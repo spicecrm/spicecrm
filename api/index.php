@@ -10,6 +10,7 @@ use DI\Container;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\Middleware\DeveloperMiddleware;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -17,6 +18,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponseFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\modules\SystemTenants\SystemTenant;
 
 register_shutdown_function([SpiceUtils::class, 'spiceCleanup']);
 
@@ -42,7 +44,13 @@ try {
 
     DBManagerFactory::setDBConfig();
 
+    SystemTenant::processTenantSwitch();
+
     SpiceConfig::getInstance()->reloadConfig();
+
+    if (!SpiceDictionary::compareSystemDumpHashes()) {
+        SpiceDictionary::getInstance(false)->reloadSystemDump();
+    }
 
     SpiceLanguageManager::setCurrentLanguage();
 
@@ -76,6 +84,9 @@ try {
     // load the modules first
     SpiceModules::getInstance()->loadModules();
 
+    // load the metadata from the database
+    SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
+
     if (!empty(SpiceConfig::getInstance()->config['session_dir'])) {
         session_save_path(SpiceConfig::getInstance()->config['session_dir']);
     }
@@ -86,6 +97,6 @@ try {
     // run the request
     $RESTManager->app->run();
 
-} catch (SpiceCRM\includes\ErrorHandlers\Exception $e) {
+} catch (SpiceCRM\includes\ErrorHandlers\Exception|Exception $e) {
     $RESTManager->outputError($e);
 }

@@ -214,16 +214,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'type' => 'date',
                 'comment' => 'The birthdate of the contact'
             ],
-            'accounts' => [
-                'name' => 'accounts',
-                'type' => 'link',
-                'relationship' => 'accounts_contacts',
-                'link_type' => 'one',
-                'source' => 'non-db',
-                'vname' => 'LBL_ACCOUNTS',
-                'duplicate_merge' => false,
-                'module' => 'Accounts'
-            ],
+#migrated
+//            'accounts' => [
+//                'name' => 'accounts',
+//                'type' => 'link',
+//                'relationship' => 'accounts_contacts',
+//                'link_type' => 'one',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_ACCOUNTS',
+//                'duplicate_merge' => false,
+//                'module' => 'Accounts'
+//            ],
             'prospects' => [
                 'name' => 'prospects',
                 'type' => 'link',
@@ -534,15 +535,23 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                     ],
                     'unsubscribegroup_status' => [
                         'map' => 'prospectlists_contacts_unsubscribegroup_status'
+                    ],
+                    'email_addr_bean_rel_id' => [
+                        'map' => 'prospectlists_person_email_addr_bean_rel_id'
                     ]
                 ]
             ],
             'prospectlistunsubscribes' => [
                 'name' => 'prospectlistunsubscribes',
-                'vname' => 'LBL_PROSPECTLISTS_UNSUBSCRIBES',
+                'vname' => 'LBL_PROSPECTLIST_UNSUBSCRIBES',
                 'type' => 'link',
                 'relationship' => 'prospectlistunsubscribes_contacts',
                 'source' => 'non-db',
+                'rel_fields' => [
+                    'email_addr_bean_rel_id' => [
+                        'map' => 'prospectlists_person_email_addr_bean_rel_id'
+                    ]
+                ]
             ],
             'optout_sendgrid' => [
                 'name' => 'optout_sendgrid',
@@ -615,6 +624,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'name' => 'prospectlists_contacts_unsubscribegroup_status',
                 'vname' => 'LBL_UNSUBSCRIBE_STATUS',
                 'type' => 'bool',
+                'source' => 'non-db'
+            ],
+            'prospectlists_person_email_addr_bean_rel_id' => [
+                'name' => 'prospectlists_person_email_addr_bean_rel_id',
+                'vname' => 'LBL_EMAIL_ADDRESS',
+                'type' => 'varchar',
+                'len' => '36',
                 'source' => 'non-db'
             ],
             'catalogorders' => [

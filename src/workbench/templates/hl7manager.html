@@ -1,0 +1,25 @@
+<workbench-header titlelabel="LBL_HL7_MANAGER">
+    <workbench-header-controls>
+        <button class="slds-button slds-button--icon-border slds-button_neutral slds-m-left_small" (click)="reload()" [disabled]="isLoading"><system-button-icon icon="refresh" size="medium"></system-button-icon></button>
+    </workbench-header-controls>
+</workbench-header>
+<div class="slds-p-around--small slds-p-top--none">
+    <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread slds-m-top--small slds-m-bottom--medium slds-form--inline">
+        <div class="slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_ACTION"></system-label></label>
+            <div class="slds-form-element__control" style="min-width:250px;">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="selectedMessageDef" [disabled]="!messageDefs || messageDefs.length == 0"><!--(change)="reset()"-->
+                        <option *ngIf="!selectedMessageDef"></option>
+                        <option *ngFor="let messageDef of messageDefs" [ngValue]="messageDef">{{messageDef.name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ><!-- [system-overlay-loading-spinner]="isLoading" -->
+        <div *ngIf="messageDefs.length">
+            <hl7-manager-type *ngIf="selectedMessageDef" [messageDef]="selectedMessageDef"></hl7-manager-type>
+        </div>
+    </div>
+</div>

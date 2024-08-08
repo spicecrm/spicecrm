@@ -187,7 +187,7 @@ export class fieldEmailRecipientsInput {
 
         if (!this.model.getField('recipient_addresses') || this.model.getField('recipient_addresses').length == 0) return;
 
-        this.value = this.model.getField('recipient_addresses').filter(addr => addr.email_address_id != removeId);
+        this.value = this.model.getField('recipient_addresses').filter(addr => addr.id != removeId);
 
         e.preventDefault();
         e.stopPropagation();
@@ -353,5 +353,26 @@ export class fieldEmailRecipientsInput {
             this.clickListener();
             this.clickListener = false;
         }
+    }
+
+    /**
+     * on paste extract email addresses from clipboard
+     * @param event
+     */
+    public onPasteExtractEmailAddresses(event: ClipboardEvent) {
+
+        event.preventDefault();
+
+        const paste = (event.clipboardData || window['clipboardData']).getData('text');
+        paste.matchAll(/(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/g)
+            .forEach(addrMatch => {
+                const newEmailAddress = {
+                    id: this.model.generateGuid(),
+                    address_type: this.addressType,
+                    email_address: addrMatch[0]
+                };
+
+                this.value = [...this.model.getField('recipient_addresses'), newEmailAddress];
+            });
     }
 }

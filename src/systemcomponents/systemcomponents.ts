@@ -137,6 +137,7 @@ import {SystemViewContainer} from "./components/systemviewcontainer";
 import {SystemIconHelpText} from "./components/systemiconhelptext";
 import {SystemMultipleSelect} from "./components/systemmultipleselect";
 import {SystemWrappedText} from './components/systemwrappedtext';
+import {SystemInputRoles} from "./components/systeminputroles";
 
 import {PackageLoader} from "./components/packageloader";
 import {PackageLoaderPipe} from "./components/packageloaderpipe";
@@ -197,6 +198,9 @@ import {SystemChartDataColumn} from "./components/systemchartdatacolumn";
 import {SystemRichTextEditorMentionDropdown} from "./components/systemrichtexteditormentiondropdown";
 import {SystemProgressIndicator} from "./components/systemprogressindicator";
 import {SystemProgressIndicatorItem} from "./components/systemprogressindicatoritem";
+import {PackageLoaderReloadLoadedModal} from "./components/packageloaderreloadloadedmodal";
+import {SystemInputDictionary} from "./components/systeminputdictionary";
+import {SystemSelectModuleModal} from "./components/systemselectmodulemodal";
 
 @NgModule({
     imports: [
@@ -381,7 +385,11 @@ import {SystemProgressIndicatorItem} from "./components/systemprogressindicatori
         SystemSelectOption,
         SystemRichTextEditorMentionDropdown,
         SystemProgressIndicator,
-        SystemProgressIndicatorItem
+        SystemProgressIndicatorItem,
+        PackageLoaderReloadLoadedModal,
+        SystemInputDictionary,
+        SystemInputRoles,
+        SystemSelectModuleModal
     ],
     exports: [
         PaginationControlsComponent,
@@ -543,7 +551,11 @@ import {SystemProgressIndicatorItem} from "./components/systemprogressindicatori
         SystemSelectOption,
         SystemInputFlter,
         SystemProgressIndicator,
-        SystemProgressIndicatorItem
+        SystemProgressIndicatorItem,
+        PackageLoaderReloadLoadedModal,
+        SystemInputDictionary,
+        SystemInputRoles,
+        SystemSelectModuleModal
     ]
 })
 export class SystemComponents {}

@@ -3,7 +3,8 @@
 
 namespace SpiceCRM\modules\CampaignTasks;
 
-use Exception;
+use SpiceCRM\extensions\modules\TextMessages\TextMessage;
+use SpiceCRM\extensions\modules\TextMessageTemplates\TextMessageTemplate;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
@@ -21,6 +22,7 @@ use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\OutputTemplates\OutputTemplate;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\modules\Users\User;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 
 class CampaignTask extends SpiceBean
 {
@@ -41,13 +43,40 @@ class CampaignTask extends SpiceBean
 
     /**
      * return exclusion list id
-     * @return array|false
+     * @param string $campaignTaskId
+     * @param string $type
+     * @return array
      * @throws Exception
      */
-    public static function getListIdByType(string $campaignTaskId, string $type)
+    public static function getListIdsByType(string $campaignTaskId, string $type): array
     {
         $db = DBManagerFactory::getInstance();
-        return $db->getOne("SELECT pl.id FROM prospect_lists pl INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = pl.id WHERE plc.campaigntask_id = '$campaignTaskId' and pl.list_type = '$type' and pl.deleted != 1  and plc.deleted != 1 ");
+        return array_column(
+            $db->fetchAll("SELECT pl.id FROM prospect_lists pl INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = pl.id WHERE plc.campaigntask_id = '$campaignTaskId' and pl.list_type = '$type' and pl.deleted != 1  and plc.deleted != 1 ") ?: [],
+            'id'
+        );
+    }
+
+    /**
+     * get all targets count
+     * @return int
+     * @throws Exception
+     */
+    public function getAllTargetsCount(): int
+    {
+        return (int) $this->getTargetCount() + $this->getTargetsFilterEntries(true);
+    }
+    /**
+     * merge targets arrays to remove duplicates by key (bean.id)
+     * @return array|int
+     * @throws Exception
+     */
+    private function getAllTargetsEntries()
+    {
+        return array_merge(
+            $this->getTargetsEntries(),
+            $this->getTargetsFilterEntries()
+        );
     }
 
     /**
@@ -60,18 +89,11 @@ class CampaignTask extends SpiceBean
      */
     function activate(string $status = 'targeted', $additionalParams = []): array
     {
+        $this->preActivateCheck();
+
         $delQuery = "DELETE FROM campaign_log WHERE campaign_id='$this->campaign_id' AND campaigntask_id='$this->id' AND activity_type='$status'";
         $this->db->query($delQuery);
 
-        # merge targets arrays to remove duplicates by key (bean.id)
-        $targets = array_merge(
-            $this->getTargetsEntries(),
-            $this->getTargetsFilterEntries()
-        );
-
-        if (count($targets) == 0) {
-            return ['success' => false, 'msg' => 'no targets found'];
-        }
 
         $guidSQL = $this->db->getGuidSQL();
         $currentDate = $this->db->now();
@@ -84,7 +106,7 @@ class CampaignTask extends SpiceBean
             $addQueryValues = ", "."'".implode("', '", array_values($additionalParams))."'";
         }
 
-        $chunks = array_chunk($targets, 500);
+        $chunks = array_chunk($this->getAllTargetsEntries(), 500);
 
         foreach ($chunks as $chunkTargets) {
 
@@ -108,43 +130,109 @@ class CampaignTask extends SpiceBean
         return ['success' => true, 'id' => $this->id];
     }
 
-    public function activateFromEvent($status)
+    /**
+     * pre activate check for all types
+     * @return void
+     * @throws Exception
+     */
+    private function preActivateCheck()
     {
+        switch ($this->campaigntask_type) {
+            case 'Email':
+                if (empty($this->mailbox_id)) throw (new Exception('Mailbox required'))->setLbl('MSG_MAILBOX_REQUIRED');
+                if (empty($this->email_subject)) throw (new Exception('Email subject required'))->setLbl('MSG_EMAIL_TEMPLATE_SUBJECT_REQUIRED');
+                if (empty($this->email_body)) throw (new Exception('Email body required'))->setLbl('MSG_EMAIL_TEMPLATE_BODY_REQUIRED');
+                break;
+            case 'EventWithCampaign':
+
+                if ($this->getEventTargetsCount() == 0) {
+                    throw (new Exception("No processable event targets "))->setLbl('MSG_NO_PROCESSABLE_TARGETS');
+                }
+                return;
+            case 'Event':
+            case 'NewsLetter':
+            case 'Telesales':
+            case 'Mail':
+            case 'mailmerge':
+            case 'Feedback':
+            case 'Print':
+            case 'Web':
+            case 'Radio':
+            case 'Television':
+                break;
+        }
+
+        if ($this->getAllTargetsCount() == 0) {
+            throw (new Exception('No processable targets'))->setLbl('MSG_NO_PROCESSABLE_TARGETS');
+        }
+    }
+
+    /**
+     * get event targets query
+     * @param bool $countOnly
+     * @param string|null $status
+     * @return string
+     */
+    private function getEventTargetsQuery(bool $countOnly = false, ?string $status = ''): string
+    {
+        $filter = '';
         $sysModuleFilters = new SysModuleFilters();
 
-        // disable ONLY_FULL_GROUP_BY if this is set
-//        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
+        if(!empty($this->module_filter)){
+            $filter = $sysModuleFilters->generateWhereClauseForFilterId($this->module_filter);
+            $filter = !empty($filter) ? "AND $filter" : "";
+        }
 
-        // set the group by mode off on MySQL
-//        if($this->db->dbType == 'mysql') {
-//            $this->db->query("SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
-//        }
+        $campaign = BeanFactory::getBean('Campaigns', $this->campaign_id, ['relationships' => false]);
+
+        if (!$countOnly) {
+            $current_date = TimeDate::getInstance()->nowDb();
+            $guidSQL = $this->db->getGuidSQL();
+            $target_tracker_key = $this->db->getGuidSQL();
+            $query = "SELECT $guidSQL, '$current_date', '$campaign->id', '$this->id', $target_tracker_key, eventregistrations.parent_id, eventregistrations.parent_type,'$status',0, '$current_date', '{$this->assigned_user_id}', eventregistrations.id, 'EventRegistrations'";
+        } else {
+            $query = "SELECT COUNT(*)";
+        }
+
+        $query .= " FROM events INNER JOIN eventregistrations ON eventregistrations.event_id = events.id ";
+        return $query . " WHERE events.id = '$campaign->event_id' AND events.deleted != 1 AND eventregistrations.deleted != 1 $filter ";
+
+    }
+
+    /**
+     * get event targets count
+     * @return int
+     */
+    private function getEventTargetsCount(): int
+    {
+        return (int) $this->db->getOne(
+            $this->getEventTargetsQuery(true)
+        );
+    }
+
+    public function activateFromEvent($status)
+    {
+        $this->preActivateCheck();
+
+        $sysModuleFilters = new SysModuleFilters();
 
         // delete old campaignLog
         $campaignLog = BeanFactory::getBean('CampaignLog');
         $deleteWhere = ['campaign_id' => $this->campaign_id, 'campaigntask_id' => $this->id, 'activity_type' => $status];
         $campaignLog->db->deleteQuery($campaignLog->_tablename, $deleteWhere);
 
-        // grab campaign
         $campaign = BeanFactory::getBean('Campaigns', $this->campaign_id, ['relationships' => false]);
 
-        // check on filter and build where clause
+        $filter = '';
         if(!empty($this->module_filter)){
             $filter = $sysModuleFilters->generateWhereClauseForFilterId($this->module_filter);
             $filter = !empty($filter) ? "AND $filter" : "";
         }
 
-        // prepare insert query
-        $current_date = TimeDate::getInstance()->nowDb();
-        $guidSQL = $this->db->getGuidSQL();
-        $target_tracker_key = $this->db->getGuidSQL();
+        # create campaign log entries
+        $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id, source_id, source_type) ";
+        $insert_query .= $this->getEventTargetsQuery(false, $status);
 
-        $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id, source_id, source_type)";
-        $insert_query .= " SELECT $guidSQL, '$current_date', '$campaign->id', '$this->id', $target_tracker_key, eventregistrations.parent_id, eventregistrations.parent_type,'$status',0, '$current_date', '{$this->assigned_user_id}', eventregistrations.id, 'EventRegistrations'";
-        $insert_query .= " FROM events INNER JOIN eventregistrations ON eventregistrations.event_id = events.id ";
-        $insert_query .= " WHERE events.id = '$campaign->event_id' AND events.deleted != 1 AND eventregistrations.deleted != 1 $filter ";
-
-        // create campainlog entries
         if($success = $this->db->query($insert_query)){
             // set to activated
             $this->activated = true;
@@ -192,7 +280,7 @@ class CampaignTask extends SpiceBean
     private function getCampaignTargetLists(): array
     {
         $query = $this->db->query("
-            SELECT pl.id, pl.name, pl.list_type FROM prospect_list_campaigntasks plc INNER JOIN prospect_lists pl ON pl.id = plc.prospect_list_id 
+            SELECT pl.id, pl.name, pl.list_type, pl.is_generated_by_system FROM prospect_list_campaigntasks plc INNER JOIN prospect_lists pl ON pl.id = plc.prospect_list_id 
             WHERE pl.list_type != 'test' AND campaigntask_id = '$this->id' AND plc.deleted != 1 AND pl.deleted != 1 ORDER BY pl.name"
         );
 
@@ -345,30 +433,41 @@ class CampaignTask extends SpiceBean
         ];
     }
 
-    function sendTestEmail($emailAddresses = [])
+    /**
+     * send test emails
+     * @return int[]
+     * @throws Exception
+     * @throws MessageInterceptedException
+     */
+    function sendTestEmails()
     {
         # set the current user to the one assigned to the task. fallback set the admin user
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $user = BeanFactory::getBean('Users', $this->assigned_user_id ?: '1');
         AuthenticationController::getInstance()->setCurrentUser($user);
 
-        $testCount = 0;
-        $res = $this->db->query("SELECT plp.related_id, plp.related_type FROM prospect_list_campaigntasks plc INNER JOIN prospect_lists pl ON pl.list_type = 'test' AND plc.campaigntask_id = '{$this->id}' AND plc.prospect_list_id = pl.id INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = pl.id WHERE plc.deleted = 0 AND pl.deleted = 0 AND plp.deleted = 0");
-        while ($row = $this->db->fetchByAssoc($res)) {
-            $bean = BeanFactory::getBean($row['related_type'], $row['related_id']);
-            if ($bean && $bean->hasEmails()) {
-                $email = $this->sendEmail($bean, false, true);
+        [$sentCount, $testCount] = 0;
 
-                if ($email->status == 'sent') {
-                    $testCount++;
-                }
-            }
+        $res = $this->db->query("SELECT plp.related_id, plp.related_type FROM prospect_list_campaigntasks plc INNER JOIN prospect_lists pl ON pl.list_type = 'test' AND plc.campaigntask_id = '{$this->id}' AND plc.prospect_list_id = pl.id INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = pl.id WHERE plc.deleted = 0 AND pl.deleted = 0 AND plp.deleted = 0");
+
+        while ($row = $this->db->fetchByAssoc($res)) {
+
+            $bean = BeanFactory::getBean($row['related_type'], $row['related_id']);
+
+            if (!$bean || !$bean->hasEmails()) continue;
+
+            $email = $this->sendEmail($bean, false, true);
+            $testCount++;
+            if ($email->status == 'sent') $sentCount++;
         }
 
         # reset the current user for the system after parsing
         AuthenticationController::getInstance()->setCurrentUser($current_user);
 
-        return $testCount > 0 ? ['status' => 'success'] : ['status' => 'error', 'msg' => 'no targets found'] ;
+        if ($testCount == 0) throw (new Exception("No test targets found"))->setLbl('LBL_NO_TEST_TARGETS');
+        if ($sentCount == 0) throw (new Exception("Could not send any test email"))->setLbl('MSG_NO_TEST_EMAILS_SENT');
+
+        return ['sent' => $sentCount, 'total' => $testCount];
     }
 
     /**
@@ -376,7 +475,7 @@ class CampaignTask extends SpiceBean
      * @return bool
      * @throws MessageInterceptedException
      */
-    function sendQueuedEmails($addBeans = []){
+    function sendQueuedEmails($campaignTaskType='Email'){
         // set the admin user
         /** @var User $admin */
         $admin = BeanFactory::getBean('Users', '1');
@@ -384,7 +483,7 @@ class CampaignTask extends SpiceBean
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         // get the queued emails
-        $queuedEmails = $this->db->limitQuery("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = 'Email' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC", 0, 50);
+        $queuedEmails = $this->db->limitQuery("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = '$campaignTaskType' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC", 0, 50);
 
         while($queuedEmail = $this->db->fetchByAssoc($queuedEmails)){
             /// load the campaign task if we have a new one
@@ -437,6 +536,8 @@ class CampaignTask extends SpiceBean
                 if ($this->save_emails == 1) {
                     $campaignLog->related_id = $email->id;
                     $campaignLog->related_type = 'Emails';
+                } else {
+                    $campaignLog->external_id = $email->message_id;
                 }
             }
 
@@ -446,6 +547,49 @@ class CampaignTask extends SpiceBean
         // set the assigned user back to the admin
         AuthenticationController::getInstance()->setCurrentUser($admin);
 
+        return true;
+    }
+
+    /**
+     * send queued text messages for text message campaign tasks where the log entry is set to queued
+     * @return bool
+     */
+    function sendQueuedTextMessages($addBeans = []){
+        // set the admin user
+        $admin = BeanFactory::getBean('Users', '1');
+        AuthenticationController::getInstance()->setCurrentUser($admin);
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+
+        // get the queued emails
+        $queuedEmails = $this->db->limitQuery("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = 'SMS' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC", 0, 50);
+        while($queuedTextMessage = $this->db->fetchByAssoc($queuedEmails)){
+            /// load the campaign task if we have a new one
+            if($queuedTextMessage['campaigntask_id'] != $this->id){
+                $this->retrieve($queuedTextMessage['campaigntask_id']);
+            };
+
+            // load the bean and send the email
+            $seed = BeanFactory::getBean($queuedTextMessage['target_type'], $queuedTextMessage['target_id']);
+            $campaignLog = BeanFactory::getBean('CampaignLog', $queuedTextMessage['id']);
+            if($seed && $seed->is_inactive) {
+                $campaignLog->activity_type = 'inactive';
+                $campaignLog->save();
+            } else if($seed) {
+                $textMessage = $this->sendTextMessage($seed, true, false, ['CampaignLog' => $campaignLog]);
+                if($textMessage == false){
+                    $campaignLog->activity_type = 'noemail';
+                    $campaignLog->save();
+                } else {
+                    $campaignLog->activity_type = 'sent';
+                    $campaignLog->related_id = $textMessage->id;
+                    $campaignLog->related_type = 'TextMessages';
+                    $campaignLog->save();
+                }
+            } else {
+                $campaignLog->activity_type = 'error';
+                $campaignLog->save();
+            }
+        }
         return true;
     }
 
@@ -473,13 +617,14 @@ class CampaignTask extends SpiceBean
             $emailTemplate->body_html = $this->email_body;
             $emailTemplate->style = $this->email_stylesheet_id;
         }
-        $parsedHtml = $emailTemplate->parse($seed, ['campaignTask' => $this->id], $addBeans);
+        $parsedContent = $emailTemplate->parse($seed, ['campaignTask' => $this->id], $addBeans);
 
         $email->id = SpiceUtils::createGuid();
         $email->new_with_id = true;
         $email->mailbox_id = $this->mailbox_id;
-        $email->name = $test ? ('[TEST] ' . $this->email_subject) : $this->email_subject;
-        $email->body = $parsedHtml['body_html'];
+        $email->name = $parsedContent['subject'];
+        $email->body = $parsedContent['body_html'];
+        if ( $test ) $email->name = '[TEST] ' . $email->name;
 
         $email->addEmailAddress('to', $seed->email1);
         $email->addEmailAddress('from', $mailbox->imap_pop3_username);
@@ -506,7 +651,7 @@ class CampaignTask extends SpiceBean
                 $result = $email->sendEmail();
             } catch ( MessageInterceptedException $e ) {
                 throw $e;
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 $result = ['result' => false];
             }
 
@@ -517,12 +662,57 @@ class CampaignTask extends SpiceBean
     }
 
     /**
+     * sends the text message
+     *
+     * @param $seed
+     * @param false $saveTextMessage
+     * @param false $test
+     * @return false|SpiceBean
+     */
+    function sendTextMessage($seed, $saveTextMessage = false, $test = false, $addBeans = [])
+    {
+        if(!$seed->phone_mobile) {
+            return false;
+        }
+
+        $textMessageTemplate = (function(): TextMessageTemplate {return BeanFactory::getBean('TextMessageTemplates');})();
+        $textMessage = (function(): TextMessage {return BeanFactory::getBean('TextMessages');})();
+
+        if(!empty($this->textmessage_template_id)){
+            $textMessageTemplate->retrieve($this->textmessage_template_id);
+        } else {
+            $textMessageTemplate->body = $this->email_body;
+        }
+
+        $textMessage->description = $textMessageTemplate->parse($seed, ['campaignTask' => $this->id]); # third param would be: $addBeans
+        $textMessage->id = SpiceUtils::createGuid();
+        $textMessage->new_with_id = true;
+        $textMessage->mailbox_id = $this->mailbox_id;
+        $textMessage->name = $test ? ('[TEST] ' . $this->email_subject) : $this->email_subject;
+
+        $textMessage->msisdn = $seed->phone_mobile;
+
+        try {
+            if ($saveTextMessage) {
+                $textMessage->parent_type = $seed->_module;
+                $textMessage->parent_id = $seed->id;
+                $textMessage->to_be_sent = true;
+                $textMessage->save();
+            } else {
+                $textMessage->send();
+            }
+        }
+        catch ( MessageInterceptedException $e ) { }
+        return $textMessage;
+    }
+
+    /**
      * @deprecated because of typo. Use generateServiceFeedbacks from now on
      * @return void
      * @throws Exception
      */
     public function genereateServiceFeedbacks(){
-        $this->generateServiceFeedbacks();
+        return $this->generateServiceFeedbacks();
     }
 
     /**
@@ -627,7 +817,7 @@ class CampaignTask extends SpiceBean
      */
     private function buildTargetsEntriesQuery(bool $countOnly = false): string
     {
-        $exclusionListId = (string) self::getListIdByType($this->id, 'exclude');
+        $exclusionListIds = self::getListIdsByType($this->id, 'exclude');
 
         $query = 'SELECT ' . ($countOnly ? 'COUNT(distinct plp.related_id) ' : "plp.related_id, plp.related_type, plp.prospect_list_id ");
         $query .= "FROM prospect_lists pl INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = pl.id ";
@@ -635,8 +825,9 @@ class CampaignTask extends SpiceBean
         $query .= "WHERE plc.campaigntask_id='$this->id' AND pl.deleted=0 AND plc.deleted=0 AND plp.deleted=0 ";
         $query .= "AND pl.list_type != 'test' AND pl.list_type != 'exclude' AND pl.list_type not like 'exempt%'";
 
-        if ($exclusionListId) {
-            $query .= " AND NOT EXISTS(SELECT id FROM prospect_lists_prospects WHERE prospect_list_id = '$exclusionListId' AND plp.related_id = related_id AND deleted != 1)";
+        if (!empty($exclusionListIds)) {
+            $exclusionListIds = implode("','", $exclusionListIds);
+            $query .= " AND NOT EXISTS(SELECT id FROM prospect_lists_prospects WHERE prospect_list_id in ('$exclusionListIds') AND plp.related_id = related_id AND deleted != 1)";
         }
 
         return $query;
@@ -644,9 +835,10 @@ class CampaignTask extends SpiceBean
 
     /**
      * get targets filter entries
-     * @return array
+     * @return array | int
+     * @throws Exception
      */
-    public function getTargetsFilterEntries(): array
+    public function getTargetsFilterEntries(bool $countOnly = false)
     {
         $entries = [];
 
@@ -660,6 +852,16 @@ class CampaignTask extends SpiceBean
         while ($listFilter = $this->db->fetchByAssoc($listFilters)) {
             $seed = BeanFactory::getBean($listFilter['module']);
             $where = $sysModuleFilters->generateWhereClauseForFilterId($listFilter['module_filter']);
+
+            if (empty($where)) {
+                throw (new Exception("Module filter {$listFilter['module_filter']} generated empty where"))->setLbl('MSG_MODULE_FILTER_EMPTY_CONDITIONS');
+            }
+
+            if ($countOnly) {
+                $entries[] = (int) $this->db->getOne("SELECT count(id) FROM $seed->_tablename WHERE deleted != 1 AND $where");
+                continue;
+            }
+
             $query = $this->db->query("SELECT id FROM $seed->_tablename WHERE deleted != 1 AND $where");
 
             while($entry = $this->db->fetchByAssoc($query)) {
@@ -674,7 +876,7 @@ class CampaignTask extends SpiceBean
             }
         }
 
-        return $entries;
+        return $countOnly ? array_sum($entries) : $entries;
     }
 
     /**
@@ -693,7 +895,7 @@ class CampaignTask extends SpiceBean
      * produces a mailmerge PDF for the campaign
      *
      * @return array
-     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     * @throws Exception
      */
     public function mailMerge($start = 0, $limit = 100, $mailMergeSubject = null, $mailMergeBody = null){
 

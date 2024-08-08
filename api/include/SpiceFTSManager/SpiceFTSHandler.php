@@ -57,6 +57,11 @@ class SpiceFTSHandler
         'elastic' => []
     ];
 
+    /**
+     * fixed date to differentiate the erroneous entries failed to index
+     */
+    const ERRONEOUS_FIXED_DATE = '9999-12-31 23:24:25';
+
     public final function __construct()
     {
         $this->elasticHandler = new ElasticHandler();
@@ -879,10 +884,9 @@ class SpiceFTSHandler
         $listTypes = ['all', 'owner', 'globalSearch'];
         if (property_exists($seed, 'is_inactive') && in_array($listId, $listTypes)) {
             if(is_array($queryParam['query']['bool']['filter']['bool']['must'])) {
-                $index = count($queryParam['query']['bool']['filter']['bool']['must']);
-                $queryParam['query']['bool']['filter']['bool']['must']['0']['bool']['must'][$index]['terms']['is_inactive'] = ['0'];
+                $queryParam['query']['bool']['filter']['bool']['must'][]['bool']['must'][]['terms']['is_inactive'] = ['0'];
             } else {
-                $queryParam['query']['bool']['filter']['bool']['must']['0']['bool']['must']['0']['terms']['is_inactive'] = ['0'];
+                $queryParam['query']['bool']['filter']['bool']['must'][]['terms']['is_inactive'] = ['0'];
             }
         }
 
@@ -1638,7 +1642,7 @@ class SpiceFTSHandler
                 continue;
             }
 
-            $indexBeans = $db->limitQuery("SELECT id, deleted FROM " . $seed->_tablename . " WHERE (deleted = 0 AND (date_indexed IS NULL  OR date_indexed < date_modified)) OR (deleted = 1 AND (date_indexed IS NOT NULL))", 0, $packagesize - $beanCounter);
+            $indexBeans = $db->limitQuery("SELECT id, deleted FROM " . $seed->_tablename . " WHERE " . SpiceFTSHandler::getSelectQueryWhere(), 0, $packagesize - $beanCounter);
             $numRows = $indexBeans->num_rows;
             $counterIndexed = $counterDeleted = 0;
             if ($toConsole) {
@@ -1676,6 +1680,16 @@ class SpiceFTSHandler
             }
         }
         echo 'Indexing finished. All done.';
+    }
+
+    /**
+     * generate where claus for the index beans selection on the bean table
+     * @return string
+     */
+    public static function getSelectQueryWhere(): string
+    {
+        $erroneousFixedDate = self::ERRONEOUS_FIXED_DATE;
+        return "((date_indexed IS NULL OR date_indexed < date_modified) AND deleted = 0) OR (date_indexed IS NOT NULL AND deleted = 1 AND date_indexed != '$erroneousFixedDate')";
     }
 
     /**
@@ -1730,9 +1744,12 @@ class SpiceFTSHandler
                 continue;
             }
 
-            $indexBeans = $db->limitQuery("SELECT id, deleted FROM " . $seed->_tablename . " WHERE (deleted = 0 AND (date_indexed IS NULL OR date_indexed < date_modified)) OR (deleted = 1 AND (date_indexed IS NOT NULL )) ORDER BY date_modified DESC", 0, $packagesize);
+            $selectWhere = SpiceFTSHandler::getSelectQueryWhere();
+            $indexBeans = $db->limitQuery("SELECT id, deleted FROM " . $seed->_tablename . " WHERE $selectWhere ORDER BY date_modified DESC", 0, $packagesize);
             $numRows = $indexBeans->num_rows;
             $counterIndexed = $counterDeleted = 0;
+            $counterErroneous = 0;
+
             if ($toConsole) {
                 echo $numRows . ' records to do.';
                 if ($numRows) {
@@ -1811,47 +1828,21 @@ class SpiceFTSHandler
                 }
                 if (count($bulkItems) >= $bulkCommitSize) {
                     $indexResponse = $this->elasticHandler->bulk($bulkItems);
-                    if (!$indexResponse->errors) {
-                        if (count($bulkUpdates['indexed']) > 0)
-                            $db->query("UPDATE " . $seed->_tablename . " SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
-
-                        if (count($bulkUpdates['deleted']) > 0)
-                            $db->query("UPDATE " . $seed->_tablename . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
-                    }
-
-                    // reset the list
-                    $bulkUpdates = [
-                        'indexed' => [],
-                        'deleted' => []
-                    ];
-
                     $bulkItems = [];
+                    $this->handleBulkResponse($indexResponse, $bulkUpdates, $seed->_tablename, $counterErroneous, $counterIndexed, $counterDeleted);
+
                 }
             }
 
             if (count($bulkItems) > 0) {
                 $indexResponse = $this->elasticHandler->bulk($bulkItems);
-                if (!$indexResponse->errors) {
-                    if (count($bulkUpdates['indexed']) > 0)
-                        $db->query("UPDATE " . $seed->_tablename . " SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
-
-                    if (count($bulkUpdates['deleted']) > 0)
-                        $db->query("UPDATE " . $seed->_tablename . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
-
-                }
-
-                // reset the list
-                $bulkUpdates = [
-                    'indexed' => [],
-                    'deleted' => []
-                ];
-
                 $bulkItems = [];
+                $this->handleBulkResponse($indexResponse, $bulkUpdates, $seed->_tablename, $counterErroneous, $counterIndexed, $counterDeleted);
             }
 
             if ($numRows) {
                 if ($toConsole) echo str_repeat(chr(8), $numRowsLength + 1) . '!'; // delete previous/last counter output
-                echo " Indexed $counterIndexed, deleted $counterDeleted records.\n";
+                echo " Indexed $counterIndexed, deleted $counterDeleted records, failed $counterErroneous.\n";
             }
             if ($beanCounter >= $packagesize) {
                 echo "Indexing incomplete closed, because scheduler package size ($packagesize) exceeded. Will continue next time.\n";
@@ -1860,22 +1851,70 @@ class SpiceFTSHandler
         }
         if (count($bulkItems) > 0) {
             $indexResponse = $this->elasticHandler->bulk($bulkItems);
-            if (!$indexResponse->errors) {
-                if (count($bulkUpdates['indexed']) > 0)
-                    $db->query("UPDATE " . $seed->_tablename . " SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
-
-                if (count($bulkUpdates['deleted']) > 0)
-                    $db->query("UPDATE " . $seed->_tablename . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
-
-            }
-
-            // reset the list
-            $bulkUpdates = [
-                'indexed' => [],
-                'deleted' => []
-            ];
+            $this->handleBulkResponse($indexResponse, $bulkUpdates, $seed->_tablename, $counterErroneous, $counterIndexed, $counterDeleted);
         }
         echo 'Indexing finished. All done.';
+    }
+
+    /**
+     * update the index date for the indexed records
+     * @param object $indexResponse
+     * @param array $bulkUpdates
+     * @param string $tableName
+     * @param int $counterErroneous
+     * @param int $counterIndexed
+     * @param int $counterDeleted
+     * @return void
+     * @throws \Exception
+     */
+    private function handleBulkResponse(object $indexResponse, array &$bulkUpdates, string $tableName, int &$counterErroneous, int &$counterIndexed, int &$counterDeleted): void
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $erroneousIndexes = [];
+
+        if ($indexResponse->errors) {
+
+            foreach ($indexResponse->items as $item) {
+
+                if (isset($item->index) && !in_array($item->index->status, [201, 200])) {
+                    $erroneousIndexes[] = $item->index->_id;
+                    $counterErroneous++;
+                    $counterIndexed--;
+                }
+
+                if (isset($item->delete) && !in_array($item->index->status, [201, 200, 404])) {
+                    $erroneousIndexes[] = $item->index->_id;
+                    $counterErroneous++;
+                    $counterDeleted--;
+                }
+            }
+        }
+
+        # set indexed date for entries that could not be indexed to a late fixed date to exclude them from the next run
+        if (count($erroneousIndexes) > 0) {
+            $erroneousIndexesStr = implode("','", $erroneousIndexes);
+            $erroneousFixedDate = self::ERRONEOUS_FIXED_DATE;
+            $db->query("UPDATE $tableName SET date_indexed = '$erroneousFixedDate' WHERE id in ('$erroneousIndexesStr')");
+            $bulkUpdates['indexed'] = array_diff($bulkUpdates['indexed'], $erroneousIndexes);
+            $bulkUpdates['deleted'] = array_diff($bulkUpdates['deleted'], $erroneousIndexes);
+        }
+
+        if (count($bulkUpdates['indexed']) > 0) {
+            $now = TimeDate::getInstance()->nowDb();
+            $db->query("UPDATE $tableName SET date_indexed = '$now' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
+        }
+
+        if (count($bulkUpdates['deleted']) > 0) {
+            $db->query("UPDATE $tableName SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
+        }
+
+
+        // reset the list
+        $bulkUpdates = [
+            'indexed' => [],
+            'deleted' => []
+        ];
     }
 
 

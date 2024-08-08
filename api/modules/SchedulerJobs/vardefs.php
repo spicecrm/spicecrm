@@ -9,14 +9,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['SchedulerJob'] = [
 		'date_time_start' => [
 			'name' => 'date_time_start',
 			'vname' => 'LBL_DATE_START',
-			'type' => 'datetimecombo',
+			'type' => 'datetime',
 			'required' => true,
 			'reportable' => false
         ],
 		'date_time_end' => [
 			'name' => 'date_time_end',
 			'vname' => 'LBL_DATE_END',
-			'type' => 'datetimecombo',
+			'type' => 'datetime',
 			'reportable' => false,
         ],
         'next_run_date' => [
@@ -82,6 +82,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['SchedulerJob'] = [
             'vname' => 'LBL_NOTIFY_USER',
             'type' => 'bool',
             'default' => 0
+        ],
+        'max_execution_minutes' => [
+            'name' => 'max_execution_minutes',
+            'vname' => 'LBL_MAX_EXECUTION_MINUTES',
+            'type' => 'int',
+            'len' => 3
         ],
 		'jobtask_sequence' => [
 			'name' => 'jobtask_sequence',

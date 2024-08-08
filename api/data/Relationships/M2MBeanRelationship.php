@@ -165,7 +165,7 @@ class M2MBeanRelationship extends M2MRelationship
      * @param $rhs
      * @return bool|void
      */
-    public function remove($lhs, $rhs)
+    public function remove($lhs, $rhs, ?string $relId = null)
     {
         return;
     }

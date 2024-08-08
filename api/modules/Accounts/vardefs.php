@@ -214,13 +214,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'source' => 'non-db',
             'vname' => 'LBL_EMAILS_AS_PARENT',
         ],
-        'documents' => [
-            'name' => 'documents',
-            'type' => 'link',
-            'relationship' => 'documents_accounts',
-            'source' => 'non-db',
-            'vname' => 'LBL_DOCUMENTS',
-        ],
+#migrated
+//        'documents' => [
+//            'name' => 'documents',
+//            'type' => 'link',
+//            'relationship' => 'documents_accounts',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_DOCUMENTS',
+//        ],
 // CR1000426 cleanup backend, module Bugs removed
 //        'bugs' => array(
 //            'name' => 'bugs',
@@ -231,15 +232,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
 //            'source' => 'non-db',
 //            'vname' => 'LBL_BUGS',
 //        ),
-        'contacts' => [
-            'name' => 'contacts',
-            'type' => 'link',
-            'relationship' => 'accounts_contacts',
-            'module' => 'Contacts',
-            'bean_name' => 'Contact',
-            'source' => 'non-db',
-            'vname' => 'LBL_CONTACTS',
-        ],
+#migrated
+//        'contacts' => [
+//            'name' => 'contacts',
+//            'type' => 'link',
+//            'relationship' => 'accounts_contacts',
+//            'module' => 'Contacts',
+//            'bean_name' => 'Contact',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CONTACTS',
+//        ],
         'users' => [
             'name' => 'users',
             'type' => 'link',
@@ -925,7 +927,7 @@ if (file_exists('extensions/modules/Potentials')) {
         'vname' => 'LBL_POTENTIALS',
         'type' => 'link',
         'relationship' => 'account_potentials',
-        'module' => 'Accounts',
+        'module' => 'Potentials',
         'source' => 'non-db'
     ];
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['resellerpotentials'] = [
@@ -933,7 +935,7 @@ if (file_exists('extensions/modules/Potentials')) {
         'vname' => 'LBL_RESELLERPOTENTIALS',
         'type' => 'link',
         'relationship' => 'accounts_potentials_resellers',
-        'module' => 'Accounts',
+        'module' => 'Potentials',
         'source' => 'non-db'
     ];
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['maincompetitorpotentials'] = [
@@ -941,7 +943,7 @@ if (file_exists('extensions/modules/Potentials')) {
         'vname' => 'LBL_MAINCOMPETITORPOTENTIALS',
         'type' => 'link',
         'relationship' => 'potential_maincompetitor',
-        'module' => 'Accounts',
+        'module' => 'Potentials',
         'source' => 'non-db'
     ];
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['ompetitorpotentials'] = [
@@ -949,7 +951,7 @@ if (file_exists('extensions/modules/Potentials')) {
         'vname' => 'LBL_COMPETITORPOTENTIALS',
         'type' => 'link',
         'relationship' => 'accounts_potentials_competitors',
-        'module' => 'Accounts',
+        'module' => 'Potentials',
         'source' => 'non-db'
     ];
 
@@ -967,7 +969,7 @@ if (file_exists('extensions/modules/BonusCards')) {
     ];
 }
 
-if (file_exists('extensions/modules/Products')) {
+if (file_exists('modules/Products')) {
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['manufactured_products'] = [
         'vname' => 'LBL_MANUFACTURED_PRODUCTS',
         'name' => 'manufactured_products',

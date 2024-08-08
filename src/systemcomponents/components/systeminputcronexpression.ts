@@ -41,6 +41,7 @@ export class SystemInputCronExpression implements OnInit, ControlValueAccessor {
         every?: 'minutes' | 'hours' | 'days' | 'months' | 'weekdays' | 'daysAt' | 'monthsAt'
         everyQuantity?: number,
         everyAtValue?: any,
+        everyOnValue?: any,
     } = {
         minutes: '',
         hours: '',
@@ -215,10 +216,11 @@ export class SystemInputCronExpression implements OnInit, ControlValueAccessor {
 
         switch (this.expression.recurrence) {
             case 'daily':
-                this.expression.everyAtValue = moment(moment().utc().hour(0).minute(0));
+                this.expression.everyAtValue = moment().hour(0).minute(0).tz(this.userPreferences.toUse.timezone);
                 break;
             case 'weekly':
-                this.expression.everyAtValue = '0';
+                this.expression.everyAtValue = moment().hour(0).minute(0).tz(this.userPreferences.toUse.timezone);
+                this.expression.everyOnValue = '0';
                 break;
             case 'monthly':
                 this.expression.everyAtValue = '1';
@@ -369,13 +371,13 @@ export class SystemInputCronExpression implements OnInit, ControlValueAccessor {
 
         switch (this.expression.recurrence) {
             case 'daily':
-                this.expression.minutes = `${this.expression.everyAtValue.utc().minute()}`;
-                this.expression.hours = `${this.expression.everyAtValue.utc().hour()}`;
+                this.expression.hours = `${moment(this.expression.everyAtValue).tz(this.userPreferences.toUse.timezone).utc().hour()}`;
+                this.expression.minutes = `${moment(this.expression.everyAtValue).tz(this.userPreferences.toUse.timezone).utc().minute()}`;
                 break;
             case 'weekly':
-                this.expression.minutes = '0';
-                this.expression.hours = '0';
-                this.expression.weekDay = this.expression.everyAtValue;
+                this.expression.hours = `${moment(this.expression.everyAtValue).tz(this.userPreferences.toUse.timezone).utc().hour()}`;
+                this.expression.minutes = `${moment(this.expression.everyAtValue).tz(this.userPreferences.toUse.timezone).utc().minute()}`;
+                this.expression.weekDay = this.expression.everyOnValue;
                 break;
             case 'everyWeekday':
                 this.expression.minutes = '0';
@@ -458,8 +460,8 @@ export class SystemInputCronExpression implements OnInit, ControlValueAccessor {
 
         } else if (isWeekly) {
             this.expression.recurrence = 'weekly';
-            this.expression.everyAtValue = this.expression.weekDay;
-
+            this.expression.everyOnValue = this.expression.weekDay;
+            this.expression.everyAtValue = moment(moment.utc().hour(+this.expression.hours).minute(+this.expression.minutes)).tz(this.userPreferences.toUse.timezone);
         } else if (isEveryWeekDay) {
             this.expression.recurrence = 'everyWeekday';
             this.expression.everyAtValue = moment(moment.utc().hour(0).minute(0)).tz(this.userPreferences.toUse.timezone);
@@ -575,7 +577,10 @@ export class SystemInputCronExpression implements OnInit, ControlValueAccessor {
                     )}`;
                     break;
                 case 'weekly':
-                    this.expression.displayValue += ` ${this.weekdays[this.expression.everyAtValue]}`;
+                    this.expression.displayValue += ` ${this.weekdays[this.expression.everyOnValue]} `;
+                    if (moment.isMoment(this.expression.everyAtValue)) {
+                        this.expression.displayValue += `${this.expression.everyAtValue.tz(this.userPreferences.toUse.timezone).format(this.userPreferences.getTimeFormat())} ${this.language.getLabel('LBL_O_CLOCK')}`;
+                    }
                     break;
                 case 'annually':
                     this.expression.displayValue += ` ${this.months[this.expression.everyAtValue - 1]}`;
@@ -583,32 +588,32 @@ export class SystemInputCronExpression implements OnInit, ControlValueAccessor {
                 default:
                     this.expression.displayValue += `${this.expression.everyAtValue}`;
             }
-            return;
-        }
 
-        this.expression.displayValue = `${this.language.getLabel('LBL_EVERY')} `;
+        } else {
+            this.expression.displayValue = `${this.language.getLabel('LBL_EVERY')} `;
 
-        const everyAtVal = this.expression.everyAtValue;
+            const everyAtVal = this.expression.everyAtValue;
 
-        if (this.expression.every && this.expression.every != 'weekdays') {
-            const everyLabel = this.language.getLabel(
-                this.everyLabels[this.expression.every].replace('{s}', this.expression.everyQuantity > 1 ? 'S' : '')
-            );
-            this.expression.displayValue += `${this.expression.everyQuantity} ${everyLabel}`;
-        }
+            if (this.expression.every && this.expression.every != 'weekdays') {
+                const everyLabel = this.language.getLabel(
+                    this.everyLabels[this.expression.every].replace('{s}', this.expression.everyQuantity > 1 ? 'S' : '')
+                );
+                this.expression.displayValue += `${this.expression.everyQuantity} ${everyLabel}`;
+            }
 
-        if (!!this.expression.everyAtValue) {
-            if (this.expression.every == 'monthsAt') {
-                this.expression.displayValue += ` ${this.expression.everyAtValue}${this.language.getLabel(
-                    everyAtVal == 1 || everyAtVal == 21 || everyAtVal == 31 ? 'LBL_ST_DAY'
-                        : everyAtVal == 2 || everyAtVal == 22 ? 'LBL_ND_DAY'
-                            : everyAtVal == 3 || everyAtVal == 23 ? 'LBL_RD_DAY' : 'LBL_TH_DAY'
-                )}`;
+            if (!!this.expression.everyAtValue) {
+                if (this.expression.every == 'monthsAt') {
+                    this.expression.displayValue += ` ${this.expression.everyAtValue}${this.language.getLabel(
+                        everyAtVal == 1 || everyAtVal == 21 || everyAtVal == 31 ? 'LBL_ST_DAY'
+                            : everyAtVal == 2 || everyAtVal == 22 ? 'LBL_ND_DAY'
+                                : everyAtVal == 3 || everyAtVal == 23 ? 'LBL_RD_DAY' : 'LBL_TH_DAY'
+                    )}`;
 
-            } else if (this.expression.every == 'daysAt' && moment.isMoment(this.expression.everyAtValue)) {
-                this.expression.displayValue += ` ${everyAtVal.tz(this.userPreferences.toUse.timezone).format(this.userPreferences.getTimeFormat())} ${this.language.getLabel('LBL_O_CLOCK')}`;
-            } else if (this.expression.every == 'weekdays') {
-                this.expression.displayValue += ` ${this.expression.everyAtValue.map(e => this.weekdays[e]).join(', ')}`;
+                } else if (this.expression.every == 'daysAt' && moment.isMoment(this.expression.everyAtValue)) {
+                    this.expression.displayValue += ` ${everyAtVal.tz(this.userPreferences.toUse.timezone).format(this.userPreferences.getTimeFormat())} ${this.language.getLabel('LBL_O_CLOCK')}`;
+                } else if (this.expression.every == 'weekdays') {
+                    this.expression.displayValue += ` ${this.expression.everyAtValue.map(e => this.weekdays[e]).join(', ')}`;
+                }
             }
         }
     }

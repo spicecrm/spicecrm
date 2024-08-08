@@ -26,9 +26,9 @@
             </button>
         </div>
     </div>
-    <div *ngIf="sessionservice.isAdmin">
-        <button type="button" class="slds-button slds-button--neutral" (click)="filesToDB()">Files to DB</button>
-    </div>
+<!--    <div *ngIf="sessionservice.isAdmin">-->
+<!--        <button type="button" class="slds-button slds-button&#45;&#45;neutral" (click)="filesToDB()">Files to DB</button>-->
+<!--    </div>-->
 </div>
 
 <system-spinner *ngIf="is_searching"></system-spinner>
@@ -50,7 +50,7 @@
                                 <span>{{lbl.name}}</span>
                                 <span *ngIf="lbl.scope == 'custom'" class="slds-text-color_weak">custom</span>
                                 <div class="slds-col--bump-left">
-                                    <system-utility-icon *ngIf="lbl == selected_label" [icon]="'close'" [size]="'xx-small'" (click)="deleteLabel(lbl)"></system-utility-icon>
+                                    <system-utility-icon *ngIf="lbl == selected_label" [icon]="'delete'" [size]="'xx-small'" (click)="deleteLabel(lbl)" [addclasses]="'slds-icon-text-light'"></system-utility-icon>
                                 </div>
                             </div>
                         </li>

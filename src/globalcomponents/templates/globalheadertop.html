@@ -1,22 +1,22 @@
-<div class="slds-global-header slds-grid slds-grid--align-spread slds-p-left--medium">
-    <div class="slds-show--large slds-large-size--1-of-6">
+<div [ngClass]="{'slds-theme--error': configurationService.data.startupMode == 'recovery', 'slds-theme--warning': configurationService.data.startupMode == 'maintenance', 'slds-theme--default': configurationService.data.startupMode != 'maintenance' && configurationService.data.startupMode != 'recovery'}" class="slds-global-header slds-grid slds-grid--align-spread slds-p-left--medium">
+    <div class="slds-show--large">
         <div class="slds-global-header__item slds-p-left--none">
             <global-header-image></global-header-image>
         </div>
     </div>
-    <div *ngIf="isSmall" class="slds-x-small-size--1-of-12">
+    <div *ngIf="isSmall">
         <div class="slds-global-header__item slds-p-horizontal--none">
             <global-navigation-compact></global-navigation-compact>
         </div>
     </div>
-    <div *ngIf="showSearch" class="slds-x-small-size--11-of-12 slds-medium-size--4-of-6 slds-large-size--3-of-6">
+    <div *ngIf="showSearch" class="slds-grow">
         <div class="slds-global-header__item">
             <global-header-search></global-header-search>
         </div>
     </div>
-    <div *ngIf="!isSmall" class="slds-medium-size--2-of-6 slds-large-size--1-of-6">
+    <div>
         <div class="slds-global-header__item slds-grid slds-grid--align-end slds-grid--vertical-align-center">
-            <global-header-tools></global-header-tools>
+            <global-header-tools *ngIf="!isSmall"></global-header-tools>
             <global-user></global-user>
         </div>
     </div>

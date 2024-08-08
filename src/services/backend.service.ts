@@ -662,6 +662,9 @@ export class backend {
      */
     public handleError(err, route, method: string, data = null, responseSubject?: Subject<any>): boolean {
         switch (err.status) {
+            case 503:
+                this.configurationService.data.startupMode = 'recovery';
+                return true;
             case 401:
 
                 if (!this.session.authData?.sessionId) {

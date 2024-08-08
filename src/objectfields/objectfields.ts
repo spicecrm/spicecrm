@@ -131,6 +131,8 @@ import {fieldLinkedParent} from "./components/fieldlinkedparent";
 import {fieldCountries} from "./components/fieldcountries";
 import {fieldToggle} from "./components/fieldtoggle";
 import {fieldNotificationIndicator} from "./components/fieldnotificationindicator";
+import {fieldIban} from "./components/fieldiban";
+import {fieldEnumRoles} from "./components/fieldenumroles";
 
 
 /**
@@ -271,7 +273,9 @@ declare var _: any;
         fieldJson,
         fieldCountries,
         fieldToggle,
-        fieldNotificationIndicator
+        fieldNotificationIndicator,
+        fieldIban,
+        fieldEnumRoles
     ],
     exports: [
         fieldSet,
@@ -293,7 +297,8 @@ declare var _: any;
         fieldCategoriesTree,
         fieldEmailRecipientsInput,
         fieldMultienumCheckBox,
-        fieldToggle
+        fieldToggle,
+        fieldEmailEmailAddressStatus
     ]
 })
 export class ObjectFields {}

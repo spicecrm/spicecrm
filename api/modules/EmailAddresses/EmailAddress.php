@@ -331,6 +331,23 @@ class EmailAddress extends SpiceBean
     }
 
     /**
+     * reset the bounce counter for an email address
+     * @param string $emailAddress
+     * @return void
+     * @throws \Exception
+     */
+    public static function resetBounceCounter(string $emailAddress)
+    {
+        $emailAddressBean = BeanFactory::getBean('EmailAddresses');
+        $emailAddressBean->retrieve_by_string_fields(['email_address_caps' => strtoupper($emailAddress)]);
+
+        if (empty($emailAddressBean->id) || !$emailAddressBean->bounced_count) return;
+
+        $emailAddressBean->bounced_count = 0;
+
+        $emailAddressBean->save();
+    }
+    /**
      * retrieve by email address and return the id
      * @param $emailAddress
      * @return string | null
@@ -373,6 +390,7 @@ class EmailAddress extends SpiceBean
      */
     public function splitEmailAddress($addressString): array
     {
+        if (!str_contains($addressString, '<')) return ['name' => null, 'email' => $addressString];
         [$nameOrEmailAddress, $emailAddress] = explode(' <', trim($addressString, '> '));
         return ["name" => $nameOrEmailAddress, "email" => !empty($emailAddress) ? strtolower($emailAddress) : $nameOrEmailAddress];
     }

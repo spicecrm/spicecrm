@@ -4,15 +4,15 @@ namespace SpiceCRM\modules\Emails\api\controllers;
 
 use SpiceCRM\data\BeanFactory;
 use Exception;
+use SpiceCRM\extensions\modules\Mailboxes\Handlers\OutlookAttachmentHandler;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\modules\Mailboxes\Handlers\OutlookAttachmentHandler;
 use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachmentHandler;
 use SpiceCRM\includes\UploadFile;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -559,5 +559,30 @@ class EmailsController
         $attachmentHandler = new GSuiteAttachmentHandler($email, $attachmentData);
         return $attachmentHandler->saveAttachments();
     }
+
+    public function getEmailAsAttachment(Request $req, Response $res, array $args){
+        $db = DBManagerFactory::getInstance();
+
+        $thisEmailAsAttachment = $db->fetchByAssoc($db->query("SELECT * FROM emails WHERE id = '{$args['beanId']}'"));
+
+        // check if we found the attachment oand the file is here
+        if (!$thisEmailAsAttachment || !file_exists(StreamFactory::getPathPrefix('upload') . ($thisEmailAsAttachment['file_md5'] ?: $thisEmailAsAttachment['id']))) {
+            throw new NotFoundException('attachment not found');
+        }
+
+        $file = base64_encode(file_get_contents(StreamFactory::getPathPrefix('upload') . ($thisEmailAsAttachment['file_md5'] ?: $thisEmailAsAttachment['id'])));
+        $attachment = [
+            'id' => $thisEmailAsAttachment['id'],
+            'date' => $thisEmailAsAttachment['date_sent'],
+            'filename' => $thisEmailAsAttachment['file_name'],
+            'file_mime_type' => $thisEmailAsAttachment['file_mime_type'],
+            'file' => $file,
+            'filemd5' => $thisEmailAsAttachment['file_md5'],
+            'external_id' => $thisEmailAsAttachment['external_id']
+        ];
+
+        return $res->withJson($attachment);
+    }
+
 
 }

@@ -3,15 +3,16 @@
 
 namespace SpiceCRM\data;
 
+use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use stdClass;
 use SpiceCRM\includes\AddressReferences\AddressReferences;
 use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceNotes\SpiceNotes;
-use SpiceCRM\includes\SpiceNotifications\SpiceNotifications;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotificationsLoader;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -19,18 +20,13 @@ use SpiceCRM\includes\SysTrashCan\SysTrashCan;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\EncryptionUtils;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\modules\Relationships\Relationship;
 use SpiceCRM\includes\SugarCleaner;
-use SpiceCRM\data\Relationships\SugarRelationship;
-use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
-use SpiceCRM\includes\SugarObjects\VardefManager;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\data\Relationships\Relationship;
 
 
 /* * *******************************************************************************
@@ -235,6 +231,11 @@ class SpiceBean
     var $field_defs;
 
     /**
+     * @var holds acl fields that are under ACL control
+     */
+    var $acl_fields;
+
+    /**
      * @deprecated
      *
      * @var array
@@ -332,6 +333,28 @@ class SpiceBean
     public $systemUpdate = false;
 
     /**
+     * @var int helper var for the logic hook depth
+     */
+    var $logicHookDepth = [];
+
+    /**
+     * @var holds the data values of the bean
+     */
+    protected $_data = null;
+
+    /**
+     * @var string a generic summary text for the Bean
+     */
+    public $summary_text = '';
+
+
+    /**
+     * store related data, currently for email address relationship id in ProspectLists
+     * @var array
+     */
+    public $mergeRelatedData = [];
+
+    /**
      * Constructor for the bean, it performs following tasks:
      *
      * 1. Initalized a database connections
@@ -343,9 +366,54 @@ class SpiceBean
      */
     function __construct()
     {
-        // $this->initialize_bean();
+        // initialize the _data object
+        $this->_data = new stdClass();
 
+        // return the object
         return $this;
+    }
+
+    /**
+     * generic setter for the bean values
+     *
+     * @param string $name
+     * @param mixed $value
+     * @return void
+     * @throws Exception
+     */
+    /*
+    public function __set(string $name, mixed $value): void {
+
+        // if we do not have the field defined throw an error if we are in strict mode
+        if(SpiceConfig::getInstance()->get('systemvardefs.strict') && !$this->field_defs[$name]){
+            throw new Exception("property {$name} not defined on {$this->_module}");
+        }
+
+        $this->_data->{$name} = $value;
+    }
+    */
+
+    /**
+     * generic getter for the bean values
+     *
+     * @param string $name
+     * @return mixed
+     */
+    /*
+    public function __get(string $name): mixed {
+        return $this->_data->{$name};
+    }
+    */
+
+    public function getBeanDataArray(){
+        $data = (array) $this->_data;
+
+        // add standard Fields
+        $data['id'] = $this->id;
+        $data['deleted'] = $this->deleted;
+
+        // return the data
+        return $data;
     }
 
     /**
@@ -354,8 +422,18 @@ class SpiceBean
     public function initialize_bean()
     {
         $this->db = DBManagerFactory::getInstance();
-        $dictHandler = SpiceDictionaryHandler::getInstance();
 
+        $dictionaryDefs = SpiceDictionary::getInstance()->getDefs($this->_objectname);
+        $this->field_defs = $dictionaryDefs['fields'];
+        $this->optimistic_lock = $dictionaryDefs['optimistic_locking'];
+
+        if ($this->bean_implements('ACL') && !empty(AuthenticationController::getInstance()->getCurrentUser())) {
+            $this->acl_fields = (isset($dictionaryDefs['acl_fields']) && $dictionaryDefs['acl_fields'] === false) ? false : true;
+        }
+        $this->populateDefaultValues();
+
+        /*
+        $dictHandler = SpiceDictionaryHandler::getInstance();
         if ((false == $this->disable_vardefs && empty($dictHandler->dictionary[$this->_objectname])) || !empty($GLOBALS['reload_vardefs'])) {
             VardefManager::loadVardef($this->_module, $this->_objectname);
 
@@ -383,6 +461,7 @@ class SpiceBean
             $this->acl_fields = (isset($dictHandler->dictionary[$this->_objectname]['acl_fields']) && $dictHandler->dictionary[$this->_objectname]['acl_fields'] === false) ? false : true;
         }
         $this->populateDefaultValues();
+        */
     }
 
     /**
@@ -589,7 +668,7 @@ class SpiceBean
             return $this->_tablename;
         }
 
-        return SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['table'];
+        return SpiceDictionary::getInstance()->getDefs($this->_objectname)['table'];
     }
 
     /**
@@ -695,123 +774,6 @@ class SpiceBean
         return $this->$name;
     }
 
-    /**
-     * Populates the relationship meta for a module.
-     *
-     * It is called during setup/install. It is used statically to create relationship meta data for many-to-many tables.
-     *
-     * @param string $key name of the object.
-     * @param object $db database handle.
-     * @param string $tablename table, meta data is being populated for.
-     * @param array dictionary vardef dictionary for the object.     *
-     * @param string module_dir name of subdirectory where module is installed.
-     * @param boolean $iscustom Optional,set to true if module is installed in a custom directory. Default value is false.
-     * @static
-     *
-     *  Internal function, do not override.
-     */
-    static function createRelationshipMeta($key, $db, $tablename, $dictionary, $module_dir, $iscustom = false)
-    {
-        //forget relationships if tablename is empty. Will be the case with MergeRecords.
-        //avoid unnecessary log line "createRelationshipMeta: Metadata for table  does not exist"
-        if (empty($tablename)) return;
-
-        //load the module dictionary if not supplied.
-        if (empty($dictionary) && !empty($module_dir)) {
-            if ($iscustom) {
-                $filename = 'custom/modules/' . $module_dir . '/Ext/Vardefs/vardefs.ext.php';
-            } else {
-                if ($key == 'User') {
-                    // a very special case for the Employees module
-                    // this must be done because the Employees/vardefs.php does an include_once on
-                    // Users/vardefs.php
-                    $filename = 'modules/Users/vardefs.php';
-                } else {
-                    if (file_exists( "extensions/modules/{$module_dir}/vardefs.php")) {
-                        $filename = "extensions/modules/{$module_dir}/vardefs.php";
-                    } elseif (file_exists( "modules/{$module_dir}/vardefs.php")) {
-                        $filename = "modules/{$module_dir}/vardefs.php";
-                    }
-                }
-            }
-
-            //add custom/modules/[]modulename]/vardefs.php capability
-            //ORIGINAL: if (file_exists($filename)) {
-            if (file_exists(($iscustom ? $filename : SpiceUtils::getCustomFileIfExists($filename)))) {
-                include($filename);
-                // cn: bug 7679 - dictionary entries defined as $GLOBALS['name'] not found
-                if (empty($dictionary) || !empty(SpiceDictionaryHandler::getInstance()->dictionary[$key])) {
-                    $dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
-                }
-            } else {
-                LoggerManager::getLogger()->debug("createRelationshipMeta: no metadata file found" . ($iscustom ? $filename : SpiceUtils::getCustomFileIfExists($filename)));
-                return;
-            }
-        }
-
-        if (!is_array($dictionary) or !array_key_exists($key, $dictionary)) {
-            LoggerManager::getLogger()->fatal('dictionary', "createRelationshipMeta: Metadata for table " . $tablename . " does not exist");
-            SpiceUtils::displayNotice("meta data absent for table " . $tablename . " keyed to $key ");
-        } else {
-            if (isset($dictionary[$key]['relationships'])) {
-
-                $RelationshipDefs = $dictionary[$key]['relationships'];
-
-                $delimiter = ',';
-                $beanList_ucase = array_change_key_case(SpiceModules::getInstance()->getBeanList(), CASE_UPPER);
-                foreach ($RelationshipDefs as $rel_name => $rel_def) {
-                    if (isset($rel_def['lhs_module']) and !isset($beanList_ucase[strtoupper($rel_def['lhs_module'])])) {
-                        LoggerManager::getLogger()->debug('skipping orphaned relationship record ' . $rel_name . ' lhs module is missing ' . $rel_def['lhs_module']);
-                        continue;
-                    }
-                    if (isset($rel_def['rhs_module']) and !isset($beanList_ucase[strtoupper($rel_def['rhs_module'])])) {
-                        LoggerManager::getLogger()->debug('skipping orphaned relationship record ' . $rel_name . ' rhs module is missing ' . $rel_def['rhs_module']);
-                        continue;
-                    }
-
-
-                    //check whether relationship exists or not first.
-                    if (!class_exists('Relationship')) {
-                        require_once 'modules/Relationships/Relationship.php';
-                    }
-                    if (Relationship::exists($rel_name, $db)) {
-                        LoggerManager::getLogger()->debug('Skipping, reltionship already exists ' . $rel_name);
-                    } else {
-                        /** @var Relationship */
-                        $seed = BeanFactory::getBean('Relationships');
-                        $keys = array_keys($seed->field_defs);
-                        $toInsert = [];
-                        foreach ($keys as $key) {
-                            if ($key == "id") {
-                                $toInsert[$key] = SpiceUtils::createGuid();
-                            } else if ($key == "relationship_name") {
-                                $toInsert[$key] = $rel_name;
-                            } else if (isset($rel_def[$key])) {
-                                $toInsert[$key] = $rel_def[$key];
-                            } else if (isset($seed->field_defs[$key]['default'])) {
-                                $defaultValue = $seed->field_defs[$key]['default'];
-                                if($seed->field_defs[$key]['default'] === false) $defaultValue = 0;
-                                if($seed->field_defs[$key]['default'] === true) $defaultValue = 1;
-                                $toInsert[$key] = $defaultValue;
-                            }
-                        }
-
-
-                        $column_list = implode(",", array_keys($toInsert));
-                        // todo: consider variable type for values! integer shall be passed as such and not as a string
-                        $value_list = "'" . implode("','", array_values($toInsert)) . "'";
-
-                        //create the record. todo add error check.
-                        $insert_string = "INSERT into relationships (" . $column_list . ") values (" . $value_list . ")";
-                        $db->query($insert_string, true);
-                    }
-                }
-            } else {
-                //todo
-                //log informational message stating no relationships meta was set for this bean.
-            }
-        }
-    }
 
     /**
      * Handle the following when a SpiceBean object is cloned
@@ -982,7 +944,7 @@ class SpiceBean
                     'searchterm' => $searchterm
                 ]));
             } else
-                return array_values($this->$field_name->getBeans());
+                return array_values($this->$field_name->getBeans(['sort' => $sort_array]));
         }
         return [];
     }
@@ -1105,17 +1067,15 @@ class SpiceBean
      * Return true if auditing is enabled for this object
      * You would set the audit flag in the implemting module's vardef file.
      *
-     * @return boolean
+     * @return boolean|array|null
      *
      * Internal function, do not override.
      */
-    function is_AuditEnabled()
+    function is_AuditEnabled(): bool|array|null
     {
-        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['audited'])) {
-            return boolval(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['audited']);
-        } else {
-            return false;
-        }
+        if (empty(SpiceModules::getInstance()->modules)) return false;
+
+        return SpiceModules::getInstance()->getModuleDetails($this->_module)['audited'];
     }
 
     /**
@@ -1187,8 +1147,8 @@ class SpiceBean
             require($custom);
         }
 
-        $fieldDefs = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
-        $indices   = SpiceDictionaryHandler::getInstance()->dictionary['audit']['indices'];
+        $fieldDefs = SpiceDictionary::getInstance()->dictionary['audit']['fields'];
+        $indices   = SpiceDictionary::getInstance()->dictionary['audit']['indices'];
 
         // Renaming template indexes to fit the particular audit table (removed the brittle hard coding)
         foreach ($indices as $nr => $properties) {
@@ -1199,10 +1159,10 @@ class SpiceBean
         }
 
         $engine = null;
-        if (isset(SpiceDictionaryHandler::getInstance()->dictionary['audit']['engine'])) {
-            $engine = SpiceDictionaryHandler::getInstance()->dictionary['audit']['engine'];
-        } else if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['engine'])) {
-            $engine = SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['engine'];
+        if (isset(SpiceDictionary::getInstance()->dictionary['audit']['engine'])) {
+            $engine = SpiceDictionary::getInstance()->dictionary['audit']['engine'];
+        } else if (isset(SpiceDictionary::getInstance()->dictionary[$this->getObjectName()]['engine'])) {
+            $engine = SpiceDictionary::getInstance()->dictionary[$this->getObjectName()]['engine'];
         }
 
         $this->db->createTableParams($table_name, $fieldDefs, $indices, $engine);
@@ -1226,8 +1186,8 @@ class SpiceBean
             require($custom);
         }
 
-        $fieldDefs = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
-        $indices   = SpiceDictionaryHandler::getInstance()->dictionary['audit']['indices'];
+        $fieldDefs = SpiceDictionary::getInstance()->dictionary['audit']['fields'];
+        $indices   = SpiceDictionary::getInstance()->dictionary['audit']['indices'];
 
         // Renaming template indexes to fit the particular audit table (removed the brittle hard coding)
         foreach ($indices as $nr => $properties) {
@@ -1246,14 +1206,14 @@ class SpiceBean
     function drop_tables()
     {
         $key = $this->getObjectName();
-        if (!array_key_exists($key, SpiceDictionaryHandler::getInstance()->dictionary)) {
+        if (!array_key_exists($key, SpiceDictionary::getInstance()->dictionary)) {
             LoggerManager::getLogger()->fatal('dictionary', "drop_tables: Metadata for table " . $this->_tablename . " does not exist");
             echo "meta data absent for table " . $this->_tablename . "<br>\n";
         } else {
             if (empty($this->_tablename))
                 return;
             if ($this->db->tableExists($this->_tablename))
-                $this->db->dropTable($this);
+                $this->db->dropTableName($this->getTableName());
 
             if ($this->db->tableExists($this->get_audit_table_name())) {
                 $this->db->dropTableName($this->get_audit_table_name());
@@ -1395,7 +1355,7 @@ class SpiceBean
 
 
         if (empty($GLOBALS['resavingRelatedBeans'])) {
-            SugarRelationship::resaveRelatedBeans();
+            Relationship::resaveRelatedBeans();
         }
 
         // call fts manager to index the bean
@@ -1847,10 +1807,7 @@ class SpiceBean
         //FIXME: Bug? we should remove the magic number -99
         //use -99 to return all
         $index = $row_offset;
-        while ($max_per_page == -99 || ($index < $row_offset + $max_per_page)) {
-            $row = $db->fetchByAssoc($result);
-            if (empty($row))
-                break;
+        while ($row = $db->fetchByAssoc($result)) {
 
             //instantiate a new class each time. This is because php5 passes
             //by reference by default so if we continually update $this, we will
@@ -1991,9 +1948,11 @@ class SpiceBean
 
         $query = "SELECT $this->_tablename.*" . " FROM $this->_tablename ";
         $query .= " WHERE $this->_tablename.id = " . $this->db->quoted($id);
-        if ($deleted)
-            $query .= " AND $this->_tablename.deleted=0";
+
+        // don't retrieve Bean with deleted flag true
+        if ($deleted) $query .= " AND $this->_tablename.deleted=0";
         // LoggerManager::getLogger()->debug("Retrieve $this->_objectname : " . $query);
+
         $result = $this->db->query($query, true, "Retrieving record by id $this->_tablename:$id found ");
         if (empty($result)) {
             return null;
@@ -2100,20 +2059,6 @@ class SpiceBean
     }
 
     /**
-     * @deprecated
-     *
-     * Converts an array into an acl mapping name value pairs into files
-     *
-     * @param Array $arr
-     */
-    function fromArray($arr)
-    {
-        foreach($arr as $name=>$value)
-        {
-            $this->$name = $value;
-        }
-    }
-    /**
      * Convert row data from DB format to internal format
      * Mostly useful for dates/times
      * @param array $row
@@ -2155,6 +2100,32 @@ class SpiceBean
     }
 
     /**
+     * Will map all non link fields of a bean to another bean that is created on the fly
+     * @param SpiceBean $origin the original bean
+     * @param string $targetModule the target module name
+     * @param array $mapConvert an optional array with a field mapping origin field name to target field name
+     * @return false|SpiceBean
+     */
+    public function convertBeanToBean(SpiceBean $origin, string $targetModule, array $mapConvert = []){
+        $target = BeanFactory::newBean($targetModule);
+        $target->new_with_id = true;
+        $target->id = SpiceUtils::createGuid();
+
+        foreach($origin->field_defs as $vardef){
+            if(!in_array($vardef['type'], ['link', 'linked']) && isset($target->field_defs[$vardef['name']])){
+                $target->{$vardef['name']} = $origin->{$vardef['name']};
+            }
+        }
+
+        if(!empty($mapConvert)){
+            foreach($mapConvert as $originField => $targetField){
+                $target->{$targetField} = $origin->{$originField};
+            }
+        }
+        return $target;
+    }
+
+    /**
      * Sets value from fetched row into the bean.
      *
      * @param array $row Fetched row
@@ -2179,19 +2150,6 @@ class SpiceBean
                 $this->$field = $nullvalue;
             }
         }
-    }
-
-    /**
-     * Decode and decrypt a base 64 encoded string with field type 'encrypt' in this bean using Blowfish.
-     * @param STRING value - an encrypted and base 64 encoded string.
-     * @return string
-     */
-    function decrypt_after_retrieve($value)
-    {
-        if (empty($value))
-            return $value; // no need to decrypt empty
-        require_once("include/utils/encryption_utils.php");
-        return EncryptionUtils::blowfishDecode($this->getEncryptKey(), $value);
     }
 
     /**
@@ -2401,7 +2359,7 @@ class SpiceBean
             }
             $this->db->query($query, true, "Error marking record deleted: ");
 
-            SugarRelationship::resaveRelatedBeans();
+            Relationship::resaveRelatedBeans();
 
             // Take the item off the recently viewed lists
             $tracker = BeanFactory::getBean('Trackers');
@@ -2480,6 +2438,23 @@ class SpiceBean
 
         //delete beans used in merge
         foreach ($tmpBeans as $beanId => $tmpBean) {
+            // make sure email addresses are handled before other relationships to allow correct handling of other relationships
+            $key = 'email_addresses';
+            if (array_key_exists($key, $linked_fields)) {
+                if (isset($linked_fields[$key]['duplicate_merge'])) {
+                    if (
+                        $linked_fields[$key]['duplicate_merge'] === 'disabled' or
+                        $linked_fields[$key]['duplicate_merge'] === 0 or
+                        $linked_fields[$key]['duplicate_merge'] === false) {
+                        continue;
+                    }
+                }
+                if ($tmpBean->load_relationship($key)) {
+                    $tmpBean->$key->load(['relationship_fields' => $tmpBean->$key->relationship_fields]);
+//                handle email address merge
+                    $this->handleEmailMerge($key, $tmpBean->$key->rows);
+                }
+            }
             //handle related beans
             foreach ($linked_fields as $name => $properties) {
                 if ($properties['name'] == 'modified_user_link' || $properties['name'] == 'created_by_link')
@@ -2498,9 +2473,10 @@ class SpiceBean
                     //check to see if loaded relationship is with email address
                     $relName = $tmpBean->$name->getRelatedModuleName();
                     if (!empty($relName) and strtolower($relName) == 'emailaddresses') {
-                        $tmpBean->$name->load(['relationship_fields' => $tmpBean->$name->relationship_fields]);
-                        //handle email address merge
-                        $this->handleEmailMerge($name, $tmpBean->$name->rows);
+//                        $tmpBean->$name->load(['relationship_fields' => $tmpBean->$name->relationship_fields]);
+//                        //handle email address merge
+//                        $this->handleEmailMerge($name, $tmpBean->$name->rows);
+                        continue;
                     } else {
                         $tmpBean->$name->load(['relationship_fields' => $tmpBean->$name->relationship_fields]);
                         $data = $tmpBean->$name->rows;
@@ -2519,10 +2495,10 @@ class SpiceBean
                                     if ($tmpBean->$name->getType == 'many')
                                         $tmpBean->$name->delete($tmpBean->id, $related_id);
                                     //add to primary bean
-                                    $this->$name->add($related_id, $additionalValues);
+                                    $this->$name->add($row['id'], $additionalValues);
 
                                     // re-index the related bean
-                                    $relatedBean = BeanFactory::getBean($relName, $related_id, ['relationships' => false]);
+                                    $relatedBean = BeanFactory::getBean($relName, $row['id'], ['relationships' => false]);
                                     SpiceFTSHandler::getInstance()->indexBean($relatedBean);
                                 }
                             }
@@ -2549,7 +2525,7 @@ class SpiceBean
     /**
      * This function will compare the email addresses to be merged and only add the email id's
      * of the email addresses that are not duplicates.
-     * @param $name name of relationship (email_addresses)
+     * @param $name string of relationship (email_addresses)
      * @param $data array of email id's that will be merged into existing bean.
      */
     public function handleEmailMerge($name, $data)
@@ -2557,6 +2533,9 @@ class SpiceBean
         $mrgArray = [];
         //get the email id's to merge
         $existingData = $data;
+
+        // save existing email data
+        $this->mergeRelatedData[$name]['existingEmailMergeData'] = $existingData;
 
         $existingEmails = [];
 
@@ -2622,6 +2601,11 @@ class SpiceBean
         foreach ($mrgArray as $related_id => $additionalValues) {
             //add to primary bean
             $this->$name->add($related_id, $additionalValues);
+            // save new email data
+            $this->mergeRelatedData[$name]['newEmailMergeData'][] = [
+                'id' => $related_id,
+                'relid' => $this->email_addresses->relationship->relid
+            ];
         }
     }
 
@@ -3100,16 +3084,13 @@ class SpiceBean
     /**
      * returns output templates that can be rendered for this module
      *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
+     * @return array
      */
-    public function getOutputTemplates()
+    public function getOutputTemplates(): array
     {
         $templates = [];
         $bean = BeanFactory::getBean('OutputTemplates');
-        $beans = $bean->get_full_list('name', "module_name='{$this->_module}'");
+        $beans = $bean->get_full_list('name', "module_name='{$this->_module}' AND is_inactive = '0'");
         foreach ($beans as $bean) {
             $templates[] = [
                 'id' => $bean->id,

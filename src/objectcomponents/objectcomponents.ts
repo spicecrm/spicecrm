@@ -132,6 +132,7 @@ import {ObjectRelatedCardFooter} from './components/objectrelatedcardfooter';
 import {ObjectRelatedCard} from './components/objectrelatedcard';
 import {ObjectRelatedList} from './components/objectrelatedlist';
 import {ObjectRelatedlistList} from './components/objectrelatedlistlist';
+import {ObjectRelatedlistCards} from './components/objectrelatedlistcards';
 import {ObjectRelatedListItem} from './components/objectrelatedlistitem';
 import {ObjectRelatedlistTiles} from './components/objectrelatedlisttiles';
 import {ObjectRelatedCardTile} from './components/objectrelatedcardtile';
@@ -223,6 +224,11 @@ import {ObjectRelatedCardUrl} from "./components/objectrelatedcardurl";
 import {ObjectUrlActionMenu} from "./components/objecturlactionmenu";
 import {ObjectSetInactiveIcon} from "./components/objectsetinactiveicon";
 import {ObjectActionCheckDuplicateButton} from "./components/objectactioncheckduplicatebutton";
+import {ObjectRelatedDuplicatesCardFooter} from "./components/objectrelatedduplicatescardfooter";
+import {ObjectProjectActivityTrackTimeIcon} from "./components/objectprojectactivitytracktimeicon";
+import {ObjectTemplatesEditor} from "./components/objecttemplateseditor";
+import {ObjectTemplatesPreview} from "./components/objecttemplatespreview";
+import {ObjectActionDownloadEmailButton} from "./components/objectactiondownloademailbutton";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -339,6 +345,7 @@ import {ObjectActionCheckDuplicateButton} from "./components/objectactioncheckdu
         ObjectRelatedCardFooter,
         ObjectRelatedList,
         ObjectRelatedlistList,
+        ObjectRelatedlistCards,
         ObjectRelatedListItem,
         ObjectRelatedlistTiles,
         ObjectRelatedCardTile,
@@ -420,7 +427,12 @@ import {ObjectActionCheckDuplicateButton} from "./components/objectactioncheckdu
         ObjectRelatedCardUrl,
         ObjectUrlActionMenu,
         ObjectSetInactiveIcon,
-        ObjectActionCheckDuplicateButton
+        ObjectActionCheckDuplicateButton,
+        ObjectRelatedDuplicatesCardFooter,
+        ObjectProjectActivityTrackTimeIcon,
+        ObjectTemplatesEditor,
+        ObjectTemplatesPreview,
+        ObjectActionDownloadEmailButton
     ],
     exports: [
         ObjectListViewHeader,
@@ -470,7 +482,9 @@ import {ObjectActionCheckDuplicateButton} from "./components/objectactioncheckdu
         ObjectRelatedListUrls,
         ObjectRelatedCardUrl,
         ObjectActionNewButton,
-        ObjectRecordFieldsetContainer
+        ObjectRecordFieldsetContainer,
+        ObjectActionContainerItem,
+        ObjectActionDownloadEmailButton
     ]
 })
 export class ObjectComponents {}

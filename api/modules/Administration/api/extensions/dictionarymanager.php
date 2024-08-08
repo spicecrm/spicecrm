@@ -144,16 +144,6 @@ $routes = [
     ],
     [
         'method' => 'get',
-        'route' => '/admin/repair/language',
-        'oldroute' => '/repair/language',
-        'class' => AdminController::class,
-        'function' => 'repairLanguage',
-        'description' => 'clears language cache and repairs the language extensions',
-        'options' => ['adminOnly' => true, 'validate' => true],
-        'parameters' => []
-    ],
-    [
-        'method' => 'get',
         'route' => '/admin/repair/cache',
         'oldroute' => '/repair/cache',
         'class' => AdminController::class,

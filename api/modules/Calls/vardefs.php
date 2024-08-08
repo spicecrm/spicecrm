@@ -628,4 +628,26 @@ if(file_exists("extensions/modules/HCMEmployeeObjectives")) {
     ];
 }
 
+if (file_exists('extensions/modules/ProjectActivities')) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Call']['fields']['projectactivities_parent'] = [
+        'name' => 'projectactivities_parent',
+        'type' => 'link',
+        'relationship' => 'call_projectactivities_parent',
+        'source' => 'non-db',
+        'module' => 'ProjectActivities',
+        'bean_name' => 'ProjectActivity',
+        'vname' => 'LBL_PROJECTACTIVITIES_AS_PARENT',
+    ];
+    SpiceDictionaryHandler::getInstance()->dictionary['Call']['relationships']['call_projectactivities_parent'] = [
+        'lhs_module' => 'Calls',
+        'lhs_table' => 'calls',
+        'lhs_key' => 'id',
+        'rhs_module' => 'ProjectActivities',
+        'rhs_table' => 'projectactivities',
+        'rhs_key' => 'parent_id',
+        'relationship_type' => 'one-to-many',
+        'relationship_role_column' => 'parent_type',
+        'relationship_role_column_value' => 'Calls'
+    ];
+}
 VardefManager::createVardef('Calls', 'Call', ['default', 'assignable']);

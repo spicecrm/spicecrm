@@ -3,19 +3,9 @@
 namespace SpiceCRM\data;
 
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\includes\SugarObjects\VardefManager;
-use SpiceCRM\modules\Currencies\Currency;
-use SpiceCRM\modules\EmailAddresses\EmailAddress;
-use SpiceCRM\modules\SchedulerJobs\SchedulerJob;
-use SpiceCRM\modules\SpiceACLObjects\SpiceACLObject;
-use SpiceCRM\modules\SystemTenants\SystemTenant;
-use SpiceCRM\modules\Trackers\Tracker;
-use SpiceCRM\modules\UserAbsences\UserAbsence;
-use SpiceCRM\modules\UserAccessLogs\UserAccessLog;
-use SpiceCRM\modules\Users\User;
 
 /**
  * Factory to create SpiceBeans
@@ -60,6 +50,10 @@ class BeanFactory
     private static function initSystemModules(): void
     {
         foreach (self::$systemModules as $moduleName => $beanInfo) {
+            if(!SpiceDictionary::getInstance()->getDefs($beanInfo['beanname'])){
+                unset(self::$systemModules[$moduleClass]);
+                continue;
+            }
             $customClass = "\\SpiceCRM\\custom\\modules\\{$moduleName}\\{$beanInfo['beanname']}";
             $extensionClass = "\\SpiceCRM\\extensions\\modules\\{$moduleName}\\{$beanInfo['beanname']}";
             $moduleClass = "\\SpiceCRM\\modules\\{$moduleName}\\{$beanInfo['beanname']}";
@@ -142,7 +136,7 @@ class BeanFactory
         // set the base params if not et in the implementation of the Bean
         if(!$bean->module_dir) $bean->module_dir = $module;
         if(!$bean->object_name) $bean->object_name = $beanName;
-        if(!$bean->table_name) $bean->table_name = SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['table'] ?: strtolower($module);
+        if(!$bean->table_name) $bean->table_name = SpiceDictionary::getInstance()->getDefs($beanName)['table'] ?: strtolower($module); // SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['table'] ?: strtolower($module);
 
         // set the bean module
         $bean->_module = $module;
@@ -150,7 +144,7 @@ class BeanFactory
         // initialize the bean. Will load the vardefs
         $bean->initialize_bean();
         // set the table name (vardefs need to be loaded first as done in initialize_bean())
-        $bean->_tablename = SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['table'] ?: strtolower($module);
+        $bean->_tablename = SpiceDictionary::getInstance()->getDefs($beanName)['table'] ?: strtolower($module);
 
         if (!empty($id)) {
             if ($forceRetrieve || empty(self::$loadedBeans[$module][$id])) {

@@ -176,22 +176,28 @@ export abstract class GroupwareService {
      */
     public loadLinkedBeans(): Observable<any> {
         let responseSubject = new Subject<any>();
-        let payload = this.getEmailAddressData();
-        this.relatedBeans = [];
-        this.backend.postRequest('module/EmailAddress/searchbeans', {}, payload).subscribe(
-            (res: any) => {
-                for (let item in res) {
-                    if (!this.checkRelatedBeans(res[item])) {
-                        this.relatedBeans.push(res[item]);
+
+        this.getEmailAddressData().subscribe({
+            next: payload => {
+
+                this.relatedBeans = [];
+                this.backend.postRequest('module/EmailAddress/searchbeans', {}, payload).subscribe(
+                    (res: any) => {
+                        for (let item in res) {
+                            if (!this.checkRelatedBeans(res[item])) {
+                                this.relatedBeans.push(res[item]);
+                            }
+                        }
+                        responseSubject.next(this.relatedBeans);
+                        responseSubject.complete();
+                    },
+                    (err) => {
+                        responseSubject.error(err);
                     }
-                }
-                responseSubject.next(this.relatedBeans);
-                responseSubject.complete();
-            },
-            (err) => {
-                responseSubject.error(err);
+                );
+
             }
-        );
+        });
 
         return responseSubject.asObservable();
     }
@@ -217,12 +223,12 @@ export abstract class GroupwareService {
     /**
      * Retrieves an array of all email addresses (From, To, Cc)
      */
-    public abstract getAddressArray();
+    public abstract getAddressArray(): Observable<string[]>;
 
     /**
      * Retrieves an of email adresses and the message ID of the current email.
      */
-    public abstract getEmailAddressData();
+    public abstract getEmailAddressData(): Observable<{addresses: string[]}>;
 
     /**
      * Retrieves an array of all email addresses (From, To, Cc)

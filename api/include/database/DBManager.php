@@ -36,10 +36,11 @@
 
 namespace SpiceCRM\includes\database;
 
+use Exception;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\resource\ResourceManager;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -223,6 +224,7 @@ abstract class DBManager
         'currency' => 'float',
         'decimal' => 'float',
         'decimal2' => 'float',
+        'enum' => 'enum'
     ];
 
     /**
@@ -468,11 +470,11 @@ abstract class DBManager
         else
             return false;
 
-        if (!empty($object_name) && !empty(SpiceDictionaryHandler::getInstance()->dictionary[$object_name]))
-            $indices = SpiceDictionaryHandler::getInstance()->dictionary[$object_name]['indices'];
+        if (!empty($object_name) && !empty(SpiceDictionary::getInstance()->dictionary[$object_name]))
+            $indices = SpiceDictionary::getInstance()->dictionary[$object_name]['indices'];
 
         if (empty($indices)) {
-            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $current) {
+            foreach (SpiceDictionary::getInstance()->dictionary as $current) {
                 if ($current['table'] == $table) {
                     $indices = $current['indices'];
                     break;
@@ -561,18 +563,18 @@ abstract class DBManager
      * @param array $data key/value pairs
      * @param bool $execute boolean execute the query on true, return the query on false
      * @return mixed query result | false
+     * @throws Exception
      */
     public function insertQuery($table, array $data, $execute = true)
     {
-        // find the dictionary table
-        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
-            if ($dictionaryDefs['table'] == $table) {
-                return $this->insertParams($table, $dictionaryDefs['fields'], $data, null, $execute);
-            }
+        $def = SpiceDictionary::getInstance()->getDefsByTableName($table);
+
+        if (!$def) {
+            $this->last_error = "Dictionary was not found for table $table";
+            return false;
         }
 
-        $this->last_error = "Dictionary was not found for table $table";
-        return false;
+        return $this->insertParams($table, $def['fields'], $data, null, $execute);
     }
 
     /**
@@ -582,18 +584,28 @@ abstract class DBManager
      * @param array $pks key/value pairs of primary/unique keys
      * @param array $data key/values of fields to update
      * @return bool query result
+     * @throws Exception
      */
     public function updateQuery($table, array $pks, array $data, $execute = true)
     {
+        $def = SpiceDictionary::getInstance()->getDefsByTableName($table);
+
+        if (!$def) {
+            $this->last_error = "Dictionary was not found for table $table";
+            return false;
+        }
+
+        $data = $this->prepareData($data, $def['fields']);
+
         foreach ($data as $key => $val) {
-            // do not set the PKs
             if(isset($pks[$key])) continue;
-            $sets[] = "`$key` = '{$this->quote($val)}'";
+            $sets[] = "`$key` = $val";
         }
 
         foreach ($pks as $key => $val) {
             $wheres[] = "`$key` = '{$this->quote($val)}'";
         }
+
         $query = "UPDATE $table SET " . implode(',', $sets) . " WHERE " . implode(' AND ', $wheres);
 
         return $execute ? $this->query($query) : $query;
@@ -659,46 +671,42 @@ abstract class DBManager
      */
     public function insertParams($table, $field_defs, $data, $field_map = null, $execute = true)
     {
-        $values = [];
-        foreach ($field_defs as $fieldIdx => $fieldDef) {
-            $field = $fieldDef['name'];
-            if (isset($fieldDef['source']) && $fieldDef['source'] != 'db') continue;
-            //custom fields handle there save seperatley
-            if (!empty($field_map) && !empty($field_map[$field]['custom_type'])) continue;
+        $values = $this->prepareData($data, $field_defs, true);
 
-			if(isset($data[$field])) {
-				// clean the incoming value..
-				$val = $data[$field];
-			} else {
-				if(isset($fieldDef['default']) && strlen($fieldDef['default']) > 0) {
-					$val = $fieldDef['default'];
-				} else {
-					$val = null;
-				}
-			}
-
-            //handle auto increment values here - we may have to do something like nextval for oracle
-            if (!empty($fieldDef['auto_increment'])) {
-                $auto = $this->getAutoIncrementSQL($table, $fieldDef['name']);
-                if (!empty($auto)) {
-                    $values[$field] = $auto;
-                }
-            } elseif ($fieldDef['name'] == 'deleted') {
-                $values['deleted'] = (int)$val;
-            } else {
-                // need to do some thing about types of values
-                if (!is_null($val) || !empty($fieldDef['required'])) {
-                    $values[$field] = $this->massageValue($val, $fieldDef);
-                }
-            }
-        }
-
-        if (empty($values))
-            return $execute ? true : ''; // no columns set
+        if (empty($values)) return $execute ? true : ''; // no columns set
 
         // get the entire sql
         $query = "INSERT INTO $table (" . implode(",", array_keys($values)) . ") VALUES (" . implode(",", $values) . ")";
         return $execute ? $this->query($query, true) : $query;
+    }
+
+    /**
+     * prepare the data array to insert or update query
+     * @param array $data
+     * @param array $field_defs
+     * @param bool $withDefaults
+     * @return array
+     */
+    private function prepareData(array $data, array $field_defs, bool $withDefaults = false): array
+    {
+        $values = [];
+
+        foreach ($field_defs as $fieldDef) {
+
+            $field = $fieldDef['name'];
+
+            # temporarily make sure to set the deleted flag to 0 if it does not have a default value.
+            if ($withDefaults && $field == 'deleted' && !isset($fieldDef['default'])) {
+                $values['deleted'] = 0;
+                continue;
+            }
+
+            if ((!isset($data[$field]) && (!$withDefaults || !isset($fieldDef['default']))) || (isset($fieldDef['source']) && $fieldDef['source'] != 'db')) continue;
+
+            $values[$field] = $this->massageValue($data[$field], $fieldDef);
+        }
+
+        return $values;
     }
 
     /**
@@ -890,8 +898,8 @@ abstract class DBManager
             return '';
 
         $engine = null;
-        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine']) && !empty(SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine']))
-            $engine = SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine'];
+        if (isset(SpiceDictionary::getInstance()->dictionary[$bean->getObjectName()]['engine']) && !empty(SpiceDictionary::getInstance()->dictionary[$bean->getObjectName()]['engine']))
+            $engine = SpiceDictionary::getInstance()->dictionary[$bean->getObjectName()]['engine'];
 
         return $this->repairTableParams($tablename, $fielddefs, $new_index, $execute, $engine);
     }
@@ -916,8 +924,8 @@ abstract class DBManager
             return '';
 
         $engine = null;
-        if (isset(SpiceDictionaryHandler::getInstance()->dictionary['audit']['engine']) && !empty(SpiceDictionaryHandler::getInstance()->dictionary['audit']['engine'])) {
-            $engine = SpiceDictionaryHandler::getInstance()->dictionary['audit']['engine'];
+        if (isset(SpiceDictionaryr::getInstance()->dictionary['audit']['engine']) && !empty(SpiceDictionary::getInstance()->dictionary['audit']['engine'])) {
+            $engine = SpiceDictionary::getInstance()->dictionary['audit']['engine'];
         }
         return $this->repairTableParams($tablename, $fielddefs, $new_index, $execute, $engine);
     }
@@ -932,7 +940,7 @@ abstract class DBManager
     {
 
         if (isset($vardef['isnull']) && (strtolower($vardef['isnull']) == 'false' || $vardef['isnull'] === false)
-            && !empty($vardef['required'])) {
+            || $vardef['required'] === 'true') {
             /* required + is_null=false => not null */
             return false;
         }
@@ -957,7 +965,7 @@ abstract class DBManager
      * @return string
      * @todo: refactor engine param to be more generic
      */
-    public function repairTableParams($tablename, $fielddefs, $indices, $execute = true, $engine = null)
+    public function repairTableParams($tablename, $fielddefs, $indices, $execute = true, $engine = null, $commented = false)
     {
         //jc: had a bug when running the repair if the tablename is blank the repair will
         //fail when it tries to create a repair table
@@ -965,14 +973,14 @@ abstract class DBManager
             return '';
 
         //if the table does not exist create it and we are done
-        $sql = "/* Table : $tablename */\n";
+        if($commented) $sql = "/* Table : $tablename */\n";
         if (!$this->tableExists($tablename)) {
             $createtablesql = $this->createTableSQLParams($tablename, $fielddefs, $indices, $engine);
             if ($execute && $createtablesql) {
                 $this->createTableParams($tablename, $fielddefs, $indices, $engine);
             }
 
-            $sql .= "/* MISSING TABLE: {$tablename} */\n";
+            if($commented) $sql .= "/* MISSING TABLE: {$tablename} */\n";
             $sql .= $createtablesql . ";\n";
             return $sql;
         }
@@ -983,17 +991,17 @@ abstract class DBManager
         $take_action = false;
 
         // do column comparisons
-        $sql .= "/*COLUMNS*/\n";
+        if($commented) $sql .= "/*COLUMNS*/\n";
         foreach ($fielddefs as $name => $value) {
             if (isset($value['source']) && $value['source'] != 'db')
                 continue;
 
             // Bug #42406. Skipping breaked vardef without type or name
             if (isset($value['name']) == false || $value['name'] == false) {
-                $sql .= "/* NAME IS MISSING IN VARDEF $tablename::$name */\n";
+                if($commented) $sql .= "/* NAME IS MISSING IN VARDEF $tablename::$name */\n";
                 continue;
             } else if (isset($value['type']) == false || $value['type'] == false) {
-                $sql .= "/* TYPE IS MISSING IN VARDEF $tablename::$name */\n";
+                if($commented) $sql .= "/* TYPE IS MISSING IN VARDEF $tablename::$name */\n";
                 continue;
             }
 
@@ -1006,7 +1014,7 @@ abstract class DBManager
             //Do not track requiredness in the DB, auto_increment, ID,
             // and deleted fields are always required in the DB, so don't force those
             if ($this->isNullable($value)) {
-                $value['required'] = false;
+                $value['required'] = 'false';
             }
             //Should match the conditions in DBManager::oneColumnSQLRep for DB required fields, type='id' fields will sometimes
 
@@ -1018,24 +1026,25 @@ abstract class DBManager
 
             if (!isset($compareFieldDefs[$name])) {
                 // ok we need this field lets create it
-                $sql .= "/*MISSING IN DATABASE - $name -  ROW*/\n";
+                if($commented) $sql .= "/*MISSING IN DATABASE - $name -  ROW*/\n";
                 $sql .= $this->addColumnSQL($tablename, $value) . ";\n";
                 if ($execute)
                     $this->addColumn($tablename, $value);
                 $take_action = true;
             } elseif (!$this->compareVarDefs($compareFieldDefs[$name], $value)) {
                 //fields are different lets alter it
-                $sql .= "/*MISMATCH WITH DATABASE - $name -  ROW ";
-                foreach ($compareFieldDefs[$name] as $rKey => $rValue) {
-                    $sql .= "[$rKey] => '$rValue'  ";
+                if($commented) {
+                    $sql .= "/*MISMATCH WITH DATABASE - $name -  ROW ";
+                    foreach ($compareFieldDefs[$name] as $rKey => $rValue) {
+                        $sql .= "[$rKey] => '$rValue'  ";
+                    }
+                    $sql .= "*/\n";
+                    $sql .= "/* VARDEF - $name -  ROW";
+                    foreach ($value as $rKey => $rValue) {
+                        $sql .= "[$rKey] => '$rValue'  ";
+                    }
+                    $sql .= "*/\n";
                 }
-                $sql .= "*/\n";
-                $sql .= "/* VARDEF - $name -  ROW";
-                foreach ($value as $rKey => $rValue) {
-                    $sql .= "[$rKey] => '$rValue'  ";
-                }
-                $sql .= "*/\n";
-
                 //jc: oracle will complain if you try to execute a statement that sets a column to (not) null
                 //when it is already (not) null
                 if (isset($value['isnull']) && isset($compareFieldDefs[$name]['isnull']) &&
@@ -1049,6 +1058,7 @@ abstract class DBManager
                     && (empty($compareFieldDefs[$name]['required']) || $compareFieldDefs[$name]['required'] != 'true')) {
                     $ignorerequired = true;
                 }
+
                 $altersql = $this->alterColumnSQL($tablename, $value, $ignorerequired);
                 if (is_array($altersql)) {
                     $altersql = join("\n", $altersql);
@@ -1062,7 +1072,7 @@ abstract class DBManager
         }
 
         // do index comparisons
-        $sql .= "/* INDEXES */\n";
+        if($commented) $sql .= "/* INDEXES */\n";
         $correctedIndexs = [];
 
         $compareIndices_case_insensitive = [];
@@ -1079,6 +1089,8 @@ abstract class DBManager
             if (isset($value['source']) && $value['source'] != 'db')
                 continue;
 
+            // ensure the index has fields
+            if(count($value['fields']) == 0) continue;
 
             $validDBName = $this->getValidDBName($value['name'], false, 'index', true);
             if (isset($compareIndices[$validDBName])) {
@@ -1090,46 +1102,54 @@ abstract class DBManager
             if (isset($correctedIndexs[$name]))
                 continue;
 
-            //don't bother checking primary nothing we can do about them
-            if (isset($value['type']) && $value['type'] == 'primary')
-                continue;
-
             //database helpers do not know how to handle full text indices
             if ($value['type'] == 'fulltext')
                 continue;
 
-            if (in_array($value['type'], ['alternate_key', 'foreign']))
+            if (in_array($value['type'], ['alternate_key']))
                 $value['type'] = 'index';
 
             if (!in_array($name, array_keys($compareIndices))) {
-                $sql .= "/*MISSING INDEX IN DATABASE - $name -{$value['type']}  ROW */\n";
+
+                # if a primary key with different name is already defined, do nothing
+                if (isset($value['type']) && $value['type'] == 'primary' && array_filter($compareIndices, fn($i) => $i['type'] == 'primary'))
+                    continue;
+
+                if($commented) $sql .= "/*MISSING INDEX IN DATABASE - $name -{$value['type']}  ROW */\n";
                 $sql .= $this->addIndexes($tablename, [$value], $execute) . "\n";
 
                 $take_action = true;
                 $correctedIndexs[$name] = true;
 
             } elseif (!$this->compareVarDefs($compareIndices[$name], $value)) {
+
+                //don't bother checking primary nothing we can do about them
+                if (isset($value['type']) && $value['type'] == 'primary')
+                    continue;
+
                 // fields are different lets alter it
-                $sql .= "/*INDEX MISMATCH WITH DATABASE - $name -  ROW ";
-                foreach ($compareIndices[$name] as $n1 => $t1) {
-                    $sql .= "<$n1>";
-                    if ($n1 == 'fields')
-                        foreach ($t1 as $rKey => $rValue)
-                            $sql .= "[$rKey] => '$rValue'  ";
-                    else
-                        $sql .= " $t1 ";
+                if($commented) {
+                    $sql .= "/*INDEX MISMATCH WITH DATABASE - $name -  ROW ";
+                    foreach ($compareIndices[$name] as $n1 => $t1) {
+                        $sql .= "<$n1>";
+                        if ($n1 == 'fields')
+                            foreach ($t1 as $rKey => $rValue)
+                                $sql .= "[$rKey] => '$rValue'  ";
+                        else
+                            $sql .= " $t1 ";
+                    }
+                    $sql .= "*/\n";
+                    $sql .= "/* VARDEF - $name -  ROW";
+                    foreach ($value as $n1 => $t1) {
+                        $sql .= "<$n1>";
+                        if ($n1 == 'fields')
+                            foreach ($t1 as $rKey => $rValue)
+                                $sql .= "[$rKey] => '$rValue'  ";
+                        else
+                            $sql .= " $t1 ";
+                    }
+                    $sql .= "*/\n";
                 }
-                $sql .= "*/\n";
-                $sql .= "/* VARDEF - $name -  ROW";
-                foreach ($value as $n1 => $t1) {
-                    $sql .= "<$n1>";
-                    if ($n1 == 'fields')
-                        foreach ($t1 as $rKey => $rValue)
-                            $sql .= "[$rKey] => '$rValue'  ";
-                    else
-                        $sql .= " $t1 ";
-                }
-                $sql .= "*/\n";
                 $sql .= $this->modifyIndexes($tablename, [$value], $execute) . ";\n";
                 $take_action = true;
                 $correctedIndexs[$name] = true;
@@ -1149,11 +1169,20 @@ abstract class DBManager
      */
     public function compareVarDefs($fielddef1, $fielddef2, $ignoreName = false)
     {
+        # todo refactor
+
+        # if the db field has no default value but the field dictionary definition consider the comparison unequal
+        if (isset($fielddef2['default']) && !isset($fielddef1['default'])) {
+            return false;
+        }
+
         foreach ($fielddef1 as $key => $value) {
             if ($key == 'comment') continue;
 
             if ($key == 'name' && $ignoreName)
                 continue;
+
+            # if columns property is identical continue to the next property
             if (isset($fielddef2[$key])) {
                 if (!is_array($fielddef1[$key]) && !is_array($fielddef2[$key])) {
                     if (strtolower($fielddef1[$key]) == strtolower($fielddef2[$key])) {
@@ -1165,12 +1194,21 @@ abstract class DBManager
                     }
                 }
             }
-            //Ignore len if its not set in the vardef
-            if ($key == 'len' && empty($fielddef2[$key]))
-                continue;
-            // if the length in db is greather than the vardef, ignore it
-            if ($key == 'len' && ($fielddef1[$key] >= $fielddef2[$key])) {
-                continue;
+
+            # column property is not identical continue checking
+
+            # ignore comparing index types since it is not allowed to change index type, and it's complicated to compare foreign key with index
+            if ($key == 'type' && $fielddef1['type'] == 'index') return true;
+
+            if ($key == 'required') return !isset($fielddef2['required']);
+
+            if ($key == 'len') {
+
+                if (empty($fielddef2['len'])) continue;
+
+                if (!str_contains($fielddef2['type'], 'int')) {
+                    return false;
+                }
             }
 
             // check if vardef definition might be a little different but correct
@@ -1450,23 +1488,12 @@ abstract class DBManager
     }
 
     /**
-     * Drops the table associated with a bean
-     *
-     * @param SpiceBean $bean SpiceBean instance
-     * @return bool query result
-     */
-    public function dropTable(SpiceBean $bean)
-    {
-        return $this->dropTableName($bean->getTableName());
-    }
-
-    /**
      * Drops the table by name
      *
      * @param string $name Table name
      * @return bool query result
      */
-    public function dropTableName($name)
+    public function dropTable($name)
     {
         $sql = $this->dropTableNameSQL($name);
         return $this->query($sql, true, "Error dropping table $name:");
@@ -1957,6 +1984,21 @@ abstract class DBManager
     }
 
     /**
+     * reshuffles the fields in a table according to the sequence provided in the array of fields
+     * all fields that are not in the array are ignopred and appended in the current sequence at the end of the table
+     * fields that are in the array but not in the table are ignored
+     *
+     *
+     * @param $tablename the name of the database table
+     * @param $fields an array of strings with field names
+     * @return true or false
+     */
+    public function reshuffleFields($tablename, $fields)
+    {
+        return false;
+    }
+
+    /**
      * Generates SQL for insert statement.
      *
      * @param SpiceBean $bean SpiceBean instance
@@ -2217,8 +2259,8 @@ abstract class DBManager
             $fieldDef['len'] = $matches[2][0];
         if (!empty($fieldDef['precision']) && is_numeric($fieldDef['precision']) && !strstr($fieldDef['len'], ','))
             $fieldDef['len'] .= ",{$fieldDef['precision']}";
-        if (!empty($fieldDef['required']) || ($fieldDef['name'] == 'id' && !isset($fieldDef['required']))) {
-            $fieldDef['required'] = 'true';
+        if (isset($fieldDef['required']) || ($fieldDef['name'] == 'id' && !isset($fieldDef['required']))) {
+            $fieldDef['required'] = $fieldDef['name'] == 'id' || $fieldDef['required'] ? 'true' : 'false';
         }
     }
 
@@ -2549,6 +2591,11 @@ abstract class DBManager
             && !empty($fieldDef['required'])) {
             $required = "NOT NULL";
         }
+
+        if ($fieldDef['required'] === 'true') {
+            $required = "NOT NULL";
+        }
+
         if ($ignoreRequired)
             $required = "";
 
@@ -2679,17 +2726,6 @@ abstract class DBManager
     public function alterColumnSQL($tablename, $newFieldDefs, $ignorerequired = false)
     {
         return $this->changeColumnSQL($tablename, $newFieldDefs, 'modify', $ignorerequired);
-    }
-
-    /**
-     * Generates SQL for dropping a table.
-     *
-     * @param SpiceBean $bean Sugarbean instance
-     * @return string SQL statement
-     */
-    public function dropTableSQL(SpiceBean $bean)
-    {
-        return $this->dropTableNameSQL($bean->getTableName());
     }
 
     /**
@@ -2855,7 +2891,7 @@ abstract class DBManager
         $sql = "INSERT INTO " . $bean->get_audit_table_name();
         //get field defs for the audit table.
         require('metadata/audit_templateMetaData.php');
-        $fieldDefs = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
+        $fieldDefs = SpiceDictionary::getInstance()->dictionary['audit']['fields'];
 
         $values = [];
         $values['id'] = $this->massageValue(SpiceUtils::createGuid(), $fieldDefs['id']);
@@ -3502,7 +3538,7 @@ abstract class DBManager
             return "Failed to create temp table!";
         }
 
-        $this->dropTableName($tempname);
+        $this->dropTable($tempname);
         return '';
     }
 
@@ -3807,8 +3843,18 @@ abstract class DBManager
      *
      * @param string $tablename
      * @return array
+     * todo refactor
      */
     abstract public function get_columns($tablename);
+
+    /**
+     * drops columns from a table
+     *
+     * @param $tablename
+     * @param array $columns
+     * @return mixed
+     */
+    abstract public function delete_columns($tablename, array $columns = []);
 
     /**
      * Returns columns list for passed table.

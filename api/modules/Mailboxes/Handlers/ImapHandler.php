@@ -127,7 +127,7 @@ class ImapHandler extends TransportHandler
      *
      * @return array
      */
-    public function fetchEmails(): array {
+    public function fetchEmails(?string $startFromDate = null): array {
         $imap_status = $this->checkConfiguration($this->incoming_settings);
         if (!$imap_status['result']) {
             $this->log(Mailbox::LOG_DEBUG,
@@ -151,7 +151,11 @@ class ImapHandler extends TransportHandler
 
         $this->initMessageIDs();
 
-        if ($this->mailbox->last_checked != '') {
+        if ($startFromDate) {
+            $dateSince = date('d-M-Y', strtotime($startFromDate));
+            $criteria = 'SINCE ' . $dateSince;
+
+        } else if ($this->mailbox->last_checked != '') {
             if (isset(SpiceConfig::getInstance()->config['mailboxes']['delta_t'])) {
                 $dateSince = date(
                     'd-M-Y',
@@ -164,10 +168,12 @@ class ImapHandler extends TransportHandler
                 $dateSince = date('d-M-Y', strtotime($this->mailbox->last_checked));
             }
 
-            $items = imap_search($stream, 'SINCE ' . $dateSince);
+            $criteria = 'SINCE ' . $dateSince;
         } else {
-            $items = imap_search($stream, 'ALL');
+            $criteria = 'ALL';
         }
+
+        $items = imap_search($stream, $criteria);
 
         $this->log(Mailbox::LOG_DEBUG, is_array($items) ? count($items) : 0 . ' emails in mailbox since '
             . date('d-M-Y', strtotime($dateSince)));
@@ -209,7 +215,7 @@ class ImapHandler extends TransportHandler
                 try {
                     $email->save(false, true, false);
                 } catch (Exception $e) {
-                    LoggerManager::getLogger()->error('Could not save email: ' . $email->name);
+                    LoggerManager::getLogger()->error('Could not save email: ' . $email->name . ' ' . $email->message_id .'. Error Message: '.$e->getMessage());
                     continue;
                 }
 
@@ -269,6 +275,9 @@ class ImapHandler extends TransportHandler
 
         $stream = $this->getImapStream($this->mailbox->imap_trash_dir);
 
+        // don't proceed if we don't have imap connection
+        if(!$stream) return ['deleted_mail_count' => $deleted_mail_count];
+
         $items = imap_search($stream, 'ALL');
 
         if (is_array($items) || is_object($items)) {
@@ -326,9 +335,10 @@ class ImapHandler extends TransportHandler
      * Gets IMAP connection stream
      *
      * @param string $folder
-     * @return resource
+     * @return resource|boolean
      */
-    private function getImapStream($folder = "INBOX") {
+    private function getImapStream($folder = "INBOX")
+    {
         $stream = imap_open(
             $this->mailbox->getRef() . $folder,
             $this->mailbox->imap_pop3_username,
@@ -337,6 +347,12 @@ class ImapHandler extends TransportHandler
             1,
             ['DISABLE_AUTHENTICATOR' => 'GSSAPI']
         );
+
+        $imapErrors = imap_errors();
+
+        if ($imapErrors) {
+            LoggerManager::getLogger()->error("Unable to open an IMAP stream to a mailbox with id: " . $this->mailbox->id . ". Error: " . print_r($imapErrors, true));
+        }
 
         return $stream;
     }
@@ -541,6 +557,7 @@ class ImapHandler extends TransportHandler
                 $toAddresses[] = $this->mailbox->catch_all_address;
                 // add a message for whom this was intended for
                 $email->name .= ' [to '.$this->mailbox->catch_all_address.' intended for ' . join(', ', $intendedRecipients) . ']';
+                $message->setSubject($email->name);
             } else {
                 throw ( new MessageInterceptedException('Email intercepted.'))->setErrorCode('emailIntercepted')->setLbl('LBL_EMAIL_INTERCEPTED');
             }
@@ -581,7 +598,7 @@ class ImapHandler extends TransportHandler
         if ($email->id) {
             foreach ($email->attachments as $att) {
                 $message->attach(
-                    Swift_Attachment::fromPath(StreamFactory::getPathPrefix('upload') . $att->filemd5)->setFilename($att->filename)
+                    Swift_Attachment::fromPath(StreamFactory::getPathPrefix('upload') . $att->filemd5)->setFilename($att->display_name ?: $att->filename)
                 );
             }
 

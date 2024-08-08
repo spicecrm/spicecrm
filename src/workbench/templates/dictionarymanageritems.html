@@ -1,10 +1,19 @@
 <div system-to-bottom-noscroll>
     <ng-container *ngIf="dictionarymanager.currentDictionaryDefinition; else selectdefinition">
-        <div style="height: calc(100% - 500px);" class="slds-scrollable--y">
-            <table  class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-p-around--xx-small slds-theme--shade slds-border--bottom">
+            <system-input-text class="slds-col--bump-right" [(ngModel)]="filterterm" placeholder="LBL_FILTER" autocomplete="off" [showClear]="true"></system-input-text>
+            <button *ngIf="dictionaryitems.length == 0" class="slds-button slds-button--neutral" (click)="cloneDefinition()">
+                <system-label label="LBL_CLONE"/>
+            </button>
+            <button class="slds-button slds-button--neutral" (click)="addDictionaryItem()">
+                <system-label label="LBL_ADD"/>
+            </button>
+        </div>
+        <div system-to-bottom>
+            <table  class="slds-table slds-table--fixed-layout slds-table_bordered">
                 <thead>
                     <tr class="slds-line-height_reset">
-                        <th style="width:2.5rem" scope="col" class="slds-text-align--right">
+                        <th style="width:4rem" scope="col" class="slds-text-align--right">
                             <system-utility-icon *ngIf="hasDraftItems" (click)="activateAll($event)" class="slds-p-right--xx-small" icon="light_bulb" colorclass="slds-icon-text-warning" size="xx-small"></system-utility-icon>
                         </th>
                         <th class="" scope="col">
@@ -16,41 +25,63 @@
                         <th class="" scope="col">
                             <div class="slds-truncate"><system-label label="LBL_TEMPLATE"></system-label></div>
                         </th>
-                        <th style="width:2rem" scope="col">
-                            <system-utility-icon icon="new" size="x-small" (click)="addDictionaryItem($event)" ></system-utility-icon>
-                        </th>
+                        <th style="width:3rem" scope="col"></th>
                     </tr>
                 </thead>
                 <tbody class="dragboundary"  cdkDropList (cdkDropListDropped)="drop($event)">
-                    <tr class="slds-hint-parent" *ngFor="let dictionaryitem of dictionaryitems" (click)="setActiveId(dictionaryitem.id)" [ngClass]="{'slds-is-selected': dictionarymanager.currentDictionaryItem == dictionaryitem.id}" cdkDrag [cdkDragDisabled]="!canShuffle" cdkDragBoundary=".dragboundary">
-                        <td>
-                            <system-utility-icon *ngIf="canShuffle" class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
-                            <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionaryitem.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                            <dictionary-manager-item-status [(ngModel)]="dictionaryitem.status"></dictionary-manager-item-status>
-                        </td>
-                        <td data-label="Domain">
-                            <div class="slds-truncate">{{dictionaryitem.name}}</div>
-                        </td>
-                        <td data-label="Type">
-                            <div class="slds-truncate">{{dictionarymanager.getDomainName(dictionaryitem.sysdomaindefinition_id)}}</div>
-                        </td>
-                        <td data-label="Type">
-                            <div class="slds-truncate">{{dictionarymanager.getDictionaryDefinitionName(dictionaryitem.sysdictionary_ref_id)}}</div>
-                        </td>
-                        <td>
-                            <button class="slds-button slds-button--icon" [disabled]="!dictionarymanager.canChange(dictionaryitem.scope)" (click)="deleteDictionaryItem($event, dictionaryitem.id)">
-                                <system-button-icon size="xx-small" icon="delete"></system-button-icon>
-                            </button>
-                        </td>
-                    </tr>
+                    <ng-container *ngFor="let dictionaryitem of dictionaryitems">
+                        <tr class="slds-hint-parent" (click)="setActiveId(dictionaryitem.id)" (dblclick)="detailsExpanded = !detailsExpanded" [ngClass]="{'slds-is-selected': dictionarymanager.currentDictionaryItem == dictionaryitem.id}" cdkDrag [cdkDragDisabled]="!canShuffle" cdkDragBoundary=".dragboundary">
+                            <td>
+                                <system-utility-icon *ngIf="canShuffle" class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
+                                <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionaryitem.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
+                                <dictionary-manager-item-status #statusComponent [disabled]="definitionStatus != 'a'" [ngModel]="dictionaryitem.status" (ngModelChange)="setStatus(dictionaryitem, $event, statusComponent)"></dictionary-manager-item-status>
+                            </td>
+                            <td data-label="Domain">
+                                <div class="slds-truncate">{{dictionaryitem.name}}</div>
+                            </td>
+                            <td data-label="Type">
+                                <div class="slds-truncate">{{dictionarymanager.getDomainName(dictionaryitem.sysdomaindefinition_id)}}</div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate">{{dictionarymanager.getDictionaryDefinitionName(dictionaryitem.sysdictionary_ref_id)}}</div>
+                            </td>
+                            <td class="">
+                                <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-end">
+                                    <button *ngIf="!dictionaryitem.sysdictionary_ref_id" class="slds-button slds-button--icon" (click)="editDictionaryItem(dictionaryitem)">
+                                        <system-button-icon icon="edit"/>
+                                    </button>
+                                    <button [disabled]="dictionaryitem.status == 'a'" class="slds-button slds-button--icon"  (click)="deleteDictionaryItem(dictionaryitem.id)">
+                                        <system-button-icon icon="delete"/>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <ng-container *ngFor="let refItem of getTemplateItems(dictionaryitem.sysdictionary_ref_id)">
+                            <tr class="slds-hint-parent" (click)="setActiveId(dictionaryitem.id)" (dblclick)="detailsExpanded = !detailsExpanded" [ngClass]="{'slds-is-selected': dictionarymanager.currentDictionaryItem == dictionaryitem.id}" cdkDrag [cdkDragDisabled]="!canShuffle" cdkDragBoundary=".dragboundary">
+                                <td></td>
+                                <td data-label="Domain">
+                                    <div class="slds-truncate">{{refItem.name}}</div>
+                                </td>
+                                <td data-label="Type">
+                                    <div class="slds-truncate">{{dictionarymanager.getDomainName(refItem.sysdomaindefinition_id)}}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate">{{dictionarymanager.getDictionaryDefinitionName(dictionaryitem.sysdictionary_ref_id)}}</div>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </ng-container>
+                    </ng-container>
                 </tbody>
             </table>
             <div *ngIf="dictionarymanager.changescope != 'none'" class="slds-align--absolute-center slds-p-around--small">
-                <system-utility-icon icon="new" size="x-small" (click)="addDictionaryItem($event)" ></system-utility-icon>
+                <button class="slds-button slds-button--icon" (click)="addDictionaryItem()">
+                    <system-button-icon icon="new"/>
+                </button>
+                <button *ngIf="dictionaryitems.length == 0" class="slds-button slds-button--icon" (click)="cloneDefinition()">
+                    <system-button-icon icon="copy"/>
+                </button>
             </div>
-        </div>
-        <div class="slds-border--top">
-            <dictionary-manager-item-details [dictionaryitem]="dictionaryitem"></dictionary-manager-item-details>
         </div>
     </ng-container>
     <ng-template #selectdefinition>

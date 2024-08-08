@@ -7,9 +7,15 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class ACLUsersFilterPipe implements PipeTransform {
 
     transform(values: any[], filterString: string ): any[] {
-        return values.filter( v => {
-            return !filterString || v.user_name.toLowerCase().includes(filterString.toLowerCase());
-        });
+        if (!filterString) {
+            return values;
+        }
+
+        const lowerFilter = filterString.toLowerCase();
+
+        return values.filter(v =>
+            Object.values(v).some(value => typeof value === 'string' && value.toLowerCase().includes(lowerFilter))
+        );
     }
 
 }

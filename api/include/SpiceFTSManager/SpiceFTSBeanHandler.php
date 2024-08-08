@@ -636,7 +636,9 @@ class SpiceFTSBeanHandler
 
             // force date format for date fields
             if ($properties[$indexFieldName]['fields']['raw']['type'] == 'date') $properties[$indexFieldName]['fields']['raw']['format'] = "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis";
-        } else {
+
+        # workaround to Ignore put mapping the raw value for the html analyzer to prevent illegal utf8 characters in the raw value
+        } else if ($indexProperty['analyzer'] != 'spice_html') {
             $properties[$indexFieldName]['fields']['raw'] = [
                 'type' => 'keyword',
                 'index' => true

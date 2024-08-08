@@ -6,13 +6,13 @@
             </thead>
             <tbody>
                 <ng-container *ngIf="!dragAndDrop">
-                    <tr object-list-item *ngFor="let listItem of modellist.listData.list; let i = index" [rownumbers]="rowNumbers" [rowNumber]="i + 1" [listItem]="listItem" [inlineedit]="inlineedit" [rowselect]="true" class="slds-hint-parent"></tr>
+                    <tr object-list-item *ngFor="let listItem of modellist.listData.list; let i = index" [rownumbers]="rowNumbers" [rowNumber]="i + 1" [listItem]="listItem" [inlineedit]="inlineedit" [rowselect]="!issmall" class="slds-hint-parent"></tr>
                 </ng-container>
                 <ng-container *ngIf="dragAndDrop">
-                    <tr object-list-item cdkDrag [cdkDragData]="listItem" *ngFor="let listItem of modellist.listData.list; let i = index" [rownumbers]="rowNumbers" [dragHandles]="dragAndDrop" [rowNumber]="i + 1" [listItem]="listItem" [inlineedit]="inlineedit" [rowselect]="true" class="slds-hint-parent slds-drag--preview"></tr>
+                    <tr object-list-item cdkDrag [cdkDragData]="listItem" *ngFor="let listItem of modellist.listData.list; let i = index" [rownumbers]="rowNumbers" [dragHandles]="dragAndDrop" [rowNumber]="i + 1" [listItem]="listItem" [inlineedit]="inlineedit" [rowselect]="!issmall" class="slds-hint-parent slds-drag--preview"></tr>
                 </ng-container>
             </tbody>
-            <tbody system-table-stencils [columns]="modellist.listfields.length" [select]="true" [rownumbers]="rowNumbers" [dragHandles]="dragAndDrop" [tools]="true" [rows]="20" *ngIf="isloading"></tbody>
+            <tbody system-table-stencils [columns]="modellist.listfields.length" [select]="!issmall" [rownumbers]="rowNumbers" [dragHandles]="dragAndDrop" [tools]="true" [rows]="20" *ngIf="isloading"></tbody>
         </table>
         <div class="slds-size--1-of-1 slds-p-around--small slds-align--absolute-center" *ngIf="noAutoLoad && canLoadMore">
             <button class="slds-button slds-button--neutral" (click)="loadMore()">
