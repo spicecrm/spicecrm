@@ -51,7 +51,9 @@ export class ProjectActivityTrackTimeModal implements OnInit {
     }
 
     ngOnInit() {
+        this.model.startEdit();
         this.view.isEditable = true;
+        this.view.setEditMode();
     }
 
     /**
