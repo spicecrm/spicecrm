@@ -20,7 +20,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['SpiceText'] = [
         ],
         'description' => [
             'name' => 'description',
-            'vname' => 'LBL_DESCRIPTION',
+            'vname' => 'LBL_TEXT',
             'type' => 'text',
             'required' => true
         ],
@@ -48,7 +48,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['SpiceText'] = [
         ],
         'text_id' => [
             'name' => 'text_id',
-            'vname' => 'LBL_TEXT',
+            'vname' => 'LBL_TEXT_ID',
             'type' => 'id',
             'required' => true
         ],

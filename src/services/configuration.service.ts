@@ -40,6 +40,7 @@ export class configurationService {
      * holds general system data retrieved from sysinfo call
      */
     public data: any = {
+        startupMode: 'normal', // normal, recovery, maintenance
         backendUrl: 'api',
         backendextensions: {},
         systemparameters: {},
@@ -162,6 +163,7 @@ export class configurationService {
         sysinfo.subscribe({
             next: (res: any) => {
                 if (res) {
+                    this.data.startupMode = res.startup_mode;
                     this.data.languages = res.languages;
                     this.data.backendextensions = res.extensions;
                     this.data.systemparameters = res.systemsettings;

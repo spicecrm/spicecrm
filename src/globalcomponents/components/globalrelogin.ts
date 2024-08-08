@@ -73,7 +73,7 @@ export class GlobalReLogin {
     constructor(public login: loginService,
                 private toast: toast,
                 public session: session,
-                private configuration: configurationService) {
+                public configuration: configurationService) {
         this.load2FAConfig();
     }
 

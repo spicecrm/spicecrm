@@ -1,0 +1,30 @@
+<div class="slds-page-header spice-sticky-top">
+    <div class="slds-grid">
+        <div class="slds-col slds-has-flexi-truncate">
+            <div class="slds-media slds-no-space slds-grow">
+                <system-icon [module]="model.module"></system-icon>
+                <div class="slds-media__body">
+                    <p class="slds-text-title--caps slds-line-height--reset">
+                        <system-label-modulename [module]="model.module"></system-label-modulename>
+                    </p>
+                    <div class="slds-grid slds-grid--vertical-align-center">
+                        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
+                            <span *ngIf="model.data.summary_text">{{model.data.summary_text}}</span>
+                            <span *ngIf="!model.data.summary_text"><system-label label="LBL_NEW"/></span>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-m-horizontal--x-small slds-align--absolute-center">
+            <button (click)="cancel()" class="slds-button slds-button--neutral">
+                <system-label label="LBL_CANCEL"/>
+            </button>
+            <button (click)="save()" class="slds-button slds-button--brand">
+                <system-label label="LBL_SAVE"/>
+            </button>
+        </div>
+    </div>
+</div>
+
+<system-componentset [componentset]="componentConfig.componentset"/>

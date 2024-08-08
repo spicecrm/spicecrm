@@ -8,25 +8,25 @@ use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceCache\SpiceCacheFile;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSRESTManager;
 use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\modules\Users\User;
 
 class SystemTenant extends SpiceBean
 {
-
     /**
-     * loads the tenant data from teh config for the loader to return to the frontend
+     * holds the passed tenant id in the incoming api request header
+     * @var string|null
      */
-    public function getTenantData()
-    {
-
-        return SpiceConfig::getInstance()->config['tenant'] ?: [];
-    }
+    public static ?string $currentTenantID = null;
 
     /**
      * switches to the tenant
@@ -52,12 +52,14 @@ class SystemTenant extends SpiceBean
      * @param string $dbName
      * @return void
      */
-    private static function switchDB(string $dbName)
+    public static function switchDB(string $dbName)
     {
         DBManagerFactory::disconnectAll();
         DBManagerFactory::changeDBName($dbName);
 
         BeanFactory::clearLoadedBeans();
+
+        SpiceCache::reinitialize();
 
         // reloads the config
         SpiceConfig::getInstance()->reloadConfig();
@@ -80,45 +82,54 @@ class SystemTenant extends SpiceBean
         $db = DBManagerFactory::getInstance();
         $db->createDatabase($this->id);
 
+        /** @var User $adminUser */
+        $adminUser = BeanFactory::getBean('Users', '1');
+
         // switch to tenant database
         $this->switchToTenant();
 
         $db = DBManagerFactory::getInstance();
 
-        // create the db tables
-        $this->createMissingTables();
+        $db->transactionStart();
 
-        // insert default configs
         $installer = new SpiceInstaller();
-        $installer->insertDefaults($db);
 
-        // create local and in tenant
-        if (!$config['tenant']['disable_copy_config']) {
-            $installer->retrieveCoreandLanguages($db, 'en_us');
-        }
-
-        $this->copyMetadataFromMaster();
-
-        // create the missing db tables after copying the metadata from the master
-        $this->createMissingTables();
-
-        $this->copyModulesDataFromMaster();
-
-        // set the fts setting
+        $installer->initializeSystem($db, 'en_us');
 
         $this->copyConfig($db, $config, 'fts');
         $this->copyConfig($db, $config, 'default_preferences');
         $this->copyConfig($db, $config, 'system');
         $this->copyConfig($db, $config, 'core');
 
-        // initialize elastic search
-        $ftsManager = new SpiceFTSRESTManager();
-        SpiceFTSHandler::getInstance()->elasticHandler->indexPrefix = "{$config['fts']['prefix']}{$this->id}_";
-        $ftsManager->initialize();
+        SpiceConfig::getInstance()->set('fts', 'prefix', "{$config['fts']['prefix']}{$this->id}_");
+
+        if (SpiceConfig::getInstance()->get('multitenancy.copy_metadata')) {
+            $this->copyMetadataFromMaster();
+        }
+
+        if (SpiceConfig::getInstance()->get('multitenancy.copy_module_data')) {
+            $this->copyModulesDataFromMaster();
+        }
+
+        # initialize fts if we already have some modules metadata
+        if (SpiceConfig::getInstance()->get('multitenancy.copy_metadata')) {
+            $ftsManager = new SpiceFTSRESTManager();
+            SpiceFTSHandler::getInstance()->elasticHandler->indexPrefix = "{$config['fts']['prefix']}{$this->id}_";
+            $ftsManager->initialize();
+        }
+
+        $this->createTenantAdminUser($db, $adminUser);
 
         $db->transactionCommit();
 
         self::switchToMaster();
+
+        self::addUserTOTenantMappingTable("$adminUser->user_name.$this->tenant_domain", $this->id, $this->tenant_domain);
+
+        SpiceConfig::getInstance()->set('cache', 'file_location', 'cache' . DIRECTORY_SEPARATOR . $this->id);
+
+        $tenantCacheDir = SpiceCacheFile::getCacheDirectory() . DIRECTORY_SEPARATOR . $this->id;
+        mkdir($tenantCacheDir, 0775, true);
 
         $this->initialized = true;
         $this->save();
@@ -127,48 +138,10 @@ class SystemTenant extends SpiceBean
     }
 
     /**
-     * repair the database tables from vardefs
-     * @return void
-     * @throws Exception
-     * @see AdminController::buildSQLforRepair
-     */
-    private function createMissingTables()
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $repairedTables = [];
-
-        foreach (SpiceModules::getInstance()->getModuleList() as $moduleName) {
-
-            $bean = BeanFactory::getBean($moduleName);
-
-            if (($bean instanceof SpiceBean) && !$repairedTables[$bean->_tablename]) {
-                $db->repairTable($bean);
-                $repairedTables[$bean->_tablename] = true;
-            }
-
-            // check on audit tables
-            if (($bean instanceof SpiceBean) && $bean->is_AuditEnabled() && !isset($repairedTables[$bean->_tablename . '_audit'])) {
-                $sql .= $bean->update_audit_table();
-                $repairedTables[$bean->_tablename . '_audit'] = true;
-            }
-        }
-
-        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
-
-            if (!isset($meta['table']) || $repairedTables[$meta['table']]) continue;
-
-            $db->repairTableParams($meta['table'], $meta['fields'], $meta['indices'], true, $meta['engine']);
-
-            $repairedTables[$meta['table']] = true;
-        }
-    }
-
-    /**
      * copy metadata tables from master to tenant db
      * @throws Exception
      */
-    private function copyMetadataFromMaster()
+    private function copyMetadataFromMaster(): void
     {
         $tables = $this->getMetadataCopyTables();
         $this->copyFromMaster($tables);
@@ -178,7 +151,7 @@ class SystemTenant extends SpiceBean
      * copy modules tables from master to tenant db
      * @throws Exception
      */
-    private function copyModulesDataFromMaster()
+    private function copyModulesDataFromMaster(): void
     {
         $tables = $this->getModulesCopyTables();
         $this->copyFromMaster($tables);
@@ -190,7 +163,7 @@ class SystemTenant extends SpiceBean
      * @return void
      * @throws Exception
      */
-    public function copyFromMaster(array $tables)
+    public function copyFromMaster(array $tables): void
     {
         $db = DBManagerFactory::getInstance();
 
@@ -267,5 +240,95 @@ class SystemTenant extends SpiceBean
         foreach ($config[$category] as $name => $value) {
             $db->query("INSERT INTO config (category, name, value) VALUES ('$category', '$name', '$value')");
         }
+    }
+
+    /**
+     * determine user tenant by domain and username
+     * @param string $username
+     * @param $domain
+     * @return string|null
+     * @throws Exception
+     */
+    public static function determineUserTenant(string $username, $domain): ?string
+    {
+        $db = DBManagerFactory::getInstance();
+        return (string) $db->getOne("SELECT tenant_id FROM tenant_auth_users WHERE username = '$username' AND tenant_domain = '$domain'", true);
+    }
+
+    /**
+     * determine tenant by username and domain and switch to tenant
+     * this is called at the very beginning of the script execution before authentication
+     * @return void
+     * @throws Exception
+     */
+    public static function processTenantSwitch(): void
+    {
+        if (!SpiceConfig::getInstance()->get('multitenancy.enabled')) {
+            return;
+        }
+
+        $authParams = RESTManager::getInstance()->parseAuthParams();
+
+        if (!empty($authParams->tenantID)) {
+            self::$currentTenantID = $authParams->tenantID;
+            self::switchDB($authParams->tenantID);
+
+        } else if ($authParams->authType == 'credentials') {
+            $domain = $_SERVER['HTTP_HOST'];
+            $tenantId = self::determineUserTenant($authParams->authData->username, $domain);
+
+            self::$currentTenantID = $tenantId;
+
+            if (!empty($tenantId)) {
+                self::switchDB($tenantId);
+            }
+        }
+    }
+
+    /**
+     * add user to tenant mapping table
+     * @param string $username
+     * @param string $tenantID
+     * @param string $domain
+     * @return void
+     * @throws Exception
+     */
+    public static function addUserTOTenantMappingTable(string $username, string $tenantID, string $domain): void
+    {
+        $db = DBManagerFactory::getInstance();
+        $db->query("INSERT INTO tenant_auth_users (id, username, tenant_id, tenant_domain) VALUES (UUID(), '$username', '$tenantID', '$domain')", true);
+    }
+
+    /**
+     * add user to tenant mapping table
+     * @param string $username
+     * @param string $tenantID
+     * @param string $domain
+     * @return void
+     * @throws Exception
+     */
+    public static function removeUserTOTenantMappingTable(string $username, string $tenantID, string $domain): void
+    {
+        $db = DBManagerFactory::getInstance();
+        $db->query("DELETE FROM tenant_auth_users WHERE username = '$username' AND tenant_id = '$tenantID' AND tenant_domain = '$domain'", true);
+    }
+
+    /**
+     * tenant admin is the same as the admin (1) username followed by period and the tenant_domain
+     * e.g. admin.crm.spicecrm.cloud
+     * @param DBManager $db
+     * @param User $masterAdmin
+     * @return void
+     */
+    private function createTenantAdminUser(DBManager $db, User $masterAdmin): void
+    {
+        $date = date("Y-m-d h:i:s");
+        $username = "$masterAdmin->user_name.$this->tenant_domain";
+
+        $query = "INSERT INTO users (id, user_name, user_hash, last_name, user_email, is_admin, date_entered, date_modified, modified_user_id, created_by, title, status, deleted) ";
+        $query .= "VALUES ('1', '$username', '$masterAdmin->user_hash', '$masterAdmin->last_name', '$masterAdmin->user_email', 1, '$date','$date', '1', '1', 'Administrator', 'Active', 0)";
+        $db->query($query);
+        $db->query("INSERT INTO sysuiuserroles (id, user_id, sysuirole_id, defaultrole) VALUES (" . $db->getGuidSQL() . ", '1', '3687463f-8ed3-49df-af07-1fa2638505db', 1)");
+
     }
 }

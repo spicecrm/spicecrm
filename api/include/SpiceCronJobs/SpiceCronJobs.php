@@ -6,8 +6,12 @@ use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
+use SpiceCRM\includes\TimeDate;
+use SpiceCRM\modules\SchedulerJobs\SchedulerJob;
 use SpiceCRM\modules\SchedulerJobTasks\SchedulerJobTask;
 
 class SpiceCronJobs
@@ -19,6 +23,10 @@ class SpiceCronJobs
      */
     public function runJobs(string $jobId = null)
     {
+        if (SystemStartupMode::maintenanceModeEnabled() || SystemStartupMode::recoveryModeEnabled()) return;
+
+        $this->killMaxTimeExceededJobs();
+
         $pid = getmypid();
         LoggerManager::getLogger()->debug("---> CRON: PROCESS_ID: '$pid': Run Jobs <---");
 
@@ -31,8 +39,32 @@ class SpiceCronJobs
             $jobs = [BeanFactory::getBean('SchedulerJobs', $jobId)];
         }
 
+        /** @var SchedulerJob $job */
         foreach ($jobs as $job) {
-            $job->runTasks();
+            $job->runTasks(empty($jobId));
+        }
+    }
+
+    /**
+     * kill all the jobs that exceeded the maximum execution time
+     * @return void
+     * @throws DatabaseException
+     */
+    public function killMaxTimeExceededJobs()
+    {
+        $db = DBManagerFactory::getInstance();
+        $query = $db->query("SELECT id, last_run_date, max_execution_minutes FROM schedulerjobs WHERE max_execution_minutes IS NOT NULL AND max_execution_minutes > 0 AND job_status = 'Running' AND deleted != 1");
+
+        while ($row = $db->fetchByAssoc($query)) {
+
+            $diff = (TimeDate::getInstance()->getNow()->getTimestamp() - TimeDate::getInstance()->fromDb($row['last_run_date'])->getTimestamp()) / 60;
+
+            if ($diff < $row['max_execution_minutes']) continue;
+
+            /** @var SchedulerJob $job */
+            $job = BeanFactory::getBean('SchedulerJobs', $row['id']);
+
+            $job->killProcess();
         }
     }
 

@@ -247,15 +247,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'rhs_key' => 'mailbox_id',
             'relationship_type' => 'one-to-many',
         ],
-        'users' => [
-            'vname' => 'LBL_USERS',
-            'name' => 'users',
-            'type' => 'link',
-            'module' => 'Users',
-            'bean_name' => 'User',
-            'relationship' => 'mailboxes_users',
-            'source' => 'non-db'
-        ],
         'mailboxes_mailbox_processors' => [
             'lhs_module' => 'Mailboxes',
             'lhs_table' => 'mailboxes',

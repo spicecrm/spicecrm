@@ -141,7 +141,9 @@ class SpiceNotificationsLoader
         $notification->saveNotification();
 
         // delete the subscription on the deleted bean
-        $subscriptionLoader = new SpiceSubscriptionsLoader();
-        $subscriptionLoader->deleteSubscription($bean->_module, $bean->id);
+        if($bean->id) {
+            $subscriptionLoader = new SpiceSubscriptionsLoader();
+            $subscriptionLoader->deleteSubscription($bean->_module, $bean->id);
+        }
     }
 }

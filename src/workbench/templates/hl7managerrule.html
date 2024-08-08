@@ -1,0 +1,41 @@
+<tr [ngClass]="{'slds-is-selected':showDetails,'slds-is-open':showDetails}" class="slds-section">
+    <td class="hl7-first-col">
+        <button (click)="clickDetails()" class="slds-button"><system-utility-icon icon="switch" size="x-small" addclasses="slds-section__title-action-icon slds-button__icon_left"></system-utility-icon></button>
+    </td>
+    <td><span style="width:70px;display:inline-block;line-height:0.7" class="slds-truncate slds-text-font_monospace" [title]="rule.id">{{rule.id}}</span><button class="slds-button slds-button--icon" style="vertical-align:top" (click)="clipboard.copy(rule.id)"><system-button-icon icon="copy" size="xx-small"></system-button-icon></button></td>
+    <td class="slds-text-font_monospace">{{rule.hl7_segment}}</td>
+    <td>{{rule.spice_module}} / {{rule.spice_field}}</td>
+    <td>{{rule.hl7_field}}</td>
+    <td>{{rule.import_method}}</td>
+    <td><ng-container *ngIf="rule.hl7_segment_variant_meaning">when &quot;{{rule.hl7_segment_variant_meaning}}&quot; in Segment {{rule.hl7_segment_variant_meaning_location}}</ng-container></td>
+    <td class="hl7-last-col">
+        <system-utility-icon *ngIf="rule.active == '1'" (click)="clickActive()" icon="check" size="x-small" addclasses="slds-icon slds-icon-text-default" class="slds-section__title-action-icon"></system-utility-icon>
+        <span *ngIf="rule.active != '1'">&mdash;</span>
+    </td>
+</tr>
+<tr *ngIf="showDetails">
+    <td colspan="8" style="padding:0;border-left-width:1px;border-right-width:1px;border-top-width:0">
+        <div class="slds-border--bottom slds-border--left slds-border--right slds-p-around--small" style="border-width:2px;border-bottom-width:1px">
+            <div>
+                <h3 class="slds-section__title slds-theme--shade">
+                    <span class="slds-truncate slds-p-left--x-small"><system-label style="font-weight:700;font-size:13px" label="LBL_DATATYPE_A_CO"></system-label></span>
+                </h3>
+            </div>
+            <div class="slds-grid slds-m-bottom--medium slds-m-top--small">
+                <field-container class="slds-size--1-of-3 slds-p-horizontal--x-small" [field]="'datatype'" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container><!-- [fieldconfig]="fieldconfigs['datatype']" -->
+                <field-container class="slds-size--1-of-3 slds-p-horizontal--small" [field]="'mapping'" [fieldconfig]="{fieldtype:'json'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container><!--[fieldconfig]="fieldconfigs['mapping']"-->
+                <field-container class="slds-size--1-of-3 slds-p-horizontal--x-small" [field]="'validation_config'" [fieldconfig]="{fieldtype:'json'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container><!-- [fieldconfig]="fieldconfigs['validation_config']"-->
+            </div>
+            <div>
+                <h3 class="slds-section__title slds-theme_shade">
+                    <span class="slds-truncate slds-p-left--x-small"><system-label style="font-weight:700;font-size:13px" label="LBL_SPICE_RELATION"></system-label></span>
+                </h3>
+            </div>
+            <div class="slds-grid slds-m-bottom--medium slds-m-top--small">
+                <field-container class="slds-size--1-of-2 slds-p-left--x-small slds-p-right--small" [field]="'spice_relation'" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container>
+                <field-container class="slds-size--1-of-2 slds-p-right--x-small slds-p-left--small" [field]="'spice_relation_ext_id_field'" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight" ></field-container>
+            </div>
+        </div>
+    </td>
+</tr>
+

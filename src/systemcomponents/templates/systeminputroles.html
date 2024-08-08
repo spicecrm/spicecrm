@@ -1,0 +1,4 @@
+<system-select *ngIf="roles.length > 0" [(ngModel)]="role">
+    <system-select-option *ngFor="let role of roles" [value]="role.name" [display]="role.name"/>
+</system-select>
+<system-input-text *ngIf="roles.length == 0"  disabled/>

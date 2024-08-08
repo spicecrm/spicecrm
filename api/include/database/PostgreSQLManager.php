@@ -272,9 +272,12 @@ class PostgreSQLManager extends DBManager
      */
     public function get_columns($tablename)
     {
-        //find all unique indexes and primary keys.
-        $result = $this->query(
-            "SELECT ordinal_position, column_name, 
+        $columns = [];
+
+        if($this>$this->tableExists($tablename)) {
+            //find all unique indexes and primary keys.
+            $result = $this->query(
+                "SELECT ordinal_position, column_name, 
             		column_default as data_default, data_type,
 					character_maximum_length as char_length, 
 					numeric_precision, numeric_precision_radix as data_precision,
@@ -282,42 +285,52 @@ class PostgreSQLManager extends DBManager
 			FROM information_schema.columns 
 			WHERE table_name = '$tablename';");
 
-        $columns = [];
+            while (($row = $this->fetchByAssoc($result)) != null) {
+                $name = strtolower($row['column_name']);
+                $columns[$name]['name'] = $name;
+                $columns[$name]['type'] = strtolower($row['data_type']);
+                if ($columns[$name]['type'] == 'number') {
+                    $columns[$name]['len'] =
+                        (!empty($row['data_precision']) ? $row['data_precision'] : '3');
+                    if (!empty($row['data_scale']))
+                        $columns[$name]['len'] .= ',' . $row['data_scale'];
+                } elseif (in_array($columns[$name]['type']
+                    , ['date', 'text', 'time'])) {
+                    // do nothing
+                } else
+                    $columns[$name]['len'] = strtolower($row['char_length']);
+                if (!empty($row['data_default'])) {
+                    $matches = [];
+                    $row['data_default'] = html_entity_decode($row['data_default'], ENT_QUOTES);
+                    if (preg_match("/'(.*)'/i", $row['data_default'], $matches))
+                        $columns[$name]['default'] = $matches[1];
+                }
 
-        while (($row=$this->fetchByAssoc($result)) !=null) {
-            $name = strtolower($row['column_name']);
-            $columns[$name]['name']=$name;
-            $columns[$name]['type']=strtolower($row['data_type']);
-            if ( $columns[$name]['type'] == 'number' ) {
-                $columns[$name]['len']=
-                    ( !empty($row['data_precision']) ? $row['data_precision'] : '3');
-                if ( !empty($row['data_scale']) )
-                    $columns[$name]['len'].=','.$row['data_scale'];
-            }
-            elseif ( in_array($columns[$name]['type']
-                ,['date','text','time']) ) {
-                // do nothing
-            }
-            else
-                $columns[$name]['len']=strtolower($row['char_length']);
-            if ( !empty($row['data_default']) ) {
-                $matches = [];
-                $row['data_default'] = html_entity_decode($row['data_default'],ENT_QUOTES);
-                if ( preg_match("/'(.*)'/i",$row['data_default'],$matches) )
-                    $columns[$name]['default'] = $matches[1];
-            }
+                $sequence_name = $this->getSequenceName($tablename, $row['column_name'], true);
+                if ($this->findSequence($sequence_name))
+                    $columns[$name]['auto_increment'] = '1';
 
-            $sequence_name = $this->getSequenceName($tablename, $row['column_name'], true);
-            if ($this->findSequence($sequence_name))
-                $columns[$name]['auto_increment'] = '1';
-            elseif ( $row['nullable'] == 'NO' )
-                $columns[$name]['required'] = 'true';
+                $columns[$name]['required'] = json_encode($row['nullable'] == 'NO');
+            }
         }
-
         return $columns;
     }
 
-
+    /**
+     * remove columns from a table
+     *
+     * @param $tablename
+     * @param array $columns
+     * @return mixed|void
+     */
+    public function delete_columns($tablename, array $columns = [])
+    {
+        $dropColumns = [];
+        foreach ($columns as $column) {
+            $dropColumns[] = "DROP COLUMN $column";
+        }
+        $this->query("ALTER TABLE $tablename " . join(", ", $dropColumns));
+    }
 
     /**
      * Get a list of columns names for selects
@@ -567,7 +580,7 @@ class PostgreSQLManager extends DBManager
      * (non-PHPdoc)
      * @see DBManager::repairTableParams()
      */
-    public function repairTableParams($tablename, $fielddefs, $indices, $execute = true, $engine = null)
+    public function repairTableParams($tablename, $fielddefs, $indices, $execute = true, $engine = null, $commented = false)
     {
         //Modules with names close to 63 characters may have index names over 63 characters, we need to clean them
         foreach ($indices as $key => $value) {
@@ -649,6 +662,8 @@ class PostgreSQLManager extends DBManager
                 }
             case 'add_time':
                 return "(date $string + INTERVAL + time '{$additional_parameters[0]}:{$additional_parameters[1]}')";
+            case 'substring':
+                return "SUBSTRING($string, {$additional_parameters['from']}, {$additional_parameters['to']})";
         }
 
         return $string;

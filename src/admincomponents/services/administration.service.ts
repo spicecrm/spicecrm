@@ -202,11 +202,8 @@ export class administration implements OnDestroy {
                 // search if we find any component that matches
                 let filteredcompopnents = [];
                 for (let groupcomponent of group.groupcomponents) {
-                    if (
-                        groupcomponent.adminaction.toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0 ||
-                        (groupcomponent.admin_label && this.language.getLabel(groupcomponent.admin_label).toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0) ||
-                        (groupcomponent.admin_label && this.language.getLabel(groupcomponent.admin_label, '', 'long').toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0)
-                    ) {
+                    let splited = this.itemfilter.split(' ');
+                    if (splited.every(filter => this.language.getLabel(groupcomponent.admin_label).toLowerCase().indexOf(filter.toLowerCase()) >= 0 || groupcomponent.admin_label.toLowerCase().indexOf(filter.toLowerCase()) >= 0)) {
                         filteredcompopnents.push(groupcomponent);
                     }
                 }

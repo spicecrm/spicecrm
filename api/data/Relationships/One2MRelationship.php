@@ -4,8 +4,6 @@
 namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SugarObjects\VardefManager;
-use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 
 
@@ -27,9 +25,7 @@ class One2MRelationship extends M2MRelationship
 
         if ($this->selfReferencing)
         {
-            $links = VardefManager::getLinkFieldForRelationship(
-                $lhsModule, BeanFactory::getObjectName($lhsModule), $this->name
-            );
+            $links = $this->getLinkFieldForRelationship($lhsModule);
             if (empty($links))
             {
                 LoggerManager::getLogger()->fatal('relationships',"No Links found for relationship {$this->name} in One2M");
@@ -58,12 +54,8 @@ class One2MRelationship extends M2MRelationship
             }
         } else
         {
-            $this->lhsLinkDef = VardefManager::getLinkFieldForRelationship(
-                $lhsModule, BeanFactory::getObjectName($lhsModule), $this->name
-            );
-            $this->rhsLinkDef = VardefManager::getLinkFieldForRelationship(
-                $rhsModule, BeanFactory::getObjectName($rhsModule), $this->name
-            );
+            $this->lhsLinkDef = $this->getLinkFieldForRelationship($lhsModule);
+            $this->rhsLinkDef = $this->getLinkFieldForRelationship($rhsModule);
             if (!isset($this->lhsLinkDef['name']) && isset($this->lhsLinkDef[0]))
             {
               $this->lhsLinkDef = $this->lhsLinkDef[0];

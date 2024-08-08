@@ -197,17 +197,31 @@ export class AdministrationAssetManager implements OnInit{
         })
     }
     public reset(){
-        let defaultColours: any[] = [];
+        let assets: any[] = [];
         const colors = window._.object(this.cssvars.map(v => v.name), Array.from({length: this.cssvars.length}, () => ''));
 
         let dc = this.loadedassets.find(a => a.assetkey == 'colors');
-        defaultColours.push({
+        assets.push({
             id: dc ? dc.id : this.modelutilities.generateGuid(),
             assetkey: 'colors',
             assetvalue: JSON.stringify(colors)
         });
 
-        this.backend.postRequest('system/spiceui/admin/assets', {}, defaultColours).subscribe(assets => {
+        let loginImage = this.loadedassets.find(a => a.assetkey == 'loginimage');
+        assets.push({
+            id: loginImage.id,
+            assetkey: 'loginimage',
+            assetvalue: ''
+        });
+
+        let headerImage = this.loadedassets.find(a => a.assetkey == 'headerimage');
+        assets.push({
+            id: headerImage.id,
+            assetkey: 'headerimage',
+            assetvalue: ''
+        });
+
+        this.backend.postRequest('system/spiceui/admin/assets', {}, assets).subscribe(assets => {
             this.assets = assets;
             this.configuration.setAssets(assets, true);
         })

@@ -1,5 +1,5 @@
 <groupware-email-archive-pane-header></groupware-email-archive-pane-header>
-<div class="slds-tabs_default" [system-overlay-loading-spinner]="isLoading">
+<div class="slds-tabs_default">
     <ul class="slds-tabs_default__nav" role="tablist">
         <!--li class="slds-tabs_default__item" title="Search" role="presentation" [ngClass]="{'slds-is-active': activetab=='beans'}">
             <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" (click)="open('beans')">
@@ -32,7 +32,7 @@
         <groupware-email-archive-pane-search [ngClass]="{'slds-hide': activetab!='search'}"></groupware-email-archive-pane-search>
         <groupware-email-archive-pane-attachments [ngClass]="{'slds-hide': activetab!='attachments'}"></groupware-email-archive-pane-attachments>
         <groupware-email-archive-pane-linked [ngClass]="{'slds-hide': activetab!='linked'}"></groupware-email-archive-pane-linked-->
-        <div *ngFor="let tab of getTabs(); let tabindex = index" system-to-bottom-noscroll class="slds-vertical-tabs__content slds-scrollable--y slds-p-around--xx-small slds-show" [ngClass]="{'slds-hide': activetab!=tabindex}" role="tabpanel">
+        <div *ngFor="let tab of getTabs(); let tabindex = index" system-to-bottom-noscroll class="slds-vertical-tabs__content slds-scrollable--y slds-show slds-p-around--none" [ngClass]="{'slds-hide': activetab!=tabindex}" role="tabpanel">
             <groupware-email-archive-pane-item *ngIf="tab.componentset" [componentconfig]="tab"></groupware-email-archive-pane-item>
         </div>
     </div>

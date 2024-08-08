@@ -20,6 +20,9 @@
                         <li *ngIf="hasInactiveFieldProperty" class="slds-item">
                             <object-set-inactive-icon/>
                         </li>
+                        <li *ngIf="showProjectActivityTrackIcon" class="slds-item">
+                            <object-project-activity-track-time-icon/>
+                        </li>
                     </ul>
                     <div class="slds-grid slds-grid--vertical-align-center">
                         <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
@@ -31,7 +34,7 @@
                 </div>
             </div>
         </div>
-        <div class="slds-m-horizontal--x-small slds-show--medium slds-align--absolute-center">
+        <div class="slds-m-horizontal--x-small slds-align--absolute-center">
             <object-workflow-button/>
             <!--object-subscription-button></object-subscription-button-->
             <!--object-reminder-button></object-reminder-button-->

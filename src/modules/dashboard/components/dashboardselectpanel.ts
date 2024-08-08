@@ -36,7 +36,7 @@ export class DashboardSelectPanel {
                 dashboards.push(dashboard);
             }
         }
-        return dashboards;
+        return dashboards.sort((a, b) => a.name.localeCompare(b.name, undefined, {'sensitivity': 'base'}));
     }
 
     get canAdd() {

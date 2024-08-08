@@ -30,6 +30,7 @@
                                     <system-select-option *ngFor="let foreignKey of getForeignKeys(field.name)" [value]="foreignKey.value" [display]="foreignKey.display"/>
                                 </system-select>
                                 <administration-configurator-item-role *ngSwitchCase="'role'" [editmode]="true" [(fieldvalue)]="entry.data[field.name]"></administration-configurator-item-role>
+                                <system-input-dictionary *ngSwitchCase="'dictionary'" [(ngModel)]="entry.data[field.name]"></system-input-dictionary>
                                 <input *ngSwitchDefault type="text" class="slds-input" [(ngModel)]="entry.data[field.name]"/>
                             </div>
                         </div>

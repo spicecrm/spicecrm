@@ -1,5 +1,5 @@
 <ng-container cdkDropListGroup class="globalnavigationtabbeddsubtabsragboundary">
-    <div class="slds-context-bar slds-context-bar_tabs slds-p-left--xx-small" [ngStyle]="contextbarStyle">
+    <div [ngClass]="{'slds-theme--error': configurationService.data.startupMode == 'recovery', 'slds-theme--warning': configurationService.data.startupMode == 'maintenance', 'slds-theme--default': configurationService.data.startupMode != 'maintenance' && configurationService.data.startupMode != 'recovery'}" class="slds-context-bar slds-context-bar_tabs slds-p-left--xx-small" [ngStyle]="contextbarStyle">
         <global-app-launcher class="slds-context-bar__primary"></global-app-launcher>
         <global-navigation-tabbed-menu #tabbedMenuComponent class="slds-context-bar__secondary globalnavigationtabbeddragboundary" role="navigation" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="tabbedMenuComponent.objectTabs" (cdkDropListDropped)="drop($event)"></global-navigation-tabbed-menu>
         <button (click)="toggleCollapse()" class="slds-button slds-button--icon slds-m-right--xx-small">

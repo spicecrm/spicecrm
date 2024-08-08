@@ -3,8 +3,8 @@
 
 namespace SpiceCRM\data;
 
-use SpiceCRM\data\Relationships\SugarRelationship;
-use SpiceCRM\data\Relationships\SugarRelationshipFactory;
+use SpiceCRM\data\Relationships\Relationship;
+use SpiceCRM\data\Relationships\RelationshipFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -80,7 +80,7 @@ class Link2
             $this->name = $linkName;
         }
         //Instantiate the relationship for this link.
-        $this->relationship = SugarRelationshipFactory::getInstance()->getRelationship($this->def['relationship']);
+        $this->relationship = RelationshipFactory::getInstance()->getRelationship($this->def['relationship']);
 
         // Fix to restore functionality from Link.php that needs to be rewritten but for now this will do.
         $this->relationship_fields = (!empty($this->def['rel_fields'])) ? $this->def['rel_fields'] : array();
@@ -244,7 +244,7 @@ class Link2
     }
 
     /**
-     * @return SugarRelationship the relationship object this link references
+     * @return Relationship the relationship object this link references
      */
     public function getRelationshipObject()
     {
@@ -397,7 +397,7 @@ class Link2
 
                     //mod for deviating id in relationship
                     $idField = 'id';
-                    if ($this->relationship->def['relationship_type'] == 'many-to-many') {
+                    if (in_array($this->relationship->def['relationship_type'], ['many-to-many', 'email-address', 'many-to-many-prospectlists'])) {
                         $idField = $this->relationship->def['rhs_module'] == $rel_module ? $this->relationship->def['rhs_key'] : $this->relationship->def['lhs_key'];
                     }
 
@@ -405,10 +405,20 @@ class Link2
                         $tmpBean = BeanFactory::getBean($rel_module);
                         $tmpBean->retrieve_by_string_fields([$idField => $id]);
                     } else {
-                        $tmpBean = BeanFactory::getBean($rel_module, $id);
+
+                        // retrieve linked Bean, if it is deleted
+                        if($params && isset($params['deleted']) && $params['deleted'] == true) {
+                            // set deleted to false in order to retrieve a deleted Bean in SpiceBean Class
+                            $tmpBean = BeanFactory::getBean($rel_module, $id, ['forceRetrieve' => true], false);
+                        } else {
+                            // if deleted is not false, only not-deleted Bean will be retrieved per default
+                            $tmpBean = BeanFactory::getBean($rel_module, $vals['id']);
+                        }
                     }
                     if ($tmpBean !== FALSE)
-                        $result[$id] = $tmpBean;
+                        // clone to get independent objects of the same bean (because of relid allocation further below)
+                        // using getBean with forceRetrieve parameter would lower the performance
+                        $result[$id] = clone $tmpBean;
                 } else {
                     $result[$id] = $this->beans[$id];
                 }
@@ -540,7 +550,7 @@ class Link2
      * @param string $related_id id or SpiceBean to unrelate. Pass a SpiceBean if you have it.
      * @return boolean          true if delete was successful or false if it was not
      */
-    function delete($id, $related_id = '')
+    function delete($id, $related_id = '', ?string $relId = null)
     {
         if (empty($this->focus->id))
             $this->focus = BeanFactory::getBean($this->focus->_module, $id);
@@ -549,9 +559,9 @@ class Link2
                 $related_id = $this->getRelatedBean($related_id);
             }
             if ($this->getSide() == REL_LHS) {
-                return $this->relationship->remove($this->focus, $related_id);
+                return $this->relationship->remove($this->focus, $related_id, $relId);
             } else {
-                return $this->relationship->remove($related_id, $this->focus);
+                return $this->relationship->remove($related_id, $this->focus, $relId);
             }
         } else {
             return $this->relationship->removeAll($this);

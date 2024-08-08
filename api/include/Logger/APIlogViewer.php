@@ -3,7 +3,7 @@ namespace SpiceCRM\includes\Logger;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
@@ -36,7 +36,7 @@ class APIlogViewer {
      * @return array
      */
     public function getLogTables(){
-        $dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
+        $dictionary = SpiceDictionary::getInstance()->dictionary;
 
         $tables = [];
         foreach($dictionary as $name => $data){

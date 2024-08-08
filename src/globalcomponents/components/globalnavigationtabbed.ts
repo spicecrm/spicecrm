@@ -9,6 +9,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 import {GlobalNavigationTabbedMenu} from "./globalnavigationtabbedmenu";
 import {userpreferences} from "../../services/userpreferences.service";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
+import {configurationService} from "../../services/configuration.service";
 
 /** @ignore */
 const ANIMATIONS = [
@@ -58,6 +59,7 @@ export class GlobalNavigationTabbed implements OnDestroy {
     constructor(public metadata: metadata,
                public navigation: navigation,
                public userPreferences: userpreferences,
+                public configurationService: configurationService,
                public cdRef: ChangeDetectorRef) {
     }
 

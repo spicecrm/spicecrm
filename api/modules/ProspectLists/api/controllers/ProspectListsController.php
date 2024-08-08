@@ -8,6 +8,7 @@ use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\modules\ProspectLists\ProspectList;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -225,5 +226,32 @@ class ProspectListsController
         return $res->withJson(['success' => true, 'prospectlistid' => $newTargetGroup->id]);
     }
 
+    /**
+     * get list entries count
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function getEntriesCount(Request $req, Response $res, array $args): Response
+    {
+        /** @var ProspectList $list */
+        $list = BeanFactory::getBean('ProspectLists', $args['id']);
+        return $res->withJson($list->get_entry_count());
+    }
+
+    public function checkExistingBeanEmailAddressInItems(Request $req, Response $res, $args): Response
+    {
+        $params = $req->getQueryParams();
+        $relIdWhere = $params['isPrimary'] ? "" : "and plp.email_addr_bean_rel_id = '{$args['relId']}'";
+
+        $db = DBManagerFactory::getInstance();
+        $prospects = [];
+        $query = $db->query("SELECT pl.name FROM prospect_lists_prospects plp, prospect_lists pl where pl.id = plp.prospect_list_id $relIdWhere and plp.deleted = 0");
+        while($row = $db->fetchByAssoc($query) ){
+            $prospects[] = $row['name'];
+        }
+        return $res->withJson($prospects);
+    }
 }
 

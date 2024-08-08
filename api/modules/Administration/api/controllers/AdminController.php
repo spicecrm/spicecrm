@@ -12,7 +12,6 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
-use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
@@ -172,6 +171,8 @@ class AdminController
                 'name' => SpiceConfig::getInstance()->config['system']['name'],
                 'site_url' => SpiceConfig::getInstance()->config['site_url'],
                 'unique_key' => SpiceConfig::getInstance()->config['unique_key'],
+                'startup_mode' => SpiceConfig::getInstance()->config['system']['startup_mode'],
+                'edit_mode' => SpiceConfig::getInstance()->config['system']['edit_mode'],
             ],
             'advanced' => [
                 'stack_trace_errors' => SpiceUtils::getStackTrace(),
@@ -222,8 +223,14 @@ class AdminController
                         break;
                         // name goes to database
                     case 'name':
-                        SpiceConfig::getInstance()->config['system']['name'] = $itemvalue;
-                        $query = "UPDATE config SET value = '$itemvalue' WHERE category = 'system' AND name = '$itemname'";
+                    case 'startup_mode':
+                    case 'edit_mode':
+                        SpiceConfig::getInstance()->config['system'][$itemname] = $itemvalue;
+                        if($db->fetchOne("SELECT * FROM config WHERE category = 'system' AND name = '$itemname'")) {
+                            $query = "UPDATE config SET value = '$itemvalue' WHERE category = 'system' AND name = '$itemname'";
+                        } else {
+                            $query = "INSERT INTO config (category, name, value) VALUES ('system', '$itemname', '$itemvalue')";
+                        }
                         $db->query($query);
                         break;
                     default:
@@ -506,79 +513,7 @@ class AdminController
         unset($_SESSION['relationships']);
 
         // rebuild relationship cache
-        Relationship::build_relationship_cache();
-    }
-
-    /**
-     * rebuilds the metadata relationships
-     *
-     * TODo: remove this in the next version with the vardef manager
-     */
-    private function rebuildMetadataRelationships()
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $rel_dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
-        foreach ($rel_dictionary as $rel_name => $rel_data) {
-            $table = isset($rel_data ['table']) ? $rel_data ['table'] : "";
-            SpiceBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
-        }
-    }
-
-    /**
-     * clears language cache and repairs the language extensions
-     *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     */
-    public function repairLanguage(Request $req, Response $res, array $args): Response {
-        $appListStrings = [];
-        $appLang = [];
-        $langs = LanguageManager::getLanguages();
-
-        foreach ($langs['available'] as $lang) {
-            if($lang['system_language']){
-                $language = $lang['language_code'];
-                $this->merge_files('Ext/Language/', $language . '.lang.ext.php', $language);
-                $appListStrings[$language][] = SpiceUtils::returnAppListStringsLanguage($language);
-                $appLang[$language][] = $this->loadLanguage($language);
-            }
-        }
-
-        if (!empty($appListStrings) && !empty($appLang)) {
-            $response = 'ok';
-        } else {
-            $response = 'e';
-        }
-
-        return $res->withJson(['response' => $response,
-            'appList' => $appListStrings,
-            'appLang' => $appLang,
-            'languages' => $langs]);
-    }
-
-    /**
-     * loads the applang labels for a language
-     * @param $lang
-     * @return array
-     */
-    private function loadLanguage($lang)
-    {
-        $syslanguagelabels = LanguageManager::loadDatabaseLanguage($lang);
-        $syslanguages = [];
-        if (is_array($syslanguagelabels)) {
-            foreach ($syslanguagelabels as $syslanguagelbl => $syslanguagelblcfg) {
-                $syslanguages[$syslanguagelbl] = [
-                    'default' => $syslanguagelblcfg['default'],
-                    'short' => $syslanguagelblcfg['short'],
-                    'long' => $syslanguagelblcfg['long'],
-                ];
-            }
-        }
-
-        return $syslanguages;
+        SpiceDictionaryVardefs::build_relationship_cache();
     }
 
     /**
@@ -685,7 +620,7 @@ class AdminController
                 if ($entry != "." && $entry != "..") {
                     $extensions[$entry] = "";
                     $subHandle = opendir("custom/Extension/modules/{$entry}/Ext/Vardefs");
-                    while ($subEntry = readdir(($subHandle))) {
+                    if ( $subHandle ) while ($subEntry = readdir(($subHandle))) {
                         if ($subEntry != "." && $subEntry != "..") {
                             $extensions[$entry] = $subEntry;
                         }

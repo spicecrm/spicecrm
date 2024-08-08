@@ -1,7 +1,7 @@
 /**
  * @module AdminComponentsModule
  */
-import {Component, OnInit, Injector} from '@angular/core';
+import {Component, Injector} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {backend} from '../../services/backend.service';
@@ -65,53 +65,54 @@ export class AdministrationFTSStatus {
         // reset the indices
         this.indices = [];
 
-        this.backend.getRequest('admin/elastic/status').subscribe(
-            response => {
-                this.version = response.version;
+        this.backend.getRequest('admin/elastic/status').subscribe({
+                next: (response) => {
+                    this.version = response.version;
 
-                // initialize
-                this.stats.tdocs = 0;
-                this.stats.pdocs = 0;
-                this.stats.tsize = 0;
-                this.stats.psize = 0;
+                    // initialize
+                    this.stats.tdocs = 0;
+                    this.stats.pdocs = 0;
+                    this.stats.tsize = 0;
+                    this.stats.psize = 0;
 
-                if ( response.stats?._all ) {
-                    // catch when no fts index is set yet
-                    if( response.stats._all.total.docs && response.stats._all.total.docs.count ) {
-                        this.stats.tdocs = response.stats._all.total.docs.count;
-                        this.stats.pdocs = response.stats._all.primaries.docs.count;
+                    if (response.stats?._all) {
+                        // catch when no fts index is set yet
+                        if (response.stats._all.total.docs && response.stats._all.total.docs.count) {
+                            this.stats.tdocs = response.stats._all.total.docs.count;
+                            this.stats.pdocs = response.stats._all.primaries.docs.count;
+                        }
+                        // catch when no fts index is set yet
+                        if (response.stats._all.total?.store && response.stats._all.total.store.size_in_bytes) {
+                            this.stats.tsize = this.helper.humanFileSize(response.stats._all.total.store.size_in_bytes);
+                            this.stats.psize = this.helper.humanFileSize(response.stats._all.primaries.store.size_in_bytes);
+                        }
                     }
-                    // catch when no fts index is set yet
-                    if ( response.stats._all.total?.store && response.stats._all.total.store.size_in_bytes ) {
-                        this.stats.tsize = this.helper.humanFileSize( response.stats._all.total.store.size_in_bytes );
-                        this.stats.psize = this.helper.humanFileSize( response.stats._all.primaries.store.size_in_bytes );
+                    for (let index in response.stats.indices) {
+                        this.indices.push({
+                            name: index,
+                            pdocs: response.stats.indices[index].primaries.docs.count,
+                            psize: this.helper.humanFileSize(response.stats.indices[index].primaries.store.size_in_bytes),
+                            tdocs: response.stats.indices[index].total.docs.count,
+                            tsize: this.helper.humanFileSize(response.stats.indices[index].total.store.size_in_bytes),
+                            stored: response.stats.indexed[index]?.count ? response.stats.indexed[index].count : 'error: check spicecrm.log',
+                            unindexed: response.stats.indexed[index]?.unindexed ? response.stats.indexed[index].unindexed : 'error: check spicecrm.log',
+                            erroneous: response.stats.indexed[index]?.erroneous ? response.stats.indexed[index].erroneous : 'error: check spicecrm.log',
+                            blocked: (response.settings && response.settings[index] && response.settings[index].settings.index.blocks?.read_only_allow_delete) ? true : false
+                        });
                     }
+
+                    // sort the indices
+                    this.indices.sort((a, b) => a.name > b.name ? 1 : -1);
+
+                    // no longer loading
+                    this.loading = false;
+
+                }, error: () => {
+                    this.loading = false;
+                    this.toast.sendToast('Error loading Status', "error");
                 }
-
-                for (let index in response.stats.indices) {
-                    this.indices.push({
-                        name: index,
-                        pdocs: response.stats.indices[index].primaries.docs.count,
-                        psize: this.helper.humanFileSize(response.stats.indices[index].primaries.store.size_in_bytes),
-                        tdocs: response.stats.indices[index].total.docs.count,
-                        tsize: this.helper.humanFileSize(response.stats.indices[index].total.store.size_in_bytes),
-                        stored: response.stats.indexed[index].count,
-                        unindexed: response.stats.indexed[index].unindexed,
-                        blocked: (response.settings && response.settings[index] && response.settings[index].settings.index.blocks?.read_only_allow_delete) ? true : false
-                    });
-                }
-
-                // sort the indices
-                this.indices.sort((a, b) => a.name > b.name ? 1 : -1);
-
-                // no longer loading
-                this.loading = false;
-
-            },
-            error => {
-                this.loading = false;
-                this.toast.sendToast('Error loading Status', "error");
-            });
+            }
+        );
     }
 
     /**
@@ -131,8 +132,6 @@ export class AdministrationFTSStatus {
     get hasLocks() {
         return this.indices.find(i => i.blocked) ? true : false;
     }
-
-
 
     /**
      * initialize the full index

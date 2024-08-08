@@ -83,10 +83,21 @@ export interface ComponentSetItemI {
 export interface ObjectListFilterI {
     logicaloperator: string,
     groupscope: 'all' | 'own' | 'creator',
-    groupstate: 'active' | 'inactive' | 'activeAndInactive',
+    groupstate?: 'active' | 'inactive' | 'activeAndInactive',
     conditions: Array<any>,
     geography?: Object,
     field?: string,
     operator?: string,
     filtervalue?: string
+}
+
+export interface ObjectActionMenuItemI {
+    disabled: boolean,
+    id: string,
+    sequence: number,
+    action: string,
+    component: string | undefined,
+    actionconfig: Object,
+    singlebutton:  boolean,
+    displayasicon?: boolean
 }

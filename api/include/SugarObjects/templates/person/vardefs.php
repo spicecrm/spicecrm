@@ -160,6 +160,7 @@ $vardefs = [
             'type' => 'enum',
             'options' => 'is_inactive_dom',
             'default' => '0',
+            'required' => true,
             'len' => 1,
             'audited' => true
         ],
@@ -617,7 +618,7 @@ $vardefs = [
             [
                 'lhs_module' => $module, 'lhs_table' => strtolower($module), 'lhs_key' => 'id',
                 'rhs_module' => 'EmailAddresses', 'rhs_table' => 'email_addresses', 'rhs_key' => 'id',
-                'relationship_type' => 'many-to-many',
+                'relationship_type' => 'email-address',
                 'join_table' => 'email_addr_bean_rel', 'join_key_lhs' => 'bean_id', 'join_key_rhs' => 'email_address_id',
                 'relationship_role_column' => 'bean_module',
                 'relationship_role_column_value' => $module
@@ -625,7 +626,7 @@ $vardefs = [
         strtolower($object_name) . '_email_addresses_primary' =>
             ['lhs_module' => $module, 'lhs_table' => strtolower($module), 'lhs_key' => 'id',
                 'rhs_module' => 'EmailAddresses', 'rhs_table' => 'email_addresses', 'rhs_key' => 'id',
-                'relationship_type' => 'many-to-many',
+                'relationship_type' => 'email-address',
                 'join_table' => 'email_addr_bean_rel', 'join_key_lhs' => 'bean_id', 'join_key_rhs' => 'email_address_id',
                 'relationship_role_column' => 'primary_address',
                 'relationship_role_column_value' => '1'

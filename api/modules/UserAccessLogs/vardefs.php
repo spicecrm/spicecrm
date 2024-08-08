@@ -97,4 +97,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['UserAccessLog'] = [
     ]
 ];
 
-VardefManager::createVardef('UserAccessLogs', 'UserAccessLog');
+VardefManager::createVardef('UserAccessLogs', 'UserAccessLog', []);

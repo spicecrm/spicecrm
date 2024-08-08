@@ -19,7 +19,9 @@ import {language} from '../../../services/language.service';
 import {calendar} from '../services/calendar.service';
 import {CdkDragEnd} from "@angular/cdk/drag-drop";
 import {CalendarSheetDropTarget} from "./calendarsheetdroptarget";
-import {Subscription} from "rxjs";
+import {asapScheduler, Subscription} from "rxjs";
+import {navigation} from "../../../services/navigation.service";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 /**
  * @ignore
@@ -99,10 +101,16 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      * holds the resize listener
      */
     public resizeListener: any;
+    /**
+     * active calendars
+     */
+    @Input() public availableCalendars: {id: string, visible: boolean}[] = [];
 
     constructor(public language: language,
                 public cdRef: ChangeDetectorRef,
                 public renderer: Renderer2,
+                private navigation: navigation,
+                private navigationTab: navigationtab,
                 public calendar: calendar) {
         this.buildHours();
         this.buildSheetDays();
@@ -156,7 +164,11 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      * @param changes
      */
     public ngOnChanges(changes: SimpleChanges) {
-        this.buildSheetDays();
+
+        if (!changes.availableCalendars) {
+            this.buildSheetDays();
+        }
+
         if (changes.setdate) {
             this.getOwnerEvents();
             this.getUsersEvents();
@@ -213,7 +225,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
                 color: this.isToday(moment(focDate)) ? this.calendar.todayColor : '#000000',
                 dateTextDayShort: moment(focDate).format('ddd'),
                 dateTextDayNumber: moment(focDate).format('D'),
-                items: []
+                events: []
             });
             d++;
             dayIndex++;
@@ -353,11 +365,28 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
                 this.setMultiEventsStyle();
             })
         );
-        this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
-                if (calendar.id == 'owner') {
-                    this.getOwnerEvents();
-                } else {
-                    this.getUserEvents(calendar);
+
+        this.subscription.add(
+            this.navigation.activeTab$.subscribe(tabId => {
+
+                if (this.navigationTab.objecttab.id != tabId) return;
+
+                // wait until the tab is visible and the reset the events styles
+                asapScheduler.schedule(() => {
+                    this.arrangeMultiEvents();
+                    this.setSingleEventsStyle();
+                    this.setMultiEventsStyle();
+                }, 100);
+            })
+        );
+
+        this.subscription.add(this.calendar.userCalendarChange$.subscribe({
+                next: calendar => {
+                    if (calendar.type == 'other') {
+                        this.getOwnerEvents(calendar);
+                    } else {
+                        this.getUserEvents(calendar);
+                    }
                 }
             })
         );
@@ -453,6 +482,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
 
             this.nextDaySingleEvents[key][event.id + '_next'] = {
                 id: event.id + '_next',
+                calendarId: event.calendarId,
                 start: moment(event.start).add(1, 'day').hour(this.calendar.startHour).minute(0),
                 end: nextDayEnd,
             };
@@ -463,25 +493,56 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
     /**
      * load owner events from service and rearrange the multi events
      */
-    public getOwnerEvents() {
-        this.ownerEvents = [];
-        this.ownerMultiEvents = [];
-        this.nextDaySingleEvents.ownerEvents = [];
+    public getOwnerEvents(calendar?) {
+
+        if (!calendar) {
+            this.ownerEvents = [];
+            this.ownerMultiEvents = [];
+            this.nextDaySingleEvents.ownerEvents = {};
+        } else {
+            this.ownerEvents = this.ownerEvents.filter(e => e.calendarId != calendar.id);
+            this.ownerMultiEvents = this.ownerMultiEvents.filter(e => e.calendarId != calendar.id);
+            Object.keys(this.nextDaySingleEvents.ownerEvents).forEach(eId => {
+                if (this.nextDaySingleEvents.ownerEvents[eId].calendarId != calendar.id) return;
+                delete this.nextDaySingleEvents.ownerEvents[eId];
+            });
+        }
+
         this.arrangeMultiEvents();
+        this.setSingleEventsStyle();
+        this.setMultiEventsStyle();
 
-        if (!this.calendar.ownerCalendarVisible) return this.setSingleEventsStyle();
+        (calendar ? [calendar] : this.availableCalendars).forEach(calendar => {
 
-        this.calendar.loadEvents(this.startDate, this.endDate)
-            .subscribe(events => {
+            if (!calendar.visible) {
+                return;
+            }
+
+            this.calendar.loadEvents(this.startDate, this.endDate, this.calendar.owner, calendar.id).subscribe(events => {
                 if (events.length > 0) {
-                    this.ownerEvents = events.filter(event => !event.isMulti);
-                    this.ownerMultiEvents = events.filter(event => event.isMulti);
+                    events.forEach(e => this.adjustEvent(e));
+                    this.ownerEvents = this.ownerEvents.concat(events.filter(event => !event.isMulti));
+                    this.ownerMultiEvents = this.ownerMultiEvents.concat(events.filter(event => event.isMulti));
                     this.generateNextDaySingleEvents('ownerEvents');
                     this.arrangeMultiEvents();
                     this.setSingleEventsStyle();
                     this.setMultiEventsStyle();
                 }
             });
+        });
+    }
+
+    public adjustEvent(event) {
+        if (!event.isMulti) {
+            let endInRange = event.end.hour() > this.calendar.startHour && event.start.hour() < this.calendar.startHour;
+            let startInRange = event.start.hour() < this.calendar.endHour && event.end.hour() > this.calendar.endHour;
+            if (endInRange) {
+                event.start = event.start.hour(this.calendar.startHour).minute(0);
+            }
+            if (startInRange) {
+                event.end = event.end.hour(this.calendar.endHour).minute(59);
+            }
+        }
     }
 
     /**
@@ -499,6 +560,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         this.calendar.loadGroupwareEvents(this.startDate, this.endDate)
             .subscribe(events => {
                 if (events.length > 0) {
+                    events.forEach(e => this.adjustEvent(e));
                     this.groupwareEvents = events.filter(event => !event.isMulti);
                     this.groupwareMultiEvents = events.filter(event => event.isMulti);
                     this.generateNextDaySingleEvents('groupwareEvents');
@@ -529,53 +591,46 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
             return this.setSingleEventsStyle();
         }
 
-        this.calendar.loadUserEvents(this.startDate, this.endDate, calendar.id)
-            .subscribe(events => {
-                if (events.length > 0) {
-                    events.forEach(event => {
-                        if (!event.isMulti) {
-                            this.userEvents.push(event);
-                        } else {
-                            this.userMultiEvents.push(event);
-                        }
-                    });
-                    this.generateNextDaySingleEvents('userEvents');
-                    this.arrangeMultiEvents();
-                    this.setSingleEventsStyle();
-                    this.setMultiEventsStyle();
-                }
-            });
+        this.calendar.loadEvents(this.startDate, this.endDate, calendar.id, calendar.id).subscribe(events => {
+            if (events.length > 0) {
+                events.forEach(event => {
+
+                    this.adjustEvent(event);
+
+                    if (!event.isMulti) {
+                        this.userEvents.push(event);
+                    } else {
+                        this.userMultiEvents.push(event);
+                    }
+                });
+                this.generateNextDaySingleEvents('userEvents');
+                this.arrangeMultiEvents();
+                this.setSingleEventsStyle();
+                this.setMultiEventsStyle();
+            }
+        });
     }
 
     /**
      * load other users events from service and rearrange the multi events
      */
     public getUsersEvents() {
+
         this.userEvents = [];
         this.nextDaySingleEvents.userEvents = {};
         this.userMultiEvents = [];
         this.arrangeMultiEvents();
-        if (this.calendar.isMobileView) {
-            return this.setSingleEventsStyle();
-        }
+        this.setSingleEventsStyle();
 
-        this.calendar.loadUsersEvents(this.startDate, this.endDate)
-            .subscribe(events => {
-                if (events.length > 0) {
-                    events.forEach(event => {
-                        if (!event.isMulti) {
-                            this.userEvents.push(event);
-                        } else {
-                            this.userMultiEvents.push(event);
-                        }
-                    });
-                    this.generateNextDaySingleEvents('userEvents');
-                    this.arrangeMultiEvents();
-                    this.setSingleEventsStyle();
-                    this.setMultiEventsStyle();
-                }
-            });
+        if (this.calendar.isMobileView) return;
 
+        const visibleUserCalendars = this.calendar.usersCalendars.filter(c => !!c.visible);
+
+        if (visibleUserCalendars.length == 0) return;
+
+        visibleUserCalendars.forEach(userCalendar =>
+            this.getUserEvents(userCalendar)
+        );
     }
 
     /**

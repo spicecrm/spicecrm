@@ -1,4 +1,4 @@
-import {Component, OnInit, Self, SkipSelf} from '@angular/core';
+import {Component, OnInit, SkipSelf} from '@angular/core';
 import {backend} from "../../services/backend.service";
 import {modal} from "../../services/modal.service";
 import {toast} from "../../services/toast.service";
@@ -6,6 +6,7 @@ import {model} from "../../services/model.service";
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {language} from "../../services/language.service";
 import {broadcast} from "../../services/broadcast.service";
+import {duplicatedmodels} from "../../services/duplicatedmodels.service";
 
 @Component({
     selector: 'object-action-check-duplicate-button',
@@ -16,16 +17,19 @@ import {broadcast} from "../../services/broadcast.service";
 export class ObjectActionCheckDuplicateButton implements OnInit {
 
     /**
-     * if set to true display the button as icon
-     */
-    public displayAsIcon: boolean = false;
-
-    /**
      * indicator that we are processing currently
      */
     public inProcess: boolean = false;
 
+    /**
+     * whether
+     */
     public _deleteCheck: boolean = false;
+
+    /**
+     * holds config of the action btn
+     */
+    public actionconfig: any = {};
 
     constructor(
         public backend: backend,
@@ -35,7 +39,8 @@ export class ObjectActionCheckDuplicateButton implements OnInit {
         public toast: toast,
         public relatedmodels: relatedmodels,
         private language: language,
-        public broadcast: broadcast
+        public broadcast: broadcast,
+        public duplicatedModels: duplicatedmodels,
     ) {
     }
 
@@ -48,12 +53,34 @@ export class ObjectActionCheckDuplicateButton implements OnInit {
      * changes the label of the listitemactionset
      */
     get manageLabel(): string {
-        return this.relatedmodels.duplicatesChecked.find(item => item.id == this.model.id) ? this.deleteCheck : 'LBL_CHECK_AS_DUPLICATE';
+        return this.deleteCheck ? 'LBL_DELETE_DUPLICATE_CHECK' : 'LBL_CHECK_AS_DUPLICATE';
     }
 
-    get deleteCheck() {
-        this._deleteCheck = true;
-        return 'LBL_DELETE_DUPLICATE_CHECK';
+    /**
+     * holds the click value
+     */
+    get deleteCheck(): boolean {
+        return this._deleteCheck;
+    }
+
+    /**
+     * manages button color class
+     */
+    get manageBtnClass() {
+        const acceptedItemFound = this.duplicatedModels.acceptedDuplicates.find(item => item.id == this.model.id);
+        if (acceptedItemFound) {
+            this._deleteCheck = true;
+            return 'slds-icon-text-success';
+        } else {
+            this._deleteCheck = false;
+            if (this.duplicatedModels.foundDuplicates.find(item => item.id == this.model.id)) return 'slds-icon-text-default';
+        }
+    }
+    /**
+     * changes the label of the confirm modal
+     */
+    get confirmModalLabel(): string {
+        return this.deleteCheck ? 'MSG_DELETE_DUPLICATE_CHECK' : 'MSG_ACCEPT_AS_DUPLICATE';
     }
 
     /**
@@ -61,44 +88,48 @@ export class ObjectActionCheckDuplicateButton implements OnInit {
      */
     public execute() {
         this.inProcess = true;
-        let loadingModal = this.modal.await(this.language.getLabel('LBL_SAVING_DATA'));
+        this.modal.confirm(this.confirmModalLabel, this.confirmModalLabel, 'error').subscribe(answer => {
+            if (answer) {
+                let loadingModal = this.modal.await(this.language.getLabel('LBL_SAVING_DATA'));
+                this.backend.postRequest(`module/${this.parentmodel.module}/${this.parentmodel.id}/${this.model.id}/acceptasduplicate`, {deleted: this._deleteCheck}).subscribe({
+                    next: (resp) => {
 
-        this.backend.postRequest(`module/${this.parentmodel.module}/${this.parentmodel.id}/${this.model.id}/acceptasduplicate`, {deleted: this._deleteCheck}).subscribe({
-            next: (resp) => {
+                        if (!this._deleteCheck) {
 
-                if(!this._deleteCheck) {
+                            this.duplicatedModels.acceptedDuplicates.push(resp.checkedDuplicate.rightBean);
+                            this.duplicatedModels.foundDuplicates = this.duplicatedModels.foundDuplicates.filter(item => item.id != resp.checkedDuplicate.rightBean.id);
 
-                    this.relatedmodels.duplicatesChecked.push(resp.acceptedDuplicate.rightBean);
+                            // reload list
+                            this.broadcast.broadcastMessage('duplicates.reload', {
+                                newAcceptedDuplicate: resp.checkedDuplicate.rightBean,
+                                status: resp.checkedDuplicate.status
+                            });
 
-                    this.relatedmodels.count--;
+                            this.inProcess = false;
+                            loadingModal.emit(true);
+                            this.toast.sendToast(this.language.getLabel('LBL_DUPLICATE_CHECKED'), 'success');
+                        } else {
+                            // remove the checked duplicate Bean from arrays
+                            this.duplicatedModels.acceptedDuplicates = this.duplicatedModels.acceptedDuplicates.filter(item => item.id != resp.checkedDuplicate.rightBean.id);
+                            this.duplicatedModels.foundDuplicates = this.duplicatedModels.foundDuplicates.filter(item => item.id != resp.checkedDuplicate.rightBean.id);
 
-                    // reload list
-                    this.broadcast.broadcastMessage('duplicates.reload', {
-                        newAcceptedDuplicate: resp.acceptedDuplicate.rightBean
-                    });
+                            this.broadcast.broadcastMessage('duplicates.reload', {
+                                deletedAcceptedDuplicate: resp.checkedDuplicate.rightBean,
+                                status: resp.checkedDuplicate.status
+                            });
 
-                    this.inProcess = false;
-                    loadingModal.emit(true);
-                    this.toast.sendToast(this.language.getLabel('LBL_DUPLICATE_CHECKED'), 'success');
-                } else {
-                    // remove the checked duplicate Bean from duplicatesChecked
-                    this.relatedmodels.duplicatesChecked = this.relatedmodels.duplicatesChecked.filter(item => item.id != resp.acceptedDuplicate.rightBean.id);
-
-                    this.relatedmodels.count++;
-
-                    this.broadcast.broadcastMessage('duplicates.reload', {
-                        deletedAcceptedDuplicate: resp.acceptedDuplicate.rightBean
-                    });
-
-                    this.inProcess = false;
-                    loadingModal.emit(true);
-                    this.toast.sendToast(this.language.getLabel('LBL_DUPLICATE_CHECK_DELETED'), 'info');
-                }
-            }, error: () => {
+                            this.inProcess = false;
+                            loadingModal.emit(true);
+                            this.toast.sendToast(this.language.getLabel('LBL_DUPLICATE_CHECK_DELETED'), 'info');
+                        }
+                    }, error: () => {
+                        this.inProcess = false;
+                        loadingModal.emit(true);
+                        this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+                    }
+                });
+            } else {
                 this.inProcess = false;
-                loadingModal.emit(true);
-
-                this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
             }
         });
     }
