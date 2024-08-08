@@ -467,7 +467,7 @@ class User extends Person
      */
     public function isAdmin()
     {
-        if (isset($this->is_admin) && ($this->is_admin == '1' || $this->is_admin === 'on')) {
+        if ($this->is_admin && ($this->is_admin == '1' || $this->is_admin === 'on')) {
             return true;
         }
         return false;

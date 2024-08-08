@@ -21,6 +21,7 @@ use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
+use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
 use SpiceCRM\includes\SugarCleaner;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
@@ -71,6 +72,11 @@ class Email extends SpiceBean
      * @var string|null
      */
     private ?string $runtime_tracking_parent_id = null;
+    /**
+     * @var false|\SpiceCRM\data\SpiceBean
+     */
+    public $emailAddress;
+
     /**
      * sole constructor
      */
@@ -265,6 +271,10 @@ class Email extends SpiceBean
             if ($result['result'] == true) {
                 $this->status = 'sent';
 
+                foreach ($this->to() as $address) {
+                    EmailAddress::resetBounceCounter($address['email']);
+                }
+
             } else {
                 $this->status = $result['errors'] ? 'send_error' : 'created';
             }
@@ -369,7 +379,8 @@ class Email extends SpiceBean
 
         foreach ($fields as $type => $field) {
 
-            if (empty($this->$field)) continue;
+            # if no changes detected ignore the fill in
+            if (empty($this->$field) || $this->$field == $this->fetched_row[$field]) continue;
 
             $addresses = [];
 
@@ -1394,6 +1405,9 @@ class Email extends SpiceBean
         $q = $db->query($query);
 
         while ($row = $db->fetchByAssoc($q)) {
+
+            $this->body = Compiler::applyInlineStyles($this->body, $row['csscode']);
+
             $this->body = '<style>' . $row['csscode'] . '</style>' . $this->body;
 
             if (strpos($this->body, '</head>')) {

@@ -58,16 +58,15 @@ export class EventWithCampaignActivateButton implements ActionSetItemI {
         this.activating = true;
 
         // execute on backend
-        this.backend.postRequest(`module/CampaignTasks/${this.model.id}/activateEventTask`, {}).subscribe(status => {
-            this.activating = false;
-
-            // send toast and set actrive
-            if (status.success) {
+        this.backend.postRequest(`module/CampaignTasks/${this.model.id}/activateEventTask`, {}).subscribe({
+            next: () => {
+                this.activating = false;
                 this.toast.sendToast('Created');
                 this.model.setField('activated', true);
-
-            } else {
-                this.toast.sendToast('Error');
+            },
+            error: err => {
+                this.activating = false;
+                this.toast.sendToast(err.error.error?.lbl, 'error');
             }
         });
     }

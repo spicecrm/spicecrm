@@ -25,6 +25,12 @@ export class ObjectRelatedCardFooter implements OnInit {
     @Input() public componentconfig;
 
     /**
+     * whether reload of related data should be disabled
+     * needed i.e. in ObjectRelatedDuplicates panel
+     */
+    @Input()public disableReload: boolean = false;
+
+    /**
      * @ignore
      *
      * the module of the card: set in ngOnInit from the config
@@ -126,9 +132,11 @@ export class ObjectRelatedCardFooter implements OnInit {
      * triggers the reload of the related models service
      */
     public reload() {
-        this.relatedmodels.offset = 0;
-        this.paginating = true;
-        this.relatedmodels.getData().subscribe(() => this.paginating = false);
+        if(!this.disableReload) {
+            this.relatedmodels.offset = 0;
+            this.paginating = true;
+            this.relatedmodels.getData().subscribe(() => this.paginating = false);
+        }
     }
 
     /**
@@ -210,6 +218,6 @@ export class ObjectRelatedCardFooter implements OnInit {
      * gets the total number of pages
      */
     get pages() {
-        return Math.floor(this.relatedmodels.count / this.relatedmodels.loaditems) + 1;
+        return Math.ceil(this.relatedmodels.count / this.relatedmodels.loaditems);
     }
 }

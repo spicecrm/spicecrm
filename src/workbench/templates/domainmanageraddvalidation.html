@@ -1,3 +1,4 @@
+this.fieldvalidation.status = 'a';
 <system-modal>
     <system-modal-header (close)="close()"><system-label label="LBL_ADD_VALIDATION"></system-label></system-modal-header>
     <system-modal-content>
@@ -21,8 +22,8 @@
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_TYPE"></system-label></label>
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="fieldvalidation.validation_type">
-                        <option value="enum">enum</option>
-                        <option value="range">range</option>
+                        <option value="options"><system-label label="LBL_OPTIONS"/></option>
+                        <option value="range"><system-label label="LBL_RANGE"/></option>
                     </select>
                 </div>
             </div>
@@ -36,7 +37,7 @@
             </div>
         </div>
         <label class="slds-form-element__label"><system-label label="LBL_COMMENT"></system-label></label>
-        <system-richtext-editor [(ngModel)]="fieldvalidation.description"></system-richtext-editor>
+        <textarea class="slds-textarea" [ngModel]="fieldvalidation.description"></textarea>
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>

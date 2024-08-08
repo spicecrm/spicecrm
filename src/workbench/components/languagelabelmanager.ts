@@ -157,7 +157,7 @@ export class LanguageLabelManagerComponent {
     public deleteLabel(label) {
         this.modalservice.confirm(this.language.getLabel('LBL_DELETE_LABEL_TEXT'), this.language.getLabel('LBL_DELETE_LABEL_TITLE')).subscribe((decision) => {
             if (decision) {
-                this.backend.deleteRequest('configuration/syslanguages/labels/' + label.id + '/' + label.source).subscribe(
+                this.backend.deleteRequest('configuration/syslanguages/labels/' + label.id + '/' + label.scope).subscribe(
                     (res) => {
                         for (let i = 0; i < this.labels.length; i++) {
                             let lbl = this.labels[i];
@@ -236,6 +236,9 @@ export class LanguageLabelManagerComponent {
         return this.language.getLangText(language);
     }
 
+    /**
+     * @deprecated since 2024.01.001
+     */
     public filesToDB() {
         this.modalservice.confirm('Transfering custom labels from language files will change your database content and might destroy/overwrite existing language data in your database! Do you really want to do this?', 'Caution!', 'warning' ).subscribe( (answer) => {
             if ( answer ) {

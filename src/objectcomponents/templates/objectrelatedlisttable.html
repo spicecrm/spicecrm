@@ -15,7 +15,7 @@
                 </a>
             </th>
         </ng-container>
-        <th *ngIf="!hideActions"  class="slds-cell-shrink" scope="col"></th>
+        <th *ngIf="!hideActions" [ngClass]="getButtonColumnStyle()" scope="col"></th>
     </tr>
     </thead>
     <ng-container *ngIf="!isSequenced">

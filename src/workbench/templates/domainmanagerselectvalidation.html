@@ -18,7 +18,6 @@
                     <td>
                         <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="validation.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
                         <dictionary-manager-item-status [(ngModel)]="validation.status"></dictionary-manager-item-status>
-
                     </td>
                     <td>{{validation.name}}</td>
                     <td>{{validation.validation_type}}</td>
@@ -27,6 +26,10 @@
         </table>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <system-input-text class="slds-col--bump-right" [(ngModel)]="filterterm" placeholder="LBL_FILTER"></system-input-text>
+            <button class="slds-button slds-button--brand" (click)="new()"><system-label label="LBL_NEW"></system-label></button>
+            <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        </div>
     </system-modal-footer>
 </system-modal>

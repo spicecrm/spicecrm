@@ -60,6 +60,10 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
      * subscription to handle unsubscribe
      */
     public subscription: Subscription = new Subscription();
+    /**
+     * active calendars
+     */
+    @Input() public availableCalendars: {id: string, visible: boolean}[] = [];
 
     constructor(public language: language,
                 public broadcast: broadcast,
@@ -71,12 +75,14 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
                 public calendar: calendar) {
         this.untilDate = new moment().hour(0).minute(0).second(0).add(1, "M");
 
-        this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
-            if (calendar.id == 'owner') {
-                this.getOwnerEvents();
-            } else {
-                this.getUserEvents(calendar);
-            }
+        this.subscription.add(this.calendar.userCalendarChange$.subscribe({
+                next: calendar => {
+                    if (calendar.type == 'other') {
+                        this.getOwnerEvents(calendar);
+                    } else {
+                        this.getUserEvents(calendar);
+                    }
+                }
             })
         );
     }
@@ -205,19 +211,27 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     /**
      * load owner events from service and rearrange the multi events
      */
-    public getOwnerEvents() {
-        this.ownerEvents = [];
+    public getOwnerEvents(calendar?) {
+
+        if (!calendar) {
+            this.ownerEvents = [];
+        } else {
+            this.ownerEvents = this.ownerEvents.filter(e => e.calendarId != calendar.id);
+        }
+
         this.setEventDays();
 
-        if (!this.calendar.ownerCalendarVisible) return this.cdRef.detectChanges();
+        (calendar ? [calendar] : this.availableCalendars).forEach(calendar => {
 
-        this.calendar.loadEvents(this.startDate, this.untilDate)
-            .subscribe(events => {
-                if (events.length > 0) {
-                    this.ownerEvents = events;
-                }
+            if (!calendar.visible) return;
+
+            this.calendar.loadEvents(this.startDate, this.untilDate, this.calendar.owner, calendar.id).subscribe(events => {
+                if (events.length == 0) return;
+
+                this.ownerEvents = this.ownerEvents.concat(events);
                 this.setEventDays();
             });
+        });
     }
 
     /**
@@ -251,12 +265,12 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
             return;
         }
 
-        this.calendar.loadUserEvents(this.startDate, this.untilDate, calendar.id)
+        this.calendar.loadEvents(this.startDate, this.untilDate, calendar.id, calendar.id)
             .subscribe(events => {
-                if (events.length > 0) {
-                    this.userEvents = [...this.userEvents, ...events];
-                    this.setEventDays();
-                }
+                if (events.length == 0) return;
+
+                this.userEvents = [...this.userEvents, ...events];
+                this.setEventDays();
             });
     }
 
@@ -266,17 +280,16 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     public getUsersEvents() {
         this.userEvents = [];
         this.setEventDays();
-        if (this.calendar.isMobileView) {
-            return;
-        }
 
-        this.calendar.loadUsersEvents(this.startDate, this.untilDate)
-            .subscribe(events => {
-                if (events.length > 0) {
-                    this.userEvents = events;
-                    this.setEventDays();
-                }
-            });
+        if (this.calendar.isMobileView) return;
+
+        const visibleUserCalendars = this.calendar.usersCalendars.filter(c => !!c.visible);
+
+        if (visibleUserCalendars.length == 0) return;
+
+        visibleUserCalendars.forEach(userCalendar =>
+            this.getUserEvents(userCalendar)
+        );
     }
 
     /**

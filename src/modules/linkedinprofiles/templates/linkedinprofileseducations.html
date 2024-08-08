@@ -1,0 +1,52 @@
+<article class="slds-card">
+    <div class="slds-card__header slds-grid">
+        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+            <div class="slds-media__figure">
+                <system-icon icon="education" size="small"></system-icon>
+            </div>
+            <div class="slds-media__body">
+                <h2 class="slds-card__header-title">
+                    <system-label label="LBL_EDUCATION"/>
+                </h2>
+            </div>
+        </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+        <div *ngIf="isLoading; else contentLoaded">
+            <system-spinner></system-spinner>
+        </div>
+        <ng-template #contentLoaded>
+            <div *ngIf="educations; else noInformation" >
+                <div *ngFor="let education of educations; let i = index;">
+                    <div [ngClass]="{'slds-border--bottom': i < educations.length - 1}">
+                        <div class="slds-grid slds-p-vertical--x-small slds-grid_vertical-align-center">
+                            <div>
+                                <div class="slds-text-heading--small">
+                                    <div *ngIf="education.institution_url">
+                                        <a target="_blank" [href]="education.institution_url">{{ education.institution_name }}</a>
+                                    </div>
+                                    <div *ngIf="!education.institution_url">
+                                        <span>{{ education.institution_name }}</span>
+                                    </div>
+                                </div>
+                                <div>{{education.degree}}</div>
+                                <div class="slds-text-color_weak">
+                                    <span>{{formatYear(education.date_start)}}</span>
+                                    <span *ngIf="education.date_end"> - {{formatYear(education.date_end)}}</span>
+                                </div>
+                                <div *ngIf="education.description">
+                                    <span>{{education.description}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ng-template #noInformation>
+                <system-illustration-no-records>
+                    no records
+                </system-illustration-no-records>
+            </ng-template>
+        </ng-template>
+    </div>
+</article>

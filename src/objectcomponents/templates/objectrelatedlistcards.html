@@ -1,0 +1,21 @@
+@if(relatedmodels.isloading){
+    <div class="slds-m-vertical--xx-small slds-box--border">
+        <div class="slds-align_absolute-center" style="min-height: 200px">
+            <system-spinner/>
+        </div>
+    </div>
+} @else {
+    @if (relatedmodels.items.length > 0) {
+        @for (item of relatedmodels.items; track item.id) {
+            <div class="slds-m-vertical--xx-small slds-box--border" [system-model-provider]="{module: relatedmodels.relatedModule, data: item}">
+                <system-componentset [componentset]="componentconfig.componentset"/>
+            </div>
+        }
+    } @else {
+        <div class="slds-m-vertical--xx-small slds-box--border">
+            <div class="slds-align_absolute-center" style="min-height: 200px">
+                <system-illustration-no-records/>
+            </div>
+        </div>
+    }
+}

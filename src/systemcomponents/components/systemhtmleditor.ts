@@ -32,6 +32,7 @@ import {helper} from '../../services/helper.service';
 import {configurationService} from "../../services/configuration.service";
 import {SystemRichTextLink} from "./systemrichtextlink";
 import {ObjectModalModuleLookup} from "../../objectcomponents/components/objectmodalmodulelookup";
+import { backend } from '../../services/backend.service';
 
 @Component({
     selector: "system-html-editor",
@@ -85,6 +86,7 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
     };
     @Output() public save$: EventEmitter<string> = new EventEmitter<string>();
     public select = ["H1", "H2", "H3", "H4", "H5", "H6", "P", "PRE", "DIV"];
+    public isLoading = false;
 
     constructor(public modal: modal,
                 public renderer: Renderer2,
@@ -96,7 +98,8 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                 public viewContainerRef: ViewContainerRef,
                 public configurationService: configurationService,
                 @Optional() public model: model,
-                public helper: helper) {
+                public helper: helper,
+                public backend: backend ) {
     }
 
     get useTemplateVariableHelper() {
@@ -132,7 +135,8 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
         return this.isExpanded ? {
             height: '100vh',
             resize: 'none',
-            position: 'fixed'
+            position: 'fixed',
+            'z-index': 9999
         } : {height: (+this.innerHeight + 50) + 'px'};
     }
 
@@ -576,11 +580,12 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
     public openTextSnippetModal() {
         if (!this.isActive) return;
 
-        this.editorService.saveSelection();
-        this.modalOpen = true;
         const config = this.metadata.getComponentConfig('SystemHtmlEditor', 'TextSnippets');
 
+        this.editorService.saveSelection();
+        this.modalOpen = true;
         this.modal.openModal('ObjectModalModuleLookup', null, this.viewContainerRef.injector)
+            .pipe(take(1))
             .subscribe((modal: ComponentRef<ObjectModalModuleLookup>) => {
                 modal.instance.module = 'TextSnippets';
                 modal.instance.multiselect = false;
@@ -592,26 +597,34 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                     };
                 }
 
-                modal.instance.selectedItems.subscribe((items) => {
+                modal.instance.selectedItems
+                    .pipe(take(1))
+                    .subscribe((items) => {
 
-                    this.modalOpen = false;
+                        this.isLoading = true;
 
-                    const body = !this.model ? null : {
-                        module: this.model.module,
-                        bean_data: this.model.utils.spiceModel2backend(this.model.module, this.model.data)
-                    };
+                        const body = !this.model ? null : {
+                            module: this.model.module,
+                            beanData: this.model.utils.spiceModel2backend(this.model.module, this.model.data)
+                        };
 
-                    this.model.backend.postRequest(`module/TextSnippets/${items[0].id}/liveCompile`, null, body).subscribe({
-                        next: res => {
-                            this.focusEditor();
-                            this.editorService.restoreSelection();
-                            this._document.execCommand('insertHTML', false, res.html);
-                        },
-                        error: () => {
-                            this.model.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
-                        }
-                    })
-                });
+                        this.backend.postRequest(`module/TextSnippets/${items[0].id}/liveCompile`, null, body)
+                            .pipe(take(1))
+                            .subscribe({
+                                next: res => {
+                                    this.focusEditor();
+                                    this.editorService.restoreSelection();
+                                    this._document.execCommand('insertHTML', false, res.html);
+                                    this.modalOpen = false;
+                                    this.isLoading = false;
+                                },
+                                error: () => {
+                                    this.model.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                                    this.modalOpen = false;
+                                    this.isLoading = false;
+                                }
+                            });
+                    });
             });
     }
 

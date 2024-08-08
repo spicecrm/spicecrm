@@ -34,6 +34,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'importable' => 'true',
         ],
         'product_name' => [
+            'name' => 'product_name',
             'vname' => 'LBL_PRODUCT',
             'join_name' => 'products',
             'type' => 'relate',

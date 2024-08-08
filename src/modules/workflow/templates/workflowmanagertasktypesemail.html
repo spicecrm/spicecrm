@@ -29,6 +29,7 @@
                             <option value="3">user created Bean</option>
                             <option value="4">manager assigned to Bean</option>
                             <option value="5">manager created Bean</option>
+                            <option value="C">manager assigned to organizational unit of the user assigned to bean</option>
                             <option value="6">email address</option>
                             <option value="7">system routine</option>
                             <option value="8">user creator to Bean</option>
@@ -53,7 +54,6 @@
                 <label class="slds-truncate slds-float_left">
                     <system-label label="LBL_CLASS"></system-label>
                 </label>
-                <field-container [field]="'emailclass'"></field-container>
                 <system-input-backend-method
                         [(ngModel)]="model.data.type_config.emailclass"></system-input-backend-method>
             </div>

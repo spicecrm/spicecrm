@@ -47,6 +47,9 @@
             ]
           },
           "configurations": {
+            "outlook": {
+              "index": "outlook-dev.html"
+            },
             "production": {
               "customWebpackConfig": {
                 "path": "./webpack.config.js",
@@ -78,6 +81,12 @@
             "browserTarget": "core:build",
             "port": 3333,
             "proxyConfig": "proxy.conf.js"
+          },
+          "configurations": {
+            "outlook": {
+              "browserTarget": "core:build:outlook",
+              "ssl": true
+            }
           }
         }
       }

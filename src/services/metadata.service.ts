@@ -20,6 +20,7 @@ import {map} from "rxjs/operators";
 import {SystemNavigationCollector} from "../systemcomponents/components/systemnavigationcollector";
 import {SystemComponentMissing} from "../systemcomponents/components/systemcomponentmissing";
 import {ComponentType} from "@angular/cdk/overlay";
+import {keys} from "underscore";
 
 declare var _;
 
@@ -143,15 +144,25 @@ export class metadata {
             this.router.config.unshift({
                 path: route.path,
                 component: SystemNavigationCollector,
-                canActivate: [aclCheck]
+                canActivate: [aclCheck],
+                pathMatch: route.pathmatch == 'full' ? 'full' : 'prefix'
             });
+
+            if (!!route.redirectto) {
+                this.router.config[0].redirectTo = route.redirectto;
+            }
 
             // add the same for the tabbed browser
             this.router.config.unshift({
                 path: 'tab/:tabid/' + route.path,
                 component: SystemNavigationCollector,
-                canActivate: [aclCheck]
+                canActivate: [aclCheck],
+                pathMatch: route.pathmatch == 'full' ? 'full' : 'prefix'
             });
+
+            if (!!route.redirectto) {
+                this.router.config[0].redirectTo = 'tab/:tabid/' + route.redirectto;
+            }
         });
     }
 
@@ -1064,6 +1075,14 @@ export class metadata {
         }
     }
 
+    /**
+     * get domain validation values for the passed validation
+     * @param validationName
+     */
+    public getDomainValidationValues(validationName: string): DomainValidationValues {
+        return this.configuration.getData('domainvalidations')[validationName]?.validationvalues;
+    }
+
     public getFieldRequired(module: string, field: string) {
         try {
             return this.fieldDefs[module][field].required;
@@ -1892,5 +1911,15 @@ export class noBack  {
         }
         return true;
 
+    }
+}
+
+// tslint:disable-next-line:max-classes-per-file
+export interface DomainValidationValues {
+    [key: string]: {
+        enumvalue: string;
+        label: string;
+        sequence: string;
+        status: 'a' | 'd' | 'i';
     }
 }

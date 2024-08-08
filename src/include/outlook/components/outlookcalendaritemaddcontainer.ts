@@ -2,9 +2,8 @@
  * @module Outlook
  */
 
-import {Component, Input, OnInit} from "@angular/core";
+import {ChangeDetectorRef, Component, Input, NgZone, OnDestroy} from "@angular/core";
 import {Subscription} from "rxjs";
-
 import {outlookNameValuePairI} from "../interfaces/outlook.interfaces";
 import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
 
@@ -24,7 +23,7 @@ declare var _: any;
     templateUrl: '../templates/outlookcalendaritemaddcontainer.html',
     providers: [model, view]
 })
-export class OutlookCalendarItemAddContainer {
+export class OutlookCalendarItemAddContainer implements OnDestroy {
 
     /**
      * the custom prperties of the mailbox item
@@ -61,16 +60,24 @@ export class OutlookCalendarItemAddContainer {
      */
     public modelsubscription: Subscription;
 
+    private timeout: number;
+
     constructor(
         public backend: backend,
         public configuration: configurationService,
         public model: model,
         public view: view,
+        private cdRef: ChangeDetectorRef,
+        private zone: NgZone,
         public metadata: metadata
     ) {
         this.view.isEditable = true;
         this.view.setEditMode();
         this.loadExchangeConfig();
+        // subscribe to the model changes and set the data
+        this.modelsubscription = this.model.data$.subscribe(() => {
+            this.saveChanges();
+        });
     }
 
     get canAdd() {
@@ -89,51 +96,34 @@ export class OutlookCalendarItemAddContainer {
      *
      * @param module
      */
-    @Input('module') set module(module) {
-        this._module = module;
+    set module(module) {
 
-        if (module && this._module) {
-            let componentconfig = this.metadata.getComponentConfig('OutlookCalendarItemAddContainer', module);
-            this.fieldset = componentconfig.fieldset;
+        this.zone.run(() => {
 
-            this.model.module = module;
-            this.model.initialize();
+            // force reload the fieldset view
+            this._module = undefined;
+            this.cdRef.detectChanges();
 
-            if (module != this.customProperties.get('_module')) {
-                this.setCustomProperties([{name: '_module', value: module}]);
+            this._module = module;
+
+            if (module && this._module) {
+                let componentconfig = this.metadata.getComponentConfig('OutlookCalendarItemAddContainer', module);
+                this.fieldset = componentconfig.fieldset;
+
+                this.model.module = module;
+                this.model.initialize();
+
+            } else {
+                // clear the fieldset
+                this.fieldset = undefined;
+                this.clearCustomProperties(['_module'].concat(this.getFields()));
             }
+        });
 
-            // load the values
-            let fields = this.getFields();
-            let modelValues = {};
-            for (let field of fields) {
-                let cProp = this.customProperties.get(field);
-                if (cProp) {
-                    modelValues[field] = cProp;
-                }
-            }
-            if (!_.isEmpty(modelValues)) {
-                this.model.setFields(modelValues);
-            }
+    }
 
-            // subscribe to the model changes and set the data
-            this.modelsubscription = this.model.data$.subscribe(changed => {
-                this.saveChanges(changed);
-            });
-
-        } else {
-
-            // clear the custom properties
-            this.clearCustomProperties(['_module'].concat(this.getFields()));
-
-            // clear the fieldset
-            this.fieldset = undefined;
-
-            if (this.modelsubscription) {
-                this.modelsubscription.unsubscribe();
-                this.modelsubscription = undefined;
-            }
-        }
+    public ngOnDestroy() {
+        this.modelsubscription.unsubscribe();
     }
 
     /**
@@ -171,39 +161,44 @@ export class OutlookCalendarItemAddContainer {
      */
     public loadExchangeConfig() {
         let config = this.configuration.getData('microsoftserviceuserconfig');
-        for (let e of config) {
-            if (['calendar', 'events'].indexOf(e.exchange_object ?? e.service_name) > -1 && e.outlookaddenabled == '1') {
-                let addmodule = this.metadata.getModuleById(e.sysmodule_id);
+
+        if (typeof config != 'object') return;
+
+        Object.keys(config).forEach(key => {
+            if (['calendar', 'events'].indexOf(config[key].exchange_object ?? config[key].service_name) > -1 && config[key].outlookaddenabled == '1') {
+                let addmodule = this.metadata.getModuleById(config[key].sysmodule_id);
                 this.modules.push({
                     value: addmodule,
                     label: this.metadata.getModuleDefs(addmodule).singular_label
                 });
             }
-        }
-    }
-
-    public setItemModule() {
-        let itemModule = this.customProperties.get('_module');
-
-        // if we have a module then do not allow changing it
-        if (itemModule) this.allowModuleChange = false;
-
-        // triugger the set of the module
-        this.module = itemModule ? itemModule : '';
+        });
     }
 
     /**
      * save model changes to the custom properties
-     *
-     * @param changes
      */
-    public saveChanges(changes) {
-        let values: outlookNameValuePairI[] = [];
-        let fields = this.getFields();
-        for (let field of fields) {
-            values.push({name: field, value: this.model.getField(field)});
-        }
-        this.setCustomProperties(values);
+    public saveChanges() {
+
+        clearTimeout(this.timeout);
+
+        this.timeout = window.setTimeout(() => {
+
+            const fields = this.getFields();
+            let values: outlookNameValuePairI[] = [];
+
+            for (let field of fields) {
+                values.push({name: field, value: this.model.getField(field)});
+            }
+
+            values.push(
+                {name: '_module', value: this.module},
+                {name: '_id', value: this.model.id},
+            );
+
+            this.setCustomProperties(values);
+        }, 500);
+
     }
 
     /**

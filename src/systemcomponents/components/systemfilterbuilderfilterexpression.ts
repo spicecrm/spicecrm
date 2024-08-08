@@ -165,11 +165,6 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
                 value1: 'integer'
             },
             {
-                operator: 'inlastndays',
-                name: 'LBL_IN_THE_LAST_N_DAYS',
-                value1: 'integer'
-            },
-            {
                 operator: 'inmorethanndays',
                 name: 'LBL_IN_MORE_THAN_N_DAYS',
                 value1: 'integer'
@@ -278,6 +273,10 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
                 operator: 'notequalr',
                 name: 'LBL_OP_NOTEQUAL',
                 value1: 'relate'
+            }, {
+                operator: 'startsr',
+                name: 'LBL_STARTS',
+                value1: 'text'
             }, {
                 operator: 'emptyr',
                 name: 'LBL_OP_ISEMPTY'

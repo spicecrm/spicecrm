@@ -5,6 +5,7 @@ import {Component, SkipSelf} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
 import {view} from '../../../services/view.service';
+import {navigationtab} from "../../../services/navigationtab.service";
 
 declare var moment: any;
 
@@ -17,7 +18,11 @@ export class CampaignTaskAddModal {
 
     public self: any;
 
-    constructor(@SkipSelf() public parent: model, public model: model, public view: view, public modal: modal) {
+    constructor(@SkipSelf() public parent: model,
+                public model: model,
+                public view: view,
+                private navigationTab: navigationtab,
+                public modal: modal) {
         this.model.module = 'CampaignTasks';
         this.model.initialize(parent);
 
@@ -27,10 +32,13 @@ export class CampaignTaskAddModal {
 
     }
 
-    public save() {
+    public save(goTo?: boolean) {
         if(this.model.validate()) {
             this.model.save().subscribe(() => {
                 this.self.destroy();
+                if (goTo) {
+                    this.model.goDetail(this.navigationTab.tabid);
+                }
             });
         }
     }

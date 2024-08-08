@@ -4,6 +4,7 @@
 import {Injectable} from '@angular/core';
 import {Subject, Observable} from 'rxjs';
 import {backend} from "../../../services/backend.service";
+import {TokenObjectI} from "../../../globalcomponents/interfaces/globalcomponents.interfaces";
 
 declare var Office: any;
 
@@ -16,6 +17,8 @@ export class OutlookConfiguration {
 
     public username: string;
     public password: string;
+    public tokenObject: TokenObjectI;
+    public issuer: string;
 
     constructor(
         public backend: backend,
@@ -29,6 +32,8 @@ export class OutlookConfiguration {
     public loadSettings() {
         this.username = this.settings.get('username');
         this.password = this.settings.get('password');
+        this.tokenObject = this.settings.get('tokenObject');
+        this.issuer = this.settings.get('issuer');
     }
 
     /**
@@ -46,6 +51,8 @@ export class OutlookConfiguration {
 
         this.settings.set('username', this.username);
         this.settings.set('password', this.password);
+        this.settings.set('tokenObject', this.tokenObject);
+        this.settings.set('issuer', this.issuer);
 
         this.settings.saveAsync(result => {
             if (result.status == Office.AsyncResultStatus.Failed) {

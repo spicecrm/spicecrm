@@ -1,15 +1,17 @@
 /**
  * @module ObjectFields
  */
-import {Component, EventEmitter, Input, NgZone, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {configurationService} from "../../services/configuration.service";
 import {backend} from "../../services/backend.service";
+import {tap} from "rxjs/operators";
 
 @Component({
     selector: 'field-email-emailaddress',
     templateUrl: '../templates/fieldemailemailaddress.html'
 })
-export class fieldEmailEmailAddress {
+export class fieldEmailEmailAddress implements OnChanges
+{
     /*
     * emit after typing
     */
@@ -23,11 +25,6 @@ export class fieldEmailEmailAddress {
     */
     @Input() public hasFocus: boolean = false;
     /**
-     * holds the typing timeout
-     * @private
-     */
-    public typingTimeout: number;
-    /**
      * invalid domain boolean
      */
     public invalid_domain: boolean = false;
@@ -40,8 +37,13 @@ export class fieldEmailEmailAddress {
      */
     public validInput: boolean = true;
 
-    constructor(public zone: NgZone,
-                private backend: backend,
+    /**
+     * backup the email address input field value
+     */
+    public backup: string;
+
+
+    constructor(private backend: backend,
                 private configurationService: configurationService) {
     }
 
@@ -60,18 +62,21 @@ export class fieldEmailEmailAddress {
 
         this.emailAddress.email_address = value;
         this.emailAddress.email_address_caps = value.toUpperCase();
+    }
 
-        this.zone.runOutsideAngular(() => {
-            window.clearTimeout(this.typingTimeout);
-            this.typingTimeout = window.setTimeout(() =>
-                    this.zone.run(() => {
-                        this.validateEmailAddress();
-                        this.onBlur.emit();
-                    })
-                ,
-                500
-            );
-        });
+    public ngOnChanges(changes: SimpleChanges) {
+        if (changes.emailAddress) {
+            this.backup = this.emailAddress.email_address;
+        }
+    }
+
+    public emitChanges() {
+
+        if (this.backup == this.emailAddress.email_address) return;
+
+        this.validateEmailAddress();
+        this.validateDomain().then((() => this.onBlur.emit()));
+
     }
 
     /**
@@ -93,17 +98,22 @@ export class fieldEmailEmailAddress {
     /**
      * validate email address domain
      */
-    public validateDomain() {
+    private validateDomain(): Promise<boolean> {
 
-        if (!this.emailAddress.email_address || this.emailAddress.invalid_email == 1) return;
+        if (!this.emailAddress.email_address || this.emailAddress.invalid_email == 1) return Promise.resolve(true);
 
         this.checkingDomain = true;
 
-        this.backend.postRequest('module/EmailAddresses/validate', null, {text: this.emailAddress.email_address})
-            .subscribe(res => {
-                this.checkingDomain = false;
-                this.emailAddress.invalid_email = res.invalid_email || res.invalid_domain ? 1 : 0;
-                this.invalid_domain = res.invalid_domain;
-            });
+        return new Promise((emitChange) => {
+            this.backend.postRequest('module/EmailAddresses/validate', null, {text: this.emailAddress.email_address})
+                .subscribe({
+                    next: res => {
+                        this.checkingDomain = false;
+                        this.emailAddress.invalid_email = res.invalid_email || res.invalid_domain ? 1 : 0;
+                        this.invalid_domain = res.invalid_domain;
+                        emitChange(true);
+                    }
+                })
+        });
     }
 }

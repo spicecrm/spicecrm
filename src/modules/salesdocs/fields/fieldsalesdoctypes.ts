@@ -24,6 +24,8 @@ export class fieldSalesdocTypes extends fieldGeneric {
 
     public options: any[] = [];
 
+    public types: {[key: symbol | string]: any} = {};
+
     /**
      * Keep the language subscription the unsubscribe at component end.
      */
@@ -33,33 +35,36 @@ export class fieldSalesdocTypes extends fieldGeneric {
         super(model, view, language, metadata, router);
         // Keep the language subscription the unsubscribe at component end:
         this.languageSubscription = this.language.currentlanguage$.subscribe( () => this.translateAndSortOptions() );
+        this.setTypes();
     }
 
     public ngOnInit() {
         super.ngOnInit();
-
-        this.getOptions();
+        this.setOptions();
 
         // if we have only one option set it
-        if(this.options.length == 1){
+        if(this.options.length == 1 && this.view.isEditMode()){
             this.value = this.options[0].name;
         }
     }
 
-    public getValue(): string {
-        try {
-            if (!this.value) return '';
+    /**
+     * set the sales docs types
+     * @private
+     */
+    private setTypes() {
+        const types = this.configuration.getData('salesdoctypes');
 
-            // find the option and try to translate the table
-            let thisOption = this.options.find(itemtype => itemtype.name == this.value);
-            if (thisOption && thisOption.vname) {
-                return this.language.getLabel(thisOption.vname);
-            } else {
-                return this.value;
-            }
-        } catch (e) {
-            return this.value;
-        }
+        if (!_.isArray(types)) return;
+
+        types.forEach(t => this.types[t.name] = t);
+    }
+
+    /**
+     * display value
+     */
+    get displayValue(): string {
+        return this.types[this.value]?.vname ?? this.value;
     }
 
     /**
@@ -67,27 +72,32 @@ export class fieldSalesdocTypes extends fieldGeneric {
      *
      * if config setting without display only is set filter the document out that are display ony .. this is required for the creation of sales documents
      */
-    public getOptions() {
-        let salesdocTypes = this.configuration.getData('salesdoctypes');
-        if ( _.isArray( salesdocTypes )) {
-            if( this.fieldconfig.withoutdisplayonly ) {
-                this.options = salesdocTypes.filter( salesdocType => salesdocType.displayonly == 0 );
-            } else {
-                this.options = salesdocTypes;
-            }
+    private setOptions() {
 
-            // filter by party
-            if(this.model.getField('salesdocparty')){
-                this.options = this.options.filter( salesdocType => salesdocType.salesdocparty == this.model.getField('salesdocparty') );
-            }
+        this.options = Object.values(this.types);
 
-            // filter by type
-            if(this.model.getField('salesdoccategory')){
-                this.options = this.options.filter( salesdocType => salesdocType.salesdoccategory == this.model.getField('salesdoccategory') );
-            }
-
-            this.translateAndSortOptions();
+        if( this.fieldconfig.withoutdisplayonly ) {
+            this.options = this.options.filter( salesdocType => salesdocType.displayonly == 0 );
         }
+
+        // filter by party
+        if(this.model.getField('salesdocparty')){
+            this.options = this.options.filter( salesdocType => salesdocType.salesdocparty == this.model.getField('salesdocparty') );
+        }
+
+        // filter by type
+        if(this.model.getField('salesdoccategory')){
+            this.options = this.options.filter( salesdocType => salesdocType.salesdoccategory == this.model.getField('salesdoccategory') );
+        }
+
+        // check if we have to check ACL rights
+        this.options.forEach((o, i) => {
+            if(o.aclaction && !this.metadata.checkModuleAcl('SalesDocs', o.aclaction)){
+                this.options.splice(i, 1);
+            }
+        })
+
+        this.translateAndSortOptions();
     }
 
     /**

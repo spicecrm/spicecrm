@@ -133,11 +133,6 @@ export class relatedmodels implements OnDestroy {
      */
     public serviceSubscriptions: any[] = [];
 
-    /**
-     * which were checked as duplicates
-     */
-    public duplicatesChecked: any[] = [];
-
     constructor(
         public metadata: metadata,
         public backend: backend,
@@ -491,11 +486,10 @@ export class relatedmodels implements OnDestroy {
             return of(false) ;
         }
 
-        let relatedIds: any[] = [];
-        for (let item of items) {
-            relatedIds.push(item.id);
-        }
-        this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], relatedIds, this.httpRequestsRefID).subscribe({
+        // only id and rel fields will be processed in the backend
+        let body = {beansData: items.map(e => (this.modelutilities.spiceModel2backend(this.relatedModule, e)))};
+
+        this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], body, this.httpRequestsRefID).subscribe({
             next: () => {
                     for (let item of items) {
                         let itemfound = false;
@@ -582,15 +576,13 @@ export class relatedmodels implements OnDestroy {
     /**
      * removes the relationship for an items
      * @param id the related id
+     * @param relId
      */
-    public deleteItem(id) {
+    public deleteItem(id, relId?: string) {
         if (!this.isonlyfiltered) {
-            let relatedids = [];
-            relatedids.push(id);
-            let params = {
-                relatedids: relatedids
-            };
-            this.backend.deleteRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, params, this.httpRequestsRefID).subscribe(() => {
+            const relatedids = [{beanId: id, relId}];
+
+            this.backend.deleteRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, {relatedids}, this.httpRequestsRefID).subscribe(() => {
                 this.items.some((item, index) => {
                     if (item.id == id) {
                         this.items.splice(index, 1);

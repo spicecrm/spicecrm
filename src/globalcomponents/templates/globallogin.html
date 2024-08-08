@@ -1,5 +1,5 @@
 <global-login-loading class="slds-size--1-of-1" *ngIf="!configuration.initialized"></global-login-loading>
-<div *ngIf="configuration.initialized"  class="slds-grid slds-wrap slds-is-absolute slds-size--1-of-1 slds-theme--default" style="height:100vh; top: 0px;">
+<div *ngIf="configuration.initialized" [ngClass]="{'slds-theme--error': configuration.data.startupMode == 'recovery', 'slds-theme--warning': configuration.data.startupMode == 'maintenance', 'slds-theme--default': configuration.data.startupMode != 'maintenance' && configuration.data.startupMode != 'recovery'}" class="slds-grid slds-wrap slds-is-absolute slds-size--1-of-1" style="height:100vh; top: 0px;">
     <div class="slds-align--absolute-center slds-size--1-of-1 slds-large-size--1-of-2">
         <div class="slds-size--1-of-1 slds-medium-size--2-of-3 slds-p-around--medium" style="max-width: 500px">
             <!--div class="spiceLoginLogo"-->
@@ -9,6 +9,14 @@
             <div class="slds-box--border slds-theme--shade" *ngIf="!loginService.session.authData.sessionId && promptUser" [system-overlay-loading-spinner]="loggingIn">
                 <div class="slds-p-around--medium" [system-overlay-loading-spinner]="configuration.reloading">
                     <form *ngIf="!showForgotPass" (submit)="login()">
+                        <div *ngIf="configuration.data.startupMode == 'recovery'" class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                            <system-icon icon="error" sprite="utility" addclasses="slds-m-right_x-small slds-icon-text-warning" divClass="slds-icon-utility-error"/>
+                            <h2><system-label label="ERR_RECOVERY_MODE_ENABLED"/> </h2>
+                        </div>
+                        <div *ngIf="configuration.data.startupMode == 'maintenance'" class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                            <system-icon icon="error" sprite="utility" addclasses="slds-m-right_x-small slds-icon-text-warning" divClass="slds-icon-utility-error"/>
+                            <h2><system-label label="ERR_MAINTENANCE_MODE_ENABLED"/> </h2>
+                        </div>
                         <div class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
                                 <system-utility-icon icon="user" addclasses="slds-input__icon slds-icon-text-default"></system-utility-icon>
@@ -18,7 +26,7 @@
                         <div class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
                                 <system-utility-icon icon="lock" addclasses="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"></system-utility-icon>
-                                <input [disabled]="loggingIn" type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-vertical--xx-small" tabindex="2" system-placeholder="LBL_PASSWORD" />
+                                <input [disabled]="loggingIn" type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-vertical--xx-small  slds-theme--default" tabindex="2" system-placeholder="LBL_PASSWORD" />
                             </div>
                         </div>
                         <div *ngIf="twoFactorAuthCodeRequired" class="slds-form-element slds-m-vertical--small slds-grid slds-grid--vertical-align-center">

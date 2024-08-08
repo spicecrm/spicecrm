@@ -24,6 +24,7 @@ import {ReportsDesignerMoreIntegrateItemDrilldown} from "./components/reportsdes
 import {ReportsDesignerMoreIntegrateItemFilters} from "./components/reportsdesignermoreintegrateitemfilters";
 import {ReportsDesignerMoreIntegrateItemSnapshots} from "./components/reportsdesignermoreintegrateitemsnapshots";
 import {ReportsDesignerMoreIntegrateItemProcessWorkflow} from "./components/reportsdesignermoreintegrateitemprocessworkflow";
+import {ReportsDesignerMoreIntegrateItemPdfExport} from "./components/reportsdesignermoreintegrateitempdfexport";
 
 @NgModule({
     imports: [
@@ -49,7 +50,8 @@ import {ReportsDesignerMoreIntegrateItemProcessWorkflow} from "./components/repo
         ReportsDesignerMoreIntegrateItemDrilldown,
         ReportsDesignerMoreIntegrateItemFilters,
         ReportsDesignerMoreIntegrateItemSnapshots,
-        ReportsDesignerMoreIntegrateItemProcessWorkflow
+        ReportsDesignerMoreIntegrateItemProcessWorkflow,
+        ReportsDesignerMoreIntegrateItemPdfExport
     ]
 })
 export class ModuleReportsDesignerMore {

@@ -142,6 +142,7 @@ export class loginService {
                 error: (err: any) => {
                     switch (err.status) {
                         case 401:
+                        case 503:
                             loginSuccess.error(err.error.error);
                             break;
                         default:
@@ -189,6 +190,10 @@ export class loginService {
                 headers = headers.set('remember-device', this.session.deviceID);
             }
 
+            if (!!this.session.authData.tenant_id){
+                headers = headers.set('tenant-id', this.session.authData.tenant_id);
+            }
+
         } else if (tokenObject) {
             headers = headers.set(
                 'OAuth-Token',
@@ -203,6 +208,11 @@ export class loginService {
                 'OAuth-Token-Valid-Until',
                 tokenObject.valid_until ?? ''
             );
+
+            if (!!this.session.authData.tenant_id){
+                headers = headers.set('tenant-id', this.session.authData.tenant_id);
+            }
+
         } else {
             throw new Error('Cannot Log In');
         }
@@ -238,6 +248,8 @@ export class loginService {
                 error: (err: any) => {
                     switch (err.status) {
                         case 401:
+                        case 503:
+                            this.toast.sendToast(err.error?.error?.message, "error");
                             loginSuccess.error(err.error.error);
                             break;
                         default:

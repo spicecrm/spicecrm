@@ -6,6 +6,7 @@ import {GroupwareService} from "../../../include/groupware/services/groupware.se
 import {Observable, of, Subject} from "rxjs";
 import {OutlookAttachmentI} from "../interfaces/outlook.interfaces";
 import {GroupwareEmail} from "../../../include/groupware/interfaces/groupwareemail.interface";
+import {map} from "rxjs/operators";
 
 declare var Office: any;
 declare var _: any;
@@ -77,7 +78,7 @@ export class OutlookGroupware extends GroupwareService {
     public archiveEmail(): Observable<any> {
         let retSubject = new Subject();
 
-        this.isArchiving = true;
+        const loading = this.model.modal.await('LBL_PROCESSING');
 
         this.assembleEmail().subscribe(
             (email: any) => {
@@ -99,12 +100,14 @@ export class OutlookGroupware extends GroupwareService {
 
                             this.backend.postRequest('channels/groupware/outlook/attachments', {}, attachmentData).subscribe(
                                 success => {
-                                    this.isArchiving = false;
+                                    loading.next(true);
+                                    loading.complete();
                                     retSubject.next(true);
                                     retSubject.complete();
                                 },
                                 error => {
-                                    this.isArchiving = false;
+                                    loading.next(true);
+                                    loading.complete();
                                     retSubject.error('error archiving attachments');
                                     retSubject.complete();
                                 }
@@ -112,13 +115,16 @@ export class OutlookGroupware extends GroupwareService {
 
                             this.emailId = res.email_id;
                         } else {
-                            this.isArchiving = false;
+                            loading.next(true);
+                            loading.complete();
+
                             retSubject.next(true);
                             retSubject.complete();
                         }
                     },
                     error => {
-                        this.isArchiving = false;
+                        loading.next(true);
+                        loading.complete();
                         retSubject.error('error archiving email');
                         retSubject.complete();
                     }
@@ -128,7 +134,8 @@ export class OutlookGroupware extends GroupwareService {
                 // console.log('Cannot assemble email: ' + err);
                 retSubject.error('error assembling email');
                 retSubject.complete();
-                this.isArchiving = false;
+                loading.next(true);
+                loading.complete();
             }
         );
 
@@ -191,7 +198,7 @@ export class OutlookGroupware extends GroupwareService {
     /**
      * Returns an array of email adresses used in the selected email.
      */
-    public getAddressArray(includeown: boolean = false) {
+    public getAddressArray(includeown: boolean = false): Observable<string[]> {
         let toAddresses = [];
         toAddresses.push(Office.context.mailbox.item.from.emailAddress);
         for (let address of Office.context.mailbox.item.to) {
@@ -209,16 +216,16 @@ export class OutlookGroupware extends GroupwareService {
 
         let allAddresses = toAddresses.concat(ccAddresses);
         // todo remove duplicates
-        return allAddresses;
+        return of(allAddresses);
     }
 
     /**
      * Returns the email adresses array and the message ID (Outlook ID) of the selected email.
      */
-    public getEmailAddressData() {
-        return {
-            addresses: this.getAddressArray()
-        };
+    public getEmailAddressData(): Observable<{addresses: string[]}> {
+        return this.getAddressArray().pipe(map(res => ({
+            addresses: res
+        })));
     }
 
     /**

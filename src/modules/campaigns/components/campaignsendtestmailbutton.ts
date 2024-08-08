@@ -35,18 +35,16 @@ export class CampaignSendTestMailButton {
         if (!this.sending) {
             this.sending = true;
             this.backend.postRequest(`module/CampaignTasks/${this.model.id}/sendtestmail`).subscribe({
-                next: (results: any) => {
+                next: res => {
                     this.sending = false;
                     loading.emit(true);
-                    if (results.status == 'success') {
-                        this.toast.sendToast(this.language.getLabel('LBL_TEST_MAILS_SENT'), 'success');
-                    } else {
-                        this.toast.sendToast(this.language.getLabel('LBL_NO_TEST_TARGETS'), 'error');
-                    }
-                }, error: (error) => {
+                    loading.complete();
+                    this.toast.sendToast(`${this.language.getLabel('LBL_TEST_MAILS_SENT')} ${res.sent} from ${res.total}`, 'success');
+                }, error: (err) => {
                     loading.emit(true);
+                    loading.complete();
                     this.sending = false;
-                    this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+                    this.toast.sendToast(err.error.error?.lbl, 'error');
                 }
             });
         }
@@ -63,11 +61,6 @@ export class CampaignSendTestMailButton {
      * handle the disabled status
      */
     public handleDisabled() {
-        // not if activated already
-        if (this.model.getField('activated')) {
-            this.disabled = true;
-            return;
-        }
 
         // not if editing
         if (!this.model.checkAccess('edit')) {

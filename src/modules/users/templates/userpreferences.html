@@ -8,8 +8,8 @@
         <system-preferences-panel #systemPreferencesPanel [preferences]="preferences" [isPersonalContext]="true"></system-preferences-panel>
 
         <system-collapsable-tab [collapsible]="false" tabtitle="LBL_HOME_PREFERENCES">
-            <div class="slds-grid">
-                <system-preferences-panel-item class="slds-size--1-of-3" itemlabel="LBL_HOME_DASHBOARD">
+            <div class="slds-grid slds-wrap">
+                <system-preferences-panel-item class="slds-size--1-of-1 slds-medium-size--1-of-3" itemlabel="LBL_HOME_DASHBOARD">
 <!--                    <field-container *ngIf="!preferences.home_dashboard" [system-model-provider]="{module: 'Dashboards', id: preferences.home_dashboard, data: homeDashboardData}" field="name" [fieldconfig]="{link: true, hidelabel: true}"></field-container>-->
                     <system-preferences-panel-item-display>
                         <span *ngIf="homeDashboardData && homeDashboardData.name">{{homeDashboardData.name}}</span>
@@ -22,7 +22,7 @@
                         </div>
                     </system-preferences-panel-item-edit>
                 </system-preferences-panel-item>
-                <system-preferences-panel-item class="slds-size--1-of-3" itemlabel="LBL_HOME_DASHBOARDSET">
+                <system-preferences-panel-item class="slds-size--1-of-1 slds-medium-size--1-of-3" itemlabel="LBL_HOME_DASHBOARDSET">
 <!--                    <field-container *ngIf="!!preferences.home_dashboardset" [system-model-provider]="{module: 'DashboardSets', id: preferences.home_dashboardset, data: dashboardSetData}" field="name" [fieldconfig]="{link: true, hidelabel: true}"></field-container>-->
                     <system-preferences-panel-item-display>
                         <span *ngIf="homeDashboardSetData && homeDashboardSetData.name">{{homeDashboardSetData.name}}</span>
@@ -35,7 +35,7 @@
                         </div>
                     </system-preferences-panel-item-edit>
                 </system-preferences-panel-item>
-                <system-preferences-panel-item class="slds-size--1-of-3" itemlabel="LBL_HOME_ASSISTANT">
+                <system-preferences-panel-item class="slds-size--1-of-1 slds-medium-size--1-of-3" itemlabel="LBL_HOME_ASSISTANT">
                     <system-preferences-panel-item-display [global]="systemPreferencesPanel.prefValueIsGlobalFallback('home_assistant')">
                         <system-label *ngIf="systemPreferencesPanel.getPrefValue('home_assistant') === 'visible'" label="LBL_VISIBLE"></system-label>
                         <system-label *ngIf="systemPreferencesPanel.getPrefValue('home_assistant') === 'hidden'" label="LBL_HIDDEN"></system-label>

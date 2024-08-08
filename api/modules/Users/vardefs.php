@@ -91,7 +91,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
         ],
         'pwd_last_changed' => [
             'name' => 'pwd_last_changed',
-            'vname' => 'LBL_PSW_MODIFIED',
+            'vname' => 'LBL_PWD_MODIFIED',
             'type' => 'datetime',
             'required' => false,
         ],
@@ -352,7 +352,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
         ],
         'phone_fax' => [
             'name' => 'phone_fax',
-            'vname' => 'LBL_FAX_PHONE',
+            'vname' => 'LBL_PHONE_FAX',
             'type' => 'phone',
             'dbType' => 'varchar',
             'len' => '50',
@@ -476,6 +476,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'type' => 'enum',
             'options' => 'messenger_type_dom',
             'len' => 100,
+        ],
+        'employee' => [
+            'name' => 'employee',
+            'type' => 'link',
+            'relationship' => 'employees_users',
+            'source' => 'non-db',
+            'vname' => 'LBL_EMPLOYEE'
         ],
         'calls' => [
             'name' => 'calls',
@@ -1098,7 +1105,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
         'users_email_addresses' => [
             'lhs_module' => "Users", 'lhs_table' => 'users', 'lhs_key' => 'id',
             'rhs_module' => 'EmailAddresses', 'rhs_table' => 'email_addresses', 'rhs_key' => 'id',
-            'relationship_type' => 'many-to-many',
+            'relationship_type' => 'email-address',
             'join_table' => 'email_addr_bean_rel', 'join_key_lhs' => 'bean_id', 'join_key_rhs' => 'email_address_id',
             'relationship_role_column' => 'bean_module',
             'relationship_role_column_value' => "Users"
@@ -1108,7 +1115,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'lhs_table' => 'users',
             'lhs_key' => 'id',
             'rhs_module' => 'EmailAddresses', 'rhs_table' => 'email_addresses', 'rhs_key' => 'id',
-            'relationship_type' => 'many-to-many',
+            'relationship_type' => 'email-address',
             'join_table' => 'email_addr_bean_rel', 'join_key_lhs' => 'bean_id', 'join_key_rhs' => 'email_address_id',
             'relationship_role_column' => 'primary_address',
             'relationship_role_column_value' => '1'
@@ -1254,15 +1261,16 @@ if (file_exists("extensions/modules/Shops")) {
     ];
 }
 
-if (file_exists("modules/DistributionLists")) {
-    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['distributionlists'] = [
-        'name' => 'distributionlists',
-        'vname' => 'LBL_DISTRIBUTIONLISTS',
-        'type' => 'link',
-        'relationship' => 'distributionlists_users',
-        'module' => 'DistributionLists',
-        'bean_name' => 'DistributionList',
-        'source' => 'non-db',
-        'comment' => 'DistributionLists the user is allocated to'
-    ];
-}
+#migrated
+//if (file_exists("modules/DistributionLists")) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['distributionlists'] = [
+//        'name' => 'distributionlists',
+//        'vname' => 'LBL_DISTRIBUTIONLISTS',
+//        'type' => 'link',
+//        'relationship' => 'distributionlists_users',
+//        'module' => 'DistributionLists',
+//        'bean_name' => 'DistributionList',
+//        'source' => 'non-db',
+//        'comment' => 'DistributionLists the user is allocated to'
+//    ];
+//}

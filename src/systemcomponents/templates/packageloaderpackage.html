@@ -12,9 +12,9 @@
                 </div>
                 <div class="slds-no-flex">
                     <div class="slds-button-group" role="group">
-                        <button [disabled]="disabled" *ngIf="!package.installed" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="loadPackage(package.package)"><system-button-icon icon="download"></system-button-icon></button>
-                        <button [disabled]="disabled" *ngIf="package.installed && package.package != 'core'" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="deletePackage(package.package)"><system-button-icon icon="delete"></system-button-icon></button>
-                        <button [disabled]="disabled" *ngIf="package.installed"class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="loadPackage(package.package)"><system-button-icon icon="refresh"></system-button-icon></button>
+                        <button [disabled]="disabled" *ngIf="!package.installed" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="loadPackage(package)"><system-button-icon icon="download"></system-button-icon></button>
+                        <button [disabled]="deleteButtonDisabled" *ngIf="package.installed && package.package != 'core'" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="deletePackage(package.package)"><system-button-icon icon="delete"></system-button-icon></button>
+                        <button [disabled]="disabled" *ngIf="package.installed" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="loadPackage(package)"><system-button-icon icon="refresh"></system-button-icon></button>
                     </div>
                 </div>
             </header>
@@ -29,11 +29,11 @@
                 <div class="slds-size--1-of-2 slds-col">
                     <div class="slds-text-heading_small slds-p-vertical--xx-small"><system-label label="LBL_PREREQUISITES"></system-label></div>
                     <div class="slds-grid slds-grid_vertical-align-center slds-p-vertical--xxx-small" *ngFor="let extension of extensions">
-                        <div class="slds-size--1-of-2 slds-truncate"><system-utility-icon icon="apex_plugin" size="xx-small" [colorclass]="disabled ? 'slds-icon-text-light' : 'slds-icon-text-default'"></system-utility-icon> {{extension.name}}</div>
+                        <div class="slds-size--1-of-2 slds-truncate"><system-utility-icon title="LBL_EXTENSION" icon="apex_plugin" size="xx-small" [colorclass]="disabled ? 'slds-icon-text-light' : 'slds-icon-text-default'"></system-utility-icon> {{extension.name}}</div>
                         <div class="slds-size--1-of-2 slds-text-align--right"><system-utility-icon size="xx-small" [icon]="extension.status ? 'check' : 'close'" [colorclass]="disabled ? 'slds-icon-text-light' : 'slds-icon-text-default'"></system-utility-icon></div>
                     </div>
                     <div class="slds-grid slds-grid_vertical-align-center slds-p-vertical--xxx-small" *ngFor="let requiredpackage of requiredpackages">
-                        <div class="slds-size--1-of-2 slds-truncate"><system-utility-icon icon="archive" size="xx-small" [colorclass]="disabled ? 'slds-icon-text-light' : 'slds-icon-text-default'"></system-utility-icon> {{requiredpackage.package}}</div>
+                        <div class="slds-size--1-of-2 slds-truncate"><system-utility-icon title="LBL_PACKAGE" icon="archive" size="xx-small" [colorclass]="disabled ? 'slds-icon-text-light' : 'slds-icon-text-default'"></system-utility-icon> {{requiredpackage.package}}</div>
                         <div class="slds-size--1-of-2 slds-text-align--right"><system-utility-icon size="xx-small" [icon]="requiredpackage.installed ? 'check' : 'close'" [colorclass]="disabled ? 'slds-icon-text-light' : 'slds-icon-text-default'"></system-utility-icon></div>
                     </div>
                     <div class="slds-disabled-text" *ngIf="requiredpackages.length == 0 && extensions.length == 0">

@@ -8,7 +8,7 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 import {metadata} from "../../../services/metadata.service";
 
 @Component({
-    selector: 'sendgrid-delete-from-targetlist-button',
+    selector: 'sendgrid-remove-contact-from-targetlist-button',
     templateUrl: '../templates/sendgridremovecontactfromtargetlistbutton.html',
 
 })
@@ -25,19 +25,19 @@ export class SendgridRemoveContactFromTargetListButton {
     }
 
 
-    /**
+    /**acl
      * gets the disabled state for the import button based on the acl rights for the user
      */
 
     get disabled(): boolean {
-        return !this.model.checkAccess('sendgrid_remove');
+        return !this.relatedmodels.model.checkAccess('sendgrid_remove');
     }
 
     /**
      * hides button if the list is not connected to sendgrid
      */
     get hidden(){
-        return (this.model.getField('sendgrid_source') == '')
+        return (this.relatedmodels.model.getField('sendgrid_source') == '')
     }
     /**
      * fires rest call from backend to Sendgrid
@@ -46,9 +46,9 @@ export class SendgridRemoveContactFromTargetListButton {
         this.modal.confirm('MSG_DELETE_RECORD', 'MSG_DELETE_RECORD')
             .subscribe(answer => {
                 if (answer) {
-                    this.relatedmodels.deleteItem(this.model.id);
+                    this.relatedmodels.deleteItem(this.model.id, this.model.data.relid);
                     let awaitModal = this.modal.await(this.language.getLabel('LBL_LOADING'));
-                    this.backend.deleteRequest(`channels/emarketing/sendgrid/marketing/lists/${this.model.id}/contacts/${this.relatedmodels.id}`).subscribe(
+                    this.backend.deleteRequest(`channels/emarketing/sendgrid/marketing/lists/${this.relatedmodels.id}/contacts/${this.model.id}/${this.model.data.prospectlists_person_email_addr_bean_rel_id}`).subscribe(
                         response => {
                             awaitModal.emit(true);
                             if (response) {
