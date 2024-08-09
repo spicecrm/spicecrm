@@ -314,13 +314,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source'       => 'non-db',
                 'vname'        => 'LBL_LETTERS',
             ],
-            'documents' => [
-                'name' => 'documents',
-                'type' => 'link',
-                'relationship' => 'documents_contacts',
-                'source' => 'non-db',
-                'vname' => 'LBL_DOCUMENTS',
-            ],
+#migrated
+//            'documents' => [
+//                'name' => 'documents',
+//                'type' => 'link',
+//                'relationship' => 'documents_contacts',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_DOCUMENTS',
+//            ],
             'leads' => [
                 'name' => 'leads',
                 'type' => 'link',
