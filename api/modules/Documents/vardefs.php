@@ -191,14 +191,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Document'] = [
 //            'source' => 'non-db',
 //            'vname' => 'LBL_OPPORTUNITIES_SUBPANEL_TITLE',
 //        ],
-        'projects' => [
-            'name' => 'projects',
-            'type' => 'link',
-            'relationship' => 'documents_projects',
-            'source' => 'non-db',
-            'module' => 'Projects',
-            'vname' => 'LBL_PROJECTS',
-        ],
+#migrated
+//        'projects' => [
+//            'name' => 'projects',
+//            'type' => 'link',
+//            'relationship' => 'documents_projects',
+//            'source' => 'non-db',
+//            'module' => 'Projects',
+//            'vname' => 'LBL_PROJECTS',
+//        ],
         'related_doc_id' => [
             'name' => 'related_doc_id',
             'vname' => 'LBL_RELATED_DOCUMENT_ID',
