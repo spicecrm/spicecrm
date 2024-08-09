@@ -86,15 +86,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'source' => 'non-db',
             'vname' => 'LBL_USERS',
         ],
-        'employees' => [
-            'name' => 'employees',
-            'type' => 'link',
-            'relationship' => 'orgunits_employees',
-            'module' => 'Employees',
-            'bean_name' => 'User',
-            'source' => 'non-db',
-            'vname' => 'LBL_EMPLYOEES',
-        ],
         'hcmjoboffers' => [
             'name' => 'hcmjoboffers',
             'type' => 'link',
