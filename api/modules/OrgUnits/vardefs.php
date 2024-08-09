@@ -142,14 +142,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'source' => 'non-db',
             'vname' => 'LBL_SPICEACLPROFILES'
         ],
-        'documents' => [
-            'name' => 'documents',
-            'type' => 'link',
-            'relationship' => 'documents_orgunits',
-            'source' => 'non-db',
-            'module' => 'Documents',
-            'vname' => 'LBL_DOCUMENTS',
-        ],
+#migrated
+//        'documents' => [
+//            'name' => 'documents',
+//            'type' => 'link',
+//            'relationship' => 'documents_orgunits',
+//            'source' => 'non-db',
+//            'module' => 'Documents',
+//            'vname' => 'LBL_DOCUMENTS',
+//        ],
         'employees' => [
             'name' => 'employees',
             'vname' => 'LBL_EMPLOYEES',
