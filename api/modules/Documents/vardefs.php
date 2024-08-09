@@ -175,13 +175,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Document'] = [
 //            'source' => 'non-db',
 //            'vname' => 'LBL_ACCOUNTS_SUBPANEL_TITLE',
 //        ],
-        'contacts' => [
-            'name' => 'contacts',
-            'type' => 'link',
-            'relationship' => 'documents_contacts',
-            'source' => 'non-db',
-            'vname' => 'LBL_CONTACTS_SUBPANEL_TITLE',
-        ],
+#migrated
+//        'contacts' => [
+//            'name' => 'contacts',
+//            'type' => 'link',
+//            'relationship' => 'documents_contacts',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CONTACTS_SUBPANEL_TITLE',
+//        ],
         'opportunities' => [
             'name' => 'opportunities',
             'type' => 'link',
