@@ -229,6 +229,8 @@ import {ObjectProjectActivityTrackTimeIcon} from "./components/objectprojectacti
 import {ObjectTemplatesEditor} from "./components/objecttemplateseditor";
 import {ObjectTemplatesPreview} from "./components/objecttemplatespreview";
 import {ObjectActionDownloadEmailButton} from "./components/objectactiondownloademailbutton";
+import {ObjectListHeaderActionsExportPdfButton} from "./components/objectlistheaderactionsexportpdfbutton";
+import {ObjectActionPdfExportRelatedButton} from "./components/objectactionpdfexportrelatedbutton";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -262,6 +264,7 @@ import {ObjectActionDownloadEmailButton} from "./components/objectactiondownload
         ObjectListHeaderActionsDeleteButton,
         ObjectListHeaderActionsMergeButton,
         ObjectListHeaderActionsExportCSVButton,
+        ObjectListHeaderActionsExportPdfButton,
         ObjectFieldFilterPipe,
         ObjectListHeaderActionsExportCSVSelectFields,
         ObjectListHeaderActionsExportTargetlistButton,
@@ -354,6 +357,7 @@ import {ObjectActionDownloadEmailButton} from "./components/objectactiondownload
         ObjectRelatedDuplicates,
         ObjectRelatedDuplicateTile,
         ObjectRelatedlistAll,
+        ObjectActionPdfExportRelatedButton,
         ObjectRelatedlistTable,
         ObjectRelatedlistSequenced,
         ObjectRelatedListSequencedItem,
@@ -447,6 +451,7 @@ import {ObjectActionDownloadEmailButton} from "./components/objectactiondownload
         ObjectSelectButton,
         ObjectRelatedList,
         ObjectRelatedlistTable,
+        ObjectActionPdfExportRelatedButton,
         ObjectRelatedListItem,
         ObjectRecordFieldset,
         ObjectRecordFieldsetField,

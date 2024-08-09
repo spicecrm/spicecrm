@@ -17,6 +17,7 @@ import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
 import {model} from "../../services/model.service";
 import {Subscription} from "rxjs";
+import {ObjectActionPdfExportRelatedButton} from "./objectactionpdfexportrelatedbutton";
 
 /**
  * the component that is rendered as part of an actionset and renders the actionset item
@@ -73,6 +74,7 @@ export class ObjectActionContainerItem implements AfterViewInit {
         SAVE: "ObjectActionSaveButton",
         SAVERELATED: "ObjectActionSaveRelatedButton",
         ROUTE: "GlobalNavigationMenuItemActionRoute",
+        PDF: "ObjectActionPdfExportRelatedButton",
     };
     /**
      * @ignore
