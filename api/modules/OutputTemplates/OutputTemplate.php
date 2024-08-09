@@ -81,6 +81,12 @@ class OutputTemplate extends SpiceBean
      */
     public $parsed_name;
 
+
+    public function __construct()
+    {
+        $this->setPDFHandler();
+    }
+
     public function translateBody($bean = null, $bodyOnly = false)
     {
         if (!$bean) {
@@ -98,7 +104,7 @@ class OutputTemplate extends SpiceBean
         $templateCompiler = new Compiler($this);
         $templateCompiler->idsOfParentTemplates = array_merge($this->idsOfParentTemplates, [$this->id]);
         if ($bodyOnly) {
-            $html = $templateCompiler->compile(html_entity_decode($this->body), $bean, $this->language, $this->additonalValues);
+            $html = $templateCompiler->compile(html_entity_decode($this->body), $bean, $this->language, $this->additonalValues, [], null, $bodyOnly);
         } else {
             $html = $templateCompiler->compile('
                 <body>
@@ -185,13 +191,11 @@ class OutputTemplate extends SpiceBean
 
     public function download()
     {
-        $this->setPDFHandler();
         return $this->pdf_handler->toDownload();
     }
 
     private function saveAsTmpFile($filename = null)
     {
-        $this->setPDFHandler();
         return $this->pdf_handler->toTempFile($filename);
     }
 
@@ -216,13 +220,11 @@ class OutputTemplate extends SpiceBean
 
     public function getPdfContent()
     {
-        $this->setPDFHandler();
         return $this->pdf_handler->__toString();
     }
 
     public function setOutputHtml($html)
     {
-        $this->setPDFHandler();
         $this->pdf_handler->html_content = $html;
     }
 
@@ -288,5 +290,10 @@ class OutputTemplate extends SpiceBean
     public function getHtmlOfPdfCreation(): string
     {
         return $this->pdf_handler->htmlOfPdfCreation;
+    }
+
+    public function addPageBreak(): string
+    {
+        return '<div style="page-break-after: always;"></div>';
     }
 }

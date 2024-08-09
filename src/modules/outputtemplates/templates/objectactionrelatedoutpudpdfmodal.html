@@ -1,0 +1,32 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_EXPORT_PDF_PREVIEW"></system-label></system-modal-header>
+    <system-modal-content margin="none">
+        <div style="height: 70vh;">
+            @if(blobUrl) {
+                <object *ngIf="blobUrl" [data]="blobUrl" width="100%" height="100%"></object>
+            }
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid">
+            <div class="slds-grid slds-grid--vertical-align-center slds-size--1-of-2" >
+                <system-label label="LBL_OUTPUT_TEMPLATE"></system-label>
+                <div class="slds-select_container">
+                    <select [(ngModel)]="selectedTemplate" class="slds-select slds-m-left--xx-small" style="width: 10rem;">
+                        @for (template of outputTemplates; track template.id) {
+                            <option [value]="template.id">{{template.name}}</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="slds-size--1-of-2">
+                <button class="slds-button slds-button--neutral" (click)="downloadBulk()">
+                    <system-label label="LBL_DOWNLOAD"/>
+                </button>
+                <button class="slds-button slds-button--neutral" (click)="close()">
+                    <system-label label="LBL_CANCEL"/>
+                </button>
+            </div>
+        </div>
+    </system-modal-footer>
+</system-modal>
