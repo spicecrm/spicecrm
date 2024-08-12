@@ -86,15 +86,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'source' => 'non-db',
             'vname' => 'LBL_USERS',
         ],
-        'employees' => [
-            'name' => 'employees',
-            'type' => 'link',
-            'relationship' => 'orgunits_employees',
-            'module' => 'Employees',
-            'bean_name' => 'User',
-            'source' => 'non-db',
-            'vname' => 'LBL_EMPLYOEES',
-        ],
         'hcmjoboffers' => [
             'name' => 'hcmjoboffers',
             'type' => 'link',
@@ -142,14 +133,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'source' => 'non-db',
             'vname' => 'LBL_SPICEACLPROFILES'
         ],
-        'documents' => [
-            'name' => 'documents',
-            'type' => 'link',
-            'relationship' => 'documents_orgunits',
-            'source' => 'non-db',
-            'module' => 'Documents',
-            'vname' => 'LBL_DOCUMENTS',
-        ],
+#migrated
+//        'documents' => [
+//            'name' => 'documents',
+//            'type' => 'link',
+//            'relationship' => 'documents_orgunits',
+//            'source' => 'non-db',
+//            'module' => 'Documents',
+//            'vname' => 'LBL_DOCUMENTS',
+//        ],
         'employees' => [
             'name' => 'employees',
             'vname' => 'LBL_EMPLOYEES',

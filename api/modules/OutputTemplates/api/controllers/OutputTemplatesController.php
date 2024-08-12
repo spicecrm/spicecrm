@@ -44,6 +44,36 @@ class OutputTemplatesController
 
     }
 
+    /**
+     * generate bulk pdf for the selected beans
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return array
+     * @throws Exception
+     */
+    public function generateBulkPDF(Request $req, Response $res, array $args): Response
+    {
+
+        $ids = $req->getParsedBody()['beanIds'];
+        /** @var OutputTemplate $outputTemplate */
+        $outputTemplate = BeanFactory::getBean('OutputTemplates', $args['id'], ['forceRetrieve' => true]);
+        $html = "";
+
+        foreach ($ids as $id) {
+            $bean = BeanFactory::getBean($args['module'], $id);
+            $html .= $outputTemplate->translateBody($bean, true);
+            $html .= $outputTemplate->addPageBreak();
+        }
+
+        $completeHTML = '<html><body>' . $html . '</body></html>';
+
+        $outputTemplate->setOutputHtml($completeHTML);
+        $pdf = $outputTemplate->getPdfContent();
+
+        return $res->withJson(['content' => base64_encode($pdf)]);
+    }
+
     public function previewpdf(Request $req, Response $res, array $args): Response {
         $body = $req->getParsedBody();
         $bean = BeanFactory::getBean('OutputTemplates');
