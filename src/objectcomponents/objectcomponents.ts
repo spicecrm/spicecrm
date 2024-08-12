@@ -229,6 +229,7 @@ import {ObjectProjectActivityTrackTimeIcon} from "./components/objectprojectacti
 import {ObjectTemplatesEditor} from "./components/objecttemplateseditor";
 import {ObjectTemplatesPreview} from "./components/objecttemplatespreview";
 import {ObjectActionDownloadEmailButton} from "./components/objectactiondownloademailbutton";
+import {ObjectTemplateSendTestEmailModal} from "./components/objecttemplatesendtestemailmodal";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -432,7 +433,8 @@ import {ObjectActionDownloadEmailButton} from "./components/objectactiondownload
         ObjectProjectActivityTrackTimeIcon,
         ObjectTemplatesEditor,
         ObjectTemplatesPreview,
-        ObjectActionDownloadEmailButton
+        ObjectActionDownloadEmailButton,
+        ObjectTemplateSendTestEmailModal
     ],
     exports: [
         ObjectListViewHeader,
@@ -484,7 +486,8 @@ import {ObjectActionDownloadEmailButton} from "./components/objectactiondownload
         ObjectActionNewButton,
         ObjectRecordFieldsetContainer,
         ObjectActionContainerItem,
-        ObjectActionDownloadEmailButton
+        ObjectActionDownloadEmailButton,
+        ObjectTemplateSendTestEmailModal
     ]
 })
 export class ObjectComponents {}
