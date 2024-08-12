@@ -229,6 +229,8 @@ import {ObjectProjectActivityTrackTimeIcon} from "./components/objectprojectacti
 import {ObjectTemplatesEditor} from "./components/objecttemplateseditor";
 import {ObjectTemplatesPreview} from "./components/objecttemplatespreview";
 import {ObjectActionDownloadEmailButton} from "./components/objectactiondownloademailbutton";
+import {ObjectListHeaderActionsExportPdfButton} from "./components/objectlistheaderactionsexportpdfbutton";
+import {ObjectActionPdfExportRelatedButton} from "./components/objectactionpdfexportrelatedbutton";
 import {ObjectTemplateSendTestEmailModal} from "./components/objecttemplatesendtestemailmodal";
 
 /**
@@ -263,6 +265,7 @@ import {ObjectTemplateSendTestEmailModal} from "./components/objecttemplatesendt
         ObjectListHeaderActionsDeleteButton,
         ObjectListHeaderActionsMergeButton,
         ObjectListHeaderActionsExportCSVButton,
+        ObjectListHeaderActionsExportPdfButton,
         ObjectFieldFilterPipe,
         ObjectListHeaderActionsExportCSVSelectFields,
         ObjectListHeaderActionsExportTargetlistButton,
@@ -355,6 +358,7 @@ import {ObjectTemplateSendTestEmailModal} from "./components/objecttemplatesendt
         ObjectRelatedDuplicates,
         ObjectRelatedDuplicateTile,
         ObjectRelatedlistAll,
+        ObjectActionPdfExportRelatedButton,
         ObjectRelatedlistTable,
         ObjectRelatedlistSequenced,
         ObjectRelatedListSequencedItem,
@@ -449,6 +453,7 @@ import {ObjectTemplateSendTestEmailModal} from "./components/objecttemplatesendt
         ObjectSelectButton,
         ObjectRelatedList,
         ObjectRelatedlistTable,
+        ObjectActionPdfExportRelatedButton,
         ObjectRelatedListItem,
         ObjectRecordFieldset,
         ObjectRecordFieldsetField,

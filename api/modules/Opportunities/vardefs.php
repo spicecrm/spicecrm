@@ -403,13 +403,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'source' => 'non-db',
             'vname' => 'LBL_EMAILS',
         ],
-        'documents' => [
-            'name' => 'documents',
-            'type' => 'link',
-            'relationship' => 'documents_opportunities',
-            'source' => 'non-db',
-            'vname' => 'LBL_DOCUMENTS',
-        ],
+#migrated
+//        'documents' => [
+//            'name' => 'documents',
+//            'type' => 'link',
+//            'relationship' => 'documents_opportunities',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_DOCUMENTS',
+//        ],
         //@deprecated project. Use projects
 //        'project' => array(
 //            'name' => 'project',
