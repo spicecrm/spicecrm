@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {model} from '../../../services/model.service';
@@ -28,6 +28,16 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
      * the available mailboxes
      */
     public options: any[] = [];
+
+    /**
+     * config for zip compress
+     */
+    public mailboxZipConfig: string;
+
+    /**
+     * config for send read receipt
+     */
+    public mailboxReadReceiptConfig: string;
 
     constructor(
         public model: model,
@@ -67,6 +77,16 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
     }
 
     /**
+     * returns the css classes
+     */
+    public getFieldClass() {
+        if (this.receiptHidden && this.zipHidden) this.addCssClass('slds-size--1-of-1');
+        else if(!this.zipHidden && !this.receiptHidden) this.addCssClass('slds-size--2-of-4');
+        else{this.addCssClass('slds-size--3-of-4'); }
+        return this.css_classes;
+    }
+
+    /**
      * set the value from the user preferences
      * get the options
      */
@@ -74,6 +94,7 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
         super.ngOnInit();
         this.setValueFromPreferences();
         this.getOptions();
+        this.setConfigSettings(this.value);
     }
 
     /**
@@ -140,5 +161,74 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
         if (!!this.fieldconfig.disableCache) return;
 
         this.userpreferences.setPreference(`defaultmailbox_${this.scope}`, value);
+    }
+
+    /**
+     * react to changes in the chosen mailbox
+     * @param value
+     */
+    public onChange(value){
+        this.setConfigSettings(value);
+        this.setZip(undefined);
+        this.setReadReceipt(undefined);
+        this.setToPreferences(value);
+    }
+
+    /**
+     * get config to disable zip compress checkbox
+     */
+    get zipDisabled() {
+        return this.mailboxZipConfig == '0';
+    }
+
+    /**
+     * get config to disable send read receipt checkbox
+     */
+    get receiptDisabled() {
+        return this.mailboxReadReceiptConfig == '0';
+    }
+
+    /**
+     * get config to hide zip compress checkbox
+     */
+    get zipHidden() {
+        return this.fieldconfig.hideZipCompress;
+    }
+
+    /**
+     * get config to hide send read receipt checkbox
+     */
+    get receiptHidden() {
+        return this.fieldconfig.hideReadReceipt;
+    }
+
+    /**
+     * get congig for specific mailbox if zip compress and send read receipt are enabled
+     * @param mailboxId
+     * @private
+     */
+    private setConfigSettings(mailboxId: string) {
+        if (!!mailboxId) {
+            const mailboxData = this.configuration.getData(`mailboxes${this.scope}`);
+            const selectedMailboxData = mailboxData.find(id => id.value == mailboxId);
+            this.mailboxZipConfig = selectedMailboxData.zip_compress;
+            this.mailboxReadReceiptConfig = selectedMailboxData.send_read_receipt;
+        }
+    }
+
+    /**
+     * set zip compress value
+     * @param value
+     */
+    public setZip(value) {
+        this.model.setField('zip_compress', value);
+    }
+
+    /**
+     * set send read receipt value
+     * @param value
+     */
+    public setReadReceipt(value){
+        this.model.setField('send_read_receipt', value);
     }
 }
