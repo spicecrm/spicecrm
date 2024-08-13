@@ -23,7 +23,7 @@ export class GroupwareEmailArchivePaneAttachment {
     ) {}
 
     public onClick(event) {
-        if (event.target.checked) {
+        if (event) {
             this.groupware.addAttachment(this.attachment);
         } else {
             this.groupware.removeAttachment(this.attachment);

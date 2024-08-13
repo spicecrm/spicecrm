@@ -63,9 +63,6 @@
     color:#706E6BFF;
 }
 
-.slds-media__body {
-    min-width: unset !important;
-}
 .slds-color-picker__selector.slds-popover{
     width: 13.375rem;
 }

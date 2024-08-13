@@ -17,6 +17,29 @@ $RESTManager->registerExtension('outputtemplates', '1.0');
 
 $routes = [
     [
+        'method'      => 'put',
+        'route'       => '/module/OutputTemplates/{id}/formodule/{module}/generateBulkPDF',
+        'class'       => OutputTemplatesController::class,
+        'function'    => 'generateBulkPDF',
+        'description' => 'get all templates of the given module',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters'  => [
+            'module' => [
+                'in'            => 'path',
+                'type'          => ValidationMiddleware::TYPE_MODULE,
+                'description'   => 'name of a module',
+                'example'       => 'Accounts',
+                'required'      => true
+            ],
+            'id' => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'required'    => true,
+                'description' => 'GUID of the OutputTemplate',
+            ]
+        ]
+    ],
+    [
         'method'      => 'get',
         'route'       => '/module/OutputTemplates/formodule/{module}',
         'class'       => OutputTemplatesController::class,

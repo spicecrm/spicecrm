@@ -1261,15 +1261,16 @@ if (file_exists("extensions/modules/Shops")) {
     ];
 }
 
-if (file_exists("modules/DistributionLists")) {
-    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['distributionlists'] = [
-        'name' => 'distributionlists',
-        'vname' => 'LBL_DISTRIBUTIONLISTS',
-        'type' => 'link',
-        'relationship' => 'distributionlists_users',
-        'module' => 'DistributionLists',
-        'bean_name' => 'DistributionList',
-        'source' => 'non-db',
-        'comment' => 'DistributionLists the user is allocated to'
-    ];
-}
+#migrated
+//if (file_exists("modules/DistributionLists")) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['distributionlists'] = [
+//        'name' => 'distributionlists',
+//        'vname' => 'LBL_DISTRIBUTIONLISTS',
+//        'type' => 'link',
+//        'relationship' => 'distributionlists_users',
+//        'module' => 'DistributionLists',
+//        'bean_name' => 'DistributionList',
+//        'source' => 'non-db',
+//        'comment' => 'DistributionLists the user is allocated to'
+//    ];
+//}

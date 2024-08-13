@@ -57,8 +57,8 @@
                     <tr class="slds-hint-parent" *ngFor="let validationvalue of validationvalues" cdkDrag cdkDragBoundary=".dragboundary">
                         <td class="slds-grid slds-align--absolute-center" style="min-height: 40px;">
                             <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
-                            <system-utility-icon (click)="customizeValidationValue($event, validationvalue)" class="slds-p-right--xx-small" size="xx-small" [icon]="validationvalue.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                            <dictionary-manager-item-status [(ngModel)]="validationvalue.status"></dictionary-manager-item-status>
+                            <system-utility-icon (click)="customizeValidationValue($event, validationvalue)" class="slds-p-right--xx-small" size="xx-small" [icon]="validationvalue.scope == 'g' ? 'world' : 'people'" style="cursor:pointer"></system-utility-icon>
+                            <dictionary-manager-item-status [(ngModel)]="validationvalue.status" style="cursor:pointer"></dictionary-manager-item-status>
                         </td>
                         <td *ngIf="validation.validation_type == 'enum' || validation.validation_type == 'options'" >
                             <!-- only allow change in Draft mode. Once activated and deactivated the value can no longer be changed to avoid data inconsitencies -->

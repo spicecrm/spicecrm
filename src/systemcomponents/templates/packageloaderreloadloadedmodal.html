@@ -2,7 +2,7 @@
     <system-modal-header (close)="close()">
         <system-label label="MSG_RELOAD_ALL_LOADED_PACKAGES"/>
     </system-modal-header>
-    <system-modal-content [grow]="true">
+    <system-modal-content [grow]="true" margin="none">
         <div *ngIf="isReloadingConfig">
             <system-loader-progress/>
         </div>
