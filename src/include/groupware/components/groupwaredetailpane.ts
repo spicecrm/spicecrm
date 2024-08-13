@@ -89,6 +89,8 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
      */
     public loadRecords() {
         this.loading = true;
+        this.groupware.relatedBeans = [];
+        this.cdref.detectChanges();
 
         this.groupware.loadLinkedBeans().subscribe(
             (res) => {
