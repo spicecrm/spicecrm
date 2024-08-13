@@ -224,7 +224,7 @@ export class modal {
      * @param options options to be presented to the user
      * @param optionsAsRadio
      */
-    public prompt(type: 'info'|'input'|'input_text'|'input_date'|'confirm'|'input_module', text: string, headertext: string = null, theme: string = 'shade', defaultvalue: string | number = null, options: { value: string|boolean, display: string}[] = null, optionsAs: true|'radio'|'button'|'select' = 'select', regex?: string ): Observable<any> {
+    public prompt(type: 'info'|'input'|'input_text'|'input_date'|'confirm'|'input_module', text: string, headertext: string = null, theme: string = 'shade', defaultvalue: string | number = null, options: { value: string|boolean, display: string, disabled?: boolean}[] = null, optionsAs: true|'radio'|'button'|'select' = 'select', regex?: string ): Observable<any> {
         let responseSubject = new Subject();
         this.openStaticModal(SystemPrompt, true, this.injector).subscribe(component => {
             component.instance.type = type;
