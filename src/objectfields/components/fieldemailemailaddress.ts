@@ -1,10 +1,11 @@
 /**
  * @module ObjectFields
  */
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Host, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {configurationService} from "../../services/configuration.service";
 import {backend} from "../../services/backend.service";
 import {tap} from "rxjs/operators";
+import {fieldEmailAddresses} from "./fieldemailaddresses";
 
 @Component({
     selector: 'field-email-emailaddress',
@@ -44,6 +45,7 @@ export class fieldEmailEmailAddress implements OnChanges
 
 
     constructor(private backend: backend,
+                @Host() private parentCmp: fieldEmailAddresses,
                 private configurationService: configurationService) {
     }
 
@@ -62,6 +64,8 @@ export class fieldEmailEmailAddress implements OnChanges
 
         this.emailAddress.email_address = value;
         this.emailAddress.email_address_caps = value.toUpperCase();
+        this.invalid_domain = false;
+        this.emailAddress.invalid_email = false;
     }
 
     public ngOnChanges(changes: SimpleChanges) {
@@ -74,6 +78,7 @@ export class fieldEmailEmailAddress implements OnChanges
 
         if (this.backup == this.emailAddress.email_address) return;
 
+        this.parentCmp.setFieldError('checking');
         this.validateEmailAddress();
         this.validateDomain().then((() => this.onBlur.emit()));
 
@@ -111,6 +116,8 @@ export class fieldEmailEmailAddress implements OnChanges
                         this.checkingDomain = false;
                         this.emailAddress.invalid_email = res.invalid_email || res.invalid_domain ? 1 : 0;
                         this.invalid_domain = res.invalid_domain;
+                        this.parentCmp.clearFieldError();
+
                         emitChange(true);
                     }
                 })

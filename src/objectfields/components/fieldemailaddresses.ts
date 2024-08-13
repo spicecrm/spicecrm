@@ -11,6 +11,8 @@ import {Router} from '@angular/router';
 import {broadcast} from "../../services/broadcast.service";
 import {backend} from "../../services/backend.service";
 import {modal} from "../../services/modal.service";
+import {forkJoin} from "rxjs";
+import {map} from "rxjs/operators";
 
 declare var _;
 
@@ -47,6 +49,10 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * property for loading spinner
      */
     public isloading: boolean;
+    /**
+     * when the single mode is active save an email addresses list of other not primary addresses if exist
+     */
+    public singleModeHiddenAddresses = [];
 
     /**
      * holds the new input email address data
@@ -74,6 +80,21 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
     public ngOnInit() {
         this.initialize();
         this.subscribeToModeChange();
+    }
+
+    public openHiddenAddressesModal() {
+
+        const options = this.singleModeHiddenAddresses.map(e => ({
+            value: e.id,
+            disabled: !this.view.isEditMode() || e.invalid_email == 1,
+            display: `${e.email_address} ${e.invalid_email == 1 ? `(${this.language.getLabel('LBL_INVALID_EMAIL')})` : ''}`
+        }));
+
+        this.modal.prompt('input', null, 'LBL_EMAIL_ADDRESSES', 'default', null, options, 'radio')
+            .subscribe(answer => {
+                if (!answer || !this.view.isEditMode()) return;
+                this.setPrimary(this.singleModeHiddenAddresses.find(e => e.id == answer));
+            });
     }
 
     /**
@@ -195,13 +216,19 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
 
         this.subscriptions.add(
             this.model.observeFieldChanges('email_addresses').subscribe(() => {
-                const email_addresses = this.model.getRelatedRecords('email_addresses');
-                this.emailAddresses = !this.fieldconfig.singleMode ? email_addresses : email_addresses.filter(e => e.primary_address == 1);
+
+                this.emailAddresses = this.model.getRelatedRecords('email_addresses');
+
+                if (this.fieldconfig.singleMode && this.emailAddresses.length > 0) {
+                    this.singleModeHiddenAddresses = this.emailAddresses.filter(e => e.primary_address != 1);
+                    const address = this.emailAddresses.find(e => e.primary_address == 1);
+                    this.emailAddresses = address ? [address] : [];
+                }
 
                 // check if we have at least one email address and if we are in is adding but no email has been inputted
                 // this is the case if we have a new record or edit an existing without email address but from other areas an email address is added
                 // then cancel the adding process so only the now one email address remains
-                if (email_addresses.length > 0 && this.isAdding) {
+                if (this.emailAddresses.length > 0 && this.isAdding) {
                     if (!this.inputNewEmailAddress.email_address) this.isAdding = false;
                 }
 
@@ -241,8 +268,13 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      */
     public initialize() {
 
-        const email_addresses = this.model.getRelatedRecords('email_addresses');
-        this.emailAddresses = !this.fieldconfig.singleMode ? email_addresses : email_addresses.filter(e => e.primary_address == 1);
+        this.emailAddresses = this.model.getRelatedRecords('email_addresses');
+
+        if (this.fieldconfig.singleMode && this.emailAddresses.length > 0) {
+            this.singleModeHiddenAddresses = this.emailAddresses.filter(e => e.primary_address != 1);
+            const address = this.emailAddresses.find(e => e.primary_address == 1);
+            this.emailAddresses = address ? [address] : [];
+        }
 
         if (!this.isEditMode()) return;
 
@@ -322,7 +354,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
         const unique = [];
         const deletedIds = this.emailAddresses.filter(emailAddress => !emailAddress.email_address).map(e => e.id);
 
-        this.emailAddresses
+        this.emailAddresses.concat(this.singleModeHiddenAddresses)
             .filter(emailAddress => !!emailAddress.email_address)
             .forEach(emailAddress => {
                 if (!unique.some(e => e.email_address == emailAddress.email_address)) {
@@ -348,6 +380,28 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
             this.isAdding = false;
             this.setCanAdd();
         }
+    }
+
+    /**
+     * confirm reset the bounce counter field
+     * @param emailAddress
+     */
+    public confirmResetBounceCounter(emailAddress) {
+        this.modal.confirm('MSG_RESET_BOUNCE_COUNTER', 'MSG_RESET_BOUNCE_COUNTER').subscribe(answer => {
+            if (!answer) return;
+            emailAddress.bounced_count = 0;
+            this.setEmailAddressesField();
+        });
+    }
+
+    /**
+     * update opt in status
+     * @param status
+     * @param emailAddress
+     */
+    public updateOptInStatus(status: 'opted_in' | 'pending' | 'opted_out', emailAddress) {
+        emailAddress.opt_in_status = status;
+        this.setEmailAddressesField();
     }
 }
 
