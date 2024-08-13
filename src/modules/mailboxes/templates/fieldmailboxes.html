@@ -6,15 +6,23 @@
         </ng-container>
     </ng-container>
 </field-generic-display>
-<div *ngIf="isEditMode()" class="slds-form-element">
-    <div class="slds-form-element__control" [ngClass]="getFieldClass()">
+<div *ngIf="isEditMode()" class="slds-form-element slds-grid">
+    <div class="slds-form-element__control slds-m-right--small" [ngClass]="getFieldClass()">
         <div class="slds-select_container slds-m-vertical--xx-small">
-            <select class="slds-select" [disabled]="options.length == 0" [(ngModel)]="value" (ngModelChange)="setToPreferences($event)">
+            <select class="slds-select" [disabled]="options.length == 0" [(ngModel)]="value" (ngModelChange)="onChange($event)">
                 <ng-container *ngFor="let o of options; trackBy: trackByFn">
                     <option [value]="o.value" >{{o.display}}</option>
                 </ng-container>
             </select>
         </div>
         <field-messages [fieldname]="fieldname"></field-messages>
+    </div>
+    <div *ngIf="!zipHidden" class="slds-size--1-of-4 slds-grid slds-grid--align-spread">
+        <system-checkbox [disabled]="zipDisabled" [ngModel]="model.getField('zip_compress')" (ngModelChange)="setZip($event)"></system-checkbox>
+        <system-label label="LBL_ZIP_COMPRESS"></system-label>
+    </div>
+    <div *ngIf="!receiptHidden" class="slds-size--1-of-4 slds-grid slds-grid--align-spread">
+        <system-checkbox [disabled]="receiptDisabled" [ngModel]="model.getField('send_read_receipt')" (ngModelChange)="setReadReceipt($event)"></system-checkbox>
+        <system-label label="LBL_SEND_READ_RECEIPT"></system-label>
     </div>
 </div>
