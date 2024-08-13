@@ -17,7 +17,7 @@
             <img width="50px" height="50px" [src]="getWeatherIconUrl(dayHourToShow.weather[0].icon)">
             <div class="slds-text-heading--large slds-grid slds-grid--vertical-align-center">{{getTemperature(dayHourToShow.main.temp)}}°C</div>
         </div>
-        <div class="slds-size--2-of-2  slds-p-left--medium">
+        <div class="slds-size--1-of-2  slds-p-left--medium">
             <div class="slds-text-body--regular">Clouds: {{dayHourToShow.clouds.all}}%</div>
             <div class="slds-text-body--regular">Humidity: {{dayHourToShow.main.humidity}}%</div>
             <div class="slds-text-body--regular">Wind: {{getWind(dayHourToShow.wind)}}km/h</div>
