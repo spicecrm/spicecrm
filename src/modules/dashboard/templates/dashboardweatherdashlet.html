@@ -13,7 +13,7 @@
         </div>
     </div>
     <div *ngIf="dayHourToShow" class="slds-grid slds-p-horizontal--x-small">
-        <div class="slds-grid slds-size--1-2 slds-grid--vertical-align-center">
+        <div class="slds-grid slds-size--1-of-2 slds-grid--vertical-align-center">
             <img width="50px" height="50px" [src]="getWeatherIconUrl(dayHourToShow.weather[0].icon)">
             <div class="slds-text-heading--large slds-grid slds-grid--vertical-align-center">{{getTemperature(dayHourToShow.main.temp)}}°C</div>
         </div>
