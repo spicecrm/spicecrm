@@ -2212,10 +2212,6 @@ abstract class DBManager
                     }
                     break;
             }
-        } else {
-            if (!empty($val) && !empty($fieldDef['len']) && strlen($val) > $fieldDef['len']) {
-                $val = $this->truncate($val, $fieldDef['len']);
-            }
         }
 
         if (is_null($val)) {
