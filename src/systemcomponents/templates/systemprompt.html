@@ -29,14 +29,14 @@
                     <ng-container *ngIf="options && optionsAs !== 'button'">
                         <div *ngIf="optionsAs !== 'radio'; else radioGroupContainer" class="slds-select_container">
                             <select #selectField class="slds-select" [(ngModel)]="value">
-                                <option *ngFor="let option of options" [value]="option.value">
-                                    {{option.display}}
+                                <option *ngFor="let option of options" [value]="option.value" [disabled]="option.disabled">
+                                    <system-label [label]="option.display"/>
                                 </option>
                             </select>
                         </div>
                         <ng-template #radioGroupContainer>
-                            <system-input-radio *ngFor="let option of options" [name]="radioGroupName" [value]="option.value" [(ngModel)]="value" style="display: block">
-                                {{option.display}}
+                            <system-input-radio *ngFor="let option of options" [name]="radioGroupName" [value]="option.value" [(ngModel)]="value" [disabled]="option.disabled" style="display: block">
+                                <system-label [label]="option.display"/>
                             </system-input-radio>
                         </ng-template>
                     </ng-container>
