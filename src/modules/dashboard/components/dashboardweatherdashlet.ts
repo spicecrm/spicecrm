@@ -11,7 +11,11 @@ import {HttpClient} from "@angular/common/http";
 */
 declare var moment: any;
 
+/**
+ * a simple dashtlet gatheriong the weather at the local location
+ */
 @Component({
+    selector: 'dashboard-weather-dashlet',
     templateUrl: '../templates/dashboardweatherdashlet.html',
 })
 export class DashboardWeatherDashlet implements OnInit {
