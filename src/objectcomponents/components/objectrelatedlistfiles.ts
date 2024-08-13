@@ -218,7 +218,8 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         // reload file list
         switch (message.messagetype) {
             case 'attachments.loaded':
-                if(message.messagedata.reload) {
+                // load attachments only, if we are in the same model
+                if(message.messagedata.reload && message.messagedata.module == this.model.module && message.messagedata.id == this.model.id) {
                     this.setFilteredFiles('category', this.selectedCategoryId);
                 }
                 break;

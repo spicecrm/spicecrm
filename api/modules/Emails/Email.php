@@ -271,6 +271,10 @@ class Email extends SpiceBean
             if ($result['result'] == true) {
                 $this->status = 'sent';
 
+                foreach ($this->to() as $address) {
+                    EmailAddress::resetBounceCounter($address['email']);
+                }
+
             } else {
                 $this->status = $result['errors'] ? 'send_error' : 'created';
             }
@@ -1020,7 +1024,7 @@ class Email extends SpiceBean
     }
 
 
-    private function extractAddresses($items)
+    public function extractAddresses($items)
     {
         if (is_array($items)) {
             $addresses = [];

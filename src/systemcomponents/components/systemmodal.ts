@@ -76,7 +76,7 @@ export class SystemModal {
     get containerStyle() {
         if (this.layout.screenwidth == 'small') {
             return {
-                'padding': '0px',
+                'padding': '.25rem',
                 'margin': '0px',
                 'border-radius': '0px'
             };

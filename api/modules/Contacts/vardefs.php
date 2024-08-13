@@ -214,16 +214,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'type' => 'date',
                 'comment' => 'The birthdate of the contact'
             ],
-            'accounts' => [
-                'name' => 'accounts',
-                'type' => 'link',
-                'relationship' => 'accounts_contacts',
-                'link_type' => 'one',
-                'source' => 'non-db',
-                'vname' => 'LBL_ACCOUNTS',
-                'duplicate_merge' => false,
-                'module' => 'Accounts'
-            ],
+#migrated
+//            'accounts' => [
+//                'name' => 'accounts',
+//                'type' => 'link',
+//                'relationship' => 'accounts_contacts',
+//                'link_type' => 'one',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_ACCOUNTS',
+//                'duplicate_merge' => false,
+//                'module' => 'Accounts'
+//            ],
             'prospects' => [
                 'name' => 'prospects',
                 'type' => 'link',
@@ -313,13 +314,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source'       => 'non-db',
                 'vname'        => 'LBL_LETTERS',
             ],
-            'documents' => [
-                'name' => 'documents',
-                'type' => 'link',
-                'relationship' => 'documents_contacts',
-                'source' => 'non-db',
-                'vname' => 'LBL_DOCUMENTS',
-            ],
+#migrated
+//            'documents' => [
+//                'name' => 'documents',
+//                'type' => 'link',
+//                'relationship' => 'documents_contacts',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_DOCUMENTS',
+//            ],
             'leads' => [
                 'name' => 'leads',
                 'type' => 'link',

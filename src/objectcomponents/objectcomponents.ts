@@ -228,6 +228,10 @@ import {ObjectRelatedDuplicatesCardFooter} from "./components/objectrelateddupli
 import {ObjectProjectActivityTrackTimeIcon} from "./components/objectprojectactivitytracktimeicon";
 import {ObjectTemplatesEditor} from "./components/objecttemplateseditor";
 import {ObjectTemplatesPreview} from "./components/objecttemplatespreview";
+import {ObjectActionDownloadEmailButton} from "./components/objectactiondownloademailbutton";
+import {ObjectListHeaderActionsExportPdfButton} from "./components/objectlistheaderactionsexportpdfbutton";
+import {ObjectActionPdfExportRelatedButton} from "./components/objectactionpdfexportrelatedbutton";
+import {ObjectTemplateSendTestEmailModal} from "./components/objecttemplatesendtestemailmodal";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -261,6 +265,7 @@ import {ObjectTemplatesPreview} from "./components/objecttemplatespreview";
         ObjectListHeaderActionsDeleteButton,
         ObjectListHeaderActionsMergeButton,
         ObjectListHeaderActionsExportCSVButton,
+        ObjectListHeaderActionsExportPdfButton,
         ObjectFieldFilterPipe,
         ObjectListHeaderActionsExportCSVSelectFields,
         ObjectListHeaderActionsExportTargetlistButton,
@@ -353,6 +358,7 @@ import {ObjectTemplatesPreview} from "./components/objecttemplatespreview";
         ObjectRelatedDuplicates,
         ObjectRelatedDuplicateTile,
         ObjectRelatedlistAll,
+        ObjectActionPdfExportRelatedButton,
         ObjectRelatedlistTable,
         ObjectRelatedlistSequenced,
         ObjectRelatedListSequencedItem,
@@ -430,7 +436,9 @@ import {ObjectTemplatesPreview} from "./components/objecttemplatespreview";
         ObjectRelatedDuplicatesCardFooter,
         ObjectProjectActivityTrackTimeIcon,
         ObjectTemplatesEditor,
-        ObjectTemplatesPreview
+        ObjectTemplatesPreview,
+        ObjectActionDownloadEmailButton,
+        ObjectTemplateSendTestEmailModal
     ],
     exports: [
         ObjectListViewHeader,
@@ -445,6 +453,7 @@ import {ObjectTemplatesPreview} from "./components/objecttemplatespreview";
         ObjectSelectButton,
         ObjectRelatedList,
         ObjectRelatedlistTable,
+        ObjectActionPdfExportRelatedButton,
         ObjectRelatedListItem,
         ObjectRecordFieldset,
         ObjectRecordFieldsetField,
@@ -480,7 +489,10 @@ import {ObjectTemplatesPreview} from "./components/objecttemplatespreview";
         ObjectRelatedListUrls,
         ObjectRelatedCardUrl,
         ObjectActionNewButton,
-        ObjectRecordFieldsetContainer
+        ObjectRecordFieldsetContainer,
+        ObjectActionContainerItem,
+        ObjectActionDownloadEmailButton,
+        ObjectTemplateSendTestEmailModal
     ]
 })
 export class ObjectComponents {}

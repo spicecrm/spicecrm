@@ -651,7 +651,7 @@ export class modelattachments implements OnDestroy {
         // reload file list
         switch (message.messagetype) {
             case 'attachments.uploaded':
-                if (message.messagedata.reload) {
+                if(message.messagedata.reload && message.messagedata.module == this.module && message.messagedata.id == this.id) {
                     this.files = message.messagedata.uploadedFiles;
                 }
                 break;

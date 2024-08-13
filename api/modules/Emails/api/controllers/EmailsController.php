@@ -6,6 +6,7 @@ use SpiceCRM\data\BeanFactory;
 use Exception;
 use SpiceCRM\extensions\modules\Mailboxes\Handlers\OutlookAttachmentHandler;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
@@ -557,6 +558,47 @@ class EmailsController
     private function handleGSuiteAttachments(Email $email, $attachmentData) {
         $attachmentHandler = new GSuiteAttachmentHandler($email, $attachmentData);
         return $attachmentHandler->saveAttachments();
+    }
+
+    public function getEmailAsAttachment(Request $req, Response $res, array $args){
+        $db = DBManagerFactory::getInstance();
+
+        $thisEmailAsAttachment = $db->fetchByAssoc($db->query("SELECT * FROM emails WHERE id = '{$args['beanId']}'"));
+
+        // check if we found the attachment oand the file is here
+        if (!$thisEmailAsAttachment || !file_exists(StreamFactory::getPathPrefix('upload') . ($thisEmailAsAttachment['file_md5'] ?: $thisEmailAsAttachment['id']))) {
+            throw new NotFoundException('attachment not found');
+        }
+
+        $file = base64_encode(file_get_contents(StreamFactory::getPathPrefix('upload') . ($thisEmailAsAttachment['file_md5'] ?: $thisEmailAsAttachment['id'])));
+        $attachment = [
+            'id' => $thisEmailAsAttachment['id'],
+            'date' => $thisEmailAsAttachment['date_sent'],
+            'filename' => $thisEmailAsAttachment['file_name'],
+            'file_mime_type' => $thisEmailAsAttachment['file_mime_type'],
+            'file' => $file,
+            'filemd5' => $thisEmailAsAttachment['file_md5'],
+            'external_id' => $thisEmailAsAttachment['external_id']
+        ];
+
+        return $res->withJson($attachment);
+    }
+    public function sendTestEmail(Request $req, Response $res, array $args): Response{
+        $body = $req->getParsedBody();
+
+        // create a new seed email bean
+        $email = BeanFactory::getBean('Emails');
+        $email->mailbox_id = $body['mailbox_id'];
+        $email->name = $body['email_subject'];
+        $email->body = $body['email_body'];
+        $email->to_addrs = $email->extractAddresses($body['recipients']);
+
+        // clone the attachments
+        $email->id = SpiceUtils::createGuid();
+
+        $email->sendEmail();
+
+        return $res->withJson(['success' => true]);
     }
 
 }

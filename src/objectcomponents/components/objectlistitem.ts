@@ -17,6 +17,7 @@ import {model} from '../../services/model.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {modellist} from '../../services/modellist.service';
 import {view} from '../../services/view.service';
+import {layout} from "../../services/layout.service";
 
 /**
  * renders a TR item for the modellist
@@ -92,10 +93,21 @@ export class ObjectListItem implements OnInit, OnDestroy {
      */
     public subscriptions: any[] = [];
 
+    /**
+     * expanded boolean for mobile view
+     */
+    public expanded: boolean = false;
+
     @Output('object-list-item') public listItemEditing: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(public model: model, public modelutilities: modelutilities, public modellist: modellist, public view: view, public router: Router, public language: language, public cdref: ChangeDetectorRef) {
-        this.view.displayLabels = false;
+    constructor(public model: model,
+                public modelutilities: modelutilities,
+                public modellist: modellist,
+                public view: view,
+                public router: Router,
+                public language: language,
+                public cdref: ChangeDetectorRef,
+                public layout: layout) {
     }
 
     /**
@@ -119,6 +131,7 @@ export class ObjectListItem implements OnInit, OnDestroy {
 
         this.view.isEditable = this.inlineedit && this.model.checkAccess('edit');
         this.view.displayLinks = this.displaylinks;
+        this.view.displayLabels = false;
 
         // register that the check is run
         this.subscriptions.push(this.model.data$.subscribe(data => this.cdref.detectChanges()));
@@ -139,10 +152,6 @@ export class ObjectListItem implements OnInit, OnDestroy {
         }
     }
 
-    public navigateDetail() {
-        this.router.navigate(['/module/' + this.model.module + '/' + this.model.id]);
-    }
-
     get editing() {
         let viewMode: string = '';
         this.view.mode$.subscribe(mode => {
@@ -150,5 +159,14 @@ export class ObjectListItem implements OnInit, OnDestroy {
             }
         )
         return viewMode;
+    }
+
+    /**
+     * toggle expanded for mobile view
+     * @param e
+     */
+    public toggleExpanded(e: MouseEvent) {
+        e.stopPropagation();
+        this.expanded = !this.expanded;
     }
 }
