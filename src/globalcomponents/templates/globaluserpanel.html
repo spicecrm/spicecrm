@@ -45,7 +45,7 @@
     <!--div class="OptionsSeparator"><system-label label="LBL_OPTIONS"></system-label></div-->
     <div class="slds-p-around--small slds-form--stacked">
         <system-language-selector (selected)="close()"/>
-        <div class="slds-form-element">
+        <div class="slds-form-element slds-m-top--x-small">
             <label class="slds-form-element__label"><system-label label="LBL_SELECT_TIMEZONE"/></label>
             <system-input-timezone [(ngModel)]="currentTz" denyEmpty="true"/>
         </div>

@@ -144,14 +144,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Document'] = [
             'side' => 'left',
             'vname' => 'LBL_REVISIONS',
         ],
-        'orgunits' => [
-            'name' => 'orgunits',
-            'type' => 'link',
-            'relationship' => 'documents_orgunits',
-            'source' => 'non-db',
-            'module' => 'OrgUnits',
-            'vname' => 'LBL_ORGUNITS',
-        ],
+#migrated
+//        'orgunits' => [
+//            'name' => 'orgunits',
+//            'type' => 'link',
+//            'relationship' => 'documents_orgunits',
+//            'source' => 'non-db',
+//            'module' => 'OrgUnits',
+//            'vname' => 'LBL_ORGUNITS',
+//        ],
         'contracts' => [
             'name' => 'contracts',
             'type' => 'link',
@@ -167,35 +168,39 @@ SpiceDictionaryHandler::getInstance()->dictionary['Document'] = [
             'source' => 'non-db',
             'vname' => 'LBL_LEADS',
         ],
-        'accounts' => [
-            'name' => 'accounts',
-            'type' => 'link',
-            'relationship' => 'documents_accounts',
-            'source' => 'non-db',
-            'vname' => 'LBL_ACCOUNTS_SUBPANEL_TITLE',
-        ],
-        'contacts' => [
-            'name' => 'contacts',
-            'type' => 'link',
-            'relationship' => 'documents_contacts',
-            'source' => 'non-db',
-            'vname' => 'LBL_CONTACTS_SUBPANEL_TITLE',
-        ],
-        'opportunities' => [
-            'name' => 'opportunities',
-            'type' => 'link',
-            'relationship' => 'documents_opportunities',
-            'source' => 'non-db',
-            'vname' => 'LBL_OPPORTUNITIES_SUBPANEL_TITLE',
-        ],
-        'projects' => [
-            'name' => 'projects',
-            'type' => 'link',
-            'relationship' => 'documents_projects',
-            'source' => 'non-db',
-            'module' => 'Projects',
-            'vname' => 'LBL_PROJECTS',
-        ],
+#migrated
+//        'accounts' => [
+//            'name' => 'accounts',
+//            'type' => 'link',
+//            'relationship' => 'documents_accounts',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_ACCOUNTS_SUBPANEL_TITLE',
+//        ],
+#migrated
+//        'contacts' => [
+//            'name' => 'contacts',
+//            'type' => 'link',
+//            'relationship' => 'documents_contacts',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CONTACTS_SUBPANEL_TITLE',
+//        ],
+#migrated
+//        'opportunities' => [
+//            'name' => 'opportunities',
+//            'type' => 'link',
+//            'relationship' => 'documents_opportunities',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_OPPORTUNITIES_SUBPANEL_TITLE',
+//        ],
+#migrated
+//        'projects' => [
+//            'name' => 'projects',
+//            'type' => 'link',
+//            'relationship' => 'documents_projects',
+//            'source' => 'non-db',
+//            'module' => 'Projects',
+//            'vname' => 'LBL_PROJECTS',
+//        ],
         'related_doc_id' => [
             'name' => 'related_doc_id',
             'vname' => 'LBL_RELATED_DOCUMENT_ID',

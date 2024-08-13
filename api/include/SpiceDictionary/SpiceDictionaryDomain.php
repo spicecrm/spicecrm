@@ -90,7 +90,8 @@ class SpiceDictionaryDomain
             // backward compatibility to push options as well
             if($definition->sysdomainfieldvalidation_id) {
                 $validation = new SpiceDictionaryDomainValidation($definition->sysdomainfieldvalidation_id);
-                if($validation->domainvalidation->validation_type == 'options') $definition->options = $validation->domainvalidation->name;
+                // enum is the deprecated value
+                if($validation->domainvalidation->validation_type == 'options' || $validation->domainvalidation->validation_type == 'enum') $definition->options = $validation->domainvalidation->name;
             }
 
             // write to the cached fields
