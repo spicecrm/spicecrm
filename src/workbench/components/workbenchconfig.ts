@@ -39,6 +39,10 @@ export class WorkbenchConfig implements OnChanges {
 
         // remove any options elements in case some exist and remove keys that are not in the corresponding field type options
         for (let option of this.optionsElements) {
+            let optionType = option.instance.option.option;
+            if(optionType in this.configValues) {
+                delete this.configValues[optionType]
+            }
             option.destroy();
         }
         this.optionsElements = [];
