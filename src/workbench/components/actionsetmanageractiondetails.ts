@@ -46,7 +46,8 @@ export class ActionsetManagerActionDetails implements OnChanges {
         {display: "OPEN", value: "OPEN", component: "ObjectActionOpenButton"},
         {display: "CANCEL", value: "CANCEL", component: "ObjectActionCancelButton"},
         {display: "SAVE", value: "SAVE", component: "ObjectActionSaveButton"},
-        {display: "SAVERELATED", value: "SAVERELATED", component: "ObjectActionSaveRelatedButton"}
+        {display: "SAVERELATED", value: "SAVERELATED", component: "ObjectActionSaveRelatedButton"},
+        {display: "PDF", value: "PDF", component: "ObjectActionPdfExportRelatedButton"}
     ];
 
     constructor(public backend: backend, public metadata: metadata, public language: language, public view: view) {

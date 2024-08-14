@@ -134,14 +134,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Project'] = [
             'source' => 'non-db',
             'vname' => 'LBL_EMAILS',
         ],
-        'documents' => [
-            'name' => 'documents',
-            'type' => 'link',
-            'relationship' => 'documents_projects',
-            'source' => 'non-db',
-            'module' => 'Documents',
-            'vname' => 'LBL_DOCUMENTS',
-        ],
+#migrated
+//        'documents' => [
+//            'name' => 'documents',
+//            'type' => 'link',
+//            'relationship' => 'documents_projects',
+//            'source' => 'non-db',
+//            'module' => 'Documents',
+//            'vname' => 'LBL_DOCUMENTS',
+//        ],
         'scrumthemes' => [
             'name' => 'scrumthemes',
             'type' => 'link',

@@ -20,15 +20,10 @@
         </div>
     </div>
     <div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
-        <div class="slds-form-element">
+        <div class="slds-form-element slds-size--1-of-1">
             <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
-            <div class="slds-form-element__control">
-                <div class="slds-select_container" style="min-width:250px;">
-                    <select class="slds-select" [(ngModel)]="currentModule" [disabled]="!initialized" (change)="selectedModule()">
-                        <option value="*">*</option>
-                        <option *ngFor="let sysModule of sysModules" [value]="sysModule">{{sysModule}}</option>
-                    </select>
-                </div>
+            <div class="slds-form-element__control slds-size--1-of-8">
+                <system-input-module [(ngModel)]="currentModule" [disabled]="!initialized" [displayAsterisk]="true" (ngModelChange)="selectedModule()"/>
             </div>
         </div>
     </div>

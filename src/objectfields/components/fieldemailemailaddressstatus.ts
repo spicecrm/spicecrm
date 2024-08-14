@@ -1,7 +1,8 @@
 /**
  * @module ObjectFields
  */
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'field-email-emailaddress-status',
@@ -13,6 +14,11 @@ export class fieldEmailEmailAddressStatus {
      * holds the status of the email address
      */
     @Input() public status: 'opted_in' | 'pending' | 'opted_out';
+
+    @Output() private status$ = new EventEmitter<'opted_in' | 'pending' | 'opted_out'>();
+
+    constructor(private modal: modal) {
+    }
 
     /**
      * @return opt in status color class
@@ -60,5 +66,20 @@ export class fieldEmailEmailAddressStatus {
             default:
                 return 'LBL_OPT_IN_STATUS';
         }
+    }
+
+    public openSetStatusModal() {
+
+        const options = [
+            {value: 'opted_in', display: 'LBL_OPTED_IN'},
+            {value: 'pending', display: 'LBL_PENDING'},
+            {value: 'opted_out', display: 'LBL_OPTED_OUT'}
+        ];
+
+        this.modal.prompt('input', null, 'LBL_EMAIL_ADDRESSES', 'default', this.status, options, 'radio')
+            .subscribe(answer => {
+                if (!answer) return;
+                this.status$.emit(answer);
+            });
     }
 }
