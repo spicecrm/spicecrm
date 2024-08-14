@@ -229,6 +229,9 @@ import {ObjectProjectActivityTrackTimeIcon} from "./components/objectprojectacti
 import {ObjectTemplatesEditor} from "./components/objecttemplateseditor";
 import {ObjectTemplatesPreview} from "./components/objecttemplatespreview";
 import {ObjectActionDownloadEmailButton} from "./components/objectactiondownloademailbutton";
+import {ObjectListHeaderActionsExportPdfButton} from "./components/objectlistheaderactionsexportpdfbutton";
+import {ObjectActionPdfExportRelatedButton} from "./components/objectactionpdfexportrelatedbutton";
+import {ObjectTemplateSendTestEmailModal} from "./components/objecttemplatesendtestemailmodal";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -262,6 +265,7 @@ import {ObjectActionDownloadEmailButton} from "./components/objectactiondownload
         ObjectListHeaderActionsDeleteButton,
         ObjectListHeaderActionsMergeButton,
         ObjectListHeaderActionsExportCSVButton,
+        ObjectListHeaderActionsExportPdfButton,
         ObjectFieldFilterPipe,
         ObjectListHeaderActionsExportCSVSelectFields,
         ObjectListHeaderActionsExportTargetlistButton,
@@ -354,6 +358,7 @@ import {ObjectActionDownloadEmailButton} from "./components/objectactiondownload
         ObjectRelatedDuplicates,
         ObjectRelatedDuplicateTile,
         ObjectRelatedlistAll,
+        ObjectActionPdfExportRelatedButton,
         ObjectRelatedlistTable,
         ObjectRelatedlistSequenced,
         ObjectRelatedListSequencedItem,
@@ -432,7 +437,8 @@ import {ObjectActionDownloadEmailButton} from "./components/objectactiondownload
         ObjectProjectActivityTrackTimeIcon,
         ObjectTemplatesEditor,
         ObjectTemplatesPreview,
-        ObjectActionDownloadEmailButton
+        ObjectActionDownloadEmailButton,
+        ObjectTemplateSendTestEmailModal
     ],
     exports: [
         ObjectListViewHeader,
@@ -447,6 +453,7 @@ import {ObjectActionDownloadEmailButton} from "./components/objectactiondownload
         ObjectSelectButton,
         ObjectRelatedList,
         ObjectRelatedlistTable,
+        ObjectActionPdfExportRelatedButton,
         ObjectRelatedListItem,
         ObjectRecordFieldset,
         ObjectRecordFieldsetField,
@@ -484,7 +491,8 @@ import {ObjectActionDownloadEmailButton} from "./components/objectactiondownload
         ObjectActionNewButton,
         ObjectRecordFieldsetContainer,
         ObjectActionContainerItem,
-        ObjectActionDownloadEmailButton
+        ObjectActionDownloadEmailButton,
+        ObjectTemplateSendTestEmailModal
     ]
 })
 export class ObjectComponents {}
