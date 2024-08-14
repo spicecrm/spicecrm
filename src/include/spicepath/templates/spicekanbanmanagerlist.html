@@ -15,10 +15,10 @@
                 </h2>
             </div>
             <ul class="slds-has-dividers_around-space slds-p-around--x-small" cdkDropList
-                id = "activeStagesList"
+                id = "activeStagesList" cdkDropListLockAxis="y"
                 [cdkDropListData]="activeStages" [cdkDropListConnectedTo]="['notInKanbanList']"
                 (cdkDropListDropped)="drop($event)">
-                <li *ngFor="let activeStage of activeStages;  let index = index" class="slds-item slds-text-link_reset"
+                <li *ngFor="let activeStage of activeStages;  let index = index" class="slds-item slds-text-link_reset slds-drag--preview spice-drag-placeholder-visible"
                     cdkDrag [cdkDragData]="activeStage"
                     (click)="openDetails(activeStage)"
                     [ngClass]="{'slds-is-selected slds-color__background_gray-5': selected == activeStage.id}"
@@ -37,10 +37,10 @@
                     <system-label label="LBL_INACTIVE"></system-label>
                 </h2>
             </div>
-            <ul class="slds-has-dividers_around-space slds-p-around--x-small" cdkDropList id = "notInKanbanList"
+            <ul class="slds-has-dividers_around-space slds-p-around--x-small" cdkDropList id = "notInKanbanList" cdkDropListLockAxis="y"
                 [cdkDropListData]="inactiveStages" [cdkDropListConnectedTo]="['activeStagesList']" style='min-height: 20px'
                 (cdkDropListDropped)="drop($event)">
-                <li *ngFor="let nik of inactiveStages;  let index = index" class="slds-item slds-text-link_reset" cdkDrag [cdkDragData]="nik"
+                <li *ngFor="let nik of inactiveStages;  let index = index" class="slds-item slds-text-link_reset  slds-drag--preview spice-drag-placeholder-visible" cdkDrag [cdkDragData]="nik"
                     (click)="openDetails(nik)"
                     [ngClass]="{'slds-is-selected slds-color__background_gray-5': selected == nik.id}">
 
