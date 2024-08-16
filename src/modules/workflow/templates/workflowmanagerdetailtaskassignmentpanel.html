@@ -6,7 +6,7 @@
     <field-label fieldname="assigntouser_name" [fieldconfig]="{label: 'LBL_ASSIGNED_TO'}"></field-label>
     <field-container field="assigntouser_name"></field-container>
 </div>
-<div *ngIf="model.data.assigntype == '7'">
+<div *ngIf="model.data.assigntype == '7' || model.data.assigntype == '9'">
     <field-label fieldname="assigntoorgunit_name" [fieldconfig]="{label: 'LBL_ORGUNIT',helpText:'LBL_HELP_WORKFLOWTASK_ASSIGNMENT_ORGUNIT'}"></field-label>
     <field-container field="assigntoorgunit_name"></field-container>
 </div>
