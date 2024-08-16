@@ -1024,7 +1024,7 @@ class Email extends SpiceBean
     }
 
 
-    private function extractAddresses($items)
+    public function extractAddresses($items)
     {
         if (is_array($items)) {
             $addresses = [];

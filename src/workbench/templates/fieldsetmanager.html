@@ -86,7 +86,7 @@
                                 <a href="javascript:void(0);" role="presentation" class="slds-truncate">{{getDisplayName(currentFieldSetItem)}}</a>
                             </div>
                             <div class="slds-col_bump-left">
-                                <button [disabled]="!view.isEditMode() || currentFieldSetItem.type == 'field' || currentFieldSetItem.customModeGlobalField" class="slds-button slds-button--icon" title="add item"  (click)="addItem(currentFieldSetItem.data.fieldset)">
+                                <button [disabled]="!view.isEditMode() || currentFieldSetItem.type == 'field' || currentFieldSetItem.customModeGlobalField" class="slds-button slds-button--icon" title="add item"  (click)="addItem(currentFieldSetItem.item.fieldset)">
                                     <system-button-icon [icon]="'new'"></system-button-icon>
                                 </button>
                                 <button [disabled]="!view.isEditMode() || currentFieldSetItem.type == 'field'" class="slds-button slds-button--icon" title="customize" (click)="openCopyModal(currentFieldSetItem)">
@@ -115,8 +115,8 @@
             </div>
         </div>
         <div class="slds-size--2-of-5 slds-p-horizontal--small slds-p-vertical--x-small">
-            <fieldsetmanager-fieldset-details *ngIf="selectedItem?.type == 'fieldset'" [fieldset]="selectedItem"></fieldsetmanager-fieldset-details>
-            <fieldsetmanager-field-details *ngIf="selectedItem?.type == 'field'" [field]="selectedItem"></fieldsetmanager-field-details>
+            <fieldsetmanager-fieldset-details *ngIf="selectedItem.type == 'fieldset'" [fieldset]="selectedItem"></fieldsetmanager-fieldset-details>
+            <fieldsetmanager-field-details *ngIf="selectedItem.type == 'field'" [module]="currentModule" [field]="selectedItem"></fieldsetmanager-field-details>
         </div>
     </div>
     <div class="slds-text-align--right slds-p-around--small slds-border--top">

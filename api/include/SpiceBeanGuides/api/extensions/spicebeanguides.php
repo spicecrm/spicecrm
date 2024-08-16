@@ -11,29 +11,9 @@ use SpiceCRM\includes\Middleware\ValidationMiddleware;
 $RESTManager = RESTManager::getInstance();
 
 $routes = [
-
-    /*
-        feature_swagger refactoring: route not found in frontend
-        [
-            'method' => 'get',
-            'route' => '/common/spicebeanguide/{module}',
-            'oldroute' => '/spicebeanguide/{module}',
-            'class' => SpiceBeanGuidesController::class,
-            'function' => 'getStages',
-            'description' => '',
-            'options' => ['noAuth' => true, 'adminOnly' => false],
-            'parameters' => [
-                'module' => [
-                    'in' => 'path',
-                    'description' => 'the module corresponding to the table',
-                    'type' => ValidationMiddleware::TYPE_STRING,
-                    'example' => 'Opportunities'
-                ]
-            ]
-        ],*/
     [
         'method' => 'get',
-        'route' => '/common/spicebeanguide/{module}/{beanid}',
+        'route' => '/common/spicebeanguide/{guideId}/{module}/{beanid}',
         'oldroute' => '/spicebeanguide/{module}/{beanid}',
         'class' => SpiceBeanGuidesController::class,
         'function' => 'getBeanStages',
@@ -49,6 +29,12 @@ $routes = [
             'beanid' => [
                 'in' => 'path',
                 'description' => 'the id of the record',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'example' => '894562d5-d74b-4587-a10a-fabe7ec2f696',
+            ],
+            'guideId' => [
+                'in' => 'path',
+                'description' => 'the bean guide id',
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'example' => '894562d5-d74b-4587-a10a-fabe7ec2f696',
             ]

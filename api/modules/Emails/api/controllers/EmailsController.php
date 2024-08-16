@@ -583,6 +583,22 @@ class EmailsController
 
         return $res->withJson($attachment);
     }
+    public function sendTestEmail(Request $req, Response $res, array $args): Response{
+        $body = $req->getParsedBody();
 
+        // create a new seed email bean
+        $email = BeanFactory::getBean('Emails');
+        $email->mailbox_id = $body['mailbox_id'];
+        $email->name = $body['email_subject'];
+        $email->body = $body['email_body'];
+        $email->to_addrs = $email->extractAddresses($body['recipients']);
+
+        // clone the attachments
+        $email->id = SpiceUtils::createGuid();
+
+        $email->sendEmail();
+
+        return $res->withJson(['success' => true]);
+    }
 
 }
