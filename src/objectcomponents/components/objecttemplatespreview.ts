@@ -1,7 +1,7 @@
 /**
  * @module ModuleEmails
  */
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from "@angular/core";
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, Input} from "@angular/core";
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {backend} from "../../services/backend.service";
 import {model} from "../../services/model.service";
@@ -70,6 +70,8 @@ export class ObjectTemplatesPreview implements AfterViewInit {
      * @private
      */
     public parsedHtml: SafeResourceUrl;
+
+    public html: any;
     /**
      * holds the body html field name from the parent
      * @private
@@ -88,7 +90,8 @@ export class ObjectTemplatesPreview implements AfterViewInit {
                 public modal: modal,
                 public toast: toast,
                 public sanitizer: DomSanitizer,
-                public cdRef: ChangeDetectorRef) {
+                public cdRef: ChangeDetectorRef,
+                public injector: Injector) {
     }
 
     /**
@@ -179,6 +182,7 @@ export class ObjectTemplatesPreview implements AfterViewInit {
                         return loadingModal.unsubscribe();
                     }
                     this.parsedHtml = this.sanitizer.bypassSecurityTrustResourceUrl('data:text/html;charset=UTF-8,' + encodeURIComponent(data.html));
+                    this.html = data.html;
                     this.cdRef.detectChanges();
                     loadingModal.emit(true);
                     loadingModal.unsubscribe();
@@ -198,5 +202,14 @@ export class ObjectTemplatesPreview implements AfterViewInit {
      */
     public setViewType(value: string) {
         this.viewType = this.viewTypeOptions.find(type => type.value == value);
+    }
+
+    public sendEmail(){
+        this.modal.openModal('ObjectTemplateSendTestEmailModal', true, this.injector).subscribe(
+            modal => {
+                modal.instance.parsedHtml = this.parsedHtml;
+                modal.instance.email_body = this.html;
+            }
+        );
     }
 }

@@ -1,0 +1,55 @@
+<div *ngIf="selectedStage">
+    <system-collapsable-tab [collapsible]="true" tabtitle="LBL_DETAILS">
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-2 slds-p-around--x-small">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><system-label label="LBL_LABEL"></system-label></label>
+                    <system-input-label [(ngModel)]="selectedStage.stage_label"></system-input-label>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-p-around--x-small">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><system-label label="LBL_STAGE_ADD_DATA"></system-label></label>
+                    <system-icon-help-text [helpText]="language.getLabel('LBL_STAGE_ADD_DATA_HELP', '', 'long')"></system-icon-help-text>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="selectedStage.stage_add_data">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size_1-of-1 slds-p-around--x-small">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label"><system-label label="LBL_COMPONENTSET"></system-label></label>
+                <system-icon-help-text [helpText]="language.getLabel('LBL_STAGE_ADD_COMP_HELP', '', 'long')"></system-icon-help-text>
+                <system-input-componentset [(ngModel)]="selectedStage.stage_componentset"></system-input-componentset>
+            </div>
+        </div>
+        </div>
+
+        <div class="slds-grid slds-wrap slds-p-around--x-small">
+            <div class="slds-col">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><system-label label="LBL_TEXT"></system-label></label>
+                    <system-icon-help-text [helpText]="language.getLabel('LBL_SYSTEXT_HELP', '', 'long')"></system-icon-help-text>
+                </div>
+            </div>
+            <div class="slds-tabs_scoped">
+                <div class="slds-col">
+                    <ul class="slds-tabs_scoped__nav" role="tablist">
+                        <li *ngFor="let lang of systemLanguages" class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': lang.language == selectedLanguage}" (click)="switchTab(lang.language)" role="presentation">
+                            <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" [attr.aria-selected]="lang.language == selectedLanguage" >{{lang.display_label}}</a>
+                        </li>
+                    </ul>
+                    <div *ngFor="let lang of systemLanguages" [ngClass]="{'slds-show': lang.language == selectedLanguage,'slds-hide': lang.language != selectedLanguage}" class="slds-tabs_scoped__content" role="tabpanel">
+                        <system-richtext-editor [(ngModel)]="selectedStageText.name"></system-richtext-editor>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </system-collapsable-tab>
+    <spice-kanban-manager-checks [selectedStage]="selectedStage"></spice-kanban-manager-checks>
+</div>
+<div *ngIf="!selectedStage">
+    <label class="slds-form-element__label"><system-label label="LBL_MAKE_SELECTION_LEFT"></system-label></label>
+</div>

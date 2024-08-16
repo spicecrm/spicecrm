@@ -24,6 +24,7 @@ export class WorkbenchConfig implements OnChanges {
 
     @Input() public component: string = "";
     @Input() public configValues: any = {};
+    @Input() public module: string;
 
     public configOptions: any[] = [];
     public optionsElements: any[] = [];
@@ -39,6 +40,10 @@ export class WorkbenchConfig implements OnChanges {
 
         // remove any options elements in case some exist and remove keys that are not in the corresponding field type options
         for (let option of this.optionsElements) {
+            let optionType = option.instance.option.option;
+            if(optionType in this.configValues) {
+                delete this.configValues[optionType]
+            }
             option.destroy();
         }
         this.optionsElements = [];
@@ -71,6 +76,7 @@ export class WorkbenchConfig implements OnChanges {
                 cmpref => {
                     this.optionsElements.push(cmpref);
                     cmpref.instance.option = fieldconfig;
+                    cmpref.instance.module = this.module;
                     cmpref.instance.configValues = this.configValues;
                 }
             );

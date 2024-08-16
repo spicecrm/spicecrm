@@ -20,10 +20,10 @@
         </div>
     </div>
     <div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
-        <div class="slds-form-element">
+        <div class="slds-form-element slds-size--1-of-1">
             <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
-            <div class="slds-form-element__control">
-                <system-input-module [(ngModel)]="currentModule" [disabled]="!initialized" (ngModelChange)="selectedModule()"/>
+            <div class="slds-form-element__control slds-size--1-of-8">
+                <system-input-module [(ngModel)]="currentModule" [disabled]="!initialized" [displayAsterisk]="true" (ngModelChange)="selectedModule()"/>
             </div>
         </div>
     </div>
@@ -86,7 +86,7 @@
                     <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="selectedComponent.version"/>
                 </div>
             </div>
-            <workbench-config [component]="component" [configValues]="configValues"></workbench-config>
+            <workbench-config [module]="currentModule" [component]="component" [configValues]="configValues"></workbench-config>
         </div>
     </div>
 </div>
