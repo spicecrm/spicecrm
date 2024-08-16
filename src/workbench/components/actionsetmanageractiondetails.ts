@@ -21,6 +21,7 @@ import {view} from '../../services/view.service';
 export class ActionsetManagerActionDetails implements OnChanges {
 
     @Input() public action: any = {};
+    @Input() public module: string;
 
     public component: string = "";
     public component_backup: string = "";

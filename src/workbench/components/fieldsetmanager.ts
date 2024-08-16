@@ -38,7 +38,12 @@ export class FieldsetManager {
     public currentModule: string = '*';
     public currentFieldSet: string = '';
     public currentFieldSetItems: any[] = [];
-    public selectedItem;
+    public selectedItem: any = {
+        type: '',
+        fieldset: '',
+        id: '',
+        isViewMode: false
+    };
     public showFieldSetDetails: boolean = false;
 
     constructor(public backend: backend,
@@ -173,7 +178,11 @@ export class FieldsetManager {
 
 
     public loadCurrentFieldset() {
-        this.selectedItem = undefined;
+        this.selectedItem = {
+            type: '',
+            fieldset: '',
+            id: ''
+        };
         this.checkMode();
         this.currentFieldSetItems = [];
         this.addFieldSetItems(this.currentFieldSet, 0, this.fieldSetType);
@@ -195,8 +204,12 @@ export class FieldsetManager {
     }
 
     public unlinkItem(item) {
-        if (this.metadata.removeFieldsetItem(item.fieldset, item.data)) {
-            this.selectedItem = undefined;
+        if (this.metadata.removeFieldsetItem(item.fieldset, item.item)) {
+            this.selectedItem = {
+                type: '',
+                fieldset: '',
+                id: ''
+            };
             this.loadCurrentFieldset();
         }
     }
@@ -261,7 +274,7 @@ export class FieldsetManager {
                     name: fieldsetItem.field,
                     index: index,
                     count: fieldsetItems.length,
-                    data: JSON.parse(JSON.stringify(fieldsetItem)),
+                    item: fieldsetItem,
                     parentScope: parentScope,
                     customModeGlobalField: customModeGlobalField
                 };
@@ -291,7 +304,7 @@ export class FieldsetManager {
                     name: this.metadata.getFieldsetName(fieldsetItem.fieldset),
                     index: index,
                     count: fieldsetItems.length,
-                    data: JSON.parse(JSON.stringify(fieldsetItem)),
+                    item: fieldsetItem,
                     parentScope: parentScope,
                     customModeGlobalField: customModeGlobalField
                 };
@@ -304,17 +317,17 @@ export class FieldsetManager {
 
     public getDisplayName(item) {
         if (item.type == 'field') {
-            return item.data.field;
+            return item.item.field;
         }
 
         if (item.type == 'fieldset') {
-            return this.metadata.getFieldsetName(item.data.fieldset);
+            return this.metadata.getFieldsetName(item.item.fieldset);
         }
     }
 
     public getDisplayType(item) {
         if (item.type == 'fieldset') {
-            let ditem = this.metadata.getFieldset(item.data.fieldset);
+            let ditem = this.metadata.getFieldset(item.item.fieldset);
             if (ditem) {
                 return ditem.type;
             }
@@ -323,11 +336,16 @@ export class FieldsetManager {
     }
 
     public isSelected(id) {
-        return id == this.selectedItem?.id;
+        return id == this.selectedItem.id;
     }
 
     public selectItem(currentFieldSetItem, scope) {
-        this.selectedItem    = currentFieldSetItem;
+        this.selectedItem = {
+            type: currentFieldSetItem.type,
+            fieldset: currentFieldSetItem.fieldset,
+            id: currentFieldSetItem.id,
+            isViewMode: currentFieldSetItem.customModeGlobalField
+        };
     }
 
     public moveDown(item) {

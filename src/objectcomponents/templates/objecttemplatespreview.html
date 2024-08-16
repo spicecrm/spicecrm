@@ -44,6 +44,9 @@
             <system-input-radio-button-group [ngModel]="viewType.value" (ngModelChange)="setViewType($event)" [inputOptions]="viewTypeOptions"></system-input-radio-button-group>
         </div>
     </div>
+    <button (click)="sendEmail()" [disabled]="!selectedItem" class="slds-button slds-button--icon-border slds-m-horizontal--xx-small">
+        <system-button-icon icon="email"></system-button-icon>
+    </button>
 </div>
 <div class="slds-m-top--small slds-border--top slds-border--right slds-border--left slds-border--bottom slds-grid slds-p-around--xx-small slds-grid slds-grid--align-center slds-grow" style="min-height: 0">
     <div *ngIf="parsedHtml" [style.width.px]="viewType.width" class="slds-grid slds-grid--vertical slds-height_full">

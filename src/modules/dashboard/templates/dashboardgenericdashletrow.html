@@ -1,5 +1,11 @@
-<ng-container *ngFor="let field of fieldsetfields; trackBy: trackByFn">
-    <td style="min-width: 8rem; display: table-cell;" [attr.data-label]="language.getFieldDisplayName(module, field.field)" [ngClass]="model.alert" >
-        <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
+<td class="slds-hide--medium">
+    <div class="slds-grid slds-grid--vertical-align-center" >
+        <div class="slds-text-align--left slds-truncate slds-grow slds-text-heading_small" system-model-popover>{{model.data.summary_text}}</div>
+        <system-utility-icon [icon]="expanded ? 'chevronup' : 'chevrondown'" size="xx-small" (click)="toggleExpanded($event)"></system-utility-icon>
+    </div>
+</td>
+<ng-container *ngIf="expanded || layout.screenwidth != 'small'">
+    <td *ngFor="let field of fieldsetfields; trackBy: trackByFn" [ngClass]="model.alert" [attr.data-label]="language.getFieldDisplayName(module, field.field)">
+        <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
     </td>
 </ng-container>

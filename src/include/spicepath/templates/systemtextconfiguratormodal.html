@@ -1,0 +1,53 @@
+<system-modal size="medium">
+    <system-modal-header (close)="close()"><system-label label="LBL_ADD_SYSTEXT_ID"></system-label></system-modal-header>
+    <system-modal-content>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-2 slds-p-around--x-small">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><system-label label="LBL_NEW_SYSTEXT_ID"></system-label></label>
+                    <system-icon-help-text [helpText]="language.getLabel('LBL_ADD_SYSTEXT_ID_HELP', '', 'long')"></system-icon-help-text>
+                    <div class="slds-form-element__control">
+                        <system-input-text [(ngModel)]="textId"></system-input-text>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-p-around--x-small">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <system-input-text [(ngModel)]="sysTextName"></system-input-text>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-2 slds-p-around--x-small">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><system-label label="LBL_SELECT_LABEL"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <system-input-label [(ngModel)]="label"></system-input-label>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-p-around--x-small">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <system-input-module [displayAsterisk]="true" [(ngModel)]="module">{{module}}</system-input-module>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="close()">
+                <system-label label="LBL_CANCEL"></system-label>
+            </button>
+            <button class="slds-col--bump-left slds-button slds-button--brand" (click)="save()" [disabled]="!canSave">
+                <system-label label="LBL_SAVE"></system-label>
+            </button>
+        </div>
+    </system-modal-footer>
+</system-modal>
