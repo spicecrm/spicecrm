@@ -30,10 +30,12 @@ import {DictionaryManagerRelationshipAdd} from "./components/dictionarymanagerre
 import {DictionaryManagerRelationshipAddOneToMany} from "./components/dictionarymanagerrelationshipaddonetomany";
 import {DictionaryManagerRelationshipContainerOneToMany} from "./components/dictionarymanagerrelationshipcontaineronetomany";
 import {DictionaryManagerRelationshipAddManyToMany} from "./components/dictionarymanagerrelationshipaddmanytomany";
+import {DictionaryManagerRelationshipAddManyToManyProspectlists} from "./components/dictionarymanagerrelationshipaddmanytomanyprospectlists";
 import {DictionaryManagerRelationshipAddOneToManyPolymorph} from "./components/dictionarymanagerrelationshipaddonetomanypolymorph";
 import {DictionaryManagerRelationshipContainerOneToManyPolymorph} from "./components/dictionarymanagerrelationshipcontaineronetomanypolymorph";
 import {DictionaryManagerRelationshipContainerOneToManyPolymorphAddRelated} from "./components/dictionarymanagerrelationshipcontaineronetomanypolymorphaddrelated";
 import {DictionaryManagerRelationshipContainerManyToMany} from "./components/dictionarymanagerrelationshipcontainermanytomany";
+import {DictionaryManagerRelationshipContainerManyToManyProspectlists} from "./components/dictionarymanagerrelationshipcontainermanytomanyprospectlists";
 import {DictionaryManagerRelationshipAddParent} from "./components/dictionarymanagerrelationshipaddparent";
 import {DictionaryManagerRelationshipContainerParent} from "./components/dictionarymanagerrelationshipcontainerparent";
 import {DictionaryManagerIndexes} from "./components/dictionarymanagerindexes";
@@ -223,9 +225,11 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         DictionaryManagerRelationshipContainerOneToManyPolymorphAddRelated,
         DictionaryManagerRelationshipContainerOneToMany,
         DictionaryManagerRelationshipAddManyToMany,
+        DictionaryManagerRelationshipAddManyToManyProspectlists,
         DictionaryManagerRelationshipAddEmailAddress,
         DictionaryManagerRelationshipContainerEmailAddress,
         DictionaryManagerRelationshipContainerManyToMany,
+        DictionaryManagerRelationshipContainerManyToManyProspectlists,
         DictionaryManagerRelationshipAddParent,
         DictionaryManagerRelationshipContainerParent,
         DictionaryManagerIndexes,
