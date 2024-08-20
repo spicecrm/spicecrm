@@ -9,11 +9,12 @@ import {modal} from "../../services/modal.service";
 import {backend} from "../../services/backend.service";
 import {toast} from "../../services/toast.service";
 import {configurationService} from "../../services/configuration.service";
+import {session} from "../../services/session.service";
 
 @Component({
     selector: "object-template-send-test-email-modal",
     templateUrl: "../templates/objecttemplatesendtestemailmodal.html",
-    providers: [model, view],
+    providers: [view],
 })
 export class ObjectTemplateSendTestEmailModal {
 
@@ -36,6 +37,7 @@ export class ObjectTemplateSendTestEmailModal {
 
     constructor(public backend: backend,
                 public configuration: configurationService,
+                public session: session,
                 public modal: modal,
                 public language: language,
                 public model: model,
@@ -44,6 +46,12 @@ export class ObjectTemplateSendTestEmailModal {
 
     public ngOnInit() {
         this.loadAvailableMailboxes();
+
+        // get the subject --- todo parse the content
+        this.email_subject = this.model.getField('subject');
+
+        // get the receipient
+        this.recipients = this.session.authData.email;
     }
 
     /**
