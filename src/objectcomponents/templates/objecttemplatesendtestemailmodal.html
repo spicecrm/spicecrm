@@ -29,7 +29,7 @@
         </div>
         <div class="slds-p-around--small">
             <div class="slds-box--border" style="height: 60vh">
-                <div *ngIf="parsedHtml" class="slds-grid slds-grid--vertical slds-size--1-of-1 slds-is-relative slds-m-vertical--xx-small">
+                <div *ngIf="parsedHtml" class="slds-grid slds-grid--vertical slds-size--1-of-1 slds-is-relative slds-m-vertical--xx-small" style="height: calc(100% - 4px)">
                     <iframe *ngIf="parsedHtml" [src]="parsedHtml" style="border: 0; min-height: 250px" class="slds-grow" sandbox></iframe>
                 </div>
             </div>
