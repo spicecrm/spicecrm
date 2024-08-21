@@ -140,8 +140,12 @@ class EmailTracking
         $email->parent_id = $bean->id;
         $email->to_be_sent = true;
 
-        $recipientAddresses = $bean->email1;
-
+        // emailaddresses for multiemailhandling come from additional values
+        if (!empty($additionalValues)) {
+            $recipientAddresses = $additionalValues['emailAddresses'];
+        } else {
+            $recipientAddresses = $bean->email1;
+        }
 
         // add the recipients to the email
         if (!is_array($recipientAddresses))
