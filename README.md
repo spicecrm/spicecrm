@@ -27,8 +27,7 @@ you will need a classic Web server to run SpiceCRM.
 1. Clone the project or download the files as ZIP files
 2. Launch installer by calling installation folder path in your webbrowser and follow the installation procedure.
 
-You can also find a more detailed installation guide [here](You can also find a more detailed installation guide [here](https://www.spicecrm.com/wp-content/uploads/2022/11/SpiceCRM-Installation-Guide_202301001.pdf)
-)
+You can also find a more detailed installation guide [here](https://www.spicecrm.com/wp-content/uploads/2024/05/SpiceCRM-Installation-Guide_202401001.pdf)
 
 ## Support
 
