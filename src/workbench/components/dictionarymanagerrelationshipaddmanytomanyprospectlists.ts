@@ -22,9 +22,9 @@ import {
  * renders a modal to add a one to many relationship
  */
 @Component({
-    templateUrl: '../templates/dictionarymanagerrelationshipaddmanytomany.html',
+    templateUrl: '../templates/dictionarymanagerrelationshipaddmanytomanyprospectlists.html',
 })
-export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
+export class DictionaryManagerRelationshipAddManyToManyProspectlists implements OnInit {
 
     /**
      * reference to the modal window
@@ -69,7 +69,7 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
             rhs_duplicatemerge: 0,
             rhs_relatename: '',
             rhs_relatelabel: '',
-            relationship_type: 'many-to-many',
+            relationship_type: 'many-to-many-prospectlists',
             deleted: 0,
             status: 'd'
         };
@@ -79,9 +79,7 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
      * initialize and build the names
      */
     public ngOnInit() {
-        if(this.currentIsModule){
-            this.lhsRelatedId = this.dictionarymanager.currentDictionaryDefinition;
-        }
+        this.lhsRelatedId = this.relatedIds.find(r => r.name == 'ProspectList').id;
 
         // if we have a relationship or metadata table use it as joint table
         if(this.dictionarymanager.getCurrentDefinition()?.sysdictionary_type == 'metadata' || this.dictionarymanager.getCurrentDefinition()?.sysdictionary_type == 'relationship'){
@@ -129,7 +127,7 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
         // set the rhs defaults
         let riditem = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.rhs_sysdictionarydefinition_id).find(i => i.name == 'id');
         if (riditem) this.relationship.rhs_sysdictionaryitem_id = riditem.id;
-        this.relationship.rhs_linkname = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.lhs_sysdictionarydefinition_id).tablename.toLowerCase();
+        this.relationship.rhs_linkname = this.dictionarymanager.getDictionaryDefinitionName(this.relationship.lhs_sysdictionarydefinition_id).toLowerCase();
     }
 
     /**
