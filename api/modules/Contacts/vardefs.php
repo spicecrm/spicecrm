@@ -523,6 +523,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'options' => 'dom_meeting_accept_status',
                 'importable' => 'false',
             ],
+            /*
             'prospect_lists' => [
                 'name' => 'prospect_lists',
                 'type' => 'link',
@@ -542,6 +543,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                     ]
                 ]
             ],
+            */
             'prospectlistunsubscribes' => [
                 'name' => 'prospectlistunsubscribes',
                 'vname' => 'LBL_PROSPECTLIST_UNSUBSCRIBES',
@@ -615,6 +617,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source' => 'non-db',
                 'vname' => 'LBL_BONUSCARDS',
             ],
+            /*
             'prospectlists_contacts_quantity' => [
                 'name' => 'prospectlists_contacts_quantity',
                 'vname' => 'LBL_QUANTITY',
@@ -634,6 +637,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'len' => '36',
                 'source' => 'non-db'
             ],
+            */
             'catalogorders' => [
                 'name' => 'catalogorders',
                 'type' => 'link',
