@@ -30,10 +30,12 @@ import {DictionaryManagerRelationshipAdd} from "./components/dictionarymanagerre
 import {DictionaryManagerRelationshipAddOneToMany} from "./components/dictionarymanagerrelationshipaddonetomany";
 import {DictionaryManagerRelationshipContainerOneToMany} from "./components/dictionarymanagerrelationshipcontaineronetomany";
 import {DictionaryManagerRelationshipAddManyToMany} from "./components/dictionarymanagerrelationshipaddmanytomany";
+import {DictionaryManagerRelationshipAddManyToManyProspectlists} from "./components/dictionarymanagerrelationshipaddmanytomanyprospectlists";
 import {DictionaryManagerRelationshipAddOneToManyPolymorph} from "./components/dictionarymanagerrelationshipaddonetomanypolymorph";
 import {DictionaryManagerRelationshipContainerOneToManyPolymorph} from "./components/dictionarymanagerrelationshipcontaineronetomanypolymorph";
 import {DictionaryManagerRelationshipContainerOneToManyPolymorphAddRelated} from "./components/dictionarymanagerrelationshipcontaineronetomanypolymorphaddrelated";
 import {DictionaryManagerRelationshipContainerManyToMany} from "./components/dictionarymanagerrelationshipcontainermanytomany";
+import {DictionaryManagerRelationshipContainerManyToManyProspectlists} from "./components/dictionarymanagerrelationshipcontainermanytomanyprospectlists";
 import {DictionaryManagerRelationshipAddParent} from "./components/dictionarymanagerrelationshipaddparent";
 import {DictionaryManagerRelationshipContainerParent} from "./components/dictionarymanagerrelationshipcontainerparent";
 import {DictionaryManagerIndexes} from "./components/dictionarymanagerindexes";
@@ -173,6 +175,7 @@ import {DictionaryManagerFixDBFieldsMismatchModal} from "./components/dictionary
 import {HL7Manager} from './components/hl7manager';
 import {Hl7ManagerType} from './components/hl7managertype';
 import {HL7ManagerRule} from './components/hl7managerrule';
+import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkanban";
 
 @NgModule({
     imports: [
@@ -222,9 +225,11 @@ import {HL7ManagerRule} from './components/hl7managerrule';
         DictionaryManagerRelationshipContainerOneToManyPolymorphAddRelated,
         DictionaryManagerRelationshipContainerOneToMany,
         DictionaryManagerRelationshipAddManyToMany,
+        DictionaryManagerRelationshipAddManyToManyProspectlists,
         DictionaryManagerRelationshipAddEmailAddress,
         DictionaryManagerRelationshipContainerEmailAddress,
         DictionaryManagerRelationshipContainerManyToMany,
+        DictionaryManagerRelationshipContainerManyToManyProspectlists,
         DictionaryManagerRelationshipAddParent,
         DictionaryManagerRelationshipContainerParent,
         DictionaryManagerIndexes,
@@ -333,12 +338,15 @@ import {HL7ManagerRule} from './components/hl7managerrule';
         DictionaryManagerFixDBFieldsMismatchModal,
         HL7Manager,
         Hl7ManagerType,
-        HL7ManagerRule
+        HL7ManagerRule,
+        WorkbenchConfigOptionKanban
     ],
     exports: [
         SortPipe,
         WorkbenchConfigLabel,
         DictionaryManager,
+        WorkbenchHeader,
+        WorkbenchHeaderControls
     ]
 })
 export class WorkbenchModule {}

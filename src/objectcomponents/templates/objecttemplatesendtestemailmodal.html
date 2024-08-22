@@ -1,8 +1,8 @@
-<system-modal size="medium">
+<system-modal>
     <system-modal-header (close)="close()"><system-label label="LBL_TEST_EMAIL"></system-label></system-modal-header>
     <system-modal-content margin="none">
-        <div class="slds-grow slds-grid slds-p-horizontal--x-small">
-            <div class="slds-form-element slds-size--1-of-3 slds-p-horizontal--xxx-small">
+        <div class="slds-grow slds-grid slds-p-horizontal--small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
                 <label class="slds-form-element__label">
                     <system-label label="LBL_MAILBOX"></system-label>
                 </label>
@@ -14,22 +14,24 @@
                     </select>
                 </div>
             </div>
-            <div class="slds-form-element slds-size--1-of-3 slds-p-horizontal--xxx-small">
-                <label class="slds-form-element__label">
-                    <system-label label="LBL_SUBJECT"></system-label>
-                </label>
-               <system-input-text [(ngModel)]="email_subject"></system-input-text>
-            </div>
-            <div class="slds-form-element slds-size--1-of-3 slds-p-horizontal--xxx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-lect--xx-small">
                 <label class="slds-form-element__label">
                     <system-label label="LBL_ADD_EMAILADDRESS"></system-label>
                 </label>
                <system-input-text [(ngModel)]="recipients"></system-input-text>
             </div>
         </div>
-        <div>
-            <div *ngIf="parsedHtml" class="slds-grid slds-grid--vertical slds-height_full slds-size--1-of-1 slds-is-relative slds-m-vertical--xx-small">
-                <iframe [src]="parsedHtml" style="border: 0; min-height: 250px" class="slds-grow" sandbox></iframe>
+        <div class="slds-form-element slds-size--1-of-1 slds-p-horizontal--small">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_SUBJECT"></system-label>
+            </label>
+            <system-input-text [(ngModel)]="email_subject"></system-input-text>
+        </div>
+        <div class="slds-p-around--small">
+            <div class="slds-box--border" style="height: 60vh">
+                <div *ngIf="parsedHtml" class="slds-grid slds-grid--vertical slds-size--1-of-1 slds-is-relative slds-m-vertical--xx-small" style="height: calc(100% - 4px)">
+                    <iframe *ngIf="parsedHtml" [src]="parsedHtml" style="border: 0; min-height: 250px" class="slds-grow" sandbox></iframe>
+                </div>
             </div>
         </div>
     </system-modal-content>

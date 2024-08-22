@@ -17,6 +17,7 @@ import {socket} from "./socket.service";
 import {backend} from "./backend.service";
 import {userpreferences} from "./userpreferences.service";
 import {SocketEventI} from "./interfaces.service";
+import {layout} from "./layout.service";
 
 declare var _: any;
 
@@ -206,7 +207,8 @@ export class navigation {
         public socket: socket,
         public backend: backend,
         public userpreferences: userpreferences,
-        public router: Router
+        public router: Router,
+        private layout: layout
     ) {
         this.activeModule$ = new EventEmitter<string>();
 
@@ -778,6 +780,10 @@ export class navigation {
                 }
             });
         } else {
+
+            // reset the open tabs in mobile view to force reload the tab component 
+            if (this.layout.screenwidth == 'small') this.objectTabs = [];
+
             for (let objectTab of this.objectTabs) {
                 if (this.matchPath(objectTab, routeData) && this.matchRouteParams(objectTab, routeParams)) {
                     // set the path since the path might be changed dues to the reference path of routes for the tabbed navigation

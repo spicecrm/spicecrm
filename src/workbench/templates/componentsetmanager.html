@@ -113,7 +113,7 @@
             </div>
         </div>
         <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-vertical--x-small">
-            <componentsetmanager-componentset-details *ngIf="selectedId" [component]="selectedComponent"></componentsetmanager-componentset-details>
+            <componentsetmanager-componentset-details *ngIf="selectedId" [module]="currentModule" [component]="selectedComponent"></componentsetmanager-componentset-details>
         </div>
     </div>
     <div class="slds-text-align--right slds-p-around--small slds-border--top">

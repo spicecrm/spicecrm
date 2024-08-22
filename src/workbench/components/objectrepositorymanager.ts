@@ -52,7 +52,7 @@ export class ObjectRepositoryManager {
     public configList: any = {};
     public currentConfigArray: any[] = [];
     public objectFilter: string = '';
-    public fieldTypeList: any[] = ["string", "label", "boolean", "fieldset", "actionset", "componentset", "module", "modulefilter"];
+    public fieldTypeList: any[] = ["string", "label", "boolean", "fieldset", "actionset", "componentset", "module", "modulefilter", "kanban"];
     public newRepo: any = {};
     public emptyRepo: any = {
         component: "",

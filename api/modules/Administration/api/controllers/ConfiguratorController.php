@@ -291,11 +291,17 @@ class ConfiguratorController{
     public function writeConfigList(Request $req, Response $res, $args ): Response
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $db = DBManagerFactory::getInstance();
 
         if (!$current_user->is_admin) throw ( new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
 
-        if(!isset(SpiceDictionary::getInstance()->dictionary[$args['table']])){
+        $tableExists = false;
+
+        foreach (SpiceDictionary::getInstance()->dictionary as $item) {
+            if ($item['table'] == $args['table']) {
+                $tableExists = true;
+            }
+        }
+        if(!$tableExists){
             throw new NotFoundException('not a known table');
         }
 

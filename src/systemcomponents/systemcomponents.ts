@@ -545,6 +545,8 @@ import {SystemSelectModuleModal} from "./components/systemselectmodulemodal";
         SystemChartDataRow,
         SystemChartDataColumn,
         SystemChartMultiDimensional,
+        SystemModuleCustomPipe,
+        SystemModuleGlobalPipe,
         SystemSelectOption,
         SystemSelectOption,
         SystemInputFlter,
