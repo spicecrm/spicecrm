@@ -124,6 +124,9 @@ export class SystemInputBackendMethod implements ControlValueAccessor {
             this._class = elements[0];
             this._method = elements[1];
             this.validateNamespace();
+        } else {
+            this._class = undefined;
+            this._method = undefined;
         }
     }
 

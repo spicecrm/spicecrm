@@ -1,0 +1,62 @@
+<system-collapsable-tab [collapsible]="true" tabtitle="LBL_KANBAN_CHECKS"> <!-- [expanded]="true" -->
+    <div class="slds-grid slds-wrap slds-p-around--medium">
+        <div *ngIf="stageChecks.length > 0; else noChecks" class="slds-col slds-size_1-of-3 slds-p-around--x-small">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <ul class="slds-has-dividers_around-space dragboundary" cdkDropList [cdkDropListData]="stageChecks"
+                        (cdkDropListDropped)="dropCheckLabels($event)">
+                        <li *ngFor="let check of stageChecks; let index = index" class="slds-item slds-text-link_reset"
+                            (click)="setSelectedCheck(check)" [ngClass]="{'slds-is-selected slds-color__background_gray-5': selectedCheck?.id == check.id}" cdkDrag
+                            cdkDragBoundary=".dragboundary">
+                            <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'"
+                                                 [size]="'x-small'" style="cursor:move"></system-utility-icon>
+                            <a href="javascript:void(0);"
+                               class="slds-text-link_reset slds-text-align_center slds-p-around--xx-small"
+                            ><system-label label="{{check.check_label}}"></system-label></a>
+
+                        </li>
+                    </ul>
+                    <div class="slds-align--absolute-center slds-p-around--small">
+                        <system-utility-icon icon="new" size="x-small"
+                                             (click)="addCheck($event)"></system-utility-icon>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ng-template #noChecks>
+            <div class="slds-col slds-size_1-of-1 slds-p-around--medium slds-align--absolute-center">
+                <div>
+                    <system-illustration-no-records><system-label label="LBL_NO_RECORDS"></system-label> </system-illustration-no-records>
+                    <div class="slds-align--absolute-center slds-p-around--small">
+                        <system-utility-icon icon="new" size="x-small"
+                                             (click)="addCheck($event)"></system-utility-icon>
+                    </div>
+                </div>
+
+            </div>
+        </ng-template>
+        <div class="slds-col slds-size_2-of-3 slds-p-around--x-small">
+            <div *ngIf="selectedCheck">
+                <div class="slds-form-element slds-size_2-of-3">
+                    <div class="slds-form-element__control">
+                        <label class="slds-form-element__label">
+                            <system-label label="LBL_CHECK_LABEL"></system-label>
+                        </label>
+                        <div class="slds-form-element__control">
+                            <system-input-label [(ngModel)]="selectedCheck.check_label"></system-input-label>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-p-top--small">
+                    <div class="slds-form-element__control">
+                        <label class="slds-form-element__label">
+                            <system-label label="LBL_CHECK_METHOD"></system-label>
+                        </label>
+                        <system-input-backend-method [(ngModel)]="selectedCheck.check_method"></system-input-backend-method>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</system-collapsable-tab>

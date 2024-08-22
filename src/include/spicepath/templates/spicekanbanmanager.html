@@ -1,0 +1,62 @@
+<div class="slds-grid slds-grid--vertical slds-height_full">
+    <workbench-header titlelabel="LBL_KANBAN_MANAGER">
+        <workbench-header-controls class="slds-size--3-of-4">
+            <div class="slds-grid--align-end slds-grid">
+                <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
+                <system-input-module [disabled]="loading" [(ngModel)]="moduleName" class="slds-size--1-of-4">{{moduleName}}</system-input-module>
+                <div class="slds-form-element__control slds-m-left--xx-small" style="min-width:250px;">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [disabled]="loading" [(ngModel)]="selectedBeanGuide">
+<!--                            <option></option>-->
+<!--                            <option *ngFor="let beanGuide of moduleBeanGuides" [ngValue]="beanGuide">{{beanGuide.name}}</option>-->
+                            <option></option>
+                            <optgroup [label]="'custom '" *ngIf="beanGuidesCustom.length > 0">
+                                <option *ngFor="let beanGuide of moduleBeanGuidesCustom" [ngValue]="beanGuide">{{beanGuide.name}}</option>
+                            </optgroup>
+                            <optgroup [label]="'global'"  *ngIf="beanGuides.length > 0">
+                                <option *ngFor="let beanGuide of moduleBeanGuides" [ngValue]="beanGuide">{{beanGuide.name}}</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+                <button [disabled]="moduleName == ''" (click)="openAddModal()" class="slds-button slds-button--neutral slds-button--icon-border slds-m-left--xx-small">
+                    <system-button-icon icon="add"></system-button-icon>
+                </button>
+                <button [disabled]="!kanbanManagerService.selectedBeanGuide" (click)="openEditModal(kanbanManagerService.selectedBeanGuide)" class="slds-button slds-button--neutral slds-button--icon-border">
+                    <system-button-icon icon="edit"></system-button-icon>
+                </button>
+
+                <button [disabled]="!kanbanManagerService.selectedBeanGuide" (click)="togglePreview()" class="slds-button slds-button--icon-border" [ngClass]="{'slds-button--brand': preview}" >
+                    <system-button-icon icon="preview"></system-button-icon>
+                </button>
+                <button (click)="kanbanManagerService.changeService.undo()" [disabled]="!kanbanManagerService.changeService.canUndo" class="slds-button slds-button--neutral slds-button--icon-border">
+                    <system-button-icon icon="undo"></system-button-icon>
+                </button>
+                <button (click)="kanbanManagerService.changeService.redo()" [disabled]="!kanbanManagerService.changeService.canRedo" class="slds-button slds-button--neutral slds-button--icon-border">
+                    <system-button-icon icon="redo"></system-button-icon>
+                </button>
+                <button (click)="kanbanManagerService.save()" [disabled]="!kanbanManagerService.selectedBeanGuide || !kanbanManagerService.hasChanges" class="slds-button slds-button--neutral slds-button--icon-border">
+                    <system-button-icon icon="save"></system-button-icon>
+                </button>
+            </div>
+        </workbench-header-controls>
+    </workbench-header>
+    <div *ngIf="preview" class="slds-m-around_large">
+        <spice-kanban-manager-preview [active]="activeStages"></spice-kanban-manager-preview>
+    </div>
+    <div class="slds-grow slds-grid">
+        <ng-container *ngIf="!!kanbanManagerService.selectedBeanGuide; else noSelection">
+            <div [ngClass]="{'slds-size--1-of-5': !kanbanManagerService.minimized}" [ngStyle]="{'min-width': kanbanManagerService.minimized ? '10px' : null }" class="slds-size--1-of-5 slds-height_full slds-scrollable--y slds-border--right" >
+                <spice-kanban-manager-list (emitActiveStages)="activeStages = $event" (selectedStage)="selectedStage = $event"></spice-kanban-manager-list>
+            </div>
+            <div [ngClass]="{'slds-size--4-of-5': !kanbanManagerService.minimized, 'slds-size--11-of-12' : kanbanManagerService.minimized}" class=" slds-height_full slds-scrollable--y slds-p-around--xx-small">
+                <spice-kanban-manager-details [selectedStage]="selectedStage"></spice-kanban-manager-details>
+            </div>
+        </ng-container>
+        <ng-template #noSelection>
+            <div class="slds-align--absolute-center slds-grid slds-grid--vertical" style="height: 100%">
+                <system-illustration-no-records><system-label label="LBL_MAKE_SELECTION"></system-label> </system-illustration-no-records>
+            </div>
+        </ng-template>
+    </div>
+</div>
