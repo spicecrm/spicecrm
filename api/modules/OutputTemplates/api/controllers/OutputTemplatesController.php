@@ -7,7 +7,9 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ConflictException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceFTSManager\ElasticHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -45,33 +47,77 @@ class OutputTemplatesController
     }
 
     /**
-     * generate bulk pdf for the selected beans
+     * generate related bean bulk pdf
      * @param Request $req
      * @param Response $res
      * @param array $args
-     * @return array
+     * @return Response
      * @throws Exception
+     * @throws NotFoundException
+     * @throws ForbiddenException
+     */
+    public function generateRelatedBulkPDF(Request $req, Response $res, array $args): Response
+    {
+        $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
+        $getParams = $req->getQueryParams();
+        unset($getParams['sort']);
+        $relatedBeans = $moduleHandler->get_related($args['beanName'], $args['beanId'], $args['linkName'], $getParams)['list'];
+
+        $bean = BeanFactory::newBean($args['beanName']);
+        $bean->load_relationship($args['linkName']);
+        $relModule = $bean->{$args['linkName']}->getRelatedModuleName();
+
+        return $res->withJson([
+            'content' => $this->generateBulkPDFForIds($args['id'], $relModule, array_column($relatedBeans, 'id'))]
+        );
+    }
+
+    /**
+     * generate beans bulk pdf
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     * @throws NotFoundException
+     * @throws ForbiddenException
      */
     public function generateBulkPDF(Request $req, Response $res, array $args): Response
     {
+        $beanIds = $req->getParsedBody()['beanIds'];
 
-        $ids = $req->getParsedBody()['beanIds'];
+        return $res->withJson([
+            'content' => $this->generateBulkPDFForIds($args['id'], $args['module'], $beanIds)]
+        );
+    }
+
+    /**
+     * generate bulk pdf for the selected beans
+     * @param string $templateId
+     * @param string $module
+     * @param array $ids
+     * @return string
+     * @throws Exception
+     */
+    public function generateBulkPDFForIds(string $templateId, string $module, array $ids): string
+    {
         /** @var OutputTemplate $outputTemplate */
-        $outputTemplate = BeanFactory::getBean('OutputTemplates', $args['id'], ['forceRetrieve' => true]);
+        $outputTemplate = BeanFactory::getBean('OutputTemplates', $templateId, ['forceRetrieve' => true]);
+
         $html = "";
 
         foreach ($ids as $id) {
-            $bean = BeanFactory::getBean($args['module'], $id);
+
+            $bean = BeanFactory::getBean($module, $id, ['relationships' => false]);
             $html .= $outputTemplate->translateBody($bean, true);
             $html .= $outputTemplate->addPageBreak();
         }
 
-        $completeHTML = '<html><body>' . $html . '</body></html>';
+        $style = $outputTemplate->getStyle();
 
+        $completeHTML = "<html><head><style>$style</style></head><body>" . $html . "</body></html>";
         $outputTemplate->setOutputHtml($completeHTML);
-        $pdf = $outputTemplate->getPdfContent();
-
-        return $res->withJson(['content' => base64_encode($pdf)]);
+        return base64_encode($outputTemplate->getPdfContent());
     }
 
     public function previewpdf(Request $req, Response $res, array $args): Response {
