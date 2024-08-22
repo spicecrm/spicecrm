@@ -163,24 +163,28 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'type' => 'varchar',
             'source' => 'non-db'
         ],
+        /*
         'prospectlists_contacts_quantity' => [
             'name' => 'prospectlists_contacts_quantity',
             'vname' => 'LBL_QUANTITY',
             'type' => 'varchar',
             'source' => 'non-db'
         ],
+        */
         'prospectlists_consumer_quantity' => [
             'name' => 'prospectlists_consumer_quantity',
             'vname' => 'LBL_QUANTITY',
             'type' => 'varchar',
             'source' => 'non-db'
         ],
+        /*
         'prospectlists_contacts_unsubscribegroup_status' => [
             'name' => 'prospectlists_contacts_unsubscribegroup_status',
             'vname' => 'LBL_UNSUBSCRIBE_STATUS',
             'type' => 'bool',
             'source' => 'non-db'
         ],
+
         'prospectlists_person_email_addr_bean_rel_id' => [
             'name' => 'prospectlists_person_email_addr_bean_rel_id',
             'vname' => 'LBL_EMAIL_ADDRESS',
@@ -188,6 +192,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'len' => '36',
             'source' => 'non-db'
         ],
+        */
+        /* migrated to dictionary
         'prospects' => [
             'name' => 'prospects',
             'type' => 'link',
@@ -243,6 +249,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
                 ]
             ]
         ],
+        */
         'campaigns' => [
             'name' => 'campaigns',
             'type' => 'link',
@@ -257,6 +264,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'relationship' => 'prospect_list_campaigntasks',
             'source' => 'non-db',
         ],
+        /*
         'users' => [
             'name' => 'users',
             'type' => 'link',
@@ -264,6 +272,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'relationship' => 'prospect_list_users',
             'source' => 'non-db',
         ],
+        */
 // CR1000465 cleanup Email
 //        'email_marketing' => array(
 //            'name' => 'email_marketing',

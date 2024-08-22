@@ -1,0 +1,36 @@
+<system-modal size="prompt">
+    <system-modal-header (click)="close()"><system-label [label]="isEditing ? 'LBL_EDIT_KANBAN' : 'LBL_ADD_KANBAN'"></system-label></system-modal-header>
+    <system-modal-content margin="none">
+        <div class="slds-p-bottom--large">
+            <div class="slds-form-element slds-m-top--small">
+                <label class="slds-form-element__label"><system-label label="LBL_KANBAN_NAME"></system-label></label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="selectedBeanGuide.name"/>
+                </div>
+            </div>
+            <div class="slds-form-element slds-m-top--small">
+                <label class="slds-form-element__label"><system-label label="LBL_MODEL_FIELD"></system-label></label>
+                <select class="slds-select" [disabled]="isEditing || enumFields.length == 0" [(ngModel)]="selectedBeanGuide.status_field">
+                    <option *ngFor="let thisfield of enumFields" [value]="thisfield"><system-label-fieldname [module]="selectedBeanGuide.module" [field]="thisfield"></system-label-fieldname></option>
+                </select>
+            </div>
+            <div *ngIf="!isEditing" class="slds-form-element slds-m-top--small">
+                <label class="slds-form-element__label"><system-label label="LBL_SCOPE"></system-label></label>
+                <select class="slds-select" [(ngModel)]="scope">
+                    <option value="global"><system-label label="LBL_GLOBAL"></system-label></option>
+                    <option value="custom"><system-label label="LBL_CUSTOM"></system-label></option>
+                </select>
+            </div>
+            <div *ngIf="!isEditing" class="slds-form-element slds-m-top--small">
+                <label class="slds-form-element__label"><system-label label="LBL_SYSTEXTID_FIELD"></system-label></label>
+                <div class="slds-form-element__control">
+                    <span>{{selectedBeanGuide.systextid + (!loading ? sysTextIDName : '')}}</span>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button (click)="close()" class="slds-button slds-button--neutral"><system-label label="LBL_CANCEL"></system-label></button>
+        <button (click)="save()" [disabled]="!canSave" class="slds-button slds-button--brand"><system-label label="LBL_SAVE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

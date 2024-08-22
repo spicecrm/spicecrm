@@ -86,7 +86,7 @@
                     <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="selectedComponent.version"/>
                 </div>
             </div>
-            <workbench-config [component]="component" [configValues]="configValues"></workbench-config>
+            <workbench-config [module]="currentModule" [component]="component" [configValues]="configValues"></workbench-config>
         </div>
     </div>
 </div>

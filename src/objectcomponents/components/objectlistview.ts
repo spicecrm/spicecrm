@@ -107,8 +107,13 @@ export class ObjectListView implements AfterViewInit, OnDestroy {
             component.destroy();
         }
 
+        // pass component config to the component 
+        const config = this.metadata.getComponentConfig('ObjectListView', this.model.module);
+        const componentDef = this.metadata.getComponentSetObjects(config.componentset).find(c => c.component == this.modellist.currentList?.listcomponent);
+
         // render the new component
         this.metadata.addComponent(this.modellist.currentList?.listcomponent, this.container).subscribe(componentRef => {
+            componentRef.instance.componentconfig = componentDef.componentconfig;
             this.componentRefs.push(componentRef);
         });
     }
