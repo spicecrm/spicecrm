@@ -63,13 +63,13 @@
         <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
             <label class="slds-form-element__label"><system-label label="LBL_LHS_LINKLABEL"></system-label></label>
             <div class="slds-form-element__control">
-                <system-input-label [disabled]="readonly" [(ngModel)]="relationship.lhs_linklabel"></system-input-label>
+                <system-input-label [disabled]="readonly" [(ngModel)]="relationship.lhs_linklabel" [label]="getLabel(relationship.lhs_linkname)"></system-input-label>
             </div>
         </div>
         <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
             <label class="slds-form-element__label"><system-label label="LBL_RHS_LINKLABEL"></system-label></label>
             <div class="slds-form-element__control">
-                <system-input-label [disabled]="readonly" [(ngModel)]="relationship.rhs_linklabel"></system-input-label>
+                <system-input-label [disabled]="readonly" [(ngModel)]="relationship.rhs_linklabel" [label]="getLabel(relationship.rhs_linkname)"></system-input-label>
             </div>
         </div>
     </div>
