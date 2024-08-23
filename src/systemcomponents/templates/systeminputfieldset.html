@@ -8,7 +8,7 @@
                     <option *ngFor="let sysFieldset of _fieldsets|systemmodulecustompipe:_module" [value]="sysFieldset.id" [disabled]="sysFieldset.id === parent">{{sysFieldset.name}}</option>
                 </optgroup>
                 <optgroup [label]="'global ' + language.getLabel('LBL_FIELDSET')"  *ngIf="_fieldsets|systemmoduleglobalpipe:_module.length > 0">
-                    <option *ngFor="let sysFieldset of _fieldsets|systemmoduleglobalpipe:_module" [value]="sysFieldset.id">{{sysFieldset.name}}</option>
+                    <option *ngFor="let sysFieldset of _fieldsets|systemmoduleglobalpipe:_module" [value]="sysFieldset.id" [disabled]="sysFieldset.id === parent">{{sysFieldset.name}}</option>
                 </optgroup>
             </select>
         </div>
