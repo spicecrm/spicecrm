@@ -458,9 +458,10 @@ export class language {
      *
      * @param values
      * @param formatted
+     * @param includeInactiveOptions
      * @private
      */
-    private prepareOptions(values: DomainValidationValues, formatted?: boolean): EnumDisplayOptionArray | EnumDisplayOptionObject {
+    private prepareOptions(values: DomainValidationValues, formatted?: boolean, includeInactiveOptions?: boolean): EnumDisplayOptionArray | EnumDisplayOptionObject {
 
         if (!values) return formatted ? [] : {};
 
@@ -469,9 +470,13 @@ export class language {
             if (formatted) {
                 const optionsArray = [];
                 for (let option in values) {
+
+                    if (!includeInactiveOptions && values[option].status != 'a') continue;
+
                     optionsArray.push({
                         value: option,
                         display: this.getLabel(values[option].label),
+                        status: values[option].status
                     });
                 }
 
@@ -491,14 +496,15 @@ export class language {
      * @param module the module as defined in sysmodules table
      * @param fieldname the name of the field
      * @param formatted if the values should be returned properly so the enum fields can use the output
+     * @param includeInactiveOptions include options that are not active
      */
-    public getFieldDisplayOptions(module: string, fieldname: string, formatted: true): EnumDisplayOptionArray;
+    public getFieldDisplayOptions(module: string, fieldname: string, formatted: true, includeInactiveOptions?: boolean): EnumDisplayOptionArray;
     public getFieldDisplayOptions(module: string, fieldname: string, formatted?: false | undefined): EnumDisplayOptionObject;
-    public getFieldDisplayOptions(module: string, fieldname: string, formatted?: boolean): EnumDisplayOptionArray | EnumDisplayOptionObject {
+    public getFieldDisplayOptions(module: string, fieldname: string, formatted?: boolean, includeInactiveOptions?: boolean): EnumDisplayOptionArray | EnumDisplayOptionObject {
         let options = this.metadata.getFieldOptions(module, fieldname);
         if (options !== false) {
             const values = this.metadata.getDomainValidationValues(options);
-            return this.prepareOptions(values, formatted);
+            return this.prepareOptions(values, formatted, includeInactiveOptions);
         } else {
             return formatted ? [] : {};
         }
@@ -508,12 +514,13 @@ export class language {
      * returns the options that are possible for a given app_list_strings entry. used for the display if no options are defined in the metadata or if they options are derived dynamically
      * @param domainValidation
      * @param formatted
+     * @param includeInactiveOptions
      */
-    public getDisplayOptions(domainValidation: string, formatted: true): EnumDisplayOptionArray;
+    public getDisplayOptions(domainValidation: string, formatted: true, includeInactiveOptions?: boolean): EnumDisplayOptionArray;
     public getDisplayOptions(domainValidation: string, formatted?: false | undefined): EnumDisplayOptionObject;
-    public getDisplayOptions(domainValidation: string, formatted?: boolean): EnumDisplayOptionArray | EnumDisplayOptionObject {
+    public getDisplayOptions(domainValidation: string, formatted?: boolean, includeInactiveOptions?: boolean): EnumDisplayOptionArray | EnumDisplayOptionObject {
         const values = this.metadata.getDomainValidationValues(domainValidation);
-        return this.prepareOptions(values, formatted);
+        return this.prepareOptions(values, formatted, includeInactiveOptions);
     }
 
     /**
@@ -759,5 +766,5 @@ export class language {
 }
 
 // tslint:disable-next-line:max-classes-per-file
-export type EnumDisplayOptionArray = { value: string, display: string }[];
+export type EnumDisplayOptionArray = { value: string, display: string, status: 'a' | 'i' }[];
 export interface EnumDisplayOptionObject { [key: string]: string}

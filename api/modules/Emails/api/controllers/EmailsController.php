@@ -593,6 +593,11 @@ class EmailsController
         $email->body = $body['email_body'];
         $email->to_addrs = $email->extractAddresses($body['recipients']);
 
+        // clean up for imap
+        if (strpos($email->body, "\n")) {
+            $email->body = str_replace("\n", "", $email->body);
+        }
+
         // clone the attachments
         $email->id = SpiceUtils::createGuid();
 
