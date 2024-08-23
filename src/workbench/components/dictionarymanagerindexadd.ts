@@ -161,7 +161,9 @@ export class DictionaryManagerIndexAdd implements OnInit{
                     sysdictionaryitem_id: this.dictionaryItemId,
                     sysdictionaryforeigndefinition_id: this.dictionaryForeignDefinitionId,
                     sysdictionaryforeignitem_id: this.dictionaryForeignItemId,
-                    sequence: 0
+                    sequence: 0,
+                    version: this.index.version,
+                    package: this.index.package
                 });
                 break;
             default:
@@ -173,7 +175,9 @@ export class DictionaryManagerIndexAdd implements OnInit{
                         status: this.index.status,
                         sysdictionaryindex_id: this.index.id,
                         sysdictionaryitem_id: item.id,
-                        sequence: sequence
+                        sequence: sequence,
+                        version: this.index.version,
+                        package: this.index.package
                     });
                     sequence++;
                 }
