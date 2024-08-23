@@ -42,6 +42,8 @@ export class SystemInputEnum implements OnInit, ControlValueAccessor {
      */
     public options: any[] = [];
 
+    @Input() public displayInactiveOptions: boolean = false;
+
     /**
      * for the value accessor
      */
@@ -101,15 +103,9 @@ export class SystemInputEnum implements OnInit, ControlValueAccessor {
     }
 
     public getOptions() {
-        let retArray = [];
-        let options = this.language.getFieldDisplayOptions(this.module, this.field);
-        for (let optionVal in options) {
-            retArray.push({
-                value: optionVal,
-                display: options[optionVal]
-            });
-        }
-        this.options = retArray;
+
+        this.options = this.language.getFieldDisplayOptions(this.module, this.field, true, this.displayInactiveOptions);
+
         if (this.sortdirection) {
             switch (this.sortdirection.toLowerCase()) {
                 case 'desc':
