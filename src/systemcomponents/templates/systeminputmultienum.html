@@ -1,5 +1,8 @@
 <system-checkbox-group [(ngModel)]="value" class="slds-grid slds-wrap">
     <div *ngFor="let option of options" class="slds-large-size--1-of-3 slds-medium-size--1-of-1 slds-truncate">
-        <system-checkbox-group-checkbox [value]="option.value"> {{option.display}}</system-checkbox-group-checkbox>
+        <system-checkbox-group-checkbox [textColorTheme]="option.status == 'i' ? 'error' : undefined" [value]="option.value">
+            {{option.display}}
+        </system-checkbox-group-checkbox>
     </div>
 </system-checkbox-group>
+

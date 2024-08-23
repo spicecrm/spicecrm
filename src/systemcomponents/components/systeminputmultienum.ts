@@ -1,12 +1,9 @@
 /**
  * @module WorkbenchModule
  */
-import {
-    Component, EventEmitter, forwardRef, Input, OnInit, Output
-} from '@angular/core';
-import {backend} from '../../services/backend.service';
+import {Component, forwardRef, Input, OnInit} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
-import {language} from '../../services/language.service';
+import {EnumDisplayOptionArray, language} from '../../services/language.service';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Component({
@@ -37,10 +34,12 @@ export class SystemInputMultiEnum implements OnInit, ControlValueAccessor {
      */
     @Input() public sortdirection: string;
 
+    @Input() public displayInactiveOptions: boolean = false;
+
     /**
      * the options from the enum
      */
-    public options: any[] = [];
+    public options: EnumDisplayOptionArray = [];
 
     /**
      * for the value accessor
@@ -100,17 +99,8 @@ export class SystemInputMultiEnum implements OnInit, ControlValueAccessor {
     }
 
     public getOptions() {
-        let retArray = [];
-        let options = this.language.getFieldDisplayOptions(this.module, this.field);
-        for (let optionVal in options) {
-            if (optionVal && options[optionVal]) {
-                retArray.push({
-                    value: optionVal,
-                    display: options[optionVal]
-                });
-            }
-        }
-        this.options = retArray;
+        this.options = this.language.getFieldDisplayOptions(this.module, this.field, true, this.displayInactiveOptions);
+
         if (this.sortdirection) {
             switch (this.sortdirection.toLowerCase()) {
                 case 'desc':
