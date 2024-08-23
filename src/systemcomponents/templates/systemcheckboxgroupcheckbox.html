@@ -2,8 +2,10 @@
     <input type="checkbox" [id]="id" [disabled]="disabled" [(ngModel)]="checked">
     <label class="slds-checkbox__label" [for]="id">
         <span class="slds-checkbox_faux"></span>
-        <span class="slds-form-element__label slds-p-left--x-small">
+        <span class="slds-form-element__label slds-p-left--x-small" [ngClass]="!textColorTheme ? undefined : 'slds-text-color_' + textColorTheme">
             <ng-content></ng-content>
         </span>
     </label>
 </span>
+
+y

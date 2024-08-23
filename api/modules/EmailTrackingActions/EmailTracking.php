@@ -159,6 +159,11 @@ class EmailTracking
         $additionalBeans = array_merge($additionalBeans, [$bean->_objectname => $bean]);
         $email->generateFromTemplate($emailtemplate_id, $email, $additionalValues, $additionalBeans);
 
+        // clean up for imap
+        if (strpos($email->body, "\n")) {
+            $email->body = str_replace("\n", "", $email->body);
+        }
+
         $email->save();
 
         return $email;
