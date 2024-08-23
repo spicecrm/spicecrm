@@ -1,4 +1,4 @@
-<div class="slds-grid slds-grid_vertical-align-center slds-p-around--xx-small slds-theme--shade slds-border--bottom">
+<div *ngIf="dictionarymanager.currentDictionaryDefinition" class="slds-grid slds-grid_vertical-align-center slds-p-around--xx-small slds-theme--shade slds-border--bottom">
     <system-input-text [(ngModel)]="filterterm" placeholder="LBL_FILTER" autocomplete="off" [showClear]="true"></system-input-text>
     <system-checkbox class="slds-p-left--x-small slds-col--bump-right" [(ngModel)]="filterdbonly">exclude non-db</system-checkbox>
     <button [disabled]="!canDelete" class="slds-button slds-button--neutral" (click)="deleteDictionaryColumns()">
