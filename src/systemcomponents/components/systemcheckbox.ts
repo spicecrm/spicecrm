@@ -54,6 +54,7 @@ export class SystemCheckbox implements ControlValueAccessor, OnChanges, AfterVie
     @Input() public asinteger: boolean = false;
 
 
+    @Input() public textColorTheme: 'default' | 'success' | 'error' | 'inverse' | 'inverse-weak' | 'weak';
     /**
      * to disable the checkbox
      */

@@ -61,7 +61,7 @@ $routes = [
         'function' => 'authChangePassword',
         'description' => '',
         'options' => ['noAuth' => true, 'adminOnly' => false],
-        'params' => [
+        'parameters' => [
             'username' => [
                 'in' => 'body',
                 'description' => 'The Username',
@@ -217,7 +217,7 @@ $routes = [
         'options' => ['validate' => true],
         'parameters' => [
             'method' => [
-                'in' => 'query',
+                'in' => 'path',
                 'description' => 'the 2FA Method requested',
                 'type' => ValidationMiddleware::TYPE_ENUM,
                 'options' => ['sms', 'email']
@@ -233,13 +233,13 @@ $routes = [
         'options' => ['validate' => true],
         'parameters' => [
             'method' => [
-                'in' => 'query',
+                'in' => 'path',
                 'description' => 'the 2FA Method to b e set',
                 'type' => ValidationMiddleware::TYPE_ENUM,
                 'options' => ['sms', 'email']
             ],
             'code' => [
-                'in' => 'query',
+                'in' => 'path',
                 'description' => 'code that was sent',
                 'type' => ValidationMiddleware::TYPE_NUMERIC,
                 'options' => ['sms', 'email']
@@ -255,7 +255,7 @@ $routes = [
         'options' => ['validate' => true],
         'parameters' => [
             'code' => [
-                'in' => 'query',
+                'in' => 'path',
                 'description' => 'code that was sent',
                 'type' => ValidationMiddleware::TYPE_NUMERIC,
                 'options' => ['sms', 'email']

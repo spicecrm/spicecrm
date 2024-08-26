@@ -121,6 +121,18 @@ export class DictionaryManagerIndexes {
     }
 
     /**
+     * react to the click to edit a dictionary definition
+     */
+
+    public editIndex(index: DictionaryIndex) {
+        this.modal.openModal('DictionaryManagerIndexEdit', true, this.injector).subscribe({
+            next: (modalRef) => {
+                modalRef.instance.index = index;
+            }
+        });
+    }
+
+    /**
      * prompts the user and delets the dictionary definition
      *
      * @param event

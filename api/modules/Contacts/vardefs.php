@@ -544,6 +544,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 ]
             ],
             */
+            /* migrated
             'prospectlistunsubscribes' => [
                 'name' => 'prospectlistunsubscribes',
                 'vname' => 'LBL_PROSPECTLIST_UNSUBSCRIBES',
@@ -556,6 +557,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                     ]
                 ]
             ],
+            */
             'optout_sendgrid' => [
                 'name' => 'optout_sendgrid',
                 'vname' => 'LBL_OPTOUT_SENDGRID',

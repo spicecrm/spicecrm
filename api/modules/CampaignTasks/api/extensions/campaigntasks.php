@@ -25,6 +25,11 @@ $routes = [
         'description' => 'get campaign tasks defined for a specific campaign',
         'options'     => ['noAuth' => false, 'adminOnly' => false],
         'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
             'offset' => [
                 'in' => 'query',
                 'type' => ValidationMiddleware::TYPE_NUMERIC,
@@ -98,16 +103,6 @@ $routes = [
                 'in'          => 'path',
                 'description' => 'Campaign Task id',
                 'type'        => ValidationMiddleware::TYPE_GUID
-            ],
-            'start'    => [
-                'in'          => 'path',
-                'description' => 'the index to start the letter from',
-                'type'        => ValidationMiddleware::TYPE_NUMERIC
-            ],
-            'limit'    => [
-                'in'          => 'path',
-                'description' => 'the number of records to print',
-                'type'        => ValidationMiddleware::TYPE_NUMERIC
             ]
         ]
     ],
@@ -152,6 +147,11 @@ $routes = [
         'description' => '',
         'options'     => ['noAuth' => false, 'adminOnly' => false],
         'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'description' => ''
+            ],
             'parentmodule' => [
                 'in' => 'path',
                 'type' => ValidationMiddleware::TYPE_STRING,

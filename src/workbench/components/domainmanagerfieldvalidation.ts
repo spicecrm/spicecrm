@@ -200,6 +200,7 @@ export class DomainManagerFieldValidation implements OnInit {
                 this.domainmanager.domainfieldvalidationvalues = this.domainmanager.domainfieldvalidationvalues.filter(v => !this.deletedValidationIds.some(dId => v.id == dId))
 
                 this.domainmanager.reloadLanguageData();
+                this.backend.configurationService.reloadTaskData('domainvalidations');
                 this.close();
             }
         })
