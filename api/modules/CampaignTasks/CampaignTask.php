@@ -560,13 +560,21 @@ class CampaignTask extends SpiceBean
         AuthenticationController::getInstance()->setCurrentUser($admin);
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
+        $campaigntasksWithInvalidMailbox = [];
+
         // get the queued emails
         $queuedEmails = $this->db->limitQuery("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = 'SMS' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC", 0, 50);
         while($queuedTextMessage = $this->db->fetchByAssoc($queuedEmails)){
             /// load the campaign task if we have a new one
             if($queuedTextMessage['campaigntask_id'] != $this->id){
                 $this->retrieve($queuedTextMessage['campaigntask_id']);
+                // Check whether the CampaignTask actually has a valid mailbox ID (not missing, not unknown):
+                if ( empty( $this->mailbox_id ) or BeanFactory::getBean('Mailboxes', $this->mailbox_id) === false ) $campaigntasksWithInvalidMailbox[$this->id] = true;
             };
+
+            // Switch to the next CampaignLog entry,
+            // in case we already know, that the mailbox ID of the associated CampaignTask has no mailbox ID (missing or unknown).
+            if ( !empty( $campaigntasksWithInvalidMailbox[$this->id] )) continue;
 
             // load the bean and send the email
             $seed = BeanFactory::getBean($queuedTextMessage['target_type'], $queuedTextMessage['target_id']);
