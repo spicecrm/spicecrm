@@ -236,4 +236,22 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit,
             isNew: true
         };
     }
+
+    /**
+     * check if there is existing label for the modules in the relationship
+     * @param linkName
+     */
+    public checkIfExistingLabel(linkName): boolean {
+        return this.language.searchLabel('LBL_' + linkName).length >= 1;
+    }
+
+    /**
+     * if there is a label, provide it as property
+     * @param linkName
+     */
+    public getLabel(linkName): string {
+        return this.checkIfExistingLabel(linkName)
+            ? 'LBL_' + linkName.toUpperCase()
+            : '';
+    }
 }

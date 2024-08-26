@@ -14,19 +14,59 @@ import {helper} from "../../../services/helper.service";
     templateUrl: '../templates/objectactionoutputpdfmodal.html',
 })
 export class ObjectActionOutputPdfModal {
+
     public self :any = {};
 
+    /**
+     * Available output templates corresponding to the module
+     */
     public outputTemplates :any[] = [];
 
+    /**
+     * Selected template
+     */
     public _selectedTemplate :string = '';
 
+    /**
+     * Template ID needed for the request
+     */
     public templateId :string = '';
 
+    /**
+     * Array of selected items (ID's) from the list view
+     */
     public selectedItems :any[] = []
 
+    /**
+     * Url in charge of displaying the PDF in the UI
+     */
     public blobUrl :any;
 
-    public base64string :string = '';
+    /**
+     * Base64 string required when downloading the file from the UI
+     */
+    public base64content : string;
+
+    /**
+     * Number of items displayed per page, configurable in the 'config' table
+     */
+    public bucketMaxItems :number;
+
+    /**
+     * Array of arrays holding IDs. Each array's size is limited by bucketMaxItems.
+     * Used when sending separate requests based on the currentIndex i.e. page we're on
+     */
+    public splitArray :any[] = [];
+
+    /**
+     * current index of the splitArray
+     */
+    public currentIndex :number = 0;
+
+    /**
+     * loading state
+     */
+    public isLoading :boolean = false;
 
     constructor(
         public language: language,
@@ -37,8 +77,9 @@ export class ObjectActionOutputPdfModal {
         public backend: backend,
         public cdRef: ChangeDetectorRef,
         public sanitizer: DomSanitizer,
-        public helper: helper
+        public helper: helper,
     ) {
+        this.bucketMaxItems = +(this.model.configuration.getCapabilityConfig('outputtemplates')?.bucketMaxItems ?? 5);
         this.selectedItems = this.modellist.getSelectedIDs();
     }
 
@@ -50,12 +91,24 @@ export class ObjectActionOutputPdfModal {
         this.backend.getRequest('module/OutputTemplates/formodule/' + this.modellist.module, {}).subscribe(res => {
             this.outputTemplates = res;
             this._selectedTemplate = res[0].id
-            this.renderPreview();
+            this.getTranslatedPdfContent();
         })
+
+        this.splitArrayBasedOnbucketMaxItems();
+    }
+
+    /**
+     * splitting the array according to the maximum items allowed per page
+     */
+    public splitArrayBasedOnbucketMaxItems() {
+        for (let i = 0; i < this.selectedItems.length; i += this.bucketMaxItems) {
+            this.splitArray.push(this.selectedItems.slice(i, i + this.bucketMaxItems));
+        }
     }
 
     public downloadBulk() :void {
-        this.helper.downloadFileInBrowser(this.base64string, 'application/pdf', 'testing')
+        let fileName = `${this.modellist.module} PDF Export - ${this.numberOfItems} ${this.language.getLabel('LBL_OF')} ${this.totalItems}`;
+        this.helper.downloadFileInBrowser(this.base64content, 'application/pdf', fileName);
     }
 
     get selectedTemplate(): string {
@@ -64,21 +117,60 @@ export class ObjectActionOutputPdfModal {
 
     set selectedTemplate(value: string) {
         this._selectedTemplate = value;
-        this.renderPreview();
+        this.getTranslatedPdfContent();
     }
 
-    public renderPreview() {
+    public getTranslatedPdfContent() {
+        this.isLoading = true;
 
         let body = {
-            beanIds: this.selectedItems,
+            beanIds: this.splitArray[this.currentIndex]
         }
 
         this.backend.putRequest(`/module/OutputTemplates/${this.selectedTemplate}/formodule/${this.modellist.module}/generateBulkPDF`, {}, body).subscribe(pdf => {
-            this.base64string = pdf.content;
+            this.base64content = pdf.content;
+            this.renderPreview();
 
-            let blob = this.helper.datatoBlob(atob(pdf.content), 'application/pdf')
-            this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob))
-            this.cdRef.detectChanges();
+            this.isLoading = false;
         })
+    }
+
+    public renderPreview() {
+        let blob = this.helper.datatoBlob(atob(this.base64content), 'application/pdf')
+        this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob))
+    }
+
+    public reload() {
+        this.getTranslatedPdfContent();
+    }
+
+    public previousPage() {
+        if(this.currentIndex == 0) return;
+
+        this.currentIndex--;
+
+        this.getTranslatedPdfContent();
+    }
+
+    get previousDisabled() {
+       return this.currentIndex == 0;
+    }
+
+    public nextPage() {
+        this.currentIndex += 1;
+        this.getTranslatedPdfContent();
+    }
+
+    get nextDisabled() {
+        return this.numberOfItems == this.totalItems;
+    }
+
+    get numberOfItems() {
+        let currentNumberOfDisplayedItems = (this.currentIndex + 1) * this.bucketMaxItems
+        return currentNumberOfDisplayedItems > this.selectedItems.length ? this.selectedItems.length : currentNumberOfDisplayedItems;
+    }
+
+    get totalItems() {
+        return this.selectedItems.length;
     }
 }

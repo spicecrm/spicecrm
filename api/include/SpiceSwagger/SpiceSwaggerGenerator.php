@@ -20,6 +20,8 @@ class SpiceSwaggerGenerator
     private $extensions;
     private $allExtensions;
     private $structureArray = [];
+    private $selectedRoute;
+    private $includeSubroutes;
 
     /**
      * SpiceSwaggerGenerator constructor.
@@ -29,11 +31,14 @@ class SpiceSwaggerGenerator
      * @param array|null $modules
      * @param string|null $node
      */
-    public function __construct(array $allRoutes, array $allExtensions, ?array $extensions, ?array $modules, string $node = "/") {
+    public function __construct(string $selectedRoute, bool $includeSubroutes, array $allRoutes, array $allExtensions, ?array $extensions, ?array $modules, string $node = "/") {
         $this->allRoutes     = $allRoutes;
         $this->routes        = $allRoutes;
         $this->extensions    = $allExtensions;
         $this->allExtensions = $allExtensions;
+        $this->selectedRoute = $selectedRoute;
+        $this->includeSubroutes = $includeSubroutes;
+
 
         if ($modules) {
             $this->instantiateGenericRoutes($modules);
@@ -61,7 +66,7 @@ class SpiceSwaggerGenerator
 //        $this->generateDefinitions();
         $this->generateComponents();
         $this->generateExternalDocs();
-
+        file_put_contents('debug_structure.txt', print_r($this->structureArray, true));
         return $this->convertToYaml();
     }
 
@@ -103,18 +108,36 @@ class SpiceSwaggerGenerator
      * Tags are extension names.
      */
     private function generateTags(): void {
-        $tags = [];
-        foreach ($this->extensions as $extensionName => $extension) {
-            $tags[] = [
-                'name'        => $extensionName,
-                'description' => $extensionName . ' v' . $extension['version'],
-            ];
+        $usedExtensions = [];
+
+        // Collect used extensions from the filtered routes
+        foreach ($this->routes as $route) {
+            if (!empty($route['extension'])) {
+                $usedExtensions[$route['extension']] = true;
+            }
         }
 
-        $tags[] = [
-            'name'        => 'custom',
-            'description' => 'Customer specific routes',
-        ];
+        // Only add tags for extensions that are actually used
+        foreach ($usedExtensions as $extensionName => $used) {
+            if (isset($this->extensions[$extensionName])) {
+                $tags[] = [
+                    'name' => $extensionName,
+                    'description' => $extensionName . ' v' . $this->extensions[$extensionName]['version'],
+                ];
+            }
+        }
+
+        // Add 'custom' tag only if there are custom routes
+        $hasCustomRoutes = array_reduce($this->routes, function($carry, $route) {
+            return $carry || (!empty($route['custom']) && $route['custom'] === true);
+        }, false);
+
+        if ($hasCustomRoutes) {
+            $tags[] = [
+                'name' => 'custom',
+                'description' => 'Customer specific routes',
+            ];
+        }
 
         $this->structureArray['tags'] = $tags;
     }
@@ -134,8 +157,10 @@ class SpiceSwaggerGenerator
         $pathsArray = [];
 
         foreach ($this->routes as $route) {
-            $path = new SpiceSwaggerPath($route);
-            $pathsArray[$route['route']][$route['method']] = $path->generatePathArray();
+                $path = new SpiceSwaggerPath($route);
+                $pathRoute = $route['route'];
+                $pathMethod = $route['method'];
+                $pathsArray[$pathRoute][$pathMethod] = $path->generatePathArray();
         }
 
         $this->structureArray['paths'] = $pathsArray;
@@ -184,7 +209,18 @@ class SpiceSwaggerGenerator
      * @return string
      */
     private function convertToYaml(): string {
-        return Yaml::dump($this->structureArray);
+        $yaml = Yaml::dump($this->structureArray, 12, 2, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
+
+        //This is used to find the response codes and turn them into strings instead of leaving them as numbers
+        $yaml = preg_replace_callback(
+            '/^(\s+)(\d{3}):$/m',
+            function($matches) {
+                return $matches[1] . "'" . $matches[2] . "':";
+            },
+            $yaml
+        );
+
+        return $yaml;
     }
 
     /**
@@ -199,7 +235,11 @@ class SpiceSwaggerGenerator
 
         foreach ($this->allRoutes as $route) {
             if ($this->belongsToNode($route, $node) && $this->belongsToExtensions($route, $extensions)) {
-                $routes[] = $route;
+                if ($this->includeSubroutes && strpos($route['route'], $this->selectedRoute) === 0) {
+                    $routes[] = $route;
+                } elseif ($route['route'] === $this->selectedRoute) {
+                    $routes[] = $route;
+                }
             }
         }
 

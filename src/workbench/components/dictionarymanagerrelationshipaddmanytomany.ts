@@ -129,7 +129,7 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
         // set the rhs defaults
         let riditem = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.rhs_sysdictionarydefinition_id).find(i => i.name == 'id');
         if (riditem) this.relationship.rhs_sysdictionaryitem_id = riditem.id;
-        this.relationship.rhs_linkname = this.dictionarymanager.getDictionaryDefinitionName(this.relationship.lhs_sysdictionarydefinition_id).toLowerCase();
+        this.relationship.rhs_linkname = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.lhs_sysdictionarydefinition_id).tablename.toLowerCase();
     }
 
     /**

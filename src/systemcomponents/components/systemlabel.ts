@@ -44,6 +44,7 @@ export class SystemLabel implements OnChanges, AfterViewInit, OnDestroy {
      * the subscription on the language
      */
     public subsciptions: Subscription = new Subscription();
+    @Input() disabled!: boolean;
 
     constructor(public language: language,
                 public modal: modal,

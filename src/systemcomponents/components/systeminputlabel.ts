@@ -59,6 +59,7 @@ export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
         valid: true
     };
 
+    @Input()
     public label: string = '';
 
     // for the dropdown
@@ -195,6 +196,8 @@ export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
      * @param value value to be executed when there is a change in contenteditable
      */
     public writeValue(value: any): void {
+        if(!value) return
+
         this.label = value;
     }
 
