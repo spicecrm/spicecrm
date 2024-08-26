@@ -106,6 +106,12 @@ $routes = [
                 'required'    => true,
                 'description' => 'The name of the module',
             ],
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
+                'description' => 'The id of the module'
+            ],
             'links'          => [
                 'in'          => 'body',
                 'type'        => ValidationMiddleware::TYPE_ARRAY,
@@ -158,7 +164,14 @@ $routes = [
         'class'       => ProspectListsController::class,
         'function'    => 'getEntriesCount',
         'description' => '',
-        'options'     => ['noAuth' => false, 'adminOnly' => false]
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],
 
 ];

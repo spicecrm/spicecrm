@@ -13,7 +13,19 @@ $routes = [
         'class'       => GdprController::class,
         'function'    => 'getGdprReleases',
         'description' => 'Get the GDPR Releases.',
-        'options'     => ['noAuth' => false, 'adminOnly' => false]
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters' => [
+            'module' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ],
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ], [
         'method'      => 'get',
         'route'       => '/common/gdpr/portalGDPRconsentText',

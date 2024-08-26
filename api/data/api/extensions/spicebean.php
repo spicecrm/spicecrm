@@ -761,7 +761,7 @@ $routes = [
                 'description' => '',
             ],
             'excludeinactive'           => [
-                'in'          => 'excludeinactive',
+                'in'          => 'query',
                 'type'        => ValidationMiddleware::TYPE_BOOL,
                 'required'    => false,
                 'description' => 'set to excludeinactive',
