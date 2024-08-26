@@ -40,6 +40,7 @@ import {DictionaryManagerRelationshipAddParent} from "./components/dictionaryman
 import {DictionaryManagerRelationshipContainerParent} from "./components/dictionarymanagerrelationshipcontainerparent";
 import {DictionaryManagerIndexes} from "./components/dictionarymanagerindexes";
 import {DictionaryManagerIndexAdd} from "./components/dictionarymanagerindexadd";
+import {DictionaryManagerIndexEdit} from "./components/dictionarymanagerindexedit";
 import {DictionaryManagerIndexAddType} from "./components/dictionarymanagerindexaddtype";
 import {DictionaryManagerIndexDetails} from "./components/dictionarymanagerindexdetails";
 import {DictionaryManagerFields} from "./components/dictionarymanagerfields";
@@ -234,6 +235,7 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         DictionaryManagerRelationshipContainerParent,
         DictionaryManagerIndexes,
         DictionaryManagerIndexAdd,
+        DictionaryManagerIndexEdit,
         DictionaryManagerIndexAddType,
         DictionaryManagerIndexDetails,
         DictionaryManagerFields,
