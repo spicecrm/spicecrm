@@ -255,11 +255,15 @@ class CoreController
      */
     public function getSwagger($req, $res, $args) {
         $postBody = $req->getParsedBody();
+
+        $selectedRoute = $postBody['selectedRoute'] ?? null;
+        $includeSubroutes = $postBody['includeSubroutes'] ?? false;
+
         $node       = $postBody['node'] ?: "/";
         $extensions = $postBody['extensions'];
         $modules    = $postBody['modules'];
 //        $extensionName = $args['extensionName'] ?: '';
-        $res->getBody()->write(RESTManager::getInstance()->getSwagger($extensions, $modules, $node));
+        $res->getBody()->write(RESTManager::getInstance()->getSwagger($selectedRoute, $includeSubroutes, $extensions, $modules, $node));
         return $res->withHeader('Content-Type', 'text/yaml');
     }
 
