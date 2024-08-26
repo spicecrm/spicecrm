@@ -203,6 +203,13 @@ $routes = [
         'function' => 'getDBColumns',
         'description' => 'get dictionary definitions as defined on the database',
         'options' => ['adminOnly' => true],
+        'parameters' => [
+            'dictionaryname' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ]
+        ]
     ],
     [
         'method' => 'delete',
@@ -213,13 +220,13 @@ $routes = [
         'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'dictionaryname' => [
-                'in' => 'query',
+                'in' => 'path',
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_STRING
             ],
             'fields' => [
-                'in' => 'params',
-                'description' => '',
+                'in' => 'query',
+                'description' => 'JSON-encoded array of field names to delete',
                 'type' => ValidationMiddleware::TYPE_ARRAY
             ]
         ]
@@ -231,6 +238,13 @@ $routes = [
         'function' => 'getDictionaryVardefs',
         'description' => 'get dictionary definitions vardefs for a given dictionary item by name',
         'options' => ['adminOnly' => true],
+        'parameters' => [
+            'dictionaryname' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ]
+        ]
     ],
     [
         'method' => 'post',
@@ -500,14 +514,28 @@ $routes = [
         'class' => SpiceDictionaryDefinitionsController::class,
         'function' => 'postDictionaryDefinition',
         'description' => 'posts a dictionary Definition',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ], [
         'method' => 'delete',
         'route' => '/dictionary/definition/{id}',
         'class' => SpiceDictionaryDefinitionsController::class,
         'function' => 'deleteDictionaryDefinition',
         'description' => 'delets a dictionary Definition',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],
     [
         'method' => 'post',
@@ -515,35 +543,70 @@ $routes = [
         'class' => SpiceDictionaryDefinitionsController::class,
         'function' => 'activateDictionaryDefinition',
         'description' => 'activates a dictionary Definition',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ], [
         'method' => 'delete',
         'route' => '/dictionary/definition/{id}/activate',
         'class' => SpiceDictionaryDefinitionsController::class,
         'function' => 'deactivateDictionaryDefinition',
         'description' => 'deactivates a dictionary Definition',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ], [
         'method' => 'put',
         'route' => '/dictionary/definition/{id}/repair',
         'class' => SpiceDictionaryDefinitionsController::class,
         'function' => 'repairDictionaryDefinition',
         'description' => 'repairs a dictionary Definition',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],[
         'method' => 'put',
         'route' => '/dictionary/template/{id}/repairrelated',
         'class' => SpiceDictionaryDefinitionsController::class,
         'function' => 'repairTemplateRelatedDictionaries',
         'description' => 'repairs a template related dictionaries',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ], [
         'method' => 'put',
         'route' => '/dictionary/definition/{id}/reshuffle',
         'class' => SpiceDictionaryDefinitionsController::class,
         'function' => 'reshuffleDictionaryDefinition',
         'description' => 'reshuffles a dictionary Definition',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],
     // for the items
     [
@@ -552,7 +615,14 @@ $routes = [
         'class' => SpiceDictionaryItemsController::class,
         'function' => 'postDictionaryItem',
         'description' => 'posts a dictionary Item',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],
     [
         'method' => 'post',
@@ -576,7 +646,14 @@ $routes = [
         'class' => SpiceDictionaryItemsController::class,
         'function' => 'deleteDictionaryItem',
         'description' => 'posts a dictionary Index',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],
     [
         'method' => 'post',
@@ -584,7 +661,14 @@ $routes = [
         'class' => SpiceDictionaryItemsController::class,
         'function' => 'activateDictionaryItem',
         'description' => 'posts a dictionary Index',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],
     [
         'method' => 'delete',
@@ -592,7 +676,14 @@ $routes = [
         'class' => SpiceDictionaryItemsController::class,
         'function' => 'deactivateDictionaryItem',
         'description' => 'posts a dictionary Index',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],
     // for the indexes
     [
@@ -601,7 +692,14 @@ $routes = [
         'class' => SpiceDictionaryIndexesController::class,
         'function' => 'postDictionaryIndex',
         'description' => 'posts a dictionary Index',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],
     [
         'method' => 'delete',
@@ -609,7 +707,14 @@ $routes = [
         'class' => SpiceDictionaryIndexesController::class,
         'function' => 'deleteDictionaryIndex',
         'description' => 'posts a dictionary Index',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],
     [
         'method' => 'post',
@@ -617,7 +722,14 @@ $routes = [
         'class' => SpiceDictionaryIndexesController::class,
         'function' => 'activateDictionaryIndex',
         'description' => 'activates a dictionary Index',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],
     [
         'method' => 'delete',
@@ -625,7 +737,14 @@ $routes = [
         'class' => SpiceDictionaryIndexesController::class,
         'function' => 'dropDictionaryIndex',
         'description' => 'drops a dictionary Index',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],
     // for the relationships
     [
@@ -664,7 +783,14 @@ $routes = [
         'class' => SpiceDictionaryRelationshipsController::class,
         'function' => 'activate',
         'description' => 'activates a Relationship',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],
     [
         'method' => 'delete',
