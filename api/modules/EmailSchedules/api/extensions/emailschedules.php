@@ -191,7 +191,7 @@ $routes = [
         'options' => ['noAuth' => false, 'adminOnly' => false],
         'parameters' => [
             'parentmodule' => [
-                'in' => 'body',
+                'in' => 'path',
                 'description' => 'the name of the parent module',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'example' => 'ProspectLists',
