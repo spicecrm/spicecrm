@@ -223,8 +223,49 @@ export class systemrichtextservice {
         const newAnchor: HTMLAnchorElement = document.createElement('A') as HTMLAnchorElement;
         newAnchor.href = href;
         this.addDataAttributes( newAnchor, dataAttributes );
+        // put the selected content html in the inner html of the new link
         newAnchor.innerHTML = content;
-        this.insertElement( newAnchor );
+
+        // if we have a selection, make sure to reinsert only the unselected parts of the text nodes which will not be included in the selected area
+        if (this.savedSelection) {
+            //
+            let sibling = this.savedSelection.startContainer;
+            sibling.parentNode.insertBefore(newAnchor, sibling);
+
+            // if the beginning of the selection is a text node and part of the text is not selected, reinsert the unselected part of the text
+            if (this.savedSelection.startOffset > 0 && this.savedSelection.startContainer.nodeType == 3) {
+                const textPart = this.savedSelection.startContainer.cloneNode();
+                textPart.textContent = textPart.textContent.substring(0, this.savedSelection.startOffset);
+                this.savedSelection.startContainer.parentNode.insertBefore(textPart, newAnchor);
+            }
+
+            // if the end of the selection is a text node and part of the text is not selected, reinsert the unselected part of the text
+            if (this.savedSelection.endOffset < this.savedSelection.endContainer.textContent.length && this.savedSelection.endContainer.nodeType == 3) {
+                const textPart = this.savedSelection.endContainer.cloneNode();
+                textPart.textContent = textPart.textContent.substring(this.savedSelection.endOffset);
+                if (newAnchor.nextSibling) {
+                    newAnchor.parentNode.insertBefore(textPart, newAnchor.nextSibling);
+                } else {
+                    newAnchor.parentNode.appendChild(textPart);
+                }
+            }
+
+            // remove the replaced selection
+            const toRemove = [];
+
+            while (sibling) {
+                toRemove.push(sibling);
+
+                if (sibling.isEqualNode(this.savedSelection.endContainer) || sibling.contains(this.savedSelection.endContainer)) break;
+
+                sibling = sibling.nextSibling;
+            }
+
+            toRemove.forEach(s => s.parentNode.removeChild(s));
+
+        } else {
+            this.insertElement( newAnchor );
+        }
     }
 
     /**
