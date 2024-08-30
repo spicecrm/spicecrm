@@ -45,7 +45,7 @@ class SpiceDictionaryDomainLoader
         if ($domainValidation['validation_type'] != 'enum') {
             return $enumValues;
         }
-        $query3 = "SELECT * FROM sysdomainfieldvalidationvalues WHERE sysdomainfieldvalidation_id ='{$domainValidation['id']}' AND deleted = 0 AND status='a' ORDER BY sequence ASC";
+        $query3 = "SELECT * FROM sysdomainfieldvalidationvalues WHERE sysdomainfieldvalidation_id ='{$domainValidation['id']}' AND deleted = 0 AND status='a'";
         $result3 = $db->query($query3);
         while ($row = $db->fetchRow($result3)) {
             $enumValues[] = $row['enumvalue'];
