@@ -106,24 +106,6 @@ $routes = [
                 'description' => 'the name of the module',
                 'type' => ValidationMiddleware::TYPE_MODULE,
                 'example' => 'Contacts',
-            ],
-            'global' => [
-                'in' => 'path',
-                'description' => 'designates if a list is global',
-                'type' => ValidationMiddleware::TYPE_BOOL,
-                'example' => '1',
-            ],
-            'name' => [
-                'in' => 'path',
-                'description' => 'the name of the list',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'example' => 'My list',
-            ],
-            'listcomponent' => [
-                'in' => 'path',
-                'description' => 'the used component',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'example' => 'ObjectList',
             ]
         ]
     ],
@@ -789,7 +771,7 @@ $routes = [
         'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
         'parameters' => [
             'id' => [
-                'in' => 'query',
+                'in' => 'path',
                 'description' => 'the id of the validation rule',
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'example' => '894562d5-d74b-4587-a10a-fabe7ec2f696',

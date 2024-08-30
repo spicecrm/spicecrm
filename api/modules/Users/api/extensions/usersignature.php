@@ -49,7 +49,12 @@ $routes = [
         'description' => '',
         'options'     => ['noAuth' => false, 'adminOnly' => false],
         'parameters' => [
-
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true
+            ]
         ]
     ],
     [

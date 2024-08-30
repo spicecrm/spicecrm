@@ -32,12 +32,11 @@ export class ReportsDesignerMoreIntegrateItemPdfExport {
      * initialize the plugin properties
      */
     public ngOnInit() {
-        this.initializeProperties();
-
         let outPutTemplates = this.configuration.getData('OutputTemplates');
         if (outPutTemplates && outPutTemplates[this.model.module]) {
             this.templates = outPutTemplates[this.model.module];
             this.isLoaded = true;
+            this.initializeProperties();
         } else {
             this.backend.getRequest('module/OutputTemplates/formodule/' + this.model.module, {}).subscribe(
                 (data: any) => {
@@ -48,10 +47,10 @@ export class ReportsDesignerMoreIntegrateItemPdfExport {
                     this.templates = data;
 
                     this.isLoaded = true;
+                    this.initializeProperties();
                 }
             );
         }
-
     }
 
     /**
@@ -64,7 +63,13 @@ export class ReportsDesignerMoreIntegrateItemPdfExport {
                 outputtemplate_id: ''
             };
             this.model.setField('integration_params', integrationParams);
-        } else{
+        }
+        if (this.templates.length === 1) {
+            this.outputtemplate_id = this.templates[0].id;
+            integrationParams.kpdfexport.outputtemplate_id = this.outputtemplate_id;
+            this.model.setField('integration_params', integrationParams);
+        }
+        else{
             this.outputtemplate_id = integrationParams.kpdfexport.outputtemplate_id;
         }
     }

@@ -73,7 +73,7 @@ $routes = [
                 ]
             ],
             'description' => [
-                'in' => 'description',
+                'in' => 'body',
                 'description' => 'Description of the IP address.',
                 'type' => ValidationMiddleware::TYPE_STRING
             ]

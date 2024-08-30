@@ -291,12 +291,6 @@ $routes = [
                 'description' => 'GUID of bean it is cloned from',
                 'required' => true
             ],
-            'categoryId' => [
-                'in' => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'description' => 'GUID of a category to be cloned',
-                'required' => false
-            ],
             'selectedFiles' => [
                 'in' => 'body',
                 'type'        => ValidationMiddleware::TYPE_ARRAY,
