@@ -195,7 +195,7 @@ class CampaignTasksController
         $campaignLog = BeanFactory::getBean('CampaignLog');
         $list = $campaignLog->get_list(
             "planned_activity_date DESC",
-            "campaigntask_id = '{$args['id']}' AND IFNULL(planned_activity_date, '$now') <= '$now' AND activity_type NOT IN ('completed','converted')",
+            "campaigntask_id = '{$args['id']}' AND IFNULL(planned_activity_date, '$now') <= '$now' AND activity_type NOT IN ('completed','converted', 'maxattempts')",
             $getParams['offset'] ?: 0,
             $getParams['limit'] ?: 10,
             $getParams['limit'] ?: -1);
@@ -221,7 +221,33 @@ class CampaignTasksController
             ];
         }
 
-        return $res->withJson(['items' => $items, 'row_count' => $list['row_count']]);
+        // get the stats
+        $stats = DBManagerFactory::getInstance()->fetchAll("SELECT count(id) count, activity_type FROM campaign_log WHERE campaigntask_id = '{$args['id']}' AND deleted = 0 GROUP BY activity_type");
+
+        return $res->withJson(['items' => $items, 'row_count' => $list['row_count'], 'stats' => $stats]);
+    }
+
+    /**
+     * returns the stats for the campaigntask
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws NotFoundException
+     */
+    public function getCampaignTaskStats(Request $req, Response $res, array $args): Response
+    {
+       $seed = BeanFactory::getBean('CampaignTasks', $args['id']);
+
+        if (!$seed) {
+            throw new NotFoundException('Campaigntask not found');
+        }
+
+        // get the stats
+        $stats = DBManagerFactory::getInstance()->fetchAll("SELECT count(id) count, activity_type FROM campaign_log WHERE campaigntask_id = '{$args['id']}' AND deleted = 0 GROUP BY activity_type");
+
+        return $res->withJson(['stats' => $stats]);
     }
 
     /**
