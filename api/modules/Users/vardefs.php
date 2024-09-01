@@ -640,6 +640,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'module' => 'CompanyCodes',
         ],
+        /* migrated to dictionary
         'costcenter_id' => [
             'name' => 'costcenter_id',
             'vname' => 'LBL_COSTCENTER',
@@ -666,6 +667,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'module' => 'CostCenters',
             'source' => 'non-db'
         ],
+        */
         'email1' => [
             'name' => 'email1',
             'vname' => 'LBL_EMAIL',
@@ -963,7 +965,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'module' => 'SystemTenants',
             'source' => 'non-db'
         ],
-
+        /* migrated
         'shop_id' => [
             'name' => 'shop_id',
             'vname' => 'LBL_SHOP',
@@ -983,6 +985,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'module' => 'Shops',
             'source' => 'non-db',
         ],
+        */
         'spiceaclprofiles' => [
             'name' => 'spiceaclprofiles',
             'type' => 'link',
@@ -1147,6 +1150,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'rhs_key' => 'companycode_id',
             'relationship_type' => 'one-to-many'
         ],
+        /*
         'costcenter_users' => [
             'lhs_module' => 'CostCenters',
             'lhs_table' => 'costcenters',
@@ -1157,6 +1161,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'relationship_type' => 'one-to-many',
             'default' => true
         ],
+        */
         'shop_users' => [
             'lhs_module' => 'Shops',
             'lhs_table' => 'shops',
@@ -1249,6 +1254,8 @@ if (file_exists("modules/ServiceTickets")) {
 //        'default' => false
 //    );
 //}
+
+/* migrated
 if (file_exists("extensions/modules/Shops")) {
     SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['shops'] = [
         'name' => 'shops',
@@ -1260,7 +1267,7 @@ if (file_exists("extensions/modules/Shops")) {
         'module' => 'Shops'
     ];
 }
-
+*/
 #migrated
 //if (file_exists("modules/DistributionLists")) {
 //    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['distributionlists'] = [
