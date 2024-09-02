@@ -1315,10 +1315,10 @@ class SpiceBean
 
         // check if we have any numbered fields
         if($this->isNew()){
-            $numberrangeFields = $this->db->query("SELECT field FROM sysnumberrangeallocation WHERE module='{$this->_module}'");
-            while($numberrangeField = $this->db->fetchByAssoc($numberrangeFields)){
-                if(empty($this->{$numberrangeField['field']})){
-                    $this->{$numberrangeField['field']} = SpiceNumberRanges::getNextNumberForField($this->_module, $numberrangeField['field']);
+            $numberrangeFields = SpiceNumberRanges::getNumberRangeFieldsForBean($this->_module);
+            foreach ($numberrangeFields as $numberrangeField){
+                if(empty($this->{$numberrangeField})){
+                    $this->{$numberrangeField} = SpiceNumberRanges::getNextNumberForField($this->_module, $numberrangeField);
                 }
             }
         }
