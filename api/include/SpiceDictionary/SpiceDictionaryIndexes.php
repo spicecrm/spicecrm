@@ -296,17 +296,39 @@ class SpiceDictionaryIndexes
      */
     public function addIndex(array $index, array $items)
     {
+        // Determine the appropriate table
         $table = $index['scope'] == 'c' ? self::customtable : self::table;
-        SystemDeploymentCR::writeDBEntry($table, $index['id'], $index, $index['name'], SystemDeploymentCR::ACTION_INSERT);
+
+        // Check if the index already exists
+        $existingIndex = $this->dictionaryIndexes[$index['id']] ?? null;
+
+        if ($existingIndex) {
+            // If it exists, update it
+            SystemDeploymentCR::writeDBEntry($table, $index['id'], $index, $index['name'], SystemDeploymentCR::ACTION_UPDATE);
+        } else {
+            // If it doesn't exist, insert it
+            SystemDeploymentCR::writeDBEntry($table, $index['id'], $index, $index['name'], SystemDeploymentCR::ACTION_INSERT);
+        }
+
+        // Update or add the index in the cache
         $this->dictionaryIndexes[$index['id']] = $index;
 
+        // Handle index items similarly
         foreach ($items as $item) {
             $table = $item['scope'] == 'c' ? self::customitemtable : self::itemtable;
-            SystemDeploymentCR::writeDBEntry($table, $item['id'], $item, $index['name'], SystemDeploymentCR::ACTION_INSERT);
+            $existingItem = $this->dictionaryIndexItems[$item['id']] ?? null;
+
+            if ($existingItem) {
+                SystemDeploymentCR::writeDBEntry($table, $item['id'], $item, $index['name'], SystemDeploymentCR::ACTION_UPDATE);
+            } else {
+                SystemDeploymentCR::writeDBEntry($table, $item['id'], $item, $index['name'], SystemDeploymentCR::ACTION_INSERT);
+            }
+
+            // Update or add the item in the cache
             $this->dictionaryIndexItems[$item['id']] = $item;
         }
 
-        // rewrite the cache
+        // Rewrite the cache to persist changes
         $this->writeCache();
 
         return true;

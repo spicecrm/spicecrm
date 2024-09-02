@@ -1,6 +1,7 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\OutputTemplates\api\controllers\OutputTemplatesController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 use Slim\Routing\RouteCollectorProxy;
@@ -13,9 +14,122 @@ $RESTManager = RESTManager::getInstance();
 /**
  * register the Extension
  */
-$RESTManager->registerExtension('outputtemplates', '1.0');
+$RESTManager->registerExtension('outputtemplates', '1.0', ['bucketMaxItems' => SpiceConfig::getInstance()->get('bulkpdf_export.max_items')]);
 
 $routes = [
+    [
+        'method'      => 'put',
+        'route'       => '/module/OutputTemplates/{id}/formodule/{beanName}/{beanId}/related/{linkName}/generateBulkPDF',
+        'class'       => OutputTemplatesController::class,
+        'function'    => 'generateRelatedBulkPDF',
+        'description' => 'generate bulk pdf for related beans',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters'  => [
+            'id'           => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'required'    => true,
+                'description' => 'The id of the output template',
+            ],
+            'beanName'           => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'required'    => true,
+                'description' => 'The name of the module',
+            ],
+            'beanId'             => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'required'    => true,
+                'description' => 'GUID of the bean',
+            ],
+            'linkName'           => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => true,
+                'description' => 'The name of the link',
+            ],
+            'modulefilter'       => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'required'    => false,
+                'description' => 'Module filter GUID',
+            ],
+            'fieldfilters'       => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_COMPLEX,
+                'required'    => false,
+                'description' => '',
+            ],
+            'sort'               => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_OBJECT,
+                'required'    => false,
+                'description' => '',
+                'parameters' => [
+                    'sortfield' => [
+                        'type'        => ValidationMiddleware::TYPE_STRING,
+                        'required'    => true,
+                        'description' => 'the sort fieldname'
+                    ],
+                    'sortdirection' => [
+                        'type'        => ValidationMiddleware::TYPE_ENUM,
+                        'required'    => true,
+                        'description' => 'the sort direction',
+                        'options' => ['ASC', 'DESC']
+                    ]
+                ]
+            ],
+            'offset'             => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC,
+                'required'    => false,
+                'description' => '',
+            ],
+            'limit'              => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC,
+                'required'    => false,
+                'description' => '',
+            ],
+            'relationshipFields' => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_COMPLEX,
+                'required'    => false,
+                'description' => '',
+            ],
+            'getcount'           => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_BOOL,
+                'required'    => false,
+                'description' => '',
+            ],
+            'excludeinactive'           => [
+                'in'          => 'excludeinactive',
+                'type'        => ValidationMiddleware::TYPE_BOOL,
+                'required'    => false,
+                'description' => 'set to excludeinactive',
+            ],
+            'module'   => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'required'    => false,
+                'description' => 'The name of the module',
+            ],
+            'forceResolveLinks' => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => false,
+                'description' => 'Forces resolving the links (when default=true in vardefs).',
+            ],
+            'searchterm' => [
+                'in'          => 'query',
+                'description' => 'a searchterm to search by',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+            ],
+
+        ],
+    ],
     [
         'method'      => 'put',
         'route'       => '/module/OutputTemplates/{id}/formodule/{module}/generateBulkPDF',

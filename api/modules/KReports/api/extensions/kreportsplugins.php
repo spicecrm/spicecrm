@@ -22,6 +22,18 @@ $routes = [
         'function'    => 'processPluginAction',
         'description' => 'calls a plugin action',
         'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters' => [
+            'plugin' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => \SpiceCRM\includes\Middleware\ValidationMiddleware::TYPE_STRING
+            ],
+            'action' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => \SpiceCRM\includes\Middleware\ValidationMiddleware::TYPE_STRING
+            ]
+        ]
     ],
 
 ];

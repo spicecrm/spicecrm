@@ -55,7 +55,7 @@ $routes = [
                 'in' => 'body',
                 'description' => 'the revision status of the file',
                 'type' => ValidationMiddleware::TYPE_ENUM,
-                'example' => 'r',
+                'options' => ['r'],
             ],
         ]
     ],

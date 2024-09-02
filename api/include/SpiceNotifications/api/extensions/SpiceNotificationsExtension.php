@@ -17,6 +17,13 @@ $routes = [
         'function' => 'save',
         'description' => 'create a new notification',
         'options' => ['noAuth' => false, 'adminOnly' => false],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => \SpiceCRM\includes\Middleware\ValidationMiddleware::TYPE_GUID,
+            ]
+        ]
     ],
     [
         'method' => 'post',
@@ -25,6 +32,13 @@ $routes = [
         'function' => 'markAsRead',
         'description' => 'mark a notification as read',
         'options' => ['noAuth' => false, 'adminOnly' => false],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => \SpiceCRM\includes\Middleware\ValidationMiddleware::TYPE_GUID,
+            ]
+        ]
     ],
     [
         'method' => 'post',
