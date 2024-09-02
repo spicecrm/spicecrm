@@ -11,6 +11,7 @@ import {ObjectFields} from '../../objectfields/objectfields';
 import {GlobalComponents} from '../../globalcomponents/globalcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
+
 import {telecockpitservice} from "./services/telecockpit.service";
 
 import {TeleSalesCockpitListItem} from './components/telesalescockpitlistitem';
@@ -25,6 +26,8 @@ import {TeleSalesCockpitModuleActions} from './components/telesalescockpitmodule
 import {TeleSalesCockpitAddMeetingButton} from './components/telesalescockpitaddmeetingbutton';
 import {TeleSalesCockpitHeader} from './components/telesalescockpitheader';
 import {TeleSalesCockpit} from './components/telesalescockpit';
+import {DirectivesModule} from "../../directives/directives";
+import {TeleSalesCockpitStats} from "./components/telesalescockpitstats";
 
 @NgModule({
     imports: [
@@ -34,6 +37,7 @@ import {TeleSalesCockpit} from './components/telesalescockpit';
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule,
     ],
     declarations: [
         TeleSalesCockpit,
@@ -48,6 +52,7 @@ import {TeleSalesCockpit} from './components/telesalescockpit';
         TeleSalesCockpitAddAttemptModal,
         TeleSalesCockpitModuleActions,
         TeleSalesCockpitAddMeetingButton,
+        TeleSalesCockpitStats
 
     ],
     providers: [

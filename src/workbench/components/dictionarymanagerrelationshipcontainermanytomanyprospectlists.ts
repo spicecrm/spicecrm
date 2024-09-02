@@ -103,8 +103,8 @@ export class DictionaryManagerRelationshipContainerManyToManyProspectlists imple
         this.loadJoinItems();
 
         // set the join defintion
-        this.join_sysdictionarydefinition_id = this.relationsTables.find(r => r.name == 'prospect_lists_prospects').id;
-        this.relationship.join_lhs_sysdictionaryitem_id = this.join_items.find(i => i.name == 'prospect_list_id').id;
+        if(!this.join_sysdictionarydefinition_id) this.join_sysdictionarydefinition_id = this.relationsTables.find(r => r.name == 'prospect_lists_prospects').id;
+        if(!this.relationship.join_lhs_sysdictionaryitem_id) this.relationship.join_lhs_sysdictionaryitem_id = this.join_items.find(i => i.name == 'prospect_list_id').id;
         this.relationship.join_rhs_sysdictionaryitem_id = this.join_items.find(i => i.name == 'related_id').id;
         this.relationship.relationship_role_column = this.join_items.find(i => i.name == 'related_type').id;
     }

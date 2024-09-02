@@ -50,11 +50,8 @@ export class TeleSalesCockpitList {
         }
     }
 
-    public onScroll(e) {
-        let element = this.listcontainer.element.nativeElement;
-        if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
-            this.telecockpitservice.loadMoreData();
-        }
+    public loadMore(e){
+        this.telecockpitservice.loadMoreData();
     }
 
     public trackByFn(index, item) {

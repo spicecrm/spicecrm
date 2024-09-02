@@ -106,12 +106,12 @@ $routes = [
         'options'     => ['adminOnly' => true, 'validate' => true],
         'parameters'  => [
             'id' => [
-                'in' => 'query',
+                'in' => 'path',
                 'description' => 'the id of the entry',
                 'type' => ValidationMiddleware::TYPE_GUID
             ],
             'status' => [
-                'in' => 'query',
+                'in' => 'path',
                 'description' => 'ttruw or false to activate or deactivate ',
                 'type' => ValidationMiddleware::TYPE_BOOL
             ]
@@ -126,7 +126,7 @@ $routes = [
         'options'     => ['adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
         'parameters'  => [
             'id' => [
-                'in' => 'query',
+                'in' => 'path',
                 'description' => 'the id of the entry',
                 'type' => ValidationMiddleware::TYPE_GUID
             ]
@@ -141,7 +141,7 @@ $routes = [
         'options'     => ['adminOnly' => true, 'validate' => true],
         'parameters'  => [
             'id' => [
-                'in' => 'query',
+                'in' => 'path',
                 'description' => 'the id of the entry',
                 'type' => ValidationMiddleware::TYPE_GUID
             ]
