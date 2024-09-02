@@ -19,7 +19,10 @@
 </ul>
 <!-- displays if no records are found-->
 <ng-template #nocontent>
-    <div class="slds-p-vertical--medium">
+    <!--div class="slds-p-vertical--medium">
         <system-illustration-no-records *ngIf="!loading"><system-label label="LBL_NO_ENTRIES"></system-label></system-illustration-no-records>
+    </div-->
+    <div *ngIf="!loading" class="slds-p-vertical--small slds-text-color--inverse-weak slds-align_absolute-center">
+        <system-label label="LBL_NO_ENTRIES"/>
     </div>
 </ng-template>
