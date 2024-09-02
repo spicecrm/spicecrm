@@ -177,7 +177,7 @@ class SpiceDictionaryIndex
         if ($drop && $dictionaryDefinition->type != 'template') {
             $tablename = $dictionaryDefinition ? $dictionaryDefinition->tablename : $indexDictionaryDefinition->tablename;
             $tableIndexes = $db->get_indices($tablename);
-            if ($tableIndexes[$this->getIndexName($tablename)]) {
+            if ($tableIndexes[$this->getIndexName($tablename)] || ($this->index->indextype == 'primary' && $tableIndexes['primary'])) {
                 $db->query($db->add_drop_constraint($tablename, $this->getIndexDefinition($tablename), true));
             }
         }

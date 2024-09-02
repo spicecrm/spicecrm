@@ -83,6 +83,11 @@ $routes = [
         'description' => 'build the query to retrieve results displayed in presentation',
         'options' => ['noAuth' => false, 'adminOnly' => false],
         'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
             'start' => [
                 'in' => 'query',
                 'description' => 'offset for database query',
@@ -135,6 +140,11 @@ $routes = [
         'description' => 'same as etPresentation but passes additional body parameters',
         'options' => ['noAuth' => false, 'adminOnly' => false],
         'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
             'start' => [
                 'in' => 'query',
                 'description' => 'offset for database query',
@@ -223,8 +233,13 @@ $routes = [
         'description' => '',
         'options' => ['noAuth' => false, 'adminOnly' => false],
         'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
             'start' => [
-                'in' => 'requeryquest',
+                'in' => 'query',
                 'description' => 'offset for database query',
                 'type' => ValidationMiddleware::TYPE_NUMERIC,
                 'example' => 0,
@@ -276,6 +291,11 @@ $routes = [
         'description' => '',
         'options' => ['noAuth' => false, 'adminOnly' => false],
         'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
             'start' => [
                 'in' => 'query',
                 'description' => 'offset for database query',

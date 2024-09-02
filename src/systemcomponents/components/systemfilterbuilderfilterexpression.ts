@@ -382,6 +382,7 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
                 this.operatortype = 'numeric';
                 break;
             case 'relate':
+            case 'linked':
                 this.operatortype = 'relate';
                 break;
             default:

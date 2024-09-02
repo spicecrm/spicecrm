@@ -28,6 +28,9 @@
         <div style="min-height: 49px;" class="slds-p-around--x-small slds-border--bottom slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
             <span class="slds-text-heading--medium">{{apiinspector.selectedAPI?.route}} ({{apiinspector.apiMethods.length}})</span>
             <system-checkbox [(ngModel)]="apiinspector.apiSubMethods"><system-label label="LBL_INCLUDE_SUBROUTES"></system-label></system-checkbox>
+            <button *ngIf="apiinspector.selectedAPI" class="slds-button slds-button_brand slds-m-left_x-small" (click)="exportSwagger()">
+                <system-label label="EXPORT SWAGGER"></system-label>
+            </button>
         </div>
         <div system-to-bottom>
             <administration-api-inspector-methods *ngIf="apiinspector.apiMethods.length > 0; else noMethodsAvailable"></administration-api-inspector-methods>
