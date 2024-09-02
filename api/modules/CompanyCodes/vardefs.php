@@ -170,6 +170,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['CompanyCode'] = [
             'type' => 'varchar',
             'len' => 12
         ],
+        /* migrated to disctionary with shops
         'shops' => [
             'name' => 'shops',
             'type' => 'link',
@@ -179,6 +180,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['CompanyCode'] = [
             'source' => 'non-db',
             'module' => 'Shops',
         ],
+        */
         // CR1000674
         'currency_id' => [
             'name' => 'currency_id',
@@ -234,8 +236,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['CompanyCode'] = [
         ['name' => 'idx_companycodes_currency_del', 'type' => 'index', 'fields' => ['currency_id', 'deleted'],],
     ],
     'relationships' => [
-        'companycodes_accountkpis' =>
-            [
+        'companycodes_accountkpis' => [
                 'lhs_module' => 'CompanyCodes',
                 'lhs_table' => 'companycodes',
                 'lhs_key' => 'id',
@@ -243,7 +244,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['CompanyCode'] = [
                 'rhs_table' => 'accountkpis',
                 'rhs_key' => 'companycode_id',
                 'relationship_type' => 'one-to-many',
-            ],
+            ]
+        /* migrated to dsictionary with shops ,
         'companycode_shops' => [
             'name' => 'companycode_shops',
             'lhs_module' => 'CompanyCodes',
@@ -254,6 +256,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['CompanyCode'] = [
             'rhs_key' => 'companycode_id',
             'relationship_type' => 'one-to-many'
         ]
+        */
     ],
     'optimistic_lock' => true,
 ];
