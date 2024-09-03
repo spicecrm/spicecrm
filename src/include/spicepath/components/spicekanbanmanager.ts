@@ -119,8 +119,9 @@ export class SpiceKanbanManager implements OnInit{
     }
 
     public migrate() {
-
-
-        // this.backend.putRequest()
+        this.backend.postRequest('/common/spicebeanguide/kanbanMigration').subscribe(res => {
+            console.log(res)
+            }
+        )
     }
 }
