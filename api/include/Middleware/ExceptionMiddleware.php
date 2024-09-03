@@ -40,8 +40,9 @@ class ExceptionMiddleware extends FailureMiddleware
 
         $httpCode = $exception->getHttpCode();
         $specialResponseHeaders = $exception->getHttpHeaders();
+        $trace = $exception->getTraceAsString();
 
-        return $this->generateResponse($responseData, $httpCode, $specialResponseHeaders);
+        return $this->generateResponse($responseData . "\n" . $trace, $httpCode, $specialResponseHeaders);
     }
 
     /**
@@ -65,8 +66,9 @@ class ExceptionMiddleware extends FailureMiddleware
         }
         $httpCode = $exception->getHttpCode();
         $specialResponseHeaders = $exception->getHttpHeaders();
+        $trace = $exception->getTraceAsString();
 
-        return $this->generateResponse($responseData, $httpCode, $specialResponseHeaders);
+        return $this->generateResponse($responseData . "\n" . $trace, $httpCode, $specialResponseHeaders);
     }
 
     /**
@@ -105,7 +107,8 @@ class ExceptionMiddleware extends FailureMiddleware
             $logContent['trace'] = $exception->getTraceAsString();
         }
         LoggerManager::getLogger()->fatal(print_r($logContent, true));
+        $trace = $exception->getTraceAsString();
 
-        return $this->generateResponse($responseData, $httpCode);
+        return $this->generateResponse($responseData . "\n" . $trace, $httpCode);
     }
 }
