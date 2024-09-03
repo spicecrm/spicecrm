@@ -20,6 +20,11 @@ export class telecockpitservice {
     public selectedItemSubject: Subject<any> = new Subject<any>();
     public renderedMainComponents: any[] = [];
 
+    /**
+     * holds the stats
+     */
+    public campaignTaskStats: any = {};
+
     constructor(public backend: backend, public metadata: metadata, public language: language) {
         this.getCampaignTasks();
     }
@@ -63,15 +68,14 @@ export class telecockpitservice {
 
     public loadData(id) {
         this.listItems = [];
+        this.campaignTaskStats = [];
         this.isloading = true;
         this.canLoadMore = true;
-        if (!id) {
-            return;
-        }
+
         let params = {limit: this.loadLimit};
 
-        this.backend.getRequest("module/CampaignTasks/" + id + "/items", params)
-            .subscribe(response => {
+        this.backend.getRequest("module/CampaignTasks/" + id + "/items", params).subscribe({
+            next: (response) => {
                 for (let item of response.items) {
                     this.listItems.push({
                         id: item.campaignlog_id,
@@ -85,12 +89,17 @@ export class telecockpitservice {
                     });
                 }
 
+                // set the stats
+                this.campaignTaskStats = response.stats;
+
+                // set loading to false
                 this.isloading = false;
 
                 if (this.listItems.length < this.loadLimit) {
                     this.canLoadMore = false;
                 }
-            });
+            }
+        });
 
     }
 
@@ -123,6 +132,18 @@ export class telecockpitservice {
 
                 this.isloading = false;
             });
+    }
+
+    /**
+     * load the stats only
+     */
+    public loadStats(){
+        this.backend.getRequest("module/CampaignTasks/" + this.selectedCampaignTask.id + "/stats").subscribe({
+            next: (response) => {
+                // set the stats
+                this.campaignTaskStats = response.stats;
+            }
+        });
     }
 
     public resetMainView() {
