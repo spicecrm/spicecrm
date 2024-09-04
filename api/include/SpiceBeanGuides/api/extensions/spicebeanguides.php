@@ -13,6 +13,14 @@ $RESTManager = RESTManager::getInstance();
 
 $routes = [
     [
+        'method' => 'get',
+        'route'  => '/common/spicebeanguide/kanbanMigration',
+        'class'  => SpiceBeanGuidesKanbanMigrationController::class,
+        'function' => 'kanbanMigrationQuery',
+        'description' => '',
+        'options' => ['noAuth' => false, 'adminOnly' => true],
+    ],
+    [
         'method' => 'post',
         'route'  => '/common/spicebeanguide/kanbanMigration',
         'class'  => SpiceBeanGuidesKanbanMigrationController::class,
