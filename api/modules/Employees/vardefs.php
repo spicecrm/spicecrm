@@ -39,58 +39,58 @@ SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
 //            'source' => 'non-db',
 //            'module' => 'HCMTrainings'
 //        ],
-        'orgunit_id' => [
-            'vname' => 'LBL_ORGUNIT_ID',
-            'name' => 'orgunit_id',
-            'type' => 'id',
-            'source' => 'non-db',
-        ],
-        'orgunit_name' => [
-            'name' => 'orgunit_name',
-            'rname' => 'name',
-            'id_name' => 'orgunit_id',
-            'link' => 'orgunitprimary',
-            'vname' => 'LBL_ORGUNIT',
-            'type' => 'relate',
-            'table' => 'orgunits',
-            'module' => 'OrgUnits',
-            'source' => 'non-db',
-        ],
-        'orgunitprimary' => [
-            'name' => 'orgunitprimary',
-            'type' => 'link',
-            'vname' => 'LBL_ORGUNIT_PRIMARY',
-            'relationship' => 'orgunits_employees_primary',
-            'module' => 'OrgUnits',
-            'source' => 'non-db',
-            'comment' => 'simulate a relate field to the primary orgunit'
-        ],
-        'orgunits' => [
-            'name' => 'orgunits',
-            'vname' => 'LBL_ORGUNITS',
-            'type' => 'link',
-            'relationship' => 'orgunits_employees',
-            'module' => 'OrgUnits',
-            'source' => 'non-db',
-            'rel_fields' => [
-                'is_primary_orgunit' => ['map' => 'is_primary_orgunit'],
-                'employee_role' => ['map' => 'employee_role']
-            ],
-        ],
-        'is_primary_orgunit' => [
-            'name' => 'is_primary_orgunit',
-            'type' => 'bool',
-            'vname' => 'LBL_PRIMARY',
-            'source' => 'non-db',
-            'comment' => 'represents the value in orgunits_employees.is_primary_orgunit'
-        ],
-        'employee_role' => [
-            'name' => 'employee_role',
-            'type' => 'varchar',
-            'vname' => 'LBL_ROLE',
-            'source' => 'non-db',
-            'comment' => 'represents the value in orgunits_employees.employee_role'
-        ],
+//        'orgunit_id' => [
+//            'vname' => 'LBL_ORGUNIT_ID',
+//            'name' => 'orgunit_id',
+//            'type' => 'id',
+//            'source' => 'non-db',
+//        ],
+//        'orgunit_name' => [
+//            'name' => 'orgunit_name',
+//            'rname' => 'name',
+//            'id_name' => 'orgunit_id',
+//            'link' => 'orgunitprimary',
+//            'vname' => 'LBL_ORGUNIT',
+//            'type' => 'relate',
+//            'table' => 'orgunits',
+//            'module' => 'OrgUnits',
+//            'source' => 'non-db',
+//        ],
+//        'orgunitprimary' => [
+//            'name' => 'orgunitprimary',
+//            'type' => 'link',
+//            'vname' => 'LBL_ORGUNIT_PRIMARY',
+//            'relationship' => 'orgunits_employees_primary',
+//            'module' => 'OrgUnits',
+//            'source' => 'non-db',
+//            'comment' => 'simulate a relate field to the primary orgunit'
+//        ],
+//        'orgunits' => [
+//            'name' => 'orgunits',
+//            'vname' => 'LBL_ORGUNITS',
+//            'type' => 'link',
+//            'relationship' => 'orgunits_employees',
+//            'module' => 'OrgUnits',
+//            'source' => 'non-db',
+//            'rel_fields' => [
+//                'is_primary_orgunit' => ['map' => 'is_primary_orgunit'],
+//                'employee_role' => ['map' => 'employee_role']
+//            ],
+//        ],
+//        'is_primary_orgunit' => [
+//            'name' => 'is_primary_orgunit',
+//            'type' => 'bool',
+//            'vname' => 'LBL_PRIMARY',
+//            'source' => 'non-db',
+//            'comment' => 'represents the value in orgunits_employees.is_primary_orgunit'
+//        ],
+//        'employee_role' => [
+//            'name' => 'employee_role',
+//            'type' => 'varchar',
+//            'vname' => 'LBL_ROLE',
+//            'source' => 'non-db',
+//            'comment' => 'represents the value in orgunits_employees.employee_role'
+//        ],
         'userabsences' => [
             'name' => 'userabsences',
             'vname' => 'LBL_USER_ABSENCES',
