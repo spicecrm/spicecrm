@@ -9,6 +9,7 @@ import {KanbanManagerService} from "../services/kanbanmanager.service";
 import {SpiceKanbanManagerAddModal} from "./spicekanbanmanageraddmodal";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {ChangeHistoryService} from "../../../workbench/services/changehistory.service";
+import {backend} from "../../../services/backend.service";
 
 
 @Component({
@@ -45,6 +46,7 @@ export class SpiceKanbanManager implements OnInit{
         public metadata: metadata,
         public modelUtilities: modelutilities,
         public kanbanManagerService: KanbanManagerService,
+        public backend: backend
     ) {
     }
 
@@ -114,5 +116,12 @@ export class SpiceKanbanManager implements OnInit{
             modalRef.instance.isEditing = true;
         });
 
+    }
+
+    public migrate() {
+        this.backend.postRequest('/common/spicebeanguide/kanbanMigration').subscribe(res => {
+            console.log(res)
+            }
+        )
     }
 }
