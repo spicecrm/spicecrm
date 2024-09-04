@@ -4,6 +4,7 @@
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceBeanGuides\api\controllers\SpiceBeanGuidesController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
+use SpiceCRM\includes\SpiceBeanGuides\api\controllers\SpiceBeanGuidesKanbanMigrationController;
 
 /**
  * get a Rest Manager Instance
@@ -11,6 +12,22 @@ use SpiceCRM\includes\Middleware\ValidationMiddleware;
 $RESTManager = RESTManager::getInstance();
 
 $routes = [
+    [
+        'method' => 'get',
+        'route'  => '/common/spicebeanguide/kanbanMigration',
+        'class'  => SpiceBeanGuidesKanbanMigrationController::class,
+        'function' => 'kanbanMigrationQuery',
+        'description' => '',
+        'options' => ['noAuth' => false, 'adminOnly' => true],
+    ],
+    [
+        'method' => 'post',
+        'route'  => '/common/spicebeanguide/kanbanMigration',
+        'class'  => SpiceBeanGuidesKanbanMigrationController::class,
+        'function' => 'migrateKanban',
+        'description' => '',
+        'options' => ['noAuth' => false, 'adminOnly' => true],
+    ],
     [
         'method' => 'get',
         'route' => '/common/spicebeanguide/{guideId}/{module}/{beanid}',

@@ -10,6 +10,7 @@ import {toast} from '../../../services/toast.service';
 import {backend} from "../../../services/backend.service";
 import {Observable, Subject} from 'rxjs';
 import {metadata} from "../../../services/metadata.service";
+import {telecockpitservice} from "../services/telecockpit.service";
 
 /**
  * @ignore
@@ -38,6 +39,7 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
         public backend: backend,
         public view: view,
         public metadata: metadata,
+        public telecockpit: telecockpitservice
     ) {
         this.responseSubject = new Subject<object>();
         this.response = this.responseSubject.asObservable();
@@ -80,21 +82,24 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
         let planned_activity_date = this.modelutilities.spice2backend(this.model.module, 'planned_activity_date', this.model.getField('planned_activity_date'));
         let params = {planned_activity_date: planned_activity_date};
 
-        this.backend.postRequest(`module/CampaignLog/${this.model.id}/attempted`, params)
-            .subscribe(
-                status => {
-                    if (status.success) {
-                        this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
-                        this.responseSubject.next(true);
-                        this.responseSubject.complete();
-                        this.self.destroy();
+        this.backend.postRequest(`module/CampaignLog/${this.model.id}/attempted`, params).subscribe({
+            next: (status) => {
+                if (status.success) {
+                    this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
+                    this.responseSubject.next(true);
+                    this.responseSubject.complete();
+                    this.telecockpit.loadStats();
+                    this.self.destroy();
 
-                    } else {
-                        this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
-                        this.self.destroy();
-                    }
-                },
-                err => this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error'));
+                } else {
+                    this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+                    this.self.destroy();
+                }
+            },
+            error: (err) => {
+                this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error')
+            }
+        });
     }
 
     public remove() {

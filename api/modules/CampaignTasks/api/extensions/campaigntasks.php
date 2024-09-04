@@ -47,6 +47,21 @@ $routes = [
         ]
     ],
     [
+        'method'      => 'get',
+        'route'       => '/module/CampaignTasks/{id}/stats',
+        'class'       => CampaignTasksController::class,
+        'function'    => 'getCampaignTaskStats',
+        'description' => 'return stats on the campaign log for a campagntask',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ],
+    [
         'method'      => 'post',
         'route'       => '/module/CampaignTasks/{id}/activate',
         'oldroute'    => '/module/CampaignTasks/{campaigntaskid}/activate',
