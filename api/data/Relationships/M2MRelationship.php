@@ -107,6 +107,11 @@ class M2MRelationship extends Relationship
                 'vname' => $relationship->relationship->lhs_linklabel
             ];
 
+            // if we are self referencing add the side
+            if($lhsDictionaryDefinition == $rhsDictionaryDefinition){
+                $leftFieldDefs['side'] = 'right';
+            }
+
             $this->addJoinTableNonDBRoleField($relationship, $joinDictionaryDefinition, $lhsDictionaryDefinition);
             $this->appendJoinTableRoleFieldsMappingToLink($relationship, $joinDictionaryDefinition, $rhsDictionaryDefinition, $leftFieldDefs);
 
@@ -134,6 +139,11 @@ class M2MRelationship extends Relationship
                 'module' => $lhsDictionaryDefinition->getModuleName(),
                 'vname' => $relationship->relationship->rhs_linklabel
             ];
+
+            // if we are self referencing add the side
+            if($lhsDictionaryDefinition == $rhsDictionaryDefinition){
+                $rightFieldDefs['side'] = 'left';
+            }
 
             $this->addJoinTableNonDBRoleField($relationship, $joinDictionaryDefinition, $rhsDictionaryDefinition);
             $this->appendJoinTableRoleFieldsMappingToLink($relationship, $joinDictionaryDefinition, $lhsDictionaryDefinition, $rightFieldDefs);

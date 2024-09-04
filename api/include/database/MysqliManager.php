@@ -812,7 +812,7 @@ class MysqliManager extends DBManager
 
                 $columns[$name]['required'] = json_encode($row['Null'] == 'NO');
 
-                if (!empty($row['Default']))
+                if (!empty($row['Default']) || $row['Default'] == '0') {}
                     $columns[$name]['default'] = $row['Default'];
                 if (!empty($row['Comment']))
                     $columns[$name]['comment'] = $row['Comment'];
