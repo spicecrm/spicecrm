@@ -1,7 +1,7 @@
 /**
  * @module ModuleTeleSales
  */
-import {Component, Input} from '@angular/core';
+import {Component, Injector, Input} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {modal} from "../../../services/modal.service";
 import {telecockpitservice} from "../services/telecockpit.service";
@@ -19,6 +19,7 @@ export class TeleSalesCockpitAddAttemptButton {
     constructor(
         public telecockpitservice: telecockpitservice,
         public language: language,
+        public injector: Injector,
         public modalservice: modal) {
     }
 
@@ -31,7 +32,7 @@ export class TeleSalesCockpitAddAttemptButton {
         if (!item) {
             return;
         }
-        this.modalservice.openModal('TeleSalesCockpitAddAttemptModal').subscribe(modalRef => {
+        this.modalservice.openModal('TeleSalesCockpitAddAttemptModal', true, this.injector).subscribe(modalRef => {
             modalRef.instance.selectedListItem = item;
             modalRef.instance.maxAttempts = this.maxAttempts;
             modalRef.instance.response.subscribe(response => this.removeItem(response, item));
