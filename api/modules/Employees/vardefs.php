@@ -152,22 +152,23 @@ SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
             'source' => 'non-db',
             'vname' => 'LBL_TASKS',
         ],
-        'hcmemployeeobjectiveagreements' => [
-            'name' => 'hcmemployeeobjectiveagreements',
-            'vname' => 'LBL_HCMEMPLOYEE_OBJECTIVE_AGREEMENTS',
-            'type' => 'link',
-            'relationship' => 'employees_hcmemployeeobjectiveagreements',
-            'source' => 'non-db',
-            'module' => 'HCMEmployeeObjectiveAgreements'
-        ],
-        'hcmemployeeobjectives' => [
-            'name' => 'hcmemployeeobjectives',
-            'vname' => 'LBL_HCMEMPLOYEE_OBJECTIVES',
-            'type' => 'link',
-            'relationship' => 'employees_hcmemployeeobjectives',
-            'source' => 'non-db',
-            'module' => 'HCMEmployeeObjectives'
-        ],
+// migrated
+//        'hcmemployeeobjectiveagreements' => [
+//            'name' => 'hcmemployeeobjectiveagreements',
+//            'vname' => 'LBL_HCMEMPLOYEE_OBJECTIVE_AGREEMENTS',
+//            'type' => 'link',
+//            'relationship' => 'employees_hcmemployeeobjectiveagreements',
+//            'source' => 'non-db',
+//            'module' => 'HCMEmployeeObjectiveAgreements'
+//        ],
+//        'hcmemployeeobjectives' => [
+//            'name' => 'hcmemployeeobjectives',
+//            'vname' => 'LBL_HCMEMPLOYEE_OBJECTIVES',
+//            'type' => 'link',
+//            'relationship' => 'employees_hcmemployeeobjectives',
+//            'source' => 'non-db',
+//            'module' => 'HCMEmployeeObjectives'
+//        ],
     ],
     'indices' => [],
     'relationships' => [
