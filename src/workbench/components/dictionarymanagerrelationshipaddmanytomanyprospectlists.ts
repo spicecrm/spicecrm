@@ -19,7 +19,7 @@ import {
 } from "../interfaces/dictionarymanager.interfaces";
 
 /**
- * renders a modal to add a one to many relationship
+ * renders a modal to add a many to many prospectlist relationship
  */
 @Component({
     templateUrl: '../templates/dictionarymanagerrelationshipaddmanytomanyprospectlists.html',

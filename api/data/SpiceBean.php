@@ -5,6 +5,7 @@ namespace SpiceCRM\data;
 
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
 use stdClass;
 use SpiceCRM\includes\AddressReferences\AddressReferences;
 use SpiceCRM\includes\database\DBManager;
@@ -1311,6 +1312,16 @@ class SpiceBean
 
         $this->call_custom_logic("before_save", $custom_logic_arguments);
         unset($custom_logic_arguments);
+
+        // check if we have any numbered fields
+        if($this->isNew()){
+            $numberrangeFields = SpiceNumberRanges::getNumberRangeFieldsForBean($this->_module);
+            foreach ($numberrangeFields as $numberrangeField){
+                if(empty($this->{$numberrangeField})){
+                    $this->{$numberrangeField} = SpiceNumberRanges::getNextNumberForField($this->_module, $numberrangeField);
+                }
+            }
+        }
 
         //construct the SQL to create the audit record if auditing is enabled.
         $auditDataChanges = [];

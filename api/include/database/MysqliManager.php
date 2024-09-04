@@ -812,7 +812,7 @@ class MysqliManager extends DBManager
 
                 $columns[$name]['required'] = json_encode($row['Null'] == 'NO');
 
-                if (!empty($row['Default']))
+                if (!empty($row['Default']) || $row['Default'] == '0') {}
                     $columns[$name]['default'] = $row['Default'];
                 if (!empty($row['Comment']))
                     $columns[$name]['comment'] = $row['Comment'];
@@ -1382,8 +1382,13 @@ class MysqliManager extends DBManager
             case 'primary':
                 if ($drop)
                     $sql = "ALTER TABLE {$table} DROP PRIMARY KEY";
-                else
-                    $sql = "ALTER TABLE {$table} ADD CONSTRAINT PRIMARY KEY ({$fields})";
+                else {
+                    if($this->get_indices($table)['primary']) {
+                        $sql = "ALTER TABLE {$table} DROP PRIMARY KEY, ADD CONSTRAINT {$name} PRIMARY KEY ({$fields})";
+                    } else {
+                        $sql = "ALTER TABLE {$table} ADD CONSTRAINT {$name} PRIMARY KEY ({$fields})";
+                    }
+                }
                 break;
             case 'foreign':
                 if ($drop) {

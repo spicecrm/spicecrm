@@ -66,7 +66,6 @@ class SpiceSwaggerGenerator
 //        $this->generateDefinitions();
         $this->generateComponents();
         $this->generateExternalDocs();
-        file_put_contents('debug_structure.txt', print_r($this->structureArray, true));
         return $this->convertToYaml();
     }
 
