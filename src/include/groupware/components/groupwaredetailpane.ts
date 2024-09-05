@@ -37,7 +37,7 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
     /**
      * the available modules
      */
-    public availableModules: string[];
+    public availableModules: string[] = [];
 
     constructor(
         public groupware: GroupwareService,
@@ -137,6 +137,6 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
      */
     private getAvailableModules() {
         const config = this.metadata.getComponentConfig('GroupwareCreateBean');
-        this.availableModules = (config.modules ?? ['Contacts']).filter(m => m != 'Users' || this.metadata.checkModuleAcl(m, 'create'))
+        this.availableModules = (config.modules?.split(',').map(e => e.trim()) ?? ['Contacts']).filter(m => m != 'Users' || this.metadata.checkModuleAcl(m, 'create'))
     }
 }
