@@ -1,6 +1,6 @@
 
 export const environment = {
     production: true,
-    buildNumber: "2024.02.001.1724150202504",
+    buildNumber: "2024.02.001.1725459099972",
     copyright: "© 2015 -  2024 SpiceCRM FlexCo All rights reserved."
     }
