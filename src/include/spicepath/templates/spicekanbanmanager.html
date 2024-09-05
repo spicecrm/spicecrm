@@ -25,10 +25,9 @@
                 <button [disabled]="!kanbanManagerService.selectedBeanGuide" (click)="openEditModal(kanbanManagerService.selectedBeanGuide)" class="slds-button slds-button--neutral slds-button--icon-border">
                     <system-button-icon icon="edit"></system-button-icon>
                 </button>
-                <button [disabled]="" (click)="migrate()" class="slds-button slds-button--neutral slds-button--icon-border">
+                <button [disabled]="migrateBtnDisabled" (click)="migrate()" class="slds-button slds-button--neutral slds-button--icon-border">
                     <system-button-icon icon="replace"></system-button-icon>
                 </button>
-
                 <button [disabled]="!kanbanManagerService.selectedBeanGuide" (click)="togglePreview()" class="slds-button slds-button--icon-border" [ngClass]="{'slds-button--brand': preview}" >
                     <system-button-icon icon="preview"></system-button-icon>
                 </button>
