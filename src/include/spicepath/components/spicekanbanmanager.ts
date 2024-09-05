@@ -40,6 +40,10 @@ export class SpiceKanbanManager implements OnInit{
 
     public activeStages: any;
 
+    public kanbansToMigrate: any[];
+
+    public migrateBtnDisabled: boolean = true;
+
     constructor(
         public modal: modal,
         public injector: Injector,
@@ -84,9 +88,9 @@ export class SpiceKanbanManager implements OnInit{
             this.beanGuidesCustom = res.filter(r => r.scope == 'custom');
             this.loading = false;
         })
+
+        this.checkMigrateKanbans();
     }
-
-
 
     openAddModal() {
         this.modal.openModal('SpiceKanbanManagerAddModal', true, this.injector).subscribe((modalRef: ComponentRef<SpiceKanbanManagerAddModal>)  => {
@@ -115,13 +119,24 @@ export class SpiceKanbanManager implements OnInit{
             modalRef.instance.selectedBeanGuide = selectedBeanGuide;
             modalRef.instance.isEditing = true;
         });
+    }
 
+    public checkMigrateKanbans() {
+        this.backend.getRequest('/common/spicebeanguide/kanbanMigration').subscribe( {
+            next: (res) => {
+                this.kanbansToMigrate = res
+                if(res.length > 1) this.migrateBtnDisabled = false;
+            }
+        })
     }
 
     public migrate() {
-        this.backend.postRequest('/common/spicebeanguide/kanbanMigration').subscribe(res => {
-            console.log(res)
-            }
-        )
+        this.modal.openModal('SpiceKanbanManagerMigrateModal', true, this.injector).subscribe((modalRef) => {
+            modalRef.instance.migrateKanbans = this.kanbansToMigrate;
+            modalRef.instance.migrated.subscribe({
+                next: (migrated) => { if (migrated) this.migrateBtnDisabled = true; }
+            })
+        })
     }
+
 }
