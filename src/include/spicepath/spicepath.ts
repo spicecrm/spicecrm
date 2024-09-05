@@ -31,6 +31,7 @@ import {SpiceKanbanManagerChecks} from "./components/spicekanbanmanagerchecks";
 import {SpiceKanbanManagerAddModal} from "./components/spicekanbanmanageraddmodal";
 import {SpiceKanbanManagerPreview} from "./components/spicekanbanmanagerpreview";
 import {SystemTextConfiguratorModal} from "./components/systemtextconfiguratormodal";
+import {SpiceKanbanManagerMigrateModal} from "./components/spicekanbanmanagermigratemodal";
 
 @NgModule({
     imports: [
@@ -60,7 +61,8 @@ import {SystemTextConfiguratorModal} from "./components/systemtextconfiguratormo
         SpiceKanbanManagerChecks,
         SpiceKanbanManagerAddModal,
         SpiceKanbanManagerPreview,
-        SystemTextConfiguratorModal
+        SystemTextConfiguratorModal,
+        SpiceKanbanManagerMigrateModal
     ]
 })
 export class ModuleSpicePath {

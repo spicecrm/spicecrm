@@ -78,7 +78,7 @@ class SpiceBeanGuidesKanbanMigrationController
             $componentConfig['kanban'] = "kanban-" . SpiceUtils::createGuid();
 
             $sql = "UPDATE " . $definition['tableName'] . " SET componentconfig = '" . json_encode($componentConfig) . "'"
-                    . " WHERE id = " . $item['id'];
+                . " WHERE id = '" . $item['id'] . "'";
             $db->query($sql);
         }
     }
