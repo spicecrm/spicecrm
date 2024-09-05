@@ -170,6 +170,7 @@ import {
     DictionaryFilterRelationshipTemplatePipe
 } from "./pipes/dictionarymanagerfilterrelationshiptemplate.pipe";
 import {DictionaryManagerRelationshipAddUser} from "./components/dictionarymanagerrelationshipadduser";
+import {DictionaryManagerRelationshipAddOrgUnit} from "./components/dictionarymanagerrelationshipaddorgunit";
 import {DictionaryManagerRelationshipContainerUser} from "./components/dictionarymanagerrelationshipcontaineruser";
 import {DictionaryManagerFixDBFieldsMismatchModal} from "./components/dictionarymanagerfixdbfieldsmismatchmodal";
 
@@ -336,6 +337,7 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         DictionaryFilterRelationshipPipe,
         DictionaryFilterRelationshipTemplatePipe,
         DictionaryManagerRelationshipAddUser,
+        DictionaryManagerRelationshipAddOrgUnit,
         DictionaryManagerRelationshipContainerUser,
         DictionaryManagerFixDBFieldsMismatchModal,
         HL7Manager,
