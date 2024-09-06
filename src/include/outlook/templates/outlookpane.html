@@ -1,4 +1,7 @@
-<router-outlet></router-outlet><system-navigation-manager></system-navigation-manager>
-<global-footer></global-footer>
-<outlook-pane-footer *ngIf="session.authData.sessionId && session.authData.loaded === true && displayBottomBar"></outlook-pane-footer>
-
+<div class="slds-grid slds-grid--vertical slds-height_full">
+    <div class="slds-grow">
+        <router-outlet></router-outlet><system-navigation-manager></system-navigation-manager>
+    </div>
+    <global-footer></global-footer>
+    <outlook-pane-footer *ngIf="session.authData.sessionId && session.authData.loaded === true && displayBottomBar"></outlook-pane-footer>
+</div>
