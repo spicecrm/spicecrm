@@ -1723,9 +1723,10 @@ abstract class DBManager
      * @param bool $dieOnError True if we want to call die if the query returns errors
      * @param string $msg Message to log if error occurs
      * @param bool $suppress Message to log if error occurs
-     * @return array    single row from the query
+     * @param bool $idAsKey
+     * @return array | false    single row from the query
      */
-    public function fetchAll($sql, $dieOnError = false, $msg = '', $suppress = false)
+    public function fetchAll(string $sql, bool $dieOnError = false, string $msg = '', bool $suppress = false, bool $idAsKey = false)
     {
         $this->checkConnection();
         $queryresult = $this->query($sql, $dieOnError, $msg);
@@ -1735,8 +1736,13 @@ abstract class DBManager
 
         // get the rows
         while($row = $this->fetchByAssoc($queryresult)){
-            $rows[] = $row;
+            if ($idAsKey) {
+                $rows[$row['id']] = $row;
+            } else {
+                $rows[] = $row;
+            }
         }
+
         if (!$rows) return false;
 
         $this->freeResult($queryresult);
