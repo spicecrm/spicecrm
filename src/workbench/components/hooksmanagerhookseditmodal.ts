@@ -24,10 +24,9 @@ export class HooksManagerHooksEditModal implements OnInit {
     public self: ComponentRef<HooksManagerHooksEditModal>;
 
     public hooks: LogicHookI[] = [];
-    public events: string[] = ['before_relationship_add', 'after_relationship_add', 'before_relationship_delete', 'after_relationship_delete', 'before_save', 'after_save', 'before_retrieve', 'after_retrieve', 'before_delete', 'after_delete', 'before_restore', 'after_restore', 'after_save_completed', 'before_logout'];
+    public events: string[] = ['before_relationship_add', 'after_relationship_add', 'before_relationship_delete', 'after_relationship_delete', 'before_save', 'after_save', 'before_retrieve', 'after_retrieve', 'before_delete', 'after_delete', 'before_restore', 'after_restore', 'after_save_completed', 'after_login', 'after_ldap_login', 'before_logout', 'after_logout'];
 
     public classMethod: string = '';
-
 
     constructor(
         public backend: backend,
