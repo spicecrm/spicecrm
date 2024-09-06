@@ -1,7 +1,7 @@
 /**
  * @module ModuleGroupware
  */
-import {Component, OnDestroy, OnInit, ChangeDetectorRef, NgZone} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectorRef, NgZone, Injector} from '@angular/core';
 import {Router} from "@angular/router";
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {broadcast} from "../../../services/broadcast.service";
@@ -46,7 +46,8 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
         public cdref: ChangeDetectorRef,
         private modal: modal,
         private metadata: metadata,
-        private zone: NgZone
+        private zone: NgZone,
+        private injector: Injector
     ) {
     }
 
@@ -118,9 +119,10 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
     public create() {
 
         this.zone.run(() => {
-            this.modal.openStaticModal(SystemSelectModuleModal).subscribe(modalRef => {
+            this.modal.openStaticModal(SystemSelectModuleModal, true, this.injector).subscribe(modalRef => {
 
                 modalRef.instance.modules = this.availableModules;
+                this.cdref.detectChanges();
                 modalRef.instance.module$.subscribe({
                     next: module => {
                         this.selectedModule = module;
