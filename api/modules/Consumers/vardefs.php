@@ -230,6 +230,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
                 ]
             ]
         ],
+        'eventbookingblockers' => [
+            'name'         => 'eventbookingblockers',
+            'type'         => 'link',
+            'module'       => 'EventBookingBlockers',
+            'relationship' => 'consumer_eventbookingblockers',
+            'source'       => 'non-db',
+        ],
+        'eventbookings' => [
+            'name'         => 'eventbookings',
+            'type'         => 'link',
+            'module'       => 'EventBookings',
+            'relationship' => 'consumer_eventbookings',
+            'source'       => 'non-db',
+        ],
         'prospectlists_consumer_quantity' => [
             'name' => 'prospectlists_consumer_quantity',
             'vname' => 'LBL_QUANTITY',

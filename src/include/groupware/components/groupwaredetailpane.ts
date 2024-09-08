@@ -1,7 +1,7 @@
 /**
  * @module ModuleGroupware
  */
-import {Component, OnDestroy, OnInit, ChangeDetectorRef} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectorRef, NgZone, Injector} from '@angular/core';
 import {Router} from "@angular/router";
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {broadcast} from "../../../services/broadcast.service";
@@ -37,7 +37,7 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
     /**
      * the available modules
      */
-    public availableModules: string[];
+    public availableModules: string[] = [];
 
     constructor(
         public groupware: GroupwareService,
@@ -45,7 +45,9 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
         public broadcast: broadcast,
         public cdref: ChangeDetectorRef,
         private modal: modal,
-        private metadata: metadata
+        private metadata: metadata,
+        private zone: NgZone,
+        private injector: Injector
     ) {
     }
 
@@ -115,14 +117,18 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
     }
 
     public create() {
-        this.modal.openStaticModal(SystemSelectModuleModal).subscribe(modalRef => {
 
-            modalRef.instance.modules = this.availableModules;
-            modalRef.instance.module$.subscribe({
-                next: module => {
-                    this.selectedModule = module;
-                    this.isCreating = true;
-                }
+        this.zone.run(() => {
+            this.modal.openStaticModal(SystemSelectModuleModal, true, this.injector).subscribe(modalRef => {
+
+                modalRef.instance.modules = this.availableModules;
+                this.cdref.detectChanges();
+                modalRef.instance.module$.subscribe({
+                    next: module => {
+                        this.selectedModule = module;
+                        this.isCreating = true;
+                    }
+                });
             });
         });
     }
@@ -137,6 +143,6 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
      */
     private getAvailableModules() {
         const config = this.metadata.getComponentConfig('GroupwareCreateBean');
-        this.availableModules = (config.modules ?? ['Contacts']).filter(m => m != 'Users' || this.metadata.checkModuleAcl(m, 'create'))
+        this.availableModules = (config.modules?.split(',').map(e => e.trim()) ?? ['Contacts']).filter(m => m != 'Users' || this.metadata.checkModuleAcl(m, 'create'))
     }
 }

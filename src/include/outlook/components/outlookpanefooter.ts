@@ -8,6 +8,7 @@ import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {footer} from "../../../services/footer.service";
 import {ObjectActionContainerItem} from "../../../objectcomponents/components/objectactioncontaineritem";
+import {loginService} from "../../../services/login.service";
 
 /**
  * Footer component for the SpiceCRM Outlook add-in.
@@ -39,7 +40,8 @@ export class OutlookPaneFooter implements AfterViewInit, OnDestroy {
         public router: Router,
         public metadata: metadata,
         public language: language,
-        public footer: footer
+        public footer: footer,
+        public loginService: loginService
     ) {
         this.getActions();
     }
