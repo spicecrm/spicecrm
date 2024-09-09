@@ -1,4 +1,4 @@
-import {Component, ComponentRef, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, ComponentRef, OnInit} from '@angular/core';
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 import {metadata} from "../../../services/metadata.service";

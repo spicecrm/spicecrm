@@ -7,7 +7,6 @@ import {modal} from "../../../services/modal.service";
 import {toast} from "../../../services/toast.service";
 import {view} from "../../../services/view.service";
 import {TravelAddTravelModal} from "./traveladdtravelmodal";
-import {SpiceAttachmentAddImageModal} from "../../../include/spiceattachments/components/spiceattachmentaddimagemodal";
 
 @Component({
     selector: 'travel-manager',
