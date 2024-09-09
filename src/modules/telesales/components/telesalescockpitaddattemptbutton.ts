@@ -24,6 +24,8 @@ export class TeleSalesCockpitAddAttemptButton {
     }
 
     get maxAttempts() {
+        if(this.telecockpitservice && this.telecockpitservice.selectedcampaigntask)
+            return this.telecockpitservice.selectedcampaigntask;
         return this.actionconfig && this.actionconfig.maxAttempts ? this.actionconfig.maxAttempts : 5;
     }
 
@@ -35,6 +37,7 @@ export class TeleSalesCockpitAddAttemptButton {
         this.modalservice.openModal('TeleSalesCockpitAddAttemptModal', true, this.injector).subscribe(modalRef => {
             modalRef.instance.selectedListItem = item;
             modalRef.instance.maxAttempts = this.maxAttempts;
+            modalRef.instance.campaignTask = this.telecockpitservice.selectedcampaigntask;
             modalRef.instance.response.subscribe(response => this.removeItem(response, item));
         });
     }

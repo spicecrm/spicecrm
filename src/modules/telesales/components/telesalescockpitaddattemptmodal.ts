@@ -28,6 +28,7 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
     public responseSubject: Subject<any> = null;
     @Input() public selectedListItem: any;
     @Input() public maxAttempts: any;
+    @Input() public campaignTask: any;
     public self: any;
     public fieldset: string = '';
 
@@ -52,14 +53,16 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
     }
 
     public initializeModel() {
-        this.model.module = 'CampaignLog';
+        this.model.initialize('CampaignLog');
         this.model.id = this.selectedListItem.id;
+        this.model.startEdit(false);
         this.model.setData({
             hits: this.selectedListItem.hits,
-            planned_activity_date: new moment().add(1, 'days'),
+            planned_activity_date: new moment().add((this.campaignTask.telesales_attempt_delay ? this.campaignTask.telesales_attempt_delay : 1), 'days'),
             activity_type: this.selectedListItem.activity_type,
             activity_date: new moment(),
         }, false);
+
     }
 
     public loadFieldset() {
