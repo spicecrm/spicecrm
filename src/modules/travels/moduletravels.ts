@@ -15,6 +15,15 @@ import {TravelAddReceiptButton} from "./components/traveladdreceiptbutton";
 import {TravelAddReceiptModal} from "./components/traveladdreceiptmodal";
 import {TravelReceiptItems} from "./components/travelreceiptitems";
 import {TravelReceiptTax} from "./components/travelreceipttax";
+import {TravelManager} from "./components/travelmanager";
+import {DirectivesModule} from "../../directives/directives";
+import {TravelManagerButtonGroup} from "./components/travelmanagerbuttongroup";
+import {TravelManagerTravelItems} from "./components/travelmanagertravelitems";
+import {TravelAddTravelModal} from "./components/traveladdtravelmodal";
+import {ModuleSpiceAttachments} from "../../include/spiceattachments/spiceattachments";
+import {TravelAddManualTravelReceiptModal} from "./components/traveladdmanualtravelreceiptmodal";
+import {TravelAddTravelMileageModal} from "./components/traveladdtravelmileagemodal";
+import {TravelAddTravelSegmentModal} from "./components/traveladdtravelsegmentmodal";
 
 
 @NgModule({
@@ -25,12 +34,21 @@ import {TravelReceiptTax} from "./components/travelreceipttax";
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule,
+        ModuleSpiceAttachments,
     ],
     declarations: [
         TravelAddReceiptButton,
         TravelAddReceiptModal,
         TravelReceiptItems,
-        TravelReceiptTax
+        TravelReceiptTax,
+        TravelManager,
+        TravelManagerButtonGroup,
+        TravelManagerTravelItems,
+        TravelAddTravelModal,
+        TravelAddManualTravelReceiptModal,
+        TravelAddTravelMileageModal,
+        TravelAddTravelSegmentModal
     ]
 })
 export class ModuleTravels {}

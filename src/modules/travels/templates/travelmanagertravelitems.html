@@ -1,0 +1,103 @@
+<travel-manager-button-group ></travel-manager-button-group>
+
+<ng-container *ngIf="selectedTravel">
+    <div class="slds-card__body slds-p-around_small">
+
+        <!-- TravelSegments -->
+        <div class="slds-tree_container slds-p-top--small">
+            <h4 class="slds-tree__group-header slds-p-around--x-small slds-border--bottom slds-grid">
+                <system-icon [module]="'TravelSegments'" [size]="'x-small'"></system-icon>
+                <div>
+                    <span class="slds-tree__item-label slds-truncate slds-p-right--small"><system-label label="LBL_TRAVEL_SEGMENTS_BETWEEN"></system-label></span>
+                </div>
+                <div>
+                    <span class="slds-tree__item-label slds-truncate" title="{{model.data.date_start}}">
+                        <system-display-datetime [date]="model.data.date_start" [displayTime]="false" class=" slds-p-left--xx-small slds-p-right--xx-small"></system-display-datetime>
+                    </span>
+                </div>
+                <div>
+                    <span class="slds-tree__item-label slds-truncate slds-p-left--small" title="{{model.data.date_end}}">
+                        <system-display-datetime [date]="model.data.date_end" [displayTime]="false" class=" slds-p-left--xx-small slds-p-right--xx-small"></system-display-datetime>
+                    </span>
+                </div>
+            </h4>
+            <div class="slds-p-right--xx-small">
+                <ul aria-labelledby="treeheading" class="slds-tree" role="tree">
+                    <li *ngFor="let travelSegment of travelSegments" role="treeitem" class="slds-grid" >
+                        <div class="slds-tree__item">
+                            <span class="slds-tree__item-label slds-truncate" title="{{travelSegment.end_country}}">{{travelSegment.end_country}}</span>
+                        </div>
+                        <div class="slds-tree__item">
+                            <span class="slds-tree__item-label slds-truncate" title="{{travelSegment.date_start}}">
+                                <system-display-datetime [date]="travelSegment.date_start" class=" slds-p-left--xx-small slds-p-right--xx-small"></system-display-datetime>
+                            </span>
+                        </div>
+                        <div class="slds-tree__item">
+                            <span class="slds-tree__item-label slds-truncate" title="{{travelSegment.date_end}}">
+                                <system-display-datetime [date]="travelSegment.date_end" class=" slds-p-left--xx-small slds-p-right--xx-small"></system-display-datetime>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- TravelReceipts -->
+        <div class="slds-tree_container slds-p-top--small">
+            <h4 class="slds-tree__group-header slds-p-around--x-small slds-border--bottom slds-grid">
+                <system-icon [module]="'TravelReceipts'" [size]="'x-small'"></system-icon>
+                <div>
+                    <span class="slds-tree__item-label slds-truncate slds-p-right--small"><system-label label="LBL_TRAVEL_RECEIPTS"></system-label></span>
+                </div>
+            </h4>
+            <div class="slds-p-right--xx-small">
+                <ul aria-labelledby="treeheading" class="slds-tree" role="tree">
+                    <li *ngFor="let travelReceipt of travelReceipts" role="treeitem" class="slds-grid" >
+                        <div class="slds-tree__item">
+                            <span class="slds-tree__item-label slds-truncate" title="{{travelReceipt.name}}">{{travelReceipt.name}}</span>
+                        </div>
+                        <div class="slds-tree__item">
+                            <span class="slds-tree__item-label slds-truncate" title="{{travelReceipt.receipt_date}}">{{travelReceipt.receipt_date}}</span>
+                        </div>
+                        <div class="slds-tree__item">
+                            <span class="slds-tree__item-label slds-truncate" title="{{travelReceipt.amount}}">
+                                <system-display-number [number]="travelReceipt.amount" [currency_id]="travelReceipt.currency_id"></system-display-number>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- TravelMileages -->
+        <div class="slds-tree_container slds-p-top--small">
+            <h4 class="slds-tree__group-header slds-p-around--x-small slds-border--bottom slds-grid">
+                <system-icon [module]="'TravelMileages'" [size]="'x-small'"></system-icon>
+                <div>
+                    <span class="slds-tree__item-label slds-truncate slds-p-right--small"><system-label label="LBL_TRAVEL_MILEAGES"></system-label></span>
+                </div>
+            </h4>
+            <div class="slds-p-right--xx-small">
+                <ul aria-labelledby="treeheading" class="slds-tree" role="tree">
+                    <li *ngFor="let travelMileage of travelMileages" role="treeitem" class="slds-grid" >
+                        <div class="slds-tree__item">
+                            <span class="slds-tree__item-label slds-truncate" title="{{travelMileage.name}}">{{travelMileage.name}}</span>
+                        </div>
+                        <div class="slds-tree__item">
+                            <span class="slds-tree__item-label slds-truncate" title="{{travelMileage.date_start}}">
+                                <system-display-datetime [date]="travelMileage.date_start" class=" slds-p-left--xx-small slds-p-right--xx-small"></system-display-datetime>
+                            </span>
+                        </div>
+                        <div class="slds-tree__item">
+                            <span class="slds-tree__item-label slds-truncate" title="{{travelMileage.date_end}}">
+                                <system-display-datetime [date]="travelMileage.date_end" class=" slds-p-left--xx-small slds-p-right--xx-small"></system-display-datetime>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+</ng-container>
