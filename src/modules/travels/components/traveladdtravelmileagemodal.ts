@@ -69,8 +69,8 @@ export class TravelAddTravelMileageModal implements OnInit {
      */
     public setFields() {
         this.model.setFields({
-            date_start: moment(),
-            date_end: moment(),
+            date_start: moment({hour: this.userpreferences.toUse.calendar_day_start_hour}),
+            date_end: moment({hour: this.userpreferences.toUse.calendar_day_end_hour}),
             employee_id: this.userpreferences.session.authData.user.parent_id,
             employee_name: this.userpreferences.session.authData.user.parent_name,
             currency_id: this.userpreferences.toUse.currency,
