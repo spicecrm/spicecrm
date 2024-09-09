@@ -23,15 +23,17 @@ export class TravelManagerButtonGroup {
      * creates a TravelReceipt Bean
      */
     public createTravelReceipt() {
-        // temporary solution, until we've got scanner working
-        this.modal.openModal("TravelAddManualTravelReceiptModal", true, this.injector).subscribe(componentref => {
-            componentref.instance.parent = this.model;
-        });
 
-        // prepared for scanner
-        /*        this.modal.openModal("TravelAddReceiptModal", true, this.injector).subscribe(componentref => {
-            componentref.instance.showToolBars = false;
-        });*/
+        // show scanner on smartphone and tablet only
+        if(this.view.size == 'small' || this.view.layout.screenwidth == 'medium') {
+            this.modal.openModal("TravelAddReceiptModal", true, this.injector).subscribe(componentref => {
+                componentref.instance.showToolBars = false;
+            });
+        } else {
+            this.modal.openModal("TravelAddManualTravelReceiptModal", true, this.injector).subscribe(componentref => {
+                componentref.instance.parent = this.model;
+            });
+        }
     }
 
     /**
