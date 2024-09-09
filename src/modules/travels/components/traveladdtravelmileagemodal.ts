@@ -74,13 +74,15 @@ export class TravelAddTravelMileageModal implements OnInit {
             employee_id: this.userpreferences.session.authData.user.parent_id,
             employee_name: this.userpreferences.session.authData.user.parent_name,
             currency_id: this.userpreferences.toUse.currency,
+            distance_unit: this.userpreferences.toUse.distance_unit_system == 'METRIC' ? 'km' : 'miles',
+            name: this.userpreferences.session.authData.user?.address_country + ' -> ',
             travel_id: this.parent.data.id,
             travel_name: this.parent.data.name
         })
     }
 
     /**
-     * save TravelSegment
+     * save new TravelMileage
      */
     public save() {
         const isSaving = this.modal.await('LBL_SAVING_DATA');
