@@ -84,7 +84,7 @@ export class TravelManagerTravelItems implements OnInit {
 
                 if(message.messagedata.module == 'TravelReceipts') this.travelReceipts.push(data);
                 if(message.messagedata.module == 'TravelSegments') this.travelSegments.push(data);
-                if(message.messagedata.module == 'TravelSegments') this.travelMileages.push(data);
+                if(message.messagedata.module == 'TravelMileages') this.travelMileages.push(data);
                 break;
         }
     }
