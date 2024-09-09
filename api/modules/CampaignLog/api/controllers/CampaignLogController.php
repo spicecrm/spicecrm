@@ -35,14 +35,24 @@ class CampaignLogController{
 
         $postParams = $req->getQueryParams();
 
+        $maxAttempts = 3;
+
         if ($campaignLog) {
+
+            // get CampaignTask
+            if(!empty($campaignLog->campaigntask_id)){
+                $campaignTask = BeanFactory::getBean('CampaignTasks', $campaignLog->campaigntask_id, ['relationships' => false]);
+                if($campaignTask && $campaignTask->telesales_may_attempts){
+                    $maxAttempts = $campaignTask->telesales_may_attempts;
+                }
+            }
 
             switch($status){
                 case 'attempted':
                     $campaignLog->planned_activity_date = $postParams['planned_activity_date'];
                     $campaignLog->hits += 1;
 
-                    if($campaignLog->hits >= 3){
+                    if($campaignLog->hits >= $maxAttempts){
                         $status = 'maxattempts';
                     }
 
