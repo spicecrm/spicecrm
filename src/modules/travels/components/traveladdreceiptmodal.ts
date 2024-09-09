@@ -7,7 +7,7 @@ import {
     AfterRenderRef,
     AfterViewInit,
     Component,
-    ElementRef, Optional,
+    ElementRef, EventEmitter, Optional,
     ViewChild
 } from '@angular/core';
 import {modal} from '../../../services/modal.service';
@@ -49,6 +49,16 @@ export class TravelAddReceiptModal implements AfterViewInit{
      * the hieght of the inner windo
      */
     public height = 0;
+
+    /**
+     * flag to save the travel receipt
+     */
+    public saveBean: boolean = true;
+
+    /**
+     * emits the bean data
+     */
+    public beanData: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(
         public modal: modal,
@@ -92,21 +102,27 @@ export class TravelAddReceiptModal implements AfterViewInit{
 
     public scan() {
         let loader = this.modal.await('LBL_PROCESSING');
-        this.backend.postRequest('common/mindee/scan/receipt', {}, {travel_id: this.model.id, filetype: 'image/jpeg', filedata: this.file}).subscribe({
-        //this.backend.postRequest('common/klippa/scan', {}, {travel_id: this.model.id, filetype: 'image/jpeg', filedata: this.file}).subscribe({
+        this.backend.postRequest('common/mindee/scan/receipt', {}, {travel_id: this.model.id, filetype: 'image/jpeg', filedata: this.file, save: this.saveBean}).subscribe({
             next: (res) => {
-                // reload the subtab
-                this.model.broadcast.broadcastMessage('relatedmodels.reload', {module: 'TravelReceipts'});
 
-                // navigate to the created receipt record
-                let objectlink = "/module/TravelReceipts/" + res.id;
-                // if we have a tabid and it is not th emain tab add it
-                if (this.navigationtab?.tabid) objectlink = '/tab/' + this.navigationtab.tabid + '/' + objectlink;
-                // navigate to the route
-                this.router.navigate([objectlink]);
+                // emit the bean data
+                this.beanData.emit(res);
+
+                // if the bean has been saved navigate to the bean
+                if(this.saveBean) {
+                    // reload the subtab
+                    this.model.broadcast.broadcastMessage('relatedmodels.reload', {module: 'TravelReceipts'});
+
+                    // navigate to the created receipt record
+                    let objectlink = "/module/TravelReceipts/" + res.id;
+                    // if we have a tabid and it is not th emain tab add it
+                    if (this.navigationtab?.tabid) objectlink = '/tab/' + this.navigationtab.tabid + '/' + objectlink;
+                    // navigate to the route
+                    this.router.navigate([objectlink]);
+                }
 
                 // close the modal
-                this.close();
+                this.self.destroy();
 
                 // emit the message
                 loader.emit(true);
@@ -117,6 +133,8 @@ export class TravelAddReceiptModal implements AfterViewInit{
     }
 
     public close() {
+        // emit false so we now the user has cancelled
+        this.beanData.emit(false);
         this.self.destroy();
     }
 
