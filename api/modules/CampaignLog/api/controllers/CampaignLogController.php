@@ -42,8 +42,8 @@ class CampaignLogController{
             // get CampaignTask
             if(!empty($campaignLog->campaigntask_id)){
                 $campaignTask = BeanFactory::getBean('CampaignTasks', $campaignLog->campaigntask_id, ['relationships' => false]);
-                if($campaignTask && $campaignTask->telesales_may_attempts){
-                    $maxAttempts = $campaignTask->telesales_may_attempts;
+                if($campaignTask && $campaignTask->telesales_max_attempts){
+                    $maxAttempts = $campaignTask->telesales_max_attempts;
                 }
             }
 
