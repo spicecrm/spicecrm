@@ -32,6 +32,13 @@ export class TeleSalesCockpitHeader implements OnInit {
         return this.telecockpitservice.selectedCampaignTask;
     }
 
+    get getActionsetId(){
+        if(this.telecockpitservice.selectedCampaignTask.telesales_actionset_id){
+            return this.telecockpitservice.selectedCampaignTask.telesales_actionset_id;
+        }
+        return this.actionset;
+    }
+
     public ngOnInit() {
         this.loadComponentConfigs();
     }
