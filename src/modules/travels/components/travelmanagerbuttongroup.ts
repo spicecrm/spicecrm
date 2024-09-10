@@ -2,6 +2,8 @@ import {Component, Injector} from '@angular/core';
 import {view} from "../../../services/view.service";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
+import {language} from "../../../services/language.service";
+import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'travel-manager-button-group',
@@ -15,25 +17,37 @@ export class TravelManagerButtonGroup {
         public view: view,
         private modal: modal,
         public model: model,
-        private injector: Injector
+        private injector: Injector,
+        private language: language,
+        private toast: toast
     ) {
     }
 
     /**
      * creates a TravelReceipt Bean
      */
-    public createTravelReceipt() {
+    public async createTravelReceipt() {
+        this.modal.openModal("TravelAddReceiptModal", true, this.injector).subscribe(modalRef => {
+            modalRef.instance.showToolBars = false;
+            modalRef.instance.saveBean = false;
 
-        // show scanner on smartphone and tablet only
-        if(this.view.size == 'small' || this.view.layout.screenwidth == 'medium') {
-            this.modal.openModal("TravelAddReceiptModal", true, this.injector).subscribe(componentref => {
-                componentref.instance.showToolBars = false;
-            });
-        } else {
-            this.modal.openModal("TravelAddManualTravelReceiptModal", true, this.injector).subscribe(componentref => {
-                componentref.instance.parent = this.model;
-            });
-        }
+            // wait for scanner to finish mapping fields
+            modalRef.instance.beanData.subscribe({
+                next: async (resp: any) => {
+                    this.modal.openModal("TravelAddManualTravelReceiptModal", true, this.injector).subscribe(componentref => {
+                        componentref.instance.parent = this.model;
+
+                        // initialize model in modal before setting model.data object
+                        componentref.instance.model.initialize();
+
+                        componentref.instance.model.id = resp.id;
+                        componentref.instance.model.data = resp;
+                    });
+                }, error: (err: { message: string; }) => {
+                    this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error', err.message);
+                }
+            })
+        });
     }
 
     /**

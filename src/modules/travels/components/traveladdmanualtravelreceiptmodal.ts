@@ -1,4 +1,4 @@
-import {Component, ComponentRef,OnInit, SkipSelf} from '@angular/core';
+import {Component, ComponentRef, OnInit, SkipSelf} from '@angular/core';
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
 import {metadata} from "../../../services/metadata.service";
@@ -6,6 +6,8 @@ import moment from "moment/moment";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {modal} from "../../../services/modal.service";
 import {Subject} from "rxjs";
+import {toast} from "../../../services/toast.service";
+import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'travel-add-manual-travel-receipt-modal',
@@ -31,7 +33,7 @@ export class TravelAddManualTravelReceiptModal implements OnInit {
     public self: ComponentRef<TravelAddManualTravelReceiptModal>;
 
     /**
-     * the componentset id defined in config
+     * the fieldset id defined in config
      * */
     public fieldset: string = '';
 
@@ -41,19 +43,22 @@ export class TravelAddManualTravelReceiptModal implements OnInit {
         private modal: modal,
         private metadata: metadata,
         public view: view,
-        private userpreferences: userpreferences
+        private userpreferences: userpreferences,
+        private toast: toast,
+        private language: language
     ) {
         this.model.module = 'TravelReceipts';
         this.loadConfig();
     }
 
     ngOnInit() {
-        this.model.initialize();
-
+        // set the model to editing
         this.model.startEdit(false);
-        this.setFields()
         this.view.isEditable = true;
         this.view.setEditMode();
+
+        this.setFields()
+
     }
 
     /**
@@ -69,10 +74,9 @@ export class TravelAddManualTravelReceiptModal implements OnInit {
      */
     public setFields() {
         this.model.setFields({
-            receipt_date: moment(),
+            receipt_date: moment(this.model.data.receipt_date),
             employee_id: this.userpreferences.session.authData.user.parent_id,
             employee_name: this.userpreferences.session.authData.user.parent_name,
-            currency_id: this.userpreferences.toUse.currency,
             parent_id: this.parent.data.id,
             parent_name: this.parent.data.name
         })
@@ -84,22 +88,22 @@ export class TravelAddManualTravelReceiptModal implements OnInit {
     public save() {
         const isSaving = this.modal.await('LBL_SAVING_DATA');
 
-        if (this.model.validate()) {
-            this.model.save(true).subscribe({
-                next: res => {
-                    this.receiptResponseSubject.next(this.model.data);
-                    this.receiptResponseSubject.complete()
-                    isSaving.next(true);
-                    isSaving.complete();
-                    this.close();
-                },
-                error: () => {
-                    isSaving.next(false);
-                    isSaving.complete();
-                    this.close();
-                }
-            });
-        }
+        this.model.save(true).subscribe({
+            next: res => {
+                this.receiptResponseSubject.next(this.model.data);
+                this.receiptResponseSubject.complete()
+                isSaving.next(true);
+                isSaving.complete();
+                this.close();
+            },
+            error: (err) => {
+                this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error', err.message);
+
+                isSaving.next(false);
+                isSaving.complete();
+                this.close();
+            }
+        });
     }
 
     /**
