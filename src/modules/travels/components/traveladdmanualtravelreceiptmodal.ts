@@ -78,7 +78,7 @@ export class TravelAddManualTravelReceiptModal implements OnInit {
             employee_id: this.userpreferences.session.authData.user.parent_id,
             employee_name: this.userpreferences.session.authData.user.parent_name,
             parent_id: this.parent.data.id,
-            parent_name: this.parent.data.name
+            parent_type: 'Travels'
         })
     }
 

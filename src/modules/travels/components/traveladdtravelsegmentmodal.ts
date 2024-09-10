@@ -2,10 +2,11 @@ import {Component, ComponentRef, OnInit, SkipSelf} from '@angular/core';
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
 import {metadata} from "../../../services/metadata.service";
-import moment from "moment/moment";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {modal} from "../../../services/modal.service";
 import {Subject} from "rxjs";
+import {toast} from "../../../services/toast.service";
+import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'travel-add-travel-segment-modal',
@@ -41,7 +42,9 @@ export class TravelAddTravelSegmentModal implements OnInit {
         private modal: modal,
         private metadata: metadata,
         public view: view,
-        private userpreferences: userpreferences
+        private userpreferences: userpreferences,
+        private toast: toast,
+        private language: language
     ) {
         this.model.module = 'TravelSegments';
         this.loadConfig();
@@ -69,8 +72,8 @@ export class TravelAddTravelSegmentModal implements OnInit {
      */
     public setFields() {
         this.model.setFields({
-            date_start: moment({hour: this.userpreferences.toUse.calendar_day_start_hour}),
-            date_end: moment({hour: this.userpreferences.toUse.calendar_day_end_hour}),
+            date_start: this.parent.data.date_start,
+            date_end: this.parent.data.date_end,
             currency_id: this.userpreferences.toUse.currency,
 
             employee_id: this.userpreferences.session.authData.user.parent_id,
@@ -84,23 +87,29 @@ export class TravelAddTravelSegmentModal implements OnInit {
      * save TravelSegment
      */
     public save() {
-        const isSaving = this.modal.await('LBL_SAVING_DATA');
 
-        if (this.model.validate()) {
+        if (this.checkDateValid()) {
+
+            const isSaving = this.modal.await('LBL_SAVING_DATA');
+
             this.model.save(true).subscribe({
-                next: res => {
+                next: (res) => {
                     this.mileageResponseSubject.next(this.model.data);
                     this.mileageResponseSubject.complete()
                     isSaving.next(true);
                     isSaving.complete();
                     this.close();
                 },
-                error: () => {
+                error: (err) => {
+                    this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error', err.message);
+
                     isSaving.next(false);
                     isSaving.complete();
                     this.close();
                 }
             });
+        } else {
+            this.toast.sendToast('LBL_DATE_INVALID', 'error');
         }
     }
 
@@ -111,5 +120,20 @@ export class TravelAddTravelSegmentModal implements OnInit {
         this.view.isEditable = false;
         this.view.setViewMode();
         this.self.destroy()
+    }
+
+    /**
+     * check whether date_start and date_end
+     * are between the start & end dates of the Travel
+     * @private
+     */
+    private checkDateValid(): boolean {
+        const dateStart: boolean = this.model.data.date_start >= this.parent.data.date_start && this.model.data.date_start <= this.parent.data.date_end;
+        const dateEnd: boolean = this.model.data.date_end >= this.parent.data.date_start && this.model.data.date_end <= this.parent.data.date_end;
+
+        // date_end can't be before date_start & they can't be set at the same time
+        const endAfterStart: boolean = this.model.data.date_end > this.model.data.date_start;
+
+        return dateStart && dateEnd && endAfterStart;
     }
 }

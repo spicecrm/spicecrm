@@ -6,6 +6,8 @@ import moment from "moment/moment";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {modal} from "../../../services/modal.service";
 import {Subject} from "rxjs";
+import {toast} from "../../../services/toast.service";
+import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'travel-add-travel-mileage-modal',
@@ -41,7 +43,9 @@ export class TravelAddTravelMileageModal implements OnInit {
         private modal: modal,
         private metadata: metadata,
         public view: view,
-        private userpreferences: userpreferences
+        private userpreferences: userpreferences,
+        private toast: toast,
+        private language: language
     ) {
         this.model.module = 'TravelMileages';
         this.loadConfig();
@@ -69,13 +73,12 @@ export class TravelAddTravelMileageModal implements OnInit {
      */
     public setFields() {
         this.model.setFields({
-            date_start: moment({hour: this.userpreferences.toUse.calendar_day_start_hour}),
-            date_end: moment({hour: this.userpreferences.toUse.calendar_day_end_hour}),
+            date_start: this.parent.data.date_start,
+            date_end: this.parent.data.date_end,
             employee_id: this.userpreferences.session.authData.user.parent_id,
             employee_name: this.userpreferences.session.authData.user.parent_name,
             currency_id: this.userpreferences.toUse.currency,
             distance_unit: this.userpreferences.toUse.distance_unit_system == 'METRIC' ? 'km' : 'miles',
-            name: this.userpreferences.session.authData.user?.address_country + ' -> ',
             travel_id: this.parent.data.id,
             travel_name: this.parent.data.name
         })
@@ -85,23 +88,29 @@ export class TravelAddTravelMileageModal implements OnInit {
      * save new TravelMileage
      */
     public save() {
-        const isSaving = this.modal.await('LBL_SAVING_DATA');
 
-        if (this.model.validate()) {
+        if (this.checkDateValid()) {
+
+            const isSaving = this.modal.await('LBL_SAVING_DATA');
+
             this.model.save(true).subscribe({
-                next: res => {
+                next: (res) => {
                     this.mileageResponseSubject.next(this.model.data);
                     this.mileageResponseSubject.complete()
                     isSaving.next(true);
                     isSaving.complete();
                     this.close();
                 },
-                error: () => {
+                error: (err) => {
+                    this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error', err.message);
+
                     isSaving.next(false);
                     isSaving.complete();
                     this.close();
                 }
             });
+        } else {
+            this.toast.sendToast('LBL_DATESPAN_INVALID', 'error');
         }
     }
 
@@ -112,5 +121,20 @@ export class TravelAddTravelMileageModal implements OnInit {
         this.view.isEditable = false;
         this.view.setViewMode();
         this.self.destroy()
+    }
+
+    /**
+     * check whether date_start and date_end
+     * are between the start & end dates of the Travel
+     * @private
+     */
+    private checkDateValid(): boolean {
+        const dateStart: boolean = this.model.data.date_start >= this.parent.data.date_start && this.model.data.date_start <= this.parent.data.date_end;
+        const dateEnd: boolean = this.model.data.date_end >= this.parent.data.date_start && this.model.data.date_end <= this.parent.data.date_end;
+
+        // date_end can't be before date_start & they can't be set at the same time
+        const endAfterStart: boolean = this.model.data.date_end > this.model.data.date_start;
+
+        return dateStart && dateEnd && endAfterStart;
     }
 }
