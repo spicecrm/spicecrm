@@ -8,7 +8,7 @@ import {
     Component, ContentChildren,
     ElementRef,
     forwardRef,
-    Input, QueryList,
+    Input, OnDestroy, QueryList,
     Renderer2,
     SimpleChanges,
     ViewChild,
@@ -18,6 +18,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {SystemDropdownTriggerDirective} from "../../directives/directives/systemdropdowntrigger";
 import {SystemSelectOption} from "./systemselectoption";
 import {SystemSelectNgModelValue, SystemSelectOptionI} from "../interfaces/systemcomponents.interfaces";
+import {Subscription} from "rxjs";
 
 /**
  * @ignore
@@ -34,7 +35,7 @@ declare var _;
         multi: true
     }]
 })
-export class SystemSelect implements ControlValueAccessor, AfterContentInit {
+export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnDestroy {
     /**
      * reference to the dropdown trigger directive
      * @private
@@ -100,6 +101,8 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit {
 
     @ContentChildren(SystemSelectOption) private options: QueryList<SystemSelectOption>;
 
+    private subscription: Subscription = new Subscription();
+
     constructor(public elementRef: ElementRef,
                 public cdRef: ChangeDetectorRef,
                 public renderer: Renderer2) {
@@ -114,6 +117,18 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit {
 
     public ngAfterContentInit() {
         this.searchList = this.generateSearchList();
+        this.subscription.add(this.options.changes.subscribe(() => {
+            // rebuild the search list options on content change
+            this.searchList = this.generateSearchList();
+            if (!this.focusedItemId) return;
+            // update the display value after rebuilding the search list options if there is any match
+            this.value = this.searchList.find(e => e.id == this.focusedItemId)?.name ?? this.focusedItemId;
+            this.cdRef.detectChanges();
+        }));
+    }
+
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 
     /**
@@ -145,7 +160,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit {
         if (!value) return;
 
         if(typeof value == 'string') {
-            value = this.searchList.find(e => e.id == value);
+            value = this.searchList.find(e => e.id == value) ?? {name: value, id: value};
         }
         this.value = value.name;
         this.focusedItemId = value.id;
