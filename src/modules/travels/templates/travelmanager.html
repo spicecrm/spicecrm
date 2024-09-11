@@ -1,64 +1,62 @@
-<div *ngIf="!model.isLoading">
-    <div class="slds-page-header">
-        <div class="slds-grid">
-            <div class="slds-col slds-has-flexi-truncate">
-                <div class="slds-media slds-no-space slds-grow">
-                    <system-icon [module]="'Travels'"></system-icon>
-                    <div class="slds-media__body">
-                        <ng-container>
-                            <travel-manager-button-group *ngIf="!model.isLoading && model.id; else moduleName"></travel-manager-button-group>
-                        </ng-container>
-                        <ng-template #moduleName>
-                            <p class="slds-text-title--caps slds-line-height--reset">
-                                <system-label-modulename module="Travels"></system-label-modulename>
-                            </p>
-                            <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate slds-m-bottom--x-small">
-                                <system-label label="LBL_TRAVEL_MANAGER"></system-label>
-                            </h1>
-                        </ng-template>
-                    </div>
+<div class="slds-page-header">
+    <div class="slds-grid">
+        <div class="slds-col slds-has-flexi-truncate">
+            <div class="slds-media slds-no-space slds-grow">
+                <system-icon [module]="'Travels'"></system-icon>
+                <div class="slds-media__body">
+                    <ng-container>
+                        <travel-manager-button-group *ngIf="!model.isLoading && model.id; else moduleName"></travel-manager-button-group>
+                    </ng-container>
+                    <ng-template #moduleName>
+                        <p class="slds-text-title--caps slds-line-height--reset">
+                            <system-label-modulename module="Travels"></system-label-modulename>
+                        </p>
+                        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate slds-m-bottom--x-small">
+                            <system-label label="LBL_TRAVEL_MANAGER"></system-label>
+                        </h1>
+                    </ng-template>
                 </div>
             </div>
-
-            <!-- remove current model Button -->
-            <!-- <button *ngIf="model.data.id" class="slds-button slds-button_icon slds-button_icon-border-filled" system-title="LBL_RESET_MODEL" [disabled]="loading" (click)="resetCurrentModel()">
-                <system-button-icon size="small" icon="close"></system-button-icon>
-            </button>-->
         </div>
+
+        <!-- remove current model Button -->
+        <!-- <button *ngIf="model.data.id" class="slds-button slds-button_icon slds-button_icon-border-filled" system-title="LBL_RESET_MODEL" [disabled]="loading" (click)="resetCurrentModel()">
+            <system-button-icon size="small" icon="close"></system-button-icon>
+        </button>-->
     </div>
-
-    <!-- add new Travel or select a Travel from list -->
-    <ng-container *ngIf="nowTravels.length == 0 || (!model.isLoading && nowTravels.length > 1 && !model.data.id); else showTravelItems">
-        <div class="slds-card__body slds-p-left_small">
-            <div class="slds-tree_container" *ngIf="futureTravels.length > 1" style="max-width: 70%">
-                <h4 class="slds-tree__group-header slds-p-around--x-small slds-border--bottom slds-grid" style="box-shadow: 0 4px 2px -2px var(--color-gray-4);">
-                    <system-icon [module]="'Travels'" [size]="'x-small'"></system-icon>
-                    <span class="slds-tree__item-label slds-truncate"><system-label label="LBL_YOUR_TRAVELS"></system-label></span>
-                </h4>
-                <div class="slds-p-right--xx-small">
-                    <ul aria-labelledby="treeheading" class="slds-tree" role="tree">
-                        <li *ngFor="let futureTravel of futureTravels" role="treeitem" class="slds-border--bottom slds-m-left--small">
-                            <div class="slds-tree__item slds-grid slds-wrap slds-medium-nowrap">
-                                <span (click)="selectTravel(futureTravel)" class="slds-col slds-size--1-of-1 slds-medium-size--small slds-tree__item-label slds-truncate" title="{{futureTravel.name}}">{{ futureTravel.name }}</span>
-                                <span class="slds-col slds-size--1-of-1 slds-medium-size--small slds-tree__item-label slds-truncate" title="{{futureTravel.date_start}}">
-                                    <system-display-datetime [date]="futureTravel.date_start"></system-display-datetime>
-                                </span>
-                                <span class="slds-col slds-size--1-of-1 slds-medium-size--small slds-tree__item-label slds-truncate" title="{{futureTravel.date_end}}">
-                                    <system-display-datetime [date]="futureTravel.date_end"></system-display-datetime>
-                                </span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <button class="slds-button slds-button--neutral slds-m-left--small slds-m-top--medium" (click)="createNewTravel()">
-                <ng-container><system-button-icon *ngIf="view.size == 'small'; else travelBiggerView" icon="add"></system-button-icon></ng-container>
-                <ng-template #travelBiggerView><system-label label="LBL_ADD_TRAVEL"/></ng-template>
-            </button>
-        </div>
-    </ng-container>
-
-    <ng-template #showTravelItems>
-        <travel-manager-travel-items *ngIf="!model.isLoading" [selectedTravel]="model.data.id" class="slds-is-absolute"></travel-manager-travel-items>
-    </ng-template>
 </div>
+
+<!-- add new Travel or select a Travel from list -->
+<ng-container *ngIf="nowTravels.length == 0 || (!model.isLoading && nowTravels.length > 1 && !model.data.id); else showTravelItems">
+    <div class="slds-card__body slds-p-left_small">
+        <div class="slds-tree_container" *ngIf="futureTravels.length > 0" style="max-width: 90%">
+            <h4 class="slds-tree__group-header slds-p-around--x-small slds-border--bottom slds-grid" style="box-shadow: 0 4px 2px -2px var(--color-gray-4);">
+                <system-icon [module]="'Travels'" [size]="'x-small'"></system-icon>
+                <span class="slds-tree__item-label slds-truncate"><system-label label="LBL_YOUR_TRAVELS"></system-label></span>
+            </h4>
+            <div class="slds-p-right--xx-small">
+                <ul aria-labelledby="treeheading" class="slds-tree" role="tree">
+                    <li *ngFor="let futureTravel of futureTravels" role="treeitem" class="slds-border--bottom slds-m-left--small">
+                        <div class="slds-tree__item slds-grid slds-wrap slds-medium-nowrap">
+                            <span (click)="selectTravel(futureTravel)" class="slds-col slds-size--1-of-1 slds-medium-size--small slds-tree__item-label slds-truncate" title="{{futureTravel.name}}">{{ futureTravel.name }}</span>
+                            <span class="slds-col slds-size--1-of-1 slds-medium-size--small slds-tree__item-label slds-truncate" title="{{futureTravel.date_start}}">
+                                <system-display-datetime [date]="futureTravel.date_start"></system-display-datetime>
+                            </span>
+                            <span class="slds-col slds-size--1-of-1 slds-medium-size--small slds-tree__item-label slds-truncate" title="{{futureTravel.date_end}}">
+                                <system-display-datetime [date]="futureTravel.date_end"></system-display-datetime>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <button class="slds-button slds-button--neutral slds-m-left--small slds-m-top--medium" (click)="createNewTravel()">
+            <ng-container><system-button-icon *ngIf="view.size == 'small'; else travelBiggerView" icon="add"></system-button-icon></ng-container>
+            <ng-template #travelBiggerView><system-label label="LBL_ADD_TRAVEL"/></ng-template>
+        </button>
+    </div>
+</ng-container>
+
+<ng-template #showTravelItems>
+    <travel-manager-travel-items *ngIf="!model.isLoading" [selectedTravel]="model.data.id" class="slds-is-absolute"></travel-manager-travel-items>
+</ng-template>

@@ -87,11 +87,11 @@ export class TravelManager implements OnInit {
      * @param selectedTravel
      */
     public selectTravel(selectedTravel) {
+        this.model.isLoading = true;
+
         if (selectedTravel?.id) {
-            this.loading = true;
             this.model.id = selectedTravel.id;
             this.model.getData();
-            this.loading = false;
         }
     }
 
