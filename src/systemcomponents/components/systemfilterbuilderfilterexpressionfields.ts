@@ -1,10 +1,7 @@
 /**
  * @module WorkbenchModule
  */
-import {
-    Component, EventEmitter, forwardRef, Input, OnInit, Output
-} from '@angular/core';
-import {backend} from '../../services/backend.service';
+import {Component, forwardRef, Input, OnChanges} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
@@ -20,7 +17,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
     }
 ]
 })
-export class SystemFilterBuilderFilterExpressionFields implements OnInit, ControlValueAccessor {
+export class SystemFilterBuilderFilterExpressionFields implements OnChanges, ControlValueAccessor {
 
     /**
      * for the value accessor
@@ -32,6 +29,11 @@ export class SystemFilterBuilderFilterExpressionFields implements OnInit, Contro
      * the module we are attaching this filter to
      */
     @Input() public module: string;
+    /**
+     * flag to display all fields
+     * @private
+     */
+    @Input() private displayAllFields: boolean = false;
 
     public fields: any[] = [];
 
@@ -39,7 +41,6 @@ export class SystemFilterBuilderFilterExpressionFields implements OnInit, Contro
 
 
     constructor(
-        public backend: backend,
         public language: language,
         public metadata: metadata,
     ) {
@@ -86,49 +87,47 @@ export class SystemFilterBuilderFilterExpressionFields implements OnInit, Contro
         this._field = value;
     }
 
-    public getFieldDisplayOptions() {
-        let retArray = [];
-        let options = this.language.getFieldDisplayOptions(this.module, this.field);
-        for (let optionVal in options) {
-            retArray.push({
-                value: optionVal,
-                display: options[optionVal]
-            });
-        }
-        return retArray.filter(item => item.value.length > 0);
+    public ngOnChanges() {
+        this.buildFieldOptions();
     }
 
     /**
      * load the fields and sort them
      */
-    public ngOnInit() {
+    private buildFieldOptions() {
+
+        this.fields = [];
+
+        if (!this.module) return;
+
         let fields = this.metadata.getModuleFields(this.module);
         for (let field in fields) {
-            // no links
-            if(fields[field].type == 'link') continue;
 
-            // no relate fields if no module is set or the relate is non db
-            if(fields[field].type == 'relate') {
-                if(!fields[field].module) continue;
-                if(fields[field].id_name && fields[fields[field].id_name] && fields[fields[field].id_name].source == 'non-db') continue;
+            if (!this.displayAllFields && !(fields[field].type == 'linked' && fields[field].name == 'assigned_user')) {
+                // no links
+                if(fields[field].type == 'link') continue;
+
+                // no relate fields if no module is set or the relate is non db
+                if(fields[field].type == 'relate') {
+                    if(!fields[field].module) continue;
+                    if(fields[field].id_name && fields[fields[field].id_name] && fields[fields[field].id_name].source == 'non-db') continue;
+                }
+
+                // no id fields
+                if(fields[field].type == 'id') continue;
+
+                // no non-db fields
+                if(fields[field].source == 'non-db' && fields[field].type != 'relate') continue;
             }
 
-            if(fields[field].type == 'linked' && fields[field].name == 'assigned_user') {
-                this.fields.push(fields[field]);
-                continue;
-            }
-
-            // no id fields
-            if(fields[field].type == 'id') continue;
-
-            // no non-db fields
-            if(fields[field].source == 'non-db' && fields[field].type != 'relate') continue;
-
-            this.fields.push(fields[field]);
+            this.fields.push({
+                ...fields[field],
+                displayName: this.language.getFieldDisplayName(this.module, fields[field].name)
+            });
         }
 
         // sort the fields
-        this.fields.sort((a, b) => this.language.getFieldDisplayName(this.module, a.name).toLowerCase() > this.language.getFieldDisplayName(this.module, b.name).toLowerCase() ? 1 : -1);
+        this.fields.sort((a, b) => a.displayName.toLowerCase() > b.displayName.toLowerCase() ? 1 : -1);
     }
 
 }

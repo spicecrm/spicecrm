@@ -17,6 +17,10 @@ export class SystemFilterBuilderFilterExpressionGroup implements OnChanges {
     @Input() public module: string;
     @Input() public filtergroup: any;
     @Input() public candelete: boolean = false;
+    /**
+     * flag to display all fields
+     */
+    @Input() public displayAllFields: boolean = false;
 
     @Output() public expressionChanged: EventEmitter<any> = new EventEmitter<any>();
 
