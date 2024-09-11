@@ -106,6 +106,24 @@ $routes = [
                 'description' => 'the name of the module',
                 'type' => ValidationMiddleware::TYPE_MODULE,
                 'example' => 'Contacts',
+            ],
+            'global' => [
+                'in' => 'query',
+                'description' => 'designates if a list is global',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'example' => '1',
+            ],
+            'name' => [
+                'in' => 'query',
+                'description' => 'the name of the list',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'My list',
+            ],
+            'listcomponent' => [
+                'in' => 'query',
+                'description' => 'the used component',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'ObjectList',
             ]
         ]
     ],
