@@ -1,7 +1,7 @@
 <div class="slds-form-element">
     <label class="slds-form-element__label"><system-label label="LBL_FIELD"></system-label></label>
     <div class="slds-form-element__control">
-        <system-select [(ngModel)]="field">
+        <system-select [(ngModel)]="field" [idOnly]="true">
             @for (f of fields; track f.name) {
                 <system-select-option [display]="f.displayName" [value]="f.name" />
             }
