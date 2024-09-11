@@ -9,6 +9,7 @@ import {KanbanManagerService} from "../services/kanbanmanager.service";
 import {SpiceKanbanManagerAddModal} from "./spicekanbanmanageraddmodal";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {ChangeHistoryService} from "../../../workbench/services/changehistory.service";
+import {backend} from "../../../services/backend.service";
 
 
 @Component({
@@ -39,12 +40,17 @@ export class SpiceKanbanManager implements OnInit{
 
     public activeStages: any;
 
+    public kanbansToMigrate: any[];
+
+    public migrateBtnDisabled: boolean = true;
+
     constructor(
         public modal: modal,
         public injector: Injector,
         public metadata: metadata,
         public modelUtilities: modelutilities,
         public kanbanManagerService: KanbanManagerService,
+        public backend: backend
     ) {
     }
 
@@ -82,9 +88,9 @@ export class SpiceKanbanManager implements OnInit{
             this.beanGuidesCustom = res.filter(r => r.scope == 'custom');
             this.loading = false;
         })
+
+        this.checkMigrateKanbans();
     }
-
-
 
     openAddModal() {
         this.modal.openModal('SpiceKanbanManagerAddModal', true, this.injector).subscribe((modalRef: ComponentRef<SpiceKanbanManagerAddModal>)  => {
@@ -113,6 +119,24 @@ export class SpiceKanbanManager implements OnInit{
             modalRef.instance.selectedBeanGuide = selectedBeanGuide;
             modalRef.instance.isEditing = true;
         });
-
     }
+
+    public checkMigrateKanbans() {
+        this.backend.getRequest('/common/spicebeanguide/kanbanMigration').subscribe( {
+            next: (res) => {
+                this.kanbansToMigrate = res
+                if(res.length > 1) this.migrateBtnDisabled = false;
+            }
+        })
+    }
+
+    public migrate() {
+        this.modal.openModal('SpiceKanbanManagerMigrateModal', true, this.injector).subscribe((modalRef) => {
+            modalRef.instance.migrateKanbans = this.kanbansToMigrate;
+            modalRef.instance.migrated.subscribe({
+                next: (migrated) => { if (migrated) this.migrateBtnDisabled = true; }
+            })
+        })
+    }
+
 }

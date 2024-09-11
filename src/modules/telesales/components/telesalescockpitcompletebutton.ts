@@ -16,21 +16,26 @@ export class TeleSalesCockpitCompleteButton {
     constructor(public language: language,
                 public toast: toast,
                 public backend: backend,
+                public telecockpit: telecockpitservice,
                 public telecockpitservice: telecockpitservice) {
     }
 
     public execute() {
         let item = this.telecockpitservice.selectedListItem;
-        this.backend.postRequest(`module/CampaignLog/${item.id}/completed`)
-            .subscribe(
-                status => {
-                    if (status.success) {
-                        this.toast.sendToast(this.language.getLabel('LBL_COMPLETED'), 'success');
-                        this.removeItem(item);
-                    } else {
-                        this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error');
-                    }
-                }, err => this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error'));
+        this.backend.postRequest(`module/CampaignLog/${item.id}/completed`).subscribe({
+            next: (status) => {
+                if (status.success) {
+                    this.toast.sendToast(this.language.getLabel('LBL_COMPLETED'), 'success');
+                    this.telecockpit.loadStats();
+                    this.removeItem(item);
+                } else {
+                    this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error');
+                }
+            },
+            error: (err) => {
+                this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error');
+            }
+        });
     }
 
     public removeItem(item) {

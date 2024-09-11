@@ -267,6 +267,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source' => 'non-db',
                 'vname' => 'LBL_CALLS_AS_PARENT',
             ],
+            /* migrated to dictiornary
             'callattempts_parent' => [
                 'name' => 'callattempts_parent',
                 'type' => 'link',
@@ -274,6 +275,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source' => 'non-db',
                 'vname' => 'LBL_CALLATTEMPTS',
             ],
+            */
 // CR1000426 cleanup backend, module Cases removed
 //            'cases' => array(
 //                'name' => 'cases',
@@ -894,12 +896,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Contacts'
         ],
+        /* migrated to ditionary
         'contact_callattempts_parent' => [
             'lhs_module' => 'Contacts', 'lhs_table' => 'contacts', 'lhs_key' => 'id',
             'rhs_module' => 'CallAttempts', 'rhs_table' => 'callattempts', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Contacts'
         ],
+        */
         'contact_emails_parent' => [
             'lhs_module' => 'Contacts', 'lhs_table' => 'contacts', 'lhs_key' => 'id',
             'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id',

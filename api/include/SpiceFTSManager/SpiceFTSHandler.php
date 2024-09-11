@@ -882,7 +882,7 @@ class SpiceFTSHandler
         // add additional query params
         // exclude inactive records for specific list types
         $listTypes = ['all', 'owner', 'globalSearch'];
-        if (property_exists($seed, 'is_inactive') && in_array($listId, $listTypes)) {
+        if ($seed && property_exists($seed, 'is_inactive') && in_array($listId, $listTypes)) {
             if(is_array($queryParam['query']['bool']['filter']['bool']['must'])) {
                 $queryParam['query']['bool']['filter']['bool']['must'][]['bool']['must'][]['terms']['is_inactive'] = ['0'];
             } else {

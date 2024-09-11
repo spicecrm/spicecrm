@@ -349,6 +349,8 @@ class Compiler
                             # LIBXML_HTML_NOIMPLIED is necessary to prevent loadHTML from adding <html> and <body> around.
                             $subDoc->loadHTML( '<span></span>'.mb_convert_encoding($subTemplate->$bodyFieldName, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
                             foreach ( $subDoc->childNodes as $item ) {
+                                # ignore the item if it is a comment or any other item that does not have a tagName property
+                                if (!$item->tagName) continue;
                                 $elements[] = $this->createNewElement( $item, $beans );
                             }
 
