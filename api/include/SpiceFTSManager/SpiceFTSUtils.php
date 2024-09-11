@@ -138,7 +138,7 @@ class SpiceFTSUtils
                 $seed = BeanFactory::getBean($module);
 
                 // ensure the is_inactive field is properly set in the index parameters
-                if (property_exists($seed, 'is_inactive')) {
+                if ($seed && property_exists($seed, 'is_inactive')) {
                     $id =  SpiceUtils::createGuid();
                     $modulePropertiesarray[] = [
                         'id' => $id,
