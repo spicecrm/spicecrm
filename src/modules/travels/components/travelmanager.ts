@@ -58,8 +58,6 @@ export class TravelManager implements OnInit {
      * @private
      */
     private loadActiveUserTravels() {
-        this.loading = true;
-
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_LOADING';
 
@@ -76,10 +74,8 @@ export class TravelManager implements OnInit {
                     }
 
                     loadingRef.instance.self.destroy();
-                    this.loading = false;
                 }, error: (err) => {
                     loadingRef.instance.self.destroy();
-                    this.loading = false;
                     this.toast.sendToast(this.language.getLabel('LBL_ERR_LOADING_TRAVELS'), 'error', err);
                 }
             })
