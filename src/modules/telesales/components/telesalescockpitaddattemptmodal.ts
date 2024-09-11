@@ -11,6 +11,7 @@ import {backend} from "../../../services/backend.service";
 import {Observable, Subject} from 'rxjs';
 import {metadata} from "../../../services/metadata.service";
 import {telecockpitservice} from "../services/telecockpit.service";
+import {modal} from "../../../services/modal.service";
 
 /**
  * @ignore
@@ -28,12 +29,14 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
     public responseSubject: Subject<any> = null;
     @Input() public selectedListItem: any;
     @Input() public maxAttempts: any;
+    @Input() public campaignTask: any;
     public self: any;
     public fieldset: string = '';
 
     constructor(
         public language: language,
         public model: model,
+        public modal: modal,
         public modelutilities: modelutilities,
         public toast: toast,
         public backend: backend,
@@ -51,12 +54,17 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
         this.setEditMode();
     }
 
+    /**
+     * initilizes the model
+     */
     public initializeModel() {
+        this.model.initialize();
         this.model.module = 'CampaignLog';
         this.model.id = this.selectedListItem.id;
+        this.model.startEdit(false);
         this.model.setData({
-            hits: this.selectedListItem.hits,
-            planned_activity_date: new moment().add(1, 'days'),
+            hits: parseInt(this.selectedListItem.hits) + 1,
+            planned_activity_date: new moment().add((this.campaignTask.telesales_attempt_delay ? this.campaignTask.telesales_attempt_delay : 1), 'days'),
             activity_type: this.selectedListItem.activity_type,
             activity_date: new moment(),
         }, false);
@@ -79,6 +87,8 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
     }
 
     public save() {
+
+        let awaitModal = this.modal.await('LBL_SAVING')
         let planned_activity_date = this.modelutilities.spice2backend(this.model.module, 'planned_activity_date', this.model.getField('planned_activity_date'));
         let params = {planned_activity_date: planned_activity_date};
 
@@ -89,10 +99,16 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
                     this.responseSubject.next(true);
                     this.responseSubject.complete();
                     this.telecockpit.loadStats();
+
+                    awaitModal.emit(true);
+
                     this.self.destroy();
 
                 } else {
                     this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+
+                    awaitModal.emit(true);
+
                     this.self.destroy();
                 }
             },
@@ -104,8 +120,8 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
 
     public remove() {
         this.backend.postRequest(`module/CampaignLog/${this.model.id}/completed`)
-            .subscribe(
-                status => {
+            .subscribe({
+                next: (status) => {
                     if (status.success) {
                         this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
                         this.responseSubject.next(true);
@@ -114,6 +130,9 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
                         this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
                     }
                 },
-                err => this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error'));
+                error: (err) => {
+                    this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error');
+                }
+            });
     }
 }
