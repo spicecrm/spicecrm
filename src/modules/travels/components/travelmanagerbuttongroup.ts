@@ -34,15 +34,17 @@ export class TravelManagerButtonGroup {
             // wait for scanner to finish mapping fields
             modalRef.instance.beanData.subscribe({
                 next: async (resp: any) => {
-                    this.modal.openModal("TravelAddManualTravelReceiptModal", true, this.injector).subscribe(componentref => {
-                        componentref.instance.parent = this.model;
+                    if(resp) {
+                        this.modal.openModal("TravelAddManualTravelReceiptModal", true, this.injector).subscribe(componentref => {
+                            componentref.instance.parent = this.model;
 
-                        // initialize model in modal before setting model.data object
-                        componentref.instance.model.initialize();
+                            // initialize model in modal before setting model.data object
+                            componentref.instance.model.initialize();
 
-                        componentref.instance.model.id = resp.id;
-                        componentref.instance.model.data = resp;
-                    });
+                            componentref.instance.model.id = resp.id;
+                            componentref.instance.model.data = resp;
+                        });
+                    }
                 }, error: (err: { message: string; }) => {
                     this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error', err.message);
                 }
