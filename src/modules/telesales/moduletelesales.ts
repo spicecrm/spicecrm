@@ -20,6 +20,7 @@ import {TeleSalesCockpitMain} from './components/telesalescockpitmain';
 import {TeleSalesCockpitCreateLeadButton} from './components/telesalescockpitcreateleadbutton';
 import {TeleSalesCockpitLogCallButton} from './components/telesalescockpitlogcallbutton';
 import {TeleSalesCockpitCompleteButton} from './components/telesalescockpitcompletebutton';
+import {TeleSalesCockpitCompleteModal} from "./components/telesalescockpitcompletemodal";
 import {TeleSalesCockpitAddAttemptButton} from './components/telesalescockpitaddattemptbutton';
 import {TeleSalesCockpitAddAttemptModal} from './components/telesalescockpitaddattemptmodal';
 import {TeleSalesCockpitModuleActions} from './components/telesalescockpitmoduleactions';
@@ -48,6 +49,7 @@ import {TeleSalesCockpitStats} from "./components/telesalescockpitstats";
         TeleSalesCockpitCreateLeadButton,
         TeleSalesCockpitLogCallButton,
         TeleSalesCockpitCompleteButton,
+        TeleSalesCockpitCompleteModal,
         TeleSalesCockpitAddAttemptButton,
         TeleSalesCockpitAddAttemptModal,
         TeleSalesCockpitModuleActions,
