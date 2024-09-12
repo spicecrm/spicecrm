@@ -127,7 +127,7 @@ export class ObjectActionOutputPdfModal {
             beanIds: this.splitArray[this.currentIndex]
         }
 
-        this.backend.putRequest(`/module/OutputTemplates/${this.selectedTemplate}/formodule/${this.modellist.module}/generateBulkPDF`, {}, body).subscribe(pdf => {
+        this.backend.putRequest(`module/OutputTemplates/${this.selectedTemplate}/formodule/${this.modellist.module}/generateBulkPDF`, {}, body).subscribe(pdf => {
             this.base64content = pdf.content;
             this.renderPreview();
 
