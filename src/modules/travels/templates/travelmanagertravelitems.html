@@ -1,0 +1,76 @@
+<ng-container *ngIf="selectedTravel">
+    <div class="slds-card__body slds-p-left_small">
+
+        <!-- TravelSegments -->
+        <div class="slds-tree_container" *ngIf="travelSegments.length > 0" style="max-width: 90%">
+            <h4 class="slds-tree__group-header slds-p-around--x-small slds-border--bottom slds-grid" style="box-shadow: 0 4px 2px -2px var(--color-gray-4);">
+                <system-icon [module]="'TravelSegments'" [size]="'x-small'"></system-icon>
+                <span class="slds-tree__item-label slds-truncate"><system-label label="LBL_TRAVEL_SEGMENTS_BETWEEN"></system-label></span>
+            </h4>
+            <div class="slds-p-right--xx-small">
+                <ul aria-labelledby="treeheading" class="slds-tree" role="tree">
+                    <li *ngFor="let travelSegment of travelSegments" role="treeitem" class="slds-border--bottom slds-m-left--small" style="cursor: default">
+                        <div class="slds-tree__item slds-grid slds-wrap slds-medium-nowrap">
+                            <span class="slds-col slds-size--1-of-1 slds-medium-size--small slds-tree__item-label slds-truncate" title="{{travelSegment.end_country}}">{{ travelSegment.end_country }}</span>
+                            <span class="slds-col slds-size--1-of-1 slds-medium-size--small slds-tree__item-label slds-truncate" title="{{travelSegment.date_start}}">
+                                <system-display-datetime [date]="travelSegment.date_start"></system-display-datetime>
+                            </span>
+                            <span class="slds-col slds-size--1-of-1 slds-medium-size--small slds-tree__item-label slds-truncate" title="{{travelSegment.date_end}}">
+                                <system-display-datetime [date]="travelSegment.date_end"></system-display-datetime>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- TravelReceipts -->
+        <div class="slds-tree_container slds-p-top--medium" *ngIf="travelReceipts.length > 0" style="max-width: 90%">
+            <h4 class="slds-tree__group-header slds-p-around--x-small slds-border--bottom slds-grid" style="box-shadow: 0 4px 2px -2px var(--color-gray-4);">
+                <system-icon [module]="'TravelReceipts'" [size]="'x-small'"></system-icon>
+                <span class="slds-tree__item-label slds-truncate"><system-label label="LBL_TRAVEL_RECEIPTS"></system-label></span>
+            </h4>
+            <div class="slds-p-right--xx-small">
+                <ul aria-labelledby="treeheading" class="slds-tree" role="tree">
+                    <li *ngFor="let travelReceipt of travelReceipts" role="treeitem" class="slds-border--bottom slds-m-left--small" style="cursor: default">
+                        <div class="slds-tree__item slds-grid slds-wrap slds-medium-nowrap">
+                            <span class="slds-col slds-size--1-of-1 slds-medium-size--small slds-tree__item-label slds-truncate" title="{{travelReceipt.name}}">{{ travelReceipt.name}}</span>
+
+                            <span class="slds-col slds-size--1-of-1 slds-medium-size--small slds-tree__item-label slds-truncate" title="{{travelReceipt.name}}">
+                                <system-display-datetime [date]="travelReceipt.name"></system-display-datetime>
+                            </span>
+                            <span class="slds-col slds-size--1-of-1 slds-medium-size--small slds-tree__item-label slds-truncate" title="{{travelReceipt.receipt_date}}">
+                                <system-display-number [number]="travelReceipt.amount" [currency_id]="travelReceipt.currency_id"></system-display-number>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- TravelMileages -->
+        <div class="slds-tree_container slds-p-top--medium" *ngIf="travelMileages.length > 0" style="max-width: 90%">
+            <h4 class="slds-tree__group-header slds-p-around--x-small slds-border--bottom slds-grid" style="box-shadow: 0 4px 2px -2px var(--color-gray-4);">
+                <system-icon [module]="'TravelMileages'" [size]="'x-small'"></system-icon>
+                <span class="slds-tree__item-label slds-truncate"><system-label label="LBL_TRAVEL_MILEAGES"></system-label></span>
+            </h4>
+            <div class="slds-p-right--xx-small">
+                <ul aria-labelledby="treeheading" class="slds-tree" role="tree">
+                    <li *ngFor="let travelMileage of travelMileages" role="treeitem" class="slds-border--bottom slds-m-left--small">
+                        <div class="slds-tree__item slds-grid slds-wrap slds-medium-nowrap">
+                            <span class="slds-col slds-size--1-of-1 slds-medium-size--small slds-tree__item-label slds-truncate" title="{{travelMileage.name}}">{{ travelMileage.name}}</span>
+                            <span class="slds-col slds-size--1-of-1 slds-medium-size--small slds-tree__item-label slds-truncate" title="{{travelMileage.date_start}}">
+                                <system-display-datetime [date]="travelMileage.date_start"></system-display-datetime>
+                            </span>
+                            <span class="slds-col slds-size--1-of-1 slds-medium-size--small slds-tree__item-label slds-truncate" title="{{travelMileage.date_end}}">
+                                <system-display-datetime [date]="travelMileage.date_end"></system-display-datetime>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+</ng-container>
