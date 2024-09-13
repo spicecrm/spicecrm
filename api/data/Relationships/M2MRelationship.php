@@ -63,6 +63,8 @@ class M2MRelationship extends Relationship
 
         // get the join definitions
         $joinDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->join_sysdictionarydefinition_id);
+        $joinDictionaryItem = new SpiceDictionaryItem($relationship->relationship->relationship_role_column);
+        $joinField = SpiceDictionaryField::getField($joinDictionaryItem, $joinDictionaryDefinition);
         $joinLhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->join_lhs_sysdictionaryitem_id);
         $joinRhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->join_rhs_sysdictionaryitem_id);
         $joinLhsField = SpiceDictionaryField::getField($joinLhsDictionaryitem, $joinDictionaryDefinition);
@@ -86,7 +88,9 @@ class M2MRelationship extends Relationship
             'join_table' => $joinDictionaryDefinition->tablename,
             'join_key_lhs' => $joinLhsField->fieldname,
             'join_key_rhs' => $joinRhsField->fieldname,
-            'deleted' => 0
+            'deleted' => 0,
+            'relationship_role_column' => $joinField->fieldname,
+            'relationship_role_column_value' => $this->relationship_role_column_value,
         ];
 
         // make sure we delete any current relationship with the same name (might be the case if we have the same from legacy)
