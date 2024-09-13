@@ -326,7 +326,7 @@
         <div class="slds-text-color_weak slds-grow slds-height_full spice-richtext-editor slds-rich-text-editor__textarea">
             <system-richtext-editor-content>
                 <link *ngIf="cssContent" rel="stylesheet" type="text/css" [href]="cssContent">
-                <div [contentEditable]="true" #ckEditor></div>
+                <div [attr.contenteditable]="true" #ckEditor></div>
             </system-richtext-editor-content>
         </div>
     </div>

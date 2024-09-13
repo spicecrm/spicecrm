@@ -864,9 +864,17 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     }
 
     public speechRecognitionStart() {
+
+        // extracting the text content from the ckEditor
+        let currentEditorContent = this.editor.getData();
+        let temporaryElement = document.createElement('div');
+        temporaryElement.innerHTML = currentEditorContent;
+        let editorTextContent = temporaryElement.textContent || temporaryElement.innerText || "";
+
         this.modal.openModal('SpeechRecognition', false).subscribe(modal => {
             modal.instance.textfield = this.ckEditor;
-            modal.instance.htmlElement = 'div';
+            modal.instance.typeOfField = 'richText';
+            modal.instance.richTextEditorString = editorTextContent;
             modal.instance.divElementValue.subscribe({
                 next: (newHtml) => {
                     this._html = newHtml;
@@ -876,7 +884,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                         this.onChange(newHtml);
                     }
 
-                    this.editor.setData(this._html)
+                    this.editor.setData(newHtml)
                 }
             })
         });
