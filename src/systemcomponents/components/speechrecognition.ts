@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import {Component, OnInit, ChangeDetectorRef, ApplicationRef} from '@angular/core';
+import {Component, OnInit, ChangeDetectorRef, ApplicationRef, EventEmitter} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {toast} from '../../services/toast.service';
@@ -38,6 +38,9 @@ export class SpeechRecognition implements OnInit {
     public pausing = false;
     public working = false;
 
+    public divElementValue = new EventEmitter<any>()
+    public htmlElement :'div'|'textarea' = 'textarea';
+
     public languages = [{id: 'de_DE', name: 'Deutsch'}, {id: 'en_US', name: 'English'}];
     public selectedLanguage = 0;
 
@@ -62,10 +65,15 @@ export class SpeechRecognition implements OnInit {
         this.recognition.interimResults = true;
         this.recognition.maxAlternatives = 1;
 
-        this.part1fromField =
-            this.textfield.element.nativeElement.value.substring(0, this.textfield.element.nativeElement.selectionStart);
-        this.part2fromField =
-            this.textfield.element.nativeElement.value.substring(this.textfield.element.nativeElement.selectionEnd);
+        const element = this.textfield.element.nativeElement;
+
+        if(this.htmlElement === 'textarea') {
+            this.part1fromField = element.value.substring(0, element.selectionStart);
+            this.part2fromField = element.value.substring(element.selectionEnd);
+        } else {
+            this.part1fromField = element.textContent.substring(0, element.textContent.length);
+            this.part2fromField = element.textContent.substring(element.textContent.length);
+        }
 
         this.recognition.onresult = (speech) => {
 
@@ -177,9 +185,17 @@ export class SpeechRecognition implements OnInit {
         }
 
         this.recognizing = false;
-        this.textfield.element.nativeElement.value =
-           this.part1fromField + this.theText + this.part2fromField;
-        this.textfield.element.nativeElement.dispatchEvent( new Event('change') );
+
+        const element = this.textfield.element.nativeElement;
+
+        if(this.htmlElement === 'textarea') {
+            element.value = this.part1fromField + this.theText + this.part2fromField;
+        } else {
+            element.textContent = this.part1fromField + this.theText + this.part2fromField;
+            this.divElementValue.emit(element.textContent);
+        }
+
+        element.dispatchEvent( new Event('change') );
 
         this.self.destroy();
 
