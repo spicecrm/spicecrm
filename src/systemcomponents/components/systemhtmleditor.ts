@@ -646,4 +646,24 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
         return div.innerHTML;
     }
 
+    public speechRecognitionStart() {
+        this.modal.openModal('SpeechRecognition', false).subscribe(modal => {
+            modal.instance.textfield = this.htmlEditor;
+            modal.instance.typeOfField = 'html';
+            modal.instance.divElementValue.subscribe({
+                next: (newHtml) => {
+                    this._html = newHtml;
+
+                    // set the model value
+                    if (typeof this.onChange === 'function') {
+                        this.onChange(newHtml);
+                    }
+
+                    // set the value to the editor
+                    this.renderer.setProperty(this.htmlEditor.element.nativeElement, 'innerHTML', this._html);
+                }
+            })
+        });
+    }
+
 }

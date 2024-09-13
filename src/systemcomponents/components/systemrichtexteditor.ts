@@ -862,4 +862,31 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             this.cssContent = this.sanitizer.bypassSecurityTrustResourceUrl('data:text/css;base64,' + btoa(res.css))
         );
     }
+
+    public speechRecognitionStart() {
+
+        // extracting the text content from the ckEditor
+        let currentEditorContent = this.editor.getData();
+        let temporaryElement = document.createElement('div');
+        temporaryElement.innerHTML = currentEditorContent;
+        let editorTextContent = temporaryElement.textContent || temporaryElement.innerText || "";
+
+        this.modal.openModal('SpeechRecognition', false).subscribe(modal => {
+            modal.instance.textfield = this.ckEditor;
+            modal.instance.typeOfField = 'richText';
+            modal.instance.richTextEditorString = editorTextContent;
+            modal.instance.divElementValue.subscribe({
+                next: (newHtml) => {
+                    this._html = newHtml;
+
+                    // set the model value
+                    if (typeof this.onChange === 'function') {
+                        this.onChange(newHtml);
+                    }
+
+                    this.editor.setData(newHtml)
+                }
+            })
+        });
+    }
 }

@@ -58,6 +58,8 @@ class OutputTemplatesController
      */
     public function generateRelatedBulkPDF(Request $req, Response $res, array $args): Response
     {
+        ini_set('memory_limit', '512M');
+        
         $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
         $getParams = $req->getQueryParams();
         unset($getParams['sort']);
@@ -84,6 +86,8 @@ class OutputTemplatesController
      */
     public function generateBulkPDF(Request $req, Response $res, array $args): Response
     {
+        ini_set('memory_limit', '512M');
+
         $beanIds = $req->getParsedBody()['beanIds'];
 
         return $res->withJson([
