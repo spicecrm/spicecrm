@@ -115,7 +115,7 @@ export class ObjectActionRelatedOutputPdfModal {
             params.sort = JSON.stringify(this.relatedmodels.sortfield);
         }
 
-        this.backend.putRequest(`/module/OutputTemplates/${this.selectedTemplate}/formodule/${this.relatedmodels.module}/${this.relatedmodels.id}/related/${this.relatedmodels._linkName}/generateBulkPDF`, params).subscribe(res => {
+        this.backend.putRequest(`module/OutputTemplates/${this.selectedTemplate}/formodule/${this.relatedmodels.module}/${this.relatedmodels.id}/related/${this.relatedmodels._linkName}/generateBulkPDF`, params).subscribe(res => {
             this.base64content = res.content;
             this.renderPreview()
 

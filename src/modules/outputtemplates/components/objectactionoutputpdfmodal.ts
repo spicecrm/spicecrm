@@ -7,6 +7,8 @@ import {model} from '../../../services/model.service';
 import {backend} from "../../../services/backend.service";
 import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 import {helper} from "../../../services/helper.service";
+import {tap} from "rxjs/operators";
+import {Observable} from "rxjs";
 
 
 @Component({
@@ -35,7 +37,7 @@ export class ObjectActionOutputPdfModal {
     /**
      * Array of selected items (ID's) from the list view
      */
-    public selectedItems :any[] = []
+    public selectedItems: string[] = []
 
     /**
      * Url in charge of displaying the PDF in the UI
@@ -106,9 +108,14 @@ export class ObjectActionOutputPdfModal {
         }
     }
 
+    /**
+     * download all pages
+     */
     public downloadBulk() :void {
-        let fileName = `${this.modellist.module} PDF Export - ${this.numberOfItems} ${this.language.getLabel('LBL_OF')} ${this.totalItems}`;
-        this.helper.downloadFileInBrowser(this.base64content, 'application/pdf', fileName);
+        this.getPdfContent({beanIds: this.selectedItems}).subscribe(pdf => {
+            let fileName = `${this.modellist.module} PDF Export - ${this.numberOfItems} ${this.language.getLabel('LBL_OF')} ${this.totalItems}`;
+            this.helper.downloadFileInBrowser(pdf.content, 'application/pdf', fileName);
+        });
     }
 
     get selectedTemplate(): string {
@@ -121,18 +128,38 @@ export class ObjectActionOutputPdfModal {
     }
 
     public getTranslatedPdfContent() {
-        this.isLoading = true;
 
         let body = {
             beanIds: this.splitArray[this.currentIndex]
         }
 
-        this.backend.putRequest(`/module/OutputTemplates/${this.selectedTemplate}/formodule/${this.modellist.module}/generateBulkPDF`, {}, body).subscribe(pdf => {
-            this.base64content = pdf.content;
-            this.renderPreview();
+        this.getPdfContent(body).subscribe({
+            next: pdf => {
+                this.base64content = pdf.content;
+                this.renderPreview();
+            }
+        });
 
-            this.isLoading = false;
-        })
+    }
+
+    /**
+     * get the pdf content in base64 format
+     * @param body
+     * @private
+     */
+    private getPdfContent(body: {beanIds: string[]}): Observable<{content: string}> {
+
+        this.isLoading = true;
+
+        return this.backend.putRequest(`module/OutputTemplates/${this.selectedTemplate}/formodule/${this.modellist.module}/generateBulkPDF`, {}, body).pipe(tap({
+            next: () => {
+                this.isLoading = false;
+            },
+            error: () => {
+                this.isLoading = false;
+                this.model.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+            }
+        }));
     }
 
     public renderPreview() {

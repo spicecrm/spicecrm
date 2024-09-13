@@ -34,6 +34,7 @@ export class PackageLoader {
     public languages = [];
     public opencrs: boolean = false;
     public errorpackages: string[] = [];
+    public loadedPackages: string[] = [];
 
     constructor(
         public language: language,
@@ -108,11 +109,16 @@ export class PackageLoader {
                         this.languages.push(langpack);
                     }
 
+                    this.loadedPackages = [...res.loaded.packages];
+
+                    // this results in all packages that are loaded locally but not existing remotely
+                    this.errorpackages = res.loaded.packages;
+
                     for (let confpackage of res.packages) {
                         let instIndex = res.loaded.packages.indexOf(confpackage.package);
                         if (instIndex >= 0) {
                             confpackage.installed = true;
-                            res.loaded.packages.splice(instIndex, 1);
+                            this.errorpackages.splice(instIndex, 1);
                         } else {
                             confpackage.installed = false;
                         }
@@ -120,9 +126,6 @@ export class PackageLoader {
                     }
                     this.versions = res.versions;
                     this.opencrs = res.opencrs;
-
-                    // write the erroneous packages
-                    this.errorpackages = res.loaded.packages;
 
                 } catch (e) {
                     console.error(e);

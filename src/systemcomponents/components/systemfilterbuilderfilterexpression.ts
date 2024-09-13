@@ -18,6 +18,10 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
      * the module we are attaching this filter to
      */
     @Input() public module: string;
+    /**
+     * flag to display all fields
+     */
+    @Input() public displayAllFields: boolean = false;
 
     /**
      * the durrect set filter expression

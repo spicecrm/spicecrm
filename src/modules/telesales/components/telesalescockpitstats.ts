@@ -35,17 +35,18 @@ export class TeleSalesCockpitStats {
         let leftCount = 0;
         let thisCount = 0;
         //this.telecockpitservice.campaignTaskStats.forEach(s => {
-        for(let s of this.telecockpitservice.campaignTaskStats){
-            totalCount += parseInt(s.count, 10);
-            if(this.statSequence.indexOf(s.activity_type) < this.statSequence.indexOf(status)){
-                leftCount += parseInt(s.count, 10);
-            }
+        if(this.telecockpitservice && this.telecockpitservice.campaignTaskStats && this.telecockpitservice.campaignTaskStats.length > 0) {
+            for (let s of this.telecockpitservice.campaignTaskStats) {
+                totalCount += parseInt(s.count, 10);
+                if (this.statSequence.indexOf(s.activity_type) < this.statSequence.indexOf(status)) {
+                    leftCount += parseInt(s.count, 10);
+                }
 
-            if(s.activity_type == status){
-                thisCount = parseInt(s.count, 10);
+                if (s.activity_type == status) {
+                    thisCount = parseInt(s.count, 10);
+                }
             }
         }
-
         return {
             width: thisCount ? Math.round((thisCount / totalCount) * 100) + '%' : '0px',
             left: leftCount ? Math.round((leftCount / totalCount) * 100) + '%'  : '0px'
@@ -54,9 +55,11 @@ export class TeleSalesCockpitStats {
 
     get getTitle(){
         let title = '';
-        for(let s of this.statSequence){
-            let statrecord = this.telecockpitservice.campaignTaskStats.find(sr => sr.activity_type == s);
-            title += s + ': ' + (statrecord ? statrecord.count : 0) + '\n';
+        if(this.telecockpitservice && this.telecockpitservice.campaignTaskStats && this.telecockpitservice.campaignTaskStats.length > 0){
+            for(let s of this.statSequence){
+                let statrecord = this.telecockpitservice.campaignTaskStats.find(sr => sr.activity_type == s);
+                title += s + ': ' + (statrecord ? statrecord.count : 0) + '\n';
+            }
         }
         return title;
     }
