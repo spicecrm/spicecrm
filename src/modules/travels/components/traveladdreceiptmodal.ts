@@ -102,7 +102,7 @@ export class TravelAddReceiptModal implements AfterViewInit{
 
     public scan() {
         let loader = this.modal.await('LBL_PROCESSING');
-        this.backend.postRequest('common/mindee/scan/receipt', {}, {travel_id: this.model.id, filetype: 'image/jpeg', filedata: this.file, save: this.saveBean}).subscribe({
+        this.backend.postRequest('common/mindee/scan/receipt', {}, {parent_id: this.model.id, parent_type: this.model.module, filetype: 'image/jpeg', filedata: this.file, save: this.saveBean}).subscribe({
             next: (res) => {
 
                 // emit the bean data

@@ -22,14 +22,13 @@
         </div>
 
         <!-- remove current model Button -->
-        <!--
-        <button *ngIf="model.data.id" class="slds-button slds-button_icon slds-button_icon-border-filled" system-title="LBL_RESET_MODEL" [disabled]="loading" (click)="resetCurrentModel()">
+        <button *ngIf="!hideRelatedTravelData" class="slds-button slds-button_icon slds-button_icon-border-filled" system-title="LBL_RESET_MODEL" (click)="resetCurrentModel()">
             <system-button-icon size="small" icon="close"></system-button-icon>
         </button>
-        <button *ngIf="!model.data.id && !model.isLoading" class="slds-button slds-button_icon slds-button_icon-border-filled" system-title="LBL_ADD_RECEIPT" [disabled]="loading" (click)="resetCurrentModel()">
-            <system-button-icon size="small" icon="scan"></system-button-icon>
+        <!-- receipt scanner -->
+        <button *ngIf="hideRelatedTravelData" class="slds-button slds-button_icon slds-button_icon-border-filled" system-title="LBL_ADD_RECEIPT" (click)="resetCurrentModel()">
+            <travel-add-receipt-button [status]="'scanned'" [hideLabel]="true"></travel-add-receipt-button>
         </button>
-        -->
     </div>
 </div>
 
