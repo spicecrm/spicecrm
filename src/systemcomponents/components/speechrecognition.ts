@@ -38,8 +38,21 @@ export class SpeechRecognition implements OnInit {
     public pausing = false;
     public working = false;
 
+    /**
+     * emitter for fields that are using div elements as text areas (fieldRichText and fieldHtml)
+     */
     public divElementValue = new EventEmitter<any>()
-    public htmlElement :'div'|'textarea' = 'textarea';
+
+    /**
+     * field types that are using speachRecogntion functionality
+     * also needed to determine how to format the data
+     */
+    public typeOfField :'html'|'text'|'richText' = 'text';
+
+    /**
+     * needed when extracting the text content from the richText field type
+     */
+    public richTextEditorString :string;
 
     public languages = [{id: 'de_DE', name: 'Deutsch'}, {id: 'en_US', name: 'English'}];
     public selectedLanguage = 0;
@@ -67,12 +80,18 @@ export class SpeechRecognition implements OnInit {
 
         const element = this.textfield.element.nativeElement;
 
-        if(this.htmlElement === 'textarea') {
-            this.part1fromField = element.value.substring(0, element.selectionStart);
-            this.part2fromField = element.value.substring(element.selectionEnd);
-        } else {
-            this.part1fromField = element.textContent.substring(0, element.textContent.length);
-            this.part2fromField = element.textContent.substring(element.textContent.length);
+        switch (this.typeOfField) {
+            case 'text':
+                this.part1fromField = element.value.substring(0, element.selectionStart);
+                this.part2fromField = element.value.substring(element.selectionEnd);
+                break;
+            case "html":
+                this.part1fromField = element.textContent.substring(0, element.textContent.length);
+                this.part2fromField = element.textContent.substring(element.textContent.length);
+                break;
+            case "richText":
+                this.part1fromField = this.richTextEditorString.substring(0, this.richTextEditorString.length);
+                this.part2fromField = this.richTextEditorString.substring(this.richTextEditorString.length);
         }
 
         this.recognition.onresult = (speech) => {
@@ -188,7 +207,7 @@ export class SpeechRecognition implements OnInit {
 
         const element = this.textfield.element.nativeElement;
 
-        if(this.htmlElement === 'textarea') {
+        if(this.typeOfField === 'text') {
             element.value = this.part1fromField + this.theText + this.part2fromField;
         } else {
             element.textContent = this.part1fromField + this.theText + this.part2fromField;

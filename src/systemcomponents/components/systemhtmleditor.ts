@@ -649,7 +649,7 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
     public speechRecognitionStart() {
         this.modal.openModal('SpeechRecognition', false).subscribe(modal => {
             modal.instance.textfield = this.htmlEditor;
-            modal.instance.htmlElement = 'div';
+            modal.instance.typeOfField = 'html';
             modal.instance.divElementValue.subscribe({
                 next: (newHtml) => {
                     this._html = newHtml;
