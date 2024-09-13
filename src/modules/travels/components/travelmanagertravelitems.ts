@@ -107,8 +107,6 @@ export class TravelManagerTravelItems implements OnInit {
                     this.travelReceipts = [...response.travelData.receipts];
                     this.travelMileages = [...response.travelData.mileages];
 
-                    //this.allocateTravelData(this.travelData);
-
                     loadingRef.instance.self.destroy();
                     this.loading = false;
                 }, error: (err) => {
@@ -120,28 +118,4 @@ export class TravelManagerTravelItems implements OnInit {
         });
     }
 
-    /**
-     * allocates TravelMileages and TravelReceipts to a TravelSegment
-     * according to the date
-     * @private
-     */
-    private allocateTravelData(travelData: any) {
-
-        travelData.segments.forEach(segment => {
-            const mileages = travelData.mileages.filter((mileage: any) => mileage.date_start >= segment.date_start && mileage.date_end <= segment.date_end);
-            const receipts = travelData.receipts.filter((receipt: any) => receipt.receipt_date >= moment(segment.date_end).utc().format("YYYY-MM-DD") && receipt.receipt_date <= moment(segment.date_end).utc().format("YYYY-MM-DD"));
-
-            this.travelSegments = travelData.segments.map(segment => segment);
-
-            //this.travelSegments[0].push({segment: segment, mileages: mileages, receipts: receipts});
-        });
-
-        if(this.travelSegments.length > 0) {
-            this.travelMileages = travelData.mileages.filter(mileage => !this.travelSegments.includes(mileage));
-            this.travelReceipts = travelData.receipts.filter(receipt => !this.travelSegments.includes(receipt));
-        } else {
-            this.travelMileages = travelData.mileages;
-            this.travelReceipts = travelData.receipts;
-        }
-    }
 }

@@ -1,7 +1,6 @@
 <div class="slds-button-group">
-    <button class="slds-button slds-button--neutral" (click)="createTravelReceipt()">
-        <ng-container><system-button-icon *ngIf="view.size == 'small'; else receiptBiggerView" icon="money"></system-button-icon></ng-container>
-        <ng-template #receiptBiggerView><system-label label="LBL_ADD_TRAVEL_RECEIPT"/></ng-template>
+    <button class="slds-button slds-button--neutral">
+        <travel-add-receipt-button></travel-add-receipt-button>
     </button>
     <button class="slds-button slds-button--neutral" (click)="createTravelMileage()">
         <ng-container><system-button-icon *ngIf="view.size == 'small'; else mileageBiggerView" icon="travel_and_places"></system-button-icon></ng-container>
