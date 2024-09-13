@@ -1,36 +1,44 @@
-<div *ngIf="isCreating; else detailsContainer" class="slds-height_full slds-size--1-of-1">
-    <groupware-create-bean *ngIf="isCreating" [module]="selectedModule" (action$)="handleCreateAction()"/>
-</div>
-
-<ng-template #detailsContainer>
-    <div class="slds-page-header spice-sticky-top">
-        <div class="slds-page-header__row">
-            <div class="slds-page-header__col-title">
-                <div class="slds-media">
-                    <system-icon icon="dynamic_record_choice"></system-icon>
-                    <div class="slds-media__body">
-                        <div class="slds-page-header__name">
-                            <div class="slds-page-header__name-title">
-                                <h1>
-                                    <span class="slds-page-header__title slds-truncate"><system-label label="LBL_RECORDS"></system-label></span>
-                                </h1>
+@if (isCreating) {
+    <div class="slds-height_full slds-size--1-of-1 slds-scrollable--y">
+        <groupware-create-bean *ngIf="isCreating" [module]="selectedModule" (action$)="handleCreateAction()"/>
+    </div>
+}
+@else {
+    <div class="slds-grid slds-grid--vertical slds-height_full">
+        <div class="slds-page-header spice-sticky-top">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <system-icon icon="dynamic_record_choice"></system-icon>
+                        <div class="slds-media__body">
+                            <div class="slds-page-header__name">
+                                <div class="slds-page-header__name-title">
+                                    <h1>
+                                        <span class="slds-page-header__title slds-truncate"><system-label label="LBL_RECORDS"></system-label></span>
+                                    </h1>
+                                </div>
                             </div>
+                            <p class="slds-page-header__name-meta"><system-label [label]="loading ? 'LBL_SEARCHING' : 'LBL_SELECT'"></system-label></p>
                         </div>
-                        <p class="slds-page-header__name-meta"><system-label [label]="loading ? 'LBL_SEARCHING' : 'LBL_SELECT'"></system-label></p>
                     </div>
                 </div>
             </div>
         </div>
+        <div [system-overlay-loading-spinner]="loading" class="slds-scrollable--y slds-grow">
+            <div *ngIf="!loading && groupware.relatedBeans.length > 0" class="slds-p-around--x-small">
+                <groupware-detail-pane-bean *ngFor="let bean of groupware.relatedBeans" [bean]="bean" (selected)="selectBean($event)" style="cursor: pointer"></groupware-detail-pane-bean>
+            </div>
+            <div *ngIf="!loading && groupware.relatedBeans.length > 0" class="slds-grid slds-grid--align-center spice-sticky-bottom">
+                <button class="slds-button slds-button--icon slds-button--icon-large" (click)="create()" [disabled]="availableModules.length == 0" system-title="LBL_ADD">
+                    <system-button-icon icon="new"/>
+                </button>
+            </div>
+            <groupware-pane-no-beans-found *ngIf="groupware.relatedBeans.length == 0 && !loading" class="slds-align--absolute-center">
+                <button class="slds-button slds-button--icon slds-button--icon-large" (click)="create()" [disabled]="availableModules.length == 0" system-title="LBL_ADD">
+                    <system-button-icon icon="new"/>
+                </button>
+            </groupware-pane-no-beans-found>
+        </div>
     </div>
-    <div *ngIf="!loading" class="slds-p-around--x-small">
-        <groupware-detail-pane-bean *ngFor="let bean of groupware.relatedBeans" [bean]="bean" (selected)="selectBean($event)" style="cursor: pointer"></groupware-detail-pane-bean>
-    </div>
-    <groupware-pane-no-beans-found *ngIf="groupware.relatedBeans.length == 0 && !loading" class="slds-align--absolute-center" system-to-bottom-noscroll>
-        <button class="slds-button slds-button--icon slds-button--icon-large" (click)="create()" [disabled]="availableModules.length == 0" system-title="LBL_ADD">
-            <system-button-icon icon="new"/>
-        </button>
-    </groupware-pane-no-beans-found>
-    <div *ngIf="loading" class="slds-p-around--small slds-align--absolute-center">
-        <system-spinner></system-spinner>
-    </div>
-</ng-template>
+}
+

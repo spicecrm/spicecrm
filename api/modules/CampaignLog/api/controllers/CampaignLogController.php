@@ -4,6 +4,7 @@ namespace SpiceCRM\modules\CampaignLog\api\controllers;
 
 use SpiceCRM\data\BeanFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\TimeDate;
 
@@ -35,14 +36,24 @@ class CampaignLogController{
 
         $postParams = $req->getQueryParams();
 
+        $maxAttempts = 3;
+
         if ($campaignLog) {
+
+            // get CampaignTask
+            if(!empty($campaignLog->campaigntask_id)){
+                $campaignTask = BeanFactory::getBean('CampaignTasks', $campaignLog->campaigntask_id, ['relationships' => false]);
+                if($campaignTask && $campaignTask->telesales_max_attempts){
+                    $maxAttempts = $campaignTask->telesales_max_attempts;
+                }
+            }
 
             switch($status){
                 case 'attempted':
                     $campaignLog->planned_activity_date = $postParams['planned_activity_date'];
                     $campaignLog->hits += 1;
 
-                    if($campaignLog->hits >= 3){
+                    if($campaignLog->hits >= $maxAttempts){
                         $status = 'maxattempts';
                     }
 
@@ -56,16 +67,26 @@ class CampaignLogController{
                         $callAttempt->campaigntask_id = $campaignTask->id;
                         $callAttempt->save();
                     }
-
                     break;
+
                 case 'called':
                     $campaignLog->related_id = $postParams['call_id'];
                     $campaignLog->related_type = 'Calls';
                     $campaignLog->hits += 1;
                     $campaignLog->planned_activity_date = null;
                     break;
-            }
 
+                case 'completed':
+                    $campaignLog->hits += 1;
+                    $campaignLog->planned_activity_date = null;
+                    $campaignLog->outcome_id1 = $postParams['outcome_id1'];
+                    $campaignLog->outcome_id2 = $postParams['outcome_id2'];
+                    $campaignLog->outcome_id3 = $postParams['outcome_id3'];
+                    $campaignLog->outcome_id4 = $postParams['outcome_id4'];
+                    break;
+            }
+            if($campaignLog->isNew())
+                $campaignLog->assigned_user_id = AuthenticationController::getInstance()->getCurrentUser()->id;
             $campaignLog->activity_type = $status;
             $campaignLog->activity_date = $timedate->nowDb();
             $campaignLog->save();

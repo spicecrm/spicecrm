@@ -30,6 +30,8 @@ class SpiceBeanGuideRestHandler
 
             $bean = BeanFactory::getBean($guide['module']);
 
+            if (!$bean) continue;
+
             if (!$guides[$guide['module']]) $guides[$guide['module']] = [];
 
             $guides[$guide['module']][] = [
