@@ -129,8 +129,11 @@ export class TravelAddTravelModal implements OnInit {
      * closes and destroys the modal
      */
     public close() {
+        this.model.cancelEdit();
         this.view.isEditable = false;
         this.view.setViewMode();
+        this.responseSubject.next(false);
+        this.responseSubject.complete()
         this.self.destroy()
     }
 }

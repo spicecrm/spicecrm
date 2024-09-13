@@ -7,6 +7,8 @@ import {modal} from "../../../services/modal.service";
 import {toast} from "../../../services/toast.service";
 import {view} from "../../../services/view.service";
 import {TravelAddTravelModal} from "./traveladdtravelmodal";
+import {Router} from "@angular/router";
+import {navigation} from "../../../services/navigation.service";
 
 @Component({
     selector: 'travel-manager',
@@ -28,9 +30,14 @@ export class TravelManager implements OnInit {
     public futureTravels: any[] = [];
 
     /**
-     * weather data is being loaded
+     * weather buttons or data should be hidden
      */
-    public loading: boolean = false;
+    public hideRelatedTravelData: boolean = true;
+
+    /**
+     * weather add icon should be hidden
+     */
+    public hideAddButton: boolean = true;
 
     constructor(
         public model: model,
@@ -41,6 +48,7 @@ export class TravelManager implements OnInit {
         private toast: toast,
         public view: view,
         private injector: Injector,
+        private navigation: navigation
     ) {
         this.model.module = 'Travels';
         this.loadActiveUserTravels();
@@ -51,6 +59,15 @@ export class TravelManager implements OnInit {
             displayname: this.language.getLabel('LBL_TRAVEL_MANAGER'),
             displaymodule: 'Travels'
         });
+    }
+
+    /**
+     * set height for centering the button
+     */
+    public setHeight() {
+        return {
+            height: this.view.layout.screenwidth == 'small' && this.futureTravels.length == 0 ? '90%' : undefined
+        }
     }
 
     /**
@@ -67,16 +84,20 @@ export class TravelManager implements OnInit {
                     if (response.travels?.now) this.nowTravels = [...response.travels?.now];
                     if (response.travels?.future) this.futureTravels = [...response.travels?.future];
 
-                    if (this.nowTravels.length > 1) {
-                        this.futureTravels = this.nowTravels.concat(this.futureTravels);
-                    } else {
+                    if (this.nowTravels.length == 1) {
                         this.selectTravel(this.nowTravels[0]);
+                    } else {
+                        this.futureTravels = this.nowTravels.concat(this.futureTravels);
+                        this.hideAddButton = false;
                     }
 
                     loadingRef.instance.self.destroy();
                 }, error: (err) => {
+
                     loadingRef.instance.self.destroy();
-                    this.toast.sendToast(this.language.getLabel('LBL_ERR_LOADING_TRAVELS'), 'error', err);
+                    this.toast.sendToast(this.language.getLabel('LBL_ERR_LOADING_TRAVELS'), 'error', this.language.getLabel(err.error.error.message));
+
+                    this.navigation.closeObjectTab(this.navigationTab.objecttab.id);
                 }
             })
         });
@@ -87,9 +108,9 @@ export class TravelManager implements OnInit {
      * @param selectedTravel
      */
     public selectTravel(selectedTravel) {
-        this.model.isLoading = true;
-
         if (selectedTravel?.id) {
+            this.hideRelatedTravelData = false;
+            this.hideAddButton = true;
             this.model.id = selectedTravel.id;
             this.model.getData();
         }
@@ -104,8 +125,12 @@ export class TravelManager implements OnInit {
             // wait for modal to finish saving the Travel
             modalRef.instance.responseSubject.subscribe({
                 next: (resp) => {
-                    this.selectTravel(resp);
-                    this.nowTravels.push(resp);
+                    if(resp) {
+                        this.selectTravel(resp);
+                        this.nowTravels.push(resp);
+                    } else {
+                        this.resetCurrentModel()
+                    }
                 }
             })
         });
@@ -115,10 +140,9 @@ export class TravelManager implements OnInit {
      * resets the current model
      */
     public resetCurrentModel() {
-        this.loading = true;
+        this.hideRelatedTravelData = true;
+        this.hideAddButton = false;
         this.model.initialize();
         this.model.id = undefined;
-        this.loading = false;
-
     }
 }
