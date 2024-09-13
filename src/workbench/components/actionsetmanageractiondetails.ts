@@ -71,7 +71,7 @@ export class ActionsetManagerActionDetails implements OnChanges {
     }
 
     get configContainerComponentName() {
-        return this.action.component ?? this.standardActions.find(a => a.value == this.action.action).component;
+        return this.action.component ?? this.standardActions.find(a => a.value == this.action.action)?.component;
     }
 
     // get all system-components for the selected system-module
