@@ -261,7 +261,7 @@ export class FieldsetManager {
                     name: fieldsetItem.field,
                     index: index,
                     count: fieldsetItems.length,
-                    data: JSON.parse(JSON.stringify(fieldsetItem)),
+                    data: fieldsetItem,
                     parentScope: parentScope,
                     customModeGlobalField: customModeGlobalField
                 };
@@ -291,7 +291,7 @@ export class FieldsetManager {
                     name: this.metadata.getFieldsetName(fieldsetItem.fieldset),
                     index: index,
                     count: fieldsetItems.length,
-                    data: JSON.parse(JSON.stringify(fieldsetItem)),
+                    data: fieldsetItem,
                     parentScope: parentScope,
                     customModeGlobalField: customModeGlobalField
                 };

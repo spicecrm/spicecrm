@@ -25,7 +25,7 @@ class EventsController
         $body = $req->getParsedBody();
         $prospectListIds = $body['targetListIds'];
         $registrationData = $body['registrationData'];
-        $event = BeanFactory::getBean('Events', $body['eventId']);
+        $event = BeanFactory::getBean('Events', $args['id']);
         $existingEventRegistrations = $event->get_linked_beans('eventregistrations');
         $participants = [];
         foreach ($existingEventRegistrations as $existingEventRegistration){
@@ -58,14 +58,7 @@ class EventsController
                 if (!in_array($prospect->id, $participants)) {
                     // map personal data
                     $eventRegistration = BeanFactory::getBean('EventRegistrations');
-                    $eventRegistration->salutation = $prospect->salutation;
-                    $eventRegistration->first_name = $prospect->first_name;
-                    $eventRegistration->last_name = $prospect->last_name;
-                    $eventRegistration->parent_id = $prospect->id;
-                    $eventRegistration->parent_type = $prospect->_module;
-                    $eventRegistration->event_id = $body['eventId'];
-                    $eventRegistration->assigned_user_id = AuthenticationController::getInstance()->getCurrentUser()->id;
-                    // set additional values common to all registrations
+                    // set additional values common to all registrations first!
                     if(is_array($registrationData)){
                         foreach($registrationData as $property => $value){
                             if(!in_array($eventRegistration->field_defs[$property]['type'], ['link', 'linked', 'relate'])){
@@ -73,6 +66,16 @@ class EventsController
                             }
                         }
                     }
+
+                    $eventRegistration->salutation = $prospect->salutation;
+                    $eventRegistration->first_name = $prospect->first_name;
+                    $eventRegistration->last_name = $prospect->last_name;
+                    $eventRegistration->parent_id = $prospect->id;
+                    $eventRegistration->parent_type = $prospect->_module;
+                    $eventRegistration->event_id = $event->id;
+                    if(empty($eventRegistration->assigned_user_id))
+                        $eventRegistration->assigned_user_id = AuthenticationController::getInstance()->getCurrentUser()->id;
+
                     // save
                     $eventRegistration->save();
                     // update counter
