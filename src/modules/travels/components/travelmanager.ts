@@ -74,7 +74,9 @@ export class TravelManager implements OnInit {
      * retrieve travels for the Employee/logged-in User
      * @private
      */
-    private loadActiveUserTravels() {
+    private loadActiveUserTravels(autoselect = true) {
+        this.nowTravels = [];
+        this.futureTravels = [];
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_LOADING';
 
@@ -84,7 +86,7 @@ export class TravelManager implements OnInit {
                     if (response.travels?.now) this.nowTravels = [...response.travels?.now];
                     if (response.travels?.future) this.futureTravels = [...response.travels?.future];
 
-                    if (this.nowTravels.length == 1) {
+                    if (autoselect && this.nowTravels.length == 1) {
                         this.selectTravel(this.nowTravels[0]);
                     } else {
                         this.futureTravels = this.nowTravels.concat(this.futureTravels);
@@ -144,5 +146,6 @@ export class TravelManager implements OnInit {
         this.hideAddButton = false;
         this.model.initialize();
         this.model.id = undefined;
+        this.loadActiveUserTravels(false);
     }
 }
