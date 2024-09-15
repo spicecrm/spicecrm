@@ -140,7 +140,16 @@ export class metadata {
      */
     public addRoutes() {
 
-        this.routes.forEach(route => {
+        // reset all rouites
+        this.router.config.forEach((r, i) => {
+            if(r.component && r.component.name == 'SystemNavigationCollector'){
+                this.router.config.splice(i, 1);
+            }
+        })
+
+        this.routes.sort((a, b) => {
+            return a.path.split(':').length > b.path.split(':').length ? -1 : 1;
+        }).forEach(route => {
             this.router.config.unshift({
                 path: route.path,
                 component: SystemNavigationCollector,
