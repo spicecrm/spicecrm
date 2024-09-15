@@ -53,9 +53,10 @@ export class TravelAddReceiptButton {
                             // initialize model in modal before setting model.data object
                             componentref.instance.model.initialize();
 
+                            // populate the model
                             componentref.instance.model.id = resp.id;
-                            componentref.instance.model.data = resp;
-                            componentref.instance.model.data.receipt_status = this.status;
+                            componentref.instance.model.data = this.model.utils.backendModel2spice('TravelReceipts', resp);
+                            componentref.instance.model.setField('receipt_status', this.status)
                         });
                     }
                 }, error: (err) => {
