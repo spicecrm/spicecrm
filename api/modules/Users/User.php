@@ -342,12 +342,10 @@ class User extends Person
      */
     public function getPrimaryOrgUnit(){
         if($this->parent_id && !empty($this->parent_type)){
-            $parent = BeanFactory::getBean($this->parent_type, $this->parent_id);
-            if($parent && method_exists($parent, 'getPrimaryOrgUnit')){
-                $primaryOrgUnit = $parent->getPrimaryOrgUnit();
-                if($primaryOrgUnit){
-                    $this->orgunit_id = $primaryOrgUnit->id;
-                    $this->orgunit_name = $primaryOrgUnit->name;
+            if($orgUnits = $this->get_linked_beans('orgunitprimary')){ // should be only 1
+                foreach($orgUnits as $orgUnit){
+                    $this->orgunit_id = $orgUnit->id;
+                    $this->orgunit_name = $orgUnit->name;
                 }
             }
         }
