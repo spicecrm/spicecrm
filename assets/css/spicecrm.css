@@ -190,10 +190,15 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     height: 100%;
 }
 
-/* strombo: ??? really necessary? slds-is-absolute already exists */
+/* helper styles for absolute elements */
 .slds-is-absolute__top {
     position: absolute;
     top: 0;
+}
+
+.slds-is-absolute__bottom {
+    position: absolute;
+    bottom: 0;
 }
 
 /* for illustrations */
