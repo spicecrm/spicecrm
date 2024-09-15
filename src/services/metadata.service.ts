@@ -1491,7 +1491,6 @@ export class metadata {
     public getFieldTypeComponent(fieldtype) {
         return this.fieldTypeMappings[fieldtype];
     }
-
     /**
      * returns the details for a given route
      * @param route
@@ -1526,8 +1525,24 @@ export class metadata {
     * for the route handling
      */
 
+    /**
+     * returns S,M or L for the screen size
+     *
+     * @private
+     */
+    private getScreenSize(){
+        let w = window.innerWidth;
+        if(w <= 640) return 'S';
+        if(w <= 1024) return 'M';
+        return 'L';
+    }
+
     public getRouteComponent(route) {
-        return this.routes ? this.routes.find(routeDetails => {
+        // check that we have routes
+        if(!this.routes) return false;
+
+        // find the route
+        let r = this.routes.find(routeDetails => {
             if (routeDetails.path == route) {
                 return true;
             } else if (route.split("/").length == routeDetails.path.split("/").length) {
@@ -1547,7 +1562,20 @@ export class metadata {
                     return true;
                 }
             }
-        })?.component : false;
+        });
+
+        // check that we have a record
+        if(!r) return false;
+
+        // return the proper component for the Screensize
+        switch(this.getScreenSize()){
+            case 'S':
+                return r.component_small ? r.component_small : r.component;
+            case 'M':
+                return r.component_mdeium ? r.component_medium : r.component;
+            default:
+                return r.component;
+        }
     }
 
     /*
