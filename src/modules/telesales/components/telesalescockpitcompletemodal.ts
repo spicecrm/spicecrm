@@ -65,9 +65,8 @@ export class TeleSalesCockpitCompleteModal implements OnInit {
         this.model.id = this.selectedListItem.id;
         this.model.getData().subscribe({
             next: (res) => {
-                this.model.startEdit(false);
+                this.model.startEdit();
                 this.model.setFields({
-                    hits: parseInt(this.selectedListItem.hits) + 1,
                     activity_type: 'completed',
                     activity_date: new moment(),
                 });
