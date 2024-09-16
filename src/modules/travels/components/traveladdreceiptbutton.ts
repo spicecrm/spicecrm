@@ -37,33 +37,7 @@ export class TravelAddReceiptButton {
      * creates a TravelReceipt Bean
      */
     public execute() {
-        this.modal.openModal("TravelAddReceiptModal", true, this.injector).subscribe(modalRef => {
-            modalRef.instance.showToolBars = false;
-            modalRef.instance.saveBean = false;
-
-            // wait for scanner to finish mapping fields
-            modalRef.instance.beanData.subscribe({
-                next: async (resp: any) => {
-                    if(resp) {
-                        this.modal.openModal("TravelAddManualTravelReceiptModal", true, this.injector).subscribe(componentref => {
-
-                            // don't set parent module if we are only scanning
-                            if(this.model.id == '' || this.model.id == undefined) componentref.instance.parent = undefined;
-
-                            // initialize model in modal before setting model.data object
-                            componentref.instance.model.initialize();
-
-                            // populate the model
-                            componentref.instance.model.id = resp.id;
-                            componentref.instance.model.data = this.model.utils.backendModel2spice('TravelReceipts', resp);
-                            componentref.instance.model.setField('receipt_status', this.status)
-                        });
-                    }
-                }, error: (err) => {
-                    this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error', err.message);
-                }
-            })
-        });
+        this.modal.openModal("TravelAddManualTravelReceiptModal", true, this.injector);
     }
 
     /**

@@ -1,4 +1,4 @@
-import {Component, ComponentRef, OnInit, SkipSelf} from '@angular/core';
+import {Component, ComponentRef, Injector, OnInit, SkipSelf} from '@angular/core';
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
 import {metadata} from "../../../services/metadata.service";
@@ -45,20 +45,23 @@ export class TravelAddManualTravelReceiptModal implements OnInit {
         public view: view,
         private userpreferences: userpreferences,
         private toast: toast,
-        private language: language
+        private language: language,
+        public injector: Injector
     ) {
         this.model.module = 'TravelReceipts';
         this.loadConfig();
     }
 
     ngOnInit() {
+        this.model.module = 'TravelReceipts';
+        this.model.initialize(this.parent);
+
         // set the model to editing
         this.model.startEdit(false);
         this.view.isEditable = true;
         this.view.setEditMode();
 
         this.setFields()
-
     }
 
     /**
@@ -103,6 +106,35 @@ export class TravelAddManualTravelReceiptModal implements OnInit {
                 isSaving.complete();
                 this.close();
             }
+        });
+    }
+
+    public capture(){
+        this.modal.openModal("TravelAddReceiptModal", true, this.injector).subscribe(modalRef => {
+            modalRef.instance.showToolBars = false;
+            modalRef.instance.saveBean = false;
+
+            // wait for scanner to finish mapping fields
+            modalRef.instance.beanData.subscribe({
+                next: (resp) => {
+                    // populate the model
+                    let modeldata = this.model.utils.backendModel2spice('TravelReceipts', resp);
+                    this.model.setFields({
+                        name: modeldata.name,
+                        receipt_date: modeldata.receipt_date,
+                        amount: modeldata.amount,
+                        currency_id: modeldata.currency_id,
+                        lineitems: modeldata.lineitems,
+                        taxdetails: modeldata.taxdetails,
+                        rawdata: modeldata.rawdata,
+                        file_name: modeldata.file_name,
+                        file_mime_type: modeldata.file_mime_type,
+                        file_md5: modeldata.file_md5
+                    })
+                }, error: (err) => {
+                    this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error', err.message);
+                }
+            })
         });
     }
 
