@@ -180,6 +180,15 @@ class RESTManager
             $route['extension'] = $extension;
             $route['custom']    = $this->isCustomExtension;
             $this->routes[$route['method'].':'.$route['route']] = $route;
+            // check on aliases
+            if(isset($route['aliases']) && !empty($route['aliases'])){
+                foreach($route['aliases'] as $alias){
+                    $routeAlias = $route;
+                    $routeAlias['route'] = $alias;
+                    unset($routeAlias['aliases']);
+                    $this->routes[$route['method'].':'.$alias] = $routeAlias;
+                }
+            }
         }
     }
 
