@@ -89,7 +89,7 @@ export class TravelAddTravelMileageModal implements OnInit {
      */
     public save() {
 
-        if (this.checkDateValid()) {
+        if (this.checkDateValid() && this.model.validate()) {
 
             const isSaving = this.modal.await('LBL_SAVING_DATA');
 
