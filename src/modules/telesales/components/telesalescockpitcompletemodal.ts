@@ -61,15 +61,18 @@ export class TeleSalesCockpitCompleteModal implements OnInit {
      * initilizes the model
      */
     public initializeModel() {
-        this.model.initialize();
         this.model.module = 'CampaignLog';
         this.model.id = this.selectedListItem.id;
-        this.model.startEdit(false);
-        this.model.setData({
-            hits: parseInt(this.selectedListItem.hits) + 1,
-            activity_type: 'completed',
-            activity_date: new moment(),
-        }, false);
+        this.model.getData().subscribe({
+            next: (res) => {
+                this.model.startEdit(false);
+                this.model.setFields({
+                    hits: parseInt(this.selectedListItem.hits) + 1,
+                    activity_type: 'completed',
+                    activity_date: new moment(),
+                });
+            }
+        });
     }
 
     public loadFieldset() {
