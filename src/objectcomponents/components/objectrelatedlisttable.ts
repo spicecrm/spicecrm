@@ -134,7 +134,7 @@ export class ObjectRelatedlistTable implements OnInit {
      * set fix column width if we've got a single/icon button
      */
     public getButtonColumnStyle(): string {
-        return this.singlebutton ? 'slds-size_1-of-6' : 'slds-size_1-of-12';
+        return this.singlebutton ? 'slds-cell-shrink' : 'slds-cell-shrink';
     }
 
     public isSortable(field): boolean {
