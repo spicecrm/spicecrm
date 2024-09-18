@@ -94,12 +94,12 @@ class SpiceBeanGuideRestHandler
         if (empty($sysTextId)) return [];
 
         $db = DBManagerFactory::getInstance();
-        $texts = $db->fetchAll("SELECT text_language, name FROM spicetexts WHERE parent_id = '$stageId' AND parent_type = 'SpiceBeanGuideStages' AND text_id = '$sysTextId'") ?: [];
+        $texts = $db->fetchAll("SELECT text_language, description FROM spicetexts WHERE parent_id = '$stageId' AND parent_type = 'SpiceBeanGuideStages' AND text_id = '$sysTextId'") ?: [];
 
         $textsByLanguage = [];
 
         foreach ($texts as $text) {
-            $textsByLanguage[$text['text_language']] = $text['name'];
+            $textsByLanguage[$text['text_language']] = $text['description'];
         }
 
         return $textsByLanguage;
