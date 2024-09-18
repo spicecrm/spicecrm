@@ -380,9 +380,9 @@ class SpiceDictionaryController
             $rightId = $rel['rhs_sysdictionarydefinition_id'];
 
             # if one of the sides is a template, set the side id as the reference dictionary id
-            if (!empty($leftId) && (new SpiceDictionaryDefinition($rel['lhs_sysdictionarydefinition_id']))->type == 'template') {
+            if (!empty($leftId) && (new SpiceDictionaryDefinition($rel['lhs_sysdictionarydefinition_id'], false))?->type == 'template') {
                 $leftId = $rel['referencing_sysdictionarydefinition_id'];
-            } else if (!empty($rightId) && (new SpiceDictionaryDefinition($rel['rhs_sysdictionarydefinition_id']))->type == 'template') {
+            } else if (!empty($rightId) && (new SpiceDictionaryDefinition($rel['rhs_sysdictionarydefinition_id'], false))?->type == 'template') {
                 $rightId = $rel['referencing_sysdictionarydefinition_id'];
             }
 
