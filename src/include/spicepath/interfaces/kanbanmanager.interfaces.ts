@@ -47,7 +47,7 @@ export interface SpiceBeanGuideCheckI {
 
 export interface SpiceTextsI {
     id: string;
-    name: string;
+    description: string;
     parent_id: string;
     parent_type: string;
     text_id: string;

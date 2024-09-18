@@ -102,7 +102,7 @@ export class SpiceKanbanManagerDetails implements OnInit {
 
         return {
             id: this.utils.generateGuid(),
-            name: '',
+            description: '',
             parent_id: this._selectedStage.id,
             parent_type: 'SpiceBeanGuideStages',
             text_id: this.kanban.selectedBeanGuide.systextid,
