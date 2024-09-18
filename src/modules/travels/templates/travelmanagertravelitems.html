@@ -58,7 +58,7 @@
                 <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-text-align--right slds-truncate"><system-label label="LBL_AMOUNT"/></div>
             </div>
             @for (travelMileage of travelMileages; track travelMileage.id;) {
-                <div class="slds-grid slds-wrap slds-medium-nowrap slds-p-horizontal--x-small slds-p-vertical--xx-small slds-border--bottom slds-size--1-of-1" (click)="openItem('TravelMileages',travelMileages.id)">
+                <div class="slds-grid slds-wrap slds-medium-nowrap slds-p-horizontal--x-small slds-p-vertical--xx-small slds-border--bottom slds-size--1-of-1" (click)="openItem('TravelMileages',travelMileage.id)">
                     <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-truncate">
                         <system-display-datetime [date]="travelMileage.date_start" [displayTime]="false"/>
                     </div>
