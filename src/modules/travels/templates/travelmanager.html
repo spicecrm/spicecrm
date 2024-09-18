@@ -29,21 +29,21 @@
 <!-- add new Travel or select a Travel from list -->
 @if (!model.id) {
     <div system-to-bottom marginBottom="50">
-        @for (futureTravel of futureTravels; track futureTravel.id; ) {
-            <div class="slds-box slds-box--border slds-m-around--small slds-theme--info" (click)="selectTravel(futureTravel)">
+        @for (travel of travels; track travel.id; ) {
+            <div class="slds-box slds-box--border slds-m-around--small slds-theme--info" (click)="selectTravel(travel)">
                 <div class="slds-p-around--x-small">
-                    <div class="slds-text-heading--small">{{ futureTravel.name }}</div>
+                    <div class="slds-text-heading--small">{{ travel.name }}</div>
                     <div class="slds-grid">
-                        <system-display-datetime [date]="futureTravel.date_start" [displayTime]="false"/>
+                        <system-display-datetime [date]="travel.date_start" [displayTime]="false"/>
                         <div> -</div>
-                        <system-display-datetime [date]="futureTravel.date_end" [displayTime]="false"/>
+                        <system-display-datetime [date]="travel.date_end" [displayTime]="false"/>
                     </div>
                 </div>
             </div>
         }
     </div>
 } @else {
-    <travel-manager-travel-items *ngIf="!hideRelatedTravelData && model.id" [selectedTravel]="model.id"/>
+    <travel-manager-travel-items [selectedTravel]="model.id"/>
 }
 
 <!-- page header details -->

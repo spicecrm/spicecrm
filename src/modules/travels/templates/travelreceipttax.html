@@ -1,4 +1,4 @@
-<system-collapsable-tab title="LBL_TAX">
+<system-collapsable-tab *ngIf="lineItems.length>0" title="LBL_TAX" [collapsible]="false">
         <table class="slds-table slds-table--fixed-layout slds-table_bordered slds-box--border slds-table--col-bordered slds-table--striped">
             <thead>
                 <tr class="slds-line-height_reset">
