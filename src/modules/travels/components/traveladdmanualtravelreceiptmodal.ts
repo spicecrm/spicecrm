@@ -77,7 +77,8 @@ export class TravelAddManualTravelReceiptModal implements OnInit {
      */
     public setFields() {
         this.model.setFields({
-            receipt_date: moment(this.model.data.receipt_date),
+            receipt_date: moment(),
+            receipt_status: 'new',
             employee_id: this.userpreferences.session.authData.user.parent_id,
             employee_name: this.userpreferences.session.authData.user.parent_name,
             parent_id: this.parent?.data.id,
@@ -93,7 +94,7 @@ export class TravelAddManualTravelReceiptModal implements OnInit {
 
         this.model.save(true).subscribe({
             next: res => {
-                this.receiptResponseSubject.next(this.model.data);
+                this.receiptResponseSubject.next(this.model.utils.backendModel2spice('TravelReceipts', res));
                 this.receiptResponseSubject.complete()
                 isSaving.next(true);
                 isSaving.complete();

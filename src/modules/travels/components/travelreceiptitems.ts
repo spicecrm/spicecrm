@@ -17,7 +17,7 @@ export class TravelReceiptItems {
     }
 
     get lineItems(){
-        return this.model.getField('lineitems');
+        return this.model.getField('lineitems') ?? [];
     }
 
 }

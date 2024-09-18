@@ -40,21 +40,5 @@ export class TravelAddReceiptButton {
         this.modal.openModal("TravelAddManualTravelReceiptModal", true, this.injector);
     }
 
-    /**
-     *
-     */
-    public execute_bak() {
-        this.modal.openModal("SystemUploadImage").subscribe(componentref => {
-            componentref.instance.cropheight = 300;
-            componentref.instance.cropwidth = 300;
-            componentref.instance.croptype = 'square';
-            componentref.instance.cropresize = true;
-            componentref.instance.imagedata.subscribe(image => {
-                if (image !== false) {
-                }
-            });
-        });
-    }
-
 }
 

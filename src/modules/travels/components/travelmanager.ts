@@ -22,22 +22,8 @@ export class TravelManager implements OnInit {
      * holds travels happening
      * between today and end date of the Travel
      */
-    public nowTravels: any[] = [];
+    public travels: any[] = [];
 
-    /**
-     * holds travels in the future
-     */
-    public futureTravels: any[] = [];
-
-    /**
-     * weather buttons or data should be hidden
-     */
-    public hideRelatedTravelData: boolean = true;
-
-    /**
-     * weather add icon should be hidden
-     */
-    public hideAddButton: boolean = true;
 
     constructor(
         public model: model,
@@ -60,37 +46,22 @@ export class TravelManager implements OnInit {
             displaymodule: 'Travels'
         });
     }
-
-    /**
-     * set height for centering the button
-     */
-    public setHeight() {
-        return {
-            height: this.view.layout.screenwidth == 'small' && this.futureTravels.length == 0 ? '90%' : undefined
-        }
-    }
-
     /**
      * retrieve travels for the Employee/logged-in User
      * @private
      */
     private loadActiveUserTravels(autoselect = true) {
-        this.nowTravels = [];
-        this.futureTravels = [];
+        this.travels = [];
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_LOADING';
 
             this.backend.getRequest(`module/Travels/load`).subscribe({
                 next: (response) => {
 
-                    if (response.travels?.now) this.nowTravels = [...response.travels?.now];
-                    if (response.travels?.future) this.futureTravels = [...response.travels?.future];
+                    this.travels = response;
 
-                    if (autoselect && this.nowTravels.length == 1) {
-                        this.selectTravel(this.nowTravels[0]);
-                    } else {
-                        this.futureTravels = this.nowTravels.concat(this.futureTravels);
-                        this.hideAddButton = false;
+                    if (autoselect && this.travels.length == 1) {
+                        this.selectTravel(this.travels[0]);
                     }
 
                     loadingRef.instance.self.destroy();
@@ -111,8 +82,6 @@ export class TravelManager implements OnInit {
      */
     public selectTravel(selectedTravel) {
         if (selectedTravel?.id) {
-            this.hideRelatedTravelData = false;
-            this.hideAddButton = true;
             this.model.id = selectedTravel.id;
             this.model.getData();
         }
@@ -129,7 +98,7 @@ export class TravelManager implements OnInit {
                 next: (resp) => {
                     if(resp) {
                         this.selectTravel(resp);
-                        this.nowTravels.push(resp);
+                        this.travels.push(resp);
                     } else {
                         this.resetCurrentModel()
                     }
@@ -142,8 +111,6 @@ export class TravelManager implements OnInit {
      * resets the current model
      */
     public resetCurrentModel() {
-        this.hideRelatedTravelData = true;
-        this.hideAddButton = false;
         this.model.initialize();
         this.model.id = undefined;
         this.loadActiveUserTravels(false);

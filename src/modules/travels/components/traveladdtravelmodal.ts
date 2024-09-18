@@ -9,14 +9,15 @@ import {Subject} from "rxjs";
 
 @Component({
     selector: 'travel-add-travel-modal',
-    templateUrl: '../templates/traveladdtravelmodal.html'
+    templateUrl: '../templates/traveladdtravelmodal.html',
+    providers: [model, view]
 })
 
 /**
  * configurable modal
  * where you can create a new Travel Bean
  */
-export class TravelAddTravelModal implements OnInit {
+export class TravelAddTravelModal {
 
     /**
      * holds self instance of the modal
@@ -28,30 +29,6 @@ export class TravelAddTravelModal implements OnInit {
      * */
     public fieldset: string = '';
 
-    /**
-     * holds the current date
-     */
-    public currentDate: any = moment();
-
-    /**
-     * holds the end date
-     */
-
-    public endDate: any = moment();
-    /**
-     * holds the start date
-     */
-    public startDate: any = moment();
-
-    /**
-     * holds the start hour from user preferences
-     */
-
-    public startHour: number = 0;
-    /**
-     * holds the end hour from user preferences
-     */
-    public endHour: number = 23;
 
     /**
      * observable subject
@@ -65,16 +42,20 @@ export class TravelAddTravelModal implements OnInit {
         public view: view,
         private userpreferences: userpreferences
     ) {
-        this.loadConfig();
-    }
+        // set the view
+        this.view.isEditable = true;
+        this.view.setEditMode();
 
-    ngOnInit() {
+        // set the module
+        this.model.module = 'Travels';
         this.model.initialize();
         this.model.startEdit(false);
         this.setFields()
-        this.view.isEditable = true;
-        this.view.setEditMode();
+
+        // load the config for the dialog
+        this.loadConfig();
     }
+
 
     /**
      * set pre-defined values for specific fields
@@ -87,8 +68,7 @@ export class TravelAddTravelModal implements OnInit {
 
             // fill out the rest of the fields
             employee_id: this.userpreferences.session.authData.user.parent_id,
-            employee_name: this.userpreferences.session.authData.user.parent_name,
-            currency_id: this.userpreferences.toUse.currency
+            employee_name: this.userpreferences.session.authData.user.parent_name
         })
 
     }
