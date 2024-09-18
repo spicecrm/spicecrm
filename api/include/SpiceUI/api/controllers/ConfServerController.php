@@ -107,6 +107,7 @@ class ConfServerController
             'sysdictionaryindexitems',
             'sysdictionaryitems',
             'sysdictionaryrelationshipfields',
+            'sysdictionaryrelationshippolymorphs',
             'sysdictionaryrelationshiprelatefields',
             'sysdictionaryrelationships',
             'sysdictionaryrelationshiptypes',
