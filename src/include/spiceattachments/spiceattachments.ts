@@ -22,6 +22,7 @@ import {fieldSpiceAttachmentsCount} from "./fields/fieldspiceattachmentscount";
 import {SpiceAttachmentsEditModal} from "./components/spiceattachmentseditmodal";
 import {SpiceAttachmentStats} from "./components/spiceattachmentstats";
 import {fieldModelAttachment} from "./fields/fieldmodelattachment";
+import {fieldModelAttachmentPreview} from "./fields/fieldmodelattachmentpreview";
 import {SpiceAttachmentsContainer} from "./components/spiceattachmentscontainer";
 import {SpiceAttachmentAddFromRecordModal} from "./components/spiceattachmentaddfromrecordmodal";
 
@@ -51,6 +52,7 @@ import {SpiceAttachmentAddFromRecordModal} from "./components/spiceattachmentadd
         SpiceAttachmentsEditModal,
         SpiceAttachmentStats,
         fieldModelAttachment,
+        fieldModelAttachmentPreview,
         SpiceAttachmentsContainer,
         SpiceAttachmentAddFromRecordModal
     ]
