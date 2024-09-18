@@ -7,6 +7,8 @@ import {language} from "../../../services/language.service";
 import moment from "moment";
 import {broadcast} from "../../../services/broadcast.service";
 import {Subscription} from "rxjs";
+import {Router} from "@angular/router";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 @Component({
     selector: 'travel-manager-travel-items',
@@ -51,7 +53,9 @@ export class TravelManagerTravelItems implements OnInit {
         private backend: backend,
         private toast: toast,
         private language: language,
-        public broadcast: broadcast
+        public broadcast: broadcast,
+        public router: Router,
+        public navigationtab: navigationtab
     ) {
         this.subscriptions.add(
             this.broadcast.message$.subscribe(message => {
@@ -118,6 +122,14 @@ export class TravelManagerTravelItems implements OnInit {
                 }
             })
         });
+    }
+
+    public openItem(module, id){
+        let objectlink = "/module/" + module + "/" + id;
+        // if we have a tabid and it is not th emain tab add it
+        if (this.navigationtab?.tabid) objectlink = '/tab/' + this.navigationtab?.tabid + '/' + objectlink;
+        // navigate to the route
+        this.router.navigate([objectlink]);
     }
 
 }
