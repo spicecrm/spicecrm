@@ -88,7 +88,7 @@ export class TravelManagerTravelItems implements OnInit {
                 // manipulate data in frontend due to issues with moment on date fields
                 const data = this.backend.modelutilities.spiceModel2backend(message.messagedata.module, JSON.parse(JSON.stringify(message.messagedata.data)))
 
-                if(message.messagedata.module == 'TravelReceipts' && data.travel_id == this.model.id) this.travelReceipts.push(data);
+                if(message.messagedata.module == 'TravelReceipts' && data.parent_id == this.model.id) this.travelReceipts.push(data);
                 if(message.messagedata.module == 'TravelSegments' && data.travel_id == this.model.id) this.travelSegments.push(data);
                 if(message.messagedata.module == 'TravelMileages' && data.travel_id == this.model.id) this.travelMileages.push(data);
                 break;
