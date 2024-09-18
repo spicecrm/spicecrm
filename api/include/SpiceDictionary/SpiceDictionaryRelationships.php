@@ -141,7 +141,11 @@ class SpiceDictionaryRelationships
         // build a where filter clause
         $whereArray = [];
         if($sysdictionaryDefinitonId){
-            $whereArray[] = "(lhs_sysdictionarydefinition_id='{$sysdictionaryDefinitonId}' OR rhs_sysdictionarydefinition_id='{$sysdictionaryDefinitonId}')";
+            $idWhere = "lhs_sysdictionarydefinition_id='{$sysdictionaryDefinitonId}' OR rhs_sysdictionarydefinition_id='{$sysdictionaryDefinitonId}'";
+            # include polymorph relationship for provided dictionary
+            $idWhere .= " OR exists (SELECT id FROM sysdictionaryrelationshippolymorphs WHERE rel.id = relationship_id AND lhs_sysdictionarydefinition_id = '$sysdictionaryDefinitonId')";
+            $idWhere .= " OR exists (SELECT id FROM syscustomdictionaryrelationshippolymorphs WHERE rel.id = relationship_id AND lhs_sysdictionarydefinition_id = '$sysdictionaryDefinitonId')";
+            $whereArray[] = "($idWhere)";
         }
         if(is_array($statusFilter) && count($statusFilter) > 0){
             $whereArray[] = "status IN ('".implode("','", $statusFilter)."')";
@@ -150,11 +154,11 @@ class SpiceDictionaryRelationships
 
         // build the items
         $relationshipsArray = [];
-        $dictionaryrelationships = $db->query("SELECT *, 'g' scope FROM sysdictionaryrelationships {$whereClause}");
+        $dictionaryrelationships = $db->query("SELECT *, 'g' scope FROM sysdictionaryrelationships rel {$whereClause}");
         while($dictionaryrelationship = $db->fetchByAssoc($dictionaryrelationships)){
             $relationshipsArray[] = $dictionaryrelationship;
         }
-        $dictionaryrelationships = $db->query("SELECT *, 'c' scope FROM syscustomdictionaryrelationships {$whereClause}");
+        $dictionaryrelationships = $db->query("SELECT *, 'c' scope FROM syscustomdictionaryrelationships rel {$whereClause}");
         while($dictionaryrelationship = $db->fetchByAssoc($dictionaryrelationships)){
             $relationshipsArray[] = $dictionaryrelationship;
         }
