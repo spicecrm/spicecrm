@@ -76,7 +76,7 @@ export class fieldModelAttachment extends fieldGeneric {
      * returns the mime type
      */
     get mime_type() {
-        return this.model.getFieldValue(this.prefix + '_mime_type');
+        return this.model.getFieldValue(this.fieldname + '_mime_type');
     }
 
     /**
@@ -85,6 +85,7 @@ export class fieldModelAttachment extends fieldGeneric {
      * the method extracts the prefix without the '_' so file_name will return file
      */
     get prefix() {
+        return this.fieldname;
         // legacy handling supporting the module where the fieldname is still filename
         // and it is one file
         if (this.fieldname == 'filename') {
@@ -95,6 +96,10 @@ export class fieldModelAttachment extends fieldGeneric {
         return this.fieldname.substring(0, this.fieldname.length - 5);
     }
 
+    get filename(){
+        return this.model.getField(this.fieldname + '_name');
+    }
+
     /**
      * a specific kethod to retrieve the attachment for a bean
      * also handles legacy methods where the file is stored with the bean id and not the MD5 in the backend
@@ -102,16 +107,16 @@ export class fieldModelAttachment extends fieldGeneric {
     public getAttachment(): Observable<any> {
         let retSubject = new Subject();
         // somewhat ugly logic to get the prefix from the field .. it has to end with name
-        this.backend.getRequest(`common/spiceattachments/module/${this.model.module}/${this.model.id}/byfield/${this.prefix}`).subscribe(
-            fileData => {
+        this.backend.getRequest(`common/spiceattachments/module/${this.model.module}/${this.model.id}/byfield/${this.fieldname}`).subscribe({
+            next: (fileData) => {
                 retSubject.next(fileData.file);
                 retSubject.complete();
             },
-            err => {
+            error: (err) => {
                 retSubject.error(err);
                 retSubject.complete();
             }
-        );
+        });
 
         return retSubject.asObservable();
     }
@@ -133,14 +138,14 @@ export class fieldModelAttachment extends fieldGeneric {
                     this.modal.openModal('SystemImagePreviewModal').subscribe(modalref => {
                         modalref.instance.imgname = this.value;
                         modalref.instance.imgtype = this.mime_type.toLowerCase();
-                        this.getAttachment().subscribe(
-                            file => {
+                        this.getAttachment().subscribe({
+                            next: (file) => {
                                 modalref.instance.imgsrc = 'data:' + this.mime_type.toLowerCase() + ';base64,' + file;
                             },
-                            err => {
+                            error: (err) => {
                                 modalref.instance.loadingerror = true;
                             }
-                        );
+                        });
                     });
                     break;
                 case 'text':
@@ -149,14 +154,14 @@ export class fieldModelAttachment extends fieldGeneric {
                     this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
                         modalref.instance.name = this.value;
                         modalref.instance.type = this.mime_type.toLowerCase();
-                        this.getAttachment().subscribe(
-                            file => {
+                        this.getAttachment().subscribe({
+                            next: (file) => {
                                 modalref.instance.data = atob(file);
                             },
-                            err => {
+                            error: (err) => {
                                 modalref.instance.loadingerror = true;
                             }
-                        );
+                        });
                     });
                     break;
                 case "application":
@@ -165,14 +170,14 @@ export class fieldModelAttachment extends fieldGeneric {
                             this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
                                 modalref.instance.name = this.value;
                                 modalref.instance.type = this.mime_type.toLowerCase();
-                                this.getAttachment().subscribe(
-                                    file => {
+                                this.getAttachment().subscribe({
+                                    next: (file) => {
                                         modalref.instance.data = atob(file);
                                     },
-                                    err => {
+                                    error: (err) => {
                                         modalref.instance.loadingerror = true;
                                     }
-                                );
+                                });
                             });
                             break;
                         default:
@@ -200,10 +205,10 @@ export class fieldModelAttachment extends fieldGeneric {
         let modelValues: any = {};
 
         // somewhat ugly logic to get the prefix from the field .. it has to end with name
-        modelValues[this.fieldname] = undefined;
-        modelValues[this.prefix + '_size'] = undefined;
-        modelValues[this.prefix + '_mime_type'] = undefined;
-        modelValues[this.prefix + '_md5'] = undefined;
+        modelValues[this.fieldname + '_name'] = '';
+        modelValues[this.fieldname + '_size'] = '';
+        modelValues[this.fieldname + '_mime_type'] = '';
+        modelValues[this.fieldname + '_md5'] = '';
 
         // update the model
         this.model.setFields(modelValues);
@@ -257,10 +262,10 @@ export class fieldModelAttachment extends fieldGeneric {
                 let modelValues: any = {};
 
                 // somewhat ugly logic to get the prefix from the field .. it has to end with name
-                modelValues[this.fieldname] = file.filename;
-                modelValues[this.prefix + '_size'] = file.filesize;
-                modelValues[this.prefix + '_mime_type'] = file.file_mime_type;
-                modelValues[this.prefix + '_md5'] = file.filemd5;
+                modelValues[this.fieldname + '_name'] = file.filename;
+                modelValues[this.fieldname + '_size'] = file.filesize;
+                modelValues[this.fieldname + '_mime_type'] = file.file_mime_type;
+                modelValues[this.fieldname + '_md5'] = file.filemd5;
 
                 // update the model
                 this.model.setFields(modelValues);

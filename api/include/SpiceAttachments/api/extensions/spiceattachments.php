@@ -100,7 +100,6 @@ $routes = [
             ]
         ]
     ],
-
     [
         'method'      => 'get',
         'route'       => '/common/spiceattachments/module/{beanName}/{beanId}/byfield/{fieldprefix}',
@@ -127,6 +126,41 @@ $routes = [
                 'in' => 'path',
                 'type'        => "string",
                 'description' => 'Prefix of the field',
+                'required' => true
+            ]
+        ]
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/common/spiceattachments/module/{beanName}/{beanId}/byfield/{fieldprefix}/{fieldmd5}',
+        'class'       => SpiceAttachmentsController::class,
+        'function'    => 'getAttachmentForField',
+        'description' => '',
+        'options'     => ['validate' => true],
+        'parameters'  => [
+            'beanName' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'description' => 'name of a module',
+                'example' => 'Accounts',
+                'required' => true
+            ],
+            'beanId' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'description' => 'GUID of bean',
+                'required' => true
+            ],
+            'fieldprefix' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'Prefix of the field',
+                'required' => true
+            ],
+            'fieldmd5' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'thew MD5 Hash of the Field',
                 'required' => true
             ]
         ]
