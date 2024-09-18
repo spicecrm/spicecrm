@@ -380,14 +380,14 @@ class SpiceDictionaryController
             $rightId = $rel['rhs_sysdictionarydefinition_id'];
 
             # if one of the sides is a template, set the side id as the reference dictionary id
-            if ((new SpiceDictionaryDefinition($rel['lhs_sysdictionarydefinition_id']))->type == 'template') {
+            if (!empty($leftId) && (new SpiceDictionaryDefinition($rel['lhs_sysdictionarydefinition_id']))->type == 'template') {
                 $leftId = $rel['referencing_sysdictionarydefinition_id'];
-            } else if ((new SpiceDictionaryDefinition($rel['rhs_sysdictionarydefinition_id']))->type == 'template') {
+            } else if (!empty($rightId) && (new SpiceDictionaryDefinition($rel['rhs_sysdictionarydefinition_id']))->type == 'template') {
                 $rightId = $rel['referencing_sysdictionarydefinition_id'];
             }
 
             # check if both sides modules exist, otherwise ignore the relationship
-            if (!SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($leftId) || !SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($rightId)) continue;
+            if ((!empty($leftId) && !SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($leftId)) || (!empty($rightId) && !SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($rightId))) continue;
 
             // if this is considered unique ... go for it
             $spiceDictionaryRelationships[] = $rel;
