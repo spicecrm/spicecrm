@@ -166,7 +166,13 @@ class SpiceAttachmentsController
 
         $prefix = StreamFactory::getPathPrefix('upload');
 
-        if (!empty($seed->{$args['fieldprefix'] . '_md5'})) {
+        if(!empty($args['fieldmd5'])){
+            if (file_exists($prefix . $args['fieldmd5'])) {
+                $file = base64_encode(file_get_contents($prefix . $args['fieldmd5']));
+            } else {
+                throw new NotFoundException('attachment not found');
+            }
+        } else if (!empty($seed->{$args['fieldprefix'] . '_md5'})) {
             if (file_exists($prefix . $seed->{$args['fieldprefix'] . '_md5'})) {
                 $file = base64_encode(file_get_contents($prefix . $seed->{$args['fieldprefix'] . '_md5'}));
             } else {
