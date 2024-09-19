@@ -118,7 +118,7 @@ export class AgreementsAddRevisionModal implements OnInit {
      * generates non static revision name
      */
     public generateRevName() {
-        this.revName = this.revNumber + '_' + this.spiceattachment.filename;
+        this.revName = this.revNumber + '_' + this.spiceattachment.name;
         this.model.setField('name', this.revName);
         return this.revName;
     }
