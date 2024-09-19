@@ -2,7 +2,7 @@
     <div class="slds-grid">
         <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
             <label class="slds-form-element__label">
-                <system-label label="LBL_NAME"></system-label>
+                <abbr class="slds-required">*</abbr><system-label label="LBL_NAME"></system-label>
             </label>
             <div class="slds-form-element__control">
                 <input [disabled]="readonly" class="slds-input" [(ngModel)]="relationship.name"/>
@@ -20,17 +20,17 @@
     <div class="slds-grid">
         <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
             <label class="slds-form-element__label">
-                <system-label label="LBL_RHS_SYSDICTIONARYITEM_ID"></system-label>
+                <abbr class="slds-required">*</abbr><system-label label="LBL_RHS_SYSDICTIONARYITEM_ID"></system-label>
             </label>
             <div class="slds-select_container">
-                <select [disabled]="readonly" [(ngModel)]="relationship.rhs_sysdictionaryitem_id" class="slds-select">
+                <select [disabled]="readonly" [(ngModel)]="relationship.rhs_sysdictionaryitem_id" (ngModelChange)="updateRHSParentFieldName($event)" class="slds-select">
                     <option *ngFor="let item of rhs_items" [value]="item.id">{{item.name}}</option>
                 </select>
             </div>
         </div>
         <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
             <label class="slds-form-element__label">
-                <system-label label="LBL_LHS_SYSDICTIONARYITEM_TYPE"></system-label>
+                <abbr class="slds-required">*</abbr><system-label label="LBL_LHS_SYSDICTIONARYITEM_TYPE"></system-label>
             </label>
             <div class="slds-select_container">
                 <select [disabled]="readonly" [(ngModel)]="relationship.relationship_role_column" class="slds-select">
@@ -42,25 +42,25 @@
     <div class="slds-grid">
         <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
             <label class="slds-form-element__label">
-                <system-label label="LBL_RHS_LINKNAME"></system-label>
+                <abbr class="slds-required">*</abbr> <system-label label="LBL_RHS_PARENT_FIELD_NAME"></system-label>
             </label>
             <div class="slds-form-element__control">
-                <input [disabled]="readonly" class="slds-input" [(ngModel)]="relationship.rhs_linkname"/>
+                <input [disabled]="readonly" class="slds-input" [(ngModel)]="relationship.rhs_relatename"/>
             </div>
         </div>
         <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
             <label class="slds-form-element__label">
-                <system-label label="LBL_RHS_LINKLABEL"></system-label>
+                <system-label label="LBL_RHS_PARENT_FIELD_LABEL"></system-label>
             </label>
             <div class="slds-form-element__control">
-                <system-input-label [disabled]="readonly" [(ngModel)]="relationship.rhs_linklabel"></system-input-label>
+                <system-input-label [disabled]="readonly" [(ngModel)]="relationship.rhs_relatelabel"></system-input-label>
             </div>
         </div>
     </div>
     <div class="slds-grid">
         <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
             <label class="slds-form-element__label">
-                <system-label label="LBL_LHS_LINKNAME"></system-label>
+                <abbr class="slds-required">*</abbr> <system-label label="LBL_LHS_LINKNAME"></system-label>
             </label>
             <div class="slds-form-element__control">
                 <input [disabled]="readonly" class="slds-input" [(ngModel)]="relationship.lhs_linkname"/>
@@ -89,6 +89,12 @@
                         <th class="" scope="col">
                             <div class="slds-truncate"><system-label label="LBL_RELATIONSHIP_NAME"/></div>
                         </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_RHS_LINKNAME"/></div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_RHS_LINKLABEL"/></div>
+                        </th>
                         <th style="width: 2rem" scope="col"></th>
                         <th style="width: 2rem" scope="col"></th>
                     </tr>
@@ -102,18 +108,26 @@
                             <div class="slds-truncate"><input disabled class="slds-input" [ngModel]="dictionarymanager.getDictionaryItemName(relationshipPolymorph.lhs_sysdictionaryitem_id)"/></div>
                         </td>
                         <td>
-                            <div class="slds-truncate"><input class="slds-input" [(ngModel)]="relationshipPolymorph.relationship_name"/></div>
+                            <div class="slds-truncate"><input [disabled]="readonly" class="slds-input" [(ngModel)]="relationshipPolymorph.relationship_name"/></div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate"><input [disabled]="readonly" class="slds-input" [(ngModel)]="relationshipPolymorph.rhs_link_name"/></div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate"><input [disabled]="readonly" class="slds-input" [(ngModel)]="relationshipPolymorph.rhs_link_label"/></div>
                         </td>
                         <td>
                             <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="relationshipPolymorph.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
                         </td>
                         <td>
-                            <button class="slds-button slds-button--icon"><system-button-icon icon="delete"/></button>
+                            <!-- todo implement
+                            <button class="slds-button slds-button&#45;&#45;icon"><system-button-icon icon="delete"/></button>
+                            -->
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <div class="slds-size--1-of-1 slds-p-around--x-small slds-align--absolute-center">
+            <div *ngIf="!readonly" class="slds-size--1-of-1 slds-p-around--x-small slds-align--absolute-center">
                 <button class="slds-button slds-button--icon" (click)="addRelated()">
                     <system-button-icon icon="new"/>
                 </button>

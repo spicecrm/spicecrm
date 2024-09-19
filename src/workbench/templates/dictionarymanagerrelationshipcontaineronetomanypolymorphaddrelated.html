@@ -2,7 +2,7 @@
     <system-modal-header-empty (close)="close()"></system-modal-header-empty>
     <system-modal-content>
             <div class="slds-form-element">
-                <label class="slds-form-element__label"><system-label label="LBL_RIGHT_SIDE"/></label>
+                <label class="slds-form-element__label"><abbr class="slds-required">*</abbr> <system-label label="LBL_RIGHT_SIDE"/></label>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="lhsRelatedId">
@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="slds-form-element">
-                <label class="slds-form-element__label"><system-label label="LBL_RHS_SYSDICTIONARYITEM"></system-label></label>
+                <label class="slds-form-element__label"><abbr class="slds-required">*</abbr> <system-label label="LBL_RHS_SYSDICTIONARYITEM"></system-label></label>
                 <div class="slds-select_container">
                     <select [disabled]="!_lhsRelatedId" [(ngModel)]="lhs_sysdictionaryitem_id" class="slds-select">
                         <option *ngFor="let item of lhs_items" [value]="item.id">{{item.name}}</option>
@@ -26,6 +26,16 @@
                         <option *ngIf="dictionarymanager.changescope == 'all'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
                         <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
                     </select>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-form-element__control slds-p-around--xx-small slds-grow">
+                    <label class="slds-form-element__label"><system-label label="LBL_RHS_LINKNAME"/></label>
+                    <system-input-text [(ngModel)]="rhs_link_name" />
+                </div>
+                <div class="slds-form-element__control slds-p-around--xx-small slds-grow">
+                    <label class="slds-form-element__label"><system-label label="LBL_RHS_LINKLABEL"/></label>
+                    <system-input-text [(ngModel)]="rhs_link_label" />
                 </div>
             </div>
             <div class="slds-form-element__control slds-p-around--xx-small">

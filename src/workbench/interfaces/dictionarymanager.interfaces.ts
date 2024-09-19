@@ -114,6 +114,8 @@ export interface RelationshipPolymorph {
     status?: 'd'|'a'|'i';
     lhs_sysdictionarydefinition_id: string;
     lhs_sysdictionaryitem_id: string;
+    rhs_link_name?: string;
+    rhs_link_label?: string;
     version?: string;
     package?: string;
 }

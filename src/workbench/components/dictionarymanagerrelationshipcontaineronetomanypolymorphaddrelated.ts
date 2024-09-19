@@ -27,6 +27,14 @@ export class DictionaryManagerRelationshipContainerOneToManyPolymorphAddRelated 
     public scope: 'g'|'c' = 'g';
 
     relationship_id: string;
+    /**
+     * RHS link name
+     */
+    public rhs_link_name: string;
+    /**
+     * RHS link label
+     */
+    public rhs_link_label: string;
 
     /**
      * package
@@ -75,6 +83,8 @@ export class DictionaryManagerRelationshipContainerOneToManyPolymorphAddRelated 
             relationship_id: this.relationship_id,
             lhs_sysdictionarydefinition_id: this._lhsRelatedId,
             lhs_sysdictionaryitem_id:this.lhs_sysdictionaryitem_id,
+            rhs_link_name:this.rhs_link_name,
+            rhs_link_label:this.rhs_link_label,
             scope: this.scope,
             package: this.package,
             version: this.version
