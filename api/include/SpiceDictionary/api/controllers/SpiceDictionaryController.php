@@ -359,7 +359,7 @@ class SpiceDictionaryController
         // get all relationships
         $relArray = [];
         foreach ($spiceDictionaryDefinitions as $spiceDictionaryDefinition){
-            $relArray = array_merge($relArray, SpiceDictionaryRelationships::getInstance()->getRelationships($spiceDictionaryDefinition['id'], ['a'], true));
+            $relArray = array_merge($relArray, SpiceDictionaryRelationships::getInstance()->getRelationships($spiceDictionaryDefinition['id'], ['a'], true, false));
         }
 
         // rebuild the relationships Array to be unique
