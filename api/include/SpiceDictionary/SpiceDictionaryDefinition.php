@@ -23,15 +23,18 @@ class SpiceDictionaryDefinition
     public $tablename;
     public $type;
 
-    public function __construct($id)
+    public function __construct($id, $throwException = true)
     {
         $this->id = $id;
 
         // $res = DBManagerFactory::getInstance()->fetchOne("SELECT *, 'g' scope FROM sysdictionarydefinitions WHERE deleted = 0 AND id='{$id}' UNION SELECT *, 'c' scope FROM syscustomdictionarydefinitions WHERE deleted = 0 AND id='{$id}'");
         $res = SpiceDictionaryDefinitions::getInstance()->getDefinitionById($id);
+
         if (!$res) {
-            throw new Exception("dictionary Definition with id {$id} not found");
+            if ($throwException) throw new Exception("dictionary Definition with id {$id} not found");
+            return null;
         }
+
         $this->definition = (object)$res;
 
         // set properties

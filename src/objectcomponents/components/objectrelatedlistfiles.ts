@@ -390,7 +390,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
                     (modalRef: ComponentRef<AgreementsAddRevisionModal>) => {
                         modalRef.instance.files = files;
                         modalRef.instance.revComponent = this.componentconfig;
-                        modalRef.instance.spiceattachment = result[0];
+                        modalRef.instance.spiceattachment = files[0];
 
                         modalRef.instance.responseSubject.subscribe({
                             next: res => {
