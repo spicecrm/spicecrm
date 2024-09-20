@@ -42,6 +42,10 @@ export class KanbanManagerService {
     public minimized: boolean = false;
 
     public selectedStage: SpiceBeanGuideStageI;
+    /**
+     * workbench edit mode
+     */
+    public editMode: 'all' | 'custom' | 'none';
 
     public constructor(
         public backend: backend,
@@ -50,6 +54,7 @@ export class KanbanManagerService {
         public changeService: ChangeHistoryService,
         private configurationService: configurationService
     ) {
+        this.editMode = this.configurationService.getCapabilityConfig('core').edit_mode;
         this.loadItems();
         this.loadChecks();
         this.loadValidations();
