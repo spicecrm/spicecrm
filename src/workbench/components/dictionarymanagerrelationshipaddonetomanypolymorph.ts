@@ -90,11 +90,15 @@ export class DictionaryManagerRelationshipAddOneToManyPolymorph {
         this.relationship.rhs_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
 
         // build default name and relationship name
-        this.relationship.name = 'parent'
+        this.relationship.name = 'parent';
+        this.relationship.relationship_name = this.relationship.name;
 
         // set the defaults for a parent_id and parent_type if we have one
         let parentiditem = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.rhs_sysdictionarydefinition_id).find(i => i.name == 'parent_id');
-        if (parentiditem) this.relationship.rhs_sysdictionaryitem_id = parentiditem.id;
+        if (parentiditem) {
+            this.relationship.rhs_sysdictionaryitem_id = parentiditem.id;
+            this.relationship.rhs_relatename = parentiditem.name.replace('_id', '_name');
+        }
         let parenttypeitem = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.rhs_sysdictionarydefinition_id).find(i => i.name == 'parent_type');
         if (parenttypeitem) this.relationship.relationship_role_column = parenttypeitem.id;
     }

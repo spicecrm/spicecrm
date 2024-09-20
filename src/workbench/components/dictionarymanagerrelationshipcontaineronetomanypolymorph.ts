@@ -92,4 +92,12 @@ export class DictionaryManagerRelationshipContainerOneToManyPolymorph implements
         // build the left hand and right hand items
         this.rhs_items = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.rhs_sysdictionarydefinition_id);
     }
+
+    /**
+     * update the parent field name on the child
+     * @param itemId
+     */
+    public updateRHSParentFieldName(itemId: string) {
+        this.relationship.rhs_relatename = this.rhs_items.find(e => e.id == itemId).name.replace('_id', '_name');
+    }
 }
