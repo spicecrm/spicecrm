@@ -29,7 +29,12 @@ export class SystemIcon {
     }
 
     public getSvgHRef() {
-        return "./vendor/sldassets/icons/" + this.getSprite() + "-sprite/svg/symbols.svg#" + this.getIcon();
+        switch(this.getSprite()) {
+            case 'spicecrm':
+                return "./assets/icons/spicecrm.svg#" + this.getIcon();
+            default:
+                return  "./vendor/sldassets/icons/" + this.getSprite() + "-sprite/svg/symbols.svg#" + this.getIcon();
+        }
     }
 
     public getIconClass() {
@@ -38,6 +43,8 @@ export class SystemIcon {
             case "action":
             case "custom":
                 return "slds-icon slds-icon_container" + (this.size ? " slds-icon--" + this.size : "") + " slds-icon-" + this.getSprite() + "-" + this.getIcon().replace(/_/g, "-") + " " + this.addclasses;
+            case "spicecrm":
+                return "slds-icon slds-icon_container" + (this.size ? " slds-icon--" + this.size : "") + " slds-icon-custom-custom29" + this.addclasses;
             default:
                 return "slds-icon slds-icon_container" + (this.size ? " slds-icon--" + this.size : "") + " slds-icon-text-default" + " " + this.addclasses;
         }

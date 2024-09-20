@@ -359,7 +359,7 @@ class SpiceDictionaryController
         // get all relationships
         $relArray = [];
         foreach ($spiceDictionaryDefinitions as $spiceDictionaryDefinition){
-            $relArray = array_merge($relArray, SpiceDictionaryRelationships::getInstance()->getRelationships($spiceDictionaryDefinition['id'], ['a'], true));
+            $relArray = array_merge($relArray, SpiceDictionaryRelationships::getInstance()->getRelationships($spiceDictionaryDefinition['id'], ['a'], true, false));
         }
 
         // rebuild the relationships Array to be unique
@@ -373,7 +373,21 @@ class SpiceDictionaryController
                 if($isDuplicate) break;
 
             }
-            if($isDuplicate || !SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($rel['lhs_sysdictionarydefinition_id']) || !SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($rel['rhs_sysdictionarydefinition_id'])) continue;
+
+            if($isDuplicate) continue;
+
+            $leftId = $rel['lhs_sysdictionarydefinition_id'];
+            $rightId = $rel['rhs_sysdictionarydefinition_id'];
+
+            # if one of the sides is a template, set the side id as the reference dictionary id
+            if (!empty($leftId) && (new SpiceDictionaryDefinition($rel['lhs_sysdictionarydefinition_id'], false))?->type == 'template') {
+                $leftId = $rel['referencing_sysdictionarydefinition_id'];
+            } else if (!empty($rightId) && (new SpiceDictionaryDefinition($rel['rhs_sysdictionarydefinition_id'], false))?->type == 'template') {
+                $rightId = $rel['referencing_sysdictionarydefinition_id'];
+            }
+
+            # check if both sides modules exist, otherwise ignore the relationship
+            if ((!empty($leftId) && !SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($leftId)) || (!empty($rightId) && !SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($rightId))) continue;
 
             // if this is considered unique ... go for it
             $spiceDictionaryRelationships[] = $rel;

@@ -130,12 +130,16 @@ class SpiceDictionaryRelationships
     }
 
     /**
-     * loads the relationships from the Database
+     * loads the relationships from the database
      *
+     * @param string|null $sysdictionaryDefinitonId
+     * @param array $statusFilter
+     * @param $includeTemplates
+     * @param bool $includeParentPolymorph default is true, when disabled only child polymorph relationships will be retrieved
      * @return array
-     * @throws Exception
+     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
      */
-    public function getRelationships(string $sysdictionaryDefinitonId = null, array $statusFilter = ['a'], $includeTemplates = false){
+    public function getRelationships(string $sysdictionaryDefinitonId = null, array $statusFilter = ['a'], $includeTemplates = false, bool $includeParentPolymorph = true){
         $db = DBManagerFactory::getInstance();
 
         // build a where filter clause
@@ -143,6 +147,7 @@ class SpiceDictionaryRelationships
         if($sysdictionaryDefinitonId){
             $whereArray[] = "(lhs_sysdictionarydefinition_id='{$sysdictionaryDefinitonId}' OR rhs_sysdictionarydefinition_id='{$sysdictionaryDefinitonId}')";
         }
+
         if(is_array($statusFilter) && count($statusFilter) > 0){
             $whereArray[] = "status IN ('".implode("','", $statusFilter)."')";
         }
@@ -157,6 +162,12 @@ class SpiceDictionaryRelationships
         $dictionaryrelationships = $db->query("SELECT *, 'c' scope FROM syscustomdictionaryrelationships {$whereClause}");
         while($dictionaryrelationship = $db->fetchByAssoc($dictionaryrelationships)){
             $relationshipsArray[] = $dictionaryrelationship;
+        }
+
+        # search for polymorph relationships for this dictionary as a parent
+        if ($sysdictionaryDefinitonId && $includeParentPolymorph) {
+            $polymorphRelationships = $this->getPolymorphRelationshipsForParentDictionary($sysdictionaryDefinitonId);
+            $relationshipsArray = array_merge($relationshipsArray, $polymorphRelationships);
         }
 
         // if we have an ID and shoudl include templates retrieve them as well
@@ -190,6 +201,29 @@ class SpiceDictionaryRelationships
         }
 
         return $relationshipsArray;
+    }
+
+    /**
+     * get polymorph relationships for dictionary as a parent
+     * @param string $definitionId
+     * @return array
+     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     */
+    public function getPolymorphRelationshipsForParentDictionary(string $definitionId): array
+    {
+        $db = DBManagerFactory::getInstance();
+        $relationships = [];
+
+        $query = $db->query("SELECT * FROM sysdictionaryrelationshippolymorphs WHERE lhs_sysdictionarydefinition_id = '$definitionId'");
+        while ($polymorph = $db->fetchByAssoc($query)){
+            $relationship = new SpiceDictionaryRelationship($polymorph['relationship_id']);
+            $relationship->relationship->lhs_sysdictionarydefinition_id = $definitionId;
+            $relationship->relationship->lhs_sysdictionaryitem_id = $polymorph['lhs_sysdictionaryitem_id'];
+            $relationship->relationship->relationship_name = $polymorph['relationship_name'];
+            $relationships[] = json_decode(json_encode($relationship->relationship), true);
+        }
+
+        return $relationships;
     }
 
     /**
