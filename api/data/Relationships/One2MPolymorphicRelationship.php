@@ -46,21 +46,21 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
         $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}'");
         $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
 
-        // add the parent link field on the LHS Module
+        # add the parent name field on the child (RHS)
         $db->insertQuery('sysdictionaryfields', [
             'id' => SpiceUtils::createGuid(),
             'sysdictionaryname' => $rhsDictionaryDefinition->name,
             'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
             'sysdictionarytableaudited' => $rhsDictionaryDefinition->getDefinition()->audited,
-            'fieldname' => $relationship->relationship->rhs_linkname,
+            'fieldname' => $relationship->relationship->rhs_relatename,
             'fieldtype' => 'parent',
             'fielddefinition' => json_encode([
-                'name' => $relationship->relationship->rhs_linkname,
+                'name' => $relationship->relationship->rhs_relatename,
                 'type' => 'parent',
                 'type_name' => $roleColumnField->fieldname,
                 'id_name' => $rhsField->fieldname,
                 'source' => 'non-db',
-                'vname' => $relationship->relationship->rhs_linklabel
+                'vname' => $relationship->relationship->rhs_relatelabel
             ]),
             'sysdictionaryrelationship_id' => $relationship->id,
             'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
@@ -72,13 +72,16 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
             // convert to object
             $morph = (object)$morph;
 
+            $db->query("DELETE FROM relationships WHERE id = '$morph->id'");
+            $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$morph->id}'");
+
             $lhsDictionaryDefinition = new SpiceDictionaryDefinition($morph->lhs_sysdictionarydefinition_id);
             $lhsDictionaryitem = new SpiceDictionaryItem($morph->lhs_sysdictionaryitem_id);
             $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
 
             $relationship_name = str_replace('{tablename}', $rhsDictionaryDefinition->tablename, $morph->relationship_name);
 
-            // insert the relationship
+            # insert the relationship
             $db->insertQuery('relationships', [
                 'id' => $morph->id,
                 'relationship_name' => $relationship_name,
@@ -92,7 +95,7 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
                 'deleted' => 0
             ]);
 
-            // add an lhs link
+            # add link on the parent (LHS)
             $db->insertQuery('sysdictionaryfields', [
                 'id' => SpiceUtils::createGuid(),
                 'sysdictionaryname' => $lhsDictionaryDefinition->name,
@@ -111,23 +114,26 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
                 'sysdictionarydefinition_id' => $lhsDictionaryDefinition->id
             ]);
 
-            // add an rhs link
-            $db->insertQuery('sysdictionaryfields', [
-                'id' => SpiceUtils::createGuid(),
-                'sysdictionaryname' => $rhsDictionaryDefinition->name,
-                'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
-                'sysdictionarytableaudited' => $rhsDictionaryDefinition->getDefinition()->audited,
-                'fieldname' => $relationship->relationship->name . '_' . $lhsDictionaryDefinition->tablename,
-                'fieldtype' => 'link',
-                'fielddefinition' => json_encode([
-                    'name' => $relationship->relationship->name . '_' . $lhsDictionaryDefinition->tablename,
-                    'type' => 'link',
-                    'relationship' => $relationship_name,
-                    'source' => 'non-db'
-                ]),
-                'sysdictionaryrelationship_id' => $morph->id,
-                'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
-            ]);
+            # add link for the parent on the child if isset
+            if (!empty($relationship->relationship->rhs_link_name)) {
+                $db->insertQuery('sysdictionaryfields', [
+                    'id' => SpiceUtils::createGuid(),
+                    'sysdictionaryname' => $rhsDictionaryDefinition->name,
+                    'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
+                    'sysdictionarytableaudited' => $rhsDictionaryDefinition->getDefinition()->audited,
+                    'fieldname' => $relationship->relationship->rhs_link_name,
+                    'fieldtype' => 'link',
+                    'fielddefinition' => json_encode([
+                        'name' => $relationship->relationship->rhs_link_name,
+                        'vname' => $relationship->relationship->rhs_link_label,
+                        'type' => 'link',
+                        'relationship' => $relationship_name,
+                        'source' => 'non-db'
+                    ]),
+                    'sysdictionaryrelationship_id' => $morph->id,
+                    'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
+                ]);
+            }
         }
     }
 

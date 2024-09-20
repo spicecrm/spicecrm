@@ -18,7 +18,7 @@ export class currency {
     }
 
     get currencies() {
-        return this.configuration.getData('currencies') ?? [];
+        return this.configuration.getData('currencies') ? this.configuration.getData('currencies') : [];
     }
 
     public getCurrencies() {

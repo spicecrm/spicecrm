@@ -99,14 +99,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
             'source' => 'non-db',
             'module' => 'UserAbsences'
         ],
-        'travels' => [
+/*        'travels' => [
             'name' => 'travels',
             'vname' => 'LBL_TRAVELS',
             'type' => 'link',
             'relationship' => 'employee_travels',
             'source' => 'non-db',
             'module' => 'Employees',
-        ],
+        ],*/
         'calls' => [
             'name' => 'calls',
             'type' => 'link',
