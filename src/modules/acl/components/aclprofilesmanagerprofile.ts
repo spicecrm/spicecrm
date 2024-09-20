@@ -180,13 +180,7 @@ export class ACLProfilesManagerProfile implements OnChanges {
                         this.backend.postRequest('module/SpiceACLProfiles/' + this.profileid + '/related/users', {}, {userids: newusers}).subscribe(status => {
                             items.forEach(user => {
                                 if(this.aclusers.findIndex(u => u.id == user.id) == -1) {
-                                    this.aclusers.push({
-                                        id: user.id,
-                                        user_name: user.user_name,
-                                        first_name: user.first_name,
-                                        last_name: user.last_name,
-                                        department: user.department
-                                    });
+                                    this.aclusers.push(user);
                                 }
                             });
                             this.sortusers();
