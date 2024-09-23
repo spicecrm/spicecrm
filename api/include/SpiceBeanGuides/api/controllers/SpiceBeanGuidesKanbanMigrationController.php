@@ -91,6 +91,7 @@ class SpiceBeanGuidesKanbanMigrationController
 
         $this->moveRelatedCustomEntries();
         $this->generateSpiceTexts();
+        $this->updateBeanGuides();
 
         foreach ($this->definitionsArray as $definition) {
             $itemsForMigration = $this->getMigrationItems($definition);
@@ -103,6 +104,21 @@ class SpiceBeanGuidesKanbanMigrationController
         }
 
         return $res->withJson(true, 200);
+    }
+    public function updateBeanGuides()
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $db->query("update spicebeanguides set name = 'migrated' where name is null or name = ''", true);
+        $db->query("update spicebeancustomguides set name = 'migrated' where name is null or name = ''", true);
+
+        $kanbanModules = $db->fetchAll("SELECT DISTINCT module, 'g' scope FROM spicebeanguides WHERE is_default != 1 UNION SELECT DISTINCT module, 'c' scope FROM spicebeancustomguides WHERE is_default != 1");
+
+        foreach ($kanbanModules as $row) {
+            $table = $row['scope'] == 'c' ? 'spicebeancustomguides' : 'spicebeanguides';
+
+            $db->query("update $table set is_default = 1 limit 1");
+        }
     }
 
     public function moveRelatedCustomEntries(): void
@@ -139,7 +155,7 @@ class SpiceBeanGuidesKanbanMigrationController
         $db->query("insert into syscustomtextids (id, text_id, name) select uuid(), CONCAT('kanban-', id), 'migrated' from spicebeancustomguides where systextid is null or systextid = ''", true);
 
         # global update
-        $db->query("update spicebeanguides set systextid = CONCAT('kanban-', id) where systextid is null or systextid = ''", true);
+        $db->query("update spicebeanguides set systextid = CONCAT('kanban-', id)where systextid is null or systextid = ''", true);
 
         # custom update
         $db->query("update spicebeancustomguides set systextid = CONCAT('kanban-', id) where systextid is null or systextid = ''", true);
@@ -151,7 +167,6 @@ class SpiceBeanGuidesKanbanMigrationController
                     union select uuid(), txt.stage_name, txt.stage_description, st.id, 'SpiceBeanGuideStages', gu.systextid, txt.`language`, 0 from spicebeanguidestages_texts txt, spicebeancustomguidestages st, spicebeancustomguides gu 
                     where txt.stage_id = st.id and st.spicebeanguide_id = gu.id and gu.systextid is not null and (txt.stage_description is not null and txt.stage_description != '')", true);
 
-        $db->query("update spicebeanguides set name = 'migrated' where name is null or name = ''", true);
     }
 
     private function getMigrationItems(array $definition): array {

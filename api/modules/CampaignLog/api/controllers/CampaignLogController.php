@@ -64,7 +64,10 @@ class CampaignLogController{
                         $callAttempt->name = $campaignTask->name;
                         $callAttempt->parent_type = $campaignLog->target_type;
                         $callAttempt->parent_id = $campaignLog->target_id;
+                        if($postParams['activity_comment'])
+                            $callAttempt->description = $postParams['activity_comment'];
                         $callAttempt->campaigntask_id = $campaignTask->id;
+                        $callAttempt->assigned_user_id = AuthenticationController::getInstance()->getCurrentUser()->id;
                         $callAttempt->save();
                     }
                     break;
@@ -77,7 +80,7 @@ class CampaignLogController{
                     break;
 
                 case 'completed':
-                    $campaignLog->hits += 1;
+//                    $campaignLog->hits += 1;
                     $campaignLog->planned_activity_date = null;
                     $campaignLog->outcome_id1 = $postParams['outcome_id1'];
                     $campaignLog->outcome_id2 = $postParams['outcome_id2'];
@@ -89,6 +92,8 @@ class CampaignLogController{
                 $campaignLog->assigned_user_id = AuthenticationController::getInstance()->getCurrentUser()->id;
             $campaignLog->activity_type = $status;
             $campaignLog->activity_date = $timedate->nowDb();
+            if($postParams['activity_comment'])
+                $campaignLog->activity_comment = $postParams['activity_comment'];
             $campaignLog->save();
 
             return $res->withJson(['success' => true, 'id' => $args['id']]);
