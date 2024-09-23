@@ -2249,8 +2249,20 @@ abstract class DBManager
             if (isset($fieldDef['dbtype']))
                 $fieldDef['dbType'] = $fieldDef['dbtype'];
             else
-                $fieldDef['dbType'] = $fieldDef['type'];
+                $fieldDef['dbType'] = $this->getColumnType($fieldDef['type']);
         }
+
+        # override dbType for json type, because json type is not implemented yet
+        if (in_array('json', [$fieldDef['dbType'], $fieldDef['type']])) {
+            $fieldDef['dbType'] = $this->getColumnType('json');
+        }
+
+        # override dbType for id set to varchar with length 36 to handle legacy varchar definitions
+        if ($fieldDef['dbType'] == 'id') {
+            $fieldDef['dbType'] = $this->getColumnType('id');
+            $fieldDef['len'] = 36;
+        }
+
         $type = $this->getColumnType($fieldDef['dbType']);
         $matches = [];
         // len can be a number or a string like 'max', for example, nvarchar(max)
@@ -2486,9 +2498,11 @@ abstract class DBManager
         // and add dbtype where type is being used for some special
         // purposes like referring to foreign table etc.
         if (!empty($fieldDef['dbType']))
-            return $fieldDef['dbType'];
+            # get only the field type and omit the length for later type comparison
+            return preg_replace('/\(.+\)/', '', $fieldDef['dbType']);
         if (!empty($fieldDef['dbtype']))
-            return $fieldDef['dbtype'];
+            # get only the field type and omit the length for later type comparison
+            return preg_replace('/\(.+\)/', '', $fieldDef['dbtype']);
         if (!empty($fieldDef['type']))
             return $fieldDef['type'];
         if (!empty($fieldDef['Type']))
