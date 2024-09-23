@@ -119,7 +119,7 @@ class MysqliManager extends DBManager
         'currency' => 'decimal(26,6)',
         'decimal'  => 'decimal',
         'decimal2' => 'decimal',
-        'id'       => 'char(36)',
+        'id'       => 'varchar',
         'url'      => 'varchar',
         'encrypt'  => 'varchar',
         'file'     => 'varchar',
@@ -1728,8 +1728,8 @@ class MysqliManager extends DBManager
      * To ensure multiple database types support vardefs will sometimes be defined with a basic dbType and a specific length to match another column Type. Example dbType='text' and a len=4294967295. This definition creates a longtext column in mysql.
      * Column will be created properly in database but repair/rebuild will not recognize that vardef match with column type
      * This function matches definition with table column type for specific column types
-     * @param $fielddef1 database field definition
-     * @param $fielddef2 vardef
+     * @param $fielddef1 array database field definition
+     * @param $fielddef2 array vardef or dictionary def
      * @return boolean
      */
 
@@ -1738,11 +1738,6 @@ class MysqliManager extends DBManager
         $dbtype = $fielddef1['type'];
         $fieldtype = $this->getFieldType($fielddef2);
         switch($dbtype){
-            case 'varchar':
-                if($fielddef2['name'] == 'id' && $fielddef2['len'] == 36){
-                    $fieldtype = 'char';
-                }
-                break;
             case 'longtext':
             case 'mediumtext':
             case 'text':

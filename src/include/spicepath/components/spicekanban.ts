@@ -194,9 +194,14 @@ export class SpiceKanban implements OnInit, OnDestroy {
         }
 
         if (!this.componentconfig.kanban) {
-            this.confdata = kanbans[0];
+            // Look for the default kanban
+            this.confdata = kanbans.find(k => k.is_default == 1);
         } else {
             this.confdata = kanbans.find(k => k.id == this.componentconfig.kanban);
+        }
+
+        if (!this.confdata) {
+            return;
         }
 
         this.loadStatusNetwork();
