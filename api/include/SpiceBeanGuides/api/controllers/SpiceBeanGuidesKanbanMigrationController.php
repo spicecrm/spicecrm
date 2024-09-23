@@ -29,12 +29,57 @@ class SpiceBeanGuidesKanbanMigrationController
     ];
 
     public function kanbanMigrationQuery(Request $req, Response $res, $args): Response {
+
         $itemsForMigration = [];
+
         foreach ($this->definitionsArray as $definition) {
             $results = $this->getMigrationItems($definition);
             if (!empty($results)) {
                 foreach ($results as $result) {
-                    $itemsForMigration[] = $result;
+                    $module = $result['module'] ?: '-';
+                    $scope = str_contains($definition['tableName'], 'custom') ? 'custom' : 'global';
+
+                    $found = false;
+                    foreach ($itemsForMigration as &$item) {
+                        if ($item['module'] === $module) {
+                            $found = true;
+
+                            if ($scope === 'global') {
+                                if (isset($item['countGlobal'])) {
+                                    $item['countGlobal']++;
+                                } else {
+                                    $item['countGlobal'] = 1;
+                                }
+                            } else {
+                                if (isset($item['countCustom'])) {
+                                    $item['countCustom']++;
+                                } else {
+                                    $item['countCustom'] = 1;
+                                }
+                            }
+                            break;
+                        }
+                    }
+
+                    if (!$found) {
+                        $newItem = [
+                            'id' => $result['id'],
+                            'role_id' => $result['role_id'],
+                            'module' => $module,
+                            'component' => $result['component'] ?: '-',
+                            'componentconfig' => $result['componentconfig'],
+                            'version' => $result['version'],
+                            'package' => $result['package'],
+                        ];
+
+                        if ($scope === 'global') {
+                            $newItem['countGlobal'] = 1;
+                        } else {
+                            $newItem['countCustom'] = 1;
+                        }
+
+                        $itemsForMigration[] = $newItem;
+                    }
                 }
             }
         }

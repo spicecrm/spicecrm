@@ -10,18 +10,30 @@
                     <th class="" scope="col">
                         <div class="slds-truncate"><system-label label="LBL_COMPONENT"></system-label></div>
                     </th>
-                    <th class="" scope="col">
+                    <th scope="col">
                         <div class="slds-truncate"><system-label label="LBL_MODULE"></system-label></div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_GLOBAL"></system-label></div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_CUSTOM"></system-label></div>
                     </th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr class="slds-hint-parent" *ngFor="let item of migrateKanbans">
                     <td>
-                        <div class="slds-truncate">{{item.component ? item.component : '-'}}</div>
+                        <div class="slds-truncate">{{item.component}}</div>
                     </td>
                     <td>
-                        <div class="slds-truncate">{{item.module ? item.module : '-'}}</div>
+                        <div class="slds-truncate">{{item.module}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{item.countGlobal}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{item.countCustom}}</div>
                     </td>
                 </tr>
                 </tbody>
