@@ -33,6 +33,8 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
     public self: any;
     public fieldset: string = '';
 
+    public reserved: boolean;
+
     constructor(
         public language: language,
         public model: model,
@@ -90,8 +92,9 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
 
         let awaitModal = this.modal.await('LBL_SAVING')
         let planned_activity_date = this.modelutilities.spice2backend(this.model.module, 'planned_activity_date', this.model.getField('planned_activity_date'));
+        let planned_activity_user_id = !!this.reserved ? this.metadata.session.authData.user.id : '';
         let activity_comment = this.modelutilities.spice2backend(this.model.module, 'activity_comment', this.model.getField('activity_comment'));
-        let params = {planned_activity_date: planned_activity_date, activity_comment: activity_comment};
+        let params = {planned_activity_date: planned_activity_date, activity_comment: activity_comment, planned_activity_user_id: planned_activity_user_id};
 
         this.backend.postRequest(`module/CampaignLog/${this.model.id}/attempted`, params).subscribe({
             next: (status) => {

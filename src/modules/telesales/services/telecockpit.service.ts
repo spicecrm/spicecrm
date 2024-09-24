@@ -85,6 +85,7 @@ export class telecockpitservice {
                         activity_type: item.campaignlog_activity_type,
                         related_id: item.campaignlog_related_id,
                         planned_activity_date: item.campaignlog_planned_activity_date,
+                        planned_activity_user_id: item.campaignlog_planned_activity_user_id,
                         data: item.data
                     });
                 }
@@ -122,6 +123,7 @@ export class telecockpitservice {
                         activity_type: item.campaignlog_activity_type,
                         related_id: item.campaignlog_related_id,
                         planned_activity_date: item.campaignlog_planned_activity_date,
+                        planned_activity_user_id: item.campaignlog_planned_activity_user_id,
                         data: item.data
                     });
                 }

@@ -51,6 +51,7 @@ class CampaignLogController{
             switch($status){
                 case 'attempted':
                     $campaignLog->planned_activity_date = $postParams['planned_activity_date'];
+                    $campaignLog->planned_activity_user_id = $postParams['planned_activity_user_id'];
                     $campaignLog->hits += 1;
 
                     if($campaignLog->hits >= $maxAttempts){
