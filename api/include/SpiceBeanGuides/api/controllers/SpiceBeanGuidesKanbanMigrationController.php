@@ -9,38 +9,6 @@ use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceBeanGuidesKanbanMigrationController
 {
-    private array $definitionsArray = [
-        [
-            'tableName'     => 'sysuicomponentmoduleconf',
-            'componentName' => 'SpiceKanban',
-        ],
-        [
-            'tableName'     => 'sysuicustomcomponentmoduleconf',
-            'componentName' => 'SpiceKanban',
-        ],
-        [
-            'tableName'     => 'sysuicomponentsetscomponents',
-            'componentName' => 'SpicePathWithCoaching',
-        ],
-        [
-            'tableName'     => 'sysuicustomcomponentsetscomponents',
-            'componentName' => 'SpicePathWithCoaching',
-        ],
-    ];
-
-    public function kanbanMigrationQuery(Request $req, Response $res, $args): Response {
-        $itemsForMigration = [];
-        foreach ($this->definitionsArray as $definition) {
-            $results = $this->getMigrationItems($definition);
-            if (!empty($results)) {
-                foreach ($results as $result) {
-                    $itemsForMigration[] = $result;
-                }
-            }
-        }
-
-        return $res->withJson($itemsForMigration);
-    }
 
     public function migrateKanban(Request $req, Response $res, $args): Response {
 
@@ -72,7 +40,7 @@ class SpiceBeanGuidesKanbanMigrationController
         foreach ($kanbanModules as $row) {
             $table = $row['scope'] == 'c' ? 'spicebeancustomguides' : 'spicebeanguides';
 
-            $db->query("update $table set is_default = 1 limit 1");
+            $db->query("update $table set is_default = 1 WHERE module = '{$row['module']}' limit 1");
         }
     }
 
