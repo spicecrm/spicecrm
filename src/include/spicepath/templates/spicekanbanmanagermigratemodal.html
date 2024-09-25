@@ -7,9 +7,6 @@
             <table class="slds-table slds-table_bordered" aria-labelledby="element-with-table-label other-element-with-table-label">
                 <thead>
                 <tr class="slds-line-height_reset">
-                    <th class="" scope="col">
-                        <div class="slds-truncate"><system-label label="LBL_COMPONENT"></system-label></div>
-                    </th>
                     <th scope="col">
                         <div class="slds-truncate"><system-label label="LBL_MODULE"></system-label></div>
                     </th>
@@ -23,9 +20,6 @@
                 </thead>
                 <tbody>
                 <tr class="slds-hint-parent" *ngFor="let item of migrateKanbans">
-                    <td>
-                        <div class="slds-truncate">{{item.component}}</div>
-                    </td>
                     <td>
                         <div class="slds-truncate">{{item.module}}</div>
                     </td>
