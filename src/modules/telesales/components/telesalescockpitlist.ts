@@ -1,7 +1,7 @@
 /**
  * @module ModuleTeleSales
  */
-import {Component, Input, QueryList, ViewChild, ViewChildren, ViewContainerRef} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, QueryList, ViewChild, ViewChildren, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {telecockpitservice} from '../services/telecockpit.service';
 import {modellist} from '../../../services/modellist.service';
@@ -55,6 +55,6 @@ export class TeleSalesCockpitList {
     }
 
     public trackByFn(index, item) {
-        return item.id;
+        return item.data;
     }
 }

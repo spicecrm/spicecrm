@@ -1,15 +1,18 @@
 /**
  * @module ModuleTeleSales
  */
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
-import {Subject} from "rxjs";
+import {Subject, Subscription} from "rxjs";
+import {broadcast} from "../../../services/broadcast.service";
+
+declare var moment;
 
 @Injectable()
 
-export class telecockpitservice {
+export class telecockpitservice implements OnDestroy {
 
     public isloading: boolean = false;
     public canLoadMore: boolean = true;
@@ -19,14 +22,19 @@ export class telecockpitservice {
     public selectedListItem: any;
     public selectedItemSubject: Subject<any> = new Subject<any>();
     public renderedMainComponents: any[] = [];
+    private subscription = new Subscription();
 
     /**
      * holds the stats
      */
     public campaignTaskStats: any = {};
 
-    constructor(public backend: backend, public metadata: metadata, public language: language) {
+    constructor(public backend: backend,
+                public metadata: metadata,
+                private broadcast: broadcast,
+                public language: language) {
         this.getCampaignTasks();
+        this.subscribeToModelChanges();
     }
 
     get loadLimit() {
@@ -51,6 +59,33 @@ export class telecockpitservice {
     set selectedListItem$(value) {
         this.selectedListItem = value;
         this.selectedItemSubject.next(value);
+    }
+
+    private subscribeToModelChanges() {
+        this.subscription.add(
+            this.broadcast.message$.subscribe({
+                next: (msg) => {
+                    if (msg.messagetype != 'model.save') return;
+
+                    if (msg.messagedata.module == 'CampaignLogs') {
+
+                        const itemIdx = this.listItems.findIndex(i => i.id == msg.messagedata.id);
+
+                        if (moment(this.listItems[itemIdx].planned_activity_date).isAfter(moment()) || (this.listItems[itemIdx].activity_type in {completed: 1, converted: 1, maxattempts: 1})) {
+                            this.listItems.splice(itemIdx, 1);
+                        }
+
+                    } else {
+
+                        const itemIdx = this.listItems.findIndex(i => i.target_type == msg.messagedata.module && i.data.id == msg.messagedata.id);
+
+                        if (itemIdx == -1) return;
+
+                        this.listItems[itemIdx] = {...this.listItems[itemIdx], data: msg.messagedata.data};
+                    }
+                }
+            })
+        )
     }
 
     public getCampaignTasks() {
@@ -169,5 +204,9 @@ export class telecockpitservice {
                 });
             }
         }
+    }
+
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 }
