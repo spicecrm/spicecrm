@@ -7,6 +7,7 @@ import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
 import {Subject, Subscription} from "rxjs";
 import {broadcast} from "../../../services/broadcast.service";
+import {view} from "../../../services/view.service";
 
 declare var moment;
 
@@ -32,6 +33,7 @@ export class telecockpitservice implements OnDestroy {
     constructor(public backend: backend,
                 public metadata: metadata,
                 private broadcast: broadcast,
+                private view: view,
                 public language: language) {
         this.getCampaignTasks();
         this.subscribeToModelChanges();
@@ -56,9 +58,14 @@ export class telecockpitservice implements OnDestroy {
         return this.selectedItemSubject.asObservable();
     }
 
-    set selectedListItem$(value) {
+    set selectedListItem$(value: any) {
         this.selectedListItem = value;
         this.selectedItemSubject.next(value);
+    }
+
+    public isLocked(item?: any, checkOwner?: boolean) {
+        if (!item) item = this.selectedListItem;
+        return moment(item.locked_until).isAfter(moment()) && (!checkOwner || item.locked_by_id != this.metadata.session.authData.user.id);
     }
 
     private subscribeToModelChanges() {
@@ -67,12 +74,22 @@ export class telecockpitservice implements OnDestroy {
                 next: (msg) => {
                     if (msg.messagetype != 'model.save') return;
 
-                    if (msg.messagedata.module == 'CampaignLogs') {
+                    if (msg.messagedata.module == 'CampaignLog') {
 
                         const itemIdx = this.listItems.findIndex(i => i.id == msg.messagedata.id);
 
-                        if (moment(this.listItems[itemIdx].planned_activity_date).isAfter(moment()) || (this.listItems[itemIdx].activity_type in {completed: 1, converted: 1, maxattempts: 1})) {
+                        if (itemIdx > -1 && (moment(msg.messagedata.data.planned_activity_date).isAfter(moment()) || (msg.messagedata.data.activity_type in {completed: 1, converted: 1, maxattempts: 1}))) {
                             this.listItems.splice(itemIdx, 1);
+                        } else if(itemIdx >-1){
+                            this.listItems[itemIdx].target_type = msg.messagedata.data.target_type;
+                            this.listItems[itemIdx].hits = msg.messagedata.data.hits;
+                            this.listItems[itemIdx].activity_date = msg.messagedata.data.activity_date;
+                            this.listItems[itemIdx].activity_type = msg.messagedata.data.activity_type;
+                            this.listItems[itemIdx].related_id = msg.messagedata.data.related_id;
+                            this.listItems[itemIdx].planned_activity_date = msg.messagedata.data.planned_activity_date;
+                            this.listItems[itemIdx].planned_activity_user_id = msg.messagedata.data.planned_activity_user_id;
+                            this.listItems[itemIdx].locked_until = msg.messagedata.data.locked_until;
+                            this.listItems[itemIdx].locked_by_id = msg.messagedata.data.locked_by_id;
                         }
 
                     } else {
@@ -112,17 +129,9 @@ export class telecockpitservice implements OnDestroy {
         this.backend.getRequest("module/CampaignTasks/" + id + "/items", params).subscribe({
             next: (response) => {
                 for (let item of response.items) {
-                    this.listItems.push({
-                        id: item.campaignlog_id,
-                        target_type: item.campaignlog_target_type,
-                        hits: item.campaignlog_hits,
-                        activity_date: item.campaignlog_activity_date,
-                        activity_type: item.campaignlog_activity_type,
-                        related_id: item.campaignlog_related_id,
-                        planned_activity_date: item.campaignlog_planned_activity_date,
-                        planned_activity_user_id: item.campaignlog_planned_activity_user_id,
-                        data: item.data
-                    });
+                    this.listItems.push(
+                        this.generateItemObject(item)
+                    );
                 }
 
                 // set the stats
@@ -150,17 +159,9 @@ export class telecockpitservice implements OnDestroy {
         this.backend.getRequest("module/CampaignTasks/" + this.selectedCampaignTask.id + "/items", params)
             .subscribe(response => {
                 for (let item of response.items) {
-                    this.listItems.push({
-                        id: item.campaignlog_id,
-                        target_type: item.campaignlog_target_type,
-                        hits: item.campaignlog_hits,
-                        activity_date: item.campaignlog_activity_date,
-                        activity_type: item.campaignlog_activity_type,
-                        related_id: item.campaignlog_related_id,
-                        planned_activity_date: item.campaignlog_planned_activity_date,
-                        planned_activity_user_id: item.campaignlog_planned_activity_user_id,
-                        data: item.data
-                    });
+                    this.listItems.push(
+                        this.generateItemObject(item)
+                    );
                 }
 
                 if (response.items.length < this.loadLimit) {
@@ -169,6 +170,22 @@ export class telecockpitservice implements OnDestroy {
 
                 this.isloading = false;
             });
+    }
+
+    private generateItemObject(item) {
+        return {
+            id: item.campaignlog_id,
+            target_type: item.campaignlog_target_type,
+            hits: item.campaignlog_hits,
+            activity_date: item.campaignlog_activity_date,
+            activity_type: item.campaignlog_activity_type,
+            related_id: item.campaignlog_related_id,
+            planned_activity_date: item.campaignlog_planned_activity_date,
+            planned_activity_user_id: item.campaignlog_planned_activity_user_id,
+            locked_until: item.campaignlog_locked_until,
+            locked_by_id: item.campaignlog_locked_by_id,
+            data: item.data
+        }
     }
 
     /**
