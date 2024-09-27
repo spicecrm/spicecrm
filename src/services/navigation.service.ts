@@ -625,7 +625,6 @@ export class navigation {
         this.modelregister.push({id: id, model: model, tabid: this.activeTab});
 
         this.socket.joinRoom('module', Md5.hashStr(`${model.module}:${model.id}`).toString());
-        console.log('socket join room', model.module, model.id, Md5.hashStr(`${model.module}:${model.id}`).toString());
 
         return id;
     }
