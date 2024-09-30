@@ -88,7 +88,7 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
 
     public save() {
 
-        let awaitModal = this.modal.await('LBL_SAVING')
+        let awaitModal = this.modal.await('LBL_SAVING');
         let planned_activity_date = this.modelutilities.spice2backend(this.model.module, 'planned_activity_date', this.model.getField('planned_activity_date'));
         let activity_comment = this.modelutilities.spice2backend(this.model.module, 'activity_comment', this.model.getField('activity_comment'));
         let params = {planned_activity_date: planned_activity_date, activity_comment: activity_comment};
