@@ -32,6 +32,11 @@ export class ServiceTicketCloseModal {
      */
     public fieldset: string;
 
+    /**
+     * boolean to check length of SLA reason
+     */
+    public force_sladeviation_reason: boolean;
+
     constructor(
         public language: language,
         public metadata: metadata,
@@ -47,6 +52,7 @@ export class ServiceTicketCloseModal {
         // load the fieldset
         let componentconfig = this.metadata.getComponentConfig('ServiceTicketCloseModal', this.model.module);
         this.fieldset = componentconfig.fieldset;
+        this.force_sladeviation_reason = componentconfig.force_sladeviation_reason;
 
         // start editing the model and set the status
         this.model.startEdit(true, true);
@@ -64,7 +70,12 @@ export class ServiceTicketCloseModal {
      * cheks if the deviation reason for the sla is set
      */
     get canSave() {
-        return this.model.getField('sladeviation_reason').length > 0;
+        if(!this.force_sladeviation_reason){
+            return true;
+        }
+        else {
+            return this.model.getField('sladeviation_reason').length > 0;
+        }
     }
 
     /**
