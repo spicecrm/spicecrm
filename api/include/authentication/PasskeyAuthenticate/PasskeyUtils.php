@@ -93,6 +93,10 @@ class PasskeyUtils
             'challenge' => $challenge,
         ];
 
+        if (!is_dir($this->getChallengesDirectory())) {
+            mkdir($this->getChallengesDirectory(), 0775, true);
+        }
+
         $challengeHash = md5($challenge);
         file_put_contents(
             $this->getChallengeFileName($challengeHash), json_encode($content)
@@ -132,8 +136,17 @@ class PasskeyUtils
      */
     private function getChallengeFileName(string $challengeHash): string
     {
-        $path = __DIR__ . DIRECTORY_SEPARATOR . 'challenges' . DIRECTORY_SEPARATOR;
+        $path = $this->getChallengesDirectory() . DIRECTORY_SEPARATOR;
         return $path . $challengeHash;
+    }
+
+    /**
+     * get challenges directory
+     * @return string
+     */
+    public function getChallengesDirectory(): string
+    {
+        return __DIR__ . DIRECTORY_SEPARATOR . 'challenges';
     }
 
     /**
