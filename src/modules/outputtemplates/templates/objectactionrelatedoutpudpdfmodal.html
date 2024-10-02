@@ -1,49 +1,74 @@
 <system-modal>
-    <system-modal-header (close)="close()"><system-label label="LBL_EXPORT_PDF"></system-label></system-modal-header>
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_EXPORT_PDF"></system-label>
+    </system-modal-header>
     <system-modal-content margin="none" [scrollable]="false" [system-overlay-loading-spinner]="isLoading">
         <div style="height: 70vh;">
-            @if(blobUrl) {
+            @if (blobUrl) {
                 <object *ngIf="blobUrl" [data]="blobUrl" width="100%" height="100%"></object>
             }
         </div>
     </system-modal-content>
     <system-modal-footer>
         <div class="slds-grid">
-            <div class="slds-grid slds-grid--vertical-align-center slds-size--1-of-3" >
+            <div class="slds-grid slds-grid--vertical-align-center slds-size--2-of-5">
                 <system-label label="LBL_OUTPUT_TEMPLATE"></system-label>
                 <div class="slds-select_container">
-                    <select [(ngModel)]="selectedTemplate" class="slds-select slds-m-left--xx-small" style="width: 10rem;">
+                    <select [(ngModel)]="selectedTemplate" class="slds-select slds-m-left--xx-small"
+                            style="width: 10rem;">
                         @for (template of outputTemplates; track template.id) {
-                            <option [value]="template.id">{{template.name}}</option>
+                            <option [value]="template.id">{{ template.name }}</option>
                         }
                     </select>
                 </div>
             </div>
-            <div class="slds-size--1-of-3 slds-align_absolute-center" *ngIf="blobUrl">
+            <div class="slds-size--1-of-5 slds-align_absolute-center" *ngIf="blobUrl">
                 <button [disabled]="previousDisabled" class="slds-button slds-button_icon" (click)="previousPage()">
                     <system-button-icon icon="chevronleft"></system-button-icon>
                 </button>
                 <div class="slds-p-horizontal--xx-small slds-grid slds-grid--vertical-align-center slds-gutters_direct-xxx-small">
-                    <div class="slds-col">{{numberOfItems}}</div>
+                    <div class="slds-col">{{ numberOfItems }}</div>
                     <system-label class="slds-col" label="LBL_OF"></system-label>
-                    <div class="slds-col">{{totalItems}}</div>
+                    <div class="slds-col">{{ totalItems }}</div>
                 </div>
                 <button [disabled]="nextDisabled" class="slds-button slds-button_icon" (click)="nextPage()">
                     <system-button-icon icon="chevronright"></system-button-icon>
                 </button>
             </div>
-            <div class="slds-size--1-of-3 slds-align_absolute-center" *ngIf="!blobUrl">
+            <div class="slds-size--1-of-5 slds-align_absolute-center" *ngIf="!blobUrl">
                 <system-spinner [size]="20" message="click on 'reload' if no content is loaded"></system-spinner>
             </div>
-            <div class="slds-size--1-of-3">
-                <button class="slds-button slds-button--neutral" (click)="downloadBulk()">
-                    <system-label label="LBL_DOWNLOAD"/>
+            <div class="slds-grid slds-grid--align-end slds-grid--vertical-align-center slds-size--2-of-5">
+                <div class="slds-grid slds-grid--vertical-align-center slds-is-relative">
+                    <system-checkbox [(ngModel)]="downloadAll">
+                        <system-label label="LBL_DOWNLOAD_ALL"/>
+                    </system-checkbox>
+                    @if (!downloadAll) {
+                        <div class="slds-grid slds-m-horizontal--x-small slds-grid--vertical-align-center">
+                            <system-label class="slds-col slds-m-horizontal--x-small" label="LBL_FROM"></system-label>
+                            <div class="slds-form-element" [ngClass]="{ 'slds-has-error': fromValid }">
+                                <div class="slds-form-element__control">
+                                    <input style="width: 3rem" type="number" placeholder="1" (input)="validateOnInput()" [(ngModel)]="from" class="slds-input">
+                                </div>
+                            </div>
+                            <system-label class="slds-col slds-m-horizontal--x-small" label="LBL_TO"></system-label>
+                            <div class="slds-form-element" [ngClass]="{ 'slds-has-error': toValid }">
+                                <div class="slds-form-element__control">
+                                    <input style="width: 3rem" type="number" [placeholder]="relatedmodels.count" (input)="validateOnInput()" [(ngModel)]="to" class="slds-input">
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <button [disabled]="canDownload()" class="slds-button slds-button--neutral" system-title="LBL_DOWNLOAD"
+                        (click)="downloadBulk()">
+                    <system-button-icon icon="download"></system-button-icon>
                 </button>
-                <button class="slds-button slds-button--neutral" (click)="reload()">
-                    <system-label label="LBL_RELOAD"/>
+                <button class="slds-button slds-button--neutral" system-title="LBL_RELOAD" (click)="reload()">
+                    <system-button-icon icon="refresh"></system-button-icon>
                 </button>
-                <button class="slds-button slds-button--neutral" (click)="close()">
-                    <system-label label="LBL_CANCEL"/>
+                <button class="slds-button slds-button--neutral" system-title="LBL_CLOSE" (click)="close()">
+                    <system-button-icon icon="close"></system-button-icon>
                 </button>
             </div>
         </div>
