@@ -4,6 +4,8 @@
             <object-record-fieldset [fieldset]="fieldset" [direction]="'vertical'"></object-record-fieldset>
     </system-modal-content>
     <system-modal-footer>
+        <system-checkbox [(ngModel)]="reserved">
+            <system-label label="LBL_RESERVE_FOR_USER"></system-label></system-checkbox>
         <button *ngIf="model.data.hits >= maxAttempts" class="slds-button slds-button--neutral" (click)="remove()">
             <system-label label="LBL_REMOVE"></system-label>
         </button>
