@@ -93,10 +93,6 @@ class PasskeyUtils
             'challenge' => $challenge,
         ];
 
-        if (!is_dir($this->getChallengesDirectory())) {
-            mkdir($this->getChallengesDirectory(), 0775, true);
-        }
-
         $challengeHash = md5($challenge);
         file_put_contents(
             $this->getChallengeFileName($challengeHash), json_encode($content)
