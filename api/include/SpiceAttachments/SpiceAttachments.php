@@ -222,7 +222,7 @@ class SpiceAttachments
     {
 
         $fileArray = [
-            'filename' => $file['name'],
+            'filename' => ($file['filename'] ?: $file['name']),
             'file' => base64_encode(file_get_contents($file['path'] . $file['name'])),
             'filemimetype' => $file['mime_type'] ?: mime_content_type($file['path'] . $file['name']),
             'external_id' => $file['external_id']

@@ -9,7 +9,7 @@ import {
     ViewChildren,
     QueryList,
     OnInit,
-    OnChanges, AfterViewInit, NgZone, ChangeDetectorRef, KeyValueDiffer, ElementRef
+    OnChanges, AfterViewInit, NgZone, ChangeDetectorRef, KeyValueDiffer, ElementRef, SimpleChanges
 } from "@angular/core";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
@@ -141,9 +141,11 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
         this.groups = Object.values(groupsObj).sort((a,b) => a.sequence > b.sequence ? 1 : -1);
     }
 
-    public ngOnChanges() {
-        this.grouped = this.metadata.getActionSet(this.actionset)?.grouped;
-        this.buildItems();
+    public ngOnChanges(changes:SimpleChanges) {
+        if (changes.actionset) {
+            this.grouped = this.metadata.getActionSet(this.actionset)?.grouped;
+            this.buildItems();
+        }
     }
 
 

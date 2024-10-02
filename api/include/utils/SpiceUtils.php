@@ -1530,6 +1530,9 @@ class SpiceUtils
 
         // get the cached nodes
         $cached = SpiceCache::get('categorytreenodes'.md5($treeId));
+        if(empty($cached)) {
+            $cached = SpiceUtils::cacheCategoryTree($treeId);
+        };
         if(empty($cached)) return null;
 
         // loop the values and build string
@@ -1540,6 +1543,34 @@ class SpiceUtils
         }
 
         return ($returnArray ? $storeParts : implode($separator, $storeParts));
+    }
+
+    /**
+     * will cache a category tree
+     * @param $treeId
+     * @return array
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
+     */
+    static function cacheCategoryTree($treeId){
+            $db = DBManagerFactory::getInstance();
+
+            $return = [];
+            $where = "syscategorytree_id = '{$treeId}'";
+            $rows = $db->query("SELECT * FROM syscategorytreenodes WHERE ".$where);
+            while ($row = $db->fetchByAssoc($rows)) {
+                $row['favorite'] = $row['favorite'] == 1 ? true : false;
+                $row['selectable'] = $row['selectable'] == 1 ? true : false;
+                $row['parent_id'] = $row['parent_id'] ?: '';
+
+                // decode the json and send as object
+                $row['add_params'] = json_decode(html_entity_decode($row['add_params'])) ?: null;
+
+                $return[] = $row;
+            }
+
+            // set the cached values
+            SpiceCache::set('categorytreenodes'.md5($treeId), $return);
+            return $return;
     }
 
 }
