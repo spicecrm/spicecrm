@@ -14,6 +14,7 @@ import {configurationService} from "../../../services/configuration.service";
 import {helper} from '../../../services/helper.service';
 import {session} from "../../../services/session.service";
 import {modal} from "../../../services/modal.service";
+import {GlobalLoginPasskeyModal} from "../../../globalcomponents/components/globalloginpasskeymodal";
 
 /**
  * @ignore
@@ -31,6 +32,14 @@ export class UserSet2FAModal  {
     public user_2fa_method: string;
 
     public capabilityConfig: any;
+    /**
+     * holds the registered passkey name and icon
+     */
+    public passkeyMetadata: {name: string, icon_dark: string, icon_light: string} = undefined;
+    /**
+     * loading flag for passkey
+     */
+    public loadingPasskey: boolean = false;
 
     constructor(
         public config: configurationService,
@@ -41,6 +50,8 @@ export class UserSet2FAModal  {
         this.capabilityConfig = this.config.getCapabilityConfig('login');
 
         if(this.currentMethod) this.user_2fa_method = this.currentMethod;
+
+        this.checkPasskey();
     }
 
     get smsEnabled(){
@@ -48,6 +59,9 @@ export class UserSet2FAModal  {
     }
     get emailEnabled(){
         return this.capabilityConfig.twofactor.email;
+    }
+    get passkeyEnabled(){
+        return navigator.credentials && navigator.credentials.create;
     }
 
     get candelete(){
@@ -72,6 +86,53 @@ export class UserSet2FAModal  {
 
     get canSave(){
         return this.user_2fa_method != this.currentMethod;
+    }
+
+    /**
+     * create a passkey
+     */
+    public createPasskey() {
+        if (this.passkeyMetadata) {
+            const isDeleting = this.modal.await('LBL_PROCESSING');
+            this.backend.deleteRequest('authentication/passkey/' + this.session.authData.userId, {rpId: window.location.hostname}).subscribe({
+                next: () => {
+                    this.passkeyMetadata = undefined;
+                }
+            });
+        } else {
+            this.close();
+            this.modal.openStaticModal(GlobalLoginPasskeyModal, true);
+        }
+    }
+
+    /**
+     * check if a passkey exists for the user
+     */
+    public checkPasskey() {
+        this.loadingPasskey = true;
+
+        this.backend.getRequest('authentication/passkey/' + this.session.authData.userId, {rpId: window.location.hostname}).subscribe({
+            next: res => {
+                this.loadingPasskey = false;
+                this.passkeyMetadata = res;
+            },
+            error: () => this.loadingPasskey = false
+        });
+    }
+
+    /**
+     * remove passkey
+     */
+    public removePasskey() {
+        this.loadingPasskey = true;
+
+        this.backend.deleteRequest('authentication/passkey/' + this.session.authData.userId, {rpId: window.location.hostname}).subscribe({
+            next: () => {
+                this.passkeyMetadata = undefined;
+                this.loadingPasskey = false;
+            },
+            error: () => this.loadingPasskey = false
+        });
     }
 
     public save(){
