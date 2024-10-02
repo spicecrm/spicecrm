@@ -146,15 +146,6 @@ class PasskeyUtils
     }
 
     /**
-     * generate crypt key
-     * @return string
-     */
-    public function getCryptKey(): string
-    {
-        return base64_encode(json_encode($this->db->dbConfig));
-    }
-
-    /**
      * generate get arguments
      * @param $params
      * @return object
@@ -192,6 +183,7 @@ class PasskeyUtils
      */
     public function getRegistrationByUserId(string $userId, string $rpId): ?object
     {
+        $rpId = $this->db->quote($rpId);
         $registration = $this->db->fetchOne("SELECT * FROM authentication_passkeys WHERE relying_party = '$rpId' AND user_id = '$userId'");
         if (!$registration) return null;
         return $this->decodeRegistration(
@@ -207,6 +199,9 @@ class PasskeyUtils
      */
     public function removeUserRegistration(string $userId, string $rpId)
     {
+        $userId = $this->db->quote($userId);
+        $rpId = $this->db->quote($rpId);
+
         return $this->db->query("DELETE FROM authentication_passkeys WHERE relying_party = '$rpId' AND user_id = '$userId'");
     }
 
@@ -218,7 +213,9 @@ class PasskeyUtils
      */
     public function getRegistrationByCredentialId(string $credentialId, string $rpId): ?object
     {
-        $credentialId = base64_encode($credentialId);
+        $rpId = $this->db->quote($rpId);
+        $credentialId = $this->db->quote(base64_encode($credentialId));
+
         $registration = $this->db->fetchOne("SELECT * FROM authentication_passkeys WHERE relying_party = '$rpId' AND credential_id = '$credentialId'");
         if (!$registration) return null;
         return $this->decodeRegistration(
@@ -256,7 +253,7 @@ class PasskeyUtils
             'credential_id' => $data->credentialId
         ];
 
-        $this->db->query("DELETE FROM authentication_passkeys WHERE relying_party = '$data->rpId' AND user_id = '$data->userId'");
+        $this->removeUserRegistration($data->userId, $data->rpId);
         $this->db->insertQuery('authentication_passkeys', $entry);
     }
 
