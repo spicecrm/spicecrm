@@ -91,6 +91,9 @@ export class TeleSalesCockpitCompleteModal implements OnInit {
     }
 
     public save() {
+        if (!this.model.validate()) {
+            return false;
+        }
 
         let awaitModal = this.modal.await('LBL_SAVING');
         let params = {

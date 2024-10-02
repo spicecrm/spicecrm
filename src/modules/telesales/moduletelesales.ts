@@ -29,6 +29,8 @@ import {TeleSalesCockpitHeader} from './components/telesalescockpitheader';
 import {TeleSalesCockpit} from './components/telesalescockpit';
 import {DirectivesModule} from "../../directives/directives";
 import {TeleSalesCockpitStats} from "./components/telesalescockpitstats";
+import {FieldTeleSalesCockpitComplete} from "./fields/fieldtelesalescockpitcomplete";
+import {TeleSalesCockpitLockEntryButton} from "./components/telesalescockpitlockentrybutton";
 
 @NgModule({
     imports: [
@@ -54,7 +56,9 @@ import {TeleSalesCockpitStats} from "./components/telesalescockpitstats";
         TeleSalesCockpitAddAttemptModal,
         TeleSalesCockpitModuleActions,
         TeleSalesCockpitAddMeetingButton,
-        TeleSalesCockpitStats
+        TeleSalesCockpitStats,
+        FieldTeleSalesCockpitComplete,
+        TeleSalesCockpitLockEntryButton,
 
     ],
     providers: [
