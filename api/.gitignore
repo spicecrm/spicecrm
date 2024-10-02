@@ -33,6 +33,8 @@
 /cache/xml/*
 /cache/upload/*
 
+/include/authentication/PasskeyAuthenticate/challenges/*
+
 /modules/SecurityGroups/*
 /modules/SpiceUIGenerator/csv/*
 

@@ -55,7 +55,7 @@ return array (
   ),
   'mobile' => 
   array (
-    'NationalNumberPattern' => '1(?:05(?:[0-8]\\d|9[0-6])|22[13]\\d)\\d{4,5}|1(?:0[1-46-9]|[16-9]\\d|2[013-9])\\d{6,7}',
+    'NationalNumberPattern' => '1(?:05(?:[0-8]\\d|9[0-6])|22[13]\\d)\\d{4,5}|1(?:0[0-46-9]|[16-9]\\d|2[013-9])\\d{6,7}',
     'ExampleNumber' => '1020000000',
     'PossibleLength' => 
     array (
@@ -68,7 +68,7 @@ return array (
   ),
   'tollFree' => 
   array (
-    'NationalNumberPattern' => '00(?:308\\d{6,7}|798\\d{7,9})|(?:00368|80)\\d{7}',
+    'NationalNumberPattern' => '00(?:308\\d{6,7}|798\\d{7,9})|(?:00368|[38]0)\\d{7}',
     'ExampleNumber' => '801234567',
     'PossibleLength' => 
     array (
@@ -144,7 +144,7 @@ return array (
   ),
   'uan' => 
   array (
-    'NationalNumberPattern' => '1(?:5(?:22|33|44|66|77|88|99)|6(?:[07]0|44|6[168]|88)|8(?:00|33|55|77|99))\\d{4}',
+    'NationalNumberPattern' => '1(?:5(?:22|33|44|66|77|88|99)|6(?:[07]0|44|6[0168]|88)|8(?:00|33|55|77|99))\\d{4}',
     'ExampleNumber' => '15441234',
     'PossibleLength' => 
     array (
@@ -242,7 +242,7 @@ return array (
       'format' => '$1-$2-$3',
       'leadingDigitsPatterns' => 
       array (
-        0 => '60|8',
+        0 => '[36]0|8',
       ),
       'nationalPrefixFormattingRule' => '0$1',
       'domesticCarrierCodeFormattingRule' => '0$CC-$1',
@@ -366,7 +366,7 @@ return array (
       'format' => '$1-$2-$3',
       'leadingDigitsPatterns' => 
       array (
-        0 => '60|8',
+        0 => '[36]0|8',
       ),
       'nationalPrefixFormattingRule' => '0$1',
       'domesticCarrierCodeFormattingRule' => '0$CC-$1',
