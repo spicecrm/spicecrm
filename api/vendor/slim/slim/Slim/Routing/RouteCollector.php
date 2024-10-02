@@ -17,6 +17,7 @@ use Slim\Handlers\Strategies\RequestResponse;
 use Slim\Interfaces\CallableResolverInterface;
 use Slim\Interfaces\InvocationStrategyInterface;
 use Slim\Interfaces\RouteCollectorInterface;
+use Slim\Interfaces\RouteCollectorProxyInterface;
 use Slim\Interfaces\RouteGroupInterface;
 use Slim\Interfaces\RouteInterface;
 use Slim\Interfaces\RouteParserInterface;
@@ -31,6 +32,7 @@ use function is_writable;
 /**
  * RouteCollector is used to collect routes and route groups
  * as well as generate paths and URLs relative to its environment
+ * @template TContainerInterface of (ContainerInterface|null)
  */
 class RouteCollector implements RouteCollectorInterface
 {
@@ -69,7 +71,7 @@ class RouteCollector implements RouteCollectorInterface
     /**
      * Route groups
      *
-     * @var RouteGroup[]
+     * @var RouteGroupInterface[]
      */
     protected array $routeGroups = [];
 
@@ -80,6 +82,9 @@ class RouteCollector implements RouteCollectorInterface
 
     protected ResponseFactoryInterface $responseFactory;
 
+    /**
+     * @param TContainerInterface $container
+     */
     public function __construct(
         ResponseFactoryInterface $responseFactory,
         CallableResolverInterface $callableResolver,
@@ -180,6 +185,7 @@ class RouteCollector implements RouteCollectorInterface
     {
         $route = $this->getNamedRoute($name);
 
+        /** @psalm-suppress PossiblyNullArrayOffset */
         unset($this->routesByName[$route->getName()], $this->routes[$route->getIdentifier()]);
         return $this;
     }
@@ -224,21 +230,37 @@ class RouteCollector implements RouteCollectorInterface
      */
     public function group(string $pattern, $callable): RouteGroupInterface
     {
-        $routeCollectorProxy = new RouteCollectorProxy(
-            $this->responseFactory,
-            $this->callableResolver,
-            $this->container,
-            $this,
-            $pattern
-        );
-
-        $routeGroup = new RouteGroup($pattern, $callable, $this->callableResolver, $routeCollectorProxy);
+        $routeGroup = $this->createGroup($pattern, $callable);
         $this->routeGroups[] = $routeGroup;
 
         $routeGroup->collectRoutes();
         array_pop($this->routeGroups);
 
         return $routeGroup;
+    }
+
+    /**
+     * @param string|callable $callable
+     */
+    protected function createGroup(string $pattern, $callable): RouteGroupInterface
+    {
+        $routeCollectorProxy = $this->createProxy($pattern);
+        return new RouteGroup($pattern, $callable, $this->callableResolver, $routeCollectorProxy);
+    }
+
+    /**
+     * @return RouteCollectorProxyInterface<TContainerInterface>
+     */
+    protected function createProxy(string $pattern): RouteCollectorProxyInterface
+    {
+        /** @var RouteCollectorProxyInterface<TContainerInterface> */
+        return new RouteCollectorProxy(
+            $this->responseFactory,
+            $this->callableResolver,
+            $this->container,
+            $this,
+            $pattern
+        );
     }
 
     /**
