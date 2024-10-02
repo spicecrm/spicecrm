@@ -51,10 +51,16 @@ class CampaignLogController{
             switch($status){
                 case 'attempted':
                     $campaignLog->planned_activity_date = $postParams['planned_activity_date'];
+                    $campaignLog->planned_activity_user_id = $postParams['planned_activity_user_id'];
                     $campaignLog->hits += 1;
 
                     if($campaignLog->hits >= $maxAttempts){
                         $status = 'maxattempts';
+                        $campaignLog->planned_activity_date = null;
+                        $campaignLog->outcome_id1 = $campaignTask->telesales_max_attempts_outcome_id1;
+                        $campaignLog->outcome_id2 = $campaignTask->telesales_max_attempts_outcome_id2;
+                        $campaignLog->outcome_id3 = $campaignTask->telesales_max_attempts_outcome_id3;
+                        $campaignLog->outcome_id4 = $campaignTask->telesales_max_attempts_outcome_id4;
                     }
 
                     // create a call attempt

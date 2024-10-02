@@ -11,8 +11,15 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\utils\SpiceUtils;
 
-class UserRelationship extends One2MRelationship
+class UserRelationship extends One2MBeanRelationship
 {
+
+    /**
+     * set the type
+     *
+     * @var string
+     */
+    var $type = "user";
     /**
      * activate the relationship and add the necessary cache fields
      * @param SpiceDictionaryRelationship $relationship
