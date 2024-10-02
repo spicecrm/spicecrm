@@ -18,6 +18,7 @@ import {GlobalLogin2FAMethodSelectModal} from "./globallogin2famethodselectmodal
 import {
     TOTPAuthenticationGenerateModal
 } from "../../include/totpauthentication/components/totpauthenticationgeneratemodal";
+import {GlobalLoginPasskeyModal} from "./globalloginpasskeymodal";
 
 
 /**
@@ -146,6 +147,10 @@ export class GlobalLogin implements OnDestroy {
             this.initializeNecessaryLanguageData();
             this.load2FAConfig();
         });
+    }
+
+    get passkeyEnabled() {
+        return window.PublicKeyCredential && PublicKeyCredential.isConditionalMediationAvailable;
     }
 
     /**
@@ -334,5 +339,97 @@ export class GlobalLogin implements OnDestroy {
         }
 
         this.session.endSession();
+    }
+
+    /**
+     * check passkey registration and login
+     */
+    public async checkRegistration(event: MouseEvent) {
+
+        event.preventDefault();
+
+        if (!window.PublicKeyCredential || !PublicKeyCredential.isConditionalMediationAvailable || !(await PublicKeyCredential.isConditionalMediationAvailable())) {
+            return console.error('Passkey authentication Browser not supported.');
+        }
+
+        this.loginService.backend.postRequest('authentication/passkey/getArgs', null, {rpId: window.location.hostname, username: this.username}).subscribe({
+            next: async getArgs => {
+                if (getArgs.success === false) {
+                    return console.error(getArgs.msg);
+                }
+
+                const secret = getArgs.secret;
+                getArgs = window._.omit(getArgs, 'secret');
+
+                // replace binary base64 data with ArrayBuffer
+                this.recursiveBase64StrToArrayBuffer(getArgs);
+
+                // check credentials with hardware
+                const cred: any = await navigator.credentials.get(getArgs);
+
+                // create object for transmission to server
+                const authenticatorAttestationResponse = {
+                    id: cred.rawId ? this.arrayBufferToBase64(cred.rawId) : null,
+                    clientDataJSON: cred.response.clientDataJSON ? this.arrayBufferToBase64(cred.response.clientDataJSON) : null,
+                    authenticatorData: cred.response.authenticatorData ? this.arrayBufferToBase64(cred.response.authenticatorData) : null,
+                    signature: cred.response.signature ? this.arrayBufferToBase64(cred.response.signature) : null,
+                    userHandle: cred.response.userHandle ? this.arrayBufferToBase64(cred.response.userHandle) : null,
+                    secret,
+                    rpId: window.location.hostname
+                };
+                const token = {
+                    issuer: 'Passkey',
+                    tokenObject: {
+                        access_token: btoa(JSON.stringify(authenticatorAttestationResponse))
+                    }
+                };
+
+                this.login(token);
+            },
+        });
+    }
+
+    /**
+     * convert RFC 1342-like base64 strings to array buffer
+     * @param obj
+     */
+    private recursiveBase64StrToArrayBuffer(obj) {
+        let prefix = '=?BINARY?B?';
+        let suffix = '?=';
+        if (typeof obj === 'object') {
+            for (let key in obj) {
+                if (typeof obj[key] === 'string') {
+                    let str = obj[key];
+                    if (str.substring(0, prefix.length) === prefix && str.substring(str.length - suffix.length) === suffix) {
+                        str = str.substring(prefix.length, str.length - suffix.length);
+
+                        let binary_string = window.atob(str);
+                        let len = binary_string.length;
+                        let bytes = new Uint8Array(len);
+                        for (let i = 0; i < len; i++) {
+                            bytes[i] = binary_string.charCodeAt(i);
+                        }
+                        obj[key] = bytes.buffer;
+                    }
+                } else {
+                    this.recursiveBase64StrToArrayBuffer(obj[key]);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Convert a ArrayBuffer to Base64
+     * @param buffer
+     * @returns string
+     */
+    private arrayBufferToBase64(buffer: ArrayBuffer) {
+        let binary = '';
+        let bytes = new Uint8Array(buffer);
+        let len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
     }
 }
