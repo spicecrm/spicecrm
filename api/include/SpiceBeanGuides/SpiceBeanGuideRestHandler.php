@@ -21,7 +21,7 @@ class SpiceBeanGuideRestHandler
 
         $db = DBManagerFactory::getInstance();
 
-        $fields = "id, name, status_field, systextid, module, is_default";
+        $fields = "id, name, status_field, systextid, module";
         $query = $db->query("SELECT $fields, 'custom' as scope FROM spicebeancustomguides UNION SELECT $fields, 'global' as scope FROM spicebeanguides");
 
         $guides = [];
