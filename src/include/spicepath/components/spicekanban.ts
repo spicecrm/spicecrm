@@ -277,7 +277,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     public ngOnDestroy() {
         // unsubscribe
-        this.modellistsubscribe.unsubscribe();
+        this.modellistsubscribe?.unsubscribe();
 
         // reset buckets
         this.modellist.buckets = {};
