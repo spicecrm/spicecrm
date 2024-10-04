@@ -214,8 +214,11 @@ class CampaignTasksController
                 'campaignlog_activity_date' => $item->activity_date,
                 'campaignlog_related_id' => $item->related_id,
                 'campaignlog_planned_activity_date' => $item->planned_activity_date,
+                'campaignlog_planned_activity_user_id' => $item->planned_activity_user_id,
+                'campaignlog_locked_until' => $item->locked_until,
                 'campaignlog_target_type' => $item->target_type,
                 'campaignlog_hits' => $item->hits,
+                'campaignlog_locked_by_id' => $item->locked_by_id,
                 // tbd
                 'data' => $KRESTModuleHandler->mapBeanToArray($item->target_type, $seed)
             ];

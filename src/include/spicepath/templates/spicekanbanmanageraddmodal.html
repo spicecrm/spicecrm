@@ -14,14 +14,14 @@
                     <option *ngFor="let thisfield of enumFields" [value]="thisfield"><system-label-fieldname [module]="selectedBeanGuide.module" [field]="thisfield"></system-label-fieldname></option>
                 </select>
             </div>
-            <div *ngIf="!isEditing" class="slds-form-element slds-m-top--small">
+            <div class="slds-form-element slds-m-top--small">
                 <label class="slds-form-element__label"><system-label label="LBL_SCOPE"></system-label></label>
-                <select class="slds-select" [(ngModel)]="scope">
+                <select [disabled]="isEditing" class="slds-select" [(ngModel)]="scope">
                     <option value="global"><system-label label="LBL_GLOBAL"></system-label></option>
                     <option value="custom"><system-label label="LBL_CUSTOM"></system-label></option>
                 </select>
             </div>
-            <div *ngIf="!isEditing" class="slds-form-element slds-m-top--small">
+            <div class="slds-form-element slds-m-top--small">
                 <label class="slds-form-element__label"><system-label label="LBL_SYSTEXTID_FIELD"></system-label></label>
                 <div class="slds-form-element__control">
                     <span>{{selectedBeanGuide.systextid + (!loading ? sysTextIDName : '')}}</span>

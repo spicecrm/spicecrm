@@ -17,22 +17,22 @@ import {Observable} from "rxjs";
 })
 export class ObjectActionOutputPdfModal {
 
-    public self :any = {};
+    public self: any = {};
 
     /**
      * Available output templates corresponding to the module
      */
-    public outputTemplates :any[] = [];
+    public outputTemplates: any[] = [];
 
     /**
      * Selected template
      */
-    public _selectedTemplate :string = '';
+    public _selectedTemplate: string = '';
 
     /**
      * Template ID needed for the request
      */
-    public templateId :string = '';
+    public templateId: string = '';
 
     /**
      * Array of selected items (ID's) from the list view
@@ -42,33 +42,33 @@ export class ObjectActionOutputPdfModal {
     /**
      * Url in charge of displaying the PDF in the UI
      */
-    public blobUrl :any;
+    public blobUrl: any;
 
     /**
      * Base64 string required when downloading the file from the UI
      */
-    public base64content : string;
+    public base64content: string;
 
     /**
      * Number of items displayed per page, configurable in the 'config' table
      */
-    public bucketMaxItems :number;
+    public bucketMaxItems: number;
 
     /**
      * Array of arrays holding IDs. Each array's size is limited by bucketMaxItems.
      * Used when sending separate requests based on the currentIndex i.e. page we're on
      */
-    public splitArray :any[] = [];
+    public splitArray: any[] = [];
 
     /**
      * current index of the splitArray
      */
-    public currentIndex :number = 0;
+    public currentIndex: number = 0;
 
     /**
      * loading state
      */
-    public isLoading :boolean = false;
+    public isLoading: boolean = false;
 
     constructor(
         public language: language,
@@ -85,11 +85,11 @@ export class ObjectActionOutputPdfModal {
         this.selectedItems = this.modellist.getSelectedIDs();
     }
 
-    public close() :void {
+    public close(): void {
         this.self.destroy();
     }
 
-    ngOnInit() :void {
+    ngOnInit(): void {
         this.backend.getRequest('module/OutputTemplates/formodule/' + this.modellist.module, {}).subscribe(res => {
             this.outputTemplates = res;
             this._selectedTemplate = res[0].id
@@ -109,11 +109,11 @@ export class ObjectActionOutputPdfModal {
     }
 
     /**
-     * download all pages
+     * download all selected pages
      */
-    public downloadBulk() :void {
+    public downloadBulk(): void {
         this.getPdfContent({beanIds: this.selectedItems}).subscribe(pdf => {
-            let fileName = `${this.modellist.module} PDF Export - ${this.numberOfItems} ${this.language.getLabel('LBL_OF')} ${this.totalItems}`;
+            let fileName = `${this.modellist.module}_PDF_Export_${this.language.getLabel('LBL_ALL')}_${this.language.getLabel('LBL_PAGES')}`;
             this.helper.downloadFileInBrowser(pdf.content, 'application/pdf', fileName);
         });
     }
@@ -127,6 +127,9 @@ export class ObjectActionOutputPdfModal {
         this.getTranslatedPdfContent();
     }
 
+    /**
+     * translate the html content to base64 and present it in the modal
+     */
     public getTranslatedPdfContent() {
 
         let body = {
@@ -134,7 +137,7 @@ export class ObjectActionOutputPdfModal {
         }
 
         this.getPdfContent(body).subscribe({
-            next: pdf => {
+            next: (pdf) => {
                 this.base64content = pdf.content;
                 this.renderPreview();
             }
@@ -147,7 +150,7 @@ export class ObjectActionOutputPdfModal {
      * @param body
      * @private
      */
-    private getPdfContent(body: {beanIds: string[]}): Observable<{content: string}> {
+    private getPdfContent(body: { beanIds: string[] }): Observable<{ content: string }> {
 
         this.isLoading = true;
 
@@ -162,6 +165,9 @@ export class ObjectActionOutputPdfModal {
         }));
     }
 
+    /**
+     * render the preview of the selected items
+     */
     public renderPreview() {
         let blob = this.helper.datatoBlob(atob(this.base64content), 'application/pdf')
         this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob))
@@ -171,16 +177,15 @@ export class ObjectActionOutputPdfModal {
         this.getTranslatedPdfContent();
     }
 
+    /**
+     * display navigation
+     */
     public previousPage() {
-        if(this.currentIndex == 0) return;
+        if (this.currentIndex == 0) return;
 
         this.currentIndex--;
 
         this.getTranslatedPdfContent();
-    }
-
-    get previousDisabled() {
-       return this.currentIndex == 0;
     }
 
     public nextPage() {
@@ -188,6 +193,13 @@ export class ObjectActionOutputPdfModal {
         this.getTranslatedPdfContent();
     }
 
+    get previousDisabled() {
+        return this.currentIndex == 0;
+    }
+
+    /**
+     * determining the disabled state based on the page position
+     */
     get nextDisabled() {
         return this.numberOfItems == this.totalItems;
     }

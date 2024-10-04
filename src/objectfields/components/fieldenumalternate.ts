@@ -10,6 +10,15 @@ import {fieldEnum} from './fieldenum';
 })
 
 export class fieldEnumAlternate extends fieldEnum {
+
+    public ngOnInit() {
+        super.ngOnInit();
+
+        if(this.fieldconfig.fielddisplayclass){
+            this.fielddisplayclass = this.fieldconfig.fielddisplayclass;
+        }
+    }
+
     public setValue(value) {
         this.value = value; // not needed anymore? :o
     }

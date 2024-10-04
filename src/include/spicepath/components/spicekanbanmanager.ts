@@ -86,10 +86,10 @@ export class SpiceKanbanManager implements OnInit{
         this.kanbanManagerService.getBeanGuides().subscribe(res => {
             this.beanGuides = res.filter(r => r.scope == 'global');
             this.beanGuidesCustom = res.filter(r => r.scope == 'custom');
-            this.loading = false;
-        })
+            this.checkMigrateKanbans();
 
-        this.checkMigrateKanbans();
+            this.loading = false;
+        });
     }
 
     openAddModal() {
@@ -122,12 +122,16 @@ export class SpiceKanbanManager implements OnInit{
     }
 
     public checkMigrateKanbans() {
-        this.backend.getRequest('/common/spicebeanguide/kanbanMigration').subscribe( {
-            next: (res) => {
-                this.kanbansToMigrate = res
-                if(res.length > 1) this.migrateBtnDisabled = false;
-            }
-        })
+
+        const modulesObj = window._.groupBy(this.beanGuides.filter(g => !g.name || !g.systextid).concat(this.beanGuidesCustom.filter(g => !g.name || !g.systextid)), 'module');
+
+        this.kanbansToMigrate = Object.keys(modulesObj).map(module => ({
+            module,
+            countGlobal: modulesObj[module].filter(g => g.scope == 'global').length,
+            countCustom: modulesObj[module].filter(g => g.scope == 'custom').length
+        }));
+
+        this.migrateBtnDisabled = this.kanbansToMigrate.length == 0;
     }
 
     public migrate() {
