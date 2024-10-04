@@ -34,7 +34,7 @@
         </div>
         <div class="slds-p-around--small slds-col--bump-left">
             <tele-sales-cockpit-module-actions [module]="model.module"></tele-sales-cockpit-module-actions>
-            <object-action-container class="slds-m-left--small" [actionset]="getActionsetId"></object-action-container>
+            <object-action-container [disabled]="telecockpitservice.isLocked(undefined, true)" class="slds-m-left--small" [actionset]="getActionsetId"></object-action-container>
         </div>
     </div>
 </div>

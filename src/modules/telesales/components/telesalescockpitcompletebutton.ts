@@ -31,7 +31,9 @@ export class TeleSalesCockpitCompleteButton {
         this.modalservice.openModal('TeleSalesCockpitCompleteModal', true, this.injector).subscribe(modalRef => {
             modalRef.instance.selectedListItem = item;
             modalRef.instance.campaignTask = this.telecockpitservice.selectedcampaigntask;
-            modalRef.instance.response.subscribe(response => this.removeItem(item));
+            modalRef.instance.response.subscribe(response => {
+                if(!!response)  this.removeItem(item);
+            })
         });
     }
 

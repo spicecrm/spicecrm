@@ -346,6 +346,7 @@ class User extends Person
                 foreach($orgUnits as $orgUnit){
                     $this->orgunit_id = $orgUnit->id;
                     $this->orgunit_name = $orgUnit->name;
+                    $this->orgunit_assigned_user_id = $orgUnit->assigned_user_id;
                 }
             }
         }

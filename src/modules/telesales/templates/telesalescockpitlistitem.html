@@ -4,8 +4,10 @@
         <h3 class="slds-truncate slds-text-heading--small">
             <a href="javascript:void(0);">{{ model.data.summary_text }}</a>
         </h3>
-        <div class="slds-col--bump-left">
-            <system-utility-icon *ngIf="item.related_id" icon="outbound_call" [size]="'x-small'" class="slds-m-right--xx-small"></system-utility-icon>
+        <div [system-model-provider]="{id: item.id, data: item, module: 'CampaignLog'}" class="slds-col--bump-left">
+            <system-utility-icon *ngIf="item.related_id" icon="outbound_call" [size]="'x-small'" [title]="language.getLabel('LBL_CALLATTEMPT')" class="slds-m-right--xx-small"></system-utility-icon>
+            <system-utility-icon *ngIf="item.planned_activity_user_id" icon= "privately_shared" [size]="'x-small'" [title]="language.getLabel('LBL_RESERVED')"></system-utility-icon>
+            <system-utility-icon *ngIf="telecockpitservice.isLocked(item, false)" icon= "lock" [size]="'x-small'" [title]="language.getLabel('LBL_LOCKED')"></system-utility-icon>
             <span *ngIf="item.hits > 0" class="slds-box slds-box_xx-small slds-theme--error" [ngStyle]="hitsStyle">
                 {{ item.hits }}
             </span>

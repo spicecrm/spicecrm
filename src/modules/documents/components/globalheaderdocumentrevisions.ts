@@ -40,11 +40,12 @@ export class GlobalHeaderDocumentRevisions implements OnInit {
 
 
     public loadRelated(){
-
-        this.backend.getRequest(`module/documentrevisions/${this.model.data.assigned_user_id}/relateduserrevisions`).subscribe(
-            res => {
-                this.relatedRevisions = res;
-            })
+        if(this.model.data.assigned_user_id){
+            this.backend.getRequest(`module/documentrevisions/${this.model.data.assigned_user_id}/relateduserrevisions`).subscribe(
+                res => {
+                    this.relatedRevisions = res;
+                })
+        }
     }
 
     /**
