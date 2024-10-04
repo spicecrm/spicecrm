@@ -692,7 +692,7 @@ class CampaignTask extends SpiceBean
             $textMessageTemplate->body = $this->email_body;
         }
 
-        $textMessage->description = $textMessageTemplate->parse($seed, ['campaignTask' => $this->id]); # third param would be: $addBeans
+        $textMessage->description = $textMessageTemplate->parse($seed, ['campaignTask' => $this->id], $addBeans);
         $textMessage->id = SpiceUtils::createGuid();
         $textMessage->new_with_id = true;
         $textMessage->mailbox_id = $this->mailbox_id;
