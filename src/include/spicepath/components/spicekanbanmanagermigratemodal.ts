@@ -33,7 +33,7 @@ export class SpiceKanbanManagerMigrateModal {
     }
 
     public migrate() {
-        this.backend.postRequest('/common/spicebeanguide/kanbanMigration').subscribe({
+        this.backend.postRequest('common/spicebeanguide/kanbanMigration').subscribe({
             next: () => {
                 this.toast.sendToast('LBL_KANBANS_MIGRATED', 'success');
                 this.close();

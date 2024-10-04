@@ -38,6 +38,7 @@ class SpiceBeanGuideRestHandler
                 'id' => $guide['id'],
                 'name' => $guide['name'],
                 'type' => $guide['scope'],
+                'is_default' => $guide['is_default'],
                 'statusfield' => $guide['status_field'],
                 'stages' => $this->getBeanGuideStages($guide, $bean)
             ];
