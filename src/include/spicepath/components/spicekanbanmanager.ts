@@ -139,35 +139,4 @@ export class SpiceKanbanManager implements OnInit{
         })
     }
 
-    /**
-     * set selected kanban to default and the other default kanban to false
-     */
-    public setDefault() {
-
-        if (!this.kanbanManagerService.editMode || this.kanbanManagerService.editMode == 'none' || (this.kanbanManagerService.selectedBeanGuide.scope == 'global' && this.kanbanManagerService.editMode != 'all')) return;
-
-        const reqCustom = [];
-        const reqGlobal = [];
-
-        const oldCustomDefault = this.moduleBeanGuidesCustom.find(g => g.is_default == 1 && g.module == this.moduleName);
-        if (oldCustomDefault) reqCustom.push({...oldCustomDefault, scope: undefined, is_default: 0});
-
-        if (this.kanbanManagerService.editMode == 'all') {
-            const oldGlobalDefault = this.moduleBeanGuides.find(g => g.is_default == 1 && g.module == this.moduleName);
-            if (oldGlobalDefault) reqGlobal.push({...oldGlobalDefault, scope: undefined, is_default: 0});
-        }
-
-        this.kanbanManagerService.selectedBeanGuide.is_default = 1;
-
-        if (this.kanbanManagerService.selectedBeanGuide.scope == 'custom') {
-            reqCustom.push({...this.kanbanManagerService.selectedBeanGuide, scope: undefined});
-
-        } else {
-            reqGlobal.push({...this.kanbanManagerService.selectedBeanGuide, scope: undefined});
-        }
-
-        this.backend.postRequest('configuration/configurator/spicebeanguides', null, { config: reqGlobal });
-        this.backend.postRequest('configuration/configurator/spicebeancustomguides', null, { config: reqCustom });
-    }
-
 }
