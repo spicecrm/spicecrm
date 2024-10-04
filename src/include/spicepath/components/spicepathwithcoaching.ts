@@ -89,7 +89,7 @@ export class SpicePathWithCoaching {
         const config = this.metadata.getComponentConfig('SpicePathWithCoaching', this.model.module);
 
         if (!config.kanban) {
-            config.kanban = this.configuration.getData('spicebeanguides')[this.model.module]?.find(k => k.is_default == 1)?.id;
+            config.kanban = this.configuration.getData('spicebeanguides')[this.model.module][0]?.id;
         }
 
         if (!config.kanban) return;
