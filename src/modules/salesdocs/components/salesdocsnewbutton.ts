@@ -4,10 +4,12 @@
 import {Component, OnInit, Injector, SkipSelf} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
-import {modal} from "../../../services/modal.service";
+import {relatedmodels} from "../../../services/relatedmodels.service";
 import {language} from "../../../services/language.service";
 import {ObjectActionNewButton} from "../../../objectcomponents/components/objectactionnewbutton";
 import {navigation} from "../../../services/navigation.service";
+import {ObjectActionNewrelatedButton} from "../../../objectcomponents/components/objectactionnewrelatedbutton";
+import {modal} from "../../../services/modal.service";
 
 declare var _: any;
 
@@ -15,12 +17,13 @@ declare var _: any;
     templateUrl: "../../../objectcomponents/templates/objectactionnewbutton.html",
     providers: [model]
 })
-export class SalesdocsNewButton extends ObjectActionNewButton implements OnInit {
+export class SalesdocsNewButton extends ObjectActionNewrelatedButton implements OnInit {
 
     public actionconfig: any = {};
 
-    constructor(public language: language, public metadata: metadata, public model: model, @SkipSelf() public parentmodel: model, public modal: modal, public injector: Injector, public navigation: navigation) {
-        super(language, metadata, model, parentmodel, injector);
+    constructor(@SkipSelf() public parent: model, public language: language, public metadata: metadata, public model: model, public relatedmodels: relatedmodels, public injector: Injector, public modal: modal) {
+
+        super(parent, language, metadata, model, relatedmodels, injector);
 
         this.model.module = 'SalesDocs';
     }
@@ -34,7 +37,7 @@ export class SalesdocsNewButton extends ObjectActionNewButton implements OnInit 
         }
 
         this.model.id = "";
-        this.model.initialize(this.parentmodel);
+        this.model.initialize(this.parent);
 
         if (this.actionconfig.defaultsalesdoctype) {
             this.model.setField('salesdoctype', this.actionconfig.defaultsalesdoctype);
