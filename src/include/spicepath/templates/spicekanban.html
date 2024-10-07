@@ -1,4 +1,5 @@
-<div *ngIf="confdata" class="slds-m-top--small slds-scrollable--x slds-grid slds-grid--vertical slds-height_full">
+@if (confdata){
+<div class="slds-m-top--small slds-scrollable--x slds-grid slds-grid--vertical slds-height_full">
     <div class="slds-tabs--path slds-p-horizontal--small" role="application">
         <ul class="slds-tabs--path__nav" role="tablist">
             <ng-container *ngFor="let stage of stages">
@@ -78,7 +79,12 @@
         </div>
     </div>
 </div>
-<system-illustration-page-not-available *ngIf="!confdata" class="slds-align--absolute-center slds-height_full">
-    <system-label label="MSG_MISSING_KANBAN_CONFIG"></system-label>
-</system-illustration-page-not-available>
+} @else {
+    <div class="slds-align_absolute-center slds-height_full slds-theme--error slds-theme--alert-texture">
+        <system-illustration-page-not-available>
+            <system-label label="MSG_MISSING_KANBAN_CONFIG"></system-label>
+        </system-illustration-page-not-available>
+    </div>
+}
+
 
