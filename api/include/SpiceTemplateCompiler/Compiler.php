@@ -9,6 +9,7 @@ use DateTimeZone;
 use DOMDocument;
 use DOMXPath;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
@@ -630,12 +631,12 @@ class Compiler
 
         //parse pipe if passed in
 
+        $value1 = $this->handleSubstitution($conditionparts[0], $beans, true);
+        if ( count( $conditionparts ) === 1 and is_bool( $value1 )) return $value1;
         $value1 = trim($this->handleSubstitution($conditionparts[0], $beans, true), "'");
         if ( count( $conditionparts ) > 1) {
             $value2 = trim($this->handleSubstitution($conditionparts[2], $beans, true), "'");
         }
-
-        if ( count( $conditionparts ) === 1 and is_bool( $value1 )) return $value1;
 
         switch (strtolower($conditionparts[1])) {
             case '>':
@@ -871,7 +872,7 @@ class Compiler
 
             if (is_callable([$obj, $part])) {
                 $value = $obj->{$part}();
-            } else {
+            } elseif ( $obj instanceof SpiceBean ) {
                 $field = $obj->field_defs[$part];
                 switch ($field['type']) {
                     case 'link':
@@ -897,7 +898,7 @@ class Compiler
                         //$value = implode(', ', SpiceUtils::unencodeMultienum($obj->{$parts[$level]}));
                         break;
                     case 'date':
-                        if(!empty($obj->{$part})){
+                        if (!empty($obj->{$part})) {
                             //set to user preferences format
                             $userTimezone = new DateTimeZone(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timezone"));
                             $gmtTimezone = new DateTimeZone('GMT');
@@ -912,7 +913,7 @@ class Compiler
                         break;
                     case 'datetime':
                     case 'datetimecombo':
-                        if(!empty($obj->{$part})){
+                        if (!empty($obj->{$part})) {
                             //set to user preferences format
                             $userTimezone = new DateTimeZone(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timezone"));
                             $gmtTimezone = new DateTimeZone('GMT');
@@ -920,13 +921,13 @@ class Compiler
                             $offset = $userTimezone->getOffset($myDateTime);
                             $myInterval = DateInterval::createFromDateString((string)$offset . 'seconds');
                             $myDateTime->add($myInterval);
-                            $value = $myDateTime->format(AuthenticationController::getInstance()->getCurrentUser()->getPreference("datef")." ". AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"));
+                            $value = $myDateTime->format(AuthenticationController::getInstance()->getCurrentUser()->getPreference("datef") . " " . AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"));
                         } else {
                             $value = '';
                         }
                         break;
                     case 'time':
-                        if(!empty($obj->{$part})){
+                        if (!empty($obj->{$part})) {
                             //set to user preferences format
                             $userTimezone = new DateTimeZone(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timezone"));
                             $gmtTimezone = new DateTimeZone('GMT');
@@ -941,22 +942,24 @@ class Compiler
                         break;
                     case 'currency':
                         // $currency = \SpiceCRM\data\BeanFactory::getBean('Currencies');
-                        $value = $raw ? $obj->{$part} : SpiceUtils::currencyFormatNumber($obj->{$part}, ['symbol_space' => true] );
+                        $value = $raw ? $obj->{$part} : SpiceUtils::currencyFormatNumber($obj->{$part}, ['symbol_space' => true]);
                         break;
                     case 'html':
                         $value = SpiceUtils::cleanHtmlBody(html_entity_decode($obj->{$part}));
                         break;
                     case 'image':
-                        if ( !empty( $obj->{$part} )) {
-                            $value = '<img src="data:'.$obj->{$part}.'" style="max-width:100%;max-height:100%;margin:0">';
+                        if (!empty($obj->{$part})) {
+                            $value = '<img src="data:' . $obj->{$part} . '" style="max-width:100%;max-height:100%;margin:0">';
                         }
                         break;
                     default:
                         // moved nl2br to only be added when non specific fields are parsed
                         $value = SpiceUtils::cleanHtmlBody($raw ? $obj->{$part} : nl2br(html_entity_decode($obj->{$part}, ENT_QUOTES)));
                         break;
+                    }
+                } else {
+                    $value = $obj->{$part};
                 }
-            }
             $bean = $obj;
             return $value;
         };
