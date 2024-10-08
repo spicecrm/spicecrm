@@ -99,7 +99,7 @@ class SpiceFTSActivityHandler
 
             if ($beanHandler->indexSettings[strtolower($activitiesmodule) . 'filter']) {
                 $filter = new SysModuleFilters();
-                $filterDef = $filter->generareElasticFilterForFilterId($beanHandler->indexSettings[strtolower($activitiesmodule) . 'filter']);
+                $filterDef = $filter->generateElasticFilterForFilterId($beanHandler->indexSettings[strtolower($activitiesmodule) . 'filter']);
                 $moduleQuery['bool']['filter']['bool']['must'][] = $filterDef;
             }
 
@@ -281,7 +281,7 @@ class SpiceFTSActivityHandler
             # create module filter query
             if (!empty($moduleDetails['settings']['calendarfilter'])) {
                 $filter = new SysModuleFilters();
-                $filterDef = $filter->generareElasticFilterForFilterId($moduleDetails['settings']['calendarfilter']);
+                $filterDef = $filter->generateElasticFilterForFilterId($moduleDetails['settings']['calendarfilter']);
                 $moduleQuery['bool']['filter']['bool']['must'][] = $filterDef;
             }
 
