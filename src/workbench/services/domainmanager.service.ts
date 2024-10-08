@@ -63,7 +63,7 @@ export class domainmanager {
     /**
      * the dbtypes
      */
-    public dbtypes = ['non-db','varchar', 'char', 'text', 'shorttext', 'mediumtext', 'longtext', 'date', 'datetime', 'int', 'tinyint', 'bigint', 'double', 'bool', 'float', 'json', 'enum', 'blob', 'longblob'];
+    public dbtypes = ['non-db','varchar', 'char', 'text', 'shorttext', 'mediumtext', 'longtext', 'date', 'datetime', 'time', 'int', 'tinyint', 'bigint', 'double', 'bool', 'float', 'json', 'enum', 'blob', 'longblob'];
 
     /**
      * holds the fieldtypes
