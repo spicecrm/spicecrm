@@ -80,10 +80,6 @@ export class FieldsetManager {
         return this.metadata.getFieldset(this.currentFieldSet).version;
     }
 
-    set currentFieldSetVersion(newVersion) {
-        this.metadata.setFieldset(this.currentFieldSet, {name: this.currentFieldSetName, package: this.currentFieldSetPackage, version: newVersion});
-    }
-
     get showDetailIcon() {
         return this.showFieldSetDetails ? 'chevronup' : 'chevrondown';
     }
@@ -568,5 +564,29 @@ export class FieldsetManager {
         } else {
             return this.allowBarButtons;
         }
+    }
+
+    /**
+     * sets the version for the fieldset
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.metadata.setFieldset(this.currentFieldSet, {
+            name: this.currentFieldSetName,
+            package: this.currentFieldSetPackage,
+            version: version?.name
+        });
+    }
+
+    /**
+     * sets the package for the fieldset
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.metadata.setFieldset(this.currentFieldSet, {
+            name: this.currentFieldSetName,
+            package: packageData?.name,
+            version: this.currentFieldSetVersion
+        });
     }
 }
