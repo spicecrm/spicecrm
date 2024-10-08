@@ -486,6 +486,28 @@ $routes = [
         ]
     ],
     [
+        'method' => 'delete',
+        'route' => '/configuration/spiceui/core/componentsets',
+        'class' => SystemUIController::class,
+        'function' => 'SystemDeleteComponentSet',
+        'description' => 'delete the componentset and its corresponding items',
+        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'parameters' => [
+            'table' => [
+                'in' => 'query',
+                'description' => 'table name from where the componentset should be deleted',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'sysuicustomcomponentsets'
+            ],
+            'id' => [
+                'in' => 'query',
+                'description' => 'id of the componentset that should be deleted',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'example' => '9c1452fe-6009-f75b-6e0f-de124ab0e86f'
+            ]
+        ]
+    ],
+    [
         'method' => 'get',
         'route' => '/configuration/spiceui/core/fieldsets',
         'oldroute' => '/spiceui/core/fieldsets',
@@ -528,7 +550,7 @@ $routes = [
         'route' => '/configuration/spiceui/core/{tableName}/{id}',
         'class' => SpiceUIFieldsetsController::class,
         'function' => 'deleteFieldset',
-        'description' => '',
+        'description' => 'delete the fieldset and its corresponding items',
         'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
         'parameters' => [
             'tableName' => [
