@@ -571,12 +571,22 @@ class SysModuleFilters
     }
 
     /**
+     * @deprecated since 2024.02.001
+     * @param $filterId
+     * @param $bean
+     * @return mixed
+     */
+    public function generareElasticFilterForFilterId($filterId, $bean = null){
+        return generateElasticFilterForFilterId($filterId, $bean);
+    }
+
+    /**
      * generates the elastic filter for a given filterid
      *
      * @param $filterId
      * @return array|string
      */
-    public function generareElasticFilterForFilterId($filterId, $bean = null)
+    public function generateElasticFilterForFilterId($filterId, $bean = null)
     {
         $db = DBManagerFactory::getInstance();
 
