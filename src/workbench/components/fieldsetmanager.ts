@@ -569,4 +569,25 @@ export class FieldsetManager {
             return this.allowBarButtons;
         }
     }
+
+    public delete(): void {
+        let tableName: string = this.fieldSetType === 'global' ? 'sysuifieldsets' : 'sysuicustomfieldsets';
+
+        this.modal.confirmDeleteRecord().subscribe({
+            next: (confirmed) => {
+                if(confirmed) {
+                    this.backend.deleteRequest(`configuration/spiceui/core/${tableName}/${this.currentFieldSet}`).subscribe({
+                        next: () => {
+                            this.configurationService.reloadTaskData('fieldsets');
+                            this.currentFieldSet = '';
+                            this.toast.sendToast('LBL_DELETED');
+                        },
+                        error: () => {
+                            this.toast.sendToast('LBL_ERROR')
+                        }
+                    })
+                }
+            }
+        })
+    }
 }
