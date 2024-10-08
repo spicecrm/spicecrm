@@ -450,6 +450,10 @@ export class ActionsetManager {
         });
     }
 
+
+    /**
+     * delete the actionset and it's items
+     */
     public deleteActionset(): void {
 
         let params = {
