@@ -575,6 +575,28 @@ $routes = [
         ]
     ],
     [
+        'method' => 'delete',
+        'route' => '/configuration/spiceui/core/actionsets',
+        'class' => SpiceUIActionsetsController::class,
+        'function' => 'deleteActionSets',
+        'description' => 'delete the actionset and its corresponding items',
+        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters' => [
+            'table' => [
+                'in' => 'query',
+                'description' => 'table from where the actionset should be removed',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'sysuiactionsets',
+            ],
+            'id' => [
+                'in' => 'query',
+                'description' => 'id of the actionset to be removed',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'example' => '9c1452fe-6009-f75b-6e0f-de124ab0e86f'
+            ]
+        ]
+    ],
+    [
         'method' => 'get',
         'route' => '/configuration/spiceui/core/fieldsetalreadyexists',
         'oldroute' => '/spiceui/core/fieldsetalreadyexists',
