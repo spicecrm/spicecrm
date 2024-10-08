@@ -289,7 +289,7 @@ FROM sysuicustomfieldsets LEFT JOIN sysuicustomfieldsetsitems ON sysuicustomfiel
     }
 
     /**
-     * delete fieldset
+     * delete fieldset and it's corresponding items
      * @param Request $req
      * @param Response $res
      * @param $args
