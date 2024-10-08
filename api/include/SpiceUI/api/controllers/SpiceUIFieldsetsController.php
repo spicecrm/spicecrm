@@ -288,13 +288,28 @@ FROM sysuicustomfieldsets LEFT JOIN sysuicustomfieldsetsitems ON sysuicustomfiel
         SystemDeploymentCR::writeDBEntry($fieldsetTable, $fieldsetId, $dbData, $name, SystemDeploymentCR::ACTION_INSERT);
     }
 
+    /**
+     * delete fieldset
+     * @param Request $req
+     * @param Response $res
+     * @param $args
+     * @return Response
+     * @throws Exception
+     */
     static function deleteFieldset(Request $req, Response $res, $args): Response
     {
         $db = DBManagerFactory::getInstance();
-        $fieldsetItemsTable = strpos($args['tableName'], 'custom') ? 'sysuicustomfieldsetsitems' : 'sysuifieldsetsitems';
+        SpiceUIRESTHelper::checkAdmin();
 
-        $db->query("DELETE FROM {$args['tableName']} WHERE id = '{$args['id']}'");
-        $db->query("DELETE FROM {$fieldsetItemsTable} WHERE fieldset_id = '{$args['id']}' OR fieldset = '{$args['id']}'");
+        $fieldsetItemsTable = strpos($args['tableName'], 'custom') ? 'sysuicustomfieldsetsitems' : 'sysuifieldsetsitems';
+        $fieldsetItemsQuery = "SELECT id FROM {$fieldsetItemsTable} WHERE fieldset_id = '{$args['id']}' OR fieldset = '{$args['id']}'";
+        $queryResult = $db->query($fieldsetItemsQuery);
+
+        SystemDeploymentCR::deleteDBEntry($args['tableName'], $args['id'], $args['tableName']);
+
+        while($row = $db->fetchByAssoc($queryResult)) {
+            SystemDeploymentCR::deleteDBEntry($fieldsetItemsTable, $row['id'], $fieldsetItemsTable);
+        }
 
         SpiceCache::clear('spiceFieldSets');
 
