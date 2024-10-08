@@ -18,7 +18,6 @@ import {GlobalLogin2FAMethodSelectModal} from "./globallogin2famethodselectmodal
 import {
     TOTPAuthenticationGenerateModal
 } from "../../include/totpauthentication/components/totpauthenticationgeneratemodal";
-import {GlobalLoginPasskeyModal} from "./globalloginpasskeymodal";
 
 
 /**
@@ -386,6 +385,7 @@ export class GlobalLogin implements OnDestroy {
 
                 this.login(token);
             },
+            error: () => this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error')
         });
     }
 
