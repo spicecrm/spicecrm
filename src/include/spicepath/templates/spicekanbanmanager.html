@@ -28,9 +28,6 @@
                 <button [disabled]="migrateBtnDisabled" (click)="migrate()" class="slds-button slds-button--neutral slds-button--icon-border">
                     <system-button-icon icon="replace"></system-button-icon>
                 </button>
-                <button [disabled]="!kanbanManagerService.selectedBeanGuide" (click)="setDefault()" class="slds-button slds-button--icon-border" [ngClass]="{'slds-button--success': kanbanManagerService.selectedBeanGuide?.is_default == 1}">
-                    <system-button-icon icon="datadotcom"></system-button-icon>
-                </button>
                 <button [disabled]="!kanbanManagerService.selectedBeanGuide" (click)="togglePreview()" class="slds-button slds-button--icon-border" [ngClass]="{'slds-button--brand': preview}" >
                     <system-button-icon icon="preview"></system-button-icon>
                 </button>
