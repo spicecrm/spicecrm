@@ -61,8 +61,10 @@ export class GlobalLoginPasskeyModal implements ModalComponentI {
                             console.error('passkey create args error: ', authenticatorAttestationServerResponse.msg || 'unknown error occured');
                         }
                     },
+                    error: () => this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error')
                 });
             },
+            error: () => this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error')
         });
 
     }
