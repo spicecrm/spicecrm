@@ -286,6 +286,20 @@ class SystemUIController{
     }
 
     /**
+     * @param Request $req
+     * @param Response $res
+     * @param $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function SystemDeleteComponentSet(Request $req, Response $res, $args): Response
+    {
+        $uiRestHandler = new SpiceUIRESTHandler();
+        $getParams = $req->getQueryParams();
+        return $res->withJson($uiRestHandler->deleteComponentset($getParams));
+    }
+
+    /**
      * gets the fieldsets
      * @param $req
      * @param $res
