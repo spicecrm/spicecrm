@@ -820,7 +820,7 @@ class SpiceInstaller
                 $index = new SpiceDictionaryIndex($index['id']);
                 $index->activate();
             } catch (Throwable $t) {
-                throw new Exception("Error repairing index ({$index['name']}). Check if all index items and dictionary related items have the package system in the system-package.gz file.");
+                throw new Exception("Error repairing index ($index->name). Check if all index items and dictionary related items have the package system in the system-package.gz file.");
             }
         }
     }
