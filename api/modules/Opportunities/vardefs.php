@@ -459,6 +459,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'link_type' => 'one',
             'source' => 'non-db',
         ],
+        /*
         'opportunitystages' => [
             'name' => 'opportunitystages',
             'type' => 'link',
@@ -469,6 +470,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'bean_name' => 'OpportunityStage',
             'vname' => 'LBL_OPPORTUNITYSTAGES',
         ],
+        */
         'opportunityrevenuesplit' => [
             'name' => 'opportunityrevenuesplit',
             'type' => 'enum',
