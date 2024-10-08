@@ -68,6 +68,9 @@
                     {{selectedComponent.component}} / {{selectedComponent.role_name}}
                 </div>
                 <div class="slds-col--bump-left">
+                    <button [disabled]="!view.isEditMode() || !selectedComponent?.id" class="slds-button slds-button--neutral" system-title="LBL_DELETE" (click)="delete()">
+                        <system-button-icon icon="delete"></system-button-icon>
+                    </button>
                     <button [disabled]="!getAllowCopyButton" type="button" class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--neutral" (click)="copyConf()">
                         <system-label label="LBL_COPY"></system-label>
                     </button>
@@ -86,7 +89,7 @@
                     <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="selectedComponent.version"/>
                 </div>
             </div>
-            <workbench-config [module]="currentModule" [component]="component" [configValues]="configValues"></workbench-config>
+            <workbench-config *ngIf="selectedComponent?.id" [module]="currentModule" [component]="component" [configValues]="configValues"></workbench-config>
         </div>
     </div>
 </div>
