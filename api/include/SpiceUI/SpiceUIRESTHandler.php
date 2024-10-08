@@ -376,6 +376,30 @@ class SpiceUIRESTHandler
         SystemDeploymentCR::writeDBEntry($tableName, $componentsetId, $dbData, $name, SystemDeploymentCR::ACTION_INSERT);
     }
 
+    /**
+     * @param $params
+     * @return bool
+     * @throws \Exception
+     */
+    function deleteComponentset($params): bool
+    {
+        $db = DBManagerFactory::getInstance();
+        SpiceUIRESTHelper::checkAdmin();
+
+        $componentsetComponentsTable = strpos($params['table'], 'custom') ? 'sysuicustomcomponentsetscomponents' : 'sysuicomponentsetscomponents';
+        $componentsetComponentsQuery = "SELECT id FROM {$componentsetComponentsTable} WHERE componentset_id = '{$params['id']}'";
+        $queryResult = $db->query($componentsetComponentsQuery);
+
+        SystemDeploymentCR::deleteDBEntry($params['table'], $params['id'], $params['table']);
+
+        while ($row = $db->fetchByAssoc($queryResult)) {
+            SystemDeploymentCR::deleteDBEntry($componentsetComponentsTable, $row['id'], $componentsetComponentsTable);
+        }
+
+        SpiceCache::clear('spiceComponentSets');
+
+        return true;
+    }
 
     /**
      * @deprected .. moved to controller

@@ -28,6 +28,7 @@ use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use Throwable;
 
 require_once('modules/TableDictionary.php');
 
@@ -810,13 +811,17 @@ class SpiceInstaller
      * @return void
      * @throws Exception
      */
-    public function createDatabaseIndexes()
+    public function createDatabaseIndexes(): void
     {
         $indexHandler = SpiceDictionaryIndexes::getInstance();
 
         foreach ($indexHandler->dictionaryIndexes as $index) {
-            $index = new SpiceDictionaryIndex($index['id']);
-            $index->activate();
+            try {
+                $index = new SpiceDictionaryIndex($index['id']);
+                $index->activate();
+            } catch (Throwable $t) {
+                throw new Exception("Error repairing index ($index->name). Check if all index items and dictionary related items have the package system in the system-package.gz file. Error: " . $t->getMessage());
+            }
         }
     }
 

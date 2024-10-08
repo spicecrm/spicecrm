@@ -80,6 +80,10 @@ export class FieldsetManager {
         return this.metadata.getFieldset(this.currentFieldSet).version;
     }
 
+    set currentFieldSetVersion(newVersion) {
+        this.metadata.setFieldset(this.currentFieldSet, {name: this.currentFieldSetName, package: this.currentFieldSetPackage, version: newVersion});
+    }
+
     get showDetailIcon() {
         return this.showFieldSetDetails ? 'chevronup' : 'chevrondown';
     }
@@ -588,5 +592,26 @@ export class FieldsetManager {
             package: packageData?.name,
             version: this.currentFieldSetVersion
         });
+    }
+
+    public delete(): void {
+        let tableName: string = this.fieldSetType === 'global' ? 'sysuifieldsets' : 'sysuicustomfieldsets';
+
+        this.modal.confirmDeleteRecord().subscribe({
+            next: (confirmed) => {
+                if(confirmed) {
+                    this.backend.deleteRequest(`configuration/spiceui/core/${tableName}/${this.currentFieldSet}`).subscribe({
+                        next: () => {
+                            this.configurationService.reloadTaskData('fieldsets');
+                            this.currentFieldSet = '';
+                            this.toast.sendToast('LBL_DELETED');
+                        },
+                        error: () => {
+                            this.toast.sendToast('LBL_ERROR')
+                        }
+                    })
+                }
+            }
+        })
     }
 }

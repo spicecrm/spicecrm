@@ -120,5 +120,8 @@
         <button [disabled]="!view.isEditMode()" type="button" class="slds-button slds-button--brand" (click)="saveChanges()">
             <system-label label="LBL_SAVE"></system-label>
         </button>
+        <button [disabled]="!view.isEditMode()" class="slds-button slds-button--neutral" system-title="LBL_DELETE" (click)="delete()">
+            <system-button-icon icon="delete"></system-button-icon>
+        </button>
     </div>
 </div>
