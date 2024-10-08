@@ -11,6 +11,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -55,7 +56,7 @@ class PasskeyUtils
      * create a new registration for the generated passkey
      * @param $params
      * @return array
-     * @throws WebAuthnException|BadRequestException
+     * @throws WebAuthnException
      */
     public function processCreate($params): array
     {
@@ -81,9 +82,14 @@ class PasskeyUtils
      * used for the request pairs (createArgs, processCreate) and (getArgs, processGet)
      * @param int $timeout in milliseconds
      * @return string
+     * @throws Exception
      */
     private function saveChallenge(int $timeout): string
     {
+        if (!is_writable($this->getChallengesDirectory())) {
+            throw new Exception('Required server challenges directory is not writable');
+        }
+
         $challenge = ($this->webAuthn->getChallenge())->getHex();
 
         $now = TimeDate::getInstance()->getNow();
