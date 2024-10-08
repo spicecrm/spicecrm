@@ -524,6 +524,28 @@ $routes = [
         ]
     ],
     [
+        'method' => 'delete',
+        'route' => '/configuration/spiceui/core/{tableName}/{id}',
+        'class' => SpiceUIFieldsetsController::class,
+        'function' => 'deleteFieldset',
+        'description' => '',
+        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters' => [
+            'tableName' => [
+                'in' => 'path',
+                'description' => 'name of the table from where the fieldset should be removed',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'sysuifieldsets'
+            ],
+            'id' => [
+                'in' => 'path',
+                'description' => 'id of the fieldset that is being removed',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'example' => '9c142fge-90k9-f0ob-6lkf-d1d90ab0e9tf'
+            ]
+        ]
+    ],
+    [
         'method' => 'post',
         'route' => '/configuration/spiceui/core/actionsets',
         'oldroute' => '/spiceui/core/actionsets',
