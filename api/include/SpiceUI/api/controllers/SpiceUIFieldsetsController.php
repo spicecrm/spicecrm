@@ -287,4 +287,17 @@ FROM sysuicustomfieldsets LEFT JOIN sysuicustomfieldsetsitems ON sysuicustomfiel
 
         SystemDeploymentCR::writeDBEntry($fieldsetTable, $fieldsetId, $dbData, $name, SystemDeploymentCR::ACTION_INSERT);
     }
+
+    static function deleteFieldset(Request $req, Response $res, $args): Response
+    {
+        $db = DBManagerFactory::getInstance();
+        $fieldsetItemsTable = strpos($args['tableName'], 'custom') ? 'sysuicustomfieldsetsitems' : 'sysuifieldsetsitems';
+
+        $db->query("DELETE FROM {$args['tableName']} WHERE id = '{$args['id']}'");
+        $db->query("DELETE FROM {$fieldsetItemsTable} WHERE fieldset_id = '{$args['id']}' OR fieldset = '{$args['id']}'");
+
+        SpiceCache::clear('spiceFieldSets');
+
+        return $res->withJson(true);
+    }
 }
