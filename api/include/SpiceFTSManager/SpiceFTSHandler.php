@@ -863,7 +863,7 @@ class SpiceFTSHandler
         // if yes add this here to the add filters
         if (!empty($indexSettings['globalfilter']) && $useGlobalFilter) {
             $sysFilter = new SysModuleFilters();
-            $filterForId = $sysFilter->generareElasticFilterForFilterId($indexSettings['globalfilter']);
+            $filterForId = $sysFilter->generateElasticFilterForFilterId($indexSettings['globalfilter']);
             if (!empty($filterForId)) {
                 $addFilters[] = $filterForId;
             }
@@ -995,7 +995,7 @@ class SpiceFTSHandler
         // if yes add this here to the add filters
         if (!empty($indexSettings['globalfilter'])) {
             $sysFilter = new SysModuleFilters();
-            $filterForId = $sysFilter->generareElasticFilterForFilterId($indexSettings['globalfilter']);
+            $filterForId = $sysFilter->generateElasticFilterForFilterId($indexSettings['globalfilter']);
             if (!empty($filterForId)) {
                 $addFilters[] = $filterForId;
             }
@@ -1125,7 +1125,7 @@ class SpiceFTSHandler
         // if yes add this here to the add filters
         if (!empty($indexSettings['duplicatefilter'])) {
             $sysFilter = new SysModuleFilters();
-            $filterForId = $sysFilter->generareElasticFilterForFilterId($indexSettings['duplicatefilter']);
+            $filterForId = $sysFilter->generateElasticFilterForFilterId($indexSettings['duplicatefilter']);
             if (!empty($filterForId)) {
                 // $addFilters[] = $filterForId;
                 if (is_array($queryParam['query']['bool']['filter']['bool']['must'])) {
@@ -1249,7 +1249,7 @@ class SpiceFTSHandler
             // check for modulefilter
             if (!empty($params['modulefilter'])) {
                 $sysFilter = new SysModuleFilters();
-                $addFilters[] = $sysFilter->generareElasticFilterForFilterId($params['modulefilter'], $params['filtercontext']);
+                $addFilters[] = $sysFilter->generateElasticFilterForFilterId($params['modulefilter'], $params['filtercontext']);
             }
 
 
@@ -1444,7 +1444,7 @@ class SpiceFTSHandler
 
         // check for modulefilter
         if (!empty($params['modulefilter'])) {
-            $addFilters[] = $sysFilter->generareElasticFilterForFilterId($params['modulefilter'], $params['filtercontext']);
+            $addFilters[] = $sysFilter->generateElasticFilterForFilterId($params['modulefilter'], $params['filtercontext']);
         }
 
         // check if we have a listid
@@ -1593,7 +1593,7 @@ class SpiceFTSHandler
         // check for modulefilter
         if (!empty($params['modulefilter'])) {
             $sysFilter = new SysModuleFilters();
-            $addFilters[] = $sysFilter->generareElasticFilterForFilterId($params['modulefilter'], $params['filtercontext']);
+            $addFilters[] = $sysFilter->generateElasticFilterForFilterId($params['modulefilter'], $params['filtercontext']);
         }
 
 
