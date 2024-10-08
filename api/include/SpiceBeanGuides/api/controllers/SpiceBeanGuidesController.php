@@ -20,7 +20,7 @@ class SpiceBeanGuidesController
     {
         $restHandler = new SpiceBeanGuideRestHandler();
 
-        $fields = "id, name, status_field, systextid, module, is_default";
+        $fields = "id, name, status_field, systextid, module";
         $guide = DBManagerFactory::getInstance()->fetchOne("SELECT $fields, 'custom' as scope FROM spicebeancustomguides WHERE id = '{$args['guideId']}' UNION SELECT $fields, 'global' as scope FROM spicebeanguides  WHERE id = '{$args['guideId']}'");
         $bean = BeanFactory::getBean($args['module'], $args['beanid']);
 
