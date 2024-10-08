@@ -9,14 +9,14 @@ use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryIndex
 {
-    protected $id;
+    public $id;
 
     /**
      * the index details
      *
      * @var
      */
-    protected $index;
+    public $index;
 
     /**
      * the fields of the index
@@ -25,9 +25,9 @@ class SpiceDictionaryIndex
      */
     protected $indexItems;
 
-    protected $name;
-    protected $indextype;
-    protected $sysdictionarydefinition_id;
+    public $name;
+    public $indextype;
+    public $sysdictionarydefinition_id;
 
     public function __construct($indexId)
     {
