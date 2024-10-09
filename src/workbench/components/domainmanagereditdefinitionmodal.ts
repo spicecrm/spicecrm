@@ -7,11 +7,12 @@ import {modelutilities} from '../../services/modelutilities.service';
 import {DomainDefinition} from "../interfaces/domainmanager.interfaces";
 import {backend} from "../../services/backend.service";
 import {domainmanager} from "../services/domainmanager.service";
+import {view} from "../../services/view.service";
 
 
 @Component({
-    selector: 'domain-manager-edit-definition-modal',
     templateUrl: '../templates/domainmanagereditdefinitionmodal.html',
+    providers: [view]
 })
 export class DomainManagerEditDefinitionModal{
     /**
@@ -54,5 +55,21 @@ export class DomainManagerEditDefinitionModal{
             })
             return true;
         })
+    }
+
+    /**
+     * sets the version
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.domaindefinition.version = version?.name;
+    }
+
+    /**
+     * sets the package
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.domaindefinition.package = packageData?.name;
     }
 }
