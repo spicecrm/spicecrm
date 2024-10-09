@@ -1,5 +1,5 @@
 <system-modal>
-    <system-modal-header (close)="close()"><system-label label="LBL_ADD_VALIDATION"></system-label></system-modal-header>
+    <system-modal-header (close)="close()"><system-label label="LBL_ADD_VALIDATION_VALUE"></system-label></system-modal-header>
     <system-modal-content>
         <div class="slds-grid">
             <div class="slds-form-element__control slds-size--1-of-2 slds-p-right--xx-small">
@@ -34,11 +34,11 @@
         <div class="slds-grid">
             <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
-                <system-input-text [(ngModel)]="fieldvalidationvalue.package"></system-input-text>
+                <field-package [package]="fieldvalidationvalue.package" (packageSelected)="setPackage($event)"></field-package>
             </div>
             <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
-                <system-input-text [(ngModel)]="fieldvalidationvalue.version"></system-input-text>
+                <field-version [version]="fieldvalidationvalue.version" (versionSelected)="setVersion($event)"></field-version>
             </div>
         </div>
         <label class="slds-form-element__label"><system-label label="LBL_COMMENT"></system-label></label>

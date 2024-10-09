@@ -9,10 +9,12 @@ import {modelutilities} from '../../services/modelutilities.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryDefinition, DictionaryManagerMessage} from "../interfaces/dictionarymanager.interfaces";
 import {backend} from "../../services/backend.service";
+import {view} from "../../services/view.service";
 
 @Component({
     selector: 'dictionary-manager-edit-definition-modal',
     templateUrl: '../templates/dictionarymanagereditdefinitionmodal.html',
+    providers: [view]
 })
 export class DictionaryManagerEditDefinitionModal {
 
@@ -56,7 +58,21 @@ export class DictionaryManagerEditDefinitionModal {
             })
            return true;
         });
+    }
 
+    /**
+     * sets the version
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.dictionarydefinition.version = version?.name;
+    }
 
+    /**
+     * sets the package
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.dictionarydefinition.package = packageData?.name;
     }
 }
