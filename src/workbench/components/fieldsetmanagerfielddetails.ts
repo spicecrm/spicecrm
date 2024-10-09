@@ -48,4 +48,20 @@ export class FieldsetManagerFieldDetails implements OnChanges {
         });
         this.component = this.metadata.getFieldTypeComponent(this.configValues.fieldtype);
     }
+
+    /**
+     * sets the version for the fieldsetitem
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.currentField.version = version?.name;
+    }
+
+    /**
+     * sets the package for the fieldsetitem
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.currentField.package = packageData?.name;
+    }
 }
