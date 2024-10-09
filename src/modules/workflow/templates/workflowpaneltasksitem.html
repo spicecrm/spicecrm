@@ -6,7 +6,7 @@
     <div class="slds-truncate"><field-container field="name" fielddisplayclass="slds-truncate"></field-container></div>
 </td>
 <td>
-    <div class="slds-truncate" *ngIf="!model.getField('assigned_orgunit_id')"><field-container field="assigned_user_name" fielddisplayclass="slds-truncate"></field-container></div>
+    <div class="slds-truncate" *ngIf="!model.getField('assigned_orgunit_id')"><field-container field="assigned_user" fielddisplayclass="slds-truncate"></field-container></div>
     <div class="slds-truncate" *ngIf="model.getField('assigned_orgunit_id')"><field-container field="assigned_orgunit_name" fielddisplayclass="slds-truncate"></field-container></div>
 </td>
 <td>
