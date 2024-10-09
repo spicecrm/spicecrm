@@ -519,6 +519,7 @@ export class metadata {
     public setFieldset(fieldset_id, params) {
         this.fieldSets[fieldset_id].name = params.name;
         this.fieldSets[fieldset_id].package = params.package;
+        this.fieldSets[fieldset_id].version = params.version;
         this.configuration.setData('fieldsets', this.fieldSets);
     }
 
