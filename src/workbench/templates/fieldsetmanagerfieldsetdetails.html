@@ -25,13 +25,13 @@
 <div class="slds-form-element slds-m-vertical--x-small">
     <label class="slds-form-element__label" ><system-label label="LBL_PACKAGE"></system-label></label>
     <div class="slds-form-element__control">
-        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentFieldSet.package"/>
+        <field-package [package]="currentFieldSet.package" (packageSelected)="setPackage($event)"></field-package>
     </div>
 </div>
 <div class="slds-form-element slds-m-vertical--x-small">
     <label class="slds-form-element__label" ><system-label label="LBL_VERSION"></system-label></label>
     <div class="slds-form-element__control">
-        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentFieldSet.version"/>
+        <field-version [version]="currentFieldSet.version" (versionSelected)="setVersion($event)"></field-version>
     </div>
 </div>
 <div class="slds-form-element slds-m-vertical--x-small">
