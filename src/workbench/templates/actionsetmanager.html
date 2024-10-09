@@ -32,12 +32,15 @@
             </div>
         </div>
         <div class="slds-form-element slds-col--bump-left">
-
             <button *ngIf="!checkForChanges && currentActionSet.id != ''" [disabled]="!allowBarButtons" class="slds-button slds-button--brand" (click)="copy()" >
                 <span><system-label label="LBL_COPY"></system-label></span>
             </button>
-            <button *ngIf="!checkForChanges" [disabled]="!allowBarButtons" type="button" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="addActionset()"><system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon></button>
-
+            <button *ngIf="!checkForChanges" [disabled]="!allowBarButtons" type="button" system-title="LBL_ADD" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="addActionset()">
+                <system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon>
+            </button>
+            <button *ngIf="!checkForChanges && currentActionSet.id != ''" [disabled]="!allowBarButtons" system-title="LBL_DELETE" type="button" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="deleteActionset()">
+                <system-utility-icon [icon]="'delete'" [size]="'x-small'"></system-utility-icon>
+            </button>
             <button *ngIf="checkForChanges && currentActionSet.id != ''" [disabled]="!view.isEditMode()" type="button" class="slds-button slds-button--brand" (click)="saveChanges()">
                 <system-label label="LBL_SAVE"></system-label>
             </button>
@@ -60,7 +63,7 @@
             <div class="slds-form-element slds-p-right--x-small slds-size--1-of-6">
                 <label class="slds-form-element__label"><system-label label="LBL_GROUPED"></system-label></label>
                 <div class="slds-form-element__control">
-                    <div class="slds-select_container slds-m-vertical--xx-small">
+                    <div class="slds-select_container">
                         <select [disabled]="!view.isEditMode()" class="slds-select " [(ngModel)]="currentActionSet.grouped">
                             <option value="no"><system-label label="LBL_NO"></system-label></option>
                             <option value="vertical"><system-label label="LBL_VERTICAL"></system-label></option>

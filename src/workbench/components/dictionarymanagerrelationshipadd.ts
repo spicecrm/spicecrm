@@ -16,6 +16,7 @@ import {dictionarymanager} from '../services/dictionarymanager.service';
  * renders a modal to select the type of the relationship
  */
 @Component({
+    selector: 'dictionary-manager-relationship-add',
     templateUrl: '../templates/dictionarymanagerrelationshipadd.html',
 })
 export class DictionaryManagerRelationshipAdd implements OnInit{

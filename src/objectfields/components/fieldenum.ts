@@ -38,15 +38,9 @@ export class fieldEnum extends fieldGeneric {
     }
 
     public getOptions() {
-        let retArray = [];
-        let options = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
-        for (let optionVal in options) {
-            retArray.push({
-                value: optionVal,
-                display: options[optionVal]
-            });
-        }
-        this.options = retArray;
+
+        this.options = this.language.getFieldDisplayOptions(this.model.module, this.fieldname, true);
+
         if (this.fieldconfig.sortdirection) {
             switch (this.fieldconfig.sortdirection.toLowerCase()) {
                 case 'desc':

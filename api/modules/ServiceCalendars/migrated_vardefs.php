@@ -2,7 +2,7 @@
 /***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-
+/* migrated
 SpiceDictionaryHandler::getInstance()->dictionary['ServiceCalendar'] = [
     'table' => 'servicecalendars',
     'comment' => 'ServiceCalendars Module',
@@ -85,3 +85,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['ServiceCalendar'] = [
 ];
 
 VardefManager::createVardef('ServiceCalendars', 'ServiceCalendar', ['default']);
+*/
