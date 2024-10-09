@@ -16,6 +16,7 @@ import {
     DictionaryIndexItem,
     DictionaryItem
 } from "../interfaces/dictionarymanager.interfaces";
+import {view} from "../../services/view.service";
 
 /**
  * redners a modal to add an index
@@ -23,6 +24,7 @@ import {
 @Component({
     selector: 'dictionary-manager-index-add',
     templateUrl: '../templates/dictionarymanagerindexadd.html',
+    providers: [view]
 })
 export class DictionaryManagerIndexAdd implements OnInit{
 
@@ -210,5 +212,19 @@ export class DictionaryManagerIndexAdd implements OnInit{
         event.container.data.splice(event.currentIndex, 0, previousItem[0]);
     }
 
+    /**
+     * sets the version
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.index.version = version?.name;
+    }
 
+    /**
+     * sets the package
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.index.package = packageData?.name;
+    }
 }
