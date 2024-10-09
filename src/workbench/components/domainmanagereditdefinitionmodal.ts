@@ -42,7 +42,8 @@ export class DomainManagerEditDefinitionModal{
             if (d.id != this.domaindefinition.id) return false;
             d.package = this.domaindefinition.package;
             d.version = this.domaindefinition.version;
-            this.backend.postRequest(`domain/definition/${this.domaindefinition}`, {}, this.domaindefinition).subscribe({
+            d.description = this.domaindefinition.description;
+            this.backend.postRequest(`dictionary/domaindefinition/${this.domaindefinition.id}`, {}, this.domaindefinition).subscribe({
                 next: (res) => {
                     this.close();
                 },
