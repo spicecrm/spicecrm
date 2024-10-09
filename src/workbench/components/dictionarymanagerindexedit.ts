@@ -7,6 +7,7 @@ import {metadata} from "../../services/metadata.service";
 import {modal} from "../../services/modal.service";
 
 @Component({
+    selector: 'dictionary-manager-index-edit',
     templateUrl:'../templates/dictionarymanagerindexedit.html',
 })
 export class DictionaryManagerIndexEdit implements OnInit {
