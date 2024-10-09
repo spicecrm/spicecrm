@@ -431,4 +431,19 @@ export class ObjectRepositoryManager {
         return dep == '1';
     }
 
+    /**
+     * sets the version for the obj repository manager
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.currentObjRepo.version = version?.name;
+    }
+
+    /**
+     * sets the package for the obj repository manager
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.currentObjRepo.package = packageData?.name;
+    }
 }
