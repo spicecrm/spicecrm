@@ -486,6 +486,28 @@ $routes = [
         ]
     ],
     [
+        'method' => 'delete',
+        'route' => '/configuration/spiceui/core/componentsets',
+        'class' => SystemUIController::class,
+        'function' => 'SystemDeleteComponentSet',
+        'description' => 'delete the componentset and its corresponding items',
+        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'parameters' => [
+            'table' => [
+                'in' => 'query',
+                'description' => 'table name from where the componentset should be deleted',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'sysuicustomcomponentsets'
+            ],
+            'id' => [
+                'in' => 'query',
+                'description' => 'id of the componentset that should be deleted',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'example' => '9c1452fe-6009-f75b-6e0f-de124ab0e86f'
+            ]
+        ]
+    ],
+    [
         'method' => 'get',
         'route' => '/configuration/spiceui/core/fieldsets',
         'oldroute' => '/spiceui/core/fieldsets',
@@ -524,6 +546,28 @@ $routes = [
         ]
     ],
     [
+        'method' => 'delete',
+        'route' => '/configuration/spiceui/core/{tableName}/{id}',
+        'class' => SpiceUIFieldsetsController::class,
+        'function' => 'deleteFieldset',
+        'description' => 'delete the fieldset and its corresponding items',
+        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters' => [
+            'tableName' => [
+                'in' => 'path',
+                'description' => 'name of the table from where the fieldset should be removed',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'sysuifieldsets'
+            ],
+            'id' => [
+                'in' => 'path',
+                'description' => 'id of the fieldset that is being removed',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'example' => '9c142fge-90k9-f0ob-6lkf-d1d90ab0e9tf'
+            ]
+        ]
+    ],
+    [
         'method' => 'post',
         'route' => '/configuration/spiceui/core/actionsets',
         'oldroute' => '/spiceui/core/actionsets',
@@ -549,6 +593,28 @@ $routes = [
                 'description' => 'the actionset to be updated with its actions',
                 'type' => ValidationMiddleware::TYPE_COMPLEX,
                 'example' => '{update: {9c1452fe-6009-f75b-6e0f-de124ab0e86f: {}}}',
+            ]
+        ]
+    ],
+    [
+        'method' => 'delete',
+        'route' => '/configuration/spiceui/core/actionsets',
+        'class' => SpiceUIActionsetsController::class,
+        'function' => 'deleteActionSets',
+        'description' => 'delete the actionset and its corresponding items',
+        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters' => [
+            'table' => [
+                'in' => 'query',
+                'description' => 'table from where the actionset should be removed',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'sysuiactionsets',
+            ],
+            'id' => [
+                'in' => 'query',
+                'description' => 'id of the actionset to be removed',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'example' => '9c1452fe-6009-f75b-6e0f-de124ab0e86f'
             ]
         ]
     ],

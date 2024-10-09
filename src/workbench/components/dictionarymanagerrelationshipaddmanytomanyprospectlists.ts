@@ -22,6 +22,7 @@ import {
  * renders a modal to add a many to many prospectlist relationship
  */
 @Component({
+    selector: 'dictionary-manager-relationship-add-many-to-many-prospectlists',
     templateUrl: '../templates/dictionarymanagerrelationshipaddmanytomanyprospectlists.html',
 })
 export class DictionaryManagerRelationshipAddManyToManyProspectlists implements OnInit {
