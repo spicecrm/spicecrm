@@ -15,6 +15,7 @@ import {DictionaryIndex, DictionaryIndexItem, DictionaryItem} from "../interface
  * redners a modal to add an index and choose the type
  */
 @Component({
+    selector: 'dictionary-manager-index-add-type',
     templateUrl: '../templates/dictionarymanagerindexaddtype.html',
 })
 export class DictionaryManagerIndexAddType {
