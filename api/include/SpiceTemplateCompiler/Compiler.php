@@ -129,7 +129,11 @@ class Compiler
             $this->root->appendChild($newElement);
         }
 
-        $this->addStyleTag($additionalStyleId);
+        if (!is_array($additionalStyleId)) {
+            $additionalStyleId = !$additionalStyleId ? [] : [$additionalStyleId];
+        }
+
+        foreach ($additionalStyleId as $id) $this->addStyleTag($id);
 
         if ($bodyContentOnly) {
             return str_replace(['<body>', '</body>'], '', $this->doc->saveHTML($this->doc->getElementsByTagName('body')->item(0)));
