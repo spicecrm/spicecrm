@@ -14,7 +14,7 @@ import {DomainDefinition, DomainField} from "../interfaces/domainmanager.interfa
  * a modal window to add a fields to a domain definition
  */
 @Component({
-    // selector: 'domain-manager-add-field-modal',
+    selector: 'domain-manager-add-field-modal',
     templateUrl: '../templates/domainmanageraddfieldmodal.html',
 })
 export class DomainManagerAddFieldModal implements OnInit{
