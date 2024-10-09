@@ -480,7 +480,7 @@ export class language {
                     });
                 }
 
-                return optionsArray;
+                return optionsArray.sort((a, b) => values[a.value].sequence > values[b.value].sequence ? 1 : -1);
             } else {
                 const optionsObject = {};
                 Object.keys(values).forEach(key => optionsObject[key] = this.getLabel(values[key].label));
