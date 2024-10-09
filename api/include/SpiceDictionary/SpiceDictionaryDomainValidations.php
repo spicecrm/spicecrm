@@ -94,9 +94,10 @@ class SpiceDictionaryDomainValidations
                     'status' => $domainvalue['status'],
                 ];
             }
-        }
 
-        $validationsArray[$valname]['validationvalues'] = array_values($validationsArray[$valname]['validationvalues']);
+            $validationsArray[$valname]['validationvalues'] = array_values($validationsArray[$valname]['validationvalues']);
+            usort($validationsArray[$valname]['validationvalues'], fn($a, $b) => $a['sequence'] > $b['sequence'] ? 1 : -1);
+        }
 
         SpiceCache::set('domainvalidations', $validationsArray);
 
