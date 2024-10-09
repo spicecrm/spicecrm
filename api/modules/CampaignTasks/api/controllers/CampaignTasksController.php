@@ -274,6 +274,9 @@ class CampaignTasksController
         $additionalParams = [];
         $status = 'targeted';
         switch ($campaignTask->campaigntask_type) {
+            case 'Telesales':
+                $status = 'tobecalled';
+                break;
             case 'Mail':
                 $status = 'sent';
                 break;
