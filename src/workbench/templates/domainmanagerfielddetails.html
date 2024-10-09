@@ -63,18 +63,18 @@
         <div class="slds-grid slds-m-vertical--xxx-small slds-gutters_direct-xx-small">
             <div class="slds-col slds-size--1-of-2 slds-form-element">
                 <label class="slds-form-element__label">
-                    <system-label label="LBL_VERSION"></system-label>
+                    <system-label label="LBL_PACKAGE"></system-label>
                 </label>
                 <div class="slds-form-element__control">
-                    <input type="text" class="slds-input" [(ngModel)]="_field.version"/>
+                    <field-package [package]="_field.package" (packageSelected)="setPackage($event)"></field-package>
                 </div>
             </div>
             <div class="slds-col slds-size--1-of-2 slds-form-element">
                 <label class="slds-form-element__label">
-                    <system-label label="LBL_PACKAGE"></system-label>
+                    <system-label label="LBL_VERSION"></system-label>
                 </label>
                 <div class="slds-form-element__control">
-                    <input type="text" class="slds-input" [(ngModel)]="_field.package"/>
+                    <field-version [version]="_field.version" (versionSelected)="setVersion($event)"></field-version>
                 </div>
             </div>
         </div>

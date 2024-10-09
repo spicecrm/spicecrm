@@ -40,11 +40,11 @@
             </div>
             <div class="slds-size--1-of-4 slds-p-horizontal--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"/></label>
-                <system-input-text [(ngModel)]="dictionarydefinition.package"></system-input-text>
+                <field-package [package]="dictionarydefinition.package" (packageSelected)="setPackage($event)"></field-package>
             </div>
             <div class="slds-size--1-of-4 slds-p-horizontal--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_VERSION"/></label>
-                <system-input-text [(ngModel)]="dictionarydefinition.version"></system-input-text>
+                <field-version [version]="dictionarydefinition.version" (versionSelected)="setVersion($event)"></field-version>
             </div>
         </div>
         <div class="slds-p-vertical--xx-small">
