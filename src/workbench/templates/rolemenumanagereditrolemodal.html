@@ -84,15 +84,15 @@
                 </div>
                 <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
                     <label class="slds-form-element__label">
-                        <system-label label="LBL_VERSION"></system-label>
+                        <system-label label="LBL_PACKAGE"></system-label>
                     </label>
-                    <system-input-text [(ngModel)]="newRole.version"></system-input-text>
+                    <field-package [package]="newRole.package" (packageSelected)="setPackage($event)"></field-package>
                 </div>
                 <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
                     <label class="slds-form-element__label">
-                        <system-label label="LBL_PACKAGE"></system-label>
+                        <system-label label="LBL_VERSION"></system-label>
                     </label>
-                    <system-input-text [(ngModel)]="newRole.package"></system-input-text>
+                    <field-version [version]="newRole.version" (versionSelected)="setVersion($event)"></field-version>
                 </div>
             </div>
             <div class="slds-form-element__control slds-size--4-of-4 slds-p-right--xxx-small slds-m-top--x-small">
