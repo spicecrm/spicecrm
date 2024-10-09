@@ -31,11 +31,11 @@
                 </div>
                 <div class="slds-size--1-of-4 slds-p-horizontal--xxx-small slds-form-element__control">
                     <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
-                    <system-input-text [(ngModel)]="index.package"></system-input-text>
+                    <field-package [package]="index.package" (packageSelected)="setPackage($event)"></field-package>
                 </div>
                 <div class="slds-size--1-of-4 slds-p-left--xxx-small slds-form-element__control">
                     <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
-                    <system-input-text [(ngModel)]="index.version"></system-input-text>
+                    <field-version [version]="index.version" (versionSelected)="setVersion($event)"></field-version>
                 </div>
             </div>
             <div *ngIf="index.indextype != 'foreign'" class="slds-grid">
