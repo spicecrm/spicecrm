@@ -585,5 +585,21 @@ export class ModuleConfigManager {
             }
         })
     }
+
+    /**
+     * sets the version for the component default conf
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.selectedComponent.version = version?.name;
+    }
+
+    /**
+     * sets the package for the component default conf
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.selectedComponent.package = packageData?.name;
+    }
 }
 
