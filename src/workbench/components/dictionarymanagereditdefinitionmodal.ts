@@ -11,6 +11,7 @@ import {DictionaryDefinition, DictionaryManagerMessage} from "../interfaces/dict
 import {backend} from "../../services/backend.service";
 
 @Component({
+    selector: 'dictionary-manager-edit-definition-modal',
     templateUrl: '../templates/dictionarymanagereditdefinitionmodal.html',
 })
 export class DictionaryManagerEditDefinitionModal {

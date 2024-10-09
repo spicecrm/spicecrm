@@ -22,6 +22,7 @@ import {backend} from "../../services/backend.service";
  * renders a modal to add a one to many polymorphic relationship
  */
 @Component({
+    selector: 'dictionary-manager-relationship-add-one-to-many-polymorph',
     templateUrl: '../templates/dictionarymanagerrelationshipaddonetomanypolymorph.html',
 })
 export class DictionaryManagerRelationshipAddOneToManyPolymorph {
