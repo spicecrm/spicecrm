@@ -13,6 +13,7 @@ import {DomainValidation} from "../interfaces/domainmanager.interfaces";
  * a modal window to add a new validation to a domain field
  */
 @Component({
+    selector: 'domain-manager-add-validation',
     templateUrl: '../templates/domainmanageraddvalidation.html'
 })
 export class DomainManagerAddValidation {

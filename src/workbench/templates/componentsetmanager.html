@@ -68,13 +68,13 @@
             <div class="slds-form-element slds-p-right--x-small slds-size--1-of-5">
                 <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
                 <div class="slds-form-element__control">
-                    <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentComponentSetPackage"/>
+                    <field-package [package]="currentComponentSetPackage" (packageSelected)="setPackage($event)"></field-package>
                 </div>
             </div>
             <div class="slds-form-element slds-p-right--x-small slds-size--1-of-5">
                 <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
                 <div class="slds-form-element__control">
-                    <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentComponentSetVersion"/>
+                    <field-version [version]="currentComponentSetVersion" (versionSelected)="setVersion($event)"></field-version>
                 </div>
             </div>
             <div class="slds-form-element slds-p-right--x-small slds-size--1-of-5">
