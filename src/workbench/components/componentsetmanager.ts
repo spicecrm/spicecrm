@@ -141,18 +141,8 @@ export class ComponentsetManager {
         return this.metadata.getComponentSet(this.currentComponentSet).package;
     }
 
-    set currentComponentSetPackage(newPackage) {
-        let componentset = this.metadata.getComponentSet(this.currentComponentSet);
-        componentset.package = newPackage;
-    }
-
     get currentComponentSetVersion() {
         return this.metadata.getComponentSet(this.currentComponentSet).version;
-    }
-
-    set currentComponentSetVersion(newVersion) {
-        let componentset = this.metadata.getComponentSet(this.currentComponentSet);
-        componentset.version = newVersion;
     }
 
     get currentComponentSetName() {
@@ -202,7 +192,7 @@ export class ComponentsetManager {
     }
 
     public getComponentSetItems() {
-        return this.currentComponentSet ? this.metadata.getComponentSetObjects(this.currentComponentSet) : [];
+        return this.currentComponentSetItems = this.currentComponentSet ? this.metadata.getComponentSetObjects(this.currentComponentSet) : []
     }
 
     public selectItem(item) {
@@ -360,5 +350,49 @@ export class ComponentsetManager {
         });
     }
 
+    /**
+     * delete the selected componentset and it's components
+     */
+    public delete(): void {
 
+        let params = {
+            table: this.componentSetType === 'custom' ? 'sysuicustomcomponentsets' : 'sysuicomponentsets',
+            id: this.currentComponentSet
+        }
+
+        this.modalservice.confirmDeleteRecord().subscribe({
+            next: (confirm) => {
+                if(confirm) {
+                    this.backend.deleteRequest('configuration/spiceui/core/componentsets', params).subscribe({
+                        next: () => {
+                            this.currentComponentSet = '';
+                            this.currentComponentSetItems = [];
+                            this.configurationService.reloadTaskData('componentsets');
+                            this.toast.sendToast('LBL_DELETED');
+                        },
+                        error: () => {
+                            this.toast.sendToast('LBL_ERROR')
+                        }
+                    })
+                }
+            }
+        })
+    }
+
+    /**
+     * sets the version for the fieldset
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.metadata.getComponentSet(this.currentComponentSet).version = version?.name;
+
+    }
+
+    /**
+     * sets the package for the fieldset
+     * @param packageData
+     */
+    public setPackage(packageData: { name: string; }) {
+        this.metadata.getComponentSet(this.currentComponentSet).package = packageData?.name;
+    }
 }
