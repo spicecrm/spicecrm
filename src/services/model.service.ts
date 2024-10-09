@@ -1122,7 +1122,7 @@ export class model implements OnDestroy {
             this.data = this.backupData;
             this.data$.next(this.data);
             this.backupData = null;
-            // todo: evaluate all fields because they have changed back???
+            this.evaluateValidationRules(null, "change");
             this.resetMessages();
         }
 

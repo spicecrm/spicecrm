@@ -17,6 +17,7 @@ import {backend} from "../../services/backend.service";
  * renders a modal to add a one to many relationship
  */
 @Component({
+    selector: 'dictionary-manager-relationship-add-one-to-many',
     templateUrl: '../templates/dictionarymanagerrelationshipaddonetomany.html',
 })
 export class DictionaryManagerRelationshipAddOneToMany {

@@ -10,13 +10,15 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {domainmanager} from '../services/domainmanager.service';
 import {field} from "../../objectfields/components/field";
+import {view} from "../../services/view.service";
 
 /**
  * a tab with details on a domain field
  */
 @Component({
     selector: 'domain-manager-field-details',
-    templateUrl: '../templates/domainmanagerfielddetails.html'
+    templateUrl: '../templates/domainmanagerfielddetails.html',
+    providers: [view]
 })
 export class DomainManagerFieldDetails implements OnInit{
 
@@ -77,4 +79,19 @@ export class DomainManagerFieldDetails implements OnInit{
         this.self.destroy();
     }
 
+    /**
+     * sets the version for domainfields
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this._field.version = version?.name;
+    }
+
+    /**
+     * sets the package for domainfields
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this._field.package = packageData?.name;
+    }
 }
