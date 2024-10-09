@@ -41,11 +41,11 @@
         <div *ngIf="this.mode == 'copy'" class="slds-grid slds-grid--vertical-align-center slds-m-vertical--xxx-small">
             <div class="slds-size--1-of-2 slds-p-right--xx-small">
                 <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
-                <input type="text" class="slds-input" [(ngModel)]="compSelectedItem.package"/>
+                <field-package [package]="compSelectedItem.package" (packageSelected)="setPackage($event)"></field-package>
             </div>
             <div class="slds-size--1-of-2 slds-p-left--xx-small">
                 <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
-                <input type="text" class="slds-input" [(ngModel)]="compSelectedItem.version"/>
+                <field-version [version]="compSelectedItem.version" (versionSelected)="setVersion($event)"></field-version>
             </div>
         </div>
         <div *ngIf="this.mode == 'copy'" class="slds-text-align_center slds-p-vertical_small slds-text-heading_small">

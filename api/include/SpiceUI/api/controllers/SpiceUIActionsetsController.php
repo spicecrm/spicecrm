@@ -285,4 +285,34 @@ class SpiceUIActionsetsController
 
         SystemDeploymentCR::writeDBEntry($tableName, $actionsetId, $dbData, $name, SystemDeploymentCR::ACTION_INSERT);
     }
+
+
+    /**
+     * @param Request $req
+     * @param Response $res
+     * @param $args
+     * @return Response
+     * @throws Exception
+     */
+    function deleteActionSets(Request $req, Response $res, $args): Response {
+
+        $db = DBManagerFactory::getInstance();
+        SpiceUIRESTHelper::checkAdmin();
+
+        $params = $req->getQueryParams();
+
+        $actionsetItemsTable = strpos($params['table'], 'custom') ? 'sysuicustomactionsetitems' : 'sysuiactionsetitems';
+        $actionsetItemsQuery = "SELECT id FROM {$actionsetItemsTable} WHERE actionset_id = '{$params['id']}'";
+        $queryResult = $db->query($actionsetItemsQuery);
+
+        SystemDeploymentCR::deleteDBEntry($params['table'], $params['id'], $params['table']);
+
+        while ($row = $db->fetchByAssoc($queryResult)) {
+            SystemDeploymentCR::deleteDBEntry($actionsetItemsTable, $row['id'], $actionsetItemsTable);
+        }
+
+        SpiceCache::clear('spiceUIActionsets');
+
+        return $res->withJson(true);
+    }
 }

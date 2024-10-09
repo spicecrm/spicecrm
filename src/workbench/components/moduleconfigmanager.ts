@@ -345,8 +345,8 @@ export class ModuleConfigManager {
 
                     // Check if it is a deprecated object
                     let compName = entry.component;
-                    if(this.metadata.getSystemComponents().length > 0 && this.metadata.getSystemComponents().find(x => x.component === entry.component)) {
-                        if(this.metadata.getSystemComponents().find(x => x.component === entry.component).deprecated == "1") {
+                    if (this.metadata.getSystemComponents().length > 0 && this.metadata.getSystemComponents().find(x => x.component === entry.component)) {
+                        if (this.metadata.getSystemComponents().find(x => x.component === entry.component).deprecated == "1") {
                             compName = compName + " | dep.";
                         }
                     }
@@ -406,7 +406,7 @@ export class ModuleConfigManager {
 
                 switch (this.currentTableActive) {
                     case "default":
-                        this.backend.postRequest('configuration/configurator/sysuicomponentdefaultconf/' + this.selectedComponent.id, {}, { config: this.selectedComponent }).subscribe(status => {
+                        this.backend.postRequest('configuration/configurator/sysuicomponentdefaultconf/' + this.selectedComponent.id, {}, {config: this.selectedComponent}).subscribe(status => {
                             if (status.status == "success") {
                                 this.configuration.reloadTaskData('componentdefaultconfigs');
                                 loadingModalRef.instance.self.destroy();
@@ -415,7 +415,7 @@ export class ModuleConfigManager {
                         });
                         break;
                     case "default_custom":
-                        this.backend.postRequest('configuration/configurator/sysuicustomcomponentdefaultconf/' + this.selectedComponent.id, {}, { config: this.selectedComponent }).subscribe(status => {
+                        this.backend.postRequest('configuration/configurator/sysuicustomcomponentdefaultconf/' + this.selectedComponent.id, {}, {config: this.selectedComponent}).subscribe(status => {
                             if (status.status == "success") {
                                 this.configuration.reloadTaskData('componentdefaultconfigs');
                                 loadingModalRef.instance.self.destroy();
@@ -424,7 +424,7 @@ export class ModuleConfigManager {
                         });
                         break;
                     case "global":
-                        this.backend.postRequest('configuration/configurator/sysuicomponentmoduleconf/' + this.selectedComponent.id, {}, { config: this.selectedComponent }).subscribe(status => {
+                        this.backend.postRequest('configuration/configurator/sysuicomponentmoduleconf/' + this.selectedComponent.id, {}, {config: this.selectedComponent}).subscribe(status => {
                             if (status.status == "success") {
                                 this.configuration.reloadTaskData('componentmoduleconfigs');
                                 loadingModalRef.instance.self.destroy();
@@ -433,7 +433,7 @@ export class ModuleConfigManager {
                         });
                         break;
                     case "custom":
-                        this.backend.postRequest('configuration/configurator/sysuicustomcomponentmoduleconf/' + this.selectedComponent.id, {}, { config: this.selectedComponent }).subscribe(status => {
+                        this.backend.postRequest('configuration/configurator/sysuicustomcomponentmoduleconf/' + this.selectedComponent.id, {}, {config: this.selectedComponent}).subscribe(status => {
                             if (status.status == "success") {
                                 this.configuration.reloadTaskData('componentmoduleconfigs');
                                 loadingModalRef.instance.self.destroy();
@@ -523,6 +523,83 @@ export class ModuleConfigManager {
         this.selectedModule();
     }
 
+    /**
+     * delete the module configuration
+     */
+    public delete() {
+        let table: string;
 
+        switch(this.currentTableActive) {
+            case 'default_custom':
+                table = 'sysuicustomcomponentdefaultconf';
+                break;
+            case 'custom':
+                table = 'sysuicustomcomponentmoduleconf';
+                break;
+            case 'default':
+                table = 'sysuicomponentdefaultconf';
+                break;
+            case 'global':
+                table = 'sysuicomponentmoduleconf';
+                break;
+        }
+
+        this.modal.confirmDeleteRecord().subscribe({
+            next: (confirm) => {
+                if (confirm) {
+                    this.backend.deleteRequest(`configuration/configurator/${table}/${this.selectedComponent.id}`).subscribe({
+                        next: () => {
+                            const childItemIndex = this.treelist.findIndex(item => item.id === this.selectedComponent.id);
+                            if (childItemIndex !== -1) {
+                                this.treelist.splice(childItemIndex, 1);
+                                this.treelist = [...this.treelist];
+                                this.selectedComponent = {};
+                                this.configuration.reloadTaskData(table.includes('default') ? 'componentdefaultconfigs' : 'componentmoduleconfigs');
+                                this.toast.sendToast('LBL_DELETED');
+                            } else {
+                                this.toast.sendToast('LBL_ERROR');
+                            }
+
+                            this.removeParent();
+
+                        },
+                        error: () => {
+                            this.toast.sendToast('LBL_ERROR');
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    /**
+     * removes the parent if it has no more child nodes
+     */
+    public removeParent(): void {
+        const parentsArr = this.treelist.filter(item => !item.parent_id);
+        parentsArr.forEach(item => {
+            if (!item.systemTreeDefs.hasChildren) {
+                let parrentIndex = this.treelist.findIndex(item => item.id === this.selectedComponent.component);
+                this.treelist.splice(parrentIndex, 1);
+                this.treelist = [...this.treelist];
+            }
+        })
+    }
+
+    /**
+     * sets the version for the component default conf
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.selectedComponent.version = version?.name;
+    }
+
+    /**
+     * sets the package for the component default conf
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.selectedComponent.package = packageData?.name;
+    }
 }
 

@@ -21,6 +21,7 @@ import {
  * redners a modal to add an index
  */
 @Component({
+    selector: 'dictionary-manager-index-add',
     templateUrl: '../templates/dictionarymanagerindexadd.html',
 })
 export class DictionaryManagerIndexAdd implements OnInit{

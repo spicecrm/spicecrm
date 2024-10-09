@@ -38,7 +38,7 @@ export class WorkbenchConfig implements OnChanges {
 
     public ngOnChanges(changes: SimpleChanges) {
 
-        // remove any options elements in case some exist and remove keys that are not in the corresponding field type options
+        // remove any options elements in case some exist
         for (let option of this.optionsElements) {
             option.destroy();
         }
