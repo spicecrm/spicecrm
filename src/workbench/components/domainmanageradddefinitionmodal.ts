@@ -9,6 +9,7 @@ import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
 import {domainmanager} from '../services/domainmanager.service';
 import {DomainDefinition} from "../interfaces/domainmanager.interfaces";
+import {view} from "../../services/view.service";
 
 /**
  * a modal component to alow the user to add a new Domain Definition. Called from teh Domain Manager
@@ -16,6 +17,7 @@ import {DomainDefinition} from "../interfaces/domainmanager.interfaces";
 @Component({
     selector: 'domain-manager-add-definition-modal',
     templateUrl: '../templates/domainmanageradddefinitionmodal.html',
+    providers: [view]
 })
 export class DomainManagerAddDefinitionModal {
 
@@ -75,5 +77,21 @@ export class DomainManagerAddDefinitionModal {
                 }
             })
         }
+    }
+
+    /**
+     * sets the version
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.domaindefinition.version = version?.name;
+    }
+
+    /**
+     * sets the package
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.domaindefinition.package = packageData?.name;
     }
 }
