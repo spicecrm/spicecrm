@@ -70,8 +70,20 @@ export class ObjectTemplatesPreview implements AfterViewInit {
      * @private
      */
     public parsedHtml: SafeResourceUrl;
+    /**
+     * holds the mailbox id
+     */
+    public mailboxId: string;
+    /**
+     * holds the mailboxes list
+     */
+    public mailboxes: any[] = [];
 
     public html: any;
+    /**
+     * flag to display mailbox selector
+     */
+    @Input() public displayMailboxSelector: boolean = false;
     /**
      * holds the body html field name from the parent
      * @private
@@ -99,7 +111,21 @@ export class ObjectTemplatesPreview implements AfterViewInit {
      */
     public ngAfterViewInit() {
         this.subscribeToModelChanges();
+        this.getMailboxes();
     }
+
+    /**
+     * get mailboxes list
+     */
+    public getMailboxes() {
+
+        this.backend.getRequest("module/Mailboxes/scope", {scope: 'outbound'}).subscribe(
+            (results: any) => {
+                this.mailboxes = results.sort((a, b) => a.display.localeCompare(b.display));
+                this.cdRef.detectChanges();
+            });
+    }
+
 
     /**
      * destroy the subscriptions
@@ -173,7 +199,11 @@ export class ObjectTemplatesPreview implements AfterViewInit {
         if (!this.model.id) return;
 
         const loadingModal = this.modal.await('LBL_PARSING_HTML');
-        const body = {html: this.model.getField(this.bodyHtmlField), field: this.bodyHtmlField};
+        const body = {
+            html: this.model.getField(this.bodyHtmlField),
+            field: this.bodyHtmlField,
+            stylesheet_id: !this.mailboxId ? null: this.mailboxes.find(m => m.value == this.mailboxId).stylesheet,
+        };
         this.backend.postRequest(`module/${this.model.module}/${this.model.id}/livecompile/${this.previewForBean}/${this.selectedItem.id}`, {}, body)
             .subscribe({
                 next: (data: any) => {
