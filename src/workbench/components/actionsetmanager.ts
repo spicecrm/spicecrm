@@ -449,4 +449,33 @@ export class ActionsetManager {
             });
         });
     }
+
+
+    /**
+     * delete the actionset and it's items
+     */
+    public deleteActionset(): void {
+
+        let params = {
+            table: this.currentActionSet.type === 'custom' ? 'sysuicustomactionsets' : 'sysuiactionsets',
+            id: this.currentActionSet.id
+        }
+
+        this.modalservice.confirmDeleteRecord().subscribe({
+            next: (confirm) => {
+                if(confirm) {
+                    this.backend.deleteRequest('configuration/spiceui/core/actionsets', params).subscribe({
+                        next: () => {
+                            this.reset();
+                            this.configurationService.reloadTaskData('actionsets');
+                            this.toast.sendToast('LBL_DELETED');
+                        },
+                        error: () => {
+                            this.toast.sendToast('LBL_ERROR')
+                        }
+                    })
+                }
+            }
+        })
+    }
 }
