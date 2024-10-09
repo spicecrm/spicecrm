@@ -12,6 +12,7 @@ import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryItem, DictionaryManagerMessage} from "../interfaces/dictionarymanager.interfaces";
 
 @Component({
+    selector: 'dictionary-manager-add-item-modal',
     templateUrl: '../templates/dictionarymanageradditemmodal.html',
 })
 export class DictionaryManagerAddItemModal implements OnInit{
