@@ -70,6 +70,31 @@ $routes = [
             ]
         ]
     ],
+
+    [
+        'method'      => 'get',
+        'route'       => '/common/spiceattachments/count/module/{beanName}',
+        'class'       => SpiceAttachmentsController::class,
+        'function'    => 'getAttachmentsCountPerBean',
+        'description' => 'get spice attachments count for the bean ids given as input',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => false],
+        'parameters'  => [
+            'beanName' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'description' => 'name of a module',
+                'example' => 'Accounts',
+                'required' => true
+            ],
+            'beanIds' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_ARRAY,
+                'subtype'     => ValidationMiddleware::TYPE_STRING,
+                'description' => 'GUID of bean',
+                'required' => false
+            ],
+        ]
+    ],
     [
         'method'      => 'get',
         'route'       => '/common/spiceattachments/module/{beanName}/{beanId}/{attachmentId}',
