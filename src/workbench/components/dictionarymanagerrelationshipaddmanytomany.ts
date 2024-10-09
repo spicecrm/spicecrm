@@ -22,6 +22,7 @@ import {
  * renders a modal to add a one to many relationship
  */
 @Component({
+    selector: 'dictionary-manager-relationship-add-many-to-many',
     templateUrl: '../templates/dictionarymanagerrelationshipaddmanytomany.html',
 })
 export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
