@@ -72,6 +72,13 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      * emit the input value on enter press
      */
     @Input() public emitInputValueOnEnterPress: boolean = false;
+
+    /**
+     * whether the search list should be sorted in reversed order
+     * desc -> asc
+     */
+    @Input() public sortReversed: boolean = false;
+
     /**
      * holds the search list results
      */
@@ -360,11 +367,20 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
                     );
                 }
 
-                this.options.filter(e => e.group == g)
+                if (!this.sortReversed) {
+                    this.options.filter(e => e.group == g)
                     .sort((a, b) => a.display > b.display ? 1 : -1)
                     .forEach((e) =>
                         searchList.push({id: e.value, name: e.display, content: e.display, group: g})
                     );
+                } else {
+                    // reversed sorting (desc -> asc)
+                    this.options.filter(e => e.group == g)
+                    .sort((a, b) => a.display < b.display ? 1 : -1)
+                    .forEach((e) =>
+                        searchList.push({id: e.value, name: e.display, content: e.display, group: g})
+                    );
+                }
             }
         );
 
