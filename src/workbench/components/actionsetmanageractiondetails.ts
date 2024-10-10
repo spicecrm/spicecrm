@@ -105,4 +105,20 @@ export class ActionsetManagerActionDetails implements OnChanges {
     public setComponent() {
         this.action.component = this.localcomponent;
     }
+
+    /**
+     * sets the version
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.action.version = version?.name;
+    }
+
+    /**
+     * sets the package
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.action.package = packageData?.name;
+    }
 }
