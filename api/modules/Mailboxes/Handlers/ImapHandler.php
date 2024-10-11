@@ -597,8 +597,11 @@ class ImapHandler extends TransportHandler
 
         if ($email->id) {
             foreach ($email->attachments as $att) {
+                if($att->display_name){
+                    $displayName = $att->display_name . substr($att->filename, strrpos($att->filename, '.'));
+                }
                 $message->attach(
-                    Swift_Attachment::fromPath(StreamFactory::getPathPrefix('upload') . $att->filemd5)->setFilename($att->display_name ?: $att->filename)
+                    Swift_Attachment::fromPath(StreamFactory::getPathPrefix('upload') . $att->filemd5)->setFilename($displayName ?: $att->filename)
                 );
             }
 
