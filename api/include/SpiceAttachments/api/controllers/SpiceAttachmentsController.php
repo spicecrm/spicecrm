@@ -57,6 +57,21 @@ class SpiceAttachmentsController
 
         return $res->withJson(['count' => SpiceAttachments::getAttachmentsCount($args['beanName'], $args['beanId'], $params['categoryId'])]);
     }
+    /**
+     * returns the list of attachments for given bean ids
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     */
+    public function getAttachmentsCountPerBean(Request $req, Response $res, array $args): Response
+    {
+        $params = $req->getParsedBody();
+
+        return $res->withJson(SpiceAttachments::getAttachmentsCountPerBean($args['beanName'], $params['beanIds'], $params['returnFiles']));
+    }
 
     /**
      * saves an attachment
