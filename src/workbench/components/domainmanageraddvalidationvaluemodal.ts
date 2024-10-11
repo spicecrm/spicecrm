@@ -7,13 +7,15 @@ import {
 import {modelutilities} from '../../services/modelutilities.service';
 import {domainmanager} from '../services/domainmanager.service';
 import {DomainValidation, DomainValidationValue} from "../interfaces/domainmanager.interfaces";
+import {view} from "../../services/view.service";
 
 /**
  * a modal window to add a new validation to a domain field
  */
 @Component({
     selector: 'domain-manager-add-validationvalue-modal',
-    templateUrl: '../templates/domainmanageraddvalidationvaluemodal.html'
+    templateUrl: '../templates/domainmanageraddvalidationvaluemodal.html',
+    providers: [view]
 })
 export class DomainManagerAddValidationValueModal implements OnInit{
 
@@ -66,6 +68,23 @@ export class DomainManagerAddValidationValueModal implements OnInit{
         this.validationValue.emit(this.fieldvalidationvalue)
         this.close();
     }
+
+    /**
+     * sets the version for adding domain validation value
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.fieldvalidationvalue.version = version?.name;
+    }
+
+    /**
+     * sets the package for adding domain validation value
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.fieldvalidationvalue.package = packageData?.name;
+    }
+
 
     /**
      * close the modal
