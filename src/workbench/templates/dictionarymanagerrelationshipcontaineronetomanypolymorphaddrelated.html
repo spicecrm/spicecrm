@@ -40,11 +40,11 @@
             </div>
             <div class="slds-form-element__control slds-p-around--xx-small">
                 <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"/></label>
-                <system-input-text [(ngModel)]="package" />
+                <field-package [package]="package" (packageSelected)="setPackage($event)"></field-package>
             </div>
             <div class="slds-form-element__control slds-p-around--xx-small">
                 <label class="slds-form-element__label"><system-label label="LBL_VERSION"/></label>
-                <system-input-text [(ngModel)]="version" />
+                <field-version [version]="version" (versionSelected)="setVersion($event)"></field-version>
             </div>
     </system-modal-content>
     <system-modal-footer>

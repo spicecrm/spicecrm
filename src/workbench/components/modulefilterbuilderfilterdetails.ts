@@ -9,6 +9,7 @@ import {language} from '../../services/language.service';
 import {toast} from "../../services/toast.service";
 import {metadata} from "../../services/metadata.service";
 import {configurationService} from "../../services/configuration.service";
+import {view} from "../../services/view.service";
 
 /**
  * @ignore
@@ -18,6 +19,7 @@ declare var _;
 @Component({
     selector: 'module-builder-filter-details',
     templateUrl: '../templates/modulefilterbuilderfilterdetails.html',
+    providers: [view]
 })
 export class ModuleFilterBuilderFilterDetails implements OnChanges {
 
@@ -73,5 +75,21 @@ export class ModuleFilterBuilderFilterDetails implements OnChanges {
                 }
             }
         }
+    }
+
+    /**
+     * sets the version
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.filter.version = version?.name;
+    }
+
+    /**
+     * sets the package
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.filter.package = packageData?.name;
     }
 }

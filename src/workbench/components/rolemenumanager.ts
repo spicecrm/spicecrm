@@ -45,6 +45,9 @@ export class RoleMenuManager implements OnInit {
     public editableRoleScope: boolean;
     public filterModules:string[] =[];
 
+    public package: string = '';
+    public version: string = '';
+
     @ViewChildren(SystemViewProviderDirective) private viewProviders: QueryList<SystemViewProviderDirective>;
 
     private roleModulesBackup: { [key: symbol]: RoleModuleI } = {};
@@ -67,12 +70,13 @@ export class RoleMenuManager implements OnInit {
         delete this.roleModulesBackup[roleModule.id];
         if (!roleModule.id) roleModule.id = this.backend.modelutilities.generateGuid();
         roleModule.sysuirole_id = this.selectedRoleId;
+        roleModule.package = this.package;
+        roleModule.version = this.version;
 
 
         const table = roleModule.scope == 'global' ? 'sysuirolemodules' : 'sysuicustomrolemodules';
         const data = {...roleModule};
         delete data.scope;
-
 
         this.backend.postRequest(`configuration/configurator/${table}/${roleModule.id}`, null, {config: data}).subscribe({
             next: () => {
@@ -297,6 +301,21 @@ export class RoleMenuManager implements OnInit {
                 this.configurationService.reloadTaskData('rolemodules');
             });
         }
+    }
+    /**
+     * sets the version
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.version = version?.name;
+    }
+
+    /**
+     * sets the package
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.package = packageData?.name;
     }
 }
 

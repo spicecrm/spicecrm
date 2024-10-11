@@ -65,8 +65,7 @@
                 <system-label label="LBL_PACKAGE"></system-label>
             </label>
             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
-                <input [disabled]="!view.isEditMode()" type="text" class="slds-input" placeholder="package"
-                       [(ngModel)]="action.package">
+                <field-package [package]="action.package" (packageSelected)="setPackage($event)"></field-package>
             </div>
         </div>
         <div class="slds-form-element slds-m-vertical--xxx-small">
@@ -74,8 +73,7 @@
                 <system-label label="LBL_VERSION"></system-label>
             </label>
             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
-                <input [disabled]="!view.isEditMode()" type="text" class="slds-input" placeholder="version"
-                       [(ngModel)]="action.version">
+                <field-version [version]="action.version" (versionSelected)="setVersion($event)"></field-version>
             </div>
         </div>
     </div>

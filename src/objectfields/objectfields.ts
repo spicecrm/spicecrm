@@ -135,6 +135,7 @@ import {fieldIban} from "./components/fieldiban";
 import {fieldEnumRoles} from "./components/fieldenumroles";
 import {fieldVersion} from "./components/fieldVersion";
 import {fieldPackage} from "./components/fieldPackage";
+import {fieldActivityStatus} from "./components/fieldactivitystatus";
 
 
 /**
@@ -279,7 +280,8 @@ declare var _: any;
         fieldIban,
         fieldEnumRoles,
         fieldVersion,
-        fieldPackage
+        fieldPackage,
+        fieldActivityStatus
     ],
     exports: [
         fieldSet,
