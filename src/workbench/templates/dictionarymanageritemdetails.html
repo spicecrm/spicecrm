@@ -1,5 +1,5 @@
 <system-modal>
-    <system-modal-header (close)="close()"></system-modal-header>
+    <system-modal-header (close)="close()"><system-label label="LBL_DICTIONARY_ITEM_DETAILS"></system-label></system-modal-header>
     <system-modal-content>
         <div class="slds-p-around--x-small">
             <div class="slds-grid">
@@ -71,18 +71,18 @@
             <div class="slds-grid slds-m-vertical--xxx-small slds-gutters_direct-xx-small">
                 <div class="slds-col slds-size--1-of-2 slds-form-element">
                     <label class="slds-form-element__label">
-                        <system-label label="LBL_VERSION"></system-label>
+                        <system-label label="LBL_PACKAGE"></system-label>
                     </label>
                     <div class="slds-form-element__control">
-                        <input type="text" class="slds-input" [(ngModel)]="dictionaryitem.version"/>
+                        <field-package [package]="dictionaryitem.package" (packageSelected)="setPackage($event)"></field-package>
                     </div>
                 </div>
                 <div class="slds-col slds-size--1-of-2 slds-form-element">
                     <label class="slds-form-element__label">
-                        <system-label label="LBL_PACKAGE"></system-label>
+                        <system-label label="LBL_VERSION"></system-label>
                     </label>
                     <div class="slds-form-element__control">
-                        <input type="text" class="slds-input" [(ngModel)]="dictionaryitem.package"/>
+                        <field-version [version]="dictionaryitem.version" (versionSelected)="setVersion($event)"></field-version>
                     </div>
                 </div>
             </div>
