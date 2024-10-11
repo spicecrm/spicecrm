@@ -16,6 +16,7 @@ use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\CampaignTasks\CampaignTask;
+use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -274,6 +275,9 @@ class CampaignTasksController
         $additionalParams = [];
         $status = 'targeted';
         switch ($campaignTask->campaigntask_type) {
+            case 'Telesales':
+                $status = 'tobecalled';
+                break;
             case 'Mail':
                 $status = 'sent';
                 break;
@@ -357,7 +361,7 @@ class CampaignTasksController
     public function liveCompileEmailBody(Request $req, Response $res, array $args): Response
     {
         $params = $req->getParsedBody();
-        /** @var EmailTemplate **/
+        /** @var $emailTemplate EmailTemplate **/
         $emailTemplate = BeanFactory::getBean('EmailTemplates');
         $emailTemplate->body_html = $params['html'];
         $bean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
@@ -368,8 +372,10 @@ class CampaignTasksController
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $user = BeanFactory::getBean('Users', $campaignTask->assigned_user_id ?: '1');
         AuthenticationController::getInstance()->setCurrentUser($user);
+        $mailbox = BeanFactory::getBean('Mailboxes', $campaignTask->mailbox_id);
+        $styles = !$mailbox ? [] : [$mailbox->stylesheet];
 
-        $parsedTpl = $emailTemplate->parse($bean);
+        $parsedTpl = $emailTemplate->parse($bean, null, [], $styles);
 
         # reset the current user for the system after parsing
         AuthenticationController::getInstance()->setCurrentUser($current_user);

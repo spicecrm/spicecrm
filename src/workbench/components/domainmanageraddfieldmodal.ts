@@ -9,6 +9,7 @@ import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
 import {domainmanager} from '../services/domainmanager.service';
 import {DomainDefinition, DomainField} from "../interfaces/domainmanager.interfaces";
+import {view} from "../../services/view.service";
 
 /**
  * a modal window to add a fields to a domain definition
@@ -16,6 +17,7 @@ import {DomainDefinition, DomainField} from "../interfaces/domainmanager.interfa
 @Component({
     // selector: 'domain-manager-add-field-modal',
     templateUrl: '../templates/domainmanageraddfieldmodal.html',
+    providers: [view]
 })
 export class DomainManagerAddFieldModal implements OnInit{
 
@@ -84,6 +86,22 @@ export class DomainManagerAddFieldModal implements OnInit{
                 }
             });
         }
+    }
+
+    /**
+     * sets the version for adding domain module field
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.domainfield.version = version?.name;
+    }
+
+    /**
+     * sets the package for adding domain module field
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.domainfield.package = packageData?.name;
     }
 
 }

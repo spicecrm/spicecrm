@@ -17,10 +17,12 @@ import {
 import {language} from "../../services/language.service";
 import * as module from "module";
 import {configurationService} from "../../services/configuration.service";
+import {view} from "../../services/view.service";
 
 @Component({
     selector: 'dictionary-manager-add-definition-modal',
     templateUrl: '../templates/dictionarymanageradddefinitionmodal.html',
+    providers: [view]
 })
 export class DictionaryManagerAddDefinitionModal {
 
@@ -188,5 +190,21 @@ export class DictionaryManagerAddDefinitionModal {
                 if (!answer) return;
                 this.sysModule = answer;
             });
+    }
+
+    /**
+     * sets the version
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.dictionarydefinition.version = version?.name;
+    }
+
+    /**
+     * sets the package
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.dictionarydefinition.package = packageData?.name;
     }
 }
