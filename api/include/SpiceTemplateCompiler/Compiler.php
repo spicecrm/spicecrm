@@ -129,7 +129,11 @@ class Compiler
             $this->root->appendChild($newElement);
         }
 
-        $this->addStyleTag($additionalStyleId);
+        if (!is_array($additionalStyleId)) {
+            $additionalStyleId = !$additionalStyleId ? [] : [$additionalStyleId];
+        }
+
+        foreach ($additionalStyleId as $id) $this->addStyleTag($id);
 
         if ($bodyContentOnly) {
             return str_replace(['<body>', '</body>'], '', $this->doc->saveHTML($this->doc->getElementsByTagName('body')->item(0)));
@@ -725,6 +729,9 @@ class Compiler
                             $value = $this->app_list_strings[$obj->field_defs[$part]['options']][$obj->{$part}];
                         }
                         break;
+                    case 'categories':
+                        $value = SpiceUtils::renderCategoryTreeEntry($obj, $obj->_module, $part, $this->lang);
+                        break;
                     case 'multienum':
                         $value = $obj->{$part};
                         if(!$keepFetchedRowValue) {
@@ -886,6 +893,9 @@ class Compiler
                         break;
                     case 'enum':
                         $value = $raw ? $obj->{$part} : $this->app_list_strings[$obj->field_defs[$part]['options']][$obj->{$part}];
+                        break;
+                    case 'categories':
+                        $value = SpiceUtils::renderCategoryTreeEntry($obj, $obj->_module, $part, $this->lang);
                         break;
                     case 'multienum':
                         $values = explode(',', $obj->{$part});

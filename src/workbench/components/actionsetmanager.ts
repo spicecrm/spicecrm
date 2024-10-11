@@ -36,6 +36,7 @@ export class ActionsetManager {
         module: '',
         name: '',
         package: '',
+        version: '',
         type: '',
         actions: [],
         isnew: false
@@ -266,6 +267,7 @@ export class ActionsetManager {
                     this.currentActionSet.type = added.type;
                     this.currentActionSet.actions = [];
                     this.currentActionSet.package = '';
+                    this.currentActionSet.version = '';
                     this.currentActionSet.isnew = true;
                 }
             });
@@ -307,6 +309,7 @@ export class ActionsetManager {
             module: '',
             name: '',
             package: '',
+            version: '',
             type: '',
             actions: []
         };
@@ -477,5 +480,21 @@ export class ActionsetManager {
                 }
             }
         })
+    }
+
+    /**
+     * sets the version
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.currentActionSet.version = version?.name;
+    }
+
+    /**
+     * sets the package
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.currentActionSet.package = packageData?.name;
     }
 }

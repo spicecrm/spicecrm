@@ -5,9 +5,12 @@ import {dictionarymanager} from "../services/dictionarymanager.service";
 import {DictionaryDefinition, DictionaryIndex, DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 import {metadata} from "../../services/metadata.service";
 import {modal} from "../../services/modal.service";
+import {view} from "../../services/view.service";
 
 @Component({
+    selector: 'dictionary-manager-index-edit',
     templateUrl:'../templates/dictionarymanagerindexedit.html',
+    providers: [view]
 })
 export class DictionaryManagerIndexEdit implements OnInit {
 
@@ -143,5 +146,21 @@ export class DictionaryManagerIndexEdit implements OnInit {
 
     public close() {
         this.self.destroy();
+    }
+
+    /**
+     * sets the version
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.index.version = version?.name;
+    }
+
+    /**
+     * sets the package
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.index.package = packageData?.name;
     }
 }

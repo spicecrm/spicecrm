@@ -10,9 +10,12 @@ import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryItem, DictionaryManagerMessage} from "../interfaces/dictionarymanager.interfaces";
+import {view} from "../../services/view.service";
 
 @Component({
+    selector: 'dictionary-manager-add-item-modal',
     templateUrl: '../templates/dictionarymanageradditemmodal.html',
+    providers: [view]
 })
 export class DictionaryManagerAddItemModal implements OnInit{
 
@@ -192,5 +195,19 @@ export class DictionaryManagerAddItemModal implements OnInit{
         }
     }
 
+    /**
+     * sets the version
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.dictionaryitem.version = version?.name;
+    }
 
+    /**
+     * sets the package
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.dictionaryitem.package = packageData?.name;
+    }
 }

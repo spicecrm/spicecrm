@@ -31,6 +31,7 @@ export interface SpiceBeanGuidesI {
     scope?: string;
     name: string;
     systextid: string;
+    is_default?: 0 | 1;
 }
 
 export interface SpiceBeanGuideCheckI {

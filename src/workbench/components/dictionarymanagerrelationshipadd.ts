@@ -11,12 +11,15 @@ import {language} from '../../services/language.service';
 
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
+import {view} from "../../services/view.service";
 
 /**
  * renders a modal to select the type of the relationship
  */
 @Component({
+    selector: 'dictionary-manager-relationship-add',
     templateUrl: '../templates/dictionarymanagerrelationshipadd.html',
+    providers: [view]
 })
 export class DictionaryManagerRelationshipAdd implements OnInit{
 
@@ -95,6 +98,22 @@ export class DictionaryManagerRelationshipAdd implements OnInit{
             modalRef.instance.relationship.package = this.package;
         });
         this.close();
+    }
+
+    /**
+     * sets the version
+     * @param version
+     */
+    public setVersion(version: {name: string;}) {
+        this.version = version?.name;
+    }
+
+    /**
+     * sets the package
+     * @param packageData
+     */
+    public setPackage(packageData: {name: string;}) {
+        this.package = packageData?.name;
     }
 
 }
