@@ -36,12 +36,12 @@ export class DomainManagerAddValidation {
     constructor(public domainmanager: domainmanager, public backend: backend, public modelutilities: modelutilities) {
         this.fieldvalidation = {
             name: "",
-            order_by: undefined,
+            order_by: 'sequence',
             sort_flag: undefined,
             status: 'a',
             validation_type: "enum",
             scope: 'c',
-            id: this.modelutilities.generateGuid()
+            id: this.modelutilities.generateGuid(),
         }
     }
 
