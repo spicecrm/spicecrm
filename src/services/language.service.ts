@@ -3,15 +3,15 @@
  */
 import {Injectable, EventEmitter} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Subject, throwError} from 'rxjs';
+import {Subject} from 'rxjs';
 
 import {configurationService} from './configuration.service';
 import {session} from './session.service';
 import {broadcast} from './broadcast.service';
-import {DomainValidationValues, metadata} from './metadata.service';
+import {metadata} from './metadata.service';
 import {Observable} from 'rxjs';
 import {StoreService} from "./store.service";
-import {values} from "underscore";
+import {DomainValidation, DomainValidationValue} from "../workbench/interfaces/domainmanager.interfaces";
 
 /**
  * @ignore
@@ -458,10 +458,11 @@ export class language {
      *
      * @param values
      * @param formatted
+     * @param sortedBy
      * @param includeInactiveOptions
      * @private
      */
-    private prepareOptions(values: DomainValidationValues, formatted?: boolean, includeInactiveOptions?: boolean): EnumDisplayOptionArray | EnumDisplayOptionObject {
+    private prepareOptions(values: {[key: string]: DomainValidationValue}, formatted?: boolean, sortedBy?: {field: DomainValidation['order_by'], direction: DomainValidation['sort_flag']}, includeInactiveOptions?: boolean): EnumDisplayOptionArray | EnumDisplayOptionObject {
 
         if (!values) return formatted ? [] : {};
 
@@ -480,7 +481,25 @@ export class language {
                     });
                 }
 
-                return optionsArray.sort((a, b) => values[a.value].sequence > values[b.value].sequence ? 1 : -1);
+                return optionsArray.sort((a, b) => {
+
+                    let compareResult: number;
+                    if (!sortedBy.field) sortedBy.field = 'sequence';
+
+                    switch (sortedBy.field) {
+                        case 'enumvalue':
+                            compareResult = values[a.value][sortedBy.field].localeCompare(values[b.value][sortedBy.field]);
+                            break;
+                        case 'label':
+                            compareResult = this.getLabel(values[a.value][sortedBy.field]).localeCompare(this.getLabel(values[b.value][sortedBy.field]));
+                            break;
+                        case 'sequence':
+                            compareResult = values[a.value][sortedBy.field] > values[b.value][sortedBy.field] ? 1 : -1;
+                            break;
+                    }
+
+                    return sortedBy.direction == 'desc' ? -compareResult : compareResult;
+                });
             } else {
                 const optionsObject = {};
                 Object.keys(values).forEach(key => optionsObject[key] = this.getLabel(values[key].label));
@@ -503,8 +522,8 @@ export class language {
     public getFieldDisplayOptions(module: string, fieldname: string, formatted?: boolean, includeInactiveOptions?: boolean): EnumDisplayOptionArray | EnumDisplayOptionObject {
         let options = this.metadata.getFieldOptions(module, fieldname);
         if (options !== false) {
-            const values = this.metadata.getDomainValidationValues(options);
-            return this.prepareOptions(values, formatted, includeInactiveOptions);
+            const validation = this.metadata.getDomainValidationByName(options);
+            return this.prepareOptions(validation.validationvalues, formatted, {field: validation.order_by, direction: validation.sort_flag}, includeInactiveOptions);
         } else {
             return formatted ? [] : {};
         }
@@ -519,8 +538,8 @@ export class language {
     public getDisplayOptions(domainValidation: string, formatted: true, includeInactiveOptions?: boolean): EnumDisplayOptionArray;
     public getDisplayOptions(domainValidation: string, formatted?: false | undefined): EnumDisplayOptionObject;
     public getDisplayOptions(domainValidation: string, formatted?: boolean, includeInactiveOptions?: boolean): EnumDisplayOptionArray | EnumDisplayOptionObject {
-        const values = this.metadata.getDomainValidationValues(domainValidation);
-        return this.prepareOptions(values, formatted, includeInactiveOptions);
+        const validation = this.metadata.getDomainValidationByName(domainValidation);
+        return this.prepareOptions(validation.validationvalues, formatted, {field: validation.order_by, direction: validation.sort_flag}, includeInactiveOptions);
     }
 
     /**

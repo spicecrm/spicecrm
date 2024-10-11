@@ -3,7 +3,7 @@
     <system-modal-content margin="none" system-modal-content-grow="">
         <div style="height: 100%">
             <div class="slds-grid slds-gutters_direct-xx-small slds-p-around--x-small">
-                <div class="slds-form-element__control slds-size--1-of-3 slds-p-left--xxx-small">
+                <div class="slds-form-element__control slds-size--1-of-4 slds-p-left--xxx-small">
                     <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_SCOPE"></system-label></label>
                     <div class="slds-select_container">
                         <select disabled class="slds-select" [(ngModel)]="validation.scope">
@@ -22,6 +22,27 @@
                     <label class="slds-form-element__label"><system-label label="LBL_TYPE"></system-label></label>
                     <div class="slds-form-element__control">
                         <input type="text" disabled [(ngModel)]="validation.validation_type" class="slds-input"/>
+                    </div>
+                </div>
+                <div class="slds-form-element__control slds-grid slds-size--1-of-4 slds-p-left--xxx-small">
+                    <div class="slds-grow">
+                        <label class="slds-form-element__label"><system-label label="LBL_SORTEDBY"/></label>
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="validation.order_by" (ngModelChange)="sortValues()">
+                                <option value="sequence"><system-label label="LBL_SEQUENCE"/></option>
+                                <option value="enumvalue"><system-label label="LBL_VALUE"/></option>
+                                <option value="label"><system-label label="LBL_LABEL"/></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="slds-m-left--xx-small">
+                        <label class="slds-form-element__label"><system-label label="LBL_DIRECTION"/></label>
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="validation.sort_flag" (ngModelChange)="sortValues()">
+                                <option value="asc"><system-label label="LBL_ASCENDING"/></option>
+                                <option value="desc"><system-label label="LBL_DESCENDING"/></option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -54,9 +75,9 @@
                     </tr>
                     </thead>
                     <tbody class="dragboundary" cdkDropList (cdkDropListDropped)="drop($event)">
-                    <tr class="slds-hint-parent" *ngFor="let validationvalue of validationvalues" cdkDrag cdkDragBoundary=".dragboundary">
+                    <tr class="slds-hint-parent" *ngFor="let validationvalue of validationvalues" cdkDrag [cdkDragDisabled]="validation.order_by != 'sequence' && !!validation.order_by" cdkDragBoundary=".dragboundary">
                         <td class="slds-grid slds-align--absolute-center" style="min-height: 40px;">
-                            <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
+                            <system-utility-icon [cdkDragHandleDisabled]="validation.order_by != 'sequence' && !!validation.order_by" [colorclass]="validation.order_by != 'sequence' && !!validation.order_by ? 'slds-icon-text-light' : 'slds-icon-text-default'" class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
                             <system-utility-icon (click)="customizeValidationValue($event, validationvalue)" class="slds-p-right--xx-small" size="xx-small" [icon]="validationvalue.scope == 'g' ? 'world' : 'people'" style="cursor:pointer"></system-utility-icon>
                             <dictionary-manager-item-status [(ngModel)]="validationvalue.status" style="cursor:pointer"></dictionary-manager-item-status>
                         </td>
