@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\utils;
 use DateTime;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ValidationException;
 use SpiceCRM\includes\Localization\Localization;
@@ -1507,23 +1508,31 @@ class SpiceUtils
     /**
      * returns a translated string of a full tree entry
      * according to the values (= node keys) passed
-     * @param $values
+     * @param SpiceBean $obj
      * @param $module
      * @param $field
-     * @param $language
-     * @param $separator
+     * @param null $language
+     * @param bool $returnArray
+     * @param string $separator
      * @return array|string|null
-     * @throws \Exception
+     * @throws DatabaseException
      */
-    static public function renderCategoryTreeEntry(array $values, $module, $field, $language = null, $returnArray = false, $separator = ' / '){
+    static public function renderCategoryTreeEntry(SpiceBean $obj, $module, $field, $language = null, $returnArray = false, $separator = ' / '){
         if(empty($language)){
             $language = LanguageManager::getDefaultLanguage();
         }
         // get tree ID
         $treeLinks = SysCategoryTree::getInstance()->getTreeLinksByModule($module);
+
+        if (empty($treeLinks)) return null;
+
         foreach($treeLinks as $treeLink){
             if($treeLink['module_field'] == $field){
                 $treeId = $treeLink['syscategorytree_id'];
+                if ($obj->{$treeLink['module_field_c1']}) $values[] = $obj->{$treeLink['module_field_c1']};
+                if ($obj->{$treeLink['module_field_c2']}) $values[] = $obj->{$treeLink['module_field_c2']};
+                if ($obj->{$treeLink['module_field_c3']}) $values[] = $obj->{$treeLink['module_field_c3']};
+                if ($obj->{$treeLink['module_field_c4']}) $values[] = $obj->{$treeLink['module_field_c4']};
                 break;
             }
         }

@@ -162,7 +162,8 @@ class MailboxManagerController
                         'hidden' => $mailbox->hidden,
                         'max_upload' => $mailbox->max_upload,
                         'zip_compress' => $mailbox->zip_compress,
-                        'send_read_receipt' => $mailbox->send_read_receipt
+                        'send_read_receipt' => $mailbox->send_read_receipt,
+                        'stylesheet' => $mailbox->stylesheet,
                     ];
                 }
             } catch (\Exception $exception) {
