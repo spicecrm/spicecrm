@@ -121,4 +121,8 @@ export class AdministrationConfigurator implements OnInit {
     public clearFilter(){
         this.filters = {};
     }
+
+    public isFieldRequired(field: any): boolean {
+        return field.required === true;
+    }
 }
