@@ -41,8 +41,18 @@ export class AdministrationConfiguratorItemModal {
         this.administrationconfigurator.cancelEditMode(this.entry.id);
     }
 
-    get canSave(){
-        return this.administrationconfigurator.canSave(this.entry.id);
+    get canSave() {
+        return this.administrationconfigurator.canSave(this.entry.id) && this.areRequiredFieldsFilled();
+    }
+
+    private areRequiredFieldsFilled(): boolean {
+        return this.fields.every(field => {
+            if (field.required) {
+                const value = this.entry.data[field.name];
+                return value !== undefined && value !== null && value !== '';
+            }
+            return true;
+        });
     }
 
     public save() {
@@ -100,6 +110,10 @@ export class AdministrationConfiguratorItemModal {
     public close(){
         this.administrationconfigurator.cancelEditMode(this.entry.id);
         this.self.destroy();
+    }
+
+    public isFieldRequired(field: any): boolean {
+        return field.required === true;
     }
 
 }
