@@ -72,7 +72,8 @@ export class ObjectFileActionMenu {
      * triggers the download of the file
      */
     public downloadFile() {
-        this.modelattachments.downloadAttachment(this.file.id, this.file.name);
+        let downloadName = this.file.display_name ? this.file.display_name : this.file.name;
+        this.modelattachments.downloadAttachment(this.file.id, downloadName);
     }
 
     /**

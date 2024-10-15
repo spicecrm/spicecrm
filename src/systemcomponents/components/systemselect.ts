@@ -335,7 +335,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
     public generateSearchList(): SystemSelectOptionI[] {
 
         const searchList = [];
-        const groups = _.uniq(this.options.map(e => e.group)).sort();
+        const groups = _.uniq(this.options.map(e => e.group));
 
         groups.forEach((g) => {
 
@@ -347,14 +347,12 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
 
                 if (!this.sortReversed) {
                     this.options.filter(e => e.group == g)
-                    .sort((a, b) => a.display > b.display ? 1 : -1)
                     .forEach((e) =>
                         searchList.push({id: e.value, name: e.display, content: e.display, group: g, inactive: e.inactive})
                     );
                 } else {
                     // reversed sorting (desc -> asc)
                     this.options.filter(e => e.group == g)
-                    .sort((a, b) => a.display < b.display ? 1 : -1)
                     .forEach((e) =>
                         searchList.push({id: e.value, name: e.display, content: e.display, group: g, inactive: e.inactive})
                     );
