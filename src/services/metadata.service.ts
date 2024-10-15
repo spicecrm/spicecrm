@@ -21,6 +21,7 @@ import {SystemNavigationCollector} from "../systemcomponents/components/systemna
 import {SystemComponentMissing} from "../systemcomponents/components/systemcomponentmissing";
 import {ComponentType} from "@angular/cdk/overlay";
 import {keys} from "underscore";
+import {DomainValidation, DomainValidationValue} from "../workbench/interfaces/domainmanager.interfaces";
 
 declare var _;
 
@@ -1089,8 +1090,17 @@ export class metadata {
      * get domain validation values for the passed validation
      * @param validationName
      */
-    public getDomainValidationValues(validationName: string): DomainValidationValues {
+    public getDomainValidationValues(validationName: string): {[key: string]: DomainValidationValue}
+    {
         return this.configuration.getData('domainvalidations')[validationName]?.validationvalues;
+    }
+
+    /**
+     * get domain validation by name
+     * @param validationName
+     */
+    public getDomainValidationByName(validationName: string): DomainValidation {
+        return this.configuration.getData('domainvalidations')[validationName];
     }
 
     public getFieldRequired(module: string, field: string) {
@@ -1949,15 +1959,5 @@ export class noBack  {
         }
         return true;
 
-    }
-}
-
-// tslint:disable-next-line:max-classes-per-file
-export interface DomainValidationValues {
-    [key: string]: {
-        enumvalue: string;
-        label: string;
-        sequence: string;
-        status: 'a' | 'd' | 'i';
     }
 }

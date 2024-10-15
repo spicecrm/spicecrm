@@ -53,7 +53,9 @@ class SpiceDictionaryDomainValidations
                 'id' => $domainfield['id'],
                 'validation_type' => $domainfield['validation_type'],
                 'operator' => $domainfield['operator'],
-                'validationvalues' => []
+                'order_by' => $domainfield['order_by'],
+                'sort_flag' => $domainfield['sort_flag'],
+                'validationvalues' => [],
             ];
         }
         $domainfields = $db->query("SELECT * FROM syscustomdomainfieldvalidations");
@@ -62,6 +64,8 @@ class SpiceDictionaryDomainValidations
                 'id' => $domainfield['id'],
                 'validation_type' => $domainfield['validation_type'],
                 'operator' => $domainfield['operator'],
+                'order_by' => $domainfield['order_by'],
+                'sort_flag' => $domainfield['sort_flag'],
                 'validationvalues' => []
             ];
         }
@@ -148,7 +152,9 @@ class SpiceDictionaryDomainValidations
         //get teh table
         $table = $validation['scope'] == 'c' ? 'syscustomdomainfieldvalidations' : 'sysdomainfieldvalidations';
         unset($validation['scope']);
-        DBManagerFactory::getInstance()->insertQuery($table, $validation);
+        DBManagerFactory::getInstance()->upsertQuery($table, ['id' => $validation['id']], $validation);
+
+        SpiceCache::clear('domainvalidations');
     }
 
 }
