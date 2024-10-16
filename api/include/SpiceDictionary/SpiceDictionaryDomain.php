@@ -85,7 +85,8 @@ class SpiceDictionaryDomain
             if($dictionaryitem->itemDefinition->required == 1) $definition->required = 1;
             if(!empty($dictionaryitem->itemDefinition->default_value) || $dictionaryitem->itemDefinition->default_value == 0) $definition->default = $dictionaryitem->itemDefinition->default_value;
             if($dictionaryitem->itemDefinition->descriptions) $definition->descriptions = $dictionaryitem->itemDefinition->descriptions;
-            if($dictionaryitem->itemDefinition->label) $definition->vname = $dictionaryitem->itemDefinition->label;
+            // ToDO: temp fix to preserve domain level field name
+            if($dictionaryitem->itemDefinition->label && !$definition->vname) $definition->vname = $dictionaryitem->itemDefinition->label;
 
             // backward compatibility to push options as well
             if($definition->sysdomainfieldvalidation_id) {
