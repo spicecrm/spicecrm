@@ -252,6 +252,15 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
         box-shadow: 0 -5px 10px 0 #999 !important;
     }
 
+    /* add overlay for the dropdown */
+     global-footer:has(.spice-dropdown-mobile, .spice-dropdown-mobile-top):after {
+        content: '';
+        background: rgba(8, 7, 7, 0.6);
+        position: fixed;
+        inset: 0;
+        z-index: 999998 !important;
+    }
+
     .spice-dropdown-mobile-top {
         transform: translate(0,0) !important;
         position: fixed !important;
