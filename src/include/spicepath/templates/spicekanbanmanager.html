@@ -19,28 +19,28 @@
                         </select>
                     </div>
                 </div>
-                <button [disabled]="moduleName == ''" (click)="openAddModal()" class="slds-button slds-button--neutral slds-button--icon-border slds-m-left--xx-small">
+                <button [disabled]="moduleName == ''" (click)="openAddModal()" system-title="LBL_ADD" class="slds-button slds-button--neutral slds-button--icon-border slds-m-left--xx-small">
                     <system-button-icon icon="add"></system-button-icon>
                 </button>
-                <button [disabled]="!kanbanManagerService.selectedBeanGuide" (click)="openEditModal(kanbanManagerService.selectedBeanGuide)" class="slds-button slds-button--neutral slds-button--icon-border">
+                <button [disabled]="!kanbanManagerService.selectedBeanGuide" system-title="LBL_EDIT" (click)="openEditModal(kanbanManagerService.selectedBeanGuide)" class="slds-button slds-button--neutral slds-button--icon-border">
                     <system-button-icon icon="edit"></system-button-icon>
                 </button>
-                <button [disabled]="migrateBtnDisabled" (click)="migrate()" class="slds-button slds-button--neutral slds-button--icon-border">
+                <button [disabled]="migrateBtnDisabled" (click)="migrate()" system-title="LBL_MIGRATE" class="slds-button slds-button--neutral slds-button--icon-border">
                     <system-button-icon icon="replace"></system-button-icon>
                 </button>
-                <button [disabled]="!kanbanManagerService.selectedBeanGuide" (click)="setDefault()" class="slds-button slds-button--icon-border" [ngClass]="{'slds-button--success': kanbanManagerService.selectedBeanGuide?.is_default == 1}">
+                <button [disabled]="!kanbanManagerService.selectedBeanGuide" system-title="LBL_DEFAULT" (click)="setDefault()" class="slds-button slds-button--icon-border" [ngClass]="{'slds-button--success': kanbanManagerService.selectedBeanGuide?.is_default == 1}">
                     <system-button-icon icon="datadotcom"></system-button-icon>
                 </button>
-                <button [disabled]="!kanbanManagerService.selectedBeanGuide" (click)="togglePreview()" class="slds-button slds-button--icon-border" [ngClass]="{'slds-button--brand': preview}" >
+                <button [disabled]="!kanbanManagerService.selectedBeanGuide" system-title="LBL_PREVIEW" (click)="togglePreview()" class="slds-button slds-button--icon-border" [ngClass]="{'slds-button--brand': preview}" >
                     <system-button-icon icon="preview"></system-button-icon>
                 </button>
-                <button (click)="kanbanManagerService.changeService.undo()" [disabled]="!kanbanManagerService.changeService.canUndo" class="slds-button slds-button--neutral slds-button--icon-border">
+                <button (click)="kanbanManagerService.changeService.undo()" system-title="LBL_UNDO" [disabled]="!kanbanManagerService.changeService.canUndo" class="slds-button slds-button--neutral slds-button--icon-border">
                     <system-button-icon icon="undo"></system-button-icon>
                 </button>
-                <button (click)="kanbanManagerService.changeService.redo()" [disabled]="!kanbanManagerService.changeService.canRedo" class="slds-button slds-button--neutral slds-button--icon-border">
+                <button (click)="kanbanManagerService.changeService.redo()" system-title="LBL_REDO" [disabled]="!kanbanManagerService.changeService.canRedo" class="slds-button slds-button--neutral slds-button--icon-border">
                     <system-button-icon icon="redo"></system-button-icon>
                 </button>
-                <button (click)="kanbanManagerService.save()" [disabled]="!kanbanManagerService.selectedBeanGuide || !kanbanManagerService.hasChanges" class="slds-button slds-button--neutral slds-button--icon-border">
+                <button (click)="kanbanManagerService.save()" system-title="LBL_SAVE" [disabled]="!kanbanManagerService.selectedBeanGuide || !kanbanManagerService.hasChanges" class="slds-button slds-button--neutral slds-button--icon-border">
                     <system-button-icon icon="save"></system-button-icon>
                 </button>
             </div>

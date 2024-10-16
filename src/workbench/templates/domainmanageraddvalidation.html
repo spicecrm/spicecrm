@@ -3,7 +3,7 @@ this.fieldvalidation.status = 'a';
     <system-modal-header (close)="close()"><system-label label="LBL_ADD_VALIDATION"></system-label></system-modal-header>
     <system-modal-content>
         <div class="slds-grid">
-            <div class="slds-form-element__control slds-size--3-of-4 slds-p-right--xxx-small">
+            <div class="slds-form-element__control slds-size--2-of-4 slds-p-right--xxx-small">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_NAME"></system-label></label>
                 <system-input-text [(ngModel)]="fieldvalidation.name"></system-input-text>
             </div>
@@ -14,6 +14,27 @@ this.fieldvalidation.status = 'a';
                         <option value="g"><system-label label="LBL_GLOBAL"></system-label></option>
                         <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
                     </select>
+                </div>
+            </div>
+            <div class="slds-form-element__control slds-grid slds-size--1-of-4 slds-p-left--xxx-small">
+                <div class="slds-grow">
+                    <label class="slds-form-element__label"><system-label label="LBL_SORTEDBY"/></label>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="fieldvalidation.order_by">
+                            <option value="sequence"><system-label label="LBL_SEQUENCE"/></option>
+                            <option value="enumvalue"><system-label label="LBL_VALUE"/></option>
+                            <option value="label"><system-label label="LBL_LABEL"/></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="slds-m-left--xx-small">
+                    <label class="slds-form-element__label"><system-label label="LBL_DIRECTION"/></label>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="fieldvalidation.sort_flag">
+                            <option value="asc"><system-label label="LBL_ASCENDING"/></option>
+                            <option value="desc"><system-label label="LBL_DESCENDING"/></option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>

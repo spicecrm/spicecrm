@@ -3,12 +3,12 @@
     {{getValue()}}
 </field-generic-display>
 <div *ngIf="isEditMode()" class="slds-form-element">
-    <div class="slds-form-element__control" [ngClass]="getFieldClass()">
-        <div class="slds-select_container slds-m-vertical--xx-small">
-            <select #focus class="slds-select " [(ngModel)]="value">
-                <option *ngFor="let o of options" [ngValue]="o.value">{{o.display}}</option>
-            </select>
-        </div>
+    <div class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="getFieldClass()">
+        <system-select [ngModel]="value" [idOnly]="true">
+            @for (o of options; track o.value) {
+                <system-select-option [value]="o.value" [display]="o.display" [inactive]="o.status == 'i'"/>
+            }
+        </system-select>
         <field-messages [fieldname]="fieldname"></field-messages>
     </div>
 </div>

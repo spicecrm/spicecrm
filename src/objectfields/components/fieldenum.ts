@@ -4,7 +4,7 @@
 import {Component} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
-import {language} from '../../services/language.service';
+import {EnumDisplayOptionArray, language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
@@ -15,7 +15,7 @@ import {Router} from '@angular/router';
 })
 export class fieldEnum extends fieldGeneric {
 
-    public options: any[] = [];
+    public options: EnumDisplayOptionArray = [];
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
@@ -39,7 +39,7 @@ export class fieldEnum extends fieldGeneric {
 
     public getOptions() {
 
-        this.options = this.language.getFieldDisplayOptions(this.model.module, this.fieldname, true);
+        this.options = this.language.getFieldDisplayOptions(this.model.module, this.fieldname, true, true);
 
         if (this.fieldconfig.sortdirection) {
             switch (this.fieldconfig.sortdirection.toLowerCase()) {

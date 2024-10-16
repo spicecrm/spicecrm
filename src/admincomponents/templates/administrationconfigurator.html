@@ -10,6 +10,7 @@
                 <th *ngFor="let field of itemFields" scope="col" (click)="sort(field.name)">
                     <div class="slds-truncate slds-p-horizontal--small">
                         {{field.name}}
+                        <span *ngIf="isFieldRequired(field)" class="slds-required">*</span>
                         <ng-container *ngIf="administrationconfigurator.sorting.field == field.name">
                             <system-utility-icon *ngIf="administrationconfigurator.sorting.direction == 'asc'" [icon]="'arrowup'" [size]="'x-small'"></system-utility-icon>
                             <system-utility-icon *ngIf="administrationconfigurator.sorting.direction == 'dsc'" [icon]="'arrowdown'" [size]="'x-small'"></system-utility-icon>
