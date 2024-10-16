@@ -9,6 +9,7 @@ import {modal} from '../../services/modal.service';
 import {backend} from '../../services/backend.service';
 import {domainmanager} from '../services/domainmanager.service';
 import {DomainValidationValue, DomainValidation} from "../interfaces/domainmanager.interfaces";
+import {language} from "../../services/language.service";
 
 /**
  * a component rendering the validation details as part of a domain field
@@ -39,7 +40,7 @@ export class DomainManagerFieldValidation implements OnInit {
      */
     public deletedValidationIds: string[] = [];
 
-    constructor(public domainmanager: domainmanager, public backend: backend, public modelutilities: modelutilities, public modal: modal, public injector: Injector) {
+    constructor(public domainmanager: domainmanager, public backend: backend, public modelutilities: modelutilities, public modal: modal, public injector: Injector, private language: language) {
 
     }
 
@@ -48,9 +49,10 @@ export class DomainManagerFieldValidation implements OnInit {
      */
     public ngOnInit() {
         // get the valdiation
-        this.validation = this.domainmanager.getValidationById(this.field.sysdomainfieldvalidation_id)
+        this.validation = {...this.domainmanager.getValidationById(this.field.sysdomainfieldvalidation_id)}
         // get the values
-        this.validationvalues = this.domainmanager.getValidationValuesdById(this.field.sysdomainfieldvalidation_id).sort((a, b) => +a.sequence > +b.sequence ? 1 : -1);
+        this.validationvalues = this.domainmanager.getValidationValuesdById(this.field.sysdomainfieldvalidation_id);
+        this.sortValues();
     }
 
 
@@ -185,6 +187,9 @@ export class DomainManagerFieldValidation implements OnInit {
     }
 
     public save(){
+
+        this.saveValidationSortedBy();
+
         this.backend.postRequest(`dictionary/domainvalidation/${this.field.sysdomainfieldvalidation_id}/values`, {}, this.validationvalues).subscribe({
             next: (res) => {
                 // handle the values
@@ -208,5 +213,51 @@ export class DomainManagerFieldValidation implements OnInit {
 
     public close(){
         this.self.destroy();
+    }
+
+    /**
+     * save the validation sorted_by field change
+     */
+    public saveValidationSortedBy() {
+        const dbValidation = this.domainmanager.domainfieldvalidations.find(v => v.id == this.field.sysdomainfieldvalidation_id);
+
+        if (dbValidation.order_by == this.validation.order_by && dbValidation.sort_flag == this.validation.sort_flag) return;
+
+        this.backend.postRequest(`dictionary/domainvalidation/${this.validation.id}`, {}, this.validation).subscribe({
+            next: () => {
+                dbValidation.order_by = this.validation.order_by;
+                dbValidation.sort_flag = this.validation.sort_flag;
+            }
+        });
+    }
+
+    /**
+     * sort values on changing the sort field
+     */
+    public sortValues() {
+        const sortedBy = {
+            field: this.validation.order_by,
+            direction: this.validation.sort_flag
+        };
+
+        this.validationvalues.sort((a, b) => {
+
+            let compareResult: number;
+            if (!sortedBy.field) sortedBy.field = 'sequence';
+
+            switch (sortedBy.field) {
+                case 'enumvalue':
+                    compareResult = a[sortedBy.field].localeCompare(b[sortedBy.field]);
+                    break;
+                case 'label':
+                    compareResult = this.language.getLabel(a[sortedBy.field]).localeCompare(this.language.getLabel(b[sortedBy.field]));
+                    break;
+                case 'sequence':
+                    compareResult = a[sortedBy.field] > b[sortedBy.field] ? 1 : -1;
+                    break;
+            }
+
+            return sortedBy.direction == 'desc' ? -compareResult : compareResult;
+        });
     }
 }

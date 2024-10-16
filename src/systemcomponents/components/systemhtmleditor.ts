@@ -446,6 +446,9 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
         }
     }
 
+    /**
+     * @deprecated
+     */
     public addVideo() {
         if (!this.isActive) {
             return;

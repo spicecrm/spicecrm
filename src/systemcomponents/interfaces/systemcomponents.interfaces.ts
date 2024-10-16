@@ -60,6 +60,7 @@ export interface SystemSelectOptionI {
     group?: string;
     content?: string;
     isGroup?: boolean;
+    inactive?: boolean;
 }
 
 export interface GoogleChartOptionsI {
