@@ -159,6 +159,7 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
         if (this.dropdownElement && this.footer.footercontainer.element.nativeElement.contains(this.dropdownElement)) {
             this.renderer.removeChild(this.footer.footercontainer.element.nativeElement, this.dropdownElement);
             this.renderer.appendChild(this.elementRef.nativeElement, this.dropdownElement);
+            this.renderer.removeClass(this.dropdownElement, 'spice-dropdown-mobile');
         }
     }
 
