@@ -2,7 +2,7 @@
     <label *ngIf="label" class="slds-form-element__label"><system-label [label]="label"></system-label></label>
     <div class="slds-form-element__control slds-size_2-of-2">
         <div class="slds-combobox_container slds-size--1-of-1">
-            <div system-dropdown-trigger class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-size--1-of-1" aria-expanded="true" aria-haspopup="listbox" role="combobox">
+            <div system-dropdown-trigger [stickyOnMobile]="true" class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-size--1-of-1" aria-expanded="true" aria-haspopup="listbox" role="combobox">
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
                     <input #inputElement system-dropdown-trigger-button type="text" (focus)="onFocus()" (blur)="onBlur()" (click)="onInputClick($event)" [(ngModel)]="value" (keyup)="onKeyup($event)" [disabled]="disabled" system-placeholder="LBL_SEARCH" class="slds-input slds-combobox__input slds-combobox__input-value" aria-autocomplete="list" autoComplete="off" role="textbox">
                     <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon slds-input__icon--left'"></system-utility-icon>
