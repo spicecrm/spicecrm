@@ -33,6 +33,16 @@
             </div>
         </div>
     </div>
+    <div *ngIf="displayMailboxSelector" class="slds-col slds-grow slds-form-element" style="max-width: 100px">
+        <label class="slds-form-element__label">
+            <system-label label="LBL_MAILBOX"></system-label>
+        </label>
+        <system-select [(ngModel)]="mailboxId" [idOnly]="true">
+            @for (mailbox of mailboxes; track mailbox.value) {
+                <system-select-option [value]="mailbox.value" [display]="mailbox.display"/>
+            }
+        </system-select>
+    </div>
     <button (click)="compileBody()" [disabled]="!selectedItem" class="slds-button slds-button--icon-border slds-m-horizontal--xx-small">
         <system-button-icon icon="refresh"></system-button-icon>
     </button>

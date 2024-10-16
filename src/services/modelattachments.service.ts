@@ -525,7 +525,7 @@ export class modelattachments implements OnDestroy {
             let a = document.createElement("a");
             document.body.appendChild(a);
             a.href = blobUrl;
-            a.download = fileData.filename;
+            a.download = name ? name : fileData.filename;
             a.type = fileData.file_mime_type;
             a.click();
             a.remove();

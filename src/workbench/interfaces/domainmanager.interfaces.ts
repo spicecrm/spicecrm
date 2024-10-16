@@ -47,10 +47,11 @@ export interface DomainValidation {
     status: 'd'|'a'|'i';
     validation_type: string;
     sort_flag: 'asc'|'desc';
-    order_by: 'sequence'|'name';
+    order_by: 'sequence' | 'enumvalue' | 'label';
     description?: string;
     version?: string;
     package?: string;
+    validationvalues?: {[key: string]: DomainValidationValue};
 }
 
 /**

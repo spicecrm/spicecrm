@@ -10,7 +10,6 @@ import {
     forwardRef,
     Input, OnDestroy, QueryList,
     Renderer2,
-    SimpleChanges,
     ViewChild,
     ViewContainerRef
 } from "@angular/core";
@@ -44,12 +43,8 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
     /**
      * when true emit and receive the id as ngModel value
      */
-    @Input('system-select-id-only') set setIdOnly(value) {
-        if (value === false) {
-            this.idOnly = false;
-        } else {
-            this.idOnly = true;
-        }
+    @Input('system-select-id-only') set setIdOnly(value: boolean) {
+        this.idOnly = value !== false;
     }
     @Input() public idOnly: boolean = false;
     /**
@@ -90,7 +85,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
     /**
      * holds the focused dom item data
      */
-    public focusedItemId: string;
+    public focusedItem: SystemSelectOptionI;
     /**
      * change emitter by ngModel
      * @private
@@ -115,21 +110,11 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
                 public renderer: Renderer2) {
     }
 
-    /**
-     * @return string dropdown length style
-     */
-    get dropdownLength() {
-        return `calc(((1rem * 1.5) + 1rem) * ${this.listHeight})`;
-    }
-
     public ngAfterContentInit() {
         this.searchList = this.generateSearchList();
         this.subscription.add(this.options.changes.subscribe(() => {
             // rebuild the search list options on content change
             this.searchList = this.generateSearchList();
-            if (!this.focusedItemId) return;
-            // update the display value after rebuilding the search list options if there is any match
-            this.value = this.searchList.find(e => e.id == this.focusedItemId)?.name ?? this.focusedItemId;
             this.cdRef.detectChanges();
         }));
     }
@@ -159,18 +144,23 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
     }
 
     /**
-     * Write a new value to the element.
-     * @param value
+     * Write a new focusedItemOrString to the element.
+     * @param focusedItemOrString
      */
-    public writeValue(value: string | SystemSelectNgModelValue) {
+    public writeValue(focusedItemOrString: string | SystemSelectNgModelValue) {
 
-        if (!value) return;
+        if (!focusedItemOrString) return;
 
-        if(typeof value == 'string') {
-            value = this.searchList.find(e => e.id == value) ?? {name: value, id: value};
+        if(typeof focusedItemOrString == 'string') {
+            const focusedItem = this.searchList.find(e => e.id == focusedItemOrString);
+            if (!focusedItem) {
+                this.value = focusedItemOrString;
+            } else {
+                this.focusedItem = focusedItem;
+            }
+        } else {
+            this.focusedItem = focusedItemOrString;
         }
-        this.value = value.name;
-        this.focusedItemId = value.id;
 
         this.cdRef.detectChanges();
     }
@@ -185,18 +175,6 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
             this.onChange(option?.id);
         } else {
             this.onChange({id: option.id, name: option.name, group: option.group});
-        }
-    }
-
-    /**
-     * handle the click outside the search box
-     * @param event
-     */
-    public outsideClickHandler(event: MouseEvent): void {
-
-        const clickedInside = this.elementRef.nativeElement.contains(event.target);
-        if (!clickedInside) {
-            this.setSearchListVisible(false);
         }
     }
 
@@ -245,7 +223,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
     /**
      * handle input blur the hide the result list
      */
-    public onBlur(event: FocusEvent) {
+    public onBlur() {
         this.inputIsVisible = false;
         this.setSearchListVisible(false);
     }
@@ -275,8 +253,8 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
         this.setSearchListVisible(false);
 
         this.emitValue(listItem);
-        this.value = listItem.name;
-        this.focusedItemId = listItem.id;
+        this.focusedItem = listItem;
+        this.value = undefined;
 
         this.inputIsVisible = false;
 
@@ -305,7 +283,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      */
     public filterSearchList() {
         this.setSearchListVisible(true);
-        this.focusedItemId = undefined;
+        this.focusedItem = undefined;
 
         this.searchList = this.generateSearchList();
 
@@ -338,12 +316,12 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      * @private
      */
     public handleEnterPress() {
-        if (!!this.focusedItemId) {
-            this.emitValue(
-                this.searchList.find(e => e.id == this.focusedItemId)
-            );
+        if (!!this.focusedItem) {
+            this.emitValue(this.focusedItem);
+            this.value = undefined;
             this.inputIsVisible = false;
         } else if (this.emitInputValueOnEnterPress) {
+            this.focusedItem = this.searchList.find(e => e.id == this.value);
             this.onChange(this.value);
             this.inputIsVisible = false;
         }
@@ -357,7 +335,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
     public generateSearchList(): SystemSelectOptionI[] {
 
         const searchList = [];
-        const groups = _.uniq(this.options.map(e => e.group)).sort();
+        const groups = _.uniq(this.options.map(e => e.group));
 
         groups.forEach((g) => {
 
@@ -369,16 +347,14 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
 
                 if (!this.sortReversed) {
                     this.options.filter(e => e.group == g)
-                    .sort((a, b) => a.display > b.display ? 1 : -1)
                     .forEach((e) =>
-                        searchList.push({id: e.value, name: e.display, content: e.display, group: g})
+                        searchList.push({id: e.value, name: e.display, content: e.display, group: g, inactive: e.inactive})
                     );
                 } else {
                     // reversed sorting (desc -> asc)
                     this.options.filter(e => e.group == g)
-                    .sort((a, b) => a.display < b.display ? 1 : -1)
                     .forEach((e) =>
-                        searchList.push({id: e.value, name: e.display, content: e.display, group: g})
+                        searchList.push({id: e.value, name: e.display, content: e.display, group: g, inactive: e.inactive})
                     );
                 }
             }
@@ -402,18 +378,16 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
         }
 
         const direction = event.key == 'ArrowDown' ? 'down' : 'up';
-        const currentIndex = !this.focusedItemId ? 0 : list.findIndex(e => e.id == this.focusedItemId);
+        const currentIndex = !this.focusedItem ? 0 : list.findIndex(e => e.id == this.focusedItem.id);
         let nextItem = direction == 'down' ? list[currentIndex + 1] : list[currentIndex - 1];
 
-        if (!this.focusedItemId || !nextItem) {
+        if (!this.focusedItem || !nextItem) {
             nextItem = list[0];
-            this.focusedItemId = nextItem.id;
-            this.value = nextItem.name;
+            this.focusedItem = nextItem;
 
         } else if (!!nextItem) {
 
-            this.focusedItemId = nextItem.id;
-            this.value = nextItem.name;
+            this.focusedItem = nextItem;
         }
 
         if (!this.searchListIsVisible && !!nextItem) {
@@ -452,7 +426,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
     public clearValue(e: MouseEvent) {
         e.stopPropagation();
         this.value = undefined;
-        this.focusedItemId = undefined;
+        this.focusedItem = undefined;
         this.onChange(undefined);
         this.inputIsVisible = true;
     }

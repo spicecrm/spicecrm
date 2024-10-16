@@ -130,6 +130,24 @@ class SpiceAttachments
     }
 
     /**
+     * Returns the number of attachments linked to a bean.
+     *
+     * @param string $beanName
+     * @param string $beanId
+     * @param null $categoryId
+     * @throws Exception
+     */
+    public static function getAttachmentsCountPerBean(string $beanName, array $beanIds,  $returnFiles = false)
+    {
+        $attachments = [];
+        foreach ($beanIds as $beanId) {
+          $attachments[$beanId] = self::getAttachmentsForBean($beanName,$beanId, 25, false);
+        }
+        $res = $attachments;
+        return $res;
+    }
+
+    /**
      * saves the attachments
      *
      * @param $beanName

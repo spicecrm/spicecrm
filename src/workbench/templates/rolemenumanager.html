@@ -43,12 +43,12 @@
                 </th>
                 <th class="slds-text-align_left" scope="col">
                     <div class="slds-truncate">
-                        <system-label label="LBL_VERSION"></system-label>
+                        <system-label label="LBL_PACKAGE"></system-label>
                     </div>
                 </th>
                 <th class="slds-text-align_left" scope="col">
                     <div class="slds-truncate">
-                        <system-label label="LBL_PACKAGE"></system-label>
+                        <system-label label="LBL_VERSION"></system-label>
                     </div>
                 </th>
                 <th class="slds-cell_action-mode" scope="col"></th>
@@ -69,12 +69,12 @@
                         <system-input-module *ngIf="viewProvider.view.mode == 'edit'" [(ngModel)]="roleModule.module"></system-input-module>
                     </td>
                     <td class="slds-text-align_left">
-                        <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{ roleModule.version }}</div>
-                        <input class="slds-input" *ngIf="viewProvider.view.mode == 'edit'" [(ngModel)]="roleModule.version">
+                        <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{ roleModule.package }}</div>
+                        <field-package *ngIf="viewProvider.view.mode == 'edit'" [package]="roleModule.package" (packageSelected)="setPackage($event)"></field-package>
                     </td>
                     <td class="slds-text-align_left">
-                        <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{ roleModule.package }}</div>
-                        <input class="slds-input" *ngIf="viewProvider.view.mode == 'edit'" [(ngModel)]="roleModule.package">
+                        <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{ roleModule.version }}</div>
+                        <field-version *ngIf="viewProvider.view.mode == 'edit'" [version]="roleModule.version" (versionSelected)="setVersion($event)"></field-version>
                     </td>
                     <td class="slds-text-align_center">
                         <div class="slds-truncate slds-cell_action-mode">
