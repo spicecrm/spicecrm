@@ -12,6 +12,8 @@
     "@angular/platform-browser": "17.2.3",
     "@angular/platform-browser-dynamic": "17.2.3",
     "@angular/router": "17.2.3",
+    "@txtextcontrol/tx-ng-document-editor": "^32.4.0",
+    "@txtextcontrol/tx-ng-document-viewer": "^32.4.0",
     "chart.js": "^4.4.2",
     "cropperjs": "1.5.12",
     "croppie": "2.6.5",
