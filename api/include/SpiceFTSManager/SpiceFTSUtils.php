@@ -85,6 +85,10 @@ class SpiceFTSUtils
             'type' => 'keyword',
             'index' => true
         ],
+        'is_inactive' => [
+            'type' => 'keyword',
+            'index' => true
+        ],
         'date_entered' => [
             'type' => 'date',
             'index' => false,

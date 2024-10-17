@@ -10,7 +10,9 @@
             </thead>
             <tbody>
                 <tr *ngFor="let field of fields">
-                    <td>{{field.name}}</td>
+                    <td>{{field.name}}
+                        <span *ngIf="isFieldRequired(field)" class="slds-required">*</span>
+                    </td>
                     <td >
                         <div class="slds-form-element">
                             <div class="slds-form-element__control" [ngSwitch]="field.type">
