@@ -46,8 +46,9 @@
     --sds-c-button-brand-color-background-hover: #CA1B21;
     --sds-c-input-shadow-focus: 0 0 3px #CA1B21;
     --sds-c-textarea-shadow-focus: 0 0 3px #CA1B21;
-    --slds-c-input-color-border: #808080;
-    --slds-c-select-color-border: #808080;
+    --slds-c-input-color-border: #c9c9c9;
+    --slds-c-select-color-border: #c9c9c9;
+    --slds-g-color-border-base-4: var(--slds-g-color-border-base-1);
     --sds-c-select-shadow-focus: 0 0 3px #CA1B21;
     --sds-c-button-text-color-hover: #ffffff;
     --sds-c-toast-text-color: #ffffff;
@@ -147,6 +148,10 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 /* ToDo: replace by angular animation */
 .slds-section__title-action-icon {
     transition: 0.5s;
+}
+
+.slds-text-link {
+    color: var(--brand-primary);
 }
 
 /* a 1 pixel gap between tab and bold horizontal line. */
