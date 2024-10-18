@@ -1,5 +1,5 @@
-/*! Lightning Design System 2.23.0 */
-.slds-wcag{
+/*! Lightning Design System 2.25.1 */
+:root{
   --slds-g-color-neutral-base-100:#ffffff;
   --slds-g-color-neutral-base-95:#f3f3f3;
   --slds-g-color-neutral-base-90:#e5e5e5;
@@ -231,6 +231,10 @@
   --slds-g-color-neutral-100-opacity-25:rgba(255, 255, 255, 0.25);
   --slds-g-color-neutral-100-opacity-50:rgba(255, 255, 255, 0.5);
   --slds-g-color-neutral-100-opacity-75:rgba(255, 255, 255, 0.75);
+  --slds-g-shadow-outset-focus-1:0 0 0 2px #FFFFFF, 0 0 0 4px #0B5CAB;
+  --slds-g-shadow-inset-focus-1:0 0 0 2px #FFFFFF inset, 0 0 0 4px #0B5CAB inset;
+  --slds-g-shadow-inset-inverse-focus-1:0 0 0 2px #0B5CAB inset, 0 0 0 4px #FFFFFF inset;
+  --slds-g-shadow-outline-focus-1:0 0 0 2px #0B5CAB;
 }
 @media (pointer: coarse) and (hover: none){
   body{
@@ -593,7 +597,7 @@
   .slds-input[type=date], .slds-input[type=datetime-local], .slds-input[type=month], .slds-input[type=time]{
     height:2.75rem;
   }
-  .slds-input[type=date]{
+  .slds-input[type=date], .slds-input[type=datetime-local]{
     white-space:nowrap;
   }
   .slds-input-has-icon .slds-input__icon{
@@ -743,7 +747,7 @@
             align-items:center;
     min-height:2.75rem;
   }
-  .slds-progress__item .slds-button:before{
+  .slds-progress__item .slds-progress__marker:before{
     position:absolute;
     width:calc(100% + 8px);
     height:2.75rem;
@@ -758,7 +762,7 @@
     width:2rem;
     height:2rem;
   }
-  .slds-progress__marker_icon .slds-button__icon{
+  .slds-progress__marker_icon .slds-icon{
     width:1.25rem;
     height:1.25rem;
   }
