@@ -177,7 +177,19 @@ export class AdministrationApiInspectorMethodTest implements AfterViewInit {
         let body: any = {};
         let bodyParameters = this.apiInspector.getMethodParameters(this.apiMethod.route, this.apiMethod.method, 'body');
         for (let bodyParameter of bodyParameters) {
-            body[bodyParameter.name] = this.parameterCollector[bodyParameter.name];
+            let bodyParamValue =  this.parameterCollector[bodyParameter.name];
+            // json decode to match array or object
+            if(bodyParameter.type && (bodyParameter.type == 'array' || bodyParameter.type == 'object')){
+                try {
+                    let inputData = JSON.parse(this.parameterCollector[bodyParameter.name]);
+                    if(inputData){
+                        bodyParamValue = inputData;
+                    }
+                } catch (e) {
+                    // do nothing
+                }
+            }
+            body[bodyParameter.name] = bodyParamValue;
         }
         return body;
     }

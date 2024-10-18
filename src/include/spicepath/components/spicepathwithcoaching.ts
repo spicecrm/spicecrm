@@ -123,7 +123,7 @@ export class SpicePathWithCoaching {
         if (!Array.isArray(moduleKanbans) || moduleKanbans.length == 0) return;
 
         if (!config?.kanban) {
-            this.stages = moduleKanbans[0].stages;
+            this.stages = moduleKanbans.find(k => k.is_default == 1).stages;
         } else {
             this.stages = moduleKanbans.find(k => k.id == config.kanban)?.stages ?? [];
         }
