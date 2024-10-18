@@ -8,9 +8,7 @@ use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SpiceGDPRManager\SpiceGDPRManager;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
-use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceGDPRManagerSchedulerJobTasks
 {
@@ -18,8 +16,7 @@ class SpiceGDPRManagerSchedulerJobTasks
      * @throws DatabaseException
      * @throws Exception
      */
-    public function processRetentions(): true
-    {
+    public function processRetentions() {
         $db = DBManagerFactory::getInstance();
         $retentions = $db->query("SELECT * FROM sysgdprretentions WHERE deleted = 0 AND active = 1");
         while ($retention = $db->fetchByAssoc($retentions)) {
@@ -75,7 +72,7 @@ class SpiceGDPRManagerSchedulerJobTasks
                 }
 
                 // check if we've got another tasks after retention task was executed
-                $this->furtherRetentionTasks(['bean_module' => $moduleFilter->filtermodule, 'bean_id' => $id, 'retention_type' => $retention['retention_type']]);
+                $this->furtherRetentionTasks(['bean_module' => $moduleFilter->filtermodule, 'bean_id' => $id['id'], 'retention_type' => $retention['retention_type']]);
             }
         }
         return true;
