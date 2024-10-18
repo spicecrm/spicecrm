@@ -2,7 +2,7 @@
  * @module DirectivesModule
  */
 import {
-    ChangeDetectorRef,
+    ChangeDetectorRef, ComponentRef,
     Directive,
     ElementRef,
     HostBinding,
@@ -13,6 +13,11 @@ import {
 } from '@angular/core';
 import {footer} from "../../services/footer.service";
 import {layout} from "../../services/layout.service";
+import {modal} from "../../services/modal.service";
+import {SystemDropdownMobileModal} from "../../systemcomponents/components/systemdropdownmobilemodal";
+import {DomPortal} from "@angular/cdk/portal";
+import {fromEvent} from "rxjs";
+import {take} from "rxjs/operators";
 
 /**
  * This directive can be added to an element to handle show/hide the dropdown element
@@ -42,17 +47,28 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
      * @private
      */
     @Input() private stickyOnMobile: boolean = false;
+       /**
+     * if true always close the dropdown on click
+     * @private
+     */
+    @Input() private autoClose: boolean = false;
     /*
     * @input dropdowntrigger: boolean = false
     */
     @Input('system-dropdown-trigger') public dropdowntriggerdisabled: boolean = false;
+    /**
+     * holds a reference of the mobile modal
+     * @private
+     */
+    private mobileModalRef: ComponentRef<SystemDropdownMobileModal>;
 
     constructor(
         public renderer: Renderer2,
         public elementRef: ElementRef,
         public footer: footer,
         public layout: layout,
-        public cdRef: ChangeDetectorRef
+        public cdRef: ChangeDetectorRef,
+        private modal: modal
     ) {
 
     }
@@ -95,34 +111,38 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
      * remove dropdown from footer if it is closed
      * remove global click listener
      */
-    public toggleDropdown(event?) {
+    public toggleDropdown() {
 
         if (!this.dropdownElement) {
             this.setDropdownElement();
         }
 
-
         if (this.dropdowntriggerdisabled || !this.dropdownElement) return false;
 
-        this.dropDownOpen = !this.dropDownOpen;
-
-        if (this.dropDownOpen) {
-            this.moveDropdownToFooter();
-            this.setDropdownElementPosition();
-
-            this.scrollHandlerFn = () => requestAnimationFrame(
-                () => this.setDropdownElementPosition()
-            );
-
-            this.clickListener = this.renderer.listen("document", "click", (e) => this.onClick(e));
-            // use window scroll listener with capture to catch any scroll event in the app
-            window.addEventListener("scroll", this.scrollHandlerFn, {capture: true});
-
+        if (!this.dropDownOpen) {
+            this.open();
         } else {
-            this.removeScrollListener();
-            this.restoreDropdownFromFooter();
-            this.clickListener();
+            this.close();
         }
+    }
+
+    /**
+     * open dropdown
+     */
+    public open() {
+
+        this.dropDownOpen = true;
+
+        this.moveDropdownToFooter();
+        this.setDropdownElementPosition();
+
+        this.scrollHandlerFn = () => requestAnimationFrame(
+            () => this.setDropdownElementPosition()
+        );
+
+        this.clickListener = this.renderer.listen("document", "click", (e) => this.onClick(e));
+        // use window scroll listener with capture to catch any scroll event in the app
+        window.addEventListener("scroll", this.scrollHandlerFn, {capture: true});
     }
 
     /**
@@ -133,13 +153,12 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
 
     /**
      * open the dropdown on the host click if the trigger button was not defined
-     * @param event
      * @private
      */
-    @HostListener('click', ['$event'])
-    public hostClick(event) {
+    @HostListener('click')
+    public hostClick() {
         if (this.hasTriggerButton) return;
-        this.toggleDropdown(event);
+        this.toggleDropdown();
     }
 
     /*
@@ -147,8 +166,22 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
     * @append the dropdown element to the footer
     */
     public moveDropdownToFooter() {
-        this.renderer.removeChild(this.elementRef.nativeElement, this.dropdownElement);
-        this.renderer.appendChild(this.footer.footercontainer.element.nativeElement, this.dropdownElement);
+
+        if (this.stickyOnMobile && this.layout.screenwidth == 'small') {
+
+            this.modal.openStaticModal(SystemDropdownMobileModal).subscribe((modalRef: ComponentRef<SystemDropdownMobileModal>) => {
+                this.mobileModalRef = modalRef;
+                modalRef.instance.portalContent = new DomPortal<HTMLElement>(this.dropdownElement);
+                modalRef.instance.destroy$.subscribe({
+                    complete: () => {
+                        if (this.dropDownOpen) this.close();
+                    }
+                })
+            });
+        } else {
+            this.renderer.removeChild(this.elementRef.nativeElement, this.dropdownElement);
+            this.renderer.appendChild(this.footer.footercontainer.element.nativeElement, this.dropdownElement);
+        }
     }
 
     /*
@@ -156,10 +189,17 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
     * @append the dropdown element to the footer
     */
     public restoreDropdownFromFooter() {
-        if (this.dropdownElement && this.footer.footercontainer.element.nativeElement.contains(this.dropdownElement)) {
+
+        if (this.stickyOnMobile && this.layout.screenwidth == 'small') {
+            if (this.mobileModalRef) {
+                this.mobileModalRef.instance.self.destroy();
+                this.mobileModalRef = undefined;
+                this.cdRef.detectChanges();
+            }
+
+        } else if (this.dropdownElement && this.footer.footercontainer.element.nativeElement.contains(this.dropdownElement)) {
             this.renderer.removeChild(this.footer.footercontainer.element.nativeElement, this.dropdownElement);
             this.renderer.appendChild(this.elementRef.nativeElement, this.dropdownElement);
-            this.renderer.removeClass(this.dropdownElement, 'spice-dropdown-mobile');
         }
     }
 
@@ -182,11 +222,8 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
     public setDropdownElementPosition() {
 
         if (this.stickyOnMobile && this.layout.screenwidth == 'small') {
-            this.renderer.addClass(this.dropdownElement, 'spice-dropdown-mobile');
             return;
         }
-
-        this.renderer.removeClass(this.dropdownElement, 'spice-dropdown-mobile');
 
         let triggerRect = this.triggerElement.getBoundingClientRect();
 
@@ -234,7 +271,7 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
 
             // on overflow adjust the width
             if (triggerRect.right < window.innerWidth * 0.70) {
-                this.renderer.setStyle(this.dropdownElement, 'max-width', (window.innerWidth - triggerRect.right - 10) + 'px');
+                this.renderer.setStyle(this.dropdownElement, 'max-width', triggerRect.width + 'px');
             }
         }
 
@@ -249,13 +286,20 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
     * @remove global click listener
     */
     public onClick(event): void {
-        if (!this.elementRef.nativeElement.contains(event.target)) {
-            this.dropDownOpen = false;
-            this.removeScrollListener();
-            this.restoreDropdownFromFooter();
-            this.clickListener();
-            // make sure we detect changes in case we are on a push strategy
-            this.cdRef.markForCheck();
+        if (this.autoClose || !this.elementRef.nativeElement.contains(event.target)) {
+            this.close();
         }
+    }
+
+    /**
+     * close dropdown
+     */
+    public close() {
+        this.dropDownOpen = false;
+        this.removeScrollListener();
+        this.restoreDropdownFromFooter();
+        this.clickListener();
+        // make sure we detect changes in case we are on a push strategy
+        this.cdRef.markForCheck();
     }
 }
