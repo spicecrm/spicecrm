@@ -201,13 +201,16 @@ import {SystemProgressIndicatorItem} from "./components/systemprogressindicatori
 import {PackageLoaderReloadLoadedModal} from "./components/packageloaderreloadloadedmodal";
 import {SystemInputDictionary} from "./components/systeminputdictionary";
 import {SystemSelectModuleModal} from "./components/systemselectmodulemodal";
+import {SystemDropdownMobileModal} from "./components/systemdropdownmobilemodal";
+import {CdkPortalOutlet} from "@angular/cdk/portal";
 
 @NgModule({
     imports: [
         DirectivesModule,
         CommonModule,
         FormsModule,
-        DragDropModule
+        DragDropModule,
+        CdkPortalOutlet
     ],
     declarations: [
         PackageLoader,
@@ -389,7 +392,8 @@ import {SystemSelectModuleModal} from "./components/systemselectmodulemodal";
         PackageLoaderReloadLoadedModal,
         SystemInputDictionary,
         SystemInputRoles,
-        SystemSelectModuleModal
+        SystemSelectModuleModal,
+        SystemDropdownMobileModal
     ],
     exports: [
         PaginationControlsComponent,
@@ -555,7 +559,8 @@ import {SystemSelectModuleModal} from "./components/systemselectmodulemodal";
         PackageLoaderReloadLoadedModal,
         SystemInputDictionary,
         SystemInputRoles,
-        SystemSelectModuleModal
+        SystemSelectModuleModal,
+        SystemDropdownMobileModal
     ]
 })
 export class SystemComponents {}
