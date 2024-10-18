@@ -520,6 +520,18 @@ input[type="submit"] {
     display: none !important;
 }
 
+.slds-split-view__toggle-button{
+    border-color: var(--slds-g-color-border-base-1);
+}
+
+.slds-modal__close{
+    background-color: transparent;
+}
+
+.slds-modal__close .slds-button__icon{
+    fill: var(--color-grey-5);
+}
+
 .slds-modal__footer .slds-button-group button:not(:first-of-type) {
     border-left: 0;
     margin-left: 0;
