@@ -4,7 +4,7 @@
 </field-generic-display>
 <div *ngIf="isEditMode()" class="slds-form-element">
     <div class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="getFieldClass()">
-        <system-select [ngModel]="value" [idOnly]="true">
+        <system-select [(ngModel)]="value" [idOnly]="true">
             @for (o of options; track o.value) {
                 <system-select-option [value]="o.value" [display]="o.display" [inactive]="o.status == 'i'"/>
             }
