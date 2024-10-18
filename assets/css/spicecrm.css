@@ -150,6 +150,10 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     transition: 0.5s;
 }
 
+.slds-text-link {
+    color: var(--brand-primary);
+}
+
 /* a 1 pixel gap between tab and bold horizontal line. */
 .slds-context-bar__item:before {
     bottom: 1px;
