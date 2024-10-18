@@ -72,7 +72,7 @@ $routes = [
     ],
 
     [
-        'method'      => 'get',
+        'method'      => 'post',
         'route'       => '/common/spiceattachments/count/module/{beanName}',
         'class'       => SpiceAttachmentsController::class,
         'function'    => 'getAttachmentsCountPerBean',
