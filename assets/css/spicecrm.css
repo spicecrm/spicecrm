@@ -69,6 +69,8 @@
     --slds-c-input-text-color: #000000;
     --sds-c-input-text-color-focus: #000000;
     --slds-g-shadow-outline-focus-1: 0 0 3px var(--brand-primary);
+    --slds-c-radio-mark-color-foreground: var(--brand-primary);
+    --slds-c-radio-shadow-focus: 0 0 3px var(--brand-primary);
 }
 
 html {
