@@ -101,7 +101,7 @@
             </div>
         </div>
     </div>
-    <div class="slds-grid">
+    <div class="slds-grid" *ngIf="relationshipTableType == 'metadata'">
         <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
             <label class="slds-form-element__label"><system-label label="LBL_RELATIONSHIP_ROLE_COLUMN"></system-label></label>
             <div class="slds-select_container">
@@ -119,7 +119,7 @@
         </div>
     </div>
 </div>
-<system-collapsable-tab [expanded]="false" tabtitle="LBL_JOIN_TABLE_ROLE_FIELDS_MAPPING">
+<system-collapsable-tab *ngIf="relationshipTableType == 'metadata'" [expanded]="false" tabtitle="LBL_JOIN_TABLE_ROLE_FIELDS_MAPPING">
     <div *ngFor="let item of relationshipFieldsPerItem" class="slds-grid slds-grid--vertical-align-end">
         <div class="slds-grid slds-grow">
             <div class="slds-size--1-of-3 slds-p-left--xx-small slds-form-element">

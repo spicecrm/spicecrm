@@ -88,6 +88,9 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
         if(this.dictionarymanager.getCurrentDefinition()?.sysdictionary_type == 'metadata' || this.dictionarymanager.getCurrentDefinition()?.sysdictionary_type == 'relationship'){
             this.relationship.join_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
         }
+
+        // set the proper relationship type as this is used for n:m and n:m bean
+        this.relationship.relationship_type = this.type.name;
     }
 
     /**
