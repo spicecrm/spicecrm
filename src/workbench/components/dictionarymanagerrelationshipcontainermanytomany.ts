@@ -62,7 +62,7 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit,
     public relationsTables: DictionaryDefinition[] = [];
 
     constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
-        this.getRelationshipTables();
+
     }
 
     /**
@@ -101,10 +101,17 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit,
 
         // load the join items
         this.loadJoinItems();
+
+        // load the reltables
+        this.getRelationshipTables();
+    }
+
+    get relationshipTableType(){
+        return this.relationship.relationship_type == 'many-to-many-bean' ? 'module' : 'metadata';
     }
 
     public getRelationshipTables(){
-        this.relationsTables = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'relationship' || d.sysdictionary_type == 'metadata').sort((a, b) => a.name.localeCompare(b.name));
+        this.relationsTables = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'relationship' || d.sysdictionary_type == this.relationshipTableType).sort((a, b) => a.name.localeCompare(b.name));
     }
 
     /**
