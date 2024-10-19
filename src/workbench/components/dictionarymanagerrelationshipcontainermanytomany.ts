@@ -111,7 +111,11 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit,
     }
 
     public getRelationshipTables(){
-        this.relationsTables = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'relationship' || d.sysdictionary_type == this.relationshipTableType).sort((a, b) => a.name.localeCompare(b.name));
+        if(this.relationshipTableType == 'module') {
+            this.relationsTables = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'module').sort((a, b) => a.name.localeCompare(b.name));
+        } else {
+            this.relationsTables = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'relationship' || d.sysdictionary_type == 'metadata').sort((a, b) => a.name.localeCompare(b.name));
+        }
     }
 
     /**
