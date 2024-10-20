@@ -523,7 +523,7 @@ export class language {
         let options = this.metadata.getFieldOptions(module, fieldname);
         if (options !== false) {
             const validation = this.metadata.getDomainValidationByName(options);
-            return this.prepareOptions(validation.validationvalues, formatted, {field: validation.order_by, direction: validation.sort_flag}, includeInactiveOptions);
+            return validation ? this.prepareOptions(validation.validationvalues, formatted, {field: validation.order_by, direction: validation.sort_flag}, includeInactiveOptions) : [];
         } else {
             return formatted ? [] : {};
         }
