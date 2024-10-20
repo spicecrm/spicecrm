@@ -193,7 +193,7 @@ class SpiceDictionaryRelationships
                     $relationship['original_id'] = $relationship['id'];
                     $relationship['template_sysdictionarydefinition_id'] = $item['sysdictionary_ref_id'];
                     $relationship['referencing_sysdictionarydefinition_id'] = $sysdictionaryDefinitonId;
-                    $relationship['id'] = SpiceUtils::generateMD5GUID("{$item['id']}{$sysdictionaryDefinitonId}");
+                    $relationship['id'] = SpiceUtils::generateMD5GUID("{$item['id']}{$sysdictionaryDefinitonId}{$relationship['original_id']}");
 
                     $relationshipsArray[] = $relationship;
                 }
