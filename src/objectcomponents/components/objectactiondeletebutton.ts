@@ -42,7 +42,7 @@ export class ObjectActionDeleteButton {
 
     }
 
-    get disabled(){
+    get disabled() {
         return !this.canDelete;
     }
 
@@ -75,12 +75,16 @@ export class ObjectActionDeleteButton {
     * @navigate to list view
     */
     public delete() {
-        this.model.delete().subscribe(
-            status => {
-                this.completeAction();
-            },
-            () => {
-                this.toast.sendToast('LBL_ERROR_DELETING_RECORD', "error");
+        let awaitModal = this.modal.await('LBL_DELETING');
+        this.model.delete().subscribe({
+                next: (status) => {
+                    awaitModal.emit(true)
+                    this.completeAction();
+                },
+                error: () => {
+                    awaitModal.emit(true)
+                    this.toast.sendToast('LBL_ERROR_DELETING_RECORD', "error");
+                }
             }
         );
     }
