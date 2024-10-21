@@ -36,7 +36,7 @@ class SpiceGDPRManagerSchedulerJobTasks
             $relatedModules = explode(',', $retention['delete_related']);
 
             // query the ids
-            $ids = $db->query($query);
+            if($query) $ids = $db->query($query);
             while ($id = $db->fetchByAssoc($ids)) {
                 switch ($retention['retention_type']) {
                     case 'I';
