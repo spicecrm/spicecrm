@@ -4,7 +4,7 @@
 import {
     Component,
     ElementRef,
-    Input, OnInit
+    Input, OnInit, SkipSelf
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
@@ -25,10 +25,6 @@ export class SalesDocsItemDetailsContainer implements OnInit {
      */
     @Input() public item: any = {};
 
-    /**
-     * the view fromt eh parent .. to link the two
-     */
-    @Input() public parentview: view;
 
     /**
      * the salesdoc model
@@ -41,6 +37,7 @@ export class SalesDocsItemDetailsContainer implements OnInit {
         public language: language,
         public model: model,
         public view: view,
+        @SkipSelf() public parentview: view,
         public configuration: configurationService
     ) {
 
