@@ -5,11 +5,11 @@
         </thead>
         <tbody *ngIf="itemcount > 0">
             <ng-container *ngFor="let item of items|salesdocsitemsdeletedpipe">
-                <tr salesdocs-item-container [item]="item" [parentview]="view" [salesdoc]="model" (recalculated)="recalculate()"></tr>
+                <tr salesdocs-item-container [item]="item" [salesdoc]="model" (recalculated)="recalculate()"></tr>
                 <tr *ngIf="item.expanded">
                     <td colspan="2" class="slds-cell-shrink">
                     <td [attr.colspan]="fieldsetItems.length">
-                        <salesdocs-item-details-container [item]="item" [parentview]="view" [salesdoc]="model"></salesdocs-item-details-container>
+                        <salesdocs-item-details-container [item]="item" [salesdoc]="model"></salesdocs-item-details-container>
                     </td>
                     <td></td>
                 </tr>
