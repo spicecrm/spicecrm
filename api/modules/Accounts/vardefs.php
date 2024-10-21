@@ -730,6 +730,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
 
 // CE version has not all modules...
 //set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
+/* migrated
 if (file_exists("extensions/modules/SalesDocs")) {
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['salesdocs'] = [
         'name' => 'salesdocs',
@@ -776,7 +777,7 @@ if (file_exists("extensions/modules/SalesDocs")) {
         'comment' => 'allows to display items on salesdocs via a n:m relationship using the salesdocs table'
     ];
 }
-
+*/
 if (file_exists("extensions/modules/ProcurementDocs")) {
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['procurementdocs'] = [
         'name' => 'procurementdocs',
