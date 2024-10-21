@@ -21,6 +21,7 @@ import {fieldContainer} from './components/fieldcontainer';
 import {fieldGenericDisplay} from './components/fieldgenericdisplay';
 import {fieldText} from './components/fieldtext';
 import {fieldNumber} from './components/fieldnumber';
+import {fieldProbability} from "./components/fieldprobability";
 import {fieldHtml} from './components/fieldhtml';
 import {fieldHtmlEditor} from './components/fieldhtmleditor';
 import {fieldWYSIWYGEditor} from './components/fieldwysiwygeditor';
@@ -138,6 +139,7 @@ import {fieldPackage} from "./components/fieldpackage";
 import {fieldActivityStatus} from "./components/fieldactivitystatus";
 
 
+
 /**
  * @ignore
  */
@@ -166,6 +168,7 @@ declare var _: any;
         fieldGenericDisplay,
         fieldText,
         fieldNumber,
+        fieldProbability,
         fieldHtml,
         fieldHtmlEditor,
         fieldWYSIWYGEditor,
