@@ -134,7 +134,7 @@ import {fieldNotificationIndicator} from "./components/fieldnotificationindicato
 import {fieldIban} from "./components/fieldiban";
 import {fieldEnumRoles} from "./components/fieldenumroles";
 import {fieldVersion} from "./components/fieldVersion";
-import {fieldPackage} from "./components/fieldPackage";
+import {fieldPackage} from "./components/fieldpackage";
 import {fieldActivityStatus} from "./components/fieldactivitystatus";
 
 
