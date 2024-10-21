@@ -2,7 +2,7 @@
 /***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-
+/* migrated
 SpiceDictionaryHandler::getInstance()->dictionary['OutputRevision'] = [
     'table' => 'outputrevisions',
     'audited' => true,
@@ -31,9 +31,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['OutputRevision'] = [
             'reportable' => false,
             'comment'    => 'The ID of the parent Sugar object identified by parent_type'
         ],
-        /**
-         * store the file is an original has been recorded
-         */
         'file_mime_type' => [
             'name' => 'file_mime_type',
             'vname' => 'LBL_FILE_MIME_TYPE',
@@ -69,3 +66,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['OutputRevision'] = [
 
 VardefManager::createVardef('OutputRevisions', 'OutputRevision', ['default', 'assignable']);
 unset(SpiceDictionaryHandler::getInstance()->dictionary['OutputRevision']['fields']['name']);
+*/
