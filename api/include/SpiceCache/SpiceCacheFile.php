@@ -65,6 +65,11 @@ class SpiceCacheFile extends SpiceCacheAbstract
     {
         parent::__construct();
         $this->_cacheDirectory = self::getCacheDirectory();
+
+        // if the cache directory is not here create it
+        if($this->_cacheDirectory == 'cache' && !is_dir($this->_cacheDirectory)){
+            mkdir($this->_cacheDirectory);
+        }
     }
 
     /**
