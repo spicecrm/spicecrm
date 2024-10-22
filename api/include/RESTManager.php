@@ -404,7 +404,7 @@ class RESTManager
      * @param array|null $modules
      * @return string
      */
-    public function getSwagger(string $selectedRoute, bool $includeSubroutes ,?array $extensions, ?array $modules, string $node = "/"): string {
+    public function getSwagger(string|null $selectedRoute, bool $includeSubroutes ,?array $extensions, ?array $modules, string $node = "/"): string {
         $swaggerGenerator = new SpiceSwaggerGenerator($selectedRoute, $includeSubroutes,$this->routes,  $this->extensions, $extensions, $modules, $node);
         return $swaggerGenerator->generateSwaggerFile();
     }
