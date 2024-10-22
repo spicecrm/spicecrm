@@ -93,7 +93,7 @@ class One2MBeanRelationship extends One2MRelationship
 
         // write the rhs link
         if($relationship->relationship->rhs_linkname){
-            $db->insertQuery('sysdictionaryfields', [
+            $rhsLink = [
                 'id' => SpiceUtils::createGuid(),
                 'sysdictionaryname' => $rhsDictionaryDefinition->name,
                 'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
@@ -106,12 +106,16 @@ class One2MBeanRelationship extends One2MRelationship
                     'relationship' => $relationship->relationship->relationship_name,
                     'source' => 'non-db',
                     'module' => $lhsDictionaryDefinition->getModuleName(),
-                    'vname' => $relationship->relationship->rhs_linklabel,
-                    'default' => $relationship->relationship->rhs_linkdefault
+                    'vname' => $relationship->relationship->rhs_linklabel
                 ]),
                 'sysdictionaryrelationship_id' => $relationship->id,
                 'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
-            ]);
+            ];
+
+            // set default if we have it
+            if($relationship->relationship->rhs_linkdefault) $rhsLink['fielddefinition']['default'] = 1;
+
+            $db->insertQuery('sysdictionaryfields', $rhsLink);
 
             // write the rhs relate
             if($relationship->relationship->rhs_relatename){
