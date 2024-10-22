@@ -94,13 +94,14 @@ export interface Relationship {
     rhs_linklabel: string;
     rhs_relatename: string;
     rhs_relatelabel: string;
+    rhs_linkdefault?: number;
+    rhs_duplicatemerge?: number;
     relationship_type: string;
     join_sysdictionarydefinition_id?: string;
     join_lhs_sysdictionaryitem_id?: string;
     join_rhs_sysdictionaryitem_id?: string;
     relationship_role_column?: string;
     relationship_role_column_value?: string;
-    rhs_duplicatemerge: number;
     deleted: number;
     version?: string;
     package?: string;
