@@ -4,7 +4,7 @@
         {{value}}
     </div>
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-grid slds-p-around--xx-small" [ngClass]="getFieldClass()">
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="getFieldClass()">
     <input class="slds-input slds-text-align_right" type="number"[(ngModel)]="value" />
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>
