@@ -10,6 +10,8 @@ import {userpreferences} from '../../../services/userpreferences.service';
 import {dashboardlayout} from '../services/dashboardlayout.service';
 import {view} from "../../../services/view.service";
 import {metadata} from "../../../services/metadata.service";
+import {Router} from "@angular/router";
+import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'dashboard-view',
@@ -28,7 +30,9 @@ export class DashboardView implements OnInit {
                 public model: model,
                 public view: view,
                 public modellist: modellist,
-                public metadata: metadata) {
+                public metadata: metadata,
+                public router: Router,
+                public toast: toast) {
     }
 
     get ismobile() {
@@ -51,8 +55,14 @@ export class DashboardView implements OnInit {
     }
 
     public ngOnInit() {
-        this.loadDashboards();
-        this.navigationTab.setTabInfo({displaymodule: 'Dashboards', displayname: this.metadata.getModuleDefs('Dashboards').module_label});
+        // if the user is not authorized send the user back to Home
+        if(!this.metadata.checkModuleAcl('Dashboards', 'list')){
+            this.toast.sendToast('LBL_NOT_AUTHORIZED', 'warning');
+            this.router.navigate(['module/Home']);
+        } else {
+            this.loadDashboards();
+            this.navigationTab.setTabInfo({displaymodule: 'Dashboards', displayname: this.metadata.getModuleDefs('Dashboards').module_label});
+        }
     }
 
     public loadDashboards() {
