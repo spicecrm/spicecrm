@@ -57,6 +57,22 @@ export class DictionaryManagerRelationshipContainerOneToMany implements OnInit {
     constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
     }
 
+    get rhs_linkdefault(){
+        return this.relationship.rhs_linkdefault == 1;
+    }
+
+    set rhs_linkdefault(value){
+        this.relationship.rhs_linkdefault = value ? 1 : 0;
+    }
+
+    get rhs_duplicatemerge(){
+        return this.relationship.rhs_duplicatemerge == 1;
+    }
+
+    set rhs_duplicatemerge(value){
+        this.relationship.rhs_duplicatemerge = value ? 1 : 0;
+    }
+
     /**
      * initialize and build the names
      */

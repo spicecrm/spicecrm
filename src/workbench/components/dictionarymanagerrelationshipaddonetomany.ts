@@ -56,6 +56,7 @@ export class DictionaryManagerRelationshipAddOneToMany {
             rhs_linkname: '',
             rhs_linklabel: '',
             rhs_duplicatemerge: 0,
+            rhs_linkdefault: 0,
             rhs_relatename: '',
             rhs_relatelabel: '',
             relationship_type: '',
