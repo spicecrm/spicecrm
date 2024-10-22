@@ -96,6 +96,8 @@ export interface Relationship {
     rhs_relatelabel: string;
     rhs_linkdefault?: number;
     rhs_duplicatemerge?: number;
+    rhs_sortfield?: string;
+    rhs_sortdirection?: string;
     relationship_type: string;
     join_sysdictionarydefinition_id?: string;
     join_lhs_sysdictionaryitem_id?: string;
