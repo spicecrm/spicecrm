@@ -106,7 +106,8 @@ class One2MBeanRelationship extends One2MRelationship
                     'relationship' => $relationship->relationship->relationship_name,
                     'source' => 'non-db',
                     'module' => $lhsDictionaryDefinition->getModuleName(),
-                    'vname' => $relationship->relationship->rhs_linklabel
+                    'vname' => $relationship->relationship->rhs_linklabel,
+                    'default' => $relationship->relationship->rhs_linkdefault
                 ]),
                 'sysdictionaryrelationship_id' => $relationship->id,
                 'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
