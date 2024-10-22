@@ -357,13 +357,12 @@ class Link2
         if (!is_array($params))
             $params = [];
 
+        // add a default sort if not set
+        if ($this->def['sort'] && (!isset($params['sort']) || !is_array($params['sort']) || count($params['sort']) == 0)) {
+            $params['sort'] = $this->def['sort'];
+        }
+
         if (!$this->loaded && empty($params)) {
-
-            // add a sort if not set
-            if ($this->def['sort']) {
-                $params['sort'] = $this->def['sort'];
-            }
-
             $this->load($params);
         }
 

@@ -71,24 +71,42 @@ class One2MBeanRelationship extends One2MRelationship
 
         // write the lhs link
         if($relationship->relationship->lhs_linkname){
-            $db->insertQuery('sysdictionaryfields', [
+            $lhsLink = [
                 'id' => SpiceUtils::createGuid(),
                 'sysdictionaryname' => $lhsDictionaryDefinition->name,
                 'sysdictionarytablename' => $lhsDictionaryDefinition->tablename,
                 'sysdictionarytableaudited' => $lhsDictionaryDefinition->getDefinition()->audited,
                 'fieldname' => $relationship->relationship->lhs_linkname,
                 'fieldtype' => 'link',
-                'fielddefinition' => json_encode([
+                'fielddefinition' => [
                     'name' => $relationship->relationship->lhs_linkname,
                     'type' => 'link',
                     'relationship' => $relationship->relationship->relationship_name,
                     'source' => 'non-db',
                     'module' => $rhsDictionaryDefinition->getModuleName(),
                     'vname' => $relationship->relationship->lhs_linklabel
-                ]),
+                ],
                 'sysdictionaryrelationship_id' => $relationship->id,
                 'sysdictionarydefinition_id' => $lhsDictionaryDefinition->id
-            ]);
+            ];
+
+            // set default if we have it
+            if($relationship->relationship->rhs_linkdefault) $lhsLink['fielddefinition']['default'] = true;
+
+            // see if we have a sortfield
+            if($relationship->relationship->rhs_sortfield) {
+                $rhsSortFieldItem = new SpiceDictionaryItem($relationship->relationship->rhs_sortfield);
+                $rhsSortField = SpiceDictionaryField::getField($rhsSortFieldItem, $rhsDictionaryDefinition);
+                $lhsLink['fielddefinition']['sort'] = [
+                    'sortfield' => $rhsSortField->fieldname,
+                    'sortdirection' => $relationship->relationship->rhs_sortdirection ? strtoupper($relationship->relationship->rhs_sortdirection) : 'ASC'
+                ];
+            }
+
+            // json encode the field definition
+            $lhsLink['fielddefinition'] = json_encode($lhsLink['fielddefinition']);
+
+            $db->insertQuery('sysdictionaryfields', $lhsLink);
         }
 
         // write the rhs link
@@ -100,20 +118,21 @@ class One2MBeanRelationship extends One2MRelationship
                 'sysdictionarytableaudited' => $rhsDictionaryDefinition->getDefinition()->audited,
                 'fieldname' => $relationship->relationship->rhs_linkname,
                 'fieldtype' => 'link',
-                'fielddefinition' => json_encode([
+                'fielddefinition' => [
                     'name' => $relationship->relationship->rhs_linkname,
                     'type' => 'link',
                     'relationship' => $relationship->relationship->relationship_name,
                     'source' => 'non-db',
                     'module' => $lhsDictionaryDefinition->getModuleName(),
                     'vname' => $relationship->relationship->rhs_linklabel
-                ]),
+                ],
                 'sysdictionaryrelationship_id' => $relationship->id,
                 'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
             ];
 
-            // set default if we have it
-            if($relationship->relationship->rhs_linkdefault) $rhsLink['fielddefinition']['default'] = 1;
+
+            // json encode the field definition
+            $rhsLink['fielddefinition'] = json_encode($rhsLink['fielddefinition']);
 
             $db->insertQuery('sysdictionaryfields', $rhsLink);
 
