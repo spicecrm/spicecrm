@@ -181,6 +181,7 @@ export class CalendarHeader implements OnDestroy {
      * go to today
      */
     public goToday() {
+        if (this.calendar.asPicker || this.calendar.isDashlet) return;
         this.calendar.calendarDate = new moment();
     }
 

@@ -4,7 +4,7 @@
         <h2 class="slds-text-heading--medium slds-truncate">{{title}}</h2>
     </div>
     <div [ngStyle]="contentStyle" class="slds-size--1-of-1">
-        <calendar-sheet-schedule [setdate]="calendarDate" (untildate$)="scheduleUntilDate = $event">
+        <calendar-sheet-schedule [setdate]="calendarDate" [availableCalendars]="calendar.availableCalendars" (untildate$)="scheduleUntilDate = $event">
         </calendar-sheet-schedule>
     </div>
 </div>
