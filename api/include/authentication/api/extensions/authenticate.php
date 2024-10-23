@@ -225,6 +225,21 @@ $routes = [
         ]
     ],
     [
+        'method' => 'get',
+        'route' => '/authentication/2fa/{user_id}/activeLoginMethods',
+        'class' => AuthenticateController::class,
+        'function' => 'getUserLoginActiveMethods',
+        'description' => '',
+        'options' => ['validate' => true],
+        'parameters' => [
+            'user_id' => [
+                'in' => 'path',
+                'description' => 'the 2FA user id requested',
+                'type' => ValidationMiddleware::TYPE_GUID,
+            ],
+        ]
+    ],
+    [
         'method' => 'put',
         'route' => '/authentication/2fa/{method}/{code}',
         'class' => AuthenticateController::class,
@@ -248,7 +263,7 @@ $routes = [
     ],
     [
         'method' => 'delete',
-        'route' => '/authentication/2fa/{code}',
+        'route' => '/authentication/2fa/{method}/{code}',
         'class' => AuthenticateController::class,
         'function' => 'delete2FASettings',
         'description' => '',
@@ -257,8 +272,12 @@ $routes = [
             'code' => [
                 'in' => 'path',
                 'description' => 'code that was sent',
-                'type' => ValidationMiddleware::TYPE_NUMERIC,
-                'options' => ['sms', 'email']
+                'type' => ValidationMiddleware::TYPE_NUMERIC
+            ],
+            'method' => [
+                'in' => 'path',
+                'description' => '2fa method',
+                'type' => ValidationMiddleware::TYPE_STRING
             ]
         ]
     ],
