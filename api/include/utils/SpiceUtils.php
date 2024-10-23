@@ -1508,12 +1508,12 @@ class SpiceUtils
     /**
      * returns a translated string of a full tree entry
      * according to the values (= node keys) passed
-     * @param SpiceBean $obj
-     * @param $module
-     * @param $field
-     * @param null $language
-     * @param bool $returnArray
-     * @param string $separator
+     * @param SpiceBean $obj the record conatining the values
+     * @param $module the module to check on the tree(s)
+     * @param $field the non-db fieldname of type categories defined for the module
+     * @param null $language the language to get the translation from
+     * @param bool $returnArray wether return an array or a string
+     * @param string $separator the separator to concatenate the translations
      * @return array|string|null
      * @throws DatabaseException
      */
@@ -1548,12 +1548,58 @@ class SpiceUtils
         $storeParts = [];
         foreach($values as $value){
             $key = array_search($value, array_column($cached, 'node_key'));
-            $storeParts[] = LanguageManager::getLabelTranslation($cached[$key]['node_name'], $language)['default'];
+            if($key === false) {
+                $storeParts[] = $value; // just pass the value
+            }
+            else{
+                $storeParts[] = LanguageManager::getLabelTranslation($cached[$key]['node_name'], $language)['default'];
+            }
         }
 
         return ($returnArray ? $storeParts : implode($separator, $storeParts));
     }
 
+    /**
+     * @param $value the value to be translated
+     * @param $module the module to check on the tree(s)
+     * @param $field the non-db fieldname of type categories defined for the module
+     * @param null $language the language to get the translation from
+     * @return mixed|null a string with the translation or the original value
+     * @throws DatabaseException
+     */
+    static public function renderCategoryTreeSingleValue($value, $module, $field = null, $language = null){
+
+        if(empty($language)){
+            $language = LanguageManager::getDefaultLanguage();
+        }
+        // get tree ID
+        $treeLinks = SysCategoryTree::getInstance()->getTreeLinksByModule($module);
+
+        if (empty($treeLinks)) return $value;
+
+        if($field){
+            foreach($treeLinks as $treeLink){
+                if($treeLink['module_field'] == $field){
+                    $treeId = $treeLink['syscategorytree_id'];
+                    break;
+                }
+            }
+        } else{ // let's hope there is only 1 tree for the module
+            $treeId = $treeLinks[0]['syscategorytree_id'];
+        }
+
+        // get the cached nodes
+        $cached = SpiceCache::get('categorytreenodes'.md5($treeId));
+        if(empty($cached)) {
+            $cached = SpiceUtils::cacheCategoryTree($treeId);
+        };
+        if(empty($cached)) return null;
+
+        // grab the translation and return
+        $key = array_search($value, array_column($cached, 'node_key'));
+        if($key === false) return $value;
+        return LanguageManager::getLabelTranslation($cached[$key]['node_name'], $language)['default'];
+    }
     /**
      * will cache a category tree
      * @param $treeId
