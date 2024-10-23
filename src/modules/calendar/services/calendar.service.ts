@@ -1,7 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {ChangeDetectorRef, EventEmitter, Injectable, OnDestroy} from '@angular/core';
+import {ChangeDetectorRef, EventEmitter, Inject, Injectable, OnDestroy, Optional} from '@angular/core';
 import {of, Subject, Subscription} from 'rxjs';
 import {backend} from '../../../services/backend.service';
 import {session} from '../../../services/session.service';
@@ -198,7 +198,9 @@ export class calendar implements OnDestroy {
                 public modelutilities: modelutilities,
                 public metadata: metadata,
                 public cdRef: ChangeDetectorRef,
+                @Optional() @Inject('calendarConfigOverride') private calendarConfigOverride: {isDashlet?: boolean, sheetType?: 'Day' | 'Three_Days' | 'Week' | 'Month' | 'Schedule', sheetHourHeight?: number},
                 public userPreferences: userpreferences) {
+        this.loadOverrideConfig();
         this.loadCalendarModules();
         this.loadPreferences();
         this.subscribeToLanguage();
@@ -290,6 +292,26 @@ export class calendar implements OnDestroy {
      */
     set weekStartDay(value) {
         this.weekstartday = value;
+    }
+
+    /**
+     * override selected properties on the service
+     * e.g. when loading the calendar as dashlet
+     * @private
+     */
+    private loadOverrideConfig() {
+
+        if (this.calendarConfigOverride?.isDashlet) {
+            this.isDashlet = true;
+        }
+
+        if (this.calendarConfigOverride?.sheetType) {
+            this.sheetType = this.calendarConfigOverride?.sheetType;
+        }
+
+        if (this.calendarConfigOverride?.sheetHourHeight) {
+            this.sheetHourHeight = this.calendarConfigOverride?.sheetHourHeight;
+        }
     }
 
     /**

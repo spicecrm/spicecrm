@@ -7,6 +7,7 @@ use Exception;
 use libphonenumber\PhoneNumberUtil;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\extensions\modules\TextMessages\TextMessage;
+use SpiceCRM\includes\authentication\api\controllers\AuthenticateController;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
@@ -99,8 +100,9 @@ class SpiceCRM2FAUtils
                 $message = 'Enter the one-time password code displayed on the authenticator app in your mobile device';
                 break;
         }
-
-        throw new UnauthorizedException($message, 4);
+        throw (new UnauthorizedException($message, 4))->setDetails([
+            'activeMethods' => AuthenticateController::loadUserLoginActiveMethods($user->id)
+        ]);
     }
 
     /**
@@ -164,18 +166,24 @@ class SpiceCRM2FAUtils
 
         $db = DBManagerFactory::getInstance();
 
-        switch ($method) {
-            case 'one_time_password':
-                $userId = empty($user->impersonating_user_id) ? $user->id : $user->impersonating_user_id;
-                $tokenMatch = TOTPAuthentication::checkTOTPCode($userId, $code2fa);
-                break;
-            case 'sms':
-            case 'email':
-                $code = $db->getOne("SELECT id FROM user_2fa_codes WHERE id ='$code2fa' AND user_id = '$user->id' AND expires_in > {$db->now()}");
-                $tokenMatch = (bool)$code;
-                break;
-            default:
-                $tokenMatch = false;
+        $activeMethods = array_unique(([$method, ...array_intersect(['sms', 'email', 'one_time_password'], AuthenticateController::loadUserLoginActiveMethods($user->id))]));
+
+        foreach ($activeMethods as $activeMethod) {
+            switch ($activeMethod) {
+                case 'one_time_password':
+                    $userId = empty($user->impersonating_user_id) ? $user->id : $user->impersonating_user_id;
+                    $tokenMatch = TOTPAuthentication::checkTOTPCode($userId, $code2fa);
+                    break;
+                case 'sms':
+                case 'email':
+                    $code = $db->getOne("SELECT id FROM user_2fa_codes WHERE id ='$code2fa' AND user_id = '$user->id' AND expires_in > {$db->now()}");
+                    $tokenMatch = (bool) $code;
+                    break;
+                default:
+                    $tokenMatch = false;
+            }
+
+            if ($tokenMatch) break;
         }
 
         if (!$tokenMatch) {
