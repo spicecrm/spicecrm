@@ -9,6 +9,9 @@ import {session} from '../../services/session.service';
 import {Config2FAI, TokenObjectI} from "../interfaces/globalcomponents.interfaces";
 import {configurationService} from "../../services/configuration.service";
 import {toast} from "../../services/toast.service";
+import {firstValueFrom} from "rxjs";
+import {modal} from "../../services/modal.service";
+import {backend} from "../../services/backend.service";
 
 /**
  * a modal to prompt the user for the password to relogin
@@ -69,10 +72,16 @@ export class GlobalReLogin {
      * remember device visible
      */
     public rememberDeviceVisible: boolean = false;
+    /**
+     * user active 2fa methods
+     */
+    public userLoginActive2FAMethods: string[] = [];
 
     constructor(public login: loginService,
                 private toast: toast,
                 public session: session,
+                public modal: modal,
+                public backend: backend,
                 public configuration: configurationService) {
         this.load2FAConfig();
     }
@@ -121,6 +130,7 @@ export class GlobalReLogin {
                 if (error.errorCode == 4) {
                     this.toast.sendToast(error.message, "success");
                     this.twoFactorAuthCodeRequired = true;
+                    this.userLoginActive2FAMethods = error.details?.activeMethods ?? [];
                     setTimeout(() => {
                         if (this.twofactorinput) {
                             this.twofactorinput.element.nativeElement.focus();
@@ -151,4 +161,31 @@ export class GlobalReLogin {
    public close() {
         this.self.destroy();
     }
+
+    /**
+     * resend authentication code
+     * @param method
+     * @param event
+     */
+    public async resendAuthCode(method: 'sms' | 'email', event: MouseEvent) {
+        event.preventDefault();
+        const confirmed = await firstValueFrom(this.modal.confirm('', 'MSG_RESEND_CODE_VIA_' + method.toUpperCase()));
+
+        if (!confirmed) return;
+
+        const sending = this.modal.await('LBL_SENDING');
+        const body = {username: this.session.authData.userName, password: this.password};
+
+        this.backend.postRequest(`authentication/2fa/${method}/send`, null, body).subscribe({
+            next: () => {
+                sending.next(true); sending.complete();
+                this.toast.sendToast('LBL_SENT', 'success');
+            },
+            error: () => {
+                sending.next(true); sending.complete();
+                this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+            }
+        });
+    }
+
 }

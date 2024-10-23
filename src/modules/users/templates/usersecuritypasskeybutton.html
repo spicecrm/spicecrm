@@ -1,0 +1,8 @@
+@if (!passkeyMetadata) {
+    <button (click)="createPasskey()" [disabled]="loadingPasskey" class="slds-button slds-button--neutral"><system-label label="LBL_GENERATE_PASSKEY"/></button>
+} @else {
+    <button (click)="removePasskey()" [disabled]="loadingPasskey" class="slds-button slds-button--neutral">
+        <img [src]="passkeyMetadata.icon_light" class="slds-m-right--x-small" [alt]="passkeyMetadata.name">
+        <system-label label="LBL_REMOVE_PASSKEY"/>
+    </button>
+}
