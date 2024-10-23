@@ -411,7 +411,7 @@ class Link2
                             $tmpBean = BeanFactory::getBean($rel_module, $id, ['forceRetrieve' => true], false);
                         } else {
                             // if deleted is not false, only not-deleted Bean will be retrieved per default
-                            $tmpBean = BeanFactory::getBean($rel_module, $vals['id']);
+                            $tmpBean = BeanFactory::getBean($rel_module, $vals['id'], ['forceRetrieve' => true]);
                         }
                     }
                     if ($tmpBean !== FALSE)
