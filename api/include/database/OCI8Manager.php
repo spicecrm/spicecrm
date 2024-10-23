@@ -1594,28 +1594,6 @@ class OCI8Manager extends DBManager
     }
 
     /**
-     * @see DBManager::upsertQuery()
-     */
-    public function upsertQuery($table, array $pks, array $data, bool $execute = true)
-    {
-
-        $query = $this->query("SELECT id FROM " . $table . " WHERE id = '" . $pks['id'] . "'", true );
-        while ($row = $this->fetchByAssoc($query)) {
-            $id = $row['id'];
-        }
-
-        if (!empty($id)) {
-            foreach ($data as $col => $val) {
-                $sets[] = "$col = '{$this->quote($val)}'";
-            }
-            return $this->updateQuery($table, $pks, $data);
-            // $this->query("UPDATE " . $table . " SET " . implode(',', $sets) . " WHERE id = '" . $pks['id'] . "'");
-        } else {
-            return $this->insertQuery($table, $data, $execute);
-        }
-    }
-
-    /**
      * Does this type represent text (i.e., non-varchar) value?
      * @param string $type
      */
