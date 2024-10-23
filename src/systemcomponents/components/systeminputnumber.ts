@@ -71,10 +71,20 @@ export class SystemInputNumber implements ControlValueAccessor {
     @Input() public placeholder: string;
 
     /**
-     * to disable the field
-     * HTML attribute
+     * input to disable the input
      */
-    @Input() public disabled = false;
+    public _disabled = false;
+    @Input('disabled') set disabled(value) {
+        if (value === false) {
+            this._disabled = false;
+        } else {
+            this._disabled = true;
+        }
+    }
+
+    get disabled(){
+        return this._disabled;
+    }
 
     /**
      * to set the size of the field

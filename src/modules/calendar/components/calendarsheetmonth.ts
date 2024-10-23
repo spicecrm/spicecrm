@@ -205,7 +205,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         this.subscription.add(
             this.navigation.activeTab$.subscribe(tabId => {
 
-                if (this.navigationTab.objecttab.id != tabId) return;
+                if (this.navigationTab.objecttab?.id != tabId) return;
 
                 // wait until the tab is visible and the reset the events styles
                 asapScheduler.schedule(() => {
@@ -447,6 +447,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * @param sheetDay
      */
     public gotoDay(sheetDay) {
+        if (this.calendar.asPicker || this.calendar.isDashlet) return;
         let navigateDate = moment(this.setdate);
         navigateDate.month(sheetDay.month).date(sheetDay.day);
         this.calendar.gotToDayView(navigateDate);

@@ -624,10 +624,20 @@ abstract class DBManager
      */
     public function upsertQuery($table, array $pks, array $data, bool $execute = true)
     {
-        if ($this->fetchOne("SELECT id FROM {$table} WHERE id = '{$pks['id']}'")) {
-            $this->updateQuery($table, $pks, $data, $execute);
+        if(count($pks) == 0) throw new Exception('attempting upsert without keys');
+
+        $keyWhereClauses = [];
+
+        foreach ($pks as $pkField => $pkValue) {
+            $keyWhereClauses[] = "{$pkField} = '{$pkValue}'";
+        }
+
+        $keyWhereClause = implode(" AND ", $keyWhereClauses);
+
+        if ($this->fetchOne("SELECT id FROM {$table} WHERE $keyWhereClause", false )) {
+            return $this->updateQuery($table, $pks, $data);
         } else {
-            $this->insertQuery($table, $data, $execute);
+            return $this->insertQuery($table, $data, $execute);
         }
     }
 
