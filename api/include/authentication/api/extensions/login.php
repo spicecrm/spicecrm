@@ -55,28 +55,20 @@ $routes = [
 /**
  * build the 2fa settings
  */
-$config = SpiceConfig::getInstance()->config['user_login_2fa'];
+$config = SpiceCRM2FAUtils::get2FAConfig();
 $auth2faConfig = [
     'twofactor' => [
-        'sms' => !empty($config['sms_mailbox_id']),
-        'email' => !empty($config['email_mailbox_id']),
+        'sms' => !empty($config->sms_mailbox_id),
+        'email' => !empty($config->email_mailbox_id),
         'onlogin' => [
-            'enforced' => $config['require_on'] ?: '',
-            'method' => $config['method'],
+            'enforced' => $config->require_on ?: '',
+            'method' => $config->method,
             'trustenabled' => $config->trust_device_days > 0
         ]
     ]
 ];
 
-$config = SpiceCRM2FAUtils::get2FAConfig();
-$config = [
-    'twoFactorAuthMethod' => $config->method,
-    'trustDeviceDays' => $config->trust_device_days,
-    'smsMailboxId' => $config->sms_mailbox_id,
-    'emailMailboxId' => $config->email_mailbox_id,
-    'requireOn' => $config->require_on,
-];
 /**
  * register the Extension
  */
-$RESTManager->registerExtension('login', '1.0', array_merge($auth2faConfig, $config), $routes);
+$RESTManager->registerExtension('login', '1.0', $auth2faConfig, $routes);

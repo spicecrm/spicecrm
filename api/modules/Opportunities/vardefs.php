@@ -45,6 +45,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
     'duplicate_merge' => true,
     'comment' => 'An opportunity is the target of selling activities',
     'fields' => [
+        /* migrated
         'name' => [
             'name' => 'name',
             'vname' => 'LBL_NAME',
@@ -68,6 +69,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'comment' => 'Type of opportunity (ex: Existing, New)',
             'merge_filter' => 'enabled',
         ],
+        */
         'account_name' => [
             'name' => 'account_name',
             'rname' => 'name',
@@ -144,6 +146,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'vname' => 'LBL_OPPORTUNITYPOTENTIALS',
             'source' => 'non-db'
         ],
+        /*
         'lead_source' => [
             'name' => 'lead_source',
             'vname' => 'LBL_LEAD_SOURCE',
@@ -166,7 +169,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'options' => 'numeric_range_search_dom',
             'enable_range_search' => true,
         ],
-        'amount_usdollar' => [ /**@deprecated**/
+        'amount_usdollar' => [
             'name' => 'amount_usdollar',
             'vname' => 'LBL_AMOUNT_USDOLLAR',
             'type' => 'currency',
@@ -318,6 +321,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'vname' => 'LBL_LOSS_REASON',
             'type' => 'text'
         ],
+        */
         // links
         'accounts' => [
             'name' => 'accounts',
@@ -508,6 +512,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             ],
         ]
     ],
+    /* migrated
     'indices' => [
         [
             'name' => 'idx_opp_name',
@@ -530,7 +535,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'fields' => ['assigned_user_id', 'deleted', 'sales_stage'],
         ],
     ],
-
+    */
     'relationships' => [
         'opportunity_calls' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
             'rhs_module' => 'Calls', 'rhs_table' => 'calls', 'rhs_key' => 'parent_id',

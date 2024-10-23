@@ -12,12 +12,13 @@ import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {Config2FAI, TokenObjectI} from "../interfaces/globalcomponents.interfaces";
 import {modal} from "../../services/modal.service";
 import {language} from "../../services/language.service";
-import {Subscription} from "rxjs";
+import {firstValueFrom, Subscription} from "rxjs";
 import {GlobalLoginChangePassword} from "./globalloginchangepassword";
 import {GlobalLogin2FAMethodSelectModal} from "./globallogin2famethodselectmodal";
 import {
     TOTPAuthenticationGenerateModal
 } from "../../include/totpauthentication/components/totpauthenticationgeneratemodal";
+import {backend} from "../../services/backend.service";
 
 
 /**
@@ -48,6 +49,10 @@ export class GlobalLogin implements OnDestroy {
      * two-factor authentication active boolean
      */
     public twoFactorAuthCodeRequired: boolean = false;
+    /**
+     * user active 2fa methods
+     */
+    public userLoginActive2FAMethods: string[] = [];
     /**
      * holds the prompt user boolean
      */
@@ -113,7 +118,8 @@ export class GlobalLogin implements OnDestroy {
                 public changeDetectorRef: ChangeDetectorRef,
                 private modal: modal,
                 private injector: Injector,
-                private language: language
+                private language: language,
+                private backend: backend
     ) {
         this.session.loadFromStorage();
 
@@ -286,7 +292,7 @@ export class GlobalLogin implements OnDestroy {
      * @param error
      * @private
      */
-    private handleError(error: { errorCode: number, details?: { userId: string, methods: { value: string, label: string, address: string }[] }, message: string }) {
+    private handleError(error: { errorCode: number, details?: { userId: string, activeMethods?: string[], methods: { value: string, label: string, address: string }[] }, message: string }) {
         switch (error.errorCode) {
             // invalid password/user
             case 1:
@@ -308,6 +314,7 @@ export class GlobalLogin implements OnDestroy {
             case 4:
                 this.messageId = this.toast.sendToast(error.message, "success");
                 this.twoFactorAuthCodeRequired = true;
+                this.userLoginActive2FAMethods = error.details?.activeMethods ?? [];
                 setTimeout(() => {
                     if (this.twofactorinput) {
                         this.twofactorinput.element.nativeElement.focus();
@@ -432,4 +439,31 @@ export class GlobalLogin implements OnDestroy {
         }
         return window.btoa(binary);
     }
+
+    /**
+     * resend authentication code
+     * @param method
+     * @param event
+     */
+    public async resendAuthCode(method: 'sms' | 'email', event: MouseEvent) {
+        event.preventDefault();
+        const confirmed = await firstValueFrom(this.modal.confirm('', 'MSG_RESEND_CODE_VIA_' + method.toUpperCase()));
+
+        if (!confirmed) return;
+
+        const sending = this.modal.await('LBL_SENDING');
+        const body = {username: this.username, password: this.password};
+
+        this.backend.postRequest(`authentication/2fa/${method}/send`, null, body).subscribe({
+            next: () => {
+                sending.next(true); sending.complete();
+                this.toast.sendToast('LBL_SENT', 'success');
+            },
+            error: () => {
+                sending.next(true); sending.complete();
+                this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+            }
+        });
+    }
+
 }

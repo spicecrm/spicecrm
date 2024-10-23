@@ -357,13 +357,12 @@ class Link2
         if (!is_array($params))
             $params = [];
 
+        // add a default sort if not set
+        if ($this->def['sort'] && (!isset($params['sort']) || !is_array($params['sort']) || count($params['sort']) == 0)) {
+            $params['sort'] = $this->def['sort'];
+        }
+
         if (!$this->loaded && empty($params)) {
-
-            // add a sort if not set
-            if ($this->def['sort']) {
-                $params['sort'] = $this->def['sort'];
-            }
-
             $this->load($params);
         }
 
@@ -412,7 +411,7 @@ class Link2
                             $tmpBean = BeanFactory::getBean($rel_module, $id, ['forceRetrieve' => true], false);
                         } else {
                             // if deleted is not false, only not-deleted Bean will be retrieved per default
-                            $tmpBean = BeanFactory::getBean($rel_module, $vals['id']);
+                            $tmpBean = BeanFactory::getBean($rel_module, $vals['id'], ['forceRetrieve' => true]);
                         }
                     }
                     if ($tmpBean !== FALSE)
