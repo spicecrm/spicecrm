@@ -23,7 +23,7 @@ class PasskeyAuthenticate implements AuthenticatorI
     {
         $params = json_decode(base64_decode($authData->token?->access_token));
 
-        if (!$params) throw new BadRequestException('Invalid header');
+        if (!$params) throw new UnauthorizedException('Invalid header');
 
         $utils = new PasskeyUtils($params->rpId);
 
@@ -35,8 +35,8 @@ class PasskeyAuthenticate implements AuthenticatorI
         $registration = $utils->getRegistrationByCredentialId(base64_decode($params->id), $params->rpId);
         $credentialPublicKey = $registration?->credentialPublicKey;
 
-        if ($credentialPublicKey === null) {
-            throw new Exception('Public Key for credential ID not found!');
+        if (!$registration || !$credentialPublicKey) {
+            throw new UnauthorizedException('No registered passkey for this user');
         }
 
         // if we have resident key, we have to verify that the userHandle is the provided userId at registration

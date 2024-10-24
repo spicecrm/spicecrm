@@ -178,14 +178,14 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
      * get config to disable zip compress checkbox
      */
     get zipDisabled() {
-        return this.mailboxZipConfig == '0';
+        return !this.mailboxZipConfig || this.mailboxZipConfig == '0';
     }
 
     /**
      * get config to disable send read receipt checkbox
      */
     get receiptDisabled() {
-        return this.mailboxReadReceiptConfig == '0';
+        return !this.mailboxZipConfig || this.mailboxReadReceiptConfig == '0';
     }
 
     /**

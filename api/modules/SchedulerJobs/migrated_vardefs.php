@@ -2,7 +2,7 @@
 /***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-
+/*
 SpiceDictionaryHandler::getInstance()->dictionary['SchedulerJob'] = [
     'table' => 'schedulerjobs',
 	'fields' => [
@@ -147,3 +147,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['SchedulerJob'] = [
 ];
 
 VardefManager::createVardef('SchedulerJobs','SchedulerJob', ['default', 'assignable']);
+*/
