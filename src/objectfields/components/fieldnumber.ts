@@ -19,12 +19,4 @@ export class fieldNumber extends fieldGeneric {
         super(model, view, language, metadata, router);
     }
 
-    get min() {
-        return 0;
-    }
-
-    get max() {
-        return 120;
-    }
-
 }

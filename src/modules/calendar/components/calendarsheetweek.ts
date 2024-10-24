@@ -339,7 +339,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      * @param dayOfWeek: number
      */
     public gotoDay(dayOfWeek) {
-        if (this.calendar.asPicker) return;
+        if (this.calendar.asPicker || this.calendar.isDashlet) return;
         this.calendar.gotToDayView(moment(dayOfWeek.format()));
     }
 
@@ -369,7 +369,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         this.subscription.add(
             this.navigation.activeTab$.subscribe(tabId => {
 
-                if (this.navigationTab.objecttab.id != tabId) return;
+                if (this.navigationTab.objecttab?.id != tabId) return;
 
                 // wait until the tab is visible and the reset the events styles
                 asapScheduler.schedule(() => {

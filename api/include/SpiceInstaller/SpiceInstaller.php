@@ -842,6 +842,9 @@ class SpiceInstaller
 
             if ( !$tablesFields[$tableName]) continue;
 
+            // delete all system package entries
+            $db->query("DELETE FROM {$tableName} WHERE package='system'");
+
             foreach ($packageContent->data->rows->$tableName as $row) {
                 $row = self::prepareSystemPackageRow($row, $tablesFields, $tableName);
                 $db->upsertQuery($tableName, ['id' => $row['id']] , $row);
