@@ -26,7 +26,7 @@ export class MailboxesManager {
     /**
      * the container with the view .. gets rendered daynamically
      */
-    @ViewChild("viewcontainer", {read: ViewContainerRef, static: true}) public viewcontainer: ViewContainerRef;
+    @ViewChild("viewcontainer", {read: ViewContainerRef, static: false}) public viewcontainer: ViewContainerRef;
 
     /**
      * any component reference that is rendered
