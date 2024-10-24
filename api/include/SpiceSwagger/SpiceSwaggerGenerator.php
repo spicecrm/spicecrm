@@ -31,7 +31,7 @@ class SpiceSwaggerGenerator
      * @param array|null $modules
      * @param string|null $node
      */
-    public function __construct(string $selectedRoute, bool $includeSubroutes, array $allRoutes, array $allExtensions, ?array $extensions, ?array $modules, string $node = "/") {
+    public function __construct(string|null $selectedRoute, bool $includeSubroutes, array $allRoutes, array $allExtensions, ?array $extensions, ?array $modules, string $node = "/") {
         $this->allRoutes     = $allRoutes;
         $this->routes        = $allRoutes;
         $this->extensions    = $allExtensions;

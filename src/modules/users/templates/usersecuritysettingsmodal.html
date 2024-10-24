@@ -1,0 +1,142 @@
+<system-modal size="small">
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_LOGIN_TO_SPICECRM"/>
+    </system-modal-header>
+    <system-modal-content>
+        <div>
+            <div class="slds-grid slds-size--1-of-1 slds-m-vertical--x-small spice-hover-display-children">
+                <div class="slds-size--4-of-8">
+                    <system-utility-icon icon="password" colorclass="slds-icon-text-success" size="x-small" class="slds-m-right--x-small"/>
+                    <system-label label="LBL_PASSWORD"/>
+                </div>
+                <div class="slds-grow">
+                    {{activeMethods.change_pass.metadata.last_changed}}
+                </div>
+                <div>
+                    <button [disabled]="activeMethods.change_pass.disabled" (click)="openChangePasswordModal()" class="slds-button slds-button--icon">
+                        <system-button-icon icon="edit"/>
+                    </button>
+                </div>
+            </div>
+            @if (activeMethods.passkey) {
+                <div class="slds-grid slds-size--1-of-1 slds-m-vertical--x-small spice-hover-display-children">
+                    <div class="slds-size--4-of-8">
+                        <system-utility-icon icon="touch_action" [colorclass]="activeMethods.passkey.active ? 'slds-icon-text-success' : 'slds-icon-text-default'" size="x-small" class="slds-m-right--x-small"/>
+                        <system-label label="MSG_PASSKEY_DESCRIPTION"/>
+                    </div>
+                        <div class="slds-grow">
+                            @if (activeMethods.passkey.metadata) {
+                                <img style="width: 24px; height: 24px;" [src]="activeMethods.passkey.metadata.icon_light" class="slds-m-right--xx-small" [alt]="activeMethods.passkey.metadata.name">
+                                {{activeMethods.passkey.metadata.name}}
+                            }
+                        </div>
+                    <div>
+                        @if (!activeMethods.passkey.active) {
+                            <button (click)="activate('passkey')" class="slds-button slds-button--icon">
+                                <system-button-icon icon="new"/>
+                            </button>
+                        } @else {
+                            <button (click)="deactivate('passkey')" class="slds-button slds-button--icon">
+                                <system-button-icon icon="delete"/>
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+            <div class="slds-text-heading--label slds-grid slds-size--1-of-1 slds-m-vertical--medium">
+                <system-label label="LBL_2FA_AUTHENTICATION"/>
+            </div>
+            <div class="slds-grid slds-size--1-of-1 slds-m-vertical--x-small spice-hover-display-children">
+                <div class="slds-size--4-of-8">
+                    <system-utility-icon icon="scan" [colorclass]="activeMethods.one_time_password.active ? 'slds-icon-text-success' : 'slds-icon-text-default'" size="x-small" class="slds-m-right--x-small"/>
+                    <system-label label="LBL_TOTP_AUTHENTICATION"/>
+                </div>
+                <div class="slds-grow">
+                    @if (activeMethods.one_time_password.metadata) {
+                        <img [src]="activeMethods.one_time_password.metadata.icon_light" style="max-width: 24px" class="slds-m-right--xx-small" [alt]="activeMethods.one_time_password.metadata.name">
+                        {{activeMethods.one_time_password.metadata.name}}
+                    }
+                </div>
+                <div>
+                    @if (systemDefaultMethod == 'one_time_password' || (systemDefaultMethod == 'user_defined' && model.data.user_2fa_method == 'one_time_password')) {
+                        <system-utility-icon size="x-small" system-title="LBL_DEFAULT" icon="favorite" colorclass="slds-icon-text-success" class="slds-m-right--xx-small"/>
+                    } @else if (systemDefaultMethod == 'user_defined') {
+                        <button (click)="setDefaultMethod('one_time_password')" class="slds-button slds-button--icon spice-hover-child">
+                            <system-button-icon [icon]="model.data.user_2fa_method == 'one_time_password' ? 'favorite' : 'favorite_alt'"/>
+                        </button>
+                    }
+                    @if (!activeMethods.one_time_password.active) {
+                        <button (click)="activate('one_time_password')" class="slds-button slds-button--icon">
+                            <system-button-icon icon="new"/>
+                        </button>
+                    } @else {
+                        <button (click)="deactivate('one_time_password')" class="slds-button slds-button--icon">
+                            <system-button-icon icon="delete"/>
+                        </button>
+                    }
+                </div>
+            </div>
+            @if (activeMethods.email) {
+                <div class="slds-grid slds-size--1-of-1 slds-m-vertical--x-small spice-hover-display-children">
+                    <div class="slds-size--4-of-8">
+                        <system-utility-icon icon="email" [colorclass]="activeMethods.email.active ? 'slds-icon-text-success' : 'slds-icon-text-default'" size="x-small" class="slds-m-right--x-small"/>
+                        <system-label label="LBL_EMAIL"/>
+                    </div>
+                    <div class="slds-grow">
+                        {{model.data.email1}}
+                    </div>
+                    <div>
+                        @if (systemDefaultMethod == 'email' || (systemDefaultMethod == 'user_defined' && model.data.user_2fa_method == 'email')) {
+                            <system-utility-icon size="x-small" system-title="LBL_DEFAULT" icon="favorite" colorclass="slds-icon-text-success" class="slds-m-right--xx-small"/>
+                        } @else if (systemDefaultMethod == 'user_defined') {
+                            <button (click)="setDefaultMethod('email')" class="slds-button slds-button--icon spice-hover-child">
+                                <system-button-icon [icon]="model.data.user_2fa_method == 'email' ? 'favorite' : 'favorite_alt'"/>
+                            </button>
+                        }
+                        @if (!activeMethods.email.active) {
+                            <button (click)="activate('email')" class="slds-button slds-button--icon">
+                                <system-button-icon icon="new"/>
+                            </button>
+                        } @else {
+                            <button (click)="deactivate('email')" class="slds-button slds-button--icon">
+                                <system-button-icon icon="delete"/>
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+            @if (activeMethods.sms) {
+                <div class="slds-grid slds-size--1-of-1 slds-m-vertical--x-small spice-hover-display-children">
+                    <div class="slds-size--4-of-8">
+                        <system-utility-icon icon="chat" [colorclass]="activeMethods.sms.active ? 'slds-icon-text-success' : 'slds-icon-text-default'" size="x-small" class="slds-m-right--x-small"/>
+                        <system-label label="LBL_SMS"/>
+                    </div>
+                    <div class="slds-grow">
+                        {{model.data.phone_mobile}}
+                    </div>
+                    <div>
+                        @if (systemDefaultMethod == 'sms' || (systemDefaultMethod == 'user_defined' && model.data.user_2fa_method == 'sms')) {
+                            <system-utility-icon size="x-small" system-title="LBL_DEFAULT" icon="favorite" colorclass="slds-icon-text-success" class="slds-m-right--xx-small"/>
+                        } @else if (systemDefaultMethod == 'user_defined') {
+                            <button (click)="setDefaultMethod('sms')" class="slds-button slds-button--icon spice-hover-child">
+                                <system-button-icon [icon]="model.data.user_2fa_method == 'sms' ? 'favorite' : 'favorite_alt'"/>
+                            </button>
+                        }
+                        @if (!activeMethods.sms.active) {
+                            <button (click)="activate('sms')" class="slds-button slds-button--icon">
+                                <system-button-icon icon="new"/>
+                            </button>
+                        } @else {
+                            <button (click)="deactivate('sms')" class="slds-button slds-button--icon">
+                                <system-button-icon icon="delete"/>
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"/></button>
+    </system-modal-footer>
+</system-modal>

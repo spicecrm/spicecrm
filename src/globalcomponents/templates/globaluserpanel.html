@@ -17,15 +17,9 @@
                     <system-button-icon icon="signature"></system-button-icon>
                 </button>
             </li>
-            <li *ngIf="canChangePassword" class="slds-item">
-                <button class="slds-button slds-button--icon" (click)="changePassword()" system-title="LBL_CHANGE_PASSWORD">
-                    <system-button-icon icon="password"></system-button-icon>
-                </button>
-            </li>
-            <li *ngIf="canChange2fa" class="slds-item">
-                <button class="slds-button slds-button--icon" (click)="set2FA()" system-title="LBL_2FA">
-                    <!--system-button-icon  icon="key"></system-button-icon-->
-                    <system-utility-icon icon="key" size="xx-small" [colorclass]="!session.authData.user.user_2fa_method ? 'slds-icon-text-light' : 'slds-icon-text-success'"></system-utility-icon>
+            <li class="slds-item">
+                <button class="slds-button slds-button--icon" (click)="openUserSettingsModal()" system-title="LBL_2FA">
+                    <system-utility-icon icon="key" size="xx-small"></system-utility-icon>
                 </button>
             </li>
         </ul>
