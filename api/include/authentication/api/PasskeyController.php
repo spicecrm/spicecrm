@@ -67,12 +67,6 @@ class PasskeyController
         $passkeyAuthenticate = new PasskeyUtils($params->rpId);
         $response = $passkeyAuthenticate->processCreate($params);
 
-        $user = AuthenticationController::getInstance()->getCurrentUser();
-
-        if ($response['success']) {
-            AuthenticateController::registerUserLoginMethod('passkey', $user->id);
-        }
-
         return $res->withJson($response);
     }
 
@@ -130,10 +124,6 @@ class PasskeyController
 
         $passkeyAuthenticate = new PasskeyUtils($params->rpId);
         $response = $passkeyAuthenticate->removeUserRegistration($args['userId'], $params->rpId);
-
-        if (!!$response) {
-            AuthenticateController::removeUserActiveLoginMethodRegistration('passkey', $args['userId']);
-        }
 
         return $res->withJson(!!$response);
     }

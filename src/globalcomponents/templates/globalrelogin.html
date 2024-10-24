@@ -28,17 +28,17 @@
                         <input [disabled]="loggingIn" type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-vertical--xx-small" tabindex="2" placeholder="Password" />
                     </div>
                     <div *ngIf="twoFactorAuthCodeRequired" class="slds-form-element slds-m-vertical--small slds-grid slds-grid--vertical-align-center">
-                        <div [ngClass]="{'slds-input-has-icon--left-right': userLoginActive2FAMethods.length > 0, 'slds-input-has-icon_group-right': userLoginActive2FAMethods.length > 0}" class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left slds-grow">
+                        <div [ngClass]="{'slds-input-has-icon--left-right': optional2FAMethods.sms || optional2FAMethods.email, 'slds-input-has-icon_group-right': optional2FAMethods.sms || optional2FAMethods.email}" class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left slds-grow">
                             <system-utility-icon icon="scan" addclasses="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"></system-utility-icon>
                             <input #twofactorinput [disabled]="loggingIn" type="text" name="code2fa" autocomplete="off" [(ngModel)]="code2fa" class="slds-input slds-p-vertical--xx-small" tabindex="2" [placeholder]="loginLabels.LBL_ENTER_CODE?.default ?? 'Enter code'" />
-                            @if (userLoginActive2FAMethods.length > 0) {
+                            @if (optional2FAMethods.sms || optional2FAMethods.email) {
                                 <div class="slds-input__icon-group slds-input__icon-group_right" style="margin-top: 0">
-                                    @if (userLoginActive2FAMethods.indexOf('sms') > -1) {
+                                    @if (optional2FAMethods.sms) {
                                         <button (click)="resendAuthCode('sms', $event)" tabindex="-1" class="slds-button slds-button_icon slds-input__icon_right" title="Clear">
                                             <system-button-icon icon="sms"/>
                                         </button>
                                     }
-                                    @if (userLoginActive2FAMethods.indexOf('email') > -1) {
+                                    @if (optional2FAMethods.email) {
                                         <button (click)="resendAuthCode('email', $event)" tabindex="-1" class="slds-button slds-button_icon slds-input__icon_right" title="Clear">
                                             <system-button-icon icon="email"/>
                                         </button>
