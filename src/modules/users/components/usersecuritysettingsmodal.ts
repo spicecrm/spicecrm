@@ -28,17 +28,17 @@ export class UserSecuritySettingsModal implements ModalComponentI{
      */
     public activeMethods: {
         change_pass: { disabled: boolean, metadata?: {last_changed: string} };
-        one_time_password: { active: boolean; disabled: boolean, metadata?: {name: string, icon_light: string} };
-        passkey?: { active: boolean; metadata?: {name: string, icon_dark: string, icon_light: string} };
-        sms?: { active: boolean; disabled: boolean, metadata?: any };
-        email?: { active: boolean; disabled: boolean, metadata?: any }
+        one_time_password: { active: boolean; canDeactivate: boolean, metadata?: {name: string, icon_light: string} };
+        passkey?: { active: boolean; disabled: boolean, metadata?: {name: string, icon_dark: string, icon_light: string} };
+        sms?: { active: boolean; canDeactivate: boolean, metadata?: any };
+        email?: { active: boolean; canDeactivate: boolean, metadata?: any }
     };
     /**
      * system default method
      */
     public systemDefaultMethod: 'user_defined' | 'one_time_password' | 'email' | 'sms';
 
-    constructor(private session: session,
+    constructor(public session: session,
                 private modal: modal,
                 public model: model,
                 private toast: toast,
@@ -80,11 +80,11 @@ export class UserSecuritySettingsModal implements ModalComponentI{
     private initializeActiveMethods() {
         let config = this.config.getCapabilityConfig('login');
         this.systemDefaultMethod = config.twofactor.onlogin?.method;
-        const is2FAEnabled = this.session.authData.canchangepassword && (!config.twofactor.onlogin.enforced || !this.systemDefaultMethod || this.systemDefaultMethod == 'user_defined');
+        const canChange = (method: 'one_time_password' | 'email' | 'sms') => this.systemDefaultMethod != method && this.session.authData.canchangepassword;
 
         this.activeMethods = {
             one_time_password: {
-                active: false, disabled: is2FAEnabled,
+                active: false, canDeactivate: canChange('one_time_password'),
                 metadata: {
                     icon_light: 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyNy40LjEsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBiYXNlUHJvZmlsZT0iYmFzaWMiIGlkPSJMYXllcl8xIg0KCSB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDUxMiA1MTIiDQoJIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPHBhdGggZmlsbD0iIzFBNzNFOCIgZD0iTTQ0MCwyNTUuOTk5OTd2MC4wMDAwNkM0NDAsMjczLjEyMDg1LDQyNi4xMjA4NSwyODcsNDA5LjAwMDAzLDI4N0gzMDJsLTQ2LTkzLjAxMDAxbDQ5LjY1MDctODUuOTk1MQ0KCWM4LjU2MDIxLTE0LjgyNjI5LDI3LjUxODM0LTE5LjkwNjUsNDIuMzQ1MTgtMTEuMzQ3MjRsMC4wMDU4NiwwLjAwMzRjMTQuODI3NzYsOC41NTk3OSwxOS45MDg3NSwyNy41MTkyOCwxMS4zNDg1Nyw0Mi4zNDY4Mg0KCUwzMDkuNzAwMDEsMjI1aDk5LjMwMDAyQzQyNi4xMjA4NSwyMjUsNDQwLDIzOC44NzkxNyw0NDAsMjU1Ljk5OTk3eiIvPg0KPHBhdGggZmlsbD0iI0VBNDMzNSIgZD0iTTM0OC4wMDE3NCw0MTUuMzQ4OTdsLTAuMDA1ODYsMC4wMDMzOWMtMTQuODI2ODQsOC41NTkyNy0zMy43ODQ5NywzLjQ3OTAzLTQyLjM0NTE4LTExLjM0NzIzTDI1NiwzMTguMDEwMDENCglsLTQ5LjY1MDY1LDg1Ljk5NTA5Yy04LjU2MDIsMTQuODI2MjktMjcuNTE4MzQsMTkuOTA2NTItNDIuMzQ1MTcsMTEuMzQ3MjlsLTAuMDA1OTEtMC4wMDM0Mg0KCWMtMTQuODI3NzctOC41NTk3OC0xOS45MDg3NS0yNy41MTkyOS0xMS4zNDg1OS00Mi4zNDY4M0wyMDIuMjk5OTksMjg3TDI1NiwyODVsNTMuNzAwMDEsMmw0OS42NTAzLDg2LjAwMjE0DQoJQzM2Ny45MTA0OSwzODcuODI5NjgsMzYyLjgyOTUsNDA2Ljc4OTE4LDM0OC4wMDE3NCw0MTUuMzQ4OTd6Ii8+DQo8cGF0aCBmaWxsPSIjRkJCQzA0IiBkPSJNMjU2LDE5My45ODk5OUwyNDIsMjMybC0zOS43MDAwMS03bC00OS42NTAzLTg2LjAwMjEyDQoJYy04LjU2MDE3LTE0LjgyNzU1LTMuNDc5MTktMzMuNzg3MDUsMTEuMzQ4NTktNDIuMzQ2ODRsMC4wMDU5MS0wLjAwMzQxYzE0LjgyNjgzLTguNTU5MjUsMzMuNzg0OTctMy40NzkwMyw0Mi4zNDUxNywxMS4zNDcyNg0KCUwyNTYsMTkzLjk4OTk5eiIvPg0KPHBhdGggZmlsbD0iIzM0QTg1MyIgZD0iTTI0OCwyMjVsLTM2LDYySDEwMi45OTk5N0M4NS44NzkxNiwyODcsNzIsMjczLjEyMDg1LDcyLDI1Ni4wMDAwM3YtMC4wMDAwNg0KCUM3MiwyMzguODc5MTcsODUuODc5MTYsMjI1LDEwMi45OTk5NywyMjVIMjQ4eiIvPg0KPHBvbHlnb24gZmlsbD0iIzE4NURCNyIgcG9pbnRzPSIzMDkuNzAwMDEsMjg3IDIwMi4yOTk5OSwyODcgMjU2LDE5My45ODk5OSAiLz4NCjwvc3ZnPg0K',
                     name: 'Google Authenticator'
@@ -99,15 +99,15 @@ export class UserSecuritySettingsModal implements ModalComponentI{
         };
 
         if (navigator.credentials && navigator.credentials.create) {
-            this.activeMethods.passkey = {active: false};
+            this.activeMethods.passkey = {active: false, disabled: !this.session.authData.canchangepassword};
         }
 
         if (config.twofactor.email) {
-            this.activeMethods.email = {active: false, disabled: is2FAEnabled};
+            this.activeMethods.email = {active: false, canDeactivate: canChange('email')};
         }
 
         if (config.twofactor.sms) {
-            this.activeMethods.sms = {active: false, disabled: is2FAEnabled};
+            this.activeMethods.sms = {active: false, canDeactivate: canChange('sms')};
         }
     }
 
@@ -150,9 +150,10 @@ export class UserSecuritySettingsModal implements ModalComponentI{
         switch (method) {
             case 'passkey':
                 this.modal.openStaticModal(GlobalLoginPasskeyModal, true).subscribe(modalRef => {
-                    modalRef.instance.onSuccess$.subscribe(() =>
-                        this.activeMethods.passkey.active = true
-                    )
+                    modalRef.instance.onSuccess$.subscribe(metadata => {
+                        this.activeMethods.passkey.active = true;
+                        this.activeMethods.passkey.metadata = metadata;
+                    });
                 });
                 break;
             case 'one_time_password':
@@ -208,6 +209,8 @@ export class UserSecuritySettingsModal implements ModalComponentI{
                 });
                 break;
             case 'one_time_password':
+                loadingModal.next(true);
+                loadingModal.complete();
                 this.delete2FASettings(method);
                 break;
             case 'email':

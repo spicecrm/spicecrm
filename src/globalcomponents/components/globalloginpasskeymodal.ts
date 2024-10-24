@@ -18,7 +18,7 @@ export class GlobalLoginPasskeyModal implements ModalComponentI, OnDestroy {
     /**
      * emit on success
      */
-    @Output() onSuccess$ = new Subject<void>();
+    @Output() onSuccess$ = new Subject<{name: string, icon_light: string, icon_dark: string}>();
 
     constructor(private backend: backend,
                 private modal: modal,
@@ -70,7 +70,7 @@ export class GlobalLoginPasskeyModal implements ModalComponentI, OnDestroy {
 
                         if (authenticatorAttestationServerResponse.success) {
                             this.toast.sendToast('LBL_SUCCESS', 'success');
-                            this.onSuccess$.next();
+                            this.onSuccess$.next(authenticatorAttestationServerResponse.metadata);
                             this.onSuccess$.complete();
                             this.cancel();
                         } else {
