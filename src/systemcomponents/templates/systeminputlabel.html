@@ -11,7 +11,7 @@
             </div>
         </div>
         <div *ngIf="!label" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
-            <input id="inputField" [disabled]="_disabled" type="search" class="slds-input slds-combobox__input" [(ngModel)]="searchterm" (keyup)="keyup($event)" (blur)="onBlur()" system-placeholder="LBL_SEARCH" role="combobox"/>
+            <input id="inputField" [disabled]="_disabled" autocomplete="off" type="search" class="slds-input slds-combobox__input" [(ngModel)]="searchterm" (keyup)="keyup($event)" (blur)="onBlur()" system-placeholder="LBL_SEARCH" role="combobox"/>
         </div>
         <div class="slds-dropdown slds-dropdown_fluid slds-dropdown--length-7" role="listbox" >
             <ul class="slds-listbox slds-listbox_vertical" role="presentation">
