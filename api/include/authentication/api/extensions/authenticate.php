@@ -225,21 +225,6 @@ $routes = [
         ]
     ],
     [
-        'method' => 'get',
-        'route' => '/authentication/2fa/{user_id}/activeLoginMethods',
-        'class' => AuthenticateController::class,
-        'function' => 'getUserLoginActiveMethods',
-        'description' => '',
-        'options' => ['validate' => true],
-        'parameters' => [
-            'user_id' => [
-                'in' => 'path',
-                'description' => 'the 2FA user id requested',
-                'type' => ValidationMiddleware::TYPE_GUID,
-            ],
-        ]
-    ],
-    [
         'method' => 'put',
         'route' => '/authentication/2fa/{method}/{code}',
         'class' => AuthenticateController::class,

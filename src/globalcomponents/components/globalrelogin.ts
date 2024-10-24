@@ -12,6 +12,7 @@ import {toast} from "../../services/toast.service";
 import {firstValueFrom} from "rxjs";
 import {modal} from "../../services/modal.service";
 import {backend} from "../../services/backend.service";
+import {language} from "../../services/language.service";
 
 /**
  * a modal to prompt the user for the password to relogin
@@ -75,12 +76,16 @@ export class GlobalReLogin {
     /**
      * user active 2fa methods
      */
-    public userLoginActive2FAMethods: string[] = [];
+    public optional2FAMethods: {
+        sms?: {value: string, label: string, address: string},
+        email?: {value: string, label: string, address: string}
+    };
 
     constructor(public login: loginService,
                 private toast: toast,
                 public session: session,
                 public modal: modal,
+                private language: language,
                 public backend: backend,
                 public configuration: configurationService) {
         this.load2FAConfig();
@@ -130,7 +135,7 @@ export class GlobalReLogin {
                 if (error.errorCode == 4) {
                     this.toast.sendToast(error.message, "success");
                     this.twoFactorAuthCodeRequired = true;
-                    this.userLoginActive2FAMethods = error.details?.activeMethods ?? [];
+                    this.optional2FAMethods = error.details?.optional2FAMethods ?? {};
                     setTimeout(() => {
                         if (this.twofactorinput) {
                             this.twofactorinput.element.nativeElement.focus();
@@ -169,7 +174,7 @@ export class GlobalReLogin {
      */
     public async resendAuthCode(method: 'sms' | 'email', event: MouseEvent) {
         event.preventDefault();
-        const confirmed = await firstValueFrom(this.modal.confirm('', 'MSG_RESEND_CODE_VIA_' + method.toUpperCase()));
+        const confirmed = await firstValueFrom(this.modal.confirm(`${this.language.getLabel('LBL_TO')} ${this.optional2FAMethods[method].address}`, 'MSG_RESEND_CODE_VIA_' + method.toUpperCase()));
 
         if (!confirmed) return;
 
