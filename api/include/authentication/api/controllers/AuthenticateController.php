@@ -247,8 +247,6 @@ class AuthenticateController
             $forUser->user_2fa_method = 'one_time_password';
             $forUser->save();
 
-            self::registerUserLoginMethod('one_time_password', $forUser->id);
-
             $validated = true;
         }
 
@@ -422,54 +420,6 @@ class AuthenticateController
     }
 
     /**
-     * get user login active methods
-     * @throws \Exception
-     */
-    public function getUserLoginActiveMethods(Request $req, Response $res, array $args): Response
-    {
-        return $res->withJson(self::loadUserLoginActiveMethods($args['user_id']));
-    }
-
-    /**
-     * load user login active methods from the db table
-     * @param string $userId
-     * @return array
-     * @throws \Exception
-     */
-    public static function loadUserLoginActiveMethods(string $userId): array
-    {
-        $db = DBManagerFactory::getInstance();
-        $methods = $db->fetchAll("SELECT method FROM user_login_active_methods WHERE user_id = '$userId'");
-
-        return array_map(fn($m) => $m['method'], $methods ?: []);
-    }
-
-    /**
-     * register user login method
-     * @throws \Exception
-     */
-    public static function registerUserLoginMethod(string $method, string $userId): void
-    {
-        $db = DBManagerFactory::getInstance();
-        $db->deleteQuery('user_login_active_methods', ['method' => $method, 'user_id' => $userId]);
-        $db->insertQuery('user_login_active_methods', [
-            'id' => SpiceUtils::createGuid(),
-            'method' => $method,
-            'user_id' => $userId,
-        ]);
-    }
-
-    /**
-     * remove user active login method registration
-     * @throws \Exception
-     */
-    public static function removeUserActiveLoginMethodRegistration(string $method, string $userId): void
-    {
-        $db = DBManagerFactory::getInstance();
-        $db->deleteQuery('user_login_active_methods', ['method' => $method, 'user_id' => $userId]);
-    }
-
-    /**
      * sets a 2FA method
      *
      * @param Request $req
@@ -486,7 +436,6 @@ class AuthenticateController
             if (SpiceCRM2FAUtils::check2FACode($currentUser, $args['method'], $args['code'])) {
                 $currentUser->user_2fa_method = $args['method'];
                 $currentUser->save();
-                $this->registerUserLoginMethod($args['method'], $currentUser->id);
             }
         } catch (\Throwable $e){
             $response = false;
@@ -517,8 +466,6 @@ class AuthenticateController
                 if($args['method'] == 'one_time_password'){
                     TOTPAuthentication::deleteTOTP($currentUser->id);
                 }
-
-                $this->removeUserActiveLoginMethodRegistration($args['method'], $currentUser->id);
 
                 if ($args['method'] == $currentUser->user_2fa_method) {
                     $currentUser->user_2fa_method = '';
