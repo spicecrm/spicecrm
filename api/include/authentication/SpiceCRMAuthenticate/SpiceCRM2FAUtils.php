@@ -72,7 +72,6 @@ class SpiceCRM2FAUtils
      * throw exception and send code by sms
      * @param User $user
      * @param string $method
-     * @return mixed
      * @throws UnauthorizedException | Exception
      */
     private static function handleRequire2FAException(User $user, string $method)
@@ -83,7 +82,6 @@ class SpiceCRM2FAUtils
         if (empty($method)) {
             throw (new UnauthorizedException('No 2FA method selected', UnauthorizedException::NO_2FA_METHOD_SELECTED))
                 ->setDetails(['methods' => self::getAvailableMethods($user)]);
-
         }
 
         switch ($method) {
@@ -100,9 +98,9 @@ class SpiceCRM2FAUtils
                 $message = 'Enter the one-time password code displayed on the authenticator app in your mobile device';
                 break;
         }
+
         throw (new UnauthorizedException($message, 4))->setDetails([
-            'activeMethods' => AuthenticateController::loadUserLoginActiveMethods($user->id)
-        ]);
+            'optional2FAMethods' => self::getAvailableMethods($user, true)]);
     }
 
     /**
@@ -123,12 +121,14 @@ class SpiceCRM2FAUtils
 
     /**
      * get available methods
-     * @return array[]
+     * @param User $user
+     * @param bool $asObject
+     * @return array | object
      */
-    public static function getAvailableMethods(User $user): array
+    public static function getAvailableMethods(User $user, bool $asObject = false)
     {
         $config = self::get2FAConfig();
-        $methods = [['value' => 'one_time_password', 'label' => 'LBL_TOTP_AUTHENTICATION']];
+        $methods = ['one_time_password' => ['value' => 'one_time_password', 'label' => 'LBL_TOTP_AUTHENTICATION']];
 
         if (!empty($config->sms_mailbox_id) && !empty($user->phone_mobile)) {
 
@@ -136,17 +136,17 @@ class SpiceCRM2FAUtils
                 SpicePhoneNumberParser::determinePhoneCountry($user)
             );
             $address = "+$countryCode*******" . substr($user->phone_mobile, -3);
-            $methods[] = ['value' => 'sms', 'label' => 'LBL_SMS', 'address' => "$address"];
+            $methods['sms'] = ['value' => 'sms', 'label' => 'LBL_SMS', 'address' => "$address"];
         }
 
         if (!empty($config->email_mailbox_id) && !empty($user->email1)) {
             [$email, $domain] = explode('@', $user->email1);
             $email = substr($email, 0, 1) . "**********" . substr($email,  -1) . "@***" . substr($domain, -2);
 
-            $methods[] = ['value' => 'email', 'label' => 'LBL_EMAIL', 'address' => $email];
+            $methods['email'] = ['value' => 'email', 'label' => 'LBL_EMAIL', 'address' => $email];
         }
 
-        return $methods;
+        return $asObject ? (object) $methods : array_values($methods);
     }
 
     /**
@@ -166,24 +166,12 @@ class SpiceCRM2FAUtils
 
         $db = DBManagerFactory::getInstance();
 
-        $activeMethods = array_unique(([$method, ...array_intersect(['sms', 'email', 'one_time_password'], AuthenticateController::loadUserLoginActiveMethods($user->id))]));
+        $userId = empty($user->impersonating_user_id) ? $user->id : $user->impersonating_user_id;
+        $tokenMatch = TOTPAuthentication::checkTOTPCode($userId, $code2fa);
 
-        foreach ($activeMethods as $activeMethod) {
-            switch ($activeMethod) {
-                case 'one_time_password':
-                    $userId = empty($user->impersonating_user_id) ? $user->id : $user->impersonating_user_id;
-                    $tokenMatch = TOTPAuthentication::checkTOTPCode($userId, $code2fa);
-                    break;
-                case 'sms':
-                case 'email':
-                    $code = $db->getOne("SELECT id FROM user_2fa_codes WHERE id ='$code2fa' AND user_id = '$user->id' AND expires_in > {$db->now()}");
-                    $tokenMatch = (bool) $code;
-                    break;
-                default:
-                    $tokenMatch = false;
-            }
-
-            if ($tokenMatch) break;
+        if (!$tokenMatch) {
+            $code = $db->getOne("SELECT id FROM user_2fa_codes WHERE id ='$code2fa' AND user_id = '$user->id' AND expires_in > {$db->now()}");
+            $tokenMatch = (bool) $code;
         }
 
         if (!$tokenMatch) {

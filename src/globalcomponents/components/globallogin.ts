@@ -52,7 +52,10 @@ export class GlobalLogin implements OnDestroy {
     /**
      * user active 2fa methods
      */
-    public userLoginActive2FAMethods: string[] = [];
+    public optional2FAMethods: {
+        sms?: {value: string, label: string, address: string},
+        email?: {value: string, label: string, address: string}
+    };
     /**
      * holds the prompt user boolean
      */
@@ -292,7 +295,7 @@ export class GlobalLogin implements OnDestroy {
      * @param error
      * @private
      */
-    private handleError(error: { errorCode: number, details?: { userId: string, activeMethods?: string[], methods: { value: string, label: string, address: string }[] }, message: string }) {
+    private handleError(error: { errorCode: number, details?: { userId: string, optional2FAMethods?: any, methods: { value: string, label: string, address: string }[] }, message: string }) {
         switch (error.errorCode) {
             // invalid password/user
             case 1:
@@ -314,7 +317,7 @@ export class GlobalLogin implements OnDestroy {
             case 4:
                 this.messageId = this.toast.sendToast(error.message, "success");
                 this.twoFactorAuthCodeRequired = true;
-                this.userLoginActive2FAMethods = error.details?.activeMethods ?? [];
+                this.optional2FAMethods = error.details?.optional2FAMethods ?? {};
                 setTimeout(() => {
                     if (this.twofactorinput) {
                         this.twofactorinput.element.nativeElement.focus();
@@ -447,7 +450,7 @@ export class GlobalLogin implements OnDestroy {
      */
     public async resendAuthCode(method: 'sms' | 'email', event: MouseEvent) {
         event.preventDefault();
-        const confirmed = await firstValueFrom(this.modal.confirm('', 'MSG_RESEND_CODE_VIA_' + method.toUpperCase()));
+        const confirmed = await firstValueFrom(this.modal.confirm(`${this.language.getLabel('LBL_TO')} ${this.optional2FAMethods[method].address}`, 'MSG_RESEND_CODE_VIA_' + method.toUpperCase()));
 
         if (!confirmed) return;
 
