@@ -227,6 +227,8 @@ class AuthenticateController
      */
     public function validateTOTPCode( Request $req, Response $res, array $args): Response
     {
+        $this->checkCanManage2FA();
+
         $db = DBManagerFactory::getInstance();
         $forUser = $this->get2FAUserObject($req);
 
@@ -251,6 +253,18 @@ class AuthenticateController
         }
 
         return $res->withJson(['validated' => $validated]);
+    }
+
+    /**
+     * check if user can manage security settings
+     * @return void
+     * @throws ForbiddenException
+     */
+    private function checkCanManage2FA(): void
+    {
+        if (!AuthenticationController::getInstance()->isAdmin() && !AuthenticationController::getInstance()->getCanChangePassword()) {
+            throw new ForbiddenException('User is not authorized to change security settings');
+        }
     }
 
     /**
@@ -380,29 +394,31 @@ class AuthenticateController
     }
 
     /**
-     * generates a 2FA Tooen and sends it out
+     * generates a 2FA token and sends it out
      *
-     * @param $req
-     * @param $res
+     * @param Request $req
+     * @param Response $res
      * @param array $args
      * @return mixed
-     * @throws NotFoundException
+     * @throws ForbiddenException
+     * @throws UnauthorizedException
      */
-    public function generate2FAToken( Request $req, Response $res, array $args)
+    public function generate2FAToken( Request $req, Response $res, array $args): Response
     {
+        $this->checkCanManage2FA();
+
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
 
-        $response = false;
         switch ($args['method']){
             case 'sms':
-                $response = SpiceCRM2FAUtils::send2FACodeBySMS($currentUser->id);
+                 SpiceCRM2FAUtils::send2FACodeBySMS($currentUser->id);
                 break;
             case 'email':
-                $response = SpiceCRM2FAUtils::send2FACodeByEmail($currentUser->id);
+                 SpiceCRM2FAUtils::send2FACodeByEmail($currentUser->id);
                 break;
         }
 
-        return $res->withJson(['success' => $response]);
+        return $res->withJson(['success' => true]);
     }
 
     /**
@@ -460,7 +476,6 @@ class AuthenticateController
      * @param Response $res
      * @param array $args
      * @return Response
-     * @throws BadRequestException
      */
     public function set2FAMethod( Request $req, Response $res, array $args): Response
     {
@@ -481,19 +496,21 @@ class AuthenticateController
     }
 
     /**
-     * sets a 2FA method
+     * delete 2FA method
      *
      * @param Request $req
      * @param Response $res
      * @param array $args
      * @return mixed
-     * @throws BadRequestException
+     * @throws ForbiddenException
      */
     public function delete2FASettings( Request $req, Response $res, array $args): Response
     {
+        $this->checkCanManage2FA();
+
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
 
-        $response = false;
+        $response = true;
         try {
             if (SpiceCRM2FAUtils::check2FACode($currentUser, $args['method'], $args['code'])) {
 
@@ -507,10 +524,8 @@ class AuthenticateController
                     $currentUser->user_2fa_method = '';
                     $currentUser->save();
                 }
-
-                $response = true;
             }
-        } catch (UnauthorizedException $e){
+        } catch (\Throwable $e){
             $response = false;
         }
 
