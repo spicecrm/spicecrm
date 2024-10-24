@@ -8,8 +8,8 @@ import {
     Component, ContentChildren,
     ElementRef,
     forwardRef,
-    Input, OnDestroy, QueryList,
-    Renderer2,
+    Input, OnChanges, OnDestroy, QueryList,
+    Renderer2, SimpleChanges,
     ViewChild,
     ViewContainerRef
 } from "@angular/core";
@@ -35,7 +35,7 @@ declare var _;
         multi: true
     }]
 })
-export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnDestroy {
+export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnChanges, OnDestroy {
     /**
      * reference to the dropdown trigger directive
      * @private
@@ -117,6 +117,10 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
         }));
     }
 
+    public ngOnChanges(changes: SimpleChanges) {
+        console.log(changes);
+    }
+
     public ngOnDestroy() {
         this.subscription.unsubscribe();
     }
@@ -147,7 +151,11 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      */
     public writeValue(focusedItemOrString: string | SystemSelectNgModelValue) {
 
-        if (!focusedItemOrString) return;
+        if (!focusedItemOrString) {
+            this.value = undefined
+            this.inputIsVisible = true;
+            return;
+        }
 
         if(typeof focusedItemOrString == 'string') {
             const focusedItem = this.searchList.find(e => e.id == focusedItemOrString);
@@ -155,6 +163,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
                 this.value = focusedItemOrString;
             } else {
                 this.focusedItem = focusedItem;
+                this.inputIsVisible = false;
             }
         } else {
             this.focusedItem = focusedItemOrString;
