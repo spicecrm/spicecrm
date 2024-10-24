@@ -31,11 +31,11 @@
                             }
                         </div>
                     <div>
-                        @if (!activeMethods.passkey.active) {
+                        @if (!activeMethods.passkey.disabled && !activeMethods.passkey.active) {
                             <button (click)="activate('passkey')" class="slds-button slds-button--icon">
                                 <system-button-icon icon="new"/>
                             </button>
-                        } @else {
+                        } @else if (!activeMethods.passkey.disabled) {
                             <button (click)="deactivate('passkey')" class="slds-button slds-button--icon">
                                 <system-button-icon icon="delete"/>
                             </button>
@@ -59,18 +59,18 @@
                 </div>
                 <div>
                     @if (systemDefaultMethod == 'one_time_password' || (systemDefaultMethod == 'user_defined' && model.data.user_2fa_method == 'one_time_password')) {
-                        <system-utility-icon size="x-small" system-title="LBL_DEFAULT" icon="favorite" colorclass="slds-icon-text-success" class="slds-m-right--xx-small"/>
+                        <system-utility-icon size="x-small" system-title="LBL_DEFAULT" icon="favorite" colorclass="slds-icon-text-success"/>
                     } @else if (systemDefaultMethod == 'user_defined') {
                         <button (click)="setDefaultMethod('one_time_password')" class="slds-button slds-button--icon spice-hover-child">
                             <system-button-icon [icon]="model.data.user_2fa_method == 'one_time_password' ? 'favorite' : 'favorite_alt'"/>
                         </button>
                     }
-                    @if (!activeMethods.one_time_password.active) {
-                        <button (click)="activate('one_time_password')" class="slds-button slds-button--icon">
+                    @if (session.authData.canchangepassword && !activeMethods.one_time_password.active) {
+                        <button (click)="activate('one_time_password')" class="slds-button slds-button--icon slds-m-left--xx-small">
                             <system-button-icon icon="new"/>
                         </button>
-                    } @else {
-                        <button (click)="deactivate('one_time_password')" class="slds-button slds-button--icon">
+                    } @else if (activeMethods.one_time_password.active && activeMethods.one_time_password.canDeactivate) {
+                        <button (click)="deactivate('one_time_password')" class="slds-button slds-button--icon slds-m-left--xx-small">
                             <system-button-icon icon="delete"/>
                         </button>
                     }
@@ -87,18 +87,18 @@
                     </div>
                     <div>
                         @if (systemDefaultMethod == 'email' || (systemDefaultMethod == 'user_defined' && model.data.user_2fa_method == 'email')) {
-                            <system-utility-icon size="x-small" system-title="LBL_DEFAULT" icon="favorite" colorclass="slds-icon-text-success" class="slds-m-right--xx-small"/>
+                            <system-utility-icon size="x-small" system-title="LBL_DEFAULT" icon="favorite" colorclass="slds-icon-text-success"/>
                         } @else if (systemDefaultMethod == 'user_defined') {
                             <button (click)="setDefaultMethod('email')" class="slds-button slds-button--icon spice-hover-child">
                                 <system-button-icon [icon]="model.data.user_2fa_method == 'email' ? 'favorite' : 'favorite_alt'"/>
                             </button>
                         }
-                        @if (!activeMethods.email.active) {
-                            <button (click)="activate('email')" class="slds-button slds-button--icon">
+                        @if (session.authData.canchangepassword && !activeMethods.email.active) {
+                            <button (click)="activate('email')" class="slds-button slds-button--icon slds-m-left--xx-small">
                                 <system-button-icon icon="new"/>
                             </button>
-                        } @else {
-                            <button (click)="deactivate('email')" class="slds-button slds-button--icon">
+                        } @else if (activeMethods.email.active && activeMethods.email.canDeactivate) {
+                            <button (click)="deactivate('email')" class="slds-button slds-button--icon slds-m-left--xx-small">
                                 <system-button-icon icon="delete"/>
                             </button>
                         }
@@ -108,7 +108,7 @@
             @if (activeMethods.sms) {
                 <div class="slds-grid slds-size--1-of-1 slds-m-vertical--x-small spice-hover-display-children">
                     <div class="slds-size--4-of-8">
-                        <system-utility-icon icon="chat" [colorclass]="activeMethods.sms.active ? 'slds-icon-text-success' : 'slds-icon-text-default'" size="x-small" class="slds-m-right--x-small"/>
+                        <system-utility-icon icon="chat" [colorclass]="activeMethods.sms.active ? 'slds-icon-text-success' : 'slds-icon-text-default'" size="x-small"/>
                         <system-label label="LBL_SMS"/>
                     </div>
                     <div class="slds-grow">
@@ -122,12 +122,12 @@
                                 <system-button-icon [icon]="model.data.user_2fa_method == 'sms' ? 'favorite' : 'favorite_alt'"/>
                             </button>
                         }
-                        @if (!activeMethods.sms.active) {
-                            <button (click)="activate('sms')" class="slds-button slds-button--icon">
+                        @if (session.authData.canchangepassword && !activeMethods.sms.active) {
+                            <button (click)="activate('sms')" class="slds-button slds-button--icon slds-m-left--xx-small">
                                 <system-button-icon icon="new"/>
                             </button>
-                        } @else {
-                            <button (click)="deactivate('sms')" class="slds-button slds-button--icon">
+                        } @else if (activeMethods.sms.active && activeMethods.sms.canDeactivate) {
+                            <button (click)="deactivate('sms')" class="slds-button slds-button--icon slds-m-left--xx-small">
                                 <system-button-icon icon="delete"/>
                             </button>
                         }

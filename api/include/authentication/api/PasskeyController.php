@@ -8,11 +8,20 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\authentication\api\controllers\AuthenticateController;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\authentication\PasskeyAuthenticate\PasskeyUtils;
-use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 class PasskeyController
 {
+    /**
+     * @throws ForbiddenException
+     */
+    private function checkCanChangePasskey(): void
+    {
+        if (!AuthenticationController::getInstance()->isAdmin() && !AuthenticationController::getInstance()->getCanChangePassword()) {
+            throw new ForbiddenException('Forbidden to create a passkey. User not allowed to change security setting.');
+        }
+    }
     /**
      * generate create args
      * @param Request $req
@@ -23,6 +32,8 @@ class PasskeyController
      */
     public function createArgs(Request $req, Response $res, array $args): Response
     {
+        $this->checkCanChangePasskey();
+
         $user = AuthenticationController::getInstance()->getCurrentUser();
         $rpId = $req->getParsedBody()['rpId'];
 
@@ -49,6 +60,8 @@ class PasskeyController
      */
     public function processCreate(Request $req, Response $res, array $args): Response
     {
+        $this->checkCanChangePasskey();
+
         $params = (object) $req->getParsedBody();
 
         $passkeyAuthenticate = new PasskeyUtils($params->rpId);
@@ -97,7 +110,7 @@ class PasskeyController
         if (!$response) {
             return $res->withJson(null);
         }
-        $metadata = $passkeyAuthenticate->getAuthenticatorMetadata($response);
+        $metadata = $passkeyAuthenticate->getAuthenticatorMetadata($response->AAGUID);
         return $res->withJson($metadata);
     }
 
@@ -111,6 +124,8 @@ class PasskeyController
      */
     public function removePasskey(Request $req, Response $res, array $args): Response
     {
+        $this->checkCanChangePasskey();
+
         $params = (object) $req->getQueryParams();
 
         $passkeyAuthenticate = new PasskeyUtils($params->rpId);
