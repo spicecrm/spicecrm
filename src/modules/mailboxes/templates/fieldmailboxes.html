@@ -17,11 +17,11 @@
         </div>
         <field-messages [fieldname]="fieldname"></field-messages>
     </div>
-    <div *ngIf="!zipHidden" class="slds-size--1-of-4 slds-grid slds-grid--align-spread">
+    <div *ngIf="!zipHidden" class="slds-size--1-of-4">
         <system-checkbox [disabled]="zipDisabled" [ngModel]="model.getField('zip_compress')" (ngModelChange)="setZip($event)"></system-checkbox>
         <system-label label="LBL_ZIP_COMPRESS"></system-label>
     </div>
-    <div *ngIf="!receiptHidden" class="slds-size--1-of-4 slds-grid slds-grid--align-spread">
+    <div *ngIf="!receiptHidden" class="slds-size--1-of-4">
         <system-checkbox [disabled]="receiptDisabled" [ngModel]="model.getField('send_read_receipt')" (ngModelChange)="setReadReceipt($event)"></system-checkbox>
         <system-label label="LBL_SEND_READ_RECEIPT"></system-label>
     </div>
