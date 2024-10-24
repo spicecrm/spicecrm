@@ -2,8 +2,10 @@
 
 namespace SpiceCRM\includes\authentication\api;
 
+use Exception;
 use lbuchs\WebAuthn\WebAuthnException;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\authentication\api\controllers\AuthenticateController;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\authentication\PasskeyAuthenticate\PasskeyUtils;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
@@ -17,7 +19,7 @@ class PasskeyController
      * @param Response $res
      * @param array $args
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function createArgs(Request $req, Response $res, array $args): Response
     {
@@ -42,8 +44,8 @@ class PasskeyController
      * @param Response $res
      * @param array $args
      * @return Response
-     * @throws BadRequestException
      * @throws WebAuthnException
+     * @throws Exception
      */
     public function processCreate(Request $req, Response $res, array $args): Response
     {
@@ -51,6 +53,13 @@ class PasskeyController
 
         $passkeyAuthenticate = new PasskeyUtils($params->rpId);
         $response = $passkeyAuthenticate->processCreate($params);
+
+        $user = AuthenticationController::getInstance()->getCurrentUser();
+
+        if ($response['success']) {
+            AuthenticateController::registerUserLoginMethod('passkey', $user->id);
+        }
+
         return $res->withJson($response);
     }
 
@@ -60,7 +69,7 @@ class PasskeyController
      * @param Response $res
      * @param array $args
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function getArgs(Request $req, Response $res, array $args): Response
     {
@@ -77,7 +86,7 @@ class PasskeyController
      * @param Response $res
      * @param array $args
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function checkPasskey(Request $req, Response $res, array $args): Response
     {
@@ -98,7 +107,7 @@ class PasskeyController
      * @param Response $res
      * @param array $args
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function removePasskey(Request $req, Response $res, array $args): Response
     {
@@ -106,6 +115,11 @@ class PasskeyController
 
         $passkeyAuthenticate = new PasskeyUtils($params->rpId);
         $response = $passkeyAuthenticate->removeUserRegistration($args['userId'], $params->rpId);
+
+        if (!!$response) {
+            AuthenticateController::removeUserActiveLoginMethodRegistration('passkey', $args['userId']);
+        }
+
         return $res->withJson(!!$response);
     }
 }

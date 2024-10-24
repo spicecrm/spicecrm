@@ -2,7 +2,7 @@
  * @module GlobalComponents
  */
 import {Router} from "@angular/router";
-import {Component, ComponentRef, EventEmitter, Output} from "@angular/core";
+import {Component, EventEmitter, Injector, Output} from "@angular/core";
 import {loginService} from "../../services/login.service";
 import {session} from "../../services/session.service";
 import {metadata} from "../../services/metadata.service";
@@ -14,15 +14,8 @@ import {toast} from '../../services/toast.service';
 import {socket} from '../../services/socket.service';
 import {language} from '../../services/language.service';
 import {loader} from '../../services/loader.service';
-import {UserPreferencesModal} from "../../modules/users/components/userpreferencesmodal";
-import {
-    TOTPAuthenticationGenerateModal
-} from "../../include/totpauthentication/components/totpauthenticationgeneratemodal";
 import {model} from "../../services/model.service";
-import {UserSet2FAModal} from "../../modules/users/components/userset2famodal";
-import {GlobalLoginChangePassword} from "./globalloginchangepassword";
-
-declare var _: any;
+import {UserSecuritySettingsModal} from "../../modules/users/components/usersecuritysettingsmodal";
 
 /**
  * the gloabl user panale rendered when the users clicks ont eh iamge or avatar in the top right corner
@@ -57,7 +50,8 @@ export class GlobaUserPanel {
        public socket: socket,
        public language: language,
        public loader: loader,
-       public model: model
+       public model: model,
+       public injector: Injector
     ) {
         // load the model from teh user data
         this.model.module = 'Users';
@@ -70,27 +64,6 @@ export class GlobaUserPanel {
         this.loginService.logout();
     }
 
-   public changeImage() {
-        this.modal.openModal("SystemUploadImage").subscribe(componentref => {
-            componentref.instance.cropheight = 150;
-            componentref.instance.cropwidth = 150;
-            componentref.instance.imagedata.subscribe(image => {
-                if (image !== false) {
-                    // make a backup of the image, set it to emtpy and if case call fails set back the saved image
-                    let imagebackup = this.session.authData.user.user_image;
-                    this.session.authData.user.user_image = '';
-                    this.backend.postRequest('module/Users/' + this.session.authData.userId + '/image', {}, {imagedata: image}).subscribe(
-                        response => {
-                            this.session.authData.user.user_image = image;
-                        },
-                        error => {
-                            this.session.authData.user.user_image = imagebackup;
-                        });
-                }
-            });
-        });
-    }
-
     get displayName() {
         return this.session.authData.user.full_name ? this.session.authData.user.full_name : this.session.authData.userName;
     }
@@ -100,25 +73,6 @@ export class GlobaUserPanel {
      */
     get userName() {
         return this.session.authData.userName;
-    }
-
-    /**
-     * returns the systemname or the tenanat name if the user is logged in a tenant
-     */
-    get systemName() {
-        return this.session.authData.tenant_name ? this.session.authData.tenant_name : this.config.systemName;
-    }
-
-    /**
-     * returns if the user can change the password
-     */
-    get canChangePassword() {
-        return this.session.authData.canchangepassword;
-    }
-
-    get canChange2fa(){
-        let config = this.config.getCapabilityConfig('login');
-        return this.canChangePassword && (!config.twofactor.onlogin.enforced || config.twofactor.onlogin.method == '' || config.twofactor.onlogin.method == 'user_defined');
     }
 
     /**
@@ -148,72 +102,10 @@ export class GlobaUserPanel {
     }
 
     /**
-     * triggers the change password dialog
-     *
-     * @private
+     * open user settings modal
      */
-   public changePassword() {
-        if(this.canChangePassword) {
-            this.modal.openStaticModal(GlobalLoginChangePassword);
-        }
-    }
-
-    /**
-     * triggers the change password dialog
-     *
-     * @private
-     */
-    public change2FA() {
-        let loading = this.modal.await(this.language.getLabel('MSG_TOTP_STATUSCHECK'));
-        this.backend.getRequest(`authentication/totp`, {onBehalfUserId: this.session.authData.userId}).subscribe(
-            res => {
-                loading.emit(true);
-                if (res.active) {
-                    this.modal.confirm(this.language.getLabel('MSG_TOTP_DELETE', null, 'long'), this.language.getLabel('MSG_TOTP_DELETE')).subscribe(a => {
-                        if (a) {
-                            loading = this.modal.await(this.language.getLabel('MSG_TOTP_DELETING'));
-                            this.backend.deleteRequest(`authentication/totp`, {onBehalfUserId: this.session.authData.userId}).subscribe({
-                                next: (res) => {
-                                    loading.emit(true);
-                                    this.session.authData.user.user_2fa_method = undefined;
-                                    this.generateTOTP();
-                                },
-                                error: () => {
-                                    loading.emit(true);
-                                }
-                            });
-                        }
-                    });
-                } else {
-                    this.generateTOTP();
-                }
-            },
-            () => {
-                loading.emit(true);
-            }
-        );
-    }
-
-
-
-    public set2FA() {
-        this.modal.openModal('UserSet2FAModal');
-    }
-
-
-    public generateTOTP() {
-        this.modal.openModal('TOTPAuthenticationGenerateModal').subscribe(
-            modalref => {
-                modalref.instance.onBehalfUserId = this.session.authData.userId;
-            }
-        );
-    }
-
-    /**
-     * returns the user image to display in the user panel
-     */
-    get userimage() {
-        return this.session.authData.user.user_image;
+    public openUserSettingsModal() {
+        this.modal.openStaticModal(UserSecuritySettingsModal, true, this.injector);
     }
 
     // /**
@@ -260,7 +152,7 @@ export class GlobaUserPanel {
         if (this.userprefs.unchangedPreferences.global && this.userprefs.unchangedPreferences.global.timezone === value) return;
         this.userprefs.setPreference('timezone', value, true).subscribe((data: any) => {
             this.toast.sendToast(this.language.getLabel('LBL_TIMEZONE_WAS_SET_TO')+': '+data.timezone, 'success');
-        }, error => {
+        }, () => {
             this.toast.sendToast('Error setting timezone.', 'error');
         });
         this.session.setTimezone(value); // Let the UI together with all the models and components know about the new configured timezone.
