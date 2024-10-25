@@ -75,6 +75,11 @@
             </div>
         </div>
     </div>
+    <div class="slds-grid slds-p-vertical--xx-small">
+        <div class="slds-size--1-of-4 slds-form-element">
+            <system-checkbox [(ngModel)]="relationship.lhs_duplicatemerge" [disabled]="readonly" [asinteger]="true"><system-label label="LBL_LHS_DUPLICATEMERGE"></system-label></system-checkbox>
+        </div>
+    </div>
     <div class="slds-p-vertical--x-small">
         <div class="slds-box--border">
             <table class="slds-table slds-table--fixed-layout slds-table_bordered slds-no-row-hover">
@@ -94,6 +99,9 @@
                         </th>
                         <th class="" scope="col">
                             <div class="slds-truncate"><system-label label="LBL_RHS_LINKLABEL"/></div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_RHS_DUPLICATEMERGE"/></div>
                         </th>
                         <th style="width: 2rem" scope="col"></th>
                         <th style="width: 2rem" scope="col"></th>
@@ -115,6 +123,11 @@
                         </td>
                         <td>
                             <div class="slds-truncate"><input [disabled]="readonly" class="slds-input" [(ngModel)]="relationshipPolymorph.rhs_link_label"/></div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">
+                                <system-checkbox [disabled]="readonly" [(ngModel)]="relationshipPolymorph.rhs_duplicatemerge" [asinteger]="true"></system-checkbox>
+                            </div>
                         </td>
                         <td>
                             <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="relationshipPolymorph.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
