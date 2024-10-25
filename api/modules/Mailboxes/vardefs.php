@@ -206,6 +206,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
         'mailbox_processors' => [
             'name' => 'mailbox_processors',
             'source' => 'non-db',
+            'type' => 'varchar',
         ],
         'mailboxprocessors' => [
             'name' => 'mailboxprocessors',
