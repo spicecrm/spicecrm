@@ -15,25 +15,73 @@
                     </td>
                     <td >
                         <div class="slds-form-element">
-                            <div class="slds-form-element__control" [ngSwitch]="field.type">
-                                <textarea *ngSwitchCase="'json'" class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [(ngModel)]="entry.data[field.name]" ></textarea>
-                                <textarea *ngSwitchCase="'text'" class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [(ngModel)]="entry.data[field.name]" ></textarea>
-                                <system-input-label *ngSwitchCase="'label'" [(ngModel)]="entry.data[field.name]" ></system-input-label>
-                                <system-input-date *ngSwitchCase="'date'" [ngModel]="entry.data[field.name]" (ngModelChange)="setFormattedDate(field.name, $event)" system-input-date-formatted [showCalendarButton]="false" ></system-input-date>
-                                <system-input-module *ngSwitchCase="'module'" [(ngModel)]="entry.data[field.name]"></system-input-module>
-                                <system-input-module-field *ngSwitchCase="'fieldname'" [module]="entry.data[field.modulefield]" [(ngModel)]="entry.data[field.name]"></system-input-module-field>
-                                <system-input-fieldset *ngSwitchCase="'fieldset'" [(ngModel)]="entry.data[field.name]"></system-input-fieldset>
-                                <system-input-filter *ngSwitchCase="'filter'" [(ngModel)]="entry.data[field.name]"></system-input-filter>
-                                <system-input-componentset *ngSwitchCase="'componentset'" [(ngModel)]="entry.data[field.name]"></system-input-componentset>
-                                <system-input-companycodes *ngSwitchCase="'companycode'" [(ngModel)]="entry.data[field.name]"></system-input-companycodes>
-                                <system-checkbox *ngSwitchCase="'bool'" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
-                                <system-checkbox *ngSwitchCase="'boolean'" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
-                                <system-select *ngSwitchCase="'foreign'" [ngModel]="{id: entry.data[field.name], name: getForeignName(field.name)}" (ngModelChange)="entry.data[field.name] = $event.id">
-                                    <system-select-option *ngFor="let foreignKey of getForeignKeys(field.name)" [value]="foreignKey.value" [display]="foreignKey.display"/>
-                                </system-select>
-                                <administration-configurator-item-role *ngSwitchCase="'role'" [editmode]="true" [(fieldvalue)]="entry.data[field.name]"></administration-configurator-item-role>
-                                <system-input-dictionary *ngSwitchCase="'dictionary'" [(ngModel)]="entry.data[field.name]"></system-input-dictionary>
-                                <input *ngSwitchDefault type="text" class="slds-input" [(ngModel)]="entry.data[field.name]"/>
+                            <div class="slds-form-element__control">
+                                @switch (field.type){
+                                    @case('json'){
+                                        @if (isEditMode(field)) {
+                                            <textarea class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" style="min-height: 250px;" [(ngModel)]="entry.data[field.name]"></textarea>
+                                        } @else {
+                                            <span class="slds-truncate_container_25" style="max-width: 200px;">{{entry.data[field.name]}}</span>
+                                        }
+                                    }
+                                    @case('text'){
+                                        @if (isEditMode(field)) {
+                                            <textarea class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" style="min-height: 250px;" [(ngModel)]="entry.data[field.name]" ></textarea>
+                                        }@else {
+                                            <span class="slds-truncate_container_25" style="max-width: 200px;">{{entry.data[field.name]}}</span>
+                                        }
+                                    }
+                                    @case('label'){
+                                        <system-input-label [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]" ></system-input-label>
+                                    }
+                                    @case('date'){
+                                        <system-input-date [disabled]="!isEditMode(field)" [ngModel]="entry.data[field.name]" (ngModelChange)="setFormattedDate(field.name, $event)" system-input-date-formatted [showCalendarButton]="false" ></system-input-date>
+                                    }
+                                    @case('module'){
+                                        <system-input-module [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"></system-input-module>
+                                    }
+                                    @case('fieldname'){
+                                        @if(entry.data[field.modulefield] && isEditMode(field)){
+                                            <system-input-module-field [module]="entry.data[field.modulefield]" [(ngModel)]="entry.data[field.name]"></system-input-module-field>
+                                        } @else if(entry.data[field.modulefield] && !isEditMode(field)) {
+                                            <system-input-module-field [disabled]="true" [module]="entry.data[field.modulefield]" [(ngModel)]="entry.data[field.name]"></system-input-module-field>
+                                        } @else {
+                                            <system-input-text disabled [(ngModel)]="entry.data[field.name]"></system-input-text>
+                                        }
+                                    }
+                                    @case('fieldset'){
+                                        <system-input-fieldset [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"></system-input-fieldset>
+                                    }
+                                    @case('filter'){
+                                        <system-input-filter [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"></system-input-filter>
+                                    }
+                                    @case('componentset'){
+                                        <system-input-componentset [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"></system-input-componentset>
+                                    }
+                                    @case('companycode'){
+                                        <system-input-companycodes [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"></system-input-companycodes>
+                                    }
+                                    @case('bool'){
+                                        <system-checkbox [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
+                                    }
+                                    @case('boolean'){
+                                        <system-checkbox [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
+                                    }
+                                    @case('foreign'){
+                                        <system-select [disabled]="!isEditMode(field)" [ngModel]="entry.data[field.name] ? {id: entry.data[field.name], name: getForeignName(field.name)} : undefined" (ngModelChange)="entry.data[field.name] = $event.id">
+                                            <system-select-option *ngFor="let foreignKey of getForeignKeys(field.name)" [value]="foreignKey.value" [display]="foreignKey.display"/>
+                                        </system-select>
+                                    }
+                                    @case('role'){
+                                        <administration-configurator-item-role [editmode]="true" [(fieldvalue)]="entry.data[field.name]"></administration-configurator-item-role>
+                                    }
+                                    @case('dictionary'){
+                                        <system-input-dictionary [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"></system-input-dictionary>
+                                    }
+                                    @default{
+                                        <input  [disabled]="!isEditMode(field)" type="text" class="slds-input" [(ngModel)]="entry.data[field.name]"/>
+                                    }
+                                }
                             </div>
                         </div>
                     </td>
