@@ -69,7 +69,7 @@ export class AdministrationConfigurator implements OnInit {
     }
 
     get width(){
-        return this.elementRef.nativeElement.width;
+        return this.elementRef.nativeElement.offsetWidth;
     }
 
     public trackByFn(index, item) {
