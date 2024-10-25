@@ -35,7 +35,7 @@ declare var _;
         multi: true
     }]
 })
-export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnChanges, OnDestroy {
+export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnDestroy {
     /**
      * reference to the dropdown trigger directive
      * @private
@@ -117,10 +117,6 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnC
         }));
     }
 
-    public ngOnChanges(changes: SimpleChanges) {
-        console.log(changes);
-    }
-
     public ngOnDestroy() {
         this.subscription.unsubscribe();
     }
@@ -167,6 +163,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnC
             }
         } else {
             this.focusedItem = focusedItemOrString;
+            this.inputIsVisible = false;
         }
 
         this.cdRef.detectChanges();
