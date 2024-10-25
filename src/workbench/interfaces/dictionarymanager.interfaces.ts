@@ -119,6 +119,7 @@ export interface RelationshipPolymorph {
     lhs_sysdictionaryitem_id: string;
     rhs_link_name?: string;
     rhs_link_label?: string;
+    rhs_duplicatemerge?: '0' | '1';
     version?: string;
     package?: string;
 }

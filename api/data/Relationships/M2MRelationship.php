@@ -112,7 +112,8 @@ class M2MRelationship extends Relationship
                 'relationship' => $relationship->relationship->relationship_name,
                 'source' => 'non-db',
                 'module' => $rhsDictionaryDefinition->getModuleName(),
-                'vname' => $relationship->relationship->lhs_linklabel
+                'vname' => $relationship->relationship->lhs_linklabel,
+                'duplicate_merge' => $relationship->relationship->lhs_duplicatemerge
             ];
 
             // if we are self referencing add the side
@@ -145,7 +146,8 @@ class M2MRelationship extends Relationship
                 'relationship' => $relationship->relationship->relationship_name,
                 'source' => 'non-db',
                 'module' => $lhsDictionaryDefinition->getModuleName(),
-                'vname' => $relationship->relationship->rhs_linklabel
+                'vname' => $relationship->relationship->rhs_linklabel,
+                'duplicate_merge' => $relationship->relationship->lhs_duplicatemerge
             ];
 
             // if we are self referencing add the side
