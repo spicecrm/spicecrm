@@ -211,9 +211,9 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
             if (table.sysdictionarydefinition_id) {
                 this.dictionarydefinition.id = table.sysdictionarydefinition_id;
                 let def = this.dictionarymanager.dictionarydefinitions.find(d => d.id == table.sysdictionarydefinition_id);
-                this.dictionarydefinition.scope = def.scope;
-                this.dictionarydefinition.package = def.package;
-                this.dictionarydefinition.version = def.version;
+                this.dictionarydefinition.scope = this.dictionarydefinition.scope;
+                this.dictionarydefinition.package = this.dictionarydefinition.package;
+                this.dictionarydefinition.version = this.dictionarydefinition.version;
             } else {
                 this.dictionarydefinition.id = this.modelutilities.generateGuid();
                 this.dictionarydefinition.scope = undefined;
