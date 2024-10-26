@@ -41,10 +41,16 @@ export class SystemInputVersion implements ControlValueAccessor, OnInit {
     public versions: any[] = [];
 
     /**
-     * optionally set disabled
-     * @private
+     * to disable the checkbox
      */
-    @Input() public disabled: boolean = false;
+    public _disabled = false;
+    @Input('disabled') set disabled(value) {
+        if (value === false) {
+            this._disabled = false;
+        } else {
+            this._disabled = true;
+        }
+    }
 
     /**
      * the placeholder string

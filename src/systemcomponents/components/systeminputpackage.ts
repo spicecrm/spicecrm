@@ -34,17 +34,22 @@ export class SystemInputPackage implements ControlValueAccessor, OnInit {
      */
     @Input() _value: string = '';
 
+    /**
+     * to disable the checkbox
+     */
+    public _disabled = false;
+    @Input('disabled') set disabled(value) {
+        if (value === false) {
+            this._disabled = false;
+        } else {
+            this._disabled = true;
+        }
+    }
 
     /**
      * holds all packages
      */
     public packages: any[] = [];
-
-    /**
-     * optionally set disabled
-     * @private
-     */
-    @Input() public disabled: boolean = false;
 
     /**
      * the placeholder string
