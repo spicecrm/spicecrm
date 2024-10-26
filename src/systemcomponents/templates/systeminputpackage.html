@@ -1,4 +1,4 @@
-<system-select *ngIf="packages.length > 0" [(ngModel)]="value">
+<system-select *ngIf="packages.length > 0" [(ngModel)]="value" [disabled]="_disabled">
     @for (option of packages; track option.enumvalue) {
         <system-select-option [value]="option.enumvalue" [display]="option.enumvalue"/>
     }
