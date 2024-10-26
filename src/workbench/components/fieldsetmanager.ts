@@ -59,6 +59,23 @@ export class FieldsetManager {
         this.checkMode();
     }
 
+    get module(){
+        return this.currentModule
+    }
+
+    set module(module: any){
+        this.currentModule = module ? module.id : undefined;
+        this.reset();
+    }
+
+    get fieldset(){
+        return this.currentFieldSet
+    }
+
+    set fieldset(fieldset: any){
+        this.currentFieldSet = fieldset ? fieldset.id : undefined;
+        this.loadCurrentFieldset();
+    }
 
     get currentFieldSetName() {
         return this.metadata.getFieldset(this.currentFieldSet).name;
@@ -568,30 +585,6 @@ export class FieldsetManager {
         } else {
             return this.allowBarButtons;
         }
-    }
-
-    /**
-     * sets the version for the fieldset
-     * @param version
-     */
-    public setVersion(version: {name: string;}) {
-        this.metadata.setFieldset(this.currentFieldSet, {
-            name: this.currentFieldSetName,
-            package: this.currentFieldSetPackage,
-            version: version?.name
-        });
-    }
-
-    /**
-     * sets the package for the fieldset
-     * @param packageData
-     */
-    public setPackage(packageData: {name: string;}) {
-        this.metadata.setFieldset(this.currentFieldSet, {
-            name: this.currentFieldSetName,
-            package: packageData?.name,
-            version: this.currentFieldSetVersion
-        });
     }
 
     public delete(): void {

@@ -4,31 +4,19 @@
         <div class="slds-form-element">
             <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
             <div class="slds-form-element__control" style="min-width:250px;">
-                <div class="slds-select_container">
-                    <select class="slds-select" [(ngModel)]="currentModule" (change)="reset()" [disabled]="modules.length == 0">
-                        <option value="*">*</option>
-                        <option *ngFor="let module of modules" [value]="module">{{module}}
-                        </option>
-                    </select>
-                </div>
+                <system-select [(ngModel)]="module" [disabled]="modules.length == 0">
+                    <system-select-option value="*" display="*"/>
+                    <system-select-option *ngFor="let m of modules" [value]="m" [display]="m"/>
+                </system-select>
             </div>
         </div>
-        <div class="slds-form-element">
+        <div class="slds-form-element" *ngIf="module">
             <label class="slds-form-element__label"><system-label label="LBL_FIELDSET"></system-label></label>
             <div class="slds-form-element__control" style="min-width:250px;">
-                <div class="slds-select_container">
-                    <select class="slds-select" [(ngModel)]="currentFieldSet" (change)="loadCurrentFieldset()" [disabled]="getFieldSets().length == 0">
-                        <option></option>
-                        <optgroup [label]="'custom' + language.getLabel('LBL_FIELDSET')" *ngIf="getFieldSets('custom').length > 0">
-                            <option *ngFor="let sysFieldset of getFieldSets('custom')" [ngValue]="sysFieldset.id">{{sysFieldset.name}}
-                            </option>
-                        </optgroup>
-                        <optgroup [label]="'global' + language.getLabel('LBL_FIELDSET')"  *ngIf="getFieldSets('global').length > 0">
-                            <option *ngFor="let sysFieldset of getFieldSets('global')" [ngValue]="sysFieldset.id">{{sysFieldset.name}}
-                            </option>
-                        </optgroup>
-                    </select>
-                </div>
+                <system-select [(ngModel)]="fieldset" [disabled]="getFieldSets().length == 0">
+                    <system-select-option *ngFor="let sysFieldset of getFieldSets('custom')" [value]="sysFieldset.id" [display]="sysFieldset.name" [group]="'custom' + language.getLabel('LBL_FIELDSET')"/>
+                    <system-select-option *ngFor="let sysFieldset of getFieldSets('global')" [value]="sysFieldset.id" [display]="sysFieldset.name" [group]="'global' + language.getLabel('LBL_FIELDSET')"/>
+                </system-select>
             </div>
         </div>
         <div class="slds-form-element slds-col--bump-left">
@@ -58,13 +46,15 @@
             <div class="slds-form-element slds-p-right--x-small slds-size--1-of-5">
                 <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
                 <div class="slds-form-element__control">
-                    <field-package [package]="currentFieldSetPackage" (packageSelected)="setPackage($event)"></field-package>
+                    <!--field-package [package]="currentFieldSetPackage" (packageSelected)="setPackage($event)"></field-package-->
+                    <system-input-package [(ngModel)]="currentFieldSetPackage"/>
                 </div>
             </div>
             <div class="slds-form-element slds-p-right--x-small slds-size--1-of-5">
                 <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
                 <div class="slds-form-element__control">
-                    <field-version [version]="currentFieldSetVersion" (versionSelected)="setVersion($event)"></field-version>
+                    <!--field-version [version]="currentFieldSetVersion" (versionSelected)="setVersion($event)"></field-version-->
+                    <system-input-version [(ngModel)]="currentFieldSetVersion"></system-input-version>
                 </div>
             </div>
             <div class="slds-form-element slds-p-right--x-small slds-size--1-of-5">
