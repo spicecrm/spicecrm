@@ -54,11 +54,22 @@ class SpiceDictionaryDomain
     public function getFieldDefinitions(SpiceDictionaryItem $sysdictionaryItem = null, bool $activeOnly = true){
         $fieldDefinitions = [];
         $db = DBManagerFactory::getInstance();
-        $fieldObjects = $db->query("SELECT id FROM sysdomainfields WHERE sysdomaindefinition_id='{$this->id}' UNION SELECT id FROM syscustomdomainfields WHERE sysdomaindefinition_id='{$this->id}'");
+
+        $fieldObjects = $db->query("SELECT id FROM syscustomdomainfields WHERE sysdomaindefinition_id='{$this->id}'");
         while($fieldObject = $db->fetchByAssoc($fieldObjects)){
-            $fieldDefinitions[] = (new SpiceDictionaryDomainField($fieldObject['id']))->getDefinition($sysdictionaryItem);
+            $definition = (new SpiceDictionaryDomainField($fieldObject['id']))->getDefinition($sysdictionaryItem);
+            $fieldDefinitions[$definition->name] = $definition;
         }
-        return $fieldDefinitions;
+
+
+        $fieldObjects = $db->query("SELECT id FROM sysdomainfields WHERE sysdomaindefinition_id='{$this->id}'");
+        while($fieldObject = $db->fetchByAssoc($fieldObjects)){
+            $definition = (new SpiceDictionaryDomainField($fieldObject['id']))->getDefinition($sysdictionaryItem);
+            if(!isset($fieldDefinitions[$definition->name])) {
+                $fieldDefinitions[$definition->name] = $definition;
+            }
+        }
+        return array_values($fieldDefinitions);
     }
 
     /**
