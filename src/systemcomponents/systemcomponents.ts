@@ -203,6 +203,8 @@ import {SystemInputDictionary} from "./components/systeminputdictionary";
 import {SystemSelectModuleModal} from "./components/systemselectmodulemodal";
 import {SystemDropdownMobileModal} from "./components/systemdropdownmobilemodal";
 import {CdkPortalOutlet} from "@angular/cdk/portal";
+import {SystemInputPackage} from "./components/systeminputpackage";
+import {SystemInputVersion} from "./components/systeminputversion";
 
 @NgModule({
     imports: [
@@ -280,6 +282,7 @@ import {CdkPortalOutlet} from "@angular/cdk/portal";
         SystemInputModuleFilter,
         SystemInputModuleField,
         SystemInputNumber,
+        SystemInputPackage,
         SystemInputPassword,
         SystemInputRadio,
         SystemInputRadioButtonGroup,
@@ -290,6 +293,7 @@ import {CdkPortalOutlet} from "@angular/cdk/portal";
         SystemInputCompanycodes,
         SystemInputBackendMethod,
         SystemInputBase64,
+        SystemInputVersion,
         SystemInstallerComponent,
         SystemLabel,
         SystemLabelFieldname,
@@ -560,7 +564,9 @@ import {CdkPortalOutlet} from "@angular/cdk/portal";
         SystemInputDictionary,
         SystemInputRoles,
         SystemSelectModuleModal,
-        SystemDropdownMobileModal
+        SystemDropdownMobileModal,
+        SystemInputPackage,
+        SystemInputVersion
     ]
 })
 export class SystemComponents {}
