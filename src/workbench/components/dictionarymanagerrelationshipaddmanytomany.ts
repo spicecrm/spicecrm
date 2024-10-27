@@ -62,7 +62,7 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
             lhs_sysdictionaryitem_id: '',
             lhs_linkname: '',
             lhs_linklabel: '',
-            lhs_duplicatemerge: 1,
+            lhs_duplicatemerge: 0,
             rhs_sysdictionarydefinition_id: '',
             rhs_sysdictionaryitem_id: '',
             rhs_linkname: '',
