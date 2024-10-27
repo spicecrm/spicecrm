@@ -3,9 +3,10 @@
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
-SpiceDictionaryHandler::getInstance()->dictionary['ProductGroup'] = [
-    'table' => 'productgroups',
-    'fields' => [
+//SpiceDictionaryHandler::getInstance()->dictionary['ProductGroup'] = [
+//    'table' => 'productgroups',
+//    'fields' => [
+        /*
         'member_count' => [
             'name' => 'member_count',
             'type' => 'int',
@@ -53,6 +54,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProductGroup'] = [
             'type' => 'varchar',
             'len' => '50'
         ],
+        */
+        /*
         'productattributes' => [
             'name' => 'productattributes',
             'vname' => 'LBL_PRODUCTATTRIBUTES',
@@ -60,6 +63,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProductGroup'] = [
             'relationship' => 'productgroups_productattributes',
             'source' => 'non-db',
         ],
+        */
+        /*
         'productattributevalues' => [
             'name' => 'productattributevalues',
             'vname' => 'LBL_PRODUCTATTRIBUTEVALUES',
@@ -127,6 +132,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProductGroup'] = [
             'source' => 'non-db',
             'vname' => 'LBL_PRODUCTS',
         ],
+        */
+        /*
         'spicetexts' => [
             'name' => 'spicetexts',
             'type' => 'link',
@@ -135,8 +142,10 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProductGroup'] = [
             'source' => 'non-db',
             'vname' => 'LBL_SPICE_TEXTS',
         ],
-    ],
-    'relationships' => [
+        */
+//    ],
+//    'relationships' => [
+        /*
         'productgroup_productattributevalues' => [
             'lhs_module' => 'ProductGroups',
             'lhs_table' => 'productgroups',
@@ -166,6 +175,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProductGroup'] = [
             'rhs_key' => 'parent_productgroup_id',
             'relationship_type' => 'one-to-many'
         ],
+        */
+        /*
         'productgroup_spicetexts' => [
             'lhs_module' => 'Products',
             'lhs_table' => 'products',
@@ -177,11 +188,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProductGroup'] = [
             'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'ProductGroups'
         ]
-    ],
+        */
+//    ],
+    /*
     'indices' => [
         ['name' => 'idx_productgroups_extid', 'type' => 'index', 'fields' => ['external_id']],
         ['name' => 'idx_productgroups_parengrpid_del', 'type' => 'index', 'fields' => ['parent_productgroup_id', 'deleted']],
     ],
-];
+    */
+//];
 
-VardefManager::createVardef('ProductGroups', 'ProductGroup', ['default', 'assignable']);
+//VardefManager::createVardef('ProductGroups', 'ProductGroup', ['default', 'assignable']);
