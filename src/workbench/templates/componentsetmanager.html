@@ -3,20 +3,24 @@
     <div class="slds-grid slds-grid--vertical-align-center slds-form--inline">
         <div class="slds-form-element">
             <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
-            <div class="slds-form-element__control">
-                <div class="slds-select_container" style="min-width:250px;">
+            <div class="slds-form-element__control" style="min-width: 300px">
+                <!--div class="slds-select_container" style="min-width:250px;">
                     <select class="slds-select" [(ngModel)]="currentModule" (change)="reset()" [disabled]="modules.length == 0">
                         <option value="*">*</option>
                         <option *ngFor="let module of modules" [value]="module">{{module}}
                         </option>
                     </select>
-                </div>
+                </div-->
+                <system-select [listHeight]="'10'" [(ngModel)]="module" [disabled]="modules.length == 0">
+                    <system-select-option value="*" display="*"/>
+                    <system-select-option *ngFor="let m of modules" [value]="m" [display]="m"/>
+                </system-select>
             </div>
         </div>
-        <div class="slds-form-element">
+        <div class="slds-form-element" *ngIf="currentModule">
             <label class="slds-form-element__label">Componentset</label>
             <div class="slds-form-element__control" style="min-width:250px;">
-                <div class="slds-select_container">
+                <!--div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="currentComponentSet" (change)="selectComponentSet()" [disabled]="getComponentSets().length == 0">
                         <option></option>
                         <optgroup label="custom Componentsets" *ngIf="getComponentSets('custom').length > 0">
@@ -30,7 +34,16 @@
                             </option>
                         </optgroup>
                     </select>
-                </div>
+                </div-->
+                <system-select [listHeight]="'10'" [(ngModel)]="componentSet" [disabled]="modules.length == 0">
+                    <!--system-select-option value="" display="" group="global Componentsets"/-->
+                    @if (getComponentSets('custom').length > 0) {
+                        <system-select-option *ngFor="let sysComponentset of getComponentSets('custom')" [value]="sysComponentset.id" [display]="sysComponentset.name" group="custom Componentsets"/>
+                    }
+                    @if (getComponentSets('global').length > 0) {
+                        <system-select-option *ngFor="let sysComponentset of getComponentSets('global')" [value]="sysComponentset.id" [display]="sysComponentset.name" group="global Componentsets"/>
+                    }
+                </system-select>
             </div>
         </div>
         <!--div *ngIf="currentComponentSet">
