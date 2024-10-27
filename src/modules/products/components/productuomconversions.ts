@@ -68,7 +68,7 @@ export class ProductUOMConversions implements OnInit {
      * @return the base uom name
      */
     get baseUomName(): string {
-        return this.model.getField(this.fieldBaseUom);
+        return this.uomUnits.find(u => u.id == this.model.getField(this.fieldBaseUomId)).label;
     }
 
     /**
