@@ -107,6 +107,7 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
                     'name' => $relationship->relationship->lhs_linkname,
                     'type' => 'link',
                     'relationship' => $relationship_name,
+                    'module' => $lhsDictionaryDefinition->getModuleName(),
                     'source' => 'non-db',
                     'vname' => $relationship->relationship->lhs_linklabel,
                     'duplicate_merge' => $relationship->relationship->lhs_duplicatemerge,
