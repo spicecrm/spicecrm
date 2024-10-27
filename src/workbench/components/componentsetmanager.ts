@@ -65,6 +65,23 @@ export class ComponentsetManager {
         this.checkMode();
     }
 
+    get module(){
+        return this.currentModule;
+    }
+
+    set module(m:any){
+        this.currentModule = m?.id;
+        this.reset();
+    }
+
+    get componentSet(){
+        return this.currentComponentSet;
+    }
+
+    set componentSet(c:any){
+        this.currentComponentSet = c?.id;
+        this.selectComponentSet();
+    }
 
     public checkMode() {
         this.edit_mode = this.configurationService.getCapabilityConfig('core').edit_mode;
