@@ -8,10 +8,12 @@ import {
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {Relationship, RelationshipField, RelationshipPolymorph} from "../interfaces/dictionarymanager.interfaces";
 import {backend} from "../../services/backend.service";
+import {view} from "../../services/view.service";
 
 @Component({
     selector: 'dictionary-manager-relationships-details',
     templateUrl: '../templates/dictionarymanagerrelationshipsdetails.html',
+    providers: [view]
 })
 export class DictionaryManagerRelationshipsDetails {
 
