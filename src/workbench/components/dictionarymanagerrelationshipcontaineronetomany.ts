@@ -73,6 +73,14 @@ export class DictionaryManagerRelationshipContainerOneToMany implements OnInit {
         this.relationship.rhs_duplicatemerge = value ? 1 : 0;
     }
 
+    get lhs_duplicatemerge(){
+        return this.relationship.lhs_duplicatemerge == 1;
+    }
+
+    set lhs_duplicatemerge(value){
+        this.relationship.lhs_duplicatemerge = value ? 1 : 0;
+    }
+
     /**
      * initialize and build the names
      */
