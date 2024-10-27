@@ -21,7 +21,7 @@ import {toast} from "../../services/toast.service";
 })
 export class DictionaryManagerMigrateDefinitionModal implements OnInit {
 
-    private currentVersion = '2024.02.001';
+    private currentVersion = '2024.02.002';
     private currentPackage = 'system';
 
     public loading: boolean = true;
@@ -204,16 +204,15 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
 
         let table = this.tables.find(t => t.sysdictionarytablename == value);
         if (table) {
-            this.fields = table.fields;
-            this.autoMapFields();
+
 
             // if we have an id already set it
             if (table.sysdictionarydefinition_id) {
                 this.dictionarydefinition.id = table.sysdictionarydefinition_id;
                 let def = this.dictionarymanager.dictionarydefinitions.find(d => d.id == table.sysdictionarydefinition_id);
-                this.dictionarydefinition.scope = this.dictionarydefinition.scope;
-                this.dictionarydefinition.package = this.dictionarydefinition.package;
-                this.dictionarydefinition.version = this.dictionarydefinition.version;
+                this.dictionarydefinition.scope = def.scope;
+                this.dictionarydefinition.package = def.package;
+                this.dictionarydefinition.version = def.version;
             } else {
                 this.dictionarydefinition.id = this.modelutilities.generateGuid();
                 this.dictionarydefinition.scope = undefined;
@@ -224,6 +223,8 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
             this.dictionarydefinition.name = table.sysdictionaryname;
             this.dictionarydefinition.tablename = table.sysdictionarytablename;
 
+            this.fields = table.fields;
+            this.autoMapFields();
 
         }
 
@@ -248,7 +249,7 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
 
             if (!f.version) f.version = this.currentVersion;
 
-            if (!f.package) f.package = this.currentPackage;
+            if (!f.package) f.package = this.dictionarydefinition.package;
 
             if (!f.scope) f.scope = 'g';
         });
