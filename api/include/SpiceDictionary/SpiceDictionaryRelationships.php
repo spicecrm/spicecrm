@@ -273,13 +273,13 @@ class SpiceDictionaryRelationships
 
         unset($relationship['scope']);
 
-        $db->upsertQuery($table, $relationship, $relationship, true);
+        $db->upsertQuery($table, ['id' => $relationship['id']], $relationship, true);
 
         // handle the polymorph entries
         foreach($relationshipPolymorphs as $relationshipPolymorph){
             $table = $relationshipPolymorph['scope'] == 'c' ? 'syscustomdictionaryrelationshippolymorphs' : 'sysdictionaryrelationshippolymorphs';
             unset($relationshipPolymorph['scope']);
-            $db->upsertQuery($table, $relationshipPolymorph, $relationshipPolymorph, true);
+            $db->upsertQuery($table, ['id' => $relationshipPolymorph['id']], $relationshipPolymorph, true);
         }
     }
 
