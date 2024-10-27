@@ -878,6 +878,7 @@ if (file_exists("extensions/modules/ProductVariants")) {
         'relationship' => 'productvariant_manufacturer',
         'source' => 'non-db'
     ];
+    /*
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['resells'] = [
         'name' => 'resells',
         'vname' => 'LBL_PRODUCTVARIANTS_RESELLER',
@@ -886,6 +887,7 @@ if (file_exists("extensions/modules/ProductVariants")) {
         'relationship' => 'productvariants_resellers',
         'source' => 'non-db'
     ];
+    */
 }
 VardefManager::createVardef('Accounts', 'Account', ['default', 'assignable', 'company']);
 
