@@ -127,12 +127,15 @@
         <system-label label="LBL_FIELDTYPE"></system-label>
     </label>
     <div class="slds-form-element__control">
-        <div class="slds-select_container">
+        <!--div class="slds-select_container">
             <select [disabled]="!view.isEditMode()" class="slds-select" [(ngModel)]="configValues.fieldtype"
                     (change)="selectFieldType()">
                 <option *ngFor="let fieldtype of fieldtypes">{{fieldtype}}</option>
             </select>
-        </div>
+        </div-->
+        <system-select [disabled]="!view.isEditMode()" [ngModel]="configValues.fieldtype" (ngModelChange)="selectFieldType($event)">
+            <system-select-option  *ngFor="let fieldtype of fieldtypes" [value]="fieldtype" [display]="fieldtype"></system-select-option>
+        </system-select>
     </div>
 </div>
 
