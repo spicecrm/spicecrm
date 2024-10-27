@@ -47,7 +47,7 @@ export class ObjectRepositoryManager {
     public crNoneActive: boolean = false;
     public moduleReposSelect: {id: string, name: string, group: string}[] = [];
     public moduleRepos: any[] = [];
-    public modulereposselecteditem: any = {};
+    public modulereposselecteditem: any;
     public objrepoList: any[] = [];
     public configList: any = {};
     public currentConfigArray: any[] = [];
