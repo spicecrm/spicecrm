@@ -74,13 +74,17 @@
                     <label class="slds-form-element__label">
                         <system-label label="LBL_DEFAULT_DASHBOARD"></system-label>
                     </label>
-                    <system-input-dashboard [(ngModel)]="newRole.default_dashboard"></system-input-dashboard>
+                    <system-select [ngModel]="currentDashboard" (ngModelChange)="setDashboard($event)">
+                        <system-select-option *ngFor="let dashboard of dashboards" [value]="dashboard.id" [display]="dashboard.name"/>
+                    </system-select>
                 </div>
                 <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small" >
                     <label class="slds-form-element__label">
                         <system-label label="LBL_DEFAULT_DASHBOARD_SET"></system-label>
                     </label>
-                    <system-input-dashboardset [(ngModel)]="newRole.default_dashboardset"></system-input-dashboardset>
+                    <system-select [ngModel]="currentDashboardSet" (ngModelChange)="setDashboardSet($event)">
+                        <system-select-option *ngFor="let dashboardSet of dashboardSets" [value]="dashboardSet.id" [display]="dashboardSet.name"/>
+                    </system-select>
                 </div>
                 <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
                     <label class="slds-form-element__label">
