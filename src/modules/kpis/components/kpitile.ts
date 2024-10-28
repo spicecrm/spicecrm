@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
@@ -112,7 +112,8 @@ export class KpiTile implements OnInit {
     }
 
     /**
-     *
+     * sets arrow Icon and its color
+     * depending on trend results from Backend
      */
     public getTrend() {
         switch (this.kpiTargetData.trendData.trend) {

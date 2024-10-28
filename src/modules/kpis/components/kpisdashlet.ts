@@ -2,7 +2,7 @@
  * @module ModuleKPIs
  */
 
-import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
 import {language} from "../../../services/language.service";
@@ -50,14 +50,7 @@ export class KPIsDashlet implements OnInit {
     }
 
     /**
-     * the size class
-     */
-    get sizeClass() {
-        return 'slds-size--1-of-' + this.kpis.length;
-    }
-
-    /**
-     *
+     * load KPIs for logged-in User
      * @private
      */
     private loadKPIs() {
@@ -71,7 +64,8 @@ export class KPIsDashlet implements OnInit {
     }
 
     /**
-     *
+     * calcualate amount of tiles displayed
+     * depending on screen width
      */
     get getTileWidthClass() {
         if (this.view.layout.screenwidth == 'small') {
