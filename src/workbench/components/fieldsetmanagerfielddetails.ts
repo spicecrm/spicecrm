@@ -41,7 +41,9 @@ export class FieldsetManagerFieldDetails implements OnChanges {
         this.configValues = this.field.data.fieldconfig;
     }
 
-    public selectFieldType() {
+    public selectFieldType(fieldType) {
+        // set the fieldtype
+        this.configValues.fieldtype = fieldType?.id;
         Object.keys(this.configValues).forEach(k => {
             if (k == 'fieldtype') return;
             delete this.configValues[k];

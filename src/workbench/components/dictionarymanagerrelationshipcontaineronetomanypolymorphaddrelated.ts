@@ -35,6 +35,10 @@ export class DictionaryManagerRelationshipContainerOneToManyPolymorphAddRelated 
      * RHS link label
      */
     public rhs_link_label: string;
+    /**
+     * RHS duplicate merge
+     */
+    public rhs_duplicatemerge: '1' | '0';
 
     /**
      * package
@@ -85,6 +89,7 @@ export class DictionaryManagerRelationshipContainerOneToManyPolymorphAddRelated 
             lhs_sysdictionaryitem_id:this.lhs_sysdictionaryitem_id,
             rhs_link_name:this.rhs_link_name,
             rhs_link_label:this.rhs_link_label,
+            rhs_duplicatemerge:this.rhs_duplicatemerge,
             scope: this.scope,
             package: this.package,
             version: this.version

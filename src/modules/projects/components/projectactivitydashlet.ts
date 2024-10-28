@@ -34,6 +34,15 @@ export class ProjectActivityDashlet implements OnInit {
      */
     public componentconfig: any = {};
 
+    /**
+     * the field to sort recent items by
+     */
+    public sortfield: string = 'date_entered';
+
+    /**
+     * the direction to sort recent items by
+     */
+    public sortdirection: string = 'DESC';
 
     /**
      * all fields that are available
@@ -52,6 +61,8 @@ export class ProjectActivityDashlet implements OnInit {
 
         // get the config
         this.componentconfig = this.metadata.getComponentConfig('ProjectActivityDashlet');
+        this.setSortfield();
+        this.setSortdirection();
 
         // set modellist config
         this.modellist.loadlimit = this.limit;
@@ -73,21 +84,19 @@ export class ProjectActivityDashlet implements OnInit {
     /**
      * returns the sortfield from the config
      */
-    get sortfield() {
+    setSortfield() {
         if(this.componentconfig?.sortfield && this.componentconfig.sortfield !== '') {
-            return this.componentconfig.sortfield;
+            this.sortfield = this.componentconfig.sortfield;
         }
-        return 'date_entered';
     }
 
     /**
      * returns the sortdirection from the componentconfig
      */
-    get sortdirection() {
+    setSortdirection() {
         if(this.componentconfig?.sortdirection && this.componentconfig.sortdirection !== '') {
-            return this.componentconfig.sortdirection ;
+            this.sortdirection = this.componentconfig.sortdirection ;
         }
-        return 'desc';
     }
 
     /**

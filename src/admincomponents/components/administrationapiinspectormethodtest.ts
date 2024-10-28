@@ -128,6 +128,26 @@ export class AdministrationApiInspectorMethodTest implements AfterViewInit {
                         this.response = js_beautify(JSON.stringify(err));
                     });
                 break;
+            case 'put':
+                this.backend.putRequest(this.buildRoute(), this.buildParams(), this.buildBody()).subscribe(
+                    res => {
+                        this.response = js_beautify(JSON.stringify(res));
+                        this.executing = false;
+                    },
+                    err => {
+                        this.response = js_beautify(JSON.stringify(err));
+                    });
+                break;
+            case 'delete':
+                this.backend.deleteRequest(this.buildRoute(), this.buildParams()).subscribe(
+                    res => {
+                        this.response = js_beautify(JSON.stringify(res));
+                        this.executing = false;
+                    },
+                    err => {
+                        this.response = js_beautify(JSON.stringify(err));
+                    });
+                break;
         }
     }
 

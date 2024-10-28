@@ -8,8 +8,8 @@ import {
     Component, ContentChildren,
     ElementRef,
     forwardRef,
-    Input, OnDestroy, QueryList,
-    Renderer2,
+    Input, OnChanges, OnDestroy, QueryList,
+    Renderer2, SimpleChanges,
     ViewChild,
     ViewContainerRef
 } from "@angular/core";
@@ -147,7 +147,11 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      */
     public writeValue(focusedItemOrString: string | SystemSelectNgModelValue) {
 
-        if (!focusedItemOrString) return;
+        if (!focusedItemOrString) {
+            this.value = undefined
+            this.inputIsVisible = true;
+            return;
+        }
 
         if(typeof focusedItemOrString == 'string') {
             const focusedItem = this.searchList.find(e => e.id == focusedItemOrString);
@@ -155,9 +159,11 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
                 this.value = focusedItemOrString;
             } else {
                 this.focusedItem = focusedItem;
+                this.inputIsVisible = false;
             }
         } else {
             this.focusedItem = focusedItemOrString;
+            this.inputIsVisible = false;
         }
 
         this.cdRef.detectChanges();

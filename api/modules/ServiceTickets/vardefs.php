@@ -26,6 +26,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket'] = [
         'email1' => [
             'name' => 'email1',
             'vname' => 'LBL_EMAIL1',
+            'type' => 'varchar',
             'source' => 'non-db',
             'required' => false
         ],

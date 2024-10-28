@@ -88,6 +88,7 @@ export interface Relationship {
     lhs_linkname: string;
     lhs_linklabel: string;
     lhs_duplicatemerge: number;
+    lhs_linkdefault?: number;
     rhs_sysdictionarydefinition_id: string;
     rhs_sysdictionaryitem_id: string;
     rhs_linkname: string;
@@ -119,6 +120,7 @@ export interface RelationshipPolymorph {
     lhs_sysdictionaryitem_id: string;
     rhs_link_name?: string;
     rhs_link_label?: string;
+    rhs_duplicatemerge?: '0' | '1';
     version?: string;
     package?: string;
 }

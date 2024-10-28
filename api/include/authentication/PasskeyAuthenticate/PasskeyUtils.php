@@ -10,7 +10,6 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
@@ -74,7 +73,7 @@ class PasskeyUtils
 
         $this->registerUser($data);
 
-        return ['success' => true, 'rootValid' => $data->rootValid];
+        return ['success' => true, 'rootValid' => $data->rootValid, 'metadata' => $this->getAuthenticatorMetadata(base64_decode($data->AAGUID))];
     }
 
     /**
@@ -83,26 +82,23 @@ class PasskeyUtils
      * @param int $timeout in milliseconds
      * @return string
      * @throws Exception
+     * @throws \Exception
      */
     private function saveChallenge(int $timeout): string
     {
-        if (!is_writable($this->getChallengesDirectory())) {
-            throw new Exception('Required server challenges directory is not writable');
-        }
-
         $challenge = ($this->webAuthn->getChallenge())->getHex();
-
         $now = TimeDate::getInstance()->getNow();
-
-        $content = (object)[
-            'expire_in' => $now->add(DateInterval::createFromDateString("$timeout milliseconds"))->getTimestamp(),
-            'challenge' => $challenge,
-        ];
-
         $challengeHash = md5($challenge);
-        file_put_contents(
-            $this->getChallengeFileName($challengeHash), json_encode($content)
-        );
+
+        $db = DBManagerFactory::getInstance();
+        $db->insertQuery('authentication_passkey_challenges', [
+            'id' => SpiceUtils::createGuid(),
+            'challenge' => $challenge,
+            'challenge_hash' => $challengeHash,
+            'expire_in' => TimeDate::getInstance()->asDb(
+                $now->add(DateInterval::createFromDateString("$timeout milliseconds"))
+            )
+        ]);
 
         return $challengeHash;
     }
@@ -113,42 +109,18 @@ class PasskeyUtils
      * @param string $challengeHash
      * @return ByteBuffer|null
      * @throws WebAuthnException
+     * @throws \Exception
      */
     public function getChallenge(string $challengeHash): ?ByteBuffer
     {
-        $challengeFileName = $this->getChallengeFileName($challengeHash);
+        $db = DBManagerFactory::getInstance();
 
-        $content = file_get_contents($challengeFileName);
-        if (!$content) return null;
-        $content = json_decode($content);
+        $challenge = $db->getOne("SELECT challenge FROM authentication_passkey_challenges WHERE challenge_hash = '$challengeHash' AND expire_in > " . $db->now());
+        if (!$challenge) return null;
 
-        unlink($challengeFileName);
+        $db->query("DELETE FROM authentication_passkey_challenges WHERE challenge_hash = '$challengeHash' OR expire_in < " . $db->now());
 
-        if ($content->expire_in < time()) {
-            return null;
-        }
-
-        return ByteBuffer::fromHex($content->challenge);
-    }
-
-    /**
-     * get challenge file name
-     * @param string $challengeHash
-     * @return string
-     */
-    private function getChallengeFileName(string $challengeHash): string
-    {
-        $path = $this->getChallengesDirectory() . DIRECTORY_SEPARATOR;
-        return $path . $challengeHash;
-    }
-
-    /**
-     * get challenges directory
-     * @return string
-     */
-    public function getChallengesDirectory(): string
-    {
-        return __DIR__ . DIRECTORY_SEPARATOR . 'challenges';
+        return ByteBuffer::fromHex($challenge);
     }
 
     /**
@@ -276,13 +248,13 @@ class PasskeyUtils
 
     /**
      * get authenticator metadata
-     * @param object $registration
+     * @param string $aaGuid
      * @return object
      */
-    public function getAuthenticatorMetadata(object $registration): object
+    public function getAuthenticatorMetadata(string $aaGuid): object
     {
         $aaGuidList = json_decode(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'metadata' . DIRECTORY_SEPARATOR . 'aaguid.json'));
-        $hex = bin2hex($registration->AAGUID);
+        $hex = bin2hex($aaGuid);
         $guid = join('-', [substr($hex, 0, 8), substr($hex, 8, 4), substr($hex, 12, 4), substr($hex, 16, 4), substr($hex, 20) ]);
         return $aaGuidList->$guid;
     }

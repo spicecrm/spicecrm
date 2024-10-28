@@ -211,6 +211,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'default' => 'pick',
             'comment' => 'Target of action used in Inbound Email assignment',
         ],
+        /* migrated
         'mailbox_id' => [
             'name' => 'mailbox_id',
             'vname' => 'LBL_MAILBOX',
@@ -219,6 +220,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'len' => '36',
             'reportable' => false,
         ],
+        */
         'created_by_link' => [
             'name' => 'created_by_link',
             'type' => 'link',
@@ -418,6 +420,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'bean_name' => 'ServiceLocation',
             'source' => 'non-db',
         ],
+        /* migrated
         'mailboxes' => [
             'name' => 'mailboxes',
             'vname' => 'LBL_MAILBOXES',
@@ -446,6 +449,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'required'       => false,
             'importable' => 'required',
         ],
+        */
         'body' => [
             'name' => 'body',
             'type' => 'blob',
