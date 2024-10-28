@@ -8,7 +8,7 @@
     <div class="slds-grid slds-wrap slds-gutters_direct-xx-small" >
         @if (kpis.length > 0) {
             @for (kpi of kpis; track kpi.id) {
-                <div class="slds-size--1-of-4 slds-col slds-p-vertical--xx-small">
+                <div class="slds-col slds-p-vertical--xx-small" [ngClass]="getTileWidthClass">
                     <kpi-tile [kpi]="kpi" [parentId]="parentId" [parentType]="parentType"></kpi-tile>
                 </div>
             }
