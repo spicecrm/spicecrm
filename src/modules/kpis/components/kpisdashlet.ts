@@ -8,6 +8,7 @@ import {backend} from "../../../services/backend.service";
 import {language} from "../../../services/language.service";
 import {toast} from "../../../services/toast.service";
 import {metadata} from "../../../services/metadata.service";
+import {view} from "../../../services/view.service";
 
 @Component({
     selector: 'kpis-dashlet',
@@ -38,6 +39,7 @@ export class KPIsDashlet implements OnInit {
         private metadata: metadata,
         private backend: backend,
         private toast: toast,
+        private view: view
     ) {
     }
 
@@ -48,14 +50,7 @@ export class KPIsDashlet implements OnInit {
     }
 
     /**
-     * the size class
-     */
-    get sizeClass() {
-        return 'slds-size--1-of-' + this.kpis.length;
-    }
-
-    /**
-     *
+     * load KPIs for logged-in User
      * @private
      */
     private loadKPIs() {
@@ -68,4 +63,17 @@ export class KPIsDashlet implements OnInit {
         })
     }
 
+    /**
+     * calcualate amount of tiles displayed
+     * depending on screen width
+     */
+    get getTileWidthClass() {
+        if (this.view.layout.screenwidth == 'small') {
+            return 'slds-size--1-of-1';
+        } else if (this.view.layout.screenwidth == 'medium') {
+            return 'slds-size--1-of-2';
+        } else {
+            return 'slds-size--1-of-3';
+        }
+    }
 }

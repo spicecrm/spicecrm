@@ -24,9 +24,8 @@
                         {{ this.kpi.metric }}
                 </div>
                 <div class="slds-truncate slds-text-heading_small slds-p-horizontal--xx-small slds-m-top--small">
-                    <system-utility-icon [colorclass]="iconColor" [icon]="arrowIcon"
-                                         [size]="'x-small'"></system-utility-icon>
-                    <span>2 (8%) better</span>
+                    <system-utility-icon [colorclass]="iconColor" [icon]="arrowIcon" [size]="'x-small'"></system-utility-icon>
+                    <span>{{ percentage }}</span>
                 </div>
             </div>
             <div class="slds-text-body--small slds-text-color--inverse-weak">
