@@ -141,7 +141,7 @@ class SysCurrencies
         }
 
         // load all other currencies from the file and set inactive if we already loaded some other currencies
-        $this->initializeCurrencies(count($legacyCurrencies) > 0 ? false : true);
+        $this->initializeCurrencies($legacyCurrencies && count($legacyCurrencies) > 0 ? false : true);
 
     }
 
