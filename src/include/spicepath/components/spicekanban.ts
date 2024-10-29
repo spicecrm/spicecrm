@@ -435,13 +435,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
         if (this.metadata.getFieldType(this.modellist.module, aggregatefield.name) == 'currency') {
             let currencySymbol: string;
             let currencyid = -99;
-            this.currencies.some(currency => {
-                if (currency.id == currencyid) {
-                    currencySymbol = currency.symbol;
-                    return true;
-                }
-            });
-            return currencySymbol;
+            return this.currency.getCurrencySymbol(currencyid);
         }
 
     }

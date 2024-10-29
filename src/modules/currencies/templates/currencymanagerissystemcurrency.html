@@ -1,0 +1,9 @@
+@if (currency.is_systemcurrency == 1) {
+    <system-utility-icon icon="success" colorclass="slds-icon-text-success" size="x-small"/>
+} @else {
+    <div *ngIf="currency.is_inactive != 1 && canSetSystemCurrency" (mouseenter)="mouseOver=true" (mouseleave)="mouseOver=false">
+        <button class="slds-button slds-button--icon" [ngClass]="{'slds-hidden': !mouseOver}" (click)="setSystemCurrency()">
+            <system-button-icon icon="success"/>
+        </button>
+    </div>
+}
