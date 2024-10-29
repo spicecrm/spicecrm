@@ -17,6 +17,10 @@ export class SystemSelectOption {
     /**
      * value of the option
      */
+    @Input() public displayselect: string;
+    /**
+     * value of the option
+     */
     @Input() public group: string;
     /**
      * to highlight the inactive option in the dropdown
