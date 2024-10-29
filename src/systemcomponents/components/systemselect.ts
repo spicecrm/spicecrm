@@ -259,15 +259,15 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
 
         if (!this.value || this.searchList.length == 0) return;
 
-        this.searchList = this.searchList.filter(e => e.name.toLowerCase().indexOf(this.value.toLowerCase()) > -1);
+        this.searchList = this.searchList.filter(e => e.content.toLowerCase().indexOf(this.value.toLowerCase()) > -1);
 
         this.searchList.forEach(e => {
 
-            const position = e.name.toLowerCase().indexOf(this.value.toLowerCase());
+            const position = e.content.toLowerCase().indexOf(this.value.toLowerCase());
 
             if (position == -1) return;
 
-            e.content = this.generateHighlightHTMLContent(e.name, position);
+            e.content = this.generateHighlightHTMLContent(e.content, position);
         });
     }
 
@@ -318,13 +318,13 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
                 if (!this.sortReversed) {
                     this.options.filter(e => e.group == g)
                     .forEach((e) =>
-                        searchList.push({id: e.value, name: e.display, content: e.display, group: g, inactive: e.inactive})
+                        searchList.push({id: e.value, name: e.display, content: e.displayselect ?? e.display, group: g, inactive: e.inactive})
                     );
                 } else {
                     // reversed sorting (desc -> asc)
                     this.options.filter(e => e.group == g)
                     .forEach((e) =>
-                        searchList.push({id: e.value, name: e.display, content: e.display, group: g, inactive: e.inactive})
+                        searchList.push({id: e.value, name: e.display, content: e.displayselect ?? e.display, group: g, inactive: e.inactive})
                     );
                 }
             }
