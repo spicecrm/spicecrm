@@ -47,7 +47,7 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public currency: currency, public userpreferences: userpreferences) {
         super(model, view, language, metadata, router);
-        this.currencies = this.currency.getCurrencies();
+        this.currencies = this.currency.getCurrencies().sort((a, b) => a.iso.localeCompare(b.iso));
     }
 
     /**
