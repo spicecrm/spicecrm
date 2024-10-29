@@ -16,6 +16,10 @@ export class fieldEmailEmailAddressStatus {
     @Input() public status: 'opted_in' | 'pending' | 'opted_out';
 
     @Output() private status$ = new EventEmitter<'opted_in' | 'pending' | 'opted_out'>();
+    /**
+     * disabled flag
+     */
+    @Input() public disabled: boolean = false;
 
     constructor(private modal: modal) {
     }
