@@ -77,6 +77,7 @@ class SysCurrencies
      * @return array
      */
     public function getAllCurrencies($activeOnly = true){
+        if(!$this->currencies) return [];
         return $activeOnly ? array_values(array_filter($this->currencies, function($c){
             return $c['is_inactive'] != 1;
         })) : array_values($this->currencies);
