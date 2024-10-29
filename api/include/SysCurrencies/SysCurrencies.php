@@ -9,6 +9,8 @@ use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Users\User;
 
+use DateTime;
+
 class SysCurrencies
 {
     /**
@@ -253,14 +255,87 @@ class SysCurrencies
         return DBManagerFactory::getInstance()->fetchAll("SELECT exchangerate_date, exchange_rate FROM syscurrenciesexchangerates WHERE syscurrency_id='{$currencyID}' ORDER BY exchangerate_date DESC");
     }
 
-    public function convertFromBase($currencyId, $amount, $precision = 6){
-        $c = $this->getCurrencyByID($currencyId);
-        return round(($amount * $c->exchange_rate), $precision);
+    /**
+     * converts direclty from one to another currency
+     *
+     * @param $currencyIDFrom
+     * @param $currencyIDTo
+     * @param $amount
+     * @param $date
+     * @param $precision
+     * @return float|int
+     */
+    public function convertFromTo($currencyIDFrom, $currencyIDTo, $amount, $date = null, $precision = 6): float{
+        return $this->convertFromBase($currencyIDTo, $this->convertToBase($currencyIDFrom, $amount, $date, $precision), $date, $precision);
     }
 
-    public function convertToBase($currencyId, $amount, $precision = 6){
+    /**
+     * converts from Base Currency
+     *
+     * @param $currencyId
+     * @param $amount
+     * @param $date
+     * @param $precision
+     * @return float|int
+     * @throws \Exception
+     */
+    public function convertFromBase($currencyId, $amount, $date = null, $precision = 6): float{
+        // do nothing if this is already the system currency
+        if($currencyId == $this->systemCurrency->id) return $amount;
+
         $c = $this->getCurrencyByID($currencyId);
-        return round(($amount / $c->exchange_rate), $precision);
+        if(!$date) {
+            return round(($amount * $c->exchange_rate), $precision);
+        } else {
+            $date = (new DateTime($date))->format(TimeDate::DB_DATE_FORMAT);
+            $exchangeRate = $this->getExchangeRate($currencyId, $date);
+            if($exchangeRate){
+                return round(($amount * $exchangeRate), $precision);
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    /**
+     * converts to Base Currency
+     *
+     * @param $currencyId
+     * @param $amount
+     * @param $date
+     * @param $precision
+     * @return float|int
+     * @throws \Exception
+     */
+    public function convertToBase($currencyId, $amount, $date = null, $precision = 6):float{
+        // do nothing if this is already the system currency
+        if($currencyId == $this->systemCurrency->id) return $amount;
+
+        $c = $this->getCurrencyByID($currencyId);
+        if(!$date) {
+            return round(($amount / $c->exchange_rate), $precision);
+        } else {
+            $date = (new DateTime($date))->format(TimeDate::DB_DATE_FORMAT);
+            $exchangeRate = $this->getExchangeRate($currencyId, $date);
+            if($exchangeRate){
+                return round(($amount / $exchangeRate), $precision);
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    /**
+     * returns the exchange rate for a given date trying to find the on e closest to the date specified
+     *
+     * @param $currencyId
+     * @param $date
+     * @return int|mixed
+     * @throws \Exception
+     */
+    public function getExchangeRate($currencyId, $date){
+        $rate = DBManagerFactory::getInstance()->fetchOne("SELECT exchange_rate FROM syscurrenciesexchangerates WHERE syscurrency_id = '{$currencyId}' ORDER BY ABS(DATEDIFF(exchangerate_date, '{$date} 12:00:00'))");
+        return $rate ? $rate['exchange_rate'] : 0;
     }
 
 }
