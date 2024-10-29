@@ -35,6 +35,7 @@
 ********************************************************************************/
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
+/* @deprecated
 SpiceDictionaryHandler::getInstance()->dictionary['Currency'] = [
     'table' => 'currencies',
 	'comment' => 'Currencies allow Sugar to store and display monetary values in various denominations',
@@ -142,3 +143,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['Currency'] = [
         ['name' => 'idx_currency_iso', 'type' => 'index', 'fields' => ['iso4217', 'deleted']],
     ]
 ];
+*/
