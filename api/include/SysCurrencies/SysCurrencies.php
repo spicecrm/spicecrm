@@ -326,6 +326,27 @@ class SysCurrencies
     }
 
     /**
+     * returns all exchange rates
+     *
+     * @return void
+     */
+    public function getAllExchangeRates(){
+        $db = DBManagerFactory::getInstance();
+        $exchangeRates = [];
+        foreach ($this->currencies as $currency) {
+            $rate = $db->fetchOne("SELECT id, exchangerate_date, exchange_rate FROM syscurrenciesexchangerates WHERE syscurrency_id='{$currency['id']}'");
+            if($rate) {
+                $exchangeRates[$currency['iso4217']] = [
+                    'id' => $rate['id'],
+                    'date' => $rate['exchangerate_date'],
+                    'rate' => (double) $rate['exchange_rate']
+                ];
+            }
+        }
+        return $exchangeRates;
+    }
+
+    /**
      * returns the exchange rate for a given date trying to find the on e closest to the date specified
      *
      * @param $currencyId
