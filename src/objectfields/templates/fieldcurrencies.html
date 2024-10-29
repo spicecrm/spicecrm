@@ -10,7 +10,7 @@
             </option>
         </select>
     </div-->
-    <system-select [(ngModel)]="value">
+    <system-select system-select-id-only [(ngModel)]="value">
         <system-select-option *ngFor="let currency of currencies" [value]="currency.id" [display]="currency.iso + ' (' + currency.symbol + ')'" [displayselect]="currency.name + ' ' + currency.iso + ' (' + currency.symbol + ')'"/>
     </system-select>
     <field-messages [fieldname]="fieldname"></field-messages>
