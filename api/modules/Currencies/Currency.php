@@ -51,15 +51,13 @@ use SpiceCRM\includes\SysCurrencies\SysCurrencies;
  */
 class Currency extends SpiceBean
 {
-    var $disable_num_format = true;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->field_defs['hide'] = ['name' => 'hide', 'source' => 'non-db', 'type' => 'varchar', 'len' => 25];
-        $this->field_defs['unhide'] = ['name' => 'unhide', 'source' => 'non-db', 'type' => 'varchar', 'len' => 25];
-        $this->disable_row_level_security = true;
-    }
+    var $id;
+    var $name;
+    var $symbol ;
+    var $iso4217;
+    var $deleted;
+    var $conversion_rate;
 
     public function convertToBase($amount, $precision = 6)
     {
