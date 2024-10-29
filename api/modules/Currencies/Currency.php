@@ -63,12 +63,12 @@ class Currency extends SpiceBean
 
     public function convertToBase($amount, $precision = 6)
     {
-        return SysCurrencies::getInstance()->convertToBase($this->id, $amount, $precision);
+        return SysCurrencies::getInstance()->convertToBase($this->id, $amount, null, $precision);
     }
 
     public function convertFromBase($amount, $precision = 6)
     {
-        return SysCurrencies::getInstance()->convertFromBase($this->id, $amount, $precision);
+        return SysCurrencies::getInstance()->convertFromBase($this->id, $amount, null, $precision);
     }
 
     /**
