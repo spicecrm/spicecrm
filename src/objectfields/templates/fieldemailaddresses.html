@@ -21,7 +21,7 @@
             </div>
         </div>
         <div class="slds-p-left--xx-small">
-            <field-email-emailaddress-status [status]="emailaddress.opt_in_status" class="slds-p-right--xx-small"></field-email-emailaddress-status>
+            <field-email-emailaddress-status [disabled]="true" [status]="emailaddress.opt_in_status" class="slds-p-right--xx-small"></field-email-emailaddress-status>
         </div>
     </div>
     <div *ngIf="emailAddresses.length == 0 && fieldconfig.singleMode && singleModeHiddenAddresses.length > 0" class="slds-m-left--x-small slds-grow slds-text-align--right">
