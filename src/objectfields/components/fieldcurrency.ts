@@ -116,19 +116,13 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
      * helper to get the currency symbol
      */
     public getCurrencySymbol(): string {
-        let currencySymbol: string;
         let currencyid = -99;
         if (this.currencyidfield) {
             if (!this.model.getField(this.currencyidfield)) return '';
             else currencyid = this.model.getField(this.currencyidfield);
         }
-        this.currencies.some(currency => {
-            if (currency.id == currencyid) {
-                currencySymbol = currency.symbol;
-                return true;
-            }
-        });
-        return currencySymbol;
+
+        return this.currency.getCurrencySymbol(currencyid);
     }
 
 

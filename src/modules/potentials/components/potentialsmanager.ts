@@ -185,15 +185,8 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
      * helper to get the currency symbol
      */
     get currencySymbol(): string {
-        let currencySymbol: string;
         let currencyid = -99;
-        this.currencies.some(currency => {
-            if (currency.id == currencyid) {
-                currencySymbol = currency.symbol;
-                return true;
-            }
-        });
-        return currencySymbol;
+        return this.currency.getCurrencySymbol(currencyid);
     }
 
     /**
