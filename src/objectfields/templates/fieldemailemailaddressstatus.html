@@ -1,3 +1,7 @@
-<button (click)="openSetStatusModal()" class="slds-button slds-button--icon">
-    <system-button-icon [icon]="statusIcon" [colorclass]="statusColor" [title]="statusLabel"/>
-</button>
+@if (!disabled) {
+    <button (click)="openSetStatusModal()" class="slds-button slds-button--icon">
+        <system-button-icon [icon]="statusIcon" [colorclass]="statusColor" [title]="statusLabel"/>
+    </button>
+} @else {
+    <system-utility-icon size="x-small" [icon]="statusIcon" [colorclass]="statusColor" [title]="statusLabel"></system-utility-icon>
+}
