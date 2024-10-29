@@ -63,6 +63,12 @@
                     @case('dictionary'){
                         <system-input-dictionary [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"></system-input-dictionary>
                     }
+                    @case('version'){
+                        <system-input-version [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"></system-input-version>
+                    }
+                    @case('package'){
+                        <system-input-package [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"></system-input-package>
+                    }
                     @default{
                         <input  [disabled]="!isEditMode(field)" type="text" class="slds-input" [(ngModel)]="entry.data[field.name]"/>
                     }
