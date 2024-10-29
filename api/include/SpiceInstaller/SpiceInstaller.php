@@ -149,6 +149,10 @@ class SpiceInstaller
 
         $requirements['bcmath'] = extension_loaded('bcmath');
 
+        # check package pear
+        require_once 'System.php';
+        $requirements['pear'] = class_exists('System', false);
+
         // db check
         $drivers = $this->dbManagerFactory::getDbDrivers();
 
