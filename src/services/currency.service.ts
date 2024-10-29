@@ -22,24 +22,20 @@ export class currency {
     }
 
     public getCurrencies() {
-        let curArray = [];
-
-        for (let currency of this.currencies) {
-            curArray.push({
-                id: currency.id,
-                name: currency.name,
-                iso: currency.iso,
-                symbol: currency.symbol
-            });
-        }
-
-        return curArray;
+        return this.currencies.map(c => {
+            return {
+                id: c.id,
+                name: c.name,
+                iso: c.iso4217,
+                symbol: c.currency_symbol
+            }
+        });
     }
 
-    public getCurrencySmbol(currencyid) {
-        let curRecord = this.currencies.find(cur => cur.id == currencyid);
+    public getCurrencySymbol(currencyid) {
+        let curRecord = this.currencies.find(cur => cur.id == currencyid || (currencyid == '-99' && cur.is_systemcurrency == 1));
         if (curRecord) {
-            return curRecord.symbol;
+            return curRecord.currency_symbol;
         } else {
             return '';
         }

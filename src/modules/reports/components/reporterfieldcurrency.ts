@@ -58,8 +58,7 @@ export class ReporterFieldCurrency implements OnInit {
         if (fieldCurrencyId) {
             currencyId = this.record[fieldCurrencyId];
         }
-        const currency = currencies.find(currency => currency.id == currencyId);
-        this.currencySymbol = currency ? currency.symbol : '';
+        this.currencySymbol = this.currency.getCurrencySymbol(currencyId);
     }
 
     /**
