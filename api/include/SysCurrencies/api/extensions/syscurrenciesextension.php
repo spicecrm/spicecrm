@@ -14,6 +14,14 @@ $routes = [
         'description' => 'loads the currencies'
     ],
     [
+        'method' => 'get',
+        'route' => '/system/currencies/exchangerates',
+        'class' => SysCurrenciesController::class,
+        'function' => 'getAllExchangeRates',
+        'description' => 'returns the latest ExchangeRates',
+        'options'=> ['noAuth' => true]
+    ],
+    [
         'method' => 'put',
         'route' => '/system/currencies/{currencyid}/systemcurrency',
         'class' => SysCurrenciesController::class,

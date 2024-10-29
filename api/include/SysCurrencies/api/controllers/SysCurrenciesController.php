@@ -26,6 +26,20 @@ class SysCurrenciesController
     }
 
     /**
+     * returns the latest ExchangeRates
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function getAllExchangeRates(Request $req, Response $res, $args): Response
+    {
+        return $res->withJson(SysCurrencies::getInstance()->getAllExchangeRates());
+    }
+
+    /**
      * loads the curencies from File
      *
      * @param Request $req
