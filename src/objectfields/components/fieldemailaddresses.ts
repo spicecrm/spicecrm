@@ -97,6 +97,8 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
                 if (!answer || !this.view.isEditMode()) return;
                 const emailAddress = this.singleModeHiddenAddresses.find(e => e.id == answer);
                 emailAddress.invalid_email = 0;
+                this.emailAddresses.push(emailAddress);
+                this.singleModeHiddenAddresses = this.singleModeHiddenAddresses.filter(e => e.id != answer);
                 this.setPrimary(emailAddress);
             });
     }
@@ -183,7 +185,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
             return;
         }
 
-        this.emailAddresses.concat(this.singleModeHiddenAddresses).forEach(addr => {
+        this.emailAddresses.forEach(addr => {
             if (addr.id == emailAddress.id) {
                 addr.primary_address = '1';
                 this.setEmail1Field(emailAddress);
