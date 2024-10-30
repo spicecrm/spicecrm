@@ -82,18 +82,22 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
         this.subscribeToModeChange();
     }
 
+    /**
+     * open hidden addresses modal to enable set a hidden address to primary
+     */
     public openHiddenAddressesModal() {
 
         const options = this.singleModeHiddenAddresses.map(e => ({
             value: e.id,
-            disabled: !this.view.isEditMode() || e.invalid_email == 1,
-            display: `${e.email_address} ${e.invalid_email == 1 ? `(${this.language.getLabel('LBL_INVALID_EMAIL')})` : ''}`
-        }));
+            disabled: !this.view.isEditMode(),
+            display: `${e.email_address} ${e.invalid_email == 1 ? `(${this.language.getLabel('LBL_INVALID_EMAIL')})` : ''}`        }));
 
         this.modal.prompt('input', null, 'LBL_EMAIL_ADDRESSES', 'default', null, options, 'radio')
             .subscribe(answer => {
                 if (!answer || !this.view.isEditMode()) return;
-                this.setPrimary(this.singleModeHiddenAddresses.find(e => e.id == answer));
+                const emailAddress = this.singleModeHiddenAddresses.find(e => e.id == answer);
+                emailAddress.invalid_email = 0;
+                this.setPrimary(emailAddress);
             });
     }
 
@@ -179,7 +183,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
             return;
         }
 
-        this.emailAddresses.forEach(addr => {
+        this.emailAddresses.concat(this.singleModeHiddenAddresses).forEach(addr => {
             if (addr.id == emailAddress.id) {
                 addr.primary_address = '1';
                 this.setEmail1Field(emailAddress);
@@ -390,6 +394,12 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
         this.modal.confirm('MSG_RESET_BOUNCE_COUNTER', 'MSG_RESET_BOUNCE_COUNTER').subscribe(answer => {
             if (!answer) return;
             emailAddress.bounced_count = 0;
+            emailAddress.invalid_email = 0;
+
+            if (!this.emailAddresses.some(e => e.primary_address == 1)) {
+                this.setPrimary(emailAddress);
+            }
+
             this.setEmailAddressesField();
         });
     }
@@ -401,6 +411,15 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      */
     public updateOptInStatus(status: 'opted_in' | 'pending' | 'opted_out', emailAddress) {
         emailAddress.opt_in_status = status;
+        this.setEmailAddressesField();
+    }
+
+    /**
+     * set email address to valid
+     * @param emailAddress
+     */
+    public setValid(emailAddress) {
+        emailAddress.invalid_email = 0;
         this.setEmailAddressesField();
     }
 }
