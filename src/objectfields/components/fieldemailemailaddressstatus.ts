@@ -80,7 +80,7 @@ export class fieldEmailEmailAddressStatus {
             {value: 'opted_out', display: 'LBL_OPTED_OUT'}
         ];
 
-        this.modal.prompt('input', null, 'LBL_EMAIL_ADDRESSES', 'default', this.status, options, 'radio')
+        this.modal.prompt('input', null, 'LBL_OPT_IN_STATUS', 'default', this.status, options, 'radio')
             .subscribe(answer => {
                 if (!answer) return;
                 this.status$.emit(answer);
