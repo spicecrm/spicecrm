@@ -448,8 +448,13 @@ export class GlobalLogin implements OnDestroy {
      * @param method
      * @param event
      */
-    public async resendAuthCode(method: 'sms' | 'email', event: MouseEvent) {
+    public async resendAuthCode(method: 'sms' | 'email', event: PointerEvent) {
+
+        // prevent processing propagated click from the enter press on the code input element
+        if (event.pointerType != 'mouse') return;
+
         event.preventDefault();
+
         const confirmed = await firstValueFrom(this.modal.confirm(`${this.language.getLabel('LBL_TO')} ${this.optional2FAMethods[method].address}`, 'MSG_RESEND_CODE_VIA_' + method.toUpperCase()));
 
         if (!confirmed) return;
