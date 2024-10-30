@@ -448,10 +448,10 @@ export class GlobalLogin implements OnDestroy {
      * @param method
      * @param event
      */
-    public async resendAuthCode(method: 'sms' | 'email', event: PointerEvent) {
+    public async resendAuthCode(method: 'sms' | 'email', event: MouseEvent) {
 
         // prevent processing propagated click from the enter press on the code input element
-        if (event.pointerType != 'mouse') return;
+        if ((event as PointerEvent).pointerType != 'mouse') return;
 
         event.preventDefault();
 
@@ -474,4 +474,13 @@ export class GlobalLogin implements OnDestroy {
         });
     }
 
+    /**
+     * auto submit 2fa code
+     * @param code
+     */
+    public autoSubmit2FACode(code: string) {
+        if (code.length == 6) {
+            this.login();
+        }
+    }
 }
