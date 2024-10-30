@@ -36,12 +36,12 @@
                                 @if (optional2FAMethods.sms || optional2FAMethods.email) {
                                     <div class="slds-input__icon-group slds-input__icon-group_right" style="margin-top: 0">
                                         @if (optional2FAMethods.sms) {
-                                            <button (click)="resendAuthCode('sms', $event)" class="slds-button slds-button_icon slds-input__icon_right" system-title="MSG_RESEND_CODE_VIA_SMS">
+                                            <button (click)="resendAuthCode('sms', $event)" tabindex="-1" class="slds-button slds-button_icon slds-input__icon_right" system-title="MSG_RESEND_CODE_VIA_SMS">
                                                 <system-button-icon icon="sms"/>
                                             </button>
                                         }
                                         @if (optional2FAMethods.email) {
-                                            <button (click)="resendAuthCode('email', $event)" class="slds-button slds-button_icon slds-input__icon_right" system-title="MSG_RESEND_CODE_VIA_EMAIL">
+                                            <button (click)="resendAuthCode('email', $event)" tabindex="-1" class="slds-button slds-button_icon slds-input__icon_right" system-title="MSG_RESEND_CODE_VIA_EMAIL">
                                                 <system-button-icon icon="email"/>
                                             </button>
                                         }
