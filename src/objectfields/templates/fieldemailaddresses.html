@@ -43,12 +43,15 @@
                     <system-button-icon icon="list" colorclass="slds-icon-text-warning"/>
                 </button>
             </div>
-            <field-email-emailaddress-status [status]="emailAddress.opt_in_status" (status$)="updateOptInStatus($event, emailAddress)" class="slds-p-right--xx-small slds-p-left--x-small"></field-email-emailaddress-status>
+            <field-email-emailaddress-status [disabled]="!metadata.checkModuleAcl('EmailAddresses', 'set_opt_in_status')" [status]="emailAddress.opt_in_status" (status$)="updateOptInStatus($event, emailAddress)" class="slds-p-right--xx-small slds-p-left--x-small"></field-email-emailaddress-status>
             <div *ngIf="emailAddress.bounced_count > 0" system-title="LBL_BOUNCED" class="slds-p-right--xx-small">
                 <a (click)="confirmResetBounceCounter(emailAddress)" style="width: 16px; height: 16px; border-radius: 50%" class="slds-theme--error slds-text-color_inverse slds-align--absolute-center">
                     {{emailAddress.bounced_count}}
                 </a>
             </div>
+            <button system-title="LBL_ACTIVATE" *ngIf="emailAddress.invalid_email == 1 && (!emailAddress.bounced_count || emailAddress.bounced_count == 0)" (click)="setValid(emailAddress)" class="slds-button slds-button--icon" style="max-height: 1.6rem">
+                <system-button-icon icon="toggle_on"></system-button-icon>
+            </button>
             <button (click)="handleOnDelete(emailAddress)" [disabled]="emailAddress.primary_address == '1' && emailAddresses.length > 1" class="slds-button slds-button--icon" style="max-height: 1.6rem">
                 <system-button-icon [icon]="isloading ? 'spinner' : 'clear'"></system-button-icon>
             </button>
@@ -63,7 +66,7 @@
                     <system-button-icon icon="list" colorclass="slds-icon-text-warning"/>
                 </button>
             </div>
-            <field-email-emailaddress-status [status]="inputNewEmailAddress.opt_in_status" class="slds-p-right--xx-small slds-p-left--x-small"></field-email-emailaddress-status>
+            <field-email-emailaddress-status [disabled]="!metadata.checkModuleAcl('EmailAddresses', 'set_opt_in_status')" [status]="inputNewEmailAddress.opt_in_status" class="slds-p-right--xx-small slds-p-left--x-small"></field-email-emailaddress-status>
             <button (click)="cancelAdding()" [disabled]="inputNewEmailAddress.primary_address == '1' && emailAddresses.length > 1" class="slds-button slds-button--icon" style="max-height: 1.6rem">
                 <system-button-icon icon="clear"></system-button-icon>
             </button>
