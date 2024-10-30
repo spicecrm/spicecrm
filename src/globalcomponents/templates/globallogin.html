@@ -32,7 +32,7 @@
                         <div *ngIf="twoFactorAuthCodeRequired" class="slds-form-element slds-m-vertical--small slds-grid slds-grid--vertical-align-center">
                             <div [ngClass]="{'slds-input-has-icon--left-right': optional2FAMethods.sms || optional2FAMethods.email, 'slds-input-has-icon_group-right': optional2FAMethods.sms || optional2FAMethods.email}" class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left slds-grow">
                                 <system-utility-icon icon="scan" addclasses="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"></system-utility-icon>
-                                <input #twofactorinput [disabled]="loggingIn" type="text" name="code2fa" autocomplete="off" [(ngModel)]="code2fa" class="slds-input slds-p-vertical--xx-small" tabindex="2" system-placeholder="LBL_ENTER_CODE" />
+                                <input #twofactorinput [disabled]="loggingIn" type="text" name="code2fa" autocomplete="off" [(ngModel)]="code2fa" (ngModelChange)="autoSubmit2FACode($event)" class="slds-input slds-p-vertical--xx-small" tabindex="2" system-placeholder="LBL_ENTER_CODE" />
                                 @if (optional2FAMethods.sms || optional2FAMethods.email) {
                                     <div class="slds-input__icon-group slds-input__icon-group_right" style="margin-top: 0">
                                         @if (optional2FAMethods.sms) {
