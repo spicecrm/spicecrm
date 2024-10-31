@@ -25,19 +25,33 @@ import {Subscription} from "rxjs";
 export class SystemInputModule implements ControlValueAccessor, OnDestroy, OnInit {
 
     /**
-     * input to disable the input
+     * to disable the checkbox
      */
-    @Input() public disabled = false;
-
-    /**
-     * if set to true also the tecnical name will be displayed
-     */
-    @Input() public technicalNameOnly: boolean = true;
+    public _disabled = false;
+    @Input('disabled') set disabled(value) {
+        if (value === false) {
+            this._disabled = false;
+        } else {
+            this._disabled = true;
+        }
+    }
 
     /**
      * for generic selections show an '*' as option
      */
     @Input() public displayAsterisk: boolean = false;
+    @Input('system-input-module-display_asterisk') set setDisplayAsterisk(value) {
+        if (value === false) {
+            this.displayAsterisk = false;
+        } else {
+            this.displayAsterisk = true;
+        }
+    }
+
+    /**
+     * if set to true also the tecnical name will be displayed
+     */
+    @Input() public technicalNameOnly: boolean = true;
 
     /**
      * filter modules input local property
