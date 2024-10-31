@@ -11,7 +11,6 @@ import {
 import {backend} from '../../services/backend.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {language} from '../../services/language.service';
-import {view} from "../../services/view.service";
 
 
 @Component({
@@ -23,8 +22,7 @@ import {view} from "../../services/view.service";
         ':host  .mce-btn button{font-size: 12px; color: #54698d;}',
         ':host  .mce-tinymce{border-radius: 4px}',
         ':host  .mce-widget{font-family: \'Titillium Web\', sans-serif;}'
-    ],
-    providers: [view]
+    ]
 })
 export class ObjectRepositoryManagerAddModule implements OnInit {
     @Output() public closedialog: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -65,21 +63,5 @@ export class ObjectRepositoryManagerAddModule implements OnInit {
     }
     public updateField(desc) {
         this.moduleRepo.description = desc;
-    }
-
-    /**
-     * sets the version for the obj rep manager modal
-     * @param version
-     */
-    public setVersion(version: {name: string;}) {
-        this.moduleRepo.version = version?.name;
-    }
-
-    /**
-     * sets the package for the obj rep manager modal
-     * @param packageData
-     */
-    public setPackage(packageData: {name: string;}) {
-        this.moduleRepo.package = packageData?.name;
     }
 }
