@@ -43,7 +43,12 @@ export class SpiceKanban implements OnInit, OnDestroy {
     /**
      * the component config
      */
-    public componentconfig: any = {};
+    public componentconfig: {
+        kanban?: string;
+        sumfield?: string;
+        limit?: string;
+        draganddrop?: string;
+    } = {};
 
     /**
      * subscription to the modellist for type changes
@@ -94,10 +99,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
     public footerExpanded: boolean;
 
     constructor(public backend: backend, public broadcast: broadcast, public model: model, public modellist: modellist, public configuration: configurationService, public metadata: metadata, public userpreferences: userpreferences, public language: language, public currency: currency, public layout: layout) {
-
-        const kanbanId = this.componentconfig.kanban;
-        this.componentconfig = this.metadata.getComponentConfig('SpiceKanban', this.modellist.module);
-        this.componentconfig.kanban = kanbanId;
 
         this.currencies = this.currency.getCurrencies();
         this.loadSortFields();
@@ -170,6 +171,21 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * load ths stage data and build the buckts we are searching for to build the kanban board
      */
     public ngOnInit() {
+
+        const defaultConfig = this.metadata.getComponentConfig('SpiceKanban', this.modellist.module);
+
+        if (!this.componentconfig.kanban) {
+            this.componentconfig.kanban = defaultConfig.kanban;
+        }
+        if (!this.componentconfig.sumfield) {
+            this.componentconfig.sumfield = defaultConfig.sumfield;
+        }
+        if (!this.componentconfig.limit) {
+            this.componentconfig.limit = defaultConfig.limit;
+        }
+        if (!this.componentconfig.draganddrop) {
+            this.componentconfig.draganddrop = defaultConfig.draganddrop;
+        }
 
         const kanbans = this.configuration.getData('spicebeanguides')[this.modellist.module];
 
