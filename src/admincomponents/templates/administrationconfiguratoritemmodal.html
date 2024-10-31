@@ -38,13 +38,17 @@
                                         <system-input-date [disabled]="!isEditMode(field)" [ngModel]="entry.data[field.name]" (ngModelChange)="setFormattedDate(field.name, $event)" system-input-date-formatted [showCalendarButton]="false" ></system-input-date>
                                     }
                                     @case('module'){
-                                        <system-input-module [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"></system-input-module>
+                                        @if (isEditMode(field)) {
+                                            <system-input-module system-input-module-display_asterisk [(ngModel)]="entry.data[field.name]"></system-input-module>
+                                        } @else {
+                                            <system-input-text disabled [(ngModel)]="entry.data[field.name]"></system-input-text>
+                                        }
                                     }
                                     @case('fieldname'){
-                                        @if(entry.data[field.modulefield] && isEditMode(field)){
+                                        @if(entry.data[field.modulefield] && entry.data[field.modulefield] != '*' && isEditMode(field)){
                                             <system-input-module-field [module]="entry.data[field.modulefield]" [(ngModel)]="entry.data[field.name]"></system-input-module-field>
-                                        } @else if(entry.data[field.modulefield] && !isEditMode(field)) {
-                                            <system-input-module-field [disabled]="true" [module]="entry.data[field.modulefield]" [(ngModel)]="entry.data[field.name]"></system-input-module-field>
+                                        } @else if(entry.data[field.modulefield] && entry.data[field.modulefield] == '*' && isEditMode(field)) {
+                                            <system-input-text></system-input-text>
                                         } @else {
                                             <system-input-text disabled [(ngModel)]="entry.data[field.name]"></system-input-text>
                                         }
