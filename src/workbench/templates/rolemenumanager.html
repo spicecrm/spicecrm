@@ -69,12 +69,18 @@
                         <system-input-module *ngIf="viewProvider.view.mode == 'edit'" [(ngModel)]="roleModule.module"></system-input-module>
                     </td>
                     <td class="slds-text-align_left">
-                        <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{ roleModule.package }}</div>
-                        <field-package *ngIf="viewProvider.view.mode == 'edit'" [package]="roleModule.package" (packageSelected)="setPackage($event)"></field-package>
+                        @if (viewProvider.view.mode != 'edit') {
+                            <div class="slds-truncate">{{ roleModule.package }}</div>
+                        } @else {
+                            <system-input-package [(ngModel)]="roleModule.package"/>
+                        }
                     </td>
                     <td class="slds-text-align_left">
-                        <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{ roleModule.version }}</div>
-                        <field-version *ngIf="viewProvider.view.mode == 'edit'" [version]="roleModule.version" (versionSelected)="setVersion($event)"></field-version>
+                        @if (viewProvider.view.mode != 'edit') {
+                            <div class="slds-truncate">{{ roleModule.version }}</div>
+                        } @else {
+                            <system-input-version [(ngModel)]="roleModule.version"/>
+                        }
                     </td>
                     <td class="slds-text-align_center">
                         <div class="slds-truncate slds-cell_action-mode">
