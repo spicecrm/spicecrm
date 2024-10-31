@@ -46,14 +46,12 @@
             <div class="slds-form-element slds-p-right--x-small slds-size--1-of-5">
                 <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
                 <div class="slds-form-element__control">
-                    <!--field-package [package]="currentFieldSetPackage" (packageSelected)="setPackage($event)"></field-package-->
                     <system-input-package [(ngModel)]="currentFieldSetPackage"/>
                 </div>
             </div>
             <div class="slds-form-element slds-p-right--x-small slds-size--1-of-5">
                 <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
                 <div class="slds-form-element__control">
-                    <!--field-version [version]="currentFieldSetVersion" (versionSelected)="setVersion($event)"></field-version-->
                     <system-input-version [(ngModel)]="currentFieldSetVersion"></system-input-version>
                 </div>
             </div>
