@@ -282,7 +282,7 @@ class SysCurrencies
      */
     public function convertFromBase($currencyId, $amount, $date = null, $precision = 6): float{
         // do nothing if this is already the system currency
-        if($currencyId == $this->systemCurrency->id) return $amount;
+        if($currencyId == $this->getSystemCurrency()->id) return $amount;
 
         $c = $this->getCurrencyByID($currencyId);
         if(!$date) {
@@ -310,7 +310,7 @@ class SysCurrencies
      */
     public function convertToBase($currencyId, $amount, $date = null, $precision = 6):float{
         // do nothing if this is already the system currency
-        if($currencyId == $this->systemCurrency->id) return $amount;
+        if($currencyId == $this->getSystemCurrency()->id) return $amount;
 
         $c = $this->getCurrencyByID($currencyId);
         if(!$date) {
