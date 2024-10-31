@@ -50,8 +50,16 @@ export class GlobalLoginPasskeyModal implements ModalComponentI, OnDestroy {
                 // is the reviver function of JSON.parse()
                 this.recursiveBase64StrToArrayBuffer(window._.omit(createArgs, ['secret']));
 
+                let cred;
+
                 // create credentials
-                const cred: any = await navigator.credentials.create(createArgs);
+                try {
+                    cred = await navigator.credentials.create(createArgs);
+                } catch (e) {
+                    loading.next(true);
+                    loading.complete();
+                    return;
+                }
 
                 // create object
                 const authenticatorAttestationResponse = {
