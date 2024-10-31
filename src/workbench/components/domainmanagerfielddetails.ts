@@ -1,16 +1,11 @@
 /**
  * @module WorkbenchModule
  */
-import {
-    Component,
-    Input, OnInit
-} from '@angular/core';
+import {Component,OnInit} from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {domainmanager} from '../services/domainmanager.service';
-import {field} from "../../objectfields/components/field";
-import {view} from "../../services/view.service";
 
 /**
  * a tab with details on a domain field
@@ -18,7 +13,6 @@ import {view} from "../../services/view.service";
 @Component({
     selector: 'domain-manager-field-details',
     templateUrl: '../templates/domainmanagerfielddetails.html',
-    providers: [view]
 })
 export class DomainManagerFieldDetails implements OnInit{
 
@@ -77,21 +71,5 @@ export class DomainManagerFieldDetails implements OnInit{
      */
     public close(){
         this.self.destroy();
-    }
-
-    /**
-     * sets the version for domainfields
-     * @param version
-     */
-    public setVersion(version: {name: string;}) {
-        this._field.version = version?.name;
-    }
-
-    /**
-     * sets the package for domainfields
-     * @param packageData
-     */
-    public setPackage(packageData: {name: string;}) {
-        this._field.package = packageData?.name;
     }
 }

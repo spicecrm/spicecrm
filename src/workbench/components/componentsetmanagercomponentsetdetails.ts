@@ -53,19 +53,4 @@ export class ComponentsetManagerComponentsetDetails implements OnChanges {
             this.selectedComponent = {};
         }
     }
-    /**
-     * sets the version for the fieldset
-     * @param version
-     */
-    public setVersion(version: {name: string;}) {
-        this.component.version = version?.name;
-    }
-
-    /**
-     * sets the package for the fieldset
-     * @param packageData
-     */
-    public setPackage(packageData: { name: string; }) {
-        this.component.package = packageData?.name;
-    }
 }
