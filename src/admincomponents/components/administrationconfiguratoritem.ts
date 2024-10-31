@@ -28,7 +28,7 @@ export class AdministrationConfiguratorItem {
     get divStyle(){
         let itemwidth = parseInt(this.parentWidth, 10) / this.fields.length;
         return {
-            'max-width': itemwidth < 200 ? '200px' : itemwidth + 'px'
+            'max-width': itemwidth < 400 ? '400px' : itemwidth + 'px'
         }
     }
 
