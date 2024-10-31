@@ -90,13 +90,13 @@
                     <label class="slds-form-element__label">
                         <system-label label="LBL_PACKAGE"></system-label>
                     </label>
-                    <field-package [package]="newRole.package" (packageSelected)="setPackage($event)"></field-package>
+                    <system-input-package [(ngModel)]="newRole.package"/>
                 </div>
                 <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
                     <label class="slds-form-element__label">
                         <system-label label="LBL_VERSION"></system-label>
                     </label>
-                    <field-version [version]="newRole.version" (versionSelected)="setVersion($event)"></field-version>
+                    <system-input-version [(ngModel)]="newRole.version"/>
                 </div>
             </div>
             <div class="slds-form-element__control slds-size--4-of-4 slds-p-right--xxx-small slds-m-top--x-small">
