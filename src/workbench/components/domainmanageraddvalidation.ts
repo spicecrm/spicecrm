@@ -8,7 +8,6 @@ import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
 import {domainmanager} from '../services/domainmanager.service';
 import {DomainValidation} from "../interfaces/domainmanager.interfaces";
-import {view} from "../../services/view.service";
 
 /**
  * a modal window to add a new validation to a domain field
@@ -16,7 +15,6 @@ import {view} from "../../services/view.service";
 @Component({
     selector: 'domain-manager-add-validation',
     templateUrl: '../templates/domainmanageraddvalidation.html',
-    providers: [view]
 })
 export class DomainManagerAddValidation {
 
@@ -66,22 +64,6 @@ export class DomainManagerAddValidation {
                 this.close();
             }
         })
-    }
-
-    /**
-     * sets the version for adding domain field validation
-     * @param version
-     */
-    public setVersion(version: {name: string;}) {
-        this.fieldvalidation.version = version?.name;
-    }
-
-    /**
-     * sets the package for adding domain field validation
-     * @param packageData
-     */
-    public setPackage(packageData: {name: string;}) {
-        this.fieldvalidation.package = packageData?.name;
     }
 
     /**

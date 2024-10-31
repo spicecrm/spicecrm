@@ -101,20 +101,4 @@ export class DictionaryManagerRelationshipContainerOneToManyPolymorphAddRelated 
     public close(){
         this.self.destroy();
     }
-
-    /**
-     * sets the version
-     * @param version
-     */
-    public setVersion(version: {name: string;}) {
-        this.version = version?.name;
-    }
-
-    /**
-     * sets the package
-     * @param packageData
-     */
-    public setPackage(packageData: {name: string;}) {
-        this.package = packageData?.name;
-    }
 }
