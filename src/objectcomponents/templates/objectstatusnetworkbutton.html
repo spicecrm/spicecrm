@@ -1,18 +1,22 @@
-<div *ngIf="isManaged" class="slds-button-group slds-m-horizontal--xxx-small">
-    <button class="slds-button slds-button_neutral" [disabled]="isDisabled" (click)="propagateclick(primaryItem.id)">
-        <object-status-network-button-item [item]="primaryItem"></object-status-network-button-item>
-    </button>
+<div *ngIf="isManaged" [class.slds-button-group]="!onlyDropdown">
+    @if (!onlyDropdown) {
+        <button class="slds-button slds-button_neutral" [disabled]="isDisabled" (click)="propagateclick(primaryItem.id)">
+            <object-status-network-button-item [item]="primaryItem"></object-status-network-button-item>
+        </button>
+    }
     <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last" system-dropdown-trigger>
         <button class="slds-button slds-button_icon slds-button_icon-border-filled" [disabled]="isDisabled || secondaryItems.length == 0">
-            <system-button-icon icon="down"></system-button-icon>
+            <system-button-icon [icon]="onlyDropdown ? 'touch_action' : 'down'"></system-button-icon>
         </button>
         <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions" style="min-width: min-content">
             <ul class="slds-dropdown__list" role="menu">
-                <li class="slds-dropdown__item" *ngFor="let secondaryItem of secondaryItems" role="presentation" (click)="propagateclick(secondaryItem.id)">
-                    <a class="slds-truncate" href="javascript:void(0);" role="menuitem">
-                        <object-status-network-button-item [item]="secondaryItem"></object-status-network-button-item>
-                    </a>
-                </li>
+                @for (secondaryItem of secondaryItems; track secondaryItem.id) {
+                    <li class="slds-dropdown__item" role="presentation" (click)="propagateclick(secondaryItem.id)">
+                        <a class="slds-truncate" href="javascript:void(0);" role="menuitem">
+                            <object-status-network-button-item [item]="secondaryItem"></object-status-network-button-item>
+                        </a>
+                    </li>
+                }
             </ul>
         </div>
     </div>
