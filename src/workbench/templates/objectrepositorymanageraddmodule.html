@@ -35,13 +35,13 @@
                 <div class="slds-form-element slds-m-top--small slds-size--1-of-2">
                     <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
                     <div class="slds-form-element__control">
-                        <field-package [package]="moduleRepo.package" (packageSelected)="setPackage($event)"></field-package>
+                        <system-input-package [(ngModel)]="moduleRepo.package"/>
                     </div>
                 </div>
                 <div class="slds-form-element slds-m-top--small slds-size--1-of-2 slds-m-right--x-small">
                     <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
                     <div class="slds-form-element__control">
-                        <field-version [version]="moduleRepo.version" (versionSelected)="setVersion($event)"></field-version>
+                        <system-input-version [(ngModel)]="moduleRepo.version"/>
                     </div>
                 </div>
             </div>
