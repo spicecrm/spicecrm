@@ -74,7 +74,7 @@
                         <system-label label="LBL_PACKAGE"></system-label>
                     </label>
                     <div class="slds-form-element__control">
-                        <field-package [package]="dictionaryitem.package" (packageSelected)="setPackage($event)"></field-package>
+                        <system-input-package [(ngModel)]="dictionaryitem.package"/>
                     </div>
                 </div>
                 <div class="slds-col slds-size--1-of-2 slds-form-element">
@@ -82,7 +82,7 @@
                         <system-label label="LBL_VERSION"></system-label>
                     </label>
                     <div class="slds-form-element__control">
-                        <field-version [version]="dictionaryitem.version" (versionSelected)="setVersion($event)"></field-version>
+                        <system-input-version [(ngModel)]="dictionaryitem.version"/>
                     </div>
                 </div>
             </div>
