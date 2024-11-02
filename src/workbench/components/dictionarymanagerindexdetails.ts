@@ -148,20 +148,4 @@ export class DictionaryManagerIndexDetails implements OnChanges {
         */
 
     }
-
-    /**
-     * sets the version
-     * @param version
-     */
-    public setVersion(version: {name: string;}) {
-        this.index.version = version?.name;
-    }
-
-    /**
-     * sets the package
-     * @param packageData
-     */
-    public setPackage(packageData: {name: string;}) {
-        this.index.package = packageData?.name;
-    }
 }

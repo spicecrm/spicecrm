@@ -8,13 +8,13 @@
     <div class="slds-form-element slds-size_1-of-4 slds-p-left_x-small">
         <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
         <div class="slds-form-element__control">
-            <field-package [package]="component.package" (packageSelected)="setPackage($event)"></field-package>
+            <system-input-package [(ngModel)]="component.package"></system-input-package>
         </div>
     </div>
     <div class="slds-form-element slds-size_1-of-4 slds-p-left_x-small">
         <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
         <div class="slds-form-element__control">
-            <field-version [version]="component.version" (versionSelected)="setVersion($event)"></field-version>
+            <system-input-version [(ngModel)]="component.version"/>
         </div>
     </div>
 </div>

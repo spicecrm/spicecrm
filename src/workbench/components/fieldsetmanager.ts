@@ -4,7 +4,7 @@
 import {
     Component, ComponentRef
 } from '@angular/core';
-import {firstValueFrom, Subject} from 'rxjs';
+import {firstValueFrom} from 'rxjs';
 
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
@@ -16,7 +16,6 @@ import {configurationService} from '../../services/configuration.service';
 import {modal} from '../../services/modal.service';
 import {view} from "../../services/view.service";
 import {FieldsetManagerCopyDialog} from "./fieldsetmanagercopydialog";
-import {subscription} from "../../services/subscription.service";
 
 @Component({
     selector: 'fieldset-manager',
