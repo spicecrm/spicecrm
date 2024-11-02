@@ -3,6 +3,7 @@ import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {language} from "../../../services/language.service";
+import moment from "moment";
 
 @Component({
     selector: 'kpi-tile',
@@ -14,28 +15,17 @@ export class KpiTile implements OnInit {
     /**
      * id of KPI related to KPITarget
      */
-    @Input() kpi: any = {};
-
-    /**
-     * parentId the KPITarget is related to
-     */
-    @Input() parentId: string = '';
-
-    /**
-     * parentType the KPITarget is related to
-     * i.e. Users, CompanyCodes etc.
-     */
-    @Input() parentType: string = '';
-
-    /**
-     * holds KPITarget's data
-     */
-    public kpiTargetData: any = [];
+    @Input() kpiTarget: any = {};
 
     /**
      * holds KPITargetValue's data
      */
-    public kpiTargetValue: any = [];
+    public kpiTargetValue: any = {};
+
+    /**
+     * holds the tend data
+     */
+    public kpiTrendData: any = {};
 
     /**
      * if tile is being loaded
@@ -62,6 +52,11 @@ export class KpiTile implements OnInit {
      */
     public percentage: string = '';
 
+    /**
+     * a now moment object
+     */
+    public now = moment();
+
     constructor(
         public model: model,
         private backend: backend,
@@ -79,13 +74,11 @@ export class KpiTile implements OnInit {
      */
     public loadKPITargets() {
         this.loading = true;
-        this.backend.getRequest('module/KPIs/' + this.kpi.id + '/' + this.parentType + '/' + this.parentId).subscribe({
+        this.backend.getRequest(`module/KPITargets/${this.kpiTarget.id}/getvalues`).subscribe({
             next: (data) => {
-                this.kpiTargetData = data;
                 this.kpiTargetValue = data.kpiTargetValue;
+                this.kpiTrendData = data.kpiTrendData;
                 this.getKPIColor();
-                this.getTrend();
-
                 this.loading = false;
             }, error: () => {
                 this.toast.sendToast(this.language.getLabel('LBL_ERR_LOADING_KPITARGETS'), 'error');
@@ -98,9 +91,10 @@ export class KpiTile implements OnInit {
      * gets text color for the KPIValue
      */
     public getKPIColor() {
+        if(!this.kpiTargetValue) return;
         let kpiValue = this.kpiTargetValue.kpi_value;
-        let kpiTargetDataLow = this.kpiTargetData.kpiTarget?.lower_boundary;
-        let kpiTargetDataUp = this.kpiTargetData.kpiTarget?.upper_boundary;
+        let kpiTargetDataLow = this.kpiTarget.kpiTarget?.lower_boundary;
+        let kpiTargetDataUp = this.kpiTarget.kpiTarget?.upper_boundary;
 
         if (kpiTargetDataLow && kpiValue <= kpiTargetDataLow) {
             this.kpiColor = "slds-text-color_error";
@@ -111,26 +105,24 @@ export class KpiTile implements OnInit {
         }
     }
 
-    /**
-     * sets arrow Icon and its color
-     * depending on trend results from Backend
-     */
-    public getTrend() {
-        switch (this.kpiTargetData.trendData.trend) {
-            case 'positive':
-                this.arrowIcon = "arrowup";
-                this.iconColor = 'slds-icon-text-success';
-                this.percentage = this.kpiTargetData.trendData.percentage + '% ' + this.language.getLabel('LBL_KPI_BETTER');
-                break;
-            case 'negative':
-                this.arrowIcon = "arrowdown";
-                this.iconColor = "slds-icon-text-error";
-                this.percentage = this.kpiTargetData.trendData.percentage + '% ' + this.language.getLabel('LBL_KPI_WORSE');
-                break;
-            default:
-                this.arrowIcon = "sort";
-                this.iconColor = "slds-icon-text-default";
-                this.percentage = this.kpiTargetData.trendData.percentage + '% ' + this.language.getLabel('LBL_KPI_UNCHANGED');
-        }
+    get slope(){
+        return this.kpiTrendData?.trend?.slope ?? 0;
     }
+
+    get slopeIcon (){
+        if(this.slope > 0) return 'arrowup';
+        if(this.slope < 0) return 'arrowdown';
+        return 'sort'
+    }
+
+    get slopeColor(){
+        if(this.slope > 0) return 'slds-icon-text-success';
+        if(this.slope < 0) return 'slds-icon-text-error';
+        return 'slds-icon-text-default'
+    }
+
+    get trendValue(){
+        return this.kpiTrendData.percentage;
+    }
+
 }

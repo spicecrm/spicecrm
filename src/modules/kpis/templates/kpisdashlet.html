@@ -1,17 +1,30 @@
-<div class="slds-p-around--x-small">
+<div class="slds-p-around--x-small slds-height_full slds-scrollable--x">
     <div class="slds-grid slds-grid--vertical-align-center slds-p-bottom--x-small">
         <system-icon [module]="'KPIs'" [size]="'small'"></system-icon>
         <h2 class="slds-text-heading--medium slds-p-bottom--xx-small">
             <system-label label="LBL_MY_KPIS"></system-label>
         </h2>
+        <button class="slds-col--bump-left slds-button slds-button--icon slds-button--icon-border" [disabled]="loading" (click)="loadKPIs()" system-title="LBL_RELOAD">
+            <system-button-icon icon="refresh"/>
+        </button>
     </div>
-    <div class="slds-grid slds-wrap slds-gutters_direct-xx-small" >
-        @if (kpis.length > 0) {
-            @for (kpi of kpis; track kpi.id) {
+    @if (kpiTargets.length > 0) {
+        <div class="slds-grid slds-wrap slds-gutters_direct-xx-small" >
+            @for (kpiTarget of kpiTargets; track kpiTarget.id) {
                 <div class="slds-col slds-p-vertical--xx-small" [ngClass]="getTileWidthClass">
-                    <kpi-tile [kpi]="kpi" [parentId]="parentId" [parentType]="parentType"></kpi-tile>
+                    <kpi-tile [kpiTarget]="kpiTarget"></kpi-tile>
                 </div>
             }
-        }
-    </div>
+        </div>
+    } @else{
+        <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+            @if (loading) {
+                <system-spinner/>
+            } @else {
+                <system-illustration-no-records>
+                    <system-label label="LBL_NO_KPIS_SET"/>
+                </system-illustration-no-records>
+            }
+        </div>
+    }
 </div>
