@@ -1,16 +1,18 @@
 <div class="slds-page-header">
     <div class="slds-grid">
-        <div class="slds-col slds-has-flexi-truncate">
+        <div class="slds-col slds-grow" style="min-width: 105px;">
             <div class="slds-media slds-no-space slds-grow">
                 <system-icon [module]="moduleName" (click)="goToModule()"></system-icon>
                 <div class="slds-media__body">
                     <ul class="slds-list_horizontal slds-has-dividers_left slds-line-height--reset">
-                        <li class="slds-item">
-                            <p class="slds-text-title--caps">
-                                <system-label-modulename *ngIf="!canGoToModule" [module]="moduleName"/>
-                                <a *ngIf="canGoToModule" href="javascript:void(0);" (click)="goToModule()"><system-label-modulename [module]="moduleName" [singular]="true"></system-label-modulename></a>
-                            </p>
-                        </li>
+                        @if (layout.screenwidth != 'small') {
+                            <li class="slds-item">
+                                <p class="slds-text-title--caps">
+                                    <system-label-modulename *ngIf="!canGoToModule" [module]="moduleName"/>
+                                    <a *ngIf="canGoToModule" href="javascript:void(0);" (click)="goToModule()"><system-label-modulename [module]="moduleName" [singular]="true"></system-label-modulename></a>
+                                </p>
+                            </li>
+                        }
                         <li class="slds-item">
                             <object-subscription-icon/>
                         </li>
@@ -34,12 +36,12 @@
                 </div>
             </div>
         </div>
-        <div class="slds-m-horizontal--x-small slds-align--absolute-center">
+        <div class="slds-m-left--x-small slds-align--absolute-center">
             <object-workflow-button/>
             <!--object-subscription-button></object-subscription-button-->
             <!--object-reminder-button></object-reminder-button-->
-            <object-status-network-button/>
-            <object-action-container [actionset]="actionSet"/>
+                <object-status-network-button [onlyDropdown]="layout.screenwidth == 'small'" class="slds-m-around--xxx-small"/>
+                <object-action-container [actionset]="actionSet" [onlyDropdown]="layout.screenwidth == 'small'" class="slds-m-around--xxx-small"/>
         </div>
     </div>
 </div>

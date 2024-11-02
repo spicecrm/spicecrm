@@ -70,20 +70,4 @@ export class FieldsetManagerFieldsetDetails implements OnChanges {
     set fieldsetname(value){
 
     }
-
-    /**
-     * sets the version for the fieldset
-     * @param version
-     */
-    public setVersion(version: {name: string;}) {
-        this.currentFieldSet.version = version?.name;
-    }
-
-    /**
-     * sets the package for the fieldset
-     * @param packageData
-     */
-    public setPackage(packageData: {name: string;}) {
-        this.currentFieldSet.package = packageData?.name;
-    }
 }
