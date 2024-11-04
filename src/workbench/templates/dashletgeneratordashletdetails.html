@@ -13,8 +13,9 @@
                 <label  class="slds-form-element__label slds-m-left--small"><system-label label="LBL_COMPONENT"></system-label></label>
                 <div class="slds-form-element__control slds-size--1-of-2">
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="dashlet.component" [disabled]="!sysModule">
-                            <option *ngFor="let component of components" [value]="component.component">{{component.component}}</option>
+                        <select class="slds-select" [(ngModel)]="dc" [disabled]="!sysModule">
+                            <option></option>
+                            <option *ngFor="let c of components" [value]="c.component">{{c.component}}</option>
                         </select>
                     </div>
                 </div>
