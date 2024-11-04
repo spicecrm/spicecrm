@@ -1,0 +1,19 @@
+<div class="slds-tabs_default">
+    <ul class="slds-tabs_default__nav" role="tablist">
+        <li class="slds-tabs_default__item slds-is-active">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" aria-selected="true">7 Days</a>
+        </li>
+        <li class="slds-tabs_default__item">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" aria-selected="true">1 Month</a>
+        </li>
+        <li class="slds-tabs_default__item">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" aria-selected="true">3 Months</a>
+        </li>
+    </ul>
+    <div class="slds-size--1-of-1 slds-align--absolute-center">
+        <system-chart-js-one-dimensional *ngIf="history.length > 0" chartType="Line" style="width: 100%; height: 500px;">
+            <system-chart-data-row *ngFor="let h of history" [label]="h.date_entered" [value]="h.kpi_value"/>
+        </system-chart-js-one-dimensional>
+    </div>
+</div>
+

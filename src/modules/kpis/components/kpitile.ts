@@ -1,5 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Injector, Input, OnInit} from '@angular/core';
 import {model} from "../../../services/model.service";
+import {modal} from "../../../services/modal.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {language} from "../../../services/language.service";
@@ -7,7 +8,8 @@ import moment from "moment";
 
 @Component({
     selector: 'kpi-tile',
-    templateUrl: '../templates/kpitile.html'
+    templateUrl: '../templates/kpitile.html',
+    providers: [model]
 })
 
 export class KpiTile implements OnInit {
@@ -59,13 +61,21 @@ export class KpiTile implements OnInit {
 
     constructor(
         public model: model,
+        public modal: modal,
         private backend: backend,
         private toast: toast,
-        private language: language
+        private language: language,
+        public injector: Injector
     ) {
     }
 
     ngOnInit() {
+        // set the model data
+        this.model.module = 'KPITargets';
+        this.model.id = this.kpiTarget.id;
+        this.model.setData(this.kpiTarget, true);
+
+        // load the targetvalues
         this.loadKPITargets()
     }
 
@@ -123,6 +133,10 @@ export class KpiTile implements OnInit {
 
     get trendValue(){
         return this.kpiTrendData.percentage;
+    }
+
+    public openHistoryModal(){
+        this.modal.openModal('KPIHistoryModal', true, this.injector)
     }
 
 }
