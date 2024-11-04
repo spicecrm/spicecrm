@@ -837,6 +837,8 @@ class CampaignTask extends SpiceBean
             $exclusionListIds = implode("','", $exclusionListIds);
             $query .= " AND NOT EXISTS(SELECT id FROM prospect_lists_prospects WHERE prospect_list_id in ('$exclusionListIds') AND plp.related_id = related_id AND deleted != 1)";
         }
+        // check its not in unsubscribe group
+        $query.= "AND plp.unsubscribegroup_status = 0 AND plp.related_id = related_id";
 
         return $query;
     }
