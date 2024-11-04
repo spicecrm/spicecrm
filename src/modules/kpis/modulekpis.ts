@@ -13,6 +13,8 @@ import {DirectivesModule} from '../../directives/directives';
 import {KPIsDashlet} from "./components/kpisdashlet";
 import {KpiTile} from "./components/kpitile";
 import {KPIStatistics} from "./components/kpistatistics";
+import {KPIHistoryModal} from "./components/kpihistorymodal";
+import {KPIHistory} from "./components/kpihistory";
 
 @NgModule({
     imports: [
@@ -27,7 +29,9 @@ import {KPIStatistics} from "./components/kpistatistics";
     declarations: [
         KPIsDashlet,
         KpiTile,
-        KPIStatistics
+        KPIStatistics,
+        KPIHistoryModal,
+        KPIHistory
     ],
 })
 export class ModuleKPIs {}

@@ -259,7 +259,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
 
         if (!this.value || this.searchList.length == 0) return;
 
-        this.searchList = this.searchList.filter(e => e.content.toLowerCase().indexOf(this.value.toLowerCase()) > -1);
+        this.searchList = this.searchList.filter(e => e.isGroup || e.content.toLowerCase().indexOf(this.value.toLowerCase()) > -1);
 
         this.searchList.forEach(e => {
 
