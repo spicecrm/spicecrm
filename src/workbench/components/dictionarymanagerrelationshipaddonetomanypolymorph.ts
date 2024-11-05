@@ -57,7 +57,8 @@ export class DictionaryManagerRelationshipAddOneToManyPolymorph {
             lhs_sysdictionaryitem_id: '',
             lhs_linkname: '',
             lhs_linklabel: '',
-            lhs_duplicatemerge: 1,
+            lhs_duplicatemerge: 0,
+            lhs_linkdefault: 0,
             rhs_sysdictionarydefinition_id: '',
             rhs_sysdictionaryitem_id: '',
             rhs_linkname: '',
@@ -91,7 +92,7 @@ export class DictionaryManagerRelationshipAddOneToManyPolymorph {
         this.relationship.rhs_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
 
         // build default name and relationship name
-        this.relationship.name = 'parent';
+        this.relationship.name = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.rhs_sysdictionarydefinition_id).tablename + '_parent';
         this.relationship.relationship_name = this.relationship.name;
 
         // set the defaults for a parent_id and parent_type if we have one
@@ -119,6 +120,7 @@ export class DictionaryManagerRelationshipAddOneToManyPolymorph {
      * @private
      */
     public add(){
+        this.relationship.relationship_name = this.relationship.name;
         this.backend.postRequest(`dictionary/relationship/${this.relationship.id}`, {}, {relationship: this.relationship, relationshippolymorphs: this.relationshipPolymorphs}).subscribe({
             next: (res) => {
                 this.dictionarymanager.pushNewRelationshipToArray(this.relationship);

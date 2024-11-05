@@ -94,8 +94,10 @@ class ChromeLocalPdfHandler extends PdfHandler
                 </style>
             ";
 
+
             # Insert layout table, necessary for header and/or footer:
-            $htmlOutput = preg_replace('#<main>(.*?)</main>#s', '
+            /*
+            $htmlOutput = preg_replace('#<main>(.*?)</main>#su', '
                 <table class="header_footer_table">
                     <thead><tr>
                         <td id="header_cell"></td>
@@ -108,7 +110,23 @@ class ChromeLocalPdfHandler extends PdfHandler
                     </tr></tfoot>
                 </table>
             ', $htmlOutput, 1 );
+            */
+            // fix since preg_replace has issues with embedded base64 images
+            // ToDo: find longterm solution
+            $htmlOutput = str_replace(['<main>', '</main>'], ['
+                <table class="header_footer_table">
+                    <thead><tr>
+                        <td id="header_cell"></td>
+                    </tr></thead>
+                    <tbody><tr>
+                        <td><main>', '</main></td>
+                    </tr></tbody>
+                    <tfoot><tr>
+                        <td id="footer_cell"></td>
+                    </tr></tfoot>
+                </table>'], $htmlOutput);
         }
+
 
         # Javascript, necessary for setting header/footer cell height, by measured header/footer height:
         $handlerSpecificJavascript = '

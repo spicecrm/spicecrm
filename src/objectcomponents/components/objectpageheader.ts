@@ -1,11 +1,12 @@
 /**
  * @module ObjectComponents
  */
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
+import {layout} from "../../services/layout.service";
 
 /**
  * @ignore
@@ -33,6 +34,8 @@ export class ObjectPageHeader implements OnInit {
      * fieldset id
      */
     public fieldset: string = '';
+
+    public layout: layout = inject(layout);
 
     constructor(
         public router: Router,

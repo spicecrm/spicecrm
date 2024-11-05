@@ -2,25 +2,38 @@
 
 namespace SpiceCRM\includes\authentication\api;
 
+use Exception;
 use lbuchs\WebAuthn\WebAuthnException;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\authentication\api\controllers\AuthenticateController;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\authentication\PasskeyAuthenticate\PasskeyUtils;
-use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 class PasskeyController
 {
+    /**
+     * @throws ForbiddenException
+     */
+    private function checkCanChangePasskey(): void
+    {
+        if (!AuthenticationController::getInstance()->isAdmin() && !AuthenticationController::getInstance()->getCanChangePassword()) {
+            throw new ForbiddenException('Forbidden to create a passkey. User not allowed to change security setting.');
+        }
+    }
     /**
      * generate create args
      * @param Request $req
      * @param Response $res
      * @param array $args
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function createArgs(Request $req, Response $res, array $args): Response
     {
+        $this->checkCanChangePasskey();
+
         $user = AuthenticationController::getInstance()->getCurrentUser();
         $rpId = $req->getParsedBody()['rpId'];
 
@@ -42,15 +55,18 @@ class PasskeyController
      * @param Response $res
      * @param array $args
      * @return Response
-     * @throws BadRequestException
      * @throws WebAuthnException
+     * @throws Exception
      */
     public function processCreate(Request $req, Response $res, array $args): Response
     {
+        $this->checkCanChangePasskey();
+
         $params = (object) $req->getParsedBody();
 
         $passkeyAuthenticate = new PasskeyUtils($params->rpId);
         $response = $passkeyAuthenticate->processCreate($params);
+
         return $res->withJson($response);
     }
 
@@ -60,7 +76,7 @@ class PasskeyController
      * @param Response $res
      * @param array $args
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function getArgs(Request $req, Response $res, array $args): Response
     {
@@ -77,7 +93,7 @@ class PasskeyController
      * @param Response $res
      * @param array $args
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function checkPasskey(Request $req, Response $res, array $args): Response
     {
@@ -88,7 +104,7 @@ class PasskeyController
         if (!$response) {
             return $res->withJson(null);
         }
-        $metadata = $passkeyAuthenticate->getAuthenticatorMetadata($response);
+        $metadata = $passkeyAuthenticate->getAuthenticatorMetadata($response->AAGUID);
         return $res->withJson($metadata);
     }
 
@@ -98,14 +114,17 @@ class PasskeyController
      * @param Response $res
      * @param array $args
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function removePasskey(Request $req, Response $res, array $args): Response
     {
+        $this->checkCanChangePasskey();
+
         $params = (object) $req->getQueryParams();
 
         $passkeyAuthenticate = new PasskeyUtils($params->rpId);
         $response = $passkeyAuthenticate->removeUserRegistration($args['userId'], $params->rpId);
+
         return $res->withJson(!!$response);
     }
 }

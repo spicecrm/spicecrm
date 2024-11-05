@@ -2153,7 +2153,7 @@ class SpiceBeanHandler
                         $thisBean->load_relationship($fieldId);
                         if ($thisBean->{$fieldId}) {
                             $relModule = $thisBean->{$fieldId}->getRelatedModuleName();
-                            $relatedBeans = $thisBean->get_linked_beans($fieldId, $relModule);
+                            $relatedBeans = $thisBean->get_linked_beans($fieldId, $relModule, false, true);
                             foreach ($relatedBeans as $relatedBean) {
                                 $beanDataArray[$fieldId]['beans']->{$relatedBean->id} = $this->mapBeanToArray($relModule, $relatedBean);
                             }

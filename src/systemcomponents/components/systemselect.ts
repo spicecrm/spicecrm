@@ -8,8 +8,8 @@ import {
     Component, ContentChildren,
     ElementRef,
     forwardRef,
-    Input, OnDestroy, QueryList,
-    Renderer2,
+    Input, OnChanges, OnDestroy, QueryList,
+    Renderer2, SimpleChanges,
     ViewChild,
     ViewContainerRef
 } from "@angular/core";
@@ -18,6 +18,7 @@ import {SystemDropdownTriggerDirective} from "../../directives/directives/system
 import {SystemSelectOption} from "./systemselectoption";
 import {SystemSelectNgModelValue, SystemSelectOptionI} from "../interfaces/systemcomponents.interfaces";
 import {Subscription} from "rxjs";
+import {layout} from "../../services/layout.service";
 
 /**
  * @ignore
@@ -79,10 +80,6 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      */
     public searchList: SystemSelectOptionI[] = [];
     /**
-     * holds a boolean to show/hide the results list
-     */
-    public searchListIsVisible: boolean = false;
-    /**
      * holds the focused dom item data
      */
     public focusedItem: SystemSelectOptionI;
@@ -107,6 +104,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
 
     constructor(public elementRef: ElementRef,
                 public cdRef: ChangeDetectorRef,
+                public layout: layout,
                 public renderer: Renderer2) {
     }
 
@@ -149,7 +147,11 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      */
     public writeValue(focusedItemOrString: string | SystemSelectNgModelValue) {
 
-        if (!focusedItemOrString) return;
+        if (!focusedItemOrString) {
+            this.value = undefined
+            this.inputIsVisible = true;
+            return;
+        }
 
         if(typeof focusedItemOrString == 'string') {
             const focusedItem = this.searchList.find(e => e.id == focusedItemOrString);
@@ -157,9 +159,11 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
                 this.value = focusedItemOrString;
             } else {
                 this.focusedItem = focusedItem;
+                this.inputIsVisible = false;
             }
         } else {
             this.focusedItem = focusedItemOrString;
+            this.inputIsVisible = false;
         }
 
         this.cdRef.detectChanges();
@@ -193,19 +197,23 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
                 break;
             case 'Escape':
                 event.stopPropagation();
-                this.setSearchListVisible(false);
+                this.dropdownTrigger.close();
                 break;
             default:
                 if (!this.value) {
                     this.onChange(undefined);
                 }
                 this.filterSearchList();
+                if (this.searchList.length > 0) {
+                    this.focusedItem = this.searchList[0];
+                }
                 break;
         }
 
         if (this.searchList.length == 0 || event.key == 'Enter') {
-
-            this.setSearchListVisible(false);
+            this.dropdownTrigger.close();
+        } else if (event.key != 'Escape' && !this.dropdownTrigger.dropDownOpen && this.searchList.length > 0) {
+            this.dropdownTrigger.open();
         }
 
         this.cdRef.detectChanges();
@@ -215,8 +223,6 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      * handle input focus and show the search list
      */
     public onFocus() {
-
-        this.setSearchListVisible(true);
         this.inputIsVisible = true;
     }
 
@@ -224,22 +230,8 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      * handle input blur the hide the result list
      */
     public onBlur() {
-        this.inputIsVisible = false;
-        this.setSearchListVisible(false);
-    }
-
-    /**
-     * handle input click to open the list
-     * @param event
-     */
-    public onInputClick(event: MouseEvent) {
-
-        if (!this.searchListIsVisible) {
-            this.searchList = this.generateSearchList();
-        }
-
-        this.setSearchListVisible(true);
-        event.stopPropagation();
+            this.value = undefined;
+            this.inputIsVisible = false;
     }
 
     /**
@@ -249,32 +241,11 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      * @private
      */
     public itemClicked(listItem: SystemSelectOptionI, event: MouseEvent) {
-
-        this.setSearchListVisible(false);
-
         this.emitValue(listItem);
         this.focusedItem = listItem;
         this.value = undefined;
 
         this.inputIsVisible = false;
-
-        if (event.stopPropagation) event.stopPropagation();
-    }
-
-    /**
-     * hide the search list and destroy the outside click listener
-     */
-    public setSearchListVisible(bool: boolean) {
-
-        this.searchListIsVisible = bool && this.searchList.length > 0;
-
-        if (!bool && this.dropdownTrigger.dropDownOpen) {
-            this.dropdownTrigger.toggleDropdown();
-        }
-
-        if (bool && !this.dropdownTrigger.dropDownOpen) {
-            this.dropdownTrigger.toggleDropdown();
-        }
     }
 
     /**
@@ -282,22 +253,21 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      * @private
      */
     public filterSearchList() {
-        this.setSearchListVisible(true);
         this.focusedItem = undefined;
 
         this.searchList = this.generateSearchList();
 
         if (!this.value || this.searchList.length == 0) return;
 
-        this.searchList = this.searchList.filter(e => e.name.toLowerCase().indexOf(this.value.toLowerCase()) > -1);
+        this.searchList = this.searchList.filter(e => e.isGroup || e.content.toLowerCase().indexOf(this.value.toLowerCase()) > -1);
 
         this.searchList.forEach(e => {
 
-            const position = e.name.toLowerCase().indexOf(this.value.toLowerCase());
+            const position = e.content.toLowerCase().indexOf(this.value.toLowerCase());
 
             if (position == -1) return;
 
-            e.content = this.generateHighlightHTMLContent(e.name, position);
+            e.content = this.generateHighlightHTMLContent(e.content, position);
         });
     }
 
@@ -348,13 +318,13 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
                 if (!this.sortReversed) {
                     this.options.filter(e => e.group == g)
                     .forEach((e) =>
-                        searchList.push({id: e.value, name: e.display, content: e.display, group: g, inactive: e.inactive})
+                        searchList.push({id: e.value, name: e.display, content: e.displayselect ?? e.display, group: g, inactive: e.inactive})
                     );
                 } else {
                     // reversed sorting (desc -> asc)
                     this.options.filter(e => e.group == g)
                     .forEach((e) =>
-                        searchList.push({id: e.value, name: e.display, content: e.display, group: g, inactive: e.inactive})
+                        searchList.push({id: e.value, name: e.display, content: e.displayselect ?? e.display, group: g, inactive: e.inactive})
                     );
                 }
             }
@@ -370,7 +340,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      */
     public navigateThroughResultList(event: KeyboardEvent) {
 
-        let list = !this.searchListIsVisible ? this.generateSearchList() : this.searchList;
+        let list = !this.dropdownTrigger.dropDownOpen ? this.generateSearchList() : this.searchList;
         list = list.filter(e => !e.isGroup);
 
         if (list.length == 0) {
@@ -390,7 +360,8 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
             this.focusedItem = nextItem;
         }
 
-        if (!this.searchListIsVisible && !!nextItem) {
+        if (!this.dropdownTrigger.dropDownOpen && !!nextItem) {
+            this.value = nextItem.name;
             this.emitValue(nextItem);
         }
 
@@ -439,6 +410,6 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
         this.inputIsVisible = true;
         this.cdRef.detectChanges();
         inputContainer.focus();
+        inputContainer.click();
     }
-
 }

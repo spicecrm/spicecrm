@@ -28,7 +28,7 @@ export class AdministrationConfiguratorItem {
     get divStyle(){
         let itemwidth = parseInt(this.parentWidth, 10) / this.fields.length;
         return {
-            'max-width': itemwidth < 200 ? '200px' : itemwidth + 'px'
+            'max-width': itemwidth < 400 ? '400px' : itemwidth + 'px'
         }
     }
 
@@ -115,6 +115,10 @@ export class AdministrationConfiguratorItem {
 
     public getForeignKeys(fieldname){
         return this.administrationconfigurator.foreignkeys[fieldname].sort((a, b) => a.display.localeCompare(b.display));
+    }
+
+    public getForeignKeyValue(fieldname){
+        return this.entry.data[fieldname] ? {id: this.entry.data[fieldname], name: this.getForeignName(this.entry.data[fieldname])} : undefined;
     }
 
     public goDetail(){

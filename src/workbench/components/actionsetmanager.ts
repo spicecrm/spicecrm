@@ -4,7 +4,6 @@
 import {
     Component
 } from '@angular/core';
-import {Subject} from 'rxjs';
 
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
@@ -480,21 +479,5 @@ export class ActionsetManager {
                 }
             }
         })
-    }
-
-    /**
-     * sets the version
-     * @param version
-     */
-    public setVersion(version: {name: string;}) {
-        this.currentActionSet.version = version?.name;
-    }
-
-    /**
-     * sets the package
-     * @param packageData
-     */
-    public setPackage(packageData: {name: string;}) {
-        this.currentActionSet.package = packageData?.name;
     }
 }

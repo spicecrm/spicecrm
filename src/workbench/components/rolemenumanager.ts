@@ -13,7 +13,6 @@ import {SystemViewProviderDirective} from "../../directives/directives/systemvie
 import {toast} from "../../services/toast.service";
 import {modal} from "../../services/modal.service";
 import {RoleMenuManagerEditRoleModal} from "./rolemenumanagereditrolemodal";
-import {switchMap} from "rxjs";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {configurationService} from "../../services/configuration.service";
 
@@ -45,9 +44,6 @@ export class RoleMenuManager implements OnInit {
     public editableRoleScope: boolean;
     public filterModules:string[] =[];
 
-    public package: string = '';
-    public version: string = '';
-
     @ViewChildren(SystemViewProviderDirective) private viewProviders: QueryList<SystemViewProviderDirective>;
 
     private roleModulesBackup: { [key: symbol]: RoleModuleI } = {};
@@ -70,9 +66,6 @@ export class RoleMenuManager implements OnInit {
         delete this.roleModulesBackup[roleModule.id];
         if (!roleModule.id) roleModule.id = this.backend.modelutilities.generateGuid();
         roleModule.sysuirole_id = this.selectedRoleId;
-        roleModule.package = this.package;
-        roleModule.version = this.version;
-
 
         const table = roleModule.scope == 'global' ? 'sysuirolemodules' : 'sysuicustomrolemodules';
         const data = {...roleModule};
@@ -302,20 +295,6 @@ export class RoleMenuManager implements OnInit {
             });
         }
     }
-    /**
-     * sets the version
-     * @param version
-     */
-    public setVersion(version: {name: string;}) {
-        this.version = version?.name;
-    }
 
-    /**
-     * sets the package
-     * @param packageData
-     */
-    public setPackage(packageData: {name: string;}) {
-        this.package = packageData?.name;
-    }
 }
 

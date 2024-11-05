@@ -85,6 +85,10 @@ class SpiceFTSUtils
             'type' => 'keyword',
             'index' => true
         ],
+        'is_inactive' => [
+            'type' => 'keyword',
+            'index' => true
+        ],
         'date_entered' => [
             'type' => 'date',
             'index' => false,
@@ -105,6 +109,15 @@ class SpiceFTSUtils
         ],
         '_location' => [
             'type' => 'geo_point'
+        ],
+        /** for the territorymanagement */
+        'spiceacl_primary_territory' => [
+            'type' => 'keyword',
+            'index' => true
+        ],
+        'spiceacl_territories_hash' => [
+            'type' => 'keyword',
+            'index' => true
         ]
     ];
 

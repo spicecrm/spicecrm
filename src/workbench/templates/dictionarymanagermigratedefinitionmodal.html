@@ -57,11 +57,11 @@
                 </div>
                 <div class="slds-size--1-of-4 slds-p-right--xxx-small slds-form-element__control">
                     <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
-                    <system-input-text [(ngModel)]="dictionarydefinition.package"></system-input-text>
+                    <system-input-package [(ngModel)]="dictionarydefinition.package"/>
                 </div>
                 <div class="slds-size--1-of-4 slds-p-left--xxx-small slds-form-element__control">
                     <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
-                    <system-input-text [(ngModel)]="dictionarydefinition.version"></system-input-text>
+                    <system-input-version [(ngModel)]="dictionarydefinition.version"/>
                 </div>
             </div>
             <div  class="slds-grid">
@@ -134,10 +134,10 @@
                                     package / version
                                 </td>
                                 <td colspan="3">
-                                    <system-input-text [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.package"></system-input-text>
+                                    <system-input-package [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.package"/>
                                 </td>
                                 <td colspan="3">
-                                    <system-input-text [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.version"></system-input-text>
+                                    <system-input-version [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.version"/>
                                 </td>
                             </tr>
                             <tr>
@@ -224,8 +224,8 @@
                                 </select>
                             </div>
                         </td>
-                        <td><system-input-text [(ngModel)]="index.package"></system-input-text></td>
-                        <td><system-input-text [(ngModel)]="index.version"></system-input-text></td>
+                        <td><system-input-package [(ngModel)]="index.package"/></td>
+                        <td><system-input-version [(ngModel)]="index.version"/></td>
                         <td>{{index.fields.join(', ')}}</td>
                     </tr>
                 </tbody>
@@ -262,8 +262,8 @@
                                 </select>
                             </div>
                         </td>
-                        <td><system-input-text [(ngModel)]="template.package"></system-input-text></td>
-                        <td><system-input-text [(ngModel)]="template.version"></system-input-text></td>
+                        <td><system-input-package [(ngModel)]="template.package"></system-input-package></td>
+                        <td><system-input-version [(ngModel)]="template.version"></system-input-version></td>
                     </tr>
                 </tbody>
             </table>

@@ -3,7 +3,7 @@
         <h2 class="slds-text-heading--medium "><system-label label="LBL_DICTIONARY_ITEM"></system-label>: {{componentconfig.dictionary}} ({{count}} <system-label label="LBL_RECORDS"></system-label>)</h2>
         <button class="slds-button slds-button--neutral" (click)="addEntry()"><system-label label="LBL_ADD"></system-label></button>
     </div>
-    <div class="slds-scrollable slds-grow" style="min-height: 0" [system-overlay-loading-spinner]="administrationconfigurator.loading">
+    <div class="slds-grow" style="min-height: 0" [system-overlay-loading-spinner]="administrationconfigurator.loading" (system-to-bottom)="loadmore()">
         <table class="slds-table slds-table--bordered">
             <thead style="position: sticky; top: 0; z-index: 20" class="slds-theme--shade">
             <tr class="slds-text-title--caps">
@@ -46,8 +46,9 @@
             </tr>
             </thead>
             <tbody>
-            <tr class="slds-align-top slds-theme--default" administration-configurator-item *ngFor="let entry of getEntries(); trackBy: trackByFn" [parentWidth]="width" [entry]="entry" [fields]="getFields()">
-            </tr>
+                @for (entry of getEntries(); track entry.id) {
+                    <tr class="slds-align-top slds-theme--default" administration-configurator-item  [parentWidth]="width" [entry]="entry" [fields]="getFields()"></tr>
+                }
             </tbody>
         </table>
     </div>

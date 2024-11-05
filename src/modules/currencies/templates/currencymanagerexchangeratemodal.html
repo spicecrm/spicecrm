@@ -1,0 +1,30 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        {{currency?.name}}&nbsp;-&nbsp;{{currency?.iso4217}}&nbsp;-&nbsp;{{currency?.currency_symbol}}
+    </system-modal-header>
+    <system-modal-content system-modal-content-grow margin="none">
+        <div class="slds-scrollable slds-grow">
+            <table class="slds-table slds-table--bordered">
+                <thead style="position: sticky; top: 0; z-index: 20" class="slds-theme--shade">
+                    <tr class="slds-text-title--caps">
+                        <th>
+                            <system-label label="LBL_DATE"></system-label>
+                        </th>
+                        <th class="slds-text-align--right">
+                            <system-label label="LBL_EXCHANGERATE"></system-label>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="vertical-align: middle" class="slds-align-top" *ngFor="let exchangerate of exchangerates">
+                        <td ><system-display-datetime [date]="exchangerate.exchangerate_date" [displayTime]="false"/></td>
+                        <td class="slds-text-align--right"><system-display-number [number]="exchangerate.exchange_rate" precision="5"/></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"/></button>
+    </system-modal-footer>
+</system-modal>

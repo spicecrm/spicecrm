@@ -297,6 +297,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
      * @param date
      */
     public goToDay(date) {
+        if (this.calendar.asPicker || this.calendar.isDashlet) return;
         this.calendar.gotToDayView(date);
     }
 

@@ -14,10 +14,9 @@ import {FormsModule} from "@angular/forms";
 
 import {CurrencyManager} from "./components/currencymanager";
 import {AddCurrencyItem} from "./components/addcurrencyitem";
-import {SystemCurrency} from "./components/systemcurrency";
-import {CurrencyList} from "./components/currencylist";
-
-
+import {CurrencyManagerExchangerateModal} from "./components/currencymanagerexchangeratemodal";
+import {CurrencyManagerIsActive} from "./components/currencymanagerisactive";
+import {CurrencyManagerIsSystemCurrency} from "./components/currencymanagerissystemcurrency";
 
 
 @NgModule({
@@ -32,9 +31,10 @@ import {CurrencyList} from "./components/currencylist";
     ],
     declarations: [
         CurrencyManager,
-        CurrencyList,
-        AddCurrencyItem,
-        SystemCurrency
+        CurrencyManagerExchangerateModal,
+        CurrencyManagerIsActive,
+        CurrencyManagerIsSystemCurrency,
+        AddCurrencyItem
     ]
 })
 export class ModuleCurrencies {}

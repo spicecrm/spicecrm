@@ -2,16 +2,21 @@
 
 namespace SpiceCRM\includes\SpiceGDPRManager\schedulerjobtasks;
 
+use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 
 class SpiceGDPRManagerSchedulerJobTasks
 {
-    public function processRetentions()
-    {
+    /**
+     * @throws DatabaseException
+     * @throws Exception
+     */
+    public function processRetentions() {
         $db = DBManagerFactory::getInstance();
         $retentions = $db->query("SELECT * FROM sysgdprretentions WHERE deleted = 0 AND active = 1");
         while ($retention = $db->fetchByAssoc($retentions)) {
@@ -31,7 +36,7 @@ class SpiceGDPRManagerSchedulerJobTasks
             $relatedModules = explode(',', $retention['delete_related']);
 
             // query the ids
-            $ids = $db->query($query);
+            if($query) $ids = $db->query($query);
             while ($id = $db->fetchByAssoc($ids)) {
                 switch ($retention['retention_type']) {
                     case 'I';
@@ -65,6 +70,9 @@ class SpiceGDPRManagerSchedulerJobTasks
 
                         break;
                 }
+
+                // check if we've got another tasks after retention task was executed
+                $this->furtherRetentionTasks(['bean_module' => $moduleFilter->filtermodule, 'bean_id' => $id['id'], 'retention_type' => $retention['retention_type']]);
             }
         }
         return true;
@@ -195,6 +203,26 @@ class SpiceGDPRManagerSchedulerJobTasks
                     }
                 }
                 break;
+        }
+    }
+
+    /**
+     * calls method in SpiceGDPRManager
+     * @param array $params
+     * @return void
+     * @throws Exception
+     */
+    private function furtherRetentionTasks(array $params): void
+    {
+        $class = 'SpiceCRM\\includes\\SpiceGDPRManager\\SpiceGDPRManager';
+        $classCustom = 'SpiceCRM\\custom\\includes\\SpiceGDPRManager\\SpiceGDPRManager';
+
+        if (class_exists($classCustom)) {
+            $class = $classCustom;
+        }
+
+        if (method_exists($class, 'afterProcessRetentionTask')) {
+            $class::afterProcessRetentionTask(['bean_module' => $params['bean_module'], 'bean_id' => $params['bean_id'], 'retention_type' => $params['retention_type']]);
         }
     }
 }

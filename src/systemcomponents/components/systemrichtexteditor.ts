@@ -657,6 +657,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     }
 
     /**
+     * @deprecated
      * add video
      */
     public addVideo() {
