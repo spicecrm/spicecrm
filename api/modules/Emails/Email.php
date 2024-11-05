@@ -271,10 +271,6 @@ class Email extends SpiceBean
             if ($result['result'] == true) {
                 $this->status = 'sent';
 
-                foreach ($this->to() as $address) {
-                    EmailAddress::resetBounceCounter($address['email']);
-                }
-
             } else {
                 $this->status = $result['errors'] ? 'send_error' : 'created';
             }
@@ -906,8 +902,9 @@ class Email extends SpiceBean
 
         if (!$handlingLink) return;
 
+        // load the document with proper encoding
         $dom = new DOMDocument();
-        $dom->loadHTML($this->body);
+        $dom->loadHTML( '<?xml encoding="utf-8"?>'.$this->body);
 
         [$parentType, $parentId] = $this->getTrackingParentData();
 
@@ -931,7 +928,9 @@ class Email extends SpiceBean
             $this->assignBeanToEmail($trackingId, 'EmailTrackingLinks');
             $node->setAttribute('href', $trackingLink);
         }
-        $this->body = $dom->saveHTML();
+
+        // save full html or body only depending on what we got in
+        $this->body = strpos($this->body, '<html>') >= 0 ? $dom->saveHTML() : str_replace(['<body>', '</body>'], '', $dom->saveHTML($dom->getElementsByTagName('body')->item(0))); // $dom->saveHTML('body');
     }
 
     /**
