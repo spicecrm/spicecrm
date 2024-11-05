@@ -34,8 +34,8 @@ import {UserCreateRoles} from "./components/usercreateroles";
 import {UserCreateProfiles} from "./components/usercreateprofiles";
 import {UserCreatePassword} from "./components/usercreatepassword";
 import {UserSet2FAModal} from "./components/userset2famodal";
-
-
+import {UserSecuritySettingsModal} from "./components/usersecuritysettingsmodal";
+import {UserSecurityPasskeyButton} from "./components/usersecuritypasskeybutton";
 
 @NgModule({
     imports: [
@@ -72,7 +72,9 @@ import {UserSet2FAModal} from "./components/userset2famodal";
         UserDeactivateSelectUser,
         UserSignature,
         User2FAConfiguration,
-        UserSet2FAModal
+        UserSet2FAModal,
+        UserSecuritySettingsModal,
+        UserSecurityPasskeyButton
     ]
 })
 export class ModuleUsers {

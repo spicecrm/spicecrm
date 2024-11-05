@@ -1,0 +1,7 @@
+@if (currency.is_systemcurrency == 1){
+    <system-utility-icon icon="light_bulb" [colorclass]="color" size="x-small"/>
+} @else {
+    <button #activatebutton class="slds-button slds-button--icon" (click)="toggle()">
+        <system-button-icon icon="light_bulb" [colorclass]="color"/>
+    </button>
+}

@@ -368,8 +368,12 @@ class SpiceDictionaryController
             // duploicate check
             $isDuplicate = false;
             foreach($spiceDictionaryRelationships as $spiceDictionaryRelationship){
-                if($rel['id'] == $spiceDictionaryRelationship['id']) $isDuplicate = true;
-                if($rel['relationship_name'] == $spiceDictionaryRelationship['relationship_name']) $isDuplicate = true;
+                if($rel['id'] == $spiceDictionaryRelationship['id']) {
+                    $isDuplicate = true;
+                }
+                if($rel['relationship_name'] == $spiceDictionaryRelationship['relationship_name']) {
+                    $isDuplicate = true;
+                }
                 if($isDuplicate) break;
 
             }

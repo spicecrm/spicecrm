@@ -28,11 +28,11 @@
             </div>
             <div class="slds-size--1-of-4 slds-p-horizontal--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
-                <field-package [package]="package" (packageSelected)="setPackage($event)"></field-package>
+                <system-input-package [(ngModel)]="package"/>
             </div>
             <div class="slds-size--1-of-4 slds-p-left--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
-                <field-version [version]="version" (versionSelected)="setVersion($event)"></field-version>
+                <system-input-version [(ngModel)]="version"/>
             </div>
         </div>
     </system-modal-content>

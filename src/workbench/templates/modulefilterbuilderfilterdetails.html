@@ -12,7 +12,7 @@
             <label class="slds-form-element__label" ><system-label label="LBL_PACKAGE"></system-label></label>
             <div class="slds-form-element slds-col">
                 <div class="slds-form-element__control">
-                    <field-package [package]="filter.package" (packageSelected)="setPackage($event)"></field-package>
+                    <system-input-package [(ngModel)]="filter.package"/>
                 </div>
             </div>
         </div>
@@ -20,7 +20,7 @@
             <label class="slds-form-element__label" ><system-label label="LBL_VERSION"></system-label></label>
             <div class="slds-form-element slds-col">
                 <div class="slds-form-element__control">
-                    <field-version [version]="filter.version" (versionSelected)="setVersion($event)"></field-version>
+                    <system-input-version [(ngModel)]="filter.version"/>
                 </div>
             </div>
         </div>

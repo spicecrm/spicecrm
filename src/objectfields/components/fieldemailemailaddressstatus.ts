@@ -16,6 +16,10 @@ export class fieldEmailEmailAddressStatus {
     @Input() public status: 'opted_in' | 'pending' | 'opted_out';
 
     @Output() private status$ = new EventEmitter<'opted_in' | 'pending' | 'opted_out'>();
+    /**
+     * disabled flag
+     */
+    @Input() public disabled: boolean = false;
 
     constructor(private modal: modal) {
     }
@@ -76,7 +80,7 @@ export class fieldEmailEmailAddressStatus {
             {value: 'opted_out', display: 'LBL_OPTED_OUT'}
         ];
 
-        this.modal.prompt('input', null, 'LBL_EMAIL_ADDRESSES', 'default', this.status, options, 'radio')
+        this.modal.prompt('input', null, 'LBL_OPT_IN_STATUS', 'default', this.status, options, 'radio')
             .subscribe(answer => {
                 if (!answer) return;
                 this.status$.emit(answer);

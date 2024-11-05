@@ -47,7 +47,7 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public currency: currency, public userpreferences: userpreferences) {
         super(model, view, language, metadata, router);
-        this.currencies = this.currency.getCurrencies();
+        this.currencies = this.currency.getCurrencies().sort((a, b) => a.name.localeCompare(b.name));
     }
 
     /**
@@ -116,19 +116,13 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
      * helper to get the currency symbol
      */
     public getCurrencySymbol(): string {
-        let currencySymbol: string;
         let currencyid = -99;
         if (this.currencyidfield) {
             if (!this.model.getField(this.currencyidfield)) return '';
             else currencyid = this.model.getField(this.currencyidfield);
         }
-        this.currencies.some(currency => {
-            if (currency.id == currencyid) {
-                currencySymbol = currency.symbol;
-                return true;
-            }
-        });
-        return currencySymbol;
+
+        return this.currency.getCurrencySymbol(currencyid);
     }
 
 

@@ -12,6 +12,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SystemTemplateFunctions;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
@@ -961,6 +962,10 @@ class Compiler
                         if (!empty($obj->{$part})) {
                             $value = '<img src="data:' . $obj->{$part} . '" style="max-width:100%;max-height:100%;margin:0">';
                         }
+                        break;
+                    case 'file':
+                        $file = base64_encode(file_get_contents(StreamFactory::getPathPrefix('upload') . $obj->{$part.'_md5'}));
+                        $value = '<img style="max-width:100%;max-height:100%;" src="data:image/png;base64,' . $file . '" style="max-width:100%;max-height:100%;margin:0">';
                         break;
                     default:
                         // moved nl2br to only be added when non specific fields are parsed

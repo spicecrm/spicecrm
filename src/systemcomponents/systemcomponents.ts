@@ -201,13 +201,18 @@ import {SystemProgressIndicatorItem} from "./components/systemprogressindicatori
 import {PackageLoaderReloadLoadedModal} from "./components/packageloaderreloadloadedmodal";
 import {SystemInputDictionary} from "./components/systeminputdictionary";
 import {SystemSelectModuleModal} from "./components/systemselectmodulemodal";
+import {SystemDropdownMobileModal} from "./components/systemdropdownmobilemodal";
+import {CdkPortalOutlet} from "@angular/cdk/portal";
+import {SystemInputPackage} from "./components/systeminputpackage";
+import {SystemInputVersion} from "./components/systeminputversion";
 
 @NgModule({
     imports: [
         DirectivesModule,
         CommonModule,
         FormsModule,
-        DragDropModule
+        DragDropModule,
+        CdkPortalOutlet
     ],
     declarations: [
         PackageLoader,
@@ -277,6 +282,7 @@ import {SystemSelectModuleModal} from "./components/systemselectmodulemodal";
         SystemInputModuleFilter,
         SystemInputModuleField,
         SystemInputNumber,
+        SystemInputPackage,
         SystemInputPassword,
         SystemInputRadio,
         SystemInputRadioButtonGroup,
@@ -287,6 +293,7 @@ import {SystemSelectModuleModal} from "./components/systemselectmodulemodal";
         SystemInputCompanycodes,
         SystemInputBackendMethod,
         SystemInputBase64,
+        SystemInputVersion,
         SystemInstallerComponent,
         SystemLabel,
         SystemLabelFieldname,
@@ -389,7 +396,8 @@ import {SystemSelectModuleModal} from "./components/systemselectmodulemodal";
         PackageLoaderReloadLoadedModal,
         SystemInputDictionary,
         SystemInputRoles,
-        SystemSelectModuleModal
+        SystemSelectModuleModal,
+        SystemDropdownMobileModal
     ],
     exports: [
         PaginationControlsComponent,
@@ -555,7 +563,10 @@ import {SystemSelectModuleModal} from "./components/systemselectmodulemodal";
         PackageLoaderReloadLoadedModal,
         SystemInputDictionary,
         SystemInputRoles,
-        SystemSelectModuleModal
+        SystemSelectModuleModal,
+        SystemDropdownMobileModal,
+        SystemInputPackage,
+        SystemInputVersion
     ]
 })
 export class SystemComponents {}

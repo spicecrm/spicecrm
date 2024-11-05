@@ -54,11 +54,22 @@ class SpiceDictionaryDomain
     public function getFieldDefinitions(SpiceDictionaryItem $sysdictionaryItem = null, bool $activeOnly = true){
         $fieldDefinitions = [];
         $db = DBManagerFactory::getInstance();
-        $fieldObjects = $db->query("SELECT id FROM sysdomainfields WHERE sysdomaindefinition_id='{$this->id}' UNION SELECT id FROM syscustomdomainfields WHERE sysdomaindefinition_id='{$this->id}'");
+
+        $fieldObjects = $db->query("SELECT id FROM syscustomdomainfields WHERE sysdomaindefinition_id='{$this->id}'");
         while($fieldObject = $db->fetchByAssoc($fieldObjects)){
-            $fieldDefinitions[] = (new SpiceDictionaryDomainField($fieldObject['id']))->getDefinition($sysdictionaryItem);
+            $definition = (new SpiceDictionaryDomainField($fieldObject['id']))->getDefinition($sysdictionaryItem);
+            $fieldDefinitions[$definition->name] = $definition;
         }
-        return $fieldDefinitions;
+
+
+        $fieldObjects = $db->query("SELECT id FROM sysdomainfields WHERE sysdomaindefinition_id='{$this->id}'");
+        while($fieldObject = $db->fetchByAssoc($fieldObjects)){
+            $definition = (new SpiceDictionaryDomainField($fieldObject['id']))->getDefinition($sysdictionaryItem);
+            if(!isset($fieldDefinitions[$definition->name])) {
+                $fieldDefinitions[$definition->name] = $definition;
+            }
+        }
+        return array_values($fieldDefinitions);
     }
 
     /**
@@ -85,7 +96,8 @@ class SpiceDictionaryDomain
             if($dictionaryitem->itemDefinition->required == 1) $definition->required = 1;
             if(!empty($dictionaryitem->itemDefinition->default_value) || $dictionaryitem->itemDefinition->default_value == 0) $definition->default = $dictionaryitem->itemDefinition->default_value;
             if($dictionaryitem->itemDefinition->descriptions) $definition->descriptions = $dictionaryitem->itemDefinition->descriptions;
-            if($dictionaryitem->itemDefinition->label) $definition->vname = $dictionaryitem->itemDefinition->label;
+            // ToDO: temp fix to preserve domain level field name
+            if($dictionaryitem->itemDefinition->label && !$definition->vname) $definition->vname = $dictionaryitem->itemDefinition->label;
 
             // backward compatibility to push options as well
             if($definition->sysdomainfieldvalidation_id) {

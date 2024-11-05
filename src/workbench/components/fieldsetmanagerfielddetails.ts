@@ -41,27 +41,13 @@ export class FieldsetManagerFieldDetails implements OnChanges {
         this.configValues = this.field.data.fieldconfig;
     }
 
-    public selectFieldType() {
+    public selectFieldType(fieldType) {
+        // set the fieldtype
+        this.configValues.fieldtype = fieldType?.id;
         Object.keys(this.configValues).forEach(k => {
             if (k == 'fieldtype') return;
             delete this.configValues[k];
         });
         this.component = this.metadata.getFieldTypeComponent(this.configValues.fieldtype);
-    }
-
-    /**
-     * sets the version for the fieldsetitem
-     * @param version
-     */
-    public setVersion(version: {name: string;}) {
-        this.currentField.version = version?.name;
-    }
-
-    /**
-     * sets the package for the fieldsetitem
-     * @param packageData
-     */
-    public setPackage(packageData: {name: string;}) {
-        this.currentField.package = packageData?.name;
     }
 }

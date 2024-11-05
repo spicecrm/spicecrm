@@ -12,7 +12,11 @@ import {calendar} from '../services/calendar.service';
     selector: 'calendar-day-dashlet',
     templateUrl: '../templates/calendardaydashlet.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [calendar]
+    providers: [calendar, {provide: 'calendarConfigOverride', useFactory: () => ({
+            isDashlet: true,
+            sheetType: 'Day',
+            sheetHourHeight: 50
+        })}]
 })
 
 export class CalendarDayDashlet implements OnInit {
@@ -33,9 +37,6 @@ export class CalendarDayDashlet implements OnInit {
     constructor(public language: language,
                 public elementRef: ElementRef,
                 public calendar: calendar) {
-        this.calendar.isDashlet = true;
-        this.calendar.sheetType = 'Day';
-        this.calendar.sheetHourHeight = 50;
     }
 
     /**

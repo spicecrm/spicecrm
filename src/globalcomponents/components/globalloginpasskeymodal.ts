@@ -1,18 +1,27 @@
-import {Component, ComponentRef} from '@angular/core';
+import {Component, ComponentRef, OnDestroy, Output} from '@angular/core';
 import {backend} from "../../services/backend.service";
 import {ModalComponentI} from "../../objectcomponents/interfaces/objectcomponents.interfaces";
 import {toast} from "../../services/toast.service";
+import {Subject} from "rxjs";
+import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'global-login-passkey-modal',
     templateUrl: '../templates/globalloginpasskeymodal.html'
 })
 
-export class GlobalLoginPasskeyModal implements ModalComponentI {
-
+export class GlobalLoginPasskeyModal implements ModalComponentI, OnDestroy {
+    /**
+     * reference to self
+     */
     public self: ComponentRef<GlobalLoginPasskeyModal>;
+    /**
+     * emit on success
+     */
+    @Output() onSuccess$ = new Subject<{name: string, icon_light: string, icon_dark: string}>();
 
     constructor(private backend: backend,
+                private modal: modal,
                 private toast: toast) {
     }
 
@@ -24,6 +33,8 @@ export class GlobalLoginPasskeyModal implements ModalComponentI {
         if (!navigator.credentials || !navigator.credentials.create) {
             return console.error('Passkey authentication Browser not supported.');
         }
+
+        const loading = this.modal.await('LBL_PROCESSING');
 
         this.backend.postRequest('authentication/passkey/createArgs', null, {rpId: window.location.hostname}).subscribe({
             next: async createArgs => {
@@ -39,8 +50,16 @@ export class GlobalLoginPasskeyModal implements ModalComponentI {
                 // is the reviver function of JSON.parse()
                 this.recursiveBase64StrToArrayBuffer(window._.omit(createArgs, ['secret']));
 
+                let cred;
+
                 // create credentials
-                const cred: any = await navigator.credentials.create(createArgs);
+                try {
+                    cred = await navigator.credentials.create(createArgs);
+                } catch (e) {
+                    loading.next(true);
+                    loading.complete();
+                    return;
+                }
 
                 // create object
                 const authenticatorAttestationResponse = {
@@ -53,18 +72,32 @@ export class GlobalLoginPasskeyModal implements ModalComponentI {
 
                 this.backend.postRequest('authentication/passkey/processCreate', null, authenticatorAttestationResponse).subscribe({
                     next: authenticatorAttestationServerResponse => {
+
+                        loading.next(true);
+                        loading.complete();
+
                         if (authenticatorAttestationServerResponse.success) {
                             this.toast.sendToast('LBL_SUCCESS', 'success');
+                            this.onSuccess$.next(authenticatorAttestationServerResponse.metadata);
+                            this.onSuccess$.complete();
                             this.cancel();
                         } else {
                             this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                             console.error('passkey create args error: ', authenticatorAttestationServerResponse.msg || 'unknown error occured');
                         }
                     },
-                    error: () => this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error')
+                    error: () => {
+                        loading.next(true);
+                        loading.complete();
+                        this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                    }
                 });
             },
-            error: () => this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error')
+            error: () => {
+                loading.next(true);
+                loading.complete();
+                this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+            }
         });
 
     }
@@ -115,5 +148,9 @@ export class GlobalLoginPasskeyModal implements ModalComponentI {
                 }
             }
         }
+    }
+
+    public ngOnDestroy() {
+        this.onSuccess$.complete();
     }
 }

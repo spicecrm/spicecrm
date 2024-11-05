@@ -1,25 +1,11 @@
 /**
  * @module ModuleUsers
  */
-import {ChangeDetectorRef, Component, OnInit, SkipSelf, ViewChild, ViewContainerRef} from "@angular/core";
-import {model} from "../../../services/model.service";
-import {modelutilities} from "../../../services/modelutilities.service";
-import {view} from "../../../services/view.service";
-import {language} from "../../../services/language.service";
-import {toast} from "../../../services/toast.service";
+import {Component} from "@angular/core";
 import {backend} from "../../../services/backend.service";
-import {Observable, Subject} from "rxjs";
-import {metadata} from "../../../services/metadata.service";
 import {configurationService} from "../../../services/configuration.service";
-import {helper} from '../../../services/helper.service';
 import {session} from "../../../services/session.service";
 import {modal} from "../../../services/modal.service";
-import {GlobalLoginPasskeyModal} from "../../../globalcomponents/components/globalloginpasskeymodal";
-
-/**
- * @ignore
- */
-declare var moment: any;
 
 @Component({
     selector: 'user-set-2fa-modal',
@@ -32,14 +18,6 @@ export class UserSet2FAModal  {
     public user_2fa_method: string;
 
     public capabilityConfig: any;
-    /**
-     * holds the registered passkey name and icon
-     */
-    public passkeyMetadata: {name: string, icon_dark: string, icon_light: string} = undefined;
-    /**
-     * loading flag for passkey
-     */
-    public loadingPasskey: boolean = false;
 
     constructor(
         public config: configurationService,
@@ -50,8 +28,6 @@ export class UserSet2FAModal  {
         this.capabilityConfig = this.config.getCapabilityConfig('login');
 
         if(this.currentMethod) this.user_2fa_method = this.currentMethod;
-
-        this.checkPasskey();
     }
 
     get smsEnabled(){
@@ -59,9 +35,6 @@ export class UserSet2FAModal  {
     }
     get emailEnabled(){
         return this.capabilityConfig.twofactor.email;
-    }
-    get passkeyEnabled(){
-        return navigator.credentials && navigator.credentials.create;
     }
 
     get candelete(){
@@ -86,53 +59,6 @@ export class UserSet2FAModal  {
 
     get canSave(){
         return this.user_2fa_method != this.currentMethod;
-    }
-
-    /**
-     * create a passkey
-     */
-    public createPasskey() {
-        if (this.passkeyMetadata) {
-            const isDeleting = this.modal.await('LBL_PROCESSING');
-            this.backend.deleteRequest('authentication/passkey/' + this.session.authData.userId, {rpId: window.location.hostname}).subscribe({
-                next: () => {
-                    this.passkeyMetadata = undefined;
-                }
-            });
-        } else {
-            this.close();
-            this.modal.openStaticModal(GlobalLoginPasskeyModal, true);
-        }
-    }
-
-    /**
-     * check if a passkey exists for the user
-     */
-    public checkPasskey() {
-        this.loadingPasskey = true;
-
-        this.backend.getRequest('authentication/passkey/' + this.session.authData.userId, {rpId: window.location.hostname}).subscribe({
-            next: res => {
-                this.loadingPasskey = false;
-                this.passkeyMetadata = res;
-            },
-            error: () => this.loadingPasskey = false
-        });
-    }
-
-    /**
-     * remove passkey
-     */
-    public removePasskey() {
-        this.loadingPasskey = true;
-
-        this.backend.deleteRequest('authentication/passkey/' + this.session.authData.userId, {rpId: window.location.hostname}).subscribe({
-            next: () => {
-                this.passkeyMetadata = undefined;
-                this.loadingPasskey = false;
-            },
-            error: () => this.loadingPasskey = false
-        });
     }
 
     public save(){
@@ -208,7 +134,7 @@ export class UserSet2FAModal  {
             next: (token) => {
                 if(token) {
                     let awaitModal = this.modal.await('LBL_DELETING');
-                    this.backend.deleteRequest(`authentication/2fa/${token}`).subscribe({
+                    this.backend.deleteRequest(`authentication/2fa/${this.currentMethod}/${token}`).subscribe({
                         next: (res) => {
                             awaitModal.emit(true);
                             if(res.success) {
