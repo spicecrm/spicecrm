@@ -32,6 +32,11 @@ import {subscription} from "../../services/subscription.service";
 export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
 
     /**
+     * indicate that the values have been loaded
+     */
+    public loaded: boolean = false;
+
+    /**
      * the searchterm entered and used in the categories search
      *
      * @private
@@ -157,16 +162,21 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
                 (res: any) => {
                     categories[this.treeid] = res;
                     this.config.setData('categories', categories);
+                    // set to laoded
+                    this.loaded = true;
                     // emit that the tree has been loaded
                     this.broadcast.broadcastMessage('categories.loaded', this.treeid);
                 }
             );
+        } else {
+            this.loaded = true;
         }
 
         // subvscribe to the brioadcast when the categories are loaded
         this.subscriptions.add(
             this.broadcast.message$.subscribe( message => {
                 if (message.messagetype === 'categories.loaded' && message.messagedata === this.treeid) {
+
                     this.changeDetectorRef.detectChanges();
                 }
             })
@@ -178,6 +188,16 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         // kill the listeners
         if(this.escKeyListener) this.escKeyListener();
         if(this.clickListener) this.clickListener();
+    }
+
+    /**
+     * overwrite isEditable so this cannot be editaed if no values are defined
+     * @param field
+     */
+    public isEditable(field: string = this.fieldname): boolean {
+        if(!this.loaded || this.categories.length == 0) return false;
+
+        return super.isEditable(field);
     }
 
     get categories(){

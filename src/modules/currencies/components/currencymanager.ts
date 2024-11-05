@@ -10,27 +10,40 @@ import {currency} from '../../../services/currency.service';
 import {toast} from "../../../services/toast.service";
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
+import {sysCurrency} from "../interfaces/currencies.interfaces";
 
 @Component({
     selector: 'currency-manager',
-    templateUrl: '../templates/currencymanager.html',
-    providers: [view, model]
+    templateUrl: '../templates/currencymanager.html'
 })
 
 export class CurrencyManager implements OnInit {
-    public currencies: any = [];
+
+    /**
+     * the loaded currencies
+     */
+    public _currencies: sysCurrency[] = [];
+
+    /**
+     * loading indicator
+     */
     public loading: boolean = true;
 
+    /**
+     * a search string
+     */
+    public filterString: string = '';
+
+    /**
+     * identifies if we have a systemcurency
+     */
+    public hasSystemCurrency: boolean = true;
 
     constructor(
-        public metadata: metadata,
-        public language: language,
         public backend: backend,
         public currency: currency,
-        public model: model,
         public modal: modal,
         public toast: toast,
-        public view: view
     ) {
 
     }
@@ -39,49 +52,48 @@ export class CurrencyManager implements OnInit {
      * gets the currencies from backend
      */
     public ngOnInit() {
-        this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
-            this.backend.getRequest('module/Currencies').subscribe(data => {
-                if (data) {
-                    for (let currency of data) {
-                        this.currencies.push({
-                            id: currency.id,
-                            name: currency.name,
-                            iso: currency.iso4217,
-                            symbol: currency.symbol,
-                            conversion_rate: currency.conversion_rate
-                        });
-                    }
-                } else {
-                    this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
-                }
+        this.loadCurrencies();
+    }
+
+    private loadCurrencies(){
+        this.backend.getRequest('system/currencies').subscribe({
+            next: (currencies) => {
+                this._currencies = currencies.sort((a, b) => a.name.localeCompare(b.name));
+
+                // check if we have a system currency
+                this.hasSystemCurrency = this._currencies.filter(c => c.is_systemcurrency == 1).length > 0;
+
                 this.loading = false;
-                modalRef.instance.self.destroy();
-            });
-
-        });
+            }
+        })
     }
 
-    /**
-     * reload the currencies when the event emitter has been emitted
-     * @param event: boolean
-     */
-    public reload(event) {
-        if (event) {
-            this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
-                this.backend.getRequest('module/Currencies').subscribe(data => {
-                    if (data) {
-                        this.currencies = data;
-                        this.currencies.shift();
-                    } else {
-                        this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
-                    }
-                    this.loading = false;
-                    modalRef.instance.self.destroy();
-                });
-            });
-        }
-
+    public openRates(currency: sysCurrency){
+        let awaitmodal = this.modal.await('LBL_LOADING')
+        this.modal.openModal('CurrencyManagerExchangerateModal').subscribe({
+            next: (modal) => {
+                modal.instance.currency = currency;
+                awaitmodal.emit(true);
+            },
+            error: (e)  => {
+                awaitmodal.emit(true);
+            }
+        })
     }
 
+    get currencies(){
+        return this.filterString ? this._currencies.filter(c => c.name.toLowerCase().indexOf(this.filterString.toLowerCase()) >= 0) : this._currencies
+    }
 
+    public setSystemCurrency(currencyId){
+        let currentSystemCurrency = this._currencies.find(c => c.is_systemcurrency == 1);
+        if(currentSystemCurrency) currentSystemCurrency.is_systemcurrency = 0;
+        this._currencies.find(c => c.id == currencyId).is_systemcurrency = 1;
+    }
+
+    public setCurrencyInactive(currencId, inactive){
+        this._currencies.find(c => c.id == currencId).is_inactive = inactive ? 1 : 0;
+        //this._currencies = [];
+        //this.loadCurrencies();
+    }
 }

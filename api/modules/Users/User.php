@@ -322,6 +322,7 @@ class User extends Person
                 // Needed for UI
                 // $this->loadEnrichedPreferences();
                 // END
+                $this->getPrimaryOrgUnit();
             }
         }
 
@@ -342,7 +343,8 @@ class User extends Person
      */
     public function getPrimaryOrgUnit(){
         if($this->parent_id && !empty($this->parent_type)){
-            if($orgUnits = $this->get_linked_beans('orgunitprimary')){ // should be only 1
+            $orgUnits = $this->get_linked_beans('orgunitprimary');
+            if($orgUnits){ // should be only 1
                 foreach($orgUnits as $orgUnit){
                     $this->orgunit_id = $orgUnit->id;
                     $this->orgunit_name = $orgUnit->name;

@@ -58,13 +58,13 @@
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
                     <system-label label="LBL_PACKAGE"></system-label>
                 </label>
-                <field-package [package]="newLogicHook.package" (packageSelected)="setPackage($event)"></field-package>
+                <system-input-package [(ngModel)]="newLogicHook.package"/>
             </div>
             <div class="slds-form-element__control slds-size--2-of-4 slds-p-right--xxx-small">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
                     <system-label label="LBL_VERSION"></system-label>
                 </label>
-                <field-version [version]="newLogicHook.version" (versionSelected)="setVersion($event)"></field-version>
+                <system-input-version [(ngModel)]="newLogicHook.version"/>
             </div>
         </div>
     </system-modal-content>

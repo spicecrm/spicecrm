@@ -3,13 +3,13 @@
     <system-modal-content margin="none">
         <div class="slds-p-bottom--large">
             <div class="slds-form-element slds-m-top--small">
-                <label class="slds-form-element__label"><system-label label="LBL_KANBAN_NAME"></system-label></label>
+                <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
                 <div class="slds-form-element__control">
                     <input type="text" class="slds-input" [(ngModel)]="selectedBeanGuide.name"/>
                 </div>
             </div>
             <div class="slds-form-element slds-m-top--small">
-                <label class="slds-form-element__label"><system-label label="LBL_MODEL_FIELD"></system-label></label>
+                <label class="slds-form-element__label"><system-label label="LBL_FIELD"></system-label></label>
                 <select class="slds-select" [disabled]="isEditing || enumFields.length == 0" [(ngModel)]="selectedBeanGuide.status_field">
                     <option *ngFor="let thisfield of enumFields" [value]="thisfield"><system-label-fieldname [module]="selectedBeanGuide.module" [field]="thisfield"></system-label-fieldname></option>
                 </select>

@@ -40,7 +40,7 @@ export class ObjectRecordAdministrationTab implements OnInit {
         },
         assigned_orgunit: {
             field: 'assigned_orgunit',
-            fieldconfig: {}
+            fieldconfig: {fieldtype:'linked', modulefilter: ''}
         },
         created_by_user: {
             field: 'created_by_user',

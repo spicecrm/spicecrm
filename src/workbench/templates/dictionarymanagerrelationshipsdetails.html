@@ -1,15 +1,43 @@
 <system-modal>
     <system-modal-header (close)="close()"><system-label label="LBL_RELATIONSHIP"/></system-modal-header>
     <system-modal-content margin="none">
-        <ng-container [ngSwitch]="dictionaryRelationship.relationship_type">
-            <dictionary-manager-relationship-container-emailaddress [readonly]="readonly" [relationship]="dictionaryRelationship" *ngSwitchCase="'email-address'"></dictionary-manager-relationship-container-emailaddress>
-            <dictionary-manager-relationship-container-onetomany [readonly]="readonly" [relationship]="dictionaryRelationship" *ngSwitchCase="'one-to-many'"></dictionary-manager-relationship-container-onetomany>
-            <dictionary-manager-relationship-container-onetomanypolymorph [readonly]="readonly" [relationship]="dictionaryRelationship" [relationshipPolymorphs]="dictionaryRelationshipPolymorphs" *ngSwitchCase="'one-to-many-polymorph'"></dictionary-manager-relationship-container-onetomanypolymorph>
-            <dictionary-manager-relationship-container-manytomany [readonly]="readonly" [relationshipFields]="dictionaryRelationshipFields" [relationship]="dictionaryRelationship" *ngSwitchCase="'many-to-many'"></dictionary-manager-relationship-container-manytomany>
-            <dictionary-manager-relationship-container-manytomany-prospectlists [readonly]="readonly" [relationshipFields]="dictionaryRelationshipFields" [relationship]="dictionaryRelationship" *ngSwitchCase="'many-to-many-prospectlists'"/>
-            <dictionary-manager-relationship-container-parent [relationship]="dictionaryRelationship" *ngSwitchCase="'parent'"></dictionary-manager-relationship-container-parent>
-            <dictionary-manager-relationship-container-user [readonly]="readonly" [relationship]="dictionaryRelationship" *ngSwitchCase="'user'"></dictionary-manager-relationship-container-user>
-        </ng-container>
+        @switch(dictionaryRelationship.relationship_type) {
+            @case('email-address') {
+                <dictionary-manager-relationship-container-emailaddress [readonly]="readonly" [relationship]="dictionaryRelationship"/>
+            }
+            @case('email-one') {
+                <dictionary-manager-relationship-container-onetomany [readonly]="readonly" [relationship]="dictionaryRelationship"/>
+            }
+            @case('one-to-many') {
+                <dictionary-manager-relationship-container-onetomany [readonly]="readonly" [relationship]="dictionaryRelationship"/>
+            }
+            @case('many-to-one') {
+                <dictionary-manager-relationship-container-onetomany [readonly]="readonly" [relationship]="dictionaryRelationship"/>
+            }
+            @case('one-to-many-polymorph') {
+                <dictionary-manager-relationship-container-onetomanypolymorph [readonly]="readonly" [relationship]="dictionaryRelationship" [relationshipPolymorphs]="dictionaryRelationshipPolymorphs"/>
+            }
+            @case('many-to-many') {
+                <dictionary-manager-relationship-container-manytomany [readonly]="readonly" [relationshipFields]="dictionaryRelationshipFields" [relationship]="dictionaryRelationship"/>
+            }
+            @case('many-to-many-bean') {
+                <dictionary-manager-relationship-container-manytomany [readonly]="readonly" [relationshipFields]="dictionaryRelationshipFields" [relationship]="dictionaryRelationship"/>
+            }
+            @case('many-to-many-prospectlists') {
+                <dictionary-manager-relationship-container-manytomany-prospectlists [readonly]="readonly" [relationshipFields]="dictionaryRelationshipFields" [relationship]="dictionaryRelationship"/>
+            }
+            @case('parent') {
+                <dictionary-manager-relationship-container-parent [readonly]="readonly" [relationship]="dictionaryRelationship"/>
+            }
+            @case('user') {
+                <dictionary-manager-relationship-container-user [readonly]="readonly" [relationship]="dictionaryRelationship"/>
+            }
+
+
+
+
+
+        }
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"/></button>

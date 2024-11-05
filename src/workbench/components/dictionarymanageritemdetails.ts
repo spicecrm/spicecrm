@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Injector, Input, OnInit
+    Component, Input, OnInit
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
@@ -10,7 +10,6 @@ import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 import {modal} from "../../services/modal.service";
 import {backend} from "../../services/backend.service";
-import {view} from "../../services/view.service";
 
 /**
  * renders the details form for the dircitonary item
@@ -18,7 +17,6 @@ import {view} from "../../services/view.service";
 @Component({
     selector: 'dictionary-manager-item-details',
     templateUrl: '../templates/dictionarymanageritemdetails.html',
-    providers: [view]
 })
 export class DictionaryManagerItemDetails implements OnInit{
 
@@ -120,21 +118,5 @@ export class DictionaryManagerItemDetails implements OnInit{
         // set back the values from teh backup
         this.dictionaryitem = JSON.parse(this.backup);
         this.self.destroy();
-    }
-
-    /**
-     * sets the version
-     * @param version
-     */
-    public setVersion(version: {name: string;}) {
-        this.dictionaryitem.version = version?.name;
-    }
-
-    /**
-     * sets the package
-     * @param packageData
-     */
-    public setPackage(packageData: {name: string;}) {
-        this.dictionaryitem.package = packageData?.name;
     }
 }

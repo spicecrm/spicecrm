@@ -149,6 +149,10 @@ class SpiceInstaller
 
         $requirements['bcmath'] = extension_loaded('bcmath');
 
+        # check package pear
+        require_once 'System.php';
+        $requirements['pear'] = class_exists('System', false);
+
         // db check
         $drivers = $this->dbManagerFactory::getDbDrivers();
 
@@ -841,6 +845,9 @@ class SpiceInstaller
         foreach ( $packageContent->data->tables as $tableName ) {
 
             if ( !$tablesFields[$tableName]) continue;
+
+            // delete all system package entries
+            $db->query("DELETE FROM {$tableName} WHERE package='system'");
 
             foreach ($packageContent->data->rows->$tableName as $row) {
                 $row = self::prepareSystemPackageRow($row, $tablesFields, $tableName);

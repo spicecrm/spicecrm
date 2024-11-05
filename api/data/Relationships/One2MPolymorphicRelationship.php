@@ -107,28 +107,32 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
                     'name' => $relationship->relationship->lhs_linkname,
                     'type' => 'link',
                     'relationship' => $relationship_name,
+                    'module' => $lhsDictionaryDefinition->getModuleName(),
                     'source' => 'non-db',
-                    'vname' => $relationship->relationship->lhs_linklabel
+                    'vname' => $relationship->relationship->lhs_linklabel,
+                    'duplicate_merge' => $relationship->relationship->lhs_duplicatemerge,
+                    'default' => $relationship->relationship->lhs_linkdefault ? true : false
                 ]),
                 'sysdictionaryrelationship_id' => $morph->id,
                 'sysdictionarydefinition_id' => $lhsDictionaryDefinition->id
             ]);
 
             # add link for the parent on the child if isset
-            if (!empty($relationship->relationship->rhs_link_name)) {
+            if (!empty($morph->rhs_link_name)) {
                 $db->insertQuery('sysdictionaryfields', [
                     'id' => SpiceUtils::createGuid(),
                     'sysdictionaryname' => $rhsDictionaryDefinition->name,
                     'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
                     'sysdictionarytableaudited' => $rhsDictionaryDefinition->getDefinition()->audited,
-                    'fieldname' => $relationship->relationship->rhs_link_name,
+                    'fieldname' => $morph->rhs_link_name,
                     'fieldtype' => 'link',
                     'fielddefinition' => json_encode([
-                        'name' => $relationship->relationship->rhs_link_name,
-                        'vname' => $relationship->relationship->rhs_link_label,
+                        'name' => $morph->rhs_link_name,
+                        'vname' => $morph->rhs_link_label,
                         'type' => 'link',
                         'relationship' => $relationship_name,
-                        'source' => 'non-db'
+                        'source' => 'non-db',
+                        'duplicate_merge' => $morph->rhs_duplicatemerge
                     ]),
                     'sysdictionaryrelationship_id' => $morph->id,
                     'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id

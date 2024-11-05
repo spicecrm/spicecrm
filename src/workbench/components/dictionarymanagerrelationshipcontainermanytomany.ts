@@ -62,7 +62,7 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit,
     public relationsTables: DictionaryDefinition[] = [];
 
     constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
-        this.getRelationshipTables();
+
     }
 
     /**
@@ -88,6 +88,23 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit,
         }
     }
 
+
+    get rhs_duplicatemerge(){
+        return this.relationship.rhs_duplicatemerge == 1;
+    }
+
+    set rhs_duplicatemerge(value){
+        this.relationship.rhs_duplicatemerge = value ? 1 : 0;
+    }
+
+    get lhs_duplicatemerge(){
+        return this.relationship.lhs_duplicatemerge == 1;
+    }
+
+    set lhs_duplicatemerge(value){
+        this.relationship.lhs_duplicatemerge = value ? 1 : 0;
+    }
+
     public ngOnChanges() {
         this.buildRelationshipFieldsPerItem();
     }
@@ -101,10 +118,21 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit,
 
         // load the join items
         this.loadJoinItems();
+
+        // load the reltables
+        this.getRelationshipTables();
+    }
+
+    get relationshipTableType(){
+        return this.relationship.relationship_type == 'many-to-many-bean' ? 'module' : 'metadata';
     }
 
     public getRelationshipTables(){
-        this.relationsTables = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'relationship' || d.sysdictionary_type == 'metadata').sort((a, b) => a.name.localeCompare(b.name));
+        if(this.relationshipTableType == 'module') {
+            this.relationsTables = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'module').sort((a, b) => a.name.localeCompare(b.name));
+        } else {
+            this.relationsTables = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'relationship' || d.sysdictionary_type == 'metadata').sort((a, b) => a.name.localeCompare(b.name));
+        }
     }
 
     /**
