@@ -13,7 +13,7 @@ use SpiceCRM\includes\utils\FileUtils;
  * wiki: https://github.com/dompdf/dompdf/wiki/Usage
  * Class TcpdfHandler
  */
-class DomPdfHandler extends LibPdfHandler
+class DomPdfHandler extends PdfHandler
 {
 
     protected $class_instance;
