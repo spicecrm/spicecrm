@@ -118,6 +118,16 @@ $routes = [
                 'in'          => 'path',
                 'description' => 'Campaign Task id',
                 'type'        => ValidationMiddleware::TYPE_GUID
+            ],
+            'start'    => [
+                'in'          => 'query',
+                'description' => 'start page number',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC
+            ],
+            'limit'    => [
+                'in'          => 'query',
+                'description' => 'limit pages',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC
             ]
         ]
     ],

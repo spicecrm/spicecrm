@@ -25,7 +25,7 @@
                 </td>
                 <td>
                     <ng-container [ngSwitch]="item.type">
-                        <system-checkbox *ngSwitchCase="'bool'" [(ngModel)]="configvalues[item.name]"></system-checkbox>
+                        <system-checkbox *ngSwitchCase="'bool'" [(ngModel)]="configvalues[item.name]" [asinteger]="true"></system-checkbox>
                         <administration-configeditor-enum *ngSwitchCase="'enum'" [value]="configvalues[item.name]" (newvalue)="configvalues[item.name] = $event" [options]="item.options"></administration-configeditor-enum>
                         <div *ngSwitchDefault class="slds-form-element__control">
                             <input type="text" class="slds-input" [disabled]="loading" [(ngModel)]="configvalues[item.name]" />
