@@ -2,7 +2,7 @@
  * @module ModuleKPIs
  */
 
-import {Component, OnInit, Input, OnChanges} from '@angular/core';
+import {Component, Input, OnChanges} from '@angular/core';
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {modal} from "../../../services/modal.service";
@@ -24,7 +24,7 @@ export class KPIsContainer implements OnChanges {
     /**
      * holds kpis for logged in User
      */
-    public kpiTargets: any[] = [];
+    public groupedTargets: any[] = [];
 
     /**
      * parentId the KPITarget is related to
@@ -55,12 +55,13 @@ export class KPIsContainer implements OnChanges {
      * @private
      */
     public loadKPIs() {
-        this.kpiTargets = [];
+        this.groupedTargets = [];
         if(this.parentId && this.parentType) {
             this.loading = true;
             this.backend.getRequest(`module/KPIs/byparent/${this.parentType}/${this.parentId}`).subscribe({
                 next: (data) => {
-                    this.kpiTargets = data;
+                    this.groupTargets(data);
+
                     this.loading = false;
                 }, error: () => {
                     this.toast.sendToast('LBL_ERR_LOADING_KPIS', 'error');
@@ -69,6 +70,57 @@ export class KPIsContainer implements OnChanges {
             })
         }
     }
+
+    /**
+     * group kpi targets
+     * @param kpiTargets
+     * @private
+     */
+    private groupTargets(kpiTargets: any[]) {
+        const groupedTargets: any[] = [];
+
+        if (kpiTargets.length > 0) {
+            // Loop through each kpiTarget in the array
+
+            kpiTargets.forEach((target) => {
+                // Check if kpiTarget has a group
+                if (target.kpi?.group) {
+                    const groupName = target.kpi.group.name;
+                    const groupPriority = target.kpi.group.priority;
+
+                    // Check if the group already exists in the groupedTargets array
+                    const group = groupedTargets.find(g => g.name === groupName);
+
+                    // If the group doesn't exist, create it
+                    if (!group) {
+                        groupedTargets.push({
+                            name: groupName,
+                            priority: groupPriority,
+                            targets: [target]
+                        });
+                    } else {
+                        group.targets.push(target);
+                    }
+                } else {
+                    // If no group, push to the 'other' group
+                    const otherGroup = groupedTargets.find(g => g.name === 'other');
+
+                    if (!otherGroup) {
+                        groupedTargets.push({name: 'other', priority: 999, targets: [target]});
+                    } else {
+                        otherGroup.targets.push(target);
+                    }
+                }
+            });
+
+            // After grouping, sort the groups by priority in asc order
+            groupedTargets.sort((a, b) => a.priority - b.priority);
+        }
+
+        this.groupedTargets = groupedTargets;
+    }
+
+
 
     /**
      * calculate amount of tiles displayed
@@ -80,7 +132,7 @@ export class KPIsContainer implements OnChanges {
         } else if (this.layout.screenwidth == 'medium') {
             return 'slds-size--1-of-2';
         } else {
-            return 'slds-size--1-of-3';
+            return 'slds-size--1-of-4';
         }
     }
 }
