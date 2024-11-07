@@ -18,9 +18,11 @@ class MailboxTemplateFunctions
      */
     public static function generateUnsubscribeLink($compiler, $beans, $inputString): string
     {
-        if (empty($beans['bean'])) return '';
+        if (empty($beans['Emails']) && empty($beans['bean']) && $beans['bean']->_module != 'Emails') return '';
 
-        [$parentType, $parentId] = $beans['bean']->getTrackingParentData();
+        $emails = isset($beans['Emails']) ? $beans['Emails'] : $beans['bean']->_module;
+
+        [$parentType, $parentId] = $emails->getTrackingParentData();
 
         $trackData = EmailTracking::encodeTrackingID("ParentType:$parentType:ParentId:$parentId");
         $unsubUrl = str_replace('{refid}', $trackData, SpiceConfig::getInstance()->get('emailtracking.unsubscribeurl'));
@@ -29,9 +31,11 @@ class MailboxTemplateFunctions
 
     public static function generateDOILink($compiler, $beans, $inputString): string
     {
-        if (empty($beans['bean'])) return '';
+        if (empty($beans['Emails']) && empty($beans['bean']) && $beans['bean']->_module != 'Emails') return '';
 
-        [$parentType, $parentId] = $beans['bean']->getTrackingParentData();
+        $emails = isset($beans['Emails']) ? $beans['Emails'] : $beans['bean']->_module;
+
+        [$parentType, $parentId] = $emails->getTrackingParentData();
 
         $trackData = EmailTracking::encodeTrackingID("ParentType:$parentType:ParentId:$parentId");
         $doubleOptinUrl = str_replace('{refid}', $trackData, SpiceConfig::getInstance()->get('emailtracking.double_optin_url'));
