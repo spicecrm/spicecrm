@@ -63,6 +63,7 @@ import {SalesDocsFlowModal} from './components/salesdocsflowmodal';
 import {fieldSalesdocItemAmount} from "./fields/fieldsalesdocitemamount";
 import {SalesDocsItemCalculate} from "./components/salesdocsitemcalculate";
 import {SalesDocsFlowItemTableRow} from "./components/salesdocsflowitemtablerow";
+import {SalesDocsNewRelatedButton} from "./components/salesdocsnewrelatedbutton";
 
 @NgModule({
     imports: [
@@ -114,7 +115,8 @@ import {SalesDocsFlowItemTableRow} from "./components/salesdocsflowitemtablerow"
         SalesDocsFlowButton,
         SalesDocsFlowModal,
         SalesDocsFlowTableRow,
-        SalesDocsFlowItemTableRow
+        SalesDocsFlowItemTableRow,
+        SalesDocsNewRelatedButton
     ]
 })
 export class ModuleSalesDocs {

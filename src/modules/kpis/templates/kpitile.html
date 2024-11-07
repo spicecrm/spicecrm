@@ -1,10 +1,13 @@
 <article class="slds-card">
     <header class="slds-media slds-media_center slds-has-flexi-truncate">
         <div class="slds-media__body">
-            <h2 class="slds-text-heading--small slds-theme--shade">
+            <h2 class="slds-text-heading--small slds-theme--shade  slds-grid slds-grid--align-spread">
                 <div class="slds-card__header slds-truncate slds-m-bottom--none slds-p-around--xx-small">
                     <span>{{ kpiTarget.kpi.name }}</span>
                 </div>
+                <button class="slds-button slds-button--icon slds-m-horizontal--xx-small" (click)="openHistoryModal()">
+                    <system-button-icon icon="graph"/>
+                </button>
             </h2>
         </div>
     </header>
@@ -25,7 +28,7 @@
                     }
                 </div>
                 <div class="slds-truncate slds-text-heading_small slds-p-horizontal--xx-small slds-m-top--small">
-                        {{ this.kpiTarget.kpi.metric }}
+                    {{ this.kpiTarget.kpi.metric }}
                 </div>
                 <div class="slds-truncate slds-text-heading_small slds-p-horizontal--xx-small slds-m-top--small slds-grid slds-grid--vertical-align-center">
                     @if(!loading) {

@@ -11,7 +11,7 @@ require_once 'vendor/tcpdf6/tcpdf.php';
  * Attention: it is not recommended to use this class with css... only very little support of it!
  * Class TcpdfHandler
  */
-class TcpdfHandler extends LibPdfHandler
+class TcpdfHandler extends PdfHandler
 {
     protected function createInstance()
     {
