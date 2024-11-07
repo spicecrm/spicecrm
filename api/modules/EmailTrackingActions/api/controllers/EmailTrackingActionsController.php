@@ -92,7 +92,7 @@ class EmailTrackingActionsController
             new NotFoundException('Email or CampaignLog not found');
         }
 
-        $seed->setEmailToOptedOut($seed);
+        $this->setEmailToOptedOut($seed);
 
         $redirectUrl = SpiceConfig::getInstance()->get('emailtracking.unsubscribe_redirect_url');
 
@@ -191,16 +191,14 @@ class EmailTrackingActionsController
         $recipient = BeanFactory::getBean($email->parent_type, $email->parent_id);
         $emailAddresses = $recipient->get_linked_beans('email_addresses');
         foreach ($emailAddresses as $address) {
-            if ($address->primary_address != 1) continue;
-            if (empty($address->opt_in_status)) {
-                throw new BadRequestException('Erroneous email opt-in status');
-            } else {
-                if (EmailAddress::setOptInStatus($recipient, $address, $status)) {
-                    return true;
-                } else {
-                    throw new BadRequestException('could not set the opt-in status for this address');
+            foreach ($email->to() as $emailAddress) {
+                if ($address->email_address == $emailAddress['email']) {
+                    if (EmailAddress::setOptInStatus($recipient, $address, $status)) {
+                        return true;
+                    } else {
+                        throw new BadRequestException('could not set the opt-in status for this address');
+                    }
                 }
-
             }
         }
         return true;
