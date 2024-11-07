@@ -29,31 +29,9 @@
                 </div>
             </div>
         </div>
-        <button class="slds-button slds-button--icon slds-button--icon-border" [disabled]="loading || !parentId" (click)="loadKPIs()" system-title="LBL_RELOAD">
+        <!--button class="slds-button slds-button--icon slds-button--icon-border" [disabled]="loading || !parentId" (click)="loadKPIs()" system-title="LBL_RELOAD">
             <system-button-icon icon="refresh"/>
-        </button>
+        </button-->
     </div>
-    @if (kpiTargets.length > 0) {
-        <div class="slds-grid slds-wrap slds-gutters_direct-xx-small" >
-            @for (kpiTarget of kpiTargets; track kpiTarget.id) {
-                <div class="slds-col slds-p-vertical--xx-small" [ngClass]="getTileWidthClass">
-                    <kpi-tile [kpiTarget]="kpiTarget"></kpi-tile>
-                </div>
-            }
-        </div>
-    } @else{
-        <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
-            @if (loading) {
-                <system-spinner/>
-            } @else {
-                <system-illustration-no-records>
-                    @if (parentId){
-                        <system-label label="LBL_NO_KPIS_SET"/>
-                    } @else {
-                        <system-label label="LBL_NO_USER_SELECTED"/>
-                    }
-                </system-illustration-no-records>
-            }
-        </div>
-    }
+    <kpis-container [parentId]="parentId" [parentType]="parentType"/>
 </div>

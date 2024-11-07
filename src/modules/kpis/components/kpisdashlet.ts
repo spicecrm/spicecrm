@@ -17,25 +17,15 @@ import {layout} from "../../../services/layout.service";
 export class KPIsDashlet implements OnInit {
 
     /**
-     * indicates that we are loading
-     */
-    public loading: boolean = true;
-
-    /**
-     * holds kpis for logged in User
-     */
-    public kpiTargets: any[] = [];
-
-    /**
      * parentId the KPITarget is related to
      */
-    parentId: string = '';
+    public parentId: string = '';
 
     /**
      * parentType the KPITarget is related to
      * i.e. Users, CompanyCodes etc.
      */
-    parentType: string = 'Users';
+    public parentType: string = 'Users';
 
     /**
      * the selected item
@@ -59,29 +49,10 @@ export class KPIsDashlet implements OnInit {
             module: 'Users',
             data: this.session.authData.user
         };
-        this.loadKPIs();
     }
 
     get isAdmin(){
         return this.session.authData.admin;
-    }
-
-    /**
-     * load KPIs for logged-in User
-     * @private
-     */
-    public loadKPIs() {
-        this.kpiTargets = [];
-        this.loading = true;
-        this.backend.getRequest(`module/KPIs/byparent/${this.parentType}/${this.parentId}`).subscribe({
-            next: (data) => {
-                this.kpiTargets = data;
-                this.loading = false;
-            }, error: () => {
-                this.toast.sendToast('LBL_ERR_LOADING_KPIS', 'error');
-                this.loading = false;
-            }
-        })
     }
 
     /**
@@ -101,7 +72,6 @@ export class KPIsDashlet implements OnInit {
     public clearField() {
         this.selectedItem = undefined;
         this.parentId = undefined;
-        this.kpiTargets = [];
     }
 
     /**
@@ -120,7 +90,6 @@ export class KPIsDashlet implements OnInit {
                             data: items[0]
                         };
                         this.parentId = this.selectedItem.id;
-                        this.loadKPIs();
                     }
                 });
         });
