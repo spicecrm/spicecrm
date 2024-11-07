@@ -93,7 +93,7 @@ export class UserSecuritySettingsModal implements ModalComponentI {
         };
 
         if (navigator.credentials && navigator.credentials.create) {
-            this.activeMethods.passkey = {active: false, disabled: !this.session.authData.canchangepassword};
+            this.activeMethods.passkey = {active: false, disabled: false};
         }
 
         if (config.twofactor.email) {

@@ -1,0 +1,3 @@
+https://github.com/umpirsky/currency-list
+
+https://raw.githubusercontent.com/umpirsky/currency-list/refs/heads/master/data/en/currency.json

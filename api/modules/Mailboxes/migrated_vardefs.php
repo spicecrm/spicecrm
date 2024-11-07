@@ -2,7 +2,7 @@
 /***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-
+/*
 SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
     'table' => 'mailboxes',
     'audited' => false,
@@ -206,6 +206,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
         'mailbox_processors' => [
             'name' => 'mailbox_processors',
             'source' => 'non-db',
+            'type' => 'varchar',
         ],
         'mailboxprocessors' => [
             'name' => 'mailboxprocessors',
@@ -263,3 +264,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
 ];
 
 VardefManager::createVardef('Mailboxes', 'Mailbox', ['default', 'assignable']);
+*/

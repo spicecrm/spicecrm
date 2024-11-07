@@ -3,6 +3,7 @@
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
+/*
 SpiceDictionaryHandler::getInstance()->dictionary['SpiceText'] = [
     'table' => 'spicetexts',
     'comment' => 'SpiceTexts Module',
@@ -99,3 +100,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['SpiceText'] = [
 ];
 
 VardefManager::createVardef('SpiceTexts', 'SpiceText', ['default', 'assignable']);
+*/

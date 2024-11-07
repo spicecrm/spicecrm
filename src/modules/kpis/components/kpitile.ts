@@ -1,12 +1,15 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Injector, Input, OnInit} from '@angular/core';
 import {model} from "../../../services/model.service";
+import {modal} from "../../../services/modal.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {language} from "../../../services/language.service";
+import moment from "moment";
 
 @Component({
     selector: 'kpi-tile',
-    templateUrl: '../templates/kpitile.html'
+    templateUrl: '../templates/kpitile.html',
+    providers: [model]
 })
 
 export class KpiTile implements OnInit {
@@ -14,28 +17,17 @@ export class KpiTile implements OnInit {
     /**
      * id of KPI related to KPITarget
      */
-    @Input() kpi: any = {};
-
-    /**
-     * parentId the KPITarget is related to
-     */
-    @Input() parentId: string = '';
-
-    /**
-     * parentType the KPITarget is related to
-     * i.e. Users, CompanyCodes etc.
-     */
-    @Input() parentType: string = '';
-
-    /**
-     * holds KPITarget's data
-     */
-    public kpiTarget: any = [];
+    @Input() kpiTarget: any = {};
 
     /**
      * holds KPITargetValue's data
      */
-    public kpiTargetValue: any = [];
+    public kpiTargetValue: any = {};
+
+    /**
+     * holds the tend data
+     */
+    public kpiTrendData: any = {};
 
     /**
      * if tile is being loaded
@@ -57,15 +49,33 @@ export class KpiTile implements OnInit {
      */
     public iconColor: 'slds-icon-text-success' | 'slds-icon-text-error' | 'slds-icon-text-default';
 
+    /**
+     * deviation in percentage
+     */
+    public percentage: string = '';
+
+    /**
+     * a now moment object
+     */
+    public now = moment();
+
     constructor(
         public model: model,
+        public modal: modal,
         private backend: backend,
         private toast: toast,
-        private language: language
+        private language: language,
+        public injector: Injector
     ) {
     }
 
     ngOnInit() {
+        // set the model data
+        this.model.module = 'KPITargets';
+        this.model.id = this.kpiTarget.id;
+        this.model.setData(this.kpiTarget, true);
+
+        // load the targetvalues
         this.loadKPITargets()
     }
 
@@ -74,12 +84,11 @@ export class KpiTile implements OnInit {
      */
     public loadKPITargets() {
         this.loading = true;
-        this.backend.getRequest('module/KPIs/' + this.kpi.id + '/' + this.parentType + '/' + this.parentId).subscribe({
+        this.backend.getRequest(`module/KPITargets/${this.kpiTarget.id}/getvalues`).subscribe({
             next: (data) => {
-                this.kpiTarget = data.kpiTarget;
                 this.kpiTargetValue = data.kpiTargetValue;
+                this.kpiTrendData = data.kpiTrendData;
                 this.getKPIColor();
-
                 this.loading = false;
             }, error: () => {
                 this.toast.sendToast(this.language.getLabel('LBL_ERR_LOADING_KPITARGETS'), 'error');
@@ -89,30 +98,45 @@ export class KpiTile implements OnInit {
     }
 
     /**
-     * calculates the current metric value
+     * gets text color for the KPIValue
      */
     public getKPIColor() {
+        if(!this.kpiTargetValue) return;
         let kpiValue = this.kpiTargetValue.kpi_value;
+        let kpiTargetDataLow = this.kpiTarget.kpiTarget?.lower_boundary;
+        let kpiTargetDataUp = this.kpiTarget.kpiTarget?.upper_boundary;
 
-        if (this.kpiTarget.lower_boundary && kpiValue <= this.kpiTarget.lower_boundary) {
-            this.iconColor = 'slds-icon-text-error';
+        if (kpiTargetDataLow && kpiValue <= kpiTargetDataLow) {
             this.kpiColor = "slds-text-color_error";
-        } else if (this.kpiTarget.upper_boundary && kpiValue >= this.kpiTarget.upper_boundary) {
-            this.iconColor = 'slds-icon-text-success';
+        } else if (kpiTargetDataUp && kpiValue >= kpiTargetDataUp) {
             this.kpiColor = "slds-text-color_success";
         } else {
-            this.iconColor = 'slds-icon-text-default';
+            this.kpiColor = 'slds-icon-text-default';
         }
     }
 
-    public getTrend() {
-/*            this.iconColor = 'slds-icon-text-error';
-            this.arrowIcon = "arrowdown";
-            this.kpiColor = "slds-text-color_error";
-
-            this.iconColor = 'slds-icon-text-success';
-            this.arrowIcon = "arrowup";
-            this.kpiColor = "slds-text-color_success";
-            this.iconColor = 'slds-icon-text-default';*/
+    get slope(){
+        return this.kpiTrendData?.trend?.slope ?? 0;
     }
+
+    get slopeIcon (){
+        if(this.slope > 0) return 'arrowup';
+        if(this.slope < 0) return 'arrowdown';
+        return 'sort'
+    }
+
+    get slopeColor(){
+        if(this.slope > 0) return 'slds-icon-text-success';
+        if(this.slope < 0) return 'slds-icon-text-error';
+        return 'slds-icon-text-default'
+    }
+
+    get trendValue(){
+        return this.kpiTrendData.percentage;
+    }
+
+    public openHistoryModal(){
+        this.modal.openModal('KPIHistoryModal', true, this.injector)
+    }
+
 }

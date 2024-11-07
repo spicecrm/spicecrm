@@ -65,6 +65,23 @@ export class ComponentsetManager {
         this.checkMode();
     }
 
+    get module(){
+        return this.currentModule;
+    }
+
+    set module(m:any){
+        this.currentModule = m?.id;
+        this.reset();
+    }
+
+    get componentSet(){
+        return this.currentComponentSet;
+    }
+
+    set componentSet(c:any){
+        this.currentComponentSet = c?.id;
+        this.selectComponentSet();
+    }
 
     public checkMode() {
         this.edit_mode = this.configurationService.getCapabilityConfig('core').edit_mode;
@@ -141,8 +158,16 @@ export class ComponentsetManager {
         return this.metadata.getComponentSet(this.currentComponentSet).package;
     }
 
+    set currentComponentSetPackage(newPackage) {
+        this.metadata.getComponentSet(this.currentComponentSet).package = newPackage;
+    }
+
     get currentComponentSetVersion() {
         return this.metadata.getComponentSet(this.currentComponentSet).version;
+    }
+
+    set currentComponentSetVersion(newVersion) {
+        this.metadata.getComponentSet(this.currentComponentSet).version = newVersion;
     }
 
     get currentComponentSetName() {
@@ -377,22 +402,5 @@ export class ComponentsetManager {
                 }
             }
         })
-    }
-
-    /**
-     * sets the version for the fieldset
-     * @param version
-     */
-    public setVersion(version: {name: string;}) {
-        this.metadata.getComponentSet(this.currentComponentSet).version = version?.name;
-
-    }
-
-    /**
-     * sets the package for the fieldset
-     * @param packageData
-     */
-    public setPackage(packageData: { name: string; }) {
-        this.metadata.getComponentSet(this.currentComponentSet).package = packageData?.name;
     }
 }

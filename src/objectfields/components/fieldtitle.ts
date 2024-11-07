@@ -1,21 +1,18 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef} from '@angular/core';
-import {model} from '../../services/model.service';
-import {view} from '../../services/view.service';
-import {language} from '../../services/language.service';
-import {metadata} from '../../services/metadata.service';
+import {Component, OnInit} from '@angular/core';
 import {fieldGeneric} from './fieldgeneric';
-import {Router}   from '@angular/router';
+import {EnumDisplayOptionArray} from "../../services/language.service";
 
 @Component({
     selector: 'field-title',
     templateUrl: '../templates/fieldtitle.html'
 })
-export class fieldTitle extends fieldGeneric {
+export class fieldTitle extends fieldGeneric implements OnInit {
     public isValid: boolean = true;
     errorMessage: String = '';
+    public options: EnumDisplayOptionArray = [];
 
     get fielddd() {
         return this.fieldconfig['field_dd'] ? this.fieldconfig['field_dd'] : 'title_dd';
@@ -25,41 +22,18 @@ export class fieldTitle extends fieldGeneric {
         return this.fieldconfig['field_txt'] ? this.fieldconfig['field_txt'] : 'title';
     }
 
-    get titledddisplay() {
-        return this.language.getFieldDisplayOptionValue(this.model.module, this.fielddd, this.model.getField(this.fielddd));
-    }
-
     get value(){
         return (this.model.getField(this.fielddd) ? this.language.getFieldDisplayOptionValue(this.model.module, this.fielddd, this.model.getField(this.fielddd)) : '') +
             (this.model.getField(this.fieldtxt) ? ' ' + this.model.getField(this.fieldtxt) : '');
     }
-
-    /*
-     constructor(public el: ElementRef, public model: model, public view: view, public language: language, public metadata: metadata) {
-     }
-     */
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
-        super(model, view, language, metadata, router);
-
+    
+    public ngOnInit() {
+        super.ngOnInit();
+        this.options = this.language.getFieldDisplayOptions(this.model.module, this.fieldconfig.field_dd ? this.fieldconfig.field_dd : 'title_dd', true);
     }
 
     // overwrite get Field Class
-    getFieldClass() {
-        let classes: string[] = [];
-        if (!this.isValid) classes.push('slds-has-error');
-        return classes;
+    public getFieldClass(): string[] {
+        return !this.isValid ? ['slds-has-error'] : [];
     }
-
-    getTitles(): any[]{
-        let retArray = [];
-        let options = this.language.getFieldDisplayOptions(this.model.module, this.fieldconfig.field_dd ? this.fieldconfig.field_dd : 'title_dd');
-        for(let optionVal in options){
-            retArray.push({
-                value: optionVal,
-                display: options[optionVal]
-            })
-        }
-        return retArray;
-    }
-
 }

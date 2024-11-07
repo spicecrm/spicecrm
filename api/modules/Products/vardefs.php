@@ -6,6 +6,7 @@ use SpiceCRM\includes\SugarObjects\VardefManager;
 SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
     'table' => 'products',
     'fields' => [
+    /*
         'ext_id' => [
             'name' => 'ext_id',
             'vname' => 'LBL_EXT_ID',
@@ -161,6 +162,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'link' => 'manufacturer',
             'source' => 'non-db'
         ],
+    */
+        /*
         'base_uom' => [
             'name' => 'base_uom',
             'rname' => 'label',
@@ -185,6 +188,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'source' => 'non-db'
 
         ],
+        */
+        /*
         'manufacturer' => [
             'name' => 'manufacturer',
             'type' => 'link',
@@ -193,6 +198,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'module' => 'Accounts',
             'vname' => 'LBL_ACCOUNT'
         ],
+        */
+        /*
         'uomunits' => [
             'name' => 'uomunits',
             'type' => 'link',
@@ -201,6 +208,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'module' => 'UOMUnits',
             'vname' => 'LBL_UNIT_OF_MEASURE'
         ],
+        */
+        /*
         'productgroup' => [
             'name' => 'productgroup',
             'vname' => 'LBL_PRODUCTGROUP',
@@ -228,6 +237,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'module' => 'ProductGroups',
             'rname' => 'right_node_id'
         ],
+        */
+        /*
         'productvariants' => [
             'name' => 'productvariants',
             'vname' => 'LBL_PRODUCTVARIANTS',
@@ -235,6 +246,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'relationship' => 'product_productvariants',
             'source' => 'non-db'
         ],
+        */
+        /*
         'productattributevalues' => [
             'name' => 'productattributevalues',
             'vname' => 'LBL_PRODUCTATTRIBUTEVALUES',
@@ -252,6 +265,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'source' => 'non-db',
             'vname' => 'LBL_SPICE_TEXTS',
         ],
+        */
         'serviceorderitems' => [
             'name' => 'serviceorderitems',
             'type' => 'link',
@@ -268,6 +282,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'module' => 'ServiceOrderEfforts',
             'source' => 'non-db',
         ],
+        /*
         'product_image' => [
             'name' => 'product_image',
             'vname' => 'LBL_IMAGE',
@@ -301,6 +316,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'source' => 'non-db',
             'vname' => 'LBL_OUTPUTTEMPLATES',
         ],
+        */
         'projects' => [
             'name' => 'projects',
             'vname' => 'LBL_PROJECTS',
@@ -334,6 +350,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
         ],
     ],
     'relationships' => [
+        /*
         'product_productvariants' => [
             'lhs_module' => 'Products',
             'lhs_table' => 'products',
@@ -354,6 +371,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Products',
         ],
+        */
+        /*
         'product_uomconversions' => [
             'lhs_module' => 'Products',
             'lhs_table' => 'products',
@@ -365,6 +384,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Products',
         ],
+        */
+        /*
         'product_spicetexts' => [
             'lhs_module' => 'Products',
             'lhs_table' => 'products',
@@ -376,6 +397,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Products'
         ],
+        */
         'product_serviceorderitems_parent' => [
             'lhs_module' => 'Products',
             'lhs_table' => 'products',
@@ -398,6 +420,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Products'
         ],
+        /*
         'outputtemplates_products' => [
             'lhs_module' => 'OutputTemplates',
             'lhs_table' => 'outputtemplates',
@@ -407,7 +430,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'rhs_key' => 'outputtemplate_id',
             'relationship_type' => 'one-to-many'
         ]
+        */
     ],
+    /*
     'indices' => [
         ['name' => 'idx_products_manu_del', 'type' => 'index', 'fields' => ['manufacturer_id', 'deleted']],
         ['name' => 'idx_products_prodgrpid_del', 'type' => 'index', 'fields' => ['productgroup_id', 'deleted']],
@@ -416,9 +441,10 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
         ['name' => 'idx_products_ext_id_del', 'type' => 'index', 'fields' => ['ext_id', 'deleted']],
 
     ],
+    */
 ];
 
-VardefManager::createVardef('Products', 'Product', ['default', 'assignable']);
+VardefManager::createVardef('Products', 'Product', []);
 
 if(file_exists('extensions/modules/ProjectWBSs')) {
     SpiceDictionaryHandler::getInstance()->dictionary['Product']['fields']['projectwbss'] = [

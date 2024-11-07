@@ -47,7 +47,7 @@ export class ObjectRepositoryManager {
     public crNoneActive: boolean = false;
     public moduleReposSelect: {id: string, name: string, group: string}[] = [];
     public moduleRepos: any[] = [];
-    public modulereposselecteditem: any = {};
+    public modulereposselecteditem: any;
     public objrepoList: any[] = [];
     public configList: any = {};
     public currentConfigArray: any[] = [];
@@ -431,19 +431,4 @@ export class ObjectRepositoryManager {
         return dep == '1';
     }
 
-    /**
-     * sets the version for the obj repository manager
-     * @param version
-     */
-    public setVersion(version: {name: string;}) {
-        this.currentObjRepo.version = version?.name;
-    }
-
-    /**
-     * sets the package for the obj repository manager
-     * @param packageData
-     */
-    public setPackage(packageData: {name: string;}) {
-        this.currentObjRepo.package = packageData?.name;
-    }
 }

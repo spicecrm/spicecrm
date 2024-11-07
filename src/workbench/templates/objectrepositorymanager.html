@@ -47,13 +47,13 @@
             <div class="slds-form-element slds-m-vertical_medium slds-size--1-of-2">
                 <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
                 <div class="slds-form-element__control">
-                    <field-package [package]="currentObjRepo.package" (packageSelected)="setPackage($event)"></field-package>
+                    <system-input-package [(ngModel)]="currentObjRepo.package"/>
                 </div>
             </div>
             <div class="slds-form-element slds-m-vertical_medium slds-m-left--x-small slds-size--1-of-2">
                 <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
                 <div class="slds-form-element__control">
-                    <field-version [version]="currentObjRepo.version" (versionSelected)="setVersion($event)"></field-version>
+                    <system-input-version [(ngModel)]="currentObjRepo.version"/>
                 </div>
             </div>
         </div>

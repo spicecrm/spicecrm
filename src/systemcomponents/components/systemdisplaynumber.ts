@@ -73,8 +73,7 @@ export class SystemDisplayNumber implements OnChanges {
     get currencySymbol(): string {
         if (!this.currency_id) return '';
 
-        let matchedCurrency = this.currency.getCurrencies().find(currency => currency.id == this.currency_id);
-        return matchedCurrency ? matchedCurrency.symbol : '';
+        return this.currency.getCurrencySymbol(this.currency_id)
     }
 
     /**

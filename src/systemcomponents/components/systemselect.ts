@@ -35,7 +35,7 @@ declare var _;
         multi: true
     }]
 })
-export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnChanges, OnDestroy {
+export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnDestroy {
     /**
      * reference to the dropdown trigger directive
      * @private
@@ -117,10 +117,6 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnC
         }));
     }
 
-    public ngOnChanges(changes: SimpleChanges) {
-        console.log(changes);
-    }
-
     public ngOnDestroy() {
         this.subscription.unsubscribe();
     }
@@ -167,6 +163,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnC
             }
         } else {
             this.focusedItem = focusedItemOrString;
+            this.inputIsVisible = false;
         }
 
         this.cdRef.detectChanges();
@@ -262,15 +259,15 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnC
 
         if (!this.value || this.searchList.length == 0) return;
 
-        this.searchList = this.searchList.filter(e => e.name.toLowerCase().indexOf(this.value.toLowerCase()) > -1);
+        this.searchList = this.searchList.filter(e => e.isGroup || e.content.toLowerCase().indexOf(this.value.toLowerCase()) > -1);
 
         this.searchList.forEach(e => {
 
-            const position = e.name.toLowerCase().indexOf(this.value.toLowerCase());
+            const position = e.content.toLowerCase().indexOf(this.value.toLowerCase());
 
             if (position == -1) return;
 
-            e.content = this.generateHighlightHTMLContent(e.name, position);
+            e.content = this.generateHighlightHTMLContent(e.content, position);
         });
     }
 
@@ -321,13 +318,13 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnC
                 if (!this.sortReversed) {
                     this.options.filter(e => e.group == g)
                     .forEach((e) =>
-                        searchList.push({id: e.value, name: e.display, content: e.display, group: g, inactive: e.inactive})
+                        searchList.push({id: e.value, name: e.display, content: e.displayselect ?? e.display, group: g, inactive: e.inactive})
                     );
                 } else {
                     // reversed sorting (desc -> asc)
                     this.options.filter(e => e.group == g)
                     .forEach((e) =>
-                        searchList.push({id: e.value, name: e.display, content: e.display, group: g, inactive: e.inactive})
+                        searchList.push({id: e.value, name: e.display, content: e.displayselect ?? e.display, group: g, inactive: e.inactive})
                     );
                 }
             }

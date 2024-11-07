@@ -449,7 +449,12 @@ export class GlobalLogin implements OnDestroy {
      * @param event
      */
     public async resendAuthCode(method: 'sms' | 'email', event: MouseEvent) {
+
+        // prevent processing propagated click from the enter press on the code input element
+        if ((event as PointerEvent).pointerType != 'mouse') return;
+
         event.preventDefault();
+
         const confirmed = await firstValueFrom(this.modal.confirm(`${this.language.getLabel('LBL_TO')} ${this.optional2FAMethods[method].address}`, 'MSG_RESEND_CODE_VIA_' + method.toUpperCase()));
 
         if (!confirmed) return;
@@ -469,4 +474,13 @@ export class GlobalLogin implements OnDestroy {
         });
     }
 
+    /**
+     * auto submit 2fa code
+     * @param code
+     */
+    public autoSubmit2FACode(code: string) {
+        if (code.length == 6) {
+            this.login();
+        }
+    }
 }
