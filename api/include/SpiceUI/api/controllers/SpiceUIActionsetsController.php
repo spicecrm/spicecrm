@@ -26,7 +26,7 @@ class SpiceUIActionsetsController
         $db = DBManagerFactory::getInstance();
 
         $retArray = [];
-        $actionsets = $db->query("SELECT sysuiactionsets.id acid, sysuiactionsetitems.*, sysuiactionsets.module, sysuiactionsets.name, sysuiactionsets.grouped, sysuiactionsets.version as set_version  FROM sysuiactionsets LEFT JOIN sysuiactionsetitems ON sysuiactionsets.id = sysuiactionsetitems.actionset_id ORDER BY actionset_id, sequence");
+        $actionsets = $db->query("SELECT sysuiactionsets.id acid, sysuiactionsetitems.*, sysuiactionsets.module, sysuiactionsets.name, sysuiactionsets.grouped, sysuiactionsets.package as set_package, sysuiactionsets.version as set_version  FROM sysuiactionsets LEFT JOIN sysuiactionsetitems ON sysuiactionsets.id = sysuiactionsetitems.actionset_id ORDER BY actionset_id, sequence");
         while ($actionset = $db->fetchByAssoc($actionsets)) {
 
             if (!isset($retArray[$actionset['acid']])) {
@@ -35,7 +35,7 @@ class SpiceUIActionsetsController
                     'name' => $actionset['name'],
                     'grouped' => $actionset['grouped'],
                     'module' => $actionset['module'],
-                    'package' => $actionset['package'],
+                    'package' => $actionset['set_package'],
                     'version' => $actionset['set_version'],
                     'type' => 'global',
                     'actions' => []
@@ -56,7 +56,7 @@ class SpiceUIActionsetsController
             }
         }
 
-        $actionsets = $db->query("SELECT sysuicustomactionsets.id acid, sysuicustomactionsetitems.*, sysuicustomactionsets.module, sysuicustomactionsets.name, sysuicustomactionsets.grouped, sysuicustomactionsets.version as set_version FROM sysuicustomactionsets LEFT JOIN sysuicustomactionsetitems ON sysuicustomactionsets.id = sysuicustomactionsetitems.actionset_id ORDER BY actionset_id, sequence");
+        $actionsets = $db->query("SELECT sysuicustomactionsets.id acid, sysuicustomactionsetitems.*, sysuicustomactionsets.module, sysuicustomactionsets.name, sysuicustomactionsets.grouped, sysuicustomactionsets.package as set_package, sysuicustomactionsets.version as set_version FROM sysuicustomactionsets LEFT JOIN sysuicustomactionsetitems ON sysuicustomactionsets.id = sysuicustomactionsetitems.actionset_id ORDER BY actionset_id, sequence");
         while ($actionset = $db->fetchByAssoc($actionsets)) {
 
             if (!isset($retArray[$actionset['acid']])) {
@@ -65,7 +65,7 @@ class SpiceUIActionsetsController
                     'name' => $actionset['name'],
                     'grouped' => $actionset['grouped'],
                     'module' => $actionset['module'],
-                    'package' => $actionset['package'],
+                    'package' => $actionset['set_package'],
                     'version' => $actionset['set_version'],
                     'type' => 'custom',
                     'actions' => []

@@ -3,15 +3,11 @@
  */
 import {
     Component,
-    OnChanges,
     Input
 } from '@angular/core';
-import {modal} from '../../../services/modal.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
-import {backend} from '../../../services/backend.service';
-import {modelutilities} from '../../../services/modelutilities.service';
 
 /**
  * part of the territories manager - renders one territorty value element

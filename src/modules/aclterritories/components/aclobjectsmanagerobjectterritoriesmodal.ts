@@ -8,6 +8,7 @@ import {language} from '../../../services/language.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 
 @Component({
+    selector: 'aclobjects-manager-object-territories-modal',
     templateUrl: '../templates/aclobjectsmanagerobjectterritoriesmodal.html'
 })
 export class ACLObjectsManagerObjectTerritoriesModal {

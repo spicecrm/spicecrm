@@ -3,12 +3,11 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
-import {language} from "../../../services/language.service";
 import {toast} from "../../../services/toast.service";
-import {metadata} from "../../../services/metadata.service";
-import {view} from "../../../services/view.service";
+import {modal} from "../../../services/modal.service";
+import {session} from "../../../services/session.service";
+import {layout} from "../../../services/layout.service";
 
 @Component({
     selector: 'kpis-dashlet',
@@ -18,62 +17,81 @@ import {view} from "../../../services/view.service";
 export class KPIsDashlet implements OnInit {
 
     /**
-     * holds kpis for logged in User
-     */
-    public kpis: any[] = [];
-
-    /**
      * parentId the KPITarget is related to
      */
-    parentId: string = '';
+    public parentId: string = '';
 
     /**
      * parentType the KPITarget is related to
      * i.e. Users, CompanyCodes etc.
      */
-    parentType: string = 'Users';
+    public parentType: string = 'Users';
+
+    /**
+     * the selected item
+     */
+    public selectedItem: any;
 
     constructor(
-        public model: model,
-        public language: language,
-        private metadata: metadata,
-        private backend: backend,
-        private toast: toast,
-        private view: view
+        public session: session,
+        public backend: backend,
+        public toast: toast,
+        public layout: layout,
+        public modal: modal
     ) {
     }
 
     ngOnInit() {
-        this.parentId = this.metadata.session.authData.user.id;
-        this.model._module = 'KPIs';
-        this.loadKPIs();
+        this.parentId = this.session.authData.user.id;
+        this.selectedItem = {
+            id: this.session.authData.user.id,
+            summary_text: this.session.authData.user.full_name,
+            module: 'Users',
+            data: this.session.authData.user
+        };
+    }
+
+    get isAdmin(){
+        return this.session.authData.admin;
     }
 
     /**
-     * load KPIs for logged-in User
-     * @private
-     */
-    private loadKPIs() {
-        this.backend.getRequest('module/KPIs/' + this.parentType + '/' + this.parentId).subscribe({
-            next: (data) => {
-                this.kpis = [...data];
-            }, error: () => {
-                this.toast.sendToast(this.language.getLabel('LBL_ERR_LOADING_KPIS'), 'error');
-            }
-        })
-    }
-
-    /**
-     * calcualate amount of tiles displayed
+     * calculate amount of tiles displayed
      * depending on screen width
      */
     get getTileWidthClass() {
-        if (this.view.layout.screenwidth == 'small') {
+        if (this.layout.screenwidth == 'small') {
             return 'slds-size--1-of-1';
-        } else if (this.view.layout.screenwidth == 'medium') {
+        } else if (this.layout.screenwidth == 'medium') {
             return 'slds-size--1-of-2';
         } else {
             return 'slds-size--1-of-3';
         }
+    }
+
+    public clearField() {
+        this.selectedItem = undefined;
+        this.parentId = undefined;
+    }
+
+    /**
+     * opens a model search modal
+     */
+    public searchWithModal() {
+        this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
+            selectModal.instance.module = 'Users'
+            selectModal.instance.multiselect = false;
+                selectModal.instance.selectedItems.subscribe(items => {
+                    if (items.length) {
+                        this.selectedItem = {
+                            id: items[0].id,
+                            summary_text: items[0].summary_text,
+                            module: 'Users',
+                            data: items[0]
+                        };
+                        this.parentId = this.selectedItem.id;
+                    }
+                });
+        });
     }
 }

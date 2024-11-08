@@ -59,6 +59,7 @@ export class SalesDocsConvertModal {
             if(salesdocitem._selected) {
                 salesdocitem.id = this.model.utils.generateGuid();
                 salesdocitem.itemnr = itemnr;
+                salesdocitem.salesdoc_id = this.model.id;
                 this.model.data.salesdocitems.beans[salesdocitem.id] = {...salesdocitem};
                 itemnr = itemnr + 10;
             }
