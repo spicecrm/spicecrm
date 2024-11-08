@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from "@angular/core";
 import {configurationService} from "../../../services/configuration.service";
 import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
@@ -44,6 +44,7 @@ export class ReporterFieldCategoryTree {
         public config: configurationService,
         private metadata: metadata,
         private backend: backend,
+        private cdRef: ChangeDetectorRef
     ) {
     }
 
@@ -104,6 +105,7 @@ export class ReporterFieldCategoryTree {
                 categories[treeId] = res;
                 this.setCategoryNodes(categories[treeId])
                 this.config.setData('categories', categories);
+                this.cdRef.detectChanges();
             }
         );
     }
