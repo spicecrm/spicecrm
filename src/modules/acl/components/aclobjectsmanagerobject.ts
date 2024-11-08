@@ -6,7 +6,7 @@ import {
     ViewChild,
     ViewContainerRef,
     Input,
-    OnChanges
+    OnChanges, SimpleChanges
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
@@ -22,6 +22,12 @@ export class ACLObjectsManagerObject implements OnChanges {
 
     @Input() public objectid: string = '';
     @Input() public typeid: string = '';
+
+    /**
+     * the whole acl object passed from the parent
+     */
+    @Input() public object: any = {};
+
     public loaded: boolean = false;
 
     public tabs: any[] = [
@@ -60,12 +66,13 @@ export class ACLObjectsManagerObject implements OnChanges {
         this.activeTab = tab;
     }
 
-    public ngOnChanges() {
+    public ngOnChanges(changes: SimpleChanges) {
         this.loaded = false;
-        if (this.objectid) {
+        if (this.objectid || changes['object']) {
             this.model.id = this.objectid;
             this.model.getData(true).subscribe(data => {
                 this.loaded = true;
+                this.object = data;
             });
         }
     }

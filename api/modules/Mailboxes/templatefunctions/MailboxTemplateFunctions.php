@@ -20,7 +20,7 @@ class MailboxTemplateFunctions
     {
         if (empty($beans['Emails']) && empty($beans['bean']) && $beans['bean']->_module != 'Emails') return '';
 
-        $emails = isset($beans['Emails']) ? $beans['Emails'] : $beans['bean']->_module;
+        $emails = isset($beans['Emails']) ? $beans['Emails'] : $beans['bean'];
 
         [$parentType, $parentId] = $emails->getTrackingParentData();
 
@@ -33,7 +33,7 @@ class MailboxTemplateFunctions
     {
         if (empty($beans['Emails']) && empty($beans['bean']) && $beans['bean']->_module != 'Emails') return '';
 
-        $emails = isset($beans['Emails']) ? $beans['Emails'] : $beans['bean']->_module;
+        $emails = isset($beans['Emails']) ? $beans['Emails'] : $beans['bean'];
 
         [$parentType, $parentId] = $emails->getTrackingParentData();
 

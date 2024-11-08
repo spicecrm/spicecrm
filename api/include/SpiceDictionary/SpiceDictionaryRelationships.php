@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceDictionary;
 
 use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -283,17 +284,64 @@ class SpiceDictionaryRelationships
         }
     }
 
+    /**
+     * repair dictionary vardef relationships
+     * @param string $dictionaryId
+     * @return void
+     * @throws DatabaseException
+     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     */
+    public static function repairDictionaryVardefRelationships(string $dictionaryId): void
+    {
+        $dic = (new SpiceDictionaryDefinition($dictionaryId));
+        self::repairVardefRelationshipsFromFields($dic->name, $dic->loadVardefs());
+    }
+
+    /**
+     * repair vardef relationships and related join tables
+     * @param string $dictionaryName
+     * @param $vardefDetails
+     * @return void
+     * @throws DatabaseException
+     * @throws Exception
+     */
+    public static function repairVardefRelationshipsFromFields(string $dictionaryName, $vardefDetails): void
+    {
+        SpiceDictionaryVardefs::loadLegacyFiles();
+
+        foreach ($vardefDetails['fields'] as $field) {
+
+            if ($field['type'] != 'link') continue;
+
+            try {
+                # try to locate the relationship on this dictionary vardef
+                SpiceDictionaryRelationships::getInstance()->repairVardefRelationship($dictionaryName, $field['relationship'], true, false);
+            } catch (NotFoundException $e) {
+                # on failure try to locate the relationship vardef
+                foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dicName => $dic) {
+                    if (!$dic['relationships'] || !$dic['relationships'][$field['relationship']]) continue;
+                    SpiceDictionaryRelationships::getInstance()->repairVardefRelationship($dicName, $field['relationship'], true, false);
+                    break;
+                }
+            }
+        }
+    }
+
 
     /**
      * legacy support to repair a vardef relationship
      *
-     * @return void
+     * @return true
+     * @throws DatabaseException
+     * @throws Exception
      */
-    public function repairVardefRelationship($dictionaryName, $relationshipName){
+    public function repairVardefRelationship($dictionaryName, $relationshipName, bool $repairJoinTable = false, bool $loadLegacyFiles = true): bool
+    {
         $db = DBManagerFactory::getInstance();
 
         // get the relationship data
-        SpiceDictionaryVardefs::loadLegacyFiles();
+        if ($loadLegacyFiles) SpiceDictionaryVardefs::loadLegacyFiles();
+
         // $relationshipDefinition = SpiceDictionary::getInstance()->getDefs($dictionaryName)['relationships'][$relationshipName];
         $relationshipDefinition = SpiceDictionaryHandler::getInstance()->dictionary[$dictionaryName]['relationships'][$relationshipName];
 
@@ -306,6 +354,14 @@ class SpiceDictionaryRelationships
         $relationshipDefinition['relationship_name'] = $relationshipName;
         $relationshipDefinition['id'] = SpiceUtils::generateMD5GUID($relationshipName);
         $db->insertQuery('relationships', $relationshipDefinition);
+
+        #repair the join table for m2m relationship
+        if ($repairJoinTable && !empty($relationshipDefinition['join_table'])) {
+            # generate the repair query
+            $sql = SpiceDictionaryDefinitions::getInstance()->repairVardefDefinition($relationshipDefinition['join_table'], false, false);
+            # execute the query
+            if (!empty($sql)) DBManagerFactory::getInstance()->query($sql, true);
+        }
 
         return true;
     }
