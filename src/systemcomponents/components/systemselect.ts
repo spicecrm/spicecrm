@@ -98,7 +98,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      */
     public inputIsVisible: boolean = false;
 
-    @ContentChildren(SystemSelectOption) private options: QueryList<SystemSelectOption>;
+    @ContentChildren(SystemSelectOption, {emitDistinctChangesOnly: true}) private options: QueryList<SystemSelectOption>;
 
     private subscription: Subscription = new Subscription();
 
@@ -113,6 +113,8 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
         this.subscription.add(this.options.changes.subscribe(() => {
             // rebuild the search list options on content change
             this.searchList = this.generateSearchList();
+            this.value = undefined;
+            this.focusedItem = undefined;
             this.cdRef.detectChanges();
         }));
     }
@@ -181,9 +183,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
             this.onChange({id: option.id, name: option.name, group: option.group});
         }
 
-        // reset value and reset filter list
-        this.value = undefined;
-        this.filterSearchList();
+        this.searchList = this.generateSearchList();
     }
 
     /**
@@ -209,7 +209,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
                 }
                 this.filterSearchList();
                 if (this.searchList.length > 0) {
-                    this.focusedItem = this.searchList[0];
+                    this.focusedItem = this.searchList.find(e => !e.isGroup);
                 }
                 break;
         }
@@ -267,7 +267,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
 
         this.searchList.forEach(e => {
 
-            const position = e.content.toLowerCase().indexOf(this.value.toLowerCase());
+            const position = !e.isGroup && e.content.toLowerCase().indexOf(this.value.toLowerCase());
 
             if (position == -1) return;
 
@@ -315,22 +315,20 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
 
                 if (!!g || (!g && groups.length > 1)) {
                     searchList.push(
-                        {id: `${g}`, name: `${g}`, isGroup: true}
+                        {id: `${g}`, name: `${g}`, content: `${g}`, isGroup: true}
                     );
                 }
 
-                if (!this.sortReversed) {
-                    this.options.filter(e => e.group == g)
+                this.options.filter(e => e.group == g)
                     .forEach((e) =>
-                        searchList.push({id: e.value, name: e.display, content: e.displayselect ?? e.display, group: g, inactive: e.inactive})
+                        searchList.push({
+                            id: e.value,
+                            name: e.display,
+                            content: e.displayselect ?? e.display,
+                            group: g,
+                            inactive: e.inactive
+                        })
                     );
-                } else {
-                    // reversed sorting (desc -> asc)
-                    this.options.filter(e => e.group == g)
-                    .forEach((e) =>
-                        searchList.push({id: e.value, name: e.display, content: e.displayselect ?? e.display, group: g, inactive: e.inactive})
-                    );
-                }
             }
         );
 
