@@ -3,7 +3,7 @@
     <div class="slds-grid slds-grid--vertical-align-center slds-form--inline">
         <div class="slds-form-element">
             <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
-            <div class="slds-form-element__control" style="min-width:400px;">
+            <div class="slds-form-element__control" style="min-width:250px;">
                 <system-select [idOnly]="true" [(ngModel)]="currentModule" [disabled]="sysModules.length == 0">
                     <system-select-option value="*" display="*"/>
                     @for (sysModule of sysModules; track sysModule) {
@@ -14,7 +14,7 @@
         </div>
         <div class="slds-form-element">
             <label class="slds-form-element__label"><system-label label="LBL_ACTIONSET"></system-label></label>
-            <div class="slds-form-element__control" style="min-width:250px;">
+            <div class="slds-form-element__control" style="min-width:400px;">
                 <system-select [idOnly]="true" [(ngModel)]="currentActionSet.id" (ngModelChange)="selectCurrentActionset()" [disabled]="!currentModule || (moduleActionsets?.global.length === 0 && moduleActionsets?.custom.length === 0)">
                     @if (moduleActionsets?.global.length > 0) {
                         @for (actionset of moduleActionsets.global; track actionset.id){
