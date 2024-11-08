@@ -17,7 +17,7 @@
                                   </span>
                                 </div>
                             </li>
-                            <li *ngIf="!item.isGroup" [style.color]="item.inactive ? 'var(--color-grey-7)' : 'inherit'" role="presentation" class="slds-listbox__item" (click)="itemClicked(item, $event)">
+                            <li *ngIf="!item.isGroup" [style.color]="item.inactive ? 'var(--color-grey-7)' : 'inherit'" role="presentation" class="slds-listbox__item" (click)="itemClicked(item, $event)" [title]="item.content">
                                 <div [class.slds-has-focus]="item.id == focusedItem?.id" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
                                     <span class="slds-media__body">
                                       <span class="slds-truncate">
