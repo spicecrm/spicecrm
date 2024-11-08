@@ -46,6 +46,8 @@ export class ComponentsetManager {
     public showAddDialog: boolean = false;
     public showComponentsetDetails: boolean = false;
 
+    public moduleComponentsets: {global: { id: string, name: string; }[], custom: { id: string, name: string; }[]};
+
     constructor(public backend: backend,
                 public metadata: metadata,
                 public language: language,
@@ -61,7 +63,7 @@ export class ComponentsetManager {
         // get teh modules from teh metadata service
         this.modules = this.metadata.getModules();
         this.modules.sort();
-
+        this.module = '*';
         this.checkMode();
     }
 
@@ -69,17 +71,24 @@ export class ComponentsetManager {
         return this.currentModule;
     }
 
-    set module(m:any){
-        this.currentModule = m?.id;
+    set module(id: string){
+        this.currentModule = id;
         this.reset();
+
+        if (!!id) {
+            this.moduleComponentsets = {
+                global: this.getComponentSets('global'),
+                custom: this.getComponentSets('custom'),
+            };
+        }
     }
 
     get componentSet(){
         return this.currentComponentSet;
     }
 
-    set componentSet(c:any){
-        this.currentComponentSet = c?.id;
+    set componentSet(id: string){
+        this.currentComponentSet = id;
         this.selectComponentSet();
     }
 
