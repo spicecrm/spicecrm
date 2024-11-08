@@ -11,6 +11,7 @@ import {territories} from '../../../services/territories.service';
  * renders a modal allowing the user to find a territory and select it
  */
 @Component({
+    selector: 'field-territory-search-modal',
     templateUrl: '../templates/fieldterritorysearchmodal.html'
 })
 export class fieldTerritorySearchModal implements OnInit {

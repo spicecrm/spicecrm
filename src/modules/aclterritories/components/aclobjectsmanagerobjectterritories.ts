@@ -24,6 +24,7 @@ import {modal} from '../../../services/modal.service';
 import {ACLObjectsManagerObjectTerritoriesModal} from "./aclobjectsmanagerobjectterritoriesmodal";
 
 @Component({
+    selector: 'aclobjects-manager-object-territories',
     templateUrl: '../templates/aclobjectsmanagerobjectterritories.html'
 })
 export class ACLObjectsManagerObjectTerritories {

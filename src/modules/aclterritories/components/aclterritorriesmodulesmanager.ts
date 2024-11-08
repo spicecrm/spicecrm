@@ -11,6 +11,7 @@ import {broadcast} from "../../../services/broadcast.service";
 
 
 @Component({
+    selector: 'aclterritorries-modules-manager',
     templateUrl: '../templates/aclterritorriesmodulesmanager.html',
 })
 export class ACLTerritorriesModulessmanager {

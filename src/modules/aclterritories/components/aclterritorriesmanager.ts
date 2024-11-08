@@ -10,6 +10,7 @@ import {language} from '../../../services/language.service';
  * a manager component in the admin section for the sales territories
  */
 @Component({
+    selector: 'aclterritorries-manager',
     templateUrl: '../templates/aclterritorriesmanager.html',
 })
 export class ACLTerritorriesManager {
