@@ -52,6 +52,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationships;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -454,7 +455,6 @@ class SpiceUIConfLoader
         ];
 
         $definitions = SpiceDictionaryDefinitions::getInstance();
-        $db = DBManagerFactory::getInstance();
 
         foreach ($dictionaryTables as $table) {
             $this->loadTableRecords($table, $response[$table], $packages);
@@ -481,12 +481,20 @@ class SpiceUIConfLoader
             }
         }
 
+        $this->repairNewRelationships($response['sysdictionarydefinitions']);
 
         SpiceDictionary::getInstance()->loadDictionary();
         RelationshipFactory::getInstance()->loadRelationships(true);
 
         foreach ($dictionaryTables as $table) {
             unset($response[$table]);
+        }
+    }
+
+    public function repairNewRelationships(array $dictionaries)
+    {
+        foreach ($dictionaries as $dic) {
+            SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($dic['id']);
         }
     }
 
