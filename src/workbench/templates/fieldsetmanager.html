@@ -24,7 +24,7 @@
                     @if (moduleFieldsets?.custom.length > 0) {
                         @for (sysFieldset of moduleFieldsets.custom; track sysFieldset.id){
                         <system-select-option [value]="sysFieldset.id" [display]="sysFieldset.name" [group]="'global' + language.getLabel('LBL_FIELDSET')"/>
-                    }
+                        }
                     }
                 </system-select>
             </div>
