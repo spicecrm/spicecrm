@@ -10,7 +10,6 @@ import {toast} from "../../services/toast.service";
 import {Subject} from "rxjs";
 import {modal} from "../../services/modal.service";
 import {configurationService} from "../../services/configuration.service";
-import {view} from "../../services/view.service";
 
 
 /**
@@ -19,7 +18,6 @@ import {view} from "../../services/view.service";
 @Component({
     selector: 'role-menu-manager-edit-role-modal',
     templateUrl: '../templates/rolemenumanagereditrolemodal.html',
-    providers: [view]
 })
 export class RoleMenuManagerEditRoleModal {
 
@@ -147,23 +145,6 @@ export class RoleMenuManagerEditRoleModal {
         });
         this.self.destroy();
     }
-
-    /**
-     * sets the version
-     * @param version
-     */
-    public setVersion(version: { name: string; }) {
-        this.newRole.version = version?.name;
-    }
-
-    /**
-     * sets the package
-     * @param packageData
-     */
-    public setPackage(packageData: { name: string; }) {
-        this.newRole.package = packageData?.name;
-    }
-
 }
 
 

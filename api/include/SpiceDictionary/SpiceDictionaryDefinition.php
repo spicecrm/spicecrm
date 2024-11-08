@@ -131,6 +131,7 @@ class SpiceDictionaryDefinition
 
         // repair the relationships
         if ($relationships) {
+            SpiceDictionaryRelationships::repairVardefRelationshipsFromFields($this->name, $vardefDetails);
             SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($this->id);
         }
 

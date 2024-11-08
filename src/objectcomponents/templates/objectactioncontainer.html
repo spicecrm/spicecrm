@@ -1,4 +1,4 @@
-<div [ngClass]="containerclass" role="group">
+<div [ngClass]="onlyDropdown ? null : containerclass" role="group">
     <button class="slds-button slds-button_neutral" [ngClass]="addclasses(actionitem)" *ngFor="let actionitem of mainactionitems" [disabled]="isDisabled(actionitem.id)" (click)="propagateclick(actionitem.id)">
         <object-action-container-item [actionitem]="actionitem" [displayasicon]="displayasicon" (actionemitter)="emitaction($event)"></object-action-container-item>
     </button>

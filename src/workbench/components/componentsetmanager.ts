@@ -158,8 +158,16 @@ export class ComponentsetManager {
         return this.metadata.getComponentSet(this.currentComponentSet).package;
     }
 
+    set currentComponentSetPackage(newPackage) {
+        this.metadata.getComponentSet(this.currentComponentSet).package = newPackage;
+    }
+
     get currentComponentSetVersion() {
         return this.metadata.getComponentSet(this.currentComponentSet).version;
+    }
+
+    set currentComponentSetVersion(newVersion) {
+        this.metadata.getComponentSet(this.currentComponentSet).version = newVersion;
     }
 
     get currentComponentSetName() {
@@ -394,22 +402,5 @@ export class ComponentsetManager {
                 }
             }
         })
-    }
-
-    /**
-     * sets the version for the fieldset
-     * @param version
-     */
-    public setVersion(version: {name: string;}) {
-        this.metadata.getComponentSet(this.currentComponentSet).version = version?.name;
-
-    }
-
-    /**
-     * sets the package for the fieldset
-     * @param packageData
-     */
-    public setPackage(packageData: { name: string; }) {
-        this.metadata.getComponentSet(this.currentComponentSet).package = packageData?.name;
     }
 }

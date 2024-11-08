@@ -11,13 +11,11 @@ import {language} from '../../services/language.service';
 import {configurationService} from '../../services/configuration.service';
 
 import {toast} from "../../services/toast.service";
-import {view} from "../../services/view.service";
 
 
 @Component({
     selector: 'moduleconfig-add-dialog',
     templateUrl: '../templates/moduleconfigadddialog.html',
-    providers: [view]
 })
 export class ModuleConfigAddDialog implements OnInit {
 
@@ -268,21 +266,5 @@ export class ModuleConfigAddDialog implements OnInit {
                 console.error(error);
             }
         );
-    }
-
-    /**
-     * sets the version for the component module conf
-     * @param version
-     */
-    public setVersion(version: {name: string;}) {
-        this.currentComponent.version = version?.name;
-    }
-
-    /**
-     * sets the package for the component module conf
-     * @param packageData
-     */
-    public setPackage(packageData: {name: string;}) {
-        this.currentComponent.package = packageData?.name;
     }
 }

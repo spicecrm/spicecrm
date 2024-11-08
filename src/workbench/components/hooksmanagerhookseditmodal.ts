@@ -12,13 +12,11 @@ import {LogicHookI} from "../interfaces/systemui.interfaces";
 import {toast} from "../../services/toast.service";
 import {Subject} from "rxjs";
 import {modal} from "../../services/modal.service";
-import {view} from "../../services/view.service";
 
 
 @Component({
     selector: 'hooks-manager-hooks-edit-modal',
     templateUrl: '../templates/hooksmanagerhookseditmodal.html',
-    providers: [view]
 
 })
 export class HooksManagerHooksEditModal implements OnInit {
@@ -113,21 +111,5 @@ export class HooksManagerHooksEditModal implements OnInit {
             });
             this.self.destroy();
         }
-    }
-
-    /**
-     * sets the version
-     * @param version
-     */
-    public setVersion(version: {name: string;}) {
-        this.newLogicHook.version = version?.name;
-    }
-
-    /**
-     * sets the package
-     * @param packageData
-     */
-    public setPackage(packageData: {name: string;}) {
-        this.newLogicHook.package = packageData?.name;
     }
 }
