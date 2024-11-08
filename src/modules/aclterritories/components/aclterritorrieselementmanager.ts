@@ -11,6 +11,7 @@ import {broadcast} from "../../../services/broadcast.service";
 
 
 @Component({
+    selector: 'aclterritorries-element-manager',
     templateUrl: '../templates/aclterritorrieselementmanager.html',
 })
 export class ACLTerritorriesElementmanager {

@@ -12,6 +12,7 @@ import {language} from "../../../services/language.service";
 
 
 @Component({
+    selector: 'aclterritorries-element-manager-elements-add-modal',
     templateUrl: '../templates/aclterritorrieselementmanagerelementsaddmodal.html',
 })
 export class ACLTerritorriesElementmanagerElementsAddModal {
