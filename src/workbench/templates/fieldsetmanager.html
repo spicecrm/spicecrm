@@ -14,7 +14,7 @@
         </div>
         <div class="slds-form-element" *ngIf="module">
             <label class="slds-form-element__label"><system-label label="LBL_FIELDSET"></system-label></label>
-            <div class="slds-form-element__control" style="min-width:250px;">
+            <div class="slds-form-element__control" style="min-width:400px;">
                 <system-select [(ngModel)]="fieldset" [idOnly]="true" [disabled]="!module || (moduleFieldsets?.global.length == 0 && moduleFieldsets?.custom.length == 0)">
                     @if (moduleFieldsets?.global.length > 0) {
                         @for (sysFieldset of moduleFieldsets.global; track sysFieldset.id){
