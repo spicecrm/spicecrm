@@ -3,7 +3,7 @@
         <acl-manager-header displaylabel="LBL_SPICEACLOBJECTS"></acl-manager-header>
     </div>
     <div #managercontent class="slds-grid" [ngStyle]="contentStyle">
-        <aclobjects-manager-objects class="slds-size--1-of-2 slds-border--right" (typeselected)="setType($event)" (objectselected)="setObject($event)"></aclobjects-manager-objects>
-        <aclobjects-manager-object [objectid]="activeobjectid" class="slds-size--1-of-2" style="height: 100%;"></aclobjects-manager-object>
+        <aclobjects-manager-objects class="slds-size--1-of-2 slds-border--right" (typeselected)="setType($event)" (objectselected)="setObject($event)" (objectUpdated)="onObjectUpdated($event)"></aclobjects-manager-objects>
+        <aclobjects-manager-object [objectid]="activeobjectid" [object]="activeObject" class="slds-size--1-of-2 slds-height_full"></aclobjects-manager-object>
     </div>
 </div>
