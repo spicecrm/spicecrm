@@ -1,27 +1,12 @@
 /**
  * @module ModuleACLTerritories
  */
-import {
-    AfterViewInit,
-    ComponentFactoryResolver,
-    Component,
-    ElementRef,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
-    Output,
-    EventEmitter,
-    Input,
-    OnChanges,
-    OnInit
-} from '@angular/core';
+import {Component} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
 import {backend} from '../../../services/backend.service';
-import {modelutilities} from '../../../services/modelutilities.service';
 import {modal} from '../../../services/modal.service';
-import {ACLObjectsManagerObjectTerritoriesModal} from "./aclobjectsmanagerobjectterritoriesmodal";
 
 @Component({
     selector: 'aclobjects-manager-object-territories',
