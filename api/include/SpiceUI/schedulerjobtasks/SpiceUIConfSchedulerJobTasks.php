@@ -15,6 +15,7 @@ class SpiceUIConfSchedulerJobTasks
      */
     public function createConfigTransferBackup(): bool
     {
+        ini_set('memory_limit', '512M');
         SpiceUIConfHandler::createBackupFile();
         return true;
     }
