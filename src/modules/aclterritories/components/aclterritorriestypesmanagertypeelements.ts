@@ -1,12 +1,10 @@
 /**
  * @module ModuleACLTerritories
  */
-import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef, Input, OnChanges} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {Component, Input, OnChanges} from '@angular/core';
 import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
-
 
 @Component({
     selector: 'aclterritorries-typesmanager-type-elements',
