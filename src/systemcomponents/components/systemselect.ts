@@ -180,6 +180,10 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
         } else {
             this.onChange({id: option.id, name: option.name, group: option.group});
         }
+
+        // reset value and reset filter list
+        this.value = undefined;
+        this.filterSearchList();
     }
 
     /**
