@@ -120,6 +120,9 @@ class SpiceACLUsers{
      * @return string
      */
     static function generateOrgUnitWhereClause($table_name = '', $bean){
+        // if there is no field assigned_orgunit_id defined just leave it.
+        if(!isset($bean->field_defs['assigned_orgunit_id'])) return false;
+
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         $absences = BeanFactory::getBean('UserAbsences');

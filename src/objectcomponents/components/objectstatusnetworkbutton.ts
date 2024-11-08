@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Renderer2, ElementRef, OnInit, ViewChildren, QueryList} from '@angular/core';
+import {Component, Renderer2, ElementRef, OnInit, ViewChildren, QueryList, Input} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
@@ -32,6 +32,10 @@ export class ObjectStatusNetworkButton implements OnInit {
      * the status network as retrieved from the config
      */
     public statusNetwork: any[] = [];
+    /**
+     * if true display all the buttons in the dropdown
+     */
+    @Input() public onlyDropdown: boolean = false;
 
     constructor(public language: language, public metadata: metadata, public model: model, public modal: modal, public router: Router, public renderer: Renderer2, public elementRef: ElementRef) {
 
@@ -73,7 +77,7 @@ export class ObjectStatusNetworkButton implements OnInit {
         for (let statusnetworkitem of this.statusNetwork) {
             if (statusnetworkitem.status_from == this.model.getField(this.statusField) && (!statusnetworkitem.required_model_state || this.model.checkModelState(statusnetworkitem.required_model_state))) {
 
-                if (firstHit) {
+                if (this.onlyDropdown || firstHit) {
                     retArray.push(statusnetworkitem);
                 }
 

@@ -70,23 +70,6 @@ export class DomainManagerAddValidationValueModal implements OnInit{
     }
 
     /**
-     * sets the version for adding domain validation value
-     * @param version
-     */
-    public setVersion(version: {name: string;}) {
-        this.fieldvalidationvalue.version = version?.name;
-    }
-
-    /**
-     * sets the package for adding domain validation value
-     * @param packageData
-     */
-    public setPackage(packageData: {name: string;}) {
-        this.fieldvalidationvalue.package = packageData?.name;
-    }
-
-
-    /**
      * close the modal
      */
     public close() {

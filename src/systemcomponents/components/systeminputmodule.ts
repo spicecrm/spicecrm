@@ -77,12 +77,12 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy, OnIni
      */
     public subscription: Subscription = new Subscription();
     /**
-     * holds the companycoded
+     * holds the module
      */
     public _module: {id: string, name: string};
 
     /**
-     * the available companycodes
+     * the available modules
      */
     public _modules: {id: string, name: string}[] = [];
 
@@ -100,7 +100,7 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy, OnIni
     public ngOnInit() {
         this._modules = this.metadata.getModules().map(m => ({id: m, name: this.technicalNameOnly ? m : `${this.language.getModuleName(m)} (${m})`}));
 
-        if (this._filterModules.length > 0) {
+        if (this._filterModules?.length > 0) {
             this._modules = this._modules.filter(m => this._filterModules.find(v => v == m.id));
         }
 
