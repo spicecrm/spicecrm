@@ -3,42 +3,34 @@
         <system-label label="LBL_ADD_FIELD"></system-label>
     </system-modal-header>
     <system-modal-content>
-
-        <div *ngIf="moduleFields || searchterm" class="slds-p-vertical--small slds-theme_default slds-is-absolute" style="top: 0; z-index: 99; width: calc(100% - 2.5rem)">
-            <system-input-text placeholder="LBL_SEARCH" class="slds-grow" [(ngModel)]="searchterm" autocomplete="off" [showClear]="false"></system-input-text>
-        </div>
-
-
-        <div *ngIf="moduleFields" class="slds-p-top--xx-large">
-            <fieldset class="slds-form-element">
-                <div class="slds-form-element__control">
-                    <div class="slds-checkbox" (click)="toggleSelectAll($event)">
-                        <input type="checkbox" [id]="'select_all'" [checked]="selectAllChecked"/>
-                        <label class="slds-checkbox__label" [attr.for]="'select_all'">
-                            <span class="slds-checkbox_faux"></span>
-                            <span class="slds-form-element__label"><system-label label="LBL_SELECT_ALL"></system-label></span>
-                        </label>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-
-
-        <fieldset class="slds-form-element">
-            <div *ngFor="let thisfield of moduleFields" class="slds-form-element__control">
-                <div *ngIf="!getFieldDisplay(thisfield)" class="slds-checkbox" (click)="setFieldValue(thisfield, $event)">
-                    <input type="checkbox" [id]="'id'+thisfield" [checked]="getFieldValue(thisfield)" />
-                    <label class="slds-checkbox__label" [attr.for]="'id'+thisfield">
-                        <span class="slds-checkbox_faux"></span>
-                        <span class="slds-form-element__label">{{getFieldDisplayName(thisfield)}}&nbsp;/&nbsp;{{thisfield}}</span>
-                    </label>
+        <div class="slds-grid slds-grid--vertical-align-center slds-gutters_direct-xx-small">
+            <div class="slds-col slds-form-element__control slds-size--1-of-4">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_SCOPE"/></label>
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="aclField.scope" [disabled]="changescope != 'all'">
+                        <option *ngIf="changescope == 'all' && aclType.acltype.scope == 'g'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
+                        <option value="c"><system-label label="LBL_CUSTOM"/></option>
+                    </select>
                 </div>
             </div>
-        </fieldset>
-
+            <div class="slds-col slds-form-element slds-size--3-of-4">
+                <label class="slds-form-element__label"><system-label label="LBL_FIELD"/></label>
+                <system-input-module-field [module]="aclType.acltype.module" [(ngModel)]="aclField.name"></system-input-module-field>
+            </div>
+        </div>
+        <div class="slds-grid slds-grid--vertical-align-center slds-gutters_direct-xx-small">
+            <div class="slds-col slds-form-element__control slds-size--1-of-2">
+                <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"/></label>
+                <system-input-package [(ngModel)]="aclField.package"/>
+            </div>
+            <div class="slds-col slds-form-element__control slds-size--1-of-2">
+                <label class="slds-form-element__label"><system-label label="LBL_VERSION"/></label>
+                <system-input-version [(ngModel)]="aclField.version"/>
+            </div>
+        </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
-        <button [disabled]="selectedfields.length < 1" class="slds-button slds-button--brand" (click)="add()"><system-label label="LBL_ADD"></system-label></button>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"/></button>
+        <button [disabled]="!canAdd" class="slds-button slds-button--brand" (click)="add()"><system-label label="LBL_ADD"/></button>
     </system-modal-footer>
 </system-modal>
