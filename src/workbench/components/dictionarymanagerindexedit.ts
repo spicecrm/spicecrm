@@ -30,6 +30,9 @@ export class DictionaryManagerIndexEdit implements OnInit {
             this.populateItems();
         }
     }
+    public close() {
+        this.self.destroy();
+    }
 
     private populateItems() {
         // Get all items for the current dictionary definition
@@ -70,6 +73,20 @@ export class DictionaryManagerIndexEdit implements OnInit {
         event.previousContainer.data.splice(event.previousIndex, 1);
 
         event.container.data.splice(event.currentIndex, 0, draggedItem);
+    }
+
+    canSave(){
+        // Validate the index name format (only Latin letters, digits, and underscores)
+        const namePattern = /^[a-zA-Z0-9_]+$/;
+        if (!namePattern.test(this.index.name)) return false;
+
+        // for non-foreign we need to have fields
+        if (this.index.indextype != 'foreign' && this.indexDictionaryItems.length == 0) return false;
+
+        // for foreign we need to have the remote field
+        if (this.index.indextype == 'foreign' && (!this.dictionaryItemId || !this.dictionaryForeignItemId)) return false;
+
+        return true;
     }
 
     public save() {
@@ -148,9 +165,5 @@ export class DictionaryManagerIndexEdit implements OnInit {
      */
     get foreignItems(): DictionaryItem[]{
         return this.dictionarymanager.getDictionaryDefinitionItems(this.dictionaryForeignDefinitionId).sort((a, b) => a.name.localeCompare(b.name));
-    }
-
-    public close() {
-        this.self.destroy();
     }
 }
