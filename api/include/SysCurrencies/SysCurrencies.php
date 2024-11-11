@@ -111,15 +111,17 @@ class SysCurrencies
         $db = DBManagerFactory::getInstance();
         // migrate the system currency
         $sysCur = SpiceConfig::getInstance()->config['currencies'];
-        $db->insertQuery('syscurrencies', [
-            'id' => '-99',
-            'name' => $sysCur['default_currency_name'],
-            'iso4217' => $sysCur['default_currency_iso4217'],
-            'currency_symbol' => $sysCur['default_currency_symbol'],
-            'is_inactive' => 0,
-            'is_systemcurrency' => 1,
-            'currency_precision' => $sysCur['default_currency_significant_digits']
-        ]);
+        if($sysCur){
+            $db->insertQuery('syscurrencies', [
+                'id' => '-99',
+                'name' => $sysCur['default_currency_name'],
+                'iso4217' => $sysCur['default_currency_iso4217'],
+                'currency_symbol' => $sysCur['default_currency_symbol'],
+                'is_inactive' => 0,
+                'is_systemcurrency' => 1,
+                'currency_precision' => $sysCur['default_currency_significant_digits']
+            ]);
+        }
 
         // migrate currencies table
         $legacyCurrencies = $db->fetchAll("SELECT * FROM currencies WHERE deleted = 0");

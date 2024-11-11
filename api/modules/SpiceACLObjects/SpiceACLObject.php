@@ -56,7 +56,7 @@ class SpiceACLObject extends SpiceBean
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $typeRecords = [];
         if (SpiceUtils::isAdmin($current_user)) {
-            $typeRecords = $this->db->fetchAll("SELECT sysmodules.id, sysmodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = sysmodules.id AND deleted = 0) usagecount FROM sysmodules WHERE acl = 1 UNION SELECT syscustommodules.id, syscustommodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = syscustommodules.id AND deleted = 0) usagecount FROM syscustommodules WHERE acl = 1");
+            $typeRecords = $this->db->fetchAll("SELECT sysmodules.id, sysmodules.module, 'g' scope, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = sysmodules.id AND deleted = 0) usagecount FROM sysmodules WHERE acl = 1 UNION SELECT syscustommodules.id, syscustommodules.module, 'c' scope, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = syscustommodules.id AND deleted = 0) usagecount FROM syscustommodules WHERE acl = 1");
         }
         return $typeRecords;
     }
@@ -101,7 +101,7 @@ class SpiceACLObject extends SpiceBean
         // check for territory values
         $this->territoryelementvalues = [];
         $territory = BeanFactory::getBean('SpiceACLTerritories');
-        if ($territory instanceof SpiceACLTerritory) {
+        if ($territory) {
             $territoryelementvalues = $this->db->query("SELECT * FROM spiceaclobjectsterritoryelementvalues WHERE spiceaclobject_id='$this->id'");
             while ($territoryelementvalue = $this->db->fetchByAssoc($territoryelementvalues)) {
                 $this->territoryelementvalues[] = $territoryelementvalue;
@@ -275,7 +275,7 @@ class SpiceACLObject extends SpiceBean
                 $this->authObjects[$aclobject['id']] = $aclobject;
 
                 // read the org values - check on method_exists because of SpiceCRM core edition
-                if ($territory && $territory instanceof SpiceACLTerritory && method_exists($territory, 'getAclObjectTerritoryValues')) {
+                if ($territory && method_exists($territory, 'getAclObjectTerritoryValues')) {
                     $this->authObjects[$aclobject['id']]['objectterritoryvalues'] = $territory->getAclObjectTerritoryValues($aclobject['id']);
                 }
 
@@ -285,14 +285,18 @@ class SpiceACLObject extends SpiceBean
                 while ($objectAction = $db->fetchByAssoc($objectActions))
                     $this->authObjects[$aclobject['id']]['objectactions'][] = $objectAction['spiceaclaction_id'];
 
-                // read the field values
-                $objectValues = $db->query("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues INNER JOIN spiceaclmodulefields ON spiceaclmodulefields.id = spiceaclobjectvalues.spiceaclmodulefield_id WHERE spiceaclobject_id='{$aclobject['id']}'");
-                while ($thisObjectValue = $db->fetchByAssoc($objectValues))
+                // get the standard values
+                $fieldStandardValues = $this->db->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues, spiceaclmodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclmodulefields.id AND spiceaclobject_id='{$aclobject['id']}'");
+                // get the custom values
+                $fieldCustomValues = $this->db->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclcustommodulefields.name FROM spiceaclobjectvalues, spiceaclcustommodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclcustommodulefields.id AND spiceaclobject_id='{$aclobject['id']}'");
+                // merge the values
+                $objectValues = array_merge($fieldStandardValues ?: [], $fieldCustomValues ?: []);
+                foreach ($objectValues as $thisObjectValue) {
                     $this->authObjects[$aclobject['id']]['objectelementvalues'][$thisObjectValue['name']] = [
                         'operator' => $thisObjectValue['operator'],
                         'value1' => $thisObjectValue['value1'],
                         'value2' => $thisObjectValue['value2']];
-
+                }
 
                 // get the field control
                 $objectFieldControls = $db->query("SELECT field, control FROM spiceaclobjectfields WHERE spiceaclobject_id='{$aclobject['id']}'");
@@ -357,7 +361,7 @@ class SpiceACLObject extends SpiceBean
         }
 
         // check that the territory matches
-        if ($territory && $territory instanceof SpiceACLTerritory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id'])) {
+        if ($territory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id'])) {
             return false;
         }
 
@@ -394,7 +398,7 @@ class SpiceACLObject extends SpiceBean
 
 
         // check that the territory matches
-        if ($territory && $territory instanceof SpiceACLTerritory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id'])) {
+        if ($territory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id'])) {
             return false;
         }
 
@@ -472,8 +476,13 @@ class SpiceACLObject extends SpiceBean
         }
 
         // add Values
-        $fieldvalues = $this->db->query("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues, spiceaclmodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclmodulefields.id AND spiceaclobject_id='$this->id'");
-        while ($fieldvalue = $this->db->fetchByAssoc($fieldvalues)) {
+        // get the standard values
+        $fieldStandardValues = $this->db->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues, spiceaclmodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclmodulefields.id AND spiceaclobject_id='$this->id'");
+        // get the custom values
+        $fieldCustomValues = $this->db->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclcustommodulefields.name FROM spiceaclobjectvalues, spiceaclcustommodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclcustommodulefields.id AND spiceaclobject_id='$this->id'");
+        // merge the values
+        $fieldvalues = array_merge($fieldStandardValues ?: [], $fieldCustomValues ?: []);
+        foreach ($fieldvalues as $fieldvalue) {
             switch ($fieldvalue['operator']) {
                 // equal =
                 case 'EQ':
@@ -585,7 +594,7 @@ class SpiceACLObject extends SpiceBean
         // territories
         if (!$this->allorgobjects) {
             $territory = BeanFactory::getBean('SpiceACLTerritories');
-            if ($territory && $territory instanceof SpiceACLTerritory && $territory instanceof('SpiceACLTerritory')) {
+            if ($territory) {
                 $hashes = $territory->getTerritoryHashesForObject($this->id, $this->sysmodule_id);
                 if ($hashes !== false) {
                     if (count($hashes) > 0) {
@@ -639,8 +648,13 @@ class SpiceACLObject extends SpiceBean
         }
 
         // add Values
-        $fieldvalues = $this->db->query("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues, spiceaclmodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclmodulefields.id AND spiceaclobject_id='$this->id'");
-        while ($fieldvalue = $this->db->fetchByAssoc($fieldvalues)) {
+        // get the standard values
+        $fieldStandardValues = $this->db->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues, spiceaclmodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclmodulefields.id AND spiceaclobject_id='$this->id'");
+        // get the custom values
+        $fieldCustomValues = $this->db->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclcustommodulefields.name FROM spiceaclobjectvalues, spiceaclcustommodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclcustommodulefields.id AND spiceaclobject_id='$this->id'");
+        // merge the values
+        $fieldvalues = array_merge($fieldStandardValues ?: [], $fieldCustomValues ?: []);
+        foreach ($fieldvalues as $fieldvalue) {
             switch ($fieldvalue['operator']) {
                 case 'EQ':
                     $whereClauses[] = "$table_name.{$fieldvalue['name']} = '{$fieldvalue['value1']}'";
@@ -698,7 +712,7 @@ class SpiceACLObject extends SpiceBean
 
         // territories
         $territory = BeanFactory::getBean('SpiceACLTerritories');
-        if ($territory && $territory instanceof SpiceACLTerritory && $this->allorgobjects != 1) {
+        if ($territory && $this->allorgobjects != 1) {
             $hashes = $territory->getTerritoryHashesForObject($this->id, $this->sysmodule_id);
             if ($hashes !== false) {
                 if (count($hashes) > 0) {
@@ -847,7 +861,7 @@ class SpiceACLObject extends SpiceBean
 
         if (!$allorgObject) {
             $territory = BeanFactory::getBean('SpiceACLTerritories');
-            if ($territory && $territory instanceof SpiceACLTerritory ) {
+            if ($territory ) {
                 $territory->activateACLObject($this->spiceacltype_module, $this->id, $objectValuesArray);
             }
 
@@ -871,7 +885,7 @@ class SpiceACLObject extends SpiceBean
     public function deactivate()
     {
         $territory = BeanFactory::getBean('SpiceACLTerritories');
-        if ($territory && $territory instanceof SpiceACLTerritory ) {
+        if ($territory) {
             $territory->deactivateACLObject($this->id);
         }
 

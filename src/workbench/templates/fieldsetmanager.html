@@ -4,18 +4,28 @@
         <div class="slds-form-element">
             <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
             <div class="slds-form-element__control" style="min-width:250px;">
-                <system-select [(ngModel)]="module" [disabled]="modules.length == 0">
+                <system-select [(ngModel)]="module" [idOnly]="true" [disabled]="modules.length == 0">
                     <system-select-option value="*" display="*"/>
-                    <system-select-option *ngFor="let m of modules" [value]="m" [display]="m"/>
+                    @for (m of modules; track m) {
+                        <system-select-option [value]="m" [display]="m"/>
+                    }
                 </system-select>
             </div>
         </div>
         <div class="slds-form-element" *ngIf="module">
             <label class="slds-form-element__label"><system-label label="LBL_FIELDSET"></system-label></label>
-            <div class="slds-form-element__control" style="min-width:250px;">
-                <system-select [(ngModel)]="fieldset" [disabled]="getFieldSets().length == 0">
-                    <system-select-option *ngFor="let sysFieldset of getFieldSets('custom')" [value]="sysFieldset.id" [display]="sysFieldset.name" [group]="'custom' + language.getLabel('LBL_FIELDSET')"/>
-                    <system-select-option *ngFor="let sysFieldset of getFieldSets('global')" [value]="sysFieldset.id" [display]="sysFieldset.name" [group]="'global' + language.getLabel('LBL_FIELDSET')"/>
+            <div class="slds-form-element__control" style="min-width:400px;">
+                <system-select [(ngModel)]="fieldset" [idOnly]="true" [disabled]="!module || (moduleFieldsets?.global.length == 0 && moduleFieldsets?.custom.length == 0)">
+                    @if (moduleFieldsets?.global.length > 0) {
+                        @for (sysFieldset of moduleFieldsets.global; track sysFieldset.id){
+                        <system-select-option [value]="sysFieldset.id" [display]="sysFieldset.name" [group]="'custom' + language.getLabel('LBL_FIELDSET')"/>
+                        }
+                    }
+                    @if (moduleFieldsets?.custom.length > 0) {
+                        @for (sysFieldset of moduleFieldsets.custom; track sysFieldset.id){
+                        <system-select-option [value]="sysFieldset.id" [display]="sysFieldset.name" [group]="'global' + language.getLabel('LBL_FIELDSET')"/>
+                        }
+                    }
                 </system-select>
             </div>
         </div>
