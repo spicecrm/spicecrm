@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Injector
+    Component, Injector, OnInit
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
@@ -20,12 +20,13 @@ import {DomainField} from "../interfaces/domainmanager.interfaces";
     selector: 'dictionary-manager-fields',
     templateUrl: '../templates/dictionarymanagerfields.html',
 })
-export class DictionaryManagerFields {
+export class DictionaryManagerFields implements OnInit{
 
     /**
      * the curretn dictionaryitem
      */
     public dictionaryitem: DictionaryItem;
+    public dictionaryitems: DictionaryItem[];
 
     public filterterm: string = '';
 
@@ -35,10 +36,14 @@ export class DictionaryManagerFields {
 
     }
 
+    public ngOnInit() {
+        this.dictionaryitems = this.buildDictionaryitems();
+    }
+
     /**
      * gets all non deleted entries sorted by name
      */
-    get dictionaryitems(): DictionaryItem[] {
+    public buildDictionaryitems(): DictionaryItem[] {
 
         // return an empty array when no DictionaryDefinition is set
         if (!this.dictionarymanager.currentDictionaryDefinition) return [];
@@ -54,14 +59,14 @@ export class DictionaryManagerFields {
             s.cached = false;
             s.database = false;
 
+
             // get the additonbal domain fields
-            s.addFields = this.getDomainFields(s.sysdomaindefinition_id, false);
-            s.addFields.forEach(a => {
-                // a.name = this.translateDomainField(a.name, s);
+            s.addFields = this.getDomainFields(s.sysdomaindefinition_id, false).map(a => {
                 a.defined = true;
                 a.cached = false;
                 a.database = false;
-            })
+                return a;
+            });
         });
 
         // get the cached fields
