@@ -103,8 +103,7 @@ $routes = [
     ],
     [
         'method'      => 'post',
-        'route'       => '/module/SpiceACLObjects/modules/{moduleid}/fields/{field}',
-        'oldroute'    => '/spiceaclobjects/authtypes/{id}/authtypefields/{field}',
+        'route'       => '/module/SpiceACLObjects/modules/{moduleid}/fields/{fieldid}',
         'class'       => SpiceACLObjectsController::class,
         'function'    => 'addACLModuleField',
         'description' => 'Create  field entry for specified module',
@@ -117,19 +116,17 @@ $routes = [
                 'example' => '3f3b8d46-fa1f-49de-8b29-e04e4a183c99',
                 'required' => true
             ],
-            'field' => [
+            'fieldid' => [
                 'in' => 'path',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'description' => 'field name',
-                'example' => 'date_entered',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'description' => 'field id',
                 'required' => true
             ]
         ]
     ],
     [
         'method'      => 'delete',
-        'route'       => '/module/SpiceACLObjects/modules/{moduleid}/fields/{fieldid}',
-        'oldroute'    => '/spiceaclobjects/authtypes/{id}/authtypefields/{fieldid}',
+        'route'       => '/module/SpiceACLObjects/modules/{moduleid}/fields/{scope}/{fieldid}',
         'class'       => SpiceACLObjectsController::class,
         'function'    => 'deleteACLModuleField',
         'description' => 'Delete field entry for specified module',
@@ -140,6 +137,13 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'description' => 'id of ACL module',
                 'example' => '3f3b8d46-fa1f-49de-8b29-e04e4a183c99',
+                'required' => true
+            ],
+            'scope' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_ENUM,
+                'description' => 'the scope',
+                'options' => ['c', 'g'],
                 'required' => true
             ],
             'fieldid' => [
@@ -154,7 +158,6 @@ $routes = [
     [
         'method'      => 'get',
         'route'       => '/module/SpiceACLObjects/modules/{moduleid}/actions',
-        'oldroute'    => '/spiceaclobjects/authtypes/{id}/authtypeactions',
         'class'       => SpiceACLObjectsController::class,
         'function'    => 'getACLModuleActions',
         'description' => 'Get Auth Type Action',
@@ -171,8 +174,7 @@ $routes = [
     ],
     [
         'method'      => 'post',
-        'route'       => '/module/SpiceACLObjects/modules/{moduleid}/actions/{action}',
-        'oldroute'    => '/spiceaclobjects/authtypes/{id}/authtypeactions/{action}',
+        'route'       => '/module/SpiceACLObjects/modules/{moduleid}/actions/{actionid}',
         'class'       => SpiceACLObjectsController::class,
         'function'    => 'addACLModuleAction',
         'description' => 'Create ACL action for specified module',
@@ -185,25 +187,18 @@ $routes = [
                 'example' => '3f3b8d46-fa1f-49de-8b29-e04e4a183c99',
                 'required' => true
             ],
-            'action' => [
+            'actionid' => [
                 'in' => 'path',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'description' => 'action itself',
                 'example' => 'edit',
                 'required' => true
-            ],
-            'description' => [
-                'in' => 'body',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'description' => 'a textual description for the acl action',
-                'required' => false
             ]
         ]
     ],
     [
         'method'      => 'delete',
-        'route'       => '/module/SpiceACLObjects/modules/{moduleid}/actions/{actionid}',
-        'oldroute'    => '/spiceaclobjects/authtypes/{id}/authtypeactions/{actionid}',
+        'route'       => '/module/SpiceACLObjects/modules/{moduleid}/actions/{scope}/{actionid}',
         'class'       => SpiceACLObjectsController::class,
         'function'    => 'deleteACLModuleAction',
         'description' => 'Delete action for specified module',
@@ -214,6 +209,13 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'description' => 'id of ACL Module',
                 'example' => '3f3b8d46-fa1f-49de-8b29-e04e4a183c99',
+                'required' => true
+            ],
+            'scope' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_ENUM,
+                'description' => 'the scope',
+                'options' => ['c', 'g'],
                 'required' => true
             ],
             'actionid' => [

@@ -3,7 +3,11 @@
         <div class="slds-col slds-has-flexi-truncate">
             <div class="slds-media slds-no-space slds-grow">
                 <div class="slds-media__figure">
-                    <system-icon module="SpiceACLObjects"></system-icon>
+                    @if (displayicon) {
+                        <system-icon [icon]="displayicon"></system-icon>
+                    } @else {
+                        <system-icon [module]="displaymodule"></system-icon>
+                    }
                 </div>
                 <div class="slds-media__body">
                     <p class="slds-text-title_caps slds-line-height_reset">
