@@ -201,6 +201,7 @@ class SpiceDemoDataGenerator
                 'lead_source' => array_rand($appListStrings['lead_source_dom']),
 
             ];
+            $opportunity['amount_systemcurrency'] = $opportunity['amount'];
             $opportunities[] = $opportunity;
         }
         return $opportunities;
