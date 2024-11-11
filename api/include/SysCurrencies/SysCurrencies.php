@@ -316,6 +316,7 @@ class SysCurrencies
 
         $c = $this->getCurrencyByID($currencyId);
         if(!$date) {
+            if(!$c->exchange_rate) return $amount;
             return round(($amount / $c->exchange_rate), $precision);
         } else {
             $date = (new DateTime($date))->format(TimeDate::DB_DATE_FORMAT);
@@ -323,7 +324,7 @@ class SysCurrencies
             if($exchangeRate){
                 return round(($amount / $exchangeRate), $precision);
             } else {
-                return 0;
+                return $amount;
             }
         }
     }
