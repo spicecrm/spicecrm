@@ -84,6 +84,7 @@ class OutputTemplate extends SpiceBean
 
     public function __construct()
     {
+        parent::__construct();
         $this->setPDFHandler();
     }
 

@@ -6,22 +6,35 @@ import {
     ViewChild,
     ViewContainerRef,
     Input,
-    OnChanges
+    OnChanges, SimpleChanges
 } from '@angular/core';
 import {model} from '../../../services/model.service';
+import {view} from '../../../services/view.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
+import {aclobjectsmanager} from "../services/aclobjectsmanager.service";
 
 @Component({
     selector: 'aclobjects-manager-object',
     templateUrl: '../templates/aclobjectsmanagerobject.html',
-    providers: [model]
+    providers: [view]
 })
 export class ACLObjectsManagerObject implements OnChanges {
 
+    /**
+     * the id of the object
+     */
     @Input() public objectid: string = '';
-    @Input() public typeid: string = '';
+
+    /**
+     * the status of the object
+     */
+    @Input() public objectstatus: string = '';
+
+    /**
+     * if we are loaded or not
+     */
     public loaded: boolean = false;
 
     public tabs: any[] = [
@@ -34,8 +47,8 @@ export class ACLObjectsManagerObject implements OnChanges {
 
     @ViewChild('header', {read: ViewContainerRef, static: true}) public header: ViewContainerRef;
 
-    constructor(public metadata: metadata, public backend: backend, public model: model, public language: language) {
-        this.model.module = 'SpiceACLObjects';
+    constructor(public aclobjectsmanager: aclobjectsmanager, public metadata: metadata, public backend: backend, public model: model, public view: view, public language: language) {
+
 
         // get config
         let componentConfig = this.metadata.getComponentConfig('ACLObjectsManagerObject', this.model.module);
@@ -56,18 +69,54 @@ export class ACLObjectsManagerObject implements OnChanges {
         }
     }
 
+    private setEditMode(){
+        switch (this.model.getField('status')){
+            case 'r':
+                this.view.isEditable = false;
+                this.view.setViewMode();
+                break;
+            default:
+                this.view.isEditable = true;
+                this.view.setEditMode();
+                break;
+        }
+    }
+
     public switchTab(tab) {
         this.activeTab = tab;
     }
 
-    public ngOnChanges() {
+    public ngOnChanges(changes: SimpleChanges) {
         this.loaded = false;
-        if (this.objectid) {
+        if (this.objectid || changes['objectid']) {
             this.model.id = this.objectid;
-            this.model.getData(true).subscribe(data => {
-                this.loaded = true;
-            });
+            this.model.initialize();
+
+            let data = this.aclobjectsmanager.aclobjects.find(t => t.id == this.objectid);
+            this.model.setData(data);
+
+            // set the edit mode on the view
+            this.setEditMode();
+
+            if(this.view.isEditMode()) {
+                this.model.startEdit();
+            }
+
+            this.loaded = true;
+        } else if(changes['objectstatus']){
+            // set the edit mode on the view
+            this.setEditMode();
+
+            if(this.view.isEditMode()) {
+                this.model.startEdit();
+            } else {
+                this.model.cancelEdit();
+            }
         }
+    }
+
+    get canSave(){
+        return this.model.isDirty();
     }
 
     public save() {

@@ -48,7 +48,6 @@ use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
@@ -95,6 +94,8 @@ class SpiceUIConfLoader
         'sysmsgraphmappingsegments',
         'sysmsgraphmappingsegmentitems',
         'sysmsgraphmappingmodules',
+        'spiceaclmoduleactions',
+        'spiceaclmodulefields'
     ];
 
     /**
@@ -407,7 +408,8 @@ class SpiceUIConfLoader
         /** @var DBManager $db */
         $db = DBManagerFactory::getInstance();
 
-        $deleteWhere = "package IN('" . implode("','", $packages) . "') OR package IS NULL OR package=''";
+        //$deleteWhere = "package IN('" . implode("','", $packages) . "') OR package IS NULL OR package=''";
+        $deleteWhere = "package IN('" . implode("','", $packages) . "')";
         $deleted = $db->deleteQuery($table, $deleteWhere);
 
         if (!$deleted) {
@@ -454,7 +456,6 @@ class SpiceUIConfLoader
         ];
 
         $definitions = SpiceDictionaryDefinitions::getInstance();
-        $db = DBManagerFactory::getInstance();
 
         foreach ($dictionaryTables as $table) {
             $this->loadTableRecords($table, $response[$table], $packages);
@@ -465,28 +466,51 @@ class SpiceUIConfLoader
         SpiceDictionaryIndexes::getInstance()->reloadItems();
         SpiceDictionaryRelationships::getInstance()->reloadItems();
 
-        foreach ($response['sysdictionarydefinitions'] as $dictionaryDef) {
+        if(isset($response['sysdictionarydefinitions']) && is_array($response['sysdictionarydefinitions'])) {
+            foreach ($response['sysdictionarydefinitions'] as $dictionaryDef) {
 
-            $dictionaryDef = json_decode(base64_decode($dictionaryDef), true);
+                $dictionaryDef = json_decode(base64_decode($dictionaryDef), true);
 
-            # repair only active definitions
-            if ($dictionaryDef['status'] != 'a') continue;
+                # repair only active definitions
+                if ($dictionaryDef['status'] != 'a') continue;
 
-            try {
-                $definitions->repair($dictionaryDef['id']);
-            } catch (\Throwable | Exception $exception) {
-                unset($response[$dictionaryDef['tablename']]);
+                try {
+                    $definitions->repair($dictionaryDef['id']);
+                } catch (\Throwable|Exception $exception) {
+                    unset($response[$dictionaryDef['tablename']]);
 
-                $this->loadErrors[] = ['scope' => 'dictionary' ,'name' => $dictionaryDef['name'], 'mismatch' => is_callable([$exception, 'getDetails']) ? $exception->getDetails() : null, 'message' => $exception->getMessage()];
+                    $this->loadErrors[] = ['scope' => 'dictionary', 'name' => $dictionaryDef['name'], 'mismatch' => is_callable([$exception, 'getDetails']) ? $exception->getDetails() : null, 'message' => $exception->getMessage()];
+                }
             }
-        }
 
+            $this->repairNewRelationships($response['sysdictionarydefinitions']);
+        }
 
         SpiceDictionary::getInstance()->loadDictionary();
         RelationshipFactory::getInstance()->loadRelationships(true);
 
         foreach ($dictionaryTables as $table) {
             unset($response[$table]);
+        }
+    }
+
+    /**
+     * repair relationships for new dictionaries
+     * @param array $dictionaries
+     * @return void
+     */
+    public function repairNewRelationships(array $dictionaries): void
+    {
+        foreach ($dictionaries as $dic) {
+
+            $dic = json_decode(base64_decode($dic), true);
+
+            SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($dic['id']);
+            try {
+                SpiceDictionaryRelationships::repairDictionaryVardefRelationships($dic['id']);
+            } catch (\Throwable $exception) {
+                $this->loadErrors[] = ['scope' => 'dictionary' ,'name' => $dic['name'], 'message' => $exception->getMessage()];
+            }
         }
     }
 

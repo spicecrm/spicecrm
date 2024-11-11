@@ -17,6 +17,7 @@ use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\OutputTemplates\OutputTemplate;
@@ -456,7 +457,7 @@ class CampaignTask extends SpiceBean
 
             if (!$bean || !$bean->hasEmails()) continue;
 
-            $email = $this->sendEmail($bean, false, true);
+            $email = $this->sendEmail($bean, $bean->email1, false, true);
             $testCount++;
             if ($email->status == 'sent') $sentCount++;
         }
@@ -483,7 +484,7 @@ class CampaignTask extends SpiceBean
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         // get the queued emails
-        $queuedEmails = $this->db->limitQuery("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = '$campaignTaskType' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC", 0, 50);
+        $queuedEmails = $this->db->limitQuery("SELECT campaign_log.id, target_type, target_id, campaigntask_id, list_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = '$campaignTaskType' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC", 0, 50);
 
         while($queuedEmail = $this->db->fetchByAssoc($queuedEmails)){
             /// load the campaign task if we have a new one
@@ -501,6 +502,8 @@ class CampaignTask extends SpiceBean
 
             /** @var Person $seed */
             $seed = BeanFactory::getBean($queuedEmail['target_type'], $queuedEmail['target_id']);
+
+            $emailAddress = $this->getEmailAddress($queuedEmail['list_id'], $seed);
             $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
             $campaignLog->activity_type = "error";
 
@@ -508,7 +511,7 @@ class CampaignTask extends SpiceBean
             if (!$seed) {
                 $campaignLog->activity_comment = 'LBL_ERROR_LOADING_RECORD';
 
-            } else if (empty($seed->email1)) {
+            } else if (empty($emailAddress?->email_address)) {
 
                 $campaignLog->activity_comment = 'ERR_NO_PRIMARY_EMAIL';
 
@@ -520,14 +523,14 @@ class CampaignTask extends SpiceBean
 
                 $campaignLog->activity_comment = 'ERR_MARKETING_AGREEMENT_REJECTED';
 
-            } else if ($this->disable_opt_out_check != 1 && method_exists($seed, 'getPrimaryEmailAddressData') && $seed->getPrimaryEmailAddressData()->opt_in_status == 'opted_out') {
+            } else if ($this->disable_opt_out_check != 1 && $emailAddress->opt_in_status == 'opted_out') {
 
                 $campaignLog->activity_comment = 'LBL_OPTED_OUT';
 
                 # try to send the email after the pre send checks
             } else {
 
-                $email = $this->sendEmail($seed, $this->save_emails == 1, false, ['CampaignLog' => $campaignLog]);
+                $email = $this->sendEmail($seed, $emailAddress->email_address,true, false, ['CampaignLog' => $campaignLog]);
 
                 if ($email->status == 'sent') {
                     $campaignLog->activity_type = 'sent';
@@ -548,6 +551,21 @@ class CampaignTask extends SpiceBean
         AuthenticationController::getInstance()->setCurrentUser($admin);
 
         return true;
+    }
+
+    public function getEmailAddress(string $listId, SpiceBean $contact): ?EmailAddress
+    {
+        $db = DBManagerFactory::getInstance();
+        $emailAddrBeanRelId = $db->fetchOne("SELECT email_addr_bean_rel_id from prospect_lists_prospects WHERE prospect_list_id = '$listId' AND related_id ='$contact->id' AND deleted = 0");
+
+        if(!isset($emailAddrBeanRelId)) {
+            return !$contact->email1 ? null : BeanFactory::newBean('EmailAddresses')->retrieve_by_string_fields(['email_address' => $contact->email1]);
+        }
+
+        $q = "SELECT eabr.* FROM email_addr_bean_rel eabr where eabr.id ='{$emailAddrBeanRelId['email_addr_bean_rel_id']}' and eabr.bean_id ='$contact->id' and eabr.deleted = 0";
+        $row = $db->fetchOne($q);
+
+        return BeanFactory::getBean('EmailAddresses', $row['email_address_id']);
     }
 
     /**
@@ -607,10 +625,11 @@ class CampaignTask extends SpiceBean
      * @param bool $saveEmail
      * @param bool $test
      * @param array $addBeans
+     * @param string $emailAddress
      * @return Email with status sent or send_error
      * @throws MessageInterceptedException
      */
-    private function sendEmail(SpiceBean $seed, bool $saveEmail = false, bool $test = false, array $addBeans = []): Email
+    private function sendEmail(SpiceBean $seed, string $emailAddress, bool $saveEmail = false, bool $test = false, array $addBeans = []): Email
     {
         /** @var EmailTemplate $emailTemplate */
         $emailTemplate = BeanFactory::getBean('EmailTemplates');
@@ -625,16 +644,19 @@ class CampaignTask extends SpiceBean
             $emailTemplate->body_html = $this->email_body;
             $emailTemplate->style = $this->email_stylesheet_id;
         }
-        $parsedContent = $emailTemplate->parse($seed, ['campaignTask' => $this->id], $addBeans);
-
         $email->id = SpiceUtils::createGuid();
         $email->new_with_id = true;
+
+        $addBeans['Emails'] = $email;
+        $parsedContent = $emailTemplate->parse($seed, ['campaignTask' => $this->id], $addBeans);
+
         $email->mailbox_id = $this->mailbox_id;
         $email->name = $parsedContent['subject'];
         $email->body = $parsedContent['body_html'];
         if ( $test ) $email->name = '[TEST] ' . $email->name;
 
-        $email->addEmailAddress('to', $seed->email1);
+        $email->addEmailAddress('to', $emailAddress);
+
         $email->addEmailAddress('from', $mailbox->imap_pop3_username);
 
         $categories = SpiceAttachments::getAttachmentCategories('CampaignTasks', true);
@@ -838,7 +860,7 @@ class CampaignTask extends SpiceBean
             $query .= " AND NOT EXISTS(SELECT id FROM prospect_lists_prospects WHERE prospect_list_id in ('$exclusionListIds') AND plp.related_id = related_id AND deleted != 1)";
         }
         // check its not in unsubscribe group
-        $query.= "AND plp.unsubscribegroup_status = 0 AND plp.related_id = related_id";
+        $query.= " AND plp.unsubscribegroup_status = 0";
 
         return $query;
     }

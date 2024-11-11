@@ -917,6 +917,9 @@ class SpiceBean
      */
     function get_linked_beans($field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "")
     {
+        if($searchterm){
+            $searchterm = strtolower($searchterm);
+        }
         // CR1000509 get a collection of related beans
         if (is_array($field_name)) {
             return $this->get_multiple_linked_beans($field_name);

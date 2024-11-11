@@ -39,6 +39,7 @@ export class FieldsetManager {
     public currentFieldSetItems: any[] = [];
     public selectedItem;
     public showFieldSetDetails: boolean = false;
+    public moduleFieldsets: {global: { id: string, name: string; }[], custom: { id: string, name: string; }[]};
 
     constructor(public backend: backend,
                 public metadata: metadata,
@@ -55,6 +56,7 @@ export class FieldsetManager {
         // get the modules fromt eh metadata service
         this.modules = this.metadata.getModules().sort();
 
+        this.module = '*';
         this.checkMode();
     }
 
@@ -62,17 +64,23 @@ export class FieldsetManager {
         return this.currentModule
     }
 
-    set module(module: any){
-        this.currentModule = module ? module.id : undefined;
+    set module(id: string){
+        this.currentModule = id;
         this.reset();
+        if (!!id) {
+            this.moduleFieldsets = {
+                global: this.getFieldSets('global'),
+                custom: this.getFieldSets('custom'),
+            };
+        }
     }
 
     get fieldset(){
         return this.currentFieldSet
     }
 
-    set fieldset(fieldset: any){
-        this.currentFieldSet = fieldset ? fieldset.id : undefined;
+    set fieldset(id: string){
+        this.currentFieldSet = id;
         this.loadCurrentFieldset();
     }
 

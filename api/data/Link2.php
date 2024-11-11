@@ -414,10 +414,11 @@ class Link2
                             $tmpBean = BeanFactory::getBean($rel_module, $vals['id'], ['forceRetrieve' => true]);
                         }
                     }
-                    if ($tmpBean !== FALSE)
-                        // clone to get independent objects of the same bean (because of relid allocation further below)
-                        // using getBean with forceRetrieve parameter would lower the performance
-                        $result[$id] = clone $tmpBean;
+
+                    if ($tmpBean !== false) {
+                        $result[$id] = $tmpBean;
+                    }
+
                 } else {
                     $result[$id] = $this->beans[$id];
                 }
