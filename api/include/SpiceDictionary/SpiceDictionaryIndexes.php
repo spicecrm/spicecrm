@@ -296,7 +296,7 @@ class SpiceDictionaryIndexes
      */
     public function addIndex(array $index, array $items)
     {
-        // Determine the appropriate table
+        // Determine the appropriate table for index
         $table = $index['scope'] == 'c' ? self::customtable : self::table;
 
         // Check if the index already exists
@@ -313,14 +313,32 @@ class SpiceDictionaryIndexes
         // Update or add the index in the cache
         $this->dictionaryIndexes[$index['id']] = $index;
 
-        // Handle index items similarly
+        // Handle index items
+        $existingItems = $this->getIndexItems($index['id']);  // Fetch all existing items for the given index ID
+
+        // Prepare an array of the item IDs that are currently being added (to compare later)
+        $newItemIds = array_map(function($item) { return $item['id']; }, $items);
+
+        // First, handle items that need to be deleted from the database (items that are no longer in the updated list)
+        foreach ($existingItems as $existingItem) {
+            if (!in_array($existingItem['id'], $newItemIds)) {
+                // Item is no longer in the updated array, delete it from the database
+                SystemDeploymentCR::deleteDBEntry($this->getItemDefinitonTable($existingItem['id']), $existingItem['id'], $index['name']);
+                // Remove from the cache
+                unset($this->dictionaryIndexItems[$existingItem['id']]);
+            }
+        }
+
+        // Now, handle adding or updating items that are part of the current save
         foreach ($items as $item) {
             $table = $item['scope'] == 'c' ? self::customitemtable : self::itemtable;
             $existingItem = $this->dictionaryIndexItems[$item['id']] ?? null;
 
             if ($existingItem) {
+                // If the item already exists, update it
                 SystemDeploymentCR::writeDBEntry($table, $item['id'], $item, $index['name'], SystemDeploymentCR::ACTION_UPDATE);
             } else {
+                // If the item doesn't exist, insert it
                 SystemDeploymentCR::writeDBEntry($table, $item['id'], $item, $index['name'], SystemDeploymentCR::ACTION_INSERT);
             }
 
