@@ -10,7 +10,7 @@
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_TYPE"></system-label></label>
                 <div class="slds-select_container">
                     <select disabled class="slds-select" [(ngModel)]="index.indextype">
-                        <!--option value="primary">primary<option-->
+                        <option value="primary">primary<option>
                         <option value="index">index</option>
                         <option value="unique">unique</option>
                         <option value="foreign">foreign</option>
@@ -96,6 +96,6 @@
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
-        <button class="slds-button slds-button--brand"  (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+        <button class="slds-button slds-button--brand" [disabled]="!canSave()" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
     </system-modal-footer>
 </system-modal>
