@@ -1,30 +1,39 @@
 /**
  * @module ModuleACL
  */
-import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, ElementRef, OnChanges, OnInit, ViewChild, ViewContainerRef} from "@angular/core";
+import {model} from "../../../services/model.service";
 import {modelutilities} from "../../../services/modelutilities.service";
-import {modellist} from "../../../services/modellist.service";
+import {aclobjectsmanager} from "../services/aclobjectsmanager.service";
 
 @Component({
+    selector: 'aclobjects-manager',
     templateUrl: "../templates/aclobjectsmanager.html",
+    providers: [aclobjectsmanager, model]
 })
-export class ACLObjectsManager {
+export class ACLObjectsManager implements OnInit {
 
     @ViewChild("managercontent", {read: ViewContainerRef, static: true}) elementmanagercontent: ViewContainerRef;
 
     public activeobjectid: string = "";
     public activetypeid: string = "";
 
-    constructor(
-        public modelutilities: modelutilities,
-        public elementRef: ElementRef
-    ) {}
+    /**
+     * holds the whole current acl object
+     */
+    public activeObject: any = {};
 
-    get contentStyle(){
-        let rect = this.elementmanagercontent.element.nativeElement.getBoundingClientRect();
-        return {
-            height: "calc(100% - " + rect.top + "px"
-        };
+    constructor(
+        public aclobjectsmanager: aclobjectsmanager,
+        public modelutilities: modelutilities,
+        public elementRef: ElementRef,
+        public model: model
+    ) {
+        this.model.module = 'SpiceACLObjects';
+    }
+
+    public ngOnInit() {
+        this.aclobjectsmanager.currentModel = this.model;
     }
 
     public setObject(objectid){
@@ -35,4 +44,16 @@ export class ACLObjectsManager {
         this.activetypeid = typeid;
     }
 
+    /**
+     * handles updates to the object when emitted by ACLObjectsManagerObjects
+     * i.e. when the status changes
+     *
+     * @param updatedObject
+     */
+    public onObjectUpdated(updatedObject: any) {
+        if (this.activeobjectid === updatedObject.id) {
+            // Update the active object reference in the parent
+            this.activeObject = {...updatedObject};
+        }
+    }
 }

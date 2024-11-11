@@ -29,7 +29,7 @@ export class ActionsetManager {
     public change_request_required: boolean = false;
 
     public sysModules: any = [];
-    public currentModule: string = '*';
+    private _currentModule: string = '*';
     public currentActionSet: any = {
         id: '',
         module: '',
@@ -48,7 +48,7 @@ export class ActionsetManager {
 
     public selectedItemID = "";
 
-    public showActionSetDetails: boolean = false;
+    public moduleActionsets: {global: { id: string, name: string; }[], custom: { id: string, name: string; }[]};
 
     constructor(public backend: backend,
                 public metadata: metadata,
@@ -61,10 +61,24 @@ export class ActionsetManager {
                 public view: view,
                 public modal: modal) {
 
-        this.backend.getRequest('system/spiceui/admin/modules').subscribe(modules => {
-            this.sysModules = modules;
-        });
+        this.sysModules = this.metadata.getModules().sort();
+        this.currentModule = '*';
         this.checkMode();
+    }
+
+    get currentModule() {
+        return this._currentModule;
+    }
+
+    set currentModule(id) {
+        this._currentModule = id;
+        this.selectModule();
+        if (!!id) {
+            this.moduleActionsets = {
+                global: this.getActionSets('global'),
+                custom: this.getActionSets('custom'),
+            };
+        }
     }
 
     /**
@@ -176,6 +190,8 @@ export class ActionsetManager {
             } else {
                 this.loadCurrentActionset(newID);
             }
+        } else {
+            this.reset();
         }
     }
 

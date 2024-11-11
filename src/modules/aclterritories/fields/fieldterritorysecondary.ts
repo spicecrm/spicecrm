@@ -15,6 +15,7 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
  * renders a field to add secondary territories
  */
 @Component({
+    selector: 'field-territory-secondary',
     templateUrl: '../templates/fieldterritorysecondary.html',
     styles: ['input, input:focus { border: none; outline: none;}']
 })

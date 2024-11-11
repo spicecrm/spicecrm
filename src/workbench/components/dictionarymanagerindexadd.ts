@@ -136,6 +136,10 @@ export class DictionaryManagerIndexAdd implements OnInit{
         // name needs to be unique
         if(this.dictionarymanager.dictionaryindexes.filter(i => i.name == this.index.name && (this.dictionarymanager.getCurrentDefinition().sysdictionary_type != 'template' || this.dictionarymanager.currentDictionaryDefinition == i.sysdictionarydefinition_id)).length > 0) return false;
 
+        // Validate the index name format (only Latin letters, digits, and underscores)
+        const namePattern = /^[a-zA-Z0-9_]+$/;
+        if (!namePattern.test(this.index.name)) return false;
+
         // for non-foreign we need to have fields
         if(this.index.indextype != 'foreign' && this.indexDictionaryItems.length == 0) return false;
 

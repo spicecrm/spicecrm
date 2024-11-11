@@ -14,7 +14,7 @@
     <div class="slds-card__body slds-card__body_inner slds-m-vertical--none slds-p-horizontal--xx-small  slds-p-bottom--xx-small">
         <div class="slds-tile__detail">
             <div class="slds-grid">
-                <div class="slds-truncate slds-text-heading_large" [ngClass]="kpiColor">
+                <div class="slds-truncate slds-text-heading_large" [ngClass]="textColor">
                     @if(!loading) {
                         @if(kpiTargetValue) {
                             <system-display-number [number]="kpiTargetValue.kpi_value" precision="0"/>
@@ -35,7 +35,7 @@
                         @if(kpiTargetValue ) {
                             <system-utility-icon [colorclass]="slopeColor" [icon]="slopeIcon" [size]="'x-small'"></system-utility-icon>
                             @if(trendValue) {
-                                <div>{{ trendValue }}%</div>
+                                <div class="slds-p-right--xx-small">{{ trendValue }}%</div>
                                 <system-label [label]="trendValue > 0 ? 'LBL_KPI_BETTER' : 'LBL_KPI_WORSE'"></system-label>
                             }
                         } @else {
@@ -64,9 +64,6 @@
             </div>
         </div>
     </div>
-    <!--
-        <kpi-dashlet-item-footer></kpi-dashlet-item-footer>
-    -->
 </article>
 
 

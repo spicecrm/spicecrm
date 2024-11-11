@@ -15,6 +15,7 @@ import {KpiTile} from "./components/kpitile";
 import {KPIStatistics} from "./components/kpistatistics";
 import {KPIHistoryModal} from "./components/kpihistorymodal";
 import {KPIHistory} from "./components/kpihistory";
+import {KPIsContainer} from "./components/kpiscontainer";
 
 @NgModule({
     imports: [
@@ -28,6 +29,7 @@ import {KPIHistory} from "./components/kpihistory";
     ],
     declarations: [
         KPIsDashlet,
+        KPIsContainer,
         KpiTile,
         KPIStatistics,
         KPIHistoryModal,

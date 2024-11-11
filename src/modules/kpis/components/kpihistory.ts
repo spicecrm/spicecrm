@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
 import moment from "moment";

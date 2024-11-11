@@ -131,6 +131,12 @@ export class KpiTile implements OnInit {
         return 'slds-icon-text-default'
     }
 
+    get textColor(){
+        if(this.slope > 0) return 'slds-text-color_success';
+        if(this.slope < 0) return 'slds-text-color_error';
+        return 'slds-text-color_default'
+    }
+
     get trendValue(){
         return this.kpiTrendData.percentage;
     }

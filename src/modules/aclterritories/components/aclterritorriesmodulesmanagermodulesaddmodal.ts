@@ -7,6 +7,7 @@ import {metadata} from '../../../services/metadata.service';
 import {language} from "../../../services/language.service";
 
 @Component({
+    selector: 'aclterritorries-modules-manager-modules-add-modal',
     templateUrl: '../templates/aclterritorriesmodulesmanagermodulesaddmodal.html',
 })
 export class ACLTerritorriesModulesmanagerModulesAddModal implements OnInit{
