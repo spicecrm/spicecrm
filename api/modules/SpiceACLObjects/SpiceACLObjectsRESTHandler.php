@@ -30,21 +30,33 @@ class SpiceACLObjectsRESTHandler
         $db = DBManagerFactory::getInstance();
 
         $retArray = [
-            'type' => $db->fetchByAssoc($db->query("SELECT sysmodules.id, sysmodules.module FROM sysmodules WHERE id = '$id' UNION SELECT syscustommodules.id, syscustommodules.module FROM syscustommodules WHERE id = '$id'")),
+            'type' => $db->fetchByAssoc($db->query("SELECT sysmodules.id, sysmodules.module, 'g' scope FROM sysmodules WHERE id = '$id' UNION SELECT syscustommodules.id, syscustommodules.module, 'c' scope FROM syscustommodules WHERE id = '$id'")),
             'authtypefields' => [],
             'authtypeactions' => []
         ];
 
         // get field values
-        $authTypeFields = $db->query("SELECT id, name FROM spiceaclmodulefields WHERE sysmodule_id = '$id'");
+        $authTypeFields = $db->query("SELECT id, name, 'g' scope FROM spiceaclmodulefields WHERE sysmodule_id = '$id'");
         while ($authTypeField = $db->fetchByAssoc($authTypeFields)) {
             $retArray['authtypefields'][] = $authTypeField;
         }
 
+        // get custom field values
+        $authTypeCustomFields = $db->query("SELECT id, name, 'c' scope FROM spiceaclcustommodulefields WHERE sysmodule_id = '$id'");
+        while ($authTypeCustomField = $db->fetchByAssoc($authTypeCustomFields)) {
+            $retArray['authtypefields'][] = $authTypeCustomField;
+        }
+
         // get action values
-        $authTypeActions = $db->query("SELECT id, action, description FROM spiceaclmoduleactions WHERE sysmodule_id = '$id'");
+        $authTypeActions = $db->query("SELECT id, action, description,'g' scope FROM spiceaclmoduleactions WHERE sysmodule_id = '$id'");
         while ($authTypeAction = $db->fetchByAssoc($authTypeActions)) {
             $retArray['authtypeactions'][] = $authTypeAction;
+        }
+
+        // get custom action values
+        $authTypeCustomActions = $db->query("SELECT id, action, description,'c' scope FROM spiceaclcustommoduleactions WHERE sysmodule_id = '$id'");
+        while ($authTypeCustomAction = $db->fetchByAssoc($authTypeCustomActions)) {
+            $retArray['authtypeactions'][] = $authTypeCustomAction;
         }
 
         return $retArray;
@@ -56,16 +68,13 @@ class SpiceACLObjectsRESTHandler
      * @return array
      * @throws \Exception
      */
-    public function addACLModuleField($typeId, $field)
+    public function addACLModuleField($field)
     {
-        $db = DBManagerFactory::getInstance();
-        $newId = SpiceUtils::createGuid();
-        $db->query("INSERT INTO spiceaclmodulefields (id, sysmodule_id, name) VALUES('$newId','$typeId','$field')");
+        $tablename = $field['scope'] == 'c' ? 'spiceaclcustommodulefields' : 'spiceaclmodulefields';
 
-        return [
-            'id' => $newId,
-            'name' => $field
-        ];
+        DBManagerFactory::getInstance()->insertQuery($tablename, $field);
+
+        return true;
     }
 
     /**
@@ -77,8 +86,8 @@ class SpiceACLObjectsRESTHandler
      */
     public function deleteACLModuleField($id)
     {
-        $db = DBManagerFactory::getInstance();
-        $db->query("DELETE FROM spiceaclmodulefields WHERE id = '$id'");
+        DBManagerFactory::getInstance()->query("DELETE FROM spiceaclmodulefields WHERE id = '$id'");
+        DBManagerFactory::getInstance()->query("DELETE FROM spiceaclcustommodulefields WHERE id = '$id'");
         return ['success' => true];
     }
 
@@ -92,6 +101,7 @@ class SpiceACLObjectsRESTHandler
     public function getACLModuleActions($sysmoduleid) {
         $db = DBManagerFactory::getInstance();
         $actions = [];
+
         $actionsObj = $db->query("SELECT * FROM spiceaclmoduleactions WHERE sysmodule_id ='$sysmoduleid'");
         while($action = $db->fetchByassoc($actionsObj)){
             $actions[] = [
@@ -100,6 +110,16 @@ class SpiceACLObjectsRESTHandler
                 'description' => $action['description']
             ];
         }
+
+        $customActionsObj = $db->query("SELECT * FROM spiceaclcustommoduleactions WHERE sysmodule_id ='$sysmoduleid'");
+        while($customAction = $db->fetchByassoc($customActionsObj)){
+            $actions[] = [
+                'id' => $customAction['id'],
+                'action' => $customAction['action'],
+                'description' => $customAction['description']
+            ];
+        }
+
         return $actions;
     }
 
@@ -109,16 +129,13 @@ class SpiceACLObjectsRESTHandler
      * @return array
      * @throws \Exception
      */
-    public function addACLModuleAction($sysmoduleid, $action, $description = null)
+    public function addACLModuleAction($action)
     {
-        $db = DBManagerFactory::getInstance();
-        $actionId = SpiceUtils::createGuid();
-        $db->query("INSERT INTO spiceaclmoduleactions (id, sysmodule_id, action, description) VALUES('$actionId', '$sysmoduleid', '$action', '$description')");
-        return [
-            'id' => $actionId,
-            'action' => $action,
-            'description' => $description
-        ];
+        $tablename = $action['scope'] == 'c' ? 'spiceaclcustommoduleactions' : 'spiceaclmoduleactions';
+
+        DBManagerFactory::getInstance()->insertQuery($tablename, $action);
+
+        return true;
     }
 
     /**
@@ -128,8 +145,8 @@ class SpiceACLObjectsRESTHandler
      */
     public function deleteACLModuleAction($id)
     {
-        $db = DBManagerFactory::getInstance();
-        $db->query("DELETE FROM spiceaclmoduleactions WHERE id = '$id'");
+        DBManagerFactory::getInstance()->query("DELETE FROM spiceaclmoduleactions WHERE id = '$id'");
+        DBManagerFactory::getInstance()->query("DELETE FROM spiceaclcustommoduleactions WHERE id = '$id'");
         return ['success' => true];
     }
 

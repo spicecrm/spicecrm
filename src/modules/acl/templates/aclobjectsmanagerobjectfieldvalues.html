@@ -1,5 +1,5 @@
-<div *ngIf="fields.length > 0" class="slds-box">
-    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+<div *ngIf="fields.length > 0">
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-border--right slds-border--left">
         <thead>
         <tr class="slds-text-title_caps">
             <th scope="col">
@@ -26,7 +26,7 @@
             <td>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
-                        <select class="slds-select" [value]="getFieldValue('operator', field.id)" (change)="setFieldValue('operator', field.id, 'change', $event)">
+                        <select class="slds-select" [disabled]="!view.isEditMode()" [value]="getFieldValue('operator', field.id)" (change)="setFieldValue('operator', field.id, 'change', $event)">
                             <option value="">ignore</option>
                             <option value="EQ">=</option>
                             <option value="NE">≠</option>
@@ -48,16 +48,18 @@
             </td>
             <td>
                 <div class="slds-form-element__control">
-                    <input type="text" class="slds-input" [value]="getFieldValue('value1', field.id)" (blur)="setFieldValue('value1', field.id, 'blur', $event)"/>
+                    <input type="text" class="slds-input" [disabled]="!view.isEditMode()" [value]="getFieldValue('value1', field.id)" (blur)="setFieldValue('value1', field.id, 'blur', $event)"/>
                 </div>
             </td>
             <td>
                 <div class="slds-form-element__control">
-                    <input type="text" class="slds-input" [value]="getFieldValue('value2', field.id)" (change)="setFieldValue('value2', field.id, 'change', $event)"/>
+                    <input type="text" class="slds-input" [disabled]="!view.isEditMode()" [value]="getFieldValue('value2', field.id)" (change)="setFieldValue('value2', field.id, 'change', $event)"/>
                 </div>
             </td>
             <td>
-                <system-utility-icon icon="clear" size="x-small" (click)="resetid(field.id)"></system-utility-icon>
+                <button class="slds-button slds-button--icon" [disabled]="!view.isEditMode()" (click)="resetid(field.id)">
+                    <system-button-icon icon="clear"/>
+                </button>
             </td>
         </tr>
         </tbody>

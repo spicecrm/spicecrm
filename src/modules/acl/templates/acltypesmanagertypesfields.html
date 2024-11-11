@@ -1,10 +1,11 @@
 <div class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
     <h2 class="slds-text-heading--small"><system-label label="LBL_FIELDS"></system-label></h2>
-    <button class="slds-col--bump-left slds-button slds-button--brand" (click)="addField()"><system-label label="LBL_ADD"></system-label></button>
+    <button class="slds-col--bump-left slds-button slds-button--brand" [disabled]="changescope == 'none' || !this.aclType.acltype?.id" (click)="addField()"><system-label label="LBL_ADD"></system-label></button>
 </div>
 <table class="slds-table slds-table_bordered slds-table_cell-buffer">
     <thead>
     <tr class="slds-text-title_caps">
+        <th style="width:2.5rem" scope="col"></th>
         <th scope="col">
             <div class="slds-truncate"><system-label label="LBL_FIELD"></system-label></div>
         </th>
@@ -12,13 +13,18 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let field of authtypefields">
-        <td>
-            <div class="slds-truncate">{{field.name}}</div>
-        </td>
-        <td style="width: 3rem;">
-            <system-utility-icon icon="delete" size="x-small" addclasses="slds-icon slds-icon-text-default" (click)="deleteField(field.id)"></system-utility-icon>
-        </td>
-    </tr>
+        <tr *ngFor="let field of aclType.aclfields">
+            <td>
+                <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="field.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
+            </td>
+            <td>
+                <div class="slds-truncate"><system-label-fieldname [module]="aclType.acltype.module" [field]="field.name"/>&nbsp;{{field.name}}</div>
+            </td>
+            <td style="width: 3rem;">
+                <button class="slds-button slds-button--icon" [disabled]="!canDelete(field)" (click)="deleteField(field)">
+                    <system-button-icon icon="delete"></system-button-icon>
+                </button>
+            </td>
+        </tr>
     </tbody>
 </table>
