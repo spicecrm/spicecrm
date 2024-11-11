@@ -41,13 +41,13 @@
                     <ng-container *ngIf="groupByValue.expanded">
                         <tr *ngFor="let record of groupByValue.records; trackBy: trackByFn"  style="vertical-align: top;">
                             <td scope="row" *ngFor="let field of displayFields; trackBy: trackByFn" [style.width.%]="fieldsData[field.fieldid].width">
-                                <reporter-field-container [field]="field" [record]="record" class="slds-grid" [ngClass]="fieldsDisplayClasses[field.fieldid]"></reporter-field-container>
+                                <reporter-field-container [field]="field" [record]="record" class="slds-grid slds-truncate" [ngClass]="fieldsDisplayClasses[field.fieldid]"></reporter-field-container>
                             </td>
                         </tr>
                     </ng-container>
                     <tr *ngIf="hasSummary && !!groupByValue.totalRecord">
                         <td scope="row" *ngFor="let field of displayFields; trackBy: trackByFn" [style.width.%]="fieldsData[field.fieldid].width" class="slds-text-title_bold">
-                            <reporter-field-container [field]="field" [record]="groupByValue.totalRecord" [ngClass]="fieldsDisplayClasses[field.fieldid]"></reporter-field-container>
+                            <reporter-field-container class="slds-truncate" [field]="field" [record]="groupByValue.totalRecord" [ngClass]="fieldsDisplayClasses[field.fieldid]"></reporter-field-container>
                         </td>
                     </tr>
                 </ng-container>
