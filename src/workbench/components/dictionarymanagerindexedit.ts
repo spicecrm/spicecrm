@@ -63,22 +63,28 @@ export class DictionaryManagerIndexEdit implements OnInit {
     }
 
     public onFieldDrop(event) {
-        let previousItem = event.previousContainer.data.splice(event.previousIndex, 1)[0];
-        event.container.data.splice(event.currentIndex, 0, previousItem);
+        let draggedItem = event.previousContainer.data[event.previousIndex];
+
+        if (event.previousContainer === event.container) return;
+
+        event.previousContainer.data.splice(event.previousIndex, 1);
+
+        event.container.data.splice(event.currentIndex, 0, draggedItem);
     }
 
     public save() {
         let toSave;
         if (this.index.indextype === 'foreign') {
+            // Handle foreign type as before
             toSave = {
                 index: {
                     ...this.index,
-                    status: this.index.status // Ensure status is included
+                    status: this.index.status
                 },
                 items: [{
                     id: this.modelutilities.generateGuid(),
                     scope: this.index.scope,
-                    status: this.index.status, // Use the index status
+                    status: this.index.status,
                     sysdictionaryindex_id: this.index.id,
                     sysdictionaryitem_id: this.dictionaryItemId,
                     sysdictionaryforeigndefinition_id: this.dictionaryForeignDefinitionId,
@@ -90,24 +96,23 @@ export class DictionaryManagerIndexEdit implements OnInit {
             };
         } else {
             toSave = {
-                index: {...this.index},
+                index: { ...this.index },
                 items: this.indexDictionaryItems.map((item, index) => ({
-                    id: this.modelutilities.generateGuid(),
+                    id: item.id || this.modelutilities.generateGuid(), // Use existing ID if available
                     scope: this.index.scope,
                     status: this.index.status,
                     sysdictionaryindex_id: this.index.id,
                     sysdictionaryitem_id: item.id,
-                    sequence: index, // Use index for sequence order
+                    sequence: index,
                     version: this.index.version,
                     package: this.index.package
                 }))
-            }
+            };
         }
 
         let saveModal = this.modal.await('LBL_SAVING');
         this.backend.postRequest(`dictionary/index/${this.index.id}`, {}, toSave).subscribe({
             next: (res) => {
-                // Update the index in the manager
                 const existingIndex = this.dictionarymanager.dictionaryindexes.findIndex(i => i.id === this.index.id);
                 if (existingIndex !== -1) {
                     this.dictionarymanager.dictionaryindexes[existingIndex] = { ...toSave.index };
@@ -115,10 +120,13 @@ export class DictionaryManagerIndexEdit implements OnInit {
                     this.dictionarymanager.dictionaryindexes.push({ ...toSave.index });
                 }
 
-                // Update dictionary items
+                // Update dictionary items to reflect saved state
                 this.dictionarymanager.dictionaryindexitems = this.dictionarymanager.dictionaryindexitems.filter(
                     item => item.sysdictionaryindex_id !== this.index.id
                 ).concat(toSave.items);
+
+                // Update original items
+                this.originalIndexItems = [...this.indexDictionaryItems];
 
                 saveModal.emit(true);
                 saveModal.complete();

@@ -3,7 +3,6 @@
  */
 import {
     Component,
-    OnChanges,
     Input, OnInit, Output, EventEmitter
 } from '@angular/core';
 import {modal} from '../../../services/modal.service';
