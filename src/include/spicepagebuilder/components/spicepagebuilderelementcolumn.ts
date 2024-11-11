@@ -100,28 +100,14 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
                 event.previousContainer.data.children = event.previousContainer.data.children.filter(item => item != event.item.data);
             }
 
-            switch (event.item.data.tagName) {
-                case 'image':
-                    this.spicePageBuilderService.openMediaFilePicker().subscribe(src => {
-                        if (!!src) {
-                            const image: PanelElementI = JSON.parse(JSON.stringify(event.item.data));
-                            image.attributes.src = src;
-                            delete image.icon;
-                            this.column.children.splice(
-                                event.currentIndex, 0, image
-                            );
-                            this.cdRef.detectChanges();
-                        }
-                    });
-                    break;
-                default:
-                    const element: PanelElementI = JSON.parse(JSON.stringify(event.item.data));
-                    delete element.icon;
+            this.spicePageBuilderService.isMouseIn = undefined;
 
-                    this.column.children.splice(
-                        event.currentIndex, 0, element
-                    );
-            }
+            const element: PanelElementI = JSON.parse(JSON.stringify(event.item.data));
+            delete element.icon;
+
+            this.column.children.splice(
+                event.currentIndex, 0, element
+            )
         } else {
             moveItemInArray(this.column.children, event.previousIndex, event.currentIndex);
         }
