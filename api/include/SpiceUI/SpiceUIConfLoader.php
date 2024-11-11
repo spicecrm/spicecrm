@@ -94,6 +94,8 @@ class SpiceUIConfLoader
         'sysmsgraphmappingsegments',
         'sysmsgraphmappingsegmentitems',
         'sysmsgraphmappingmodules',
+        'spiceaclmoduleactions',
+        'spiceaclmodulefields'
     ];
 
     /**
@@ -406,7 +408,8 @@ class SpiceUIConfLoader
         /** @var DBManager $db */
         $db = DBManagerFactory::getInstance();
 
-        $deleteWhere = "package IN('" . implode("','", $packages) . "') OR package IS NULL OR package=''";
+        //$deleteWhere = "package IN('" . implode("','", $packages) . "') OR package IS NULL OR package=''";
+        $deleteWhere = "package IN('" . implode("','", $packages) . "')";
         $deleted = $db->deleteQuery($table, $deleteWhere);
 
         if (!$deleted) {
