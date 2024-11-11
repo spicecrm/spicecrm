@@ -153,13 +153,16 @@ class SpiceDictionaryIndexes
      *
      * @return array
      */
-    public function getIndexItems($indexId = null){
-        if($indexId){
-            $filtered = [];
-            foreach ($this->dictionaryIndexItems As $dictionaryIndexItem){
-                if($dictionaryIndexItem['sysdictionaryindex_id'] == $indexId) $filtered[] = $dictionaryIndexItem;
-            }
-            return $filtered;
+    public function getIndexItems($indexId = null) {
+        // First ensure we have the latest data from DB
+        if (empty($this->dictionaryIndexItems)) {
+            $this->dictionaryIndexItems = $this->getDictionaryIndexItems();
+        }
+
+        if ($indexId) {
+            return array_values(array_filter($this->dictionaryIndexItems, function($item) use ($indexId) {
+                return $item['sysdictionaryindex_id'] === $indexId;
+            }));
         }
 
         return array_values($this->dictionaryIndexItems);
@@ -230,19 +233,28 @@ class SpiceDictionaryIndexes
     {
         $db = DBManagerFactory::getInstance();
         $indexItemsArray = [];
-        $dictionaryindexitems = $db->query("SELECT * FROM ".self::itemtable);
+
+        // Get items from global table
+        $query = "SELECT * FROM " . self::itemtable;
+        $dictionaryindexitems = $db->query($query);
         while ($dictionaryindexitem = $db->fetchByAssoc($dictionaryindexitems)) {
             $dictionaryindexitem['sequence'] = intval($dictionaryindexitem['sequence']);
-            $indexItemsArray[] = array_merge($dictionaryindexitem, ['scope' => 'g']);
+            $dictionaryindexitem['scope'] = 'g';
+            $indexItemsArray[$dictionaryindexitem['id']] = $dictionaryindexitem;
         }
-        $dictionaryindexitems = $db->query("SELECT * FROM ".self::customitemtable);
+
+        // Get items from custom table
+        $query = "SELECT * FROM " . self::customitemtable;
+        $dictionaryindexitems = $db->query($query);
         while ($dictionaryindexitem = $db->fetchByAssoc($dictionaryindexitems)) {
             $dictionaryindexitem['sequence'] = intval($dictionaryindexitem['sequence']);
-            $indexItemsArray[] = array_merge($dictionaryindexitem, ['scope' => 'c']);;
+            $dictionaryindexitem['scope'] = 'c';
+            $indexItemsArray[$dictionaryindexitem['id']] = $dictionaryindexitem;
         }
 
         return $indexItemsArray;
     }
+
 
     /**
      * writes the indexitems to the database
@@ -252,10 +264,14 @@ class SpiceDictionaryIndexes
     public function setDictionaryIndexItems($indexitems)
     {
         foreach ($indexitems as $indexitem) {
-            SystemDeploymentCR::writeDBEntry($this->getItemDefinitonTable($indexitem['id']), $indexitem['id'], $indexitem, $indexitem['id']);
-            // set the item
+            $table = $this->getItemDefinitonTable($indexitem['id']);
+            SystemDeploymentCR::writeDBEntry($table, $indexitem['id'], $indexitem, $indexitem['id']);
+            // Update the cache with the new/updated item
             $this->dictionaryIndexItems[$indexitem['id']] = $indexitem;
         }
+
+        // Write the updated cache
+        $this->writeCache();
     }
 
     /**
