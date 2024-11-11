@@ -463,23 +463,25 @@ class SpiceUIConfLoader
         SpiceDictionaryIndexes::getInstance()->reloadItems();
         SpiceDictionaryRelationships::getInstance()->reloadItems();
 
-        foreach ($response['sysdictionarydefinitions'] as $dictionaryDef) {
+        if(isset($response['sysdictionarydefinitions']) && is_array($response['sysdictionarydefinitions'])) {
+            foreach ($response['sysdictionarydefinitions'] as $dictionaryDef) {
 
-            $dictionaryDef = json_decode(base64_decode($dictionaryDef), true);
+                $dictionaryDef = json_decode(base64_decode($dictionaryDef), true);
 
-            # repair only active definitions
-            if ($dictionaryDef['status'] != 'a') continue;
+                # repair only active definitions
+                if ($dictionaryDef['status'] != 'a') continue;
 
-            try {
-                $definitions->repair($dictionaryDef['id']);
-            } catch (\Throwable | Exception $exception) {
-                unset($response[$dictionaryDef['tablename']]);
+                try {
+                    $definitions->repair($dictionaryDef['id']);
+                } catch (\Throwable|Exception $exception) {
+                    unset($response[$dictionaryDef['tablename']]);
 
-                $this->loadErrors[] = ['scope' => 'dictionary' ,'name' => $dictionaryDef['name'], 'mismatch' => is_callable([$exception, 'getDetails']) ? $exception->getDetails() : null, 'message' => $exception->getMessage()];
+                    $this->loadErrors[] = ['scope' => 'dictionary', 'name' => $dictionaryDef['name'], 'mismatch' => is_callable([$exception, 'getDetails']) ? $exception->getDetails() : null, 'message' => $exception->getMessage()];
+                }
             }
-        }
 
-        $this->repairNewRelationships($response['sysdictionarydefinitions']);
+            $this->repairNewRelationships($response['sysdictionarydefinitions']);
+        }
 
         SpiceDictionary::getInstance()->loadDictionary();
         RelationshipFactory::getInstance()->loadRelationships(true);
