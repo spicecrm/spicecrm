@@ -229,4 +229,6 @@ class ChromeLocalPdfHandler extends PdfHandler
 
         return ['name' => $filename, 'path' => $destination_path, 'mime_type' => 'application/pdf'];
     }
+
+     protected function createInstance() {return null;}
 }

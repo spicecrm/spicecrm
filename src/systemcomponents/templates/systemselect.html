@@ -9,15 +9,15 @@
                 </div>
                 <div class="slds-dropdown slds-dropdown_fluid slds-scrollable--y" role="listbox">
                     <ul #resultList class="slds-listbox slds-listbox_vertical" role="presentation">
-                        <ng-container *ngFor="let item of searchList">
+                        @for (item of searchList; track item.id){
                             <li *ngIf="item.isGroup" role="presentation" [attr.data-is-group]="true">
-                                <div class="slds-border_bottom slds-border_top slds-p-left_small" style="background-color: #ecebea;">
+                                <div class="slds-border_bottom slds-border_top slds-p-left_small slds-p-vertical--xx-small" style="background-color: #ecebea;">
                                   <span class="slds-truncate size-xx-small" style="font-weight: bold; font-size: 12px;">
                                       {{item.name}}
                                   </span>
                                 </div>
                             </li>
-                            <li *ngIf="!item.isGroup" [style.color]="item.inactive ? 'var(--color-grey-7)' : 'inherit'" role="presentation" class="slds-listbox__item" (click)="itemClicked(item, $event)">
+                            <li *ngIf="!item.isGroup" [style.color]="item.inactive ? 'var(--color-grey-7)' : 'inherit'" role="presentation" class="slds-listbox__item" (click)="itemClicked(item, $event)" [title]="item.content">
                                 <div [class.slds-has-focus]="item.id == focusedItem?.id" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
                                     <span class="slds-media__body">
                                       <span class="slds-truncate">
@@ -26,7 +26,7 @@
                                     </span>
                                 </div>
                             </li>
-                        </ng-container>
+                        }
                     </ul>
                 </div>
             </div>
