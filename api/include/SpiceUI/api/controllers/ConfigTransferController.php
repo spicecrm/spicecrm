@@ -106,12 +106,215 @@ class ConfigTransferController
                 'tables' => $allTablesToExport,
             ],
         ];
-        $gzippedContent = gzencode(json_encode($content));
-        //file_put_contents('testestest.gz', $gzippedContent);
+
+        if ($postBody['contentAsJson']) {
+            return $res->withJson($content);
+        } else {
+            $gzippedContent = gzencode(json_encode($content));
+            //file_put_contents('testestest.gz', $gzippedContent);
+            $res->getBody()->write($gzippedContent);
+
+            return $res->withHeader('Content-type', 'application/gzip')
+                ->withHeader('Content-Disposition', 'attachment; filename=' . 'spicecrm-cfg-' . date('Ymd-Hi') . '.gz');
+        }
+    }
+
+
+    /**
+     * @throws DatabaseException
+     * @throws BadRequestException
+     * @throws Exception
+     * @throws ForbiddenException
+     * @throws \Exception
+     */
+    public function generateSystemPackage(Request $req, Response $res, array $args): Response
+    {
+
+        $responseTables = $this->getSelectableTablenames($req, $res, $args);
+        $responseTablesBody = (string)$responseTables->getBody();
+        $tables = json_decode($responseTablesBody, true)['selectableTables'];
+
+        $body = [
+            'contentAsJson' => true,
+            'packages' => 'system',
+            'additionalTables' => 'spiceaclstandardactions',
+            'selectedTables' => array_filter($tables, fn($t) => !str_contains($t, 'custom'))
+        ];
+
+        $req = $req->withParsedBody($body);
+
+        # Remove previous response data
+        $responseTables->getBody()->rewind();
+
+        $responsePackageContent = $this->exportFromTables($req, $res, $args);
+        $responsePackageContentBody = (string)$responsePackageContent->getBody();
+        $packageContent = json_decode($responsePackageContentBody, true);
+
+        # extract the template names
+        $db = DBManagerFactory::getInstance();
+        $domainTemplateIds = [];
+        $domainTemplateIdsQuery = "SELECT DISTINCT sysdictionary_ref_id FROM sysdictionaryitems WHERE sysdictionary_ref_id IS NOT NULL AND sysdictionary_ref_id !=''";
+        $domainTemplateId = $db->query($domainTemplateIdsQuery);
+
+        $errors = [];
+
+        while ($row = $db->fetchRow($domainTemplateId)) {
+            $domainTemplateIds[] = $row['sysdictionary_ref_id'];
+        }
+
+        foreach ($packageContent['data']['rows']['sysdictionaryindexes'] as $item) {
+            $result = $this->validateIndexesAndItems($item, $domainTemplateIds);
+
+            if (!empty($result)) {
+                $errors[] = $result;
+            }
+        }
+
+        foreach ($packageContent['data']['rows']['sysdictionaryitems'] as $item) {
+            $result = $this->validateDictionaryItems($item['id'], $domainTemplateIds);
+
+            if (!empty($result)) {
+                $errors[] = $result;
+            }
+        }
+
+        foreach ($packageContent['data']['rows']['sysdictionaryrelationships'] as $item) {
+            $result = $this->validateRelationshipDictionaryItems($item, $domainTemplateIds);
+
+            if (!empty($result)) {
+                $errors[] = $result;
+            }
+        }
+
+        $gzippedContent = gzencode(json_encode($packageContent));
         $res->getBody()->write($gzippedContent);
+
+        if(count($errors)) {
+            throw new Exception(implode("\n", $errors));
+        }
 
         return $res->withHeader('Content-type', 'application/gzip')
             ->withHeader('Content-Disposition', 'attachment; filename=' . 'spicecrm-cfg-' . date('Ymd-Hi') . '.gz');
+    }
+
+    /**
+     * validates the dictionary items and it's corresponding domain definitions
+     * @param string $itemId
+     * @param array $domainTemplatesIds
+     * @param string $definition
+     * @param string $definitionId
+     * @return void|string
+     * @throws Exception|\Exception
+     */
+    public function validateDictionaryItems(string $itemId, array $domainTemplatesIds, string $definition = "", string $definitionId = "")
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $dictionaryItemQuery = "SELECT * FROM sysdictionaryitems WHERE id = '$itemId'";
+        $dictionaryItem = $db->fetchOne($dictionaryItemQuery);
+
+        $dictionaryItemsErrors = [];
+
+        # check if the item exist
+        if (!$dictionaryItem) {
+            $dictionaryItemsErrors[] = "No valid dictionary item found in the $definition definition id: '$definitionId', current dictionary item id: '$itemId'";
+        }
+
+        # check if the item belongs to the same package as the definition
+        if ('system' !== $dictionaryItem['package']) {
+            $dictionaryItemsErrors[] = "Dictionary item package ist not system for the $definition definition id: '$definitionId' and dictionary item id: '$itemId'";
+        }
+
+        # search the domain definition only for names that are not template names
+        if (!empty($dictionaryItem['sysdomaindefinition_id'])) {
+
+            $domainDefinition = $db->getOne("SELECT id FROM sysdomaindefinitions WHERE id = '{$dictionaryItem['sysdomaindefinition_id']}'");
+
+            if (!$domainDefinition) {
+                $dictionaryItemsErrors[] = "No valid domain for the dictionary item with id: '$itemId', current domain id: '{$dictionaryItem['sysdomaindefinition_id']}'";
+            }
+
+        } else if (empty($dictionaryItem['sysdictionary_ref_id'])) {
+            $dictionaryItemsErrors[] = "Dictionary item misconfiguration empty sysdictionary_ref_id, sysdomaindefinition_id for item '$itemId'";
+
+            # if the name is not a template name and no dictionary item is defined, throw error
+        } else if (!in_array($dictionaryItem['sysdictionary_ref_id'], $domainTemplatesIds)) {
+            $dictionaryItemsErrors[] = "Referenced dictionary template item does not exist in package system item id: '$itemId'";
+        }
+
+        if (!empty($dictionaryItemsErrors)) return implode($dictionaryItemsErrors);
+    }
+
+    /**
+     * validates the indexes, and it's corresponding items. Also validates
+     * the dictionary and domain definitions for the index items
+     * @param array $index
+     * @param array $domainTemplateIds
+     * @return void|string
+     * @throws Exception
+     */
+    public function validateIndexesAndItems(array $index, array $domainTemplateIds)
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $indexItems = $db->fetchAll("SELECT sysdictionaryitem_id, id, package FROM sysdictionaryindexitems WHERE sysdictionaryindex_id = '{$index['id']}'");
+
+        $indexItemsErrors = [];
+
+        if(!$indexItems) {
+            $indexItemsErrors[] = "No index items defined for the index with id: '{$index['id']}'";
+        }
+
+        foreach ($indexItems as $indexItem) {
+            if(!$indexItem['sysdictionaryitem_id']) {
+                $indexItemsErrors[] = "No dictionary item defined for the index item with id: '{$indexItem['id']}'";
+            }
+
+            # check the package entries
+            if ('system' !== $indexItem['package']) {
+                $indexItemsErrors[] = "Index item package is not system. index id: '{$index['id']}' and index item id: '{$indexItem['id']}'";
+            }
+
+            $this->validateDictionaryItems($indexItem['sysdictionaryitem_id'], $domainTemplateIds, 'index', $index['id']);
+        }
+
+        if (!empty($indexItemsErrors)) return implode($indexItemsErrors);
+    }
+
+    /**
+     * validates the relationships and its items
+     * @param array $item
+     * @param array $domainTemplateIds
+     * @return void|string
+     * @throws Exception
+     */
+    public function validateRelationshipDictionaryItems(array $item, array $domainTemplateIds)
+    {
+        $relationshipItemsErrors = [];
+
+        # check if the dictionary items for the relationship are defined
+        if (!$item['rhs_sysdictionaryitem_id'] || !$item['lhs_sysdictionaryitem_id']) {
+            $missingSide = !$item['rhs_sysdictionaryitem_id'] ? 'rhs' : 'lhs';
+            $relationshipItemsErrors[] = "No {$missingSide} dictionary item definition for the relationship with id: '{$item['id']}'";
+        }
+
+        if (!empty($item['lhs_sysdictionaryitem_id'])) {
+            $this->validateDictionaryItems($item['lhs_sysdictionaryitem_id'], $domainTemplateIds, 'relationship', $item['id']);
+        }
+
+        if (!empty($item['rhs_sysdictionaryitem_id'])) {
+            $this->validateDictionaryItems($item['rhs_sysdictionaryitem_id'], $domainTemplateIds, 'relationship', $item['id']);
+        }
+
+        if (!empty($item['join_lhs_sysdictionaryitem_id'])) {
+            $this->validateDictionaryItems($item['join_lhs_sysdictionaryitem_id'], $domainTemplateIds, 'relationship', $item['id']);
+        }
+
+        if (!empty($item['join_rhs_sysdictionaryitem_id'])) {
+            $this->validateDictionaryItems($item['join_rhs_sysdictionaryitem_id'], $domainTemplateIds, 'relationship', $item['id']);
+        }
+
+        if (!empty($relationshipItemsErrors)) return implode($relationshipItemsErrors);
     }
 
     /**

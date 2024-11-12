@@ -25,7 +25,7 @@
                 <ng-container *ngIf="presData?.records?.length > 0">
                     <tr *ngFor="let record of presData.records; trackBy: trackByFn" style="vertical-align: top;">
                         <td scope="row" *ngFor="let field of displayFields; trackBy: trackByFn">
-                            <reporter-field-container [field]="field" [record]="record" class="slds-grid" [ngClass]="fieldsDisplayClasses[field.fieldid]"></reporter-field-container>
+                            <reporter-field-container [field]="field" [record]="record" class="slds-grid slds-truncate" [ngClass]="fieldsDisplayClasses[field.fieldid]"></reporter-field-container>
                         </td>
                     </tr>
                 </ng-container>

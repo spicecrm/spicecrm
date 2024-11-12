@@ -1,22 +1,19 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
-import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
-import {modal} from "../../../services/modal.service";
 import {AttributeObjectI, TextI} from "../interfaces/spicepagebuilder.interfaces";
-import {SpicePageBuilderElement} from "./spicepagebuilderelement";
+import {SpicePageBuilderElementText} from "./spicepagebuilderelementtext";
+import {style} from "@angular/animations";
 
-/**
- * Parse and renders renderer container
- */
 @Component({
-    selector: 'spice-page-builder-element-text',
-    templateUrl: '../templates/spicepagebuilderelementtext.html',
+    selector: 'spice-page-builder-element-heading',
+    templateUrl: '../templates/spicepagebuilderelementheading.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SpicePageBuilderElementText extends SpicePageBuilderElement implements OnInit {
+
+export class SpicePageBuilderElementHeading extends SpicePageBuilderElementText {
     /**
      * containers to be rendered
      */
@@ -44,22 +41,8 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
      */
     public sanitizedContent: SafeHtml = '';
 
-    constructor(public domSanitizer: DomSanitizer,
-                public modal: modal,
-                public injector: Injector,
-                public cdRef: ChangeDetectorRef,
-                public spicePageBuilderService: SpicePageBuilderService) {
-        super(domSanitizer, modal, injector, cdRef, spicePageBuilderService);
-    }
-
-    /**
-     * call to sanitize the html content
-     */
     public ngOnInit() {
         super.ngOnInit();
-        if (!this.element.attributes["editor-type"]) {
-            this.element.attributes["editor-type"] = 'richText';
-        }
         this.sanitizeContent();
     }
 
@@ -73,6 +56,10 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
         super.handleEditResponse(res);
     }
 
+    public updateStyleForPreview(attribute) {
+        this.style = {...this.style, [attribute]: this.element.attributes[attribute]};
+    }
+
     /**
      * sanitize the html content
      */
@@ -80,13 +67,23 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
         this.sanitizedContent = this.domSanitizer.bypassSecurityTrustHtml(this.element.content);
     }
 
-    /**
-     * generate body style object
-     */
-    public generateStyle() {
-        super.generateStyle([
-            'color', 'font-size', 'font-style', 'font-weight', 'line-height', 'letter-spacing',
-            'text-decoration', 'text-transform', 'align', 'padding', 'height'
-        ]);
+    public toggleFontWeight() {
+        this.element.attributes["font-weight"] = this.element.attributes["font-weight"] === '600' ? '400' : '600';
+        this.updateStyleForPreview("font-weight");
+    }
+
+    public toggleFontStyleItalic() {
+        this.element.attributes["font-style"] = this.element.attributes["font-style"] === 'italic' ? 'normal' : 'italic';
+        this.updateStyleForPreview("font-style")
+    }
+
+    public toggleFontStyleUnderline() {
+        this.element.attributes["text-decoration"] = this.element.attributes["text-decoration"] === 'underline' ? 'none' : 'underline';
+        this.updateStyleForPreview("text-decoration");
+    }
+
+    public changeFontSize(fontSize) {
+        this.element.attributes["font-size"] = fontSize;
+        this.updateStyleForPreview("font-size");
     }
 }
