@@ -12,7 +12,7 @@
                 <div class="slds-truncate" [style.text-decoration]="emailaddress.invalid_email == '1' ? 'line-through' : 'initial'">{{emailaddress.email_address}}</div>
             </div>
         </div>
-        <button *ngIf="fieldconfig.singleMode && singleModeHiddenAddresses.length > 0" (click)="openHiddenAddressesModal()" class="slds-button slds-button--icon slds-p-left--xx-small">
+        <button *ngIf="fieldconfig.singleMode && singleModeHiddenAddresses.length > 0" system-title="LBL_SHOW_NON_PRIMARY_EMAIL_ADDRESSES" (click)="openHiddenAddressesModal()" class="slds-button slds-button--icon slds-p-left--xx-small">
             <system-button-icon icon="list" colorclass="slds-icon-text-warning"/>
         </button>
         <div *ngIf="emailaddress.bounced_count > 0" system-title="LBL_BOUNCED" class="slds-p-left--xx-small">
@@ -25,7 +25,7 @@
         </div>
     </div>
     <div *ngIf="emailAddresses.length == 0 && fieldconfig.singleMode && singleModeHiddenAddresses.length > 0" class="slds-m-left--x-small slds-grow slds-text-align--right">
-        <button (click)="openHiddenAddressesModal()" class="slds-button slds-button--icon">
+        <button (click)="openHiddenAddressesModal()" system-title="LBL_SHOW_NON_PRIMARY_EMAIL_ADDRESSES" class="slds-button slds-button--icon">
             <system-button-icon icon="list" colorclass="slds-icon-text-warning"/>
         </button>
     </div>
@@ -39,7 +39,7 @@
         <div class="slds-grid slds-grid--vertical-align-center" style="max-height: 32px">
             <div *ngIf="fieldconfig.singleEmailAddressReadOnly" class="slds-grow slds-grid--vertical-align-center" [style.text-decoration]="emailAddress.invalid_email == '1' ? 'line-through' : 'initial'">{{emailAddress.email_address}}</div>
             <div>
-                <button *ngIf="fieldconfig.singleMode && singleModeHiddenAddresses.length > 0" (click)="openHiddenAddressesModal()" class="slds-button slds-m-left--x-small slds-button--icon">
+                <button *ngIf="fieldconfig.singleMode && singleModeHiddenAddresses.length > 0" (click)="openHiddenAddressesModal()" system-title="LBL_SHOW_NON_PRIMARY_EMAIL_ADDRESSES" class="slds-button slds-m-left--x-small slds-button--icon">
                     <system-button-icon icon="list" colorclass="slds-icon-text-warning"/>
                 </button>
             </div>
@@ -62,7 +62,7 @@
         <field-email-emailaddress (keyup.enter)="startAdding()" [hasFocus]="true" [emailAddress]="inputNewEmailAddress" (onBlur)="setEmailAddressesField()" class="slds-grow"></field-email-emailaddress>
         <div class="slds-grid slds-grid--vertical-align-center" style="max-height: 32px">
             <div>
-                <button *ngIf="fieldconfig.singleMode && singleModeHiddenAddresses.length > 0" (click)="openHiddenAddressesModal()" class="slds-button slds-m-left--x-small slds-button--icon">
+                <button *ngIf="fieldconfig.singleMode && singleModeHiddenAddresses.length > 0" (click)="openHiddenAddressesModal()" system-title="LBL_SHOW_NON_PRIMARY_EMAIL_ADDRESSES" class="slds-button slds-m-left--x-small slds-button--icon">
                     <system-button-icon icon="list" colorclass="slds-icon-text-warning"/>
                 </button>
             </div>
