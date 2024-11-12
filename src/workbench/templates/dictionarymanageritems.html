@@ -17,13 +17,19 @@
                             <system-utility-icon *ngIf="hasDraftItems" (click)="activateAll($event)" class="slds-p-right--xx-small" icon="light_bulb" colorclass="slds-icon-text-warning" size="xx-small"></system-utility-icon>
                         </th>
                         <th class="" scope="col">
-                            <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                            <div class="slds-truncate"><system-label label="LBL_NAME"/></div>
+                        </th>
+                        <th class="" scope="col" style="width: 2rem;">
+                            <div class="slds-truncate slds-text-align--center" system-title="LBL_REQUIRED">R</div>
+                        </th>
+                        <th class="" scope="col" style="width: 2rem;">
+                            <div class="slds-truncate slds-text-align--center" system-title="LBL_NON_DB">N</div>
                         </th>
                         <th class="" scope="col">
-                            <div class="slds-truncate"><system-label label="LBL_DOMAIN"></system-label></div>
+                            <div class="slds-truncate"><system-label label="LBL_DOMAIN"/></div>
                         </th>
                         <th class="" scope="col">
-                            <div class="slds-truncate"><system-label label="LBL_TEMPLATE"></system-label></div>
+                            <div class="slds-truncate"><system-label label="LBL_TEMPLATE"/></div>
                         </th>
                         <th style="width:3rem" scope="col"></th>
                     </tr>
@@ -38,6 +44,12 @@
                             </td>
                             <td data-label="Domain">
                                 <div class="slds-truncate">{{dictionaryitem.name}}</div>
+                            </td>
+                            <td data-label="required">
+                                <system-checkbox disabled [ngModel]="dictionaryitem.required" system-checkbox-asinteger system-title="LBL_REQUIRED"/>
+                            </td>
+                            <td data-label="nondb">
+                                <system-checkbox disabled [ngModel]="dictionaryitem.non_db" system-checkbox-asinteger system-title="LBL_NON_DB"/>
                             </td>
                             <td data-label="Type">
                                 <div class="slds-truncate">{{dictionarymanager.getDomainName(dictionaryitem.sysdomaindefinition_id)}}</div>
@@ -61,6 +73,12 @@
                                 <td></td>
                                 <td data-label="Domain">
                                     <div class="slds-truncate">{{refItem.name}}</div>
+                                </td>
+                                <td data-label="required">
+                                    <system-checkbox disabled [ngModel]="refItem.required" system-checkbox-asinteger system-title="LBL_REQUIRED"/>
+                                </td>
+                                <td data-label="nondb">
+                                    <system-checkbox disabled [ngModel]="refItem.non_db" system-checkbox-asinteger system-title="LBL_NON_DB"/>
                                 </td>
                                 <td data-label="Type">
                                     <div class="slds-truncate">{{dictionarymanager.getDomainName(refItem.sysdomaindefinition_id)}}</div>
