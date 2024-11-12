@@ -2155,7 +2155,7 @@ class SpiceBeanHandler
                             $relModule = $thisBean->{$fieldId}->getRelatedModuleName();
                             $relatedBeans = $thisBean->get_linked_beans($fieldId, $relModule, false, true);
                             foreach ($relatedBeans as $relatedBean) {
-                                $beanDataArray[$fieldId]['beans']->{$relatedBean->id} = $this->mapBeanToArray($relModule, $relatedBean, $fieldData['name'] != 'email_addresses', $fieldData['name'] != 'email_addresses');
+                                $beanDataArray[$fieldId]['beans']->{$relatedBean->id} = $this->mapBeanToArray($relModule, $relatedBean);
                             }
                             //workaround lookup field: define property to be used in lookup field
                             $beanDataArray[$fieldId]['beans_relations_to_delete'] = new stdClass();
