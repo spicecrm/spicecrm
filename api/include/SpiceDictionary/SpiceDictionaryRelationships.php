@@ -107,14 +107,17 @@ class SpiceDictionaryRelationships
     /**
      * repairs the relationships for the one definiton
      *
-     * @param $sysdictionaryDefinitonId
+     * @param string $sysdictionaryDefinitonId
+     * @param string|null $package
      * @return void
+     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
      */
-    public function repairForDctionaryDefinition(string $sysdictionaryDefinitonId){
+    public function repairForDctionaryDefinition(string $sysdictionaryDefinitonId, ?string $package = null){
 
         // get the relationships directly linked
         $relationships = $this->getRelationships($sysdictionaryDefinitonId);
         foreach ($relationships as $relationship){
+            if ($package && $relationship['package'] != $package) continue;
             (new SpiceDictionaryRelationship($relationship['id']))->deactivate(false)->activate(false);
         }
 
@@ -123,7 +126,7 @@ class SpiceDictionaryRelationships
         foreach($items as $item){
             $relationships = $this->getRelationships($item['sysdictionary_ref_id']);
             foreach ($relationships as $relationship){
-
+                if ($package && $relationship['package'] != $package) continue;
                 // activate
                 (new SpiceDictionaryRelationship($relationship['id']))->deactivate(false, $item['sysdictionary_ref_id'], $sysdictionaryDefinitonId)->activate(false, $item['sysdictionary_ref_id'], $sysdictionaryDefinitonId);
             }

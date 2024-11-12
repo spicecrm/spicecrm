@@ -483,10 +483,11 @@ class SpiceUIConfLoader
                 }
             }
 
+            SpiceDictionary::getInstance()->loadDictionary();
+
             $this->repairNewRelationships($response['sysdictionarydefinitions']);
         }
 
-        SpiceDictionary::getInstance()->loadDictionary();
         RelationshipFactory::getInstance()->loadRelationships(true);
 
         foreach ($dictionaryTables as $table) {
@@ -505,7 +506,7 @@ class SpiceUIConfLoader
 
             $dic = json_decode(base64_decode($dic), true);
 
-            SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($dic['id']);
+            SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($dic['id'], $dic['package']);
             try {
                 SpiceDictionaryRelationships::repairDictionaryVardefRelationships($dic['id']);
             } catch (\Throwable $exception) {
