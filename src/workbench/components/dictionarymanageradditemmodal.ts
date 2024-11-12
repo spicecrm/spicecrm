@@ -144,8 +144,12 @@ export class DictionaryManagerAddItemModal implements OnInit{
             this.messages.push({field: 'name', message: 'name already used'});
         }
 
-        if (this.dictionaryitem.name && this.dictionarymanager.reservedwords && this.dictionarymanager.reservedwords.indexOf(this.dictionaryitem.name.toUpperCase()) >= 0) {
-            this.messages.push({field: 'name', message: 'name cannot be used (reserved word)'});
+        if (!this.dictionaryitem.non_db && this.dictionaryitem.name && this.dictionarymanager.reservedwords && this.dictionarymanager.reservedwords.indexOf(this.dictionaryitem.name.toUpperCase()) >= 0) {
+            // add a check if the field in teh domein is non-db -> if yes we are still good to go
+            let domainField = this.dictionarymanager.domainfields.find(df => df.sysdomaindefinition_id == this.dictionaryitem.sysdomaindefinition_id && df.name == '{sysdictionaryitems.name}');
+            if(domainField && domainField.dbtype != 'non-db') {
+                this.messages.push({field: 'name', message: 'name cannot be used (reserved word)'});
+            }
         }
 
         if (this.itemtype == 't' && !this.dictionaryitem.sysdictionary_ref_id) {

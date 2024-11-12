@@ -21,6 +21,7 @@ export interface DictionaryDefinition {
     sysdictionary_type: DictionaryType;
     sysdictionary_contenttype?: string;
     description?: string;
+    audited: number;
     version?: string;
     package?: string;
 }

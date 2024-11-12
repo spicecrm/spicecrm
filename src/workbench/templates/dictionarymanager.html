@@ -45,7 +45,7 @@
     </workbench-header-controls>
 </workbench-header>
 <div class="slds-grid">
-    <div class="slds-size--1-of-3" [ngClass]="{'slds-size--1-of-3': !definitionsExpanded, 'slds-size--1-of-1': definitionsExpanded}" >
+    <div class="slds-size--1-of-3 slds-border--right" [ngClass]="{'slds-size--1-of-3': !definitionsExpanded, 'slds-size--1-of-1': definitionsExpanded}" >
         <dictionary-manager-definitions (expanded)="this.definitionsExpanded = $event"></dictionary-manager-definitions>
     </div>
     <div *ngIf="!definitionsExpanded" class="slds-size--2-of-3 slds-theme--default">
