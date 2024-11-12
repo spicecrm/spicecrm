@@ -25,7 +25,12 @@ export class UserDeactivateButton {
      * only allow active subscribers and not the admin to be disabled
      */
     get disabled() {
-        return this.session.isAdmin && this.model.id != '1' ? false : true;
+        if(this.session.authData.userId == this.model.id) return true;
+        if(this.session.isAdmin) {
+            return false;
+        }
+        return !(!this.session.isAdmin && !this.model.getField('is_admin') && this.model.checkAccess('deactivate'));
+        // return this.session.isAdmin && this.model.id != '1' ? false : true;
     }
 
     /**
