@@ -2,6 +2,7 @@
      (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragExit($event)" (cdkDropListDropped)="onDrop($event)"
      class="slds-grid slds-grid--vertical spice-page-builder-renderer-drop-list">
     <ng-container *ngFor="let element of column.children; trackBy: trackByFn" [ngSwitch]="element.tagName">
+        <spice-page-builder-element-heading *ngSwitchCase="'heading'" [element]="element" (delete$)="onContentDelete(element)" cdkDrag [cdkDragData]="element" class="slds-grid slds-grow slds-drag--preview" style="width: 100%"></spice-page-builder-element-heading>
         <spice-page-builder-element-text *ngSwitchCase="'text'" [element]="element" (delete$)="onContentDelete(element)" cdkDrag [cdkDragData]="element" class="slds-grid slds-grow slds-drag--preview" style="width: 100%"></spice-page-builder-element-text>
         <spice-page-builder-element-image *ngSwitchCase="'image'" [element]="element" (delete$)="onContentDelete(element)" cdkDrag [cdkDragData]="element" class="slds-grid slds-grow slds-drag--preview" style="width: 100%"></spice-page-builder-element-image>
         <spice-page-builder-element-button *ngSwitchCase="'button'" [element]="element" (delete$)="onContentDelete(element)" cdkDrag [cdkDragData]="element" class="slds-grid slds-grow slds-drag--preview" style="width: 100%"></spice-page-builder-element-button>

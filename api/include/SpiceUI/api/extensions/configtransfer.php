@@ -71,7 +71,15 @@ $routes = [
                 'description' => 'The configuration data to import, from the exported file.'
             ]
         ]
-    ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/configuration/package/system/generate',
+        'class'       => ConfigTransferController::class,
+        'function'    => 'generateSystemPackage',
+        'description' => 'run installation process',
+        'options'     => ['noAuth' => true, 'true' => false],
+    ],
 ];
 
 /**
