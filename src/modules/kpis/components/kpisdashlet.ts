@@ -55,20 +55,6 @@ export class KPIsDashlet implements OnInit {
         return this.session.authData.admin;
     }
 
-    /**
-     * calculate amount of tiles displayed
-     * depending on screen width
-     */
-    get getTileWidthClass() {
-        if (this.layout.screenwidth == 'small') {
-            return 'slds-size--1-of-1';
-        } else if (this.layout.screenwidth == 'medium') {
-            return 'slds-size--1-of-2';
-        } else {
-            return 'slds-size--1-of-3';
-        }
-    }
-
     public clearField() {
         this.selectedItem = undefined;
         this.parentId = undefined;
