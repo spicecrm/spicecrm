@@ -11,6 +11,7 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfHandler;
 use SpiceCRM\includes\TimeDate;
 
@@ -187,6 +188,7 @@ class ConfigTransferController
         }
 
         $gzippedContent = gzencode(json_encode($packageContent));
+        $res = RESTManager::getInstance()->app->getResponseFactory()->createResponse();
         $res->getBody()->write($gzippedContent);
 
         if(count($errors)) {
