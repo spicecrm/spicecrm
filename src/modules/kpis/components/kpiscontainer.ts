@@ -130,9 +130,9 @@ export class KPIsContainer implements OnChanges {
         if (this.layout.screenwidth == 'small') {
             return 'slds-size--1-of-1';
         } else if (this.layout.screenwidth == 'medium') {
-            return 'slds-size--1-of-2';
+            return 'slds-size--1-of-3';
         } else {
-            return 'slds-size--1-of-4';
+            return 'slds-size--1-of-5';
         }
     }
 }
