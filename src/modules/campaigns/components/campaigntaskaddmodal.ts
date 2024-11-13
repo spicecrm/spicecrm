@@ -1,7 +1,7 @@
 /**
  * @module ModuleCampaigns
  */
-import {Component} from '@angular/core';
+import {Component, SkipSelf} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {navigationtab} from "../../../services/navigationtab.service";
@@ -16,6 +16,7 @@ export class CampaignTaskAddModal {
     public self: any;
 
     constructor(public model: model,
+                @SkipSelf() public parent: model,
                 public view: view,
                 private navigationTab: navigationtab) {
         this.model.module = 'CampaignTasks';
