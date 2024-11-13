@@ -1,13 +1,10 @@
 /**
  * @module ModuleCampaigns
  */
-import {Component, SkipSelf} from '@angular/core';
+import {Component} from '@angular/core';
 import {model} from '../../../services/model.service';
-import {modal} from '../../../services/modal.service';
 import {view} from '../../../services/view.service';
 import {navigationtab} from "../../../services/navigationtab.service";
-
-declare var moment: any;
 
 @Component({
     selector: 'campaigntask-add-modal',
@@ -18,11 +15,9 @@ export class CampaignTaskAddModal {
 
     public self: any;
 
-    constructor(@SkipSelf() public parent: model,
-                public model: model,
+    constructor(public model: model,
                 public view: view,
-                private navigationTab: navigationtab,
-                public modal: modal) {
+                private navigationTab: navigationtab) {
         this.model.module = 'CampaignTasks';
         this.model.initialize(parent);
 
@@ -32,15 +27,23 @@ export class CampaignTaskAddModal {
 
     }
 
+    /**
+     * @return boolean disabled flag
+     */
+    get disabled(): boolean {
+        return !this.model.data.campaigntask_type || !this.model.data.name
+    }
+
     public save(goTo?: boolean) {
-        if(this.model.validate()) {
-            this.model.save().subscribe(() => {
-                this.self.destroy();
-                if (goTo) {
-                    this.model.goDetail(this.navigationTab.tabid);
-                }
-            });
-        }
+
+        if(this.disabled) return;
+
+        this.model.save().subscribe(() => {
+            this.self.destroy();
+            if (goTo) {
+                this.model.goDetail(this.navigationTab.tabid);
+            }
+        });
     }
 
     public close() {
