@@ -1390,6 +1390,7 @@ class Email extends SpiceBean
 
 
     /**
+     * @deprecated
      * addStylesheet
      *
      * If the mailbox has a stylesheet set, it will be added to the email body
@@ -1415,6 +1416,24 @@ class Email extends SpiceBean
                 return "<style>{$row['csscode']}</style>" . $this->body;
             }
         }
+    }
+
+    /**
+     * returns the stylesheet code
+     * @param $stylesheet_id
+     * @return mixed|string
+     * @throws Exception
+     */
+    public function getStylesheet($stylesheet_id)
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $query = "SELECT * FROM sysuihtmlstylesheets WHERE id='" . $stylesheet_id . "'";
+        $row = $db->fetchOne($query);
+        if($row['csscode']){
+            return $row['csscode'];
+        }
+        return '';
     }
 
     public static function findByMessageId($message_id)

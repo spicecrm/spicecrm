@@ -29,7 +29,7 @@ class TextSnippetsController
             throw ( new NotFoundException('TextSnippet not found.'))
                 ->setLookedFor([ 'id' => $args['parentId'], 'module' => 'TextSnippets' ]);
 
-        if ( !empty($params['modelData'] ))
+        if ( !empty($params['beanData'] ))
         {
             $bean = BeanFactory::getBean($params['module']);
             foreach ( $params['modelData'] as $field => $value ) $bean->$field = $value;
@@ -51,10 +51,10 @@ class TextSnippetsController
             throw ( new NotFoundException('TextSnippet not found.'))
                 ->setLookedFor([ 'id' => $args['parentId'], 'module' => 'TextSnippets' ]);
 
-        if ( !empty($params['modelData'] ))
+        if ( !empty($params['beanData'] ))
         {
             $bean = BeanFactory::getBean($params['module']);
-            foreach ( $params['modelData'] as $field => $value ) $bean->$field = $value;
+            foreach ( $params['beanData'] as $field => $value ) $bean->$field = $value;
 
             $this->liveCompileHandleLinkedBeans($bean);
 
