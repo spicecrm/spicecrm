@@ -5,6 +5,7 @@ namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use DOMDocument;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\extensions\modules\TextMessageTemplates\TextMessageTemplate;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\includes\TimeDate;
@@ -179,7 +180,7 @@ abstract class TransportHandler
      * @param string $content
      * @return mixed
      */
-    private function parseTemplateBodyOnly(EmailTemplate $emailTemplate, Email $email, string $content)
+    private function parseTemplateBodyOnly(EmailTemplate|TextMessageTemplate $emailTemplate, Email|TextMessage $email, string $content)
     {
         $emailTemplate->body_html = $content;
         $parsedContent = $emailTemplate->parse($email)['body_html'];
