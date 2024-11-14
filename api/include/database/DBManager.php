@@ -307,6 +307,10 @@ abstract class DBManager
      */
     public $helper;
 
+    public const DEFAULT_COLLATION = "utf8mb4_unicode_ci";
+
+    public const DEFAULT_CHARSET = "utf8mb4";
+
 
     /**
      * Create DB Driver
@@ -3636,12 +3640,12 @@ abstract class DBManager
      * @param string $option Option name
      * @return mixed Option value or null if doesn't exist
      */
-    public function getOption($option)
-    {
-        if (isset($this->options[$option])) {
-            return $this->options[$option];
-        }
-        return null;
+    public function getOption(string $option): mixed {
+        return match ($option) {
+            'collation' => $this->options['collation'] ?? self::DEFAULT_COLLATION,
+            'charset'   => $this->options['charset'] ?? self::DEFAULT_CHARSET,
+            default     => $this->options[$option] ?? null,
+        };
     }
 
     /**
@@ -4032,7 +4036,7 @@ abstract class DBManager
      * Create a database
      * @param string $dbname
      */
-    abstract public function createDatabase($dbname);
+    abstract public function createDatabase(string $dbname): void;
 
     /**
      * Drop a database

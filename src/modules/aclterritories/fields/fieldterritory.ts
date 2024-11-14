@@ -48,7 +48,7 @@ export class fieldTerritory extends fieldGeneric implements OnInit, OnDestroy {
 
         // if we have a new model determine a default territory
         if (this.model.isNew) {
-            let searchterritories = this.territories.searchTerritories(this.model.module, '', 2, [], 'create');
+            let searchterritories = this.territories.searchTerritories(this.model.module, '', undefined, [], 'create');
             if (searchterritories.length == 1) {
                 this.value = searchterritories[0].id;
                 this.model.setField(this.fieldname + '_name', searchterritories[0].name);
@@ -56,7 +56,7 @@ export class fieldTerritory extends fieldGeneric implements OnInit, OnDestroy {
                 this.modal.prompt('input', undefined, 'LBL_SELECT_TERRITORY', 'shade', searchterritories[0].id, searchterritories.map(t => { return {value: t.id, display: t.name}})).subscribe({
                     next: (val) => {
                         if(val) {
-                            this.value = searchterritories[0].id;
+                            this.value = val;
                             this.model.setField(this.fieldname + '_name', searchterritories.find(t => t.id == val).name);
                         }
                     }
