@@ -66,15 +66,6 @@ export class SpiceInstallerDatabase {
                 break;
         }
 
-        switch (this.spiceinstaller.collation) {
-            case 'utf8mb4_general_ci':
-                this.charset = 'utf8mb4';
-                break;
-            case 'utf8_general_ci':
-                this.charset = 'utf8';
-                break;
-        }
-
         let body = {
             db_host_name: this.spiceinstaller.db_host_name,
             db_host_instance: this.spiceinstaller.db_host_instance,
@@ -110,7 +101,6 @@ export class SpiceInstallerDatabase {
                             autofree: this.spiceinstaller.autofree,
                             debug: this.spiceinstaller.debug,
                             ssl: this.spiceinstaller.ssl,
-                            collation: this.spiceinstaller.collation,
                             charset: this.charset
                         };
                         this.selfStep.completed = true;
