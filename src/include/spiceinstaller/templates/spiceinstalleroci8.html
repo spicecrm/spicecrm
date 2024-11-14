@@ -37,14 +37,3 @@
         <input type="text" class="slds-input" [(ngModel)]="spiceinstaller.db_schema" system-trim-input (change)="selfStep.completed=false"/>
     </div>
 </div>
-<div class="slds-form-element slds-p-vertical--small">
-    <label class="slds-form-element__label">Collation</label>
-    <div class="slds-form-element__control">
-        <div class="slds-select_container">
-            <select class="slds-select" [(ngModel)]="spiceinstaller.collation" (change)="selfStep.completed=false">
-                <option value="utf8mb4_general_ci">utf8mb4</option>
-                <option value="utf8_general_ci">utf8</option>
-            </select>
-        </div>
-    </div>
-</div>
