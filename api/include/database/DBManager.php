@@ -706,7 +706,7 @@ abstract class DBManager
             $field = $fieldDef['name'];
 
             # temporarily make sure to set the deleted flag to 0 if it does not have a default value.
-            if ($withDefaults && $field == 'deleted' && !isset($fieldDef['default'])) {
+            if ($withDefaults && $field == 'deleted' && !isset($fieldDef['default']) && $data[$field] != 1) {
                 $values['deleted'] = 0;
                 continue;
             }
