@@ -62,6 +62,27 @@
             <div class="slds-line-clamp_x-small slds-truncate" style="min-height: 39px;">
                 <span>{{ kpiTarget.kpi.description }}</span>
             </div>
+            @if(loading) {
+                <div style="width: 90px; height: 19px; overflow: hidden">
+                    <system-stencil/>
+                </div>
+            } @else if (!loading && addValues.length > 0) {
+                <footer class="slds-card__footer slds-align--absolute-center slds-p-around--none">
+                    @if (!loading && addValues.length > 0) {
+                        <ul class="slds-grid slds-wrap">
+                            @for (addValue of addValues; track $index) {
+                                <li class="slds-item slds-text-align--left slds-p-horizontal--x-small"
+                                    [ngClass]="{'slds-border--right': !isLast($index)}">
+                                    <system-label [label]="addValue.valueLabel"></system-label>
+                                    <h2 class="slds-text-heading--medium slds-tile__title slds-truncate slds-align_absolute-center">
+                                        {{ addValue.kpiValueAdd }}{{ addValue.valueMetric }}
+                                    </h2>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </footer>
+            }
         </div>
     </div>
 </article>

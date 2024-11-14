@@ -40,16 +40,6 @@ export class KpiTile implements OnInit {
     public kpiColor: any;
 
     /**
-     * color of the trend
-     */
-    public arrowIcon: 'arrowup' | 'arrowdown' | 'sort';
-
-    /**
-     * color of the trend
-     */
-    public iconColor: 'slds-icon-text-success' | 'slds-icon-text-error' | 'slds-icon-text-default';
-
-    /**
      * deviation in percentage
      */
     public percentage: string = '';
@@ -58,6 +48,15 @@ export class KpiTile implements OnInit {
      * a now moment object
      */
     public now = moment();
+
+    /**
+     * added kpi target values
+     */
+    public addValues: any[] = [{
+        kpiValueAdd: '',
+        valueLabel: '',
+        valueMetric: ''
+    }];
 
     constructor(
         public model: model,
@@ -89,6 +88,7 @@ export class KpiTile implements OnInit {
                 this.kpiTargetValue = data.kpiTargetValue;
                 this.kpiTrendData = data.kpiTrendData;
                 this.getKPIColor();
+                this.getAddValues();
                 this.loading = false;
             }, error: () => {
                 this.toast.sendToast(this.language.getLabel('LBL_ERR_LOADING_KPITARGETS'), 'error');
@@ -143,6 +143,37 @@ export class KpiTile implements OnInit {
 
     public openHistoryModal(){
         this.modal.openModal('KPIHistoryModal', true, this.injector)
+    }
+
+    /**
+     * check if the current item is the last one
+     */
+    public isLast(index: number): boolean {
+        return index === this.addValues.length - 1;
+    }
+
+    /**
+     * creates an array with values from KPITargetValue
+     */
+    public getAddValues() {
+
+        this.addValues = [];
+
+        // iterate over the range of possible kpi_value_add_? (from 1 to 5)
+        for (let i = 1; i <= 5; i++) {
+            const labelKey = `kpi_value_label_${i}`;
+            const addKey = `kpi_value_add_${i}`;
+            const metricKey = `kpi_value_metric_${i}`;
+
+            // check if the kpi_value_add_? exists in kpiTarget.kpi
+            if (this.kpiTarget.kpi?.[labelKey]) {
+                this.addValues.push({
+                    kpiValueAdd: this.kpiTargetValue[addKey],
+                    valueLabel: this.kpiTarget.kpi[labelKey],
+                    valueMetric: this.kpiTarget.kpi[metricKey]
+                });
+            }
+        }
     }
 
 }
