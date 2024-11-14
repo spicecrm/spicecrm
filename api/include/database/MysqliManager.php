@@ -1552,7 +1552,7 @@ class MysqliManager extends DBManager
      * Create a database
      * @param string $dbname
      */
-    public function createDatabase(string $dbname, string $charset = "utf8mb4", string $collation = "utf8_unicode_ci"): void {
+    public function createDatabase(string $dbname, string $charset = "utf8mb4", string $collation = "utf8mb4_unicode_ci"): void {
         $this->query("CREATE DATABASE `$dbname` CHARACTER SET $charset COLLATE $collation", true);
     }
 
