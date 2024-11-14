@@ -56,7 +56,7 @@ export class fieldTerritory extends fieldGeneric implements OnInit, OnDestroy {
                 this.modal.prompt('input', undefined, 'LBL_SELECT_TERRITORY', 'shade', searchterritories[0].id, searchterritories.map(t => { return {value: t.id, display: t.name}})).subscribe({
                     next: (val) => {
                         if(val) {
-                            this.value = searchterritories[0].id;
+                            this.value = val;
                             this.model.setField(this.fieldname + '_name', searchterritories.find(t => t.id == val).name);
                         }
                     }
