@@ -1860,19 +1860,20 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                         }
                     }
                 }
-            } else {
-                if ($this->isGrouped && (\SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'mssql' || \SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'oci8') ) {
-                    if ($this->orderByFieldID)
-                        $this->orderbyString .= 'ORDER BY MIN(sugarRecordId) ASC';
-                    else
-                        $this->orderbyString .= 'ORDER BY MIN(' . $this->rootGuid . '.id) ASC';
-                } else {
-                    if ($this->orderByFieldID)
-                        $this->orderbyString .= 'ORDER BY sugarRecordId ASC';
-                    else
-                        $this->orderbyString .= 'ORDER BY ' . $this->rootGuid . '.id ASC';
-                }
             }
+//            else {
+//                if ($this->isGrouped && (\SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'mssql' || \SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'oci8') ) {
+//                    if ($this->orderByFieldID)
+//                        $this->orderbyString .= 'ORDER BY MIN(sugarRecordId) ASC';
+//                    else
+//                        $this->orderbyString .= 'ORDER BY MIN(' . $this->rootGuid . '.id) ASC';
+//                } else {
+//                    if ($this->orderByFieldID)
+//                        $this->orderbyString .= 'ORDER BY sugarRecordId ASC';
+//                    else
+//                        $this->orderbyString .= 'ORDER BY ' . $this->rootGuid . '.id ASC';
+//                }
+//            }
             //else
             //    $this->orderbyString .= 'ORDER BY sugarRecordId';
         }
