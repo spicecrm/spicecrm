@@ -1140,14 +1140,6 @@ class MysqliManager extends DBManager
         $collation = $this->getOption('collation');
         // CR1000349 mysql8 compatibility: remove hardcoded charset
         $charset = $this->getOption('charset');
-        if(empty($collation)) {
-            //$collation = 'utf8_general_ci';
-            $collation = 'utf8mb4_unicode_ci';
-        }
-        if(empty($charset)) {
-            //$charset = 'utf8';
-            $charset = 'utf8mb4';
-        }
 
         $sql = "CREATE TABLE $tablename ($columns $keys) CHARACTER SET $charset COLLATE $collation";
 
@@ -1560,10 +1552,8 @@ class MysqliManager extends DBManager
      * Create a database
      * @param string $dbname
      */
-    public function createDatabase($dbname)
-    {
-        $this->query("CREATE DATABASE `$dbname` CHARACTER SET utf8 COLLATE utf8_general_ci", true);
-        //$this->query("CREATE DATABASE `$dbname` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci", true);
+    public function createDatabase(string $dbname, string $charset = "utf8mb4", string $collation = "utf8_unicode_ci"): void {
+        $this->query("CREATE DATABASE `$dbname` CHARACTER SET $charset COLLATE $collation", true);
     }
 
     /**
