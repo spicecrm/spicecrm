@@ -159,13 +159,13 @@ export class KpiTile implements OnInit {
 
         this.addValues = [];
 
-        // iterate over the range of possible kpi_value_add_? (from 1 to 5)
+        // iterate over the range of possible kpi_value_label_? (from 1 to 5)
         for (let i = 1; i <= 5; i++) {
             const labelKey = `kpi_value_label_${i}`;
             const addKey = `kpi_value_add_${i}`;
             const metricKey = `kpi_value_metric_${i}`;
 
-            // check if the kpi_value_add_? exists in kpiTarget.kpi
+            // check if the kpi_value_label_? exists in kpiTarget.kpi
             if (this.kpiTarget.kpi?.[labelKey]) {
                 this.addValues.push({
                     kpiValueAdd: this.kpiTargetValue[addKey],
