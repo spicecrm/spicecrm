@@ -164,7 +164,7 @@ export class ActionsetManager {
                 this.currentActionSet.id = JSON.parse(this.actionSetBackup).id;
                 JSON.stringify(this.actionSetBackup);
                 if(this.checkForChangesFunction()) {
-                    this.modal.confirm(  'LBL_ALL_CHANGES_WOULD_BE_DELETED.', 'LBL_ARE_YOU_SURE' ).subscribe( ( answer ) => {
+                    this.modal.confirm(  'LBL_ALL_CHANGES_WOULD_BE_DELETED', 'LBL_ARE_YOU_SURE' ).subscribe( ( answer ) => {
                         if(answer) {
                             this.deleteChanges();
                             this.loadCurrentActionset(newID);
@@ -285,7 +285,7 @@ export class ActionsetManager {
             this.currentActionSet.module = JSON.parse(this.actionSetBackup).module;
             JSON.stringify(this.actionSetBackup);
             if(this.checkForChangesFunction()) {
-                this.modal.confirm(  'LBL_ALL_CHANGES_WOULD_BE_DELETED.', 'LBL_ARE_YOU_SURE' ).subscribe( ( answer ) => {
+                this.modal.confirm(  'LBL_ALL_CHANGES_WOULD_BE_DELETED', 'LBL_ARE_YOU_SURE' ).subscribe( ( answer ) => {
                     if(answer) {
                         this.deleteChanges();
                         this.currentActionSet.module = newModule;
