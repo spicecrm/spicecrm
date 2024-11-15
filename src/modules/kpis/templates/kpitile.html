@@ -71,12 +71,12 @@
                     @if (!loading && addValues.length > 0) {
                         <ul class="slds-grid slds-wrap">
                             @for (addValue of addValues; track $index) {
-                                <li class="slds-item slds-text-align--left slds-p-horizontal--x-small"
-                                    [ngClass]="{'slds-border--right': !isLast($index)}">
-                                    <system-label [label]="addValue.valueLabel"></system-label>
-                                    <h2 class="slds-text-heading--medium slds-tile__title slds-truncate slds-align_absolute-center">
-                                        {{ addValue.kpiValueAdd }}{{ addValue.valueMetric }}
-                                    </h2>
+                                <li class="slds-item slds-text-align--right slds-p-horizontal--small" [ngClass]="{'slds-border--right': !isLast($index)}">
+                                    <system-label class="slds-text-body--small slds-text-color--inverse-weak" [label]="addValue.valueLabel"></system-label>
+                                    <div class="slds-grid slds-wrap slds-align_absolute-center">
+                                        <h2 class="slds-text-heading_small slds-truncate">{{addValue.kpiValueAdd}}</h2>
+                                        <span class="slds-text-body_small slds-align-bottom">{{addValue.valueMetric}}</span>
+                                    </div>
                                 </li>
                             }
                         </ul>
