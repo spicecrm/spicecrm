@@ -52,11 +52,7 @@ export class KpiTile implements OnInit {
     /**
      * added kpi target values
      */
-    public addValues: any[] = [{
-        kpiValueAdd: '',
-        valueLabel: '',
-        valueMetric: ''
-    }];
+    public addValues: any[] = [];
 
     constructor(
         public model: model,
@@ -74,6 +70,9 @@ export class KpiTile implements OnInit {
         this.model.id = this.kpiTarget.id;
         this.model.setData(this.kpiTarget, true);
 
+        // get the add values
+        this.getAddValues();
+
         // load the targetvalues
         this.loadKPITargets()
     }
@@ -88,7 +87,6 @@ export class KpiTile implements OnInit {
                 this.kpiTargetValue = data.kpiTargetValue;
                 this.kpiTrendData = data.kpiTrendData;
                 this.getKPIColor();
-                this.getAddValues();
                 this.loading = false;
             }, error: () => {
                 this.toast.sendToast(this.language.getLabel('LBL_ERR_LOADING_KPITARGETS'), 'error');
@@ -174,6 +172,14 @@ export class KpiTile implements OnInit {
                 });
             }
         }
+    }
+
+    public addValueClasses(index){
+        let classes = 'slds-size--1-of-' +this.addValues.length;
+
+        if(index > 0) classes += ' slds-border--left'
+
+        return classes;
     }
 
 }
