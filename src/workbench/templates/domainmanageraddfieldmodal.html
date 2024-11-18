@@ -47,11 +47,15 @@
             </div>
         </div>
         <div class="slds-grid">
-            <div class="slds-size--1-of-2 slds-p-right--xxx-small slds-form-element__control">
+            <div class="slds-size--1-of-3 slds-p-right--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><system-label label="LBL_LABEL"/></label>
+                <system-input-label [(ngModel)]="domainfield.label"></system-input-label>
+            </div>
+            <div class="slds-size--1-of-3 slds-p-right--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
                 <system-input-package [(ngModel)]="domainfield.package"/>
             </div>
-            <div class="slds-size--1-of-2 slds-p-left--xxx-small slds-form-element__control">
+            <div class="slds-size--1-of-3 slds-p-left--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
                 <system-input-version [(ngModel)]="domainfield.version"/>
             </div>
