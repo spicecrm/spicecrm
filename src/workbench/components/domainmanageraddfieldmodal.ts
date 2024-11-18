@@ -47,6 +47,7 @@ export class DomainManagerAddFieldModal implements OnInit{
             name: '{sysdictionaryitems.name}',
             fieldtype: '',
             scope: this.domainDefiniton.scope,
+            label: '',
             sequence: this.domainmanager.domainfields.filter(d => d.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition).length,
             required: 0,
             exclude_from_index: 0,
