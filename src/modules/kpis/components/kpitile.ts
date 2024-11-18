@@ -92,7 +92,6 @@ export class KpiTile implements OnInit {
                 this.getKPIColor();
                 this.loading = false;
             }, error: () => {
-                this.toast.sendToast(this.language.getLabel('LBL_ERR_LOADING_KPITARGETS'), 'error');
                 this.loading = false;
             }
         });
