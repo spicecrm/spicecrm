@@ -40,16 +40,6 @@ export class KpiTile implements OnInit {
     public kpiColor: any;
 
     /**
-     * color of the trend
-     */
-    public arrowIcon: 'arrowup' | 'arrowdown' | 'sort';
-
-    /**
-     * color of the trend
-     */
-    public iconColor: 'slds-icon-text-success' | 'slds-icon-text-error' | 'slds-icon-text-default';
-
-    /**
      * deviation in percentage
      */
     public percentage: string = '';
@@ -58,6 +48,11 @@ export class KpiTile implements OnInit {
      * a now moment object
      */
     public now = moment();
+
+    /**
+     * added kpi target values
+     */
+    public addValues: any[] = [];
 
     constructor(
         public model: model,
@@ -75,6 +70,9 @@ export class KpiTile implements OnInit {
         this.model.id = this.kpiTarget.id;
         this.model.setData(this.kpiTarget, true);
 
+        // get the add values
+        this.getAddValues();
+
         // load the targetvalues
         this.loadKPITargets()
     }
@@ -88,6 +86,9 @@ export class KpiTile implements OnInit {
             next: (data) => {
                 this.kpiTargetValue = data.kpiTargetValue;
                 this.kpiTrendData = data.kpiTrendData;
+
+                this.addValues.forEach(a => a.kpiValueAdd = data.kpiTargetValue[a.addKey]);
+
                 this.getKPIColor();
                 this.loading = false;
             }, error: () => {
@@ -143,6 +144,46 @@ export class KpiTile implements OnInit {
 
     public openHistoryModal(){
         this.modal.openModal('KPIHistoryModal', true, this.injector)
+    }
+
+    /**
+     * check if the current item is the last one
+     */
+    public isLast(index: number): boolean {
+        return index === this.addValues.length - 1;
+    }
+
+    /**
+     * creates an array with values from KPITargetValue
+     */
+    public getAddValues() {
+
+        this.addValues = [];
+
+        // iterate over the range of possible kpi_value_label_? (from 1 to 5)
+        for (let i = 1; i <= 5; i++) {
+            const labelKey = `kpi_value_label_${i}`;
+            const addKey = `kpi_value_add_${i}`;
+            const metricKey = `kpi_value_metric_${i}`;
+
+            // check if the kpi_value_label_? exists in kpiTarget.kpi
+            if (this.kpiTarget.kpi?.[labelKey]) {
+                this.addValues.push({
+                    addKey: addKey,
+                    kpiValueAdd: this.kpiTargetValue[addKey],
+                    valueLabel: this.kpiTarget.kpi[labelKey],
+                    valueMetric: this.kpiTarget.kpi[metricKey]
+                });
+            }
+        }
+    }
+
+    public addValueClasses(index){
+        let classes = 'slds-size--1-of-' +this.addValues.length;
+
+        if(index > 0) classes += ' slds-border--left'
+
+        return classes;
     }
 
 }
