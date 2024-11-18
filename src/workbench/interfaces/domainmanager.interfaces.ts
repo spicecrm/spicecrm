@@ -24,6 +24,7 @@ export interface DomainField {
     dbtype: string;
     len?: number;
     required: number;
+    label?: string;
     exclude_from_index: number;
     sysdomaindefinition_id: string;
     sysdomainfieldvalidation_id: string;
