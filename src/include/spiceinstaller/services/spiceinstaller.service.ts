@@ -63,7 +63,6 @@ export class spiceinstaller
     public autofree: boolean = false;
     public debug: number = 0;
     public ssl: boolean = false;
-    public collation: string = '';
 
     /**
      * postgresql additional parameters

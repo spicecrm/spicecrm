@@ -13,7 +13,7 @@
                 <system-label label="LBL_RELATIONSHIP_NAME"></system-label>
             </label>
             <div class="slds-form-element__control">
-                <input [disabled]="readonly" class="slds-input" [(ngModel)]="relationship.relationship_name"/>
+                <input disabled class="slds-input" [ngModel]="'{tablename}_email_addresses(_primary)'"/>
             </div>
         </div>
     </div>
@@ -23,7 +23,13 @@
                 <system-label label="LBL_LHS_DICTIONARYDEFINITION"></system-label>
             </label>
             <div class="slds-form-element__control">
-                <input disabled class="slds-input" [ngModel]="dictionarymanager.getDictionaryDefinitionName(relationship.lhs_sysdictionarydefinition_id)"/>
+                <div class="slds-select_container">
+                    <select disabled class="slds-select" [ngModel]="relationship.lhs_sysdictionarydefinition_id">
+                        @for (ri of relatedIds; track ri.id) {
+                            <option [value]="ri.id">{{ri.name}}</option>
+                        }
+                    </select>
+                </div>
             </div>
         </div>
         <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
