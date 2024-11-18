@@ -84,10 +84,10 @@
                 </li>
             </ng-container>
             <ng-container *ngIf="searchterm.length == 0">
-                <li *ngFor="let user of recentUsers; trackBy: trackByFn" role="presentation" (mousedown)="addUserCalendar(user.item_id, user.item_summary)">
+                <li *ngFor="let user of recentUsers; trackBy: trackByFn" role="presentation" (mousedown)="addUserCalendar(user.item_id, user.summary_text)">
                     <div class="slds-lookup__item-action slds-media" role="option">
                         <system-icon icon="user" size="x-small" divClass="slds-p-around--xxx-small slds-m-right--xxx-small"></system-icon>
-                        <span class="slds-lookup__result-text">{{user.item_summary}}</span>
+                        <span class="slds-lookup__result-text">{{user.summary_text}}</span>
                     </div>
                 </li>
             </ng-container>
