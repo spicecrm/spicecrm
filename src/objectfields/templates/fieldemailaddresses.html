@@ -57,7 +57,7 @@
             </button>
         </div>
     </div>
-    <div *ngIf="isAdding" class="slds-grid">
+    <div *ngIf="isAdding" class="slds-grid slds-grid--vertical-align-center">
         <system-input-radio *ngIf="!fieldconfig.singleMode" value="1" [name]="primaryInputRadioName" [ngModel]="inputNewEmailAddress.primary_address == '1'" (ngModelChange)="setPrimary(inputNewEmailAddress)" [disabled]="inputNewEmailAddress.invalid_email == 1 || !inputNewEmailAddress.email_address" style="max-width: 1.4rem"></system-input-radio>
         <field-email-emailaddress (keyup.enter)="startAdding()" [hasFocus]="true" [emailAddress]="inputNewEmailAddress" (onBlur)="setEmailAddressesField()" class="slds-grow"></field-email-emailaddress>
         <div class="slds-grid slds-grid--vertical-align-center" style="max-height: 32px">
