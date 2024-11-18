@@ -455,6 +455,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'source' => 'non-db',
             'vname' => 'LBL_ACCOUNTBANKACCOUNTS'
         ],
+        /*
         'accountccdetails' => [
             'name' => 'accountccdetails',
             'vname' => 'LBL_ACCOUNTCCDETAILS',
@@ -466,6 +467,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'default' => true, //UI: load related beans on account load. module property required!
             'module' => 'AccountCCDetails'
         ],
+        */
         'events_account_role' => [
             'name' => 'events_account_role',
             'vname' => 'LBL_ROLE',
@@ -535,6 +537,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'source' => 'non-db',
             'vname' => 'LBL_SPICE_TEXTS',
         ],
+        /*
         'accountvatids' => [
             'name' => 'accountvatids',
             'type' => 'link',
@@ -544,6 +547,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'module' => 'AccountVATIDs',
             'default' => true
         ],
+        */
         'agreements' => [
             'name' => 'agreements',
             'type' => 'link',
