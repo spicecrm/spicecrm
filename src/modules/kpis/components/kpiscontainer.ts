@@ -103,10 +103,10 @@ export class KPIsContainer implements OnChanges {
                     }
                 } else {
                     // If no group, push to the 'other' group
-                    const otherGroup = groupedTargets.find(g => g.name === 'other');
+                    const otherGroup = groupedTargets.find(g => g.name === 'ungroupedTargets');
 
                     if (!otherGroup) {
-                        groupedTargets.push({name: 'other', priority: 999, targets: [target]});
+                        groupedTargets.push({name: 'ungroupedTargets', priority: 999, targets: [target]});
                     } else {
                         otherGroup.targets.push(target);
                     }
