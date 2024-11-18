@@ -83,7 +83,7 @@ class SpiceACL
         $addData = SpiceACLUsers::addFTSData($bean);
 
         $territory = BeanFactory::getBean('SpiceACLTerritories');
-        if ($territory) {
+        if ($territory instanceof SpiceACLTerritory) {
             $territoryData = $territory->addFTSData($bean);
             $addData = array_merge($addData, $territoryData);
         }

@@ -1142,10 +1142,9 @@ class OCI8Manager extends DBManager
         return $this->getTableNames('WHERE TABLE_NAME LIKE ' . $this->quoted(strtoupper($like)));
     }
 
-    public function createDatabase($dbname)
-    {
+    public function createDatabase(string $dbname): void {
         //admin needs to do it
-        return true;
+        return;
     }
 
     public function dropDatabase($dbname)

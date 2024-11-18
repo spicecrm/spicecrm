@@ -483,10 +483,11 @@ class SpiceUIConfLoader
                 }
             }
 
+            SpiceDictionary::getInstance()->loadDictionary();
+
             $this->repairNewRelationships($response['sysdictionarydefinitions']);
         }
 
-        SpiceDictionary::getInstance()->loadDictionary();
         RelationshipFactory::getInstance()->loadRelationships(true);
 
         foreach ($dictionaryTables as $table) {
@@ -505,7 +506,7 @@ class SpiceUIConfLoader
 
             $dic = json_decode(base64_decode($dic), true);
 
-            SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($dic['id']);
+            SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($dic['id'], $dic['package']);
             try {
                 SpiceDictionaryRelationships::repairDictionaryVardefRelationships($dic['id']);
             } catch (\Throwable $exception) {
@@ -551,30 +552,29 @@ class SpiceUIConfLoader
     public function getCurrentConf()
     {
         $db = DBManagerFactory::getInstance();
-        $qArray = [];
+
         $excludePackageCheck = ['systemdeploymentrpdbentrys'];
-        foreach($this->conftables as $conftable) {
-            if(!in_array($conftable, $excludePackageCheck) && $db->tableExists($conftable)){
-                $qArray[] = "(SELECT package, version FROM $conftable WHERE version is not null AND version <> '')";
-            }
-        }
-        $q = implode(" UNION ", $qArray) . " ORDER BY package, version";
-        $res = $db->query($q);
+
         $packages = [];
         $versions = [];
 
-        while ($row = $db->fetchByAssoc($res)) {
-            // skip system package
-            if($row['package'] == 'system') continue;
+        foreach($this->conftables as $conftable) {
+            if (!in_array($conftable, $excludePackageCheck) && $db->tableExists($conftable)) {
+                $res = $db->query("SELECT package, version FROM $conftable WHERE version is not null AND version <> ''");
+                while ($row = $db->fetchByAssoc($res)) {
+                    // skip system package
+                    if ($row['package'] == 'system') continue;
 
-            // check if it is loaded
-            if (!empty($row['package']) && !in_array($row['package'], $packages)) {
-                $packages[] = $row['package'];
-            } elseif (!in_array('core', $packages) && !in_array($row['package'], $packages)) {
-                $packages[] = 'core';
+                    // check if it is loaded
+                    if (!empty($row['package']) && !in_array($row['package'], $packages)) {
+                        $packages[] = $row['package'];
+                    } elseif (!in_array('core', $packages) && !in_array($row['package'], $packages)) {
+                        $packages[] = 'core';
+                    }
+                    if (!empty($row['version']) && !in_array($row['version'], $versions))
+                        $versions[] = $row['version'];
+                }
             }
-            if (!empty($row['version']) && !in_array($row['version'], $versions))
-                $versions[] = $row['version'];
         }
         return ['packages' => $packages, 'versions' => $versions];
     }

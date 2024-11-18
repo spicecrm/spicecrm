@@ -452,6 +452,7 @@ class SpiceInstaller
             'db_type' => $postData['database']['db_type'],];
 
         $db = $this->dbManagerFactory::getTypeInstance($postData['database']['db_type'], ['dbconfig' => ['db_manager' => $postData['database']['db_manager']]]);
+        $postData['dboptions']['collation'] = "utf8mb4_unicode_ci";
         $db->setOptions($postData['dboptions']);
         if ($dbconfig['db_type'] == 'oci8') {
             $dbconfig['db_schema'] = $postData['database']['db_schema'];
@@ -463,12 +464,7 @@ class SpiceInstaller
         $dbconfig['db_name'] = $postData['database']['db_name'];
 
         if (!$db->dbExists($dbconfig['db_name'])) {
-            if ($postData['dboptions']['collation'] == 'utf8mb4_general_ci') {
-                $db->query("CREATE DATABASE " . $dbconfig['db_name'] . " CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci", true);
-            } else {
-                $db->createDatabase($dbconfig['db_name']);
-            }
-
+            $db->createDatabase($dbconfig['db_name']);
         }
         
         $this->dbManagerFactory::setDBConfigInstaller(['dbconfig' => $dbconfig, 'dbconfigoption'  => $postData['dboptions']]);
