@@ -77,10 +77,10 @@
                                 @if (loading){
                                     <system-stencil/>
                                 } @else {
-                                    {{addValue.kpiValueAdd}}
+                                    <system-display-number [number]="addValue.kpiValueAdd" precision="0"/>
                                 }
                             </h2>
-                            <span class="slds-text-body_small slds-align-bottom">{{addValue?.valueMetric}}</span>
+                            <span class="slds-text-body_small slds-align-bottom slds-p-left--xxx-small">{{addValue?.valueMetric}}</span>
                         </div>
                     </div>
                 }

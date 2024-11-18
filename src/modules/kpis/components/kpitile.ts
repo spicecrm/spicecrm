@@ -86,6 +86,9 @@ export class KpiTile implements OnInit {
             next: (data) => {
                 this.kpiTargetValue = data.kpiTargetValue;
                 this.kpiTrendData = data.kpiTrendData;
+
+                this.addValues.forEach(a => a.kpiValueAdd = data.kpiTargetValue[a.addKey]);
+
                 this.getKPIColor();
                 this.loading = false;
             }, error: () => {
@@ -166,6 +169,7 @@ export class KpiTile implements OnInit {
             // check if the kpi_value_label_? exists in kpiTarget.kpi
             if (this.kpiTarget.kpi?.[labelKey]) {
                 this.addValues.push({
+                    addKey: addKey,
                     kpiValueAdd: this.kpiTargetValue[addKey],
                     valueLabel: this.kpiTarget.kpi[labelKey],
                     valueMetric: this.kpiTarget.kpi[metricKey]
