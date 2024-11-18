@@ -1227,8 +1227,7 @@ class PostgreSQLManager extends DBManager
      * (non-PHPdoc)
      * @see DBManager::createDatabase()
      */
-    public function createDatabase($dbname, $LC_COLLATE = 'en_US.UTF-8', $LC_CTYPE = 'en_US.UTF-8')
-    {
+    public function createDatabase(string $dbname, $LC_COLLATE = 'en_US.UTF-8', $LC_CTYPE = 'en_US.UTF-8'): void {
         $this->query("CREATE DATABASE $dbname WITH 
 						ENCODING='UTF8' 
 						LC_COLLATE= '{$LC_COLLATE}' 

@@ -88,6 +88,7 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
             tablename: '',
             sysdictionary_type: 'module',
             scope: this.dictionarymanager.defaultScope,
+            audited: 0,
             status: 'd'
         };
 

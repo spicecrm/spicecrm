@@ -1,18 +1,22 @@
 <article class="slds-card">
     <header class="slds-media slds-media_center slds-has-flexi-truncate">
         <div class="slds-media__body">
-            <h2 class="slds-text-heading--small slds-theme--shade  slds-grid slds-grid--align-spread">
-                <div class="slds-card__header slds-truncate slds-m-bottom--none slds-p-around--xx-small">
+            <h2 class="slds-text-heading--small slds-theme--shade  slds-grid slds-grid--vertical-align-center">
+                <div class="slds-card__header slds-truncate slds-m-bottom--none slds-p-around--xx-small slds-col--bump-right">
                     <span>{{ kpiTarget.kpi.name }}</span>
                 </div>
+                @if (kpiTarget.kpi.description && addValues.length > 0){
+                    <!--system-utility-icon size="x-small" icon="info" [title]="kpiTarget.kpi.description"/-->
+                    <system-icon-help-text [helpText]="kpiTarget.kpi.description"/>
+                }
                 <button class="slds-button slds-button--icon slds-m-horizontal--xx-small" (click)="openHistoryModal()">
                     <system-button-icon icon="graph"/>
                 </button>
             </h2>
         </div>
     </header>
-    <div class="slds-card__body slds-card__body_inner slds-m-vertical--none slds-p-horizontal--xx-small  slds-p-bottom--xx-small">
-        <div class="slds-tile__detail">
+    <div class="slds-card__body slds-card__body_inner slds-m-vertical--none slds-p-horizontal--none  ">
+        <div class="slds-tile__detail slds-p-horizontal--xx-small slds-p-bottom--xx-small">
             <div class="slds-grid">
                 <div class="slds-truncate slds-text-heading_large" [ngClass]="textColor">
                     @if(!loading) {
@@ -59,10 +63,29 @@
                     </div>
                 }
             </div>
-            <div class="slds-line-clamp_x-small slds-truncate" style="min-height: 39px;">
+            <div *ngIf="addValues.length == 0" class="slds-line-clamp_x-small slds-truncate" style="min-height: 42px;">
                 <span>{{ kpiTarget.kpi.description }}</span>
             </div>
         </div>
+        @if(addValues.length > 0) {
+            <div class="slds-grid slds-border_top">
+                @for (addValue of addValues; track $index) {
+                    <div class="slds-text-align--center slds-p-bottom--xx-small slds-p-horizontal--xx-small" [ngClass]="addValueClasses($index)">
+                        <system-label class="slds-text-body--small slds-text-color--inverse-weak" [label]="addValue.valueLabel"/>
+                        <div class="slds-grid slds-grid--align-center">
+                            <h2 class="slds-text-heading_small slds-truncate">
+                                @if (loading){
+                                    <system-stencil/>
+                                } @else {
+                                    {{addValue.kpiValueAdd}}
+                                }
+                            </h2>
+                            <span class="slds-text-body_small slds-align-bottom">{{addValue?.valueMetric}}</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
     </div>
 </article>
 
