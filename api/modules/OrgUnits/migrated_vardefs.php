@@ -3,12 +3,13 @@
 
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-
+/* migrated
 SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
     'table' => 'orgunits',
     'comment' => 'OrgUnits Module',
     'audited' => true,
     'fields' => [
+        /*
         'orgchart_id' => [
             'name' => 'orgchart_id',
             'vname' => 'LBL_ORGCHART_ID',
@@ -48,6 +49,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'source' => 'non-db',
             'vname' => 'LBL_ORGCHARTS'
         ],
+        */
+        /*
         'parent_id' => [
             'name' => 'parent_id',
             'vname' => 'LBL_PARENT_ID',
@@ -68,6 +71,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'source' => 'non-db',
             'link' => 'member_of'
         ],
+        */
+        /*
         'members' => [
             'name' => 'members',
             'type' => 'link',
@@ -77,6 +82,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'source' => 'non-db',
             'vname' => 'LBL_MEMBERS',
         ],
+        */
+        /*
         'users' => [
             'name' => 'users',
             'type' => 'link',
@@ -86,6 +93,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'source' => 'non-db',
             'vname' => 'LBL_USERS',
         ],
+        */
+        /*
         'hcmjoboffers' => [
             'name' => 'hcmjoboffers',
             'type' => 'link',
@@ -113,6 +122,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'len' => 255,
             'source' => 'non-db'
         ],
+        */
+        /*
         'member_of' => [
             'name' => 'member_of',
             'type' => 'link',
@@ -124,6 +135,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'vname' => 'LBL_MEMBER_OF',
             'side' => 'right',
         ],
+        */
+        /*
         'spiceaclprofiles' => [
             'name' => 'spiceaclprofiles',
             'type' => 'link',
@@ -133,6 +146,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'source' => 'non-db',
             'vname' => 'LBL_SPICEACLPROFILES'
         ],
+        */
 #migrated
 //        'documents' => [
 //            'name' => 'documents',
@@ -178,14 +192,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
 //            'source' => 'non-db',
 //            'comment' => 'represents the value in orgunits_employees.employee_role'
 //        ],
-
+/*
     ],
     'relationships' => [
+
         'member_orgunits' => [
             'lhs_module' => 'OrgUnits', 'lhs_table' => 'orgunits', 'lhs_key' => 'id',
             'rhs_module' => 'OrgUnits', 'rhs_table' => 'orgunits', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many'
         ],
+        */
 //        'orgunits_users' => [
 //            'lhs_module' => 'OrgUnits', 'lhs_table' => 'orgunits', 'lhs_key' => 'id',
 //            'rhs_module' => 'Users', 'rhs_table' => 'users', 'rhs_key' => 'orgunit_id',
@@ -196,14 +212,18 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
 //            'rhs_module' => 'Employees', 'rhs_table' => 'employees', 'rhs_key' => 'orgunit_id',
 //            'relationship_type' => 'one-to-many'
 //        ],
-    ],
+
+ //   ],
+    /*
     'indices' => [
         ['name' => 'idx_orgunit_id_del', 'type' => 'index', 'fields' => ['id', 'deleted']],
         ['name' => 'idx_orgunit_parent_id', 'type' => 'index', 'fields' => ['parent_id', 'deleted']],
         ['name' => 'idx_orgunit_orgchart_id', 'type' => 'index', 'fields' => ['orgchart_id', 'deleted']]
     ]
-];
+    */
+//];
 
+/*
 if (file_exists("extensions/modules/ServiceQueues")) {
     SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit']['fields']['servicequeues'] = [
         'name' => 'servicequeues',
@@ -216,3 +236,4 @@ if (file_exists("extensions/modules/ServiceQueues")) {
     ];
 }
 VardefManager::createVardef('OrgUnits', 'OrgUnit', ['default', 'assignable']);
+*/

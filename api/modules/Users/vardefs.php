@@ -986,6 +986,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
         ],
         */
+        /*
         'spiceaclprofiles' => [
             'name' => 'spiceaclprofiles',
             'type' => 'link',
@@ -995,6 +996,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'vname' => 'LBL_SPICEACLPROFILES'
         ],
+        */
         'login_blocked' => [
             'name' => 'login_blocked',
             'vname' => 'LBL_LOGIN_BLOCKED',
@@ -1013,6 +1015,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'relationship' => 'user_eventregistrations',
             'source' => 'non-db',
         ],
+        /*
         'orgunit_id' => [
             'vname' => 'LBL_ORGUNIT_ID',
             'name' => 'orgunit_id',
@@ -1047,6 +1050,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'module' => 'OrgUnits',
             'source' => 'non-db'
         ],
+        */
         'documentrevisions' => [
             'name' => 'documentrevisions',
             'type' => 'link',
