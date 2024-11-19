@@ -19,7 +19,7 @@
         <div class="slds-grid">
             <div class="slds-large-size--1-of-5 slds-p-right--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_DBTYPE"></system-label></label>
-                <system-select [(ngModel)]="domainfield.dbtype">
+                <system-select [(ngModel)]="domainfield.dbtype" system-select-id-only>
                     <system-select-option *ngFor="let dbtype of domainmanager.dbtypes" [value]="dbtype" [display]="dbtype"/>
                 </system-select>
             </div>
@@ -37,7 +37,7 @@
             </div>
             <div class="slds-large-size--1-of-5 slds-p-left--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_RENDERING_TYPE"></system-label></label>
-                <system-select [(ngModel)]="domainfield.fieldtype">
+                <system-select [(ngModel)]="domainfield.fieldtype" system-select-id-only>
                     <system-select-option *ngFor="let fieldtype of domainmanager.fieldtypes" [value]="fieldtype" [display]="fieldtype"/>
                 </system-select>
             </div>
