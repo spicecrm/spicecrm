@@ -172,6 +172,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             ],
             'len' => '510',
         ],
+        /*
         'account_user_role' => [
             'name' => 'account_user_role',
             'vname' => 'LBL_ROLE',
@@ -188,6 +189,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'vname' => 'LBL_ACCOUNTS'
         ],
+        */
         'projects' => [
             'name' => 'projects',
             'type' => 'link',
@@ -197,6 +199,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'vname' => 'LBL_PROJECTS'
         ],
+        /*
         'opportunity_role' => [
             'name' => 'opportunity_role',
             'type' => 'enum',
@@ -213,6 +216,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'bean_name' => 'Opportunity',
             'vname' => 'LBL_OPPORTUNITIES',
         ],
+        */
         'name' => [
             'name' => 'name',
             'rname' => 'name',

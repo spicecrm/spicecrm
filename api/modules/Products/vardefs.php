@@ -325,6 +325,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'relationship' => 'projects_products',
             'source' => 'non-db',
         ],
+        /*
         'opportunities' => [
             'name' => 'opportunities',
             'type' => 'link',
@@ -348,6 +349,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'dbtype' => 'double',
             'source' => 'non-db'
         ],
+        */
     ],
     'relationships' => [
         /*
