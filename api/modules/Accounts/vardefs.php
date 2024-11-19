@@ -242,6 +242,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
 //            'source' => 'non-db',
 //            'vname' => 'LBL_CONTACTS',
 //        ],
+        /*
         'users' => [
             'name' => 'users',
             'type' => 'link',
@@ -256,6 +257,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 ]
             ]
         ],
+        */
         'opportunities' => [
             'name' => 'opportunities',
             'type' => 'link',
