@@ -261,7 +261,9 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit,
             map_to_fieldname: '',
             sysdictionaryitem_id: joinItemId,
             deleted: 0,
-            isNew: true
+            isNew: true,
+            version: this.relationship.version,
+            package: this.relationship.package
         };
     }
 
