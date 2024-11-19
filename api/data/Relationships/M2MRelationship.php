@@ -330,38 +330,38 @@ class M2MRelationship extends Relationship
         $lhsLinkName = $this->lhsLink;
         $rhsLinkName = $this->rhsLink;
 
-        if (empty($lhs->$lhsLinkName) && !$lhs->load_relationship($lhsLinkName))
+        if ($lhsLinkName && empty($lhs->$lhsLinkName) && !$lhs->load_relationship($lhsLinkName))
         {
             $lhsClass = get_class($lhs);
             LoggerManager::getLogger()->fatal('relationships', "could not load LHS $lhsLinkName in $lhsClass in M2M");
             return false;
         }
-        if (empty($rhs->$rhsLinkName) && !$rhs->load_relationship($rhsLinkName))
+        if ($rhsLinkName && empty($rhs->$rhsLinkName) && !$rhs->load_relationship($rhsLinkName))
         {
             $rhsClass = get_class($rhs);
             LoggerManager::getLogger()->fatal('relationships', "could not load RHS $rhsLinkName in $rhsClass in M2M");
             return false;
         }
 
-            $lhs->$lhsLinkName->addBean($rhs);
-            $rhs->$rhsLinkName->addBean($lhs);
 
-            $this->callBeforeAdd($lhs, $rhs, $lhsLinkName);
-            $this->callBeforeAdd($rhs, $lhs, $rhsLinkName);
+
+        if($lhsLinkName) $this->callBeforeAdd($lhs, $rhs, $lhsLinkName);
+        if($rhsLinkName) $this->callBeforeAdd($rhs, $lhs, $rhsLinkName);
 
         //Many to many has no additional logic, so just add a new row to the table and notify the beans.
         $dataToInsert = $this->getRowToInsert($lhs, $rhs, $additionalFields);
 
         $this->addRow($dataToInsert);
 
-        if ($this->self_referencing)
+        if($lhsLinkName) $lhs->$lhsLinkName->addBean($rhs);
+        if($rhsLinkName) $rhs->$rhsLinkName->addBean($lhs);
+
+        if ($this->self_referencing) {
             $this->addSelfReferencing($lhs, $rhs, $additionalFields);
+        }
 
-            $lhs->$lhsLinkName->addBean($rhs);
-            $rhs->$rhsLinkName->addBean($lhs);
-
-            $this->callAfterAdd($lhs, $rhs, $lhsLinkName, $dataToInsert);
-            $this->callAfterAdd($rhs, $lhs, $rhsLinkName, $dataToInsert);
+        if($lhsLinkName) $this->callAfterAdd($lhs, $rhs, $lhsLinkName, $dataToInsert);
+        if($rhsLinkName) $this->callAfterAdd($rhs, $lhs, $rhsLinkName, $dataToInsert);
 
         $this->reindexBeans($lhs, $rhs);
 
