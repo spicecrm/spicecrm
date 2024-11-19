@@ -278,7 +278,7 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit,
      * @param linkName
      */
     public getLabel(linkName): string {
-        return this.checkIfExistingLabel(linkName)
+        return linkName && this.checkIfExistingLabel(linkName)
             ? 'LBL_' + linkName.toUpperCase()
             : '';
     }
