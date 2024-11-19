@@ -357,6 +357,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'vname' => 'LBL_CONTACTS',
             'hide_history_contacts_emails' => true,
         ],
+        /*
         'users' => [
             'name' => 'users',
             'type' => 'link',
@@ -372,6 +373,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             ],
             'vname' => 'LBL_USERS'
         ],
+        */
         'tasks' => [
             'name' => 'tasks',
             'type' => 'link',
@@ -494,6 +496,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'vname' => 'LBL_OPPORTUNITYREVENUELINES',
             'default' => true
         ],
+        /*
         'products' => [
             'name' => 'products',
             'type' => 'link',
@@ -511,6 +514,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
                 ]
             ],
         ]
+        */
     ],
     /* migrated
     'indices' => [
