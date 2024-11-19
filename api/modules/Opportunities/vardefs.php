@@ -457,6 +457,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'source' => 'non-db',
             'reportable' => false
         ],
+        /*
         'proposals' => [
             'name' => 'proposals',
             'vname' => 'LBL_PROPOSALS',
@@ -465,6 +466,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'link_type' => 'one',
             'source' => 'non-db',
         ],
+        */
         /*
         'opportunitystages' => [
             'name' => 'opportunitystages',
@@ -477,6 +479,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'vname' => 'LBL_OPPORTUNITYSTAGES',
         ],
         */
+        /*
         'opportunityrevenuesplit' => [
             'name' => 'opportunityrevenuesplit',
             'type' => 'enum',
@@ -485,6 +488,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'options' => 'opportunityrevenuesplit_dom',
             'vname' => 'LBL_SPLITTYPE'
         ],
+        */
+        /*
         'opportunityrevenuelines' => [
             'name' => 'opportunityrevenuelines',
             'type' => 'link',
@@ -496,6 +501,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'vname' => 'LBL_OPPORTUNITYREVENUELINES',
             'default' => true
         ],
+        */
         /*
         'products' => [
             'name' => 'products',
