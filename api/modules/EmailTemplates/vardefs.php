@@ -287,6 +287,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'vname' => 'LBL_METHOD',
             'type' => 'varchar'
         ],
+        /*
         'outputtemplates' => [
             'name' => 'outputtemplates',
             'type' => 'link',
@@ -295,6 +296,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'vname' => 'LBL_OUTPUT_TEMPLATES',
             'module' => 'OutputTemplates'
         ],
+        */
         'is_inactive' => [
             'name' => 'is_inactive',
             'vname' => 'LBL_IS_INACTIVE',
