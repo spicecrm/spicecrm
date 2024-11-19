@@ -1,18 +1,11 @@
-<div class="slds-p-around--xx-small slds-grid slds-grid--vertical-align-center">
-    <system-label label="LBL_MODULE"></system-label>
-    <system-input-module class="slds-select" [(ngModel)]="filtermodule"></system-input-module>
-
-    <system-label label="LBL_STATUS"></system-label>
-    <select [(ngModel)]="filterstatus" class="slds-select">
-        <option value=""></option>
-        <option *ngFor="let option of filterstatusoptions" [value]="option.value"><system-label [label]="option.label"></system-label></option>
-    </select>
-</div>
-<div #listcontainer (scroll)="onScroll($event)" class="slds-scrollable--y" [ngStyle]="listStyle()">
-    <div *ngIf="!spiceimportsservice.isloading && items?.length == 0" class="slds-text-align_center slds-p-vertical--medium">
-        <span><system-label label="LBL_NO_ENTRIES"></system-label></span>
-    </div>
-    <spice-imports-list-item *ngFor="let item of items" [item]="item">
-    </spice-imports-list-item>
-    <system-spinner *ngIf="spiceimportsservice.isloading"></system-spinner>
+<div class="slds-theme--default" (system-to-bottom)="loadMore()" [system-overlay-loading-spinner]="spiceimportsservice.isloading">
+    @if (!spiceimportsservice.isloading && spiceimportsservice.filtereditems.length == 0){
+        <div class="slds-height_full slds-align--absolute-center">
+            <system-illustration-no-records>
+                <system-label label="LBL_NO_ENTRIES"></system-label>
+            </system-illustration-no-records>
+        </div>
+    } @else {
+        <spice-imports-list-item *ngFor="let item of spiceimportsservice.filtereditems" [item]="item"/>
+    }
 </div>
