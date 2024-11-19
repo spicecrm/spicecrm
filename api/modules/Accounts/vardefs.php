@@ -370,7 +370,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'duplicate_merge' => false,
             'comment' => 'The first campaign name for Account (Meta-data only)',
         ],
-        'prospect_lists' => [
+/*        'prospect_lists' => [
             'name' => 'prospect_lists',
             'type' => 'link',
             'relationship' => 'prospect_list_accounts',
@@ -382,7 +382,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                     'map' => 'prospectlists_accounts_quantity'
                 ]
             ]
-        ],
+        ],*/
         'proposals' => [
             'name' => 'proposals',
             'vname' => 'LBL_PROPOSALS',
