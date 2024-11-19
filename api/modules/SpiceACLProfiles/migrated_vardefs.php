@@ -3,6 +3,7 @@
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
+/* migrated
 SpiceDictionaryHandler::getInstance()->dictionary['SpiceACLProfile'] = [
     'table' => 'spiceaclprofiles',
     'fields' => [
@@ -18,7 +19,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['SpiceACLProfile'] = [
             'source' => 'non-db',
             'comment' => 'a boolean indicator if the proile is assigned to all users'
         ],
-        /*
         'users' =>    [
             'name' => 'users',
             'type' => 'link',
@@ -27,8 +27,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['SpiceACLProfile'] = [
             'module' => 'Users',
             'vname' => 'LBL_USERS',
         ],
-        */
-        /*
         'orgunits' =>    [
             'name' => 'orgunits',
             'type' => 'link',
@@ -37,7 +35,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['SpiceACLProfile'] = [
             'module' => 'OrgUnits',
             'vname' => 'LBL_ORGUNITS',
         ],
-        */
         'for_portal_users' => [
             'name' => 'for_portal_users',
             'vname' => 'LBL_FOR_PORTAL_USERS',
@@ -58,3 +55,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['SpiceACLProfile'] = [
 ];
 
 VardefManager::createVardef('SpiceACLProfiles', 'SpiceACLProfile', ['default']);
+*/
