@@ -61,6 +61,7 @@ export class KPIsContainer implements OnChanges {
      * @private
      */
     public loadKPIs() {
+        this.otherTargets = [];
         this.groupedTargets = [];
         if(this.parentId && this.parentType) {
             this.loading = true;
