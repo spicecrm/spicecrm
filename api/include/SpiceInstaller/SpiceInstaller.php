@@ -796,7 +796,7 @@ class SpiceInstaller
      * @return void
      * @throws Exception
      */
-    public function writeDictionaryToCacheTable()
+    public function writeDictionaryToCacheTable(): void
     {
         # write the definitions to the cache table
         $defsHandler = SpiceDictionaryDefinitions::getInstance();
@@ -814,6 +814,7 @@ class SpiceInstaller
     public function createDatabaseIndexes(): void
     {
         $indexHandler = SpiceDictionaryIndexes::getInstance();
+        $indexHandler->reloadItems();
 
         foreach ($indexHandler->dictionaryIndexes as $index) {
             try {

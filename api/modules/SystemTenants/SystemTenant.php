@@ -8,62 +8,161 @@ use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRM2FAUtils;
 use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
-use SpiceCRM\includes\SpiceCache\SpiceCacheFile;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
-use SpiceCRM\includes\SpiceFTSManager\SpiceFTSRESTManager;
 use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\modules\EmailAddresses\EmailAddress;
+use SpiceCRM\modules\Emails\Email;
+use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\Users\User;
 
 class SystemTenant extends SpiceBean
 {
     /**
+     * system tenant status: created, requested, pending, rejected, provisioned
+     * @var string
+     */
+    public string $systemtenant_status;
+
+    /**
      * holds the passed tenant id in the incoming api request header
      * @var string|null
      */
     public static ?string $currentTenantID = null;
+    /**
+     * temporary hold the generated admin password to be used in the template
+     * @var string
+     */
+    public string $adminPassword = 'admin';
+    /**
+     * temporary hold the generated admin username to be used in the template
+     * @var string
+     */
+    public string $adminUsername = 'admin';
+
+    /**
+     * @return bool if multitenancy is enabled for the system
+     */
+    public static function multitenancyEnabled(): bool
+    {
+        return SpiceConfig::getInstance()->get('multitenancy.enabled') == 1;
+    }
+
+    /**
+     * @return bool if the system is using the tenant database
+     */
+    public static function isInTenantSystem(): bool
+    {
+        return self::multitenancyEnabled() && !empty(self::$currentTenantID);
+    }
+
+    /**
+     * append the system tenant id to the fts filter
+     * @param array $queryParam
+     * @return void
+     */
+    public static function addFTSFilter(array &$queryParam): void
+    {
+        if (!self::multitenancyEnabled()) return;
+
+        # if in the master system tenant id must be empty
+        if (!SystemTenant::isInTenantSystem()) {
+            $queryParam['query']['bool']['filter']['bool']['must']  = [
+                [
+                    'bool' => [
+                        'must' => [
+                            [
+                                'bool' => [
+                                    'must_not' => [
+                                        [
+                                            'exists' => [
+                                                'field' => '_systemtenant_id'
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ];
+        } else {
+            # in the tenant system add the check for the tenant id match
+            $queryParam['query']['bool']['filter']['bool']['must']  = [
+                [
+                    'bool' => [
+                        'must' => [
+                            [
+                                'term' => [
+                                    '_systemtenant_id' => SystemTenant::$currentTenantID
+                                ]
+                            ]
+
+                        ]
+                    ]
+                ]
+            ];
+        }
+    }
 
     /**
      * switches to the tenant
      * @throws Exception
      */
-    public function switchToTenant()
+    public static function switchToTenant(string $id): void
     {
-        self::switchDB($this->id);
+        if (empty($id)) return;
+
+        self::$currentTenantID = $id;
+
+        if (empty(SpiceFTSHandler::getInstance()->modules)) {
+            SpiceFTSHandler::getInstance()->loadModules();
+        }
+
+        self::switchDB($id);
     }
 
     /**
      * switches to master db
      * @throws Exception
      */
-    public static function switchToMaster()
+    public static function switchToMaster(): void
     {
+        self::$currentTenantID = null;
         $masterDBName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
         self::switchDB($masterDBName);
+        SpiceDictionary::getInstance()->loadDictionary();
     }
 
     /**
      * switch between master and tenant db
      * @param string $dbName
      * @return void
+     * @throws Exception
      */
-    public static function switchDB(string $dbName)
+    public static function switchDB(string $dbName): void
     {
+        DBManagerFactory::getInstance()->transactionCommit();
+
         DBManagerFactory::disconnectAll();
         DBManagerFactory::changeDBName($dbName);
+        SpiceCache::reinitialize();
+        SpiceConfig::getInstance()->reloadConfig(true);
 
+        SpiceModules::getInstance()->loadModules();
         BeanFactory::clearLoadedBeans();
 
-        SpiceCache::reinitialize();
-
-        // reloads the config
-        SpiceConfig::getInstance()->reloadConfig();
-
+        DBManagerFactory::getInstance()->transactionStart();
         // unset the fts settings
         unset($_SESSION['SpiceFTS']);
     }
@@ -72,36 +171,79 @@ class SystemTenant extends SpiceBean
      * initializes a new tenant, sets up the database and builds all required tables
      * @throws Exception
      */
-    public function initializeTenant(): bool
+    public function initializeTenant(bool $sendCredentials = false, bool $confirmed = false): bool
     {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $config = SpiceConfig::getInstance()->config;
+        if ((!$confirmed && !AuthenticationController::getInstance()->isAdmin()) || in_array($this->systemtenant_status, ['provisioned', 'rejected'])) {
+            return false;
+        }
 
-        if (!$current_user->is_admin) return false;
+        if (empty(SpiceCRM2FAUtils::get2FAConfig()->sms_mailbox_id)) {
+            throw new BadRequestException("Misconfiguration sms mailbox is not defined");
+        }
 
-        $db = DBManagerFactory::getInstance();
-        $db->createDatabase($this->id);
+        $masterConfig = SpiceConfig::getInstance()->config;
 
-        /** @var User $adminUser */
-        $adminUser = BeanFactory::getBean('Users', '1');
+        DBManagerFactory::getInstance()->createDatabase($this->id);
 
         // switch to tenant database
-        $this->switchToTenant();
+        self::switchToTenant($this->id);
 
         $db = DBManagerFactory::getInstance();
 
-        $db->transactionStart();
+        SpiceDictionaryIndexes::getInstance()->reloadItems();
 
-        $installer = new SpiceInstaller();
+        (new SpiceInstaller())->initializeSystem($db, 'en_us');
 
-        $installer->initializeSystem($db, 'en_us');
+        $this->copyDataToTenant($db, $masterConfig);
 
-        $this->copyConfig($db, $config, 'fts');
-        $this->copyConfig($db, $config, 'default_preferences');
-        $this->copyConfig($db, $config, 'system');
-        $this->copyConfig($db, $config, 'core');
+        $tenantAdmin = $this->createTenantAdminUser($db, $sendCredentials);
 
-        SpiceConfig::getInstance()->set('fts', 'prefix', "{$config['fts']['prefix']}{$this->id}_");
+        SpiceConfig::getInstance()->installing = false;
+
+        # switch back to the master system and continue processing
+        self::switchToMaster();
+
+        self::addUserTOTenantMappingTable($tenantAdmin->user_name, $this->id, $this->tenant_domain);
+
+        $this->systemtenant_status = 'provisioned';
+
+        if ($sendCredentials) {
+            $this->sendCredentialsToAdmin($tenantAdmin);
+        }
+
+        $this->save();
+
+        return true;
+    }
+
+    /**
+     * get admin system username used for template
+     * @return string
+     */
+    public function getAdminSystemUsername(): string
+    {
+        return $this->adminUsername;
+    }
+
+    /**
+     * get admin system password used for template
+     * @return string
+     */
+    public function getAdminSystemPassword(): string
+    {
+        return $this->adminPassword;
+    }
+
+    /**
+     * copy config metadata and module data to the tenant database
+     * @param DBManager $db
+     * @param array $config
+     * @return void
+     * @throws Exception
+     */
+    private function copyDataToTenant(DBManager $db, array $config): void
+    {
+        $this->copyConfig($db, $config, ['fts', 'default_preferences', 'system', 'core', 'multitenancy']);
 
         if (SpiceConfig::getInstance()->get('multitenancy.copy_metadata')) {
             $this->copyMetadataFromMaster();
@@ -110,31 +252,48 @@ class SystemTenant extends SpiceBean
         if (SpiceConfig::getInstance()->get('multitenancy.copy_module_data')) {
             $this->copyModulesDataFromMaster();
         }
+    }
 
-        # initialize fts if we already have some modules metadata
-        if (SpiceConfig::getInstance()->get('multitenancy.copy_metadata')) {
-            $ftsManager = new SpiceFTSRESTManager();
-            SpiceFTSHandler::getInstance()->elasticHandler->indexPrefix = "{$config['fts']['prefix']}{$this->id}_";
-            $ftsManager->initialize();
+    /**
+     * send credentials to the admin user
+     * @param object $admin
+     * @return void
+     * @throws Exception
+     */
+    public function sendCredentialsToAdmin(object $admin): void
+    {
+        $templateId = SpiceConfig::getInstance()->get('multitenancy.credentials_template_id');
+        $this->adminPassword = $admin->password;
+        $this->adminUsername = $admin->user_name;
+        $this->sendEmail($templateId);
+    }
+
+    /**
+     * send email to the
+     * @param string $templateId
+     * @return bool
+     */
+    public function sendEmail(string $templateId): bool
+    {
+        /** @var Email $email */
+        $email = BeanFactory::getBean('Emails');
+
+        /** @var EmailTemplate $template */
+        $template = BeanFactory::getBean('EmailTemplates', $templateId);
+        $content = $template->parse($this);
+        $email->name = $content['subject'];
+        $email->body = $content['body_html'];
+
+        $email->addEmailAddress('to', $this->contact_email_address);
+
+        try {
+            $result = $email->sendEmail();
+
+        } catch (Exception $e) {
+            $result = ['result' => false];
         }
 
-        $this->createTenantAdminUser($db, $adminUser);
-
-        $db->transactionCommit();
-
-        self::switchToMaster();
-
-        self::addUserTOTenantMappingTable("$adminUser->user_name.$this->tenant_domain", $this->id, $this->tenant_domain);
-
-        SpiceConfig::getInstance()->set('cache', 'file_location', 'cache' . DIRECTORY_SEPARATOR . $this->id);
-
-        $tenantCacheDir = SpiceCacheFile::getCacheDirectory() . DIRECTORY_SEPARATOR . $this->id;
-        mkdir($tenantCacheDir, 0775, true);
-
-        $this->initialized = true;
-        $this->save();
-
-        return true;
+        return $result['result'];
     }
 
     /**
@@ -231,14 +390,16 @@ class SystemTenant extends SpiceBean
     /**
      * copy config values fromt eh current sugar config to the new config table
      *
-     * @param $db
-     * @param $config
-     * @param $category
+     * @param DBManager $db
+     * @param array $config
+     * @param array $categories
      */
-    private function copyConfig($db, $config, $category)
+    private function copyConfig(DBManager $db, array $config, array $categories): void
     {
-        foreach ($config[$category] as $name => $value) {
-            $db->query("INSERT INTO config (category, name, value) VALUES ('$category', '$name', '$value')");
+        foreach ($categories as $category) {
+            foreach ($config[$category] as $name => $value) {
+                $db->query("INSERT INTO config (category, name, value) VALUES ('$category', '$name', '$value')");
+            }
         }
     }
 
@@ -263,26 +424,141 @@ class SystemTenant extends SpiceBean
      */
     public static function processTenantSwitch(): void
     {
-        if (!SpiceConfig::getInstance()->get('multitenancy.enabled')) {
+        if (!self::multitenancyEnabled()) {
             return;
         }
 
         $authParams = RESTManager::getInstance()->parseAuthParams();
 
         if (!empty($authParams->tenantID)) {
-            self::$currentTenantID = $authParams->tenantID;
-            self::switchDB($authParams->tenantID);
+            self::switchToTenant($authParams->tenantID);
 
         } else if ($authParams->authType == 'credentials') {
-            $domain = $_SERVER['HTTP_HOST'];
-            $tenantId = self::determineUserTenant($authParams->authData->username, $domain);
+            self::processTenantSwitchByUsername($authParams->authData->username);
+        }
+    }
 
-            self::$currentTenantID = $tenantId;
+    /**
+     * process tenant switch by the passed username
+     * @param string $username
+     * @return void
+     * @throws Exception
+     */
+    public static function processTenantSwitchByUsername(string $username): void
+    {
+        $domain = $_SERVER['HTTP_HOST'];
+        $tenantId = self::determineUserTenant($username, $domain);
+        self::switchToTenant($tenantId);
+    }
 
-            if (!empty($tenantId)) {
-                self::switchDB($tenantId);
+    /**
+     * create a new tenant from inquiry data
+     * @param object $data
+     * @return bool
+     * @throws BadRequestException | Exception
+     */
+    public static function createTenantFromInquiry(object $data): bool
+    {
+        /** @var SystemTenant $tenant */
+        $tenant = BeanFactory::newBean('SystemTenants');
+        $validStatus = $tenant->validateInquiryData($data);
+        $domain = explode('@', $data->emailAddress)[1];
+        $tenant->name = $domain;
+        $tenant->systemtenant_status = 'requested';
+        $tenant->tenant_domain = $domain;
+        $tenant->contact_email_address = $data->emailAddress;
+        $tenant->contact_phone_mobile = $data->phoneMobile;
+        $tenant->contact_first_name = $data->firstName;
+        $tenant->contact_last_name = $data->lastName;
+
+        if (!$validStatus->valid) {
+            $tenant->systemtenant_status = 'rejected';
+            $tenant->status_rejected_reason = $validStatus->status_rejected_reason;
+            $tenant->save();
+        } else {
+            $tenant->save();
+            $tenant->sendConfirmationEmail();
+        }
+
+
+        return $validStatus->valid;
+    }
+
+    /**
+     * send email address confirmation email to the user
+     * @return void
+     * @throws Exception
+     */
+    public function sendConfirmationEmail(): void
+    {
+        $templateId = SpiceConfig::getInstance()->get('multitenancy.confirmation_template_id');
+
+        $result = $this->sendEmail($templateId);
+
+        if ($result) {
+            $this->systemtenant_status = 'pending';
+            $this->save();
+        }
+    }
+
+    /**
+     * get confirm url
+     * @return string
+     */
+    public function getConfirmUrl(): string
+    {
+        return SpiceConfig::getInstance()->config['site_url'] . "/module/SystemTenants/confirm/$this->id";
+    }
+
+    /**
+     * validate the inquiry data
+     * @param object $data
+     * @return object
+     */
+    public function validateInquiryData(object $data): object
+    {
+        $domain = explode('@', $data->emailAddress)[1];
+
+        if (BeanFactory::newBean('SystemTenants')->retrieve_by_string_fields(['tenant_domain' => $domain])) {
+            return (object) [
+            'valid' => false, 'status_rejected_reason' => 'Tenant for domain already exists'
+            ];
+        }
+
+        if (empty($data->lastName)) {
+            return (object) [
+            'valid' => false, 'status_rejected_reason' => 'Missing last name'
+            ];
+        }
+
+        if (empty($data->phoneMobile)) {
+            return (object)[
+                'valid' => false, 'status_rejected_reason' => 'Missing mobile phone'
+            ];
+        }
+
+        if (empty($data->emailAddress)) {
+            return (object)[
+                'valid' => false, 'status_rejected_reason' => 'Missing email address'
+            ];
+
+        } else if (!EmailAddress::isValidEmailAddress($data->emailAddress)) {
+            return (object)[
+                'valid' => false, 'status_rejected_reason' => 'Invalid email address'
+            ];
+        } else {
+            # validate the domain that it is probably a business domain
+            $generalDomains = ['gmail.com', 'yahoo.', 'hotmail.', 'aol.', 'msn.', 'live.'];
+
+            foreach ($generalDomains as $generalDomain) {
+                if (!str_contains($domain, $generalDomain)) continue;
+                return (object)[
+                    'valid' => false, 'status_rejected_reason' => 'Invalid email address. Only business domains allowed.'
+                ];
             }
         }
+
+        return (object) ['valid' => true];
     }
 
     /**
@@ -314,21 +590,29 @@ class SystemTenant extends SpiceBean
     }
 
     /**
-     * tenant admin is the same as the admin (1) username followed by period and the tenant_domain
-     * e.g. admin.crm.spicecrm.cloud
+     * create and insert the admin user for the tenant
      * @param DBManager $db
-     * @param User $masterAdmin
-     * @return void
+     * @param bool $sendCredentials
+     * @return object
      */
-    private function createTenantAdminUser(DBManager $db, User $masterAdmin): void
+    private function createTenantAdminUser(DBManager $db, bool $sendCredentials): object
     {
-        $date = date("Y-m-d h:i:s");
-        $username = "$masterAdmin->user_name.$this->tenant_domain";
+        $admin = (object)[
+            'user_name' => "admin" . (empty($this->tenant_domain) ? strtolower($this->name) : ''),
+            'password' => !$sendCredentials ? 'admin' : BeanFactory::newBean('Users')->generatePassword()
+        ];
 
-        $query = "INSERT INTO users (id, user_name, user_hash, last_name, user_email, is_admin, date_entered, date_modified, modified_user_id, created_by, title, status, deleted) ";
-        $query .= "VALUES ('1', '$username', '$masterAdmin->user_hash', '$masterAdmin->last_name', '$masterAdmin->user_email', 1, '$date','$date', '1', '1', 'Administrator', 'Active', 0)";
+        $date = date("Y-m-d h:i:s");
+        $user2FAMethod = $sendCredentials ? 'sms' : '';
+        $admin->user_hash = User::getPasswordHash($admin->password);
+
+        $query = "INSERT INTO users (id, user_name, user_hash, last_name, user_email, is_admin, date_entered, date_modified, modified_user_id, created_by, title, status, deleted, user_2fa_method, system_generated_password, phone_mobile) ";
+        $query .= "VALUES ('1', '$admin->user_name', '$admin->user_hash', '$this->contact_last_name', '$this->contact_email_address', 1, '$date','$date', '1', '1', 'Administrator', 'Active', 0, '$user2FAMethod', 1, '$this->contact_phone_mobile')";
         $db->query($query);
+
+        # assign the admin role to the user
         $db->query("INSERT INTO sysuiuserroles (id, user_id, sysuirole_id, defaultrole) VALUES (" . $db->getGuidSQL() . ", '1', '3687463f-8ed3-49df-af07-1fa2638505db', 1)");
 
+        return $admin;
     }
 }

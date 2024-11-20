@@ -14,6 +14,7 @@ use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\SystemTenants\SystemTenant;
 use SpiceCRM\modules\Users\User;
 
 class SpiceCRMAuthenticate implements AuthenticatorI
@@ -68,6 +69,10 @@ class SpiceCRMAuthenticate implements AuthenticatorI
             throw new SessionExpiredException($label['default'] ?: "Session Expired", 0);
         }
 
+        if (!empty($_SESSION['systemtenant_id']) && (!SystemTenant::isInTenantSystem() || $_SESSION['systemtenant_id'] !== SystemTenant::$currentTenantID)) {
+            throw new SessionExpiredException("Session Expired");
+        }
+
         return $_SESSION['authenticated_user_id'];
     }
 
@@ -116,6 +121,8 @@ class SpiceCRMAuthenticate implements AuthenticatorI
 
         $_SESSION['authenticated_user_id'] = $userObj->id;
         $_SESSION['unique_key'] = SpiceConfig::getInstance()->config['unique_key'];
+
+        $_SESSION['systemtenant_id'] = SystemTenant::$currentTenantID;
 
         $token = session_id();
 
