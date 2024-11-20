@@ -9,6 +9,9 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 class SpiceTagsController
 {
 
+    /**
+     * not in use
+     */
     static function searchTags(Request $req, Response $res, $args): Response {
         $tag = base64_decode($args['query']);
 
