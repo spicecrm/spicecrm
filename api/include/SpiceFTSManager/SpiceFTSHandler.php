@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\includes\SpiceFTSManager;
 
+use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
@@ -13,6 +14,7 @@ use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
+use SpiceCRM\modules\SystemTenants\SystemTenant;
 use stdClass;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 use SpiceCRM\includes\TimeDate;
@@ -56,15 +58,43 @@ class SpiceFTSHandler
         'database' => [],
         'elastic' => []
     ];
+    /**
+     * holds the fts modules
+     * @var array
+     */
+    public array $modules = [];
 
     /**
      * fixed date to differentiate the erroneous entries failed to index
      */
     const ERRONEOUS_FIXED_DATE = '9999-12-31 23:24:25';
 
+    /**
+     * @throws Exception
+     */
     public final function __construct()
     {
+        $this->loadModules();
         $this->elasticHandler = new ElasticHandler();
+    }
+
+    /**
+     * load the fts modules
+     * @important should only be done once or after switching the database
+     * @return void
+     * @throws Exception
+     */
+    public function loadModules(): void
+    {
+        $this->modules = [];
+
+        $query = DBManagerFactory::getInstance()->query("SELECT * FROM sysfts ORDER BY index_priority");
+
+        if (!$query) return;
+
+        while ($record = DBManagerFactory::getInstance()->fetchByAssoc($query)) {
+            $this->modules[$record['module']] = $record;
+        }
     }
 
     private function __clone()
@@ -203,9 +233,6 @@ class SpiceFTSHandler
      */
     function searchPhone($phonenumber)
     {
-        $db = DBManagerFactory::getInstance();
-
-
         if (substr($phonenumber, 0, 2) == 00) {
             $phonenumber = '+' . substr($phonenumber, 2);
         }
@@ -217,8 +244,7 @@ class SpiceFTSHandler
         // ToDo: move to fts utils and utilize cache
         $searchresults = [];
         $krestHandler = new SpiceBeanHandler();
-        $modulesObject = $db->query("SELECT * FROM sysfts");
-        while ($ftsmodule = $db->fetchByAssoc($modulesObject)) {
+        foreach ($this->modules as $ftsmodule) {
             $ftsParams = json_decode(html_entity_decode($ftsmodule['settings']));
             if ($ftsParams->phonesearch == true) {
                 $module = $ftsmodule['module'];
@@ -284,9 +310,7 @@ class SpiceFTSHandler
     */
     public function checkModule($module, $checkIndex = false)
     {
-        $db = DBManagerFactory::getInstance();
-
-        if ($db->fetchByAssoc($db->query("SELECT * FROM sysfts WHERE module = '$module'"))) {
+        if (SpiceFTSHandler::getInstance()->modules[$module]) {
             if ($checkIndex) {
                 $elastichandler = new ElasticHandler();
                 return $elastichandler->checkIndex($module);
@@ -395,13 +419,7 @@ class SpiceFTSHandler
         $modArray = [];
         $modLangArray = [];
         $viewDefs = [];
-        $modules = [];
-
-        // default FTS
-        $modListFts = $db->query("SELECT * FROM sysfts");
-        while ($row = $db->fetchByAssoc($modListFts)) {
-            $modules[] = $row;
-        }
+        $modules = SpiceFTSHandler::getInstance()->modules;
 
         foreach ($modules as $module) {
             $settings = json_decode(html_entity_decode($module['settings']), true);
@@ -492,8 +510,7 @@ class SpiceFTSHandler
         $modArray = [];
         $searchFields = [];
 
-        $modules = $db->query("SELECT * FROM sysfts");
-        while ($module = $db->fetchByAssoc($modules)) {
+        foreach (SpiceFTSHandler::getInstance()->modules as $module) {
             $settings = json_decode(html_entity_decode($module['settings']), true);
             if (!$settings['globalsearch']) continue;
 
@@ -869,8 +886,33 @@ class SpiceFTSHandler
             }
         }
 
+        if (!is_array($addFilters)) $addFilters = [];
+
+        $queryParam['query']['bool']['filter']['bool']['must']  = [
+            [
+                'bool' => [
+                    'must' => [
+                        [
+                            'bool' => [
+                                'must_not' => [
+                                    [
+                                        'exists' => [
+                                            'field' => 'haha'
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+
+        SystemTenant::addFTSFilter($queryParam);
+
         // process additional filters
-        if (is_array($addFilters) && count($addFilters) > 0) {
+        if (count($addFilters) > 0) {
             if (is_array($queryParam['query']['bool']['filter']['bool']['must'])) {
                 foreach ($addFilters as $addFilter)
                     $queryParam['query']['bool']['filter']['bool']['must'][] = $addFilter;
@@ -1630,9 +1672,9 @@ class SpiceFTSHandler
         $db = DBManagerFactory::getInstance();
 
         $beanCounter = 0;
-        $beans = $db->query("SELECT * FROM sysfts");
         echo "Starting indexing (maximal $packagesize records).\n";
-        while ($bean = $db->fetchByAssoc($beans)) {
+
+        foreach (SpiceFTSHandler::getInstance()->modules as $bean) {
             echo 'Indexing module ' . $bean['module'] . ': ';
             $seed = BeanFactory::getBean($bean['module']);
 
@@ -1704,13 +1746,14 @@ class SpiceFTSHandler
         $db = DBManagerFactory::getInstance();
 
         $beanCounter = 0;
-        // BEGIN CR1000257
-        $where = "";
+
         if (!empty($module)) {
-            $where = " WHERE module='" . $module . "'";
+            $modules = [$this->modules[$module]];
+        } else {
+            $modules = $this->modules;
         }
+
         // END
-        $beans = $db->query("SELECT * FROM sysfts $where ORDER BY index_priority");
         echo "Starting indexing (maximal $packagesize records).\n";
 
         $bulkCommitSize = (SpiceConfig::getInstance()->config['fts']['bulkcommitsize'] ?: 1000);
@@ -1720,7 +1763,7 @@ class SpiceFTSHandler
             'deleted' => []
         ];
 
-        while ($bean = $db->fetchByAssoc($beans)) {
+        foreach ($modules as $bean) {
             echo 'Indexing module ' . $bean['module'] . ': ';
             $seed = BeanFactory::getBean($bean['module']);
 
@@ -1865,7 +1908,7 @@ class SpiceFTSHandler
      * @param int $counterIndexed
      * @param int $counterDeleted
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     private function handleBulkResponse(object $indexResponse, array &$bulkUpdates, string $tableName, int &$counterErroneous, int &$counterIndexed, int &$counterDeleted): void
     {
@@ -1930,7 +1973,7 @@ class SpiceFTSHandler
      * execute the updates to the database
      * reset the transaction array and transaction flag
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function commitTransaction(){
         $db = DBManagerFactory::getInstance();

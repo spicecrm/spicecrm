@@ -78,10 +78,10 @@ class SpiceDictionary
         $cached = SpiceCache::get(self::cachename);
         if ($cached) {
             $this->dictionary = $cached;
-            return;
+            SpiceDictionaryHandler::getInstance()->dictionary = $cached;
+        } else {
+            $this->loadDictionary();
         }
-
-        $this->loadDictionary();
     }
 
     /**
@@ -106,6 +106,7 @@ class SpiceDictionary
             if (empty($this->dictionary)) {
                 $this->reloadSystemDump();
             } else {
+                SpiceDictionaryHandler::getInstance()->dictionary = $this->dictionary;
                 $this->writeCache();
             }
 
