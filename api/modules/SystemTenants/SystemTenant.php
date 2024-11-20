@@ -177,8 +177,8 @@ class SystemTenant extends SpiceBean
             return false;
         }
 
-        if (empty(SpiceCRM2FAUtils::get2FAConfig()->sms_mailbox_id)) {
-            throw new BadRequestException("Misconfiguration sms mailbox is not defined");
+        if (empty(SpiceCRM2FAUtils::get2FAConfig()->sms_mailbox_id) && empty(SpiceCRM2FAUtils::get2FAConfig()->email_mailbox_id)) {
+            throw new BadRequestException("Misconfiguration sms or email mailbox is not defined");
         }
 
         $masterConfig = SpiceConfig::getInstance()->config;
@@ -603,7 +603,7 @@ class SystemTenant extends SpiceBean
         ];
 
         $date = date("Y-m-d h:i:s");
-        $user2FAMethod = $sendCredentials ? 'sms' : '';
+        $user2FAMethod = $sendCredentials ? (empty(SpiceCRM2FAUtils::get2FAConfig()->sms_mailbox_id) ? 'email' : 'sms') : '';
         $admin->user_hash = User::getPasswordHash($admin->password);
 
         $query = "INSERT INTO users (id, user_name, user_hash, last_name, user_email, is_admin, date_entered, date_modified, modified_user_id, created_by, title, status, deleted, user_2fa_method, system_generated_password, phone_mobile) ";
