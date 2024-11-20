@@ -333,6 +333,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'bean_name' => 'Account',
             'vname' => 'LBL_ACCOUNT',
         ],
+        /*
         'contacts' => [
             'name' => 'contacts',
             'type' => 'link',
@@ -357,6 +358,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'vname' => 'LBL_CONTACTS',
             'hide_history_contacts_emails' => true,
         ],
+        */
         /*
         'users' => [
             'name' => 'users',

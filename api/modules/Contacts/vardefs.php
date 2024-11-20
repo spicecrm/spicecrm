@@ -113,6 +113,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'duplicate_merge' => false,
                 'hideacl' => true,
             ],
+            /*
             'opportunity_role_fields' => [
                 'name' => 'opportunity_role_fields',
                 'rname' => 'id',
@@ -170,6 +171,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'vname' => 'LBL_LEVEL_OF_INFLUENCE',
                 'options' => 'opportunity_relationship_buying_center_dom',
             ],
+            */
             'activity_accept_status' => [
                 'name' => 'activity_accept_status',
                 'type' => 'enum',
