@@ -1492,7 +1492,7 @@ class SpiceBeanHandler
             return $retArray;
     }
 
-    public function add_related($beanModule, $beanId, $linkName, $idsWithAdditionalValues)
+    public function add_related($beanModule, $beanId, $linkName, $idsOrBeansData)
     {
 
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'edit', true))
@@ -1514,17 +1514,30 @@ class SpiceBeanHandler
 
         $relFields = $thisBean->field_defs[$linkName]['rel_fields'];
 
-        foreach ($idsWithAdditionalValues as $idWithAdditionalValue) {
-            $additionalValues = [];
-            foreach ($relFields as $relfield => $relmapdata) {
-                if (isset($idWithAdditionalValue[$relmapdata['map']])) {
-                    $additionalValues[$relfield] = $idWithAdditionalValue[$relmapdata['map']];
+        foreach ($idsOrBeansData as $idOrBeanData) {
+
+            # if id only just update the relationship
+            if (is_string($idOrBeanData)) {
+                $result = $thisBean->{$linkName}->add($idOrBeanData);
+                if ($result !== true) {
+                    throw new Exception("Something went wrong by adding $idOrBeanData to $linkName");
                 }
+                $retArray[$idOrBeanData] = $thisBean->{$linkName}->relationship->relid;
+            } else {
+                # if bean data provided update the additional values for the m2m relationship
+
+                $additionalValues = [];
+                foreach ($relFields as $relfield => $relmapdata) {
+                    if (isset($idOrBeanData[$relmapdata['map']])) {
+                        $additionalValues[$relfield] = $idOrBeanData[$relmapdata['map']];
+                    }
+                }
+                $result = $thisBean->{$linkName}->add($idOrBeanData['id'], $additionalValues);
+                if ($result !== true)
+                    throw new Exception("Something went wrong by adding {$idOrBeanData['id']} to $linkName");
+                $retArray[$idOrBeanData['id']] = $thisBean->{$linkName}->relationship->relid;
+
             }
-            $result = $thisBean->{$linkName}->add($idWithAdditionalValue['id'], $additionalValues);
-            if ($result !== true)
-                throw new Exception("Something went wrong by adding {$idWithAdditionalValue['id']} to $linkName");
-            $retArray[$idWithAdditionalValue['id']] = $thisBean->{$linkName}->relationship->relid;
         }
 
         // reindex the curent bean since the added relationship might add to the indexed data
