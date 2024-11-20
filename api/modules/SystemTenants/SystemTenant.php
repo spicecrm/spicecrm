@@ -177,7 +177,7 @@ class SystemTenant extends SpiceBean
             return false;
         }
 
-        if (empty(SpiceCRM2FAUtils::get2FAConfig()->sms_mailbox_id) && empty(SpiceCRM2FAUtils::get2FAConfig()->sms_mailbox_id)) {
+        if (empty(SpiceCRM2FAUtils::get2FAConfig()->sms_mailbox_id) && empty(SpiceCRM2FAUtils::get2FAConfig()->email_mailbox_id)) {
             throw new BadRequestException("Misconfiguration sms or email mailbox is not defined");
         }
 
