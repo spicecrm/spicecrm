@@ -428,7 +428,7 @@ class EmailAddress extends SpiceBean
      */
     public static function validateEmailAddressDomain(string $domain): bool
     {
-        return checkdnsrr($domain, 'A');
+        return checkdnsrr($domain, 'A') || checkdnsrr($domain);
     }
 
     /**
