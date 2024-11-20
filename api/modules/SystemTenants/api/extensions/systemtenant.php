@@ -98,7 +98,7 @@ $routes = [
     ],
     [
         'method' => 'post',
-        'route' => '/module/SystemTenants/create',
+        'route' => '/module/Inquiries/SystemTenants/create',
         'class' => SystemTenantsController::class,
         'function' => 'createTenant',
         'description' => 'loads demo data for a tenant',
