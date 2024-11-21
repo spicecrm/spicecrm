@@ -51,10 +51,14 @@ export class AccountTerritoryDetailsAddButton implements ActionSetItemI, OnInit 
      * set available cc details
      */
     public ngOnInit() {
-        const relatedCCDetails = window._.toArray(this.parentModel.data.accountccdetails.beans);
+        const relatedCCDetails = window._.toArray(this.parentModel.data.accountccdetails?.beans);
         this.availableCCodes = this.configuration.getData('companycodes')?.filter(
             cc => !relatedCCDetails.some(d => cc.id == d.companycode_id)
         );
+
+        if (!this.actionconfig?.componentset) {
+            this.actionconfig = this.metadata.getComponentConfig('AccountTerritoryDetailsAddButton', 'AccountCCDetails');
+        }
     }
 
     /**
@@ -65,7 +69,7 @@ export class AccountTerritoryDetailsAddButton implements ActionSetItemI, OnInit 
         const options = this.availableCCodes.map(c => ({display: c.name, value: c.id, disabled: this.availableCCodes.length == 1}));
         const defaultValue = options.length == 1 ? options[0].value : undefined;
 
-        this.modal.prompt('input', 'LBL_MAKE_SELECTION', 'LBL_ACCOUNTCCDETAIL', 'shade', defaultValue, options, 'radio').subscribe(answer => {
+        this.modal.prompt('input', 'LBL_MAKE_SELECTION', 'LBL_COMPANYCODE', 'shade', defaultValue, options, 'radio').subscribe(answer => {
             if (!answer) return;
 
             const presets = {
