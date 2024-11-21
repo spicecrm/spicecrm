@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import {modal} from '../../services/modal.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
+import {language} from "../../services/language.service";
 
 /**
  * renders a modal to select the type of the relationship
@@ -59,13 +60,17 @@ export class DictionaryManagerRelationshipAdd implements OnInit{
      */
     public package: string = ''
 
-    constructor(public dictionarymanager: dictionarymanager, public modal: modal, public injector: Injector) {
+    constructor(public dictionarymanager: dictionarymanager, public language: language, public modal: modal, public injector: Injector) {
 
     }
 
     public ngOnInit() {
         this.related_ids = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'module').sort((a, b) => a.name.localeCompare(b.name));
         this.scope = this.dictionarymanager.currentDictionaryScope;
+    }
+
+    get relationshipTypes(){
+        return this.dictionarymanager.dictionaryrelationshiptypes.sort((a, b) => this.language.getLabel(a.label).localeCompare(this.language.getLabel(b.label)));
     }
 
     /**
