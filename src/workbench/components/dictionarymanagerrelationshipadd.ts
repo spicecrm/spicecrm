@@ -48,7 +48,7 @@ export class DictionaryManagerRelationshipAdd implements OnInit{
      *
      * @private
      */
-    public scope: 'c' | 'g';
+    private _scope: 'c' | 'g';
 
     /**
      * version of the relationship
@@ -62,15 +62,38 @@ export class DictionaryManagerRelationshipAdd implements OnInit{
 
     constructor(public dictionarymanager: dictionarymanager, public language: language, public modal: modal, public injector: Injector) {
 
+
     }
 
     public ngOnInit() {
         this.related_ids = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'module').sort((a, b) => a.name.localeCompare(b.name));
-        this.scope = this.dictionarymanager.currentDictionaryScope;
+        this._scope = this.dictionarymanager.currentDictionaryScope;
+
+        if(this._scope == 'g'){
+            let currentDefinition = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition);
+            this.package = currentDefinition.package;
+            this.version = currentDefinition.version;
+        }
     }
 
     get relationshipTypes(){
         return this.dictionarymanager.dictionaryrelationshiptypes.sort((a, b) => this.language.getLabel(a.label).localeCompare(this.language.getLabel(b.label)));
+    }
+
+    get scope(){
+        return this._scope;
+    }
+
+    set scope(scope){
+        this._scope = scope;
+        if(scope == 'c') {
+            this.package = undefined;
+            this.version = undefined;
+        } else {
+            let currentDefinition = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition);
+            this.package = currentDefinition.package;
+            this.version = currentDefinition.version;
+        }
     }
 
     /**
