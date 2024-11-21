@@ -7,6 +7,13 @@
                         {{ ccDetail.name }}
                     </a>
                 </li>
+                @if (metadata.checkModuleAcl('AccountCCDetails', 'create')) {
+                    <li class="slds-grid slds-grid--align-end slds-grow slds-m-right--xxx-small slds-m-top--xxx-small">
+                        <button (click)="territoryDetailsAddButton.execute()" [disabled]="territoryDetailsAddButton.disabled" class="slds-button slds-button--neutral">
+                            <account-territory-details-add-button #territoryDetailsAddButton/>
+                        </button>
+                    </li>
+                }
             </ul>
             <ng-container *ngFor="let ccDetail of getCCDetails() let tabindex = index; trackBy: trackByFn">
                 <div class="slds-tabs--default__content slds-p-around--xx-small slds-show" [ngClass]="{'slds-hide': tabindex != activeTab}" role="tabpanel">
