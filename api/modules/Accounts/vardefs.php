@@ -966,17 +966,17 @@ if (file_exists('extensions/modules/Potentials')) {
 
 }
 
-if (file_exists('extensions/modules/BonusCards')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['bonuscards'] = [
-        'name' => 'bonuscards',
-        'type' => 'link',
-        'relationship' => 'bonuscards_accounts',
-        'module' => 'BonusCards',
-        'bean_name' => 'BonusCard',
-        'source' => 'non-db',
-        'vname' => 'LBL_BONUSCARDS',
-    ];
-}
+//if (file_exists('extensions/modules/BonusCards')) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['bonuscards'] = [
+//        'name' => 'bonuscards',
+//        'type' => 'link',
+//        'relationship' => 'bonuscards_accounts',
+//        'module' => 'BonusCards',
+//        'bean_name' => 'BonusCard',
+//        'source' => 'non-db',
+//        'vname' => 'LBL_BONUSCARDS',
+//    ];
+//}
 
 if (file_exists('modules/Products')) {
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['manufactured_products'] = [

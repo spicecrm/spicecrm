@@ -616,15 +616,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                     ]
                 ]
             ],
-            'bonuscards' => [
-                'name' => 'bonuscards',
-                'type' => 'link',
-                'relationship' => 'bonuscards_contacts',
-                'module' => 'BonusCards',
-                'bean_name' => 'BonusCard',
-                'source' => 'non-db',
-                'vname' => 'LBL_BONUSCARDS',
-            ],
+//            'bonuscards' => [
+//                'name' => 'bonuscards',
+//                'type' => 'link',
+//                'relationship' => 'bonuscards_contacts',
+//                'module' => 'BonusCards',
+//                'bean_name' => 'BonusCard',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_BONUSCARDS',
+//            ],
             /*
             'prospectlists_contacts_quantity' => [
                 'name' => 'prospectlists_contacts_quantity',
