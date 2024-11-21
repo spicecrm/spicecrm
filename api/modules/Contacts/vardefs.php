@@ -348,6 +348,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source' => 'non-db',
                 'vname' => 'LBL_MEETINGS_AS_PARENT',
             ],
+            /*
             'notes' => [
                 'name' => 'notes',
                 'type' => 'link',
@@ -355,6 +356,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source' => 'non-db',
                 'vname' => 'LBL_NOTES',
             ],
+            */
             //@deprecated name project. Use projects
 //            'project' => array(
 //                'name' => 'project',
@@ -800,13 +802,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
             'rhs_table' => 'leads',
             'rhs_key' => 'contact_id',
             'relationship_type' => 'one-to-many'],
-        'contact_notes' => ['lhs_module' => 'Contacts',
-            'lhs_table' => 'contacts',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Notes',
-            'rhs_table' => 'notes',
-            'rhs_key' => 'contact_id',
-            'relationship_type' => 'one-to-many'],
+//        'contact_notes' => ['lhs_module' => 'Contacts',
+//            'lhs_table' => 'contacts',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Notes',
+//            'rhs_table' => 'notes',
+//            'rhs_key' => 'contact_id',
+//            'relationship_type' => 'one-to-many'],
         'contact_letters' => [
             'lhs_module' => 'Contacts',
             'lhs_table' => 'contacts',

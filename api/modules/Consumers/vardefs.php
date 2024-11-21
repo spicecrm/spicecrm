@@ -71,13 +71,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'source' => 'non-db',
             'vname' => 'LBL_MEETINGS',
         ],
-        'notes_participant' => [
-            'name' => 'notes',
-            'type' => 'link',
-            'relationship' => 'consumer_notes',
-            'source' => 'non-db',
-            'vname' => 'LBL_NOTES',
-        ],
+//        'notes_participant' => [
+//            'name' => 'notes',
+//            'type' => 'link',
+//            'relationship' => 'consumer_notes',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_NOTES',
+//        ],
         'tasks_participant' => [
             'name' => 'tasks',
             'type' => 'link',
