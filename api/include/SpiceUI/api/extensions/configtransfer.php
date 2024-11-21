@@ -77,9 +77,12 @@ $routes = [
         'route'       => '/configuration/package/system/generate',
         'class'       => ConfigTransferController::class,
         'function'    => 'generateSystemPackage',
-        'description' => 'run installation process',
+        'description' => 'generate system package and validate all entries',
         'options'     => ['noAuth' => true, 'true' => false],
     ],
+    [
+        
+    ]
 ];
 
 /**
