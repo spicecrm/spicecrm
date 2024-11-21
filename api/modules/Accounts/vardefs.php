@@ -517,13 +517,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'type' => 'varchar',
             'source' => 'non-db'
         ],
-        'catalogorders' => [
-            'name' => 'catalogorders',
-            'type' => 'link',
-            'module' => 'CatalogOrders',
-            'relationship' => 'accounts_catalogorders',
-            'source' => 'non-db'
-        ],
+//        'catalogorders' => [
+//            'name' => 'catalogorders',
+//            'type' => 'link',
+//            'module' => 'CatalogOrders',
+//            'relationship' => 'accounts_catalogorders',
+//            'source' => 'non-db'
+//        ],
         'inquiries' => [
             'name' => 'inquiries',
             'type' => 'link',

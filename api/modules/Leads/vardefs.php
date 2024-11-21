@@ -601,13 +601,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
             'module' => 'Potentials',
             'source' => 'non-db'
         ],
-        'catalogorders' => [
-            'name' => 'catalogorders',
-            'type' => 'link',
-            'module' => 'CatalogOrders',
-            'relationship' => 'leads_catalogorders',
-            'source' => 'non-db'
-        ]
+//        'catalogorders' => [
+//            'name' => 'catalogorders',
+//            'type' => 'link',
+//            'module' => 'CatalogOrders',
+//            'relationship' => 'leads_catalogorders',
+//            'source' => 'non-db'
+//        ]
 
     ]
     , 'indices' => [

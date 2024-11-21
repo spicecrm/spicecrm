@@ -258,13 +258,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'vname' => 'LBL_LEADS',
             'module' => 'Leads'
         ],
-        'catalogorders' => [
-            'name' => 'catalogorders',
-            'type' => 'link',
-            'module' => 'CatalogOrders',
-            'relationship' => 'consumers_catalogorders',
-            'source' => 'non-db'
-        ],
+//        'catalogorders' => [
+//            'name' => 'catalogorders',
+//            'type' => 'link',
+//            'module' => 'CatalogOrders',
+//            'relationship' => 'consumers_catalogorders',
+//            'source' => 'non-db'
+//        ],
         'inquiries' => [
             'name' => 'inquiries',
             'type' => 'link',
