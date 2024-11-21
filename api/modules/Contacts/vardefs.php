@@ -365,13 +365,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
 //                'source' => 'non-db',
 //                'vname' => 'LBL_PROJECTS_DEPRECATED',
 //            ),
-            'projects' => [
-                'name' => 'projects',
-                'type' => 'link',
-                'relationship' => 'projects_contacts',
-                'source' => 'non-db',
-                'vname' => 'LBL_PROJECTS',
-            ],
+//            'projects' => [
+//                'name' => 'projects',
+//                'type' => 'link',
+//                'relationship' => 'projects_contacts',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_PROJECTS',
+//            ],
             'tasks' => [
                 'name' => 'tasks',
                 'type' => 'link',
