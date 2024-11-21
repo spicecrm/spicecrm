@@ -427,13 +427,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
 //            'source' => 'non-db',
 //            'vname' => 'LBL_PROJECTS_DEPRECATED',
 //        ),
-        'projects' => [
-            'name' => 'projects',
-            'type' => 'link',
-            'relationship' => 'projects_opportunities',
-            'source' => 'non-db',
-            'vname' => 'LBL_PROJECTS',
-        ],
+//        'projects' => [
+//            'name' => 'projects',
+//            'type' => 'link',
+//            'relationship' => 'projects_opportunities',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_PROJECTS',
+//        ],
         'leads' => [
             'name' => 'leads',
             'type' => 'link',

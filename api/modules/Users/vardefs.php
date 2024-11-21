@@ -190,15 +190,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'vname' => 'LBL_ACCOUNTS'
         ],
         */
-        'projects' => [
-            'name' => 'projects',
-            'type' => 'link',
-            'relationship' => 'projects_users',
-            'module' => 'Projects',
-            'bean_name' => 'Project',
-            'source' => 'non-db',
-            'vname' => 'LBL_PROJECTS'
-        ],
+//        'projects' => [
+//            'name' => 'projects',
+//            'type' => 'link',
+//            'relationship' => 'projects_users',
+//            'module' => 'Projects',
+//            'bean_name' => 'Project',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_PROJECTS'
+//        ],
         /*
         'opportunity_role' => [
             'name' => 'opportunity_role',
