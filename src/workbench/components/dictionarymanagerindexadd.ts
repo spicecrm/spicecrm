@@ -69,7 +69,9 @@ export class DictionaryManagerIndexAdd implements OnInit{
 
     constructor(public backend: backend, public modal: modal, public dictionarymanager: dictionarymanager, public injector: Injector, public modelutilities: modelutilities) {
 
-        let tablename = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition).tablename;
+
+        let currentDefinition = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition);
+        let tablename = currentDefinition.tablename;
 
         this.index = {
             id: this.modelutilities.generateGuid(),
@@ -77,7 +79,9 @@ export class DictionaryManagerIndexAdd implements OnInit{
             sysdictionarydefinition_id: this.dictionarymanager.currentDictionaryDefinition,
             status: 'd',
             scope:  this.dictionarymanager.currentDictionaryScope,
-            indextype: 'index'
+            indextype: 'index',
+            package: currentDefinition.package,
+            version: currentDefinition.version
         };
 
         // if scope is not all reset to custom in any case
