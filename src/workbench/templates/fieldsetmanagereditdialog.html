@@ -30,6 +30,12 @@
                     <system-input-package [(ngModel)]="fieldsetpackage"></system-input-package>
                 </div>
             </div>
+            <div class="slds-form-element slds-p-right--x-small">
+                <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
+                <div class="slds-form-element__control">
+                    <system-input-version [(ngModel)]="fieldsetversion"></system-input-version>
+                </div>
+            </div>
         </div>
         <div class="slds-modal__footer">
             <button class="slds-button slds-button--neutral" (click)="closeDialog()"><system-label label="LBL_CANCEL"></system-label></button>
