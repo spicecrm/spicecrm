@@ -171,15 +171,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'source' => 'non-db',
             'vname' => 'LBL_TASKS',
         ],
-        'notes' => [
-            'name' => 'notes',
-            'type' => 'link',
-            'relationship' => 'account_notes',
-            'module' => 'Notes',
-            'bean_name' => 'Note',
-            'source' => 'non-db',
-            'vname' => 'LBL_NOTES',
-        ],
+//        'notes' => [
+//            'name' => 'notes',
+//            'type' => 'link',
+//            'relationship' => 'account_notes',
+//            'module' => 'Notes',
+//            'bean_name' => 'Note',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_NOTES',
+//        ],
         'meetings' => [
             'name' => 'meetings',
             'type' => 'link',
@@ -612,11 +612,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Accounts'
         ],
-        'account_notes' => ['lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
-            'rhs_module' => 'Notes', 'rhs_table' => 'notes', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Accounts'
-        ],
+//        'account_notes' => ['lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
+//            'rhs_module' => 'Notes', 'rhs_table' => 'notes', 'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Accounts'
+//        ],
         'account_meetings' => ['lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
             'rhs_module' => 'Meetings', 'rhs_table' => 'meetings', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',

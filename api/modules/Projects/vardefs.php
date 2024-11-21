@@ -93,14 +93,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Project'] = [
             'ignore_role' => true,
             'vname' => 'LBL_OPPORTUNITIES',
         ],
-        'notes' => [
-            'name' => 'notes',
-            'type' => 'link',
-            'module' => 'Notes',
-            'relationship' => 'projects_notes',
-            'source' => 'non-db',
-            'vname' => 'LBL_NOTES',
-        ],
+//        'notes' => [
+//            'name' => 'notes',
+//            'type' => 'link',
+//            'module' => 'Notes',
+//            'relationship' => 'projects_notes',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_NOTES',
+//        ],
         'tasks' => [
             'name' => 'tasks',
             'type' => 'link',
@@ -306,17 +306,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Project'] = [
     ],
 
     'relationships' => [
-        'projects_notes' => [
-            'lhs_module' => 'Projects',
-            'lhs_table' => 'projects',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Notes',
-            'rhs_table' => 'notes',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Projects'
-        ],
+//        'projects_notes' => [
+//            'lhs_module' => 'Projects',
+//            'lhs_table' => 'projects',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Notes',
+//            'rhs_table' => 'notes',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Projects'
+//        ],
         'projects_tasks' => [
             'lhs_module' => 'Projects',
             'lhs_table' => 'projects',

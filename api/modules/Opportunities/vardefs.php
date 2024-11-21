@@ -383,13 +383,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'source' => 'non-db',
             'vname' => 'LBL_TASKS',
         ],
-        'notes' => [
-            'name' => 'notes',
-            'type' => 'link',
-            'relationship' => 'opportunity_notes',
-            'source' => 'non-db',
-            'vname' => 'LBL_NOTES',
-        ],
+//        'notes' => [
+//            'name' => 'notes',
+//            'type' => 'link',
+//            'relationship' => 'opportunity_notes',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_NOTES',
+//        ],
         'meetings' => [
             'name' => 'meetings',
             'type' => 'link',
@@ -561,10 +561,10 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'rhs_module' => 'Tasks', 'rhs_table' => 'tasks', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Opportunities']
-    , 'opportunity_notes' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
-            'rhs_module' => 'Notes', 'rhs_table' => 'notes', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Opportunities']
+//    , 'opportunity_notes' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
+//            'rhs_module' => 'Notes', 'rhs_table' => 'notes', 'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Opportunities']
     , 'opportunity_emails' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
             'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
