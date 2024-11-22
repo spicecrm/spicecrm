@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, Input, Injector} from '@angular/core';
+import {Component, Input, Injector, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
 import {metadata} from '../../services/metadata.service';
 import {view} from '../../services/view.service';
@@ -13,11 +13,13 @@ import {userpreferences} from "../../services/userpreferences.service";
     selector: 'field-label',
     templateUrl: '../templates/fieldlabel.html'
 })
-export class fieldLabel {
+export class fieldLabel  implements OnInit{
     @Input() public fieldname: string = '';
     @Input() public fieldconfig: any = {};
     @Input() public addclasses: string = 'slds-form-element__label';
     public showHelp: boolean = false;
+    public alignment: 'left'|'right'|'center' = 'left';
+    public displayClasses: string;
 
     constructor(
         public model: model,
@@ -28,6 +30,36 @@ export class fieldLabel {
         public footer: footer,
         public injector: Injector
     ) {
+    }
+
+    public ngOnInit() {
+        // check if we shoudl determine the laignment of the label
+        if(this.view.alignLabels) {
+            let fieldType = this.fieldconfig.fieldtype ? this.fieldconfig.fieldtype : this.metadata.getFieldType(this.model.module, this.fieldname);
+            switch (fieldType) {
+                case 'double':
+                case 'float':
+                case 'currency':
+                case 'probability':
+                    this.alignment = 'right';
+                    break;
+            }
+
+            if(this.fieldname == 'amount_net') console.log(fieldType);
+        }
+
+        // set the displayclasses
+        this.displayClasses = this.addclasses;
+
+        // switch and set the alignment class
+        switch (this.alignment){
+            case "right":
+                this.displayClasses += ' slds-float_right';
+                break;
+            default:
+                this.displayClasses += ' slds-float_left';
+                break;
+        }
     }
 
     get stati() {
