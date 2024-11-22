@@ -1,6 +1,6 @@
-<system-select *ngIf="versions.length > 0" [(ngModel)]="value" [sortReversed]="true" [disabled]="_disabled">
-    @for (option of versions; track option.enumvalue) {
-        <system-select-option [value]="option.enumvalue" [display]="option.enumvalue"/>
+<system-select *ngIf="versions.length > 0" [(ngModel)]="value" [disabled]="_disabled">
+    @for (option of versions; track option.value) {
+        <system-select-option [value]="option.value" [display]="option.value"/>
     }
 </system-select>
 <system-input-text *ngIf="versions.length == 0"/>
