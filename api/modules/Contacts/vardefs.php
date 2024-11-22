@@ -113,6 +113,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'duplicate_merge' => false,
                 'hideacl' => true,
             ],
+            /*
             'opportunity_role_fields' => [
                 'name' => 'opportunity_role_fields',
                 'rname' => 'id',
@@ -170,6 +171,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'vname' => 'LBL_LEVEL_OF_INFLUENCE',
                 'options' => 'opportunity_relationship_buying_center_dom',
             ],
+            */
             'activity_accept_status' => [
                 'name' => 'activity_accept_status',
                 'type' => 'enum',
@@ -346,6 +348,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source' => 'non-db',
                 'vname' => 'LBL_MEETINGS_AS_PARENT',
             ],
+            /*
             'notes' => [
                 'name' => 'notes',
                 'type' => 'link',
@@ -353,6 +356,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source' => 'non-db',
                 'vname' => 'LBL_NOTES',
             ],
+            */
             //@deprecated name project. Use projects
 //            'project' => array(
 //                'name' => 'project',
@@ -361,13 +365,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
 //                'source' => 'non-db',
 //                'vname' => 'LBL_PROJECTS_DEPRECATED',
 //            ),
-            'projects' => [
-                'name' => 'projects',
-                'type' => 'link',
-                'relationship' => 'projects_contacts',
-                'source' => 'non-db',
-                'vname' => 'LBL_PROJECTS',
-            ],
+//            'projects' => [
+//                'name' => 'projects',
+//                'type' => 'link',
+//                'relationship' => 'projects_contacts',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_PROJECTS',
+//            ],
             'tasks' => [
                 'name' => 'tasks',
                 'type' => 'link',
@@ -612,15 +616,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                     ]
                 ]
             ],
-            'bonuscards' => [
-                'name' => 'bonuscards',
-                'type' => 'link',
-                'relationship' => 'bonuscards_contacts',
-                'module' => 'BonusCards',
-                'bean_name' => 'BonusCard',
-                'source' => 'non-db',
-                'vname' => 'LBL_BONUSCARDS',
-            ],
+//            'bonuscards' => [
+//                'name' => 'bonuscards',
+//                'type' => 'link',
+//                'relationship' => 'bonuscards_contacts',
+//                'module' => 'BonusCards',
+//                'bean_name' => 'BonusCard',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_BONUSCARDS',
+//            ],
             /*
             'prospectlists_contacts_quantity' => [
                 'name' => 'prospectlists_contacts_quantity',
@@ -642,20 +646,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source' => 'non-db'
             ],
             */
-            'catalogorders' => [
-                'name' => 'catalogorders',
-                'type' => 'link',
-                'module' => 'CatalogOrders',
-                'relationship' => 'contacts_catalogorders',
-                'source' => 'non-db'
-            ],
-            'inquiries' => [
-                'name' => 'inquiries',
-                'type' => 'link',
-                'module' => 'Inquiries',
-                'relationship' => 'contact_inquiries',
-                'source' => 'non-db'
-            ],
+//            'catalogorders' => [
+//                'name' => 'catalogorders',
+//                'type' => 'link',
+//                'module' => 'CatalogOrders',
+//                'relationship' => 'contacts_catalogorders',
+//                'source' => 'non-db'
+//            ],
+//            'inquiries' => [
+//                'name' => 'inquiries',
+//                'type' => 'link',
+//                'module' => 'Inquiries',
+//                'relationship' => 'contact_inquiries',
+//                'source' => 'non-db'
+//            ],
             'relationship_type' => [
                 'name' => 'relationship_type',
                 'type' => 'enum',
@@ -798,13 +802,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
             'rhs_table' => 'leads',
             'rhs_key' => 'contact_id',
             'relationship_type' => 'one-to-many'],
-        'contact_notes' => ['lhs_module' => 'Contacts',
-            'lhs_table' => 'contacts',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Notes',
-            'rhs_table' => 'notes',
-            'rhs_key' => 'contact_id',
-            'relationship_type' => 'one-to-many'],
+//        'contact_notes' => ['lhs_module' => 'Contacts',
+//            'lhs_table' => 'contacts',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Notes',
+//            'rhs_table' => 'notes',
+//            'rhs_key' => 'contact_id',
+//            'relationship_type' => 'one-to-many'],
         'contact_letters' => [
             'lhs_module' => 'Contacts',
             'lhs_table' => 'contacts',
