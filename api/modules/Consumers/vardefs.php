@@ -265,13 +265,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
 //            'relationship' => 'consumers_catalogorders',
 //            'source' => 'non-db'
 //        ],
-        'inquiries' => [
-            'name' => 'inquiries',
-            'type' => 'link',
-            'module' => 'Inquiries',
-            'relationship' => 'consumer_inquiries',
-            'source' => 'non-db'
-        ],
+//        'inquiries' => [
+//            'name' => 'inquiries',
+//            'type' => 'link',
+//            'module' => 'Inquiries',
+//            'relationship' => 'consumer_inquiries',
+//            'source' => 'non-db'
+//        ],
         'agreements' => [
             'name' => 'agreements',
             'type' => 'link',
