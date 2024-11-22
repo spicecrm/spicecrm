@@ -4,7 +4,7 @@
     </system-modal-header>
     <system-modal-content><!-- grow="true" -->
         <div class="slds-grid">
-            <div class="slds-box slds-box_x-small slds-size--1-of-2" [ngClass]="{'slds-size--1-of-1':noMetaData,'slds-size--1-of-2':!noMetaData}">
+            <div class="slds-size--1-of-2" [ngClass]="{'slds-size--1-of-1':noMetaData,'slds-size--1-of-2':!noMetaData}">
                 <system-input-media [(ngModel)]="image" class="slds-height_full"></system-input-media>
             </div>
             <div *ngIf="!noMetaData" class="slds-p-left--medium slds-size--1-of-2">
