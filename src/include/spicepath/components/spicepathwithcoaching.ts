@@ -84,17 +84,20 @@ export class SpicePathWithCoaching {
             this.coachingVisible = this.componentconfig.coachingVisible;
         }
 
-        this.setStages();
-
-        const config = this.metadata.getComponentConfig('SpicePathWithCoaching', this.model.module);
-
-        if (!config.kanban) {
-            config.kanban = this.configuration.getData('spicebeanguides')[this.model.module]?.find(k => k.is_default == 1)?.id;
+        if (!this.componentconfig.kanban) {
+            const defaultConfig = this.metadata.getComponentConfig('SpicePathWithCoaching', this.model.module);
+            this.componentconfig.kanban = defaultConfig.kanban;
         }
 
-        if (!config.kanban) return;
+        if (!this.componentconfig.kanban) {
+            this.componentconfig.kanban = this.configuration.getData('spicebeanguides')[this.model.module]?.find(k => k.is_default == 1)?.id;
+        }
 
-        this.backend.getRequest(`common/spicebeanguide/${config.kanban}/${this.model.module}/${this.model.id}`).subscribe(stages => {
+        if (!this.componentconfig.kanban) return;
+
+        this.setStages();
+
+        this.backend.getRequest(`common/spicebeanguide/${this.componentconfig.kanban}/${this.model.module}/${this.model.id}`).subscribe(stages => {
             this.beanStagesChecksResults = stages;
         });
     }
@@ -117,15 +120,14 @@ export class SpicePathWithCoaching {
      */
     private setStages() {
 
-        const config = this.metadata.getComponentConfig('SpicePathWithCoaching', this.model.module);
         const moduleKanbans = this.configuration.getData('spicebeanguides')[this.model.module];
 
         if (!Array.isArray(moduleKanbans) || moduleKanbans.length == 0) return;
 
-        if (!config?.kanban) {
+        if (!this.componentconfig?.kanban) {
             this.stages = moduleKanbans.find(k => k.is_default == 1).stages;
         } else {
-            this.stages = moduleKanbans.find(k => k.id == config.kanban)?.stages ?? [];
+            this.stages = moduleKanbans.find(k => k.id == this.componentconfig.kanban)?.stages ?? [];
         }
     }
 
