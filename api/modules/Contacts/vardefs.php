@@ -653,13 +653,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
 //                'relationship' => 'contacts_catalogorders',
 //                'source' => 'non-db'
 //            ],
-            'inquiries' => [
-                'name' => 'inquiries',
-                'type' => 'link',
-                'module' => 'Inquiries',
-                'relationship' => 'contact_inquiries',
-                'source' => 'non-db'
-            ],
+//            'inquiries' => [
+//                'name' => 'inquiries',
+//                'type' => 'link',
+//                'module' => 'Inquiries',
+//                'relationship' => 'contact_inquiries',
+//                'source' => 'non-db'
+//            ],
             'relationship_type' => [
                 'name' => 'relationship_type',
                 'type' => 'enum',
