@@ -524,13 +524,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
 //            'relationship' => 'accounts_catalogorders',
 //            'source' => 'non-db'
 //        ],
-        'inquiries' => [
-            'name' => 'inquiries',
-            'type' => 'link',
-            'module' => 'Inquiries',
-            'relationship' => 'account_inquiries',
-            'source' => 'non-db'
-        ],
+//        'inquiries' => [
+//            'name' => 'inquiries',
+//            'type' => 'link',
+//            'module' => 'Inquiries',
+//            'relationship' => 'account_inquiries',
+//            'source' => 'non-db'
+//        ],
         'spicetexts' => [
             'name' => 'spicetexts',
             'type' => 'link',
