@@ -2,8 +2,7 @@
 
     <ng-container *ngIf="isEditMode()">
         <system-spinner *ngIf="isLoadingOriginal" size="large" class="spice-vertically-centered"></system-spinner>
-        <system-input-media *ngIf="!isLoadingOriginal" [(ngModel)]="imageUrlOriginal" style="height:100%"><!--[fileformat]="fileformat" (mediaChange)="mediaChange($event)" -->
-        </system-input-media>
+        <system-input-media *ngIf="!isLoadingOriginal" [(ngModel)]="imageUrlOriginal" style="height:100%"/><!--[fileformat]="fileformat" (mediaChange)="mediaChange($event)" -->
     </ng-container>
 
     <div #imgFrame *ngIf="!isEditMode()" class="slds-grid slds-grid--vertical" style="height:100%">

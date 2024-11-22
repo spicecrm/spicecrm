@@ -154,61 +154,25 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Maximal image width set by the user. The value from the input field (string).
      */
-    public maxWidthInput = '';
-
-    /**
-     * Maximal image height set by the user. The value from the input field (string).
-     */
-    public maxHeightInput = '';
-
-    /**
-     * Maximal image width set by the user.
-     */
-    public _maxWidthByUser: number = null;
-
-    /**
-     * Maximal image height set by the user.
-     */
-    public _maxHeightByUser: number = null;
+    public maxSizeInput:number = null;
 
     /**
      * Maximal allowed (by system) pixel width.
      */
-    public _maxWidthBySystem: number = null;
+    public _maxSizeBySystem: number = null;
 
     /**
      * Simple getter.
      */
-    public get maxWidthBySystem(): number {
-        return this._maxWidthBySystem;
+    public get maxSizeBySystem(): number {
+        return this._maxSizeBySystem;
     }
 
     /**
      * Setter for maximal allowed (by system) pixel width.
      */
-    @Input('maxWidth') public set maxWidthBySystem( value ) {
-        this._maxWidthBySystem = value;
-        this.calcTargetSize();
-    }
-
-    /**
-     * Maximal allowed (by system) pixel height.
-     */
-    public _maxHeightBySystem: number = null;
-
-    /**
-     * Simple getter.
-     */
-    public get maxHeightBySystem(): number {
-        return this._maxHeightBySystem;
-    }
-
-    /**
-     * Setter for maximal allowed (by system) pixel height.
-     */
-    @Input('maxHeight') public set maxHeightBySystem( value ) {
-        this._maxHeightBySystem = value;
-        this.calcTargetSize();
+    @Input('maxSize') public set maxSizeBySystem( value ) {
+        this._maxSizeBySystem = value;
     }
 
     /**
@@ -259,7 +223,7 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * The compression level in case the image for a new jpeg compression the image as jpeg.
      */
-    public jpegCompressionLevel = 0.95;
+    public jpegCompressionLevel = 0.5;
 
     /**
      * Holds the data of the crop box from the last crop-end event.
@@ -317,24 +281,26 @@ export class SystemInputMedia implements OnDestroy {
                         this.http.get('proxy/?useurl=' + btoa(url), {
                             observe: 'response',
                             responseType: 'blob'
-                        }).subscribe(data => {
-                            this.isLoading = false;
-                            this.cd.detectChanges();
-                            this.fileFromBrowser = null;
-                            if ( !this.checkMimetype( data.body.type )) { // We only accept a file with these mime types
-                                this.showFileNotAllowedError( data.body.type );
-                                return;
+                        }).subscribe({
+                            next: (data) => {
+                                this.isLoading = false;
+                                this.cd.detectChanges();
+                                this.fileFromBrowser = null;
+                                if (!this.checkMimetype(data.body.type)) { // We only accept a file with these mime types
+                                    this.showFileNotAllowedError(data.body.type);
+                                    return;
+                                }
+                                this.mediaBase64 = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(data.body));
+                                this.cd.detectChanges();
+                                this.resetMediaMetaData();
+                                this.resetModificationStati();
+                                this.isImported = true;
+                                this.mediaMetaData.filename = url.substring(url.lastIndexOf('/') + 1);
+                                this.mediaMetaData.mimetype = data.body.type;
+                                this.mediaMetaData.fileformat = this.getFileformatFromMimetype(data.body.type);
+                            }, error: (err) => {
+                                this.isLoading = false;
                             }
-                            this.mediaBase64 = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(data.body));
-                            this.cd.detectChanges();
-                            this.resetMediaMetaData();
-                            this.resetModificationStati();
-                            this.isImported = true;
-                            this.mediaMetaData.filename = url.substring(url.lastIndexOf('/') + 1);
-                            this.mediaMetaData.mimetype = data.body.type;
-                            this.mediaMetaData.fileformat = this.getFileformatFromMimetype( data.body.type );
-                        }, err => {
-                            this.isLoading = false;
                         });
                     }
                 });
@@ -430,7 +396,8 @@ export class SystemInputMedia implements OnDestroy {
 
         if (this.cropper) this.cropper.destroy();
         this.cropper = new Cropper(image, {
-            autoCrop: false,
+            autoCrop: true,
+            autoCropArea: 1,
             viewMode: 1,
             toggleDragModeOnDblclick: this.allowCropping,
             dragMode: this.allowCropping ? 'crop' : 'move'
@@ -441,7 +408,6 @@ export class SystemInputMedia implements OnDestroy {
             if (this.cropper) {
                 this.mediaMetaData.originalWidth = this.cropper.getImageData().naturalWidth;
                 this.mediaMetaData.originalHeight = this.cropper.getImageData().naturalHeight;
-                this.calcTargetSize();
                 if (this.isDirty) this.emitChange();
                 // this.cropper.zoomTo(1);
             }
@@ -454,13 +420,11 @@ export class SystemInputMedia implements OnDestroy {
                 if (_.isEqual(cropBoxData, this.lastCropBoxData)) return;
                 this.lastCropBoxData = _.clone(cropBoxData);
                 this.emitChange();
-                this.calcTargetSize();
             });
         }
 
         image.addEventListener('zoom', () => {
             if (this.isEdited) this.emitChange();
-            if (this.isCropped) this.calcTargetSize();
         });
 
     }
@@ -581,15 +545,28 @@ export class SystemInputMedia implements OnDestroy {
 
         // otherwise extract the aimge
         let image;
-        if (this.isEdited || this.isResized) {
-            image = this.cropper.getCroppedCanvas({
-                maxHeight: this.mediaMetaData.height,
-                maxWidth: this.mediaMetaData.width,
-                imageSmoothingEnabled: true,
-                imageSmoothingQuality: 'high'
-            }) // height: this.metaData.height, width:this.metaData.width,
-                .toDataURL(this.mediaMetaData.mimetype, this.mediaMetaData.mimetype === 'image/jpeg' ? this.jpegCompressionLevel : undefined);
-        } else image = this.mediaBase64.toString();
+        let cropParams: any;
+
+        if(this.maxSizeBySystem || this.maxSizeInput) {
+            const box = this.cropper.getCropBoxData();
+            cropParams = {
+                width: this.maxSizeBySystem ?? this.maxSizeInput,
+                height: this.maxSizeBySystem ?? this.maxSizeInput
+            }
+
+            // if no heigth and with are set use the media size
+            if(!box.width) box.width = this.mediaMetaData.originalWidth;
+            if(!box.height) box.height = this.mediaMetaData.originalHeight;
+
+            if (box.width > box.height) {
+                cropParams.height = cropParams.height / box.width * box.height;
+            } else {
+                cropParams.width = cropParams.width / box.height * box.width;
+            }
+        }
+
+        image = this.cropper.getCroppedCanvas(cropParams).toDataURL(this.mediaMetaData.mimetype, this.jpegCompressionLevel);
+
         return image.substring(image.indexOf('base64,') + 7);
     }
 
@@ -614,7 +591,6 @@ export class SystemInputMedia implements OnDestroy {
         this.cropper.clear();
         this.isCropped = false;
         this.lastCropBoxData = {};
-        this.calcTargetSize();
         this.emitChange();
     }
 
@@ -642,41 +618,8 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Handler if the user has changed the maximal height of the image.
      */
-    public maxHeightChanged(): void {
-        let val: number|string;
-        val = this.maxHeightInput.split( this.userprefs.toUse.num_grp_sep ).join('');
-        val = parseInt( val, 10 );
-        this._maxHeightByUser = isNaN(val) ? null : val;
-        this.calcTargetSize();
+    public maxSizeChanged(): void {
         this.emitChange();
-    }
-
-    /**
-     * Handler if the user has changed the maximal width of the image.
-     */
-    public maxWidthChanged(): void {
-        let val: number|string;
-        val = this.maxWidthInput.split( this.userprefs.toUse.num_grp_sep ).join('');
-        val = parseInt( val, 10 );
-        this._maxWidthByUser = isNaN(val) ? null : val;
-        this.calcTargetSize();
-        this.emitChange();
-    }
-
-    /**
-     * Effective value of maximal pixel height.
-     */
-    public get maxHeight() {
-        if ( this.maxHeightBySystem && this.maxHeightByUser ) return this.maxHeightBySystem < this.maxHeightByUser ? this.maxHeightBySystem : this.maxHeightByUser;
-        return this.maxHeightBySystem ? this.maxHeightBySystem : this.maxHeightByUser ? this.maxHeightByUser : null;
-    }
-
-    /**
-     * Effective value of maximal pixel width.
-     */
-    public get maxWidth() {
-        if ( this.maxWidthBySystem && this.maxWidthByUser ) return this.maxWidthBySystem < this.maxWidthByUser ? this.maxWidthBySystem : this.maxWidthByUser;
-        return this.maxWidthBySystem ? this.maxWidthBySystem : this.maxWidthByUser ? this.maxWidthByUser : null;
     }
 
     /**
@@ -684,52 +627,6 @@ export class SystemInputMedia implements OnDestroy {
      */
     get doResizeByUser() {
         return this._doResizeByUser;
-    }
-
-    /**
-     * Sets the internal status for the resize checkbox and recalculates the target size.
-     * @param value
-     */
-    set doResizeByUser( value) {
-        this._doResizeByUser = value;
-        this.calcTargetSize();
-    }
-
-    /**
-     * Getter for maximal width when set by the user.
-     */
-    get maxWidthByUser() {
-        return this.doResizeByUser ? this._maxWidthByUser : undefined;
-    }
-
-    /**
-     * Getter for maximal height when set by the user.
-     */
-    get maxHeightByUser() {
-        return this.doResizeByUser ? this._maxHeightByUser : undefined;
-    }
-
-    /**
-     * Calculates the size of the target image. Is to be written to object "metaData".
-     */
-    public calcTargetSize(): void {
-        if ( !this.cropper ) return;
-        let ratio = 1, height;
-        let width = this.cropper.getData(true).width;
-        if (width === 0) {
-            width = this.cropper.getImageData().naturalWidth;
-            height = this.cropper.getImageData().naturalHeight;
-        } else height = this.cropper.getData(true).height;
-        if ( this.maxWidth && width > this.maxWidth || this.maxHeight && height > this.maxHeight ) {
-            if (this.maxWidth && !this.maxHeight) ratio = this.maxWidth / width;
-            else if ( this.maxHeight && !this.maxWidth ) ratio = this.maxHeight / height;
-            else ratio = this.maxWidth / width < this.maxHeight / height ? this.maxWidth / width : this.maxHeight / height;
-            this.mediaMetaData.width = Math.floor(width * ratio);
-            this.mediaMetaData.height = Math.floor(height * ratio);
-        } else {
-            this.mediaMetaData.width = width;
-            this.mediaMetaData.height = height;
-        }
     }
 
     public ngOnDestroy(): void {
@@ -842,7 +739,6 @@ export class SystemInputMedia implements OnDestroy {
         this.cropper.clear();
         this.isCropped = false;
         this.lastCropBoxData = {};
-        this.calcTargetSize();
         this.emitChange();
     }
 
@@ -881,7 +777,6 @@ export class SystemInputMedia implements OnDestroy {
     public writeValue( value: string ): void {
         if ( value && value != '' ) {
             this.mediaBase64 = this.sanitizer.bypassSecurityTrustResourceUrl('data:' + this.mediaMetaData.mimetype + ';base64,' + value );
-            this.calcTargetSize();
         }
         this.resetModificationStati();
         this.isImported = false;
