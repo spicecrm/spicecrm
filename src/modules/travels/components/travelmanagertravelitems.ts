@@ -28,19 +28,24 @@ export class TravelManagerTravelItems implements OnInit {
     public loading: boolean = false;
 
     /**
+     * the company code
+     */
+    public companyCode: any = {}
+
+    /**
      * holds TravelMileages related to selected Travel
      */
-    public travelMileages: any = [];
+    public travelMileages: any[] = [];
 
     /**
      * holds TravelSegments related to selected Travel
      */
-    public travelSegments: any = [];
+    public travelSegments: any[] = [];
 
     /**
      * holds TravelReceipts related to selected Travel
      */
-    public travelReceipts: any = [];
+    public travelReceipts: any[] = [];
 
     /**
      * holds the subscriptions to unsubscribe
@@ -109,9 +114,10 @@ export class TravelManagerTravelItems implements OnInit {
             this.backend.getRequest(`module/Travels/${this.model.id}/loadTravelData`).subscribe({
                 next: (response) => {
 
-                    this.travelSegments = [...response.travelData.segments];
-                    this.travelReceipts = [...response.travelData.receipts];
-                    this.travelMileages = [...response.travelData.mileages];
+                    this.companyCode = response.companycode;
+                    this.travelSegments = response.travelData.segments;
+                    this.travelReceipts = response.travelData.receipts;
+                    this.travelMileages = response.travelData.mileages;
 
                     loadingRef.instance.self.destroy();
                     this.loading = false;
@@ -123,6 +129,25 @@ export class TravelManagerTravelItems implements OnInit {
             })
         });
     }
+
+    /**
+     * gets the toal for all receipts in cc currency
+     */
+    get totalReceiptAmount(){
+        let totalValue = 0;
+        this.travelReceipts.forEach(r => totalValue += r.amount_cc);
+        return totalValue;
+    }
+
+    /**
+     * gets the toal for all mileage records in cc currency
+     */
+    get totalMileageAmount(){
+        let totalValue = 0;
+        this.travelMileages.forEach(r => totalValue += r.amount);
+        return totalValue;
+    }
+
 
     public openItem(module, id){
         let objectlink = "/module/" + module + "/" + id;
