@@ -7,6 +7,8 @@ import {backend} from '../../services/backend.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {toast} from "../../services/toast.service";
+import {configurationService} from "../../services/configuration.service";
+import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'language-translations-manager',
@@ -29,13 +31,11 @@ export class LanguageTranslationsManager {
         public metadata: metadata,
         public language: language,
         public utils: modelutilities,
+        public config: configurationService,
         public toast: toast,
+        public modal: modal
     ) {
-        this.backend.getRequest('syslanguage/labels/translate/cantranslate').subscribe({
-            next: (res) => {
-                this.cantranslate = res.cantranslate;
-            }
-        })
+        this.cantranslate = this.config.getCapabilityConfig('syslanguages').apikey
     }
 
     get scope() {
@@ -81,13 +81,16 @@ export class LanguageTranslationsManager {
         let to = this.selectedLanguage.substring(0, 2);
 
         // translate
+        let awaitModal = this.modal.await('LBL_TRANSLATING');
         this.backend.postRequest(`syslanguage/labels/translate/${from}/${to}`, {}, {labels: labels}).subscribe({
             next: (res) => {
-                if(res.data.translations){
-                    res.data.translations.forEach((value, index) => {
-                        label['translation_'+elements[index]] = value.translatedText;
-                    });
-                }
+                res.forEach((value, index) => {
+                    label['translation_'+elements[index]] = value;
+                });
+                awaitModal.emit(true);
+            },
+            error: () => {
+                awaitModal.emit(true);
             }
         })
     }
