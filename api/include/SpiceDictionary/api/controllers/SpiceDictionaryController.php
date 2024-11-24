@@ -111,7 +111,7 @@ class SpiceDictionaryController
             'dictionaryrelationshiptypes' => SpiceDictionaryRelationships::getInstance()->relationshiptypes,
             'dictionaryrelationships' => SpiceDictionaryRelationships::getInstance()->getRelationships(null, []),
             'dictionaryrelationshippolymorphs' => SpiceDictionaryRelationships::getInstance()->getPolymorphs(),
-            'dictionaryrelationshiprelatefields' => $handler->getDictionaryRelateFields(),
+//            'dictionaryrelationshiprelatefields' => $handler->getDictionaryRelateFields(),
             'dictionaryrelationshipfields' => $handler->getDictionaryRelationshipFields(),
             'dictionaryindexes' => SpiceDictionaryIndexes::getInstance()->getIndexes(),
             'dictionaryindexitems' => SpiceDictionaryIndexes::getInstance()->getIndexItems(),
@@ -143,7 +143,7 @@ class SpiceDictionaryController
         $handler->setDictionaryItems($body['dictionaryitems']);
         $handler->setDictionaryRelationships($body['dictionaryrelationships']);
         $handler->setDictionaryRelationshipFields($body['dictionaryrelationshipfields']);
-        $handler->setDictionaryRelateFields($body['dictionaryrelationshiprelatefields']);
+//        $handler->setDictionaryRelateFields($body['dictionaryrelationshiprelatefields']);
         SpiceDictionaryIndexes::getInstance()->setDictionaryIndexes($body['dictionaryindexes']);
         SpiceDictionaryIndexes::getInstance()->setDictionaryIndexItems($body['dictionaryindexitems']);
 
@@ -154,7 +154,7 @@ class SpiceDictionaryController
             'dictionaryitems' => $handler->getDictionaryItems(),
             'dictionaryrelationshiptypes' => SpiceDictionaryRelationships::getInstance()->relationshiptypes,
             'dictionaryrelationships' => SpiceDictionaryRelationships::getInstance()->relationships,
-            'dictionaryrelationshiprelatefields' => $handler->getDictionaryRelateFields(),
+//            'dictionaryrelationshiprelatefields' => $handler->getDictionaryRelateFields(),
             'dictionaryrelationshipfields' => $handler->getDictionaryRelationshipFields(),
             'dictionaryindexes' => SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes(),
             'dictionaryindexitems' => SpiceDictionaryIndexes::getInstance()->getDictionaryIndexItems()

@@ -257,6 +257,7 @@ class VardefManager{
     }
 
     /**
+     * @deprecated
      * Given a module, search all of the specified locations, and any others as specified
      * in order to refresh the cache file
      *
