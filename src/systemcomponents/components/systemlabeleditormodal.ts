@@ -8,6 +8,7 @@ import {toast} from "../../services/toast.service";
 import {modelutilities} from "../../services/modelutilities.service";
 import {metadata} from "../../services/metadata.service";
 import {modal} from "../../services/modal.service";
+import {configurationService} from "../../services/configuration.service";
 
 
 @Component({
@@ -54,7 +55,8 @@ export class SystemLabelEditorModal implements OnInit {
         public language: language,
         public utils: modelutilities,
         public toast: toast,
-        public modal: modal
+        public modal: modal,
+        public configurationService: configurationService
     ) {
     }
 
@@ -110,11 +112,63 @@ export class SystemLabelEditorModal implements OnInit {
             languageCode = this.untranslatedLanguages[0];
         }
 
-        this.labelData[this.currentScope + '_translations'].push({
-            id: this.utils.generateGuid(),
-            syslanguagelabel_id: this.labelData.id,
-            syslanguage: languageCode,
-        });
+        // check if we have the label in the system language
+        let sysTranslations = this.labelData[this.currentScope + '_translations'].find(l => l.syslanguage == this.language.systemLanguage);
+        if (this.configurationService.getCapabilityConfig('syslanguages').apikey && sysTranslations) {
+            let labels = [];
+            if (sysTranslations.translation_short) labels.push(sysTranslations.translation_short);
+            if (sysTranslations.translation_default) labels.push(sysTranslations.translation_default);
+            if (sysTranslations.translation_long) labels.push(sysTranslations.translation_long);
+
+            if(labels.length > 0) {
+                let awaitModal = this.modal.await('LBL_TRANSLATING');
+                this.backend.postRequest(`syslanguage/labels/translate/${this.language.systemLanguage}/${languageCode}`, {}, {labels: labels}).subscribe({
+                    next: (res) => {
+                        let newLabel: any = {
+                            id: this.utils.generateGuid(),
+                            syslanguagelabel_id: this.labelData.id,
+                            syslanguage: languageCode
+                        }
+
+                        let index = 0;
+                        if (sysTranslations.translation_short) {
+                            newLabel.translation_short = res[index];
+                            index++;
+                        }
+                        if (sysTranslations.translation_default) {
+                            newLabel.translation_default = res[index];
+                            index++;
+                        }
+                        if (sysTranslations.translation_long) {
+                            newLabel.translation_long = res[index];
+                            index++;
+                        }
+                        this.labelData[this.currentScope + '_translations'].push(newLabel);
+                        awaitModal.emit(true);
+                    },
+                    error: (e) => {
+                        this.labelData[this.currentScope + '_translations'].push({
+                            id: this.utils.generateGuid(),
+                            syslanguagelabel_id: this.labelData.id,
+                            syslanguage: languageCode,
+                        });
+                        awaitModal.emit(true);
+                    }
+                })
+            } else {
+                this.labelData[this.currentScope + '_translations'].push({
+                    id: this.utils.generateGuid(),
+                    syslanguagelabel_id: this.labelData.id,
+                    syslanguage: languageCode,
+                });
+            }
+        } else {
+            this.labelData[this.currentScope + '_translations'].push({
+                id: this.utils.generateGuid(),
+                syslanguagelabel_id: this.labelData.id,
+                syslanguage: languageCode,
+            });
+        }
 
         this.setUntranslatedLanguages();
     }
