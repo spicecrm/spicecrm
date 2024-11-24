@@ -113,7 +113,7 @@ export class SystemLabelEditorModal implements OnInit {
         }
 
         // check if we have the label in the system language
-        let sysTranslations = this.labelData[this.currentScope + '_translations'].find(l => l.syslanguage == this.language.systemLanguage);
+        let sysTranslations = this.labelData[this.currentScope + '_translations'].find(l => l.syslanguage == this.language.getDefaultLanguage());
         if (this.configurationService.getCapabilityConfig('syslanguages').apikey && sysTranslations) {
             let labels = [];
             if (sysTranslations.translation_short) labels.push(sysTranslations.translation_short);
@@ -122,7 +122,8 @@ export class SystemLabelEditorModal implements OnInit {
 
             if(labels.length > 0) {
                 let awaitModal = this.modal.await('LBL_TRANSLATING');
-                this.backend.postRequest(`syslanguage/labels/translate/${this.language.systemLanguage}/${languageCode}`, {}, {labels: labels}).subscribe({
+                let defaultLanguage = this.language.getDefaultLanguage();
+                this.backend.postRequest(`syslanguage/labels/translate/${defaultLanguage}/${languageCode}`, {}, {labels: labels}).subscribe({
                     next: (res) => {
                         let newLabel: any = {
                             id: this.utils.generateGuid(),
