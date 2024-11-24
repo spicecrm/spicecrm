@@ -362,7 +362,7 @@ export class SystemInputMedia implements OnDestroy {
      */
     get cropperHeight() {
         try {
-            return this.componentHeight - this.toolbar.nativeElement.offsetHeight - this.bottomToolbar.nativeElement.offsetHeight - 5 + 'px';
+            return this.componentHeight - this.toolbar.nativeElement.offsetHeight - this.bottomToolbar.nativeElement.offsetHeight + 'px';
         } catch (e) {
             return '0px';
         }
@@ -399,9 +399,11 @@ export class SystemInputMedia implements OnDestroy {
             autoCrop: true,
             autoCropArea: 1,
             viewMode: 1,
+            zoom: -0.1,
             toggleDragModeOnDblclick: this.allowCropping,
             dragMode: this.allowCropping ? 'crop' : 'move'
         });
+
         this.cropper.crop();
 
         image.addEventListener('ready', () => {
