@@ -24,6 +24,7 @@ import {ModuleSpiceAttachments} from "../../include/spiceattachments/spiceattach
 import {TravelAddManualTravelReceiptModal} from "./components/traveladdmanualtravelreceiptmodal";
 import {TravelAddTravelMileageModal} from "./components/traveladdtravelmileagemodal";
 import {TravelAddTravelSegmentModal} from "./components/traveladdtravelsegmentmodal";
+import {fieldTravelAllowanceDeductions} from "./fields/fieldtravelallowancedeductions";
 
 
 @NgModule({
@@ -48,7 +49,8 @@ import {TravelAddTravelSegmentModal} from "./components/traveladdtravelsegmentmo
         TravelAddTravelModal,
         TravelAddManualTravelReceiptModal,
         TravelAddTravelMileageModal,
-        TravelAddTravelSegmentModal
+        TravelAddTravelSegmentModal,
+        fieldTravelAllowanceDeductions
     ]
 })
 export class ModuleTravels {}
