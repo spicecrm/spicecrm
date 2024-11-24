@@ -90,6 +90,13 @@ export class language {
     }
 
     /**
+     * returns the system language
+     */
+    get systemLanguage(){
+        return this.languagedata.languages.available.find(l => l.system_language == 1).language_code;
+    }
+
+    /**
      * handle the message broadcast and if messagetype is logout reset the data
      *
      * @param message the message received
