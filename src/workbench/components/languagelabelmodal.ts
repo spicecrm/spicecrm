@@ -135,7 +135,7 @@ export class LanguageLabelModal {
         }
 
         // check if we have the label in the system language
-        let sysTranslations = this.label[this.label.scope + '_translations'].find(l => l.syslanguage == this.language.systemLanguage);
+        let sysTranslations = this.label[this.label.scope + '_translations'].find(l => l.syslanguage == this.language.getDefaultLanguage());
         if (this.configurationService.getCapabilityConfig('syslanguages').apikey && sysTranslations) {
             let labels = [];
             if (sysTranslations.translation_short) labels.push(sysTranslations.translation_short);
@@ -144,7 +144,8 @@ export class LanguageLabelModal {
 
             if(labels.length > 0) {
                 let awaitModal = this.modal.await('LBL_TRANSLATING');
-                this.backend.postRequest(`syslanguage/labels/translate/${this.language.systemLanguage}/${language_name}`, {}, {labels: labels}).subscribe({
+                let defaultLanguage = this.language.getDefaultLanguage();
+                this.backend.postRequest(`syslanguage/labels/translate/${defaultLanguage}/${language_name}`, {}, {labels: labels}).subscribe({
                     next: (res) => {
                         let newLabel: any = {
                             id: this.utils.generateGuid(),
