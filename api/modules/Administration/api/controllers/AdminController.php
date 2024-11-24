@@ -306,15 +306,15 @@ class AdminController
         $vardefs = SpiceDictionaryVardefs::loadVardefs($dictionaryNames);
 
         // check on specific tables
-        $sysvardefs = SpiceDictionaryVardefs::loadVardefs(['sysdictionaryfields', 'sysdictionaryindices']);
+        $sysvardefs = SpiceDictionaryVardefs::loadVardefs(['sysdictionaryfields']);
         $sysDicFieldsSql = SpiceDictionaryVardefs::repairTable($sysvardefs['sysdictionaryfields']);
-        $sysDicIndicesSql = SpiceDictionaryVardefs::repairTable($sysvardefs['sysdictionaryindices']);
+        //$sysDicIndicesSql = SpiceDictionaryVardefs::repairTable($sysvardefs['sysdictionaryindices']);
 
         $db = DBManagerFactory::getInstance();
 
-        if (!empty($sysDicIndicesSql)) {
-            $db->query($sysDicIndicesSql);
-        }
+//        if (!empty($sysDicIndicesSql)) {
+//            $db->query($sysDicIndicesSql);
+//        }
 
         if(!empty($sysDicFieldsSql)){
             $db->query($sysDicFieldsSql);
