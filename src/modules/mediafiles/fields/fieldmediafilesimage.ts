@@ -14,7 +14,7 @@ import {Router} from "@angular/router";
 import {SystemInputMedia} from "../../../systemcomponents/components/systeminputmedia";
 
 @Component({
-    selector: 'field-mdeiafiles-image',
+    selector: 'field-mediafiles-image',
     templateUrl: '../templates/fieldmediafilesimage.html',
     providers: [mediafiles]
 })
