@@ -3,6 +3,7 @@
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
+/* migrated
 SpiceDictionaryHandler::getInstance()->dictionary['UserAccessLog'] = [
     'table' => 'useraccesslogs',
     'fields' => [
@@ -98,3 +99,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['UserAccessLog'] = [
 ];
 
 VardefManager::createVardef('UserAccessLogs', 'UserAccessLog', []);
+*/

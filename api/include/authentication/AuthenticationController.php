@@ -519,7 +519,7 @@ class AuthenticationController
             throw new UnauthorizedException('Tenant expired', 401);
         }
 
-        $tenant->switchToTenant();
+        SystemTenant::switchToTenant($tenant->id);
 
         $this->systemtenantid = $tenant->id;
         $this->systemtenantname = $tenant->name;

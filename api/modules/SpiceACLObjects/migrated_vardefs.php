@@ -3,6 +3,7 @@
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
+/* migrated
 SpiceDictionaryHandler::getInstance()->dictionary['SpiceACLObject'] = [
     'table' => 'spiceaclobjects',
     'fields' => [
@@ -101,3 +102,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['SpiceACLObject'] = [
 ];
 
 VardefManager::createVardef('SpiceACLObjects', 'SpiceACLObject', ['default']);
+*/

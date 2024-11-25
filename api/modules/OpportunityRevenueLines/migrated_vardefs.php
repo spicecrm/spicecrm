@@ -2,7 +2,7 @@
 /***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-
+/* migratewd
 SpiceDictionaryHandler::getInstance()->dictionary['OpportunityRevenueLine'] = [
     'table' => 'opportunityrevenuelines',
     'comment' => 'Split Opportunity Revenue in recognition lines',
@@ -33,7 +33,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['OpportunityRevenueLine'] = [
             'options' => 'numeric_range_search_dom',
             'enable_range_search' => true,
         ],
-        'amount_usdollar' => [ /**@deprecated **/
+        'amount_usdollar' => [
             'name' => 'amount_usdollar',
             'vname' => 'LBL_AMOUNT_USDOLLAR',
             'type' => 'currency',
@@ -87,3 +87,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['OpportunityRevenueLine'] = [
 , 'optimistic_locking' => true,
 ];
 VardefManager::createVardef('OpportunityRevenueLines', 'OpportunityRevenueLine', ['basic', 'assignable']);
+*/

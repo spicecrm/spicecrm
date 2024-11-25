@@ -172,6 +172,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             ],
             'len' => '510',
         ],
+        /*
         'account_user_role' => [
             'name' => 'account_user_role',
             'vname' => 'LBL_ROLE',
@@ -188,15 +189,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'vname' => 'LBL_ACCOUNTS'
         ],
-        'projects' => [
-            'name' => 'projects',
-            'type' => 'link',
-            'relationship' => 'projects_users',
-            'module' => 'Projects',
-            'bean_name' => 'Project',
-            'source' => 'non-db',
-            'vname' => 'LBL_PROJECTS'
-        ],
+        */
+//        'projects' => [
+//            'name' => 'projects',
+//            'type' => 'link',
+//            'relationship' => 'projects_users',
+//            'module' => 'Projects',
+//            'bean_name' => 'Project',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_PROJECTS'
+//        ],
+        /*
         'opportunity_role' => [
             'name' => 'opportunity_role',
             'type' => 'enum',
@@ -213,6 +216,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'bean_name' => 'Opportunity',
             'vname' => 'LBL_OPPORTUNITIES',
         ],
+        */
         'name' => [
             'name' => 'name',
             'rname' => 'name',
@@ -986,6 +990,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
         ],
         */
+        /*
         'spiceaclprofiles' => [
             'name' => 'spiceaclprofiles',
             'type' => 'link',
@@ -995,6 +1000,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'vname' => 'LBL_SPICEACLPROFILES'
         ],
+        */
         'login_blocked' => [
             'name' => 'login_blocked',
             'vname' => 'LBL_LOGIN_BLOCKED',
@@ -1013,6 +1019,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'relationship' => 'user_eventregistrations',
             'source' => 'non-db',
         ],
+        /*
         'orgunit_id' => [
             'vname' => 'LBL_ORGUNIT_ID',
             'name' => 'orgunit_id',
@@ -1047,6 +1054,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'module' => 'OrgUnits',
             'source' => 'non-db'
         ],
+        */
         'documentrevisions' => [
             'name' => 'documentrevisions',
             'type' => 'link',

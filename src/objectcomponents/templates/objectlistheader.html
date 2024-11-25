@@ -6,14 +6,13 @@
     <object-list-header-actionmenu class="slds-p-left--x-small" *ngIf="actionset" [actionset]="actionset" [displayasicon]="isSmall"></object-list-header-actionmenu>
 </th>
 <th *ngFor="let item of listfields" scope="col" class="slds-resizable" (system-resize)="onresize($event)" [resizeid]="item.id" [width]="columnWidth(item.id)">
-    <ng-container *ngIf="isSortable(item); else nosort">
+    @if(isSortable(item)) {
         <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" (click)="setSortField(item)">
             <field-label class="slds-truncate" addclasses="slds-truncate" [fieldname]="item.field" [fieldconfig]="item.fieldconfig"></field-label>
-            <object-list-header-sort [field]="item"></object-list-header-sort>
+            <object-list-header-sort class="slds-float--right" [field]="item"></object-list-header-sort>
         </a>
-    </ng-container>
-    <ng-template #nosort>
+    } @else {
         <field-label [fieldname]="item.field" [fieldconfig]="item.fieldconfig" addclasses="slds-truncate slds-p-vertical--xx-small slds-p-horizontal--x-small"></field-label>
-    </ng-template>
+    }
 </th>
 <th *ngIf="showRowActionMenu" [ngClass]="getHeaderWidth" scope="col"></th>
