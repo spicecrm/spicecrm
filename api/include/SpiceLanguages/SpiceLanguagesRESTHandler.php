@@ -266,8 +266,17 @@ class SpiceLanguagesRESTHandler
             )
         );
 
+        // the response
+        $response = json_decode(curl_exec($ch));
+
+        // build the translations
+        $translations = [];
+        foreach($response->data->translations as $translation){
+            $translations[] = $translation->translatedText;
+        }
+
         // return the response
-        return json_decode(curl_exec($ch));
+        return $translations;
     }
 
     /**

@@ -9,6 +9,7 @@ import {view} from "../../../services/view.service";
 import {TravelAddTravelModal} from "./traveladdtravelmodal";
 import {Router} from "@angular/router";
 import {navigation} from "../../../services/navigation.service";
+import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'travel-manager',
@@ -24,12 +25,15 @@ export class TravelManager implements OnInit {
      */
     public travels: any[] = [];
 
+    public config: any;
+
 
     constructor(
         public model: model,
         private backend: backend,
         private navigationTab: navigationtab,
         public language: language,
+        public metadata: metadata,
         private modal: modal,
         private toast: toast,
         public view: view,
@@ -37,6 +41,10 @@ export class TravelManager implements OnInit {
         private navigation: navigation
     ) {
         this.model.module = 'Travels';
+
+        // get the config
+        this.config = this.metadata.getComponentConfig('TravelManager', 'Travels');
+
         this.loadActiveUserTravels();
     }
 
@@ -55,7 +63,10 @@ export class TravelManager implements OnInit {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_LOADING';
 
-            this.backend.getRequest(`module/Travels/load`).subscribe({
+            let params: any = {};
+            if(this.config.filter) params.filter = this.config.filter;
+
+            this.backend.getRequest(`module/Travels/load`, params).subscribe({
                 next: (response) => {
 
                     this.travels = response;

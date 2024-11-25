@@ -9,6 +9,7 @@ import {broadcast} from "../../../services/broadcast.service";
 import {Subscription} from "rxjs";
 import {Router} from "@angular/router";
 import {navigationtab} from "../../../services/navigationtab.service";
+import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     selector: 'travel-manager-travel-items',
@@ -28,24 +29,34 @@ export class TravelManagerTravelItems implements OnInit {
     public loading: boolean = false;
 
     /**
+     * the company code
+     */
+    public companyCode: any = {}
+
+    /**
      * holds TravelMileages related to selected Travel
      */
-    public travelMileages: any = [];
+    public travelMileages: any[] = [];
 
     /**
      * holds TravelSegments related to selected Travel
      */
-    public travelSegments: any = [];
+    public travelSegments: any[] = [];
 
     /**
      * holds TravelReceipts related to selected Travel
      */
-    public travelReceipts: any = [];
+    public travelReceipts: any[] = [];
 
     /**
      * holds the subscriptions to unsubscribe
      */
     public subscriptions: Subscription = new Subscription();
+
+    /**
+     * holds the countries
+     */
+    public countries: any;
 
     constructor(
         public model: model,
@@ -55,8 +66,12 @@ export class TravelManagerTravelItems implements OnInit {
         private language: language,
         public broadcast: broadcast,
         public router: Router,
-        public navigationtab: navigationtab
+        public navigationtab: navigationtab,
+        public configuration: configurationService
     ) {
+
+        this.countries = this.configuration.getData('countries');
+
         this.subscriptions.add(
             this.broadcast.message$.subscribe(message => {
                 this.handleMessage(message);
@@ -109,9 +124,10 @@ export class TravelManagerTravelItems implements OnInit {
             this.backend.getRequest(`module/Travels/${this.model.id}/loadTravelData`).subscribe({
                 next: (response) => {
 
-                    this.travelSegments = [...response.travelData.segments];
-                    this.travelReceipts = [...response.travelData.receipts];
-                    this.travelMileages = [...response.travelData.mileages];
+                    this.companyCode = response.companycode;
+                    this.travelSegments = response.travelData.segments;
+                    this.travelReceipts = response.travelData.receipts;
+                    this.travelMileages = response.travelData.mileages;
 
                     loadingRef.instance.self.destroy();
                     this.loading = false;
@@ -124,12 +140,44 @@ export class TravelManagerTravelItems implements OnInit {
         });
     }
 
+    /**
+     * gets the toal for all segments in cc currency
+     */
+    get totalSegmentAmount(){
+        let totalValue = 0;
+        this.travelSegments.forEach(r => totalValue += r.amount);
+        return totalValue;
+    }
+
+    /**
+     * gets the toal for all receipts in cc currency
+     */
+    get totalReceiptAmount(){
+        let totalValue = 0;
+        this.travelReceipts.forEach(r => totalValue += r.amount_cc);
+        return totalValue;
+    }
+
+    /**
+     * gets the toal for all mileage records in cc currency
+     */
+    get totalMileageAmount(){
+        let totalValue = 0;
+        this.travelMileages.forEach(r => totalValue += r.amount);
+        return totalValue;
+    }
+
+
     public openItem(module, id){
         let objectlink = "/module/" + module + "/" + id;
         // if we have a tabid and it is not th emain tab add it
         if (this.navigationtab?.tabid) objectlink = '/tab/' + this.navigationtab?.tabid + '/' + objectlink;
         // navigate to the route
         this.router.navigate([objectlink]);
+    }
+
+    public getCountryLabel(country){
+        return this.countries.countries.find(c => c.cc == country)?.label;
     }
 
 }

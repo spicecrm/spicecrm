@@ -1,7 +1,7 @@
 /**
  * @module ModuleTravels
  */
-import {Component, Injector, Input} from '@angular/core';
+import {Component, Injector, Input, Optional} from '@angular/core';
 import {modal} from '../../../services/modal.service';
 import {view} from "../../../services/view.service";
 import {model} from "../../../services/model.service";
@@ -26,10 +26,8 @@ export class TravelAddReceiptButton {
 
     constructor(public modal: modal,
                 public injector: Injector,
-                public view: view,
-                public model: model,
-                private toast: toast,
-                private language: language) {
+                @Optional() public view: view,
+                public model: model) {
 
     }
 

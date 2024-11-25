@@ -317,14 +317,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'vname' => 'LBL_OUTPUTTEMPLATES',
         ],
         */
-        'projects' => [
-            'name' => 'projects',
-            'vname' => 'LBL_PROJECTS',
-            'type' => 'link',
-            'module' => 'Projects',
-            'relationship' => 'projects_products',
-            'source' => 'non-db',
-        ],
+//        'projects' => [
+//            'name' => 'projects',
+//            'vname' => 'LBL_PROJECTS',
+//            'type' => 'link',
+//            'module' => 'Projects',
+//            'relationship' => 'projects_products',
+//            'source' => 'non-db',
+//        ],
+        /*
         'opportunities' => [
             'name' => 'opportunities',
             'type' => 'link',
@@ -348,6 +349,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'dbtype' => 'double',
             'source' => 'non-db'
         ],
+        */
     ],
     'relationships' => [
         /*

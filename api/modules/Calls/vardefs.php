@@ -370,15 +370,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
                 ]
             ]
         ],
-        'notes' => [
-            'name'         => 'notes',
-            'type'         => 'link',
-            'relationship' => 'calls_notes',
-            'module'       => 'Notes',
-            'bean_name'    => 'Note',
-            'source'       => 'non-db',
-            'vname'        => 'LBL_NOTES',
-        ],
+//        'notes' => [
+//            'name'         => 'notes',
+//            'type'         => 'link',
+//            'relationship' => 'calls_notes',
+//            'module'       => 'Notes',
+//            'bean_name'    => 'Note',
+//            'source'       => 'non-db',
+//            'vname'        => 'LBL_NOTES',
+//        ],
         'contact_id' => [
             'name'   => 'contact_id',
             'type'   => 'id',
@@ -549,17 +549,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'rhs_key'           => 'created_by',
             'relationship_type' => 'one-to-many'
         ],
-        'calls_notes' => [
-            'lhs_module'                     => 'Calls',
-            'lhs_table'                      => 'calls',
-            'lhs_key'                        => 'id',
-            'rhs_module'                     => 'Notes',
-            'rhs_table'                      => 'notes',
-            'rhs_key'                        => 'parent_id',
-            'relationship_type'              => 'one-to-many',
-            'relationship_role_column'       => 'parent_type',
-            'relationship_role_column_value' => 'Calls',
-        ],
+//        'calls_notes' => [
+//            'lhs_module'                     => 'Calls',
+//            'lhs_table'                      => 'calls',
+//            'lhs_key'                        => 'id',
+//            'rhs_module'                     => 'Notes',
+//            'rhs_table'                      => 'notes',
+//            'rhs_key'                        => 'parent_id',
+//            'relationship_type'              => 'one-to-many',
+//            'relationship_role_column'       => 'parent_type',
+//            'relationship_role_column_value' => 'Calls',
+//        ],
         'calls_tasks' => [
             'lhs_module'                     => 'Calls',
             'lhs_table'                      => 'calls',

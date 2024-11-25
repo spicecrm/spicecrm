@@ -1,69 +1,103 @@
-<article class="slds-card">
-    <header class="slds-media slds-media_center slds-has-flexi-truncate">
-        <div class="slds-media__body">
-            <h2 class="slds-text-heading--small slds-theme--shade  slds-grid slds-grid--align-spread">
-                <div class="slds-card__header slds-truncate slds-m-bottom--none slds-p-around--xx-small">
-                    <span>{{ kpiTarget.kpi.name }}</span>
-                </div>
-                <button class="slds-button slds-button--icon slds-m-horizontal--xx-small" (click)="openHistoryModal()">
-                    <system-button-icon icon="graph"/>
-                </button>
-            </h2>
-        </div>
-    </header>
-    <div class="slds-card__body slds-card__body_inner slds-m-vertical--none slds-p-horizontal--xx-small  slds-p-bottom--xx-small">
-        <div class="slds-tile__detail">
-            <div class="slds-grid">
-                <div class="slds-truncate slds-text-heading_large" [ngClass]="textColor">
-                    @if(!loading) {
-                        @if(kpiTargetValue) {
-                            <system-display-number [number]="kpiTargetValue.kpi_value" precision="0"/>
-                        } @else {
-                            ---
-                        }
-                    } @else {
-                        <div class="slds-p-around--xx-small">
-                            <system-spinner size="26"/>
-                        </div>
+<div class="slds-size--1-of-1 slds-m-vertical--xx-small">
+    <article class="slds-card">
+        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+            <div class="slds-media__body">
+                <h2 class="slds-text-heading--small slds-theme--shade  slds-grid slds-grid--vertical-align-center">
+                    <div class="slds-card__header slds-truncate slds-m-bottom--none slds-p-around--xx-small slds-col--bump-right">
+                        <span>{{ kpiTarget.kpi.name }}</span>
+                    </div>
+                    @if (kpiTarget.kpi.description && addValues.length > 0){
+                        <!--system-utility-icon size="x-small" icon="info" [title]="kpiTarget.kpi.description"/-->
+                        <system-icon-help-text [helpText]="kpiTarget.kpi.description"/>
                     }
-                </div>
-                <div class="slds-truncate slds-text-heading_small slds-p-horizontal--xx-small slds-m-top--small">
-                    {{ this.kpiTarget.kpi.metric }}
-                </div>
-                <div class="slds-truncate slds-text-heading_small slds-p-horizontal--xx-small slds-m-top--small slds-grid slds-grid--vertical-align-center">
-                    @if(!loading) {
-                        @if(kpiTargetValue ) {
-                            <system-utility-icon [colorclass]="slopeColor" [icon]="slopeIcon" [size]="'x-small'"></system-utility-icon>
-                            @if(trendValue) {
-                                <div class="slds-p-right--xx-small">{{ trendValue }}%</div>
-                                <system-label [label]="trendValue > 0 ? 'LBL_KPI_BETTER' : 'LBL_KPI_WORSE'"></system-label>
+                    <button *ngIf="kpiTargetValue" class="slds-button slds-button--icon slds-m-horizontal--xx-small" (click)="openHistoryModal()">
+                        <system-button-icon icon="graph"/>
+                    </button>
+                </h2>
+            </div>
+        </header>
+        <div class="slds-card__body slds-card__body_inner slds-m-vertical--none slds-p-horizontal--none">
+            @if(loading || kpiTargetValue) {
+                <div class="slds-tile__detail slds-p-horizontal--xx-small slds-p-bottom--xx-small">
+                    <div class="slds-grid">
+                        <div class="slds-truncate slds-text-heading_large" [ngClass]="textColor">
+                            @if (!loading) {
+                                @if (kpiTargetValue) {
+                                    <system-display-number [number]="kpiTargetValue.kpi_value" precision="0"/>
+                                } @else {
+                                    ---
+                                }
+                            } @else {
+                                <div class="slds-p-around--xx-small">
+                                    <system-spinner size="26"/>
+                                </div>
+                            }
+                        </div>
+                        <div class="slds-truncate slds-text-heading_small slds-p-horizontal--xx-small slds-m-top--small">
+                            {{ this.kpiTarget.kpi.metric }}
+                        </div>
+                        <div class="slds-truncate slds-text-heading_small slds-p-horizontal--xx-small slds-m-top--small slds-grid slds-grid--vertical-align-center">
+                            @if (!loading) {
+                                @if (kpiTargetValue) {
+                                    <system-utility-icon [colorclass]="slopeColor" [icon]="slopeIcon"
+                                                         [size]="'x-small'"></system-utility-icon>
+                                    @if (trendValue) {
+                                        <div class="slds-p-right--xx-small">{{ trendValue }}%</div>
+                                        <system-label
+                                                [label]="trendValue > 0 ? 'LBL_KPI_BETTER' : 'LBL_KPI_WORSE'"></system-label>
+                                    }
+                                } @else {
+                                    <system-label label="LBL_NO_KPIVALUE_FOUND"></system-label>
+                                }
+                            } @else {
+                                <system-stencil/>
+                            }
+                        </div>
+                    </div>
+                    <div class="slds-text-body--small slds-text-color--inverse-weak">
+                        @if (!loading) {
+                            @if (kpiTargetValue) {
+                                <system-display-datetime [date]="kpiTargetValue.date_entered"/>
+                            } @else {
+                                <system-display-datetime [date]="now"/>
                             }
                         } @else {
-                            <system-label label="LBL_NO_KPIVALUE_FOUND"></system-label>
+                            <div style="width: 90px; height: 19px; overflow: hidden">
+                                <system-stencil/>
+                            </div>
                         }
-                    } @else {
-                        <system-stencil/>
-                    }
+                    </div>
+                    <div *ngIf="addValues.length == 0" class="slds-line-clamp_x-small slds-truncate"
+                         style="min-height: 44px;">
+                        <span>{{ kpiTarget.kpi.description }}</span>
+                    </div>
                 </div>
-            </div>
-            <div class="slds-text-body--small slds-text-color--inverse-weak">
-                @if(!loading) {
-                    @if(kpiTargetValue) {
-                        <system-display-datetime [date]="kpiTargetValue.date_entered"/>
-                    } @else {
-                        <system-display-datetime [date]="now"/>
-                    }
-                } @else {
-                    <div style="width: 90px; height: 19px; overflow: hidden">
-                        <system-stencil/>
+                @if (addValues.length > 0) {
+                    <div class="slds-grid slds-border_top">
+                        @for (addValue of addValues; track $index) {
+                            <div class="slds-text-align--center slds-p-bottom--xx-small slds-p-horizontal--xx-small"
+                                 [ngClass]="addValueClasses($index)">
+                                <system-label class="slds-text-body--small slds-text-color--inverse-weak"
+                                              [label]="addValue.valueLabel"/>
+                                <div class="slds-grid slds-grid--align-center">
+                                    <h2 class="slds-text-heading_small slds-truncate">
+                                        @if (loading) {
+                                            <system-stencil/>
+                                        } @else {
+                                            <system-display-number [number]="addValue.kpiValueAdd" precision="0"/>
+                                        }
+                                    </h2>
+                                    <span class="slds-text-body_small slds-align-bottom slds-p-left--xxx-small">{{ addValue?.valueMetric }}</span>
+                                </div>
+                            </div>
+                        }
                     </div>
                 }
-            </div>
-            <div class="slds-line-clamp_x-small slds-truncate" style="min-height: 39px;">
-                <span>{{ kpiTarget.kpi.description }}</span>
-            </div>
+            } @else {
+                <div class="slds-p-around--x-small slds-align--absolute-center">
+                    <system-illustration-no-data style="height: 86px; width: 184px;"/>
+                </div>
+            }
         </div>
-    </div>
-</article>
-
-
+    </article>
+</div>

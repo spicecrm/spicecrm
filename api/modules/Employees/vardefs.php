@@ -134,15 +134,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
             'source' => 'non-db',
             'vname' => 'LBL_MEETINGS',
         ],
-        'notes' => [
-            'name' => 'notes',
-            'type' => 'link',
-            'relationship' => 'employees_notes',
-            'module' => 'Notes',
-            'bean_name' => 'Note',
-            'source' => 'non-db',
-            'vname' => 'LBL_NOTES',
-        ],
+//        'notes' => [
+//            'name' => 'notes',
+//            'type' => 'link',
+//            'relationship' => 'employees_notes',
+//            'module' => 'Notes',
+//            'bean_name' => 'Note',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_NOTES',
+//        ],
         'tasks' => [
             'name' => 'tasks',
             'type' => 'link',
@@ -203,17 +203,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
             'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Employees'
         ],
-        'employees_notes' => [
-            'lhs_module' => 'Employees',
-            'lhs_table' => 'employees',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Notes',
-            'rhs_table' => 'notes',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Employees'
-        ],
+//        'employees_notes' => [
+//            'lhs_module' => 'Employees',
+//            'lhs_table' => 'employees',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Notes',
+//            'rhs_table' => 'notes',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Employees'
+//        ],
         'employees_meetings' => [
             'lhs_module' => 'Employees',
             'lhs_table' => 'employees',

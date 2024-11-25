@@ -5,6 +5,7 @@
 namespace SpiceCRM\modules\SystemTenants\api\controllers;
 
 use Exception;
+use SpiceCRM\extensions\modules\LandingPages\LandingPage;
 use SpiceCRM\modules\SystemTenants\SystemTenant;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -34,6 +35,60 @@ class SystemTenantsController
     }
 
     /**
+     * confirm the tenant and process the initialization
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function confirmTenant(Request $req, Response $res, array $args): Response
+    {
+        /** @var SystemTenant $tenant */
+        $tenant = BeanFactory::getBean('SystemTenants', $args['id']);
+
+        if ($tenant->systemtenant_status == 'pending') {
+            $tenant->systemtenant_status = 'confirmed';
+            $tenant->save();
+        }
+
+        $redirectUrl = SpiceConfig::getInstance()->get('multitenancy.confirm_redirect_url');
+
+        if (!empty($redirectUrl)) {
+            return $res->withHeader('Location', $redirectUrl)->withStatus(302);
+        }
+
+        # load the landingpage content
+        /** @var LandingPage $landingPage */
+        $landingPage = BeanFactory::getBean('LandingPages', SpiceConfig::getInstance()->get('multitenancy.confirm_landing_page_id'));
+
+        if ($landingPage) {
+            $lpContent = $landingPage->parse($tenant);
+        } else {
+            $lpContent = ['content' => '<h1>Misconfiguration issue. Please contact the system administrator</h1>'];
+        }
+
+        $res->getBody()->write($lpContent['content']);
+        return $res->withHeader('Content-Type', 'text/html');
+    }
+
+    /**
+     * initializes the tenant
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws BadRequestException
+     */
+    public function createTenant(Request $req, Response $res, array $args): Response {
+        $data = (object) $req->getParsedBody();
+        $created = SystemTenant::createTenantFromInquiry($data);
+        return $res->withJson(['success' => $created]);
+    }
+
+    /**
      * loads demo data in a client
      *
      * @param Request $req
@@ -55,7 +110,7 @@ class SystemTenantsController
         $tenant = BeanFactory::getBean('SystemTenants', $args['id']);
         if ($tenant) {
 
-            $tenant->switchToTenant();
+            SystemTenant::switchToTenant($tenant->id);
 
             $demoGenerator = new SpiceDemoDataGenerator();
             $demoGenerator->generateAccounts();

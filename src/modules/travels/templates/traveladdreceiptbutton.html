@@ -1,6 +1,5 @@
-<ng-container>
-    <system-button-icon (click)="execute()" icon="money" *ngIf="view.size == 'small' || hideLabel; else bigView" ></system-button-icon>
-</ng-container>
-<ng-template #bigView>
+@if(view?.size == 'small' || hideLabel) {
+    <system-button-icon (click)="execute()" icon="money"/>
+} @else {
     <system-label (click)="execute()" label="LBL_ADD_TRAVEL_RECEIPT"/>
-</ng-template>
+}

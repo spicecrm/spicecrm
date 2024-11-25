@@ -506,14 +506,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'source' => 'non-db',
                 'vname' => 'LBL_TASKS',
             ],
-        'notes' =>
-            [
-                'name' => 'notes',
-                'type' => 'link',
-                'relationship' => 'lead_notes',
-                'source' => 'non-db',
-                'vname' => 'LBL_NOTES',
-            ],
+//        'notes' =>
+//            [
+//                'name' => 'notes',
+//                'type' => 'link',
+//                'relationship' => 'lead_notes',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_NOTES',
+//            ],
         'meetings' =>
             [
                 'name' => 'meetings',
@@ -601,13 +601,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
             'module' => 'Potentials',
             'source' => 'non-db'
         ],
-        'catalogorders' => [
-            'name' => 'catalogorders',
-            'type' => 'link',
-            'module' => 'CatalogOrders',
-            'relationship' => 'leads_catalogorders',
-            'source' => 'non-db'
-        ]
+//        'catalogorders' => [
+//            'name' => 'catalogorders',
+//            'type' => 'link',
+//            'module' => 'CatalogOrders',
+//            'relationship' => 'leads_catalogorders',
+//            'source' => 'non-db'
+//        ]
 
     ]
     , 'indices' => [
@@ -632,10 +632,10 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
             'rhs_module' => 'Tasks', 'rhs_table' => 'tasks', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Leads']
-        , 'lead_notes' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
-            'rhs_module' => 'Notes', 'rhs_table' => 'notes', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Leads']
+//        , 'lead_notes' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
+//            'rhs_module' => 'Notes', 'rhs_table' => 'notes', 'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Leads']
 
         , 'lead_meetings' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
             'rhs_module' => 'Meetings', 'rhs_table' => 'meetings', 'rhs_key' => 'parent_id',
