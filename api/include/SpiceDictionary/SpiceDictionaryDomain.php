@@ -99,6 +99,9 @@ class SpiceDictionaryDomain
             // ToDO: temp fix to preserve domain level field name
             if($dictionaryitem->itemDefinition->label && !$definition->vname) $definition->vname = $dictionaryitem->itemDefinition->label;
 
+            // write labelinputhelper to cache
+            if(!empty($dictionaryitem->itemDefinition->labelinputhelper)) $definition->popupHelp = $dictionaryitem->itemDefinition->labelinputhelper;
+
             // backward compatibility to push options as well
             if($definition->sysdomainfieldvalidation_id) {
                 $validation = new SpiceDictionaryDomainValidation($definition->sysdomainfieldvalidation_id);
