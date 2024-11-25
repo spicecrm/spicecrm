@@ -88,8 +88,14 @@
                                     @case('package'){
                                         <system-input-package [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"></system-input-package>
                                     }
+                                    @case('country'){
+                                        <system-input-country [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"></system-input-country>
+                                    }
+                                    @case('number'){
+                                        <system-input-number [disabled]="!isEditMode(field)" precision="2" [(ngModel)]="entry.data[field.name]"/>
+                                    }
                                     @default{
-                                        <input  [disabled]="!isEditMode(field)" type="text" class="slds-input" [(ngModel)]="entry.data[field.name]"/>
+                                        <system-input-text [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"/>
                                     }
                                 }
                             </div>
