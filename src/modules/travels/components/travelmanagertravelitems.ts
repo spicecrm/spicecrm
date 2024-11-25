@@ -9,6 +9,7 @@ import {broadcast} from "../../../services/broadcast.service";
 import {Subscription} from "rxjs";
 import {Router} from "@angular/router";
 import {navigationtab} from "../../../services/navigationtab.service";
+import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     selector: 'travel-manager-travel-items',
@@ -52,6 +53,11 @@ export class TravelManagerTravelItems implements OnInit {
      */
     public subscriptions: Subscription = new Subscription();
 
+    /**
+     * holds the countries
+     */
+    public countries: any;
+
     constructor(
         public model: model,
         private modal: modal,
@@ -60,8 +66,12 @@ export class TravelManagerTravelItems implements OnInit {
         private language: language,
         public broadcast: broadcast,
         public router: Router,
-        public navigationtab: navigationtab
+        public navigationtab: navigationtab,
+        public configuration: configurationService
     ) {
+
+        this.countries = this.configuration.getData('countries');
+
         this.subscriptions.add(
             this.broadcast.message$.subscribe(message => {
                 this.handleMessage(message);
@@ -131,6 +141,15 @@ export class TravelManagerTravelItems implements OnInit {
     }
 
     /**
+     * gets the toal for all segments in cc currency
+     */
+    get totalSegmentAmount(){
+        let totalValue = 0;
+        this.travelSegments.forEach(r => totalValue += r.amount);
+        return totalValue;
+    }
+
+    /**
      * gets the toal for all receipts in cc currency
      */
     get totalReceiptAmount(){
@@ -155,6 +174,10 @@ export class TravelManagerTravelItems implements OnInit {
         if (this.navigationtab?.tabid) objectlink = '/tab/' + this.navigationtab?.tabid + '/' + objectlink;
         // navigate to the route
         this.router.navigate([objectlink]);
+    }
+
+    public getCountryLabel(country){
+        return this.countries.countries.find(c => c.cc == country)?.label;
     }
 
 }

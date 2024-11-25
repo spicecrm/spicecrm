@@ -6,17 +6,28 @@
                 <system-icon module="TravelReceipts" size="x-small"></system-icon>
                 <span class="slds-tree__item-label slds-truncate"><system-label label="LBL_TRAVEL_SEGMENTS"></system-label></span>
             </div>
+            <div class="slds-grid slds-wrap slds-medium-nowrap slds-p-horizontal--x-small slds-p-vertical--xx-small slds-border--bottom slds-size--1-of-1">
+                <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-truncate"><system-label label="LBL_DATE"/></div>
+                <div class="slds-col slds-size--2-of-4 slds-medium-size--small slds-truncate"><system-label label="LBL_COUNTRY"/></div>
+                <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-truncate slds-text-align--right"><system-label label="LBL_AMOUNT"/></div>
+            </div>
             @for (travelSegment of travelSegments; track travelSegment.id;) {
-                <div class="slds-grid slds-wrap slds-medium-nowrap slds-p-horizontal--x-small slds-p-vertical--xx-small slds-border--bottom slds-size--1-of-1">
+                <div class="slds-grid slds-wrap slds-medium-nowrap slds-p-horizontal--x-small slds-p-vertical--xx-small slds-border--bottom slds-size--1-of-1" (click)="openItem('TravelSegments',travelSegment.id)">
                     <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-truncate">
-                        <system-display-datetime [date]="travelSegment.date_start"/>
+                        <system-display-datetime system-display-datetime-hide-time [date]="travelSegment.date_start"/>
                     </div>
-                    <div class="slds-col slds-size--2-of-4 slds-medium-size--small slds-truncate slds-text-align--center">{{ travelSegment.country }}</div>
+                    <div class="slds-col slds-size--2-of-4 slds-medium-size--small slds-truncate">
+                        <system-label [label]="getCountryLabel(travelSegment.country)"/>
+                    </div>
                     <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-truncate slds-text-align--right">
-                        <system-display-datetime [date]="travelSegment.date_end"/>
+                        <system-display-number [number]="travelSegment.amount" [currency_id]="companyCode.currency_id"/>
                     </div>
                 </div>
             }
+            <div class="slds-grid slds-wrap slds-medium-nowrap slds-p-horizontal--x-small slds-p-vertical--xx-small slds-border--bottom slds-size--1-of-1 slds-theme--info">
+                <div class="slds-col slds-size--3-of-4 slds-medium-size--small slds-truncate"><system-label label="LBL_TOTAL"/></div>
+                <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-text-align--right slds-truncate"><system-display-number [number]="totalSegmentAmount" [currency_id]="companyCode.currency_id"/></div>
+            </div>
         </div>
     }
     <!-- TravelReceipts -->

@@ -1,39 +1,35 @@
-@if(deductions) {
+@if(deductions && deductions.length > 0) {
     <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
     <div class="slds-box--border">
-        @if (deductions) {
-            <div class="slds-grid slds-grid--vertical-align-center slds-theme--shade">
+        <div class="slds-grid slds-grid--vertical-align-center slds-theme--shade">
+            <div class="slds-size_1-of-2 slds-p-around--xx-small">
+                <system-label label="LBL_DATE"/>
+            </div>
+            <div class="slds-size--1-of-6 slds-p-around--xx-small slds-truncate">
+                <system-label label="LBL_BREAKFAST"/>
+            </div>
+            <div class="slds-size--1-of-6 slds-p-around--xx-small slds-truncate">
+                <system-label label="LBL_LUNCH"/>
+            </div>
+            <div class="slds-size--1-of-6 slds-p-around--xx-small slds-truncate">
+                <system-label label="LBL_DINNER"/>
+            </div>
+        </div>
+        @for (deduction of deductions; track deduction.date) {
+            <div class="slds-grid slds-grid--vertical-align-center">
                 <div class="slds-size_1-of-2 slds-p-around--xx-small">
-                    <system-label label="LBL_DATE"/>
+                    <system-display-datetime [date]="deduction.date" system-display-datetime-hide-time system-display-datetime-show-dayofweek/>
                 </div>
-                <div class="slds-size--1-of-6 slds-p-around--xx-small slds-truncate">
-                    <system-label label="LBL_BREAKFAST"/>
+                <div class="slds-size--1-of-6 slds-p-around--xx-small">
+                    <system-checkbox [disabled]="!editing" [(ngModel)]="deduction.b" (change)="writeValue()"/>
                 </div>
-                <div class="slds-size--1-of-6 slds-p-around--xx-small slds-truncate">
-                    <system-label label="LBL_LUNCH"/>
+                <div class="slds-size--1-of-6 slds-p-around--xx-small">
+                    <system-checkbox [disabled]="!editing" [(ngModel)]="deduction.l" (change)="writeValue()"/>
                 </div>
-                <div class="slds-size--1-of-6 slds-p-around--xx-small slds-truncate">
-                    <system-label label="LBL_DINNER"/>
+                <div class="slds-size--1-of-6 slds-p-around--xx-small">
+                    <system-checkbox [disabled]="!editing" [(ngModel)]="deduction.d" (change)="writeValue()"/>
                 </div>
             </div>
-            @for (deduction of deductions; track deduction.date) {
-                <div class="slds-grid slds-grid--vertical-align-center">
-                    <div class="slds-size_1-of-2 slds-p-around--xx-small">
-                        <system-display-datetime [date]="deduction.date" system-display-datetime-hide-time system-display-datetime-show-dayofweek/>
-                    </div>
-                    <div class="slds-size--1-of-6 slds-p-around--xx-small">
-                        <system-checkbox [disabled]="!editing" [(ngModel)]="deduction.b" (change)="writeValue()"/>
-                    </div>
-                    <div class="slds-size--1-of-6 slds-p-around--xx-small">
-                        <system-checkbox [disabled]="!editing" [(ngModel)]="deduction.l" (change)="writeValue()"/>
-                    </div>
-                    <div class="slds-size--1-of-6 slds-p-around--xx-small">
-                        <system-checkbox [disabled]="!editing" [(ngModel)]="deduction.d" (change)="writeValue()"/>
-                    </div>
-                </div>
-            }
-        } @else {
-            no data
         }
     </div>
 }

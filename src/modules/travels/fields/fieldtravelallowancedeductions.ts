@@ -10,6 +10,7 @@ import {Router} from '@angular/router';
 import {view} from '../../../services/view.service';
 
 declare var moment: any;
+declare var _: any;
 
 /**
  * renders a bullet, in slds success color or grey, depending on the boolean value of the field
@@ -19,7 +20,7 @@ declare var moment: any;
 })
 export class fieldTravelAllowanceDeductions extends fieldGeneric {
 
-    public deductions: {date: string, b:boolean, l:boolean, d:boolean}[];
+    public deductions: {date: string, b:boolean, l:boolean, d:boolean}[] = undefined;
 
     constructor( public model: model, public view: view, public language: language, public metadata: metadata, public router: Router ) {
         super( model, view, language, metadata, router );
@@ -46,7 +47,7 @@ export class fieldTravelAllowanceDeductions extends fieldGeneric {
     }
 
     private buildDays(data){
-        if(!this.deductions && this.value){
+        if(!this.deductions && this.value && !_.isEmpty(this.value)){
             this.deductions = this.value;
         }
 
