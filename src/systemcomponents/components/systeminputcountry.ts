@@ -45,6 +45,9 @@ export class SystemInputCountry implements OnInit, ControlValueAccessor {
      * set to true if the address inpout shoudl be strict according to the dropdown values
      */
     public strict: boolean = false;
+    @Input('system-input-country-strict') set setStrict(value) {
+        this.strict = true;
+    }
 
     constructor(
         public metadata: metadata,
