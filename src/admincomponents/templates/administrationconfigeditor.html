@@ -24,13 +24,22 @@
                     <div *ngIf="!item.label">{{item.name}}</div>
                 </td>
                 <td>
-                    <ng-container [ngSwitch]="item.type">
-                        <system-checkbox *ngSwitchCase="'bool'" [(ngModel)]="configvalues[item.name]" [asinteger]="true"></system-checkbox>
-                        <administration-configeditor-enum *ngSwitchCase="'enum'" [value]="configvalues[item.name]" (newvalue)="configvalues[item.name] = $event" [options]="item.options"></administration-configeditor-enum>
-                        <div *ngSwitchDefault class="slds-form-element__control">
-                            <input type="text" class="slds-input" [disabled]="loading" [(ngModel)]="configvalues[item.name]" />
-                        </div>
-                    </ng-container>
+                    @switch(item.type){
+                        @case('bool'){
+                            <system-checkbox [(ngModel)]="configvalues[item.name]" [asinteger]="true"></system-checkbox>
+                        }
+                        @case('enum'){
+                            <administration-configeditor-enum  [value]="configvalues[item.name]" (newvalue)="configvalues[item.name] = $event" [options]="item.options"></administration-configeditor-enum>
+                        }
+                        @case('country'){
+                            <system-input-country system-input-country-strict [(ngModel)]="configvalues[item.name]"/>
+                        }
+                        @default{
+                            <div class="slds-form-element__control">
+                                <input type="text" class="slds-input" [disabled]="loading" [(ngModel)]="configvalues[item.name]"/>
+                            </div>
+                        }
+                    }
                 </td>
             </tr>
         </tbody>
