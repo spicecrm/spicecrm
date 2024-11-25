@@ -89,7 +89,7 @@
                                         <system-input-package [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"></system-input-package>
                                     }
                                     @case('country'){
-                                        <system-input-country [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"></system-input-country>
+                                        <system-input-country [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]" system-input-country-strict></system-input-country>
                                     }
                                     @case('number'){
                                         <system-input-number [disabled]="!isEditMode(field)" precision="2" [(ngModel)]="entry.data[field.name]"/>
