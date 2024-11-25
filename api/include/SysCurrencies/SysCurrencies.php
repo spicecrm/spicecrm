@@ -338,7 +338,7 @@ class SysCurrencies
         $db = DBManagerFactory::getInstance();
         $exchangeRates = [];
         foreach ($this->currencies as $currency) {
-            $rate = $db->fetchOne("SELECT id, exchangerate_date, exchange_rate FROM syscurrenciesexchangerates WHERE syscurrency_id='{$currency['id']}'");
+            $rate = $db->fetchOne("SELECT id, exchangerate_date, exchange_rate FROM syscurrenciesexchangerates WHERE syscurrency_id='{$currency['id']}' ORDER BY exchangerate_date DESC");
             if($rate) {
                 $exchangeRates[$currency['iso4217']] = [
                     'id' => $rate['id'],
