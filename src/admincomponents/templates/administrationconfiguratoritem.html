@@ -82,10 +82,10 @@
                         }
                     }
                     @case('country'){
-                        <system-input-country [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"></system-input-country>
+                        <system-input-country [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]" system-input-country-strict></system-input-country>
                     }
                     @case('number'){
-                        <system-input-number [disabled]="!isEditMode(field)" precision="2" [(ngModel)]="entry.data[field.name]"/>
+                        <system-input-number [disabled]="!isEditMode(field)" [asNumber]="true" precision="2" [(ngModel)]="entry.data[field.name]"/>
                     }
                     @default{
                         <system-input-text [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"/>
