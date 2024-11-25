@@ -3,6 +3,7 @@
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
+/*
 SpiceDictionaryHandler::getInstance()->dictionary['OutputTemplate'] = [
     'table' => 'outputtemplates',
     'comment' => 'Templates used to output something to .pdf or so...',
@@ -171,13 +172,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['OutputTemplate'] = [
         ]
     ],
     'indices' => [
-/* no duplication handling possible...
-        array(
-            'name' => 'idx_output_template_name',
-            'type'=> 'unique',
-            'fields'=> array('name','deleted','language')
-        ),
-*/
     ],
     'relationships' => [
 
@@ -185,3 +179,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['OutputTemplate'] = [
 ];
 
 VardefManager::createVardef('OutputTemplates','OutputTemplate', ['default', 'assignable']);
+*/

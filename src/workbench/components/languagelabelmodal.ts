@@ -7,6 +7,8 @@ import {
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
+import {modal} from '../../services/modal.service';
+import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'language-label-modal',
@@ -24,6 +26,8 @@ export class LanguageLabelModal {
         public utils: modelutilities,
         public language: language,
         public backend: backend,
+        public modal: modal,
+        public configurationService: configurationService
     ) {
         this.languages = this.language.getAvialableLanguages(true);
     }
@@ -99,11 +103,11 @@ export class LanguageLabelModal {
         );
     }
 
-    public getcurrentLanguageTranslations(){
+    public getcurrentLanguageTranslations() {
         let translations = this.translations;
         let currenttranslation = {default: '', short: '', long: ''};
         translations.some(translation => {
-            if(translation.syslanguage == this.language.currentlanguage){
+            if (translation.syslanguage == this.language.currentlanguage) {
                 currenttranslation.default = translation.translation_default;
                 currenttranslation.short = translation.translation_short;
                 currenttranslation.long = translation.translation_long;
@@ -130,11 +134,64 @@ export class LanguageLabelModal {
             language_name = langs[0];
         }
 
-        this.label[this.label.scope + '_translations'].push({
-            id: this.utils.generateGuid(),
-            syslanguagelabel_id: this.label.id,
-            syslanguage: language_name,
-        });
+        // check if we have the label in the system language
+        let sysTranslations = this.label[this.label.scope + '_translations'].find(l => l.syslanguage == this.language.getDefaultLanguage());
+        if (this.configurationService.getCapabilityConfig('syslanguages').apikey && sysTranslations) {
+            let labels = [];
+            if (sysTranslations.translation_short) labels.push(sysTranslations.translation_short);
+            if (sysTranslations.translation_default) labels.push(sysTranslations.translation_default);
+            if (sysTranslations.translation_long) labels.push(sysTranslations.translation_long);
+
+            if(labels.length > 0) {
+                let awaitModal = this.modal.await('LBL_TRANSLATING');
+                let defaultLanguage = this.language.getDefaultLanguage();
+                this.backend.postRequest(`syslanguage/labels/translate/${defaultLanguage}/${language_name}`, {}, {labels: labels}).subscribe({
+                    next: (res) => {
+                        let newLabel: any = {
+                            id: this.utils.generateGuid(),
+                            syslanguagelabel_id: this.label.id,
+                            syslanguage: language_name
+                        }
+
+                        let index = 0;
+                        if (sysTranslations.translation_short) {
+                            newLabel.translation_short = res[index];
+                            index++;
+                        }
+                        if (sysTranslations.translation_default) {
+                            newLabel.translation_default = res[index];
+                            index++;
+                        }
+                        if (sysTranslations.translation_long) {
+                            newLabel.translation_long = res[index];
+                            index++;
+                        }
+                        this.label[this.label.scope + '_translations'].push(newLabel);
+                        awaitModal.emit(true);
+                    },
+                    error: (e) => {
+                        this.label[this.label.scope + '_translations'].push({
+                            id: this.utils.generateGuid(),
+                            syslanguagelabel_id: this.label.id,
+                            syslanguage: language_name,
+                        });
+                        awaitModal.emit(true);
+                    }
+                })
+            } else {
+                this.label[this.label.scope + '_translations'].push({
+                    id: this.utils.generateGuid(),
+                    syslanguagelabel_id: this.label.id,
+                    syslanguage: language_name,
+                });
+            }
+        } else {
+            this.label[this.label.scope + '_translations'].push({
+                id: this.utils.generateGuid(),
+                syslanguagelabel_id: this.label.id,
+                syslanguage: language_name,
+            });
+        }
     }
 
     public getMissingLanguages(scope: string = null): any[] {

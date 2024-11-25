@@ -17,6 +17,8 @@ import {SpiceImports} from './components/spiceimports';
 import {SpiceImportsList} from './components/spiceimportslist';
 import {SpiceImportsListItem} from './components/spiceimportslistitem';
 import {Spiceimportslogs} from './components/spiceimportslogs';
+import {SpiceImportsHeader} from "./components/spiceimportsheader";
+import {DirectivesModule} from "../../directives/directives";
 
 @NgModule({
     imports: [
@@ -26,9 +28,11 @@ import {Spiceimportslogs} from './components/spiceimportslogs';
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule
     ],
     declarations: [
         SpiceImports,
+        SpiceImportsHeader,
         SpiceImportsList,
         SpiceImportsListItem,
         Spiceimportslogs,

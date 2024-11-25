@@ -44,7 +44,7 @@ export class SpeechRecognition implements OnInit {
     public divElementValue = new EventEmitter<any>()
 
     /**
-     * field types that are using speachRecogntion functionality
+     * field types that are using speech recogntion functionality
      * also needed to determine how to format the data
      */
     public typeOfField :'html'|'text'|'richText' = 'text';
