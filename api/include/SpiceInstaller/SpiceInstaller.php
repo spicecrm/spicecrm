@@ -453,6 +453,7 @@ class SpiceInstaller
 
         $db = $this->dbManagerFactory::getTypeInstance($postData['database']['db_type'], ['dbconfig' => ['db_manager' => $postData['database']['db_manager']]]);
         $postData['dboptions']['collation'] = "utf8mb4_unicode_ci";
+        $postData['dboptions']['charset'] = "utf8mb4";
         $db->setOptions($postData['dboptions']);
         if ($dbconfig['db_type'] == 'oci8') {
             $dbconfig['db_schema'] = $postData['database']['db_schema'];
