@@ -73,7 +73,7 @@ class SpiceFTSBeanHandler
         $aggregates = [];
         foreach ($this->indexProperties as $indexProperty) {
             $details = SpiceFTSUtils::getDetailsForField($indexProperty['path']);
-            if (isset($indexProperty['aggregate']) && (!empty($details['field']) || !empty($details['module']))) {
+            if (!empty($indexProperty['aggregate']) && (!empty($details['field']) || !empty($details['module']))) {
                 $aggregates[] = [
                     'fieldname' => $indexProperty['fieldname'],
                     'indexfieldname' => $indexProperty['indexfieldname'],
