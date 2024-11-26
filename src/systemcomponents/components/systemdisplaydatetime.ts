@@ -85,6 +85,8 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
      */
     public subscriptions: Subscription = new Subscription();
 
+    private days= ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY']
+
     constructor(public language: language, public cdRef: ChangeDetectorRef, public session: session, public userpreferences: userpreferences) {
         this.timeZone = this.userpreferences.toUse.timezone || this.session.getSessionData('timezone') || moment.tz.guess(true);
     }
@@ -164,7 +166,7 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
      * get the weekday label
      */
     get weekDayLabel(){
-        return this.date ? 'LBL_' + moment.utc(this.date).tz(this.timeZone).format('dddd').toUpperCase() : '';
+        return this.date ? 'LBL_' + this.days[moment.utc(this.date).tz(this.timeZone).format('d')] : '';
     }
 
 }
