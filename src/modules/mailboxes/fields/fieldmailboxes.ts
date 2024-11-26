@@ -178,7 +178,13 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
      * get config to disable zip compress checkbox
      */
     get zipDisabled() {
-        return !this.mailboxZipConfig || this.mailboxZipConfig == '0';
+        const isDisabled = !this.mailboxZipConfig || this.mailboxZipConfig == '0' || this.model.getField('downloadlink_attachments') == 1;
+
+        if (isDisabled) {
+            this.model.setField('zip_compress', undefined);
+        }
+
+        return isDisabled;
     }
 
     /**
@@ -230,6 +236,10 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
      * @param value
      */
     public setZip(value) {
+        if (this.zipDisabled) {
+            value = 0;
+        }
+
         this.model.setField('zip_compress', value);
     }
 
