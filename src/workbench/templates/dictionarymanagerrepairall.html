@@ -77,7 +77,7 @@
     </system-modal-content>
     <system-modal-footer>
         <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread">
-            <div class="slds-size--1-of-2 slds-grid slds-grid_vertical-align-center">
+            <div class="slds-size--1-of-3 slds-grid slds-grid_vertical-align-center">
                 <button class="slds-button slds-button--icon slds-button--icon-border" [disabled]="repairing" (click)="displayDetailSetting = !displayDetailSetting" [ngClass]="{'slds-is-selected': displayDetailSetting}" system-title="LBL_DETAILS">
                     <system-button-icon icon="settings"/>
                 </button>
@@ -91,7 +91,7 @@
                 <system-progress-bar class="slds-grow slds-m-horizontal--x-small" [progress]="getProgress()" [hideText]="true"></system-progress-bar>
                 <div>{{processedCount}}/{{filtereddefinitions.length}}</div>
             </div>
-            <div class="slds-size--1-of-4 slds-grid slds-grid--align-center">
+            <div class="slds-size--1-of-3 slds-grid slds-grid--align-center">
                 <div class="slds-form-element slds-grow slds-size--1-of-2">
                     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left-right">
                         <system-utility-icon icon="search" size="x-small" addclasses="slds-icon slds-input__icon slds-input__icon_left"></system-utility-icon>
@@ -99,7 +99,7 @@
                     </div>
                 </div>
             </div>
-            <div class="slds-size--1-of-4 slds-grid slds-grid--align-end">
+            <div class="slds-size--1-of-3 slds-grid slds-grid--align-end">
                 <div *ngIf="processedCount > 0" class="slds-grid">
                     <system-checkbox class="slds-p-around--xx-small" [disabled]="repairing" [(ngModel)]="itemfilters.erroneousDefinitions"><system-label label="LBL_ERRONEOUS_DEFINITIONS"/></system-checkbox>
                     <system-checkbox class="slds-p-around--xx-small" [disabled]="repairing" [(ngModel)]="itemfilters.alteredDefinitions"><system-label label="LBL_ALTERED_DEFINITIONS"/></system-checkbox>
