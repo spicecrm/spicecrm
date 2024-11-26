@@ -122,10 +122,10 @@ class SpiceDictionary
      */
     public function reloadSystemDump(): void
     {
+        SpiceCache::instance()->flush();
         $this->loadSystemDumpFile();
         $this->repairDBTableForDictionaries($this->dictionary);
         SpiceInstaller::loadSystemPackage(DBManagerFactory::getInstance());
-        SpiceCache::instance()->resetFull();
         SystemStartupMode::setRecoveryMode(true);
     }
 
