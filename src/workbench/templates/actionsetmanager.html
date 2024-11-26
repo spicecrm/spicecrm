@@ -18,12 +18,12 @@
                 <system-select [idOnly]="true" [(ngModel)]="currentActionSet.id" (ngModelChange)="selectCurrentActionset()" [disabled]="!currentModule || (moduleActionsets?.global.length === 0 && moduleActionsets?.custom.length === 0)">
                     @if (moduleActionsets?.global.length > 0) {
                         @for (actionset of moduleActionsets.global; track actionset.id){
-                            <system-select-option [value]="actionset.id" [display]="actionset.name" [group]="'Custom ' + language.getLabel('LBL_ACTIONSET')"/>
+                            <system-select-option [value]="actionset.id" [display]="actionset.name" [group]="'Global ' + language.getLabel('LBL_ACTIONSET')"/>
                         }
                     }
                     @if (moduleActionsets?.custom.length > 0) {
                         @for (actionset of moduleActionsets.custom; track actionset.id){
-                            <system-select-option [value]="actionset.id" [display]="actionset.name" [group]="'Global ' + language.getLabel('LBL_ACTIONSET')"/>
+                            <system-select-option [value]="actionset.id" [display]="actionset.name" [group]="'Custom ' + language.getLabel('LBL_ACTIONSET')"/>
                         }
                     }
                 </system-select>

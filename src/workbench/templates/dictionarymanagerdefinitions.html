@@ -40,6 +40,12 @@
                 <th class="" scope="col">
                     <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_TYPE"></system-label></div>
                 </th>
+                <th *ngIf="isExpanded" class="" scope="col">
+                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_CONTENT_TYPE"></system-label></div>
+                </th>
+                <th *ngIf="isExpanded" class="" scope="col">
+                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_AUDITED"></system-label></div>
+                </th>
                 <th style="width:3rem" scope="col"></th>
             </tr>
         </thead>
@@ -57,6 +63,12 @@
                 </td>
                 <td data-label="Type">
                     <div class="slds-truncate">{{dictionarydefinition.sysdictionary_type}}</div>
+                </td>
+                <td *ngIf="isExpanded" data-label="Contenttype">
+                    <div class="slds-truncate">{{dictionarydefinition.sysdictionary_contenttype}}</div>
+                </td>
+                <td *ngIf="isExpanded" data-label="audited">
+                    <system-checkbox system-checkbox-asinteger disabled [ngModel]="dictionarydefinition.audited"/>
                 </td>
                 <td>
                     <button class="slds-button slds-button--icon" (click)="editDictionaryDefinition(dictionarydefinition)">
