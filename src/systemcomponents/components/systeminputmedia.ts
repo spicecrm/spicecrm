@@ -223,8 +223,11 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * The compression level in case the image for a new jpeg compression the image as jpeg.
      */
-    public jpegCompressionLevel = 0.5;
+    public imageQuality = 1;
+    @Input('system-input-media-imagequality') public set quality( value: number ) {
+        this.imageQuality = value;
 
+    }
     /**
      * Holds the data of the crop box from the last crop-end event.
      */
@@ -567,7 +570,8 @@ export class SystemInputMedia implements OnDestroy {
             }
         }
 
-        image = this.cropper.getCroppedCanvas(cropParams).toDataURL(this.mediaMetaData.mimetype, this.jpegCompressionLevel);
+        // generate the image
+        image = this.cropper.getCroppedCanvas(cropParams).toDataURL(this.mediaMetaData.mimetype, this.imageQuality);
 
         return image.substring(image.indexOf('base64,') + 7);
     }
