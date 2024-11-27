@@ -88,6 +88,7 @@
             <table class="slds-table slds-table--fixed-layout slds-table_bordered slds-no-row-hover">
                 <thead>
                     <tr class="slds-line-height_reset">
+                        <th style="width: 2rem" scope="col"></th>
                         <th class="" scope="col">
                             <div class="slds-truncate"><system-label label="LBL_MODULE"/></div>
                         </th>
@@ -103,15 +104,23 @@
                         <th class="" scope="col">
                             <div class="slds-truncate"><system-label label="LBL_RHS_LINKLABEL"/></div>
                         </th>
-                        <th class="" scope="col">
-                            <div class="slds-truncate"><system-label label="LBL_RHS_DUPLICATEMERGE"/></div>
+                        <th style="width: 3rem" scope="col">
+                            <div class="slds-truncate" system-title="LBL_RHS_DUPLICATEMERGE"><system-label label="LBL_RHS_DUPLICATEMERGE"/></div>
                         </th>
-                        <th style="width: 2rem" scope="col"></th>
-                        <th style="width: 2rem" scope="col"></th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_PACKAGE"/></div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_VERSION"/></div>
+                        </th>
+                        <!--th style="width: 2rem" scope="col"></th-->
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="slds-hint-parent" *ngFor="let relationshipPolymorph of relationshipPolymorphs">
+                        <td>
+                            <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="relationshipPolymorph.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
+                        </td>
                         <td>
                             <div class="slds-truncate"><input disabled class="slds-input" [ngModel]="dictionarymanager.getDictionaryDefinitionName(relationshipPolymorph.lhs_sysdictionarydefinition_id)"/></div>
                         </td>
@@ -133,13 +142,15 @@
                             </div>
                         </td>
                         <td>
-                            <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="relationshipPolymorph.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
+                            <system-input-package [disabled]="readonly" [(ngModel)]="relationshipPolymorph.package"/>
                         </td>
                         <td>
-                            <!-- todo implement
-                            <button class="slds-button slds-button&#45;&#45;icon"><system-button-icon icon="delete"/></button>
-                            -->
+                            <system-input-version [disabled]="readonly" [(ngModel)]="relationshipPolymorph.version"/>
                         </td>
+                        <!--td>
+                            todo implement
+                            <button class="slds-button slds-button&#45;&#45;icon"><system-button-icon icon="delete"/></button>
+                        </td-->
                     </tr>
                 </tbody>
             </table>

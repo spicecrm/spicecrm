@@ -81,8 +81,14 @@
                             <system-input-text disabled [(ngModel)]="entry.data[field.name]"></system-input-text>
                         }
                     }
+                    @case('country'){
+                        <system-input-country [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]" system-input-country-strict></system-input-country>
+                    }
+                    @case('number'){
+                        <system-input-number [disabled]="!isEditMode(field)" [asNumber]="true" precision="2" [(ngModel)]="entry.data[field.name]"/>
+                    }
                     @default{
-                        <input  [disabled]="!isEditMode(field)" type="text" class="slds-input" [(ngModel)]="entry.data[field.name]"/>
+                        <system-input-text [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"/>
                     }
                 }
             </div>

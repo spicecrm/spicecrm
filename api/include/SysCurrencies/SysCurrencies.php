@@ -111,15 +111,17 @@ class SysCurrencies
         $db = DBManagerFactory::getInstance();
         // migrate the system currency
         $sysCur = SpiceConfig::getInstance()->config['currencies'];
-        $db->insertQuery('syscurrencies', [
-            'id' => '-99',
-            'name' => $sysCur['default_currency_name'],
-            'iso4217' => $sysCur['default_currency_iso4217'],
-            'currency_symbol' => $sysCur['default_currency_symbol'],
-            'is_inactive' => 0,
-            'is_systemcurrency' => 1,
-            'currency_precision' => $sysCur['default_currency_significant_digits']
-        ]);
+        if($sysCur){
+            $db->insertQuery('syscurrencies', [
+                'id' => '-99',
+                'name' => $sysCur['default_currency_name'],
+                'iso4217' => $sysCur['default_currency_iso4217'],
+                'currency_symbol' => $sysCur['default_currency_symbol'],
+                'is_inactive' => 0,
+                'is_systemcurrency' => 1,
+                'currency_precision' => $sysCur['default_currency_significant_digits']
+            ]);
+        }
 
         // migrate currencies table
         $legacyCurrencies = $db->fetchAll("SELECT * FROM currencies WHERE deleted = 0");
@@ -314,6 +316,7 @@ class SysCurrencies
 
         $c = $this->getCurrencyByID($currencyId);
         if(!$date) {
+            if(!$c->exchange_rate) return $amount;
             return round(($amount / $c->exchange_rate), $precision);
         } else {
             $date = (new DateTime($date))->format(TimeDate::DB_DATE_FORMAT);
@@ -321,7 +324,7 @@ class SysCurrencies
             if($exchangeRate){
                 return round(($amount / $exchangeRate), $precision);
             } else {
-                return 0;
+                return $amount;
             }
         }
     }
@@ -335,7 +338,7 @@ class SysCurrencies
         $db = DBManagerFactory::getInstance();
         $exchangeRates = [];
         foreach ($this->currencies as $currency) {
-            $rate = $db->fetchOne("SELECT id, exchangerate_date, exchange_rate FROM syscurrenciesexchangerates WHERE syscurrency_id='{$currency['id']}'");
+            $rate = $db->fetchOne("SELECT id, exchangerate_date, exchange_rate FROM syscurrenciesexchangerates WHERE syscurrency_id='{$currency['id']}' ORDER BY exchangerate_date DESC");
             if($rate) {
                 $exchangeRates[$currency['iso4217']] = [
                     'id' => $rate['id'],

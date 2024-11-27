@@ -68,7 +68,8 @@ export class DictionaryManagerAddDefinitionModal {
             tablename: '',
             sysdictionary_type: undefined,
             scope: this.dictionarymanager.defaultScope,
-            status: 'd'
+            status: 'd',
+            audited: 1
         };
     }
 

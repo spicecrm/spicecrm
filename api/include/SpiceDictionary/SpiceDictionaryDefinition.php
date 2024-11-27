@@ -131,6 +131,7 @@ class SpiceDictionaryDefinition
 
         // repair the relationships
         if ($relationships) {
+            SpiceDictionaryRelationships::repairVardefRelationshipsFromFields($this->name, $vardefDetails);
             SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($this->id);
         }
 
@@ -336,23 +337,6 @@ class SpiceDictionaryDefinition
                 SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']] = [];
 
                 SpiceDictionaryHandler::loadModuleFiles($module);
-
-                // get the ACL territories for a module
-                $territoryVardefs = self::addACLTerritoryFields($module);
-                if($territoryVardefs) {
-                    SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['fields'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['fields'], $territoryVardefs['fields']);
-                    SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['indices'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['indices'], $territoryVardefs['indices']);
-                    SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['relationships'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['relationships'], $territoryVardefs['relationships']);
-                }
-
-                // get the ACL vardefs for a module
-                $aclVardefs = self::addACLFields($module);
-                if($aclVardefs) {
-                    SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['fields'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['fields'], $aclVardefs['fields']);
-                    SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['indices'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['indices'], $aclVardefs['indices']);
-                    SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['relationships'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['relationships'], $aclVardefs['relationships']);
-                }
-
 
                 // get the module Details and return the data
                 return ['fields' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['fields'],

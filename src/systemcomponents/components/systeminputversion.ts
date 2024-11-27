@@ -2,12 +2,11 @@
  * @module WorkbenchModule
  */
 import {
-    Component, ElementRef, EventEmitter, forwardRef, HostBinding, HostListener, Input, OnInit, Output
+    Component, forwardRef, Input, OnInit
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
-import _ from "underscore";
-import {configurationService} from "../../services/configuration.service";
+import {EnumDisplayOptionArray, language} from "../../services/language.service";
 
 @Component({
     selector: 'system-input-version',
@@ -38,7 +37,7 @@ export class SystemInputVersion implements ControlValueAccessor, OnInit {
     /**
      * holds all packages
      */
-    public versions: any[] = [];
+    public versions: EnumDisplayOptionArray = [];
 
     /**
      * to disable the checkbox
@@ -66,7 +65,7 @@ export class SystemInputVersion implements ControlValueAccessor, OnInit {
     @Input() public autocomplete: string = 'off';
 
 
-    constructor( public modelutilities: modelutilities, private elementRef: ElementRef, public configuration: configurationService ) { }
+    constructor( public modelutilities: modelutilities, public language: language ) { }
 
     get value() {
         return this._value;
@@ -81,7 +80,7 @@ export class SystemInputVersion implements ControlValueAccessor, OnInit {
      * generate an autocomplete breaker if th evalue shoudl be off
      */
     public ngOnInit() {
-        this.versions = _.toArray(this.configuration.getData('domainvalidations')['spicecrmversion_dom']?.validationvalues);
+        this.versions = this.language.getDisplayOptions('spicecrmversion_dom', true);
     }
 
     /**

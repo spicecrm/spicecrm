@@ -247,7 +247,7 @@ class SpiceBeanController
     {
         $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
         $postBody = $req->getParsedBody();
-        return $res->withJson($moduleHandler->add_related($args['beanName'], $args['beanId'], $args['linkName'], $postBody['beansData']));
+        return $res->withJson($moduleHandler->add_related($args['beanName'], $args['beanId'], $args['linkName'], $postBody['beansData'] ?: $postBody));
     }
 
     public function setRelatedBean(Request $req, Response $res, array $args): Response
