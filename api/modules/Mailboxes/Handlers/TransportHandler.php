@@ -5,6 +5,7 @@ namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use DOMDocument;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\extensions\modules\TextMessageTemplates\TextMessageTemplate;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\includes\TimeDate;
@@ -84,38 +85,102 @@ abstract class TransportHandler
         /** @var EmailTemplate $emailTemplate */
         $emailTemplate = BeanFactory::newBean('EmailTemplates');
 
+        // html parts
+        $style ='';
+        $header = '';
+        $bodyParts = [];
+        $bodySource = $email->body;
+        $footer = '';
+
         # add the header to the email content
         if (!empty($this->mailbox->mailbox_header)) {
 
-            $parsedHtml = $this->parseTemplateBodyOnly($emailTemplate, $email, $this->mailbox->mailbox_header);
-            if (strpos($parsedHtml, "\n")) {
-                $parsedHtml = str_replace("\n", "", $parsedHtml);
-            }
-            if (strpos($email->body, '<body>')) {
-                $email->body = str_replace('<body>', "<body><header>{$parsedHtml}</header>", $email->body);
-            } else {
-                $email->body = "<header>{$parsedHtml}</header>" . $email->body;
-            }
+//            $parsedHtml = $this->parseTemplateBodyOnly($emailTemplate, $email, $this->mailbox->mailbox_header);
+//            if (strpos($parsedHtml, "\n")) {
+//                $parsedHtml = str_replace("\n", "", $parsedHtml);
+//            }
+//            if (strpos($email->body, '<body>')) {
+//                $email->body = str_replace('<body>', "<body><header>{$parsedHtml}</header>", $email->body);
+//            } else {
+//                $email->body = "<header>{$parsedHtml}</header>" . $email->body;
+//            }
+            $header = "<header>{$this->mailbox->mailbox_header}</header>";
         }
 
         # add the footer to the email content
         if (!empty($this->mailbox->mailbox_footer)) {
 
-            $parsedHtml = $this->parseTemplateBodyOnly($emailTemplate, $email, $this->mailbox->mailbox_footer);
-            if (strpos($parsedHtml, "\n")) {
-                $parsedHtml = str_replace("\n", "", $parsedHtml);
-            }
-            if (empty($this->mailbox->mailbox_header) && strpos($email->body, '</body>')) {
-                $email->body = str_replace('</body>', "<footer>{$parsedHtml}</footer></body>", $email->body);
-            } else {
-                $email->body = $email->body."<footer>{$parsedHtml}</footer>";
-            }
+//            $parsedHtml = $this->parseTemplateBodyOnly($emailTemplate, $email, $this->mailbox->mailbox_footer);
+//            if (strpos($parsedHtml, "\n")) {
+//                $parsedHtml = str_replace("\n", "", $parsedHtml);
+//            }
+//            if (empty($this->mailbox->mailbox_header) && strpos($email->body, '</body>')) {
+//                $email->body = str_replace('</body>', "<footer>{$parsedHtml}</footer></body>", $email->body);
+//            } else {
+//                $email->body = $email->body."<footer>{$parsedHtml}</footer>";
+//            }
+            $footer = "<footer>{$this->mailbox->mailbox_footer}</footer>";
+
         }
 
         if ($this->mailbox->stylesheet != '') {
-            $email->addStylesheet($this->mailbox->stylesheet);
+//            $email->addStylesheet($this->mailbox->stylesheet);
+            $style = '<style>'.$email->getStylesheet($this->mailbox->stylesheet).'</style>';
         }
-        $message = $this->composeEmail($email, $noSecurityCheck );
+
+        $landingPageUrl = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_landingpage_url');
+        // Check if downloadlink_attachments is enabled
+        $downloadAttachmentsEnabled = $email->getFieldValue('downloadlink_attachments');
+
+        if ($downloadAttachmentsEnabled == 1) {
+
+            if ($landingPageUrl && $email->id) {
+
+                $originalLink = "{$landingPageUrl}?id={$email->id}";
+
+                $downloadLink = "<div><a href=\"$originalLink\">Download Attachments</a></div>";
+            }
+        }
+
+        if(strpos($email->body, '<html') === false) {
+            $bodyParts[] = '<html>';
+        }
+        if(strpos($email->body, '<head>') === false) {
+            $bodyParts[] = '<head>';
+            $bodyParts[] = $style;
+            $bodyParts[] = '</head>';
+        } else {
+            $bodySource = str_replace('<head>', '<head>'.$style, $bodySource);
+        }
+
+        if(strpos($email->body, '<body>') === false){
+            $bodyParts[] = '<body>';
+            $bodyParts[] = $header;
+        } else{
+            $bodySource = str_replace('<body>', '<body>'.$header, $bodySource);
+        }
+
+        if(strpos($email->body, '</body>') === false){
+            $bodyParts[] = $bodySource;
+            $bodyParts[] = $downloadLink;
+            $bodyParts[] = $footer;
+            $bodyParts[] = '</body>';
+        } else{
+            $bodySource = str_replace('</body>',$downloadLink . $footer.'</body>', $bodySource);
+            $bodyParts[] = $bodySource;
+        }
+
+        if(strpos($email->body, '</html>') === false) {
+            $bodyParts[] = '</html>';
+        }
+
+        // build full html
+        $html = implode("\n", $bodyParts);
+        $html = str_replace("\n", "", $html);
+
+        $email->body = $this->parseTemplateBodyOnly($emailTemplate, $email, $html);
+
+        $message = $this->composeEmail($email, $noSecurityCheck);
 
         // set the date sent
         $email->date_sent = $timedate->nowDb();
@@ -130,7 +195,7 @@ abstract class TransportHandler
      * @param string $content
      * @return mixed
      */
-    private function parseTemplateBodyOnly(EmailTemplate $emailTemplate, Email $email, string $content)
+    private function parseTemplateBodyOnly(EmailTemplate|TextMessageTemplate $emailTemplate, Email|TextMessage $email, string $content)
     {
         $emailTemplate->body_html = $content;
         $parsedContent = $emailTemplate->parse($email)['body_html'];

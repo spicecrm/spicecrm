@@ -3,6 +3,7 @@
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
+/* migrated
 SpiceDictionaryHandler::getInstance()->dictionary['AccountVATID'] = [
     'table' => 'accountvatids',
     'comment' => 'AccountVATIDs Module',
@@ -69,5 +70,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['AccountVATID'] = [
     ],
 
 ];
+*/
 
-VardefManager::createVardef('AccountVATIDs', 'AccountVATID', ['default', 'assignable']);
+// VardefManager::createVardef('AccountVATIDs', 'AccountVATID', ['default', 'assignable']);

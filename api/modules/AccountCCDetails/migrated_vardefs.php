@@ -3,6 +3,7 @@
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
+/* migrated
 SpiceDictionaryHandler::getInstance()->dictionary['AccountCCDetail'] = [
     'table' => 'accountccdetails',
     'audited' => false,
@@ -133,3 +134,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['AccountCCDetail'] = [
 ];
 
 VardefManager::createVardef('AccountCCDetails', 'AccountCCDetail', ['default', 'assignable']);
+*/

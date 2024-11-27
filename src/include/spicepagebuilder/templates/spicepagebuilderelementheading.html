@@ -1,0 +1,141 @@
+<div *ngIf="!isEditMode; else editContainer" class="spice-drop-zone"
+     [class.slds-is-hovered]="spicePageBuilderService.isMouseIn == 'content'" (mouseenter)="setIsMouseIn(true)"
+     (mouseleave)="setIsMouseIn(false)" tabindex="-1">
+    <div class="spice-drop-zone-label">
+        <div class="slds-media slds-media_center">
+            <div class="slds-media__figure">
+                <system-icon icon="type_tool" sprite="utility" size="x-small"
+                             divClass="slds-current-color"></system-icon>
+            </div>
+            <div class="slds-media__body">
+                <h2 class="slds-truncate">
+                    <system-label label="LBL_HEADING"></system-label>
+                </h2>
+            </div>
+            <button (click)="spicePageBuilderService.saveCustomElement(element, 'item')"
+                    class="slds-button slds-button--icon slds-m-right--xx-small">
+                <system-button-icon icon="save" [inverse]="true"></system-button-icon>
+            </button>
+        </div>
+    </div>
+    <article (dblclick)="edit()" class="spice-drop-zone-content">
+        <div [style.background-color]="element.attributes['container-background-color']">
+            <div [innerHTML]="sanitizedContent" [ngStyle]="style"></div>
+        </div>
+    </article>
+    <div class="spice-drop-zone-actions">
+        <div class="slds-button-group" role="group">
+            <button cdkDragHandle class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small"
+                    system-title="LBL_MOVE">
+                <system-button-icon icon="move" addclasses="slds-icon"></system-button-icon>
+            </button>
+            <button (click)="edit()"
+                    class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small"
+                    system-title="LBL_EDIT">
+                <system-button-icon icon="edit" addclasses="slds-icon"></system-button-icon>
+            </button>
+            <button (click)="delete$.emit()"
+                    class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small"
+                    system-title="LBL_DELETE">
+                <system-button-icon icon="delete" addclasses="slds-icon"></system-button-icon>
+            </button>
+        </div>
+    </div>
+</div>
+
+
+
+<ng-template #editContainer>
+    <system-section titlelabel="LBL_ELEMENT_CONTENT" [alwaysExpanded]="true">
+        <div class="slds-grid slds-p-horizontal--xx-small slds-p-vertical--x-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-horizontal--xx-small slds-p-vertical--x-small">
+                <label class="slds-form-element__label"><system-label label="LBL_HEADING_TEXT"></system-label></label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="element.content"/>
+                </div>
+            </div>
+            <div class="slds-form-element slds-p-horizontal--xx-small slds-p-vertical--x-small">
+                <label class="slds-form-element__label"><system-label label="LBL_FONT_SIZE"></system-label></label>
+                <div class="slds-grid slds-rich-text-editor__spacing-wrapper" role="group">
+                    <div class="slds-rich-text-editor__select">
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <select class="slds-select" (ngModelChange)="changeFontSize($event)" [(ngModel)]="element.attributes['font-size']" [value]="'16px'">
+                                        <option value="36px">Heading 1</option>
+                                        <option value="30px">Heading 2</option>
+                                        <option value="24px">Heading 3</option>
+                                        <option value="20px">Heading 4</option>
+                                        <option value="18px">Heading 5</option>
+                                        <option value="16px">Heading 6</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-form-element slds-p-horizontal--xx-small slds-p-vertical--x-small">
+                <label class="slds-form-element__label"><system-label label="LBL_HEADING_STYLE"></system-label></label>
+                <div class="slds-form-element__control">
+                    <ul class="slds-button-group-list">
+                        <li>
+                            <button system-title="bold" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="toggleFontWeight()">
+                                <system-button-icon icon="bold"></system-button-icon>
+                            </button>
+                        </li>
+                    </ul>
+                    <ul class="slds-button-group-list">
+                        <li>
+                            <button system-title="italic" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="toggleFontStyleItalic()">
+                                <system-button-icon icon="italic"></system-button-icon>
+                            </button>
+                        </li>
+                    </ul>
+                    <ul class="slds-button-group-list">
+                        <li>
+                            <button system-title="underline" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="toggleFontStyleUnderline()">
+                                <system-button-icon icon="underline"></system-button-icon>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="slds-form-element slds-p-horizontal--xx-small slds-p-vertical--x-small">
+            <label class="slds-form-element__label"><system-label label="LBL_PREVIEW"></system-label></label>
+            <div [innerHTML]="element.content" [ngStyle]="style"></div>
+        </div>
+    </system-section>
+    <system-section titlelabel="LBL_STYLING" [alwaysExpanded]="true">
+        <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small slds-scrollable--y">
+            <div class="slds-size--1-of-1 slds-grid slds-wrap">
+                <ng-container *ngFor="let styleAttribute of attributesList" [ngSwitch]="styleAttribute.type">
+                    <spice-page-builder-input-text *ngSwitchCase="'text'"
+                                                   [(ngModel)]="element.attributes[styleAttribute.name]"
+                                                   [label]="styleAttribute.name"
+                                                   (ngModelChange)="updateStyleForPreview(styleAttribute.name)"
+                                                   class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                    <spice-page-builder-input-text *ngSwitchCase="'textSuffix'"
+                                                   [(ngModel)]="element.attributes[styleAttribute.name]"
+                                                   [label]="styleAttribute.name"
+                                                   [suffix]="spicePageBuilderService.defaultSuffix"
+                                                   (ngModelChange)="updateStyleForPreview(styleAttribute.name)"
+                                                   class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                    <spice-page-builder-input-sides *ngSwitchCase="'sides'"
+                                                    [(ngModel)]="element.attributes[styleAttribute.name]"
+                                                    [label]="styleAttribute.name"
+                                                    (ngModelChange)="updateStyleForPreview(styleAttribute.name)"
+                                                    class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-sides>
+                    <spice-page-builder-input-color *ngSwitchCase="'color'"
+                                                    [(ngModel)]="element.attributes[styleAttribute.name]"
+                                                    [label]="styleAttribute.name"
+                                                    (ngModelChange)="updateStyleForPreview(styleAttribute.name)"
+                                                    class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-color>
+                </ng-container>
+            </div>
+        </div>
+    </system-section>
+
+</ng-template>

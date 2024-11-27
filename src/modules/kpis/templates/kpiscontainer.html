@@ -1,18 +1,35 @@
-@if (kpiTargets.length > 0) {
-    <div class="slds-grid slds-wrap slds-gutters_direct-xx-small" >
-        @for (kpiTarget of kpiTargets; track kpiTarget.id) {
-            <div class="slds-col slds-p-vertical--xx-small" [ngClass]="getTileWidthClass">
+@if (groupedTargets.length > 0) {
+    @for (kpiGroup of groupedTargets; track kpiGroup.name) {
+        <div class="slds-box--border slds-p-around--x-small" [ngClass]="{'slds-m-top--x-small': $index > 0}">
+            <div class="slds-p-around--x-small slds-media__body slds-truncate">
+                <h2 class="slds-card__header-title">
+                    {{ kpiGroup.name }}
+                </h2>
+            </div>
+            <div class="slds-p-horizontal--x-small slds-grid slds-wrap slds-gutters_direct-xx-small slds-p-bottom--x-small">
+                @for (kpiTarget of kpiGroup.targets; track kpiTarget.id) {
+                    <div class="slds-col" [ngClass]="getTileWidthClass">
+                        <kpi-tile [kpiTarget]="kpiTarget"></kpi-tile>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+} @else if (otherTargets.length > 0){
+    <div class="slds-grid slds-wrap slds-gutters_direct-xx-small">
+        @for (kpiTarget of otherTargets; track kpiTarget.id) {
+            <div class="slds-col" [ngClass]="getTileWidthClass">
                 <kpi-tile [kpiTarget]="kpiTarget"></kpi-tile>
             </div>
         }
     </div>
-} @else{
+} @else {
     <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
         @if (loading) {
             <system-spinner/>
         } @else {
             <system-illustration-no-records>
-                @if (parentId){
+                @if (parentId) {
                     <system-label label="LBL_NO_KPIS_SET"/>
                 } @else {
                     <system-label label="LBL_NO_USER_SELECTED"/>

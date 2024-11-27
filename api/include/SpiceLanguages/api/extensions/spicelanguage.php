@@ -5,6 +5,7 @@ use SpiceCRM\includes\Middleware\ValidationMiddleware;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceUI\api\controllers\ConfServerController;
 use SpiceCRM\includes\SpiceLanguages\api\controllers\SpiceLanguageController;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 /**
  * get a Rest Manager Instance
@@ -220,4 +221,4 @@ $routes = [
 /**
  * register the Extension
  */
-$RESTManager->registerExtension('syslanguages', '1.0', [], $routes);
+$RESTManager->registerExtension('syslanguages', '1.0', ['apikey' => !empty(SpiceConfig::getInstance()->get('googleapi.languagekey'))], $routes);

@@ -21,11 +21,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
             'len' => 5,
             'comment' => 'status of the tenant',
         ],
-        'initialized' => [
-            'name'  => 'initialized',
-            'vname' => 'LBL_INITIALIZED',
-            'type'  => 'bool',
-        ],
         'is_trial' => [
             'name' => 'is_trial',
             'vname' => 'LBL_IS_TRIAL',
@@ -76,6 +71,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
         'tenant_domain' => [
             'name' => 'tenant_domain',
             'type' => 'varchar',
+            'vname' => 'LBL_DOMAIN',
         ],
         'users' => [
             'name' => 'users',

@@ -2,23 +2,14 @@
  * @module ModuleACLTerritories
  */
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
     Component,
-    ElementRef,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
     Output,
     EventEmitter
 } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {modelutilities} from '../../../services/modelutilities.service';
-import {navigation} from '../../../services/navigation.service';
-
 
 @Component({
     selector: 'aclterritorries-typesmanager-types',

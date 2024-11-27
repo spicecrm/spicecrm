@@ -12,7 +12,7 @@ import {language} from "../../../services/language.service";
 @Component({
     selector: 'travel-add-manual-travel-receipt-modal',
     templateUrl: '../templates/traveladdmanualtravelreceiptmodal.html',
-    providers: [model]
+    providers: [model, view]
 })
 
 /**
@@ -58,6 +58,8 @@ export class TravelAddManualTravelReceiptModal implements OnInit {
 
         // set the model to editing
         this.model.startEdit(false);
+
+        // set the view
         this.view.isEditable = true;
         this.view.setEditMode();
 

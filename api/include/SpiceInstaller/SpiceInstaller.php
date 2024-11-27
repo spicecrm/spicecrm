@@ -150,7 +150,7 @@ class SpiceInstaller
         $requirements['bcmath'] = extension_loaded('bcmath');
 
         # check package pear
-        require_once 'System.php';
+        include_once 'System.php';
         $requirements['pear'] = class_exists('System', false);
 
         // db check
@@ -452,6 +452,8 @@ class SpiceInstaller
             'db_type' => $postData['database']['db_type'],];
 
         $db = $this->dbManagerFactory::getTypeInstance($postData['database']['db_type'], ['dbconfig' => ['db_manager' => $postData['database']['db_manager']]]);
+        $postData['dboptions']['collation'] = "utf8mb4_unicode_ci";
+        $postData['dboptions']['charset'] = "utf8mb4";
         $db->setOptions($postData['dboptions']);
         if ($dbconfig['db_type'] == 'oci8') {
             $dbconfig['db_schema'] = $postData['database']['db_schema'];
@@ -463,12 +465,7 @@ class SpiceInstaller
         $dbconfig['db_name'] = $postData['database']['db_name'];
 
         if (!$db->dbExists($dbconfig['db_name'])) {
-            if ($postData['dboptions']['collation'] == 'utf8mb4_general_ci') {
-                $db->query("CREATE DATABASE " . $dbconfig['db_name'] . " CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci", true);
-            } else {
-                $db->createDatabase($dbconfig['db_name']);
-            }
-
+            $db->createDatabase($dbconfig['db_name']);
         }
         
         $this->dbManagerFactory::setDBConfigInstaller(['dbconfig' => $dbconfig, 'dbconfigoption'  => $postData['dboptions']]);
@@ -800,7 +797,7 @@ class SpiceInstaller
      * @return void
      * @throws Exception
      */
-    public function writeDictionaryToCacheTable()
+    public function writeDictionaryToCacheTable(): void
     {
         # write the definitions to the cache table
         $defsHandler = SpiceDictionaryDefinitions::getInstance();
@@ -818,6 +815,7 @@ class SpiceInstaller
     public function createDatabaseIndexes(): void
     {
         $indexHandler = SpiceDictionaryIndexes::getInstance();
+        $indexHandler->reloadItems();
 
         foreach ($indexHandler->dictionaryIndexes as $index) {
             try {

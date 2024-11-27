@@ -12,7 +12,6 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceSocket\SpiceSocket;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Mailboxes\Mailbox;
-use SpiceCRM\modules\UserPreferences\UserPreference;
 
 class SpiceNotifications
 {
@@ -22,6 +21,7 @@ class SpiceNotifications
     private $userId;
     private $notificationDate;
     private $notificationType;
+    private $notificationText;
 
     private $bean;
     private $assignedUser;
@@ -29,9 +29,10 @@ class SpiceNotifications
     const TYPE_ASSIGNMENT = 'assign';
     const TYPE_CHANGE     = 'change';
     const TYPE_DELETE     = 'delete';
+    const TYPE_GENERIC     = 'generic';
     const TYPE_RELATE     = 'relate';
 
-    public function __construct(SpiceBean $bean, string $type = self::TYPE_ASSIGNMENT, string $userId = null) {
+    public function __construct(SpiceBean $bean, string $type = self::TYPE_ASSIGNMENT, string $userId = null, ?string $text = null) {
         $timedate = TimeDate::getInstance();
 
         $this->id = SpiceUtils::createGuid();
@@ -40,7 +41,7 @@ class SpiceNotifications
         $this->userId = $userId ?? $bean->assigned_user_id;
         $this->notificationDate = $timedate->nowDb();
         $this->notificationType = $type;
-
+        $this->notificationText = $text;
         $this->bean = $bean;
         $this->assignedUser = BeanFactory::getBean('Users', $this->userId);
     }
@@ -65,14 +66,13 @@ class SpiceNotifications
             'user_id' => $this->userId,
             'notification_date' => $this->notificationDate,
             'notification_type' => $this->notificationType,
-            'additional_infos' => $this->additional_infos
+            'additional_infos' => $this->additional_infos,
+            'notification_text' => $this->notificationText
             ];
 
-        $sql = "INSERT INTO spicenotifications (id, bean_module, bean_id, created_by, user_id, notification_date, notification_type, additional_infos)
-                VALUES ('{$data['id']}', '{$data['bean_module']}', '{$data['bean_id']}', '{$data['created_by']}', '{$data['user_id']}', '{$data['notification_date']}', '{$data['notification_type']}', '{$data['additional_infos']}')";
-        $db->query($sql);
+        $db->insertQuery('spicenotifications', $data);
 
-        if ($this->assignedUser->receive_notifications) {
+        if ($this->assignedUser->receive_notifications || $this->assignedUser->getPreference('sendEmailNotifications')) {
             $this->sendEmailNotification();
         }
 
@@ -130,21 +130,29 @@ class SpiceNotifications
     {
         $destUserPrefs = BeanFactory::getBean('UserPreferences')->setUser($this->assignedUser);
         $destUserPrefs->reloadPreferences();
-        $destLang = $destUserPrefs->getPreference('language');
+        $destLang = $destUserPrefs->getPreference('language') ?: 'en_us';
 
         $this->initNotificationTemplates();
 
         if (isset($_SESSION['notification_templates'][$this->beanModule][$destLang])) {
             $tplId = $_SESSION['notification_templates'][$this->beanModule][$destLang]['id'];
-        } else if (isset($_SESSION['notification_templates'][$this->beanModule]['en_us'])) {
-            $tplId = $_SESSION['notification_templates'][$this->beanModule]['en_us']['id'];
+        } else if (isset($_SESSION['notification_templates']['*'][$destLang])) {
+            $tplId = $_SESSION['notification_templates']['*'][$destLang]['id'];
         } else {
             LoggerManager::getLogger()->fatal("Notifications: No suitable template available in DB (in the langue of the destination user or in english) for module '{$this->beanModule}', cancelling send.");
             return false;
         }
 
         $tpl = BeanFactory::getBean('EmailTemplates', $tplId);
-        $parsedTpl = $tpl->parse($this->bean);
+
+        $additionalValues = [
+            'notificationType' => $this->notificationType,
+            'assignedUserName' => $this->assignedUser->summary_text,
+            'notificationDate' => $this->notificationDate,
+            'notificationText' => $this->notificationText,
+        ];
+
+        $parsedTpl = $tpl->parse($this->bean, $additionalValues);
 
         return $parsedTpl;
     }

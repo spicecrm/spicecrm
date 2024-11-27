@@ -1,5 +1,5 @@
 <div style="display: flow-root" (contextmenu)="showContext($event)">
-    <label class="slds-truncate slds-float_left" [ngClass]="addclasses">
+    <label class="slds-truncate" [ngClass]="displayClasses">
         <abbr *ngIf="stati.editable && stati.required" class="slds-required">*</abbr>
         <system-label-fieldname *ngIf="!fieldconfig.label" [field]="fieldname" [fieldconfig]="fieldconfig" [module]="model.module" [length]="view.labels"></system-label-fieldname>
         <system-label *ngIf="fieldconfig.label" [label]="fieldconfig.label" [length]="view.labels"></system-label>

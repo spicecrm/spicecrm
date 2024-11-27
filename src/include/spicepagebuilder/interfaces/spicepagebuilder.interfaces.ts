@@ -1,3 +1,4 @@
+import {SafeResourceUrl} from "@angular/platform-browser";
 /**
  * container element to be rendered in the view
  */
@@ -163,11 +164,13 @@ export interface RSSI extends ContentElementI {
  * image element to be rendered in the view
  */
 export interface ImageI extends ContentElementI {
+    content: string,
     attributes: {
+        'imageSource': 'upload' | 'url',
         'href?': string,
         'align?': string,
         'alt'?: string,
-        'src': string,
+        'src': string | SafeResourceUrl,
         'title'?: string,
         'border'?: string,
         'border-radius'?: string,
@@ -179,7 +182,8 @@ export interface ImageI extends ContentElementI {
         'rel'?: string,
         'srcset'?: string,
         'target'?: string,
-        'width'?: string
+        'width'?: string,
+        'inputUrl'?: string
     };
 }
 /**
@@ -200,7 +204,6 @@ export interface SpacerI extends ContentElementI {
  */
 export interface TextI extends ContentElementI {
     content: string;
-    editorType: 'richText' | 'html';
     attributes: {
         'color'?: string,
         'container-background-color'?: string,
@@ -214,7 +217,8 @@ export interface TextI extends ContentElementI {
         'text-transform'?: string,
         'align'?: string,
         'padding'?: string,
-        'css-class'?: string
+        'css-class'?: string,
+        'editor-type'?: string
     };
 }
 /**

@@ -171,15 +171,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'source' => 'non-db',
             'vname' => 'LBL_TASKS',
         ],
-        'notes' => [
-            'name' => 'notes',
-            'type' => 'link',
-            'relationship' => 'account_notes',
-            'module' => 'Notes',
-            'bean_name' => 'Note',
-            'source' => 'non-db',
-            'vname' => 'LBL_NOTES',
-        ],
+//        'notes' => [
+//            'name' => 'notes',
+//            'type' => 'link',
+//            'relationship' => 'account_notes',
+//            'module' => 'Notes',
+//            'bean_name' => 'Note',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_NOTES',
+//        ],
         'meetings' => [
             'name' => 'meetings',
             'type' => 'link',
@@ -242,6 +242,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
 //            'source' => 'non-db',
 //            'vname' => 'LBL_CONTACTS',
 //        ],
+        /*
         'users' => [
             'name' => 'users',
             'type' => 'link',
@@ -256,6 +257,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 ]
             ]
         ],
+        */
         'opportunities' => [
             'name' => 'opportunities',
             'type' => 'link',
@@ -265,15 +267,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'source' => 'non-db',
             'vname' => 'LBL_OPPORTUNITY',
         ],
-        'projects' => [
-            'name' => 'projects',
-            'type' => 'link',
-            'relationship' => 'projects_accounts',
-            'module' => 'Projects',
-            'bean_name' => 'Project',
-            'source' => 'non-db',
-            'vname' => 'LBL_PROJECTS',
-        ],
+//        'projects' => [
+//            'name' => 'projects',
+//            'type' => 'link',
+//            'relationship' => 'projects_accounts',
+//            'module' => 'Projects',
+//            'bean_name' => 'Project',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_PROJECTS',
+//        ],
         'leads' => [
             'name' => 'leads',
             'type' => 'link',
@@ -370,7 +372,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'duplicate_merge' => false,
             'comment' => 'The first campaign name for Account (Meta-data only)',
         ],
-        'prospect_lists' => [
+/*        'prospect_lists' => [
             'name' => 'prospect_lists',
             'type' => 'link',
             'relationship' => 'prospect_list_accounts',
@@ -382,7 +384,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                     'map' => 'prospectlists_accounts_quantity'
                 ]
             ]
-        ],
+        ],*/
         'proposals' => [
             'name' => 'proposals',
             'vname' => 'LBL_PROPOSALS',
@@ -455,6 +457,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'source' => 'non-db',
             'vname' => 'LBL_ACCOUNTBANKACCOUNTS'
         ],
+        /*
         'accountccdetails' => [
             'name' => 'accountccdetails',
             'vname' => 'LBL_ACCOUNTCCDETAILS',
@@ -466,6 +469,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'default' => true, //UI: load related beans on account load. module property required!
             'module' => 'AccountCCDetails'
         ],
+        */
         'events_account_role' => [
             'name' => 'events_account_role',
             'vname' => 'LBL_ROLE',
@@ -513,20 +517,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'type' => 'varchar',
             'source' => 'non-db'
         ],
-        'catalogorders' => [
-            'name' => 'catalogorders',
-            'type' => 'link',
-            'module' => 'CatalogOrders',
-            'relationship' => 'accounts_catalogorders',
-            'source' => 'non-db'
-        ],
-        'inquiries' => [
-            'name' => 'inquiries',
-            'type' => 'link',
-            'module' => 'Inquiries',
-            'relationship' => 'account_inquiries',
-            'source' => 'non-db'
-        ],
+//        'catalogorders' => [
+//            'name' => 'catalogorders',
+//            'type' => 'link',
+//            'module' => 'CatalogOrders',
+//            'relationship' => 'accounts_catalogorders',
+//            'source' => 'non-db'
+//        ],
+//        'inquiries' => [
+//            'name' => 'inquiries',
+//            'type' => 'link',
+//            'module' => 'Inquiries',
+//            'relationship' => 'account_inquiries',
+//            'source' => 'non-db'
+//        ],
         'spicetexts' => [
             'name' => 'spicetexts',
             'type' => 'link',
@@ -535,6 +539,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'source' => 'non-db',
             'vname' => 'LBL_SPICE_TEXTS',
         ],
+        /*
         'accountvatids' => [
             'name' => 'accountvatids',
             'type' => 'link',
@@ -544,6 +549,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'module' => 'AccountVATIDs',
             'default' => true
         ],
+        */
         'agreements' => [
             'name' => 'agreements',
             'type' => 'link',
@@ -606,11 +612,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Accounts'
         ],
-        'account_notes' => ['lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
-            'rhs_module' => 'Notes', 'rhs_table' => 'notes', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Accounts'
-        ],
+//        'account_notes' => ['lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
+//            'rhs_module' => 'Notes', 'rhs_table' => 'notes', 'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Accounts'
+//        ],
         'account_meetings' => ['lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
             'rhs_module' => 'Meetings', 'rhs_table' => 'meetings', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
@@ -960,17 +966,17 @@ if (file_exists('extensions/modules/Potentials')) {
 
 }
 
-if (file_exists('extensions/modules/BonusCards')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['bonuscards'] = [
-        'name' => 'bonuscards',
-        'type' => 'link',
-        'relationship' => 'bonuscards_accounts',
-        'module' => 'BonusCards',
-        'bean_name' => 'BonusCard',
-        'source' => 'non-db',
-        'vname' => 'LBL_BONUSCARDS',
-    ];
-}
+//if (file_exists('extensions/modules/BonusCards')) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['bonuscards'] = [
+//        'name' => 'bonuscards',
+//        'type' => 'link',
+//        'relationship' => 'bonuscards_accounts',
+//        'module' => 'BonusCards',
+//        'bean_name' => 'BonusCard',
+//        'source' => 'non-db',
+//        'vname' => 'LBL_BONUSCARDS',
+//    ];
+//}
 
 if (file_exists('modules/Products')) {
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['manufactured_products'] = [

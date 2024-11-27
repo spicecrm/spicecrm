@@ -1,0 +1,26 @@
+<system-collapsable-tab [collapsible]="false" tabtitle="LBL_CONFIGURATION" class="slds-m-top--large spice-display-block">
+    <div [system-model-provider]="{id: model.id, data: {
+    assigntype: model.data.type_config.recipient_assigntype,
+    assigntouser: model.data.type_config.recipient_assigntouser,
+    assigntouser_name: model.data.type_config.recipient_assigntouser_name,
+    assigntoorgunit: model.data.type_config.recipient_assigntoorgunit,
+    assigntoorgunit_name: model.data.type_config.recipient_assigntoorgunit_name,
+    assignfile: model.data.type_config.recipient_assignfile,
+    assignclass: model.data.type_config.recipient_assignclass,
+    assignmethod: model.data.type_config.recipient_assignmethod,
+    assignparams: model.data.type_config.recipient_assignparams,
+    }, module: model.module}" (data$)="setRecipient($event)">
+        <workflow-manager-detail-task-assignmentpanel/>
+    </div>
+    <div class="slds-form-element slds-m-top--small">
+        <label class="slds-form-element__label">
+            <abbr class="slds-required" title="required">* </abbr><system-label label="LBL_TEXT"/> </label>
+        <div class="slds-form-element__control">
+            <textarea [(ngModel)]="model.data.type_config.notification_text" class="slds-textarea"></textarea>
+        </div>
+    </div>
+
+    <workflow-manager-task-next-tasks *ngIf="!workflowManagerService.displayDiagram"/>
+
+</system-collapsable-tab>
+

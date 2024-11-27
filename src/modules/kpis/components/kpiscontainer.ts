@@ -2,7 +2,7 @@
  * @module ModuleKPIs
  */
 
-import {Component, OnInit, Input, OnChanges} from '@angular/core';
+import {Component, ElementRef, Input, OnChanges} from '@angular/core';
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {modal} from "../../../services/modal.service";
@@ -24,7 +24,12 @@ export class KPIsContainer implements OnChanges {
     /**
      * holds kpis for logged in User
      */
-    public kpiTargets: any[] = [];
+    public groupedTargets: any[] = [];
+
+    /**
+     * the other targets
+     */
+    public otherTargets: any[] = [];
 
     /**
      * parentId the KPITarget is related to
@@ -42,7 +47,8 @@ export class KPIsContainer implements OnChanges {
         public backend: backend,
         public toast: toast,
         public layout: layout,
-        public modal: modal
+        public modal: modal,
+        public elementRef: ElementRef
     ) {
     }
 
@@ -55,12 +61,14 @@ export class KPIsContainer implements OnChanges {
      * @private
      */
     public loadKPIs() {
-        this.kpiTargets = [];
+        this.otherTargets = [];
+        this.groupedTargets = [];
         if(this.parentId && this.parentType) {
             this.loading = true;
             this.backend.getRequest(`module/KPIs/byparent/${this.parentType}/${this.parentId}`).subscribe({
                 next: (data) => {
-                    this.kpiTargets = data;
+                    this.groupTargets(data);
+
                     this.loading = false;
                 }, error: () => {
                     this.toast.sendToast('LBL_ERR_LOADING_KPIS', 'error');
@@ -71,16 +79,65 @@ export class KPIsContainer implements OnChanges {
     }
 
     /**
+     * group kpi targets
+     * @param kpiTargets
+     * @private
+     */
+    private groupTargets(kpiTargets: any[]) {
+        const groupedTargets: any[] = [];
+
+        let others: any[] = [];
+
+        if (kpiTargets.length > 0) {
+            // Loop through each kpiTarget in the array
+
+            kpiTargets.forEach((target) => {
+                // Check if kpiTarget has a group
+                if (target.kpi?.group) {
+                    const groupName = target.kpi.group.name;
+                    const groupPriority = target.kpi.group.priority;
+
+                    // Check if the group already exists in the groupedTargets array
+                    const group = groupedTargets.find(g => g.name === groupName);
+
+                    // If the group doesn't exist, create it
+                    if (!group) {
+                        groupedTargets.push({
+                            name: groupName,
+                            priority: groupPriority,
+                            targets: [target]
+                        });
+                    } else {
+                        group.targets.push(target);
+                    }
+                } else {
+                    this.otherTargets.push(target);
+                }
+            });
+        }
+
+        if(groupedTargets.length > 0 && this.otherTargets.length > 0){
+            groupedTargets.push({
+                name: 'other',
+                priority: 99,
+                targets: this.otherTargets
+            });
+        }
+
+        // After grouping, sort the groups by priority in asc order
+        groupedTargets.sort((a, b) => a.priority - b.priority);
+
+        this.groupedTargets = groupedTargets;
+    }
+
+
+    /**
      * calculate amount of tiles displayed
      * depending on screen width
      */
     get getTileWidthClass() {
-        if (this.layout.screenwidth == 'small') {
-            return 'slds-size--1-of-1';
-        } else if (this.layout.screenwidth == 'medium') {
-            return 'slds-size--1-of-2';
-        } else {
-            return 'slds-size--1-of-3';
-        }
+        let dim = this.elementRef.nativeElement.getBoundingClientRect()
+        let count = Math.floor(dim.width / 350);
+        return dim.width > 350 ?  'slds-size--1-of-' + count : 'slds-size--1-of-1';
     }
 }

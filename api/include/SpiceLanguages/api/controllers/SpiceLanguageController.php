@@ -95,7 +95,7 @@ class SpiceLanguageController
     {
         $handler = new SpiceLanguagesRESTHandler();
         $labels = $req->getParsedBody();
-        $result = $handler->translateLabels($labels['labels'], $args['fromlanguage'], $args['tolanguage']);
+        $result = $handler->translateLabels($labels['labels'], substr($args['fromlanguage'], 0, 2), substr($args['tolanguage'], 0, 2));
         return $res->withJson($result);
     }
 
