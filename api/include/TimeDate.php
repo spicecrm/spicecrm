@@ -707,7 +707,7 @@ class TimeDate
      */
     public function nowDbInMicroseconds(): string
     {
-        return (new DateTime())->setTimezone(new DateTimeZone('UTC'))->createFromFormat('U.u', microtime(true))->format(self::DB_DATETIME_MICROSECONDS_FORMAT);
+        return DateTime::createFromFormat('U.u', sprintf("%.6F", microtime(true)))->setTimezone(new DateTimeZone('UTC'))->format(self::DB_DATETIME_MICROSECONDS_FORMAT);
     }
 
     /**
