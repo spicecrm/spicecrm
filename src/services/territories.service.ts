@@ -89,7 +89,7 @@ export class territories {
             }
 
             // check if we did reach the number we are looking for
-            if (retArray.length >= items) {
+            if (items && retArray.length >= items) {
                 return retArray;
             }
         }

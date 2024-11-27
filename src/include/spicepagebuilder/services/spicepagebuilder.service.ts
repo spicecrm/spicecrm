@@ -106,10 +106,22 @@ export class SpicePageBuilderService {
             'container-background-color': '#ffffff'
         }
     };
-        /**
+    /**
      * hold the available content elements
      */
     public readonly panelElements: PanelElementI[] = [
+        {
+            tagName: 'heading',
+            label: 'LBL_HEADING',
+            content: 'Heading text here...',
+            icon: 'type_tool',
+            attributes: {
+                'font-size': '16px',
+                'line-height': '24px',
+                'padding': '4px',
+                'container-background-color': '#ffffff'
+            }
+        },
         {
             tagName: 'text',
             label: 'LBL_TEXT',
@@ -126,6 +138,7 @@ export class SpicePageBuilderService {
             tagName: 'image',
             label: 'LBL_IMAGE',
             icon: 'image',
+            content: 'Upload an image or paste an URL...',
             attributes: {
                 align: 'center',
                 padding: '4px',

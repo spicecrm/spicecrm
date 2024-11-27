@@ -177,20 +177,23 @@ class SpiceDictionaryDefinitions
      * does a generic repair or for a specific id if given
      * @param $name
      * @param bool $keep
+     * @param bool $loadLegacyFiles
      * @return string|null
      * @throws \Exception
      */
-    public function repairVardefDefinition($name, bool $keep = false): ?string
+    public function repairVardefDefinition($name, bool $keep = false, bool $loadLegacyFiles = true): ?string
     {
-        // $vardefDefinitions = SpiceDictionaryVardefs::loadVardefs([$name])[$name];
-        SpiceDictionaryVardefs::loadLegacyFiles();
+        if ($loadLegacyFiles) SpiceDictionaryVardefs::loadLegacyFiles();
+
         $dic = SpiceDictionaryHandler::getInstance()->dictionary[$name];
+
+        if (!$dic) return null;
 
         # clear the cache table for the definition before writing
         DBManagerFactory::getInstance()->deleteQuery('sysdictionaryfields', "sysdictionaryname = '$name'");
 
         $this->writeVardefToFieldsTable($name, $dic);
-        $repairFields = array_filter($dic['fields'], fn($d) => $d['source'] != 'non-db');
+        $repairFields = $dic['fields'] ? array_filter($dic['fields'], fn($d) => $d['source'] != 'non-db') : [];
 
         // do the repair
         $sql = DBManagerFactory::getInstance()->repairTableParams($dic['table'], $repairFields, $dic['indices'], false);

@@ -4,6 +4,7 @@
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
+/* migrated
 SpiceDictionaryHandler::getInstance()->dictionary['OrgChart'] = [
     'table' => 'orgcharts',
     'comment' => 'Orgcharts Module',
@@ -156,3 +157,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgChart'] = [
 ];
 
 VardefManager::createVardef('OrgCharts', 'OrgChart', ['default', 'assignable']);
+*/

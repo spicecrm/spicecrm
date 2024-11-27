@@ -71,13 +71,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'source' => 'non-db',
             'vname' => 'LBL_MEETINGS',
         ],
-        'notes_participant' => [
-            'name' => 'notes',
-            'type' => 'link',
-            'relationship' => 'consumer_notes',
-            'source' => 'non-db',
-            'vname' => 'LBL_NOTES',
-        ],
+//        'notes_participant' => [
+//            'name' => 'notes',
+//            'type' => 'link',
+//            'relationship' => 'consumer_notes',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_NOTES',
+//        ],
         'tasks_participant' => [
             'name' => 'tasks',
             'type' => 'link',
@@ -128,15 +128,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'relationship' => 'campaign_consumers',
             'source' => 'non-db',
         ],
-        'bonuscards' => [
-            'name' => 'bonuscards',
-            'type' => 'link',
-            'relationship' => 'bonuscards_consumers',
-            'module' => 'BonusCards',
-            'bean_name' => 'BonusCard',
-            'source' => 'non-db',
-            'vname' => 'LBL_BONUSCARDS',
-        ],
+//        'bonuscards' => [
+//            'name' => 'bonuscards',
+//            'type' => 'link',
+//            'relationship' => 'bonuscards_consumers',
+//            'module' => 'BonusCards',
+//            'bean_name' => 'BonusCard',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_BONUSCARDS',
+//        ],
         'c_accept_status_fields' => [
             'name' => 'c_accept_status_fields',
             'rname' => 'id',
@@ -258,20 +258,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'vname' => 'LBL_LEADS',
             'module' => 'Leads'
         ],
-        'catalogorders' => [
-            'name' => 'catalogorders',
-            'type' => 'link',
-            'module' => 'CatalogOrders',
-            'relationship' => 'consumers_catalogorders',
-            'source' => 'non-db'
-        ],
-        'inquiries' => [
-            'name' => 'inquiries',
-            'type' => 'link',
-            'module' => 'Inquiries',
-            'relationship' => 'consumer_inquiries',
-            'source' => 'non-db'
-        ],
+//        'catalogorders' => [
+//            'name' => 'catalogorders',
+//            'type' => 'link',
+//            'module' => 'CatalogOrders',
+//            'relationship' => 'consumers_catalogorders',
+//            'source' => 'non-db'
+//        ],
+//        'inquiries' => [
+//            'name' => 'inquiries',
+//            'type' => 'link',
+//            'module' => 'Inquiries',
+//            'relationship' => 'consumer_inquiries',
+//            'source' => 'non-db'
+//        ],
         'agreements' => [
             'name' => 'agreements',
             'type' => 'link',

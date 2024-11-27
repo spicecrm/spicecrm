@@ -24,7 +24,7 @@ $routes = [
         'description' => 'live compile text snippet',
         'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true ],
         'parameters' => [
-            'modelData' => [
+            'beanData' => [
                 'in' => 'body',
                 'type' => ValidationMiddleware::TYPE_COMPLEX,
                 'description' => 'model data to be parsed',
@@ -55,7 +55,7 @@ $routes = [
         'description' => 'live compile text snippet as plain text',
         'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true ],
         'parameters' => [
-            'modelData' => [
+            'beanData' => [
                 'in' => 'body',
                 'type' => ValidationMiddleware::TYPE_COMPLEX,
                 'description' => 'model data to be parsed',

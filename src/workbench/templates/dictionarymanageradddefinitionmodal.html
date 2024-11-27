@@ -47,17 +47,23 @@
                 <system-input-version [(ngModel)]="dictionarydefinition.version"/>
             </div>
         </div>
-        <div class="slds-p-vertical--xx-small">
-            <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_CONTENT_TYPE"/></label>
-            <div class="slds-select_container">
-                <select class="slds-select" [(ngModel)]="dictionarydefinition.sysdictionary_contenttype">
-                    <option value="masterdata"><system-label label="LBL_MASTERDATA"></system-label></option>
-                    <option value="transactionaldata"><system-label label="LBL_TRANSACTIONAL_DATA"></system-label></option>
-                    <option value="logs"><system-label label="LBL_LOGS"></system-label></option>
-                    <option value="config"><system-label label="LBL_CONFIGURATION"></system-label></option>
-                    <option value="custom_config"><system-label label="LBL_CUSTOM_CONFIG"></system-label></option>
-                    <option value="local_config"><system-label label="LBL_LOCAL_CONFIG"></system-label></option>
-                </select>
+        <div class="slds-p-vertical--xx-small slds-grid slds-gutters_direct-x-small">
+            <div class="slds-col slds-size--3-of-4">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_CONTENT_TYPE"/></label>
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="dictionarydefinition.sysdictionary_contenttype">
+                        <option value="masterdata"><system-label label="LBL_MASTERDATA"></system-label></option>
+                        <option value="transactionaldata"><system-label label="LBL_TRANSACTIONAL_DATA"></system-label></option>
+                        <option value="logs"><system-label label="LBL_LOGS"></system-label></option>
+                        <option value="config"><system-label label="LBL_CONFIGURATION"></system-label></option>
+                        <option value="custom_config"><system-label label="LBL_CUSTOM_CONFIG"></system-label></option>
+                        <option value="local_config"><system-label label="LBL_LOCAL_CONFIG"></system-label></option>
+                    </select>
+                </div>
+            </div>
+            <div class="slds-col slds-size--1-of-4">
+                <label class="slds-form-element__label"><system-label label="LBL_AUDITED"/></label>
+                <system-select-option [(ngModel)]="dictionarydefinition.audited"></system-select-option>
             </div>
         </div>
         <div class="slds-p-vertical--xx-small">

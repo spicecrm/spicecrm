@@ -3,6 +3,7 @@
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
+/* migrated
 SpiceDictionaryHandler::getInstance()->dictionary['SpiceACLProfile'] = [
     'table' => 'spiceaclprofiles',
     'fields' => [
@@ -54,3 +55,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['SpiceACLProfile'] = [
 ];
 
 VardefManager::createVardef('SpiceACLProfiles', 'SpiceACLProfile', ['default']);
+*/

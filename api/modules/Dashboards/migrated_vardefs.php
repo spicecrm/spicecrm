@@ -3,6 +3,7 @@
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
+/* migrated
 SpiceDictionaryHandler::getInstance()->dictionary['Dashboard'] = [
     'table' => 'dashboards',
     'audited' => true,
@@ -66,3 +67,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['Dashboard'] = [
 ];
 
 VardefManager::createVardef('Dashboards', 'Dashboard', ['default', 'assignable']);
+*/

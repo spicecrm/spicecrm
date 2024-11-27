@@ -2,11 +2,12 @@
  * @module ModuleACL
  */
 import {
-    Component,
+    Component, Injector,
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {modal} from '../../../services/modal.service';
+import {view} from "../../../services/view.service";
 
 /**
  * manages the fisl control settings on an ACL Object
@@ -17,7 +18,7 @@ import {modal} from '../../../services/modal.service';
 })
 export class ACLObjectsManagerObjectFields {
 
-    constructor(public modal: modal, public model: model, public language: language) {
+    constructor(public modal: modal, public model: model, public view: view, public language: language, public injector: Injector) {
 
     }
 
@@ -97,41 +98,14 @@ export class ACLObjectsManagerObjectFields {
      * called to add a Field
      */
     public addField() {
-        let module = this.model.getFieldValue('spiceacltype_module');
-        let currentFields = [];
-        let fields = this.model.getFieldValue('fieldcontrols');
-        for (let thisfield of fields) {
-            currentFields.push({name: thisfield.field, id: thisfield.id});
-        }
-
-        this.modal.openModal('ACLTypesManagerTypesAddFields', true).subscribe(modalRef => {
-            modalRef.instance.module = module;
-            modalRef.instance.currentfields = currentFields;
-
-            // set showAll so also links and noin-db fields are shown
-            modalRef.instance.showAll = true;
-
-            modalRef.instance.addfields.subscribe(fields => {
-                if (fields) {
+        this.modal.openModal('ACLObjectsManagerObjectFieldsAdd', true, this.injector).subscribe(modalRef => {
+            modalRef.instance.addfield.subscribe(field => {
+                if (field) {
                     let currentfields = this.model.getFieldValue('fieldcontrols');
-
-                    let newFields = [];
-
-                    // check if fields are already in currentfields -> YES: let them like they are -> NO: add new field
-                    for (let sfield of fields) {
-                        let already_selected = false;
-                        for (let key in currentfields) {
-                            if(currentfields[key].field == sfield) {
-                                already_selected = true;
-                                newFields.push(currentfields[key]);
-                            }
-                        }
-                        if(!already_selected) {
-                            newFields.push({spiceaclobject_id: this.model.id, field: sfield, control: 1});
-                        }
+                    if(!currentfields.find(f => f.field == field)){
+                        currentfields.push({spiceaclobject_id: this.model.id, field: field, control: 1});
+                        this.model.setField('fieldcontrols', currentfields);
                     }
-                    currentfields = newFields;
-                    this.model.setField('fieldcontrols', currentfields);
                 }
             });
         });

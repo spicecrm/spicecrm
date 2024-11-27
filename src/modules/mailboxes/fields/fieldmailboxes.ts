@@ -178,7 +178,13 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
      * get config to disable zip compress checkbox
      */
     get zipDisabled() {
-        return !this.mailboxZipConfig || this.mailboxZipConfig == '0';
+        const isDisabled = !this.mailboxZipConfig || this.mailboxZipConfig == '0' || this.model.getField('downloadlink_attachments') == 1;
+
+        if (isDisabled) {
+            this.model.setField('zip_compress', undefined);
+        }
+
+        return isDisabled;
     }
 
     /**
@@ -209,10 +215,19 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
      */
     private setConfigSettings(mailboxId: string) {
         if (!!mailboxId) {
-            const mailboxData = this.configuration.getData(`mailboxes${this.scope}`);
-            const selectedMailboxData = mailboxData.find(id => id.value == mailboxId);
-            this.mailboxZipConfig = selectedMailboxData.zip_compress;
-            this.mailboxReadReceiptConfig = selectedMailboxData.send_read_receipt;
+            let mailboxData = this.configuration.getData(`mailboxes${this.scope}`);
+            if (!mailboxData) {
+                this.backend.getRequest("module/Mailboxes/scope", {scope: this.scope}).subscribe(
+                    (results: any) => {
+                        this.options = results.sort((a, b) => a.display.localeCompare(b.display));
+                        this.mailboxZipConfig = this.options.find(id => id.value == mailboxId).zip_compress;
+                        this.mailboxReadReceiptConfig = this.options.find(id => id.value == mailboxId).send_read_receipt;
+                    })
+            } else {
+                const selectedMailboxData = this.configuration.getData(`mailboxes${this.scope}`).find(id => id.value == mailboxId);
+                this.mailboxZipConfig = selectedMailboxData.zip_compress;
+                this.mailboxReadReceiptConfig = selectedMailboxData.send_read_receipt;
+            }
         }
     }
 
@@ -221,6 +236,10 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
      * @param value
      */
     public setZip(value) {
+        if (this.zipDisabled) {
+            value = 0;
+        }
+
         this.model.setField('zip_compress', value);
     }
 
