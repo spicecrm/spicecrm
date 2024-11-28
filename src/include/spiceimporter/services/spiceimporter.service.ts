@@ -31,6 +31,8 @@ export class SpiceImporterService {
     public fileTooBig: boolean = false;
     public rejectExistingKey: string = '';
 
+    public showNonDbFields = false;
+
     // For backend END //
     public savedImports: any[] = [];
     public fileRows: string = '';
