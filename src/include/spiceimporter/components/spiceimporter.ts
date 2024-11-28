@@ -121,7 +121,7 @@ export class SpiceImporter implements OnInit {
                 if (fields.hasOwnProperty(field)) {
                     let thisField = fields[field];
 
-                    if (thisField.type !== 'link' && thisField.type !== 'relate' && (thisField.source != 'non-db' || this.showNonDbFields) && thisField.name != 'id') {
+                    if (thisField.type !== 'link' && thisField.type !== 'relate' && (thisField.source != 'non-db' || this.spiceImporter.showNonDbFields) && thisField.name != 'id') {
 
                         thisField.displayname = thisField.name;
 
