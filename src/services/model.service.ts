@@ -1710,6 +1710,10 @@ export class model implements OnDestroy {
 
             case "nl2br":
                 return fromField.replace(/\r\n/g, '<br>').replace(/\n\n/g, '<br>').replace(/\n/g, '<br>');
+            case "calendarStartHour":
+                return moment({hour: this.userpreferences.toUse.calendar_day_start_hour});
+            case "calendarEndHour":
+                return moment({hour: this.userpreferences.toUse.calendar_day_end_hour});
         }
         return "";
     }
