@@ -1,6 +1,8 @@
-<div (system-to-bottom)="handleScroll()">
+<div (system-to-bottom)="handleScroll()" [system-overlay-loading-spinner]="modellist.isLoading">
     <spice-imports-view-item *ngFor="let item of modellist.listData.list" [item]="item"/>
-    <div *ngIf="modellist.isLoading" class="slds-p-around--medium slds-align--absolute-center">
-        <system-spinner/>
-    </div>
+    @if (!modellist.isLoading && modellist.listData.list.length == 0){
+        <div class="slds-height_full slds-align--absolute-center">
+            <system-illustration-no-records><system-label label="LBL_NO_RECORDS"/></system-illustration-no-records>
+        </div>
+    }
 </div>
