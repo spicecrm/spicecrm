@@ -27,15 +27,15 @@
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "18.0.0",
-    "@angular-devkit/build-angular": "18.2.9",
+    "@angular-devkit/build-angular": "^18.2.12",
     "@angular/cli": "18.2.9",
     "@angular/compiler-cli": "18.2.8",
     "@types/underscore": "1.11.15",
-    "css-minimizer-webpack-plugin": "5.0.1",
-    "html-webpack-plugin": "5.6.0",
+    "css-minimizer-webpack-plugin": "6.0.0",
+    "html-webpack-plugin": "5.6.3",
     "terser-webpack-plugin": "5.3.10",
-    "typescript": "5.4.5",
-    "webpack": "5.75.0",
+    "typescript": "5.5.4",
+    "webpack": "^5.96.1",
     "webpack-auto-inject-version": "1.2.2"
   },
   "scripts": {
