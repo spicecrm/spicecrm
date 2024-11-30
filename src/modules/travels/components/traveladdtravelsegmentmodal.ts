@@ -7,6 +7,7 @@ import {modal} from "../../../services/modal.service";
 import {Subject} from "rxjs";
 import {toast} from "../../../services/toast.service";
 import {language} from "../../../services/language.service";
+import moment from "moment";
 
 @Component({
     selector: 'travel-add-travel-segment-modal',
@@ -72,10 +73,7 @@ export class TravelAddTravelSegmentModal implements OnInit {
      */
     public setFields() {
         this.model.setFields({
-            date_start: this.parent.data.date_start,
-            date_end: this.parent.data.date_end,
             currency_id: this.userpreferences.toUse.currency,
-
             employee_id: this.userpreferences.session.authData.user.parent_id,
             employee_name: this.userpreferences.session.authData.user.parent_name,
             travel_id: this.parent.data.id,
