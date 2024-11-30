@@ -99,8 +99,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['SpiceImport'] = [
         'module' => [
             'name' => 'module',
             'type' => 'varchar',
-        ],
-
+        ]
     ],
     'indices' => [
         'id' => ['name' => 'spiceimports_pk', 'type' => 'primary', 'fields' => ['id']],
