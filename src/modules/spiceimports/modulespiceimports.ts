@@ -24,6 +24,7 @@ import {SpiceImportsViewItems} from "./components/spiceimportsviewitems";
 import {SpiceImportsViewItem} from "./components/spiceimportsviewitem";
 import {SpiceImportsViewLog} from "./components/spiceimportsviewlog";
 import {SpiceImportsViewLogDetails} from "./components/spiceimportsviewlogdetails";
+import {SpiceImportsViewLogContainer} from "./components/spiceimportsviewlogcontainer";
 
 @NgModule({
     imports: [
@@ -45,7 +46,8 @@ import {SpiceImportsViewLogDetails} from "./components/spiceimportsviewlogdetail
         SpiceImportsViewItems,
         SpiceImportsViewItem,
         SpiceImportsViewLog,
-        SpiceImportsViewLogDetails
+        SpiceImportsViewLogDetails,
+        SpiceImportsViewLogContainer
     ],
     exports: [
         SpiceImportsViewLog
