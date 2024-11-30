@@ -3,6 +3,7 @@
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
+/* migrated
 SpiceDictionaryHandler::getInstance()->dictionary['SpiceImport'] = [
     'table' => 'spiceimports',
     'fields' => [
@@ -107,3 +108,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['SpiceImport'] = [
 ];
 
 VardefManager::createVardef('SpiceImports', 'SpiceImport', ['default', 'assignable']);
+*/
