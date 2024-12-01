@@ -84,7 +84,7 @@ class SpiceImport extends SpiceBean
             'fileHeader' => $fileHeader,
             'fileData' => $fileData,
             'fileRows' => $row,
-            'fileTooBig' => true // $row > $maxRows
+            'fileTooBig' => $row > $maxRows
         ];
 
         return $attachments;
