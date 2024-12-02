@@ -1,5 +1,9 @@
-<div class="slds-theme--default slds-p-around--x-small" system-to-bottom-noscroll>
+<div class="slds-theme--default slds-p-around--x-small" system-to-bottom>
     @if (model.id) {
         <system-componentset [componentset]="componentset"></system-componentset>
+    } @else {
+        <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+            <system-illustration-no-records><system-label label="LBL_NO_RECORD_SELECTED"/></system-illustration-no-records>
+        </div>
     }
 </div>
