@@ -639,6 +639,27 @@ export class modelattachments implements OnDestroy {
         return retSubject.asObservable();
     }
 
+    /**
+     * retrieves attachment from the backend for a file on a bean
+     * @param attachmentId
+     */
+    public getAttachmentDataByField(fieldname): Observable<any> {
+        let retSubject = new Subject();
+
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/byfield/${fieldname}`).subscribe({
+            next: (fileData) => {
+                retSubject.next(fileData);
+                retSubject.complete();
+            },
+            error: (err) => {
+                retSubject.error(err);
+                retSubject.complete();
+            }
+        });
+
+        return retSubject.asObservable();
+    }
+
     public ngOnDestroy() {
         this.backend.cancelPendingRequests([this.httpRequestsRefID]);
     }

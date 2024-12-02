@@ -2,7 +2,7 @@
  * @module ModuleEmails
  */
 
-import {Component, OnDestroy} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
@@ -42,7 +42,8 @@ export class EmailSchedulesBeans implements OnDestroy {
     constructor(public model: model,
                 public metadata: metadata,
                 public language: language,
-                public backend: backend
+                public backend: backend,
+                public cdref: ChangeDetectorRef
     ) {
         this.subscriptions.add(
             this.model.data$.subscribe(data => {
@@ -81,6 +82,7 @@ export class EmailSchedulesBeans implements OnDestroy {
                 res => {
                     this.beans = res;
                     this.loading = false;
+                    this.cdref.detectChanges();
                 }
             )
         }

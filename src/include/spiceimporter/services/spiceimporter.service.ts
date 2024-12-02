@@ -15,8 +15,6 @@ declare var _: any;
 export class SpiceImporterService {
     // For backend START //
     public fileMapping: any = {};
-    public fileId: string = '';
-    public fileName: string = '';
     public fileHeader: any[] = [];
     public checkFields: any[] = [];
     public fixedFields: any[] = [];
@@ -30,6 +28,22 @@ export class SpiceImporterService {
     public separator: string = 'semicolon';
     public fileTooBig: boolean = false;
     public rejectExistingKey: string = '';
+
+
+    /**
+     * holds file data
+     */
+    public file = null;
+
+    /**
+     * the id of the import generated
+     */
+    public importid: string;
+
+    /**
+     * the status of the import
+     */
+    public importstatus: 'q'|'i'|'c';
 
     public showNonDbFields = false;
 

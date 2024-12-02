@@ -30,11 +30,6 @@ export class SpiceImporterSelect {
      */
     public isLoading: boolean = false;
 
-    /**
-     * holds file data
-     */
-    public file = null;
-
     public selectedClassMethods: string[] = [];
 
     public selectedClass: {id: string, name: string};
@@ -124,7 +119,7 @@ export class SpiceImporterSelect {
     set separator(s){
         this.spiceImport.separator = s;
 
-        if(this.file) this.doLoadPreview()
+        if(this.spiceImport.file) this.doLoadPreview()
     }
 
     get separator(){
@@ -134,7 +129,7 @@ export class SpiceImporterSelect {
     set enclosure(e){
         this.spiceImport.enclosure = e;
 
-        if(this.file) this.doLoadPreview()
+        if(this.spiceImport.file) this.doLoadPreview()
     }
 
     get enclosure(){
@@ -165,8 +160,7 @@ export class SpiceImporterSelect {
      * @private
      */
     public clearFile() {
-        this.spiceImport.fileName = '';
-        this.spiceImport.fileId = '';
+        this.spiceImport.file = undefined;
 
         this.spiceImport.fileHeader = [];
         this.spiceImport.fileData = undefined;
@@ -185,7 +179,7 @@ export class SpiceImporterSelect {
 
         let fileType = file.file_name.toLowerCase();
 
-        this.file = file;
+        this.spiceImport.file = file;
 
         // if (!file.file_mime_type.toLowerCase().includes('excel')) { // commented out since issues with file_mime_type in multiple browsers
         if (!fileType.endsWith('.csv')) {
@@ -199,10 +193,8 @@ export class SpiceImporterSelect {
     private doLoadPreview(){
         this.isLoading = true;
 
-        this.spiceImport.fileName = this.file.file_name;
-        this.spiceImport.fileId = this.file.file_md5;
         const params = {
-            file_md5: this.file.file_md5,
+            file_md5: this.spiceImport.file.file_md5,
             enclosure: this.spiceImport.enclosure,
             separator: this.spiceImport.separator
         };
@@ -222,7 +214,7 @@ export class SpiceImporterSelect {
             }, error: () => {
                 this.isLoading = false;
                 this.toast.sendToast(this.language.getLabel('ERR_CANT_READ_FILE_DATA'), 'error', '', false);
-                this.file.remove();
+                this.spiceImport.file.remove();
             }
         });
     }
