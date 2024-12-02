@@ -47,6 +47,9 @@ import {DictionaryManagerFields} from "./components/dictionarymanagerfields";
 import {DictionaryManagerDeleteFieldsModal} from "./components/dictionarymanagerdeletefieldsmodal";
 import {DictionaryManagerDeleteModal} from "./components/dictionarymanagerdeletemodal";
 
+import {DictionaryIndexes} from "./components/dictionaryindexes";
+import {DictionaryIndexesDefinitions} from "./components/dictionaryindexesdefinitions";
+
 import {DomainManager} from "./components/domainmanager";
 import {DomainManagerDefinitions} from "./components/domainmanagerdefinitions";
 import {DomainManagerFields} from "./components/domainmanagerfields";
@@ -179,6 +182,7 @@ import {Hl7ManagerType} from './components/hl7managertype';
 import {HL7ManagerRule} from './components/hl7managerrule';
 import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkanban";
 
+
 @NgModule({
     imports: [
         CommonModule,
@@ -243,6 +247,8 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         DictionaryManagerDeleteFieldsModal,
         DictionaryManagerDeleteModal,
         DictionaryManagerRepairAll,
+        DictionaryIndexes,
+        DictionaryIndexesDefinitions,
         FieldsetManager,
         FieldsetManagerFieldsetDetails,
         FieldsetManagerFieldDetails,
