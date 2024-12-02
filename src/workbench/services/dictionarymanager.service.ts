@@ -393,6 +393,16 @@ export class dictionarymanager {
         return d ? d.name : refid;
     }
 
+    /**
+     * returns the domain name for the given id
+     *
+     * @param domainid
+     */
+    public getDictionaryDefinitionTableName(refid) {
+        let d = this.dictionarydefinitions.find(d => d.id == refid);
+        return d ? d.tablename : refid;
+    }
+
 
     /**
      * returns the dictionary item name for the given id

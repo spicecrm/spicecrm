@@ -3,7 +3,6 @@
 namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryField;
@@ -24,22 +23,27 @@ class UserRelationship extends One2MBeanRelationship
      * activate the relationship and add the necessary cache fields
      * @param SpiceDictionaryRelationship $relationship
      * @return void
-     * @throws DatabaseException
      * @throws Exception
      */
     public function activate(SpiceDictionaryRelationship $relationship){
-        $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
-        $rhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
-        $lhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
-        $rhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->rhs_sysdictionaryitem_id);
-        $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
-        $rhsField = SpiceDictionaryField::getField($rhsDictionaryitem, $rhsDictionaryDefinition);
-
         // clear current definitions
         $db = DBManagerFactory::getInstance();
         $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}'");
+        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}");
 
-        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}' OR (sysdictionarydefinition_id = '$rhsDictionaryDefinition->id' and fieldname = '{$relationship->relationship->rhs_relatename}')");
+        try {
+            $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
+            $rhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
+            $lhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
+            $rhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->rhs_sysdictionaryitem_id);
+            $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
+            $rhsField = SpiceDictionaryField::getField($rhsDictionaryitem, $rhsDictionaryDefinition);
+        } catch (Exception $e) {
+            return false;
+        }
+
+        // legacy delete if coming from vardefs
+        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionarydefinition_id = '$rhsDictionaryDefinition->id' AND fieldname = '{$relationship->relationship->rhs_relatename}'");
 
         // build the Defs
         $defs = [
@@ -101,6 +105,9 @@ class UserRelationship extends One2MBeanRelationship
                     'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
                 ]);
             }
+
+            // completed the activation
+            return true;
         }
     }
 }

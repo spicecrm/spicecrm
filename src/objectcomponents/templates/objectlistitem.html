@@ -1,10 +1,10 @@
 <td class="slds-hide--medium">
     <div class="slds-grid slds-grid--vertical-align-center" >
         <div [ngClass]="model.alert" *ngIf="rowselect">
-            <system-checkbox [disabled]="rowselectdisabled" [(ngModel)]="listItem.selected"></system-checkbox>
+            <system-checkbox [disabled]="rowselectdisabled" [(ngModel)]="listItem.selected"/>
         </div>
         <div class="slds-text-align--left slds-truncate slds-grow slds-text-heading_small" system-model-popover>{{model.data.summary_text}}</div>
-        <system-utility-icon [icon]="expanded ? 'chevronup' : 'chevrondown'" size="xx-small" (click)="toggleExpanded($event)"></system-utility-icon>
+        <system-utility-icon [icon]="expanded ? 'chevronup' : 'chevrondown'" size="xx-small" (click)="toggleExpanded($event)"/>
     </div>
 </td>
 <ng-container *ngIf="expanded || layout.screenwidth != 'small'">
@@ -12,17 +12,17 @@
         <div class="slds-text-align--center slds-text-body--small slds-text-color--inverse-weak">{{rowNumber}}</div>
     </td>
     <td [ngClass]="model.alert" *ngIf="dragHandles" role="gridcell" class="slds-show--medium">
-        <system-utility-icon cdkDragHandle [icon]="'drag_and_drop'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
+        <system-utility-icon cdkDragHandle [icon]="'drag_and_drop'" size="x-small" style="cursor:move"/>
     </td>
     <td [ngClass]="model.alert" *ngIf="rowselect" role="gridcell" class="slds-show--medium">
-        <system-checkbox [disabled]="rowselectdisabled" [(ngModel)]="listItem.selected"></system-checkbox>
+        <system-checkbox [disabled]="rowselectdisabled" [(ngModel)]="listItem.selected"/>
     </td>
     <td [ngClass]="model.alert" style="min-width: 2rem;" *ngFor="let item of listFields" scope="row" [attr.data-label]="language.getFieldDisplayName(model.module, item.field)">
-        <field-container [field]="item.field" [fieldconfig]="item.fieldconfig" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
+        <field-container [field]="item.field" [fieldconfig]="item.fieldconfig" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"/>
 
     </td>
     <td [ngClass]="model.alert" *ngIf="showActionMenu" role="gridcell">
-        <object-action-menu [buttonsize]="'small'"></object-action-menu>
+        <object-action-menu buttonsize="small"/>
     </td>
 </ng-container>
 
