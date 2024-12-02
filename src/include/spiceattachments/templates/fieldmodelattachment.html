@@ -3,7 +3,10 @@
     @if(filename) {
         <div class="slds-grid slds-grid--vertical-align-center">
             <system-file-icon [filemimetype]="mime_type" [filename]="filename" divClass="slds-p-right--xx-small" size="x-small"></system-file-icon>
-            <div class="slds-truncate slds-grow"><a href="javascript:void(0);" (click)="previewFile($event)">{{ filename }}</a></div>
+            <div class="slds-truncate slds-grow"><a href="javascript:void(0);" (click)="openInTab()">{{ filename }}</a></div>
+            <button class="slds-button slds-button--icon right slds-m-left--xx-small" (click)="downloadFile()">
+                <system-button-icon icon="download"/>
+            </button>
         </div>
     }
 </field-generic-display>

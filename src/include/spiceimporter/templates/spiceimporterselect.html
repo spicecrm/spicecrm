@@ -5,7 +5,7 @@
         </div>
         <div class="slds-form slds-size--1-of-1">
             <div class="slds-form-element slds-m-vertical--medium">
-                <system-input-file [ngModel]="file" (ngModelChange)="loadFilePreview($event)" (onRemove)="clearFile()" accept=".csv" class="slds-size--1-of-1"></system-input-file>
+                <system-input-file [ngModel]="spiceImport.file" (ngModelChange)="loadFilePreview($event)" (onRemove)="clearFile()" accept=".csv" class="slds-size--1-of-1"></system-input-file>
                 <div class="slds-grid slds-m-around--x-small">
                     <fieldset class="slds-size--1-of-2 slds-form-element slds-text-align--center">
                         <div class="slds-form-element__control">
@@ -35,7 +35,7 @@
                     <system-input-radio [(ngModel)]="importAction" value="update" name="options"><system-label label="LBL_UPDATE_EXISTING_RECORDS"/></system-input-radio>
                 </div>
             </div>
-            <div [hidden]="!spiceImport.fileId" class="slds-form-element slds-m-vertical--medium">
+            <div [hidden]="!spiceImport.file" class="slds-form-element slds-m-vertical--medium">
                 <legend class="slds-form-element__legend slds-form-element__label">
                     <system-label label="LBL_IMPORT_TEMPLATE"></system-label>
                 </legend>
@@ -45,7 +45,7 @@
                     <system-input-radio [(ngModel)]="importTemplateAction" value="new" name="template"><system-label label="LBL_SAVE_AS"/></system-input-radio>
                 </div>
             </div>
-            <div *ngIf="importTemplateAction=='choose' && spiceImport.fileId"
+            <div *ngIf="importTemplateAction=='choose' && spiceImport.file"
                  class="slds-form-element slds-m-vertical--medium">
                 <label class="slds-form-element__label">{{language.getLabel('LBL_SELECT_TEMPLATE', '',
                     'short')}}</label>
@@ -69,7 +69,7 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="spiceImport.availableClasses.length > 0 && spiceImport.fileId" class="slds-grid slds-p-around--xx-small">
+        <div *ngIf="spiceImport.availableClasses.length > 0 && spiceImport.file" class="slds-grid slds-p-around--xx-small">
             <div class="slds-form-element slds-p-horizontal--xx-small slds-size--1-of-1">
                 <label class="slds-form-element__label">
                     <system-label label="LBL_METHOD"></system-label>

@@ -54,10 +54,20 @@ class M2MRelationship extends Relationship
     public function activate(SpiceDictionaryRelationship $relationship){
         $db = DBManagerFactory::getInstance();
 
-        $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
-        $rhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
-        $lhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
-        $rhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->rhs_sysdictionaryitem_id);
+        // clear current definitions
+        $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}'");
+        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
+
+        // try to find both sides definitions and ids
+        try {
+            $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
+            $rhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
+            $lhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
+            $rhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->rhs_sysdictionaryitem_id);
+        } catch (Exception $e) {
+            return false;
+        }
+
         $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
         $rhsField = SpiceDictionaryField::getField($rhsDictionaryitem, $rhsDictionaryDefinition);
 
@@ -74,9 +84,7 @@ class M2MRelationship extends Relationship
         $joinLhsField = SpiceDictionaryField::getField($joinLhsDictionaryitem, $joinDictionaryDefinition);
         $joinRhsField = SpiceDictionaryField::getField($joinRhsDictionaryitem, $joinDictionaryDefinition);
 
-        // clear current definitions
-        $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}'");
-        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
+
 
         // build the Defs
         $defs = [
@@ -170,6 +178,9 @@ class M2MRelationship extends Relationship
                 'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
             ]);
         }
+
+        // completed the activation
+        return true;
     }
 
     /**

@@ -1,0 +1,28 @@
+<div class="slds-grid slds-height_full">
+    <div class="slds-split-view_container" [ngClass]="{'slds-is-opem slds-size--1-of-4': isOpen, 'slds-is-closed': !isOpen,}">
+        <button class="slds-button slds-button_icon slds-button_icon slds-split-view__toggle-button" (click)="isOpen = !isOpen" [ngClass]="{'slds-is-opem': isOpen, 'slds-is-closed': !isOpen,}">
+            <system-button-icon [icon]="isOpen ? 'left' : 'right'"/>
+        </button>
+        <article class="slds-split-view slds-grid slds-grid_vertical">
+            <div class="slds-grid slds-grid_vertical" (system-to-bottom)="onScroll()">
+                <ul aria-multiselectable="true" (system-to-bottom)="onScroll()">
+                    @for(item of modellist.listData.list;track item.id) {
+                        <object-list-split-item [data]="item"/>
+                    }
+                </ul>
+            </div>
+        </article>
+        <div class="slds-size--1-of-1 slds-p-around--small slds-align--absolute-center" *ngIf="noAutoLoad && canLoadMore">
+            <button class="slds-button slds-button--neutral" (click)="loadMore()">
+                <system-button-icon class="slds-p-right--x-small" icon="skip_forward"></system-button-icon>
+                <system-label label="LBL_LOAD_MORE"></system-label>
+            </button>
+        </div>
+        <div *ngIf="!modellist.isLoading && modellist.listData.totalcount == 0" class="slds-size--1-of-1 slds-height_full slds-align--absolute-center" >
+            <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
+        </div>
+    </div>
+    <div class="slds-grow slds-m-left--small">
+        <object-list-split-container/>
+    </div>
+</div>

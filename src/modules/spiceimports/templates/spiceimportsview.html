@@ -1,0 +1,19 @@
+<div class="slds-grid slds-height_full">
+    <spice-imports-view-items class="slds-size--1-of-2"/>
+    <div class="slds-size--1-of-2 slds-border--left slds-height_full slds-theme--default">
+    @if (selectedID) {
+        @if(selectedStatus == 'q'){
+            <div  class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+                <system-illustration illustration="gonefishing"><system-label label="MSG_IMPORT_SCHEDULED"/></system-illustration>
+            </div>
+        } @else {
+            <spice-imports-view-log [importid]="selectedID" [module]="selectedModule"/>
+        }
+
+    } @else if (!modellist.isLoading && modellist.listData.list.length > 0) {
+        <div *ngIf="!modellist.isLoading" class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+            <system-illustration-no-data><system-label label="LBL_NO_RECORD_SELECTED"/></system-illustration-no-data>
+        </div>
+    }
+    </div>
+</div>
