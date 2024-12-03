@@ -154,6 +154,9 @@ import {DomainManagerEditDefinitionModal} from "./components/domainmanagereditde
 import {CategoryTreeManagerLinkModal} from "./components/categorytreemanagerlinkmodal";
 import {RoleMenuManager} from "./components/rolemenumanager";
 import {RoleMenuManagerEditRoleModal} from "./components/rolemenumanagereditrolemodal";
+import {AdminMenuManager} from "./components/adminmenumanager";
+import {AdminMenuManagerEditGroupModal} from "./components/adminmenumanagereditgroupmodal"
+import {AdminMenuManagerEditComponentModal} from "./components/adminmenumanagereditcomponentmodal";
 import {GitPullFromRepository} from "./components/gitpullfromrepository";
 import {GitStatusOfRepository} from "./components/gitstatusofrepository";
 import {DictionaryManagerRepairAll} from "./components/dictionarymanagerrepairall";
@@ -327,6 +330,9 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         ConfigTransfer,
         RoleMenuManager,
         RoleMenuManagerEditRoleModal,
+        AdminMenuManager,
+        AdminMenuManagerEditGroupModal,
+        AdminMenuManagerEditComponentModal,
         GitPullFromRepository,
         GitStatusOfRepository,
         HooksManager,
