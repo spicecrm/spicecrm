@@ -101,14 +101,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Project'] = [
 //            'source' => 'non-db',
 //            'vname' => 'LBL_NOTES',
 //        ],
-        'tasks' => [
-            'name' => 'tasks',
-            'type' => 'link',
-            'module' => 'Tasks',
-            'relationship' => 'projects_tasks',
-            'source' => 'non-db',
-            'vname' => 'LBL_TASKS',
-        ],
+//        'tasks' => [
+//            'name' => 'tasks',
+//            'type' => 'link',
+//            'module' => 'Tasks',
+//            'relationship' => 'projects_tasks',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_TASKS',
+//        ],
         'meetings' => [
             'name' => 'meetings',
             'type' => 'link',
@@ -317,17 +317,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Project'] = [
 //            'relationship_role_column' => 'parent_type',
 //            'relationship_role_column_value' => 'Projects'
 //        ],
-        'projects_tasks' => [
-            'lhs_module' => 'Projects',
-            'lhs_table' => 'projects',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Tasks',
-            'rhs_table' => 'tasks',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Projects'
-        ],
+//        'projects_tasks' => [
+//            'lhs_module' => 'Projects',
+//            'lhs_table' => 'projects',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Tasks',
+//            'rhs_table' => 'tasks',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Projects'
+//        ],
         'projects_meetings' => [
             'lhs_module' => 'Projects',
             'lhs_table' => 'projects',

@@ -216,14 +216,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'required'            => true,
             'comment'             => 'Date meeting ends',
         ],
-        'parent_type' => [
-            'name'    => 'parent_type',
-            'vname'   => 'LBL_PARENT_TYPE',
-            'type'    => 'parent_type',
-            'dbType'  => 'varchar',
-            'len'     => 100,
-            'comment' => 'Module meeting is associated with',
-        ],
+//        'parent_type' => [
+//            'name'    => 'parent_type',
+//            'vname'   => 'LBL_PARENT_TYPE',
+//            'type'    => 'parent_type',
+//            'dbType'  => 'varchar',
+//            'len'     => 100,
+//            'comment' => 'Module meeting is associated with',
+//        ],
         'status' => [
             'name'    => 'status',
             'vname'   => 'LBL_STATUS',
@@ -264,13 +264,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'importable' => 'false',
             'reportable' => false,
         ],
-        'parent_id' => [
-            'name'       => 'parent_id',
-            'vname'      => 'LBL_PARENT_ID',
-            'type'       => 'id',
-            'reportable' => false,
-            'comment'    => 'ID of item indicated by parent_type',
-        ],
+//        'parent_id' => [
+//            'name'       => 'parent_id',
+//            'vname'      => 'LBL_PARENT_ID',
+//            'type'       => 'id',
+//            'reportable' => false,
+//            'comment'    => 'ID of item indicated by parent_type',
+//        ],
         'reminder_time' => [
             'name'       => 'reminder_time',
             'vname'      => 'LBL_REMINDER_TIME',
@@ -374,13 +374,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
                 ]
             ]
         ],
-        'accounts' => [
-            'name'         => 'accounts',
-            'type'         => 'link',
-            'relationship' => 'account_meetings',
-            'source'       => 'non-db',
-            'vname'        => 'LBL_ACCOUNT',
-        ],
+//        'accounts' => [
+//            'name'         => 'accounts',
+//            'type'         => 'link',
+//            'relationship' => 'account_meetings',
+//            'source'       => 'non-db',
+//            'vname'        => 'LBL_ACCOUNT',
+//        ],
         'consumers' => [
             'name'         => 'consumers',
             'type'         => 'link',
@@ -407,14 +407,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'vname'        => 'LBL_HCMEMPLOYEE_OBJECTIVES',
         ],
 
-        'employees' => [
-            'name'         => 'employees',
-            'type'         => 'link',
-            'relationship' => 'employees_meetings',
-            'module'       => 'Employees',
-            'source'       => 'non-db',
-            'vname'        => 'LBL_EMPLOYEES',
-        ],
+//        'employees' => [
+//            'name'         => 'employees',
+//            'type'         => 'link',
+//            'relationship' => 'employees_meetings',
+//            'module'       => 'Employees',
+//            'source'       => 'non-db',
+//            'vname'        => 'LBL_EMPLOYEES',
+//        ],
         'leads' => [
             'name'         => 'leads',
             'type'         => 'link',
@@ -422,13 +422,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'source'       => 'non-db',
             'vname'        => 'LBL_LEADS',
         ],
-        'opportunity' => [
-            'name'         => 'opportunity',
-            'type'         => 'link',
-            'relationship' => 'opportunity_meetings',
-            'source'       => 'non-db',
-            'vname'        => 'LBL_OPPORTUNITY',
-        ],
+//        'opportunity' => [
+//            'name'         => 'opportunity',
+//            'type'         => 'link',
+//            'relationship' => 'opportunity_meetings',
+//            'source'       => 'non-db',
+//            'vname'        => 'LBL_OPPORTUNITY',
+//        ],
 //        'notes' => [
 //            'name'         => 'notes',
 //            'type'         => 'link',
@@ -438,15 +438,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
 //            'source'       => 'non-db',
 //            'vname'        => 'LBL_NOTES',
 //        ],
-        'tasks' => [
-            'name'         => 'tasks',
-            'type'         => 'link',
-            'relationship' => 'meetings_tasks',
-            'module'       => 'Tasks',
-            'bean_name'    => 'Task',
-            'source'       => 'non-db',
-            'vname'        => 'LBL_TASKS',
-        ],
+//        'tasks' => [
+//            'name'         => 'tasks',
+//            'type'         => 'link',
+//            'relationship' => 'meetings_tasks',
+//            'module'       => 'Tasks',
+//            'bean_name'    => 'Task',
+//            'source'       => 'non-db',
+//            'vname'        => 'LBL_TASKS',
+//        ],
         'contact_id' => [
             'name' => 'contact_id',
             'type' => 'id',
@@ -566,17 +566,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
 //            'relationship_role_column'       => 'parent_type',
 //            'relationship_role_column_value' => 'Meetings',
 //        ],
-        'meetings_tasks' => [
-            'lhs_module'                     => 'Meetings',
-            'lhs_table'                      => 'meetings',
-            'lhs_key'                        => 'id',
-            'rhs_module'                     => 'Tasks',
-            'rhs_table'                      => 'tasks',
-            'rhs_key'                        => 'parent_id',
-            'relationship_type'              => 'one-to-many',
-            'relationship_role_column'       => 'parent_type',
-            'relationship_role_column_value' => 'Meetings',
-        ],
+//        'meetings_tasks' => [
+//            'lhs_module'                     => 'Meetings',
+//            'lhs_table'                      => 'meetings',
+//            'lhs_key'                        => 'id',
+//            'rhs_module'                     => 'Tasks',
+//            'rhs_table'                      => 'tasks',
+//            'rhs_key'                        => 'parent_id',
+//            'relationship_type'              => 'one-to-many',
+//            'relationship_role_column'       => 'parent_type',
+//            'relationship_role_column_value' => 'Meetings',
+//        ],
     ],
     'indices' => [
         [

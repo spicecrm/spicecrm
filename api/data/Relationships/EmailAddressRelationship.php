@@ -6,6 +6,7 @@ namespace SpiceCRM\data\Relationships;
 use SpiceCRM\data\Link2;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceCache\SpiceCacheMemory;
@@ -34,15 +35,20 @@ class EmailAddressRelationship extends M2MRelationship
      */
     public function activate(SpiceDictionaryRelationship $relationship){
 
-        $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
-        $lhsDictionaryItem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
-        $lhsField = SpiceDictionaryField::getField($lhsDictionaryItem, $lhsDictionaryDefinition);
         $relationshipName = $relationship->relationship->relationship_name;
 
         // clear current definitions
         $db = DBManagerFactory::getInstance();
         $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}' OR relationship_name = '{$relationshipName}_primary' OR relationship_name = '$relationshipName'");
         $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
+
+        try {
+            $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
+            $lhsDictionaryItem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
+            $lhsField = SpiceDictionaryField::getField($lhsDictionaryItem, $lhsDictionaryDefinition);
+        } catch (Exception $e){
+            return false;
+        }
 
         // add to the relationships
         $db->insertQuery('relationships', [
@@ -150,6 +156,9 @@ class EmailAddressRelationship extends M2MRelationship
             'sysdictionaryrelationship_id' => $relationship->id,
             'sysdictionarydefinition_id' => $lhsDictionaryDefinition->id
         ]);
+
+        // completed the activation
+        return true;
     }
 
     /**

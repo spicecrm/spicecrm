@@ -1011,6 +1011,9 @@ export class modellist implements OnDestroy {
 
         // emit that the data changed
         this.listDataChanged$.next(true);
+
+        // emit also that the seldection changed
+        this.selectionChanged$.next(true);
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-
+/* migrated
 SpiceDictionaryHandler::getInstance()->dictionary['EmailSchedule'] = [
     'table' => 'emailschedules',
     'comment' => 'Email Schedules Module',
@@ -24,10 +24,10 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailSchedule'] = [
             'vname' => 'LBL_STATUS',
         ],
         'email_subject' => [
-        'name' => 'email_subject',
-        'vname' => 'LBL_SUBJECT',
-        'type' => 'varchar',
-        'len' => '255',
+            'name' => 'email_subject',
+            'vname' => 'LBL_SUBJECT',
+            'type' => 'varchar',
+            'len' => '255',
         ],
         'email_body' => [
             'name' => 'email_body',
@@ -93,3 +93,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailSchedule'] = [
 ];
 
 VardefManager::createVardef('EmailSchedules', 'EmailSchedule', ['default', 'assignable']);
+*/
