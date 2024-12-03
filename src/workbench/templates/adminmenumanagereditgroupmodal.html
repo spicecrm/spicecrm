@@ -1,0 +1,52 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_GROUP"></system-label>
+    </system-modal-header>
+    <system-modal-content>
+        <div class="slds-height_full">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <div *ngIf="editMode === 'all'" class="slds-form-element__control">
+                    <label class="slds-form-element__label">
+                        <system-label label="LBL_SCOPE"></system-label>
+                    </label>
+                    <system-input-radio-button-group [(ngModel)]="newGroup.scope" [inputOptions]="radioOptions" [disabled]="!!newGroup.id"></system-input-radio-button-group>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                    <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                        <system-label label="LBL_NAME"></system-label>
+                    </label>
+                    <system-input-text [(ngModel)]="newGroup.name"></system-input-text>
+                </div>
+                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                    <label class="slds-form-element__label">
+                        <abbr class="slds-required">* </abbr>
+                        <system-label label="LBL_LABEL"></system-label>
+                    </label>
+                    <system-input-label [(ngModel)]="newGroup.label"></system-input-label>
+                </div>
+                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                    <label class="slds-form-element__label">
+                        <system-label label="LBL_PACKAGE"></system-label>
+                    </label>
+                    <system-input-package [(ngModel)]="newGroup.package"/>
+                </div>
+                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                    <label class="slds-form-element__label">
+                        <system-label label="LBL_VERSION"></system-label>
+                    </label>
+                    <system-input-version [(ngModel)]="newGroup.version"/>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">
+            <system-label label="LBL_CLOSE"></system-label>
+        </button>
+        <button class="slds-button slds-button--brand" [disabled]="!canSave()" (click)="saveGroup()">
+            <system-label label="LBL_SAVE"></system-label>
+        </button>
+    </system-modal-footer>
+</system-modal>
