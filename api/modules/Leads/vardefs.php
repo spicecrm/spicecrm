@@ -498,14 +498,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'comment' => 'URL of website for the company',
             ],
 
-        'tasks' =>
-            [
-                'name' => 'tasks',
-                'type' => 'link',
-                'relationship' => 'lead_tasks',
-                'source' => 'non-db',
-                'vname' => 'LBL_TASKS',
-            ],
+//        'tasks' =>
+//            [
+//                'name' => 'tasks',
+//                'type' => 'link',
+//                'relationship' => 'lead_tasks',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_TASKS',
+//            ],
 //        'notes' =>
 //            [
 //                'name' => 'notes',
@@ -627,11 +627,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
     , 'relationships' => [
         'lead_direct_reports' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
             'rhs_module' => 'Leads', 'rhs_table' => 'leads', 'rhs_key' => 'reports_to_id',
-            'relationship_type' => 'one-to-many'],
-        'lead_tasks' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
-            'rhs_module' => 'Tasks', 'rhs_table' => 'tasks', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Leads']
+            'relationship_type' => 'one-to-many']
+//        'lead_tasks' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
+//            'rhs_module' => 'Tasks', 'rhs_table' => 'tasks', 'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Leads']
 //        , 'lead_notes' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
 //            'rhs_module' => 'Notes', 'rhs_table' => 'notes', 'rhs_key' => 'parent_id',
 //            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
