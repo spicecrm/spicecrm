@@ -157,8 +157,8 @@ export class AdminMenuManager implements OnInit {
         this.cdRef.detectChanges();
 
         forkJoin({
-            globalComponents: this.backend.getRequest(`/configuration/configurator/entries/sysuiadmincomponents`),
-            customComponents: this.backend.getRequest(`/configuration/configurator/entries/sysuicustomadmincomponents`)
+            globalComponents: this.backend.getRequest(`configuration/configurator/entries/sysuiadmincomponents`),
+            customComponents: this.backend.getRequest(`configuration/configurator/entries/sysuicustomadmincomponents`)
         }).subscribe({
             next: ({ globalComponents, customComponents }) => {
                 this.isLoading = false;
@@ -281,8 +281,8 @@ export class AdminMenuManager implements OnInit {
         this.cdRef.detectChanges();
 
         const groupObservable = this.selectedScope === 'global'
-            ? this.backend.getRequest('/configuration/configurator/entries/sysuiadmingroups')
-            : this.backend.getRequest('/configuration/configurator/entries/sysuicustomadmingroups');
+            ? this.backend.getRequest('configuration/configurator/entries/sysuiadmingroups')
+            : this.backend.getRequest('configuration/configurator/entries/sysuicustomadmingroups');
 
         groupObservable.subscribe({
             next: (groups) => {
