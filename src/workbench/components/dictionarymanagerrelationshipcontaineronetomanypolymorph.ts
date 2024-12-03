@@ -76,8 +76,6 @@ export class DictionaryManagerRelationshipContainerOneToManyPolymorph implements
                         let rhsDefinitionDetails = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.rhs_sysdictionarydefinition_id);
                         let lhsDefinitionDetails = this.dictionarymanager.dictionarydefinitions.find(d => d.id == relationshipPolymorph.lhs_sysdictionarydefinition_id);
                         relationshipPolymorph.relationship_name = lhsDefinitionDetails.tablename + '_' + rhsDefinitionDetails.tablename;
-                        relationshipPolymorph.package = this.relationship.package;
-                        relationshipPolymorph.version = this.relationship.version;
 
                         this.relationshipPolymorphs.push(relationshipPolymorph);
                     }

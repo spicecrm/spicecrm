@@ -35,6 +35,7 @@
 ********************************************************************************/
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
+/* migrated
 SpiceDictionaryHandler::getInstance()->dictionary['UserPreference'] = [
     'table' => 'user_preferences',
     'fields' => [
@@ -105,3 +106,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['UserPreference'] = [
         ['name' =>'idx_userprefnamecatdel', 'type'=>'index', 'fields'=>['assigned_user_id','category', 'deleted']],
     ]
 ];
+*/

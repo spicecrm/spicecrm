@@ -51,6 +51,7 @@ import {SystemGooglePlacesAutocomplete} from "./components/systemgoogleplacesaut
 import {SystemGooglePlacesSearch} from "./components/systemgoogleplacessearch";
 import {SystemIcon} from "./components/systemicon";
 import {SystemFileIcon} from "./components/systemfileicon";
+import {SystemIllustration} from "./components/systemillustration";
 import {SystemIllustrationNoAccess} from "./components/systemillustrationnoaccess";
 import {SystemIllustrationNoData} from "./components/systemillustrationnodata";
 import {SystemIllustrationNoRecords} from "./components/systemillustrationnorecords";
@@ -206,6 +207,7 @@ import {CdkPortalOutlet} from "@angular/cdk/portal";
 import {SystemInputPackage} from "./components/systeminputpackage";
 import {SystemInputVersion} from "./components/systeminputversion";
 
+
 @NgModule({
     imports: [
         DirectivesModule,
@@ -256,6 +258,7 @@ import {SystemInputVersion} from "./components/systeminputversion";
         SystemIcon,
         SystemFileIcon,
         SystemIframeModal,
+        SystemIllustration,
         SystemIllustrationNoAccess,
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
@@ -566,7 +569,8 @@ import {SystemInputVersion} from "./components/systeminputversion";
         SystemSelectModuleModal,
         SystemDropdownMobileModal,
         SystemInputPackage,
-        SystemInputVersion
+        SystemInputVersion,
+        SystemIllustration
     ]
 })
 export class SystemComponents {}

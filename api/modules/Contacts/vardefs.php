@@ -372,13 +372,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
 //                'source' => 'non-db',
 //                'vname' => 'LBL_PROJECTS',
 //            ],
-            'tasks' => [
-                'name' => 'tasks',
-                'type' => 'link',
-                'relationship' => 'contact_tasks',
-                'source' => 'non-db',
-                'vname' => 'LBL_TASKS',
-            ],
+//            'tasks' => [
+//                'name' => 'tasks',
+//                'type' => 'link',
+//                'relationship' => 'contact_tasks',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_TASKS',
+//            ],
             'tasks_parent' => [
                 'name' => 'tasks_parent',
                 'type' => 'link',
@@ -829,13 +829,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
             'rhs_key' => 'contact_id',
             'relationship_type' => 'one-to-many',
         ],
-        'contact_tasks' => ['lhs_module' => 'Contacts',
-            'lhs_table' => 'contacts',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Tasks',
-            'rhs_table' => 'tasks',
-            'rhs_key' => 'contact_id',
-            'relationship_type' => 'one-to-many'],
+//        'contact_tasks' => ['lhs_module' => 'Contacts',
+//            'lhs_table' => 'contacts',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Tasks',
+//            'rhs_table' => 'tasks',
+//            'rhs_key' => 'contact_id',
+//            'relationship_type' => 'one-to-many'],
         'contact_tasks_parent' => ['lhs_module' => 'Contacts',
             'lhs_table' => 'contacts',
             'lhs_key' => 'id',
@@ -1064,16 +1064,16 @@ if (file_exists("extensions/modules/ServiceFeedbacks")) {
 //    );
 //}
 
-if (file_exists('extensions/modules/SalesVouchers')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['salesvouchers'] = [
-        'name' => 'salesvouchers',
-        'type' => 'link',
-        'relationship' => 'contacts_salesvouchers',
-        'module' => 'SalesVouchers',
-        'source' => 'non-db',
-        'vname' => 'LBL_SALESVOUCHERS',
-    ];
-}
+//if (file_exists('extensions/modules/SalesVouchers')) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['salesvouchers'] = [
+//        'name' => 'salesvouchers',
+//        'type' => 'link',
+//        'relationship' => 'contacts_salesvouchers',
+//        'module' => 'SalesVouchers',
+//        'source' => 'non-db',
+//        'vname' => 'LBL_SALESVOUCHERS',
+//    ];
+//}
 if (file_exists('extensions/modules/Potentials')) {
     SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['potentials'] = [
         'name' => 'potentials',

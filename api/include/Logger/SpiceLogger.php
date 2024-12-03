@@ -287,7 +287,9 @@ class SpiceLogger implements LoggerTemplate
         $instance->enablelog = false;
         // write the query
         $query = $instance->insertQuery("syslogs", $log, false);
-        $instance->query($query);
+        if($query != false) {
+            $instance->query($query);
+        }
 
         $this->loggingToLogTable = false;
     }

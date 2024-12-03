@@ -157,6 +157,11 @@ class M2MProspectListRelationship extends M2MRelationship
                     }
                 }
             }
+            // check on date modified. If the field is mapped in relationhsip fields, it would overwrite the value set in $row.
+            // Remove the field to make sure it doesn't get overwritten!
+            if(isset($additionalFields['date_modified'])){
+                unset($additionalFields['date_modified']);
+            }
             $row = array_merge($row, $additionalFields);
         }
 

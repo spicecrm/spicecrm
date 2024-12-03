@@ -36,12 +36,12 @@
 
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-
+/*imported
 SpiceDictionaryHandler::getInstance()->dictionary['Prospect'] = [
-
     'table' => 'prospects',
     'unified_search' => true,
     'fields' => [
+        /*
         'is_converted' =>
             [
                 'name' => 'is_converted',
@@ -109,46 +109,46 @@ SpiceDictionaryHandler::getInstance()->dictionary['Prospect'] = [
         'source'=>'non-db',
         'vname'=>'LBL_PROSPECT_LIST',
       ],
-      'calls' =>
-		[
-			'name' => 'calls',
-			'type' => 'link',
-			'relationship' => 'prospect_calls',
-			'source' => 'non-db',
-			'vname' => 'LBL_CALLS',
-        ],
-      'meetings'=>
-		[
-			'name' => 'meetings',
-			'type' => 'link',
-			'relationship' => 'prospect_meetings',
-			'source' => 'non-db',
-			'vname' => 'LBL_MEETINGS',
-        ],
-      'notes'=>
-		[
-			'name' => 'notes',
-			'type' => 'link',
-			'relationship' => 'prospect_notes',
-			'source' => 'non-db',
-			'vname' => 'LBL_NOTES',
-        ],
-      'tasks'=>
-		[
-			'name' => 'tasks',
-			'type' => 'link',
-			'relationship' => 'prospect_tasks',
-			'source' => 'non-db',
-			'vname' => 'LBL_TASKS',
-        ],
-      'emails'=>
-		[
-			'name' => 'emails',
-			'type' => 'link',
-			'relationship' => 'emails_prospects_rel',
-			'source' => 'non-db',
-			'vname' => 'LBL_EMAILS',
-        ],
+//      'calls' =>
+//		[
+//			'name' => 'calls',
+//			'type' => 'link',
+//			'relationship' => 'prospect_calls',
+//			'source' => 'non-db',
+//			'vname' => 'LBL_CALLS',
+//        ],
+//      'meetings'=>
+//		[
+//			'name' => 'meetings',
+//			'type' => 'link',
+//			'relationship' => 'prospect_meetings',
+//			'source' => 'non-db',
+//			'vname' => 'LBL_MEETINGS',
+//        ],
+//      'notes'=>
+//		[
+//			'name' => 'notes',
+//			'type' => 'link',
+//			'relationship' => 'prospect_notes',
+//			'source' => 'non-db',
+//			'vname' => 'LBL_NOTES',
+//        ],
+//      'tasks'=>
+//		[
+//			'name' => 'tasks',
+//			'type' => 'link',
+//			'relationship' => 'prospect_tasks',
+//			'source' => 'non-db',
+//			'vname' => 'LBL_TASKS',
+//        ],
+//      'emails'=>
+//		[
+//			'name' => 'emails',
+//			'type' => 'link',
+//			'relationship' => 'emails_prospects_rel',
+//			'source' => 'non-db',
+//			'vname' => 'LBL_EMAILS',
+//        ],
         'parent_id' => [
             'name' => 'parent_id',
             'vname' => 'LBL_PARENT_ID',
@@ -194,7 +194,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['Prospect'] = [
             'dbType' => 'varchar',
             'len' => 100,
         ],
+
         // Used for non-primary mail import
+
         'email_addresses_non_primary' =>
             [
                 'name' => 'email_addresses_non_primary',
@@ -203,15 +205,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Prospect'] = [
                 'vname' => 'LBL_EMAIL_NON_PRIMARY',
                 'reportable' => false,
             ],
+
     ],
 
     'indices' =>
         [
-//				array(
-//						'name' => 'prospect_auto_tracker_key' ,
-//						'type'=>'index' ,
-//						'fields'=>array('tracker_key')
-//				),
             ['name' => 'idx_prospects_last_first',
                 'type' => 'index',
                 'fields' => [
@@ -234,61 +232,61 @@ SpiceDictionaryHandler::getInstance()->dictionary['Prospect'] = [
         ],
 
     'relationships' => [
-        'prospect_tasks' => [
-            'lhs_module' => 'Prospects',
-            'lhs_table' => 'prospects',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Tasks',
-            'rhs_table' => 'tasks',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Prospects'
-        ],
-        'prospect_notes' => [
-            'lhs_module' => 'Prospects',
-            'lhs_table' => 'prospects',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Notes',
-            'rhs_table' => 'notes',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Prospects'
-        ],
-        'prospect_meetings' => [
-            'lhs_module' => 'Prospects',
-            'lhs_table' => 'prospects',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Meetings',
-            'rhs_table' => 'meetings',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Prospects'
-        ],
-        'prospect_calls' => [
-            'lhs_module' => 'Prospects',
-            'lhs_table' => 'prospects',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Calls',
-            'rhs_table' => 'calls',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Prospects'
-        ],
-        'prospect_emails' => [
-            'lhs_module' => 'Prospects',
-            'lhs_table' => 'prospects',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Emails',
-            'rhs_table' => 'emails',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Prospects'
-        ],
+//        'prospect_tasks' => [
+//            'lhs_module' => 'Prospects',
+//            'lhs_table' => 'prospects',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Tasks',
+//            'rhs_table' => 'tasks',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Prospects'
+//        ],
+//        'prospect_notes' => [
+//            'lhs_module' => 'Prospects',
+//            'lhs_table' => 'prospects',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Notes',
+//            'rhs_table' => 'notes',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Prospects'
+//        ],
+//        'prospect_meetings' => [
+//            'lhs_module' => 'Prospects',
+//            'lhs_table' => 'prospects',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Meetings',
+//            'rhs_table' => 'meetings',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Prospects'
+//        ],
+//        'prospect_calls' => [
+//            'lhs_module' => 'Prospects',
+//            'lhs_table' => 'prospects',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Calls',
+//            'rhs_table' => 'calls',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Prospects'
+//        ],
+//        'prospect_emails' => [
+//            'lhs_module' => 'Prospects',
+//            'lhs_table' => 'prospects',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Emails',
+//            'rhs_table' => 'emails',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Prospects'
+//        ],
         'prospect_campaign_log' => [
             'lhs_module' => 'Prospects',
             'lhs_table' => 'prospects',
@@ -335,8 +333,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Prospect'] = [
             'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Leads'
             ],
+
     ]
 ];
-VardefManager::createVardef('Prospects','Prospect', ['default', 'assignable',
-'person']);
-
+VardefManager::createVardef('Prospects','Prospect', []);
+*/
