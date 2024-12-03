@@ -1280,27 +1280,27 @@ class SpiceUIRESTHandler
         $db = DBManagerFactory::getInstance();
         $navElements = [];
 
-        // admin only
         if ($current_user->is_admin) {
-            // load all groups sorted
-            $groups = $db->query("SELECT * FROM (SELECT id, name, label, sequence FROM sysuiadmingroups UNION ALL SELECT id, name, label, sequence FROM sysuicustomadmingroups) us ORDER by sequence");
-            while ($group = $db->fetchByAssoc($groups)) {
-                // get the components for the group
+            $globalGroups = $db->query("SELECT id, name, label, sequence FROM sysuiadmingroups ORDER BY sequence ASC");
+            $customGroups = $db->query("SELECT id, name, label, sequence FROM sysuicustomadmingroups ORDER BY sequence ASC");
+
+            $groups = [];
+            while ($group = $db->fetchByAssoc($globalGroups)) {
+                $groups[] = array_merge($group, ['scope' => 'global']);
+            }
+            while ($group = $db->fetchByAssoc($customGroups)) {
+                $groups[] = array_merge($group, ['scope' => 'custom']);
+            }
+
+            foreach ($groups as $group) {
                 $groupComponents = [];
-                $groupComponentsObjects = $db->query("SELECT * FROM (SELECT id, adminaction, sequence, component, componentconfig, admin_label, icon FROM sysuiadmincomponents WHERE admingroup='{$group['name']}' UNION ALL SELECT id, adminaction, sequence, component, componentconfig, admin_label, icon FROM sysuicustomadmincomponents  WHERE admingroup='{$group['name']}') gc ORDER BY sequence");
+                $groupComponentsObjects = $db->query("SELECT id, adminaction, sequence, component, componentconfig, admin_label, icon FROM sysuiadmincomponents WHERE admingroup='{$group['name']}' UNION ALL SELECT id, adminaction, sequence, component, componentconfig, admin_label, icon FROM sysuicustomadmincomponents WHERE admingroup='{$group['name']}' ORDER BY sequence ASC");
                 while ($groupComponent = $db->fetchByAssoc($groupComponentsObjects)) {
-                    // ugly but effective
-                    // ToDo: find a nice way to handle that
                     $groupComponent['componentconfig'] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"', '"'], html_entity_decode($groupComponent['componentconfig'])), true) ?: [];
-
-                    if ($groupComponent['component'] == 'AdministrationConfigurator') {
-                        $groupComponent['componentconfig']['fields'] = $this->getTableFieldTypes($groupComponent['componentconfig']['dictionary'], $groupComponent['componentconfig']['fields']);
-                    }
-
                     $groupComponents[] = $groupComponent;
                 }
-                // only add if we have any component
-                if (count($groupComponents) > 0) {
+
+                if (!empty($groupComponents)) {
                     $navElements[] = array_merge($group, ['groupcomponents' => $groupComponents]);
                 }
             }
