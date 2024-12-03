@@ -24,19 +24,21 @@ export class TravelManagerButtonGroup {
     /**
      * add new TravelMileage
      */
+    public createTravelReceipt() {
+        this.modal.openModal("TravelAddManualTravelReceiptModal", true, this.injector);
+    }
+    /**
+     * add new TravelMileage
+     */
     public createTravelMileage() {
-        this.modal.openModal("TravelAddTravelMileageModal", true, this.injector).subscribe(componentref => {
-            componentref.instance.parent = this.model;
-        });
+        this.modal.openModal("TravelAddTravelMileageModal", true, this.injector)
     }
 
     /**
      * add new TravelSegment
      */
     public createTravelSegment() {
-        this.modal.openModal("TravelAddTravelSegmentModal", true, this.injector).subscribe(componentref => {
-            componentref.instance.parent = this.model;
-        });
+        this.modal.openModal("TravelAddTravelSegmentModal", true, this.injector)
     }
 
 }

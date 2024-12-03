@@ -861,24 +861,24 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'link_type' => 'one',
             'source' => 'non-db'
         ],
-        'userabsences' => [
-            'name' => 'userabsences',
-            'vname' => 'LBL_USER_ABSENCES',
-            'rel_fields' => ['user_id' => ['type' => 'id']],
-            'type' => 'link',
-            'relationship' => 'users_userabsences',
-            'source' => 'non-db',
-            'module' => 'UserAbsences'
-        ],
-        'repabscences' => [
-            'name' => 'repabscences',
-            'vname' => 'LBL_REPRESENTATIVE_DURING_ABSENCE',
-            'rel_fields' => ['user_id' => ['type' => 'id']],
-            'type' => 'link',
-            'relationship' => 'representatives_userabsences',
-            'source' => 'non-db',
-            'module' => 'UserAbsences'
-        ],
+//        'userabsences' => [
+//            'name' => 'userabsences',
+//            'vname' => 'LBL_USER_ABSENCES',
+//            'rel_fields' => ['user_id' => ['type' => 'id']],
+//            'type' => 'link',
+//            'relationship' => 'users_userabsences',
+//            'source' => 'non-db',
+//            'module' => 'UserAbsences'
+//        ],
+//        'repabscences' => [
+//            'name' => 'repabscences',
+//            'vname' => 'LBL_REPRESENTATIVE_DURING_ABSENCE',
+//            'rel_fields' => ['user_id' => ['type' => 'id']],
+//            'type' => 'link',
+//            'relationship' => 'representatives_userabsences',
+//            'source' => 'non-db',
+//            'module' => 'UserAbsences'
+//        ],
         'userhcmmeasures' => [
             'name' => 'userhcmmeasures',
             'vname' => 'LBL_HCMMEASURES',

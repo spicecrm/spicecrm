@@ -429,16 +429,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
     ]
 ];
 //avoid PHP Fatal error:  Uncaught Error: Cannot use string offset as an array
-if (file_exists('extensions/modules/SalesVouchers')){
-    SpiceDictionaryHandler::getInstance()->dictionary['Consumer']['fields']['salesvouchers'] = [
-        'name'         => 'salesvouchers',
-        'type'         => 'link',
-        'relationship' => 'consumer_salesvouchers',
-        'module'       => 'SalesVouchers',
-        'source'       => 'non-db',
-        'vname'        => 'LBL_SALESVOUCHERS',
-    ];
-}
+//if (file_exists('extensions/modules/SalesVouchers')){
+//    SpiceDictionaryHandler::getInstance()->dictionary['Consumer']['fields']['salesvouchers'] = [
+//        'name'         => 'salesvouchers',
+//        'type'         => 'link',
+//        'relationship' => 'consumer_salesvouchers',
+//        'module'       => 'SalesVouchers',
+//        'source'       => 'non-db',
+//        'vname'        => 'LBL_SALESVOUCHERS',
+//    ];
+//}
 if (file_exists("modules/ServiceTickets")) {
     SpiceDictionaryHandler::getInstance()->dictionary['Consumer']['fields']['servicetickets'] = [
         'name' => 'servicetickets',

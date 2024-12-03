@@ -27,6 +27,9 @@ import {ObjectListViewHeader} from './components/objectlistviewheader';
 import {ObjectListViewHeaderDetails} from './components/objectlistviewheaderdetails';
 import {ObjectListViewHeaderListSelector} from './components/objectlistviewheaderlistselector';
 import {ObjectList} from './components/objectlist';
+import {ObjectListSplit} from './components/objectlistsplit';
+import {ObjectListSplitItem} from './components/objectlistsplititem';
+import {ObjectListSplitContainer} from "./components/objectlistsplitcontainer";
 import {ObjectListViewContainer} from './components/objectlistviewcontainer';
 import {ObjectListView} from './components/objectlistview';
 import {ObjectActionContainerItem} from './components/objectactioncontaineritem';
@@ -256,6 +259,9 @@ import {ObjectListHeaderActionsBulkSetStatusButton} from "./actions/objectlisthe
         ObjectListViewHeaderDetails,
         ObjectListViewHeaderListSelector,
         ObjectList,
+        ObjectListSplit,
+        ObjectListSplitItem,
+        ObjectListSplitContainer,
         ObjectListHeader,
         ObjectListHeaderSort,
         ObjectActionContainer,
