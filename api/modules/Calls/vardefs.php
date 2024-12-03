@@ -277,14 +277,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'len'              => 36,
             'importable' => 'false',
         ],
-        'opportunities' => [
-            'name'         => 'opportunities',
-            'type'         => 'link',
-            'relationship' => 'opportunity_calls',
-            'source'       => 'non-db',
-            'link_type'    => 'one',
-            'vname'        => 'LBL_OPPORTUNITY',
-        ],
+//        'opportunities' => [
+//            'name'         => 'opportunities',
+//            'type'         => 'link',
+//            'relationship' => 'opportunity_calls',
+//            'source'       => 'non-db',
+//            'link_type'    => 'one',
+//            'vname'        => 'LBL_OPPORTUNITY',
+//        ],
         'leads' => [
             'name'         => 'leads',
             'type'         => 'link',
@@ -326,14 +326,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'vname'        => 'LBL_HCMEMPLOYEE_OBJECTIVES',
         ],
 
-        'employees' => [
-            'name'         => 'employees',
-            'type'         => 'link',
-            'relationship' => 'employees_calls',
-            'module'       => 'Employees',
-            'source'       => 'non-db',
-            'vname'        => 'LBL_EMPLOYEES',
-        ],
+//        'employees' => [
+//            'name'         => 'employees',
+//            'type'         => 'link',
+//            'relationship' => 'employees_calls',
+//            'module'       => 'Employees',
+//            'source'       => 'non-db',
+//            'vname'        => 'LBL_EMPLOYEES',
+//        ],
         'contacts' => [
             'name'         => 'contacts',
             'type'         => 'link',
@@ -475,13 +475,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'source'       => 'non-db',
             'module'       => 'Campaigntasks',
         ],
-        'tasks' => [
-            'name'         => 'tasks',
-            'type'         => 'link',
-            'relationship' => 'calls_tasks',
-            'source'       => 'non-db',
-            'module'       => 'Tasks',
-        ]
+//        'tasks' => [
+//            'name'         => 'tasks',
+//            'type'         => 'link',
+//            'relationship' => 'calls_tasks',
+//            'source'       => 'non-db',
+//            'module'       => 'Tasks',
+//        ]
     ],
     'indices' => [
         [
@@ -560,17 +560,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
 //            'relationship_role_column'       => 'parent_type',
 //            'relationship_role_column_value' => 'Calls',
 //        ],
-        'calls_tasks' => [
-            'lhs_module'                     => 'Calls',
-            'lhs_table'                      => 'calls',
-            'lhs_key'                        => 'id',
-            'rhs_module'                     => 'Tasks',
-            'rhs_table'                      => 'tasks',
-            'rhs_key'                        => 'parent_id',
-            'relationship_type'              => 'one-to-many',
-            'relationship_role_column'       => 'parent_type',
-            'relationship_role_column_value' => 'Calls',
-        ],
+//        'calls_tasks' => [
+//            'lhs_module'                     => 'Calls',
+//            'lhs_table'                      => 'calls',
+//            'lhs_key'                        => 'id',
+//            'rhs_module'                     => 'Tasks',
+//            'rhs_table'                      => 'tasks',
+//            'rhs_key'                        => 'parent_id',
+//            'relationship_type'              => 'one-to-many',
+//            'relationship_role_column'       => 'parent_type',
+//            'relationship_role_column_value' => 'Calls',
+//        ],
         'calls_campaigntasks' => [
             'rhs_module'        => 'Calls',
             'rhs_table'         => 'calls',
