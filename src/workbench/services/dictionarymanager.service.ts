@@ -173,6 +173,20 @@ export class dictionarymanager {
         this.dictionaryrelationships= [...this.dictionaryrelationships];
 
     }
+    /**
+     * update the input relationship in the relationship array
+     * @param relationship
+     */
+    public updateRelationshipPolymorphsInArray(polymorphs: RelationshipPolymorph[]) {
+        polymorphs.forEach(p => {
+            const idx = this.dictionaryrelationshippolymorphs.findIndex(x => x.id == p.id);
+            if(idx >= 0) {
+                this.dictionaryrelationshippolymorphs[idx] = {...p};
+            } else {
+                this.dictionaryrelationshippolymorphs.push({...p})
+            }
+        })
+    }
 
     /**
      * push a new relationship to the relationship array
