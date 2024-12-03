@@ -262,15 +262,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Task'] = ['table' => 'tasks',
             'source'       => 'non-db',
             'reportable'   => false
         ],
-        'users' => [
-            'name'         => 'users',
-            'type'         => 'link',
-            'relationship' => 'tasks_users',
-            'source'       => 'non-db',
-            'vname'        => 'LBL_USERS',
-            'module'       => 'Users',
-            'default'      => true
-        ],
+//        'users' => [
+//            'name'         => 'users',
+//            'type'         => 'link',
+//            'relationship' => 'tasks_users',
+//            'source'       => 'non-db',
+//            'vname'        => 'LBL_USERS',
+//            'module'       => 'Users',
+//            'default'      => true
+//        ],
 //        'checklists' => [
 //            'name'         => 'checklists',
 //            'type'         => 'json',
