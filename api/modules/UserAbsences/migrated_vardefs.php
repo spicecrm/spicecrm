@@ -2,7 +2,7 @@
 /***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-
+/* migrated
 SpiceDictionaryHandler::getInstance()->dictionary['UserAbsence'] = [
     'table' => 'userabsences',
     'comment' => 'UserAbsences Module',
@@ -136,3 +136,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['UserAbsence'] = [
 ];
 
 VardefManager::createVardef('UserAbsences', 'UserAbsence', ['default', 'assignable']);
+*/
