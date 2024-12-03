@@ -63,36 +63,36 @@ SpiceDictionaryHandler::getInstance()->dictionary['MediaFile'] = [
             'isnull' => false,
             'required' => false
         ],
-        'mediacategory_id' => [
-            'name' => 'mediacategory_id',
-            'vname' => 'LBL_MEDIACATEGORY_ID',
-            'type' => 'id',
-            'required' => false
-        ],
-        'mediacategory' => [
-            'name' => 'mediacategory',
-            'vname' => 'LBL_MEDIACATEGORY',
-            'type' => 'link',
-            'relationship' => 'mediacategory_mediafiles',
-            'source' => 'non-db',
-            'module' => 'MediaCategories'
-        ],
-        'mediacategory_name' => [
-            'name' => 'mediacategory_name',
-            'rname' => 'name',
-            'id_name' => 'mediacategory_id',
-            'vname' => 'LBL_MEDIACATEGORY',
-            'join_name' => 'mediacategory',
-            'type' => 'relate',
-            'link' => 'mediacategory',
-            'table' => 'mediacetegories',
-            'isnull' => 'true',
-            'module' => 'MediaCategories',
-            'dbType' => 'varchar',
-            'len' => '255',
-            'source' => 'non-db',
-            'unified_search' => true,
-        ],
+//        'mediacategory_id' => [
+//            'name' => 'mediacategory_id',
+//            'vname' => 'LBL_MEDIACATEGORY_ID',
+//            'type' => 'id',
+//            'required' => false
+//        ],
+//        'mediacategory' => [
+//            'name' => 'mediacategory',
+//            'vname' => 'LBL_MEDIACATEGORY',
+//            'type' => 'link',
+//            'relationship' => 'mediacategory_mediafiles',
+//            'source' => 'non-db',
+//            'module' => 'MediaCategories'
+//        ],
+//        'mediacategory_name' => [
+//            'name' => 'mediacategory_name',
+//            'rname' => 'name',
+//            'id_name' => 'mediacategory_id',
+//            'vname' => 'LBL_MEDIACATEGORY',
+//            'join_name' => 'mediacategory',
+//            'type' => 'relate',
+//            'link' => 'mediacategory',
+//            'table' => 'mediacetegories',
+//            'isnull' => 'true',
+//            'module' => 'MediaCategories',
+//            'dbType' => 'varchar',
+//            'len' => '255',
+//            'source' => 'non-db',
+//            'unified_search' => true,
+//        ],
         'file' => [
             'name' => 'file',
             'vname' => 'LBL_FILE',
@@ -107,15 +107,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['MediaFile'] = [
         ],
     ],
     'relationships' => [
-        'mediacategory_mediafiles' => [
-            'lhs_module' => 'MediaCategories',
-            'lhs_table' => 'mediacategories',
-            'lhs_key' => 'id',
-            'rhs_module' => 'MediaFiles',
-            'rhs_table' => 'mediafiles',
-            'rhs_key' => 'mediacategory_id',
-            'relationship_type' => 'one-to-many',
-        ]
+//        'mediacategory_mediafiles' => [
+//            'lhs_module' => 'MediaCategories',
+//            'lhs_table' => 'mediacategories',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'MediaFiles',
+//            'rhs_table' => 'mediafiles',
+//            'rhs_key' => 'mediacategory_id',
+//            'relationship_type' => 'one-to-many',
+//        ]
     ],
     'indices' => [
         ['name' =>'idx_mediafiles_name', 'type' => 'index', 'fields' => ['name']],
