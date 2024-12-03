@@ -216,14 +216,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'required'            => true,
             'comment'             => 'Date meeting ends',
         ],
-        'parent_type' => [
-            'name'    => 'parent_type',
-            'vname'   => 'LBL_PARENT_TYPE',
-            'type'    => 'parent_type',
-            'dbType'  => 'varchar',
-            'len'     => 100,
-            'comment' => 'Module meeting is associated with',
-        ],
+//        'parent_type' => [
+//            'name'    => 'parent_type',
+//            'vname'   => 'LBL_PARENT_TYPE',
+//            'type'    => 'parent_type',
+//            'dbType'  => 'varchar',
+//            'len'     => 100,
+//            'comment' => 'Module meeting is associated with',
+//        ],
         'status' => [
             'name'    => 'status',
             'vname'   => 'LBL_STATUS',
@@ -264,13 +264,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'importable' => 'false',
             'reportable' => false,
         ],
-        'parent_id' => [
-            'name'       => 'parent_id',
-            'vname'      => 'LBL_PARENT_ID',
-            'type'       => 'id',
-            'reportable' => false,
-            'comment'    => 'ID of item indicated by parent_type',
-        ],
+//        'parent_id' => [
+//            'name'       => 'parent_id',
+//            'vname'      => 'LBL_PARENT_ID',
+//            'type'       => 'id',
+//            'reportable' => false,
+//            'comment'    => 'ID of item indicated by parent_type',
+//        ],
         'reminder_time' => [
             'name'       => 'reminder_time',
             'vname'      => 'LBL_REMINDER_TIME',
@@ -374,13 +374,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
                 ]
             ]
         ],
-        'accounts' => [
-            'name'         => 'accounts',
-            'type'         => 'link',
-            'relationship' => 'account_meetings',
-            'source'       => 'non-db',
-            'vname'        => 'LBL_ACCOUNT',
-        ],
+//        'accounts' => [
+//            'name'         => 'accounts',
+//            'type'         => 'link',
+//            'relationship' => 'account_meetings',
+//            'source'       => 'non-db',
+//            'vname'        => 'LBL_ACCOUNT',
+//        ],
         'consumers' => [
             'name'         => 'consumers',
             'type'         => 'link',
