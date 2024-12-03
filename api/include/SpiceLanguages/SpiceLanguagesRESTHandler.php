@@ -271,8 +271,10 @@ class SpiceLanguagesRESTHandler
 
         // build the translations
         $translations = [];
+        $search = ["&#39;"];
+        $replace = ["'"];
         foreach($response->data->translations as $translation){
-            $translations[] = $translation->translatedText;
+            $translations[] = str_replace($search, $replace, $translation->translatedText);
         }
 
         // return the response
