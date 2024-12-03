@@ -8,7 +8,7 @@
 <div [system-overlay-loading-spinner]="isLoading" class="slds-grid" system-to-bottom-noscroll>
     <div cdkDropList [cdkDropListData]="adminGroups" (cdkDropListDropped)="drop($event, 'groups')" class="dragboundary slds-size--1-of-5 slds-scrollable--y slds-theme--shade slds-tabs_default__content slds-p-around--none slds-border--right">
         <ul class="slds-has-dividers_around-space" cdkDrag cdkDragBoundary=".dragboundary" [cdkDragDisabled]="(editMode === 'none') || (editMode === 'custom' && group.scope === 'global')" *ngFor="let group of adminGroups">
-            <li class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread slds-theme--default slds-item" [ngClass]="{'slds-theme--inverse': group.name == selectedAdminGroup}">
+            <li class="slds-grid slds-grid--vertical-align-center slds-m-around--xxx-small slds-grid--align-spread slds-theme--default slds-item" [ngClass]="{'slds-theme--inverse': group.name == selectedAdminGroup}">
                 <system-utility-icon *ngIf="editMode === 'all' || (editMode === 'custom' && selectedScope === 'custom')" class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
                 <system-utility-icon size="x-small" class="slds-p-around--xx-small" [icon]="group.scope == 'global' ? 'world' : 'people'"></system-utility-icon>
                 <div class="slds-truncate" [title]="group.name">
@@ -67,10 +67,10 @@
                 </td>
                 <td class="slds-text-align_left">
                     <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{ adminComponent.adminaction }}</div>
-                    <system-input-text *ngIf="viewProvider.view.mode == 'edit'" [(ngModel)]="adminComponent.adminaction"></system-input-text>
+                    <system-input-text  *ngIf="viewProvider.view.mode == 'edit'" [(ngModel)]="adminComponent.adminaction"></system-input-text>
                 </td>
                 <td class="slds-text-align_left">
-                    <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{ adminComponent.admin_label }}</div>
+                    <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate"><system-label [label]="adminComponent.admin_label"/> ({{adminComponent.admin_label}})</div>
                     <system-input-label *ngIf="viewProvider.view.mode == 'edit'" [(ngModel)]="adminComponent.admin_label"></system-input-label>
                 </td>
                 <td class="slds-text-align_left">
