@@ -11,14 +11,14 @@ $vardefs = [
             'source' => 'non-db',
             'vname' => 'LBL_CALLS',
         ],
-        'tasks' => [
-            'name' => 'tasks',
-            'module' => 'Tasks',
-            'type' => 'link',
-            'relationship' => strtolower($table_name) .'_tasks',
-            'source' => 'non-db',
-            'vname' => 'LBL_TASKS',
-        ],
+//        'tasks' => [
+//            'name' => 'tasks',
+//            'module' => 'Tasks',
+//            'type' => 'link',
+//            'relationship' => strtolower($table_name) .'_tasks',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_TASKS',
+//        ],
         'notes' => [
             'name' => 'notes',
             'module' => 'Notes',
@@ -61,12 +61,12 @@ $vardefs = [
             'relationship_type'=>'one-to-many', 'relationship_role_column'=>'parent_type',
             'relationship_role_column_value' => $module
         ],
-        strtolower($table_name) . '_tasks' => [
-            'lhs_module'=> $module, 'lhs_table'=> $table_name, 'lhs_key' => 'id',
-            'rhs_module'=> 'Tasks', 'rhs_table'=> 'tasks', 'rhs_key' => 'parent_id',
-            'relationship_type'=>'one-to-many', 'relationship_role_column'=>'parent_type',
-            'relationship_role_column_value' => $module
-        ],
+//        strtolower($table_name) . '_tasks' => [
+//            'lhs_module'=> $module, 'lhs_table'=> $table_name, 'lhs_key' => 'id',
+//            'rhs_module'=> 'Tasks', 'rhs_table'=> 'tasks', 'rhs_key' => 'parent_id',
+//            'relationship_type'=>'one-to-many', 'relationship_role_column'=>'parent_type',
+//            'relationship_role_column_value' => $module
+//        ],
         strtolower($table_name) . '_notes' => [
             'lhs_module'=> $module, 'lhs_table'=> $table_name, 'lhs_key' => 'id',
             'rhs_module'=> 'Notes', 'rhs_table'=> 'notes', 'rhs_key' => 'parent_id',
