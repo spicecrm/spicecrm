@@ -3,7 +3,7 @@
 
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-
+/*
 SpiceDictionaryHandler::getInstance()->dictionary['TextSnippet'] = [
     'table' => 'textsnippets',
     'comment' => 'TextSnippets Module',
@@ -35,3 +35,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['TextSnippet'] = [
 ];
 
 VardefManager::createVardef('TextSnippets', 'TextSnippet', ['default', 'assignable']);
+*/
