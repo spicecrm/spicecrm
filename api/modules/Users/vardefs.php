@@ -495,13 +495,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'vname' => 'LBL_CALLS'
         ],
-        'meetings' => [
-            'name' => 'meetings',
-            'type' => 'link',
-            'relationship' => 'meetings_users',
-            'source' => 'non-db',
-            'vname' => 'LBL_MEETINGS'
-        ],
+//        'meetings' => [
+//            'name' => 'meetings',
+//            'type' => 'link',
+//            'relationship' => 'meetings_users',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_MEETINGS'
+//        ],
         'activity_accept_status' => [
             'name' => 'activity_accept_status',
             'type' => 'enum',
@@ -767,34 +767,34 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'importable' => 'false',
         ],
-        'm_accept_status_fields' => [
-            'name' => 'm_accept_status_fields',
-            'rname' => 'id',
-            'relationship_fields' => [
-                'id' => 'accept_status_id',
-                'accept_status' => 'accept_status_name'
-            ],
-            'vname' => 'LBL_LIST_ACCEPT_STATUS',
-            'type' => 'relate',
-            'link' => 'meetings',
-            'link_type' => 'relationship_info',
-            'source' => 'non-db',
-            'importable' => 'false',
-        ],
-        'accept_status_id' => [
-            'name' => 'accept_status_id',
-            'type' => 'varchar',
-            'source' => 'non-db',
-            'vname' => 'LBL_LIST_ACCEPT_STATUS',
-            'importable' => 'false',
-        ],
-        'accept_status_name' => [
-            'name' => 'accept_status_name',
-            'type' => 'enum',
-            'source' => 'non-db',
-            'vname' => 'LBL_LIST_ACCEPT_STATUS',
-            'options' => 'dom_meeting_accept_status',
-        ],
+//        'm_accept_status_fields' => [
+//            'name' => 'm_accept_status_fields',
+//            'rname' => 'id',
+//            'relationship_fields' => [
+//                'id' => 'accept_status_id',
+//                'accept_status' => 'accept_status_name'
+//            ],
+//            'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//            'type' => 'relate',
+//            'link' => 'meetings',
+//            'link_type' => 'relationship_info',
+//            'source' => 'non-db',
+//            'importable' => 'false',
+//        ],
+//        'accept_status_id' => [
+//            'name' => 'accept_status_id',
+//            'type' => 'varchar',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//            'importable' => 'false',
+//        ],
+//        'accept_status_name' => [
+//            'name' => 'accept_status_name',
+//            'type' => 'enum',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//            'options' => 'dom_meeting_accept_status',
+//        ],
         'prospect_lists' => [
             'name' => 'prospect_lists',
             'type' => 'link',

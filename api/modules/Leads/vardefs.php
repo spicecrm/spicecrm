@@ -395,36 +395,36 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'importable' => 'false',
                 'duplicate_merge' => false,
             ],
-        'm_accept_status_fields' =>
-            [
-                'name' => 'm_accept_status_fields',
-                'rname' => 'id',
-                'relationship_fields' => ['id' => 'accept_status_id', 'accept_status' => 'accept_status_name'],
-                'vname' => 'LBL_LIST_ACCEPT_STATUS',
-                'type' => 'relate',
-                'link' => 'meetings',
-                'link_type' => 'relationship_info',
-                'source' => 'non-db',
-                'importable' => 'false',
-                'hideacl' => true,
-                'duplicate_merge' => false,
-            ],
-        'accept_status_id' =>
-            [
-                'name' => 'accept_status_id',
-                'type' => 'varchar',
-                'source' => 'non-db',
-                'vname' => 'LBL_LIST_ACCEPT_STATUS',
-            ],
-        'accept_status_name' =>
-            [
-                'name' => 'accept_status_name',
-                'type' => 'enum',
-                'source' => 'non-db',
-                'vname' => 'LBL_LIST_ACCEPT_STATUS',
-                'options' => 'dom_meeting_accept_status',
-                'importable' => 'false',
-            ],
+//        'm_accept_status_fields' =>
+//            [
+//                'name' => 'm_accept_status_fields',
+//                'rname' => 'id',
+//                'relationship_fields' => ['id' => 'accept_status_id', 'accept_status' => 'accept_status_name'],
+//                'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//                'type' => 'relate',
+//                'link' => 'meetings',
+//                'link_type' => 'relationship_info',
+//                'source' => 'non-db',
+//                'importable' => 'false',
+//                'hideacl' => true,
+//                'duplicate_merge' => false,
+//            ],
+//        'accept_status_id' =>
+//            [
+//                'name' => 'accept_status_id',
+//                'type' => 'varchar',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//            ],
+//        'accept_status_name' =>
+//            [
+//                'name' => 'accept_status_name',
+//                'type' => 'enum',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//                'options' => 'dom_meeting_accept_status',
+//                'importable' => 'false',
+//            ],
         'webtolead_email1' =>
             [
                 'name' => 'webtolead_email1',
@@ -514,14 +514,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
 //                'source' => 'non-db',
 //                'vname' => 'LBL_NOTES',
 //            ],
-        'meetings' =>
-            [
-                'name' => 'meetings',
-                'type' => 'link',
-                'relationship' => 'leads_meetings',
-                'source' => 'non-db',
-                'vname' => 'LBL_MEETINGS',
-            ],
+//        'meetings' =>
+//            [
+//                'name' => 'meetings',
+//                'type' => 'link',
+//                'relationship' => 'leads_meetings',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_MEETINGS',
+//            ],
         'calls' =>
             [
                 'name' => 'calls',
@@ -637,10 +637,10 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
 //            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
 //            'relationship_role_column_value' => 'Leads']
 
-        , 'lead_meetings' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
-            'rhs_module' => 'Meetings', 'rhs_table' => 'meetings', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Leads']
+//        , 'lead_meetings' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
+//            'rhs_module' => 'Meetings', 'rhs_table' => 'meetings', 'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Leads']
         , 'lead_emails' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
             'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
