@@ -622,12 +622,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
 //            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
 //            'relationship_role_column_value' => 'Accounts'
 //        ],
-        'account_calls' => [
-            'lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
-            'rhs_module' => 'Calls', 'rhs_table' => 'calls', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Accounts'
-        ],
+//        'account_calls' => [
+//            'lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
+//            'rhs_module' => 'Calls', 'rhs_table' => 'calls', 'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Accounts'
+//        ],
 
         /*,'accounts_emails' => array(
             'rhs_module'        => 'Emails',
