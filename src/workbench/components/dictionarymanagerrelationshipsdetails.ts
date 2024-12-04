@@ -98,7 +98,7 @@ export class DictionaryManagerRelationshipsDetails {
         }).subscribe({
             next: () => {
                 this.dictionarymanager.updateRelationshipInArray(this.dictionaryRelationship);
-                this.dictionarymanager.dictionaryrelationshipfields = relationshipFields;
+                this.dictionarymanager.updateRelationshippFieldsInArray(relationshipFields);
                 this.dictionarymanager.updateRelationshipPolymorphsInArray(this.dictionaryRelationshipPolymorphs);
                 this.self.destroy();
             }
