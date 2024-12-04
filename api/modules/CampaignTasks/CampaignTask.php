@@ -658,7 +658,7 @@ class CampaignTask extends SpiceBean
 
         $email->addEmailAddress('to', $emailAddress);
 
-        $email->addEmailAddress('from', $mailbox->imap_pop3_username);
+        $email->addEmailAddress('from', $this->handleFromAddress($mailbox));
 
         $categories = SpiceAttachments::getAttachmentCategories('CampaignTasks', true);
         $categoryId = !empty($categories) ? $categories[0]['id'] : null;
@@ -982,5 +982,29 @@ class CampaignTask extends SpiceBean
         $this->activated = 0;
         $this->status = 'Inactive';
         $this->save();
+    }
+
+
+    /**
+     * determine the from address
+     * @param Mailbox $mailbox
+     * @return mixed
+     */
+    public function handleFromAddress(Mailbox $mailbox){
+
+        switch($mailbox->transport){
+            case Mailbox::TRANSPORT_PERSONAL_GMAIL:
+            case Mailbox::TRANSPORT_PERSONAL_MSGRAPH:
+                // get email address of the assigned user of the campaigntask
+                $assignedUser = BeanFactory::getBean('Users', $this->assigned_user_id);
+                if($assignedUser){
+                    $from = $assignedUser->user_name;
+                }
+                break;
+            default:
+                $from = $mailbox->imap_pop3_username;
+        }
+
+        return $from;
     }
 }
