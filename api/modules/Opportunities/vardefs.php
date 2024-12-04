@@ -376,34 +376,34 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'vname' => 'LBL_USERS'
         ],
         */
-        'tasks' => [
-            'name' => 'tasks',
-            'type' => 'link',
-            'relationship' => 'opportunity_tasks',
-            'source' => 'non-db',
-            'vname' => 'LBL_TASKS',
-        ],
-//        'notes' => [
+//        'tasks' => [
+//            'name' => 'tasks',
+//            'type' => 'link',
+//            'relationship' => 'opportunity_tasks',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_TASKS',
+//        ],
+////        'notes' => [
 //            'name' => 'notes',
 //            'type' => 'link',
 //            'relationship' => 'opportunity_notes',
 //            'source' => 'non-db',
 //            'vname' => 'LBL_NOTES',
 //        ],
-        'meetings' => [
-            'name' => 'meetings',
-            'type' => 'link',
-            'relationship' => 'opportunity_meetings',
-            'source' => 'non-db',
-            'vname' => 'LBL_MEETINGS',
-        ],
-        'calls' => [
-            'name' => 'calls',
-            'type' => 'link',
-            'relationship' => 'opportunity_calls',
-            'source' => 'non-db',
-            'vname' => 'LBL_CALLS',
-        ],
+//        'meetings' => [
+//            'name' => 'meetings',
+//            'type' => 'link',
+//            'relationship' => 'opportunity_meetings',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_MEETINGS',
+//        ],
+//        'calls' => [
+//            'name' => 'calls',
+//            'type' => 'link',
+//            'relationship' => 'opportunity_calls',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CALLS',
+//        ],
         'emails' => [
             'name' => 'emails',
             'type' => 'link',
@@ -549,23 +549,23 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
     ],
     */
     'relationships' => [
-        'opportunity_calls' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
-            'rhs_module' => 'Calls', 'rhs_table' => 'calls', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Opportunities']
-    , 'opportunity_meetings' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
-            'rhs_module' => 'Meetings', 'rhs_table' => 'meetings', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Opportunities']
-    , 'opportunity_tasks' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
-            'rhs_module' => 'Tasks', 'rhs_table' => 'tasks', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Opportunities']
+//        'opportunity_calls' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
+//            'rhs_module' => 'Calls', 'rhs_table' => 'calls', 'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Opportunities']
+//    , 'opportunity_meetings' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
+//            'rhs_module' => 'Meetings', 'rhs_table' => 'meetings', 'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Opportunities']
+//    , 'opportunity_tasks' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
+//            'rhs_module' => 'Tasks', 'rhs_table' => 'tasks', 'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Opportunities']
 //    , 'opportunity_notes' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
 //            'rhs_module' => 'Notes', 'rhs_table' => 'notes', 'rhs_key' => 'parent_id',
 //            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
 //            'relationship_role_column_value' => 'Opportunities']
-    , 'opportunity_emails' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
+     'opportunity_emails' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
             'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Opportunities']

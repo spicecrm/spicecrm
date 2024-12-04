@@ -1092,7 +1092,7 @@ class SpiceFTSHandler
                                 "match" => [
                                     $indexProperty['indexfieldname'] => [
                                         "query" => $queryField,
-                                        'analyzer' => 'standard',
+                                        'analyzer' =>  $indexProperty['search_analyzer'] ?: 'standard',
                                         "operator" => "and",
                                         'fuzziness' => $indexProperty['duplicatefuzz'] ?: 0]
                                 ]
