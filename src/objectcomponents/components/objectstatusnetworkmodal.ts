@@ -81,8 +81,16 @@ export class ObjectStatusNetworkModal implements OnInit {
      * sets new value for status field
      */
     public changeStatusVal(): void {
-        const statusField = this.statusFieldDomain.split("_dom")[0];
-        this.model.setField(statusField, this.statusTo);
+        const domainField = this.statusFieldDomain;
+
+        Object.keys(this.model._fields).forEach((fieldName) => {
+            const field = this.model._fields[fieldName];
+
+            // Check if we can find the domainField inside the field definition
+            if (field.options === domainField) {
+                this.model.setField(field.name, this.statusTo);
+            }
+        });
     }
 
     /**
