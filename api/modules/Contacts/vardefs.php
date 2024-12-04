@@ -172,21 +172,21 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'options' => 'opportunity_relationship_buying_center_dom',
             ],
             */
-            'activity_accept_status' => [
-                'name' => 'activity_accept_status',
-                'type' => 'enum',
-                'source' => 'non-db',
-                'vname' => 'LBL_ACTIVITY_ACCEPT_STATUS',
-                'options' => 'dom_meeting_accept_status',
-                'comment' => 'non db field retrieved from the relationship to the meeting call etc'
-            ],
-            'activity_required' => [
-                'name' => 'activity_required',
-                'type' => 'bool',
-                'source' => 'non-db',
-                'vname' => 'LBL_ACTIVITY_REQUIRED',
-                'comment' => 'non db field retrieved from the relationship to the meeting call etc'
-            ],
+//            'activity_accept_status' => [
+//                'name' => 'activity_accept_status',
+//                'type' => 'enum',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_ACTIVITY_ACCEPT_STATUS',
+//                'options' => 'dom_meeting_accept_status',
+//                'comment' => 'non db field retrieved from the relationship to the meeting call etc'
+//            ],
+//            'activity_required' => [
+//                'name' => 'activity_required',
+//                'type' => 'bool',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_ACTIVITY_REQUIRED',
+//                'comment' => 'non db field retrieved from the relationship to the meeting call etc'
+//            ],
             'reports_to_id' => [
                 'name' => 'reports_to_id',
                 'vname' => 'LBL_REPORTS_TO_ID',
@@ -254,21 +254,21 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
 //                'source' => 'non-db',
 //                'vname' => 'LBL_BUGS',
 //            ),
-            'calls' => [
-                'name' => 'calls',
-                'type' => 'link',
-                'relationship' => 'calls_contacts',
-                'source' => 'non-db',
-                'module' => 'Calls',
-                'vname' => 'LBL_CALLS',
-            ],
-            'calls_parent' => [
-                'name' => 'calls_parent',
-                'type' => 'link',
-                'relationship' => 'contact_calls_parent',
-                'source' => 'non-db',
-                'vname' => 'LBL_CALLS_AS_PARENT',
-            ],
+//            'calls' => [
+//                'name' => 'calls',
+//                'type' => 'link',
+//                'relationship' => 'calls_contacts',
+//                'source' => 'non-db',
+//                'module' => 'Calls',
+//                'vname' => 'LBL_CALLS',
+//            ],
+//            'calls_parent' => [
+//                'name' => 'calls_parent',
+//                'type' => 'link',
+//                'relationship' => 'contact_calls_parent',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_CALLS_AS_PARENT',
+//            ],
             /* migrated to dictiornary
             'callattempts_parent' => [
                 'name' => 'callattempts_parent',
@@ -490,18 +490,18 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'relationship' => 'campaign_contacts',
                 'source' => 'non-db',
             ],
-            'c_accept_status_fields' => [
-                'name' => 'c_accept_status_fields',
-                'rname' => 'id',
-                'relationship_fields' => ['id' => 'accept_status_id', 'accept_status' => 'accept_status_name'],
-                'vname' => 'LBL_LIST_ACCEPT_STATUS',
-                'type' => 'relate',
-                'link' => 'calls',
-                'link_type' => 'relationship_info',
-                'source' => 'non-db',
-                'importable' => 'false',
-                'duplicate_merge' => false,
-            ],
+//            'c_accept_status_fields' => [
+//                'name' => 'c_accept_status_fields',
+//                'rname' => 'id',
+//                'relationship_fields' => ['id' => 'accept_status_id', 'accept_status' => 'accept_status_name'],
+//                'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//                'type' => 'relate',
+//                'link' => 'calls',
+//                'link_type' => 'relationship_info',
+//                'source' => 'non-db',
+//                'importable' => 'false',
+//                'duplicate_merge' => false,
+//            ],
 //            'm_accept_status_fields' => [
 //                'name' => 'm_accept_status_fields',
 //                'rname' => 'id',
@@ -888,12 +888,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
             'relationship_role_column' => 'target_type',
             'relationship_role_column_value' => 'Contacts'
         ],
-        'contact_calls_parent' => [
-            'lhs_module' => 'Contacts', 'lhs_table' => 'contacts', 'lhs_key' => 'id',
-            'rhs_module' => 'Calls', 'rhs_table' => 'calls', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Contacts'
-        ],
+//        'contact_calls_parent' => [
+//            'lhs_module' => 'Contacts', 'lhs_table' => 'contacts', 'lhs_key' => 'id',
+//            'rhs_module' => 'Calls', 'rhs_table' => 'calls', 'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Contacts'
+//        ],
 //        'contact_meetings_parent' => [
 //            'lhs_module' => 'Contacts', 'lhs_table' => 'contacts', 'lhs_key' => 'id',
 //            'rhs_module' => 'Meetings', 'rhs_table' => 'meetings', 'rhs_key' => 'parent_id',

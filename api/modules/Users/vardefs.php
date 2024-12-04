@@ -488,13 +488,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'vname' => 'LBL_EMPLOYEE'
         ],
-        'calls' => [
-            'name' => 'calls',
-            'type' => 'link',
-            'relationship' => 'calls_users',
-            'source' => 'non-db',
-            'vname' => 'LBL_CALLS'
-        ],
+//        'calls' => [
+//            'name' => 'calls',
+//            'type' => 'link',
+//            'relationship' => 'calls_users',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CALLS'
+//        ],
 //        'meetings' => [
 //            'name' => 'meetings',
 //            'type' => 'link',
@@ -502,43 +502,43 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
 //            'source' => 'non-db',
 //            'vname' => 'LBL_MEETINGS'
 //        ],
-        'activity_accept_status' => [
-            'name' => 'activity_accept_status',
-            'type' => 'enum',
-            'source' => 'non-db',
-            'vname' => 'LBL_ACTIVITY_ACCEPT_STATUS',
-            'options' => 'dom_meeting_accept_status',
-            'comment' => 'non db field retrieved from the relationship to the meeting call etc'
-        ],
-        'activity_required' => [
-            'name' => 'activity_required',
-            'type' => 'bool',
-            'source' => 'non-db',
-            'vname' => 'LBL_ACTIVITY_REQUIRED',
-            'comment' => 'non db field retrieved from the relationship to the meeting call etc'
-        ],
+//        'activity_accept_status' => [
+//            'name' => 'activity_accept_status',
+//            'type' => 'enum',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_ACTIVITY_ACCEPT_STATUS',
+//            'options' => 'dom_meeting_accept_status',
+//            'comment' => 'non db field retrieved from the relationship to the meeting call etc'
+//        ],
+//        'activity_required' => [
+//            'name' => 'activity_required',
+//            'type' => 'bool',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_ACTIVITY_REQUIRED',
+//            'comment' => 'non db field retrieved from the relationship to the meeting call etc'
+//        ],
         // CR1000356
-        'meeting_user_status_accept' => [
-            'name' => 'meeting_user_status_accept',
-            'vname' => 'LBL_USER_STATUS_ACCEPT',
-            'type' => 'link',
-            'source' => 'non-db',
-            'relationship' => 'meetings_users_status_accept',
-        ],
-        'meeting_user_status_decline' => [
-            'name' => 'meeting_status_decline',
-            'vname' => 'LBL_USER_STATUS_DECLINE',
-            'type' => 'link',
-            'source' => 'non-db',
-            'relationship' => 'meetings_users_status_decline',
-        ],
-        'meeting_user_status_tentative' => [
-            'name' => 'meeting_user_status_tentative',
-            'vname' => 'LBL_USER_STATUS_TENTATIVE',
-            'type' => 'link',
-            'source' => 'non-db',
-            'relationship' => 'meetings_users_status_tentative',
-        ],
+//        'meeting_user_status_accept' => [
+//            'name' => 'meeting_user_status_accept',
+//            'vname' => 'LBL_USER_STATUS_ACCEPT',
+//            'type' => 'link',
+//            'source' => 'non-db',
+//            'relationship' => 'meetings_users_status_accept',
+//        ],
+//        'meeting_user_status_decline' => [
+//            'name' => 'meeting_status_decline',
+//            'vname' => 'LBL_USER_STATUS_DECLINE',
+//            'type' => 'link',
+//            'source' => 'non-db',
+//            'relationship' => 'meetings_users_status_decline',
+//        ],
+//        'meeting_user_status_tentative' => [
+//            'name' => 'meeting_user_status_tentative',
+//            'vname' => 'LBL_USER_STATUS_TENTATIVE',
+//            'type' => 'link',
+//            'source' => 'non-db',
+//            'relationship' => 'meetings_users_status_tentative',
+//        ],
         'call_user_status_accept' => [
             'name' => 'call_user_status_accept',
             'vname' => 'LBL_USER_STATUS_ACCEPT',
@@ -753,20 +753,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'type' => 'bool',
         ],
         /* to support Meetings SubPanels */
-        'c_accept_status_fields' => [
-            'name' => 'c_accept_status_fields',
-            'rname' => 'id',
-            'relationship_fields' => [
-                'id' => 'accept_status_id',
-                'accept_status' => 'accept_status_name'
-            ],
-            'vname' => 'LBL_LIST_ACCEPT_STATUS',
-            'type' => 'relate',
-            'link' => 'calls',
-            'link_type' => 'relationship_info',
-            'source' => 'non-db',
-            'importable' => 'false',
-        ],
+//        'c_accept_status_fields' => [
+//            'name' => 'c_accept_status_fields',
+//            'rname' => 'id',
+//            'relationship_fields' => [
+//                'id' => 'accept_status_id',
+//                'accept_status' => 'accept_status_name'
+//            ],
+//            'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//            'type' => 'relate',
+//            'link' => 'calls',
+//            'link_type' => 'relationship_info',
+//            'source' => 'non-db',
+//            'importable' => 'false',
+//        ],
 //        'm_accept_status_fields' => [
 //            'name' => 'm_accept_status_fields',
 //            'rname' => 'id',
