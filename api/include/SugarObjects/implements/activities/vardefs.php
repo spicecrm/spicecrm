@@ -19,23 +19,23 @@ $vardefs = [
 //            'source' => 'non-db',
 //            'vname' => 'LBL_TASKS',
 //        ],
-        'notes' => [
-            'name' => 'notes',
-            'module' => 'Notes',
-            'type' => 'link',
-            'relationship' => strtolower($table_name) .'_notes',
-            'source' => 'non-db',
-            'vname' => 'LBL_NOTES',
-        ],
-        'meetings' => [
-            'name' => 'meetings',
-            'module' => 'Meetings',
-            'type' => 'link',
-            'relationship' => strtolower($table_name) .'_meetings',
-            'bean_name' => 'Meeting',
-            'source' => 'non-db',
-            'vname' => 'LBL_MEETINGS',
-        ],
+//        'notes' => [
+//            'name' => 'notes',
+//            'module' => 'Notes',
+//            'type' => 'link',
+//            'relationship' => strtolower($table_name) .'_notes',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_NOTES',
+//        ],
+//        'meetings' => [
+//            'name' => 'meetings',
+//            'module' => 'Meetings',
+//            'type' => 'link',
+//            'relationship' => strtolower($table_name) .'_meetings',
+//            'bean_name' => 'Meeting',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_MEETINGS',
+//        ],
         'emails' => [
             'name' => 'emails',
             'module' => 'Emails',
@@ -44,15 +44,15 @@ $vardefs = [
             'source' => 'non-db',
             'vname' => 'LBL_EMAILS',
         ],
-        'letters' => [
-            'name' => 'letters',
-            'module' => 'Letters',
-            'type' => 'link',
-            'relationship' => strtolower($table_name) .'_letter',
-            'bean_name' => 'Letter',
-            'source' => 'non-db',
-            'vname' => 'LBL_LETTERS',
-        ],
+//        'letters' => [
+//            'name' => 'letters',
+//            'module' => 'Letters',
+//            'type' => 'link',
+//            'relationship' => strtolower($table_name) .'_letter',
+//            'bean_name' => 'Letter',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_LETTERS',
+//        ],
     ],
     'relationships' => [
         strtolower($table_name) . '_calls' => [
@@ -67,29 +67,29 @@ $vardefs = [
 //            'relationship_type'=>'one-to-many', 'relationship_role_column'=>'parent_type',
 //            'relationship_role_column_value' => $module
 //        ],
-        strtolower($table_name) . '_notes' => [
-            'lhs_module'=> $module, 'lhs_table'=> $table_name, 'lhs_key' => 'id',
-            'rhs_module'=> 'Notes', 'rhs_table'=> 'notes', 'rhs_key' => 'parent_id',
-            'relationship_type'=>'one-to-many', 'relationship_role_column'=>'parent_type',
-            'relationship_role_column_value' => $module
-        ],
-        strtolower($module) . '_meetings' => [
-            'lhs_module'=> $module, 'lhs_table'=> $table_name, 'lhs_key' => 'id',
-            'rhs_module'=> 'Meetings', 'rhs_table'=> 'meetings', 'rhs_key' => 'parent_id',
-            'relationship_type'=>'one-to-many', 'relationship_role_column'=>'parent_type',
-            'relationship_role_column_value' => $module
-        ],
+//        strtolower($table_name) . '_notes' => [
+//            'lhs_module'=> $module, 'lhs_table'=> $table_name, 'lhs_key' => 'id',
+//            'rhs_module'=> 'Notes', 'rhs_table'=> 'notes', 'rhs_key' => 'parent_id',
+//            'relationship_type'=>'one-to-many', 'relationship_role_column'=>'parent_type',
+//            'relationship_role_column_value' => $module
+//        ],
+//        strtolower($module) . '_meetings' => [
+//            'lhs_module'=> $module, 'lhs_table'=> $table_name, 'lhs_key' => 'id',
+//            'rhs_module'=> 'Meetings', 'rhs_table'=> 'meetings', 'rhs_key' => 'parent_id',
+//            'relationship_type'=>'one-to-many', 'relationship_role_column'=>'parent_type',
+//            'relationship_role_column_value' => $module
+//        ],
         strtolower($table_name) . '_emails' => [
             'lhs_module'=> $module, 'lhs_table'=> $table_name, 'lhs_key' => 'id',
             'rhs_module'=> 'Emails', 'rhs_table'=> 'emails', 'rhs_key' => 'parent_id',
             'relationship_type'=>'one-to-many', 'relationship_role_column'=>'parent_type',
             'relationship_role_column_value' => $module
         ],
-        strtolower($table_name) . '_letters' => [
-            'lhs_module'=> $module, 'lhs_table'=> $table_name, 'lhs_key' => 'id',
-            'rhs_module'=> 'Letters', 'rhs_table'=> 'emails', 'rhs_key' => 'parent_id',
-            'relationship_type'=>'one-to-many', 'relationship_role_column'=>'parent_type',
-            'relationship_role_column_value' => $module
-        ]
+//        strtolower($table_name) . '_letters' => [
+//            'lhs_module'=> $module, 'lhs_table'=> $table_name, 'lhs_key' => 'id',
+//            'rhs_module'=> 'Letters', 'rhs_table'=> 'emails', 'rhs_key' => 'parent_id',
+//            'relationship_type'=>'one-to-many', 'relationship_role_column'=>'parent_type',
+//            'relationship_role_column_value' => $module
+//        ]
     ]
 ];
