@@ -1,7 +1,7 @@
 /**
  * @module ModuleActivities
  */
-import {Component, ElementRef, OnInit, Renderer2, OnDestroy} from '@angular/core';
+import {Component, ElementRef, OnInit, Renderer2, OnDestroy, SkipSelf} from '@angular/core';
 import {Router} from '@angular/router';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
@@ -11,6 +11,7 @@ import {broadcast} from '../../../services/broadcast.service';
 import {modal} from '../../../services/modal.service';
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 import {relateFilter} from "../../../services/interfaces.service";
+import {navigation} from "../../../services/navigation.service";
 
 @Component({
     templateUrl: '../templates/fieldactivityparticipationpanel.html'
@@ -72,7 +73,8 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
                 public router: Router,
                 public elementRef: ElementRef,
                 public renderer: Renderer2,
-                public modal: modal) {
+                public modal: modal,
+                private navigation: navigation) {
 
         super(model, view, language, metadata, router);
 
@@ -109,6 +111,11 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
     public ngOnInit() {
         // build the lookup links
         this.lookuplinks = this.getLookuplinks();
+
+        // set the primary on new meetings
+        this.setPrimary();
+
+        // set the participants
         this.setParticipants();
 
         if (!this.fieldconfig.fieldset) {
@@ -206,7 +213,7 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
             linknames = this.fieldconfig.linknames.split(',');
         }
         if(linknames.length == 0) {
-            linknames = ['contacts', 'users', 'consumers'];
+            linknames = ['contacts', 'users', 'consumers', 'leads', 'employees'];
         }
         let links = [];
         for (let linkname of linknames) {
@@ -217,6 +224,48 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
             }
         }
         return links;
+    }
+
+    private setPrimary(){
+        if(this.model.isNew){
+            if(this.model.data.contact_id){
+                // get the model data from the model registry
+                let beanData = this.navigation.getRegisteredModel(this.model.data.contact_id, 'Contacts');
+                this.participants.push({
+                    module: 'Contacts',
+                    id: this.model.data.contact_id,
+                    data: beanData.data,
+                    link: 'meetings_contacts'
+                });
+            } else if(this.model.data.employee_id){
+                // get the model data from the model registry
+                let beanData = this.navigation.getRegisteredModel(this.model.data.employee_id, 'Employees');
+                this.participants.push({
+                    module: 'Employees',
+                    id: this.model.data.employee_id,
+                    data: beanData.data,
+                    link: 'meetings_employees'
+                });
+            } else if(this.model.data.consumer_id){
+                // get the model data from the model registry
+                let beanData = this.navigation.getRegisteredModel(this.model.data.consumer_id, 'Consumers');
+                this.participants.push({
+                    module: 'Consumers',
+                    id: this.model.data.consumer_id,
+                    data: beanData.data,
+                    link: 'meetings_consumers'
+                });
+            } else if(this.model.data.lead_id){
+                // get the model data from the model registry
+                let beanData = this.navigation.getRegisteredModel(this.model.data.lead_id, 'Leads');
+                this.participants.push({
+                    module: 'Leads',
+                    id: this.model.data.lead_id,
+                    data: beanData.data,
+                    link: 'meetings_leads'
+                });
+            }
+        }
     }
 
     /**
