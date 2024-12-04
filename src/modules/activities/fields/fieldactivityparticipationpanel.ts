@@ -35,25 +35,21 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
     public possibleLinks: any[] = [
         {
             name: 'contacts',
-            link: 'meetings_contacts',
             module: 'Contacts',
             id: 'contact_id'
         },
         {
             name: 'users',
-            link: 'meetings_users',
             module: 'Users',
             id: 'user_id'
         },
         {
             name: 'employees',
-            link: 'meetings_employees',
             module: 'Employees',
             id: 'employee_id'
         },
         {
             name: 'leads',
-            link: 'meetings_leads',
             module: 'Leads',
             id: 'lead_id'
         }
@@ -104,13 +100,16 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
 
         super(model, view, language, metadata, router);
 
-        // filter by available modules
+        // filter by available modules and dynamically build the linkname
         this.participantLinks = this.possibleLinks.filter(p => {
             return this.metadata.getModuleDefs(p.module);
+        }).map(l => {
+            l.link = this.model.module.toLowerCase() + '_' + l.name
+            return l;
         });
 
+        // set the first as selected type
         if(this.participantLinks.length > 0) this.lookupType = this.participantLinks[0];
-
 
         // subscriber to the broadcast when new model is added from the model
         this.subscriptions.add(this.broadcast.message$.subscribe((message) => this.handleMessage(message)));
