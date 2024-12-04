@@ -322,14 +322,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'module' => 'Consumers',
             'source' => 'non-db',
         ],
-        'employees' => [
-            'name'         => 'employees',
-            'type'         => 'link',
-            'relationship' => 'employees_emails',
-            'module'       => 'Employees',
-            'source'       => 'non-db',
-            'vname'        => 'LBL_EMPLOYEES',
-        ],
+//        'employees' => [
+//            'name'         => 'employees',
+//            'type'         => 'link',
+//            'relationship' => 'employees_emails',
+//            'module'       => 'Employees',
+//            'source'       => 'non-db',
+//            'vname'        => 'LBL_EMPLOYEES',
+//        ],
         'contacts' => [
             'name' => 'contacts',
             'vname' => 'LBL_CONTACTS',

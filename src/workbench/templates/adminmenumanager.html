@@ -1,0 +1,122 @@
+<workbench-header titlelabel="LBL_ADMIN_MANAGER_MENU">
+    <workbench-header-controls>
+        <system-input-radio-button-group  [inputOptions]="radioOptions"
+                                          [(ngModel)]="selectedScope"
+                                          (ngModelChange)="onScopeChange($event)"></system-input-radio-button-group>
+    </workbench-header-controls>
+</workbench-header>
+<div [system-overlay-loading-spinner]="isLoading" class="slds-grid" system-to-bottom-noscroll>
+    <div class="slds-size--1-of-5 slds-border--right slds-height_full slds-grid slds-grid--vertical">
+        @if(!adminGroups || adminGroups.length === 0) {
+            <div class="slds-height_full slds-align_absolute-center">
+                <system-label label="LBL_CREATE_AN_ADMINGROUP"></system-label>
+            </div>
+        } @else {
+            <ul cdkDropList [cdkDropListData]="adminGroups" (cdkDropListDropped)="drop($event, 'groups')" class="slds-scrollable--y dragboundary slds-has-dividers_around-space slds-grow">
+                <li *ngFor="let group of adminGroups"  cdkDrag cdkDragBoundary=".dragboundary" [cdkDragDisabled]="(editMode === 'none') || (editMode === 'custom' && group.scope === 'global')" class="slds-grid slds-grid--vertical-align-center slds-m-around--xxx-small slds-grid--align-spread slds-theme--default slds-item" [ngClass]="{'slds-theme--inverse': group.name == selectedAdminGroup}">
+                    <system-utility-icon *ngIf="editMode === 'all' || (editMode === 'custom' && selectedScope === 'custom')" class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
+                    <system-utility-icon size="x-small" class="slds-p-around--xx-small" [icon]="group.scope == 'global' ? 'world' : 'people'"></system-utility-icon>
+                    <div class="slds-truncate" [title]="group.name">
+                        <a href="javascript:void(0);" class="slds-text-link_reset slds-text-align_center slds-p-around--xx-small" (click)="handleSelectedItemChange(group.name)">{{ group.name }}</a>
+                    </div>
+                    <div class="slds-button slds-button--icon slds-col_bump-left">
+                        <button *ngIf="editMode === 'all' || (editMode === 'custom' && selectedScope === 'custom')" (click)="editAdminGroup(group.id)" class="slds-button slds-button--icon">
+                            <system-button-icon icon="edit" size="small"></system-button-icon>
+                        </button>
+                        <button *ngIf="editMode === 'all' || (editMode === 'custom' && selectedScope === 'custom')" (click)="deleteAdminGroup(group.id)"
+                                class="slds-button slds-button--icon">
+                            <system-button-icon icon="delete" size="small"></system-button-icon>
+                        </button>
+                    </div>
+                </li>
+            </ul>
+        }
+        <div *ngIf="editMode === 'all' || (editMode === 'custom' && selectedScope === 'custom')" class="slds-align--absolute-center slds-size--1-of-1 slds-theme--shade slds-border--top slds-p-around--small ">
+            <button  class="slds-align--absolute-center slds-button slds-button--icon" (click)="addAdminGroup()">
+                <system-button-icon icon="new" size="medium"></system-button-icon>
+            </button>
+        </div>
+    </div>
+    @if(selectedAdminGroup){
+    <div class="slds-size--4-of-5 slds-scrollable--y slds-height_full slds-theme--shade slds-grid slds-grid--vertical">
+        <div class="slds-grow">
+        <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--fixed-layout slds-text-align_center">
+            <thead>
+            <tr class="slds-line-height_reset">
+                <th class="slds-text-align_left" style="width:4rem; padding-left: 0" scope="col">
+                    <div class="slds-truncate"></div>
+                </th>
+                <th class="slds-text-align_left" scope="col">
+                    <div class="slds-truncate">
+                        <system-label label="LBL_ADMIN_ACTION"></system-label>
+                    </div>
+                </th>
+                <th class="slds-text-align_left" scope="col">
+                    <div class="slds-truncate">
+                        <system-label label="LBL_LABEL"></system-label>
+                    </div>
+                </th>
+                <th class="slds-text-align_left" scope="col">
+                    <div class="slds-truncate">
+                        <system-label label="LBL_COMPONENT"></system-label>
+                    </div>
+                </th>
+                <th class="slds-cell_action-mode" scope="col"></th>
+            </tr>
+            </thead>
+            <tbody class="dragboundary" cdkDropList [cdkDropListData]="adminComponents" (cdkDropListDropped)="drop($event, 'components')">
+            <tr class="slds-hint-parent" #viewProvider="system-view-provider" [system-view-provider]="{editable: true}" cdkDrag cdkDragBoundary=".dragboundary" [cdkDragDisabled]="(editMode === 'none') || (editMode === 'custom' && adminComponent.scope === 'global')" *ngFor="let adminComponent of adminComponents; let index = index">
+                <td class="slds-text-align_left" style="width:4rem; padding-left: 0.5rem;">
+                    <system-utility-icon *ngIf="editMode === 'all' || (editMode === 'custom' && selectedScope === 'custom')" class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
+                    <system-utility-icon  *ngIf="!!adminComponent.id" size="x-small" [icon]="adminComponent.scope == 'global' ? 'world' : 'people'"></system-utility-icon>
+                    <span class="slds-form-element__control">
+                                <system-input-radio-button-group *ngIf="!adminComponent.id" [disabled]=" !editableAdminGroupScope" [(ngModel)]="adminComponent.scope" [inputOptions]="[{icon: 'people', value: 'custom'}, {icon: 'world', value: 'global'}]"></system-input-radio-button-group>
+                        </span>
+                </td>
+                <td class="slds-text-align_left">
+                    <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{ adminComponent.adminaction }}</div>
+                    <system-input-text  *ngIf="viewProvider.view.mode == 'edit'" [(ngModel)]="adminComponent.adminaction"></system-input-text>
+                </td>
+                <td class="slds-text-align_left">
+                    <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate"><system-label [label]="adminComponent.admin_label"/> ({{adminComponent.admin_label}})</div>
+                    <system-input-label *ngIf="viewProvider.view.mode == 'edit'" [(ngModel)]="adminComponent.admin_label"></system-input-label>
+                </td>
+                <td class="slds-text-align_left">
+                    <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{ adminComponent.component }}</div>
+                    <system-input-text *ngIf="viewProvider.view.mode == 'edit'" [(ngModel)]="adminComponent.component"></system-input-text>
+                </td>
+                <td  class="slds-text-align_right" style="padding-right:0.5rem">
+                    <div class="slds-button slds-button--icon slds-col_bump-left" *ngIf="viewProvider.view.mode != 'edit'">
+                        <button *ngIf="editMode === 'all' || (editMode === 'custom' && selectedScope === 'custom')" (click)="editAdminComponent(adminComponent.id)" class="slds-button slds-button--icon">
+                            <system-button-icon icon="edit" size="small"></system-button-icon>
+                        </button>
+                        <button *ngIf="editMode === 'all' || (editMode === 'custom' && selectedScope === 'custom')" (click)="deleteAdminComponent(adminComponent.id)"
+                                class="slds-button slds-button--icon">
+                            <system-button-icon icon="delete" size="small"></system-button-icon>
+                        </button>
+                    </div>
+                    <div *ngIf="viewProvider.view.mode == 'edit'" role="group" class="slds-button slds-float--right ng-star-inserted">
+                        <button (click)="cancelEditing(viewProvider, index)" class="slds-button slds-button--icon-border">
+                            <system-button-icon icon="close" size="small"></system-button-icon>
+                        </button>
+                        <button (click)="saveComponentChanges(adminComponent, viewProvider)" class="slds-button slds-button--icon-border">
+                            <system-button-icon icon="check" size="small"></system-button-icon>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+        <div class="slds-align--absolute-center slds-theme--shade slds-p-around--small slds-border--top slds-size--1-of-1">
+            <button  class="slds-button slds-button--icon" (click)="addAdminComponent()">
+                <system-button-icon icon="new" size="medium"></system-button-icon>
+            </button>
+        </div>
+    </div>
+    } @else {
+        <div class="slds-height_full slds-align_absolute-center">
+            <system-label label="LBL_SELECT_AN_ADMINGROUP"></system-label>
+        </div>
+    }
+</div>

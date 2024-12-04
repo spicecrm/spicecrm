@@ -124,6 +124,11 @@ class M2MRelationship extends Relationship
                 'duplicate_merge' => $relationship->relationship->lhs_duplicatemerge
             ];
 
+            // set to load default
+            if($relationship->relationship->lhs_linkdefault){
+                $leftFieldDefs['default'] = true;
+            }
+
             // if we are self referencing add the side
             if($lhsDictionaryDefinition == $rhsDictionaryDefinition){
                 $leftFieldDefs['side'] = 'right';
@@ -155,8 +160,13 @@ class M2MRelationship extends Relationship
                 'source' => 'non-db',
                 'module' => $lhsDictionaryDefinition->getModuleName(),
                 'vname' => $relationship->relationship->rhs_linklabel,
-                'duplicate_merge' => $relationship->relationship->lhs_duplicatemerge
+                'duplicate_merge' => $relationship->relationship->rhs_duplicatemerge
             ];
+
+            // set to load default
+            if($relationship->relationship->rhs_linkdefault){
+                $rightFieldDefs['default'] = true;
+            }
 
             // if we are self referencing add the side
             if($lhsDictionaryDefinition == $rhsDictionaryDefinition){
