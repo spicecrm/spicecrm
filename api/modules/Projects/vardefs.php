@@ -117,15 +117,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Project'] = [
 //            'source' => 'non-db',
 //            'vname' => 'LBL_MEETINGS',
 //        ],
-        'calls' => [
-            'name' => 'calls',
-            'type' => 'link',
-            'module' => 'Calls',
-            'relationship' => 'projects_calls',
-            'source' => 'non-db',
-            'vname' => 'LBL_CALLS',
-            'join_name' => 'calls'
-        ],
+//        'calls' => [
+//            'name' => 'calls',
+//            'type' => 'link',
+//            'module' => 'Calls',
+//            'relationship' => 'projects_calls',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CALLS',
+//            'join_name' => 'calls'
+//        ],
         'emails' => [
             'name' => 'emails',
             'type' => 'link',
@@ -339,17 +339,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Project'] = [
 //            'relationship_role_column' => 'parent_type',
 //            'relationship_role_column_value' => 'Projects'
 //        ],
-        'projects_calls' => [
-            'lhs_module' => 'Projects',
-            'lhs_table' => 'projects',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Calls',
-            'rhs_table' => 'calls',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Projects'
-        ],
+//        'projects_calls' => [
+//            'lhs_module' => 'Projects',
+//            'lhs_table' => 'projects',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Calls',
+//            'rhs_table' => 'calls',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Projects'
+//        ],
         'projects_emails' => [
             'lhs_module' => 'Projects',
             'lhs_table' => 'projects',

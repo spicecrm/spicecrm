@@ -382,19 +382,19 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'relationship' => 'campaign_leads',
                 'source' => 'non-db',
             ],
-        'c_accept_status_fields' =>
-            [
-                'name' => 'c_accept_status_fields',
-                'rname' => 'id',
-                'relationship_fields' => ['id' => 'accept_status_id', 'accept_status' => 'accept_status_name'],
-                'vname' => 'LBL_LIST_ACCEPT_STATUS',
-                'type' => 'relate',
-                'link' => 'calls',
-                'link_type' => 'relationship_info',
-                'source' => 'non-db',
-                'importable' => 'false',
-                'duplicate_merge' => false,
-            ],
+//        'c_accept_status_fields' =>
+//            [
+//                'name' => 'c_accept_status_fields',
+//                'rname' => 'id',
+//                'relationship_fields' => ['id' => 'accept_status_id', 'accept_status' => 'accept_status_name'],
+//                'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//                'type' => 'relate',
+//                'link' => 'calls',
+//                'link_type' => 'relationship_info',
+//                'source' => 'non-db',
+//                'importable' => 'false',
+//                'duplicate_merge' => false,
+//            ],
 //        'm_accept_status_fields' =>
 //            [
 //                'name' => 'm_accept_status_fields',
@@ -522,14 +522,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
 //                'source' => 'non-db',
 //                'vname' => 'LBL_MEETINGS',
 //            ],
-        'calls' =>
-            [
-                'name' => 'calls',
-                'type' => 'link',
-                'relationship' => 'leads_calls',
-                'source' => 'non-db',
-                'vname' => 'LBL_CALLS',
-            ],
+//        'calls' =>
+//            [
+//                'name' => 'calls',
+//                'type' => 'link',
+//                'relationship' => 'leads_calls',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_CALLS',
+//            ],
         'oldmeetings' =>
             [
                 'name' => 'oldmeetings',
@@ -665,17 +665,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
             'rhs_key' => 'potential_id',
             'relationship_type' => 'one-to-many'
         ],
-        'leads_calls' => [
-            'lhs_module' => 'Leads',
-            'lhs_table' => 'leads',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Calls',
-            'rhs_table' => 'calls',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Leads',
-        ]
+//        'leads_calls' => [
+//            'lhs_module' => 'Leads',
+//            'lhs_table' => 'leads',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Calls',
+//            'rhs_table' => 'calls',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Leads',
+//        ]
     ]
     //This enables optimistic locking for Saves From EditView
     , 'optimistic_locking' => true,

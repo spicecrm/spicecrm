@@ -3,14 +3,14 @@
 $vardefs = [
     'fields' => [
         //=> activities
-        'calls' => [
-            'name' => 'calls',
-            'module' => 'Calls',
-            'type' => 'link',
-            'relationship' => strtolower($table_name) .'_calls',
-            'source' => 'non-db',
-            'vname' => 'LBL_CALLS',
-        ],
+//        'calls' => [
+//            'name' => 'calls',
+//            'module' => 'Calls',
+//            'type' => 'link',
+//            'relationship' => strtolower($table_name) .'_calls',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CALLS',
+//        ],
 //        'tasks' => [
 //            'name' => 'tasks',
 //            'module' => 'Tasks',
@@ -55,12 +55,12 @@ $vardefs = [
 //        ],
     ],
     'relationships' => [
-        strtolower($table_name) . '_calls' => [
-            'lhs_module'=> $module, 'lhs_table'=> $table_name, 'lhs_key' => 'id',
-            'rhs_module'=> 'Calls', 'rhs_table'=> 'calls', 'rhs_key' => 'parent_id',
-            'relationship_type'=>'one-to-many', 'relationship_role_column'=>'parent_type',
-            'relationship_role_column_value' => $module
-        ],
+//        strtolower($table_name) . '_calls' => [
+//            'lhs_module'=> $module, 'lhs_table'=> $table_name, 'lhs_key' => 'id',
+//            'rhs_module'=> 'Calls', 'rhs_table'=> 'calls', 'rhs_key' => 'parent_id',
+//            'relationship_type'=>'one-to-many', 'relationship_role_column'=>'parent_type',
+//            'relationship_role_column_value' => $module
+//        ],
 //        strtolower($table_name) . '_tasks' => [
 //            'lhs_module'=> $module, 'lhs_table'=> $table_name, 'lhs_key' => 'id',
 //            'rhs_module'=> 'Tasks', 'rhs_table'=> 'tasks', 'rhs_key' => 'parent_id',
