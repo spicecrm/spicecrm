@@ -173,6 +173,7 @@ export class dictionarymanager {
         this.dictionaryrelationships= [...this.dictionaryrelationships];
 
     }
+
     /**
      * update the input relationship in the relationship array
      * @param relationship
@@ -184,6 +185,21 @@ export class dictionarymanager {
                 this.dictionaryrelationshippolymorphs[idx] = {...p};
             } else {
                 this.dictionaryrelationshippolymorphs.push({...p})
+            }
+        })
+    }
+
+    /**
+     * update the input relationshipfields in the relationshipfields array
+     * @param relationship
+     */
+    public updateRelationshippFieldsInArray(fields: RelationshipField[]) {
+        fields.forEach(f => {
+            const idx = this.dictionaryrelationshipfields.findIndex(x => x.id == f.id);
+            if(idx >= 0) {
+                this.dictionaryrelationshipfields[idx] = {...f};
+            } else {
+                this.dictionaryrelationshipfields.push({...f})
             }
         })
     }

@@ -97,6 +97,15 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit,
         this.relationship.rhs_duplicatemerge = value ? 1 : 0;
     }
 
+    get rhs_linkdefault(){
+        return this.relationship.rhs_linkdefault == 1;
+    }
+
+    set rhs_linkdefault(value){
+        this.relationship.rhs_linkdefault = value ? 1 : 0;
+    }
+
+
     get lhs_duplicatemerge(){
         return this.relationship.lhs_duplicatemerge == 1;
     }
@@ -104,6 +113,16 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit,
     set lhs_duplicatemerge(value){
         this.relationship.lhs_duplicatemerge = value ? 1 : 0;
     }
+
+
+    get lhs_linkdefault(){
+        return this.relationship.lhs_linkdefault == 1;
+    }
+
+    set lhs_linkdefault(value){
+        this.relationship.lhs_linkdefault = value ? 1 : 0;
+    }
+
 
     public ngOnChanges() {
         this.buildRelationshipFieldsPerItem();
