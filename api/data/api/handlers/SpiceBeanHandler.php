@@ -1877,7 +1877,7 @@ class SpiceBeanHandler
      */
     private function prepareEmailAddresses(array $postBodyEmailAddresses): array {
 
-        $emailAddresses = ['beans' => [], 'beans_relations_to_delete' => []];
+        $emailAddresses = ['beans' => [], 'beans_relations_to_delete' => $postBodyEmailAddresses['beans_relations_to_delete'] ?? []];
 
         foreach ($postBodyEmailAddresses['beans'] as $id => $postBodyEmailAddress) {
 
