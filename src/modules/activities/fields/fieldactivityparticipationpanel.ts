@@ -21,19 +21,45 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
     /**
      * the index of the type of lookup (index of the aray above
      */
-    public lookupType = 0;
+    public lookupType: any = {};
     /**
      * listens to the click
      */
     public clickListener: any;
-    /**
-     * the links that can be selected with the lookup
-     */
-    public lookuplinks = [];
+
     /**
      * indicate tha the typoe selector is open
      */
     public lookuplinkSelectOpen: boolean = false;
+
+    public possibleLinks: any[] = [
+        {
+            name: 'contacts',
+            link: 'meetings_contacts',
+            module: 'Contacts',
+            id: 'contact_id'
+        },
+        {
+            name: 'users',
+            link: 'meetings_users',
+            module: 'Users',
+            id: 'user_id'
+        },
+        {
+            name: 'employees',
+            link: 'meetings_employees',
+            module: 'Employees',
+            id: 'employee_id'
+        },
+        {
+            name: 'leads',
+            link: 'meetings_leads',
+            module: 'Leads',
+            id: 'lead_id'
+        }
+    ]
+
+    public participantLinks: any[] = []
 
     /**
      * indicates that the search box is open
@@ -78,6 +104,12 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
 
         super(model, view, language, metadata, router);
 
+        // filter by available modules
+        this.participantLinks = this.possibleLinks.filter(p => {
+            return this.metadata.getModuleDefs(p.module);
+        });
+
+        if(this.participantLinks.length > 0) this.lookupType = this.participantLinks[0];
 
 
         // subscriber to the broadcast when new model is added from the model
@@ -85,32 +117,25 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
 
         // subscribe to model $data and build the participants .. replacing the setter
         this.subscriptions.add(this.model.data$.subscribe(modelData => {
-            if(this.lookuplinks.length > 0) {
-                // set the participants
-                this.setParticipants();
-            }
+
+            // set the participants
+            this.setParticipants();
+
             // update the relate filter
             this.updateRelateFilter();
         }));
     }
 
-    /**
-     * returns the name for the link resp the module
-     */
-    get lookupTypeName() {
-        return this.language.getModuleName(this.lookuplinks[this.lookupType]?.module);
-    }
 
     get relateFilterActive() {
-        return this.lookuplinks[this.lookupType]?.module != 'Users';
+        return this.lookupType.module != 'Users';
     }
 
     /**
      * load the links and the table fieldset
      */
     public ngOnInit() {
-        // build the lookup links
-        this.lookuplinks = this.getLookuplinks();
+
 
         // set the primary on new meetings
         this.setPrimary();
@@ -201,70 +226,19 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
         }
     }
 
-    /**
-     * loads the links from the config
-     *
-     * fallback to the metadata
-     */
-    public getLookuplinks(): any[] {
-
-        let linknames: string[] = [];
-        if(this.fieldconfig.linknames) {
-            linknames = this.fieldconfig.linknames.split(',');
-        }
-        if(linknames.length == 0) {
-            linknames = ['contacts', 'users', 'consumers', 'leads', 'employees'];
-        }
-        let links = [];
-        for (let linkname of linknames) {
-            linkname = linkname.trim();
-            let module = this.metadata.getFieldDefs(this.model.module, linkname)?.module;
-            if(module && this.metadata.moduleDefs[module]) {
-                links.push({name: linkname, module: module});
-            }
-        }
-        return links;
-    }
-
     private setPrimary(){
         if(this.model.isNew){
-            if(this.model.data.contact_id){
-                // get the model data from the model registry
-                let beanData = this.navigation.getRegisteredModel(this.model.data.contact_id, 'Contacts');
-                this.participants.push({
-                    module: 'Contacts',
-                    id: this.model.data.contact_id,
-                    data: beanData.data,
-                    link: 'meetings_contacts'
-                });
-            } else if(this.model.data.employee_id){
-                // get the model data from the model registry
-                let beanData = this.navigation.getRegisteredModel(this.model.data.employee_id, 'Employees');
-                this.participants.push({
-                    module: 'Employees',
-                    id: this.model.data.employee_id,
-                    data: beanData.data,
-                    link: 'meetings_employees'
-                });
-            } else if(this.model.data.consumer_id){
-                // get the model data from the model registry
-                let beanData = this.navigation.getRegisteredModel(this.model.data.consumer_id, 'Consumers');
-                this.participants.push({
-                    module: 'Consumers',
-                    id: this.model.data.consumer_id,
-                    data: beanData.data,
-                    link: 'meetings_consumers'
-                });
-            } else if(this.model.data.lead_id){
-                // get the model data from the model registry
-                let beanData = this.navigation.getRegisteredModel(this.model.data.lead_id, 'Leads');
-                this.participants.push({
-                    module: 'Leads',
-                    id: this.model.data.lead_id,
-                    data: beanData.data,
-                    link: 'meetings_leads'
-                });
-            }
+            for(let pl of this.participantLinks){
+                let defaultID = this.model.getField(pl.id);
+                if(defaultID){
+                    let beanData = this.navigation.getRegisteredModel(defaultID, pl.module);
+                    if(beanData) {
+                        if (!this.model.data[pl.name]) this.model.data[pl.name] = {beans: {}};
+                        this.model.data[pl.name].beans[defaultID] = beanData.data;
+                    }
+                    break;
+                }
+            };
         }
     }
 
@@ -272,14 +246,14 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
      * initially loads the participants .. also listens to model chanmges (noit fired bny the field
      */
     public setParticipants() {
-        for (let lookuplink of this.lookuplinks) {
-            if (this.model.data[lookuplink.name] && this.model.data[lookuplink.name].beans) {
+        for (let pl of this.participantLinks) {
+            if (this.model.data[pl.name] && this.model.data[pl.name].beans) {
                 //  if (this.model.data[lookupModule.toLowerCase()] && this.model.data[lookupModule.toLowerCase()].beans) {
-                for (let beanid in this.model.data[lookuplink.name].beans) {
-                    let bean = this.model.data[lookuplink.name].beans[beanid];
+                for (let beanid in this.model.data[pl.name].beans) {
+                    let bean = this.model.data[pl.name].beans[beanid];
 
                     // special handling for assigned user
-                    if (lookuplink.module == 'Users' && !this.displayAssignedUser && beanid == this.model.data.assigned_user_id) {
+                    if (pl.module == 'Users' && !this.displayAssignedUser && beanid == this.model.data.assigned_user_id) {
                         continue;
                     }
 
@@ -288,10 +262,10 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
                     if (index < 0) {
                         // push to the participants
                         this.participants.push({
-                            module: lookuplink.module,
+                            module: pl.module,
                             id: bean.id,
                             data: bean,
-                            link: lookuplink.name
+                            link: pl.link
                         });
                     }
                 }
@@ -305,9 +279,9 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
      * @param item
      */
     public addItem(item) {
-        if (!this.model.data[this.lookuplinks[this.lookupType].name]) this.model.data[this.lookuplinks[this.lookupType].name] = {beans: {}};
+        if (!this.model.data[ this.lookupType.name]) this.model.data[this.lookupType.name] = {beans: {}};
 
-        this.model.data[this.lookuplinks[this.lookupType].name].beans[item.id] = item.data;
+        this.model.data[this.lookupType.name].beans[item.id] = item.data;
 
         // close the lookup
         this.lookupSearchOpen = false;
@@ -412,7 +386,7 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
      */
     public searchWithModal() {
         this.modal.openModal('ObjectModalModuleLookup').subscribe((selectModal) => {
-            selectModal.instance.module = this.lookuplinks[this.lookupType].module;
+            selectModal.instance.module = this.lookupType.module;
             selectModal.instance.multiselect = false;
 
             // set the relate filter if we have one
