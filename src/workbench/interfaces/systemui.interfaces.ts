@@ -36,7 +36,7 @@ export interface AdminGroupI {
     sequence?: number;
     version: string;
     package: string;
-    scope: 'custom' | 'global';
+    scope: string;
     scope_icon: string;
 }
 
@@ -51,7 +51,7 @@ export interface AdminComponentI {
     icon: string;
     version: string;
     package: string;
-    scope: 'custom' | 'global';
+    scope: string;
     scope_icon: string;
 }
 

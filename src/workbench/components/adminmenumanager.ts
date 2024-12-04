@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, ComponentRef, Injector, OnInit, QueryList,
     ViewChildren} from "@angular/core";
 import {backend} from "../../services/backend.service";
-import {AdminGroupI, AdminComponentI, RoleModuleI} from "../interfaces/systemui.interfaces";
+import {AdminGroupI, AdminComponentI} from "../interfaces/systemui.interfaces";
 import {toast} from "../../services/toast.service";
 import {modal} from "../../services/modal.service";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
@@ -16,7 +16,7 @@ import {SystemViewProviderDirective} from "../../directives/directives/systemvie
     selector: 'admin-menu-manager',
     templateUrl: '../templates/adminmenumanager.html',
 })
-export class AdminMenuManager implements OnInit {
+export class AdminMenuManager implements OnInit { 
     public adminGroups: AdminGroupI[] = [];
     public selectedAdminGroup: string;
     public adminComponents: AdminComponentI[] = [];
@@ -79,9 +79,9 @@ export class AdminMenuManager implements OnInit {
         });
     }
 
-    public editAdminComponent(viewProvider: SystemViewProviderDirective, adminComponent: AdminComponentI) {
-        this.adminComponentsBackup[adminComponent.id] = {...adminComponent};
-        viewProvider.view.setEditMode();
+    public editAdminComponent(id: string) {
+        const adminComponent = this.adminComponents.find(ac => ac.id == id);
+        this.openEditComponentModal(adminComponent);
     }
     public cancelEditing(viewProvider: SystemViewProviderDirective, index: number) {
 
@@ -110,7 +110,7 @@ export class AdminMenuManager implements OnInit {
                     icon: '',
                     version: '',
                     package: '',
-                    scope: 'custom',
+                    scope: this.selectedScope,
                     scope_icon: '',
                     sequence: this.adminComponents.length
                 };
@@ -252,7 +252,7 @@ export class AdminMenuManager implements OnInit {
                 label: '',
                 version: '',
                 package: '',
-                scope: 'custom',
+                scope: this.selectedScope,
                 scope_icon: '',
                 sequence: this.adminGroups.length,
             };
