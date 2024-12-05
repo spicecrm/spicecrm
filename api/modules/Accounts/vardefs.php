@@ -198,15 +198,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
 //            'source' => 'non-db',
 //            'vname' => 'LBL_CALLS',
 //        ],
-        'emails' => [
-            'name' => 'emails',
-            'type' => 'link',
-            'relationship' => 'emails_accounts_rel', /* reldef in emails */
-            'module' => 'Emails',
-            'bean_name' => 'Email',
-            'source' => 'non-db',
-            'vname' => 'LBL_EMAILS',
-        ],
+//        'emails' => [
+//            'name' => 'emails',
+//            'type' => 'link',
+//            'relationship' => 'emails_accounts_rel', /* reldef in emails */
+//            'module' => 'Emails',
+//            'bean_name' => 'Email',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_EMAILS',
+//        ],
 //        'emails_parent' => [
 //            'name' => 'emails_parent',
 //            'type' => 'link',
@@ -570,15 +570,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'vname' => 'LBL_AGREEMENT',
             'comment' => 'many-2-many relationship link'
         ],
-        'letters' => [
-            'name' => 'letters',
-            'type' => 'link',
-            'relationship' => 'account_letters',
-            'source' => 'non-db',
-            'module' => 'Letters',
-            'bean_name' => 'Letter',
-            'vname' => 'LBL_LETTERS',
-        ],
+//        'letters' => [
+//            'name' => 'letters',
+//            'type' => 'link',
+//            'relationship' => 'account_letters',
+//            'source' => 'non-db',
+//            'module' => 'Letters',
+//            'bean_name' => 'Letter',
+//            'vname' => 'LBL_LETTERS',
+//        ],
         'hcmtrainings' =>
             [
                 'name' => 'hcmtrainings',
@@ -642,28 +642,28 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'join_key_lhs'      => 'account_id'
         )
         */
-        'account_emails' => [
-            'lhs_module' => 'Accounts',
-            'lhs_table' => 'accounts',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Emails',
-            'rhs_table' => 'emails',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Accounts'
-        ],
-        'account_letters' => [
-            'lhs_module' => 'Accounts',
-            'lhs_table' => 'accounts',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Letters',
-            'rhs_table' => 'letters',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Accounts'
-        ],
+//        'account_emails' => [
+//            'lhs_module' => 'Accounts',
+//            'lhs_table' => 'accounts',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Emails',
+//            'rhs_table' => 'emails',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Accounts'
+//        ],
+//        'account_letters' => [
+//            'lhs_module' => 'Accounts',
+//            'lhs_table' => 'accounts',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Letters',
+//            'rhs_table' => 'letters',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Accounts'
+//        ],
         'account_leads' => [
             'lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id', 'rhs_module' => 'Leads', 'rhs_table' => 'leads', 'rhs_key' => 'account_id', 'relationship_type' => 'one-to-many'
         ],
