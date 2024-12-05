@@ -105,7 +105,7 @@ export class DictionaryManagerItems {
      */
     public editDictionaryItem(item: DictionaryItem) {
 
-        this.modal.openModal('DictionaryManagerItemDetails', true, this.injector).subscribe({
+        this.modal.openModal(item.sysdictionary_ref_id ? 'DictionaryManagerItemReferenceDetails' :  'DictionaryManagerItemDetails', true, this.injector).subscribe({
             next: (modalRef) => {
                 modalRef.instance.dictionaryitem = item;
             }
