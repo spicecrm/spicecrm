@@ -7,7 +7,7 @@
         {{value}}
     </ng-template>
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-top--xxx-small" [ngClass]="css_classes">
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-top--xx-small" [ngClass]="css_classes">
     <system-input-label [(ngModel)]="value"></system-input-label>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>
