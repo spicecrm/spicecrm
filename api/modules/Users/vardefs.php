@@ -1055,14 +1055,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db'
         ],
         */
-        'documentrevisions' => [
-            'name' => 'documentrevisions',
-            'type' => 'link',
-            'relationship' => 'users_documentrevisions',
-            'source' => 'non-db',
-            'module' => 'DocumentRevisions',
-            'vname' => 'LBL_DOCUMENTREVISIONS',
-        ],
+//        'documentrevisions' => [
+//            'name' => 'documentrevisions',
+//            'type' => 'link',
+//            'relationship' => 'users_documentrevisions',
+//            'source' => 'non-db',
+//            'module' => 'DocumentRevisions',
+//            'vname' => 'LBL_DOCUMENTREVISIONS',
+//        ],
     ],
     'indices' => [
         [
