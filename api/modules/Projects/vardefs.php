@@ -126,14 +126,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Project'] = [
 //            'vname' => 'LBL_CALLS',
 //            'join_name' => 'calls'
 //        ],
-        'emails' => [
-            'name' => 'emails',
-            'type' => 'link',
-            'module' => 'Emails',
-            'relationship' => 'emails_projects_rel',
-            'source' => 'non-db',
-            'vname' => 'LBL_EMAILS',
-        ],
+//        'emails' => [
+//            'name' => 'emails',
+//            'type' => 'link',
+//            'module' => 'Emails',
+//            'relationship' => 'emails_projects_rel',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_EMAILS',
+//        ],
 #migrated
 //        'documents' => [
 //            'name' => 'documents',
@@ -350,17 +350,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Project'] = [
 //            'relationship_role_column' => 'parent_type',
 //            'relationship_role_column_value' => 'Projects'
 //        ],
-        'projects_emails' => [
-            'lhs_module' => 'Projects',
-            'lhs_table' => 'projects',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Emails',
-            'rhs_table' => 'emails',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Projects'
-        ],
+//        'projects_emails' => [
+//            'lhs_module' => 'Projects',
+//            'lhs_table' => 'projects',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Emails',
+//            'rhs_table' => 'emails',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Projects'
+//        ],
         'projects_projectactivities' => [
             'lhs_module' => 'Projects',
             'lhs_table' => 'projects',

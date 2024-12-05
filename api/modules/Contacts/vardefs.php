@@ -293,22 +293,22 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source' => 'non-db',
                 'vname' => 'LBL_DIRECT_REPORTS',
             ],
-            'emails' => [
-                'name' => 'emails',
-                'type' => 'link',
-                'relationship' => 'emails_contacts_rel',
-                'module' => 'Emails',
-                'bean_name' => 'Email',
-                'source' => 'non-db',
-                'vname' => 'LBL_EMAILS',
-            ],
-            'emails_parent' => [
-                'name' => 'emails_parent',
-                'type' => 'link',
-                'relationship' => 'contact_emails_parent',
-                'source' => 'non-db',
-                'vname' => 'LBL_EMAILS_AS_PARENT',
-            ],
+//            'emails' => [
+//                'name' => 'emails',
+//                'type' => 'link',
+//                'relationship' => 'emails_contacts_rel',
+//                'module' => 'Emails',
+//                'bean_name' => 'Email',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_EMAILS',
+//            ],
+//            'emails_parent' => [
+//                'name' => 'emails_parent',
+//                'type' => 'link',
+//                'relationship' => 'contact_emails_parent',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_EMAILS_AS_PARENT',
+//            ],
             'letters' => [
                 'name'         => 'letters',
                 'type'         => 'link',
@@ -395,24 +395,24 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'vname' => 'LBL_NOTES_AS_PARENT',
                 'reportable' => false
             ],
-            'user_sync' => [
-                'name' => 'user_sync',
-                'type' => 'link',
-                'relationship' => 'contacts_users',
-                'source' => 'non-db',
-                'vname' => 'LBL_USER_SYNC',
-                'rel_fields' =>[
-                    'external_id' => [
-                        'map' => 'contact_external_id'
-                    ]
-                ]
-            ],
-            'contact_external_id' => [
-                'name' => 'contact_external_id',
-                'type' => 'varchar',
-                'source' => 'non-db',
-                'comment' => 'the external id of the contact in user\' address book'
-            ],
+//            'user_sync' => [
+//                'name' => 'user_sync',
+//                'type' => 'link',
+//                'relationship' => 'contacts_users',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_USER_SYNC',
+//                'rel_fields' =>[
+//                    'external_id' => [
+//                        'map' => 'contact_external_id'
+//                    ]
+//                ]
+//            ],
+//            'contact_external_id' => [
+//                'name' => 'contact_external_id',
+//                'type' => 'varchar',
+//                'source' => 'non-db',
+//                'comment' => 'the external id of the contact in user\' address book'
+//            ],
             'created_by_link' => [
                 'name' => 'created_by_link',
                 'type' => 'link',
@@ -667,24 +667,24 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'options' => 'relationship_type_dom',
                 'vname' => 'LBL_RELATIONSHIP_TYPE'
             ],
-            'environments' => [
-                'name' => 'environments',
-                'type' => 'link',
-                'relationship' => 'contacts_contacts',
-                'module' => 'Contacts',
-                'bean_name' => 'Contact',
-                'source' => 'non-db',
-                'vname' => 'LBL_ENVIRONMENT_CONTACTS',
-                'duplicate_merge' => false,
-                'link_type' => 'one',
-                'rel_fields' =>
-                    [
-                        'relationship_type' =>
-                            [
-                                'map' => 'relationship_type'
-                            ],
-                    ],
-            ],
+//            'environments' => [
+//                'name' => 'environments',
+//                'type' => 'link',
+//                'relationship' => 'contacts_contacts',
+//                'module' => 'Contacts',
+//                'bean_name' => 'Contact',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_ENVIRONMENT_CONTACTS',
+//                'duplicate_merge' => false,
+//                'link_type' => 'one',
+//                'rel_fields' =>
+//                    [
+//                        'relationship_type' =>
+//                            [
+//                                'map' => 'relationship_type'
+//                            ],
+//                    ],
+//            ],
             'agreements_rel' => [
                 'name' => 'agreements_rel',
                 'type' => 'link',
@@ -908,12 +908,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
             'relationship_role_column_value' => 'Contacts'
         ],
         */
-        'contact_emails_parent' => [
-            'lhs_module' => 'Contacts', 'lhs_table' => 'contacts', 'lhs_key' => 'id',
-            'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Contacts'
-        ],
+//        'contact_emails_parent' => [
+//            'lhs_module' => 'Contacts', 'lhs_table' => 'contacts', 'lhs_key' => 'id',
+//            'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Contacts'
+//        ],
         /*
         'portalusers_contacts' => array (
             'lhs_module' => 'Contacts',
