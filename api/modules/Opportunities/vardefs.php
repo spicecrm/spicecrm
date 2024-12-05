@@ -404,13 +404,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
 //            'source' => 'non-db',
 //            'vname' => 'LBL_CALLS',
 //        ],
-        'emails' => [
-            'name' => 'emails',
-            'type' => 'link',
-            'relationship' => 'emails_opportunities_rel',/* reldef in emails */
-            'source' => 'non-db',
-            'vname' => 'LBL_EMAILS',
-        ],
+//        'emails' => [
+//            'name' => 'emails',
+//            'type' => 'link',
+//            'relationship' => 'emails_opportunities_rel',/* reldef in emails */
+//            'source' => 'non-db',
+//            'vname' => 'LBL_EMAILS',
+//        ],
 #migrated
 //        'documents' => [
 //            'name' => 'documents',
@@ -565,11 +565,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
 //            'rhs_module' => 'Notes', 'rhs_table' => 'notes', 'rhs_key' => 'parent_id',
 //            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
 //            'relationship_role_column_value' => 'Opportunities']
-     'opportunity_emails' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
-            'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Opportunities']
-    , 'opportunity_leads' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
+//     'opportunity_emails' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
+//            'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Opportunities']
+     'opportunity_leads' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
             'rhs_module' => 'Leads', 'rhs_table' => 'leads', 'rhs_key' => 'opportunity_id',
             'relationship_type' => 'one-to-many']
     , 'opportunity_currencies' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'currency_id',

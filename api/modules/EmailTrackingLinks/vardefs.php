@@ -59,14 +59,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTrackingLink'] = [
             'relationship' => 'campaigntask_emailtrackinglinks',
             'source' => 'non-db'
         ],
-        'emails' => [
-            'vname' => 'LBL_EMAILS',
-            'name' => 'emails',
-            'type' => 'link',
-            'module' => 'Emails',
-            'relationship' => 'emails_emailtrackinglinks',
-            'source' => 'non-db'
-        ],
+//        'emails' => [
+//            'vname' => 'LBL_EMAILS',
+//            'name' => 'emails',
+//            'type' => 'link',
+//            'module' => 'Emails',
+//            'relationship' => 'emails_emailtrackinglinks',
+//            'source' => 'non-db'
+//        ],
         'emailtrackingactions' => [
             'name' => 'emailtrackingactions',
             'type' => 'link',
