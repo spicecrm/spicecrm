@@ -21,7 +21,8 @@ import {
  * redners a modal to add an index
  */
 @Component({
-    templateUrl: '../templates/dictionarymanagerindexadd.html',
+    selector: 'dictionary-manager-index-add',
+    templateUrl: '../templates/dictionarymanagerindexadd.html'
 })
 export class DictionaryManagerIndexAdd implements OnInit{
 
@@ -135,6 +136,10 @@ export class DictionaryManagerIndexAdd implements OnInit{
         // name needs to be unique
         if(this.dictionarymanager.dictionaryindexes.filter(i => i.name == this.index.name && (this.dictionarymanager.getCurrentDefinition().sysdictionary_type != 'template' || this.dictionarymanager.currentDictionaryDefinition == i.sysdictionarydefinition_id)).length > 0) return false;
 
+        // Validate the index name format (only Latin letters, digits, and underscores)
+        const namePattern = /^[a-zA-Z0-9_]+$/;
+        if (!namePattern.test(this.index.name)) return false;
+
         // for non-foreign we need to have fields
         if(this.index.indextype != 'foreign' && this.indexDictionaryItems.length == 0) return false;
 
@@ -161,7 +166,9 @@ export class DictionaryManagerIndexAdd implements OnInit{
                     sysdictionaryitem_id: this.dictionaryItemId,
                     sysdictionaryforeigndefinition_id: this.dictionaryForeignDefinitionId,
                     sysdictionaryforeignitem_id: this.dictionaryForeignItemId,
-                    sequence: 0
+                    sequence: 0,
+                    version: this.index.version,
+                    package: this.index.package
                 });
                 break;
             default:
@@ -173,7 +180,9 @@ export class DictionaryManagerIndexAdd implements OnInit{
                         status: this.index.status,
                         sysdictionaryindex_id: this.index.id,
                         sysdictionaryitem_id: item.id,
-                        sequence: sequence
+                        sequence: sequence,
+                        version: this.index.version,
+                        package: this.index.package
                     });
                     sequence++;
                 }
@@ -204,6 +213,5 @@ export class DictionaryManagerIndexAdd implements OnInit{
         let previousItem = event.previousContainer.data.splice(event.previousIndex, 1);
         event.container.data.splice(event.currentIndex, 0, previousItem[0]);
     }
-
 
 }

@@ -131,6 +131,15 @@ class SpiceACL
             $this->aclObject = BeanFactory::getBean('SpiceACLObjects');
 
         $userObjects = $this->aclObject->getUserACLObjects($bean->_module ?: $bean->_module);
+
+        // concatenate the where string
+        if (count($userObjects) == 0) {
+            if ($selectArray['where'] != '')
+                $selectArray['where'] .= ' AND ';
+
+            $selectArray['where'] .= ' (( 1 = 2 )) ';
+        }
+
         foreach ($userObjects as $userObjectId => $userObjectData) {
             $aclObject = BeanFactory::getBean('SpiceACLObjects', $userObjectId);
             $filters = $aclObject->getListObjectQuery($tableName ?: $bean->_tablename, $bean);

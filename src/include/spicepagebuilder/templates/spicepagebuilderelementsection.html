@@ -24,7 +24,7 @@
         </div>
     </div>
     <article [ngStyle]="style" class="spice-drop-zone-content slds-grid">
-        <spice-page-builder-element-column *ngFor="let column of section.children; trackBy: trackByFn" [column]="column" [style.width.%]="100 / section.children.length" class="spice-display-block slds-grow slds-height_full"></spice-page-builder-element-column>
+        <spice-page-builder-element-column *ngFor="let column of section.children; trackBy: trackByFn" [column]="column" [style.width]="column.attributes.width" class="spice-display-block slds-height_full"></spice-page-builder-element-column>
     </article>
 </div>
 
@@ -38,6 +38,20 @@
                         <spice-page-builder-input-text *ngSwitchCase="'textSuffix'" [(ngModel)]="section.attributes[styleAttribute.name]" [label]="styleAttribute.name" [suffix]="spicePageBuilderService.defaultSuffix" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
                         <spice-page-builder-input-sides *ngSwitchCase="'sides'" [(ngModel)]="section.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-sides>
                         <spice-page-builder-input-color *ngSwitchCase="'color'" [(ngModel)]="section.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-color>
+                    </ng-container>
+                </div>
+            </div>
+        </system-section>
+        <system-section *ngIf="section.children.length > 0" titlelabel="LBL_SECTION_SIZE" [alwaysExpanded]="true"
+                        class="spice-collapsible-tab-grow">
+            <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small slds-scrollable--y">
+                <div class="slds-size--1-of-1 slds-grid slds-wrap">
+                    <ng-container *ngFor="let column of section.children; let index = index">
+                        <spice-page-builder-input-text
+                                [(ngModel)]="column.attributes.width"
+                                [label]="'width column ' + index"
+                                [suffix]="'%'"
+                                class="slds-p-horizontal--xxx-small slds-size--1-of-4"></spice-page-builder-input-text>
                     </ng-container>
                 </div>
             </div>

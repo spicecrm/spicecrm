@@ -4,7 +4,7 @@
 import {
     Component,
     ElementRef, EventEmitter, Injector,
-    Input, OnDestroy, OnInit, Output
+    Input, OnDestroy, OnInit, Output, SkipSelf
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
@@ -32,7 +32,7 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
     /**
      * the view fromt eh parent .. to link the two
      */
-    @Input() public parentview: view;
+    // @Input() public parentview: view;
 
     /**
      * the salesdoc model
@@ -75,6 +75,7 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
         public modal: modal,
         public userpreferences: userpreferences,
         public view: view,
+        @SkipSelf() public parentview: view,
         public configuration: configurationService,
         public salesdocrecord: salesdocrecord,
         public injector: Injector
@@ -119,7 +120,7 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
 
         this.view.mode$.subscribe(mode => {
             // check if we are in the same mode already
-            if (this.view.getMode() == mode) return;
+            if (this.parentview.getMode() == mode) return;
 
             // process the mode change
             if (mode == 'edit') {

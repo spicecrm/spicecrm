@@ -67,7 +67,7 @@ class EmailTemplate extends SpiceBean {
 	}
 
 
-    function parse( $bean, $additionalValues = null, $additionalBeans = [] ){
+    function parse( $bean, $additionalValues = null, $additionalBeans = [], $additionalStyles = [] ){
         global $app_list_strings;
         $app_list_strings = SpiceUtils::returnAppListStringsLanguage($this->language);
 
@@ -75,12 +75,12 @@ class EmailTemplate extends SpiceBean {
 
         $retArray = [
             'subject' => $this->parsePlainTextField('subject', $bean, $additionalValues ),
-            'body' => $this->parseHTMLTextField('body', $bean, $additionalValues, $additionalBeans ),
-            'body_html' => $this->parseHTMLTextField('body_html', $bean, $additionalValues, $additionalBeans ),
+            'body' => $this->parseHTMLTextField('body', $bean, $additionalValues, $additionalBeans, $additionalStyles ),
+            'body_html' => $this->parseHTMLTextField('body_html', $bean, $additionalValues, $additionalBeans, $additionalStyles ),
             'attachments' => array_merge($this->getAttachmentsWithFiles(), $pdfFiles)
         ];
+        $retArray['subject'] = preg_replace('#\s+#', ' ', trim( $retArray['subject'] )); // multiple white spaces -> one
 
-        $retArray['subject'] = preg_replace('#\s+#', ' ', $retArray['subject'] ); // multiple white spaces -> one
         return $this->callContentMethod($retArray, $bean);
     }
 
@@ -132,6 +132,7 @@ class EmailTemplate extends SpiceBean {
         return $attachments;
     }
 
+
     /**
      * call the content method and return the adjusted html content by the method
      * @param array $retArray
@@ -150,11 +151,11 @@ class EmailTemplate extends SpiceBean {
     }
 
 
-    public function parseHTMLTextField( $field, $parentbean = null, $additionalValues = null, $additionalBeans = [] )
+    public function parseHTMLTextField( $field, $parentbean = null, $additionalValues = null, $additionalBeans = [], $additionalStyles = [] )
     {
         $templateCompiler = new Compiler($this);
         $templateCompiler->idsOfParentTemplates = array_merge( $this->idsOfParentTemplates, [$this->id] );
-        $html = $templateCompiler->compile($this->$field, $parentbean, $this->language, $additionalValues, $additionalBeans, $this->style);
+        $html = $templateCompiler->compile($this->$field, $parentbean, $this->language, $additionalValues, $additionalBeans, [...$additionalStyles, $this->style]);
         return html_entity_decode($html);
     }
 

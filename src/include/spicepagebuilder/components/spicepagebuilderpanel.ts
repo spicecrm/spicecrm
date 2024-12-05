@@ -61,7 +61,11 @@ export class SpicePageBuilderPanel {
                 counterColumn++;
             }
             const section: SectionI = JSON.parse(JSON.stringify(this.spicePageBuilderService.panelDefaultSection));
-            section.children = columns;
+            let columnsWithWidth = [...columns];
+            let width = 100 / columns.length
+            columnsWithWidth.forEach(col=>col.attributes.width = width.toString() + '%')
+            section.children = columnsWithWidth;
+
             this.sections.push(section);
             counterSection++;
         }

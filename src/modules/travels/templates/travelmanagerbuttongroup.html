@@ -1,0 +1,13 @@
+<div class="slds-button-group">
+    <button class="slds-button slds-button--neutral">
+        <travel-add-receipt-button></travel-add-receipt-button>
+    </button>
+    <button class="slds-button slds-button--neutral" (click)="createTravelMileage()">
+        <ng-container><system-button-icon *ngIf="view.size == 'small'; else mileageBiggerView" icon="travel_and_places"></system-button-icon></ng-container>
+        <ng-template #mileageBiggerView><system-label label="LBL_ADD_TRAVEL_MILEAGE"/></ng-template>
+    </button>
+    <button class="slds-button slds-button--neutral" (click)="createTravelSegment()">
+        <ng-container><system-button-icon *ngIf="view.size == 'small'; else segmentBiggerView" icon="tour"></system-button-icon></ng-container>
+        <ng-template #segmentBiggerView><system-label label="LBL_ADD_TRAVEL_SEGMENT"/></ng-template>
+    </button>
+</div>

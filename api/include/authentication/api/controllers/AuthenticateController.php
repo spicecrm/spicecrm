@@ -113,6 +113,8 @@ class AuthenticateController
                         break;
                 }
 
+                DBManagerFactory::getInstance()->transactionCommit();
+
                 throw new Exception($message, 'no2FACode');
             }
 
@@ -221,9 +223,12 @@ class AuthenticateController
      * @throws NotFoundException
      * @throws SessionExpiredException
      * @throws UnauthorizedException
+     * @throws \Exception
      */
     public function validateTOTPCode( Request $req, Response $res, array $args): Response
     {
+        $this->checkCanManage2FA();
+
         $db = DBManagerFactory::getInstance();
         $forUser = $this->get2FAUserObject($req);
 
@@ -246,6 +251,18 @@ class AuthenticateController
         }
 
         return $res->withJson(['validated' => $validated]);
+    }
+
+    /**
+     * check if user can manage security settings
+     * @return void
+     * @throws ForbiddenException
+     */
+    private function checkCanManage2FA(): void
+    {
+        if (!AuthenticationController::getInstance()->isAdmin() && !AuthenticationController::getInstance()->getCanChangePassword()) {
+            throw new ForbiddenException('User is not authorized to change security settings');
+        }
     }
 
     /**
@@ -375,52 +392,52 @@ class AuthenticateController
     }
 
     /**
-     * generates a 2FA Tooen and sends it out
+     * generates a 2FA token and sends it out
      *
-     * @param $req
-     * @param $res
+     * @param Request $req
+     * @param Response $res
      * @param array $args
      * @return mixed
-     * @throws NotFoundException
+     * @throws ForbiddenException
+     * @throws UnauthorizedException
      */
-    public function generate2FAToken( Request $req, Response $res, array $args)
+    public function generate2FAToken( Request $req, Response $res, array $args): Response
     {
+        $this->checkCanManage2FA();
+
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
 
-        $response = false;
         switch ($args['method']){
             case 'sms':
-                $response = SpiceCRM2FAUtils::send2FACodeBySMS($currentUser->id);
+                 SpiceCRM2FAUtils::send2FACodeBySMS($currentUser->id);
                 break;
             case 'email':
-                $response = SpiceCRM2FAUtils::send2FACodeByEmail($currentUser->id);
+                 SpiceCRM2FAUtils::send2FACodeByEmail($currentUser->id);
                 break;
         }
 
-        return $res->withJson(['success' => $response]);
+        return $res->withJson(['success' => true]);
     }
 
     /**
      * sets a 2FA method
      *
-     * @param $req
-     * @param $res
+     * @param Request $req
+     * @param Response $res
      * @param array $args
-     * @return mixed
-     * @throws NotFoundException
+     * @return Response
      */
-    public function set2FAMethod( Request $req, Response $res, array $args)
+    public function set2FAMethod( Request $req, Response $res, array $args): Response
     {
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
 
-        $response = false;
+        $response = true;
         try {
             if (SpiceCRM2FAUtils::check2FACode($currentUser, $args['method'], $args['code'])) {
                 $currentUser->user_2fa_method = $args['method'];
                 $currentUser->save();
-                $response = true;
             }
-        } catch (UnauthorizedException $e){
+        } catch (\Throwable $e){
             $response = false;
         }
 
@@ -428,31 +445,34 @@ class AuthenticateController
     }
 
     /**
-     * sets a 2FA method
+     * delete 2FA method
      *
-     * @param $req
-     * @param $res
+     * @param Request $req
+     * @param Response $res
      * @param array $args
      * @return mixed
-     * @throws NotFoundException
+     * @throws ForbiddenException
      */
-    public function delete2FASettings( Request $req, Response $res, array $args)
+    public function delete2FASettings( Request $req, Response $res, array $args): Response
     {
+        $this->checkCanManage2FA();
+
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
 
-        $response = false;
+        $response = true;
         try {
-            if (SpiceCRM2FAUtils::check2FACode($currentUser, $currentUser->user_2fa_method, $args['code'])) {
+            if (SpiceCRM2FAUtils::check2FACode($currentUser, $args['method'], $args['code'])) {
 
-                if($currentUser->user_2fa_method == 'one_time_password'){
+                if($args['method'] == 'one_time_password'){
                     TOTPAuthentication::deleteTOTP($currentUser->id);
                 }
 
-                $currentUser->user_2fa_method = '';
-                $currentUser->save();
-                $response = true;
+                if ($args['method'] == $currentUser->user_2fa_method) {
+                    $currentUser->user_2fa_method = '';
+                    $currentUser->save();
+                }
             }
-        } catch (UnauthorizedException $e){
+        } catch (\Throwable $e){
             $response = false;
         }
 

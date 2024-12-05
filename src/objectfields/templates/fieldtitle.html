@@ -5,11 +5,11 @@
 <div *ngIf="isEditable() && isEditMode()">
     <div class="slds-grid slds-p-around--xx-small">
         <div class="slds-col slds-form-element__control slds-size--1-of-2" [ngClass]="getFieldClass()">
-            <div class="slds-select_container">
-                <select class="slds-select " [(ngModel)]="model.data[fielddd]">
-                    <option *ngFor="let o of getTitles()" [ngValue]="o.value">{{o.display}}</option>
-                </select>
-            </div>
+            <system-select [(ngModel)]="model.data[fielddd]" [idOnly]="true">
+                @for (o of options; track o.value) {
+                    <system-select-option [value]="o.value" [display]="o.display"/>
+                }
+            </system-select>
         </div>
         <div class="slds-col slds-form-element__control slds-size--1-of-2 slds-p-left--xx-small" [ngClass]="getFieldClass()">
             <input class="slds-input" type="text" [(ngModel)]="model.data[fieldtxt]"/>

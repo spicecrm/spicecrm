@@ -101,6 +101,10 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      * subscription to handle unsubscribe
      */
     public subscription: Subscription = new Subscription();
+    /**
+     * active calendars
+     */
+    @Input() public availableCalendars: {id: string, visible: boolean}[] = [];
 
     constructor(public language: language,
                 public cdRef: ChangeDetectorRef,
@@ -120,14 +124,15 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
                 this.setEventsStyle();
             })
         );
-        this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
-                if (calendar.id == 'owner') {
-                    this.getOwnerEvents();
+        this.subscription.add(this.calendar.userCalendarChange$.subscribe({
+            next: calendar => {
+                if (calendar.type == 'other') {
+                    this.getOwnerEvents(calendar);
                 } else {
                     this.getUserEvents(calendar);
                 }
-            })
-        );
+            }
+        }));
         this.resizeListener = this.renderer.listen('window', 'resize', () =>
             this.setEventsStyle()
         );
@@ -238,44 +243,56 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
 
     /**
      * correct the start and end hours for the event preview
-     * @param events
+     * @param event
      * @return events
      */
-    public correctHours(events) {
-        events.forEach(event => {
-            if (!event.isMulti) {
-                let endInRange = event.end.hour() > this.calendar.startHour && event.start.hour() < this.calendar.startHour;
-                let startInRange = event.start.hour() < this.calendar.endHour && event.end.hour() > this.calendar.endHour;
-                if (endInRange) {
-                    event.start = event.start.hour(this.calendar.startHour).minute(0);
-                }
-                if (startInRange) {
-                    event.end = event.end.hour(this.calendar.endHour).minute(59);
-                }
+    public adjustEvent(event) {
+        if (!event.isMulti) {
+            let endInRange = event.end.hour() > this.calendar.startHour && event.start.hour() < this.calendar.startHour;
+            let startInRange = event.start.hour() < this.calendar.endHour && event.end.hour() > this.calendar.endHour;
+            if (endInRange) {
+                event.start = event.start.hour(this.calendar.startHour).minute(0);
             }
-        });
-        return events;
+            if (startInRange) {
+                event.end = event.end.hour(this.calendar.endHour).minute(59);
+            }
+        }
+    }
+
+    public adjustOtherUserEvent(event, userId: string) {
+        this.adjustEvent(event);
+        event.id = userId + event.id;
     }
 
     /**
      * load owner events from service and rearrange the multi events
      */
-    public getOwnerEvents() {
-        this.ownerEvents = [];
-        this.ownerMultiEvents = [];
+    public getOwnerEvents(calendar?) {
 
-        if (!this.calendar.ownerCalendarVisible) return this.setEventsStyle();
+        if (!calendar) {
+            this.ownerEvents = [];
+            this.ownerMultiEvents = [];
+        } else {
+            this.ownerEvents = this.ownerEvents.filter(e => e.calendarId != calendar.id);
+            this.ownerMultiEvents = this.ownerMultiEvents.filter(e => e.calendarId != calendar.id);
+        }
 
-        this.calendar.loadEvents(this.startDate, this.endDate)
-            .subscribe(events => {
+        this.setEventsStyle();
+
+        (calendar ? [calendar] : this.availableCalendars).forEach(calendar => {
+
+            if (!calendar.visible) return;
+
+            this.calendar.loadEvents(this.startDate, this.endDate, this.calendar.owner, calendar.id).subscribe(events => {
                 if (events.length > 0) {
-                    events = this.correctHours(events);
                     events = this.filterEvents(events);
-                    this.ownerEvents = events.filter(event => !event.isMulti);
-                    this.ownerMultiEvents = events.filter(event => event.isMulti);
+                    events.forEach(event => this.adjustEvent(event));
+                    this.ownerEvents = this.ownerEvents.concat(events.filter(event => !event.isMulti));
+                    this.ownerMultiEvents = this.ownerMultiEvents.concat(events.filter(event => event.isMulti));
                     this.setEventsStyle();
                 }
             });
+        });
     }
 
     /**
@@ -291,8 +308,8 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
         this.calendar.loadGroupwareEvents(this.startDate, this.endDate)
             .subscribe(events => {
                 if (events.length > 0) {
-                    events = this.correctHours(events);
                     events = this.filterEvents(events);
+                    events.forEach(event => this.adjustEvent(event));
                     this.groupwareEvents = events.filter(event => !event.isMulti);
                     this.groupwareMultiEvents = events.filter(event => event.isMulti);
                     this.setEventsStyle();
@@ -314,11 +331,13 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
             return this.setEventsStyle();
         }
 
-        this.calendar.loadUserEvents(this.startDate, this.endDate, calendar.id)
+        this.calendar.loadEvents(this.startDate, this.endDate, calendar.id, calendar.id)
             .subscribe(events => {
                 if (events.length > 0) {
-                    events = this.correctHours(events);
                     events = this.filterEvents(events);
+                    events.forEach(event => {
+                        this.adjustOtherUserEvent(event, calendar.id);
+                    });
                     events.forEach(event => {
                         if (!event.isMulti) {
                             this.userEvents.push(event);
@@ -337,33 +356,25 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     public getUsersEvents() {
         this.userEvents = [];
         this.userMultiEvents = [];
-        if (this.calendar.isMobileView) {
-            return this.setEventsStyle();
-        }
+        this.setEventsStyle();
 
-        this.calendar.loadUsersEvents(this.startDate, this.endDate)
-            .subscribe(events => {
-                if (events.length > 0) {
-                    events = this.correctHours(events);
-                    events = this.filterEvents(events);
-                    events.forEach(event => {
-                        if (!event.isMulti) {
-                            this.userEvents.push(event);
-                        } else {
-                            this.userMultiEvents.push(event);
-                        }
-                    });
-                    this.setEventsStyle();
-                }
-            });
+        if (this.calendar.isMobileView) return;
+
+        const visibleUserCalendars = this.calendar.usersCalendars.filter(c => !!c.visible);
+
+        if (visibleUserCalendars.length == 0) return;
+
+        visibleUserCalendars.forEach(userCalendar =>
+            this.getUserEvents(userCalendar)
+        );
     }
 
     /**
-     * filter the out of range events or the absence events
+     * filter the out of range events
      * @param events
      */
     public filterEvents(events): any {
-        return events.filter(event => event.end.hour() > this.calendar.startHour || event.start.hour() < this.calendar.endHour || ('absence' == event.type));
+        return events.filter(event => event.end.hour() > this.calendar.startHour || event.start.hour() < this.calendar.endHour);
     }
 
     /**

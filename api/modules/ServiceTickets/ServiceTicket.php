@@ -14,7 +14,7 @@ use SpiceCRM\includes\utils\SpiceUtils;
 
 class ServiceTicket extends SpiceBean
 {
-    private $stageFields = [
+    public $stageFields = [
         'assigned_user_id' => 'st_assigned_user_id',
         'serviceticket_status' =>'serviceticket_status',
         'serviceticket_class' =>'serviceticket_class',

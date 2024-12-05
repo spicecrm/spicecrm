@@ -30,23 +30,9 @@ class CalendarController
      * @param array $args
      * @return Response
      */
-    public function KRESTGetCalendar(Request $req, Response $res, array $args): Response {
+    public function getOtherCalendars(Request $req, Response $res, array $args): Response {
         $restHandler = new  CalendarRestHandler();
         return $res->withJson($restHandler->getCalendars());
-    }
-
-    /**
-     * get other calendars depending on an id
-     *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     */
-    public function KRESTGetOtherCalendars(Request $req, Response $res, array $args): Response {
-        $restHandler = new  CalendarRestHandler();
-        $params = $req->getQueryParams();
-        return $res->withJson($restHandler->getOtherCalendars($args['calendarId'], $params));
     }
 
     /**
@@ -57,23 +43,9 @@ class CalendarController
      * @param array $args
      * @return Response
      */
-    public function getUserCalendar(Request $req, Response $res, array $args): Response {
+    public function getUserCalendarEvents(Request $req, Response $res, array $args): Response {
         $restHandler = new  CalendarRestHandler();
         $params = $req->getQueryParams();
-        return $res->withJson($restHandler->getUserCalendar($args['userId'], $params));
+        return $res->withJson($restHandler->getUserCalendarEvents($args['userId'], $args['calendarId'], $params));
     }
-
-    /**
-     * gget all calendars assigned to an user
-     * @param $req
-     * @param $res
-     * @param $args
-     * @return mixed
-     */
-    public function getUsersCalendar(Request $req, Response $res, array $args): Response {
-        $restHandler = new  CalendarRestHandler();
-        $params = $req->getQueryParams();
-        return $res->withJson($restHandler->getUsersCalendar($args['userId'], $params));
-    }
-
 }

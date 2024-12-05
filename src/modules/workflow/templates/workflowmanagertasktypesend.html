@@ -2,7 +2,7 @@
     <div class="slds-p-around--x-small">
         <div class="slds-expression">
             <ul>
-                <system-filter-builder [(ngModel)]="model.data.type_config.conditions" [module]="workflowManagerService.currentModule.name"></system-filter-builder>
+                <system-filter-builder [(ngModel)]="model.data.type_config.conditions" [showToggleDisplayAllField]="true" [module]="workflowManagerService.currentModule.name"></system-filter-builder>
             </ul>
         </div>
     </div>

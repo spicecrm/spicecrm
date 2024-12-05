@@ -88,6 +88,15 @@ class SpiceCache
     }
 
     /**
+     * to be used when the cache dir has changed
+     * @return void
+     */
+    public static function reinitialize(): void
+    {
+        self::_init();
+    }
+
+    /**
      * Returns the instance of the SpiceCacheAbstract object, cooresponding to the external
      * cache being used.
      */

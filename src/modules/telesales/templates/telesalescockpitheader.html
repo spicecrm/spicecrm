@@ -1,12 +1,15 @@
 <div class="slds-grid slds-page-header slds-p-around--none slds-grid--vertical-align-center">
-    <div class="slds-p-right--xx-small slds-size--1-of-4">
-        <div class="slds-p-around--xx-small">
+    <div class="slds-p-right--xx-small slds-size--1-of-4 slds-grid">
+        <div class="slds-p-around--xx-small slds-grow">
             <select [ngModel]="selectedCampaignTask" (ngModelChange)="selectCampaignTask($event)" [disabled]="campaignTasks.length == 0" class="slds-select">
                 <option *ngFor="let campaigntask of campaignTasks; trackBy: trackByFn" [ngValue]="campaigntask">
                     {{getCampaigntaskDisplay(campaigntask)}}
                 </option>
             </select>
         </div>
+        <button [disabled]="!telecockpitservice.selectedcampaigntask" class="slds-m-left--xx-small slds-button slds-button--icon" (click)="telecockpitservice.loadData(telecockpitservice.selectedcampaigntask.id)">
+            <system-button-icon icon="refresh"/>
+        </button>
     </div>
     <div *ngIf="model.id" class="slds-grid slds-grid--vertical-align-center slds-size--3-of-4 slds-border--left" style="margin-left: -2px;">
         <div class="slds-col slds-has-flexi-truncate slds-p-around--small">
@@ -31,7 +34,7 @@
         </div>
         <div class="slds-p-around--small slds-col--bump-left">
             <tele-sales-cockpit-module-actions [module]="model.module"></tele-sales-cockpit-module-actions>
-            <object-action-container class="slds-m-left--small" [actionset]="actionset"></object-action-container>
+            <object-action-container [disabled]="telecockpitservice.isLocked(undefined, true)" class="slds-m-left--small" [actionset]="getActionsetId"></object-action-container>
         </div>
     </div>
 </div>

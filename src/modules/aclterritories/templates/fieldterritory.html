@@ -3,7 +3,10 @@
     {{territoryName}}
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="getFieldClass()">
-    <div class="slds-combobox_container">
+    <system-select system-select-id-only [(ngModel)]="value">
+        <system-select-option *ngFor="let x of t" [value]="x.id" [display]="x.name"></system-select-option>
+    </system-select>
+    <!--div class="slds-combobox_container">
         <div class="slds-form-element slds-lookup">
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click " [ngClass]="{'slds-is-open': territorySearchOpen}" role="combobox">
                 <div *ngIf="value" class="slds-form-element__control">
@@ -31,6 +34,6 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div-->
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>

@@ -28,6 +28,14 @@ export class SystemFilterBuilder implements ControlValueAccessor {
      * the module for the filter
      */
     @Input() public module: string;
+    /**
+     * flag to display all fields
+     */
+    public displayAllFields: boolean = false;
+    /**
+     * flag to display all fields
+     */
+    @Input() public showToggleDisplayAllField: boolean = false;
 
     /**
      * for the cvalue accessor

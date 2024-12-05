@@ -18,6 +18,10 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
      * the module we are attaching this filter to
      */
     @Input() public module: string;
+    /**
+     * flag to display all fields
+     */
+    @Input() public displayAllFields: boolean = false;
 
     /**
      * the durrect set filter expression
@@ -274,6 +278,10 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
                 name: 'LBL_OP_NOTEQUAL',
                 value1: 'relate'
             }, {
+                operator: 'startsr',
+                name: 'LBL_STARTS',
+                value1: 'text'
+            }, {
                 operator: 'emptyr',
                 name: 'LBL_OP_ISEMPTY'
             }, {
@@ -378,6 +386,7 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
                 this.operatortype = 'numeric';
                 break;
             case 'relate':
+            case 'linked':
                 this.operatortype = 'relate';
                 break;
             default:

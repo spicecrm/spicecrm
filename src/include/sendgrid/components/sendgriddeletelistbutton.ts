@@ -22,7 +22,7 @@ export class SendgridDeleteListButton {
     }
 
     /**
-     * gets the disabled state for the import button based on the acl rights for the user
+     * gets the disabled state for the delete button based on the acl rights for the user
      */
 
     get disabled(): boolean {

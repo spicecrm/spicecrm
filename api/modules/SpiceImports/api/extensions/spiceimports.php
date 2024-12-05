@@ -111,6 +111,13 @@ $routes = [
         'function'    => 'getImportMethods',
         'description' => 'Returns a list of classes that can be used for import.',
         'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters' => [
+            'module' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_MODULE
+            ]
+        ]
     ]
 ];
 

@@ -652,5 +652,27 @@ if (file_exists("extensions/modules/HCMEmployeeObjectives")) {
     ];
 }
 
+if (file_exists('extensions/modules/ProjectActivities')) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Meeting']['fields']['projectactivities_parent'] = [
+        'name' => 'projectactivities_parent',
+        'type' => 'link',
+        'relationship' => 'meeting_projectactivities_parent',
+        'source' => 'non-db',
+        'module' => 'ProjectActivities',
+        'bean_name' => 'ProjectActivity',
+        'vname' => 'LBL_PROJECTACTIVITIES_AS_PARENT',
+    ];
+    SpiceDictionaryHandler::getInstance()->dictionary['Meeting']['relationships']['meeting_projectactivities_parent'] = [
+        'lhs_module' => 'Meetings',
+        'lhs_table' => 'meetings',
+        'lhs_key' => 'id',
+        'rhs_module' => 'ProjectActivities',
+        'rhs_table' => 'projectactivities',
+        'rhs_key' => 'parent_id',
+        'relationship_type' => 'one-to-many',
+        'relationship_role_column' => 'parent_type',
+        'relationship_role_column_value' => 'Meetings'
+    ];
+}
 
 VardefManager::createVardef('Meetings', 'Meeting', ['default', 'assignable']);

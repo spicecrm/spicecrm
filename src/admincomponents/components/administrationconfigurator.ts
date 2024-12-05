@@ -40,6 +40,11 @@ export class AdministrationConfigurator implements OnInit {
      */
     public filters: any = {};
 
+    /**
+     * the number of records to display
+     */
+    public displaylimit: number = 50;
+
     constructor(
         public metadata: metadata,
         public administrationconfigurator: administrationconfigurator,
@@ -69,7 +74,7 @@ export class AdministrationConfigurator implements OnInit {
     }
 
     get width(){
-        return this.elementRef.nativeElement.width;
+        return this.elementRef.nativeElement.offsetWidth;
     }
 
     public trackByFn(index, item) {
@@ -91,7 +96,7 @@ export class AdministrationConfigurator implements OnInit {
                 entries.push(entry);
             }
         }
-        return entries;
+        return entries.slice(0, this.displaylimit);
     }
 
     public getFields(itemonly = false) {
@@ -104,6 +109,10 @@ export class AdministrationConfigurator implements OnInit {
         }
 
         return itemonly ? fields.filter(f => f.detailonly !== true) :  fields;
+    }
+
+    public loadmore(){
+        this.displaylimit += 50;
     }
 
     public addEntry() {
@@ -120,5 +129,9 @@ export class AdministrationConfigurator implements OnInit {
 
     public clearFilter(){
         this.filters = {};
+    }
+
+    public isFieldRequired(field: any): boolean {
+        return field.required === true;
     }
 }

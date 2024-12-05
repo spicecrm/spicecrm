@@ -21,6 +21,7 @@ use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
+use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
 use SpiceCRM\includes\SugarCleaner;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
@@ -901,8 +902,9 @@ class Email extends SpiceBean
 
         if (!$handlingLink) return;
 
+        // load the document with proper encoding
         $dom = new DOMDocument();
-        $dom->loadHTML($this->body);
+        $dom->loadHTML( '<?xml encoding="utf-8"?>'.$this->body);
 
         [$parentType, $parentId] = $this->getTrackingParentData();
 
@@ -926,7 +928,9 @@ class Email extends SpiceBean
             $this->assignBeanToEmail($trackingId, 'EmailTrackingLinks');
             $node->setAttribute('href', $trackingLink);
         }
-        $this->body = $dom->saveHTML();
+
+        // save full html or body only depending on what we got in
+        $this->body = strpos($this->body, '<html>') >= 0 ? $dom->saveHTML() : str_replace(['<body>', '</body>'], '', $dom->saveHTML($dom->getElementsByTagName('body')->item(0))); // $dom->saveHTML('body');
     }
 
     /**
@@ -1019,7 +1023,7 @@ class Email extends SpiceBean
     }
 
 
-    private function extractAddresses($items)
+    public function extractAddresses($items)
     {
         if (is_array($items)) {
             $addresses = [];
@@ -1386,6 +1390,7 @@ class Email extends SpiceBean
 
 
     /**
+     * @deprecated
      * addStylesheet
      *
      * If the mailbox has a stylesheet set, it will be added to the email body
@@ -1400,6 +1405,9 @@ class Email extends SpiceBean
         $q = $db->query($query);
 
         while ($row = $db->fetchByAssoc($q)) {
+
+            $this->body = Compiler::applyInlineStyles($this->body, $row['csscode']);
+
             $this->body = '<style>' . $row['csscode'] . '</style>' . $this->body;
 
             if (strpos($this->body, '</head>')) {
@@ -1408,6 +1416,24 @@ class Email extends SpiceBean
                 return "<style>{$row['csscode']}</style>" . $this->body;
             }
         }
+    }
+
+    /**
+     * returns the stylesheet code
+     * @param $stylesheet_id
+     * @return mixed|string
+     * @throws Exception
+     */
+    public function getStylesheet($stylesheet_id)
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $query = "SELECT * FROM sysuihtmlstylesheets WHERE id='" . $stylesheet_id . "'";
+        $row = $db->fetchOne($query);
+        if($row['csscode']){
+            return $row['csscode'];
+        }
+        return '';
     }
 
     public static function findByMessageId($message_id)

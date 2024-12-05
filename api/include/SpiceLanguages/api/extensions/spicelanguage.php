@@ -39,13 +39,13 @@ $routes = [
         'options' => ['noAuth' => false, 'adminOnly' => false],
         'parameters' => [
             'id' => [
-                'in' => 'query',
+                'in' => 'path',
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'required' => true,
             ],
-            '$environment' => [
-                'in' => 'query',
+            'environment' => [
+                'in' => 'path',
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'required' => true,
@@ -62,7 +62,7 @@ $routes = [
         'options' => ['noAuth' => false, 'adminOnly' => false],
         'parameters' => [
             'search_term' => [
-                'in' => 'query',
+                'in' => 'path',
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'required' => true,

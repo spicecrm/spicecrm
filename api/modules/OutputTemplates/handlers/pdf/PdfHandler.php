@@ -12,10 +12,15 @@ abstract class PdfHandler
     protected $content = '';
     protected $template;
     public $htmlOfPdfCreation;
+    protected $class_instance;
+
+    // a callback function to instantiate the $class_instance, called right after parent __constract()
+    abstract protected function createInstance();
 
     public function __construct(OutputTemplate $template)
     {
         $this->template = $template;
+        $this->class_instance = $this->createInstance();
     }
 
     public function __toString()

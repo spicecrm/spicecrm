@@ -1,0 +1,19 @@
+<system-modal size="medium">
+    <system-modal-header (close)="close()"><system-label label="LBL_ADD_TRAVEL_RECEIPT"></system-label></system-modal-header>
+    <system-modal-content>
+        <object-record-fieldset [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <button class="slds-button slds-button--neutral slds-col--bump-right" (click)="capture()">
+                <system-label label="LBL_SCAN_RECEIPT"></system-label>
+            </button>
+            <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="close()">
+                <system-label label="LBL_CANCEL"></system-label>
+            </button>
+            <button class=" slds-button slds-button--brand" (click)="save()">
+                <system-label label="LBL_SAVE"></system-label>
+            </button>
+        </div>
+    </system-modal-footer>
+</system-modal>

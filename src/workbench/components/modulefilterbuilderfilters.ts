@@ -10,6 +10,7 @@ import {language} from '../../services/language.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {session} from '../../services/session.service';
 import {configurationService} from "../../services/configuration.service";
+import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'module-builder-filters',
@@ -22,6 +23,10 @@ export class ModuleFilterBuilderFilters {
     public modules: string[];
     public filters: any[] = [];
     public activeTab: string = 'global';
+    public definitionfiltertermCustom: string;
+    public definitionfiltertermGlobal: string;
+    public activeFilterCustom: string;
+    public activeFilterGlobal: string;
 
     @Output() public filter: EventEmitter<any> = new EventEmitter<any>();
 
@@ -31,7 +36,8 @@ export class ModuleFilterBuilderFilters {
         public metadata: metadata,
         public modelutilities: modelutilities,
         public session: session,
-        private configurationService: configurationService
+        private configurationService: configurationService,
+        public modal: modal,
     ) {
         this.modules = this.metadata.getModules();
         this.modules.sort();
@@ -50,11 +56,15 @@ export class ModuleFilterBuilderFilters {
     }
 
     get modulefilters() {
-        return this.filters.filter(filter => filter.scope == 'global');
+        return this.filters.filter(filter => {
+            return filter.module == this.module && filter.scope == 'global' && (!this.definitionfiltertermGlobal || filter.name.toLowerCase().includes(this.definitionfiltertermGlobal.toLowerCase()));
+        }).sort((a, b) => a.name.localeCompare(b.name, undefined, {'sensitivity': 'base'}));
     }
 
     get customModulefilters() {
-        return this.filters.filter(filter => filter.scope == 'custom');
+        return this.filters.filter(filter => {
+            return filter.module == this.module && filter.scope == 'custom' && (!this.definitionfiltertermCustom || filter.name.toLowerCase().includes(this.definitionfiltertermCustom.toLowerCase()));
+        }).sort((a, b) => a.name.localeCompare(b.name, undefined, {'sensitivity': 'base'}));
     }
 
     public goDetail(filter) {
@@ -72,6 +82,18 @@ export class ModuleFilterBuilderFilters {
         }
     }
 
+    public trackByItemFn(item: any): any {
+        return item.id;
+    }
+
+    public checkActiveElementWhenTabChange() {
+        if (this.activeTab === 'custom') {
+            this.filter.emit(this.filters.find(dashlet => dashlet.id === this.activeFilterCustom));
+        } else {
+            this.filter.emit(this.filters.find(dashlet => dashlet.id === this.activeFilterGlobal));
+        }
+    }
+
     public add(scope) {
         let filter = {
             id: this.modelutilities.generateGuid(),
@@ -85,14 +107,32 @@ export class ModuleFilterBuilderFilters {
         };
         this.filters.push(filter);
         this.filter.emit(filter);
+
+        this[`activeFilter${scope === 'custom' ? 'Custom' : 'Global' }`] = filter.id;
     }
 
-    public remove(filter) {
+    public filterRemoval(filter) {
         this.metadata.removeModuleFilter(filter.id);
         this.backend.deleteRequest('configuration/sysmodulefilters/' + filter.module + '/' + filter.id).subscribe(() => {
             this.configurationService.reloadTaskData('modulefilters');
         });
         this.filters = this.filters.filter(moduleFilter => moduleFilter.id != filter.id);
-        this.filter.emit(undefined);
+        if (this.activeFilterGlobal === filter.id || this.activeFilterCustom === filter.id) this.filter.emit(undefined);
+    }
+
+    public remove(filterParam) {
+        let filterToRemove = this.filters.find(filter => filter.id === filterParam.id);
+        let modalMessage =this.language.getLabel('MSG_FILTER_REMOVAL', '_', 'long');
+        let modalTitle = `${this.language.getLabel('LBL_DELETE')} "${filterToRemove.name}"?`;
+
+        if(filterParam.filterdefs) {
+            this.modal.confirm(modalMessage, modalTitle, 'warning').subscribe(res => {
+                if(res) {
+                    this.filterRemoval(filterParam);
+                }
+            })
+        } else {
+            this.filterRemoval(filterParam);
+        }
     }
 }

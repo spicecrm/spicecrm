@@ -21,6 +21,7 @@ import {fieldContainer} from './components/fieldcontainer';
 import {fieldGenericDisplay} from './components/fieldgenericdisplay';
 import {fieldText} from './components/fieldtext';
 import {fieldNumber} from './components/fieldnumber';
+import {fieldProbability} from "./components/fieldprobability";
 import {fieldHtml} from './components/fieldhtml';
 import {fieldHtmlEditor} from './components/fieldhtmleditor';
 import {fieldWYSIWYGEditor} from './components/fieldwysiwygeditor';
@@ -131,6 +132,12 @@ import {fieldLinkedParent} from "./components/fieldlinkedparent";
 import {fieldCountries} from "./components/fieldcountries";
 import {fieldToggle} from "./components/fieldtoggle";
 import {fieldNotificationIndicator} from "./components/fieldnotificationindicator";
+import {fieldIban} from "./components/fieldiban";
+import {fieldEnumRoles} from "./components/fieldenumroles";
+import {fieldVersion} from "./components/fieldVersion";
+import {fieldPackage} from "./components/fieldpackage";
+import {fieldActivityStatus} from "./components/fieldactivitystatus";
+
 
 
 /**
@@ -161,6 +168,7 @@ declare var _: any;
         fieldGenericDisplay,
         fieldText,
         fieldNumber,
+        fieldProbability,
         fieldHtml,
         fieldHtmlEditor,
         fieldWYSIWYGEditor,
@@ -271,7 +279,12 @@ declare var _: any;
         fieldJson,
         fieldCountries,
         fieldToggle,
-        fieldNotificationIndicator
+        fieldNotificationIndicator,
+        fieldIban,
+        fieldEnumRoles,
+        fieldVersion,
+        fieldPackage,
+        fieldActivityStatus
     ],
     exports: [
         fieldSet,
@@ -294,7 +307,9 @@ declare var _: any;
         fieldEmailRecipientsInput,
         fieldMultienumCheckBox,
         fieldToggle,
-        fieldEmailEmailAddressStatus
+        fieldEmailEmailAddressStatus,
+        fieldVersion,
+        fieldPackage
     ]
 })
 export class ObjectFields {}

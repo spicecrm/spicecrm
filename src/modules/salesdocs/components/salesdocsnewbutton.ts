@@ -12,6 +12,7 @@ import {navigation} from "../../../services/navigation.service";
 declare var _: any;
 
 @Component({
+    selector: 'sales-docs-new-button',
     templateUrl: "../../../objectcomponents/templates/objectactionnewbutton.html",
     providers: [model]
 })

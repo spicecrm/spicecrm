@@ -227,7 +227,7 @@ class SpiceDictionaryItem
      * @return null
      * @throws \Exception
      */
-    public function delete($drop = true)
+    public function delete($drop = false)
     {
         // get the definition
         $dictionaryDefinition = new SpiceDictionaryDefinition($this->sysdictionarydefinition_id);

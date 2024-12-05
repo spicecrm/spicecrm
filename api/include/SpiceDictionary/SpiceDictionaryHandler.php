@@ -345,7 +345,8 @@ LEFT JOIN
     }
 
     /**
-    /**
+     * @deprecated
+     *
      * retrieves the dictionary relatioonshipd relate fields
      *
      * @return array
@@ -368,6 +369,8 @@ LEFT JOIN
     }
 
     /**
+     * @deprecated
+     *
      * writes the relationship changes to the database
      *
      * @param $relationshiprelatefields

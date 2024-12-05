@@ -54,7 +54,7 @@ $routes = [
                 'required' => true,
             ],
             'id' => [
-                'in' => 'body',
+                'in' => 'path',
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'required' => true,
@@ -73,7 +73,14 @@ $routes = [
         'class'       => UsersController::class,
         'function'    => 'createUser',
         'description' => 'an all-in-one endpoint to create a user from a BEAN',
-        'options'     => []
+        'options'     => [],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],
     [
         'method'      => 'delete',
@@ -84,6 +91,11 @@ $routes = [
         'description' => '',
         'options'     => ['noAuth' => false, 'adminOnly' => false],
         'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
             'userId' => [
                 'in' => 'query',
                 'description' => '',
@@ -102,7 +114,7 @@ $routes = [
         'options'     => ['noAuth' => false, 'adminOnly' => false],
         'parameters' => [
             'id' => [
-                'in' => 'query',
+                'in' => 'path',
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'required' => true,
@@ -119,7 +131,7 @@ $routes = [
         'options'     => ['noAuth' => false, 'adminOnly' => false],
         'parameters' => [
             'id' => [
-                'in' => 'query',
+                'in' => 'path',
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'required' => true,
@@ -136,7 +148,7 @@ $routes = [
         'options'     => ['noAuth' => false, 'adminOnly' => true],
         'parameters' => [
             'id' => [
-                'in' => 'query',
+                'in' => 'path',
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'required' => true,
@@ -152,7 +164,7 @@ $routes = [
         'options'     => ['noAuth' => false, 'adminOnly' => false],
         'parameters' => [
             'id' => [
-                'in' => 'query',
+                'in' => 'path',
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'required' => true,

@@ -1,7 +1,7 @@
 /**
  * @module ModuleTeleSales
  */
-import {Component, OnDestroy, ViewChild} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
@@ -10,6 +10,7 @@ import {telecockpitservice} from '../services/telecockpit.service';
 import {Subscription} from "rxjs";
 
 @Component({
+    selector: 'telesales-cockpit',
     templateUrl: '../templates/telesalescockpit.html',
     providers: [
         telecockpitservice,

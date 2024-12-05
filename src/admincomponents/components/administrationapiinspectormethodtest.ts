@@ -128,6 +128,26 @@ export class AdministrationApiInspectorMethodTest implements AfterViewInit {
                         this.response = js_beautify(JSON.stringify(err));
                     });
                 break;
+            case 'put':
+                this.backend.putRequest(this.buildRoute(), this.buildParams(), this.buildBody()).subscribe(
+                    res => {
+                        this.response = js_beautify(JSON.stringify(res));
+                        this.executing = false;
+                    },
+                    err => {
+                        this.response = js_beautify(JSON.stringify(err));
+                    });
+                break;
+            case 'delete':
+                this.backend.deleteRequest(this.buildRoute(), this.buildParams()).subscribe(
+                    res => {
+                        this.response = js_beautify(JSON.stringify(res));
+                        this.executing = false;
+                    },
+                    err => {
+                        this.response = js_beautify(JSON.stringify(err));
+                    });
+                break;
         }
     }
 
@@ -177,7 +197,19 @@ export class AdministrationApiInspectorMethodTest implements AfterViewInit {
         let body: any = {};
         let bodyParameters = this.apiInspector.getMethodParameters(this.apiMethod.route, this.apiMethod.method, 'body');
         for (let bodyParameter of bodyParameters) {
-            body[bodyParameter.name] = this.parameterCollector[bodyParameter.name];
+            let bodyParamValue =  this.parameterCollector[bodyParameter.name];
+            // json decode to match array or object
+            if(bodyParameter.type && (bodyParameter.type == 'array' || bodyParameter.type == 'object')){
+                try {
+                    let inputData = JSON.parse(this.parameterCollector[bodyParameter.name]);
+                    if(inputData){
+                        bodyParamValue = inputData;
+                    }
+                } catch (e) {
+                    // do nothing
+                }
+            }
+            body[bodyParameter.name] = bodyParamValue;
         }
         return body;
     }

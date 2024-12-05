@@ -66,9 +66,16 @@ export class DictionaryManager {
      */
     public generateSystem(){
         let genModal = this.modal.await('LBL_GENERATING');
-        this.backend.putRequest('dictionary/generatesystem').subscribe({
-            next: () => {
+        this.backend.getLinkToDownload('dictionary/generatesystem', 'POST').subscribe({
+            next: downloadUrl => {
                 genModal.emit(true);
+
+                const a: any = document.createElement("a");
+                document.body.appendChild(a);
+                a.href = downloadUrl;
+                a.download = 'systemcached.dump';
+                a.click();
+                a.remove();
             },
             error: () => {
                 genModal.emit(true);

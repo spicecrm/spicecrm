@@ -1,5 +1,5 @@
 <div style="width: 30px; height: 30px;" class="slds-m-right--x-small slds-align--absolute-center">
-    <system-file-icon *ngIf="!file.thumbnail" [filename]="file.filename" divClass="" [filemimetype]="file.file_mime_type"  size="small"></system-file-icon>
+    <system-file-icon *ngIf="!file.thumbnail" [filename]="file.display_name ? file.display_name : file.filename" divClass="" [filemimetype]="file.file_mime_type"  size="small"></system-file-icon>
     <div *ngIf="file.thumbnail">
         <img [src]="'data:image/jpg;base64,' + file.thumbnail"/>
     </div>
@@ -7,7 +7,7 @@
 <div class="slds-media__body">
     <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate">
         <h3 class="slds-truncate slds-text-heading--x-small slds-p-right--xxx-small" (click)="preview($event)">
-            <a href="javascript:void(0);">{{file.filename}}</a>
+            <a href="javascript:void(0);">{{file.display_name ? file.display_name : file.filename}}</a>
         </h3>
         <div *ngIf="!uploading && editmode" class="slds-shrink-none">
             <button  class="slds-button slds-button--icon" (click)="deleteFile()">

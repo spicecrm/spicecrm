@@ -68,7 +68,7 @@ export class ProductUOMConversions implements OnInit {
      * @return the base uom name
      */
     get baseUomName(): string {
-        return this.model.getField(this.fieldBaseUom);
+        return this.uomUnits && this.model.getField(this.fieldBaseUomId) ? this.uomUnits?.find(u => u.id == this.model.getField(this.fieldBaseUomId))?.label : undefined;
     }
 
     /**
@@ -146,7 +146,7 @@ export class ProductUOMConversions implements OnInit {
      * loads the uom units from the configuration service
      */
     public getUomUnits() {
-        this.uomUnits = this.configuration.getData('uomunits') || [];
+        this.uomUnits = (this.configuration.getData('uomunits') || []).sort((a, b) => a.label.localeCompare(b.label));
     }
 
     /**

@@ -35,13 +35,6 @@ export class GroupwareEmailArchivePane implements OnInit {
     }
 
     /**
-     * @return boolean if the system is archiving
-     */
-    get isLoading(): boolean {
-        return this.groupware.isArchiving;
-    }
-
-    /**
      * loads the componentconfig if not passed in
      */
     public ngOnInit() {

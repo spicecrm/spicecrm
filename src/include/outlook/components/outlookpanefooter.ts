@@ -1,12 +1,14 @@
 /**
  * @module Outlook
  */
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {footer} from "../../../services/footer.service";
+import {ObjectActionContainerItem} from "../../../objectcomponents/components/objectactioncontaineritem";
+import {loginService} from "../../../services/login.service";
 
 /**
  * Footer component for the SpiceCRM Outlook add-in.
@@ -17,24 +19,44 @@ import {footer} from "../../../services/footer.service";
     templateUrl: '../templates/outlookpanefooter.html'
 })
 export class OutlookPaneFooter implements AfterViewInit, OnDestroy {
+    /**
+     * reference to the container item where the indivvidual components can be rendered into dynamically
+     */
+    @ViewChildren(ObjectActionContainerItem) public actionitemlist: QueryList<ObjectActionContainerItem>;
 
     @ViewChild('footer', {static: false}) public footerElement;
 
     public _currentroute: string = 'mailitem';
+    /**
+     * menu actions
+     */
+    public menuActions: any[] = [];
+    /**
+     * quick actions
+     */
+    public quickActions: any[] = [];
 
     constructor(
         public router: Router,
         public metadata: metadata,
         public language: language,
-        public footer: footer
-    ) {}
+        public footer: footer,
+        public loginService: loginService
+    ) {
+        this.getActions();
+    }
 
     /**
      * Call an action.
      * @param action
      */
     public callAction(action) {
-        this.router.navigate([action.actionconfig.route]);
+        this.actionitemlist.some(actionitem => {
+            if (actionitem.id == action.id) {
+                if (!actionitem.disabled) actionitem.execute();
+                return true;
+            }
+        });
     }
 
     get currentroute() {
@@ -51,10 +73,11 @@ export class OutlookPaneFooter implements AfterViewInit, OnDestroy {
     /**
      * A list of available actions.
      */
-    get actions() {
+    private getActions() {
         let componentConfig = this.metadata.getComponentConfig('OutlookPane');
         if (componentConfig.actionset) {
-            return this.metadata.getActionSetItems(componentConfig.actionset);
+            this.quickActions = this.metadata.getActionSetItems(componentConfig.actionset).filter(a => a.singlebutton == 1);
+            this.menuActions = this.metadata.getActionSetItems(componentConfig.actionset).filter(a => a.singlebutton != 1);
         }
         return [];
     }

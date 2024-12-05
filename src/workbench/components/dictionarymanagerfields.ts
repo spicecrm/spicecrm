@@ -84,7 +84,7 @@ export class DictionaryManagerFields {
                         sysdictionaryrelationship_id: f.sysdictionaryrelationship_id,
                         defined: !!f.sysdictionaryrelationship_id ? true : false,
                         cached: true,
-                        database: false
+                        database: false,
                     })
                 } else {
                     if(def.name == f.fieldname) {
@@ -126,10 +126,26 @@ export class DictionaryManagerFields {
         // filter and sort the result
         return definitions.filter(d => {
             if(this.filterdbonly && (d.non_db && !d.addFields)) return false;
-            if(this.filterterm && d.name.indexOf(this.filterterm) == -1) return false;
             return true;
         }); // .sort((a, b) => a.name.localeCompare(b.name));
 
+    }
+
+    public filterDictionaryItems(): any[] {
+        return this.dictionaryitems.filter(item => {
+            const name = item?.name.toLowerCase();
+            const domain = this.dictionarymanager.getDomainName(item.sysdomaindefinition_id)?.toLowerCase();
+            const type = this.getDomainType(item.sysdomaindefinition_id)?.toLowerCase();
+            const source = item.sysdictionarydefinition_id !== this.dictionarymanager.currentDictionaryDefinition
+                ? this.getRefDefinitionName(item.sysdictionarydefinition_id).toLowerCase()
+                : this.getRelationshipName(item.sysdictionaryrelationship_id)?.toLowerCase();
+
+            const searchTerm = this.filterterm.toLowerCase();
+
+            const searchArr = [name, domain, type, source];
+
+            return searchArr.some(search => search?.includes(searchTerm));
+        });
     }
 
     public getRowClass(item: DictionaryItem){
@@ -155,6 +171,16 @@ export class DictionaryManagerFields {
         } else {
             return [];
         }
+    }
+
+    /**
+     * returns the fields for the type
+     *
+     * @param domaindefinitionid might be null when a dictionary template is used as dictionary item
+     */
+    public getDomainType(domaindefinitionid: string|null) {
+        const matchingField = this.dictionarymanager.domainfields.find(df => df.sysdomaindefinition_id === domaindefinitionid);
+        return matchingField?.fieldtype
     }
 
     /**

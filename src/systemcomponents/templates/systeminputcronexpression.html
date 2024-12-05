@@ -81,7 +81,7 @@
         </div>
         <div *ngIf="expression.every == 'daysAt' || expression.recurrence == 'daily'" class="slds-form-element slds-m-left--xx-small slds-grow">
             <div class="slds-form-element__control slds-input-has-fixed-addon slds-grow">
-                <system-input-time [(ngModel)]="expression.everyAtValue" (ngModelChange)="setFieldValue()" class="slds-grow slds-p-left--xxx-small"></system-input-time>
+                <system-input-time [minutes_interval]="15" [(ngModel)]="expression.everyAtValue" (ngModelChange)="setFieldValue()" class="slds-grow slds-p-left--xxx-small"></system-input-time>
                 <span class="slds-form-element__addon" style="white-space: nowrap;"> <system-label label="LBL_O_CLOCK"></system-label> </span>
             </div>
         </div>
@@ -114,12 +114,16 @@
         <div *ngIf="expression.recurrence == 'weekly'" class="slds-form-element slds-m-left--xx-small slds-grid slds-grid--vertical-align-center slds-grow">
             <div class="slds-form-element__control slds-grow">
                 <div class="slds-select_container">
-                    <select [(ngModel)]="expression.everyAtValue" (ngModelChange)="setFieldValue()" class="slds-select">
+                    <select [(ngModel)]="expression.everyOnValue" (ngModelChange)="setFieldValue()" class="slds-select">
                         <option *ngFor="let weekDay of weekdays; let index = index" [value]="index">
                             {{weekDay}}
                         </option>
                     </select>
                 </div>
+            </div>
+            <div class="slds-form-element__control slds-input-has-fixed-addon">
+                <span class="slds-form-element__addon" style="white-space: nowrap;"> <system-label label="LBL_O_CLOCK"></system-label> </span>
+                <system-input-time [minutes_interval]="15" [(ngModel)]="expression.everyAtValue" (ngModelChange)="setFieldValue()"  class="slds-p-left--xxx-small"></system-input-time>
             </div>
         </div>
         <div *ngIf="expression.recurrence == 'annually'" class="slds-form-element slds-m-left--xx-small slds-grid slds-grid--vertical-align-center slds-grow">

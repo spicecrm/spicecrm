@@ -1,0 +1,36 @@
+<system-collapsable-tab *ngIf="lineItems.length>0" title="LBL_TAX" [collapsible]="false">
+        <table class="slds-table slds-table--fixed-layout slds-table_bordered slds-box--border slds-table--col-bordered slds-table--striped">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_PERCENTAGE"/></div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_EXCL_VAT"/></div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_AMOUNT"/></div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_INCL_VAT"/></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="slds-hint-parent" *ngFor="let lineItem of lineItems">
+                    <td class="slds-text-align--right">
+                        <system-display-number [number]="lineItem.percentage"></system-display-number>
+                    </td>
+                    <td class="slds-text-align--right">
+                        <system-display-number [number]="lineItem.amount_excl_vat"></system-display-number>
+                    </td>
+                    <td class="slds-text-align--right">
+                        <system-display-number [number]="lineItem.amount"></system-display-number>
+                    </td>
+                    <td class="slds-text-align--right">
+                        <system-display-number [number]="lineItem.amount_incl_vat"></system-display-number>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</system-collapsable-tab>

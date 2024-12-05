@@ -20,7 +20,7 @@
                         <div class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
                                 <system-utility-icon icon="user" addclasses="slds-input__icon slds-icon-text-default"></system-utility-icon>
-                                <input [disabled]="loggingIn" type="text" name="username" autocomplete  [(ngModel)]="username" class="slds-input slds-p-vertical--xx-small" tabindex="1" system-placeholder="LBL_USER_NAME"/>
+                                <input [disabled]="loggingIn" type="text" name="username" autocomplete="username webauthn"  [(ngModel)]="username" class="slds-input slds-p-vertical--xx-small" tabindex="1" system-placeholder="LBL_USER_NAME"/>
                             </div>
                         </div>
                         <div class="slds-form-element slds-m-vertical--small">
@@ -30,9 +30,23 @@
                             </div>
                         </div>
                         <div *ngIf="twoFactorAuthCodeRequired" class="slds-form-element slds-m-vertical--small slds-grid slds-grid--vertical-align-center">
-                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left slds-grow">
+                            <div [ngClass]="{'slds-input-has-icon--left-right': optional2FAMethods.sms || optional2FAMethods.email, 'slds-input-has-icon_group-right': optional2FAMethods.sms || optional2FAMethods.email}" class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left slds-grow">
                                 <system-utility-icon icon="scan" addclasses="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"></system-utility-icon>
-                                <input #twofactorinput [disabled]="loggingIn" type="text" name="code2fa" autocomplete="off" [(ngModel)]="code2fa" class="slds-input slds-p-vertical--xx-small" tabindex="2" system-placeholder="LBL_ENTER_CODE" />
+                                <input #twofactorinput [disabled]="loggingIn" type="text" name="code2fa" autocomplete="off" [(ngModel)]="code2fa" (ngModelChange)="autoSubmit2FACode($event)" class="slds-input slds-p-vertical--xx-small" tabindex="2" system-placeholder="LBL_ENTER_CODE" />
+                                @if (optional2FAMethods.sms || optional2FAMethods.email) {
+                                    <div class="slds-input__icon-group slds-input__icon-group_right" style="margin-top: 0">
+                                        @if (optional2FAMethods.sms) {
+                                            <button (click)="resendAuthCode('sms', $event)" tabindex="-1" class="slds-button slds-button_icon slds-input__icon_right" system-title="MSG_RESEND_CODE_VIA_SMS">
+                                                <system-button-icon icon="sms"/>
+                                            </button>
+                                        }
+                                        @if (optional2FAMethods.email) {
+                                            <button (click)="resendAuthCode('email', $event)" tabindex="-1" class="slds-button slds-button_icon slds-input__icon_right" system-title="MSG_RESEND_CODE_VIA_EMAIL">
+                                                <system-button-icon icon="email"/>
+                                            </button>
+                                        }
+                                    </div>
+                                }
                             </div>
                             <system-checkbox *ngIf="rememberDeviceVisible" [(ngModel)]="rememberDevice" name="remember-device" class="slds-m-left--xx-small">
                                 <system-label label="LBL_REMEMBER_DEVICE"/>
@@ -45,6 +59,10 @@
                         </div>
                         <button [disabled]="loggingIn" type="submit" value="Submit" class="slds-button slds-button--brand slds-button_stretch" tabindex="0">
                             <system-label label="LBL_LOGIN"/>
+                        </button>
+                        <button *ngIf="passkeyEnabled" (click)="checkRegistration($event)" [disabled]="loggingIn" class="slds-m-left--none slds-m-top--x-small slds-button slds-button--neutral slds-button_stretch" tabindex="0">
+                            <system-button-icon icon="key" addclasses="slds-button__icon_left"/>
+                            <system-label label="LBL_LOGIN_WITH_PASSKEY"/>
                         </button>
                         <div class="slds-p-top--small">
                             <global-login-oauth2 class="slds-size--1-of-1" (token)="login($event)"></global-login-oauth2>

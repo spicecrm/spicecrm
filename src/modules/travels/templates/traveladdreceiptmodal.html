@@ -1,0 +1,13 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_SCAN_RECEIPT"/></system-modal-header>
+    <system-modal-content margin="none" system-modal-content-grow >
+        <div class="slds-height_full" #modalcontent>
+            <system-input-media *ngIf="height > 0" [(ngModel)]="receipt" [showToolBars]="false" [componentHeight]="height"></system-input-media>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" [disabled]="!file" (click)="reset()"><system-label label="LBL_RESET"/></button>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"/></button>
+        <button class="slds-button slds-button--brand" [disabled]="!file" (click)="scan()"><system-label label="LBL_SCAN_RECEIPT"/></button>
+    </system-modal-footer>
+</system-modal>

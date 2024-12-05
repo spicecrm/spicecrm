@@ -25,6 +25,11 @@ $routes = [
         'description' => 'get campaign tasks defined for a specific campaign',
         'options'     => ['noAuth' => false, 'adminOnly' => false],
         'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
             'offset' => [
                 'in' => 'query',
                 'type' => ValidationMiddleware::TYPE_NUMERIC,
@@ -38,6 +43,21 @@ $routes = [
                 'description' => 'limit for list',
                 'example' => 50,
                 'required' => false
+            ]
+        ]
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/module/CampaignTasks/{id}/stats',
+        'class'       => CampaignTasksController::class,
+        'function'    => 'getCampaignTaskStats',
+        'description' => 'return stats on the campaign log for a campagntask',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
             ]
         ]
     ],
@@ -100,13 +120,13 @@ $routes = [
                 'type'        => ValidationMiddleware::TYPE_GUID
             ],
             'start'    => [
-                'in'          => 'path',
-                'description' => 'the index to start the letter from',
+                'in'          => 'query',
+                'description' => 'start page number',
                 'type'        => ValidationMiddleware::TYPE_NUMERIC
             ],
             'limit'    => [
-                'in'          => 'path',
-                'description' => 'the number of records to print',
+                'in'          => 'query',
+                'description' => 'limit pages',
                 'type'        => ValidationMiddleware::TYPE_NUMERIC
             ]
         ]
@@ -152,6 +172,11 @@ $routes = [
         'description' => '',
         'options'     => ['noAuth' => false, 'adminOnly' => false],
         'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'description' => ''
+            ],
             'parentmodule' => [
                 'in' => 'path',
                 'type' => ValidationMiddleware::TYPE_STRING,

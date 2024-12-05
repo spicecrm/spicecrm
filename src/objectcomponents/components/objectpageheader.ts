@@ -1,11 +1,12 @@
 /**
  * @module ObjectComponents
  */
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
+import {layout} from "../../services/layout.service";
 
 /**
  * @ignore
@@ -34,6 +35,8 @@ export class ObjectPageHeader implements OnInit {
      */
     public fieldset: string = '';
 
+    public layout: layout = inject(layout);
+
     constructor(
         public router: Router,
         public model: model,
@@ -60,6 +63,15 @@ export class ObjectPageHeader implements OnInit {
      */
     get hasInactiveFieldProperty(): boolean {
         return this.metadata.hasField(this.model._module, 'is_inactive');
+    }
+
+    /**
+     * checks if the Bean has a relationship definition with ProjectActivities module
+     * and if Project Management package is loaded
+     * if true the ObjectProjectActivityTrackTimeIcon is displayed
+     */
+    get showProjectActivityTrackIcon(): boolean {
+        return !!(this.model._fields && this.model._fields.projectactivities_parent && this.metadata.moduleDefs['ProjectActivities']);
     }
 
     /**

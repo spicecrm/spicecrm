@@ -22,6 +22,11 @@ import {Relationship, RelationshipRelateField} from "../interfaces/dictionaryman
 export class DictionaryManagerRelationshipContainerParent implements OnInit {
 
     /**
+     * read only input flag
+     */
+    @Input() public readonly: boolean = false;
+
+    /**
      * the items for the left hand side
      * @private
      */

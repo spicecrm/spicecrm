@@ -28,17 +28,10 @@ export class GlobalNavigationMenuItemActionRoute {
     }
 
     /**
-     * a getter extracting the icon from the action config
-     */
-    get actionicon() {
-        return this.actionconfig.icon ? this.actionconfig.icon : 'chevronright';
-    }
-
-    /**
      * get the hidden atribute if the acl right is not granted
      */
     get disabled(){
-        return this.actionconfig.acl && !this.metadata.checkModuleAcl(this.model.module, this.actionconfig.acl);
+        return this.actionconfig.acl && !this.metadata.checkModuleAcl(this.actionconfig.module ? this.actionconfig.module : this.model.module, this.actionconfig.acl);
     }
 
     /**

@@ -1,20 +1,33 @@
-<div #footer class="slds-docked-form-footer">
+<div #footer class="slds-docked-form-footer" style="position:initial;">
     <div class="slds-size--1-of-1 slds-p-horizontal--xx-small slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
         <div system-dropdown-trigger-simple class="slds-dropdown-trigger slds-dropdown-trigger_click">
             <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" title="Show More">
                 <system-button-icon icon="rows"></system-button-icon>
             </button>
-            <div class="slds-dropdown slds-dropdown--bottom slds-dropdown_left">
+            <div class="slds-dropdown slds-dropdown--bottom slds-dropdown--x-small slds-dropdown_left">
                 <ul class="slds-dropdown__list" role="menu" aria-label="Show More">
-                    <li class="slds-dropdown__item" role="presentation" *ngFor="let action of actions" (click)="callAction(action)">
+                    <li *ngFor="let action of menuActions" (click)="callAction(action)" class="slds-dropdown__item" role="presentation">
                         <a href="javascript:void(0);" role="menuitem">
-                            <span class="slds-truncate" [title]="language.getLabel(action.actionconfig.label)"><system-label [label]="action.actionconfig.label"></system-label></span>
+                            <object-action-container-item class="slds-truncate" [actionitem]="action"/>
                         </a>
                     </li>
                 </ul>
+                <div class="slds-grid slds-grid--vertical-align-center slds-has-divider--top-space slds-p-bottom--x-small slds-p-left--small slds-theme--shade">
+                    <system-label label="LBL_LANGUAGE"/>
+                    <system-language-selector class="slds-grow slds-m-horizontal--x-small" [displaylabel]="false"/>
+                </div>
+                <div class="slds-grid slds-grid--align-end slds-p-around--x-small">
+                    <button class="slds-button slds-button--icon" system-title="LBL_LOGOFF" (click)="loginService.logout()">
+                        <system-button-icon icon="logout"/>
+                    </button>
+                </div>
             </div>
         </div>
-        <system-language-selector class="slds-col--bump-left" [displaylabel]="false"></system-language-selector>
-        <system-role-selector></system-role-selector>
+        <div class="slds-button-group slds-grow slds-scrollable--x slds-m-left--x-small" role="group">
+            <button *ngFor="let action of quickActions" (click)="callAction(action)" class="slds-button slds-button--neutral">
+                <object-action-container-item class="slds-truncate" [actionitem]="action"/>
+            </button>
+        </div>
+        <system-role-selector avatarSize="medium"></system-role-selector>
     </div>
 </div>

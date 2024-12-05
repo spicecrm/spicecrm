@@ -58,7 +58,8 @@ export class fieldUnsubscribeStatus implements OnInit {
             // save related model
             this.relatedmodels.setItem(changedData);
         let body = {
-            unsubscribe_status: this.unsubscribed
+            unsubscribe_status: this.unsubscribed,
+            email_addr_bean_rel_id: this.model.getField('prospectlists_person_email_addr_bean_rel_id')
         }
         this.backend.postRequest(`channels/emarketing/sendgrid/ProspectListUnsubscribes/${this.relatedmodels.id}/status/${this.model.id}`, null, body).subscribe(response => {
             if(response) {

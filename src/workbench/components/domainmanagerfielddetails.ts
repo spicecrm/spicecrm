@@ -1,22 +1,18 @@
 /**
  * @module WorkbenchModule
  */
-import {
-    Component,
-    Input, OnInit
-} from '@angular/core';
+import {Component,OnInit} from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {domainmanager} from '../services/domainmanager.service';
-import {field} from "../../objectfields/components/field";
 
 /**
  * a tab with details on a domain field
  */
 @Component({
     selector: 'domain-manager-field-details',
-    templateUrl: '../templates/domainmanagerfielddetails.html'
+    templateUrl: '../templates/domainmanagerfielddetails.html',
 })
 export class DomainManagerFieldDetails implements OnInit{
 
@@ -76,5 +72,4 @@ export class DomainManagerFieldDetails implements OnInit{
     public close(){
         this.self.destroy();
     }
-
 }

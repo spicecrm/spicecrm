@@ -40,6 +40,12 @@ export class WorkflowPanelTask implements OnChanges, AfterViewInit, OnInit {
      * true if posting data to backend
      */
     public posting: boolean = false;
+
+    /**
+     * stores the workflowtask types available
+     */
+    public taskTypes: any = [];
+
     /**
      * view container reference to the container element of the type component
      * @private
@@ -69,6 +75,9 @@ export class WorkflowPanelTask implements OnChanges, AfterViewInit, OnInit {
     public ngOnInit() {
         // retrieve date_due on load
         this.dateDue = this.workflowtask.date_due;
+        // retrieve the workflowtask types
+        this.taskTypes = this.configurationService.getData('workflowtasktypes');
+
     }
 
     /**
@@ -106,10 +115,8 @@ export class WorkflowPanelTask implements OnChanges, AfterViewInit, OnInit {
         this.destroyRenderedComponent();
         let component;
 
-        const types = this.configurationService.getData('workflowtasktypes');
-
-        if (types?.length > 0) {
-            component = types?.find(type => type.id == this.workflowtask.tasktype)?.frontend_component;
+        if (this.taskTypes?.length > 0) {
+            component = this.taskTypes?.find(type => type.id == this.workflowtask.tasktype)?.frontend_component;
         }
 
         if (!component) component = 'WorkflowPanelTaskStandard';

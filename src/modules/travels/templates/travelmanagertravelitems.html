@@ -1,0 +1,77 @@
+<div system-to-bottom marginBottom="50">
+    <!-- TravelSegments -->
+    @if(travelSegments.length > 0){
+        <div class="slds-m-bottom--small">
+            <div class="slds-grid slds-p-around--x-small slds-theme--shade slds-border--top slds-border--bottom">
+                <system-icon module="TravelReceipts" size="x-small"></system-icon>
+                <span class="slds-tree__item-label slds-truncate"><system-label label="LBL_TRAVEL_SEGMENTS"></system-label></span>
+            </div>
+            @for (travelSegment of travelSegments; track travelSegment.id;) {
+                <div class="slds-grid slds-wrap slds-medium-nowrap slds-p-horizontal--x-small slds-p-vertical--xx-small slds-border--bottom slds-size--1-of-1">
+                    <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-truncate">
+                        <system-display-datetime [date]="travelSegment.date_start" [displayTime]="false"/>
+                    </div>
+                    <div class="slds-col slds-size--2-of-4 slds-medium-size--small slds-truncate slds-text-align--center">{{ travelSegment.country }}</div>
+                    <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-truncate slds-text-align--right">
+                        <system-display-datetime [date]="travelSegment.date_end" [displayTime]="false"/>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    <!-- TravelReceipts -->
+    @if(travelReceipts.length > 0){
+        <div class="slds-m-bottom--small">
+            <div class="slds-grid slds-p-around--x-small slds-theme--shade slds-border--top slds-border--bottom">
+                <system-icon module="TravelReceipts" size="x-small"/>
+                <span class="slds-tree__item-label slds-truncate"><system-label label="LBL_TRAVEL_RECEIPTS"/></span>
+            </div>
+            <div class="slds-grid slds-wrap slds-medium-nowrap slds-p-horizontal--x-small slds-p-vertical--xx-small slds-border--bottom slds-size--1-of-1 slds-theme--shade">
+                <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-truncate">
+                    <system-label label="LBL_DATE"/>
+                </div>
+                <div class="slds-col slds-size--2-of-4 slds-medium-size--small slds-truncate"><system-label label="LBL_NAME"/></div>
+                <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-text-align--right slds-truncate">
+                    <system-label label="LBL_AMOUNT"/>
+                </div>
+            </div>
+            @for (travelReceipt of travelReceipts; track travelReceipt.id;) {
+                <div class="slds-grid slds-wrap slds-medium-nowrap slds-p-horizontal--x-small slds-p-vertical--xx-small slds-border--bottom slds-size--1-of-1" (click)="openItem('TravelReceipts',travelReceipt.id)">
+                    <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-truncate" title="{{travelReceipt.name}}"><system-display-datetime [date]="travelReceipt.receipt_date" [displayTime]="false"/></div>
+                    <div class="slds-col slds-size--2-of-4 slds-medium-size--small slds-truncate" title="{{travelReceipt.name}}">{{ travelReceipt.name}}</div>
+                    <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-text-align--right slds-truncate" title="{{travelReceipt.receipt_date}}"><system-display-number [number]="travelReceipt.amount" [currency_id]="travelReceipt.currency_id"/></div>
+                </div>
+            }
+        </div>
+    }
+    <!-- TravelMileages -->
+    @if(travelMileages.length > 0){
+        <div class="slds-m-bottom--small">
+            <div class="slds-grid slds-p-around--x-small slds-theme--shade slds-border--top slds-border--bottom">
+                <system-icon module="TravelMileages" size="x-small"/>
+                <span class="slds-tree__item-label slds-truncate"><system-label label="LBL_TRAVEL_MILEAGES"/></span>
+            </div>
+            <div class="slds-grid slds-wrap slds-medium-nowrap slds-p-horizontal--x-small slds-p-vertical--xx-small slds-border--bottom slds-size--1-of-1 slds-theme--shade">
+                <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-truncate"><system-label label="LBL_DATE"/></div>
+                <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-truncate"><system-label label="LBL_NAME"/></div>
+                <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-text-align--right slds-truncate"><system-label label="LBL_DISTANCE"/></div>
+                <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-text-align--right slds-truncate"><system-label label="LBL_AMOUNT"/></div>
+            </div>
+            @for (travelMileage of travelMileages; track travelMileage.id;) {
+                <div class="slds-grid slds-wrap slds-medium-nowrap slds-p-horizontal--x-small slds-p-vertical--xx-small slds-border--bottom slds-size--1-of-1" (click)="openItem('TravelMileages',travelMileage.id)">
+                    <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-truncate">
+                        <system-display-datetime [date]="travelMileage.date_start" [displayTime]="false"/>
+                    </div>
+                    <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-truncate" title="{{travelMileage.name}}">{{ travelMileage.name}}</div>
+                    <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-text-align--right slds-truncate">
+                        <system-display-number [number]="travelMileage.distance" precision="0"/> {{travelMileage.distance_unit}}
+                    </div>
+                    <div class="slds-col slds-size--1-of-4 slds-medium-size--small slds-text-align--right slds-truncate">
+                        <system-display-number [currency_id]="travelMileage.currency_id" [number]="travelMileage.amount" precision="2"/>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+

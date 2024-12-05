@@ -9,22 +9,6 @@ use SpiceCRM\includes\database\DBManagerFactory;
 
 class Product extends SpiceBean {
 
-//    public $unformated_numbers = true;
-
-    public $left_node_id;
-    public $right_node_id;
-
-    public function bean_implements($interface) {
-        switch($interface) {
-            case 'ACL': return true;
-        }
-        return false;
-    }
-
-
-    public function get_summary_text() {
-        return $this->name;
-    }
 
     public function getAttributeValues() {
 

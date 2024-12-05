@@ -123,16 +123,16 @@ export class DictionaryManagerItems {
         this.dictionarymanager.promptDelete('MSG_DELETE_DICTIONARYITEM').subscribe({
             next: (value) => {
                 let params: any = {};
-                if(value == 'drop') params.drop = 1;
-                let delteModal = this.modal.await('LBL_DELETING');
+                if (value === 'drop') params.drop = 1;
+                let deleteModal = this.modal.await('LBL_DELETING');
                 this.backend.deleteRequest(`dictionary/item/${id}`, params).subscribe({
                     next: () => {
                         let di = this.dictionarymanager.dictionaryitems.findIndex(f => f.id == id);
                         this.dictionarymanager.dictionaryitems.splice(di, 1);
-                        delteModal.emit(true);
+                        deleteModal.emit(true);
                     },
                     error: () => {
-                        delteModal.emit(true);
+                        deleteModal.emit(true);
                     }
                 })
             }

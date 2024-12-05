@@ -32,7 +32,30 @@ class Employee extends Person {
         if(count($orgunit) > 0){
             return $orgunit[0];
         }
+
+        // BWC fallback check employees.orgunit_id
+        if(!empty($this->orgunit_id)){
+            $orgunit = BeanFactory::getBean('OrgUnits', $this->orgunit_id);
+            return $orgunit;
+        }
+
         return false;
     }
+
+    /**
+     * return the user assigned of the primary orgunit object for the employee
+     * @return false|mixed
+     */
+    public function getManagerPrimaryOrgUnit(){
+        $orgunit = $this->getPrimaryOrgUnit();
+        if($orgunit){
+            $manager = BeanFactory::getBean('Users', $orgunit->assigned_user_id);
+            if($manager){
+                return $manager;
+            }
+        }
+        return false;
+    }
+
 
 }

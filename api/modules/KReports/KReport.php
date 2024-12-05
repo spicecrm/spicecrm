@@ -210,7 +210,6 @@ class KReport extends SpiceBean
     /*
      * Function to return the Fielname from a given Path
      */
-
     function getFieldNameFromPath($pathName)
     {
         return substr($pathName, strrpos($pathName, "::") + 2, strlen($pathName));
@@ -219,7 +218,6 @@ class KReport extends SpiceBean
     /*
      * Function to return the Pathname from a given Path
      */
-
     function getPathNameFromPath($pathName)
     {
         return substr($pathName, 0, strrpos($pathName, "::"));
@@ -299,7 +297,23 @@ class KReport extends SpiceBean
     {
         if ($this->fieldNameMap == null)
             $this->get_report_main_sql_query('', true, '');
-        return $this->fieldNameMap [$fieldID] ['type'];
+        return $this->fieldNameMap[$fieldID]['type'];
+    }
+
+    public function getFieldModuleById($fieldID)
+    {
+        if ($this->fieldNameMap == null)
+            $this->get_report_main_sql_query('', true, '');
+
+        return $this->fieldNameMap[$fieldID]['module'];
+    }
+
+    public function getFieldNameById($fieldID)
+    {
+        if ($this->fieldNameMap == null)
+            $this->get_report_main_sql_query('', true, '');
+
+        return $this->fieldNameMap[$fieldID]['name'];
     }
 
     function buildLinks($fieldArray, $excludeFields = [])
@@ -1250,14 +1264,14 @@ $db = DBManagerFactory::getInstance();
 
         $arrayList = json_decode(html_entity_decode($this->listfields, ENT_QUOTES, 'UTF-8'), true);
 
-        $retArray [] = ['fieldid' => '-', 'fieldname' => '-'];
+        $retArray [] = ['fieldid' => '-', 'fieldname' => '-', 'fieldtype' => '-'];
 
         if (is_array($arrayList)) {
             foreach ($arrayList as $thisList) {
                 //$pathName = $this->getPathNameFromPath($thisList['path']);
                 //$fieldName = explode(':', $this->getFieldNameFromPath($thisList['path']));
                 //if($this->joinSegments[$pathName]['object']->field_defs[$fieldname[1]]->type == 'currency')
-                $retArray [] = ['fieldid' => $thisList ['fieldid'], 'fieldname' => $thisList ['name']];
+                $retArray [] = ['fieldid' => $thisList ['fieldid'], 'fieldname' => $thisList ['name'], 'fieldtype' => $this->getFieldTypeFromPath($thisList['path'])];
             }
         } else {
             $retArray = '';

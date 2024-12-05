@@ -21,6 +21,7 @@ import {view} from '../../services/view.service';
 export class ActionsetManagerActionDetails implements OnChanges {
 
     @Input() public action: any = {};
+    @Input() public module: string;
 
     public component: string = "";
     public component_backup: string = "";
@@ -45,7 +46,8 @@ export class ActionsetManagerActionDetails implements OnChanges {
         {display: "OPEN", value: "OPEN", component: "ObjectActionOpenButton"},
         {display: "CANCEL", value: "CANCEL", component: "ObjectActionCancelButton"},
         {display: "SAVE", value: "SAVE", component: "ObjectActionSaveButton"},
-        {display: "SAVERELATED", value: "SAVERELATED", component: "ObjectActionSaveRelatedButton"}
+        {display: "SAVERELATED", value: "SAVERELATED", component: "ObjectActionSaveRelatedButton"},
+        {display: "PDF", value: "PDF", component: "ObjectActionPdfExportRelatedButton"}
     ];
 
     constructor(public backend: backend, public metadata: metadata, public language: language, public view: view) {
@@ -69,7 +71,7 @@ export class ActionsetManagerActionDetails implements OnChanges {
     }
 
     get configContainerComponentName() {
-        return this.action.component ?? this.standardActions.find(a => a.value == this.action.action).component;
+        return this.action.component ?? this.standardActions.find(a => a.value == this.action.action)?.component;
     }
 
     // get all system-components for the selected system-module
@@ -103,4 +105,5 @@ export class ActionsetManagerActionDetails implements OnChanges {
     public setComponent() {
         this.action.component = this.localcomponent;
     }
+
 }

@@ -1,8 +1,8 @@
 <div class="slds-form-element slds-truncate slds-size--1-of-1" [class.slds-has-error]="!validInput || invalid_domain || emailAddress.invalid_email">
     <div class="slds-form-element__control">
-        <input *ngIf="!hasFocus; else hasFocusContainer" type="text" class="slds-input" [(ngModel)]="emailAddressText" [style.text-decoration]="emailAddress.invalid_email == '1' ? 'line-through' : 'initial'" [disabled]="emailAddress.invalid_email == 1" (blur)="validateDomain()">
+        <input *ngIf="!hasFocus; else hasFocusContainer" type="text" class="slds-input" [(ngModel)]="emailAddressText" [style.text-decoration]="emailAddress.invalid_email == '1' ? 'line-through' : 'initial'" (blur)="emitChanges()">
         <ng-template #hasFocusContainer>
-            <input type="text" class="slds-input" [(ngModel)]="emailAddressText" [style.text-decoration]="emailAddress.invalid_email == '1' ? 'line-through' : 'initial'" [disabled]="emailAddress.invalid_email == 1" (blur)="validateDomain()" system-autofocus>
+            <input type="text" class="slds-input" [(ngModel)]="emailAddressText" [style.text-decoration]="emailAddress.invalid_email == '1' ? 'line-through' : 'initial'" (blur)="emitChanges()" system-autofocus>
         </ng-template>
     </div>
     <div *ngIf="!validInput && !invalid_domain" class="slds-form-element__help">

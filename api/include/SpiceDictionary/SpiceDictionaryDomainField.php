@@ -49,7 +49,7 @@ class SpiceDictionaryDomainField
         $definiton->sysdictionarydomainfield_id = $this->id;
         $definiton->sysdictionaryitem_id = $sysdictionaryItem->id;
         $definiton->name = $sysdictionaryItem ? str_replace("{sysdictionaryitems.name}", $sysdictionaryItem->name, $this->domainField->name) : $this->domainField->name;
-        $definiton->type = $this->domainField->fieldtype;
+        $definiton->type = $this->domainField->fieldtype ?: $this->domainField->dbtype;
         $definiton->sysdomaindefinition_id = $this->domainField->sysdomaindefinition_id;
         $definiton->sysdomainfieldvalidation_id = $this->domainField->sysdomainfieldvalidation_id;
         if($this->domainField->required == 1) $definiton->required = 1;
@@ -63,6 +63,8 @@ class SpiceDictionaryDomainField
         // set a label if we have one
         if($this->domainField->label) $definiton->vname = $this->domainField->label;
         if($this->domainField->len) $definiton->len = $this->domainField->len;
+
+        $definiton->default = $this->domainField->defaultvalue;
 
         return $definiton;
 

@@ -43,6 +43,13 @@ $routes = [
         'function'    => 'RestPDFToBaseImage',
         'description' => 'convert a pdf to a base64 image',
         'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters' => [
+            'filepath' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ]
+        ]
     ],
     [
         'method'      => 'get',
@@ -51,6 +58,13 @@ $routes = [
         'function'    => 'RestPDFToUrlImage',
         'description' => 'converts a pdf to Url image',
         'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters' => [
+            'filepath' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ]
+        ]
     ],
     [
         'method'      => 'post',

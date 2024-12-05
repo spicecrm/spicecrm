@@ -1,0 +1,384 @@
+import {ChangeDetectorRef, Injectable, signal, WritableSignal} from '@angular/core';
+import {ChangeHistoryActionI, ChangeHistoryRecordI} from "../interfaces/workbench.interfaces";
+import {Subject} from "rxjs";
+
+@Injectable()
+export class ChangeHistoryService {
+    /**
+     * holds the changes in object keys array values
+     */
+    private changes: {[key: string]: {changedObjects: Map<string, any>, newObjects: Map<string, any>}} = {};
+    /**
+     * array of references to trackable arrays
+     * @private
+     */
+    private dbObjects = new Map<string, any>();
+    /**
+     * array of references to trackable arrays
+     * @private
+     */
+    private trackableObjects = new Map<string, any>();
+    /**
+     * id of the current change group to mark all the changes happen during the bulk callback function as one record in the history
+     * @private
+     */
+    private currentChangeGroupId: string;
+    /**
+     * holds the history records
+     * @private
+     */
+    private history: ChangeHistoryRecordI[] = [];
+    /**
+     * holds the history current index
+     * @private
+     */
+    private historyCurrentIndex: number = -1;
+    /**
+     * emit on history undo redo
+     */
+    public onHistoryChange: Subject<void> = new Subject<void>();
+
+    constructor(private cdRef: ChangeDetectorRef) {
+    }
+
+    /**
+     * generate a proxy object that implements a change check, when a property set is called
+     * @param obj
+     * @param dbObject
+     * @param scope
+     */
+    public generateTrackableObject(obj: any, dbObject: any, scope: string): any {
+
+        if (this.trackableObjects.has(obj.id)) {
+            return this.trackableObjects.get(obj.id);
+        }
+
+        this.dbObjects.set(dbObject.id, dbObject);
+
+        const check = (obj: any, scope: string, prop: symbol | string, previousValue: any, newValue: any) => this.checkForObjectChanges(obj, scope, prop, previousValue, newValue);
+        return this.generateProxyObject(obj, scope, check);
+    }
+
+    /**
+     * generate trackable new object that did not exist yet
+     * @param obj
+     * @param scope
+     * @param validator
+     */
+    public generateTrackableNewObject(obj: any, scope: string, validator?: (obj: any) => boolean) {
+
+        if (this.trackableObjects.has(obj.id)) {
+            return this.trackableObjects.get(obj.id);
+        }
+
+        const check = (obj: any, scope: string, prop: symbol | string, previousValue: any, newValue: any) => {
+
+            if (!validator || validator(obj)) {
+                this.registerOrUpdateNewObject(obj, scope, prop, previousValue, newValue);
+            } else {
+                this.rollbackNewObject(obj, scope);
+            }
+        };
+
+        return this.generateProxyObject(obj, scope, check);
+    }
+
+    /**
+     * generate a proxy object of the target object
+     * @param obj
+     * @param scope
+     * @param check
+     * @private
+     */
+    private generateProxyObject(obj: any, scope: string, check: (obj: any, scope: string, prop: symbol | string, previousValue: any, newValue: any) => void) {
+
+        const trackable = new Proxy(obj, {
+
+            set(target: any, prop: string | symbol, newValue: any) {
+
+                const previousValue = target[prop];
+
+                if (window._.isEqual(previousValue, newValue)) return true;
+
+                Reflect.set(target, prop, newValue);
+                check(obj, scope, prop, previousValue, newValue);
+                return true;
+            }
+        });
+
+        this.trackableObjects.set(obj.id, trackable);
+
+        return trackable;
+    }
+
+    /**
+     * get all changes for new and existing objects in one array
+     * @param scope
+     */
+    public getAllChanges(scope: string): any[] {
+        return Array.from(this.changes[scope]?.changedObjects.values() ?? []).concat(
+            Array.from(this.changes[scope]?.newObjects.values() ?? [])
+        );
+    }
+
+    /**
+     * apply changes to the passed db array
+     * @param dbArray
+     * @param scope
+     */
+    public applyChanges(dbArray: any[], scope: string) {
+
+        if (!this.changes[scope]) return;
+
+        this.changes[scope].changedObjects.forEach(changedObj => {
+
+            // truncate the history array so that any new change after save will be pushed immediately after the current history index
+            if (this.historyCurrentIndex +1 < this.history.length) {
+                this.history.length = this.historyCurrentIndex +1;
+            }
+
+            dbArray.some((dbObj, index: number) => {
+                if (dbObj.id != changedObj.id) return false;
+                dbArray[index] = {...changedObj};
+                this.dbObjects.set(changedObj.id, dbArray[index]);
+                
+                return true;
+            });
+        });
+
+        this.changes[scope].newObjects.forEach(newObj =>
+            dbArray.push(newObj)
+        );
+
+        this.initializeScope(scope);
+    }
+
+    /**
+     * initialize scope object
+     * @param scope
+     * @private
+     */
+    private initializeScope(scope: string) {
+        this.changes[scope] = {changedObjects: new Map<string, any>(), newObjects: new Map<string, any>()};
+    }
+
+    /**
+     * register a new object in the new objects array
+     * @param scope
+     * @param obj
+     * @param prop
+     * @param previousValue
+     * @param newValue
+     * @private
+     */
+    public registerOrUpdateNewObject(obj: any, scope: string, prop: symbol | string, previousValue: any, newValue: any) {
+
+        if (!this.changes[scope]) this.initializeScope(scope);
+
+        if (!this.changes[scope].newObjects.has(obj.id)) {
+            this.changes[scope].newObjects.set(obj.id, {...obj});
+            this.addNewHistoryRecord(obj, 'new', scope, prop, previousValue, newValue);
+            this.cdRef.detectChanges();
+        } else {
+            this.addNewHistoryRecord(obj, 'update', scope, prop, previousValue, newValue);
+            this.changes[scope].newObjects.set(obj.id, {...obj});
+        }
+    }
+
+    /**
+     * add a new history record
+     * @param obj
+     * @param action
+     * @param scope
+     * @param key
+     * @param previousValue
+     * @param newValue
+     * @private
+     */
+    private addNewHistoryRecord(obj: {id: string}, action: ChangeHistoryActionI, scope: string, key?: string | symbol, previousValue?: any, newValue?: any) {
+
+        // trim the history array if the current index is not the last on in the history to override the later history records
+        if (this.historyCurrentIndex +1 < this.history.length) {
+            this.history.length = this.historyCurrentIndex +1;
+        }
+
+        this.history.push({id: obj.id, obj, action, scope, key, previousValue, newValue, groupId: this.currentChangeGroupId});
+
+        this.historyCurrentIndex++;
+    }
+
+    /**
+     * can undo
+     */
+    get canUndo() {
+        return this.history.length > 0 && this.historyCurrentIndex >= 0;
+    }
+
+    /**
+     * can redo
+     */
+    get canRedo() {
+        return this.historyCurrentIndex +1 < this.history.length;
+    }
+
+    /**
+     * undo last change
+     */
+    public undo() {
+
+        if (this.historyCurrentIndex < 0) return;
+
+        const lastChange = this.history[this.historyCurrentIndex];
+
+        switch (lastChange.action) {
+            case 'new':
+                this.changes[lastChange.scope].newObjects.delete(lastChange.id);
+                break;
+            case 'update':
+
+                const changeType = this.changes[lastChange.scope].newObjects.has(lastChange.id) ? 'newObjects' : 'changedObjects';
+
+                // in case of after save first update
+                if (!this.changes[lastChange.scope][changeType].has(lastChange.id)) {
+                    this.changes[lastChange.scope][changeType].set(lastChange.id, lastChange.obj);
+                }
+
+                // in case of update
+                this.changes[lastChange.scope][changeType].get(lastChange.id)[lastChange.key] = lastChange.previousValue;
+
+                // in case of first update, if current object same as db object delete it from changed objects
+                if (JSON.stringify(this.changes[lastChange.scope][changeType].get(lastChange.id)) == JSON.stringify(this.dbObjects.get(lastChange.id))) {
+                    this.changes[lastChange.scope][changeType].delete(lastChange.id);
+                }
+
+                break;
+        }
+
+        lastChange.obj[lastChange.key] = lastChange.previousValue;
+
+        if (this.historyCurrentIndex > -1) {
+            this.historyCurrentIndex--;
+        }
+
+        if (this.history[this.historyCurrentIndex]?.groupId && this.history[this.historyCurrentIndex].groupId == lastChange.groupId) {
+            this.undo();
+        } else {
+            this.onHistoryChange.next();
+        }
+    }
+
+    /**
+     * redo next change
+     */
+    public redo() {
+
+        if (this.historyCurrentIndex +1 > this.history.length) return;
+
+        const nextChange = this.history[this.historyCurrentIndex +1];
+
+        nextChange.obj[nextChange.key] = nextChange.newValue;
+
+        switch (nextChange.action) {
+            case 'new':
+                this.changes[nextChange.scope].newObjects.set(nextChange.id, nextChange.obj);
+                break;
+            case 'update':
+                const changeType = this.changes[nextChange.scope].newObjects.has(nextChange.id) ? 'newObjects' : 'changedObjects';
+
+                // in case of first update
+                if (!this.changes[nextChange.scope][changeType].has(nextChange.id)) {
+                    this.changes[nextChange.scope][changeType].set(nextChange.id, nextChange.obj);
+                }
+
+                this.changes[nextChange.scope][changeType].get(nextChange.id)[nextChange.key] = nextChange.newValue;
+
+                // in case of after save first update, if current object same as db object delete it from changed objects
+                if (JSON.stringify(this.changes[nextChange.scope][changeType].get(nextChange.id)) == JSON.stringify(this.dbObjects.get(nextChange.id))) {
+                    this.changes[nextChange.scope][changeType].delete(nextChange.id);
+                }
+
+                break;
+        }
+
+        if (this.historyCurrentIndex +1 < this.history.length) {
+            this.historyCurrentIndex++;
+        }
+
+        if (this.history[this.historyCurrentIndex +1]?.groupId && this.history[this.historyCurrentIndex +1].groupId == nextChange.groupId) {
+            this.redo();
+        } else {
+            this.onHistoryChange.next();
+        }
+    }
+
+    /**
+     * rollback a new object in the new objects array
+     * @param scope
+     * @param obj
+     * @private
+     */
+    public rollbackNewObject(obj: any, scope: string) {
+
+        if (!this.changes[scope]) return;
+
+        this.changes[scope].newObjects.delete(obj.id);
+    }
+
+    /**
+     * check for object changes and write the changes
+     */
+    public checkForObjectChanges(currentObject: any, scope: string, prop: symbol | string, previousValue: any, newValue: any) {
+
+        if (!this.changes[scope]) this.initializeScope(scope);
+
+        if (JSON.stringify(currentObject) == JSON.stringify(this.dbObjects.get(currentObject.id))) {
+            this.changes[scope].changedObjects.delete(currentObject.id);
+            return;
+        }
+
+        if (this.changes[scope].changedObjects.has(currentObject.id)) {
+            this.changes[scope].changedObjects.set(currentObject.id, {...currentObject});
+        } else {
+            this.changes[scope].changedObjects.set(currentObject.id, {...currentObject});
+            this.cdRef.detectChanges();
+        }
+
+        this.addNewHistoryRecord(currentObject, 'update', scope, prop, previousValue, newValue);
+    }
+
+    /**
+     * to register a bulk change as one record in the history e.g. change sequence for all objects
+     * call the passed callback function and groups all the changes made inside it as one record in the history
+     */
+    public applyBulkChange(callbackFn: () => void) {
+        this.currentChangeGroupId = window._.uniqueId('change-history-');
+        callbackFn();
+        this.currentChangeGroupId = undefined;
+    }
+
+    /**
+     * check if it has changes
+     * @param scope
+     */
+    public hasChanges(scope?: string): boolean {
+
+        if (!scope) {
+            return Object.keys(this.changes).some(scope =>
+                this.changes[scope]?.changedObjects.size > 0 || this.changes[scope]?.newObjects.size > 0
+            );
+        }
+
+        return this.changes[scope]?.changedObjects.size > 0 || this.changes[scope]?.newObjects.size > 0;
+    }
+
+    /**
+     * reset all service properties
+     */
+    public fullReset() {
+        this.changes = {};
+        this.dbObjects = new Map<string, any>();
+        this.trackableObjects = new Map<string, any>();
+        this.history = [];
+        this.historyCurrentIndex = -1;
+    }
+}

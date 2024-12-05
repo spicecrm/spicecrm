@@ -30,6 +30,10 @@ export class GlobalLoginOAuth2 implements OnDestroy {
      * emits the token
      */
     @Output() public token = new EventEmitter<{issuer: string, tokenObject: TokenObjectI}>();
+    /**
+     * emits the token
+     */
+    @Output() public servicesLoaded = new EventEmitter<AuthServiceI[]>();
 
     constructor(
         public configuration: configurationService,
@@ -72,6 +76,8 @@ export class GlobalLoginOAuth2 implements OnDestroy {
             clone.config = JSON.parse(clone.config as any);
             return clone;
         });
+
+        this.servicesLoaded.emit(this.services);
     }
 
     /**

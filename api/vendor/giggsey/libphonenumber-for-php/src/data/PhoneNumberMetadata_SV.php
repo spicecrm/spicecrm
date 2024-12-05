@@ -14,7 +14,7 @@
 return array (
   'generalDesc' => 
   array (
-    'NationalNumberPattern' => '[267]\\d{7}|[89]00\\d{4}(?:\\d{4})?',
+    'NationalNumberPattern' => '[267]\\d{7}|(?:80\\d|900)\\d{4}(?:\\d{4})?',
     'PossibleLength' => 
     array (
       0 => 7,
@@ -27,7 +27,7 @@ return array (
   ),
   'fixedLine' => 
   array (
-    'NationalNumberPattern' => '2(?:[1-6]\\d{3}|[79]90[034]|890[0245])\\d{3}',
+    'NationalNumberPattern' => '2(?:79(?:0[0347-9]|[1-9]\\d)|89(?:0[024589]|[1-9]\\d))\\d{3}|2(?:[1-69]\\d|[78][0-8])\\d{5}',
     'ExampleNumber' => '21234567',
     'PossibleLength' => 
     array (
@@ -39,7 +39,7 @@ return array (
   ),
   'mobile' => 
   array (
-    'NationalNumberPattern' => '66(?:[02-9]\\d\\d|1(?:[02-9]\\d|16))\\d{3}|(?:6[0-57-9]|7\\d)\\d{6}',
+    'NationalNumberPattern' => '[67]\\d{7}',
     'ExampleNumber' => '70123456',
     'PossibleLength' => 
     array (
@@ -51,7 +51,7 @@ return array (
   ),
   'tollFree' => 
   array (
-    'NationalNumberPattern' => '800\\d{4}(?:\\d{4})?',
+    'NationalNumberPattern' => '800\\d{8}|80[01]\\d{4}',
     'ExampleNumber' => '8001234',
     'PossibleLength' => 
     array (

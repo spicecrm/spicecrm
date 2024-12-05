@@ -3,7 +3,6 @@
  */
 import {
     Component,
-    OnChanges,
     Input, OnInit, Output, EventEmitter
 } from '@angular/core';
 import {modal} from '../../../services/modal.service';
@@ -121,10 +120,14 @@ export class ACLTerritorriesManagerTerritoryAddModal implements OnInit {
     public save() {
         this.backend.postRequest('module/SpiceACLTerritories/' + this.model.id + '/check', {}, this.modelutilities.spiceModel2backend('SpiceACLTerrtories', this.model.data)).subscribe(response => {
             if (response.status == 'success') {
-                this.backend.postRequest('module/SpiceACLTerritories/' + this.model.id, {}, this.modelutilities.spiceModel2backend('SpiceACLTerrtories', this.model.data)).subscribe(response => {
-                    this.newterritory.emit(this.model.data);
-                    this.close();
+                this.backend.postRequest('module/SpiceACLTerritories/' + this.model.id, {}, this.modelutilities.spiceModel2backend('SpiceACLTerrtories', this.model.data)).subscribe({
+                    next: (response) => {
+                        this.newterritory.emit(response.data);
+                        this.close();
+                    }
                 });
+            } else {
+                this.toast.sendToast('Duplicate Territory', "warning");
             }
         });
     }

@@ -4,23 +4,28 @@
     </system-modal-header>
     <system-modal-content>
 
+        <div *ngIf="moduleFields || searchterm" class="slds-p-vertical--small slds-theme_default slds-is-absolute" style="top: 0; z-index: 99; width: calc(100% - 2.5rem)">
+            <system-input-text placeholder="LBL_SEARCH" class="slds-grow" [(ngModel)]="searchterm" autocomplete="off" [showClear]="false"></system-input-text>
+        </div>
 
-        <fieldset class="slds-form-element">
-            <div class="slds-form-element__control">
-                <div class="slds-checkbox" (click)="toggleSelectAll($event)">
-                    <input type="checkbox" [id]="'select_all'" [checked]="selectAllChecked"/>
-                    <label class="slds-checkbox__label" [attr.for]="'select_all'">
-                        <span class="slds-checkbox_faux"></span>
-                        <span class="slds-form-element__label"><system-label label="LBL_SELECT_ALL"></system-label></span>
-                    </label>
+
+        <div *ngIf="moduleFields" class="slds-p-top--xx-large">
+            <fieldset class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <div class="slds-checkbox" (click)="toggleSelectAll($event)">
+                        <input type="checkbox" [id]="'select_all'" [checked]="selectAllChecked"/>
+                        <label class="slds-checkbox__label" [attr.for]="'select_all'">
+                            <span class="slds-checkbox_faux"></span>
+                            <span class="slds-form-element__label"><system-label label="LBL_SELECT_ALL"></system-label></span>
+                        </label>
+                    </div>
                 </div>
-            </div>
-        </fieldset>
-
+            </fieldset>
+        </div>
 
 
         <fieldset class="slds-form-element">
-            <div *ngFor="let thisfield of fields" class="slds-form-element__control">
+            <div *ngFor="let thisfield of moduleFields" class="slds-form-element__control">
                 <div *ngIf="!getFieldDisplay(thisfield)" class="slds-checkbox" (click)="setFieldValue(thisfield, $event)">
                     <input type="checkbox" [id]="'id'+thisfield" [checked]="getFieldValue(thisfield)" />
                     <label class="slds-checkbox__label" [attr.for]="'id'+thisfield">
@@ -30,6 +35,7 @@
                 </div>
             </div>
         </fieldset>
+
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>

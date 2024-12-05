@@ -1,7 +1,7 @@
 /**
  * @module ModuleSystemTenants
  */
-import {Component, Injector} from '@angular/core';
+import {Component} from '@angular/core';
 
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
@@ -15,14 +15,29 @@ import {backend} from '../../../services/backend.service';
 })
 export class SystemTenantActivateButton {
 
-    constructor(public model: model, public modal: modal, public backend: backend, public injector: Injector) {
+    constructor(public model: model,
+                public modal: modal,
+                public backend: backend) {
+    }
+
+    get disabled() {
+        return this.model.getField('initialized') == 1
     }
 
     public execute() {
         let spinner = this.modal.await('Initialize Tenant');
-        this.backend.postRequest(`module/SystemTenants/${this.model.id}/initialize`).subscribe(success => {
-            spinner.emit(true);
+
+        this.backend.postRequest(`module/SystemTenants/${this.model.id}/initialize`).subscribe({
+            next: success => {
+                spinner.next(true);
+                spinner.complete();
+                this.modal.toast.sendToast('MSG_SUCCESSFULLY_EXECUTED', 'success');
+            },
+            error: () => {
+                spinner.next(true);
+                spinner.complete();
+                this.modal.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+            }
         });
     }
-
 }

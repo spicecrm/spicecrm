@@ -28,9 +28,6 @@
             </thead>
             <tbody >
             <ng-container *ngFor="let record of records; trackBy: trackByFn">
-                <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small slds-hide--medium slds-text-title_bold">
-                    {{record.summary_text}}
-                </div>
                 <tr dashboard-generic-dashlet-row  [module]="dashletModule" [fieldset]="dashletFieldSet" [data]="record"></tr>
             </ng-container>
             </tbody>

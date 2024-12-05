@@ -113,6 +113,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'duplicate_merge' => false,
                 'hideacl' => true,
             ],
+            /*
             'opportunity_role_fields' => [
                 'name' => 'opportunity_role_fields',
                 'rname' => 'id',
@@ -170,6 +171,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'vname' => 'LBL_LEVEL_OF_INFLUENCE',
                 'options' => 'opportunity_relationship_buying_center_dom',
             ],
+            */
             'activity_accept_status' => [
                 'name' => 'activity_accept_status',
                 'type' => 'enum',
@@ -214,16 +216,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'type' => 'date',
                 'comment' => 'The birthdate of the contact'
             ],
-            'accounts' => [
-                'name' => 'accounts',
-                'type' => 'link',
-                'relationship' => 'accounts_contacts',
-                'link_type' => 'one',
-                'source' => 'non-db',
-                'vname' => 'LBL_ACCOUNTS',
-                'duplicate_merge' => false,
-                'module' => 'Accounts'
-            ],
+#migrated
+//            'accounts' => [
+//                'name' => 'accounts',
+//                'type' => 'link',
+//                'relationship' => 'accounts_contacts',
+//                'link_type' => 'one',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_ACCOUNTS',
+//                'duplicate_merge' => false,
+//                'module' => 'Accounts'
+//            ],
             'prospects' => [
                 'name' => 'prospects',
                 'type' => 'link',
@@ -266,6 +269,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source' => 'non-db',
                 'vname' => 'LBL_CALLS_AS_PARENT',
             ],
+            /* migrated to dictiornary
             'callattempts_parent' => [
                 'name' => 'callattempts_parent',
                 'type' => 'link',
@@ -273,6 +277,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source' => 'non-db',
                 'vname' => 'LBL_CALLATTEMPTS',
             ],
+            */
 // CR1000426 cleanup backend, module Cases removed
 //            'cases' => array(
 //                'name' => 'cases',
@@ -313,13 +318,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source'       => 'non-db',
                 'vname'        => 'LBL_LETTERS',
             ],
-            'documents' => [
-                'name' => 'documents',
-                'type' => 'link',
-                'relationship' => 'documents_contacts',
-                'source' => 'non-db',
-                'vname' => 'LBL_DOCUMENTS',
-            ],
+#migrated
+//            'documents' => [
+//                'name' => 'documents',
+//                'type' => 'link',
+//                'relationship' => 'documents_contacts',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_DOCUMENTS',
+//            ],
             'leads' => [
                 'name' => 'leads',
                 'type' => 'link',
@@ -342,6 +348,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source' => 'non-db',
                 'vname' => 'LBL_MEETINGS_AS_PARENT',
             ],
+            /*
             'notes' => [
                 'name' => 'notes',
                 'type' => 'link',
@@ -349,6 +356,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source' => 'non-db',
                 'vname' => 'LBL_NOTES',
             ],
+            */
             //@deprecated name project. Use projects
 //            'project' => array(
 //                'name' => 'project',
@@ -357,13 +365,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
 //                'source' => 'non-db',
 //                'vname' => 'LBL_PROJECTS_DEPRECATED',
 //            ),
-            'projects' => [
-                'name' => 'projects',
-                'type' => 'link',
-                'relationship' => 'projects_contacts',
-                'source' => 'non-db',
-                'vname' => 'LBL_PROJECTS',
-            ],
+//            'projects' => [
+//                'name' => 'projects',
+//                'type' => 'link',
+//                'relationship' => 'projects_contacts',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_PROJECTS',
+//            ],
             'tasks' => [
                 'name' => 'tasks',
                 'type' => 'link',
@@ -521,6 +529,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'options' => 'dom_meeting_accept_status',
                 'importable' => 'false',
             ],
+            /*
             'prospect_lists' => [
                 'name' => 'prospect_lists',
                 'type' => 'link',
@@ -540,13 +549,21 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                     ]
                 ]
             ],
+            */
+            /* migrated
             'prospectlistunsubscribes' => [
                 'name' => 'prospectlistunsubscribes',
-                'vname' => 'LBL_PROSPECTLISTS_UNSUBSCRIBES',
+                'vname' => 'LBL_PROSPECTLIST_UNSUBSCRIBES',
                 'type' => 'link',
                 'relationship' => 'prospectlistunsubscribes_contacts',
                 'source' => 'non-db',
+                'rel_fields' => [
+                    'email_addr_bean_rel_id' => [
+                        'map' => 'prospectlists_person_email_addr_bean_rel_id'
+                    ]
+                ]
             ],
+            */
             'optout_sendgrid' => [
                 'name' => 'optout_sendgrid',
                 'vname' => 'LBL_OPTOUT_SENDGRID',
@@ -599,15 +616,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                     ]
                 ]
             ],
-            'bonuscards' => [
-                'name' => 'bonuscards',
-                'type' => 'link',
-                'relationship' => 'bonuscards_contacts',
-                'module' => 'BonusCards',
-                'bean_name' => 'BonusCard',
-                'source' => 'non-db',
-                'vname' => 'LBL_BONUSCARDS',
-            ],
+//            'bonuscards' => [
+//                'name' => 'bonuscards',
+//                'type' => 'link',
+//                'relationship' => 'bonuscards_contacts',
+//                'module' => 'BonusCards',
+//                'bean_name' => 'BonusCard',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_BONUSCARDS',
+//            ],
+            /*
             'prospectlists_contacts_quantity' => [
                 'name' => 'prospectlists_contacts_quantity',
                 'vname' => 'LBL_QUANTITY',
@@ -627,20 +645,21 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'len' => '36',
                 'source' => 'non-db'
             ],
-            'catalogorders' => [
-                'name' => 'catalogorders',
-                'type' => 'link',
-                'module' => 'CatalogOrders',
-                'relationship' => 'contacts_catalogorders',
-                'source' => 'non-db'
-            ],
-            'inquiries' => [
-                'name' => 'inquiries',
-                'type' => 'link',
-                'module' => 'Inquiries',
-                'relationship' => 'contact_inquiries',
-                'source' => 'non-db'
-            ],
+            */
+//            'catalogorders' => [
+//                'name' => 'catalogorders',
+//                'type' => 'link',
+//                'module' => 'CatalogOrders',
+//                'relationship' => 'contacts_catalogorders',
+//                'source' => 'non-db'
+//            ],
+//            'inquiries' => [
+//                'name' => 'inquiries',
+//                'type' => 'link',
+//                'module' => 'Inquiries',
+//                'relationship' => 'contact_inquiries',
+//                'source' => 'non-db'
+//            ],
             'relationship_type' => [
                 'name' => 'relationship_type',
                 'type' => 'enum',
@@ -783,13 +802,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
             'rhs_table' => 'leads',
             'rhs_key' => 'contact_id',
             'relationship_type' => 'one-to-many'],
-        'contact_notes' => ['lhs_module' => 'Contacts',
-            'lhs_table' => 'contacts',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Notes',
-            'rhs_table' => 'notes',
-            'rhs_key' => 'contact_id',
-            'relationship_type' => 'one-to-many'],
+//        'contact_notes' => ['lhs_module' => 'Contacts',
+//            'lhs_table' => 'contacts',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Notes',
+//            'rhs_table' => 'notes',
+//            'rhs_key' => 'contact_id',
+//            'relationship_type' => 'one-to-many'],
         'contact_letters' => [
             'lhs_module' => 'Contacts',
             'lhs_table' => 'contacts',
@@ -881,12 +900,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Contacts'
         ],
+        /* migrated to ditionary
         'contact_callattempts_parent' => [
             'lhs_module' => 'Contacts', 'lhs_table' => 'contacts', 'lhs_key' => 'id',
             'rhs_module' => 'CallAttempts', 'rhs_table' => 'callattempts', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Contacts'
         ],
+        */
         'contact_emails_parent' => [
             'lhs_module' => 'Contacts', 'lhs_table' => 'contacts', 'lhs_key' => 'id',
             'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id',

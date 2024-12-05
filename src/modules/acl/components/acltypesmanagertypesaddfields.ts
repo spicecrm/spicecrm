@@ -64,9 +64,18 @@ export class ACLTypesManagerTypesAddFields implements OnInit {
      */
     public selectAllChecked: boolean = false;
 
+    /**
+     * the searchterm
+     */
+    public searchterm: string;
+
 
     constructor(public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities) {
 
+    }
+
+    get moduleFields() {
+        return this.fields.filter(field => this.searchterm ? field.toLowerCase().indexOf(this.searchterm.toLowerCase()) > -1 : true);
     }
 
     public ngOnInit() {
@@ -169,7 +178,5 @@ export class ACLTypesManagerTypesAddFields implements OnInit {
             this.selectAllChecked = false;
             this.selectedfields = [];
         }
-
-
     }
 }

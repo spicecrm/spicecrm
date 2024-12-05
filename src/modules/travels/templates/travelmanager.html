@@ -1,0 +1,68 @@
+<div class="slds-page-header">
+    <div class="slds-grid">
+        <div class="slds-col slds-has-flexi-truncate">
+            <div class="slds-media slds-no-space slds-grow">
+                <system-icon [module]="'Travels'"></system-icon>
+                <div class="slds-media__body">
+                    @if (!model.id) {
+                        <p class="slds-text-title--caps slds-line-height--reset">
+                            <system-label-modulename module="Travels"></system-label-modulename>
+                        </p>
+                        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate slds-m-bottom--x-small">
+                            <system-label label="LBL_TRAVEL_MANAGER"></system-label>
+                        </h1>
+                    } @else {
+                        <p class="slds-text-title--caps slds-line-height--reset">
+                            <system-display-datetime [date]="model.data.date_start" class="slds-p-right--xx-small"/>
+                            <system-display-datetime [date]="model.data.date_end"/>
+                        </p>
+                        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate slds-m-bottom--x-small">
+                            {{ model.data.summary_text }}
+                        </h1>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- add new Travel or select a Travel from list -->
+@if (!model.id) {
+    <div system-to-bottom marginBottom="50">
+        @for (travel of travels; track travel.id; ) {
+            <div class="slds-box slds-box--border slds-m-around--small slds-theme--info" (click)="selectTravel(travel)">
+                <div class="slds-p-around--x-small">
+                    <div class="slds-text-heading--small">{{ travel.name }}</div>
+                    <div class="slds-grid">
+                        <system-display-datetime [date]="travel.date_start" [displayTime]="false"/>
+                        <div> -</div>
+                        <system-display-datetime [date]="travel.date_end" [displayTime]="false"/>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+} @else {
+    <travel-manager-travel-items [selectedTravel]="model.id"/>
+}
+
+<!-- page header details -->
+<div class="slds-is-absolute__bottom slds-p-horizontal--medium slds-p-vertical--xx-small slds-border--top slds-scrollable--x slds-size--1-of-1 slds-align_absolute-center">
+    @if (!model.id) {
+        <div class="slds-button-group">
+            <button class="slds-button slds-button--icon slds-button--icon-border" (click)="createNewTravel()">
+                <system-button-icon icon="add"/>
+            </button>
+            <button class="slds-button slds-button_icon slds-button--icon-border">
+                <travel-add-receipt-button [status]="'scanned'" [hideLabel]="true"/>
+            </button>
+        </div>
+    } @else {
+        <div class="slds-grid slds-grid--align-spread slds-size--1-of-1">
+            <travel-manager-button-group/>
+            <button  class="slds-button slds-button_icon slds-button_icon-border" system-title="LBL_RESET_MODEL" (click)="resetCurrentModel()">
+                <system-button-icon size="small" icon="list"/>
+            </button>
+        </div>
+    }
+</div>

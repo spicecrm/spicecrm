@@ -20,7 +20,7 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     /**
      * the type of prompt
      */
-    @Input() public type: 'info'|'input'|'input_text'|'input_date'|'confirm';
+    @Input() public type: 'info'|'input'|'input_text'|'input_date'|'confirm'|'input_module';
 
     /**
      * the text that is rendered in the popup
@@ -48,7 +48,7 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     /**
      * an array of options .. if sent rather than an input in the type input a select option is rendered
      */
-    @Input() public options: {value: string|boolean, display: string}[];
+    @Input() public options: {value: string|boolean, display: string, disabled?: boolean}[];
 
     /**
      * if true display the input options as radio group

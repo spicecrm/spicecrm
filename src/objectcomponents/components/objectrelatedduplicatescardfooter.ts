@@ -2,7 +2,7 @@
  * @module ObjectComponents
  */
 import {Component, OnInit} from '@angular/core';
-import {language} from '../../services/language.service';
+import {EnumDisplayOptionObject, language} from '../../services/language.service';
 import {duplicatedmodels} from "../../services/duplicatedmodels.service";
 import {relatedmodels} from "../../services/relatedmodels.service";
 
@@ -21,7 +21,7 @@ export class ObjectRelatedDuplicatesCardFooter implements OnInit {
     /**
      * holds the domain validation values
      */
-    public duplicateStatusDom: any = {};
+    public duplicateStatusDom: EnumDisplayOptionObject = {};
 
     constructor(
         public relatedmodels: relatedmodels,
@@ -31,6 +31,6 @@ export class ObjectRelatedDuplicatesCardFooter implements OnInit {
     }
 
     public ngOnInit() {
-        this.duplicateStatusDom = this.language.languagedata.applist.duplicate_status_dom;
+        this.duplicateStatusDom = this.language.getDisplayOptions('duplicate_status_dom');
     }
 }

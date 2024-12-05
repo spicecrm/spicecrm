@@ -36,6 +36,8 @@
                         <div class="slds-truncate">{{getIndexFields(dictionaryindex.id)}}</div>
                     </td>
                     <td class="slds-align--absolute-center" style="width: 2rem;">
+                        <system-utility-icon *ngIf="dictionaryindex.status != 'a'" size="xx-small" icon="edit" (click)="editIndex(dictionaryindex)"></system-utility-icon>
+                        <system-utility-icon *ngIf="dictionaryindex.status == 'a'" size="xx-small" icon="edit" colorclass="slds-icon-text-light"></system-utility-icon>
                         <system-utility-icon *ngIf="dictionaryindex.status != 'a'" size="xx-small" icon="delete" (click)="deleteIndex($event, dictionaryindex.id)"></system-utility-icon>
                         <system-utility-icon *ngIf="dictionaryindex.status == 'a'" size="xx-small" icon="delete" colorclass="slds-icon-text-light"></system-utility-icon>
                     </td>

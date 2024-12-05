@@ -1,0 +1,11 @@
+<div *ngIf="timerStarted; else button">
+    <div *ngIf="timeLeft && visible" class="slds-grid--vertical slds-text-body--small slds-p-horizontal--small slds-m-left--small">
+        <div class="slds-grid">
+            <div class="slds-p-right--xxx-small">{{timeLeft.minutesToDday}}m</div>
+            <div>{{timeLeft.secondsToDday}}s</div>
+        </div>
+    </div>
+</div>
+<ng-template #button>
+    <span><system-label label="LBL_LOCK_ENTRY"></system-label></span>
+</ng-template>

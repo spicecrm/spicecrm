@@ -186,8 +186,8 @@ export class WorkflowManagerService {
     public getNextSequence(): number {
         let highestSequence = 0;
         for (let task of this.tasks) {
-            if (task.sequence > highestSequence) {
-                highestSequence = task.sequence;
+            if (+task.sequence > highestSequence) {
+                highestSequence = +task.sequence;
             }
         }
 

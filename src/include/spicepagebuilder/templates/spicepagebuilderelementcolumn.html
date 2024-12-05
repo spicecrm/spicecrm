@@ -12,7 +12,7 @@
     </ng-container>
     <div *ngIf="!dragEntered && column.children?.length == 0" class="slds-align--absolute-center slds-size--1-of-1" [style.height.px]="spicePageBuilderService.defaultPlaceholderHeight">
         <div class="slds-align--absolute-center slds-height_full slds-size--1-of-1 slds-theme--shade slds-text-title--caps slds-truncate">
-            <system-label label="MSG_DROP_CONTENT_HERE"></system-label>
+            <system-label class="slds-truncate" label="MSG_DROP_CONTENT_HERE"></system-label>
         </div>
     </div>
 </div>

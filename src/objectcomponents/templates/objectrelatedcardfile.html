@@ -1,5 +1,5 @@
-<div *ngIf="bigThumbnail; else smallThumbnailContainer" class="slds-file slds-file_card slds-has-title slds-m-left--small" style="width: 300px">
-    <figure style="height: 300px">
+<div *ngIf="bigThumbnail; else smallThumbnailContainer" class="slds-file slds-file_card slds-has-title slds-m-left--small" style="max-width: 500px">
+    <figure style="max-height: 500px">
         <a (click)="openInTab()" href="javascript:void(0)" class="slds-file__crop" style="padding-top: 245px">
             <img *ngIf="file.thumbnail" [src]="'data:image/jpg;base64,' + file.thumbnail">
         </a>
@@ -45,7 +45,7 @@
 </div>
 
 <ng-template #smallThumbnailContainer>
-    <div class="slds-media slds-truncate" style="width: 300px">
+    <div class="slds-media slds-truncate slds-size--1-of-1">
         <div style="width: 30px; height: 30px;" class="slds-m-right--x-small slds-align--absolute-center">
             <!--system-icon *ngIf="!file.thumbnail" [icon]="fileicon.icon" divClass="" [sprite]="fileicon.sprite"  size="'small'"></system-icon-->
             <system-file-icon *ngIf="!file.thumbnail" [filename]="file.filename" divClass="" [filemimetype]="file.file_mime_type"  size="'small'"></system-file-icon>

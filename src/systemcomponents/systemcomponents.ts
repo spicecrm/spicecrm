@@ -137,6 +137,7 @@ import {SystemViewContainer} from "./components/systemviewcontainer";
 import {SystemIconHelpText} from "./components/systemiconhelptext";
 import {SystemMultipleSelect} from "./components/systemmultipleselect";
 import {SystemWrappedText} from './components/systemwrappedtext';
+import {SystemInputRoles} from "./components/systeminputroles";
 
 import {PackageLoader} from "./components/packageloader";
 import {PackageLoaderPipe} from "./components/packageloaderpipe";
@@ -199,13 +200,19 @@ import {SystemProgressIndicator} from "./components/systemprogressindicator";
 import {SystemProgressIndicatorItem} from "./components/systemprogressindicatoritem";
 import {PackageLoaderReloadLoadedModal} from "./components/packageloaderreloadloadedmodal";
 import {SystemInputDictionary} from "./components/systeminputdictionary";
+import {SystemSelectModuleModal} from "./components/systemselectmodulemodal";
+import {SystemDropdownMobileModal} from "./components/systemdropdownmobilemodal";
+import {CdkPortalOutlet} from "@angular/cdk/portal";
+import {SystemInputPackage} from "./components/systeminputpackage";
+import {SystemInputVersion} from "./components/systeminputversion";
 
 @NgModule({
     imports: [
         DirectivesModule,
         CommonModule,
         FormsModule,
-        DragDropModule
+        DragDropModule,
+        CdkPortalOutlet
     ],
     declarations: [
         PackageLoader,
@@ -275,6 +282,7 @@ import {SystemInputDictionary} from "./components/systeminputdictionary";
         SystemInputModuleFilter,
         SystemInputModuleField,
         SystemInputNumber,
+        SystemInputPackage,
         SystemInputPassword,
         SystemInputRadio,
         SystemInputRadioButtonGroup,
@@ -285,6 +293,7 @@ import {SystemInputDictionary} from "./components/systeminputdictionary";
         SystemInputCompanycodes,
         SystemInputBackendMethod,
         SystemInputBase64,
+        SystemInputVersion,
         SystemInstallerComponent,
         SystemLabel,
         SystemLabelFieldname,
@@ -385,7 +394,10 @@ import {SystemInputDictionary} from "./components/systeminputdictionary";
         SystemProgressIndicator,
         SystemProgressIndicatorItem,
         PackageLoaderReloadLoadedModal,
-        SystemInputDictionary
+        SystemInputDictionary,
+        SystemInputRoles,
+        SystemSelectModuleModal,
+        SystemDropdownMobileModal
     ],
     exports: [
         PaginationControlsComponent,
@@ -541,13 +553,20 @@ import {SystemInputDictionary} from "./components/systeminputdictionary";
         SystemChartDataRow,
         SystemChartDataColumn,
         SystemChartMultiDimensional,
+        SystemModuleCustomPipe,
+        SystemModuleGlobalPipe,
         SystemSelectOption,
         SystemSelectOption,
         SystemInputFlter,
         SystemProgressIndicator,
         SystemProgressIndicatorItem,
         PackageLoaderReloadLoadedModal,
-        SystemInputDictionary
+        SystemInputDictionary,
+        SystemInputRoles,
+        SystemSelectModuleModal,
+        SystemDropdownMobileModal,
+        SystemInputPackage,
+        SystemInputVersion
     ]
 })
 export class SystemComponents {}

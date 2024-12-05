@@ -46,9 +46,9 @@ export class SendgridRemoveContactFromTargetListButton {
         this.modal.confirm('MSG_DELETE_RECORD', 'MSG_DELETE_RECORD')
             .subscribe(answer => {
                 if (answer) {
-                    this.relatedmodels.deleteItem(this.model.id);
+                    this.relatedmodels.deleteItem(this.model.id, this.model.data.relid);
                     let awaitModal = this.modal.await(this.language.getLabel('LBL_LOADING'));
-                    this.backend.deleteRequest(`channels/emarketing/sendgrid/marketing/lists/${this.relatedmodels.id}/contacts/${this.model.id}`).subscribe(
+                    this.backend.deleteRequest(`channels/emarketing/sendgrid/marketing/lists/${this.relatedmodels.id}/contacts/${this.model.id}/${this.model.data.prospectlists_person_email_addr_bean_rel_id}`).subscribe(
                         response => {
                             awaitModal.emit(true);
                             if (response) {

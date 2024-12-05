@@ -25,6 +25,7 @@
     0 8px 10px 1px rgba(0, 0, 0, 0.14),
     0 3px 14px 2px rgba(0, 0, 0, 0.12);
     z-index: 11000 !important;
+    list-style-type: none;
 }
 
 .slds-kanban-drag--preview.cdk-drag-preview {
@@ -84,4 +85,8 @@
 
 .kanbancontainer .cdk-drop-list-receiving, .kanbancontainer .cdk-drop-list-dragging {
 position: relative;
+}
+
+.slds-drag--preview.slds-item {
+    padding: .5rem;
 }

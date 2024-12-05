@@ -31,6 +31,7 @@ $routes = [
             ]
         ]
     ],
+    // @deprecated
     [
         'method' => 'post',
         'route' => '/admin/repair/custom/enum',

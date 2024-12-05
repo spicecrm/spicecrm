@@ -17,6 +17,7 @@ import {backend} from "../../services/backend.service";
  * renders a modal to add a one to many relationship
  */
 @Component({
+    selector: 'dictionary-manager-relationship-add-one-to-many',
     templateUrl: '../templates/dictionarymanagerrelationshipaddonetomany.html',
 })
 export class DictionaryManagerRelationshipAddOneToMany {
@@ -49,12 +50,13 @@ export class DictionaryManagerRelationshipAddOneToMany {
             lhs_sysdictionaryitem_id: '',
             lhs_linkname: '',
             lhs_linklabel: '',
-            lhs_duplicatemerge: 1,
+            lhs_duplicatemerge: 0,
             rhs_sysdictionarydefinition_id: '',
             rhs_sysdictionaryitem_id: '',
             rhs_linkname: '',
             rhs_linklabel: '',
             rhs_duplicatemerge: 0,
+            rhs_linkdefault: 0,
             rhs_relatename: '',
             rhs_relatelabel: '',
             relationship_type: '',

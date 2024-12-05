@@ -1,11 +1,21 @@
 /**
  * @module ModuleCalendar
  */
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild, ViewContainerRef} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ViewChild,
+    ViewContainerRef
+} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {fts} from '../../../services/fts.service';
 import {recent} from '../../../services/recent.service';
 import {calendar} from '../services/calendar.service';
+import {modal} from "../../../services/modal.service";
 
 /**
  * @ignore
@@ -25,6 +35,10 @@ export class CalendarOtherCalendarsMonitor {
      * holds the other user calendars
      */
     @Input() public usersCalendars: any[] = [];
+    /**
+     * holds the other available calendars
+     */
+    @Input() public availableCalendars: any[] = [];
     /**
      * emit a boolean to show/hide google events
      */
@@ -69,6 +83,8 @@ export class CalendarOtherCalendarsMonitor {
     constructor(public language: language,
                 public recent: recent,
                 public calendar: calendar,
+                private modal: modal,
+                private cdRef: ChangeDetectorRef,
                 public fts: fts) {
         this.getRecent();
     }
@@ -120,11 +136,20 @@ export class CalendarOtherCalendarsMonitor {
         this.timeout = window.setTimeout(() => {
             this.searchterm = value;
             this.isLoading = true;
+            this.cdRef.detectChanges();
+
             this.fts.searchByModules({searchterm: this.searchterm, modules: ['Users'], size: 5, sortparams: {sortfield: 'full_name', sortdirection: 'asc'}})
-                .subscribe(res => {
-                    this.filterResultsList(res.Users.hits.map(user => user = user._source));
-                    this.isLoading = false;
-                }, err => this.isLoading = false);
+                .subscribe({
+                    next: res => {
+                        this.filterResultsList(res.Users.hits.map(user => user = user._source));
+                        this.isLoading = false;
+                        this.cdRef.detectChanges();
+                    },
+                    error: () => {
+                        this.isLoading = false;
+                        this.cdRef.detectChanges();
+                    }
+                });
         }, 500);
     }
 
@@ -189,11 +214,11 @@ export class CalendarOtherCalendarsMonitor {
      */
     public toggleVisible(id, type) {
         switch (type) {
-            case 'Owner':
-                this.calendar.toggleOwnerCalendarVisible();
-                break;
             case 'Users':
                 this.calendar.toggleUserCalendarVisibility(id);
+                break;
+            case 'Available':
+                this.calendar.toggleAvailableCalendarVisibility(id);
                 break;
             case 'Google':
                 this.groupwareVisible = !this.groupwareVisible;
@@ -208,5 +233,34 @@ export class CalendarOtherCalendarsMonitor {
      */
     public setUserColor(id, color) {
         this.calendar.setUserColor(id, color);
+    }
+
+    /**
+     * open add calendar modal
+     */
+    public addCalendar() {
+        const isLoading = this.modal.await('LBL_LOADING');
+
+        this.calendar.backend.getRequest('module/Calendar/calendars').subscribe(res => {
+
+            isLoading.next(true);
+            isLoading.complete();
+
+            const options = res.map(e => ({value: e.id, display: this.language.getLabel(e.name)}));
+            this.modal.prompt('input', 'MSG_SELECT_CALENDAR', 'MSG_SELECT_CALENDAR', 'default', null, options, 'radio')
+                .subscribe(answer => {
+                    if (!answer) return;
+                    const calendar = res.find(e => e.id == answer);
+                    const newCalendar = {
+                        color: '#' + this.calendar.colorPalette[Math.floor(this.calendar.colorPalette.length * Math.random())],
+                        icon: calendar.icon, id: calendar.id, name: calendar.name, visible: true
+                    };
+
+                    this.calendar.availableCalendars.push(newCalendar);
+                    this.cdRef.detectChanges();
+                    this.calendar.setAvailableCalendars(this.calendar.availableCalendars, true);
+                });
+
+        });
     }
 }

@@ -83,8 +83,9 @@ export class ObjectListViewHeaderListSelector implements OnInit {
             lists: items.map(item => ({
                 component: item.component,
                 icon: item.componentconfig.icon ? item.componentconfig.icon : 'list',
-                label: item.componentconfig.name
-            }))
+                label: item.componentconfig.name,
+                hideOnMobile: item.componentconfig?.hideOnMobile
+            })).sort((a, b) => a.hideOnMobile ? 1 : !b.hideOnMobile ? 0 : -1)
         };
     }
 

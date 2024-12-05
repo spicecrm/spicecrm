@@ -8,7 +8,7 @@
             <system-input-radio-button-group [disabled]="!allowModuleChange" [inputOptions]="modules" [(ngModel)]="module"></system-input-radio-button-group>
         </div>
     </div>
-    <div *ngIf="module" class="slds-box_border slds-m-vertical--x-small">
+    <div *ngIf="module && fieldset" class="slds-box_border slds-m-vertical--x-small">
         <object-record-fieldset [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
     </div>
 </div>

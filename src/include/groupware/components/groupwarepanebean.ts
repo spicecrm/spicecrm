@@ -59,7 +59,7 @@ export class GroupwarePaneBean implements OnInit {
      * @param event
      */
     public onClick(event) {
-        if (event.target.checked) {
+        if (event) {
             this.groupware.addBean(this.bean);
         } else {
             this.groupware.removeBean(this.bean);

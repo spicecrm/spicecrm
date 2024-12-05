@@ -59,12 +59,14 @@ export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
         valid: true
     };
 
+    @Input()
     public label: string = '';
 
     // for the dropdown
     public _searchterm: string = '';
     public clickListener: any;
     public foundlabels: any[] = [];
+    public activeLabel: number = -1;
 
     constructor(
         public language: language,
@@ -84,6 +86,7 @@ export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
     set searchterm(st) {
         this._searchterm = st;
         this.dosearch();
+        this.activeLabel = -1;
     }
 
     public ngOnDestroy() {
@@ -94,6 +97,7 @@ export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
 
     public onBlur() {
         this._searchterm = '';
+        this.activeLabel = -1;
     }
 
     public dosearch() {
@@ -108,6 +112,7 @@ export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
         this.label = label;
         this._searchterm = '';
         this.onChange(label);
+        this.activeLabel = -1;
     }
 
     public clearField() {
@@ -118,11 +123,25 @@ export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
     public keyup(_e) {
         switch (_e.key) {
             case 'Enter':
-                this.label = this._searchterm;
+                this.label = this.activeLabel == -1 ? this._searchterm : this.foundlabels[this.activeLabel].label;
                 this.onChange(this.label);
                 this._searchterm = '';
                 break;
+            case 'ArrowDown':
+                if (this.activeLabel < this.foundlabels.length - 1) {
+                    this.activeLabel++;
+                }
+                break;
+            case 'ArrowUp':
+                if (this.activeLabel > 0) {
+                    this.activeLabel--;
+                }
+                break;
         }
+    }
+
+    public trackByFn(index, item) {
+        return item.id;
     }
 
     public addLabel() {
@@ -177,6 +196,8 @@ export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
      * @param value value to be executed when there is a change in contenteditable
      */
     public writeValue(value: any): void {
+        if(!value) return
+
         this.label = value;
     }
 

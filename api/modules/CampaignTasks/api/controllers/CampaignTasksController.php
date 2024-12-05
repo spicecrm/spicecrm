@@ -16,6 +16,7 @@ use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\CampaignTasks\CampaignTask;
+use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -195,7 +196,7 @@ class CampaignTasksController
         $campaignLog = BeanFactory::getBean('CampaignLog');
         $list = $campaignLog->get_list(
             "planned_activity_date DESC",
-            "campaigntask_id = '{$args['id']}' AND IFNULL(planned_activity_date, '$now') <= '$now' AND activity_type NOT IN ('completed','converted')",
+            "campaigntask_id = '{$args['id']}' AND IFNULL(planned_activity_date, '$now') <= '$now' AND activity_type NOT IN ('completed','converted', 'maxattempts')",
             $getParams['offset'] ?: 0,
             $getParams['limit'] ?: 10,
             $getParams['limit'] ?: -1);
@@ -214,14 +215,43 @@ class CampaignTasksController
                 'campaignlog_activity_date' => $item->activity_date,
                 'campaignlog_related_id' => $item->related_id,
                 'campaignlog_planned_activity_date' => $item->planned_activity_date,
+                'campaignlog_planned_activity_user_id' => $item->planned_activity_user_id,
+                'campaignlog_locked_until' => $item->locked_until,
                 'campaignlog_target_type' => $item->target_type,
                 'campaignlog_hits' => $item->hits,
+                'campaignlog_locked_by_id' => $item->locked_by_id,
                 // tbd
                 'data' => $KRESTModuleHandler->mapBeanToArray($item->target_type, $seed)
             ];
         }
 
-        return $res->withJson(['items' => $items, 'row_count' => $list['row_count']]);
+        // get the stats
+        $stats = DBManagerFactory::getInstance()->fetchAll("SELECT count(id) count, activity_type FROM campaign_log WHERE campaigntask_id = '{$args['id']}' AND deleted = 0 GROUP BY activity_type");
+
+        return $res->withJson(['items' => $items, 'row_count' => $list['row_count'], 'stats' => $stats]);
+    }
+
+    /**
+     * returns the stats for the campaigntask
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws NotFoundException
+     */
+    public function getCampaignTaskStats(Request $req, Response $res, array $args): Response
+    {
+       $seed = BeanFactory::getBean('CampaignTasks', $args['id']);
+
+        if (!$seed) {
+            throw new NotFoundException('Campaigntask not found');
+        }
+
+        // get the stats
+        $stats = DBManagerFactory::getInstance()->fetchAll("SELECT count(id) count, activity_type FROM campaign_log WHERE campaigntask_id = '{$args['id']}' AND deleted = 0 GROUP BY activity_type");
+
+        return $res->withJson(['stats' => $stats]);
     }
 
     /**
@@ -245,6 +275,9 @@ class CampaignTasksController
         $additionalParams = [];
         $status = 'targeted';
         switch ($campaignTask->campaigntask_type) {
+            case 'Telesales':
+                $status = 'tobecalled';
+                break;
             case 'Mail':
                 $status = 'sent';
                 break;
@@ -328,7 +361,7 @@ class CampaignTasksController
     public function liveCompileEmailBody(Request $req, Response $res, array $args): Response
     {
         $params = $req->getParsedBody();
-        /** @var EmailTemplate **/
+        /** @var $emailTemplate EmailTemplate **/
         $emailTemplate = BeanFactory::getBean('EmailTemplates');
         $emailTemplate->body_html = $params['html'];
         $bean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
@@ -339,8 +372,10 @@ class CampaignTasksController
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $user = BeanFactory::getBean('Users', $campaignTask->assigned_user_id ?: '1');
         AuthenticationController::getInstance()->setCurrentUser($user);
+        $mailbox = BeanFactory::getBean('Mailboxes', $campaignTask->mailbox_id);
+        $styles = !$mailbox ? [] : [$mailbox->stylesheet];
 
-        $parsedTpl = $emailTemplate->parse($bean);
+        $parsedTpl = $emailTemplate->parse($bean, null, [], $styles);
 
         # reset the current user for the system after parsing
         AuthenticationController::getInstance()->setCurrentUser($current_user);

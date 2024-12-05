@@ -1,13 +1,13 @@
 <div system-dropdown-trigger-simple class="slds-dropdown-trigger slds-dropdown-trigger_click">
     <button class="slds-button slds-p-horizontal--xx-small" [disabled]="roles.length < 2"  [title]="language.getLabel(activeRole.label, undefined, 'short')">
-        <span class="slds-avatar--small slds-align--absolute-center slds-line-height_reset" style="line-height: 25px;" [ngClass]="activeRole.icon"><system-label [label]="activeRole.label" length="short"></system-label></span>
+        <span class="slds-align--absolute-center slds-line-height_reset" style="line-height: 25px;" [ngClass]="activeRole.icon + ' slds-avatar--' + avatarSize"><system-label [label]="activeRole.label" length="short"></system-label></span>
     </button>
     <div class="slds-dropdown slds-dropdown--bottom slds-dropdown_right">
         <ul class="slds-dropdown__list" role="menu" aria-label="Show More">
             <li class="slds-dropdown__item" role="presentation" *ngFor="let role of roles" (click)="setActiveRole(role.id)">
                 <a href="javascript:void(0);" role="menuitem">
                     <div>
-                        <span class="slds-avatar--small slds-align--absolute-center slds-line-height_reset" style="line-height: 25px;" [ngClass]="role.icon"><system-label [label]="role.label" length="short"></system-label></span>
+                        <span class="slds-align--absolute-center slds-line-height_reset" style="line-height: 25px;" [ngClass]="role.icon + ' slds-avatar--' + avatarSize"><system-label [label]="role.label" length="short"></system-label></span>
                     </div>
                     <system-label class="slds-grow slds-p-left--x-small" [label]="role.label"></system-label>
                 </a>

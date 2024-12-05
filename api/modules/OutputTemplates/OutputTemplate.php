@@ -74,6 +74,20 @@ class OutputTemplate extends SpiceBean
      */
     public $bean;
 
+    /**
+     * the parsed name of the template
+     *
+     * @var
+     */
+    public $parsed_name;
+
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setPDFHandler();
+    }
+
     public function translateBody($bean = null, $bodyOnly = false)
     {
         if (!$bean) {
@@ -91,7 +105,7 @@ class OutputTemplate extends SpiceBean
         $templateCompiler = new Compiler($this);
         $templateCompiler->idsOfParentTemplates = array_merge($this->idsOfParentTemplates, [$this->id]);
         if ($bodyOnly) {
-            $html = $templateCompiler->compile(html_entity_decode($this->body), $bean, $this->language, $this->additonalValues);
+            $html = $templateCompiler->compile(html_entity_decode($this->body), $bean, $this->language, $this->additonalValues, [], null, $bodyOnly);
         } else {
             $html = $templateCompiler->compile('
                 <body>
@@ -116,7 +130,7 @@ class OutputTemplate extends SpiceBean
 
         // if we have a public name -> parse it as well
         if ($this->public_name) {
-            $this->public_name = str_replace(["\n", "\n"], "", strip_tags($this->parseHTMLTextField('public_name', $bean, $this->additonalValues)));
+            $this->parsed_name = str_replace(["\n", "\n"], "", strip_tags($this->parseHTMLTextField('public_name', $bean, $this->additonalValues)));
         }
 
 
@@ -139,7 +153,7 @@ class OutputTemplate extends SpiceBean
 
         // if we have a public name -> parse it
         if ($this->public_name) {
-            $this->public_name = $this->parseHTMLTextField('public_name', $bean, $additionalValues, $additionalBeans);
+            $this->parsed_name = $this->parseHTMLTextField('public_name', $bean, $additionalValues, $additionalBeans);
         }
 
         return preg_replace(
@@ -178,13 +192,11 @@ class OutputTemplate extends SpiceBean
 
     public function download()
     {
-        $this->setPDFHandler();
         return $this->pdf_handler->toDownload();
     }
 
     private function saveAsTmpFile($filename = null)
     {
-        $this->setPDFHandler();
         return $this->pdf_handler->toTempFile($filename);
     }
 
@@ -196,7 +208,7 @@ class OutputTemplate extends SpiceBean
     public function getFileName()
     {
         // if a public name is set .. use it
-        if($this->public_name) return "{$this->public_name}.pdf";
+        if($this->parsed_name || $this->public_name) return $this->parsed_name ?  "{$this->parsed_name}.pdf" : "{$this->public_name}.pdf";
 
         // load the bean if it is not laoded
         if (!$this->bean) $this->retrieveBean();
@@ -209,13 +221,11 @@ class OutputTemplate extends SpiceBean
 
     public function getPdfContent()
     {
-        $this->setPDFHandler();
         return $this->pdf_handler->__toString();
     }
 
     public function setOutputHtml($html)
     {
-        $this->setPDFHandler();
         $this->pdf_handler->html_content = $html;
     }
 
@@ -281,5 +291,10 @@ class OutputTemplate extends SpiceBean
     public function getHtmlOfPdfCreation(): string
     {
         return $this->pdf_handler->htmlOfPdfCreation;
+    }
+
+    public function addPageBreak(): string
+    {
+        return '<div style="page-break-after: always;"></div>';
     }
 }

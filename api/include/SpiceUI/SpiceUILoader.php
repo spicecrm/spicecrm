@@ -95,7 +95,7 @@ class SpiceUILoader
 
         //catch empty response
         if ($response == "[]")
-            return ['nodata' => 'No data found'];
+            return ['nodata' => []];
 
         //decode reponse
         if (!$data = json_decode($response, true))

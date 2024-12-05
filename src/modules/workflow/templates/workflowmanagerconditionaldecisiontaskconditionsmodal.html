@@ -5,9 +5,10 @@
     <system-modal-content>
         <system-collapsable-tab [collapsible]="false" tabtitle="LBL_WORKFLOWTASK_CONDITION" tabhelptext ="LBL_HELP_WORKFLOWTASK_CONDITION">
             <div class="slds-p-around--x-small">
+
                 <div class="slds-expression">
                     <ul>
-                        <system-filter-builder [(ngModel)]="conditions" [module]="module"></system-filter-builder>
+                        <system-filter-builder [(ngModel)]="conditions" [showToggleDisplayAllField]="true" [module]="module"></system-filter-builder>
                     </ul>
                 </div>
             </div>

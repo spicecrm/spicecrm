@@ -1,0 +1,10 @@
+<system-modal size="medium">
+    <system-modal-header (close)="cancel()"><system-label label="LBL_COMPLETE"></system-label></system-modal-header>
+    <system-modal-content system-modal-content-grow>
+        <object-record-fieldset [fieldset]="fieldset" [direction]="'vertical'"></object-record-fieldset>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

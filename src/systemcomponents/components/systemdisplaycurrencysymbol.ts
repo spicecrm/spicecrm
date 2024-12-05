@@ -45,8 +45,7 @@ export class SystemDisplayCurrencySymbol implements OnChanges{
     get currencySymbol(): string {
         if (!this.currencyid) return '';
 
-        let matchedCurrency = this.currency.getCurrencies().find(currency => currency.id == this.currencyid);
-        return matchedCurrency ? matchedCurrency.symbol : '';
+        return this.currency.getCurrencySymbol(this.currencyid);
     }
 
 }

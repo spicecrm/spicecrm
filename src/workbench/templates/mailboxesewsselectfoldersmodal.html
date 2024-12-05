@@ -3,11 +3,14 @@
     <system-modal-content>
         <div class="slds-grid slds-wrap slds-grid--pull-padded">
             <div class="slds-col">
+
                 <div class="slds-form-element">
                     <label class="slds-truncate slds-form-element__label"><system-label label="LBL_INBOX_FOLDER"></system-label></label>
-                    <select [disabled]="mailboxes.length == 0" [(ngModel)]="mailbox" class="slds-select">
-                        <option *ngFor="let mailbox of mailboxes" value="{{ mailbox.id }}">{{ mailbox.name }}</option>
-                    </select>
+                    <system-select [(ngModel)]="mailbox" [disabled]="mailboxes.length == 0" [idOnly]="true">
+                        @for (mailbox of mailboxes; track mailbox.id) {
+                            <system-select-option [value]="mailbox.id" [display]="mailbox.name" />
+                        }
+                    </system-select>
                 </div>
             </div>
         </div>

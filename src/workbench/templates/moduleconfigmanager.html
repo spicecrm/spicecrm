@@ -20,15 +20,10 @@
         </div>
     </div>
     <div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
-        <div class="slds-form-element">
+        <div class="slds-form-element slds-size--1-of-1">
             <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
-            <div class="slds-form-element__control">
-                <div class="slds-select_container" style="min-width:250px;">
-                    <select class="slds-select" [(ngModel)]="currentModule" [disabled]="!initialized" (change)="selectedModule()">
-                        <option value="*">*</option>
-                        <option *ngFor="let sysModule of sysModules" [value]="sysModule">{{sysModule}}</option>
-                    </select>
-                </div>
+            <div class="slds-form-element__control slds-size--1-of-8">
+                <system-input-module [(ngModel)]="currentModule" [disabled]="!initialized" [displayAsterisk]="true" (ngModelChange)="selectedModule()"/>
             </div>
         </div>
     </div>
@@ -73,6 +68,9 @@
                     {{selectedComponent.component}} / {{selectedComponent.role_name}}
                 </div>
                 <div class="slds-col--bump-left">
+                    <button [disabled]="!view.isEditMode() || !selectedComponent?.id" class="slds-button slds-button--neutral" system-title="LBL_DELETE" (click)="delete()">
+                        <system-button-icon icon="delete"></system-button-icon>
+                    </button>
                     <button [disabled]="!getAllowCopyButton" type="button" class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--neutral" (click)="copyConf()">
                         <system-label label="LBL_COPY"></system-label>
                     </button>
@@ -84,14 +82,14 @@
             <div *ngIf="selectedComponent?.id" class="slds-grid slds-grid--vertical-align-center slds-m-vertical--xxx-small">
                 <div class="slds-size--1-of-2 slds-p-right--xx-small">
                     <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
-                    <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="selectedComponent.package"/>
+                    <system-input-package [(ngModel)]="selectedComponent.package"/>
                 </div>
                 <div class="slds-size--1-of-2 slds-p-left--xx-small">
                     <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
-                    <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="selectedComponent.version"/>
+                    <system-input-version [(ngModel)]="selectedComponent.version"/>
                 </div>
             </div>
-            <workbench-config [component]="component" [configValues]="configValues"></workbench-config>
+            <workbench-config *ngIf="selectedComponent?.id" [module]="currentModule" [component]="component" [configValues]="configValues"></workbench-config>
         </div>
     </div>
 </div>

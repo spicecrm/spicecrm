@@ -138,6 +138,7 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
 
         // set the fields on the model
         this.model.setFields(fields);
+        this.model.emitFieldsChanges(fields);
     }
 
     /**

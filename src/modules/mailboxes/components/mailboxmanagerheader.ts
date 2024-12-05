@@ -198,14 +198,14 @@ export class MailboxManagerHeader implements OnInit {
      */
     public fetchEmails() {
         this.isFetching = true;
-        this.mailboxesEmails.fetchEmails().subscribe(
-            success => {
+        this.mailboxesEmails.fetchEmails().subscribe({
+            next: success => {
                 this.isFetching = false;
             },
-            error => {
-                this.isFetching = false;
-            }
-        );
+            error: () => {
+            this.isFetching = false;
+        }
+    });
     }
 
     /**

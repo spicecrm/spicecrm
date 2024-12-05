@@ -63,7 +63,7 @@ export class WorkflowManagerTaskTypesSms {
         const options = this.configuration.getData(`mailboxesoutbound`);
 
         if (_.isEmpty(options)) {
-            this.backend.getRequest("module/Mailboxes/scope", {scope: 'outboundsms'}).subscribe(
+            this.backend.getRequest("module/Mailboxes/scope", {scope: 'outboundsms', getHidden: true}).subscribe(
                 (results: any) => {
 
                     this.mailboxes = results.sort((a, b) => a.display.localeCompare(b.display));

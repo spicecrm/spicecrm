@@ -65,8 +65,7 @@
                 <system-label label="LBL_PACKAGE"></system-label>
             </label>
             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
-                <input [disabled]="!view.isEditMode()" type="text" class="slds-input" placeholder="package"
-                       [(ngModel)]="action.package">
+                <system-input-package [(ngModel)]="action.package"/>
             </div>
         </div>
         <div class="slds-form-element slds-m-vertical--xxx-small">
@@ -74,8 +73,7 @@
                 <system-label label="LBL_VERSION"></system-label>
             </label>
             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
-                <input [disabled]="!view.isEditMode()" type="text" class="slds-input" placeholder="version"
-                       [(ngModel)]="action.version">
+                <system-input-version [(ngModel)]="action.version"/>
             </div>
         </div>
     </div>
@@ -110,6 +108,6 @@
                 </label>
             </div>
         </fieldset>
-        <workbench-config [component]="configContainerComponentName" [configValues]="action.actionconfig"></workbench-config>
+        <workbench-config [component]="configContainerComponentName" [module]="module" [configValues]="action.actionconfig"></workbench-config>
     </div>
 </fieldset>

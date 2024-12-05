@@ -46,20 +46,4 @@
             </div>
         </div>
     </div>
-    <div #containerbottom class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small">
-        <div class="slds-form-element slds-grow">
-            <div class="slds-form-element__control">
-                <div class="slds-select_container">
-                    <select [disabled]="getAvialableLanguages().length <= 1" class="slds-select" [(ngModel)]="currentlanguage">
-                        <option *ngFor="let language of getAvialableLanguages()" [value]="language.language">
-                            {{language.text}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="slds-grid slds-grid--align-end slds-p-horizontal--small slds-col--bump-left">
-            <system-utility-icon icon="logout" size="x-small" [title]="language.getLabel('LBL_LOGOFF')" (click)="logout()"></system-utility-icon>
-        </div>
-    </div>
 </div>

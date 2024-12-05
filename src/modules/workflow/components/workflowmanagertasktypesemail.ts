@@ -63,7 +63,7 @@ export class WorkflowManagerTaskTypesEmail implements OnInit {
         const options = this.configuration.getData(`mailboxesoutbound`);
 
         if (_.isEmpty(options)) {
-            this.backend.getRequest("module/Mailboxes/scope", {scope: 'outbound'}).subscribe(
+            this.backend.getRequest("module/Mailboxes/scope", {scope: 'outbound', getHidden: true}).subscribe(
                 (results: any) => {
 
                     this.mailboxes = results.sort((a, b) => a.display.localeCompare(b.display));

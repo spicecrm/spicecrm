@@ -14,82 +14,83 @@ SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
             'source' => 'non-db',
             'module' => 'Users'
         ],
-        'hcmmeasures' => [
-            'name' => 'hcmmeasures',
-            'vname' => 'LBL_HCMMEASURES',
-            'type' => 'link',
-            'relationship' => 'employees_hcmmeasures',
-            'source' => 'non-db',
-            'module' => 'HCMMeasures'
-        ],
-        'hcmskills' => [
-            'name' => 'hcmskills',
-            'vname' => 'LBL_HCMSKILLS',
-            'type' => 'link',
-            'relationship' => 'employees_hcmskills',
-            'source' => 'non-db',
-            'module' => 'HCMSkills'
-        ],
-        'hcmtrainings' => [
-            'name' => 'hcmtrainings',
-            'vname' => 'LBL_HCMTRAININGS',
-            'type' => 'link',
-            'relationship' => 'employees_hcmtrainings',
-            'source' => 'non-db',
-            'module' => 'HCMTrainings'
-        ],
-        'orgunit_id' => [
-            'vname' => 'LBL_ORGUNIT_ID',
-            'name' => 'orgunit_id',
-            'type' => 'id',
-            'source' => 'non-db',
-        ],
-        'orgunit_name' => [
-            'name' => 'orgunit_name',
-            'rname' => 'name',
-            'id_name' => 'orgunit_id',
-            'link' => 'orgunitprimary',
-            'vname' => 'LBL_ORGUNIT',
-            'type' => 'relate',
-            'table' => 'orgunits',
-            'module' => 'OrgUnits',
-            'source' => 'non-db',
-        ],
-        'orgunitprimary' => [
-            'name' => 'orgunitprimary',
-            'type' => 'link',
-            'vname' => 'LBL_ORGUNIT_PRIMARY',
-            'relationship' => 'orgunits_employees_primary',
-            'module' => 'OrgUnits',
-            'source' => 'non-db',
-            'comment' => 'simulate a relate field to the primary orgunit'
-        ],
-        'orgunits' => [
-            'name' => 'orgunits',
-            'vname' => 'LBL_ORGUNITS',
-            'type' => 'link',
-            'relationship' => 'orgunits_employees',
-            'module' => 'OrgUnits',
-            'source' => 'non-db',
-            'rel_fields' => [
-                'is_primary_orgunit' => ['map' => 'is_primary_orgunit'],
-                'employee_role' => ['map' => 'employee_role']
-            ],
-        ],
-        'is_primary_orgunit' => [
-            'name' => 'is_primary_orgunit',
-            'type' => 'bool',
-            'vname' => 'LBL_PRIMARY',
-            'source' => 'non-db',
-            'comment' => 'represents the value in orgunits_employees.is_primary_orgunit'
-        ],
-        'employee_role' => [
-            'name' => 'employee_role',
-            'type' => 'varchar',
-            'vname' => 'LBL_ROLE',
-            'source' => 'non-db',
-            'comment' => 'represents the value in orgunits_employees.employee_role'
-        ],
+// migrated to dictionary
+//        'hcmmeasures' => [
+//            'name' => 'hcmmeasures',
+//            'vname' => 'LBL_HCMMEASURES',
+//            'type' => 'link',
+//            'relationship' => 'employees_hcmmeasures',
+//            'source' => 'non-db',
+//            'module' => 'HCMMeasures'
+//        ],
+//        'hcmskills' => [
+//            'name' => 'hcmskills',
+//            'vname' => 'LBL_HCMSKILLS',
+//            'type' => 'link',
+//            'relationship' => 'employees_hcmskills',
+//            'source' => 'non-db',
+//            'module' => 'HCMSkills'
+//        ],
+//        'hcmtrainings' => [
+//            'name' => 'hcmtrainings',
+//            'vname' => 'LBL_HCMTRAININGS',
+//            'type' => 'link',
+//            'relationship' => 'employees_hcmtrainings',
+//            'source' => 'non-db',
+//            'module' => 'HCMTrainings'
+//        ],
+//        'orgunit_id' => [
+//            'vname' => 'LBL_ORGUNIT_ID',
+//            'name' => 'orgunit_id',
+//            'type' => 'id',
+//            'source' => 'non-db',
+//        ],
+//        'orgunit_name' => [
+//            'name' => 'orgunit_name',
+//            'rname' => 'name',
+//            'id_name' => 'orgunit_id',
+//            'link' => 'orgunitprimary',
+//            'vname' => 'LBL_ORGUNIT',
+//            'type' => 'relate',
+//            'table' => 'orgunits',
+//            'module' => 'OrgUnits',
+//            'source' => 'non-db',
+//        ],
+//        'orgunitprimary' => [
+//            'name' => 'orgunitprimary',
+//            'type' => 'link',
+//            'vname' => 'LBL_ORGUNIT_PRIMARY',
+//            'relationship' => 'orgunits_employees_primary',
+//            'module' => 'OrgUnits',
+//            'source' => 'non-db',
+//            'comment' => 'simulate a relate field to the primary orgunit'
+//        ],
+//        'orgunits' => [
+//            'name' => 'orgunits',
+//            'vname' => 'LBL_ORGUNITS',
+//            'type' => 'link',
+//            'relationship' => 'orgunits_employees',
+//            'module' => 'OrgUnits',
+//            'source' => 'non-db',
+//            'rel_fields' => [
+//                'is_primary_orgunit' => ['map' => 'is_primary_orgunit'],
+//                'employee_role' => ['map' => 'employee_role']
+//            ],
+//        ],
+//        'is_primary_orgunit' => [
+//            'name' => 'is_primary_orgunit',
+//            'type' => 'bool',
+//            'vname' => 'LBL_PRIMARY',
+//            'source' => 'non-db',
+//            'comment' => 'represents the value in orgunits_employees.is_primary_orgunit'
+//        ],
+//        'employee_role' => [
+//            'name' => 'employee_role',
+//            'type' => 'varchar',
+//            'vname' => 'LBL_ROLE',
+//            'source' => 'non-db',
+//            'comment' => 'represents the value in orgunits_employees.employee_role'
+//        ],
         'userabsences' => [
             'name' => 'userabsences',
             'vname' => 'LBL_USER_ABSENCES',
@@ -98,14 +99,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
             'source' => 'non-db',
             'module' => 'UserAbsences'
         ],
-        'travels' => [
+/*        'travels' => [
             'name' => 'travels',
             'vname' => 'LBL_TRAVELS',
             'type' => 'link',
             'relationship' => 'employee_travels',
             'source' => 'non-db',
             'module' => 'Employees',
-        ],
+        ],*/
         'calls' => [
             'name' => 'calls',
             'type' => 'link',
@@ -151,22 +152,23 @@ SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
             'source' => 'non-db',
             'vname' => 'LBL_TASKS',
         ],
-        'hcmemployeeobjectiveagreements' => [
-            'name' => 'hcmemployeeobjectiveagreements',
-            'vname' => 'LBL_HCMEMPLOYEE_OBJECTIVE_AGREEMENTS',
-            'type' => 'link',
-            'relationship' => 'employees_hcmemployeeobjectiveagreements',
-            'source' => 'non-db',
-            'module' => 'HCMEmployeeObjectiveAgreements'
-        ],
-        'hcmemployeeobjectives' => [
-            'name' => 'hcmemployeeobjectives',
-            'vname' => 'LBL_HCMEMPLOYEE_OBJECTIVES',
-            'type' => 'link',
-            'relationship' => 'employees_hcmemployeeobjectives',
-            'source' => 'non-db',
-            'module' => 'HCMEmployeeObjectives'
-        ],
+// migrated
+//        'hcmemployeeobjectiveagreements' => [
+//            'name' => 'hcmemployeeobjectiveagreements',
+//            'vname' => 'LBL_HCMEMPLOYEE_OBJECTIVE_AGREEMENTS',
+//            'type' => 'link',
+//            'relationship' => 'employees_hcmemployeeobjectiveagreements',
+//            'source' => 'non-db',
+//            'module' => 'HCMEmployeeObjectiveAgreements'
+//        ],
+//        'hcmemployeeobjectives' => [
+//            'name' => 'hcmemployeeobjectives',
+//            'vname' => 'LBL_HCMEMPLOYEE_OBJECTIVES',
+//            'type' => 'link',
+//            'relationship' => 'employees_hcmemployeeobjectives',
+//            'source' => 'non-db',
+//            'module' => 'HCMEmployeeObjectives'
+//        ],
     ],
     'indices' => [],
     'relationships' => [
@@ -237,5 +239,5 @@ SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
     ],
 ];
 
-VardefManager::createVardef('Employees', 'Employee', ['default', 'assignable', 'person', 'activities']);
+VardefManager::createVardef('Employees', 'Employee', ['assignable','person', 'activities']);
 

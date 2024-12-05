@@ -9,8 +9,10 @@ use DateTimeZone;
 use DOMDocument;
 use DOMXPath;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SystemTemplateFunctions;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
@@ -128,7 +130,11 @@ class Compiler
             $this->root->appendChild($newElement);
         }
 
-        $this->addStyleTag($additionalStyleId);
+        if (!is_array($additionalStyleId)) {
+            $additionalStyleId = !$additionalStyleId ? [] : [$additionalStyleId];
+        }
+
+        foreach ($additionalStyleId as $id) $this->addStyleTag($id);
 
         if ($bodyContentOnly) {
             return str_replace(['<body>', '</body>'], '', $this->doc->saveHTML($this->doc->getElementsByTagName('body')->item(0)));
@@ -166,6 +172,52 @@ class Compiler
         $styleElement->appendChild($typeAttr);
 
         $head->appendChild($styleElement);
+    }
+
+    /**
+     * apply inline styles from a stylesheet that are marked with spice-compiler-inline comment
+     * the selector must be either an id selector or an html tag name e.g. #myElementId or body
+     * @param string $html
+     * @param string $cssCode
+     * @return string
+     */
+    public static function applyInlineStyles(string $html, string &$cssCode): string
+    {
+        if (empty($cssCode)) return $html;
+
+        $doc = new DOMDocument();
+        // load html and use utf-8 encoding
+        $doc->loadHTML('<?xml encoding="utf-8"?>' . $html);
+
+        # regex example /* spice-compiler-inline */ #spice { font-family: 'Titillium Web', sans-serif;}
+        $tagsFound = preg_match_all("/\/\*\s*spice-compiler-inline\s*\*\/\s*(#*\w+)\s*{([^{}]+?)}/", $cssCode, $matches);
+
+        if ($tagsFound < 1) return $html;
+
+        # loop though all the found comments for inline styles
+        for ($i = 0; $i < count($matches[0]); $i++) {
+
+            $elements = [];
+
+            # check if the selector is id or tag name and get the elements
+            if (str_starts_with($matches[1][$i], '#')) {
+                $elementWithId = $doc->getElementById(substr($matches[1][$i], 1));
+                if ($elementWithId) $elements[] = $elementWithId;
+
+            } else {
+                $elements = $doc->getElementsByTagName($matches[1][$i]);
+            }
+
+            # apply the style to the elements
+            foreach ($elements as $element) {
+                $style = $element->getAttribute('style');
+                $element->setAttribute('style', $matches[2][$i] . $style);
+            }
+        }
+
+        $cssCode = preg_replace("/\/\*\s*spice-compiler-inline\s*\*\/\s*#*\w+\s*{[^{}]+?}/", '', $cssCode);
+
+        return $doc->saveHTML();
     }
 
     private function parseDom($thisNode, $beans = []){
@@ -303,6 +355,8 @@ class Compiler
                             # LIBXML_HTML_NOIMPLIED is necessary to prevent loadHTML from adding <html> and <body> around.
                             $subDoc->loadHTML( '<span></span>'.mb_convert_encoding($subTemplate->$bodyFieldName, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
                             foreach ( $subDoc->childNodes as $item ) {
+                                # ignore the item if it is a comment or any other item that does not have a tagName property
+                                if (!$item->tagName) continue;
                                 $elements[] = $this->createNewElement( $item, $beans );
                             }
 
@@ -582,12 +636,12 @@ class Compiler
 
         //parse pipe if passed in
 
+        $value1 = $this->handleSubstitution($conditionparts[0], $beans, true);
+        if ( count( $conditionparts ) === 1 and is_bool( $value1 )) return $value1;
         $value1 = trim($this->handleSubstitution($conditionparts[0], $beans, true), "'");
         if ( count( $conditionparts ) > 1) {
             $value2 = trim($this->handleSubstitution($conditionparts[2], $beans, true), "'");
         }
-
-        if ( count( $conditionparts ) === 1 and is_bool( $value1 )) return $value1;
 
         switch (strtolower($conditionparts[1])) {
             case '>':
@@ -676,6 +730,9 @@ class Compiler
                             $value = $this->app_list_strings[$obj->field_defs[$part]['options']][$obj->{$part}];
                         }
                         break;
+                    case 'categories':
+                        $value = SpiceUtils::renderCategoryTreeEntry($obj, $obj->_module, $part, $this->lang);
+                        break;
                     case 'multienum':
                         $value = $obj->{$part};
                         if(!$keepFetchedRowValue) {
@@ -732,6 +789,8 @@ class Compiler
 
     public function compileblock($txt, $beans = [], $lang = 'de_DE')
     {
+        if (empty($txt)) return '';
+
         $resultText = '';
         $remainingText = $txt;
         while ( strlen( $remainingText )) {
@@ -821,7 +880,7 @@ class Compiler
 
             if (is_callable([$obj, $part])) {
                 $value = $obj->{$part}();
-            } else {
+            } elseif ( $obj instanceof SpiceBean ) {
                 $field = $obj->field_defs[$part];
                 switch ($field['type']) {
                     case 'link':
@@ -836,6 +895,9 @@ class Compiler
                     case 'enum':
                         $value = $raw ? $obj->{$part} : $this->app_list_strings[$obj->field_defs[$part]['options']][$obj->{$part}];
                         break;
+                    case 'categories':
+                        $value = SpiceUtils::renderCategoryTreeEntry($obj, $obj->_module, $part, $this->lang);
+                        break;
                     case 'multienum':
                         $values = explode(',', $obj->{$part});
                         foreach ($values as &$value) {
@@ -847,7 +909,7 @@ class Compiler
                         //$value = implode(', ', SpiceUtils::unencodeMultienum($obj->{$parts[$level]}));
                         break;
                     case 'date':
-                        if(!empty($obj->{$part})){
+                        if (!empty($obj->{$part})) {
                             //set to user preferences format
                             $userTimezone = new DateTimeZone(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timezone"));
                             $gmtTimezone = new DateTimeZone('GMT');
@@ -862,7 +924,7 @@ class Compiler
                         break;
                     case 'datetime':
                     case 'datetimecombo':
-                        if(!empty($obj->{$part})){
+                        if (!empty($obj->{$part})) {
                             //set to user preferences format
                             $userTimezone = new DateTimeZone(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timezone"));
                             $gmtTimezone = new DateTimeZone('GMT');
@@ -870,13 +932,13 @@ class Compiler
                             $offset = $userTimezone->getOffset($myDateTime);
                             $myInterval = DateInterval::createFromDateString((string)$offset . 'seconds');
                             $myDateTime->add($myInterval);
-                            $value = $myDateTime->format(AuthenticationController::getInstance()->getCurrentUser()->getPreference("datef")." ". AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"));
+                            $value = $myDateTime->format(AuthenticationController::getInstance()->getCurrentUser()->getPreference("datef") . " " . AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"));
                         } else {
                             $value = '';
                         }
                         break;
                     case 'time':
-                        if(!empty($obj->{$part})){
+                        if (!empty($obj->{$part})) {
                             //set to user preferences format
                             $userTimezone = new DateTimeZone(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timezone"));
                             $gmtTimezone = new DateTimeZone('GMT');
@@ -891,22 +953,28 @@ class Compiler
                         break;
                     case 'currency':
                         // $currency = \SpiceCRM\data\BeanFactory::getBean('Currencies');
-                        $value = $raw ? $obj->{$part} : SpiceUtils::currencyFormatNumber($obj->{$part}, ['symbol_space' => true] );
+                        $value = $raw ? $obj->{$part} : SpiceUtils::currencyFormatNumber($obj->{$part}, ['symbol_space' => true]);
                         break;
                     case 'html':
                         $value = SpiceUtils::cleanHtmlBody(html_entity_decode($obj->{$part}));
                         break;
                     case 'image':
-                        if ( !empty( $obj->{$part} )) {
-                            $value = '<img src="data:'.$obj->{$part}.'" style="max-width:100%;max-height:100%;margin:0">';
+                        if (!empty($obj->{$part})) {
+                            $value = '<img src="data:' . $obj->{$part} . '" style="max-width:100%;max-height:100%;margin:0">';
                         }
+                        break;
+                    case 'file':
+                        $file = base64_encode(file_get_contents(StreamFactory::getPathPrefix('upload') . $obj->{$part.'_md5'}));
+                        $value = '<img style="max-width:100%;max-height:100%;" src="data:image/png;base64,' . $file . '" style="max-width:100%;max-height:100%;margin:0">';
                         break;
                     default:
                         // moved nl2br to only be added when non specific fields are parsed
                         $value = SpiceUtils::cleanHtmlBody($raw ? $obj->{$part} : nl2br(html_entity_decode($obj->{$part}, ENT_QUOTES)));
                         break;
+                    }
+                } else {
+                    $value = $obj->{$part};
                 }
-            }
             $bean = $obj;
             return $value;
         };

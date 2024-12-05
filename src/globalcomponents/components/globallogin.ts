@@ -12,12 +12,13 @@ import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {Config2FAI, TokenObjectI} from "../interfaces/globalcomponents.interfaces";
 import {modal} from "../../services/modal.service";
 import {language} from "../../services/language.service";
-import {Subscription} from "rxjs";
+import {firstValueFrom, Subscription} from "rxjs";
 import {GlobalLoginChangePassword} from "./globalloginchangepassword";
 import {GlobalLogin2FAMethodSelectModal} from "./globallogin2famethodselectmodal";
 import {
     TOTPAuthenticationGenerateModal
 } from "../../include/totpauthentication/components/totpauthenticationgeneratemodal";
+import {backend} from "../../services/backend.service";
 
 
 /**
@@ -48,6 +49,13 @@ export class GlobalLogin implements OnDestroy {
      * two-factor authentication active boolean
      */
     public twoFactorAuthCodeRequired: boolean = false;
+    /**
+     * user active 2fa methods
+     */
+    public optional2FAMethods: {
+        sms?: {value: string, label: string, address: string},
+        email?: {value: string, label: string, address: string}
+    };
     /**
      * holds the prompt user boolean
      */
@@ -113,7 +121,8 @@ export class GlobalLogin implements OnDestroy {
                 public changeDetectorRef: ChangeDetectorRef,
                 private modal: modal,
                 private injector: Injector,
-                private language: language
+                private language: language,
+                private backend: backend
     ) {
         this.session.loadFromStorage();
 
@@ -146,6 +155,10 @@ export class GlobalLogin implements OnDestroy {
             this.initializeNecessaryLanguageData();
             this.load2FAConfig();
         });
+    }
+
+    get passkeyEnabled() {
+        return window.PublicKeyCredential && PublicKeyCredential.isConditionalMediationAvailable;
     }
 
     /**
@@ -282,7 +295,7 @@ export class GlobalLogin implements OnDestroy {
      * @param error
      * @private
      */
-    private handleError(error: { errorCode: number, details?: { userId: string, methods: { value: string, label: string, address: string }[] }, message: string }) {
+    private handleError(error: { errorCode: number, details?: { userId: string, optional2FAMethods?: any, methods: { value: string, label: string, address: string }[] }, message: string }) {
         switch (error.errorCode) {
             // invalid password/user
             case 1:
@@ -304,6 +317,7 @@ export class GlobalLogin implements OnDestroy {
             case 4:
                 this.messageId = this.toast.sendToast(error.message, "success");
                 this.twoFactorAuthCodeRequired = true;
+                this.optional2FAMethods = error.details?.optional2FAMethods ?? {};
                 setTimeout(() => {
                     if (this.twofactorinput) {
                         this.twofactorinput.element.nativeElement.focus();
@@ -334,5 +348,139 @@ export class GlobalLogin implements OnDestroy {
         }
 
         this.session.endSession();
+    }
+
+    /**
+     * check passkey registration and login
+     */
+    public async checkRegistration(event: MouseEvent) {
+
+        event.preventDefault();
+
+        if (!window.PublicKeyCredential || !PublicKeyCredential.isConditionalMediationAvailable || !(await PublicKeyCredential.isConditionalMediationAvailable())) {
+            return console.error('Passkey authentication Browser not supported.');
+        }
+
+        this.loginService.backend.postRequest('authentication/passkey/getArgs', null, {rpId: window.location.hostname, username: this.username}).subscribe({
+            next: async getArgs => {
+                if (getArgs.success === false) {
+                    return console.error(getArgs.msg);
+                }
+
+                const secret = getArgs.secret;
+                getArgs = window._.omit(getArgs, 'secret');
+
+                // replace binary base64 data with ArrayBuffer
+                this.recursiveBase64StrToArrayBuffer(getArgs);
+
+                // check credentials with hardware
+                const cred: any = await navigator.credentials.get(getArgs);
+
+                // create object for transmission to server
+                const authenticatorAttestationResponse = {
+                    id: cred.rawId ? this.arrayBufferToBase64(cred.rawId) : null,
+                    clientDataJSON: cred.response.clientDataJSON ? this.arrayBufferToBase64(cred.response.clientDataJSON) : null,
+                    authenticatorData: cred.response.authenticatorData ? this.arrayBufferToBase64(cred.response.authenticatorData) : null,
+                    signature: cred.response.signature ? this.arrayBufferToBase64(cred.response.signature) : null,
+                    userHandle: cred.response.userHandle ? this.arrayBufferToBase64(cred.response.userHandle) : null,
+                    secret,
+                    rpId: window.location.hostname
+                };
+                const token = {
+                    issuer: 'Passkey',
+                    tokenObject: {
+                        access_token: btoa(JSON.stringify(authenticatorAttestationResponse))
+                    }
+                };
+
+                this.login(token);
+            },
+            error: () => this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error')
+        });
+    }
+
+    /**
+     * convert RFC 1342-like base64 strings to array buffer
+     * @param obj
+     */
+    private recursiveBase64StrToArrayBuffer(obj) {
+        let prefix = '=?BINARY?B?';
+        let suffix = '?=';
+        if (typeof obj === 'object') {
+            for (let key in obj) {
+                if (typeof obj[key] === 'string') {
+                    let str = obj[key];
+                    if (str.substring(0, prefix.length) === prefix && str.substring(str.length - suffix.length) === suffix) {
+                        str = str.substring(prefix.length, str.length - suffix.length);
+
+                        let binary_string = window.atob(str);
+                        let len = binary_string.length;
+                        let bytes = new Uint8Array(len);
+                        for (let i = 0; i < len; i++) {
+                            bytes[i] = binary_string.charCodeAt(i);
+                        }
+                        obj[key] = bytes.buffer;
+                    }
+                } else {
+                    this.recursiveBase64StrToArrayBuffer(obj[key]);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Convert a ArrayBuffer to Base64
+     * @param buffer
+     * @returns string
+     */
+    private arrayBufferToBase64(buffer: ArrayBuffer) {
+        let binary = '';
+        let bytes = new Uint8Array(buffer);
+        let len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
+    }
+
+    /**
+     * resend authentication code
+     * @param method
+     * @param event
+     */
+    public async resendAuthCode(method: 'sms' | 'email', event: MouseEvent) {
+
+        // prevent processing propagated click from the enter press on the code input element
+        if ((event as PointerEvent).pointerType != 'mouse') return;
+
+        event.preventDefault();
+
+        const confirmed = await firstValueFrom(this.modal.confirm(`${this.language.getLabel('LBL_TO')} ${this.optional2FAMethods[method].address}`, 'MSG_RESEND_CODE_VIA_' + method.toUpperCase()));
+
+        if (!confirmed) return;
+
+        const sending = this.modal.await('LBL_SENDING');
+        const body = {username: this.username, password: this.password};
+
+        this.backend.postRequest(`authentication/2fa/${method}/send`, null, body).subscribe({
+            next: () => {
+                sending.next(true); sending.complete();
+                this.toast.sendToast('LBL_SENT', 'success');
+            },
+            error: () => {
+                sending.next(true); sending.complete();
+                this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+            }
+        });
+    }
+
+    /**
+     * auto submit 2fa code
+     * @param code
+     */
+    public autoSubmit2FACode(code: string) {
+        if (code.length == 6) {
+            this.login();
+        }
     }
 }

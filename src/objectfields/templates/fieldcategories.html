@@ -1,9 +1,12 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
-    <div *ngIf="categories.length > 0; else nocategories" [title]="display_value">{{display_value}}</div>
-    <ng-template #nocategories>
+    @if(!loaded){
         <system-stencil></system-stencil>
-    </ng-template>
+    } @else if (categories.length > 0) {
+        <div [title]="display_value">{{ display_value }}</div>
+    } @else {
+        <system-label label="LBL_NO_TREEVALUES"></system-label>
+    }
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="getFieldClass()">
     <div class="slds-form-element__control">

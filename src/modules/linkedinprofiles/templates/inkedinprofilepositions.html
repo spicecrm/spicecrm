@@ -1,0 +1,58 @@
+<article class="slds-card slds-m-bottom--small">
+    <div class="slds-card__header slds-grid">
+        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+            <div class="slds-media__figure">
+                <system-icon icon="job_position" size="small"></system-icon>
+            </div>
+            <div class="slds-media__body">
+                <h2 class="slds-card__header-title">
+                    <system-label label="LBL_JOB_POSITIONS"/>
+                </h2>
+            </div>
+        </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+        <div *ngIf="isLoading; else contentLoaded">
+            <system-spinner></system-spinner>
+        </div>
+        <ng-template #contentLoaded>
+            <div *ngIf="jobPositions; else noInformation" >
+                <div *ngFor="let position of jobPositions; let i = index;">
+                    <div [ngClass]="{'slds-border--bottom': i < jobPositions.length - 1}">
+                        <div class="slds-grid slds-p-vertical--x-small">
+                            <div style="flex: 0 0 70px;">
+                                <img *ngIf="position.company_logo_base64" [src]="position.company_logo_base64" alt="company logo" style="width: 100%; height: auto; max-width: 100%;">
+                                <svg *ngIf="!position.company_logo_base64" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" id="company-accent-4">
+                                    <path fill="#e7e2dc" d="M0 0h128v128H0z"/>
+                                    <path fill="#9db3c8" d="M48 16h64v112H48z"/>
+                                    <path fill="#788fa5" d="M16 80h32v48H16z"/>
+                                    <path fill="#56687a" d="M48 80h32v48H48z"/>
+                                </svg>
+                            </div>
+                            <div class="slds-m-left--medium">
+                                <div class="slds-text-heading--small">{{position.position_title}}</div>
+                                <div><a target="_blank" [href]="position.company_url">{{ position.company_name }}</a></div>
+                                <div class="slds-text-color_weak">
+                                    <span>{{formatYearMonthName(position.date_start)}} - </span>
+                                    <span *ngIf="position.date_end">{{formatYearMonthName(position.date_end)}} &middot; </span>
+                                    <span *ngIf="!position.date_end">present &middot; </span>
+                                    <span>{{calculateDuration(position.date_start, position.date_end)}}</span>
+                                    <span>{{position.description}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ng-template #noInformation>
+                <system-illustration-no-records>
+                    no records
+                </system-illustration-no-records>
+            </ng-template>
+        </ng-template>
+    </div>
+</article>
+
+
+
+

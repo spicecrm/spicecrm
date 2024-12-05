@@ -469,13 +469,11 @@ export class CampaignTaskTargetsManager implements OnInit, OnDestroy {
      * @param prospect
      */
     public removeIncluded(prospect: TargetI) {
-        const body = {
-            relatedids: [prospect.id]
-        };
+
+        const relatedids = [{beanId: prospect.id}];
 
         this.prospects = this.prospects.filter(p => p.id != prospect.id);
-
-        this.backend.deleteRequest(`module/ProspectLists/${prospect.prospectlists[0]}/related/${prospect.module.toLowerCase()}`, body)
+        this.backend.deleteRequest(`module/ProspectLists/${prospect.prospectlists[0]}/related/${prospect.module.toLowerCase()}`, {relatedids})
             .subscribe({
                 error: () => this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error')
             });

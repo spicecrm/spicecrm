@@ -24,6 +24,9 @@ import {ObjectActionMarkSentBeanButton} from "./components/objectactionmarksentb
 import {OutputRevisionsPDFTabContainer} from "./components/outputrevisionspdftabcontainer";
 import {OutputRevisionsPDFTabContainerEmail} from "./components/outputrevisionspdftabcontaineremail";
 import {OutputRevisionsPDFTabContainerPreview} from "./components/outputrevisionspdftabcontainerpreview";
+import {ObjectActionOutputPdfModal} from "./components/objectactionoutputpdfmodal";
+import {ModuleSAPIDOCs} from "../sapidocs/modulesapidocs";
+import {ObjectActionRelatedOutputPdfModal} from "./components/objectactionrelatedoutpudpdfmodal";
 
 @NgModule({
     imports: [
@@ -33,7 +36,8 @@ import {OutputRevisionsPDFTabContainerPreview} from "./components/outputrevision
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        DirectivesModule
+        DirectivesModule,
+        ModuleSAPIDOCs
     ],
     declarations: [
         OutputTemplatesEditor,
@@ -48,7 +52,9 @@ import {OutputRevisionsPDFTabContainerPreview} from "./components/outputrevision
         ObjectActionMarkSentBeanButton,
         OutputRevisionsPDFTabContainer,
         OutputRevisionsPDFTabContainerEmail,
-        OutputRevisionsPDFTabContainerPreview
+        OutputRevisionsPDFTabContainerPreview,
+        ObjectActionOutputPdfModal,
+        ObjectActionRelatedOutputPdfModal
     ],
     exports: [
         ObjectActionOutputBeanModalEmailContent

@@ -27,7 +27,8 @@ declare var Office: any;
     providers: [
         {provide: GroupwareService, useClass: OutlookGroupware},
         OutlookConfiguration,
-        model]
+        model],
+    host: {class: 'slds-height_full'}
 })
 export class OutlookPane implements OnInit {
 

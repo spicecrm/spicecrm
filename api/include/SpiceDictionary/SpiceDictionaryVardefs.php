@@ -280,6 +280,8 @@ class SpiceDictionaryVardefs  {
     }
 
     /**
+     * legacy code
+     *
      * add acl fields to the loaded dictionary items
      * @return void
      */
@@ -297,6 +299,8 @@ class SpiceDictionaryVardefs  {
     }
 
     /**
+     * legacy code
+     *
      * add acl territory fields to the loaded dictionary items
      * @return void
      * @throws \Exception
@@ -350,6 +354,7 @@ class SpiceDictionaryVardefs  {
 
 
     /**
+     * @deprecated
      * load vardefs for specified module
      * consider BWC definitions
      * @param string $module module name
@@ -420,6 +425,7 @@ class SpiceDictionaryVardefs  {
 
 
     /**
+     * @deprecated
      * get load all dictionary definitions and populate global SpiceDictionaryHandler::dictionary
      *
      * @param array $dictionaryType
@@ -575,7 +581,7 @@ class SpiceDictionaryVardefs  {
         return "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.tablename, sysd.audited tableaudited, sysd.sysdictionary_type dictionarytype, sysd.sysdictionary_contenttype contenttype,
        sysmod.module sysmodule, sysmod.id sysmoduleid,
          sysdo.name domainname, sysdof.name technicalname,
-        sysdi.name itemname, sysdi.id item_id, sysdi.duplicate_merge, sysdi.label itemlabel, sysdi.labelinputhelper itemlabelinputhelper, sysdi.required itemrequired, sysdi.non_db, sysdi.sysdictionary_ref_id, sysdi.status itemstatus, sysdi.deleted itemdeleted, sysdi.exclude_from_audited,
+        sysdi.name itemname, sysdi.id item_id, sysdi.duplicate_merge, sysdi.label itemlabel, sysdi.labelinputhelper itemlabelinputhelper, sysdi.required itemrequired, sysdi.non_db, sysdi.sysdictionary_ref_id, sysdi.status itemstatus, sysdi.exclude_from_audited,
         sysdof.*, sysdof.id sysdomainfield_id, sysdov.name validationname
         FROM (SELECT * from sysdictionarydefinitions UNION SELECT * from syscustomdictionarydefinitions) sysd
         LEFT JOIN (SELECT * from sysmodules UNION SELECT * from syscustommodules) sysmod ON sysmod.sysdictionarydefinition_id = sysd.id
@@ -604,6 +610,7 @@ class SpiceDictionaryVardefs  {
     }
 
     /**
+     * @deprecated
      * get dictionary array for passed module
      *
      * @param string $module
@@ -636,6 +643,7 @@ class SpiceDictionaryVardefs  {
     }
 
     /**
+     * @deprecated
      * get dictionary array for passed dictionary id
      *
      * @param string $dictionaryId guid
@@ -681,7 +689,7 @@ class SpiceDictionaryVardefs  {
 
         if($res = $db->query($q)){
             while($row = $db->fetchByAssoc($res)){
-                if($row['itemstatus'] !='a' || $row['itemdeleted'] == 1){
+                if($row['itemstatus'] !='a'){
                     continue;
                 }
 
@@ -1199,6 +1207,7 @@ WHERE rels.rhs_sysdictionarydefinition_id = '{$dict['id']}' AND rels.status='a' 
 
 
     /**
+     * @deprecated
      * create link definitions for dictionary
      *
      * @param array $dictionaryDef
@@ -1292,6 +1301,7 @@ WHERE rels.rhs_sysdictionarydefinition_id = '{$dict['id']}' AND rels.status='a' 
 
 
     /**
+     * @deprecated
      * get fields to populate a relate field
      *
      * @param string $relationshipId
@@ -1578,6 +1588,7 @@ WHERE relfields.deleted = 0 AND relfields.status = 'a' AND relfields.sysdictiona
     }
 
     /**
+     * @deprecated
      * save entry to cache table sysdictionaryindices
      * @param array $dict
      * @return void
@@ -1692,6 +1703,7 @@ WHERE relfields.deleted = 0 AND relfields.status = 'a' AND relfields.sysdictiona
     }
 
     /**
+     * @deprecated
      * remove entry in sysdictionaryfields
      *
      * @param string $dictName dictionary name
@@ -1706,10 +1718,10 @@ WHERE relfields.deleted = 0 AND relfields.status = 'a' AND relfields.sysdictiona
             LoggerManager::getLogger()->fatal('error dictionary cached entry in sysdictionaryfields with dictionary name '.$dictName.' '.$db->lastError());
             return false;
         }
-        if(!$db->deleteQuery('sysdictionaryindices', $delWhere)){
-            LoggerManager::getLogger()->fatal('error dictionary cached entry in sysdictionaryindices with dictionary name '.$dictName.' '.$db->lastError());
-            return false;
-        }
+//        if(!$db->deleteQuery('sysdictionaryindices', $delWhere)){
+//            LoggerManager::getLogger()->fatal('error dictionary cached entry in sysdictionaryindices with dictionary name '.$dictName.' '.$db->lastError());
+//            return false;
+//        }
         return true;
     }
 
@@ -1752,29 +1764,30 @@ WHERE relfields.deleted = 0 AND relfields.status = 'a' AND relfields.sysdictiona
     }
 
     /**
+     * @deprecated
      * get cached indices for specified dictionaryId
      * @param string $dictionaryId
      * @return array
      * @throws \Exception
      */
     public static function getDictionaryIndexCacheFromDb($dictionaryId){
-        if(empty($dictionaryId)){
-            return [];
-        }
-
-        $db = DBManagerFactory::getInstance();
-        $indices = [];
-
-        // get indices
-        $q = "SELECT sysindices.*
-            FROM sysdictionaryindices sysindices 
-               WHERE sysindices.sysdictionarydefinition_id = '".$dictionaryId."'";
-
-        if($res = $db->query($q)){
-            while($row = $db->fetchByAssoc($res)){
-                $indices[] = json_decode(html_entity_decode($row['indexdefinition'], ENT_QUOTES), true);
-            }
-        }
+//        if(empty($dictionaryId)){
+//            return [];
+//        }
+//
+//        $db = DBManagerFactory::getInstance();
+//        $indices = [];
+//
+//        // get indices
+//        $q = "SELECT sysindices.*
+//            FROM sysdictionaryindices sysindices
+//               WHERE sysindices.sysdictionarydefinition_id = '".$dictionaryId."'";
+//
+//        if($res = $db->query($q)){
+//            while($row = $db->fetchByAssoc($res)){
+//                $indices[] = json_decode(html_entity_decode($row['indexdefinition'], ENT_QUOTES), true);
+//            }
+//        }
         return $indices;
     }
 
@@ -2110,6 +2123,8 @@ WHERE relfields.deleted = 0 AND relfields.status = 'a' AND relfields.sysdictiona
     }
 
     /**
+     * @deprecated
+     *
      * delete content and refill 'sysdictionaryfields' table
      * truncate and refill 'relationships' table
      * @param array $dictionaryNames

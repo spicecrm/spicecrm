@@ -9,7 +9,7 @@ import {
     ViewChildren,
     QueryList,
     OnInit,
-    OnChanges, AfterViewInit, NgZone, ChangeDetectorRef, KeyValueDiffer, ElementRef
+    OnChanges, AfterViewInit, NgZone, ChangeDetectorRef, KeyValueDiffer, ElementRef, SimpleChanges
 } from "@angular/core";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
@@ -38,6 +38,11 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
      * ToDo: ???
      */
     @Input() public containerclass: string = 'slds-button-group';
+
+    /**
+     * if true display all the buttons in the dropdown
+     */
+    @Input() public onlyDropdown: boolean = false;
 
     /**
      * set to true to display the primary buttons as icons if the item supports this
@@ -117,7 +122,7 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
                 actionconfig: item.actionconfig
             };
 
-            if (initial || item.singlebutton == '1') {
+            if (!this.onlyDropdown && (initial || item.singlebutton == '1')) {
                 this.mainactionitems.push(actionItem);
                 initial = false;
             } else {
@@ -141,9 +146,15 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
         this.groups = Object.values(groupsObj).sort((a,b) => a.sequence > b.sequence ? 1 : -1);
     }
 
-    public ngOnChanges() {
-        this.grouped = this.metadata.getActionSet(this.actionset)?.grouped;
-        this.buildItems();
+    public ngOnChanges(changes:SimpleChanges) {
+        if (changes.actionset) {
+            this.grouped = this.metadata.getActionSet(this.actionset)?.grouped;
+            this.buildItems();
+        }
+
+        if (changes.onlyDropdown) {
+            this.buildItems();
+        }
     }
 
 

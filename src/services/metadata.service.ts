@@ -20,6 +20,8 @@ import {map} from "rxjs/operators";
 import {SystemNavigationCollector} from "../systemcomponents/components/systemnavigationcollector";
 import {SystemComponentMissing} from "../systemcomponents/components/systemcomponentmissing";
 import {ComponentType} from "@angular/cdk/overlay";
+import {keys} from "underscore";
+import {DomainValidation, DomainValidationValue} from "../workbench/interfaces/domainmanager.interfaces";
 
 declare var _;
 
@@ -139,19 +141,38 @@ export class metadata {
      */
     public addRoutes() {
 
-        this.routes.forEach(route => {
+        // reset all rouites
+        this.router.config.forEach((r, i) => {
+            if(r.component && r.component.name == 'SystemNavigationCollector'){
+                this.router.config.splice(i, 1);
+            }
+        })
+
+        this.routes.sort((a, b) => {
+            return a.path.split(':').length > b.path.split(':').length ? -1 : 1;
+        }).forEach(route => {
             this.router.config.unshift({
                 path: route.path,
                 component: SystemNavigationCollector,
-                canActivate: [aclCheck]
+                canActivate: [aclCheck],
+                pathMatch: route.pathmatch == 'full' ? 'full' : 'prefix'
             });
+
+            if (!!route.redirectto) {
+                this.router.config[0].redirectTo = route.redirectto;
+            }
 
             // add the same for the tabbed browser
             this.router.config.unshift({
                 path: 'tab/:tabid/' + route.path,
                 component: SystemNavigationCollector,
-                canActivate: [aclCheck]
+                canActivate: [aclCheck],
+                pathMatch: route.pathmatch == 'full' ? 'full' : 'prefix'
             });
+
+            if (!!route.redirectto) {
+                this.router.config[0].redirectTo = 'tab/:tabid/' + route.redirectto;
+            }
         });
     }
 
@@ -499,6 +520,7 @@ export class metadata {
     public setFieldset(fieldset_id, params) {
         this.fieldSets[fieldset_id].name = params.name;
         this.fieldSets[fieldset_id].package = params.package;
+        this.fieldSets[fieldset_id].version = params.version;
         this.configuration.setData('fieldsets', this.fieldSets);
     }
 
@@ -1064,6 +1086,23 @@ export class metadata {
         }
     }
 
+    /**
+     * get domain validation values for the passed validation
+     * @param validationName
+     */
+    public getDomainValidationValues(validationName: string): {[key: string]: DomainValidationValue}
+    {
+        return this.configuration.getData('domainvalidations')[validationName]?.validationvalues;
+    }
+
+    /**
+     * get domain validation by name
+     * @param validationName
+     */
+    public getDomainValidationByName(validationName: string): DomainValidation {
+        return this.configuration.getData('domainvalidations')[validationName];
+    }
+
     public getFieldRequired(module: string, field: string) {
         try {
             return this.fieldDefs[module][field].required;
@@ -1472,7 +1511,6 @@ export class metadata {
     public getFieldTypeComponent(fieldtype) {
         return this.fieldTypeMappings[fieldtype];
     }
-
     /**
      * returns the details for a given route
      * @param route
@@ -1507,8 +1545,24 @@ export class metadata {
     * for the route handling
      */
 
+    /**
+     * returns S,M or L for the screen size
+     *
+     * @private
+     */
+    private getScreenSize(){
+        let w = window.innerWidth;
+        if(w <= 640) return 'S';
+        if(w <= 1024) return 'M';
+        return 'L';
+    }
+
     public getRouteComponent(route) {
-        return this.routes ? this.routes.find(routeDetails => {
+        // check that we have routes
+        if(!this.routes) return false;
+
+        // find the route
+        let r = this.routes.find(routeDetails => {
             if (routeDetails.path == route) {
                 return true;
             } else if (route.split("/").length == routeDetails.path.split("/").length) {
@@ -1528,7 +1582,20 @@ export class metadata {
                     return true;
                 }
             }
-        })?.component : false;
+        });
+
+        // check that we have a record
+        if(!r) return false;
+
+        // return the proper component for the Screensize
+        switch(this.getScreenSize()){
+            case 'S':
+                return r.component_small ? r.component_small : r.component;
+            case 'M':
+                return r.component_mdeium ? r.component_medium : r.component;
+            default:
+                return r.component;
+        }
     }
 
     /*

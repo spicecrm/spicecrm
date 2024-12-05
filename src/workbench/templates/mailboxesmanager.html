@@ -3,13 +3,20 @@
             <object-action-container [actionset]="headeractionset"></object-action-container>
     </workbench-header-controls>
 </workbench-header>
-<div  [system-overlay-loading-spinner]="listComponent.modellist.isLoading" class="slds-grid" system-to-bottom-noscroll>
-    <div class="slds-size--1-of-5 slds-scrollable--y slds-theme--default slds-tabs_default__content slds-p-around--none slds-border--right">
-        <ul class="slds-has-dividers_around-space slds-p-around--x-small">
-            <mailboxes-manager-list #listComponent (selectedMailboxChange)="handleSelectionChange($event)"></mailboxes-manager-list>
-        </ul>
-    </div>
-    <div class="slds-size--4-of-5 slds-scrollable--y">
-        <div #viewcontainer></div>
-    </div>
+<div  [system-overlay-loading-spinner]="modellist.isLoading" class="slds-grid" system-to-bottom-noscroll>
+    @if (modellist.listData.totalcount > 0) {
+        <div class="slds-size--1-of-5 slds-scrollable--y slds-theme--default slds-tabs_default__content slds-p-around--none slds-border--right">
+            <ul class="slds-has-dividers_around-space slds-p-around--x-small">
+                <mailboxes-manager-list #listComponent
+                                        (selectedMailboxChange)="handleSelectionChange($event)"></mailboxes-manager-list>
+            </ul>
+        </div>
+        <div class="slds-size--4-of-5 slds-scrollable--y">
+            <div #viewcontainer></div>
+        </div>
+    } @else {
+        <div class="slds-align_absolute-center slds-height_full">
+            <system-illustration-no-data><system-label label="LBL_NO_RECORDS"/></system-illustration-no-data>
+        </div>
+    }
 </div>

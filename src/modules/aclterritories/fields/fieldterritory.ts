@@ -32,12 +32,16 @@ export class fieldTerritory extends fieldGeneric implements OnInit, OnDestroy {
      */
     public territorySearchTerm: string = '';
 
+    public t: any[] = [];
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public elementRef: ElementRef, public renderer: Renderer2, public modal: modal, public territories: territories, public injector: Injector) {
         super(model, view, language, metadata, router);
     }
 
     public ngOnInit() {
+
+        this.t = this.territories.userTerritories[this.model.module];
+
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
 
         // if we have a new model determine a default territory
