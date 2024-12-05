@@ -3,7 +3,7 @@
  */
 import {Injectable, EventEmitter} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Subject, throwError} from 'rxjs';
+import {Subject} from 'rxjs';
 
 import {configurationService} from './configuration.service';
 import {session} from './session.service';
@@ -11,6 +11,7 @@ import {broadcast} from './broadcast.service';
 import {metadata} from './metadata.service';
 import {Observable} from 'rxjs';
 import {StoreService} from "./store.service";
+import {DomainValidation, DomainValidationValue} from "../workbench/interfaces/domainmanager.interfaces";
 
 /**
  * @ignore
@@ -55,7 +56,7 @@ export class language {
         public metadata: metadata
     ) {
 
-        this.storeService.initializeStores(this.storeDBName, ["languages", "applang", "applist"], 'language_code');
+        this.storeService.initializeStores(this.storeDBName, ["languages", "applang"], 'language_code');
 
         // subscribe to the broadcast to catch the logout
         this.broadcast.message$.subscribe(message => this.handleLogout(message));
@@ -105,7 +106,7 @@ export class language {
      * @private
      */
     public clearDB() {
-        this.storeService.clearDB(this.storeDBName, ["languages", "applang", "applist"]);
+        this.storeService.clearDB(this.storeDBName, ["languages", "applang"]);
     }
 
     /**
@@ -124,10 +125,6 @@ export class language {
 
                 this.storeService.readStore(this.storeDBName, 'applang', this.currentlanguage).subscribe({
                     next: applang => this.languagedata.applang = applang,
-                    error: () => false
-                });
-                this.storeService.readStore(this.storeDBName, 'applist', this.currentlanguage).subscribe({
-                    next: applist => this.languagedata.applist = applist,
                     error: () => false
                 });
 
@@ -159,22 +156,10 @@ export class language {
         this.storeService.readStore(this.storeDBName, 'applang', language).subscribe({
             next: (applang) => {
                 this.languagedata.applang = applang;
-                this.storeService.readStore(this.storeService, 'applist', language).subscribe({
-                    next: (applist) => {
-                        this.languagedata.applist = applist;
+                this.currentlanguage$.emit(this.currentlanguage);
 
-                        // emit that the language has changed
-                        this.currentlanguage$.emit(this.currentlanguage);
-
-                        retSubject.next(true);
-                        retSubject.complete();
-                    },
-                    error: () => {
-                        this.currentlanguage$.emit(this.currentlanguage);
-                        retSubject.next(true);
-                        retSubject.complete();
-                    }
-                });
+                retSubject.next(true);
+                retSubject.complete();
             },
             error: () => {
                 this.loadLanguage().subscribe({
@@ -217,7 +202,6 @@ export class language {
 
                     // write to the store
                     this.storeService.writeStore(this.storeDBName, 'applang', {language_code: this.currentlanguage, data: this.languagedata.applang});
-                    this.storeService.writeStore(this.storeDBName, 'applist', {language_code: this.currentlanguage, data: this.languagedata.applist});
 
                     // emit that the language has changed
                     this.currentlanguage$.emit(this.currentlanguage);
@@ -381,16 +365,12 @@ export class language {
                 if (module_defs.singular_label) {
                     return this.getLabel(module_defs.singular_label, '', labellength);
                 }
-
-                if (this.languagedata.applist.moduleListSingular[module]) {
-                    return this.languagedata.applist.moduleListSingular[module] || module;
-                }
             } else {
                 if (module_defs.module_label) {
                     return this.getLabel(module_defs.module_label, '', labellength);
                 }
             }
-            return this.languagedata.applist.moduleList[module] || module;
+            return module;
         } catch (e) {
             return module;
         }
@@ -475,57 +455,104 @@ export class language {
     }
 
     /**
-     * returns the options that are possible for fields of type enum
      *
-     * @param module the module as deined in sysmodules
-     * @param fieldname the name of the field
-     * @param formatted if the values shoudl be returned properly so the enum fields can use the output
+     * @param values
+     * @param formatted
+     * @param sortedBy
+     * @param includeInactiveOptions
+     * @private
      */
-    public getFieldDisplayOptions(module: string, fieldname: string, formatted: boolean = false): any[] {
+    private prepareOptions(values: {[key: string]: DomainValidationValue}, formatted?: boolean, sortedBy?: {field: DomainValidation['order_by'], direction: DomainValidation['sort_flag']}, includeInactiveOptions?: boolean): EnumDisplayOptionArray | EnumDisplayOptionObject {
+
+        if (!values) return formatted ? [] : {};
+
+        try {
+            // format the return value for the use in enum fields...
+            if (formatted) {
+                const optionsArray = [];
+                for (let option in values) {
+
+                    if (!includeInactiveOptions && values[option].status != 'a') continue;
+
+                    optionsArray.push({
+                        value: option,
+                        display: this.getLabel(values[option].label),
+                        status: values[option].status
+                    });
+                }
+
+                return optionsArray.sort((a, b) => {
+
+                    let compareResult: number;
+                    if (!sortedBy.field) sortedBy.field = 'sequence';
+
+                    switch (sortedBy.field) {
+                        case 'enumvalue':
+                            compareResult = values[a.value][sortedBy.field].localeCompare(values[b.value][sortedBy.field]);
+                            break;
+                        case 'label':
+                            compareResult = this.getLabel(values[a.value][sortedBy.field]).localeCompare(this.getLabel(values[b.value][sortedBy.field]));
+                            break;
+                        case 'sequence':
+                            compareResult = values[a.value][sortedBy.field] > values[b.value][sortedBy.field] ? 1 : -1;
+                            break;
+                    }
+
+                    return sortedBy.direction == 'desc' ? -compareResult : compareResult;
+                });
+            } else {
+                const optionsObject = {};
+                Object.keys(values).forEach(key => optionsObject[key] = this.getLabel(values[key].label));
+                return optionsObject;
+            }
+        } catch (e) {
+            return formatted ? [] : {};
+        }
+    }
+
+    /**
+     * returns the options that are possible for fields of type enum
+     * @param module the module as defined in sysmodules table
+     * @param fieldname the name of the field
+     * @param formatted if the values should be returned properly so the enum fields can use the output
+     * @param includeInactiveOptions include options that are not active
+     */
+    public getFieldDisplayOptions(module: string, fieldname: string, formatted: true, includeInactiveOptions?: boolean): EnumDisplayOptionArray;
+    public getFieldDisplayOptions(module: string, fieldname: string, formatted?: false | undefined): EnumDisplayOptionObject;
+    public getFieldDisplayOptions(module: string, fieldname: string, formatted?: boolean, includeInactiveOptions?: boolean): EnumDisplayOptionArray | EnumDisplayOptionObject {
         let options = this.metadata.getFieldOptions(module, fieldname);
         if (options !== false) {
-            try {
-                let ret = this.languagedata.applist[options];
-                // format the return value for the use in enum fields...
-                if (formatted) {
-                    let tmp_ret = ret;
-                    ret = [];
-                    for (let option in tmp_ret) {
-                        ret.push({
-                            value: option,
-                            display: tmp_ret[option],
-                        });
-                    }
-                }
-                return ret;
-            } catch (e) {
-                return [];
-            }
+            const validation = this.metadata.getDomainValidationByName(options);
+            return validation ? this.prepareOptions(validation.validationvalues, formatted, {field: validation.order_by, direction: validation.sort_flag}, includeInactiveOptions) : [];
         } else {
-            return [];
+            return formatted ? [] : {};
         }
     }
 
     /**
      * returns the options that are possible for a given app_list_strings entry. used for the display if no options are defined in the metadata or if they options are derived dynamically
-     *
-     * @param {string} idx = index in dictionary
-     * @param {boolean} formatted
+     * @param domainValidation
+     * @param formatted
+     * @param includeInactiveOptions
      */
-    public getDisplayOptions(idx: string, formatted: boolean = false) {
-        let ret = this.languagedata.applist[idx];
-        // format the return value for the use in enum fields...
-        if (formatted) {
-            let tmp_ret = ret;
-            ret = [];
-            for (let option in tmp_ret) {
-                ret.push({
-                    value: option,
-                    display: tmp_ret[option],
-                });
-            }
-        }
-        return ret;
+    public getDisplayOptions(domainValidation: string, formatted: true, includeInactiveOptions?: boolean): EnumDisplayOptionArray;
+    public getDisplayOptions(domainValidation: string, formatted?: false | undefined): EnumDisplayOptionObject;
+    public getDisplayOptions(domainValidation: string, formatted?: boolean, includeInactiveOptions?: boolean): EnumDisplayOptionArray | EnumDisplayOptionObject {
+        const validation = this.metadata.getDomainValidationByName(domainValidation);
+        return this.prepareOptions(validation.validationvalues, formatted, {field: validation.order_by, direction: validation.sort_flag}, includeInactiveOptions);
+    }
+
+    /**
+     * returns a translated label of the validation value
+     * @param domainValidation
+     * @param validationEnumValue
+     */
+    public getTranslatedDisplayOption(domainValidation: string, validationEnumValue: string): string {
+
+        if (!domainValidation || !validationEnumValue) return undefined;
+
+        const values = this.metadata.getDomainValidationValues(domainValidation);
+        return this.getLabel(values[validationEnumValue].label);
     }
 
     /**
@@ -539,7 +566,7 @@ export class language {
         let options = this.metadata.getFieldOptions(module, fieldname);
         if (options !== false) {
             try {
-                return this.languagedata.applist[options][value] ? this.languagedata.applist[options][value] : value;
+                return this.getLabel(this.metadata.getDomainValidationValues(options)[value].label);
             } catch (e) {
                 return value;
             }
@@ -558,13 +585,13 @@ export class language {
         for (let language of this.languagedata.languages.available) {
 
             if (systemonly && (!language.system_language || language.system_language == 0)) continue;
-
             languages.push({
                 language: language.language_code,
                 text: language.language_name,
                 system_language: language.system_language,
                 communication_language: language.communication_language,
-                default_language: language.language_code == this.languagedata.languages.default
+                default_language: language.language_code == this.languagedata.languages.default,
+                display_label: this.getLabel('LANG_' + language.language_code.toUpperCase())
             });
         }
         return languages;
@@ -671,7 +698,7 @@ export class language {
         for (let label in this.languagedata.applang) {
             let found = true;
             for (let searchTerm of searchTermArray) {
-                if (label.toLocaleLowerCase().indexOf(searchTerm) < 0) {
+                if (this.languagedata.applang[label].default.toLocaleLowerCase().indexOf(searchTerm) < 0 && label.toLocaleLowerCase().indexOf(searchTerm) < 0) {
                     found = false;
                     break;
                 }
@@ -756,3 +783,7 @@ export class language {
     }
 
 }
+
+// tslint:disable-next-line:max-classes-per-file
+export type EnumDisplayOptionArray = { value: string, display: string, status: 'a' | 'i' }[];
+export interface EnumDisplayOptionObject { [key: string]: string}

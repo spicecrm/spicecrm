@@ -48,7 +48,6 @@ use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
@@ -95,6 +94,8 @@ class SpiceUIConfLoader
         'sysmsgraphmappingsegments',
         'sysmsgraphmappingsegmentitems',
         'sysmsgraphmappingmodules',
+        'spiceaclmoduleactions',
+        'spiceaclmodulefields'
     ];
 
     /**
@@ -230,6 +231,7 @@ class SpiceUIConfLoader
         }
 
         // gather tables and all the record IDs
+        $tables = [];
         foreach ($response as $conftable => $conf){
             foreach($conf as $recordId => $recordData){
                 $tables[$conftable][] = $recordId;
@@ -294,7 +296,7 @@ class SpiceUIConfLoader
             $this->loadTableRecords($tableName, $records, $params['packages']);
         }
 
-        if(count($this->loadErrors) > 0){
+        if(is_array($this->loadErrors) && count($this->loadErrors) > 0){
             $packages = implode(', ', $params['packages']);
             throw (new Exception("Failed to load packages $packages", 'packageLoadFailed'))->setDetails($this->loadErrors);
         }
@@ -406,7 +408,8 @@ class SpiceUIConfLoader
         /** @var DBManager $db */
         $db = DBManagerFactory::getInstance();
 
-        $deleteWhere = "package IN('" . implode("','", $packages) . "') OR package IS NULL OR package=''";
+        //$deleteWhere = "package IN('" . implode("','", $packages) . "') OR package IS NULL OR package=''";
+        $deleteWhere = "package IN('" . implode("','", $packages) . "')";
         $deleted = $db->deleteQuery($table, $deleteWhere);
 
         if (!$deleted) {
@@ -453,7 +456,6 @@ class SpiceUIConfLoader
         ];
 
         $definitions = SpiceDictionaryDefinitions::getInstance();
-        $db = DBManagerFactory::getInstance();
 
         foreach ($dictionaryTables as $table) {
             $this->loadTableRecords($table, $response[$table], $packages);
@@ -464,28 +466,51 @@ class SpiceUIConfLoader
         SpiceDictionaryIndexes::getInstance()->reloadItems();
         SpiceDictionaryRelationships::getInstance()->reloadItems();
 
-        foreach ($response['sysdictionarydefinitions'] as $dictionaryDef) {
+        if(isset($response['sysdictionarydefinitions']) && is_array($response['sysdictionarydefinitions'])) {
+            foreach ($response['sysdictionarydefinitions'] as $dictionaryDef) {
 
-            $dictionaryDef = json_decode(base64_decode($dictionaryDef), true);
+                $dictionaryDef = json_decode(base64_decode($dictionaryDef), true);
 
-            # repair only active definitions
-            if ($dictionaryDef['status'] != 'a') continue;
+                # repair only active definitions
+                if ($dictionaryDef['status'] != 'a') continue;
 
-            try {
-                $definitions->repair($dictionaryDef['id']);
-            } catch (\Throwable | Exception $exception) {
-                unset($response[$dictionaryDef['tablename']]);
+                try {
+                    $definitions->repair($dictionaryDef['id']);
+                } catch (\Throwable|Exception $exception) {
+                    unset($response[$dictionaryDef['tablename']]);
 
-                $this->loadErrors[] = ['scope' => 'dictionary' ,'name' => $dictionaryDef['name'], 'mismatch' => is_callable([$exception, 'getDetails']) ? $exception->getDetails() : null, 'message' => $exception->getMessage()];
+                    $this->loadErrors[] = ['scope' => 'dictionary', 'name' => $dictionaryDef['name'], 'mismatch' => is_callable([$exception, 'getDetails']) ? $exception->getDetails() : null, 'message' => $exception->getMessage()];
+                }
             }
-        }
 
+            $this->repairNewRelationships($response['sysdictionarydefinitions']);
+        }
 
         SpiceDictionary::getInstance()->loadDictionary();
         RelationshipFactory::getInstance()->loadRelationships(true);
 
         foreach ($dictionaryTables as $table) {
             unset($response[$table]);
+        }
+    }
+
+    /**
+     * repair relationships for new dictionaries
+     * @param array $dictionaries
+     * @return void
+     */
+    public function repairNewRelationships(array $dictionaries): void
+    {
+        foreach ($dictionaries as $dic) {
+
+            $dic = json_decode(base64_decode($dic), true);
+
+            SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($dic['id']);
+            try {
+                SpiceDictionaryRelationships::repairDictionaryVardefRelationships($dic['id']);
+            } catch (\Throwable $exception) {
+                $this->loadErrors[] = ['scope' => 'dictionary' ,'name' => $dic['name'], 'message' => $exception->getMessage()];
+            }
         }
     }
 
@@ -526,26 +551,29 @@ class SpiceUIConfLoader
     public function getCurrentConf()
     {
         $db = DBManagerFactory::getInstance();
-        $qArray = [];
+
         $excludePackageCheck = ['systemdeploymentrpdbentrys'];
-        foreach($this->conftables as $conftable) {
-            if(!in_array($conftable, $excludePackageCheck) && $db->tableExists($conftable)){
-                $qArray[] = "(SELECT package, version FROM $conftable WHERE version is not null AND version <> '')";
-            }
-        }
-        $q = implode(" UNION ", $qArray) . " ORDER BY package, version";
-        $res = $db->query($q);
+
         $packages = [];
         $versions = [];
 
-        while ($row = $db->fetchByAssoc($res)) {
-            if (!empty($row['package']) && !in_array($row['package'], $packages)) {
-                $packages[] = $row['package'];
-            } elseif (!in_array('core', $packages) && !in_array($row['package'], $packages)) {
-                $packages[] = 'core';
+        foreach($this->conftables as $conftable) {
+            if (!in_array($conftable, $excludePackageCheck) && $db->tableExists($conftable)) {
+                $res = $db->query("SELECT package, version FROM $conftable WHERE version is not null AND version <> ''");
+                while ($row = $db->fetchByAssoc($res)) {
+                    // skip system package
+                    if ($row['package'] == 'system') continue;
+
+                    // check if it is loaded
+                    if (!empty($row['package']) && !in_array($row['package'], $packages)) {
+                        $packages[] = $row['package'];
+                    } elseif (!in_array('core', $packages) && !in_array($row['package'], $packages)) {
+                        $packages[] = 'core';
+                    }
+                    if (!empty($row['version']) && !in_array($row['version'], $versions))
+                        $versions[] = $row['version'];
+                }
             }
-            if (!empty($row['version']) && !in_array($row['version'], $versions))
-                $versions[] = $row['version'];
         }
         return ['packages' => $packages, 'versions' => $versions];
     }

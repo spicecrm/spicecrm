@@ -30,14 +30,17 @@ import {DictionaryManagerRelationshipAdd} from "./components/dictionarymanagerre
 import {DictionaryManagerRelationshipAddOneToMany} from "./components/dictionarymanagerrelationshipaddonetomany";
 import {DictionaryManagerRelationshipContainerOneToMany} from "./components/dictionarymanagerrelationshipcontaineronetomany";
 import {DictionaryManagerRelationshipAddManyToMany} from "./components/dictionarymanagerrelationshipaddmanytomany";
+import {DictionaryManagerRelationshipAddManyToManyProspectlists} from "./components/dictionarymanagerrelationshipaddmanytomanyprospectlists";
 import {DictionaryManagerRelationshipAddOneToManyPolymorph} from "./components/dictionarymanagerrelationshipaddonetomanypolymorph";
 import {DictionaryManagerRelationshipContainerOneToManyPolymorph} from "./components/dictionarymanagerrelationshipcontaineronetomanypolymorph";
 import {DictionaryManagerRelationshipContainerOneToManyPolymorphAddRelated} from "./components/dictionarymanagerrelationshipcontaineronetomanypolymorphaddrelated";
 import {DictionaryManagerRelationshipContainerManyToMany} from "./components/dictionarymanagerrelationshipcontainermanytomany";
+import {DictionaryManagerRelationshipContainerManyToManyProspectlists} from "./components/dictionarymanagerrelationshipcontainermanytomanyprospectlists";
 import {DictionaryManagerRelationshipAddParent} from "./components/dictionarymanagerrelationshipaddparent";
 import {DictionaryManagerRelationshipContainerParent} from "./components/dictionarymanagerrelationshipcontainerparent";
 import {DictionaryManagerIndexes} from "./components/dictionarymanagerindexes";
 import {DictionaryManagerIndexAdd} from "./components/dictionarymanagerindexadd";
+import {DictionaryManagerIndexEdit} from "./components/dictionarymanagerindexedit";
 import {DictionaryManagerIndexAddType} from "./components/dictionarymanagerindexaddtype";
 import {DictionaryManagerIndexDetails} from "./components/dictionarymanagerindexdetails";
 import {DictionaryManagerFields} from "./components/dictionarymanagerfields";
@@ -147,6 +150,7 @@ import {DashletGeneratorDashlets} from "./components/dashletgeneratordashlets";
 import {DashletGeneratorDashletDetails} from "./components/dashletgeneratordashletdetails";
 import {APIlogConfig} from "./components/apilogconfig";
 import {DictionaryManagerEditDefinitionModal} from "./components/dictionarymanagereditdefinitionmodal";
+import {DomainManagerEditDefinitionModal} from "./components/domainmanagereditdefinitionmodal";
 import {CategoryTreeManagerLinkModal} from "./components/categorytreemanagerlinkmodal";
 import {RoleMenuManager} from "./components/rolemenumanager";
 import {RoleMenuManagerEditRoleModal} from "./components/rolemenumanagereditrolemodal";
@@ -166,10 +170,14 @@ import {
     DictionaryFilterRelationshipTemplatePipe
 } from "./pipes/dictionarymanagerfilterrelationshiptemplate.pipe";
 import {DictionaryManagerRelationshipAddUser} from "./components/dictionarymanagerrelationshipadduser";
+import {DictionaryManagerRelationshipAddOrgUnit} from "./components/dictionarymanagerrelationshipaddorgunit";
 import {DictionaryManagerRelationshipContainerUser} from "./components/dictionarymanagerrelationshipcontaineruser";
 import {DictionaryManagerFixDBFieldsMismatchModal} from "./components/dictionarymanagerfixdbfieldsmismatchmodal";
 
-
+import {HL7Manager} from './components/hl7manager';
+import {Hl7ManagerType} from './components/hl7managertype';
+import {HL7ManagerRule} from './components/hl7managerrule';
+import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkanban";
 
 @NgModule({
     imports: [
@@ -198,6 +206,7 @@ import {DictionaryManagerFixDBFieldsMismatchModal} from "./components/dictionary
         DomainManagerSelectValidation,
         DomainManagerAddValidation,
         DomainManagerAddValidationValueModal,
+        DomainManagerEditDefinitionModal,
         DictionaryManager,
         DictionaryManagerDefinitions,
         DictionaryManagerDefinitionTabs,
@@ -218,13 +227,16 @@ import {DictionaryManagerFixDBFieldsMismatchModal} from "./components/dictionary
         DictionaryManagerRelationshipContainerOneToManyPolymorphAddRelated,
         DictionaryManagerRelationshipContainerOneToMany,
         DictionaryManagerRelationshipAddManyToMany,
+        DictionaryManagerRelationshipAddManyToManyProspectlists,
         DictionaryManagerRelationshipAddEmailAddress,
         DictionaryManagerRelationshipContainerEmailAddress,
         DictionaryManagerRelationshipContainerManyToMany,
+        DictionaryManagerRelationshipContainerManyToManyProspectlists,
         DictionaryManagerRelationshipAddParent,
         DictionaryManagerRelationshipContainerParent,
         DictionaryManagerIndexes,
         DictionaryManagerIndexAdd,
+        DictionaryManagerIndexEdit,
         DictionaryManagerIndexAddType,
         DictionaryManagerIndexDetails,
         DictionaryManagerFields,
@@ -325,13 +337,20 @@ import {DictionaryManagerFixDBFieldsMismatchModal} from "./components/dictionary
         DictionaryFilterRelationshipPipe,
         DictionaryFilterRelationshipTemplatePipe,
         DictionaryManagerRelationshipAddUser,
+        DictionaryManagerRelationshipAddOrgUnit,
         DictionaryManagerRelationshipContainerUser,
-        DictionaryManagerFixDBFieldsMismatchModal
+        DictionaryManagerFixDBFieldsMismatchModal,
+        HL7Manager,
+        Hl7ManagerType,
+        HL7ManagerRule,
+        WorkbenchConfigOptionKanban
     ],
     exports: [
         SortPipe,
         WorkbenchConfigLabel,
         DictionaryManager,
+        WorkbenchHeader,
+        WorkbenchHeaderControls
     ]
 })
 export class WorkbenchModule {}

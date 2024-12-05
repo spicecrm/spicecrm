@@ -22,6 +22,7 @@ import {userpreferences} from '../../../services/userpreferences.service';
 import {CdkDrag, CdkDragDrop, CdkDropList} from "@angular/cdk/drag-drop";
 import {ListTypeI} from "../../../services/interfaces.service";
 import {skip} from "rxjs/operators";
+import {layout} from "../../../services/layout.service";
 
 declare var _: any;
 
@@ -42,7 +43,12 @@ export class SpiceKanban implements OnInit, OnDestroy {
     /**
      * the component config
      */
-    public componentconfig: any = {};
+    public componentconfig: {
+        kanban?: string;
+        sumfield?: string;
+        limit?: string;
+        draganddrop?: string;
+    } = {};
 
     /**
      * subscription to the modellist for type changes
@@ -87,10 +93,13 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * holds the status network managed boolean
      */
     public statusNetworkManaged: boolean = false;
+    /**
+     * expanded flag for the footer
+     */
+    public footerExpanded: boolean;
 
-    constructor(public backend: backend, public broadcast: broadcast, public model: model, public modellist: modellist, public configuration: configurationService, public metadata: metadata, public userpreferences: userpreferences, public language: language, public currency: currency) {
+    constructor(public backend: backend, public broadcast: broadcast, public model: model, public modellist: modellist, public configuration: configurationService, public metadata: metadata, public userpreferences: userpreferences, public language: language, public currency: currency, public layout: layout) {
 
-        this.componentconfig = this.metadata.getComponentConfig('SpiceKanban', this.modellist.module);
         this.currencies = this.currency.getCurrencies();
         this.loadSortFields();
 
@@ -109,10 +118,10 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     set sortField(field: string) {
         !_.isEmpty(this.modellist.sortArray) ? this.modellist.sortArray[0].sortfield = field :
-        this.modellist.sortArray.push({
-            sortfield: field,
-            sortdirection: this.sortDirection
-        });
+            this.modellist.sortArray.push({
+                sortfield: field,
+                sortdirection: this.sortDirection
+            });
     }
 
     /**
@@ -163,8 +172,40 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     public ngOnInit() {
 
+        const defaultConfig = this.metadata.getComponentConfig('SpiceKanban', this.modellist.module);
+
+        if (!this.componentconfig.kanban) {
+            this.componentconfig.kanban = defaultConfig.kanban;
+        }
+        if (!this.componentconfig.sumfield) {
+            this.componentconfig.sumfield = defaultConfig.sumfield;
+        }
+        if (!this.componentconfig.limit) {
+            this.componentconfig.limit = defaultConfig.limit;
+        }
+        if (!this.componentconfig.draganddrop) {
+            this.componentconfig.draganddrop = defaultConfig.draganddrop;
+        }
+
+        const kanbans = this.configuration.getData('spicebeanguides')[this.modellist.module];
+
+        if (kanbans.length == 0) {
+            return;
+        }
+
+        if (!this.componentconfig.kanban) {
+            // Look for the default kanban
+            this.confdata = kanbans.find(k => k.is_default == 1);
+        } else {
+            this.confdata = kanbans.find(k => k.id == this.componentconfig.kanban);
+        }
+
+        if (!this.confdata) {
+            return;
+        }
+
         this.loadStatusNetwork();
-        this.confdata = this.configuration.getData('spicebeanguides')[this.modellist.module];
+
         let stages = this.confdata.stages;
 
         let bucketitems = [];
@@ -203,7 +244,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
                         function: "sum",
                     });
                 }
-        }
+            }
 
 
         }
@@ -236,7 +277,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     public ngOnDestroy() {
         // unsubscribe
-        this.modellistsubscribe.unsubscribe();
+        this.modellistsubscribe?.unsubscribe();
 
         // reset buckets
         this.modellist.buckets = {};
@@ -410,13 +451,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
         if (this.metadata.getFieldType(this.modellist.module, aggregatefield.name) == 'currency') {
             let currencySymbol: string;
             let currencyid = -99;
-            this.currencies.some(currency => {
-                if (currency.id == currencyid) {
-                    currencySymbol = currency.symbol;
-                    return true;
-                }
-            });
-            return currencySymbol;
+            return this.currency.getCurrencySymbol(currencyid);
         }
 
     }
@@ -477,18 +512,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     public allowDrag(item) {
         return this.draganddropenabled && item.acl.edit && (!this.statusNetworkManaged || this.statusNetworkItems.some(e => item[this.statusField] == e.status_from));
-    }
-
-    /**
-     * adds a bottom margin if the utility bar is shown
-     */
-    get containerStyle() {
-        if (this.kanbanUtilityBar) {
-            let rect = this.kanbanUtilityBar.element.nativeElement.getBoundingClientRect();
-            return {'margin-bottom': rect.height + 'px'};
-        } else {
-            return {};
-        }
     }
 
     /**

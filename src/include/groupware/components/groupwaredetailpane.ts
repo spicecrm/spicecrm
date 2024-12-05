@@ -1,11 +1,14 @@
 /**
  * @module ModuleGroupware
  */
-import {Component, OnDestroy, OnInit, ChangeDetectorRef} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectorRef, NgZone, Injector} from '@angular/core';
 import {Router} from "@angular/router";
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {broadcast} from "../../../services/broadcast.service";
 import {Subscription} from "rxjs";
+import {SystemSelectModuleModal} from "../../../systemcomponents/components/systemselectmodulemodal";
+import {metadata} from "../../../services/metadata.service";
+import {modal} from "../../../services/modal.service";
 
 /**
  * Outlook add-in detail pane showing a list of beans that use the email addresses found in the email.
@@ -23,12 +26,28 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
     public loading: boolean = false;
 
     public subscriptions: Subscription = new Subscription();
+    /**
+     * boolean for is creating
+     */
+    public isCreating: boolean = false;
+    /**
+     * the selected module
+     */
+    public selectedModule: string;
+    /**
+     * the available modules
+     */
+    public availableModules: string[] = [];
 
     constructor(
         public groupware: GroupwareService,
         public router: Router,
         public broadcast: broadcast,
-        public cdref: ChangeDetectorRef
+        public cdref: ChangeDetectorRef,
+        private modal: modal,
+        private metadata: metadata,
+        private zone: NgZone,
+        private injector: Injector
     ) {
     }
 
@@ -37,6 +56,7 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
      */
     public ngOnInit(): void {
         this.loadRecords();
+        this.getAvailableModules();
 
         this.subscriptions.add(
             this.broadcast.message$.subscribe(message => {
@@ -71,12 +91,11 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
      */
     public loadRecords() {
         this.loading = true;
+        this.groupware.relatedBeans = [];
+        this.cdref.detectChanges();
 
         this.groupware.loadLinkedBeans().subscribe(
             (res) => {
-                if (res.length == 1) {
-                    this.router.navigate(["/groupware/details/" + res[0].module + '/' + res[0].id]);
-                }
                 this.loading = false;
                 this.cdref.detectChanges();
             },
@@ -97,4 +116,33 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
         this.router.navigate(["/groupware/details/" + bean.module + '/' + bean.id]);
     }
 
+    public create() {
+
+        this.zone.run(() => {
+            this.modal.openStaticModal(SystemSelectModuleModal, true, this.injector).subscribe(modalRef => {
+
+                modalRef.instance.modules = this.availableModules;
+                this.cdref.detectChanges();
+                modalRef.instance.module$.subscribe({
+                    next: module => {
+                        this.selectedModule = module;
+                        this.isCreating = true;
+                    }
+                });
+            });
+        });
+    }
+
+    public handleCreateAction() {
+        this.isCreating = false;
+    }
+
+    /**
+     * get the available modules from the config and check for the create acl permission
+     * @private
+     */
+    private getAvailableModules() {
+        const config = this.metadata.getComponentConfig('GroupwareCreateBean');
+        this.availableModules = (config.modules?.split(',').map(e => e.trim()) ?? ['Contacts']).filter(m => m != 'Users' || this.metadata.checkModuleAcl(m, 'create'))
+    }
 }

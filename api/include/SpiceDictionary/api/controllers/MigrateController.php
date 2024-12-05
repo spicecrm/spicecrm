@@ -12,7 +12,9 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\utils\SpiceUtils;
 
-
+/**
+ * @deprecated
+ */
 class MigrateController
 {
 
@@ -150,6 +152,15 @@ class MigrateController
         return $res->withJson($sqls);
     }
 
+    /**
+     * @deprecated
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
+     */
     public function migrateLegacyDomTranslations(Request $req, Response $res, array $args): Response
     {
         $sqls = [];
@@ -242,6 +253,7 @@ class MigrateController
     }
 
     /**
+     * @deprecated
      * migrate all vardefs id fieldefinitions to table
      * @param Request $req
      * @param Response $res
@@ -373,6 +385,14 @@ die(print_r(implode("\n", $sqlList), true));
     }
 
 
+    /**
+     * @deprecated
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
     public function repairCache(Request $req, Response $res, array $args): Response
     {
         $db = DBManagerFactory::getInstance();
@@ -393,6 +413,14 @@ die(print_r(implode("\n", $sqlList), true));
         return $res->withJson([]);
     }
 
+    /**
+     * @deprecated
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
     public function getDictionary(Request $req, Response $res, array $args): Response
     {
         return $res->withJson(SpiceDictionaryVardefs::loadDictionaryModule($args['module']));

@@ -3,12 +3,10 @@
 
 namespace SpiceCRM\modules\Calendar\api\handlers;
 
-use SpiceCRM\data\BeanFactory;
+use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSActivityHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
 class CalendarRestHandler
 {
@@ -35,20 +33,38 @@ class CalendarRestHandler
         return $result;
     }
 
-    public function getUserCalendar(string $userId, array $params): array {
+    /**
+     * get user calendar events
+     * @param string $userId
+     * @param string $calendarId
+     * @param array $params
+     * @return array
+     * @throws Exception
+     */
+    public function getUserCalendarEvents(string $userId, string $calendarId, array $params): array {
         $db = DBManagerFactory::getInstance();
         $start = $db->quote($params['start']);
         $end = $db->quote($params['end']);
-        return SpiceFTSActivityHandler::loadCalendarEvents($start, $end, $userId, $params['searchTerm']);
+        $modules = [];
+
+        if ($calendarId != 'owner') {
+            foreach ($this->getCalendarItems($calendarId, $userId) as $item) {
+                $modules[$item['module']] = [
+                    'settings' => ['calendarfilter' => $item['module_filter']],
+                    'type' => $item['type'],
+                    'allUsers' => true
+                ];
+            }
+        }
+
+        return SpiceFTSActivityHandler::loadCalendarEvents($start, $end, $userId, $params['searchTerm'], $modules);
     }
 
-    public function getUsersCalendar(string $userId, array $params): array {
-        $db = DBManagerFactory::getInstance();
-        $start = $db->quote($params['start']);
-        $end = $db->quote($params['end']);
-        return SpiceFTSActivityHandler::loadCalendarEvents($start, $end, $userId, $params['searchTerm'], json_decode($params['users']));
-    }
-
+    /**
+     * get available calendars
+     * @return array
+     * @throws Exception
+     */
     public function getCalendars(): array {
         $db = DBManagerFactory::getInstance();
         $retArray = [];
@@ -61,107 +77,16 @@ class CalendarRestHandler
         return $retArray;
     }
 
-    public function getOtherCalendars(string $calendarId, array $params): array {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+    /**
+     * get calendar items
+     * @param string $calendarId
+     * @param string $userId
+     * @return array
+     * @throws Exception
+     */
+    private function getCalendarItems(string $calendarId, string $userId): array
+    {
         $db = DBManagerFactory::getInstance();
-        $retArray = [];
-        $start = $db->quote($params['start']);
-        $end = $db->quote($params['end']);
-        $calendarId = $db->quote($calendarId);
-        $krestModuleHandler = new SpiceBeanHandler();
-        $calendars = "SELECT citems.* FROM sysuicalendaritems as citems ";
-        $calendars .= "LEFT JOIN sysuicalendars ON citems.calendar_id = sysuicalendars.id ";
-        $calendars .= "WHERE sysuicalendars.is_default = 1 AND citems.calendar_id = '$calendarId'";
-        $calendars = $db->query($calendars);
-
-        while ($calendar = $db->fetchByAssoc($calendars)) {
-            $type = $calendar['type'];
-            $isFull = $type == 'Full' || $type == 'Voll';
-            $module = $calendar['module'];
-            $fieldEvent = $calendar['field_event'];
-            $fieldStart = $calendar['field_date_start'];
-            $fieldEnd = $calendar['field_date_end'];
-            $moduleFilter = $calendar['module_filter'];
-
-            if (empty($module) || empty($type) || ($isFull && (empty($fieldStart) || empty($fieldEnd))) || (!$isFull && empty($fieldEvent))) continue;
-
-            if ($module == 'SpiceReminders') {
-                $reminders = "SELECT * FROM spicereminders WHERE $fieldEvent BETWEEN CAST('$start' as DATE) AND CAST('$end' as DATE) AND user_id = '$current_user->id'";
-                $reminders = $db->query($reminders);
-                while ($reminder = $db->fetchByAssoc($reminders)) {
-                    $seed = BeanFactory::getBean($reminder['bean']);
-                    if($seed->retrieve($reminder['bean_id'])){
-                        $eventStart = new DateTime($reminder[$fieldEvent]);
-                        $eventEnd = $eventStart;
-                        $retArray[] = [
-                            'id' => $reminder['bean_id'],
-                            'module' => $reminder['bean'],
-                            'type' => 'other',
-                            'start' => $eventStart->format('Y-m-d H:i:s'),
-                            'end' => $eventEnd->format('Y-m-d H:i:s'),
-                            'data' => $krestModuleHandler->mapBeanToArray($reminder['bean'], $seed)
-                        ];
-                    }
-                }
-            } else {
-                $bean = BeanFactory::getBean($module);
-                $beanFieldEvent = $bean->_tablename . '.' . $fieldEvent;
-                $beanFieldStart = $bean->_tablename . '.' . $fieldStart;
-                $beanFieldEnd = $bean->_tablename . '.' . $fieldEnd;
-
-                switch ($module) {
-                    case 'Contacts':
-                        $where = "(MONTH($beanFieldEvent) = MONTH('$start') OR MONTH($beanFieldEvent) = MONTH('$end')) AND (DAYOFMONTH($beanFieldEvent) BETWEEN DAYOFMONTH('$start') AND DAYOFMONTH('$end'))";
-                        break;
-                    case 'Tasks':
-                        $where = "$beanFieldEvent BETWEEN '$start' AND '$end'";
-                        break;
-                    case 'Campaigns':
-                        $where = "IFNULL($beanFieldStart, $beanFieldEnd) <=  CAST('$end' as DATE) AND $beanFieldEnd >= CAST('$start' as DATE)";
-                        break;
-                    case 'UserAbsences':
-                        $absenceType = $bean->_tablename . '.type';
-                        $where = "$beanFieldStart <=  CAST('$end' as DATE) AND $beanFieldEnd >= CAST('$start' as DATE) AND user_id <> '$current_user->id' AND ($absenceType = 'Vacation' OR $absenceType = 'Urlaub')";
-                        break;
-                    default:
-                        $where = "$beanFieldStart <=  CAST('$end' as DATE) AND $beanFieldEnd >= CAST('$start' as DATE)";
-
-                }
-
-                if (!empty($moduleFilter)) {
-                    $sysModuleFilters = new SpiceCRM\includes\SysModuleFilters\SysModuleFilters();
-                    $filterWhere = $sysModuleFilters->generareWhereClauseForFilterId($moduleFilter);
-                    if ($filterWhere) {
-                        $where .= ' AND ('. $filterWhere .')';
-                    }
-                }
-
-                $list = $bean->get_full_list($isFull ? $beanFieldEnd : $beanFieldEvent, $where);
-                if (!$list) continue;
-
-                foreach ($list as $seed) {
-                    $seedEvent = $seed->{$fieldEvent};
-                    $seedStart = $seed->{$fieldStart};
-                    $seedEnd = $seed->{$fieldEnd};
-                    if ($isFull) {
-                        $eventStart = new DateTime($seedStart ?: $seedEnd);
-                        $eventEnd = new DateTime($seedEnd);
-                    } else {
-                        $eventStart = new DateTime($seedEvent);
-                        $eventEnd = $eventStart;
-                    }
-
-                    $retArray[] = [
-                        'id' => $seed->id,
-                        'module' => $module,
-                        'type' => 'other',
-                        'start' => $eventStart->format('Y-m-d H:i:s'),
-                        'end' => $eventEnd->format('Y-m-d H:i:s'),
-                        'data' => $krestModuleHandler->mapBeanToArray($module, $seed)
-                    ];
-                }
-            }
-        }
-        return $retArray;
+        return $db->fetchAll("SELECT module, type, module_filter FROM sysuicalendaritems WHERE calendar_id = '$calendarId' AND owner = '$userId' UNION SELECT module, type, module_filter FROM sysuicustomcalendaritems WHERE calendar_id = '$calendarId' AND owner = '$userId'") ?: [];
     }
 }

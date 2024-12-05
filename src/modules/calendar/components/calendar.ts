@@ -244,11 +244,8 @@ export class Calendar implements AfterViewInit, OnDestroy {
                                 presets[module.dateEndFieldName] = dateEnd;
                             }
 
-                            if (module.name == 'UserAbsences') {
-                                presets.user_id = this.calendar.owner;
-                                presets.user_name = this.calendar.ownerName;
-                            }
-                            this.model.addModel('', null, presets);
+                            this.model.addModel('', null, presets).subscribe(() => {
+                            });
                         }
                     });
             });

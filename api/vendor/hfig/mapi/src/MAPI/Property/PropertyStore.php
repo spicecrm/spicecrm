@@ -137,7 +137,8 @@ class PropertyStore
             $prop  = '';
             if ($named) {
                 $str_off = unpack('V', $rawProp)[1];
-                $len     = unpack('V', substr($namesData, $str_off, 4))[1];
+                if (strlen($namesData) - $str_off < 4) continue; // not sure with this, but at least it will not read outside the bounds and crash
+                $len = unpack('V', substr($namesData, $str_off, 4))[1];
                 $data = substr($namesData, $str_off + 4, $len);
                 $prop = mb_convert_encoding($data, 'UTF-8', 'UTF-16LE');
             }
@@ -361,7 +362,7 @@ class PropertyStore
 
 
                 default:
-                    $this->logger->warning(sprintf('ignoring data in __properties section, encoding: %s', $encoding), [unpack('H*', $rawProp)]);
+                    $this->logger->warning(sprintf('ignoring data in __properties section, encoding: %s', $encoding), unpack('H*', $rawProp));
 
             }
         }
@@ -385,7 +386,7 @@ class PropertyStore
             else {
                 //# i think i hit these when i have a named property, in the PS_MAPI
 				//# guid
-				$this->logger->warning(sprintf('property in named range not in nameid %s', [print_r($key, true)]));
+				$this->logger->warning(sprintf('property in named range not in nameid %s', print_r($key, true)));
 				$key = new PropertyKey($key);
             }
         }

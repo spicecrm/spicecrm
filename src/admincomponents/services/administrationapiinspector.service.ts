@@ -2,14 +2,13 @@
  * @module AdminComponentsModule
  */
 import {Injectable, Injector} from '@angular/core';
-import {Subject, Observable, Subscription} from 'rxjs';
 
 import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
 import {modelutilities} from '../../services/modelutilities.service';
-import {administration} from "./administration.service";
+import {HttpClient} from "@angular/common/http";
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 
 export class administrationapiinspectorService {
 
@@ -107,6 +106,7 @@ export class administrationapiinspectorService {
     public selectedAPI;
 
     constructor(
+        private http: HttpClient,
         public backend: backend,
         public toast: toast,
         public injector: Injector,
@@ -461,6 +461,12 @@ export class administrationapiinspectorService {
             color: '#ffffff',
             background: color
         };
+    }
+
+    public exportSwagger(route: string, includeSubroutes: boolean) {
+            const payload = { selectedRoute: route, includeSubroutes: includeSubroutes };
+
+        return this.backend.getLinkToDownload('common/swagger', 'POST', null, payload);
     }
 
 }

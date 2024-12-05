@@ -19,15 +19,18 @@ class SpiceSwaggerPath
      * @return array
      */
     public function generatePathArray(): array {
-        $this->generateRouteParameters();
-        $this->generateSummaryDescription();
+        try{
+            $this->generateRouteParameters();
+            $this->generateSummaryDescription();
 //        $this->pathArray['consumes']    = ['application/json'];
 //        $this->pathArray['produces']    = ['application/json'];
-        $this->getRouteTags();
-        $this->getRouteResponses();
-        $this->getRouteRequestBody();
-
-
+            $this->getRouteTags();
+            $this->getRouteResponses();
+            $this->getRouteRequestBody();
+        }catch(\Exception $e){
+            error_log('Error generating path for route: '. json_encode($this->route));
+            error_log('Exception: '. $e->getMessage());
+        }
         return $this->pathArray;
     }
 
@@ -37,19 +40,30 @@ class SpiceSwaggerPath
      * @return void
      */
     private function generateRouteParameters(): void {
+        $parameters = [];
+
+        // First, handle explicitly defined parameters
         if (!empty($this->route['parameters'])) {
-            $parameters = [];
-
             foreach ($this->route['parameters'] as $name => $parameter) {
-                if ($parameter['in'] != 'body') {
-                    $currentParameter = new SpiceSwaggerParameter($name, $parameter);
-                    $parameters[] = $currentParameter->generateSwaggerParameter();
+                if (!is_array($parameter)) {
+                    error_log("Parameter $name is not an array: " . gettype($parameter));
+                    continue;
                 }
-            }
 
-            if (!empty($parameters)) {
-                $this->pathArray['parameters'] = $parameters;
+                if ($parameter['in'] != 'body') {
+                    try {
+                        $currentParameter = new SpiceSwaggerParameter($name, $parameter);
+                        $parameters[] = $currentParameter->generateSwaggerParameter();
+                    } catch(\Exception $e) {
+                        error_log('Exception: ' . $e->getMessage());
+                    }
+                }
+
             }
+        }
+
+        if (!empty($parameters)) {
+            $this->pathArray['parameters'] = $parameters;
         }
     }
 
@@ -86,23 +100,23 @@ class SpiceSwaggerPath
      */
     private function getRouteResponses(): void {
         $responses = [
-            500 => [
+            '500' => [
                 'description' => 'Server error',
             ],
-            200 => [
+            '200' => [
                 'description' => 'OK',
             ],
         ];
 
         if (isset($this->route['parameters'])) {
-            $responses[404] = [
+            $responses['404'] = [
                 'description' => 'Not Found',
             ];
         }
 
         if (!empty($this->route['responses'])) {
             foreach ($this->route['responses'] as $httpCode => $response) {
-                $responses[$httpCode] = $response;
+                $responses[(string)$httpCode] = $response;
             }
         }
 
@@ -111,41 +125,57 @@ class SpiceSwaggerPath
 
     /**
      * Generates an array with the route response body.
-     * todo add schemas for the responses later on
      */
     private function getRouteRequestBody(): void {
         if ($this->route['method'] == 'get' || $this->route['method'] == 'delete') {
             return;
         }
 
-        if (!empty($this->route['parameters'])) {
-            $requestBody = [];
+        $bodyParameters = array_filter($this->route['parameters'] ?? [], function($param) {
+            return ($param['in'] ?? '') == 'body';
+        });
 
-            foreach ($this->route['parameters'] as $paramName => $paramDefinition) {
-                if ($paramDefinition['in'] != 'body') {
-                    continue;
-                }
+        if (!empty($bodyParameters)) {
+            $requestBody = [
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                            'properties' => [],
+                            'required' => []
+                        ]
+                    ]
+                ]
+            ];
+
+            foreach ($bodyParameters as $paramName => $paramDefinition) {
                 $swaggerParameter = new SpiceSwaggerParameter($paramName, $paramDefinition);
-                $requestBody['content']['application/json']['schema']['properties'][$paramName] =
-                    $swaggerParameter->generateSwaggerParameter();
-            }
-//            if (!empty($this->route['requestBody']['content'])) {
-//                $bodyContent = [
-//                    'schema' => [
-//                        '$ref' => '#/components/schemas/GenericSchema',
-//                    ],
-//                ];
-//
-//                if (isset($this->route['requestBody']['example'])) {
-//                    $bodyContent['example'] = $this->route['requestBody']['example'];
-//                } else {
-//                    $bodyContent['example'] = "{key: 'value'}";
-//                }
-//
-//                $requestBody['content']['application/json'] = $bodyContent;
-//            }
+                $paramSchema = $swaggerParameter->generateSwaggerSchemaParameter();
 
-            $this->pathArray['requestBody'] = $requestBody;
+                $requestBody['content']['application/json']['schema']['properties'][$paramName] = $paramSchema['properties'][$paramName];
+
+                if (!empty($paramSchema['required'])) {
+                    $requestBody['content']['application/json']['schema']['required'] = array_merge(
+                        $requestBody['content']['application/json']['schema']['required'],
+                        $paramSchema['required']
+                    );
+                }
+            }
+
+            if (empty($requestBody['content']['application/json']['schema']['required'])) {
+                unset($requestBody['content']['application/json']['schema']['required']);
+            }
+
+            // Only add the requestBody if there are actually properties in the schema
+            if (!empty($requestBody['content']['application/json']['schema']['properties'])) {
+                $this->pathArray['requestBody'] = $requestBody;
+            }
         }
+    }
+
+    private function extractPathParameters(): array
+    {
+        preg_match_all('/{([^}]+)}/', $this->route['route'], $matches);
+        return $matches[1];
     }
 }

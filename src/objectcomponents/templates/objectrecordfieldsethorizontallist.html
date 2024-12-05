@@ -1,7 +1,7 @@
 <ul class="slds-list_horizontal slds-has-dividers_left">
     <ng-container *ngFor="let fieldsetitem of fieldsetitems">
-        <li *ngIf="model.getField(fieldsetitem.field)" class="slds-item">
-            <field-container [field]="fieldsetitem.field" [fieldconfig]="fieldsetitem.fieldconfig" fielddisplayclass="slds-align_absolute-center"></field-container>
+        <li *ngIf="model.getField(fieldsetitem.field)" class="slds-item" style="min-width: 0">
+            <field-container [field]="fieldsetitem.field" [fieldconfig]="fieldsetitem.fieldconfig" fielddisplayclass="slds-align_absolute-center" class="slds-size--1-of-1"></field-container>
         </li>
     </ng-container>
 </ul>

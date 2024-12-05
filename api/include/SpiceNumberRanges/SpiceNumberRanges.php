@@ -131,4 +131,24 @@ class SpiceNumberRanges
 
         return $number;
     }
+
+    /**
+     * fethces all numebr range fields for a bean based on the module
+     *
+     * @param $bean
+     * @return array|false
+     * @throws \Exception
+     */
+    public static function getNumberRangeFieldsForBean($module){
+        $numberrangeFields = [];
+
+        $db = DBManagerFactory::getInstance();
+        $numberrangeRecords = $db->fetchAll("SELECT field FROM sysnumberrangeallocation WHERE module='{$module}'");
+
+        foreach ($numberrangeRecords as $numberrangeRecord){
+            $numberrangeFields[] = $numberrangeRecord['field'];
+        }
+
+        return $numberrangeFields;
+    }
 }

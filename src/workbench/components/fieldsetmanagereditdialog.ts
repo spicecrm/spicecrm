@@ -27,6 +27,8 @@ export class FieldsetManagerEditDialog implements OnInit{
 
     fieldsetname: string = '';
     fieldsettype: string = '';
+    fieldsetpackage: string;
+    fieldsetversion: string;
 
     adding: boolean = false;
     globalEdit: boolean = false;
@@ -43,6 +45,8 @@ export class FieldsetManagerEditDialog implements OnInit{
         if(this.fieldset) {
             this.fieldsetname = this.metadata.getFieldsetName(this.fieldset);
             this.fieldsettype = this.metadata.getFieldset(this.fieldset).type;
+            this.fieldsetpackage = this.metadata.getFieldset(this.fieldset).package;
+            this.fieldsetversion = this.metadata.getFieldset(this.fieldset).version;
             this.adding = false;
         } else {
             this.modalTitle = this.language.getAppLanglabel('LBL_ADD');

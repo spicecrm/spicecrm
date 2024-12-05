@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceDictionary;
 
 use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -130,12 +131,16 @@ class SpiceDictionaryRelationships
     }
 
     /**
-     * loads the relationships from the Database
+     * loads the relationships from the database
      *
+     * @param string|null $sysdictionaryDefinitonId
+     * @param array $statusFilter
+     * @param $includeTemplates
+     * @param bool $includeParentPolymorph default is true, when disabled only child polymorph relationships will be retrieved
      * @return array
-     * @throws Exception
+     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
      */
-    public function getRelationships(string $sysdictionaryDefinitonId = null, array $statusFilter = ['a'], $includeTemplates = false){
+    public function getRelationships(string $sysdictionaryDefinitonId = null, array $statusFilter = ['a'], $includeTemplates = false, bool $includeParentPolymorph = true){
         $db = DBManagerFactory::getInstance();
 
         // build a where filter clause
@@ -143,6 +148,7 @@ class SpiceDictionaryRelationships
         if($sysdictionaryDefinitonId){
             $whereArray[] = "(lhs_sysdictionarydefinition_id='{$sysdictionaryDefinitonId}' OR rhs_sysdictionarydefinition_id='{$sysdictionaryDefinitonId}')";
         }
+
         if(is_array($statusFilter) && count($statusFilter) > 0){
             $whereArray[] = "status IN ('".implode("','", $statusFilter)."')";
         }
@@ -157,6 +163,12 @@ class SpiceDictionaryRelationships
         $dictionaryrelationships = $db->query("SELECT *, 'c' scope FROM syscustomdictionaryrelationships {$whereClause}");
         while($dictionaryrelationship = $db->fetchByAssoc($dictionaryrelationships)){
             $relationshipsArray[] = $dictionaryrelationship;
+        }
+
+        # search for polymorph relationships for this dictionary as a parent
+        if ($sysdictionaryDefinitonId && $includeParentPolymorph) {
+            $polymorphRelationships = $this->getPolymorphRelationshipsForParentDictionary($sysdictionaryDefinitonId);
+            $relationshipsArray = array_merge($relationshipsArray, $polymorphRelationships);
         }
 
         // if we have an ID and shoudl include templates retrieve them as well
@@ -182,7 +194,7 @@ class SpiceDictionaryRelationships
                     $relationship['original_id'] = $relationship['id'];
                     $relationship['template_sysdictionarydefinition_id'] = $item['sysdictionary_ref_id'];
                     $relationship['referencing_sysdictionarydefinition_id'] = $sysdictionaryDefinitonId;
-                    $relationship['id'] = SpiceUtils::generateMD5GUID("{$item['id']}{$sysdictionaryDefinitonId}");
+                    $relationship['id'] = SpiceUtils::generateMD5GUID("{$item['id']}{$sysdictionaryDefinitonId}{$relationship['original_id']}");
 
                     $relationshipsArray[] = $relationship;
                 }
@@ -190,6 +202,29 @@ class SpiceDictionaryRelationships
         }
 
         return $relationshipsArray;
+    }
+
+    /**
+     * get polymorph relationships for dictionary as a parent
+     * @param string $definitionId
+     * @return array
+     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     */
+    public function getPolymorphRelationshipsForParentDictionary(string $definitionId): array
+    {
+        $db = DBManagerFactory::getInstance();
+        $relationships = [];
+
+        $query = $db->query("SELECT * FROM sysdictionaryrelationshippolymorphs WHERE lhs_sysdictionarydefinition_id = '$definitionId'");
+        while ($polymorph = $db->fetchByAssoc($query)){
+            $relationship = new SpiceDictionaryRelationship($polymorph['relationship_id']);
+            $relationship->relationship->lhs_sysdictionarydefinition_id = $definitionId;
+            $relationship->relationship->lhs_sysdictionaryitem_id = $polymorph['lhs_sysdictionaryitem_id'];
+            $relationship->relationship->relationship_name = $polymorph['relationship_name'];
+            $relationships[] = json_decode(json_encode($relationship->relationship), true);
+        }
+
+        return $relationships;
     }
 
     /**
@@ -239,13 +274,56 @@ class SpiceDictionaryRelationships
 
         unset($relationship['scope']);
 
-        $db->upsertQuery($table, $relationship, $relationship, true);
+        $db->upsertQuery($table, ['id' => $relationship['id']], $relationship, true);
 
         // handle the polymorph entries
         foreach($relationshipPolymorphs as $relationshipPolymorph){
             $table = $relationshipPolymorph['scope'] == 'c' ? 'syscustomdictionaryrelationshippolymorphs' : 'sysdictionaryrelationshippolymorphs';
             unset($relationshipPolymorph['scope']);
-            $db->upsertQuery($table, $relationshipPolymorph, $relationshipPolymorph, true);
+            $db->upsertQuery($table, ['id' => $relationshipPolymorph['id']], $relationshipPolymorph, true);
+        }
+    }
+
+    /**
+     * repair dictionary vardef relationships
+     * @param string $dictionaryId
+     * @return void
+     * @throws DatabaseException
+     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     */
+    public static function repairDictionaryVardefRelationships(string $dictionaryId): void
+    {
+        $dic = (new SpiceDictionaryDefinition($dictionaryId));
+        self::repairVardefRelationshipsFromFields($dic->name, $dic->loadVardefs());
+    }
+
+    /**
+     * repair vardef relationships and related join tables
+     * @param string $dictionaryName
+     * @param $vardefDetails
+     * @return void
+     * @throws DatabaseException
+     * @throws Exception
+     */
+    public static function repairVardefRelationshipsFromFields(string $dictionaryName, $vardefDetails): void
+    {
+        SpiceDictionaryVardefs::loadLegacyFiles();
+
+        foreach ($vardefDetails['fields'] as $field) {
+
+            if ($field['type'] != 'link') continue;
+
+            try {
+                # try to locate the relationship on this dictionary vardef
+                SpiceDictionaryRelationships::getInstance()->repairVardefRelationship($dictionaryName, $field['relationship'], true, false);
+            } catch (NotFoundException $e) {
+                # on failure try to locate the relationship vardef
+                foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dicName => $dic) {
+                    if (!$dic['relationships'] || !$dic['relationships'][$field['relationship']]) continue;
+                    SpiceDictionaryRelationships::getInstance()->repairVardefRelationship($dicName, $field['relationship'], true, false);
+                    break;
+                }
+            }
         }
     }
 
@@ -253,13 +331,17 @@ class SpiceDictionaryRelationships
     /**
      * legacy support to repair a vardef relationship
      *
-     * @return void
+     * @return true
+     * @throws DatabaseException
+     * @throws Exception
      */
-    public function repairVardefRelationship($dictionaryName, $relationshipName){
+    public function repairVardefRelationship($dictionaryName, $relationshipName, bool $repairJoinTable = false, bool $loadLegacyFiles = true): bool
+    {
         $db = DBManagerFactory::getInstance();
 
         // get the relationship data
-        SpiceDictionaryVardefs::loadLegacyFiles();
+        if ($loadLegacyFiles) SpiceDictionaryVardefs::loadLegacyFiles();
+
         // $relationshipDefinition = SpiceDictionary::getInstance()->getDefs($dictionaryName)['relationships'][$relationshipName];
         $relationshipDefinition = SpiceDictionaryHandler::getInstance()->dictionary[$dictionaryName]['relationships'][$relationshipName];
 
@@ -272,6 +354,14 @@ class SpiceDictionaryRelationships
         $relationshipDefinition['relationship_name'] = $relationshipName;
         $relationshipDefinition['id'] = SpiceUtils::generateMD5GUID($relationshipName);
         $db->insertQuery('relationships', $relationshipDefinition);
+
+        #repair the join table for m2m relationship
+        if ($repairJoinTable && !empty($relationshipDefinition['join_table'])) {
+            # generate the repair query
+            $sql = SpiceDictionaryDefinitions::getInstance()->repairVardefDefinition($relationshipDefinition['join_table'], false, false);
+            # execute the query
+            if (!empty($sql)) DBManagerFactory::getInstance()->query($sql, true);
+        }
 
         return true;
     }

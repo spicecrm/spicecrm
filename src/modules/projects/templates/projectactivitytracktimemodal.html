@@ -1,0 +1,23 @@
+<system-modal size="medium">
+    <system-modal-header (close)="closeModal()">
+        <system-label label="LBL_TRACK_TIME_FOR"></system-label>
+    </system-modal-header>
+    <system-modal-content margin="none" grow="true">
+        <div class="slds-p-around--small">
+            <object-record-fieldset [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="closeModal()">
+                <system-label label="LBL_CANCEL"></system-label>
+            </button>
+            <button class="slds-col--bump-left slds-button slds-button--brand" (click)="saveProjectActivity()">
+                <system-label label="LBL_SAVE"></system-label>
+            </button>
+            <button class="slds-col--bump-left slds-button slds-button--brand" (click)="saveProjectActivity(true)">
+                <system-label label="LBL_SAVE_AND_GO_TO_RECORD"></system-label>
+            </button>
+        </div>
+    </system-modal-footer>
+</system-modal>

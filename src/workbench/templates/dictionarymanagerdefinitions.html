@@ -49,10 +49,10 @@
                     <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionarydefinition.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
                     <dictionary-manager-item-status [ngModel]="dictionarydefinition.status" (ngModelChange)="setStatus(dictionarydefinition, $event)"></dictionary-manager-item-status>
                 </td>
-                <td data-label="Dictionary" >
+                <td data-label="Dictionary" title="{{dictionarydefinition.name}}">
                     <div class="slds-truncate">{{dictionarydefinition.name}}</div>
                 </td>
-                <td data-label="Table" >
+                <td data-label="Table" title="{{dictionarydefinition.tablename}}">
                     <div class="slds-truncate">{{dictionarydefinition.tablename}}</div>
                 </td>
                 <td data-label="Type">

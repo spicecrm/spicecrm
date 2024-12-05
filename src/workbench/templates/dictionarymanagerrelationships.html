@@ -22,7 +22,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="slds-hint-parent" *ngFor="let dictionaryrelationship of dictionarymanager.dictionaryrelationships | dictionaryFilterRelationship: dictionarymanager.currentDictionaryDefinition" (click)="setActiveId(dictionaryrelationship.id)" [ngClass]="{'slds-is-selected': dictionarymanager.currentDictionaryRelationship == dictionaryrelationship.id}">
+                <tr class="slds-hint-parent" *ngFor="let dictionaryrelationship of dictionarymanager.dictionaryrelationships | dictionaryFilterRelationship: dictionarymanager.currentDictionaryDefinition: dictionarymanager.dictionaryrelationshippolymorphs" (click)="setActiveId(dictionaryrelationship.id)" [ngClass]="{'slds-is-selected': dictionarymanager.currentDictionaryRelationship == dictionaryrelationship.id}">
                     <td>
                         <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionaryrelationship.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
                         <dictionary-manager-item-status [ngModel]="dictionaryrelationship.status" (ngModelChange)="setStatus(dictionaryrelationship, $event)"></dictionary-manager-item-status>

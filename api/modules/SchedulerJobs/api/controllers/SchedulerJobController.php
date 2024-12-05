@@ -11,6 +11,7 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\modules\SchedulerJobs\SchedulerJob;
 use SpiceCRM\modules\SchedulerJobTasks\SchedulerJobTask;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
@@ -90,18 +91,9 @@ class SchedulerJobController
      */
     public function killJobProcess(Request $req, Response $res, array $args): Response
     {
+        /** @var SchedulerJob $job */
         $job = BeanFactory::getBean('SchedulerJobs', $args['id']);
         $job->killProcess();
-
-        $job->job_status = 'Active';
-        $job->save();
-
-        $tasks = $job->get_linked_beans('schedulerjobtasks', null, [], 0, -1, 0, "schedulerjobtasks.jobtask_status = 'running'");
-
-        foreach ($tasks as $task) {
-            $task->jobtask_status = SchedulerJobTask::JOB_TASK_STATUS_ACTIVE;
-            $task->save();
-        }
 
         return $res->withJson(true);
 

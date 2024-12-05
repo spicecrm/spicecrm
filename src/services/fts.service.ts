@@ -84,10 +84,24 @@ export class fts {
     public checkForSearchTermErrors(searchTerm): {label: string, nestedValues: string[]}[] | undefined {
         let config = this.configurationService.getCapabilityConfig('search');
         let minNgram = config.min_ngram ? parseInt(config.min_ngram, 10) : 3;
-        let items = searchTerm.split(' ');
+
+        let minMatchedLengthOK = true;
+        let matches = searchTerm.match(/-?"(.*?)"/gm);
+        if(matches) {
+            for (let match of matches) {
+                searchTerm = searchTerm.replace(match, '');
+                if (match.length - 2 < minNgram) minMatchedLengthOK = false;
+            }
+        }
+
+        // check if any search term is left
+        if(searchTerm.trim() == '' && matches && minMatchedLengthOK) return undefined;
+
+        // split all remaining items
+        let items = searchTerm.trim().split(' ');
         const errors = [];
 
-        if (items.filter(i => i !== 'OR' && i.length < minNgram).length > 0) {
+        if (items.filter(i => i !== 'OR' && i.trim().length < minNgram).length > 0 || !minMatchedLengthOK) {
             errors.push({
                 label: 'MSG_SEARCH_TERM_TOO_SHORT',
                 nestedValues: [String(minNgram)]

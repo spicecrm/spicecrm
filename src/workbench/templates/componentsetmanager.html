@@ -3,34 +3,30 @@
     <div class="slds-grid slds-grid--vertical-align-center slds-form--inline">
         <div class="slds-form-element">
             <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
-            <div class="slds-form-element__control">
-                <div class="slds-select_container" style="min-width:250px;">
-                    <select class="slds-select" [(ngModel)]="currentModule" (change)="reset()" [disabled]="modules.length == 0">
-                        <option value="*">*</option>
-                        <option *ngFor="let module of modules" [value]="module">{{module}}
-                        </option>
-                    </select>
-                </div>
+            <div class="slds-form-element__control" style="min-width: 300px">
+                <system-select listHeight="10" [(ngModel)]="module" [idOnly]="true" [disabled]="modules.length == 0">
+                    <system-select-option value="*" display="*"/>
+                    @for (m of modules; track m) {
+                        <system-select-option [value]="m" [display]="m"/>
+                    }
+                </system-select>
             </div>
         </div>
-        <div class="slds-form-element">
+        <div class="slds-form-element" *ngIf="currentModule">
             <label class="slds-form-element__label">Componentset</label>
-            <div class="slds-form-element__control" style="min-width:250px;">
-                <div class="slds-select_container">
-                    <select class="slds-select" [(ngModel)]="currentComponentSet" (change)="selectComponentSet()" [disabled]="getComponentSets().length == 0">
-                        <option></option>
-                        <optgroup label="custom Componentsets" *ngIf="getComponentSets('custom').length > 0">
-                            <option *ngFor="let sysComponentset of getComponentSets('custom')" [ngValue]="sysComponentset.id">
-                                {{sysComponentset.name}}
-                            </option>
-                        </optgroup>
-                        <optgroup label="global Componentsets"  *ngIf="getComponentSets('global').length > 0">
-                            <option *ngFor="let sysComponentset of getComponentSets('global')" [ngValue]="sysComponentset.id">
-                                {{sysComponentset.name}}
-                            </option>
-                        </optgroup>
-                    </select>
-                </div>
+            <div class="slds-form-element__control" style="min-width:400px;">
+                <system-select listHeight="10" [(ngModel)]="componentSet" [idOnly]="true" [disabled]="modules.length == 0 || (moduleComponentsets?.custom.length === 0 && moduleComponentsets?.global.length === 0)">
+                    @if (moduleComponentsets?.custom.length > 0) {
+                        @for (sysComponentset of moduleComponentsets.custom; track sysComponentset.id){
+                            <system-select-option [value]="sysComponentset.id" [display]="sysComponentset.name" group="custom Componentsets"/>
+                        }
+                    }
+                    @if (moduleComponentsets?.global.length > 0) {
+                        @for (sysComponentset of moduleComponentsets.global; track sysComponentset.id){
+                            <system-select-option [value]="sysComponentset.id" [display]="sysComponentset.name" group="global Componentsets"/>
+                        }
+                    }
+                </system-select>
             </div>
         </div>
         <!--div *ngIf="currentComponentSet">
@@ -68,13 +64,13 @@
             <div class="slds-form-element slds-p-right--x-small slds-size--1-of-5">
                 <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
                 <div class="slds-form-element__control">
-                    <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentComponentSetPackage"/>
+                    <system-input-package [(ngModel)]="currentComponentSetPackage"/>
                 </div>
             </div>
             <div class="slds-form-element slds-p-right--x-small slds-size--1-of-5">
                 <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
                 <div class="slds-form-element__control">
-                    <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentComponentSetVersion"/>
+                    <system-input-version [(ngModel)]="currentComponentSetVersion"/>
                 </div>
             </div>
             <div class="slds-form-element slds-p-right--x-small slds-size--1-of-5">
@@ -113,12 +109,15 @@
             </div>
         </div>
         <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-vertical--x-small">
-            <componentsetmanager-componentset-details *ngIf="selectedId" [component]="selectedComponent"></componentsetmanager-componentset-details>
+            <componentsetmanager-componentset-details *ngIf="selectedId" [module]="currentModule" [component]="selectedComponent"></componentsetmanager-componentset-details>
         </div>
     </div>
     <div class="slds-text-align--right slds-p-around--small slds-border--top">
         <button [disabled]="!view.isEditMode()" type="button" class="slds-button slds-button--brand" (click)="saveChanges()">
             <system-label label="LBL_SAVE"></system-label>
+        </button>
+        <button [disabled]="!view.isEditMode()" class="slds-button slds-button--neutral" system-title="LBL_DELETE" (click)="delete()">
+            <system-button-icon icon="delete"></system-button-icon>
         </button>
     </div>
 </div>

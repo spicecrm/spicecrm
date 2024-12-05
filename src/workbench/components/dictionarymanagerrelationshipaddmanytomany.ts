@@ -22,6 +22,7 @@ import {
  * renders a modal to add a one to many relationship
  */
 @Component({
+    selector: 'dictionary-manager-relationship-add-many-to-many',
     templateUrl: '../templates/dictionarymanagerrelationshipaddmanytomany.html',
 })
 export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
@@ -61,7 +62,7 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
             lhs_sysdictionaryitem_id: '',
             lhs_linkname: '',
             lhs_linklabel: '',
-            lhs_duplicatemerge: 1,
+            lhs_duplicatemerge: 0,
             rhs_sysdictionarydefinition_id: '',
             rhs_sysdictionaryitem_id: '',
             rhs_linkname: '',
@@ -87,6 +88,9 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
         if(this.dictionarymanager.getCurrentDefinition()?.sysdictionary_type == 'metadata' || this.dictionarymanager.getCurrentDefinition()?.sysdictionary_type == 'relationship'){
             this.relationship.join_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
         }
+
+        // set the proper relationship type as this is used for n:m and n:m bean
+        this.relationship.relationship_type = this.type.name;
     }
 
     /**
@@ -129,7 +133,7 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
         // set the rhs defaults
         let riditem = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.rhs_sysdictionarydefinition_id).find(i => i.name == 'id');
         if (riditem) this.relationship.rhs_sysdictionaryitem_id = riditem.id;
-        this.relationship.rhs_linkname = this.dictionarymanager.getDictionaryDefinitionName(this.relationship.lhs_sysdictionarydefinition_id).toLowerCase();
+        this.relationship.rhs_linkname = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.lhs_sysdictionarydefinition_id).tablename.toLowerCase();
     }
 
     /**

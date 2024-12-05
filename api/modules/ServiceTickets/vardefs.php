@@ -26,6 +26,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket'] = [
         'email1' => [
             'name' => 'email1',
             'vname' => 'LBL_EMAIL1',
+            'type' => 'varchar',
             'source' => 'non-db',
             'required' => false
         ],
@@ -598,7 +599,7 @@ if (file_exists('extensions/modules/ServiceEquipments')) {
     ];
 
 }
-
+/* migrated
 if (file_exists('extensions/modules/ServiceTicketSLAs')) {
     //serviceslas
     SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['serviceticketsla_id'] = [
@@ -630,6 +631,7 @@ if (file_exists('extensions/modules/ServiceTicketSLAs')) {
         'source' => 'non-db'
     ];
 }
+*/
 
 if (file_exists('extensions/modules/ServiceTicketNotes')) {
     SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['serviceticketnotes'] = [

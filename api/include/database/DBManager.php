@@ -36,6 +36,7 @@
 
 namespace SpiceCRM\includes\database;
 
+use Exception;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\resource\ResourceManager;
@@ -306,6 +307,10 @@ abstract class DBManager
      */
     public $helper;
 
+    public const DEFAULT_COLLATION = "utf8mb4_unicode_ci";
+
+    public const DEFAULT_CHARSET = "utf8mb4";
+
 
     /**
      * Create DB Driver
@@ -562,18 +567,18 @@ abstract class DBManager
      * @param array $data key/value pairs
      * @param bool $execute boolean execute the query on true, return the query on false
      * @return mixed query result | false
+     * @throws Exception
      */
     public function insertQuery($table, array $data, $execute = true)
     {
-        // find the dictionary table
-        foreach (SpiceDictionary::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
-            if ($dictionaryDefs['table'] == $table) {
-                return $this->insertParams($table, $dictionaryDefs['fields'], $data, null, $execute);
-            }
+        $def = SpiceDictionary::getInstance()->getDefsByTableName($table);
+
+        if (!$def) {
+            $this->last_error = "Dictionary was not found for table $table";
+            return false;
         }
 
-        $this->last_error = "Dictionary was not found for table $table";
-        return false;
+        return $this->insertParams($table, $def['fields'], $data, null, $execute);
     }
 
     /**
@@ -583,18 +588,28 @@ abstract class DBManager
      * @param array $pks key/value pairs of primary/unique keys
      * @param array $data key/values of fields to update
      * @return bool query result
+     * @throws Exception
      */
     public function updateQuery($table, array $pks, array $data, $execute = true)
     {
+        $def = SpiceDictionary::getInstance()->getDefsByTableName($table);
+
+        if (!$def) {
+            $this->last_error = "Dictionary was not found for table $table";
+            return false;
+        }
+
+        $data = $this->prepareData($data, $def['fields']);
+
         foreach ($data as $key => $val) {
-            // do not set the PKs
             if(isset($pks[$key])) continue;
-            $sets[] = "`$key` = '{$this->quote($val)}'";
+            $sets[] = "`$key` = $val";
         }
 
         foreach ($pks as $key => $val) {
             $wheres[] = "`$key` = '{$this->quote($val)}'";
         }
+
         $query = "UPDATE $table SET " . implode(',', $sets) . " WHERE " . implode(' AND ', $wheres);
 
         return $execute ? $this->query($query) : $query;
@@ -613,10 +628,20 @@ abstract class DBManager
      */
     public function upsertQuery($table, array $pks, array $data, bool $execute = true)
     {
-        if ($this->fetchOne("SELECT id FROM {$table} WHERE id = '{$pks['id']}'")) {
-            $this->updateQuery($table, $pks, $data, $execute);
+        if(count($pks) == 0) throw new Exception('attempting upsert without keys');
+
+        $keyWhereClauses = [];
+
+        foreach ($pks as $pkField => $pkValue) {
+            $keyWhereClauses[] = "{$pkField} = '{$pkValue}'";
+        }
+
+        $keyWhereClause = implode(" AND ", $keyWhereClauses);
+
+        if ($this->fetchOne("SELECT id FROM {$table} WHERE $keyWhereClause", false )) {
+            return $this->updateQuery($table, $pks, $data);
         } else {
-            $this->insertQuery($table, $data, $execute);
+            return $this->insertQuery($table, $data, $execute);
         }
     }
 
@@ -660,46 +685,42 @@ abstract class DBManager
      */
     public function insertParams($table, $field_defs, $data, $field_map = null, $execute = true)
     {
-        $values = [];
-        foreach ($field_defs as $fieldIdx => $fieldDef) {
-            $field = $fieldDef['name'];
-            if (isset($fieldDef['source']) && $fieldDef['source'] != 'db') continue;
-            //custom fields handle there save seperatley
-            if (!empty($field_map) && !empty($field_map[$field]['custom_type'])) continue;
+        $values = $this->prepareData($data, $field_defs, true);
 
-			if(isset($data[$field])) {
-				// clean the incoming value..
-				$val = $data[$field];
-			} else {
-				if(isset($fieldDef['default']) && strlen($fieldDef['default']) > 0) {
-					$val = $fieldDef['default'];
-				} else {
-					$val = null;
-				}
-			}
-
-            //handle auto increment values here - we may have to do something like nextval for oracle
-            if (!empty($fieldDef['auto_increment'])) {
-                $auto = $this->getAutoIncrementSQL($table, $fieldDef['name']);
-                if (!empty($auto)) {
-                    $values[$field] = $auto;
-                }
-            } elseif ($fieldDef['name'] == 'deleted') {
-                $values['deleted'] = (int)$val;
-            } else {
-                // need to do some thing about types of values
-                if (!is_null($val) || !empty($fieldDef['required'])) {
-                    $values[$field] = $this->massageValue($val, $fieldDef);
-                }
-            }
-        }
-
-        if (empty($values))
-            return $execute ? true : ''; // no columns set
+        if (empty($values)) return $execute ? true : ''; // no columns set
 
         // get the entire sql
         $query = "INSERT INTO $table (" . implode(",", array_keys($values)) . ") VALUES (" . implode(",", $values) . ")";
         return $execute ? $this->query($query, true) : $query;
+    }
+
+    /**
+     * prepare the data array to insert or update query
+     * @param array $data
+     * @param array $field_defs
+     * @param bool $withDefaults
+     * @return array
+     */
+    private function prepareData(array $data, array $field_defs, bool $withDefaults = false): array
+    {
+        $values = [];
+
+        foreach ($field_defs as $fieldDef) {
+
+            $field = $fieldDef['name'];
+
+            # temporarily make sure to set the deleted flag to 0 if it does not have a default value.
+            if ($withDefaults && $field == 'deleted' && !isset($fieldDef['default']) && $data[$field] != 1) {
+                $values['deleted'] = 0;
+                continue;
+            }
+
+            if ((!isset($data[$field]) && (!$withDefaults || !isset($fieldDef['default']))) || (isset($fieldDef['source']) && $fieldDef['source'] != 'db')) continue;
+
+            $values[$field] = $this->massageValue($data[$field], $fieldDef);
+        }
+
+        return $values;
     }
 
     /**
@@ -1163,6 +1184,12 @@ abstract class DBManager
     public function compareVarDefs($fielddef1, $fielddef2, $ignoreName = false)
     {
         # todo refactor
+
+        # if the db field has no default value but the field dictionary definition consider the comparison unequal
+        if (isset($fielddef2['default']) && !isset($fielddef1['default'])) {
+            return false;
+        }
+
         foreach ($fielddef1 as $key => $value) {
             if ($key == 'comment') continue;
 
@@ -1710,9 +1737,10 @@ abstract class DBManager
      * @param bool $dieOnError True if we want to call die if the query returns errors
      * @param string $msg Message to log if error occurs
      * @param bool $suppress Message to log if error occurs
-     * @return array    single row from the query
+     * @param bool $idAsKey
+     * @return array | false    single row from the query
      */
-    public function fetchAll($sql, $dieOnError = false, $msg = '', $suppress = false)
+    public function fetchAll(string $sql, bool $dieOnError = false, string $msg = '', bool $suppress = false, bool $idAsKey = false)
     {
         $this->checkConnection();
         $queryresult = $this->query($sql, $dieOnError, $msg);
@@ -1722,8 +1750,13 @@ abstract class DBManager
 
         // get the rows
         while($row = $this->fetchByAssoc($queryresult)){
-            $rows[] = $row;
+            if ($idAsKey) {
+                $rows[$row['id']] = $row;
+            } else {
+                $rows[] = $row;
+            }
         }
+
         if (!$rows) return false;
 
         $this->freeResult($queryresult);
@@ -2199,10 +2232,6 @@ abstract class DBManager
                     }
                     break;
             }
-        } else {
-            if (!empty($val) && !empty($fieldDef['len']) && strlen($val) > $fieldDef['len']) {
-                $val = $this->truncate($val, $fieldDef['len']);
-            }
         }
 
         if (is_null($val)) {
@@ -2234,8 +2263,20 @@ abstract class DBManager
             if (isset($fieldDef['dbtype']))
                 $fieldDef['dbType'] = $fieldDef['dbtype'];
             else
-                $fieldDef['dbType'] = $fieldDef['type'];
+                $fieldDef['dbType'] = $this->getColumnType($fieldDef['type']);
         }
+
+        # override dbType for json type, because json type is not implemented yet
+        if (in_array('json', [$fieldDef['dbType'], $fieldDef['type']])) {
+            $fieldDef['dbType'] = $this->getColumnType('json');
+        }
+
+        # override dbType for id set to varchar with length 36 to handle legacy varchar definitions
+        if ($fieldDef['dbType'] == 'id') {
+            $fieldDef['dbType'] = $this->getColumnType('id');
+            $fieldDef['len'] = 36;
+        }
+
         $type = $this->getColumnType($fieldDef['dbType']);
         $matches = [];
         // len can be a number or a string like 'max', for example, nvarchar(max)
@@ -2471,9 +2512,11 @@ abstract class DBManager
         // and add dbtype where type is being used for some special
         // purposes like referring to foreign table etc.
         if (!empty($fieldDef['dbType']))
-            return $fieldDef['dbType'];
+            # get only the field type and omit the length for later type comparison
+            return preg_replace('/\(.+\)/', '', $fieldDef['dbType']);
         if (!empty($fieldDef['dbtype']))
-            return $fieldDef['dbtype'];
+            # get only the field type and omit the length for later type comparison
+            return preg_replace('/\(.+\)/', '', $fieldDef['dbtype']);
         if (!empty($fieldDef['type']))
             return $fieldDef['type'];
         if (!empty($fieldDef['Type']))
@@ -3597,12 +3640,12 @@ abstract class DBManager
      * @param string $option Option name
      * @return mixed Option value or null if doesn't exist
      */
-    public function getOption($option)
-    {
-        if (isset($this->options[$option])) {
-            return $this->options[$option];
-        }
-        return null;
+    public function getOption(string $option): mixed {
+        return match ($option) {
+            'collation' => $this->options['collation'] ?? self::DEFAULT_COLLATION,
+            'charset'   => $this->options['charset'] ?? self::DEFAULT_CHARSET,
+            default     => $this->options[$option] ?? null,
+        };
     }
 
     /**
@@ -3993,7 +4036,7 @@ abstract class DBManager
      * Create a database
      * @param string $dbname
      */
-    abstract public function createDatabase($dbname);
+    abstract public function createDatabase(string $dbname): void;
 
     /**
      * Drop a database

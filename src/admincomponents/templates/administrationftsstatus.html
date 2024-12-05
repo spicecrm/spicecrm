@@ -77,6 +77,11 @@
                             </div>
                         </th>
                         <th scope="col">
+                            <div class="slds-truncate slds-p-left--xx-small">
+                                <system-label label="LBL_FAILED"></system-label>
+                            </div>
+                        </th>
+                        <th scope="col">
                             <div class="slds-truncate">
                                 <system-label label="LBL_SIZE"></system-label>
                             </div>
@@ -101,6 +106,9 @@
                         </td>
                         <td>
                             <div class="slds-truncate">{{index.unindexed}}</div>
+                        </td>
+                        <td>
+                            <div [class.slds-theme--error]="index.erroneous > 0" class="slds-truncate slds-p-left--xx-small">{{index.erroneous}}</div>
                         </td>
                         <td>
                             <div class="slds-truncate">{{index.psize}}/{{index.tsize}}</div>

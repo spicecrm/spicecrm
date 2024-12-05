@@ -77,7 +77,6 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
             'border-bottom': this.column.attributes['border-bottom'],
             'border-left': this.column.attributes['border-left'],
             'border-radius': this.column.attributes['border-radius'],
-            'width': this.column.attributes.width,
             'vertical-align': this.column.attributes['vertical-align'],
             'padding': this.column.attributes.padding,
         };

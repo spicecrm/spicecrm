@@ -5,7 +5,7 @@ import {
     Component,
     ViewChild,
     ViewContainerRef,
-    ElementRef, OnDestroy, AfterViewInit
+    ElementRef, OnDestroy, AfterViewInit, Injector
 } from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
@@ -13,11 +13,12 @@ import {navigation} from '../../services/navigation.service';
 import {language} from '../../services/language.service';
 import {navigationtab} from '../../services/navigationtab.service';
 import {administration} from '../services/administration.service';
+import {WorkbenchService} from "../../workbench/services/workbench.service";
 
 
 @Component({
     templateUrl: '../templates/administrationmain.html',
-    providers: [administration]
+    providers: [administration, WorkbenchService]
 })
 export class AdministrationMain implements AfterViewInit {
 
@@ -39,6 +40,7 @@ export class AdministrationMain implements AfterViewInit {
         public metadata: metadata,
         public language: language,
         public navigation: navigation,
+        public injector: Injector,
         public navigationtab: navigationtab,
     ) {
         this.navigationtab.setTabInfo({
@@ -79,7 +81,7 @@ export class AdministrationMain implements AfterViewInit {
         }
 
         // this.router.navigate(['admin/'+block+'/'+item.adminaction]);
-        this.metadata.addComponent(admincomponent.component, this.admincontentcontainer).subscribe(admObject => {
+        this.metadata.addComponent(admincomponent.component, this.admincontentcontainer, this.injector).subscribe(admObject => {
             admObject.instance.componentconfig = admincomponent.componentconfig;
             this.admincontentObject = admObject;
         });

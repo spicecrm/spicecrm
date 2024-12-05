@@ -34,6 +34,11 @@ export class ACLObjectsManagerObjects {
     @Output() public objectselected: EventEmitter<any> = new EventEmitter<any>();
     @Output() public typeselected: EventEmitter<any> = new EventEmitter<any>();
 
+    /**
+     * listener for updated acl object from child
+     */
+    @Output() public objectUpdated: EventEmitter<any> = new EventEmitter<any>(); // Emit updated object
+
     constructor(public backend: backend, public modal: modal, public language: language) {
 
         this.backend.getRequest('module/SpiceACLObjects/modules').subscribe(acltypes => {
@@ -147,6 +152,8 @@ export class ACLObjectsManagerObjects {
                         this.aclobjects.some(object => {
                             if (object.id == objectid) {
                                 object.status = 'r';
+                                // Emit the updated object to the parent
+                                this.objectUpdated.emit({ ...object });
                                 return true;
                             }
                         });
@@ -169,6 +176,8 @@ export class ACLObjectsManagerObjects {
                         this.aclobjects.some(object => {
                             if (object.id == objectid) {
                                 object.status = 'd';
+                                // Emit the updated object to the parent
+                                this.objectUpdated.emit({ ...object });
                                 return true;
                             }
                         });

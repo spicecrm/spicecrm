@@ -1,5 +1,13 @@
-<div class="slds-vertical-tabs" style="border: none;">
-    <ul #tabscontainer class="slds-vertical-tabs__nav slds-scrollable--y" [ngStyle]="getTabsStyle()" role="tablist" aria-orientation="vertical">
+<div class="slds-vertical-tabs slds-height_full slds-wrap slds-grid--vertical-align-start" style="border: none;">
+    <ul class="slds-vertical-tabs__nav slds-border--bottom slds-scrollable--y slds-hide--medium slds-size--1-of-1" role="tablist" aria-orientation="vertical">
+        <li *ngIf="activeTab > -1" (click)="toggleExpanded($event)" class="slds-p-right--small slds-vertical-tabs__nav-item slds-text-title--caps slds-is-active" role="presentation">
+            <a class="slds-vertical-tabs__link" href="javascript:void(0)" role="tab" tabindex="-1" aria-selected="false"><span class="slds-badge" *ngIf="tabs[activeTab].hasErrors" title="Invalid fields!">{{tabs[activeTab].hasErrors}}</span>
+                <object-vertical-tab-container-item-header [style.opacity]="expanded ? 0 : 1" [tab]="tabs[activeTab]"></object-vertical-tab-container-item-header>
+            </a>
+            <system-utility-icon [icon]="expanded ? 'chevronup' : 'chevrondown'" size="xx-small"></system-utility-icon>
+        </li>
+    </ul>
+    <ul #tabscontainer [class.slds-hide]="!expanded && layout.screenwidth == 'small'" class="spice-medium-height-full slds-vertical-tabs__nav slds-scrollable--y slds-size--1-of-1 slds-medium-size--1-of-4" role="tablist" aria-orientation="vertical">
         <li *ngFor="let tab of tabs; let tabindex = index" (click)="setActiveTab(tabindex)" [ngClass]="{'slds-is-active': tabindex === activeTab, 'slds-hide': isHidden(tab)}" class="slds-vertical-tabs__nav-item slds-text-title--caps" role="presentation">
             <a class="slds-vertical-tabs__link" href="javascript:void(0)" role="tab" tabindex="-1" aria-selected="false"><span class="slds-badge" *ngIf="tab.hasErrors" title="Invalid fields!">{{tab.hasErrors}}</span>
                 <object-vertical-tab-container-item-header [tab]="tab"></object-vertical-tab-container-item-header>
@@ -7,7 +15,7 @@
         </li>
     </ul>
     <ng-container *ngFor="let tab of tabs; let tabindex = index">
-        <div *ngIf="checkRenderTab(tabindex)" [ngStyle]="getDisplay(tabindex)" class="slds-vertical-tabs__content slds-scrollable--y slds-p-around--xx-small slds-show" role="tabpanel">
+        <div *ngIf="checkRenderTab(tabindex)" [class.slds-hide]="tabindex != activeTab" class="slds-vertical-tabs__content slds-scrollable--y slds-p-around--xx-small slds-show slds-grow" role="tabpanel">
             <object-vertical-tab-container-item *ngIf="tab.componentset" [componentset]="tab.componentset" (taberrors)="showErrorsOnTab(tabindex,$event)">
             </object-vertical-tab-container-item>
         </div>

@@ -50,9 +50,14 @@ export class DictionaryManagerRepairAll {
     public repairing: boolean = false;
 
     /**
+     * search string for the table names
+     */
+    public searchTerm: string = ''
+
+    /**
      * set to true to execute SQLs when repairing
      */
-    public executerSQLs: boolean = false;
+    public executerSQLs: boolean = true;
 
     public displayDetailSetting: boolean = false;
 
@@ -177,6 +182,12 @@ export class DictionaryManagerRepairAll {
                 return false;
             }
 
+            const searchTermMatch = !this.searchTerm || d.name.toLowerCase().includes(this.searchTerm.toLowerCase());
+
+            if (!searchTermMatch) {
+                return false;
+            }
+
             switch(d.type){
                 case 'dictionarydefinition':
                     return this.itemfilters.definitions;
@@ -242,7 +253,7 @@ export class DictionaryManagerRepairAll {
      * returns the processed count
      */
     get processedCount() {
-        return this.definitions.filter(d => d.status != 'n').length
+        return this.filtereddefinitions.filter(d => d.status != 'n').length
     }
 
     /**
@@ -530,10 +541,15 @@ export class DictionaryManagerRepairAll {
      * close the modal
      */
     public close() {
-        // set stopped if we are still repairing
-        this.stopped = true;
-        // close the modal
-        this.self.destroy();
+        if(this.repairing) {
+            this.modal.confirm('MSG_WARNING_STOP_REPAIR_ALL_DICTIONARIES', 'MSG_WARNING_STOP_REPAIR_ALL_DICTIONARIES', 'warning').subscribe(answer => {
+                if (!answer) return;
+                this.stopped = true;
+                this.self.destroy();
+            })
+        } else {
+            this.self.destroy();
+        }
     }
 
     /**

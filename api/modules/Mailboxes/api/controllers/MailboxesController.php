@@ -29,6 +29,8 @@ class MailboxesController
 
         set_time_limit(300);
 
+        $params = $req->getQueryParams();
+
         $mailbox = BeanFactory::getBean('Mailboxes', $id, ['encode' => false]);
 
         if ($mailbox->active == false) {
@@ -40,7 +42,7 @@ class MailboxesController
 
         $mailbox->initTransportHandler();
 
-        $result = $mailbox->transport_handler->fetchEmails();
+        $result = $mailbox->transport_handler->fetchEmails($params['fetchStartFromDate']);
 
         return $res->withJson($result);
     }

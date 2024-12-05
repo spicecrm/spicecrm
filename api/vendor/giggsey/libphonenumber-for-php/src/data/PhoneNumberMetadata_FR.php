@@ -25,7 +25,7 @@ return array (
   ),
   'fixedLine' => 
   array (
-    'NationalNumberPattern' => '(?:[1-35]\\d|4[1-9])\\d{7}',
+    'NationalNumberPattern' => '(?:26[013-9]|59[1-35-9])\\d{6}|(?:[13]\\d|2[0-57-9]|4[1-9]|5[0-8])\\d{7}',
     'ExampleNumber' => '123456789',
     'PossibleLength' => 
     array (
@@ -69,7 +69,7 @@ return array (
   ),
   'sharedCost' => 
   array (
-    'NationalNumberPattern' => '8(?:1[01]|2[0156]|4[02]|84)\\d{6}',
+    'NationalNumberPattern' => '8(?:1[01]|2[0156]|4[024]|84)\\d{6}',
     'ExampleNumber' => '884012345',
     'PossibleLength' => 
     array (

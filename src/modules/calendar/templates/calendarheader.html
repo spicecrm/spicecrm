@@ -1,5 +1,5 @@
 <div class="slds-page-header" style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;" [class.slds-p-around--x-small]="calendar.isMobileView">
-    <div class="slds-grid">
+    <div class="slds-grid slds-wrap">
         <div *ngIf="!calendar.isMobileView" [class.slds-m-bottom--xx-small]="calendar.isMobileView">
             <div class="slds-media slds-no-space slds-grow">
                 <system-icon [module]="'Calendar'"></system-icon>
@@ -25,7 +25,7 @@
         </div>
         <div class="slds-align-top slds-col slds-grid slds-no-flex slds-col--bump-left">
             <div class="slds-m-right--medium slds-grid">
-                <system-icon *ngFor="let module of modules" [module]="module.name" [ngStyle]="getIconStyle(module.name)" (click)="toggleVisibleModule(module.name)" size="medium" divClass="slds-m-right--xx-small" style="cursor: pointer"></system-icon>
+                <system-icon *ngFor="let module of modules" [module]="module.name" [ngStyle]="getIconStyle(module.name)" (click)="toggleVisibleModule(module.name)" [style.cursor]="module.calendarId == 'owner' ? 'pointer' : 'initial'" size="medium" divClass="slds-m-right--xx-small"></system-icon>
             </div>
             <div *ngIf="!calendar.isMobileView || calendar.asPicker" class="slds-button-group" role="group">
                 <button class="slds-button slds-button--icon-border" (click)="shiftMinus()">

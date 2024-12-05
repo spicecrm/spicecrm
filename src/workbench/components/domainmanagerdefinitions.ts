@@ -12,6 +12,8 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {modal} from '../../services/modal.service';
 import {domainmanager} from '../services/domainmanager.service';
+import {DomainDefinition} from "../interfaces/domainmanager.interfaces";
+import {DomainManagerEditDefinitionModal} from "./domainmanagereditdefinitionmodal";
 
 /**
  * provides a list of the defined domain definitons .. part of the domain manager
@@ -153,6 +155,17 @@ export class DomainManagerDefinitions {
                 domaindefinition.status = status;
                 break;
         }
+    }
+
+    /**
+     * open edit domain definition
+     */
+    public editDomainDefinition(definition: DomainDefinition) {
+
+        this.modal.openStaticModal(DomainManagerEditDefinitionModal, true, this.injector).subscribe(modalRef => {
+            modalRef.instance.domaindefinition = definition;
+        });
+
     }
 
 }

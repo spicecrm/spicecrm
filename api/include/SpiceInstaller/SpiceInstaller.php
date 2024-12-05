@@ -7,6 +7,7 @@ use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
+use SpiceCRM\includes\SpiceCache\SpiceCacheFile;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -27,6 +28,7 @@ use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use Throwable;
 
 require_once('modules/TableDictionary.php');
 
@@ -146,6 +148,10 @@ class SpiceInstaller
         }
 
         $requirements['bcmath'] = extension_loaded('bcmath');
+
+        # check package pear
+        include_once 'System.php';
+        $requirements['pear'] = class_exists('System', false);
 
         // db check
         $drivers = $this->dbManagerFactory::getDbDrivers();
@@ -446,6 +452,8 @@ class SpiceInstaller
             'db_type' => $postData['database']['db_type'],];
 
         $db = $this->dbManagerFactory::getTypeInstance($postData['database']['db_type'], ['dbconfig' => ['db_manager' => $postData['database']['db_manager']]]);
+        $postData['dboptions']['collation'] = "utf8mb4_unicode_ci";
+        $postData['dboptions']['charset'] = "utf8mb4";
         $db->setOptions($postData['dboptions']);
         if ($dbconfig['db_type'] == 'oci8') {
             $dbconfig['db_schema'] = $postData['database']['db_schema'];
@@ -457,12 +465,7 @@ class SpiceInstaller
         $dbconfig['db_name'] = $postData['database']['db_name'];
 
         if (!$db->dbExists($dbconfig['db_name'])) {
-            if ($postData['dboptions']['collation'] == 'utf8mb4_general_ci') {
-                $db->query("CREATE DATABASE " . $dbconfig['db_name'] . " CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci", true);
-            } else {
-                $db->createDatabase($dbconfig['db_name']);
-            }
-
+            $db->createDatabase($dbconfig['db_name']);
         }
         
         $this->dbManagerFactory::setDBConfigInstaller(['dbconfig' => $dbconfig, 'dbconfigoption'  => $postData['dboptions']]);
@@ -693,7 +696,7 @@ class SpiceInstaller
      * @param $postData
      */
 
-    public function retrieveCoreAndLanguages( $db, $language )
+    public function retrieveLanguages($db, $language )
     {
         $languageLoader = new SpiceLanguageLoader();
         $languageLoader->loadLanguage( $language );
@@ -736,19 +739,11 @@ class SpiceInstaller
 
         if (!empty($db)) {
 
-            $this->createSystemTablesFromDump($db);
-
-            $this->loadSystemPackage($db);
-
-            $this->writeDictionaryToCacheTable();
-
-            $this->createDatabaseIndexes();
+            $this->initializeSystem($db, $postData['language']);
 
             $this->insertDefaultConfigs( $db, $postData );
 
             $this->createAdminUser($db, $postData);
-
-            $this->retrieveCoreandLanguages( $db, $postData['language'] );
 
         } else {
             $errors[] = "empty database instance";
@@ -778,11 +773,31 @@ class SpiceInstaller
     }
 
     /**
+     * create system tables and load system package and the passed language
+     * @param $db
+     * @param string|null $language
+     * @return void
+     * @throws Exception
+     */
+    public function initializeSystem($db, ?string $language): void
+    {
+        $this->createSystemTablesFromDump($db);
+
+        $this->loadSystemPackage($db);
+
+        $this->writeDictionaryToCacheTable();
+
+        $this->createDatabaseIndexes();
+
+        $this->retrieveLanguages( $db, $language );
+    }
+
+    /**
      * write dictionary array to the cache table
      * @return void
      * @throws Exception
      */
-    private function writeDictionaryToCacheTable()
+    public function writeDictionaryToCacheTable()
     {
         # write the definitions to the cache table
         $defsHandler = SpiceDictionaryDefinitions::getInstance();
@@ -797,13 +812,17 @@ class SpiceInstaller
      * @return void
      * @throws Exception
      */
-    private function createDatabaseIndexes()
+    public function createDatabaseIndexes(): void
     {
         $indexHandler = SpiceDictionaryIndexes::getInstance();
 
         foreach ($indexHandler->dictionaryIndexes as $index) {
-            $index = new SpiceDictionaryIndex($index['id']);
-            $index->activate();
+            try {
+                $index = new SpiceDictionaryIndex($index['id']);
+                $index->activate();
+            } catch (Throwable $t) {
+                throw new Exception("Error repairing index ($index->name). Check if all index items and dictionary related items have the package system in the system-package.gz file. Error: " . $t->getMessage());
+            }
         }
     }
 
@@ -823,6 +842,9 @@ class SpiceInstaller
         foreach ( $packageContent->data->tables as $tableName ) {
 
             if ( !$tablesFields[$tableName]) continue;
+
+            // delete all system package entries
+            $db->query("DELETE FROM {$tableName} WHERE package='system'");
 
             foreach ($packageContent->data->rows->$tableName as $row) {
                 $row = self::prepareSystemPackageRow($row, $tablesFields, $tableName);

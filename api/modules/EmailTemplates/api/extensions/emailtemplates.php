@@ -24,7 +24,7 @@ $routes = [
         'description' => 'loads an email template for specified module',
         'options'     => ['noAuth' => false, 'adminOnly' => false],
         'parameters'  => [
-            'parentmodule' => [
+            'modulename' => [
                 'in' => 'path',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'description' => 'name of parent module',
@@ -41,6 +41,11 @@ $routes = [
         'description' => 'formats the email',
         'options'     => ['noAuth' => false, 'adminOnly' => false],
         'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'description' => ''
+            ],
             'parentmodule' => [
                 'in' => 'path',
                 'type' => ValidationMiddleware::TYPE_STRING,
@@ -65,6 +70,11 @@ $routes = [
         'description' => 'gets the body of an email',
         'options'     => ['noAuth' => false, 'adminOnly' => false],
         'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'description' => ''
+            ],
             'parentmodule' => [
                 'in' => 'path',
                 'type' => ValidationMiddleware::TYPE_STRING,

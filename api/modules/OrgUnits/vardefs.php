@@ -86,15 +86,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'source' => 'non-db',
             'vname' => 'LBL_USERS',
         ],
-        'employees' => [
-            'name' => 'employees',
-            'type' => 'link',
-            'relationship' => 'orgunits_employees',
-            'module' => 'Employees',
-            'bean_name' => 'User',
-            'source' => 'non-db',
-            'vname' => 'LBL_EMPLYOEES',
-        ],
         'hcmjoboffers' => [
             'name' => 'hcmjoboffers',
             'type' => 'link',
@@ -142,50 +133,51 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'source' => 'non-db',
             'vname' => 'LBL_SPICEACLPROFILES'
         ],
-        'documents' => [
-            'name' => 'documents',
-            'type' => 'link',
-            'relationship' => 'documents_orgunits',
-            'source' => 'non-db',
-            'module' => 'Documents',
-            'vname' => 'LBL_DOCUMENTS',
-        ],
-        'employees' => [
-            'name' => 'employees',
-            'vname' => 'LBL_EMPLOYEES',
-            'type' => 'link',
-            'relationship' => 'orgunits_employees',
-            'module' => 'Employees',
-            'source' => 'non-db',
-            'rel_fields' => [
-                'is_primary_orgunit' => ['map' => 'is_primary_orgunit'],
-                'employee_role' => ['map' => 'employee_role']
-            ],
-            'comment' => 'all the employees n this orgunit'
-        ],
-        'employeesasprimary' => [
-            'name' => 'employeesasprimary',
-            'type' => 'link',
-            'relationship' => 'orgunits_employees_primary',
-            'source' => 'non-db',
-            'module' => 'Employees',
-            'vname' => 'LBL_EMPLOYEES_PRIMARY',
-            'comment' => 'employee having this orgunit as primary'
-        ],
-        'is_primary_orgunit' => [
-            'name' => 'is_primary_orgunit',
-            'vname' => 'LBL_PRIMARY',
-            'type' => 'bool',
-            'source' => 'non-db',
-            'comment' => 'represents the value in orgunits_employees.is_primary_orgunit'
-        ],
-        'employee_role' => [
-            'name' => 'employee_role',
-            'vname' => 'LBL_ROLE',
-            'type' => 'varchar',
-            'source' => 'non-db',
-            'comment' => 'represents the value in orgunits_employees.employee_role'
-        ],
+#migrated
+//        'documents' => [
+//            'name' => 'documents',
+//            'type' => 'link',
+//            'relationship' => 'documents_orgunits',
+//            'source' => 'non-db',
+//            'module' => 'Documents',
+//            'vname' => 'LBL_DOCUMENTS',
+//        ],
+//        'employees' => [
+//            'name' => 'employees',
+//            'vname' => 'LBL_EMPLOYEES',
+//            'type' => 'link',
+//            'relationship' => 'orgunits_employees',
+//            'module' => 'Employees',
+//            'source' => 'non-db',
+//            'rel_fields' => [
+//                'is_primary_orgunit' => ['map' => 'is_primary_orgunit'],
+//                'employee_role' => ['map' => 'employee_role']
+//            ],
+//            'comment' => 'all the employees n this orgunit'
+//        ],
+//        'employeesasprimary' => [
+//            'name' => 'employeesasprimary',
+//            'type' => 'link',
+//            'relationship' => 'orgunits_employees_primary',
+//            'source' => 'non-db',
+//            'module' => 'Employees',
+//            'vname' => 'LBL_EMPLOYEES_PRIMARY',
+//            'comment' => 'employee having this orgunit as primary'
+//        ],
+//        'is_primary_orgunit' => [
+//            'name' => 'is_primary_orgunit',
+//            'vname' => 'LBL_PRIMARY',
+//            'type' => 'bool',
+//            'source' => 'non-db',
+//            'comment' => 'represents the value in orgunits_employees.is_primary_orgunit'
+//        ],
+//        'employee_role' => [
+//            'name' => 'employee_role',
+//            'vname' => 'LBL_ROLE',
+//            'type' => 'varchar',
+//            'source' => 'non-db',
+//            'comment' => 'represents the value in orgunits_employees.employee_role'
+//        ],
 
     ],
     'relationships' => [
@@ -194,16 +186,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'rhs_module' => 'OrgUnits', 'rhs_table' => 'orgunits', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many'
         ],
-        'orgunits_users' => [
-            'lhs_module' => 'OrgUnits', 'lhs_table' => 'orgunits', 'lhs_key' => 'id',
-            'rhs_module' => 'Users', 'rhs_table' => 'users', 'rhs_key' => 'orgunit_id',
-            'relationship_type' => 'one-to-many'
-        ],
-        'orgunits_employees' => [
-            'lhs_module' => 'OrgUnits', 'lhs_table' => 'orgunits', 'lhs_key' => 'id',
-            'rhs_module' => 'Employees', 'rhs_table' => 'employees', 'rhs_key' => 'orgunit_id',
-            'relationship_type' => 'one-to-many'
-        ],
+//        'orgunits_users' => [
+//            'lhs_module' => 'OrgUnits', 'lhs_table' => 'orgunits', 'lhs_key' => 'id',
+//            'rhs_module' => 'Users', 'rhs_table' => 'users', 'rhs_key' => 'orgunit_id',
+//            'relationship_type' => 'one-to-many'
+//        ],
+//        'orgunits_employees' => [
+//            'lhs_module' => 'OrgUnits', 'lhs_table' => 'orgunits', 'lhs_key' => 'id',
+//            'rhs_module' => 'Employees', 'rhs_table' => 'employees', 'rhs_key' => 'orgunit_id',
+//            'relationship_type' => 'one-to-many'
+//        ],
     ],
     'indices' => [
         ['name' => 'idx_orgunit_id_del', 'type' => 'index', 'fields' => ['id', 'deleted']],

@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Injector, Input, OnInit
+    Component, Input, OnInit
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
@@ -46,10 +46,23 @@ export class DictionaryManagerItemDetails implements OnInit{
 
     /**
      * initialize and create a backup
+     * set some defsult property values
      */
     public ngOnInit() {
         // create a backup
         this.backup = JSON.stringify(this.dictionaryitem);
+
+        // set default values
+        this.setItemDefaultValues();
+    }
+
+    /**
+     * Will set some default values on specific dictionaryitem properties
+     */
+    public setItemDefaultValues(){
+        if(typeof this.dictionaryitem.duplicate_merge === "undefined"){
+            this.dictionaryitem.duplicate_merge = 1;
+        }
     }
 
     /**

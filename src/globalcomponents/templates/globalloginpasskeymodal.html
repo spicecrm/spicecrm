@@ -1,0 +1,16 @@
+<system-modal size="small">
+    <system-modal-header (close)="cancel()">
+        <system-label label="MSG_PASSKEY_DESCRIPTION"/>
+    </system-modal-header>
+    <system-modal-content>
+        <system-label label="MSG_PASSKEY_DESCRIPTION" length="long"/>
+    </system-modal-content>
+    <system-modal-footer>
+        <button (click)="cancel()" class="slds-button slds-button--neutral">
+            <system-label label="LBL_CANCEL"/>
+        </button>
+        <button (click)="createRegistration()" class="slds-button slds-button--brand">
+            <system-label label="LBL_CREATE"/>
+        </button>
+    </system-modal-footer>
+</system-modal>

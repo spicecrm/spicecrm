@@ -1,15 +1,56 @@
-<div *ngIf="!loading">
-    <div class="slds-p-around--medium">
-        <div class="slds-grid slds-grid--align-spread">
-            <h2 class="slds-text-heading--medium ">
-                <system-label [label]="'LBL_CURRENCY'"></system-label>
-            </h2>
-
+<div class="slds-grid slds-grid--vertical slds-height_full">
+    <div class="slds-grid slds-grid--align-spread slds-p-around--medium">
+        <h2 class="slds-text-heading--medium "><system-label label="LBL_CURRENCIES"></system-label></h2>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <system-input-text placeholder="LBL_FILTER" [(ngModel)]="filterString"/>
         </div>
+        <!--button class="slds-button slds-button--neutral" (click)="addEntry()"><system-label label="LBL_ADD"></system-label></button-->
     </div>
-    <div class="slds-p-vertical--small">
-        <system-currency [currencies]="currencies"></system-currency>
+    <div class="slds-scrollable slds-grow" style="min-height: 0" [system-overlay-loading-spinner]="loading">
+        <table class="slds-table slds-table--bordered">
+            <thead style="position: sticky; top: 0; z-index: 20" class="slds-theme--shade">
+                <tr class="slds-text-title--caps">
+                    <th scope="col">
+                        <system-label label="LBL_NAME"></system-label>
+                    </th>
+                    <th scope="col">
+                        <system-label label="LBL_ISO"></system-label>
+                    </th>
+                    <th scope="col">
+                        <system-label label="LBL_SYMBOL"></system-label>
+                    </th>
+                    <th scope="col" class="slds-text-align--right">
+                        <system-label label="LBL_EXCHANGERATE"/>
+                    </th>
+                    <th scope="col" style="width: 2rem">
+                        <system-utility-icon icon="world" size="x-small"/>
+                    </th>
+                    <th scope="col" style="width: 2rem">
+                        <system-utility-icon icon="light_bulb" size="x-small"/>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (currency of currencies; track currency.id) {
+                    <tr style="vertical-align: middle" class="slds-align-top">
+                        <td>{{ currency.name }}</td>
+                        <td>{{ currency.iso4217 }}</td>
+                        <td>{{ currency.currency_symbol }}</td>
+                        <td class="slds-text-align--right">
+                            <system-display-number [number]="currency.exchange_rate" precision="5"/>
+                            <button class="slds-button slds-button--icon" (click)="openRates(currency)">
+                                <system-button-icon icon="graph"/>
+                            </button>
+                        </td>
+                        <td>
+                            <currency-manager-is-systemcurrency [currency]="currency" [canSetSystemCurrency]="!hasSystemCurrency" (systemCurrencySet)="setSystemCurrency($event)"/>
+                        </td>
+                        <td>
+                            <currency-manager-is-active [currency]="currency" (currencyInactive)="setCurrencyInactive(currency.id, $event)"/>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
-    <add-currency-item (new)="reload($event)"></add-currency-item>
-    <currency-list [currencies]="currencies"></currency-list>
 </div>

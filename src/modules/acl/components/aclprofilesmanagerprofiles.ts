@@ -39,6 +39,12 @@ export class ACLProfilesManagerProfiles {
         }
     }
 
+    get profiles() {
+        return this.aclprofiles.filter(profile => {
+            return profile.name.toLowerCase().indexOf(this.searchterm.toLowerCase()) > -1;
+        });
+    }
+
     public getProfiles() {
         this.loading = true;
         this.aclprofiles = [];
@@ -49,7 +55,6 @@ export class ACLProfilesManagerProfiles {
 
         let params = {
             fields: ['id', 'name', 'description', 'status', 'for_portal_users'],
-            searchterm: this.searchterm,
             limit: '-99'
         };
 

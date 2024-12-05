@@ -97,6 +97,18 @@ $routes = [
         'description' => 'Returns all swagger definitions of the API',
         'options'     => ['validate' => true],
         'parameters'  => [
+            'selectedRoute' => [
+                'in' => 'body',
+                'description' => 'The selected API route to generate Swagger for',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
+            ],
+            'includeSubroutes' => [
+                'in' => 'body',
+                'description' => 'The selected API route to generate Swagger for',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'required' => false,
+            ],
             'modules'    => [
                 'in'          => 'body',
                 'description' => 'The modules names for which the generic routes will be instantiated.',

@@ -22,6 +22,7 @@ import {backend} from "../../services/backend.service";
  * renders a modal to add a one to many polymorphic relationship
  */
 @Component({
+    selector: 'dictionary-manager-relationship-add-one-to-many-polymorph',
     templateUrl: '../templates/dictionarymanagerrelationshipaddonetomanypolymorph.html',
 })
 export class DictionaryManagerRelationshipAddOneToManyPolymorph {
@@ -56,7 +57,8 @@ export class DictionaryManagerRelationshipAddOneToManyPolymorph {
             lhs_sysdictionaryitem_id: '',
             lhs_linkname: '',
             lhs_linklabel: '',
-            lhs_duplicatemerge: 1,
+            lhs_duplicatemerge: 0,
+            lhs_linkdefault: 0,
             rhs_sysdictionarydefinition_id: '',
             rhs_sysdictionaryitem_id: '',
             rhs_linkname: '',
@@ -90,11 +92,15 @@ export class DictionaryManagerRelationshipAddOneToManyPolymorph {
         this.relationship.rhs_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
 
         // build default name and relationship name
-        this.relationship.name = 'parent'
+        this.relationship.name = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.rhs_sysdictionarydefinition_id).tablename + '_parent';
+        this.relationship.relationship_name = this.relationship.name;
 
         // set the defaults for a parent_id and parent_type if we have one
         let parentiditem = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.rhs_sysdictionarydefinition_id).find(i => i.name == 'parent_id');
-        if (parentiditem) this.relationship.rhs_sysdictionaryitem_id = parentiditem.id;
+        if (parentiditem) {
+            this.relationship.rhs_sysdictionaryitem_id = parentiditem.id;
+            this.relationship.rhs_relatename = parentiditem.name.replace('_id', '_name');
+        }
         let parenttypeitem = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.rhs_sysdictionarydefinition_id).find(i => i.name == 'parent_type');
         if (parenttypeitem) this.relationship.relationship_role_column = parenttypeitem.id;
     }
@@ -114,6 +120,7 @@ export class DictionaryManagerRelationshipAddOneToManyPolymorph {
      * @private
      */
     public add(){
+        this.relationship.relationship_name = this.relationship.name;
         this.backend.postRequest(`dictionary/relationship/${this.relationship.id}`, {}, {relationship: this.relationship, relationshippolymorphs: this.relationshipPolymorphs}).subscribe({
             next: (res) => {
                 this.dictionarymanager.pushNewRelationshipToArray(this.relationship);

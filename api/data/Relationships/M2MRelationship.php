@@ -63,6 +63,12 @@ class M2MRelationship extends Relationship
 
         // get the join definitions
         $joinDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->join_sysdictionarydefinition_id);
+        $joinRoleColumn = null;
+        if(!empty($relationship->relationship->relationship_role_column)){
+            $joinDictionaryItem = new SpiceDictionaryItem($relationship->relationship->relationship_role_column);
+            $joinField = SpiceDictionaryField::getField($joinDictionaryItem, $joinDictionaryDefinition);
+            $joinRoleColumn =  $joinField->fieldname;
+        }
         $joinLhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->join_lhs_sysdictionaryitem_id);
         $joinRhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->join_rhs_sysdictionaryitem_id);
         $joinLhsField = SpiceDictionaryField::getField($joinLhsDictionaryitem, $joinDictionaryDefinition);
@@ -86,7 +92,9 @@ class M2MRelationship extends Relationship
             'join_table' => $joinDictionaryDefinition->tablename,
             'join_key_lhs' => $joinLhsField->fieldname,
             'join_key_rhs' => $joinRhsField->fieldname,
-            'deleted' => 0
+            'deleted' => 0,
+            'relationship_role_column' => $joinRoleColumn,
+            'relationship_role_column_value' => $this->relationship_role_column_value,
         ];
 
         // make sure we delete any current relationship with the same name (might be the case if we have the same from legacy)
@@ -104,8 +112,14 @@ class M2MRelationship extends Relationship
                 'relationship' => $relationship->relationship->relationship_name,
                 'source' => 'non-db',
                 'module' => $rhsDictionaryDefinition->getModuleName(),
-                'vname' => $relationship->relationship->lhs_linklabel
+                'vname' => $relationship->relationship->lhs_linklabel,
+                'duplicate_merge' => $relationship->relationship->lhs_duplicatemerge
             ];
+
+            // if we are self referencing add the side
+            if($lhsDictionaryDefinition == $rhsDictionaryDefinition){
+                $leftFieldDefs['side'] = 'right';
+            }
 
             $this->addJoinTableNonDBRoleField($relationship, $joinDictionaryDefinition, $lhsDictionaryDefinition);
             $this->appendJoinTableRoleFieldsMappingToLink($relationship, $joinDictionaryDefinition, $rhsDictionaryDefinition, $leftFieldDefs);
@@ -132,8 +146,14 @@ class M2MRelationship extends Relationship
                 'relationship' => $relationship->relationship->relationship_name,
                 'source' => 'non-db',
                 'module' => $lhsDictionaryDefinition->getModuleName(),
-                'vname' => $relationship->relationship->rhs_linklabel
+                'vname' => $relationship->relationship->rhs_linklabel,
+                'duplicate_merge' => $relationship->relationship->lhs_duplicatemerge
             ];
+
+            // if we are self referencing add the side
+            if($lhsDictionaryDefinition == $rhsDictionaryDefinition){
+                $rightFieldDefs['side'] = 'left';
+            }
 
             $this->addJoinTableNonDBRoleField($relationship, $joinDictionaryDefinition, $rhsDictionaryDefinition);
             $this->appendJoinTableRoleFieldsMappingToLink($relationship, $joinDictionaryDefinition, $lhsDictionaryDefinition, $rightFieldDefs);
@@ -412,7 +432,7 @@ class M2MRelationship extends Relationship
         }
     }
 
-    public function remove($lhs, $rhs)
+    public function remove($lhs, $rhs, ?string $relId = null)
     {
         if(!($lhs instanceof SpiceBean) || !($rhs instanceof SpiceBean)) {
             LoggerManager::getLogger()->fatal('relationships', "LHS and RHS must be beans in M2M");
@@ -455,10 +475,16 @@ class M2MRelationship extends Relationship
             }
         }
 
-        $dataToRemove = [
-            $this->def['join_key_lhs'] => $lhs->id,
-            $this->def['join_key_rhs'] => $rhs->id
-        ];
+        if (!empty($relId)) {
+            $dataToRemove = [
+                'id' => $relId
+            ];
+        } else {
+            $dataToRemove = [
+                $this->def['join_key_lhs'] => $lhs->id,
+                $this->def['join_key_rhs'] => $rhs->id
+            ];
+        }
 
         $this->removeRow($dataToRemove);
 

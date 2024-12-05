@@ -17,6 +17,7 @@ import {modal} from '../../services/modal.service';
 import {ComponentsetManagerAddDialog} from './componentsetmanageradddialog';
 import {view} from '../../services/view.service';
 import {configurationService} from '../../services/configuration.service';
+import {WorkbenchService} from "../services/workbench.service";
 
 @Component({
     selector: 'componentset-manager',
@@ -45,6 +46,8 @@ export class ComponentsetManager {
     public showAddDialog: boolean = false;
     public showComponentsetDetails: boolean = false;
 
+    public moduleComponentsets: {global: { id: string, name: string; }[], custom: { id: string, name: string; }[]};
+
     constructor(public backend: backend,
                 public metadata: metadata,
                 public language: language,
@@ -53,16 +56,41 @@ export class ComponentsetManager {
                 public toast: toast,
                 public modalservice: modal,
                 public view: view,
+                public workbenchService: WorkbenchService,
                 public configurationService: configurationService
     ) {
 
         // get teh modules from teh metadata service
         this.modules = this.metadata.getModules();
         this.modules.sort();
-
+        this.module = '*';
         this.checkMode();
     }
 
+    get module(){
+        return this.currentModule;
+    }
+
+    set module(id: string){
+        this.currentModule = id;
+        this.reset();
+
+        if (!!id) {
+            this.moduleComponentsets = {
+                global: this.getComponentSets('global'),
+                custom: this.getComponentSets('custom'),
+            };
+        }
+    }
+
+    get componentSet(){
+        return this.currentComponentSet;
+    }
+
+    set componentSet(id: string){
+        this.currentComponentSet = id;
+        this.selectComponentSet();
+    }
 
     public checkMode() {
         this.edit_mode = this.configurationService.getCapabilityConfig('core').edit_mode;
@@ -140,8 +168,7 @@ export class ComponentsetManager {
     }
 
     set currentComponentSetPackage(newPackage) {
-        let componentset = this.metadata.getComponentSet(this.currentComponentSet);
-        componentset.package = newPackage;
+        this.metadata.getComponentSet(this.currentComponentSet).package = newPackage;
     }
 
     get currentComponentSetVersion() {
@@ -149,8 +176,7 @@ export class ComponentsetManager {
     }
 
     set currentComponentSetVersion(newVersion) {
-        let componentset = this.metadata.getComponentSet(this.currentComponentSet);
-        componentset.version = newVersion;
+        this.metadata.getComponentSet(this.currentComponentSet).version = newVersion;
     }
 
     get currentComponentSetName() {
@@ -200,7 +226,7 @@ export class ComponentsetManager {
     }
 
     public getComponentSetItems() {
-        return this.currentComponentSet ? this.metadata.getComponentSetObjects(this.currentComponentSet) : [];
+        return this.currentComponentSetItems = this.currentComponentSet ? this.metadata.getComponentSetObjects(this.currentComponentSet) : []
     }
 
     public selectItem(item) {
@@ -222,6 +248,7 @@ export class ComponentsetManager {
         this.selectedId = '';
         this.selectedComponent = {};
         this.currentComponentSet = '';
+        this.workbenchService.activeModule = this.currentModule;
     }
 
     public selectComponentSet() {
@@ -357,5 +384,32 @@ export class ComponentsetManager {
         });
     }
 
+    /**
+     * delete the selected componentset and it's components
+     */
+    public delete(): void {
 
+        let params = {
+            table: this.componentSetType === 'custom' ? 'sysuicustomcomponentsets' : 'sysuicomponentsets',
+            id: this.currentComponentSet
+        }
+
+        this.modalservice.confirmDeleteRecord().subscribe({
+            next: (confirm) => {
+                if(confirm) {
+                    this.backend.deleteRequest('configuration/spiceui/core/componentsets', params).subscribe({
+                        next: () => {
+                            this.currentComponentSet = '';
+                            this.currentComponentSetItems = [];
+                            this.configurationService.reloadTaskData('componentsets');
+                            this.toast.sendToast('LBL_DELETED');
+                        },
+                        error: () => {
+                            this.toast.sendToast('LBL_ERROR')
+                        }
+                    })
+                }
+            }
+        })
+    }
 }

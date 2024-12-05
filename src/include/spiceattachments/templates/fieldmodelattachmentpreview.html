@@ -1,0 +1,19 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"/>
+<field-generic-display [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig" [title]="filename" [fieldid]="fieldid">
+    @if(filename && mimeType) {
+        @switch (fileType){
+            @case ('image') {
+                <system-image-preview [data]="imgData"/>
+            }
+            @default {
+                <system-object-preview [data]="fileData" [type]="mimeType"/>
+            }
+        }
+    } @else {
+        <div class="slds-p-around--large" [system-overlay-loading-spinner]="loading">
+            <system-illustration-no-data>
+                <system-label label="LBL_NO_IMAGE"/>
+            </system-illustration-no-data>
+        </div>
+    }
+</field-generic-display>

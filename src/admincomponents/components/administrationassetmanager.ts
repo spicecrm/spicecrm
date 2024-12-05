@@ -44,6 +44,10 @@ export class AdministrationAssetManager implements OnInit{
         {value: '', csstype: 'color', name: 'brand-primary-transparent'},
         {value: '', csstype: 'color', name: 'color-background-alt-inverse'},
         {value: '', csstype: 'color', name: 'color-border-brand'},
+        {value: '', csstype: 'color', name: 'slds-c-input-text-color'},
+        {value: '', csstype: 'color', name: 'slds-c-input-text-color-focus'},
+        {value: '', csstype: 'color', name: 'slds-c-input-color-border'},
+        {value: '', csstype: 'color', name: 'slds-c-select-color-border'},
         {value: '', csstype: 'color', name: 'sds-c-button-brand-color-background'},
         {value: '', csstype: 'color', name: 'sds-c-button-neutral-color-background-hover'},
         {value: '', csstype: 'color', name: 'sds-c-button-brand-color-border-hover'},
@@ -197,17 +201,31 @@ export class AdministrationAssetManager implements OnInit{
         })
     }
     public reset(){
-        let defaultColours: any[] = [];
+        let assets: any[] = [];
         const colors = window._.object(this.cssvars.map(v => v.name), Array.from({length: this.cssvars.length}, () => ''));
 
         let dc = this.loadedassets.find(a => a.assetkey == 'colors');
-        defaultColours.push({
+        assets.push({
             id: dc ? dc.id : this.modelutilities.generateGuid(),
             assetkey: 'colors',
             assetvalue: JSON.stringify(colors)
         });
 
-        this.backend.postRequest('system/spiceui/admin/assets', {}, defaultColours).subscribe(assets => {
+        let loginImage = this.loadedassets.find(a => a.assetkey == 'loginimage');
+        assets.push({
+            id: loginImage.id,
+            assetkey: 'loginimage',
+            assetvalue: ''
+        });
+
+        let headerImage = this.loadedassets.find(a => a.assetkey == 'headerimage');
+        assets.push({
+            id: headerImage.id,
+            assetkey: 'headerimage',
+            assetvalue: ''
+        });
+
+        this.backend.postRequest('system/spiceui/admin/assets', {}, assets).subscribe(assets => {
             this.assets = assets;
             this.configuration.setAssets(assets, true);
         })

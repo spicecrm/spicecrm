@@ -180,6 +180,15 @@ class RESTManager
             $route['extension'] = $extension;
             $route['custom']    = $this->isCustomExtension;
             $this->routes[$route['method'].':'.$route['route']] = $route;
+            // check on aliases
+            if(isset($route['aliases']) && !empty($route['aliases'])){
+                foreach($route['aliases'] as $alias){
+                    $routeAlias = $route;
+                    $routeAlias['route'] = $alias;
+                    unset($routeAlias['aliases']);
+                    $this->routes[$route['method'].':'.$alias] = $routeAlias;
+                }
+            }
         }
     }
 
@@ -317,7 +326,7 @@ class RESTManager
             $authData['rememberDevice'] = $headers['remember-device'];
         }
 
-        return (object) ['authData' => (object) $authData, 'authType' => $authType];
+        return (object) ['authData' => (object) $authData, 'authType' => $authType, 'tenantID' => $headers['tenant-id']];
     }
 
 
@@ -395,8 +404,8 @@ class RESTManager
      * @param array|null $modules
      * @return string
      */
-    public function getSwagger(?array $extensions, ?array $modules, string $node = "/"): string {
-        $swaggerGenerator = new SpiceSwaggerGenerator($this->routes, $this->extensions, $extensions, $modules, $node);
+    public function getSwagger(string|null $selectedRoute, bool $includeSubroutes ,?array $extensions, ?array $modules, string $node = "/"): string {
+        $swaggerGenerator = new SpiceSwaggerGenerator($selectedRoute, $includeSubroutes,$this->routes,  $this->extensions, $extensions, $modules, $node);
         return $swaggerGenerator->generateSwaggerFile();
     }
 

@@ -116,13 +116,28 @@ class SchedulerJob extends SpiceBean
      */
     public function killProcess(): bool
     {
-        if (empty($this->process_id)) return false;
+        $killed = true;
 
-        if (SpiceUtils::isWindows()) {
-            return exec("taskkill /F /PID {$this->process_id}");
-        } else {
-            return exec("kill -9 {$this->process_id}");
+        if (!empty($this->process_id)) {
+            if (SpiceUtils::isWindows()) {
+                $killed = exec("taskkill /F /PID {$this->process_id}");
+            } else {
+                $killed = exec("kill -9 {$this->process_id}");
+            }
         }
+
+        $this->process_id = '';
+        $this->job_status = 'Active';
+        $this->save();
+
+        $tasks = $this->get_linked_beans('schedulerjobtasks', null, [], 0, -1, 0, "schedulerjobtasks.jobtask_status = 'running'");
+
+        foreach ($tasks as $task) {
+            $task->jobtask_status = SchedulerJobTask::JOB_TASK_STATUS_ACTIVE;
+            $task->save();
+        }
+
+        return $killed;
     }
 
     /**

@@ -132,6 +132,7 @@ import {ObjectRelatedCardFooter} from './components/objectrelatedcardfooter';
 import {ObjectRelatedCard} from './components/objectrelatedcard';
 import {ObjectRelatedList} from './components/objectrelatedlist';
 import {ObjectRelatedlistList} from './components/objectrelatedlistlist';
+import {ObjectRelatedlistCards} from './components/objectrelatedlistcards';
 import {ObjectRelatedListItem} from './components/objectrelatedlistitem';
 import {ObjectRelatedlistTiles} from './components/objectrelatedlisttiles';
 import {ObjectRelatedCardTile} from './components/objectrelatedcardtile';
@@ -224,6 +225,14 @@ import {ObjectUrlActionMenu} from "./components/objecturlactionmenu";
 import {ObjectSetInactiveIcon} from "./components/objectsetinactiveicon";
 import {ObjectActionCheckDuplicateButton} from "./components/objectactioncheckduplicatebutton";
 import {ObjectRelatedDuplicatesCardFooter} from "./components/objectrelatedduplicatescardfooter";
+import {ObjectProjectActivityTrackTimeIcon} from "./components/objectprojectactivitytracktimeicon";
+import {ObjectTemplatesEditor} from "./components/objecttemplateseditor";
+import {ObjectTemplatesPreview} from "./components/objecttemplatespreview";
+import {ObjectActionDownloadEmailButton} from "./components/objectactiondownloademailbutton";
+import {ObjectListHeaderActionsExportPdfButton} from "./components/objectlistheaderactionsexportpdfbutton";
+import {ObjectActionPdfExportRelatedButton} from "./components/objectactionpdfexportrelatedbutton";
+import {ObjectTemplateSendTestEmailModal} from "./components/objecttemplatesendtestemailmodal";
+import {ObjectListHeaderActionsBulkSetStatusButton} from "./actions/objectlistheaderactionsbulksetstatusbutton";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -257,6 +266,7 @@ import {ObjectRelatedDuplicatesCardFooter} from "./components/objectrelateddupli
         ObjectListHeaderActionsDeleteButton,
         ObjectListHeaderActionsMergeButton,
         ObjectListHeaderActionsExportCSVButton,
+        ObjectListHeaderActionsExportPdfButton,
         ObjectFieldFilterPipe,
         ObjectListHeaderActionsExportCSVSelectFields,
         ObjectListHeaderActionsExportTargetlistButton,
@@ -340,6 +350,7 @@ import {ObjectRelatedDuplicatesCardFooter} from "./components/objectrelateddupli
         ObjectRelatedCardFooter,
         ObjectRelatedList,
         ObjectRelatedlistList,
+        ObjectRelatedlistCards,
         ObjectRelatedListItem,
         ObjectRelatedlistTiles,
         ObjectRelatedCardTile,
@@ -348,6 +359,7 @@ import {ObjectRelatedDuplicatesCardFooter} from "./components/objectrelateddupli
         ObjectRelatedDuplicates,
         ObjectRelatedDuplicateTile,
         ObjectRelatedlistAll,
+        ObjectActionPdfExportRelatedButton,
         ObjectRelatedlistTable,
         ObjectRelatedlistSequenced,
         ObjectRelatedListSequencedItem,
@@ -422,7 +434,13 @@ import {ObjectRelatedDuplicatesCardFooter} from "./components/objectrelateddupli
         ObjectUrlActionMenu,
         ObjectSetInactiveIcon,
         ObjectActionCheckDuplicateButton,
-        ObjectRelatedDuplicatesCardFooter
+        ObjectRelatedDuplicatesCardFooter,
+        ObjectProjectActivityTrackTimeIcon,
+        ObjectTemplatesEditor,
+        ObjectTemplatesPreview,
+        ObjectActionDownloadEmailButton,
+        ObjectTemplateSendTestEmailModal,
+        ObjectListHeaderActionsBulkSetStatusButton
     ],
     exports: [
         ObjectListViewHeader,
@@ -437,6 +455,7 @@ import {ObjectRelatedDuplicatesCardFooter} from "./components/objectrelateddupli
         ObjectSelectButton,
         ObjectRelatedList,
         ObjectRelatedlistTable,
+        ObjectActionPdfExportRelatedButton,
         ObjectRelatedListItem,
         ObjectRecordFieldset,
         ObjectRecordFieldsetField,
@@ -472,7 +491,10 @@ import {ObjectRelatedDuplicatesCardFooter} from "./components/objectrelateddupli
         ObjectRelatedListUrls,
         ObjectRelatedCardUrl,
         ObjectActionNewButton,
-        ObjectRecordFieldsetContainer
+        ObjectRecordFieldsetContainer,
+        ObjectActionContainerItem,
+        ObjectActionDownloadEmailButton,
+        ObjectTemplateSendTestEmailModal
     ]
 })
 export class ObjectComponents {}

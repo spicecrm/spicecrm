@@ -5,12 +5,8 @@ use SpiceCRM\includes\SugarObjects\VardefManager;
 
 SpiceDictionaryHandler::getInstance()->dictionary['UOMUnit'] = [
     'table' => 'uomunits',
-    'comment' => 'UOMUnits Module',
-    'audited' =>  false,
-    'duplicate_merge' =>  false,
-    'unified_search' =>  false,
-
 	'fields' => [
+        /*
         'name' => [
             'name' => 'name',
             'type' => 'varchar',
@@ -54,6 +50,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['UOMUnit'] = [
             'type'  => 'varchar',
             'len'   => '55',
         ],
+        */
+        /*
         'products' => [
             'name' => 'products',
             'type' => 'link',
@@ -68,8 +66,10 @@ SpiceDictionaryHandler::getInstance()->dictionary['UOMUnit'] = [
             'module' => 'ProductVariants',
             'source' => 'non-db',
         ],
+        */
     ],
 	'relationships' => [
+        /*
         'uomunit_products' => [
             'lhs_module' => 'UOMUnits',
             'lhs_table' => 'uomunits',
@@ -88,6 +88,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['UOMUnit'] = [
             'rhs_key' => 'base_uom_id',
             'relationship_type' => 'one-to-many',
         ],
+        */
         'uomunit_serviceorderitems' => [
             'lhs_module' => 'UOMUnits',
             'lhs_table' => 'uomunits',
@@ -107,9 +108,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['UOMUnit'] = [
             'relationship_type' => 'one-to-many',
         ],
     ],
+    /*
 	'indices' => [
         ['name' => 'idx_uomunits_del', 'type' => 'index', 'fields' => ['deleted']]
     ]
+    */
 ];
 
-VardefManager::createVardef('UOMUnits', 'UOMUnit', ['default', 'assignable']);
+VardefManager::createVardef('UOMUnits', 'UOMUnit', []);

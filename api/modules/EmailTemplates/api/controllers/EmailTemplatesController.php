@@ -8,6 +8,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 
 class EmailTemplatesController{
 
@@ -70,10 +71,13 @@ class EmailTemplatesController{
      */
     public function getEmailBody(Request $req, Response $res, array $args): Response {
         $params = $req->getParsedBody();
+        /** @var EmailTemplate $emailTemplate */
         $emailTemplate = BeanFactory::getBean("EmailTemplates", $args['id']);
         $emailTemplate->body_html = $params['html'];
         $bean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
-        $parsedTpl = $emailTemplate->parse($bean);
+        $styles = !$params['stylesheet_id'] ? [] : [$params['stylesheet_id']];
+
+        $parsedTpl = $emailTemplate->parse($bean, null, [], $styles);
 
         return $res->withJson(['html' => $parsedTpl['body_html']]);
     }

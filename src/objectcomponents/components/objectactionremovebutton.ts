@@ -57,6 +57,11 @@ export class ObjectActionRemoveButton implements AfterViewInit, OnDestroy {
     * @return boolean
     */
     get canDelete() {
+
+        // check if the link field is editable
+        let fieldStatus = this.relatedmodels.model?.getFieldAccess(this.relatedmodels.linkName || this.relatedmodels.relatedModule?.toLowerCase());
+        if (fieldStatus && fieldStatus <= 2) return false;
+
         try {
             let access = this.model.checkAccess('deleterelated');
             if (!access) {
@@ -82,7 +87,7 @@ export class ObjectActionRemoveButton implements AfterViewInit, OnDestroy {
     public execute() {
         this.modalservice.confirm(this.language.getLabel('QST_REMOVE_ENTRY'), this.language.getLabel('QST_REMOVE_ENTRY', null, 'short'))
             .subscribe((answer) => {
-                if (answer) this.relatedmodels.deleteItem(this.model.id);
+                if (answer) this.relatedmodels.deleteItem(this.model.id,this.model.data.relid);
             });
     }
 

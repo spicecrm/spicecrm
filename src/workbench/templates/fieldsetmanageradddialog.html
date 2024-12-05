@@ -66,7 +66,7 @@
             <div *ngIf="addType=='fieldsetselect'" class="slds-form-element">
                 <label class="slds-form-element__label"><system-label label="LBL_FIELDSET"></system-label></label>
                 <div class="slds-form-element__control">
-                    <system-input-fieldset [(ngModel)]="addFieldset"></system-input-fieldset>
+                    <system-input-fieldset [(ngModel)]="addFieldset" [_module]="module" [parent]="parent"></system-input-fieldset>
                 </div>
             </div>
         </div>

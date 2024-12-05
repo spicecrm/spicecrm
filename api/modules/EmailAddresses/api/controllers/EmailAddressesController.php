@@ -27,7 +27,7 @@ class EmailAddressesController
 
     /**
      * get the parsed body of an email
-     *
+     * todo remove. Replaced with searchBeansFts
      * @param Request $req
      * @param Response $res
      * @param array $args
@@ -73,5 +73,22 @@ class EmailAddressesController
             'invalid_email' => $invalid_email,
             'invalid_domain' => $invalid_domain
         ]);
+    }
+
+    /**
+     * fts search all email search modules by the given addresses array
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function searchBeansFts(Request $req, Response $res, array $args): Response
+    {
+        $body = $req->getParsedBody();
+
+        return $res->withJson(
+            EmailAddress::ftsSearchByEmailAddresses($body['addresses'])
+        );
     }
 }

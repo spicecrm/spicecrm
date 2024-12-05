@@ -1,23 +1,22 @@
-<div class="slds-grid slds-m-top--x-small slds-p-around--xxx-small" style="border-radius: .25rem; border: 1px solid #dddbda">
-    <div *ngIf="getCCDetails().length > 0" class="slds-tabs--default">
-        <ul class="slds-tabs--default__nav" role="tablist">
-            <li *ngFor="let ccDetail of getCCDetails(); let tabindex = index; trackBy: trackByFn"
-                class="slds-tabs--default__item slds-text-title--caps"
-                [ngClass]="{'slds-active': tabindex === activeTab}"
-                role="presentation" (click)="setActiveTab(tabindex)">
-                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab" aria-selected="false">
-                    {{ ccDetail.name }}
-                </a>
-            </li>
-        </ul>
-        <ng-container *ngFor="let ccDetail of getCCDetails() let tabindex = index; trackBy: trackByFn">
-            <div class="slds-tabs--default__content slds-p-around--xx-small slds-show" [ngClass]="{'slds-hide': tabindex != activeTab}" role="tabpanel">
-                <account-territory-details-tab [data]="ccDetail"></account-territory-details-tab>
-            </div>
-        </ng-container>
+<system-collapsable-tab [title]="'LBL_ACCOUNT_TERRITORY_DETAILS'" [expanded]="true">
+    <div class="slds-grid slds-m-around--x-small slds-p-around--xxx-small" style="border-radius: .25rem; border: 1px solid #dddbda">
+        <div *ngIf="getCCDetails().length > 0" class="slds-tabs--default">
+            <ul class="slds-tabs--default__nav" role="tablist">
+                <li *ngFor="let ccDetail of getCCDetails(); let tabindex = index; trackBy: trackByFn" class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': tabindex === activeTab}" role="presentation" (click)="setActiveTab(tabindex)">
+                    <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab" aria-selected="false">
+                        {{ ccDetail.name }}
+                    </a>
+                </li>
+            </ul>
+            <ng-container *ngFor="let ccDetail of getCCDetails() let tabindex = index; trackBy: trackByFn">
+                <div class="slds-tabs--default__content slds-p-around--xx-small slds-show" [ngClass]="{'slds-hide': tabindex != activeTab}" role="tabpanel">
+                    <account-territory-details-tab [data]="ccDetail"></account-territory-details-tab>
+                </div>
+            </ng-container>
+        </div>
+        <system-spinner *ngIf="isLoading"></system-spinner>
+        <div *ngIf="getCCDetails().length == 0" class="slds-align_absolute-center slds-p-around--small">
+            <system-label label="LBL_NO_ENTRIES"></system-label>
+        </div>
     </div>
-    <system-spinner *ngIf="isLoading"></system-spinner>
-    <div *ngIf="getCCDetails().length == 0" class="slds-align_absolute-center slds-p-around--small">
-        <system-label label="LBL_NO_ENTRIES"></system-label>
-    </div>
-</div>
+</system-collapsable-tab>

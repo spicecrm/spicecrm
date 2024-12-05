@@ -2,14 +2,18 @@
  * @module GlobalComponents
  */
 import {
-    AfterViewInit, AfterViewChecked, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
-    ElementRef, ChangeDetectorRef, OnDestroy
+    AfterViewInit,
+    Component,
+    ViewChild,
+    ViewContainerRef,
+    ChangeDetectorRef,
+    OnDestroy,
+    Renderer2, ElementRef
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {broadcast} from '../../services/broadcast.service';
 import {language} from "../../services/language.service";
 import {session} from "../../services/session.service";
-import {loginService} from "../../services/login.service";
 import {navigation} from "../../services/navigation.service";
 import {Router} from "@angular/router";
 import {favorite} from "../../services/favorite.service";
@@ -18,6 +22,7 @@ import {model} from "../../services/model.service";
 import {modal} from "../../services/modal.service";
 import {Subscription} from "rxjs";
 import {take} from "rxjs/operators";
+import * as domain from "node:domain";
 
 @Component({
     selector: 'global-navigation-compact',
@@ -28,7 +33,6 @@ export class GlobalNavigationCompact implements AfterViewInit, OnDestroy {
 
     // timeout funciton to handle resize event ... to not render after any time the event is triggered but the size is stable for some time
     @ViewChild('containermiddle', {read: ViewContainerRef, static: true})public containermiddle: ViewContainerRef;
-    @ViewChild('containerbottom', {read: ViewContainerRef, static: true})public containerbottom: ViewContainerRef;
     @ViewChild('menucontainer', {read: ViewContainerRef, static: true})public menucontainer: ViewContainerRef;
 
    public showmenu: boolean = false;
@@ -37,11 +41,11 @@ export class GlobalNavigationCompact implements AfterViewInit, OnDestroy {
     public activeItemMenu: any[] = [];
    public activeItemMenucomponents: any[] = [];
    public subscriptions: Subscription = new Subscription();
+   private clickListener: () => void;
 
     constructor(
        public metadata: metadata,
        public language: language,
-       public loginService: loginService,
        public navigation: navigation,
        public favorite: favorite,
        public model: model,
@@ -50,6 +54,8 @@ export class GlobalNavigationCompact implements AfterViewInit, OnDestroy {
        public modal: modal,
        public cdr: ChangeDetectorRef,
        public broadcast: broadcast,
+       private renderer: Renderer2,
+       private elementRef: ElementRef,
        public router: Router) {
 
         // get the menu items
@@ -69,15 +75,6 @@ export class GlobalNavigationCompact implements AfterViewInit, OnDestroy {
         return !!this.metadata.getModuleDefs(this.activeItem);
     }
 
-    set currentlanguage(value) {
-        this.language.currentlanguage = value;
-        this.language.loadLanguage();
-    }
-
-    get currentlanguage() {
-        return this.language.currentlanguage;
-    }
-
     get menuItems() {
         return this.menuitems.filter(item => item != this.activeItem);
     }
@@ -93,7 +90,7 @@ export class GlobalNavigationCompact implements AfterViewInit, OnDestroy {
 
     get containerMiddleStyle() {
         return {
-            height: `calc(100vh - ${this.containermiddle.element.nativeElement.offsetTop + this.containerbottom.element.nativeElement.offsetHeight}px)`
+            height: `calc(100vh - ${this.containermiddle.element.nativeElement.offsetTop}px)`
         };
     }
 
@@ -152,20 +149,22 @@ export class GlobalNavigationCompact implements AfterViewInit, OnDestroy {
         this.modal.openModal('GlobalAppLauncherDialog');
     }
 
-   public getAvialableLanguages() {
-        return this.language.getAvialableLanguages(true);
-    }
-
    public toggleMenu() {
         this.showmenu = !this.showmenu;
+       if (this.showmenu) {
+           this.clickListener = this.renderer.listen('document', 'click', (e: MouseEvent) => {
+               if (this.elementRef.nativeElement.contains(e.target)) return;
+               this.closeMenu();
+           });
+       } else {
+           if (this.clickListener) this.clickListener();
+       }
     }
 
    public closeMenu() {
         this.showmenu = false;
-    }
+       if (this.clickListener) this.clickListener();
 
-   public logout() {
-        this.loginService.logout();
     }
 
    public trackByFn(index, item) {
@@ -203,6 +202,7 @@ export class GlobalNavigationCompact implements AfterViewInit, OnDestroy {
     }
 
     public ngOnDestroy() {
+        if (this.clickListener) this.clickListener();
         this.subscriptions.unsubscribe();
         this.destroyActiveItemMenu();
         this.cdr.detach();

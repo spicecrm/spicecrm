@@ -106,11 +106,39 @@ $routes = [
                 'required'    => true,
                 'description' => 'The name of the module',
             ],
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
+                'description' => 'The id of the module'
+            ],
             'links'          => [
                 'in'          => 'body',
                 'type'        => ValidationMiddleware::TYPE_ARRAY,
                 'required'    => true,
                 'description' => 'array with the links to check beans relationship',
+            ],
+        ]
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/module/ProspectLists/items/checkExisting/emailAddress/{relId}',
+        'class'       => ProspectListsController::class,
+        'function'    => 'checkExistingBeanEmailAddressInItems',
+        'description' => '',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters'  => [
+            'relId'        => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'required'    => true,
+                'description' => 'The m2m relationship id of the email_addr_bean_rel table',
+            ],
+            'isPrimary'        => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_BOOL,
+                'required'    => true,
+                'description' => 'Email address is primary flag to build the check query',
             ],
         ]
     ],
@@ -136,7 +164,14 @@ $routes = [
         'class'       => ProspectListsController::class,
         'function'    => 'getEntriesCount',
         'description' => '',
-        'options'     => ['noAuth' => false, 'adminOnly' => false]
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],
 
 ];

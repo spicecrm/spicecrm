@@ -272,6 +272,11 @@ export class model implements OnDestroy {
     public validated$: EventEmitter<void> = new EventEmitter<void>();
 
     /**
+     * A simple event emitter that emits whenever the model is before validating.
+     */
+    public beforeValidate$: EventEmitter<void> = new EventEmitter<void>();
+
+    /**
      * holds the data of the alerted field
      */
     public alerts: FieldsAlertI[] = [];
@@ -551,6 +556,7 @@ export class model implements OnDestroy {
      * @param event
      */
     public validate(event?: string) {
+        this.beforeValidate$.next();
         this.resetMessages();
         this.isValid = true;
 
@@ -1116,7 +1122,7 @@ export class model implements OnDestroy {
             this.data = this.backupData;
             this.data$.next(this.data);
             this.backupData = null;
-            // todo: evaluate all fields because they have changed back???
+            this.evaluateValidationRules(null, "change");
             this.resetMessages();
         }
 
@@ -1704,6 +1710,10 @@ export class model implements OnDestroy {
 
             case "nl2br":
                 return fromField.replace(/\r\n/g, '<br>').replace(/\n\n/g, '<br>').replace(/\n/g, '<br>');
+            case "calendarStartHour":
+                return moment({hour: this.userpreferences.toUse.calendar_day_start_hour});
+            case "calendarEndHour":
+                return moment({hour: this.userpreferences.toUse.calendar_day_end_hour});
         }
         return "";
     }

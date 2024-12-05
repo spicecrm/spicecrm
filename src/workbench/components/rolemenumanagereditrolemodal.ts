@@ -13,7 +13,7 @@ import {configurationService} from "../../services/configuration.service";
 
 
 /**
- * a modal window to edit role data 
+ * a modal window to edit role data
  */
 @Component({
     selector: 'role-menu-manager-edit-role-modal',
@@ -52,13 +52,52 @@ export class RoleMenuManagerEditRoleModal {
         {label: 'global', value: 'global'},
     ];
 
+    public dashboards: any[] = [];
+    public dashboardSets: any[] = [];
+    public currentDashboard: { id: string, name: string };
+    public currentDashboardSet: { id: string, name: string };
+
     constructor(public metadata: metadata,
                 public modelutilities: modelutilities,
                 public backend: backend,
                 public toast: toast,
                 private configurationService: configurationService,
                 public modal: modal) {
+        this.getDashboards();
+        this.getDashboardSets();
 
+    }
+
+    /**
+     * get dashboards
+     */
+    public getDashboards() {
+        this.backend.getRequest(`configuration/spiceui/core/module/dashboards`).subscribe(dashboards => {
+            this.dashboards = dashboards;
+            if (!!this.newRole.default_dashboard) {
+                this.currentDashboard = this.dashboards.find(d => d.id == this.newRole.default_dashboard).name;
+            }
+        });
+    }
+
+    /**
+     * get dashboardsets
+     */
+    public getDashboardSets() {
+        this.backend.getRequest(`configuration/spiceui/core/module/dashboardsets`).subscribe(dashboardSets => {
+            this.dashboardSets = dashboardSets;
+            if (!!this.newRole.default_dashboardset) {
+                this.currentDashboardSet = this.dashboardSets.find(ds => ds.id == this.newRole.default_dashboardset).name;
+            }
+        });
+    }
+
+    public setDashboard(dashboard) {
+        this.newRole.default_dashboard = dashboard ? dashboard.id : "";
+    }
+
+    public setDashboardSet(dashboardSet) {
+        this.newRole.default_dashboardset = dashboardSet ? dashboardSet.id : "";
     }
 
     /**
@@ -90,6 +129,7 @@ export class RoleMenuManagerEditRoleModal {
         delete data.systemTreeDefs;
 
         data.systemdefault = data.systemdefault ? 1 : 0;
+        // data.default_dashboard = this.currentDashboard.id;
 
         let loadingModal = this.modal.await('LBL_LOADING');
         this.backend.postRequest(`configuration/configurator/${table}/${this.newRole.id}`, null, {config: data}).subscribe({
@@ -105,7 +145,6 @@ export class RoleMenuManagerEditRoleModal {
         });
         this.self.destroy();
     }
-
 }
 
 

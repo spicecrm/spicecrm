@@ -9,6 +9,10 @@ import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 import {broadcast} from "../../services/broadcast.service";
+import {backend} from "../../services/backend.service";
+import {modal} from "../../services/modal.service";
+import {forkJoin} from "rxjs";
+import {map} from "rxjs/operators";
 
 declare var _;
 
@@ -40,6 +44,16 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * holds the email addresses locally
      */
     public emailAddresses = [];
+
+    /**
+     * property for loading spinner
+     */
+    public isloading: boolean;
+    /**
+     * when the single mode is active save an email addresses list of other not primary addresses if exist
+     */
+    public singleModeHiddenAddresses = [];
+
     /**
      * holds the new input email address data
      */
@@ -52,9 +66,12 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
                 public language: language,
                 public metadata: metadata,
                 public broadcast: broadcast,
-                public router: Router) {
+                public router: Router,
+                public backend: backend,
+                public modal: modal) {
         super(model, view, language, metadata, router);
         this.subscribeToDataChange();
+
     }
 
     /**
@@ -66,10 +83,31 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
     }
 
     /**
-     * delete the email address from the array triggered by delete button
+     * open hidden addresses modal to enable set a hidden address to primary
+     */
+    public openHiddenAddressesModal() {
+
+        const options = this.singleModeHiddenAddresses.map(e => ({
+            value: e.id,
+            disabled: !this.view.isEditMode(),
+            display: `${e.email_address} ${e.invalid_email == 1 ? `(${this.language.getLabel('LBL_INVALID_EMAIL')})` : ''}`        }));
+
+        this.modal.prompt('input', null, 'LBL_EMAIL_ADDRESSES', 'default', null, options, 'radio')
+            .subscribe(answer => {
+                if (!answer || !this.view.isEditMode()) return;
+                const emailAddress = this.singleModeHiddenAddresses.find(e => e.id == answer);
+                emailAddress.invalid_email = 0;
+                this.emailAddresses.push(emailAddress);
+                this.singleModeHiddenAddresses = this.singleModeHiddenAddresses.filter(e => e.id != answer);
+                this.setPrimary(emailAddress);
+            });
+    }
+
+    /**
+     * prepare email addresses to delete
      * @param emailAddress
      */
-    public handleOnDelete(emailAddress: {id?, primary_address, invalid_email, email_address, opt_in_status?, isNew?}) {
+    public processDelete(emailAddress){
 
         this.emailAddresses = this.emailAddresses.filter(e => e.id !== emailAddress.id);
 
@@ -90,6 +128,32 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
 
         // enforce a duplicate check
         this.model.duplicateCheckOnChange([], true);
+
+    }
+
+    /**
+     * delete the email address from the array triggered by delete button
+     * @param emailAddress
+     */
+    public handleOnDelete(emailAddress: { id?, primary_address, invalid_email, email_address, opt_in_status?, isNew?, relid? }) {
+        this.isloading = true;
+        // check if email address is linked to a prospect list
+        this.backend.getRequest(`module/ProspectLists/items/checkExisting/emailAddress/${emailAddress.relid}`, {isPrimary: emailAddress.primary_address == 1}).subscribe(res => {
+
+            if (res.length == 0) {
+                this.processDelete(emailAddress);
+            } else {
+                let text = emailAddress.primary_address == 1 ? this.language.getLabel('LBL_DELETE_PRIMARY_EMAIL') : this.language.getLabelFormatted('LBL_EMAIL_ADDRESS_IN_USE', [res.join(', '), emailAddress.email_address]);
+                this.modal.confirm(text, 'QST_REMOVE_ENTRY').subscribe({
+                    next: (res) => {
+                        if (!res) return;
+                        this.processDelete(emailAddress);
+                    }
+                })
+            }
+            this.isloading = false;
+        });
+
     }
 
     /**
@@ -115,7 +179,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * set the primary email address
      * @param emailAddress
      */
-    public setPrimary(emailAddress: {id?, primary_address, invalid_email, email_address, opt_in_status?, isNew?}) {
+    public setPrimary(emailAddress: { id?, primary_address, invalid_email, email_address, opt_in_status?, isNew? }) {
 
         if (emailAddress.invalid_email == 1) {
             return;
@@ -158,14 +222,20 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
 
         this.subscriptions.add(
             this.model.observeFieldChanges('email_addresses').subscribe(() => {
-                const email_addresses = this.model.getRelatedRecords('email_addresses');
-                this.emailAddresses = !this.fieldconfig.singleMode ? email_addresses : email_addresses.filter(e => e.primary_address == 1);
+
+                this.emailAddresses = this.model.getRelatedRecords('email_addresses');
+
+                if (this.fieldconfig.singleMode && this.emailAddresses.length > 0) {
+                    this.singleModeHiddenAddresses = this.emailAddresses.filter(e => e.primary_address != 1);
+                    const address = this.emailAddresses.find(e => e.primary_address == 1);
+                    this.emailAddresses = address ? [address] : [];
+                }
 
                 // check if we have at least one email address and if we are in is adding but no email has been inputted
                 // this is the case if we have a new record or edit an existing without email address but from other areas an email address is added
                 // then cancel the adding process so only the now one email address remains
-                if(email_addresses.length > 0 && this.isAdding){
-                    if(!this.inputNewEmailAddress.email_address) this.isAdding = false;
+                if (this.emailAddresses.length > 0 && this.isAdding) {
+                    if (!this.inputNewEmailAddress.email_address) this.isAdding = false;
                 }
 
             })
@@ -177,7 +247,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * @param emailAddress
      * @private
      */
-    public setEmail1Field(emailAddress: {id?, primary_address, invalid_email, email_address, opt_in_status?, isNew?}) {
+    public setEmail1Field(emailAddress: { id?, primary_address, invalid_email, email_address, opt_in_status?, isNew? }) {
         if (emailAddress?.invalid_email == 1 || emailAddress?.email_address == this.model.getField('email1')) {
             return;
         }
@@ -190,7 +260,10 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      */
     public subscribeToModeChange() {
         this.subscriptions.add(
-            this.view.mode$.subscribe(() => this.initialize())
+            this.view.mode$.subscribe(() => {
+                this.initialize();
+                this.cancelAdding();
+            })
         );
     }
 
@@ -201,10 +274,19 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      */
     public initialize() {
 
-        const email_addresses = this.model.getRelatedRecords('email_addresses');
-        this.emailAddresses = !this.fieldconfig.singleMode ? email_addresses : email_addresses.filter(e => e.primary_address == 1);
+        this.emailAddresses = this.model.getRelatedRecords('email_addresses');
+
+        if (this.fieldconfig.singleMode && this.emailAddresses.length > 0) {
+            this.singleModeHiddenAddresses = this.emailAddresses.filter(e => e.primary_address != 1);
+            const address = this.emailAddresses.find(e => e.primary_address == 1);
+            this.emailAddresses = address ? [address] : [];
+        }
 
         if (!this.isEditMode()) return;
+
+        // if(this.fieldconfig.editable != true){
+        //     this.view.isEditable = false;
+        // }
 
         if (!Array.isArray(this.emailAddresses) || this.emailAddresses.length == 0) {
             this.model.initializeField('email_addresses', {beans: {}, beans_relations_to_delete: {}});
@@ -273,12 +355,12 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * @return any[]
      * @private
      */
-    public getUniqueCleanEmailAddresses(): {deletedIds, unique} {
+    public getUniqueCleanEmailAddresses(): { deletedIds, unique } {
 
         const unique = [];
         const deletedIds = this.emailAddresses.filter(emailAddress => !emailAddress.email_address).map(e => e.id);
 
-        this.emailAddresses
+        this.emailAddresses.concat(this.singleModeHiddenAddresses)
             .filter(emailAddress => !!emailAddress.email_address)
             .forEach(emailAddress => {
                 if (!unique.some(e => e.email_address == emailAddress.email_address)) {
@@ -304,6 +386,43 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
             this.isAdding = false;
             this.setCanAdd();
         }
+    }
+
+    /**
+     * confirm reset the bounce counter field
+     * @param emailAddress
+     */
+    public confirmResetBounceCounter(emailAddress) {
+        this.modal.confirm('MSG_RESET_BOUNCE_COUNTER', 'MSG_RESET_BOUNCE_COUNTER').subscribe(answer => {
+            if (!answer) return;
+            emailAddress.bounced_count = 0;
+            emailAddress.invalid_email = 0;
+
+            if (!this.emailAddresses.some(e => e.primary_address == 1)) {
+                this.setPrimary(emailAddress);
+            }
+
+            this.setEmailAddressesField();
+        });
+    }
+
+    /**
+     * update opt in status
+     * @param status
+     * @param emailAddress
+     */
+    public updateOptInStatus(status: 'opted_in' | 'pending' | 'opted_out', emailAddress) {
+        emailAddress.opt_in_status = status;
+        this.setEmailAddressesField();
+    }
+
+    /**
+     * set email address to valid
+     * @param emailAddress
+     */
+    public setValid(emailAddress) {
+        emailAddress.invalid_email = 0;
+        this.setEmailAddressesField();
     }
 }
 

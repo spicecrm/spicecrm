@@ -148,5 +148,4 @@ export class DictionaryManagerIndexDetails implements OnChanges {
         */
 
     }
-
 }

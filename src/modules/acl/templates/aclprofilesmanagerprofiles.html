@@ -19,7 +19,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let aclprofile of aclprofiles" (click)="selectProfile(aclprofile)" [ngClass]="{'slds-theme--shade': aclprofile.id == activeProfileId}">
+            <tr *ngFor="let aclprofile of profiles" (click)="selectProfile(aclprofile)" [ngClass]="{'slds-theme--shade': aclprofile.id == activeProfileId}">
                 <td class="slds-truncate">
                     <div >{{aclprofile.name}}</div>
                 </td>

@@ -13,7 +13,6 @@ import {SystemViewProviderDirective} from "../../directives/directives/systemvie
 import {toast} from "../../services/toast.service";
 import {modal} from "../../services/modal.service";
 import {RoleMenuManagerEditRoleModal} from "./rolemenumanagereditrolemodal";
-import {switchMap} from "rxjs";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {configurationService} from "../../services/configuration.service";
 
@@ -68,11 +67,9 @@ export class RoleMenuManager implements OnInit {
         if (!roleModule.id) roleModule.id = this.backend.modelutilities.generateGuid();
         roleModule.sysuirole_id = this.selectedRoleId;
 
-
         const table = roleModule.scope == 'global' ? 'sysuirolemodules' : 'sysuicustomrolemodules';
         const data = {...roleModule};
         delete data.scope;
-
 
         this.backend.postRequest(`configuration/configurator/${table}/${roleModule.id}`, null, {config: data}).subscribe({
             next: () => {
@@ -298,5 +295,6 @@ export class RoleMenuManager implements OnInit {
             });
         }
     }
+
 }
 

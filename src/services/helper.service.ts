@@ -366,6 +366,24 @@ export class helper {
     }
 
     /**
+     * download the given file content in the browser
+     * @param fileContent
+     * @param mimeType
+     * @param fileName
+     */
+    public downloadFileInBrowser(fileContent: string, mimeType: string, fileName: string) {
+        let blob = this.b64toBlob(fileContent, mimeType);
+        let blobUrl = URL.createObjectURL(blob);
+        let a = document.createElement("a");
+        document.body.appendChild(a);
+        a.href = blobUrl;
+        a.download = fileName;
+        a.type = mimeType;
+        a.click();
+        a.remove();
+    }
+
+    /**
      * create blob url
      * @param blob
      */
@@ -426,7 +444,7 @@ export class helper {
                     .subscribe((items) => {
                         const body = !model ? null : {
                             module: model.module,
-                            modelData: model.utils.spiceModel2backend(model.module, model.data)
+                            beanData: model.utils.spiceModel2backend(model.module, model.data)
                         };
 
                         model.backend.postRequest( `module/TextSnippets/${items[0].id}/${routeMethod}`, null, body )

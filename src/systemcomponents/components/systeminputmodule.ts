@@ -25,19 +25,33 @@ import {Subscription} from "rxjs";
 export class SystemInputModule implements ControlValueAccessor, OnDestroy, OnInit {
 
     /**
-     * input to disable the input
+     * to disable the checkbox
      */
-    @Input() public disabled = false;
-
-    /**
-     * if set to true also the tecnical name will be displayed
-     */
-    @Input() public technicalNameOnly: boolean = true;
+    public _disabled = false;
+    @Input('disabled') set disabled(value) {
+        if (value === false) {
+            this._disabled = false;
+        } else {
+            this._disabled = true;
+        }
+    }
 
     /**
      * for generic selections show an '*' as option
      */
     @Input() public displayAsterisk: boolean = false;
+    @Input('system-input-module-display_asterisk') set setDisplayAsterisk(value) {
+        if (value === false) {
+            this.displayAsterisk = false;
+        } else {
+            this.displayAsterisk = true;
+        }
+    }
+
+    /**
+     * if set to true also the tecnical name will be displayed
+     */
+    @Input() public technicalNameOnly: boolean = true;
 
     /**
      * filter modules input local property
@@ -63,12 +77,12 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy, OnIni
      */
     public subscription: Subscription = new Subscription();
     /**
-     * holds the companycoded
+     * holds the module
      */
     public _module: {id: string, name: string};
 
     /**
-     * the available companycodes
+     * the available modules
      */
     public _modules: {id: string, name: string}[] = [];
 
@@ -86,7 +100,7 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy, OnIni
     public ngOnInit() {
         this._modules = this.metadata.getModules().map(m => ({id: m, name: this.technicalNameOnly ? m : `${this.language.getModuleName(m)} (${m})`}));
 
-        if (this._filterModules.length > 0) {
+        if (this._filterModules?.length > 0) {
             this._modules = this._modules.filter(m => this._filterModules.find(v => v == m.id));
         }
 

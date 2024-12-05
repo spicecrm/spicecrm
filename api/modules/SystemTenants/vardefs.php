@@ -73,6 +73,10 @@ SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
             'vname' => 'LBL_WIZARD_COMPLETED',
             'default' => 0
         ],
+        'tenant_domain' => [
+            'name' => 'tenant_domain',
+            'type' => 'varchar',
+        ],
         'users' => [
             'name' => 'users',
             'type' => 'link',

@@ -47,12 +47,12 @@ export class ObjectRepositoryManager {
     public crNoneActive: boolean = false;
     public moduleReposSelect: {id: string, name: string, group: string}[] = [];
     public moduleRepos: any[] = [];
-    public modulereposselecteditem: any = {};
+    public modulereposselecteditem: any;
     public objrepoList: any[] = [];
     public configList: any = {};
     public currentConfigArray: any[] = [];
     public objectFilter: string = '';
-    public fieldTypeList: any[] = ["string", "label", "boolean", "fieldset", "actionset", "componentset", "module", "modulefilter"];
+    public fieldTypeList: any[] = ["string", "label", "boolean", "fieldset", "actionset", "componentset", "module", "modulefilter", "kanban"];
     public newRepo: any = {};
     public emptyRepo: any = {
         component: "",
@@ -74,7 +74,16 @@ export class ObjectRepositoryManager {
         version: "",
         scope: "custom"
     };
-    public currentObjRepo: any = {};
+    public currentObjRepo: {
+        object: string;
+        component: string;
+        componentconfig: string;
+        id: string;
+        deprecated: '0' | '1';
+        description: string;
+        package: string;
+        version: string;
+    };
 
     constructor(
         public backend: backend,
@@ -162,10 +171,6 @@ export class ObjectRepositoryManager {
         return this.modulereposselecteditem;
     }
 
-    public updateField(event) {
-        this.currentObjRepo.description = event;
-    }
-
     public updateDeprecated() {
         this.currentObjRepo.deprecated = (this.currentObjRepo.deprecated == '1') ? '0' : '1';
     }
@@ -250,11 +255,6 @@ export class ObjectRepositoryManager {
             console.warn("JSON is invalid or empty!");
         }
 
-
-    }
-
-    public checkCurrentObjRepo(id) {
-        return this.currentObjRepo.id == id;
 
     }
 

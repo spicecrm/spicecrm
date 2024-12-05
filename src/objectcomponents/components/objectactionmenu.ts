@@ -1,7 +1,15 @@
 /**
  * @module ObjectComponents
  */
-import {Component, ElementRef, Renderer2, Input, ChangeDetectorRef, OnInit, NgZone} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    Renderer2,
+    Input,
+    ChangeDetectorRef,
+    OnInit,
+    NgZone,
+} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
@@ -22,6 +30,8 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
     @Input() public buttonsize: string = '';
 
     @Input() public actionset: string = '';
+
+    @Input() public ignoreMobileView: boolean = false;
 
     /**
      * an array with the action items.
@@ -100,7 +110,7 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
      * determines screen width: large/small
      */
     get isSmall() {
-        return this.layout.screenwidth == 'small';
+        return !this.ignoreMobileView && this.layout.screenwidth == 'small';
     }
 
     public getButtonSizeClass() {

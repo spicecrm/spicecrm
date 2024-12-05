@@ -134,6 +134,9 @@ export class SpicePageBuilderElementSection implements OnInit {
      */
     public handleEditResponse(res) {
         this.section.attributes = res.attributes;
+        this.section.children.forEach((input, index) =>{
+            input.attributes = res.children[index].attributes
+        } );
         this.generateStyle();
         this.spicePageBuilderService.emitData();
         this.cdRef.detectChanges();

@@ -135,7 +135,8 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
         return this.isExpanded ? {
             height: '100vh',
             resize: 'none',
-            position: 'fixed'
+            position: 'fixed',
+            'z-index': 9999
         } : {height: (+this.innerHeight + 50) + 'px'};
     }
 
@@ -445,6 +446,9 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
         }
     }
 
+    /**
+     * @deprecated
+     */
     public addVideo() {
         if (!this.isActive) {
             return;
@@ -604,7 +608,7 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
 
                         const body = !this.model ? null : {
                             module: this.model.module,
-                            modelData: this.model.utils.spiceModel2backend(this.model.module, this.model.data)
+                            beanData: this.model.utils.spiceModel2backend(this.model.module, this.model.data)
                         };
 
                         this.backend.postRequest(`module/TextSnippets/${items[0].id}/liveCompile`, null, body)
@@ -643,6 +647,26 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
         let div = document.createElement('div');
         div.appendChild(clonedSelection);
         return div.innerHTML;
+    }
+
+    public speechRecognitionStart() {
+        this.modal.openModal('SpeechRecognition', false).subscribe(modal => {
+            modal.instance.textfield = this.htmlEditor;
+            modal.instance.typeOfField = 'html';
+            modal.instance.divElementValue.subscribe({
+                next: (newHtml) => {
+                    this._html = newHtml;
+
+                    // set the model value
+                    if (typeof this.onChange === 'function') {
+                        this.onChange(newHtml);
+                    }
+
+                    // set the value to the editor
+                    this.renderer.setProperty(this.htmlEditor.element.nativeElement, 'innerHTML', this._html);
+                }
+            })
+        });
     }
 
 }

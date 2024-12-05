@@ -7,8 +7,10 @@ use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryDefinition
@@ -21,15 +23,18 @@ class SpiceDictionaryDefinition
     public $tablename;
     public $type;
 
-    public function __construct($id)
+    public function __construct($id, $throwException = true)
     {
         $this->id = $id;
 
         // $res = DBManagerFactory::getInstance()->fetchOne("SELECT *, 'g' scope FROM sysdictionarydefinitions WHERE deleted = 0 AND id='{$id}' UNION SELECT *, 'c' scope FROM syscustomdictionarydefinitions WHERE deleted = 0 AND id='{$id}'");
         $res = SpiceDictionaryDefinitions::getInstance()->getDefinitionById($id);
+
         if (!$res) {
-            throw new Exception("dictionary Definition with id {$id} not found");
+            if ($throwException) throw new Exception("dictionary Definition with id {$id} not found");
+            return null;
         }
+
         $this->definition = (object)$res;
 
         // set properties
@@ -53,7 +58,7 @@ class SpiceDictionaryDefinition
         if ($this->type == 'template') return '';
 
         // reset the cached items
-        SpiceDictionaryField::clearForDefiniton($this->id, $this->name);
+        SpiceDictionaryField::clearForDefiniton($this->id, $this->name, $relationships);
 
         // get all items and activate them without repair
         $items = SpiceDictionaryItems::getInstance()->getItems($this->id, ['a']);
@@ -126,6 +131,7 @@ class SpiceDictionaryDefinition
 
         // repair the relationships
         if ($relationships) {
+            SpiceDictionaryRelationships::repairVardefRelationshipsFromFields($this->name, $vardefDetails);
             SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($this->id);
         }
 
@@ -347,6 +353,50 @@ class SpiceDictionaryDefinition
                     'relationships' => SpiceDictionaryHandler::getInstance()->dictionary[$this->name]['relationships']];
 
         }
+    }
+
+    /**
+     * not legacy
+     * special treatment for territories
+     * @param $module
+     * @return array
+     * @throws \Exception
+     */
+    static public function addACLTerritoryFields($module): array
+    {
+        $vardefs = [];
+
+        $db = DBManagerFactory::getInstance();
+        if ($db->tableExists('spiceaclterritories_modules')) {
+            $row = $db->fetchOne("SELECT * FROM spiceaclterritories_modules WHERE module = '$module'");
+
+            if ($row && !empty($row['module'])) {
+                $bean = SpiceModules::getInstance()->getBeanName($row['module']);
+                $vardefs = VardefManager::getTemplateForDictionary($bean->_module, $bean->_objectname, 'spiceaclterritories');
+            }
+        }
+
+        return $vardefs;
+    }
+
+    /**
+     * not legacy
+     *
+     * add acl fields to the loaded dictionary items
+     * @return array
+     */
+    public static function addACLFields($moduleName): array
+    {
+        $vardefs = [];
+
+        $loader = new SpiceUIModulesController();
+        $modules = $loader->geUnfilteredModules();
+
+        if($modules[$moduleName] && $modules[$moduleName]['acl_multipleusers'] == 1) {
+            $vardefs = VardefManager::getTemplateForDictionary($moduleName, $modules[$moduleName]['bean'], 'spiceaclusers');
+        }
+
+        return $vardefs;
     }
 
     /**

@@ -1,12 +1,14 @@
 <ng-container *ngFor="let field of fields; let i = index">
     <td *ngIf="i === 0" scope="row" class="slds-tree__item">
-        <button class="slds-button slds-button--icon slds-button--icon-x-small slds-m-right--x-small" [disabled]="nodedata.member_count === 0" (click)="expandNode()">
-            <system-button-icon *ngIf="!loading" [icon]="getIcon()"></system-button-icon>
-            <system-button-icon *ngIf="loading" [icon]="'spinner'"></system-button-icon>
-        </button>
-        <div class="slds-truncate">
-            <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
-        </div>
+       <div class="slds-grid">
+           <button class="slds-button slds-button--icon slds-button--icon-x-small slds-m-right--x-small" [disabled]="nodedata.member_count === 0" (click)="expandNode()">
+               <system-button-icon *ngIf="!loading" [icon]="getIcon()"></system-button-icon>
+               <system-button-icon *ngIf="loading" [icon]="'spinner'"></system-button-icon>
+           </button>
+           <div class="slds-truncate">
+               <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
+           </div>
+       </div>
     </td>
     <td *ngIf="i > 0">
         <div class="slds-truncate">

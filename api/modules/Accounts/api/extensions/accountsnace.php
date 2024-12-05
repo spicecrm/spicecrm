@@ -57,7 +57,14 @@ $routes = [
         'class'       => AccountsNACEController::class,
         'function'    => 'getNACECodeFile',
         'description' => 'loads a single file',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => false]
+        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => false],
+        'parameters' => [
+            'filename' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ]
+        ]
     ],
     [
         'method'      => 'post',

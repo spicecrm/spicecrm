@@ -11,8 +11,6 @@
 If you are looking for the SendGrid API client library, please see [this repo](https://github.com/sendgrid/sendgrid-php).
 
 # Announcements
-**The default branch name for this repository has been changed to `main` as of 07/27/2020.**
-
 All updates to this library are documented in our [CHANGELOG](CHANGELOG.md).
 
 # Table of Contents
@@ -22,6 +20,7 @@ All updates to this library are documented in our [CHANGELOG](CHANGELOG.md).
 - [How to Contribute](#contribute)
 - [Thanks](#thanks)
 - [About](#about)
+- [Support](#support)
 - [License](#license)
 
 <a name="installation"></a>
@@ -29,7 +28,7 @@ All updates to this library are documented in our [CHANGELOG](CHANGELOG.md).
 
 ## Prerequisites
 
-- PHP version 5.6, 7.0, 7.1, 7.2, 7.3, or 7.4
+- PHP version 7.3, 7.4, 8.0, or 8.1
 
 ## Install with Composer
 
@@ -38,7 +37,7 @@ Add php-http-client to your `composer.json` file. If you are not using [Composer
 ```json
 {
   "require": {
-    "sendgrid/php-http-client": "^3.14.4"
+    "sendgrid/php-http-client": "^4.1.1"
   }
 }
 ```
@@ -184,9 +183,10 @@ We were inspired by the work done on [birdy](https://github.com/inueni/birdy) an
 
 php-http-client is maintained and funded by Twilio SendGrid, Inc. The names and logos for php-http-client are trademarks of Twilio SendGrid, Inc.
 
-If you need help installing or using the library, please check the [Twilio SendGrid Support Help Center](https://support.sendgrid.com).
+<a name="support">
+# Support
 
-If you've instead found a bug in the library or would like new features added, go ahead and open issues or pull requests against this repo!
+If you need help using SendGrid, please check the [Twilio SendGrid Support Help Center](https://support.sendgrid.com).
 
 <a name="license"></a>
 # License

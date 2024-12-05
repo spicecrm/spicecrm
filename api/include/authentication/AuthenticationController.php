@@ -15,9 +15,6 @@ use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRM2FAUtils;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAccessUtils;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
-use SpiceCRM\includes\authentication\TenantAuthenticate\TenantAccessUtils;
-use SpiceCRM\includes\authentication\TenantAuthenticate\TenantAuthenticate;
-use SpiceCRM\includes\authentication\TenantAuthenticate\TenantPasswordUtils;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
@@ -189,7 +186,7 @@ class AuthenticationController
 
     /**
      * get password utils handler
-     * @return SpiceCRMPasswordUtils | TenantPasswordUtils
+     * @return SpiceCRMPasswordUtils
      */
     public function getPasswordUtilsInstance()
     {
@@ -296,7 +293,7 @@ class AuthenticationController
 
     /**
      * get access utils instance
-     * @return SpiceCRMAccessUtils | TenantAccessUtils
+     * @return SpiceCRMAccessUtils
      * @throws \Exception
      */
     public function getAccessUtilsInstance()
@@ -309,7 +306,7 @@ class AuthenticationController
             $namespace = "SpiceCRM\includes\authentication\\SpiceCRMAuthenticate\\SpiceCRMAccessUtils";
         }
 
-        /** @var SpiceCRMAccessUtils | TenantAccessUtils $accessUtilsInstance */
+        /** @var SpiceCRMAccessUtils $accessUtilsInstance */
         $accessUtilsInstance = new $namespace();
 
         if (!($accessUtilsInstance instanceof AccessUtilsI)) {
@@ -427,7 +424,7 @@ class AuthenticationController
 
     /**
      * get authenticator class
-     * @return SpiceCRMAuthenticate | GoogleAuthenticate | OAuth2Authenticate | TenantAuthenticate
+     * @return SpiceCRMAuthenticate | GoogleAuthenticate | OAuth2Authenticate
      * @throws \Exception
      */
     public function getAuthenticator($authData = null)
@@ -440,7 +437,7 @@ class AuthenticationController
     /**
      * get authenticator class instance
      * @param string $type
-     * @return SpiceCRMAuthenticate | OAuth2Authenticate | TenantAuthenticate | LDAPAuthenticate | GoogleAuthenticate
+     * @return SpiceCRMAuthenticate | OAuth2Authenticate | LDAPAuthenticate | GoogleAuthenticate
      * @throws \Exception
      */
     public static function getAuthenticatorObject(string $type)
@@ -454,7 +451,7 @@ class AuthenticationController
 
         if (class_exists($authenticationClass, true)) {
 
-            /** @var SpiceCRMAuthenticate | OAuth2Authenticate | TenantAuthenticate | LDAPAuthenticate | GoogleAuthenticate $classInstance */
+            /** @var SpiceCRMAuthenticate | OAuth2Authenticate | LDAPAuthenticate | GoogleAuthenticate $classInstance */
             $classInstance = new $authenticationClass($type);
 
             if (!($classInstance instanceof AuthenticatorI)) {
@@ -562,7 +559,7 @@ class AuthenticationController
             'userid' => $currentUser->id,
             'user_image' => $currentUser->user_image,
             'companycode_id' => $currentUser->companycode_id,
-            'tenant_id' => $currentUser->systemtenant_id,
+            'tenant_id' => SystemTenant::$currentTenantID,
             'tenant_name' => $this->systemtenantname,
             'tenant_accepted_legal_notice' => $this->systemTenantLegalNoticeAccepted,
             'tenant_wizard_completed' => $this->systemTenantWizardCompleted,

@@ -16,6 +16,7 @@ import {Relationship} from "../interfaces/dictionarymanager.interfaces";
  * renders a modal to add a one to many relationship
  */
 @Component({
+    selector: 'dictionary-manager-relationship-add-parent',
     templateUrl: '../templates/dictionarymanagerrelationshipaddparent.html',
 })
 export class DictionaryManagerRelationshipAddParent implements OnInit {

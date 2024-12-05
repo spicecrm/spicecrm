@@ -32,6 +32,7 @@ import {ProjectSettlementButton} from "./components/projectsettlementbutton";
 import {ProjectSettlement} from "./components/projectsettlement";
 import {ProjectWBSHierarchyAddNode} from "./components/projectwbshierarchyaddnode";
 import {ProjectWBSGantt} from "./components/projectwbsgantt";
+import {ProjectActivityTrackTimeModal} from "./components/projectactivitytracktimemodal";
 
 @NgModule({
     imports: [
@@ -59,7 +60,10 @@ import {ProjectWBSGantt} from "./components/projectwbsgantt";
         ProjectSettlementLine,
         ProjectSettlement,
         fieldProjectActivityDuration,
-        ProjectWBSQuoteButton
+        ProjectWBSQuoteButton,
+        ProjectActivityTrackTimeModal
+    ], exports: [
+        ProjectActivityTrackTimeModal
     ]
 })
 export class ModuleProjects {}

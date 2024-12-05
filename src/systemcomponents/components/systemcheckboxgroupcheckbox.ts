@@ -22,6 +22,7 @@ export class SystemCheckboxGroupCheckbox implements OnChanges, AfterViewInit {
     public id = _.uniqueId('checkbox-group-checkbox-');  // needed to use inside the template for html ids... without, the click events will get confused...
     @Input() public value: any;
     @Input() public disabled = false;
+    @Input() public textColorTheme: 'default' | 'success' | 'error' | 'inverse' | 'inverse-weak' | 'weak';
 
     constructor(@Host() public systemCheckboxGroup: SystemCheckboxGroup, public cdRef: ChangeDetectorRef) {
         // subscribe to parent value emitter

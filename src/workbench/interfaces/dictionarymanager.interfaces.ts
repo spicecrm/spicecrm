@@ -51,6 +51,7 @@ export interface DictionaryItem {
     exclude_from_audited?: number;
     required?: number;
     default_value?: string;
+    duplicate_merge?: number;
     description?: string;
     version?: string;
     package?: string;
@@ -87,19 +88,23 @@ export interface Relationship {
     lhs_linkname: string;
     lhs_linklabel: string;
     lhs_duplicatemerge: number;
+    lhs_linkdefault?: number;
     rhs_sysdictionarydefinition_id: string;
     rhs_sysdictionaryitem_id: string;
     rhs_linkname: string;
     rhs_linklabel: string;
     rhs_relatename: string;
     rhs_relatelabel: string;
+    rhs_linkdefault?: number;
+    rhs_duplicatemerge?: number;
+    rhs_sortfield?: string;
+    rhs_sortdirection?: string;
     relationship_type: string;
     join_sysdictionarydefinition_id?: string;
     join_lhs_sysdictionaryitem_id?: string;
     join_rhs_sysdictionaryitem_id?: string;
     relationship_role_column?: string;
     relationship_role_column_value?: string;
-    rhs_duplicatemerge: number;
     deleted: number;
     version?: string;
     package?: string;
@@ -113,6 +118,9 @@ export interface RelationshipPolymorph {
     status?: 'd'|'a'|'i';
     lhs_sysdictionarydefinition_id: string;
     lhs_sysdictionaryitem_id: string;
+    rhs_link_name?: string;
+    rhs_link_label?: string;
+    rhs_duplicatemerge?: '0' | '1';
     version?: string;
     package?: string;
 }

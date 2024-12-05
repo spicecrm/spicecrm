@@ -9,6 +9,7 @@ import {calendar} from "../services/calendar.service";
  * Displays a modal with a list of possible modules to add calendar event.
  */
 @Component({
+    'selector': 'calendar-add-modules-modal',
     templateUrl: '../templates/calendaraddmodulesmodal.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })

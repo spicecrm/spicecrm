@@ -23,6 +23,10 @@ export class ComponentsetManagerComponentsetDetails implements OnChanges {
      * the component as input
      */
     @Input() public component: any = {};
+    /**
+     * the module as input
+     */
+    @Input() public module: string;
 
     public configcomponent: string = "";
     public configValues: any = {};

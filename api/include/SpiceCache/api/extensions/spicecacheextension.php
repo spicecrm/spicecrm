@@ -23,7 +23,14 @@ RESTManager::getInstance()->registerExtension('spicecache', '1.0', [], [
         'class' => SpiceCacheController::class,
         'function' => 'getKey',
         'description' => 'gets a key',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'key' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],
     [
         'method' => 'delete',
@@ -31,6 +38,13 @@ RESTManager::getInstance()->registerExtension('spicecache', '1.0', [], [
         'class' => SpiceCacheController::class,
         'function' => 'deleteKey',
         'description' => 'deletes a key',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'key' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],
 ]);
