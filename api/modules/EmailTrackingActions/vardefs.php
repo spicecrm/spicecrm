@@ -63,14 +63,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTrackingAction'] = [
             'relationship' => 'campaigntask_emailtrackingactions',
             'source' => 'non-db'
         ],
-        'emails' => [
-            'vname' => 'LBL_EMAILS',
-            'name' => 'emails',
-            'type' => 'link',
-            'module' => 'Email',
-            'relationship' => 'email_emailtrackingactions',
-            'source' => 'non-db'
-        ],
+//        'emails' => [
+//            'vname' => 'LBL_EMAILS',
+//            'name' => 'emails',
+//            'type' => 'link',
+//            'module' => 'Email',
+//            'relationship' => 'email_emailtrackingactions',
+//            'source' => 'non-db'
+//        ],
         'emailtrackinglink_id' => [
             'name' => 'emailtrackinglink_id',
             'vname' => 'LBL_TRACKINGLINK_ID',
@@ -124,15 +124,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTrackingAction'] = [
             'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many'
         ],
-        'email_emailtrackingactions' => [
-            'lhs_module' => 'Emails',
-            'lhs_table' => 'emails',
-            'lhs_key' => 'id',
-            'rhs_module' => 'EmailTrackingActions',
-            'rhs_table' => 'emailtrackingactions',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many'
-        ],
+//        'email_emailtrackingactions' => [
+//            'lhs_module' => 'Emails',
+//            'lhs_table' => 'emails',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'EmailTrackingActions',
+//            'rhs_table' => 'emailtrackingactions',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many'
+//        ],
         'emailtrackinglink_emailtrackingactions' => [
             'lhs_module' => 'EmailTrackingLinks',
             'lhs_table' => 'emailtrackinglinks',
