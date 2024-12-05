@@ -61,6 +61,7 @@ export class DictionaryManagerAddItemModal implements OnInit{
     }
 
     public ngOnInit() {
+        let currentDefinition = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition);
         this.dictionaryitem = {
             id: this.modelutilities.generateGuid(),
             sysdictionarydefinition_id: this.dictionarymanager.currentDictionaryDefinition,
@@ -71,6 +72,8 @@ export class DictionaryManagerAddItemModal implements OnInit{
             required: 0,
             scope: this.dictionarymanager.currentDictionaryScope,
             status: 'd',
+            package: currentDefinition.package,
+            version: currentDefinition.version,
             sequence: this.dictionarymanager.dictionaryitems.filter(d => d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).length
         };
 
