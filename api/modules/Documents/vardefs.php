@@ -153,21 +153,21 @@ SpiceDictionaryHandler::getInstance()->dictionary['Document'] = [
 //            'module' => 'OrgUnits',
 //            'vname' => 'LBL_ORGUNITS',
 //        ],
-        'contracts' => [
-            'name' => 'contracts',
-            'type' => 'link',
-            'relationship' => 'contracts_documents',
-            'source' => 'non-db',
-            'vname' => 'LBL_CONTRACTS',
-        ],
+//        'contracts' => [
+//            'name' => 'contracts',
+//            'type' => 'link',
+//            'relationship' => 'contracts_documents',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CONTRACTS',
+//        ],
         //todo remove
-        'leads' => [
-            'name' => 'leads',
-            'type' => 'link',
-            'relationship' => 'leads_documents',
-            'source' => 'non-db',
-            'vname' => 'LBL_LEADS',
-        ],
+//        'leads' => [
+//            'name' => 'leads',
+//            'type' => 'link',
+//            'relationship' => 'leads_documents',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_LEADS',
+//        ],
 #migrated
 //        'accounts' => [
 //            'name' => 'accounts',

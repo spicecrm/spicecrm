@@ -21,6 +21,7 @@ import {DictionaryManagerDefinitions} from "./components/dictionarymanagerdefini
 import {DictionaryManagerDefinitionTabs} from "./components/dictionarymanagerdefinitiontabs";
 import {DictionaryManagerItems} from "./components/dictionarymanageritems";
 import {DictionaryManagerItemDetails} from "./components/dictionarymanageritemdetails";
+import {DictionaryManagerItemReferenceDetails} from "./components/dictionarymanageritemreferencedetails";
 import {DictionaryManagerAddDefinitionModal} from "./components/dictionarymanageradddefinitionmodal";
 import {DictionaryManagerMigrateDefinitionModal} from "./components/dictionarymanagermigratedefinitionmodal";
 import {DictionaryManagerAddItemModal} from "./components/dictionarymanageradditemmodal";
@@ -219,6 +220,7 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         DictionaryManagerDefinitionTabs,
         DictionaryManagerItems,
         DictionaryManagerItemDetails,
+        DictionaryManagerItemReferenceDetails,
         DictionaryManagerItemStatus,
         DictionaryManagerAddDefinitionModal,
         DictionaryManagerCloneDefinitionModal,

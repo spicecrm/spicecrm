@@ -59,7 +59,7 @@
                                 </td>
                                 <td class="">
                                     <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-end">
-                                        <button *ngIf="!dictionaryitem.sysdictionary_ref_id" class="slds-button slds-button--icon" (click)="editDictionaryItem(dictionaryitem)">
+                                        <button class="slds-button slds-button--icon" (click)="editDictionaryItem(dictionaryitem)">
                                             <system-button-icon icon="edit"/>
                                         </button>
                                         <button [disabled]="dictionaryitem.status == 'a'" class="slds-button slds-button--icon"  (click)="deleteDictionaryItem(dictionaryitem.id)">

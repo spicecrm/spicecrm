@@ -24,6 +24,7 @@ use SpiceCRM\modules\OutputTemplates\OutputTemplate;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\modules\Users\User;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\modules\Mailboxes\Mailbox;
 
 class CampaignTask extends SpiceBean
 {
@@ -72,7 +73,7 @@ class CampaignTask extends SpiceBean
      * @return array|int
      * @throws Exception
      */
-    private function getAllTargetsEntries()
+    public function getAllTargetsEntries()
     {
         return array_merge(
             $this->getTargetsEntries(),
@@ -88,7 +89,7 @@ class CampaignTask extends SpiceBean
      * @return array
      * @throws Exception
      */
-    function activate(string $status = 'targeted', $additionalParams = []): array
+    public function activate(string $status = 'targeted', $additionalParams = []): array
     {
         $this->preActivateCheck();
 
@@ -136,7 +137,7 @@ class CampaignTask extends SpiceBean
      * @return void
      * @throws Exception
      */
-    private function preActivateCheck()
+    public function preActivateCheck()
     {
         switch ($this->campaigntask_type) {
             case 'Email':
@@ -174,7 +175,7 @@ class CampaignTask extends SpiceBean
      * @param string|null $status
      * @return string
      */
-    private function getEventTargetsQuery(bool $countOnly = false, ?string $status = ''): string
+    public function getEventTargetsQuery(bool $countOnly = false, ?string $status = ''): string
     {
         $filter = '';
         $sysModuleFilters = new SysModuleFilters();
@@ -204,7 +205,7 @@ class CampaignTask extends SpiceBean
      * get event targets count
      * @return int
      */
-    private function getEventTargetsCount(): int
+    public function getEventTargetsCount(): int
     {
         return (int) $this->db->getOne(
             $this->getEventTargetsQuery(true)
@@ -260,7 +261,7 @@ class CampaignTask extends SpiceBean
      * @param array $prospectLists
      * @return array
      */
-    private function fetchTargetsModules(array $prospectLists): array
+    public function fetchTargetsModules(array $prospectLists): array
     {
         $listsString = implode(',', array_map(function ($e) {return "'$e'";}, $prospectLists));
         $query = $this->db->query("SELECT DISTINCT plp.related_type FROM prospect_lists_prospects plp WHERE plp.prospect_list_id IN ($listsString) AND deleted != 1");
@@ -278,7 +279,7 @@ class CampaignTask extends SpiceBean
      * get campaign target lists
      * @return array
      */
-    private function getCampaignTargetLists(): array
+    public function getCampaignTargetLists(): array
     {
         $query = $this->db->query("
             SELECT pl.id, pl.name, pl.list_type, pl.is_generated_by_system FROM prospect_list_campaigntasks plc INNER JOIN prospect_lists pl ON pl.id = plc.prospect_list_id 
@@ -303,7 +304,7 @@ class CampaignTask extends SpiceBean
      * @param object|null $sort
      * @return array
      */
-    private function generateTargetsSearchBody(string $modules, string $limit, string $offset, array $targetsIds, ?string $searchTerm, ?object $sort): array
+    public function generateTargetsSearchBody(string $modules, string $limit, string $offset, array $targetsIds, ?string $searchTerm, ?object $sort): array
     {
         $addFilter = [
             'bool' => [
@@ -334,7 +335,7 @@ class CampaignTask extends SpiceBean
      * @param string|null $status
      * @return array
      */
-    private function getListsTargets(array $listIds, ?string $status): array
+    public function getListsTargets(array $listIds, ?string $status): array
     {
         $listIdsString = implode(',', array_map(function ($e) {return "'$e'";}, $listIds));
 
@@ -408,7 +409,7 @@ class CampaignTask extends SpiceBean
      * @param array|false $targetStatus
      * @return bool
      */
-    private function statusMatch(?string $status, $targetStatus): bool
+    public function statusMatch(?string $status, $targetStatus): bool
     {
         return empty($status) || ($status == 'unchecked' && !$targetStatus) || $status == $targetStatus;
     }
@@ -420,7 +421,7 @@ class CampaignTask extends SpiceBean
      * @param SpiceBeanHandler $beanHandler
      * @return array
      */
-    private function generateTargetArray(array $target, string $module, SpiceBeanHandler $beanHandler): array
+    public function generateTargetArray(array $target, string $module, SpiceBeanHandler $beanHandler): array
     {
         $bean = BeanFactory::getBean($module, $target['_id']);
 
@@ -440,7 +441,7 @@ class CampaignTask extends SpiceBean
      * @throws Exception
      * @throws MessageInterceptedException
      */
-    function sendTestEmails()
+    public function sendTestEmails()
     {
         # set the current user to the one assigned to the task. fallback set the admin user
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
@@ -476,7 +477,7 @@ class CampaignTask extends SpiceBean
      * @return bool
      * @throws MessageInterceptedException
      */
-    function sendQueuedEmails($campaignTaskType='Email'){
+    public function sendQueuedEmails($campaignTaskType='Email'){
         // set the admin user
         /** @var User $admin */
         $admin = BeanFactory::getBean('Users', '1');
@@ -572,7 +573,7 @@ class CampaignTask extends SpiceBean
      * send queued text messages for text message campaign tasks where the log entry is set to queued
      * @return bool
      */
-    function sendQueuedTextMessages($addBeans = []){
+    public function sendQueuedTextMessages($addBeans = []){
         // set the admin user
         $admin = BeanFactory::getBean('Users', '1');
         AuthenticationController::getInstance()->setCurrentUser($admin);
@@ -629,7 +630,7 @@ class CampaignTask extends SpiceBean
      * @return Email with status sent or send_error
      * @throws MessageInterceptedException
      */
-    private function sendEmail(SpiceBean $seed, string $emailAddress, bool $saveEmail = false, bool $test = false, array $addBeans = []): Email
+    public function sendEmail(SpiceBean $seed, string $emailAddress, bool $saveEmail = false, bool $test = false, array $addBeans = []): Email
     {
         /** @var EmailTemplate $emailTemplate */
         $emailTemplate = BeanFactory::getBean('EmailTemplates');
@@ -657,7 +658,7 @@ class CampaignTask extends SpiceBean
 
         $email->addEmailAddress('to', $emailAddress);
 
-        $email->addEmailAddress('from', $mailbox->imap_pop3_username);
+        $email->addEmailAddress('from', $this->handleFromAddress($mailbox));
 
         $categories = SpiceAttachments::getAttachmentCategories('CampaignTasks', true);
         $categoryId = !empty($categories) ? $categories[0]['id'] : null;
@@ -699,7 +700,7 @@ class CampaignTask extends SpiceBean
      * @param false $test
      * @return false|SpiceBean
      */
-    function sendTextMessage($seed, $saveTextMessage = false, $test = false, $addBeans = [])
+    public function sendTextMessage($seed, $saveTextMessage = false, $test = false, $addBeans = [])
     {
         if(!$seed->phone_mobile) {
             return false;
@@ -845,7 +846,7 @@ class CampaignTask extends SpiceBean
      * @return string
      * @throws Exception
      */
-    private function buildTargetsEntriesQuery(bool $countOnly = false): string
+    public function buildTargetsEntriesQuery(bool $countOnly = false): string
     {
         $exclusionListIds = self::getListIdsByType($this->id, 'exclude');
 
@@ -981,5 +982,29 @@ class CampaignTask extends SpiceBean
         $this->activated = 0;
         $this->status = 'Inactive';
         $this->save();
+    }
+
+
+    /**
+     * determine the from address
+     * @param Mailbox $mailbox
+     * @return mixed
+     */
+    public function handleFromAddress(Mailbox $mailbox){
+
+        switch($mailbox->transport){
+            case Mailbox::TRANSPORT_PERSONAL_GMAIL:
+            case Mailbox::TRANSPORT_PERSONAL_MSGRAPH:
+                // get email address of the assigned user of the campaigntask
+                $assignedUser = BeanFactory::getBean('Users', $this->assigned_user_id);
+                if($assignedUser){
+                    $from = $assignedUser->user_name;
+                }
+                break;
+            default:
+                $from = $mailbox->imap_pop3_username;
+        }
+
+        return $from;
     }
 }
