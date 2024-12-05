@@ -667,24 +667,24 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'options' => 'relationship_type_dom',
                 'vname' => 'LBL_RELATIONSHIP_TYPE'
             ],
-            'environments' => [
-                'name' => 'environments',
-                'type' => 'link',
-                'relationship' => 'contacts_contacts',
-                'module' => 'Contacts',
-                'bean_name' => 'Contact',
-                'source' => 'non-db',
-                'vname' => 'LBL_ENVIRONMENT_CONTACTS',
-                'duplicate_merge' => false,
-                'link_type' => 'one',
-                'rel_fields' =>
-                    [
-                        'relationship_type' =>
-                            [
-                                'map' => 'relationship_type'
-                            ],
-                    ],
-            ],
+//            'environments' => [
+//                'name' => 'environments',
+//                'type' => 'link',
+//                'relationship' => 'contacts_contacts',
+//                'module' => 'Contacts',
+//                'bean_name' => 'Contact',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_ENVIRONMENT_CONTACTS',
+//                'duplicate_merge' => false,
+//                'link_type' => 'one',
+//                'rel_fields' =>
+//                    [
+//                        'relationship_type' =>
+//                            [
+//                                'map' => 'relationship_type'
+//                            ],
+//                    ],
+//            ],
             'agreements_rel' => [
                 'name' => 'agreements_rel',
                 'type' => 'link',
