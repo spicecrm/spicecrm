@@ -569,14 +569,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'vname' => 'LBL_TASKS'
         ],
-        'contacts_sync' => [
-            'name' => 'contacts_sync',
-            'type' => 'link',
-            'relationship' => 'contacts_users',
-            'source' => 'non-db',
-            'vname' => 'LBL_CONTACTS_SYNC',
-            'reportable' => false,
-        ],
+//        'contacts_sync' => [
+//            'name' => 'contacts_sync',
+//            'type' => 'link',
+//            'relationship' => 'contacts_users',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CONTACTS_SYNC',
+//            'reportable' => false,
+//        ],
         'reports_to_id' => [
             'name' => 'reports_to_id',
             'vname' => 'LBL_REPORTS_TO_ID',
