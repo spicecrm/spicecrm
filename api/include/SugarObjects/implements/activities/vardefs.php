@@ -36,14 +36,14 @@ $vardefs = [
 //            'source' => 'non-db',
 //            'vname' => 'LBL_MEETINGS',
 //        ],
-        'emails' => [
-            'name' => 'emails',
-            'module' => 'Emails',
-            'type' => 'link',
-            'relationship' => 'emails_'.strtolower($table_name) .'_rel',/* reldef in emails */
-            'source' => 'non-db',
-            'vname' => 'LBL_EMAILS',
-        ],
+//        'emails' => [
+//            'name' => 'emails',
+//            'module' => 'Emails',
+//            'type' => 'link',
+//            'relationship' => 'emails_'.strtolower($table_name) .'_rel',/* reldef in emails */
+//            'source' => 'non-db',
+//            'vname' => 'LBL_EMAILS',
+//        ],
 //        'letters' => [
 //            'name' => 'letters',
 //            'module' => 'Letters',
@@ -79,12 +79,12 @@ $vardefs = [
 //            'relationship_type'=>'one-to-many', 'relationship_role_column'=>'parent_type',
 //            'relationship_role_column_value' => $module
 //        ],
-        strtolower($table_name) . '_emails' => [
-            'lhs_module'=> $module, 'lhs_table'=> $table_name, 'lhs_key' => 'id',
-            'rhs_module'=> 'Emails', 'rhs_table'=> 'emails', 'rhs_key' => 'parent_id',
-            'relationship_type'=>'one-to-many', 'relationship_role_column'=>'parent_type',
-            'relationship_role_column_value' => $module
-        ],
+//        strtolower($table_name) . '_emails' => [
+//            'lhs_module'=> $module, 'lhs_table'=> $table_name, 'lhs_key' => 'id',
+//            'rhs_module'=> 'Emails', 'rhs_table'=> 'emails', 'rhs_key' => 'parent_id',
+//            'relationship_type'=>'one-to-many', 'relationship_role_column'=>'parent_type',
+//            'relationship_role_column_value' => $module
+//        ],
 //        strtolower($table_name) . '_letters' => [
 //            'lhs_module'=> $module, 'lhs_table'=> $table_name, 'lhs_key' => 'id',
 //            'rhs_module'=> 'Letters', 'rhs_table'=> 'emails', 'rhs_key' => 'parent_id',
