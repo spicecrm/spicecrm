@@ -925,16 +925,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'type' => 'parent',
             'source' => 'non-db',
         ],
-        // service orders many to many
-        'serviceorders' => [
-            'name' => 'serviceorders',
-            'type' => 'link',
-            'relationship' => 'serviceorders_users',
-            'module' => 'ServiceOrders',
-            'bean_name' => 'ServiceOrder',
-            'source' => 'non-db',
-            'vname' => 'LBL_SERVICEORDERS'
-        ],
+//        // service orders many to many
+//        'serviceorders' => [
+//            'name' => 'serviceorders',
+//            'type' => 'link',
+//            'relationship' => 'serviceorders_users',
+//            'module' => 'ServiceOrders',
+//            'bean_name' => 'ServiceOrder',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_SERVICEORDERS'
+//        ],
         'serviceorder_user_role' => [
             'name' => 'serviceorder_user_role',
             'vname' => 'LBL_ROLE',
@@ -1193,19 +1193,19 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
     ]
 ];
 
-//set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
-if (file_exists('extensions/modules/ServiceQueues/ServiceQueue.php')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['servicequeues'] = [
-        'vname' => 'LBL_SERVICEQUEUES',
-        'name' => 'servicequeues',
-        'type' => 'link',
-        'module' => 'ServiceQueues',
-        'bean_name' => 'ServiceQueue',
-        'relationship' => 'servicequeues_users',
-        'source' => 'non-db'
-    ];
-
-}
+////set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
+//if (file_exists('extensions/modules/ServiceQueues/ServiceQueue.php')) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['servicequeues'] = [
+//        'vname' => 'LBL_SERVICEQUEUES',
+//        'name' => 'servicequeues',
+//        'type' => 'link',
+//        'module' => 'ServiceQueues',
+//        'bean_name' => 'ServiceQueue',
+//        'relationship' => 'servicequeues_users',
+//        'source' => 'non-db'
+//    ];
+//
+//}
 // CR1000333
 if (file_exists('extensions/modules/SystemDeploymentReleases/SystemDeploymentRelease.php')) {
     SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['systemdeploymentreleases'] = [
