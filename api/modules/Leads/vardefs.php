@@ -538,17 +538,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'source' => 'non-db',
                 'vname' => 'LBL_MEETINGS',
             ],
-        'emails' =>
-            [
-                'name' => 'emails',
-                'type' => 'link',
-                'relationship' => 'emails_leads_rel',
-                'source' => 'non-db',
-                'unified_search' => true,
-                'module' => 'Emails',
-                'bean_name' => 'Email',
-                'vname' => 'LBL_EMAILS',
-            ],
+//        'emails' =>
+//            [
+//                'name' => 'emails',
+//                'type' => 'link',
+//                'relationship' => 'emails_leads_rel',
+//                'source' => 'non-db',
+//                'unified_search' => true,
+//                'module' => 'Emails',
+//                'bean_name' => 'Email',
+//                'vname' => 'LBL_EMAILS',
+//            ],
         'campaigns' =>
             [
                 'name' => 'campaigns',
@@ -641,11 +641,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
 //            'rhs_module' => 'Meetings', 'rhs_table' => 'meetings', 'rhs_key' => 'parent_id',
 //            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
 //            'relationship_role_column_value' => 'Leads']
-        , 'lead_emails' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
-            'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Leads'],
-        'lead_campaign_log' => [
+//        , 'lead_emails' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
+//            'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Leads'],
+        ,'lead_campaign_log' => [
             'lhs_module' => 'Leads',
             'lhs_table' => 'leads',
             'lhs_key' => 'id',
