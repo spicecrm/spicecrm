@@ -43,7 +43,7 @@ $routes = [
                 'in'          => 'path',
                 'description' => 'Just an example string',
                 'type'        => ValidationMiddleware::TYPE_ENUM,
-                'options'     => 'salutation',
+                'options'     => ['salutation'],
 //                'options'     => ['lorem', 'ipsum', 'dolor', 'sit', 'amet'],
             ],
         ],

@@ -32,8 +32,8 @@
             <tr class="slds-hint-parent" *ngFor="let domainfield of domainfields;trackBy: trackByFn" [ngClass]="{'slds-is-selected': domainmanager.currentDomainField == domainfield.id}" cdkDrag cdkDragBoundary=".dragboundary"  (click)="domainmanager.currentDomainField = domainfield.id">
                 <td>
                     <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
-                    <system-utility-icon (click)="customizeDomainField($event, domainfield)" class="slds-p-right--xx-small" size="xx-small" [icon]="domainfield.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                    <dictionary-manager-item-status [ngModel]="domainfield.status" (ngModelChange)="setStatus(domainfield, $event)"></dictionary-manager-item-status>
+                    <system-utility-icon (click)="customizeDomainField($event, domainfield)" class="slds-p-right--xx-small" size="xx-small" [icon]="domainfield.scope == 'g' ? 'world' : 'people'" style="cursor:pointer"></system-utility-icon>
+                    <dictionary-manager-item-status [ngModel]="domainfield.status" (ngModelChange)="setStatus(domainfield, $event)" style="cursor:pointer"></dictionary-manager-item-status>
                 </td>
                 <td data-label="Domain">
                     <div class="slds-truncate">{{domainfield.name}}</div>

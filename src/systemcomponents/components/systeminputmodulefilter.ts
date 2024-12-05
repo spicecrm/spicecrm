@@ -62,7 +62,7 @@ export class SystemInputModuleFilter implements ControlValueAccessor {
     }
 
     get modulefilters() {
-        return this._modulefilters.filter(item => item.module == this.module);
+        return this._modulefilters.filter(item => item.module == this.module).sort((a, b) => a.name.localeCompare(b.name, undefined, {'sensitivity': 'base'}));
     }
 
     /**

@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\modules\SpiceACLProfiles;
 
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\data\BeanFactory;
@@ -127,9 +128,17 @@ class SpiceACLProfilesRESTHandler
 
         $retArray = [];
 
-        $records = $db->query("SELECT spiceaclprofiles_users.user_id id, users.user_name FROM spiceaclprofiles_users LEFT JOIN users ON spiceaclprofiles_users.user_id = users.id WHERE spiceaclprofiles_users.spiceaclprofile_id = '$id' AND spiceaclprofiles_users.deleted = 0 AND users.deleted=0 ORDER BY users.user_name");
+        $spiceBeanHandler = new SpiceBeanHandler();
+
+        $records = $db->query("SELECT spiceaclprofiles_users.user_id id, users.user_name, users.first_name, users.last_name FROM spiceaclprofiles_users LEFT JOIN users ON spiceaclprofiles_users.user_id = users.id WHERE spiceaclprofiles_users.spiceaclprofile_id = '$id' AND spiceaclprofiles_users.deleted = 0 ORDER BY users.user_name");
         while ($record = $db->fetchByAssoc($records)) {
-            $retArray[] = $record;
+            if($record['id'] == '*') {
+                $retArray[] = $record;
+            } else{
+                if($u = BeanFactory::getBean('Users', $record['id'], ['relationships' => false])){
+                    $retArray[] = $spiceBeanHandler->mapBeanToArray('Users', $u);
+                }
+            }
         }
 
         return $retArray;

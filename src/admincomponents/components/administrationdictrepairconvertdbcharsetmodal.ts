@@ -5,6 +5,7 @@ import {Component, OnInit} from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {toast} from "../../services/toast.service";
 import {language} from "../../services/language.service";
+import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'administration-dict-repair-convert-db-charset-modal',
@@ -36,7 +37,7 @@ export class AdministrationDictRepairConvertDBCharsetModal implements OnInit {
      */
     public self: any;
 
-    constructor(public backend: backend, public toast: toast, public language: language) {
+    constructor(public backend: backend, public toast: toast, public language: language, public modal: modal) {
     }
 
     /**
@@ -78,8 +79,7 @@ export class AdministrationDictRepairConvertDBCharsetModal implements OnInit {
      * send the selected tables to the backend to be converted
      */
     public convertTables() {
-
-        this.close();
+        let awaitModal = this.modal.await(this.language.getLabel('LBL_CONVERTING'));
 
         const body = {
             tables: this.filteredTables.filter(table => !!table.selected).map(t => t.table_name),
@@ -88,18 +88,21 @@ export class AdministrationDictRepairConvertDBCharsetModal implements OnInit {
         this.backend.postRequest('admin/convert/tables', {}, body).subscribe(res => {
             if (res) {
                 this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
+                awaitModal.emit(true);
             } else {
                 this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+                awaitModal.emit(true);
             }
         });
+
+        this.close();
     }
 
     /**
      * send the selected tables to the backend to be converted
      */
     public convertDatabase() {
-
-        this.close();
+        let awaitModal = this.modal.await(this.language.getLabel('LBL_CONVERTING'));
 
         const body = {
             charset: this.convertToCharset,
@@ -107,10 +110,14 @@ export class AdministrationDictRepairConvertDBCharsetModal implements OnInit {
         this.backend.postRequest('admin/convert/database', {}, body).subscribe(res => {
             if (res) {
                 this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
+                awaitModal.emit(true);
             } else {
                 this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+                awaitModal.emit(true);
             }
         });
+
+        this.close();
     }
 
     /**

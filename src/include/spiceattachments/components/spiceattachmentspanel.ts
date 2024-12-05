@@ -25,9 +25,7 @@ import {SpiceAttachmentAddFromRecordModal} from "./spiceattachmentaddfromrecordm
 import {navigationtab} from "../../../services/navigationtab.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {SpiceAttachmentAddImageModal} from "./spiceattachmentaddimagemodal";
-import {Subscription} from "rxjs";
 import {backend} from "../../../services/backend.service";
-import {configurationService} from "../../../services/configuration.service";
 
 /**
  * renders a panel for the attachments. The modelatatchment service can be provided by the component or by the parent
@@ -82,11 +80,6 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
         disableupload?: boolean
     } = {};
 
-    /**
-     * holds the components subscriptions
-     */
-    public subscriptions: Subscription = new Subscription();
-
     constructor(
         public _modelattachments: modelattachments,
         @Optional() @SkipSelf() public parentmodelattachments: modelattachments,
@@ -103,7 +96,6 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
         public navigationtab: navigationtab,
         public broadcast: broadcast,
         public backend: backend,
-        private configuration: configurationService
     ) {
         this._modelattachments.module = this.model.module;
         this._modelattachments.id = this.model.id;
@@ -291,8 +283,8 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     public doupload(files) {
         this.modelattachments.uploadAttachmentsBase64(files, this.componentconfig.systemCateogryId).subscribe({
             next: () => {
+                this.countSize();
                 this.broadcastUpload();
-                this.loadFiles();
             }
         });
     }
@@ -307,8 +299,8 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
             // wait for modal to finish upload
             modalRef.instance.responseSubject.subscribe({
                 next: () => {
+                    this.countSize();
                     this.broadcastUpload();
-                    this.loadFiles();
                 }
             })
         });
@@ -322,13 +314,14 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
             modalRef.instance.parent = this.parentModel;
         });
     }
-
     /**
      * broadcasts uploaded data to _modelattachments service
      * @private
      */
     private broadcastUpload() {
         this._modelattachments.broadcast.broadcastMessage('attachments.uploaded', {
+            module: this._modelattachments.module,
+            id: this._modelattachments.id,
             uploadedFiles: this._modelattachments.files,
             uniqueID: this._modelattachments.httpRequestsRefID,
             reload: true

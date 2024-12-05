@@ -1,14 +1,9 @@
 /**
  * @module ModuleCalendar
  */
-import {Component, ElementRef, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, ElementRef, InjectionToken, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {calendar} from '../services/calendar.service';
-
-/**
- * @ignore
- */
-declare var moment: any;
 
 /**
  * Display a three days view to be rendered in a dashboard as dashlet
@@ -16,7 +11,11 @@ declare var moment: any;
 @Component({
     selector: 'calendar-three-days-dashlet',
     templateUrl: '../templates/calendarthreedaysdashlet.html',
-    providers: [calendar]
+    providers: [calendar, {provide: 'calendarConfigOverride', useFactory: () => ({
+            isDashlet: true,
+            sheetType: 'Three_Days',
+            sheetHourHeight: 50
+    })}]
 })
 
 export class CalendarThreeDaysDashlet implements OnInit {
@@ -37,7 +36,6 @@ export class CalendarThreeDaysDashlet implements OnInit {
     constructor(public language: language,
                 public elementRef: ElementRef,
                 public calendar: calendar) {
-        this.setCalendarType();
     }
 
     /**
@@ -58,14 +56,5 @@ export class CalendarThreeDaysDashlet implements OnInit {
 
     public ngOnInit() {
         this.calendar.customOwner = this.dashletconfig?.userId;
-    }
-
-    /**
-     * set the calendar type and is dashlet value
-     */
-    public setCalendarType() {
-        this.calendar.isDashlet = true;
-        this.calendar.sheetType = 'Three_Days';
-        this.calendar.sheetHourHeight = 50;
     }
 }

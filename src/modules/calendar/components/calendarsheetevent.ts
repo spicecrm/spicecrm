@@ -92,8 +92,6 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
                 public metadata: metadata,
                 public elementRef: ElementRef,
                 public renderer: Renderer2) {
-        this.subscribeToColorChange();
-        this.subscribeToModelSave();
         // hide view labels
         this.view.displayLabels = false;
     }
@@ -115,13 +113,6 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     }
 
     /**
-     * @return isAbsence: boolean
-     */
-    get isAbsence(): boolean {
-        return this.event.type == 'absence' || this.event.module == 'UserAbsences';
-    }
-
-    /**
      * @return isDraggable: boolean
      */
     get isDraggable(): boolean {
@@ -133,7 +124,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
      */
     get canEdit(): boolean {
         return (this.model.checkAccess('edit')) && this.calendar.sheetType != 'Schedule' &&
-            (this.event.type == 'event' || this.event.type == 'absence') && !this.calendar.asPicker && !this.calendar.isMobileView && !this.calendar.isDashlet;
+            (this.event.type == 'event') && !this.calendar.asPicker && !this.calendar.isMobileView && !this.calendar.isDashlet;
     }
 
     /**
@@ -254,49 +245,6 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         if (config && config.sub_fieldset) {
             this.subFieldset = config.sub_fieldset;
         }
-    }
-
-    /**
-     * reset event color on color change
-     */
-    public subscribeToColorChange() {
-        this.subscriptions.add(this.calendar.otherCalendarsColor$.subscribe(res => {
-            if (this.event.data.assigned_user_id && res.id == this.event.data.assigned_user_id) {
-                this.event.otherColor = res.color;
-                this.cdRef.detectChanges();
-            }
-        }));
-    }
-
-    /**
-     * reset data on model save
-     */
-    public subscribeToModelSave() {
-        this.subscriptions.add(this.broadcast.message$.subscribe(message => {
-            let id = message.messagedata.id;
-            let module = message.messagedata.module;
-            let data = message.messagedata.data;
-            if (module == this.model.module) {
-                switch (message.messagetype) {
-                    case "model.save":
-                        if (id == this.model.id) {
-                            this.model.setData(data, true);
-                            this.updateEventData(data);
-                            this.setEventColor();
-                            this.eventChange.emit();
-                        }
-                        break;
-                }
-            }
-        }));
-    }
-
-    /**
-     * will update the stored event data on model update
-     * @param data
-     */
-    public updateEventData(data){
-        this.event.data = data;
     }
 
     /**

@@ -46,7 +46,7 @@
                     <system-label label="LBL_RHS_LINKNAME"></system-label>
                 </label>
                 <div class="slds-form-element__control">
-                    <input [disabled]="readonly" class="slds-input" [ngModel]="relationship.rhs_linkname"/>
+                    <input [disabled]="readonly" class="slds-input" [(ngModel)]="relationship.rhs_linkname"/>
                 </div>
             </div>
             <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
@@ -73,6 +73,24 @@
                 </label>
                 <div class="slds-form-element__control">
                     <system-input-label [disabled]="readonly" [(ngModel)]="relationship.rhs_relatelabel"></system-input-label>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-size--1-of-2">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_PACKAGE"></system-label>
+                </label>
+                <div class="slds-form-element__control">
+                    <system-input-package [disabled]="readonly" [(ngModel)]="relationship.package"/>
+                </div>
+            </div>
+            <div class="slds-p-left--xx-small slds-size--1-of-2">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_VERSION"></system-label>
+                </label>
+                <div class="slds-form-element__control">
+                    <system-input-version [disabled]="readonly" [(ngModel)]="relationship.version"/>
                 </div>
             </div>
         </div>

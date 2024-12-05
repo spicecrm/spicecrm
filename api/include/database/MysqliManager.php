@@ -119,7 +119,7 @@ class MysqliManager extends DBManager
         'currency' => 'decimal(26,6)',
         'decimal'  => 'decimal',
         'decimal2' => 'decimal',
-        'id'       => 'char(36)',
+        'id'       => 'varchar',
         'url'      => 'varchar',
         'encrypt'  => 'varchar',
         'file'     => 'varchar',
@@ -468,7 +468,7 @@ class MysqliManager extends DBManager
         // CR1000349 mysql8 compatibility: remove hardcoded charset
         $charset = $this->getOption('charset');
         if (empty($charset)) {
-            $charset = 'utf8';
+            $charset = 'utf8mb4';
         }
         mysqli_set_charset($this->database, $charset);
 	    // mysqli_query($this->database,"SET CHARACTER SET ".$charset."");
@@ -697,28 +697,6 @@ class MysqliManager extends DBManager
         }
     }
 
-    /**
-     * use MYSQL in the upsert Query
-     *
-     * @see DBManager::upsertQuery()
-     */
-    public function upsertQuery($table, array $pks, array $data, bool $execute = true)
-    {
-        // quote the names
-        $cols = array_keys($data);
-        foreach ( $cols as $k => $v ) {
-            $cols[$k] = $this->quote($v);
-        }
-
-        // quote the values
-        $vals = array_values($data);
-        foreach ( $vals as $k => $v ) {
-            $vals[$k] = is_null($v) ? "null" : "'{$this->quote( $v )}'";
-        }
-
-        // run the query
-        $this->query("REPLACE INTO " . $table . " (" . implode(',', $cols) . ") VALUES (" . implode(",", $vals) . ")", true );
-    }
 
     /**
      * @see DBManager::limitQuery()
@@ -812,7 +790,7 @@ class MysqliManager extends DBManager
 
                 $columns[$name]['required'] = json_encode($row['Null'] == 'NO');
 
-                if (!empty($row['Default']))
+                if (!empty($row['Default']) || $row['Default'] == '0') {}
                     $columns[$name]['default'] = $row['Default'];
                 if (!empty($row['Comment']))
                     $columns[$name]['comment'] = $row['Comment'];
@@ -1079,10 +1057,19 @@ class MysqliManager extends DBManager
     /**
      * (non-PHPdoc)
      * @see DBManager::fromConvert()
+     * @return string
      */
 
     public function fromConvert($string, $type)
     {
+        switch ($type) {
+            case 'date':
+                $tmp = explode(' ', $string);
+                return $tmp[0];
+            case 'time':
+                $tmp = explode(' ', $string);
+                return $tmp[1];
+        }
         return $string;
     }
 
@@ -1153,14 +1140,6 @@ class MysqliManager extends DBManager
         $collation = $this->getOption('collation');
         // CR1000349 mysql8 compatibility: remove hardcoded charset
         $charset = $this->getOption('charset');
-        if(empty($collation)) {
-            //$collation = 'utf8_general_ci';
-            $collation = 'utf8mb4_unicode_ci';
-        }
-        if(empty($charset)) {
-            //$charset = 'utf8';
-            $charset = 'utf8mb4';
-        }
 
         $sql = "CREATE TABLE $tablename ($columns $keys) CHARACTER SET $charset COLLATE $collation";
 
@@ -1373,8 +1352,13 @@ class MysqliManager extends DBManager
             case 'primary':
                 if ($drop)
                     $sql = "ALTER TABLE {$table} DROP PRIMARY KEY";
-                else
-                    $sql = "ALTER TABLE {$table} ADD CONSTRAINT PRIMARY KEY ({$fields})";
+                else {
+                    if($this->get_indices($table)['primary']) {
+                        $sql = "ALTER TABLE {$table} DROP PRIMARY KEY, ADD CONSTRAINT {$name} PRIMARY KEY ({$fields})";
+                    } else {
+                        $sql = "ALTER TABLE {$table} ADD CONSTRAINT {$name} PRIMARY KEY ({$fields})";
+                    }
+                }
                 break;
             case 'foreign':
                 if ($drop) {
@@ -1568,10 +1552,8 @@ class MysqliManager extends DBManager
      * Create a database
      * @param string $dbname
      */
-    public function createDatabase($dbname)
-    {
-        $this->query("CREATE DATABASE `$dbname` CHARACTER SET utf8 COLLATE utf8_general_ci", true);
-        //$this->query("CREATE DATABASE `$dbname` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci", true);
+    public function createDatabase(string $dbname, string $charset = "utf8mb4", string $collation = "utf8mb4_unicode_ci"): void {
+        $this->query("CREATE DATABASE `$dbname` CHARACTER SET $charset COLLATE $collation", true);
     }
 
     /**
@@ -1714,8 +1696,8 @@ class MysqliManager extends DBManager
      * To ensure multiple database types support vardefs will sometimes be defined with a basic dbType and a specific length to match another column Type. Example dbType='text' and a len=4294967295. This definition creates a longtext column in mysql.
      * Column will be created properly in database but repair/rebuild will not recognize that vardef match with column type
      * This function matches definition with table column type for specific column types
-     * @param $fielddef1 database field definition
-     * @param $fielddef2 vardef
+     * @param $fielddef1 array database field definition
+     * @param $fielddef2 array vardef or dictionary def
      * @return boolean
      */
 
@@ -1724,11 +1706,6 @@ class MysqliManager extends DBManager
         $dbtype = $fielddef1['type'];
         $fieldtype = $this->getFieldType($fielddef2);
         switch($dbtype){
-            case 'varchar':
-                if($fielddef2['name'] == 'id' && $fielddef2['len'] == 36){
-                    $fieldtype = 'char';
-                }
-                break;
             case 'longtext':
             case 'mediumtext':
             case 'text':

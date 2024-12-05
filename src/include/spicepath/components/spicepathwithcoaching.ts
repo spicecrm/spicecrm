@@ -64,7 +64,9 @@ export class SpicePathWithCoaching {
      */
     public beanStagesChecksResults: any[];
 
-    public componentconfig: any = {};
+    public componentconfig: {coachingVisible?: boolean, kanban?: string} = {};
+
+    public stages: any[] = [];
 
     constructor(public configuration: configurationService, public model: model, public language: language, public backend: backend, public metadata: metadata) {
         this.componentconfig = this.metadata.getComponentConfig('SpicePathWithCoaching', this.model.module);
@@ -77,7 +79,25 @@ export class SpicePathWithCoaching {
      * retrieve results for checks on load
      */
     public ngOnInit() {
-        this.backend.getRequest("common/spicebeanguide/" + this.model.module + "/" + this.model.id).subscribe(stages => {
+
+        if (this.componentconfig && this.componentconfig.coachingVisible) {
+            this.coachingVisible = this.componentconfig.coachingVisible;
+        }
+
+        if (!this.componentconfig.kanban) {
+            const defaultConfig = this.metadata.getComponentConfig('SpicePathWithCoaching', this.model.module);
+            this.componentconfig.kanban = defaultConfig.kanban;
+        }
+
+        if (!this.componentconfig.kanban) {
+            this.componentconfig.kanban = this.configuration.getData('spicebeanguides')[this.model.module]?.find(k => k.is_default == 1)?.id;
+        }
+
+        if (!this.componentconfig.kanban) return;
+
+        this.setStages();
+
+        this.backend.getRequest(`common/spicebeanguide/${this.componentconfig.kanban}/${this.model.module}/${this.model.id}`).subscribe(stages => {
             this.beanStagesChecksResults = stages;
         });
     }
@@ -96,10 +116,19 @@ export class SpicePathWithCoaching {
     }
 
     /**
-     * returns the stages for the module from teh configuration service
+     * set the stages for the module from the configuration service
      */
-    get stages() {
-        return this.configuration.getData('spicebeanguides')[this.model.module].stages;
+    private setStages() {
+
+        const moduleKanbans = this.configuration.getData('spicebeanguides')[this.model.module];
+
+        if (!Array.isArray(moduleKanbans) || moduleKanbans.length == 0) return;
+
+        if (!this.componentconfig?.kanban) {
+            this.stages = moduleKanbans.find(k => k.is_default == 1).stages;
+        } else {
+            this.stages = moduleKanbans.find(k => k.id == this.componentconfig.kanban)?.stages ?? [];
+        }
     }
 
     /**
@@ -153,11 +182,7 @@ export class SpicePathWithCoaching {
 
         if (!stage) return '';
 
-        if (stage.stagedata.stage_label) {
-            return this.language.getLabel(stage.stagedata.stage_label, '', 'long');
-        } else {
-            return stage.stagedata.stage_description;
-        }
+        return stage.stagedata.texts[this.language.currentlanguage];
     }
 
     /**

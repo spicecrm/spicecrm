@@ -21,4 +21,12 @@ class SpiceGDPRManager
         $clauses[] = "NOT EXISTS (SELECT id FROM campaign_log WHERE campaign_log.target_id = contacts.id AND activity_date > '".$now->format($timeDate->get_db_date_time_format())."' AND campaign_log.deleted = 0)";
         return implode(' AND ', $clauses);
     }
+
+    /**
+     * $params as array
+     * data to process after retention task finished
+     */
+    public static function afterProcessRetentionTask(array $params): void
+    {
+    }
 }

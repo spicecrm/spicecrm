@@ -79,6 +79,37 @@ export class AdministrationAPIInspector {
         this.apiinspector.selectAPI(selectedId);
     }
 
+    public exportSwagger(){
+        if (!this.apiinspector.selectedAPI) {
+            return;
+        }
+
+        const route = this.apiinspector.selectedAPI.route;
+        const includeSubroutes = this.apiinspector.apiSubMethods;
+
+        const isDownloading = this.modal.await('LBL_DOWNLOADING');
+
+        this.apiinspector.exportSwagger(route, includeSubroutes).subscribe({
+            next: (downloadUrl) => {
+
+                const a: any = document.createElement("a");
+                document.body.appendChild(a);
+                a.href = downloadUrl;
+                a.download = `swagger_${route.replace(/\//g, '_')}.yaml`;
+                a.click();
+                a.remove();
+            },
+            error: (error) => {
+                this.toast.sendToast('Error exporting Swagger file', 'error');
+            },
+            complete: () => {
+                isDownloading.next(true);
+                isDownloading.complete();
+            }
+            },
+        );
+    }
+
 
 }
 

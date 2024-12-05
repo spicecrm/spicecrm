@@ -34,7 +34,8 @@
     "sendinblue/api-v3-sdk": "7.x.x",
     "sendgrid/sendgrid": "^8.0",
     "google/cloud-storage": "^1.30",
-    "phpoffice/phpspreadsheet": "^1.29"
+    "phpoffice/phpspreadsheet": "^1.29",
+    "lbuchs/webauthn": "v2.0.0"
   },
   "minimum-stability": "rc",
   "description": ""

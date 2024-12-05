@@ -1,0 +1,10 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <div class="slds-truncate"><span *ngIf="value">{{value}}</span></div>
+    </div>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="css_classes">
+    <input class="slds-input" [(ngModel)]="value" (input)="addSpacesAndSetVariables()" (blur)="checkInputLength()" [maxlength]="max()"/>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

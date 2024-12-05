@@ -1625,9 +1625,8 @@ EOSQL;
      * Create a database
      * @param string $dbname
      */
-    public function createDatabase($dbname)
-    {
-        return $this->query("CREATE DATABASE $dbname", true);
+    public function createDatabase(string $dbname): void {
+        $this->query("CREATE DATABASE $dbname", true);
     }
 
     /**

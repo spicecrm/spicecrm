@@ -17,7 +17,7 @@ declare var _;
 
 @Component({
     selector: 'module-builder-filter-details',
-    templateUrl: '../templates/modulefilterbuilderfilterdetails.html',
+    templateUrl: '../templates/modulefilterbuilderfilterdetails.html'
 })
 export class ModuleFilterBuilderFilterDetails implements OnChanges {
 
@@ -74,4 +74,5 @@ export class ModuleFilterBuilderFilterDetails implements OnChanges {
             }
         }
     }
+
 }

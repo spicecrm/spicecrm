@@ -1,1 +1,8 @@
-<system-filter-builder-expression-group [filtergroup]="_conditions" [module]="module" (expressionChanged)="expressionChanged()"></system-filter-builder-expression-group>
+@if (showToggleDisplayAllField) {
+    <div>
+        <system-checkbox [(ngModel)]="displayAllFields">
+            <system-label label="LBL_ALL_FIELDS"/>
+        </system-checkbox>
+    </div>
+}
+<system-filter-builder-expression-group [filtergroup]="_conditions" [displayAllFields]="displayAllFields" [module]="module" (expressionChanged)="expressionChanged()"></system-filter-builder-expression-group>

@@ -357,13 +357,12 @@ class Link2
         if (!is_array($params))
             $params = [];
 
+        // add a default sort if not set
+        if ($this->def['sort'] && (!isset($params['sort']) || !is_array($params['sort']) || count($params['sort']) == 0)) {
+            $params['sort'] = $this->def['sort'];
+        }
+
         if (!$this->loaded && empty($params)) {
-
-            // add a sort if not set
-            if ($this->def['sort']) {
-                $params['sort'] = $this->def['sort'];
-            }
-
             $this->load($params);
         }
 
@@ -397,7 +396,7 @@ class Link2
 
                     //mod for deviating id in relationship
                     $idField = 'id';
-                    if (in_array($this->relationship->def['relationship_type'], ['many-to-many', 'email-address'])) {
+                    if (in_array($this->relationship->def['relationship_type'], ['many-to-many', 'email-address', 'many-to-many-prospectlists'])) {
                         $idField = $this->relationship->def['rhs_module'] == $rel_module ? $this->relationship->def['rhs_key'] : $this->relationship->def['lhs_key'];
                     }
 
@@ -405,10 +404,21 @@ class Link2
                         $tmpBean = BeanFactory::getBean($rel_module);
                         $tmpBean->retrieve_by_string_fields([$idField => $id]);
                     } else {
-                        $tmpBean = BeanFactory::getBean($rel_module, $id);
+
+                        // retrieve linked Bean, if it is deleted
+                        if($params && isset($params['deleted']) && $params['deleted'] == true) {
+                            // set deleted to false in order to retrieve a deleted Bean in SpiceBean Class
+                            $tmpBean = BeanFactory::getBean($rel_module, $id, ['forceRetrieve' => true], false);
+                        } else {
+                            // if deleted is not false, only not-deleted Bean will be retrieved per default
+                            $tmpBean = BeanFactory::getBean($rel_module, $vals['id'], ['forceRetrieve' => true]);
+                        }
                     }
-                    if ($tmpBean !== FALSE)
+
+                    if ($tmpBean !== false) {
                         $result[$id] = $tmpBean;
+                    }
+
                 } else {
                     $result[$id] = $this->beans[$id];
                 }
@@ -540,7 +550,7 @@ class Link2
      * @param string $related_id id or SpiceBean to unrelate. Pass a SpiceBean if you have it.
      * @return boolean          true if delete was successful or false if it was not
      */
-    function delete($id, $related_id = '')
+    function delete($id, $related_id = '', ?string $relId = null)
     {
         if (empty($this->focus->id))
             $this->focus = BeanFactory::getBean($this->focus->_module, $id);
@@ -549,9 +559,9 @@ class Link2
                 $related_id = $this->getRelatedBean($related_id);
             }
             if ($this->getSide() == REL_LHS) {
-                return $this->relationship->remove($this->focus, $related_id);
+                return $this->relationship->remove($this->focus, $related_id, $relId);
             } else {
-                return $this->relationship->remove($related_id, $this->focus);
+                return $this->relationship->remove($related_id, $this->focus, $relId);
             }
         } else {
             return $this->relationship->removeAll($this);

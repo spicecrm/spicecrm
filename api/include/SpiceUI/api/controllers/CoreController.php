@@ -58,7 +58,9 @@ class CoreController
             'LBL_ONE_SPECIALCHAR', 'LBL_ONE_DIGIT', 'LBL_MIN_LENGTH', 'MSG_PWD_NOT_LEGAL', 'MSG_PWDS_DONT_MATCH', 'MSG_PWD_CHANGED_SUCCESSFULLY',
             'LBL_SAVE', 'LBL_SELECT_2FA_METHOD', 'LBL_CODE', 'LBL_TOTP_AUTHENTICATION', 'MSG_AUTHENTICATOR_INSTRUCTIONS', 'MSG_OLD_PWD_NOT_AS_NEW',
             'LBL_REMEMBER_DEVICE', 'LBL_CONFIRM', 'LBL_SMS', 'LBL_EMAIL', 'MSG_TOTP_GENERATING_CODE', 'LBL_SENDING', 'LBL_SENT', 'ERR_FAILED_TO_EXECUTE',
-            'ERR_RECOVERY_MODE_ENABLED', 'ERR_MAINTENANCE_MODE_ENABLED'
+            'ERR_RECOVERY_MODE_ENABLED', 'ERR_MAINTENANCE_MODE_ENABLED', 'LBL_FORGOT_PASSWORD', 'LBL_EMAIL_ADDRESS_OR_USER_NAME', 'LBL_SEND',
+            'MSG_TOKEN_WAS_SENT_VIA_EMAIL', 'LBL_ENTER_NEW_PASSWORD', 'LBL_REPEAT_NEW_PASSWORD', 'LBL_RESET_PASSWORD',
+            'LBL_LOGIN_WITH_PASSKEY', 'LBL_TO', 'MSG_RESEND_CODE_VIA_EMAIL', 'MSG_RESEND_CODE_VIA_SMS'
         ]);
 
         // CR1000463 User Manager cleanup.. we need to know in frontend if spiceacl is running
@@ -207,9 +209,6 @@ class CoreController
         $cached = SpiceCache::get("cachedlanguage{$language}");
         if($cached) return $res->withJson($cached);
 
-        // get the app List Strings
-        $appStrings = SpiceUtils::returnAppListStringsLanguage($language);
-
         $syslanguagelabels = LanguageManager::loadDatabaseLanguage($language);
         $syslanguages = [];
         if (is_array($syslanguagelabels)) {
@@ -225,8 +224,7 @@ class CoreController
         $responseArray = [
             'language' => $language,
             'languages' => $languages,
-            'applang' => $syslanguages,
-            'applist' => $appStrings
+            'applang' => $syslanguages
         ];
 
         // cache the values
@@ -258,11 +256,15 @@ class CoreController
      */
     public function getSwagger($req, $res, $args) {
         $postBody = $req->getParsedBody();
+
+        $selectedRoute = $postBody['selectedRoute'] ?? null;
+        $includeSubroutes = $postBody['includeSubroutes'] ?? false;
+
         $node       = $postBody['node'] ?: "/";
         $extensions = $postBody['extensions'];
         $modules    = $postBody['modules'];
 //        $extensionName = $args['extensionName'] ?: '';
-        $res->getBody()->write(RESTManager::getInstance()->getSwagger($extensions, $modules, $node));
+        $res->getBody()->write(RESTManager::getInstance()->getSwagger($selectedRoute, $includeSubroutes, $extensions, $modules, $node));
         return $res->withHeader('Content-Type', 'text/yaml');
     }
 

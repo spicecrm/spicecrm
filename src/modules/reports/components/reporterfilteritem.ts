@@ -73,6 +73,7 @@ export class ReporterFilterItem {
                     case 'before':
                     case 'after':
                     case 'between':
+                    case 'betweend':
                     case 'equals':
                         type = 'date';
                         break;

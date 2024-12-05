@@ -4,7 +4,6 @@
 import {
     Component
 } from '@angular/core';
-import {Subject} from 'rxjs';
 
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
@@ -30,12 +29,13 @@ export class ActionsetManager {
     public change_request_required: boolean = false;
 
     public sysModules: any = [];
-    public currentModule: string = '*';
+    private _currentModule: string = '*';
     public currentActionSet: any = {
         id: '',
         module: '',
         name: '',
         package: '',
+        version: '',
         type: '',
         actions: [],
         isnew: false
@@ -48,7 +48,7 @@ export class ActionsetManager {
 
     public selectedItemID = "";
 
-    public showActionSetDetails: boolean = false;
+    public moduleActionsets: {global: { id: string, name: string; }[], custom: { id: string, name: string; }[]};
 
     constructor(public backend: backend,
                 public metadata: metadata,
@@ -61,10 +61,24 @@ export class ActionsetManager {
                 public view: view,
                 public modal: modal) {
 
-        this.backend.getRequest('system/spiceui/admin/modules').subscribe(modules => {
-            this.sysModules = modules;
-        });
+        this.sysModules = this.metadata.getModules().sort();
+        this.currentModule = '*';
         this.checkMode();
+    }
+
+    get currentModule() {
+        return this._currentModule;
+    }
+
+    set currentModule(id) {
+        this._currentModule = id;
+        this.selectModule();
+        if (!!id) {
+            this.moduleActionsets = {
+                global: this.getActionSets('global'),
+                custom: this.getActionSets('custom'),
+            };
+        }
     }
 
     /**
@@ -164,7 +178,7 @@ export class ActionsetManager {
                 this.currentActionSet.id = JSON.parse(this.actionSetBackup).id;
                 JSON.stringify(this.actionSetBackup);
                 if(this.checkForChangesFunction()) {
-                    this.modal.confirm(  'LBL_ALL_CHANGES_WOULD_BE_DELETED.', 'LBL_ARE_YOU_SURE' ).subscribe( ( answer ) => {
+                    this.modal.confirm(  'LBL_ALL_CHANGES_WOULD_BE_DELETED', 'LBL_ARE_YOU_SURE' ).subscribe( ( answer ) => {
                         if(answer) {
                             this.deleteChanges();
                             this.loadCurrentActionset(newID);
@@ -176,6 +190,8 @@ export class ActionsetManager {
             } else {
                 this.loadCurrentActionset(newID);
             }
+        } else {
+            this.reset();
         }
     }
 
@@ -266,6 +282,7 @@ export class ActionsetManager {
                     this.currentActionSet.type = added.type;
                     this.currentActionSet.actions = [];
                     this.currentActionSet.package = '';
+                    this.currentActionSet.version = '';
                     this.currentActionSet.isnew = true;
                 }
             });
@@ -284,7 +301,7 @@ export class ActionsetManager {
             this.currentActionSet.module = JSON.parse(this.actionSetBackup).module;
             JSON.stringify(this.actionSetBackup);
             if(this.checkForChangesFunction()) {
-                this.modal.confirm(  'LBL_ALL_CHANGES_WOULD_BE_DELETED.', 'LBL_ARE_YOU_SURE' ).subscribe( ( answer ) => {
+                this.modal.confirm(  'LBL_ALL_CHANGES_WOULD_BE_DELETED', 'LBL_ARE_YOU_SURE' ).subscribe( ( answer ) => {
                     if(answer) {
                         this.deleteChanges();
                         this.currentActionSet.module = newModule;
@@ -307,6 +324,7 @@ export class ActionsetManager {
             module: '',
             name: '',
             package: '',
+            version: '',
             type: '',
             actions: []
         };
@@ -448,5 +466,34 @@ export class ActionsetManager {
                 }
             });
         });
+    }
+
+
+    /**
+     * delete the actionset and it's items
+     */
+    public deleteActionset(): void {
+
+        let params = {
+            table: this.currentActionSet.type === 'custom' ? 'sysuicustomactionsets' : 'sysuiactionsets',
+            id: this.currentActionSet.id
+        }
+
+        this.modalservice.confirmDeleteRecord().subscribe({
+            next: (confirm) => {
+                if(confirm) {
+                    this.backend.deleteRequest('configuration/spiceui/core/actionsets', params).subscribe({
+                        next: () => {
+                            this.reset();
+                            this.configurationService.reloadTaskData('actionsets');
+                            this.toast.sendToast('LBL_DELETED');
+                        },
+                        error: () => {
+                            this.toast.sendToast('LBL_ERROR')
+                        }
+                    })
+                }
+            }
+        })
     }
 }

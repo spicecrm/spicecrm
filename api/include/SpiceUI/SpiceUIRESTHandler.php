@@ -7,6 +7,7 @@ use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceFavorites\SpiceFavorites;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSActivityHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
@@ -376,6 +377,30 @@ class SpiceUIRESTHandler
         SystemDeploymentCR::writeDBEntry($tableName, $componentsetId, $dbData, $name, SystemDeploymentCR::ACTION_INSERT);
     }
 
+    /**
+     * @param $params
+     * @return bool
+     * @throws \Exception
+     */
+    function deleteComponentset($params): bool
+    {
+        $db = DBManagerFactory::getInstance();
+        SpiceUIRESTHelper::checkAdmin();
+
+        $componentsetComponentsTable = strpos($params['table'], 'custom') ? 'sysuicustomcomponentsetscomponents' : 'sysuicomponentsetscomponents';
+        $componentsetComponentsQuery = "SELECT id FROM {$componentsetComponentsTable} WHERE componentset_id = '{$params['id']}'";
+        $queryResult = $db->query($componentsetComponentsQuery);
+
+        SystemDeploymentCR::deleteDBEntry($params['table'], $params['id'], $params['table']);
+
+        while ($row = $db->fetchByAssoc($queryResult)) {
+            SystemDeploymentCR::deleteDBEntry($componentsetComponentsTable, $row['id'], $componentsetComponentsTable);
+        }
+
+        SpiceCache::clear('spiceComponentSets');
+
+        return true;
+    }
 
     /**
      * @deprected .. moved to controller
@@ -1267,6 +1292,11 @@ class SpiceUIRESTHandler
                     // ugly but effective
                     // ToDo: find a nice way to handle that
                     $groupComponent['componentconfig'] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"', '"'], html_entity_decode($groupComponent['componentconfig'])), true) ?: [];
+
+                    if ($groupComponent['component'] == 'AdministrationConfigurator') {
+                        $groupComponent['componentconfig']['fields'] = $this->getTableFieldTypes($groupComponent['componentconfig']['dictionary'], $groupComponent['componentconfig']['fields']);
+                    }
+
                     $groupComponents[] = $groupComponent;
                 }
                 // only add if we have any component
@@ -1277,6 +1307,35 @@ class SpiceUIRESTHandler
         }
 
         return $navElements;
+    }
+
+    private function getTableFieldTypes(string $tableName, array $fields)
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $dictionaryDefinition = $db->fetchOne("SELECT id FROM sysdictionarydefinitions WHERE name = '{$tableName}'");
+        $dictionaryDefinitionId = $dictionaryDefinition['id'];
+
+        $dictionaryFieldDefinitions = $db->fetchAll("SELECT fielddefinition FROM sysdictionaryfields WHERE sysdictionarydefinition_id = '{$dictionaryDefinitionId}'");
+
+        $requiredFieldNames = [];
+        foreach ($dictionaryFieldDefinitions as $field) {
+            $fieldDefinition = json_decode($field['fielddefinition'], true);
+            if (isset($fieldDefinition['required']) && $fieldDefinition['required'] == 1) {
+                $requiredFieldNames[] = $fieldDefinition['name'];
+            }
+        }
+
+        foreach ($fields as &$field) {
+            $field['required'] = in_array($field['name'], $requiredFieldNames);
+
+            $def = $dictionaryFieldDefinitions[$field['name']] ?? null;
+            if (empty($field['type']) && $def) {
+                $field['type'] = $def['type'] ?? '';
+            }
+        }
+
+        return $fields;
     }
 
     function getAllModules()

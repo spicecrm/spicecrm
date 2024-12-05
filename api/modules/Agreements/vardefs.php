@@ -43,6 +43,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
             'type' => 'parent',
             'source' => 'non-db',
         ],
+        'category' => [
+            'name' => 'category',
+            'vname' => 'LBL_category',
+            'type' => 'categories',
+            'required' => false,
+            'source' => 'non-db'
+        ],
         'category_1' => [
             'name' => 'category_1',
             'vname' => 'LBL_CATEGORY1',

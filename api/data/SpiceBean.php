@@ -5,6 +5,7 @@ namespace SpiceCRM\data;
 
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
 use stdClass;
 use SpiceCRM\includes\AddressReferences\AddressReferences;
 use SpiceCRM\includes\database\DBManager;
@@ -346,6 +347,13 @@ class SpiceBean
      * @var string a generic summary text for the Bean
      */
     public $summary_text = '';
+
+
+    /**
+     * store related data, currently for email address relationship id in ProspectLists
+     * @var array
+     */
+    public $mergeRelatedData = [];
 
     /**
      * Constructor for the bean, it performs following tasks:
@@ -909,6 +917,9 @@ class SpiceBean
      */
     function get_linked_beans($field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "")
     {
+        if($searchterm){
+            $searchterm = strtolower($searchterm);
+        }
         // CR1000509 get a collection of related beans
         if (is_array($field_name)) {
             return $this->get_multiple_linked_beans($field_name);
@@ -936,8 +947,9 @@ class SpiceBean
                     'sort' => $sort_array,
                     'searchterm' => $searchterm
                 ]));
-            } else
+            } else {
                 return array_values($this->$field_name->getBeans(['sort' => $sort_array]));
+            }
         }
         return [];
     }
@@ -1304,6 +1316,16 @@ class SpiceBean
 
         $this->call_custom_logic("before_save", $custom_logic_arguments);
         unset($custom_logic_arguments);
+
+        // check if we have any numbered fields
+        if($this->isNew()){
+            $numberrangeFields = SpiceNumberRanges::getNumberRangeFieldsForBean($this->_module);
+            foreach ($numberrangeFields as $numberrangeField){
+                if(empty($this->{$numberrangeField})){
+                    $this->{$numberrangeField} = SpiceNumberRanges::getNextNumberForField($this->_module, $numberrangeField);
+                }
+            }
+        }
 
         //construct the SQL to create the audit record if auditing is enabled.
         $auditDataChanges = [];
@@ -1800,10 +1822,7 @@ class SpiceBean
         //FIXME: Bug? we should remove the magic number -99
         //use -99 to return all
         $index = $row_offset;
-        while ($max_per_page == -99 || ($index < $row_offset + $max_per_page)) {
-            $row = $db->fetchByAssoc($result);
-            if (empty($row))
-                break;
+        while ($row = $db->fetchByAssoc($result)) {
 
             //instantiate a new class each time. This is because php5 passes
             //by reference by default so if we continually update $this, we will
@@ -1944,9 +1963,11 @@ class SpiceBean
 
         $query = "SELECT $this->_tablename.*" . " FROM $this->_tablename ";
         $query .= " WHERE $this->_tablename.id = " . $this->db->quoted($id);
-        if ($deleted)
-            $query .= " AND $this->_tablename.deleted=0";
+
+        // don't retrieve Bean with deleted flag true
+        if ($deleted) $query .= " AND $this->_tablename.deleted=0";
         // LoggerManager::getLogger()->debug("Retrieve $this->_objectname : " . $query);
+
         $result = $this->db->query($query, true, "Retrieving record by id $this->_tablename:$id found ");
         if (empty($result)) {
             return null;
@@ -2432,6 +2453,23 @@ class SpiceBean
 
         //delete beans used in merge
         foreach ($tmpBeans as $beanId => $tmpBean) {
+            // make sure email addresses are handled before other relationships to allow correct handling of other relationships
+            $key = 'email_addresses';
+            if (array_key_exists($key, $linked_fields)) {
+                if (isset($linked_fields[$key]['duplicate_merge'])) {
+                    if (
+                        $linked_fields[$key]['duplicate_merge'] === 'disabled' or
+                        $linked_fields[$key]['duplicate_merge'] === 0 or
+                        $linked_fields[$key]['duplicate_merge'] === false) {
+                        continue;
+                    }
+                }
+                if ($tmpBean->load_relationship($key)) {
+                    $tmpBean->$key->load(['relationship_fields' => $tmpBean->$key->relationship_fields]);
+//                handle email address merge
+                    $this->handleEmailMerge($key, $tmpBean->$key->rows);
+                }
+            }
             //handle related beans
             foreach ($linked_fields as $name => $properties) {
                 if ($properties['name'] == 'modified_user_link' || $properties['name'] == 'created_by_link')
@@ -2450,9 +2488,10 @@ class SpiceBean
                     //check to see if loaded relationship is with email address
                     $relName = $tmpBean->$name->getRelatedModuleName();
                     if (!empty($relName) and strtolower($relName) == 'emailaddresses') {
-                        $tmpBean->$name->load(['relationship_fields' => $tmpBean->$name->relationship_fields]);
-                        //handle email address merge
-                        $this->handleEmailMerge($name, $tmpBean->$name->rows);
+//                        $tmpBean->$name->load(['relationship_fields' => $tmpBean->$name->relationship_fields]);
+//                        //handle email address merge
+//                        $this->handleEmailMerge($name, $tmpBean->$name->rows);
+                        continue;
                     } else {
                         $tmpBean->$name->load(['relationship_fields' => $tmpBean->$name->relationship_fields]);
                         $data = $tmpBean->$name->rows;
@@ -2471,10 +2510,10 @@ class SpiceBean
                                     if ($tmpBean->$name->getType == 'many')
                                         $tmpBean->$name->delete($tmpBean->id, $related_id);
                                     //add to primary bean
-                                    $this->$name->add($related_id, $additionalValues);
+                                    $this->$name->add($row['id'], $additionalValues);
 
                                     // re-index the related bean
-                                    $relatedBean = BeanFactory::getBean($relName, $related_id, ['relationships' => false]);
+                                    $relatedBean = BeanFactory::getBean($relName, $row['id'], ['relationships' => false]);
                                     SpiceFTSHandler::getInstance()->indexBean($relatedBean);
                                 }
                             }
@@ -2501,7 +2540,7 @@ class SpiceBean
     /**
      * This function will compare the email addresses to be merged and only add the email id's
      * of the email addresses that are not duplicates.
-     * @param $name name of relationship (email_addresses)
+     * @param $name string of relationship (email_addresses)
      * @param $data array of email id's that will be merged into existing bean.
      */
     public function handleEmailMerge($name, $data)
@@ -2509,6 +2548,9 @@ class SpiceBean
         $mrgArray = [];
         //get the email id's to merge
         $existingData = $data;
+
+        // save existing email data
+        $this->mergeRelatedData[$name]['existingEmailMergeData'] = $existingData;
 
         $existingEmails = [];
 
@@ -2574,6 +2616,11 @@ class SpiceBean
         foreach ($mrgArray as $related_id => $additionalValues) {
             //add to primary bean
             $this->$name->add($related_id, $additionalValues);
+            // save new email data
+            $this->mergeRelatedData[$name]['newEmailMergeData'][] = [
+                'id' => $related_id,
+                'relid' => $this->email_addresses->relationship->relid
+            ];
         }
     }
 

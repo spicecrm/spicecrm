@@ -1,11 +1,11 @@
 /**
  * @module ModuleACL
  */
-import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, ElementRef, ViewChild, ViewContainerRef} from "@angular/core";
 import {modelutilities} from "../../../services/modelutilities.service";
-import {modellist} from "../../../services/modellist.service";
 
 @Component({
+    selector: 'aclobjects-manager',
     templateUrl: "../templates/aclobjectsmanager.html",
 })
 export class ACLObjectsManager {
@@ -14,6 +14,11 @@ export class ACLObjectsManager {
 
     public activeobjectid: string = "";
     public activetypeid: string = "";
+
+    /**
+     * holds the whole current acl object
+     */
+    public activeObject: any = {};
 
     constructor(
         public modelutilities: modelutilities,
@@ -35,4 +40,16 @@ export class ACLObjectsManager {
         this.activetypeid = typeid;
     }
 
+    /**
+     * handles updates to the object when emitted by ACLObjectsManagerObjects
+     * i.e. when the status changes
+     *
+     * @param updatedObject
+     */
+    public onObjectUpdated(updatedObject: any) {
+        if (this.activeobjectid === updatedObject.id) {
+            // Update the active object reference in the parent
+            this.activeObject = {...updatedObject};
+        }
+    }
 }

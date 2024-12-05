@@ -23,6 +23,15 @@ import {SpicePathRelatedListTile} from './components/spicepathrelatedlisttile';
 import {SpiceKanbanSumField} from "./components/spicekanbansumfield";
 import {SpiceKanban} from "./components/spicekanban";
 import {SpiceKanbanTile} from "./components/spicekanbantile";
+import {SpiceKanbanManager} from "./components/spicekanbanmanager";
+import {SpiceKanbanManagerList} from "./components/spicekanbanmanagerlist";
+import {WorkbenchModule} from "../../workbench/workbench.module";
+import {SpiceKanbanManagerDetails} from "./components/spicekanbanmanagerdetails";
+import {SpiceKanbanManagerChecks} from "./components/spicekanbanmanagerchecks";
+import {SpiceKanbanManagerAddModal} from "./components/spicekanbanmanageraddmodal";
+import {SpiceKanbanManagerPreview} from "./components/spicekanbanmanagerpreview";
+import {SystemTextConfiguratorModal} from "./components/systemtextconfiguratormodal";
+import {SpiceKanbanManagerMigrateModal} from "./components/spicekanbanmanagermigratemodal";
 
 @NgModule({
     imports: [
@@ -33,7 +42,8 @@ import {SpiceKanbanTile} from "./components/spicekanbantile";
         ObjectComponents,
         SystemComponents,
         DirectivesModule,
-        DragDropModule
+        DragDropModule,
+        WorkbenchModule
     ],
     declarations: [
         SpicePathTrack,
@@ -44,7 +54,15 @@ import {SpiceKanbanTile} from "./components/spicekanbantile";
         SpiceKanbanStagePipe,
         SpiceKanbanSumField,
         SpiceKanban,
-        SpiceKanbanTile
+        SpiceKanbanTile,
+        SpiceKanbanManager,
+        SpiceKanbanManagerList,
+        SpiceKanbanManagerDetails,
+        SpiceKanbanManagerChecks,
+        SpiceKanbanManagerAddModal,
+        SpiceKanbanManagerPreview,
+        SystemTextConfiguratorModal,
+        SpiceKanbanManagerMigrateModal
     ]
 })
 export class ModuleSpicePath {

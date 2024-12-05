@@ -53,7 +53,9 @@ class SpiceDictionaryDomainValidations
                 'id' => $domainfield['id'],
                 'validation_type' => $domainfield['validation_type'],
                 'operator' => $domainfield['operator'],
-                'validationvalues' => []
+                'order_by' => $domainfield['order_by'],
+                'sort_flag' => $domainfield['sort_flag'],
+                'validationvalues' => [],
             ];
         }
         $domainfields = $db->query("SELECT * FROM syscustomdomainfieldvalidations");
@@ -62,6 +64,8 @@ class SpiceDictionaryDomainValidations
                 'id' => $domainfield['id'],
                 'validation_type' => $domainfield['validation_type'],
                 'operator' => $domainfield['operator'],
+                'order_by' => $domainfield['order_by'],
+                'sort_flag' => $domainfield['sort_flag'],
                 'validationvalues' => []
             ];
         }
@@ -76,7 +80,8 @@ class SpiceDictionaryDomainValidations
 //                    'minvalue' => $domainvalue['minvalue'],
 //                    'maxval' => $domainvalue['maxval'],
                     'label' => $domainvalue['label'],
-                    'sequence' => $domainvalue['sequence']
+                    'sequence' => $domainvalue['sequence'],
+                    'status' => $domainvalue['status'],
                 ];
             }
 
@@ -89,7 +94,8 @@ class SpiceDictionaryDomainValidations
 //                'minvalue' => $domainvalue['minvalue'],
 //                'maxvalue' => $domainvalue['maxvalue'],
                     'label' => $domainvalue['label'],
-                    'sequence' => $domainvalue['sequence']
+                    'sequence' => $domainvalue['sequence'],
+                    'status' => $domainvalue['status'],
                 ];
             }
         }
@@ -113,10 +119,12 @@ class SpiceDictionaryDomainValidations
         foreach($this->domainValidations as $dom => $definition){
             // re-organize and add translation
             foreach($definition['validationvalues'] as $def){
-                $translation = (!empty($syslanguagelabels[$language][$def['label']]['default']) ? $syslanguagelabels[$language][$def['label']]['default'] : $def['enumvalue']);
-                $sys_app_list_strings[$dom][$language]['values'][$def['enumvalue']]['enumvalue'] = $def['enumvalue'];
-                $sys_app_list_strings[$dom][$language]['values'][$def['enumvalue']]['translation'] = $translation;
-                $sys_app_list_strings[$dom][$language]['values'][$def['enumvalue']]['sequence'] = $def['sequence'];
+                if($def['status'] == 'a') {
+                    $translation = (!empty($syslanguagelabels[$language][$def['label']]['default']) ? $syslanguagelabels[$language][$def['label']]['default'] : $def['enumvalue']);
+                    $sys_app_list_strings[$dom][$language]['values'][$def['enumvalue']]['enumvalue'] = $def['enumvalue'];
+                    $sys_app_list_strings[$dom][$language]['values'][$def['enumvalue']]['translation'] = $translation;
+                    $sys_app_list_strings[$dom][$language]['values'][$def['enumvalue']]['sequence'] = $def['sequence'];
+                }
             }
 
             // sort by the sequence
@@ -144,7 +152,9 @@ class SpiceDictionaryDomainValidations
         //get teh table
         $table = $validation['scope'] == 'c' ? 'syscustomdomainfieldvalidations' : 'sysdomainfieldvalidations';
         unset($validation['scope']);
-        DBManagerFactory::getInstance()->insertQuery($table, $validation);
+        DBManagerFactory::getInstance()->upsertQuery($table, ['id' => $validation['id']], $validation);
+
+        SpiceCache::clear('domainvalidations');
     }
 
 }

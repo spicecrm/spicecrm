@@ -11,12 +11,14 @@
  */
 
 return array (
-  3245001 => 'Gateway Communications',
+  3245001 => 'GATEWAY COMMUNICATIONS S.A.',
+  324510 => 'DIGI Communications',
   32455 => 'VOO',
   32456 => 'Mobile Vikings/JIM Mobile',
   32460 => 'Proximus',
   324618 => 'N.M.B.S.',
   324630 => 'Lancelot Telecom',
+  324631 => 'Lancelot Telecom',
   32465 => 'Lycamobile',
   324650 => 'Telenet',
   324660 => 'Lycamobile',

@@ -36,8 +36,6 @@ class PhoneNumberUtil
     const MAX_LENGTH_COUNTRY_CODE = 3;
 
     const REGION_CODE_FOR_NON_GEO_ENTITY = '001';
-    const META_DATA_FILE_PREFIX = 'PhoneNumberMetadata';
-    const TEST_META_DATA_FILE_PREFIX = 'PhoneNumberMetadataForTesting';
 
     // Region-code for the unknown region.
     const UNKNOWN_REGION = 'ZZ';
@@ -165,6 +163,13 @@ class PhoneNumberUtil
      * @var array
      */
     protected static $GEO_MOBILE_COUNTRIES_WITHOUT_MOBILE_AREA_CODES;
+
+    /**
+     * Set of country codes that doesn't have national prefix, but it has area codes.
+     *
+     * @var array
+     */
+    protected static $COUNTRIES_WITHOUT_NATIONAL_PREFIX_WITH_AREA_CODES;
 
     /**
      * Set of country calling codes that have geographically assigned mobile numbers. This may not be
@@ -402,6 +407,9 @@ class PhoneNumberUtil
         static::$GEO_MOBILE_COUNTRIES_WITHOUT_MOBILE_AREA_CODES = array();
         static::$GEO_MOBILE_COUNTRIES_WITHOUT_MOBILE_AREA_CODES[] = 86; // China
 
+        static::$COUNTRIES_WITHOUT_NATIONAL_PREFIX_WITH_AREA_CODES = array();
+        static::$COUNTRIES_WITHOUT_NATIONAL_PREFIX_WITH_AREA_CODES[] = 52; // Mexico
+
         static::$GEO_MOBILE_COUNTRIES = array();
         static::$GEO_MOBILE_COUNTRIES[] = 52; // Mexico
         static::$GEO_MOBILE_COUNTRIES[] = 54; // Argentina
@@ -419,13 +427,13 @@ class PhoneNumberUtil
      * <p>The {@link PhoneNumberUtil} is implemented as a singleton. Therefore calling getInstance
      * multiple times will only result in one instance being created.
      *
-     * @param string $baseFileLocation
+     * @param string|null $baseFileLocation
      * @param array|null $countryCallingCodeToRegionCodeMap
      * @param MetadataLoaderInterface|null $metadataLoader
      * @param MetadataSourceInterface|null $metadataSource
      * @return PhoneNumberUtil instance
      */
-    public static function getInstance($baseFileLocation = self::META_DATA_FILE_PREFIX, array $countryCallingCodeToRegionCodeMap = null, MetadataLoaderInterface $metadataLoader = null, MetadataSourceInterface $metadataSource = null)
+    public static function getInstance($baseFileLocation = null, array $countryCallingCodeToRegionCodeMap = null, MetadataLoaderInterface $metadataLoader = null, MetadataSourceInterface $metadataSource = null)
     {
         if (static::$instance === null) {
             if ($countryCallingCodeToRegionCodeMap === null) {
@@ -437,7 +445,11 @@ class PhoneNumberUtil
             }
 
             if ($metadataSource === null) {
-                $metadataSource = new MultiFileMetadataSourceImpl($metadataLoader, __DIR__ . '/data/' . $baseFileLocation);
+                if ($baseFileLocation === null) {
+                    $baseFileLocation = __DIR__ . '/data/PhoneNumberMetadata';
+                }
+
+                $metadataSource = new MultiFileMetadataSourceImpl($metadataLoader, $baseFileLocation);
             }
 
             static::$instance = new static($metadataSource, $countryCallingCodeToRegionCodeMap);
@@ -871,14 +883,18 @@ class PhoneNumberUtil
         if ($metadata === null) {
             return 0;
         }
+
+        $countryCallingCode = $number->getCountryCode();
+
         // If a country doesn't use a national prefix, and this number doesn't have an Italian leading
         // zero, we assume it is a closed dialling plan with no area codes.
-        if (!$metadata->hasNationalPrefix() && !$number->isItalianLeadingZero()) {
+        // Note:this is our general assumption, but there are exceptions which are tracked in
+        // COUNTRIES_WITHOUT_NATIONAL_PREFIX_WITH_AREA_CODES.
+        if (!$metadata->hasNationalPrefix() && !$number->isItalianLeadingZero() && !in_array($countryCallingCode, self::$COUNTRIES_WITHOUT_NATIONAL_PREFIX_WITH_AREA_CODES)) {
             return 0;
         }
 
         $type = $this->getNumberType($number);
-        $countryCallingCode = $number->getCountryCode();
 
         if ($type === PhoneNumberType::MOBILE
             // Note this is a rough heuristic; it doesn't cover Indonesia well, for example, where area
@@ -1234,10 +1250,10 @@ class PhoneNumberUtil
     public function format(PhoneNumber $number, $numberFormat)
     {
         if ($number->getNationalNumber() == 0 && $number->hasRawInput()) {
-            // Unparseable numbers that kept their raw input just use that.
+            // Unparsable numbers that kept their raw input just use that.
             // This is the only case where a number can be formatted as E164 without a
             // leading '+' symbol (but the original number wasn't parseable anyway).
-            // TODO: Consider removing the 'if' above so that unparseable
+            // TODO: Consider removing the 'if' above so that unparsable
             // strings without raw input format to the empty string instead of "+00"
             $rawInput = $number->getRawInput();
             if ($rawInput !== '') {
@@ -1946,7 +1962,7 @@ class PhoneNumberUtil
      * (530) 583-6985 x302 and (530) 583-6985 x2303. We remove the second extension so that the first
      * number is parsed correctly.
      *
-     * @param int $number the string that might contain a phone number
+     * @param string $number the string that might contain a phone number
      * @return string the number, stripped of any non-phone-number prefix (such as "Tel:") or an empty
      *                string if no character used to start phone numbers (such as + or any digit) is
      *                found in the number

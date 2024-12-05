@@ -97,32 +97,6 @@ class SpiceBeanHandler
         return $modLang;
     }
 
-    public function get_dynamic_domains($modules, $language)
-    {
-        $dynamicDomains = [];
-
-        foreach ($modules as $module) {
-
-            $thisBean = BeanFactory::getBean($module);
-            if ($thisBean) {
-                $fieldDefs = $thisBean->getFieldDefinitions();
-
-                //$domainFunctions = array_map(function($fieldDef) { return isset($fieldDef['spice_domain_function']) ? $fieldDef['spice_domain_function'] : [];} , SpiceDictionaryHandler::getInstance()->dictionary[$beanList[$module]]['fields']);
-                $fieldDefsWithDomainFunction = array_filter($fieldDefs, function ($fieldDef) {
-                    return isset($fieldDef['spice_domain_function']);
-                });
-
-                foreach ($fieldDefsWithDomainFunction as $fieldDef) {
-                    $functionName = is_array($fieldDef['spice_domain_function']) ? $fieldDef['spice_domain_function']['name'] : $fieldDef['spice_domain_function'];
-                    $domainKey = 'spice_domain_function_' . strtolower($functionName) . '_dom';
-                    $dynamicDomains[$domainKey] = $this->processSpiceDomainFunction($thisBean, $fieldDef, $language);
-                }
-            }
-        }
-
-        return $dynamicDomains;
-    }
-
     /**
      * prepare filter context when the list ist retrieved within a bean context
      * @param array $searchParams
@@ -1235,7 +1209,7 @@ class SpiceBeanHandler
         }
 
 
-        $query = "SELECT al.*, au.user_name FROM " . $thisBean->get_audit_table_name() . " al LEFT JOIN users au ON al.created_by = au.id WHERE al.parent_id = '$beanId' $excludedFieldsSQL";
+        $query = "SELECT al.*, au.user_name, au.first_name, au.last_name FROM " . $thisBean->get_audit_table_name() . " al LEFT JOIN users au ON al.created_by = au.id WHERE al.parent_id = '$beanId' $excludedFieldsSQL";
         if ($params['user']) {
             $query .= " AND au.user_name like '%{$params['user']}%'";
         }
@@ -1253,7 +1227,7 @@ class SpiceBeanHandler
                         'transaction_id' => $auditRecord['transaction_id'],
                         'date_created' => $auditRecord['date_created'],
                         'created_by' => $auditRecord['created_by'],
-                        'user_name' => $auditRecord['user_name'],
+                        'user_name' => (!empty($auditRecord['first_name']) ? $auditRecord['first_name'].' ' : '').$auditRecord['last_name'].' ['.$auditRecord['user_name'].']',
                         'audit_log' => []
                     ];
                 }
@@ -1518,7 +1492,7 @@ class SpiceBeanHandler
             return $retArray;
     }
 
-    public function add_related($beanModule, $beanId, $linkName, $relatedIds)
+    public function add_related($beanModule, $beanId, $linkName, $idsWithAdditionalValues)
     {
 
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'edit', true))
@@ -1538,12 +1512,19 @@ class SpiceBeanHandler
         if (!SpiceACL::getInstance()->checkAccess($relModule, 'list', true))
             throw (new ForbiddenException('Forbidden to list in module ' . $relModule . '.'))->setErrorCode('noModuleList');
 
+        $relFields = $thisBean->field_defs[$linkName]['rel_fields'];
 
-        foreach ($relatedIds as $relatedId) {
-            $result = $thisBean->{$linkName}->add($relatedId);
+        foreach ($idsWithAdditionalValues as $idWithAdditionalValue) {
+            $additionalValues = [];
+            foreach ($relFields as $relfield => $relmapdata) {
+                if (isset($idWithAdditionalValue[$relmapdata['map']])) {
+                    $additionalValues[$relfield] = $idWithAdditionalValue[$relmapdata['map']];
+                }
+            }
+            $result = $thisBean->{$linkName}->add($idWithAdditionalValue['id'], $additionalValues);
             if ($result !== true)
-                throw new Exception("Something went wrong by adding $relatedId to $linkName");
-            $retArray[$relatedId] = $thisBean->{$linkName}->relationship->relid;
+                throw new Exception("Something went wrong by adding {$idWithAdditionalValue['id']} to $linkName");
+            $retArray[$idWithAdditionalValue['id']] = $thisBean->{$linkName}->relationship->relid;
         }
 
         // reindex the curent bean since the added relationship might add to the indexed data
@@ -1586,13 +1567,18 @@ class SpiceBeanHandler
         $relFields = $thisBean->field_defs[$linkName]['rel_fields'];
         if (is_array($relFields) && count($relFields) > 0) {
             $thisBean->load_relationship($linkName);
-            switch ($thisBean->{$linkName}->getSide()) {
-                case 'RHS':
-                    $relid = $thisBean->{$linkName}->relationship->relationship_exists($relBean, $thisBean);
-                    break;
-                default:
-                    $relid = $thisBean->{$linkName}->relationship->relationship_exists($thisBean, $relBean);
-                    break;
+
+            if (!empty($postparams['relid'])) {
+                $relid = $postparams['relid'];
+            } else {
+                switch ($thisBean->{$linkName}->getSide()) {
+                    case 'RHS':
+                        $relid = $thisBean->{$linkName}->relationship->relationship_exists($relBean, $thisBean);
+                        break;
+                    default:
+                        $relid = $thisBean->{$linkName}->relationship->relationship_exists($thisBean, $relBean);
+                        break;
+                }
             }
 
             if ($relid) {
@@ -1634,11 +1620,11 @@ class SpiceBeanHandler
 
         $relatedArray = json_decode($queryParams['relatedids'], true);
         if ($relatedArray) {
-            foreach ($relatedArray as $relatedId) {
-                $thisBean->$linkName->delete($beanId, $relatedId);
+            foreach ($relatedArray as $relatedData) {
+                $thisBean->$linkName->delete($beanId, $relatedData['beanId'], $relatedData['relId']);
             }
         } else {
-            $thisBean->$linkName->delete($beanId, $queryParams['relatedids']);
+            $thisBean->$linkName->delete($beanId);
         }
 
         // reindex the curent bean since the added relationship might add to the indexed data
@@ -1765,15 +1751,13 @@ class SpiceBeanHandler
         // process links if sent
         foreach ($thisBean->field_defs as $fieldId => $fieldData) {
 
-            if (in_array($fieldData['name'], ['email_addresses', 'email_addresses_primary'])) {
-                if ($fieldData['name'] == 'email_addresses' && isset($post_params['email_addresses'])) {
-                    $this->handleEmailAddresses('email_addresses', $thisBean, $post_params['email_addresses']);
-                }
-                continue;
-            }
-
             switch ($fieldData['type']) {
                 case 'link':
+
+                    if ($fieldData['name'] == 'email_addresses' && isset($post_params['email_addresses'])) {
+                        $post_params['email_addresses'] = $this->prepareEmailAddresses($post_params['email_addresses']);
+                    }
+
                     if ( !empty($fieldData['module']) && isset($post_params[$fieldData['name']])) {
                         $thisBean->load_relationship($fieldId);
 
@@ -1888,106 +1872,27 @@ class SpiceBeanHandler
 
     /**
      * handle email addresses
-     * @param string $linkName
-     * @param $bean
-     * @param $emailAddresses
+     * @param array $postBodyEmailAddresses
+     * @return array
      */
-    private function handleEmailAddresses(string $linkName, $bean, $emailAddresses) {
+    private function prepareEmailAddresses(array $postBodyEmailAddresses): array {
 
-        if (!$bean->load_relationship($linkName)) return;
+        $emailAddresses = ['beans' => [], 'beans_relations_to_delete' => $postBodyEmailAddresses['beans_relations_to_delete'] ?? []];
 
-        // fill in mapping for additional relationship fields
-        $additional_rel_fields = [];
-        $additional_rel_fields_mapped = [];
-        if (isset($bean->field_defs[$linkName]['rel_fields'])) {
-            foreach ($bean->field_defs[$linkName]['rel_fields'] as $join_table_field => $joinDetails) {
-                $additional_rel_fields_mapped[] = $joinDetails['map'];
-                $additional_rel_fields[$joinDetails['map']] = $join_table_field;
+        foreach ($postBodyEmailAddresses['beans'] as $id => $postBodyEmailAddress) {
+
+            $addressById = BeanFactory::getBean('EmailAddresses', $id);
+
+            if ($addressById && $addressById->email_address !== $postBodyEmailAddress['email_address']) {
+                $addressByText = (BeanFactory::newBean('EmailAddresses'))->retrieve_by_string_fields(['email_address_caps' => strtoupper($postBodyEmailAddress['email_address'])]);
+                $emailAddresses['beans_relations_to_delete'][$postBodyEmailAddress['id']] = $postBodyEmailAddress;
+                $postBodyEmailAddress['id'] = $addressByText->id ?? SpiceUtils::createGuid();
             }
+
+            $emailAddresses['beans'][$postBodyEmailAddress['id']] = $postBodyEmailAddress;
         }
 
-        // handle deleted email addresses
-        if(is_array($emailAddresses['beans_relations_to_delete'])){
-            foreach (array_keys($emailAddresses['beans_relations_to_delete']) as $emailAddressId) {
-                $emailAddress = BeanFactory::getBean('EmailAddresses', $emailAddressId);
-                $bean->$linkName->delete($bean, $emailAddress);
-            }
-        }
-
-        // handle insert/update email addresses
-        if(is_array($emailAddresses['beans'])) {
-            foreach ($emailAddresses['beans'] as $emailAddressId => $emailAddressData) {
-
-                $emailAddress = BeanFactory::newBean('EmailAddresses');
-
-                $existingEmailAddress = BeanFactory::getBean('EmailAddresses', $emailAddressId);
-
-                // if email address deleted handle deletion and continue
-                if ($emailAddressData['deleted'] == 1 && $existingEmailAddress) {
-                    $existingEmailAddress->mark_deleted($existingEmailAddress->id);
-                    continue;
-                }
-
-                // if the existing email address id is the same but the email address was changed create a new one
-                // copy the old additional relationship values
-                // delete the link to the old one
-                if ($existingEmailAddress && $existingEmailAddress->id) {
-
-                    $linkedEmailAddresses = $bean->get_linked_beans($linkName);
-
-                    foreach ($linkedEmailAddresses as $linkedEmailAddress) {
-
-                        if ($existingEmailAddress->id !== $linkedEmailAddress->id || ($existingEmailAddress->email_address == $emailAddressData['email_address'] && $existingEmailAddress->primary_address == $emailAddressData['primary_address'])){
-                            continue;
-                        }
-
-                        $bean->$linkName->delete($bean, $existingEmailAddress->id);
-
-                        // check if the new email address also exists
-                        $emailAddress->retrieve_by_string_fields(['email_address_caps' => strtoupper($emailAddressData['email_address'])]);
-
-                        $emailAddressData['id'] = $emailAddress->id;
-                        $emailAddressData['opt_in_status'] = $linkedEmailAddress->opt_in_status;
-                        $emailAddressData['reply_to_address'] = $linkedEmailAddress->reply_to_address;
-
-                        if (empty($emailAddress->id)) {
-                            $emailAddress->new_with_id = true;
-                            $emailAddressData['id'] = SpiceUtils::createGuid();
-                        }
-
-                        break;
-                    }
-                } else {
-                    $emailAddress->retrieve_by_string_fields(['email_address_caps' => strtoupper($emailAddressData['email_address'])]);
-                    $emailAddressData['id'] = $emailAddress->id;
-
-                    if (empty($emailAddress->id)) {
-                        $emailAddress->id = $emailAddressId;
-                        $emailAddress->new_with_id = true;
-                    }
-                }
-
-                $additional_values = [];
-
-                // update the email address fields and the additional relationship values
-                foreach (array_keys($emailAddress->field_defs) as $field) {
-
-                    if (empty($emailAddressData[$field]) || $emailAddressData[$field] === $emailAddress->$field) continue;
-
-                    // update email address field
-                    $emailAddress->$field = $emailAddressData[$field];
-
-                    // prepare additional values
-                    if (in_array($field, $additional_rel_fields_mapped)) {
-                        $additional_values[$additional_rel_fields[$field]] = $emailAddress->$field;
-                    }
-                }
-
-                $emailAddress->save();
-
-                $bean->$linkName->add($emailAddress, $additional_values);
-            }
-        }
+        return $emailAddresses;
     }
 
     /**
@@ -2248,7 +2153,7 @@ class SpiceBeanHandler
                         $thisBean->load_relationship($fieldId);
                         if ($thisBean->{$fieldId}) {
                             $relModule = $thisBean->{$fieldId}->getRelatedModuleName();
-                            $relatedBeans = $thisBean->get_linked_beans($fieldId, $relModule);
+                            $relatedBeans = $thisBean->get_linked_beans($fieldId, $relModule, false, true);
                             foreach ($relatedBeans as $relatedBean) {
                                 $beanDataArray[$fieldId]['beans']->{$relatedBean->id} = $this->mapBeanToArray($relModule, $relatedBean);
                             }
@@ -2325,39 +2230,11 @@ class SpiceBeanHandler
         $db->query("INSERT INTO spiceuitrackers (id, user_id, date_entered, record_module, record_id, record_summary) VALUES('" . SpiceUtils::createGuid() . "', '{$current_user->id}', '" . $timedate->nowDb() . "', '{$module}', '{$bean->id}', '" . $bean->get_summary_text() . "')");
     }
 
-    private function processSpiceDomainFunction($thisBean, $fieldDef, $language)
-    {
-
-        if (isset($fieldDef['spice_domain_function'])) {
-            $function = $fieldDef['spice_domain_function'];
-            if (is_array($function) && isset($function['name'])) {
-                $function = $fieldDef['spice_domain_function']['name'];
-            } else {
-                $function = $fieldDef['spice_domain_function'];
-            }
-
-            if (isset($fieldDef['spice_domain_function']['include']) && file_exists($fieldDef['spice_domain_function']['include'])) {
-                require_once($fieldDef['spice_domain_function']['include']);
-            }
-
-            $domain = call_user_func($function, $thisBean, $fieldDef['name'], $language);
-            return $domain;
-
-        } else {
-            return [];
-        }
-    }
-
-
     public function getLanguage($modules, $language = null)
     {
 
         // see if we have a language passed in .. if not use the default
         if (empty($language)) $language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
-
-        $dynamicDomains = $this->get_dynamic_domains($modules, $language);
-        $appListStrings = SpiceUtils::returnAppListStringsLanguage($language);
-        $appStrings = array_merge($appListStrings, $dynamicDomains);
 
         // grab labels from syslanguagetranslations
         $syslanguagelabels = LanguageManager::loadDatabaseLanguage($language);
@@ -2385,7 +2262,6 @@ class SpiceBeanHandler
         $responseArray = [
             'languages' => LanguageManager::getLanguages(),
             'applang' => $syslanguages,
-            'applist' => $appStrings
         ];
 
 

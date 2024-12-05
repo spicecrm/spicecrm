@@ -13,7 +13,8 @@ import {DomainValidation} from "../interfaces/domainmanager.interfaces";
  * a modal window to add a new validation to a domain field
  */
 @Component({
-    templateUrl: '../templates/domainmanageraddvalidation.html'
+    selector: 'domain-manager-add-validation',
+    templateUrl: '../templates/domainmanageraddvalidation.html',
 })
 export class DomainManagerAddValidation {
 
@@ -33,12 +34,12 @@ export class DomainManagerAddValidation {
     constructor(public domainmanager: domainmanager, public backend: backend, public modelutilities: modelutilities) {
         this.fieldvalidation = {
             name: "",
-            order_by: undefined,
+            order_by: 'sequence',
             sort_flag: undefined,
             status: 'a',
             validation_type: "enum",
             scope: 'c',
-            id: this.modelutilities.generateGuid()
+            id: this.modelutilities.generateGuid(),
         }
     }
 

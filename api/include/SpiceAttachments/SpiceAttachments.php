@@ -90,7 +90,7 @@ class SpiceAttachments
             $attachments = self::getAttachmentsForBean($fromBeanName, $fromBeanId, 100, false, $categoryId);
         }
 
-        $colQuery = "INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type, category_ids, external_id) ";
+        $colQuery = "INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type, category_ids, external_id, display_name) ";
         $clonedAttachments = [];
 
         foreach ($attachments as $attachment) {
@@ -106,7 +106,7 @@ class SpiceAttachments
             $timeDate = TimeDate::getInstance()->nowDb();
             $q = "$colQuery VALUES ('{$attachment['id']}', '{$attachment['bean_type']}', '{$attachment['bean_id']}', '{$attachment['user_id']}', '$timeDate', ";
             $q .= "'{$attachment['filename']}', '{$attachment['filesize']}', '{$attachment['filemd5']}', '{$_POST['text']}', '{$attachment['thumbnail']}', 0, ";
-            $q .= "'{$attachment['file_mime_type']}', '{$attachment['category_ids']}', '{$attachment['external_id']}')";
+            $q .= "'{$attachment['file_mime_type']}', '{$attachment['category_ids']}', '{$attachment['external_id']}', '{$attachment['display_name']}')";
             $db->query($q);
         }
         return $clonedAttachments;
@@ -127,6 +127,24 @@ class SpiceAttachments
         $db = DBManagerFactory::getInstance();
         $res = $db->fetchByAssoc($db->query("SELECT count(id) attachmentcount FROM spiceattachments WHERE bean_id='{$beanId}' $categoryWhere AND bean_type='{$beanName}' AND deleted = 0"));
         return (int)$res['attachmentcount'];
+    }
+
+    /**
+     * Returns the number of attachments linked to a bean.
+     *
+     * @param string $beanName
+     * @param string $beanId
+     * @param null $categoryId
+     * @throws Exception
+     */
+    public static function getAttachmentsCountPerBean(string $beanName, array $beanIds,  $returnFiles = false)
+    {
+        $attachments = [];
+        foreach ($beanIds as $beanId) {
+          $attachments[$beanId] = self::getAttachmentsForBean($beanName,$beanId, 25, false);
+        }
+        $res = $attachments;
+        return $res;
     }
 
     /**
@@ -222,7 +240,7 @@ class SpiceAttachments
     {
 
         $fileArray = [
-            'filename' => $file['name'],
+            'filename' => ($file['filename'] ?: $file['name']),
             'file' => base64_encode(file_get_contents($file['path'] . $file['name'])),
             'filemimetype' => $file['mime_type'] ?: mime_content_type($file['path'] . $file['name']),
             'external_id' => $file['external_id']

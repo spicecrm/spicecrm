@@ -98,7 +98,7 @@ class SpiceDictionaryDomains
         //get teh table
         $table = $definition['scope'] == 'c' ? self::customtable : self::table;
         unset($definition['scope']);
-        DBManagerFactory::getInstance()->insertQuery($table, $definition);
+        DBManagerFactory::getInstance()->upsertQuery($table, ['id' => $definition['id']], $definition);
 
         // add to the domains
         $this->domaindefinitions[$definition['id']] = $definition;

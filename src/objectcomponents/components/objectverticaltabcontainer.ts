@@ -11,6 +11,7 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {session} from '../../services/session.service';
 import {model} from '../../services/model.service';
+import {layout} from "../../services/layout.service";
 
 /**
  * renders a vertical tab container
@@ -43,6 +44,10 @@ export class ObjectVerticalTabContainer implements OnInit {
      * the number of the active tab
      */
     public activeTab: number = 0;
+    /**
+     * expanded boolean for mobile view
+     */
+    public expanded: boolean = false;
 
     /**
      * holds which tabs have been activated already. Since tabs are only rendered when selected
@@ -60,7 +65,11 @@ export class ObjectVerticalTabContainer implements OnInit {
      */
     public tabs: any[] = [];
 
-    constructor(public language: language, public metadata: metadata, public session: session, private model: model) {
+    constructor(public language: language,
+                public metadata: metadata,
+                public session: session,
+                public layout: layout,
+                private model: model) {
     }
 
     /**
@@ -102,6 +111,7 @@ export class ObjectVerticalTabContainer implements OnInit {
     public setActiveTab(index) {
         this.activatedTabs.push(index);
         this.activeTab = index;
+        this.expanded = false;
     }
 
     /**
@@ -157,4 +167,12 @@ export class ObjectVerticalTabContainer implements OnInit {
         this.componentconfig[tabindex].hasErrors = nrErrors;
     }
 
+    /**
+     * toggle expanded for mobile view
+     * @param e
+     */
+    public toggleExpanded(e: MouseEvent) {
+        e.stopPropagation();
+        this.expanded = !this.expanded;
+    }
 }

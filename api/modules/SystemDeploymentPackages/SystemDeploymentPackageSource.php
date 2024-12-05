@@ -6,7 +6,7 @@ namespace SpiceCRM\modules\SystemDeploymentPackages;
 class SystemDeploymentPackageSource
 {
     /** @var string used when no entry is set in sysuipackagerepositories table */
-    public static $public_source = 'https://packages.spicecrm.cloud/api';
+    public static $public_source = 'https://reference.spicecrm.cloud/api';
 
 
     /**

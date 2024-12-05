@@ -14,8 +14,8 @@ import {DomainDefinition, DomainField} from "../interfaces/domainmanager.interfa
  * a modal window to add a fields to a domain definition
  */
 @Component({
-    // selector: 'domain-manager-add-field-modal',
-    templateUrl: '../templates/domainmanageraddfieldmodal.html',
+    selector: 'domain-manager-add-field-modal',
+    templateUrl: '../templates/domainmanageraddfieldmodal.html'
 })
 export class DomainManagerAddFieldModal implements OnInit{
 
@@ -47,6 +47,7 @@ export class DomainManagerAddFieldModal implements OnInit{
             name: '{sysdictionaryitems.name}',
             fieldtype: '',
             scope: this.domainDefiniton.scope,
+            label: '',
             sequence: this.domainmanager.domainfields.filter(d => d.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition).length,
             required: 0,
             exclude_from_index: 0,

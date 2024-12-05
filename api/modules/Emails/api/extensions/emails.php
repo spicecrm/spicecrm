@@ -524,6 +524,58 @@ $routes = [
             ],
         ],
     ],
+    [
+        'method'      => 'get',
+        'route'       => '/module/attachment/{beanName}/{beanId}',
+        'class'       => EmailsController::class,
+        'function'    => 'getEmailAsAttachment',
+        'description' => '',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters'  => [
+            'beanName' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'description' => 'name of a module',
+                'example' => 'Accounts',
+                'required' => true
+            ],
+            'beanId' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'description' => 'GUID of bean',
+                'required' => true
+            ],
+        ],
+    ],
+    [
+        'method' => 'post',
+        'route' => '/module/Emails/sendtest',
+        'class' => EmailsController::class,
+        'function' => 'sendTestEmail',
+        'description' => '',
+        'parameters' => [
+            'email_subject' => [
+                'in' => 'body',
+                'description' => 'the subject of the email',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ],
+            'email_body' => [
+                'in' => 'body',
+                'description' => 'the body of the email',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ],
+            'recipients' => [
+                'in' => 'body',
+                'description' => 'recipients of the email',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ],
+            'mailbox_id' => [
+                'in' => 'body',
+                'description' => 'the id of the mailbox',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ]
 ];
 
 $RESTManager->registerRoutes($routes);

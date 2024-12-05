@@ -4,6 +4,6 @@
         <h2 class="slds-text-heading--medium"><system-label [label]="dashletLabel"></system-label></h2>
     </div>
     <div #calendarcontent [ngStyle]="contentStyle" class="slds-size--1-of-1">
-        <calendar-sheet-three-days [setdate]="calendarDate"></calendar-sheet-three-days>
+        <calendar-sheet-three-days [setdate]="calendarDate" [availableCalendars]="calendar.availableCalendars"></calendar-sheet-three-days>
     </div>
 </div>

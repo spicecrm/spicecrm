@@ -45,6 +45,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
     'duplicate_merge' => true,
     'comment' => 'An opportunity is the target of selling activities',
     'fields' => [
+        /* migrated
         'name' => [
             'name' => 'name',
             'vname' => 'LBL_NAME',
@@ -68,6 +69,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'comment' => 'Type of opportunity (ex: Existing, New)',
             'merge_filter' => 'enabled',
         ],
+        */
         'account_name' => [
             'name' => 'account_name',
             'rname' => 'name',
@@ -144,6 +146,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'vname' => 'LBL_OPPORTUNITYPOTENTIALS',
             'source' => 'non-db'
         ],
+        /*
         'lead_source' => [
             'name' => 'lead_source',
             'vname' => 'LBL_LEAD_SOURCE',
@@ -166,7 +169,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'options' => 'numeric_range_search_dom',
             'enable_range_search' => true,
         ],
-        'amount_usdollar' => [ /**@deprecated**/
+        'amount_usdollar' => [
             'name' => 'amount_usdollar',
             'vname' => 'LBL_AMOUNT_USDOLLAR',
             'type' => 'currency',
@@ -318,6 +321,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'vname' => 'LBL_LOSS_REASON',
             'type' => 'text'
         ],
+        */
         // links
         'accounts' => [
             'name' => 'accounts',
@@ -403,13 +407,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'source' => 'non-db',
             'vname' => 'LBL_EMAILS',
         ],
-        'documents' => [
-            'name' => 'documents',
-            'type' => 'link',
-            'relationship' => 'documents_opportunities',
-            'source' => 'non-db',
-            'vname' => 'LBL_DOCUMENTS',
-        ],
+#migrated
+//        'documents' => [
+//            'name' => 'documents',
+//            'type' => 'link',
+//            'relationship' => 'documents_opportunities',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_DOCUMENTS',
+//        ],
         //@deprecated project. Use projects
 //        'project' => array(
 //            'name' => 'project',
@@ -458,6 +463,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'link_type' => 'one',
             'source' => 'non-db',
         ],
+        /*
         'opportunitystages' => [
             'name' => 'opportunitystages',
             'type' => 'link',
@@ -468,6 +474,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'bean_name' => 'OpportunityStage',
             'vname' => 'LBL_OPPORTUNITYSTAGES',
         ],
+        */
         'opportunityrevenuesplit' => [
             'name' => 'opportunityrevenuesplit',
             'type' => 'enum',
@@ -505,6 +512,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             ],
         ]
     ],
+    /* migrated
     'indices' => [
         [
             'name' => 'idx_opp_name',
@@ -527,7 +535,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'fields' => ['assigned_user_id', 'deleted', 'sales_stage'],
         ],
     ],
-
+    */
     'relationships' => [
         'opportunity_calls' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
             'rhs_module' => 'Calls', 'rhs_table' => 'calls', 'rhs_key' => 'parent_id',
@@ -640,6 +648,28 @@ if(file_exists('extensions/modules/PartnerAgreements')) {
             'vname' => 'LBL_OPPORTUNITIES',
             'module' => 'Opportunities',
             'default' => false
+        ];
+    }
+    if (file_exists('extensions/modules/ProjectActivities')) {
+        SpiceDictionaryHandler::getInstance()->dictionary['Opportunity']['fields']['projectactivities_parent'] = [
+            'name' => 'projectactivities_parent',
+            'type' => 'link',
+            'relationship' => 'opportunity_projectactivities_parent',
+            'source' => 'non-db',
+            'module' => 'ProjectActivities',
+            'bean_name' => 'ProjectActivity',
+            'vname' => 'LBL_PROJECTACTIVITIES_AS_PARENT',
+        ];
+        SpiceDictionaryHandler::getInstance()->dictionary['Opportunity']['relationships']['opportunity_projectactivities_parent'] = [
+            'lhs_module' => 'Opportunities',
+            'lhs_table' => 'opportunities',
+            'lhs_key' => 'id',
+            'rhs_module' => 'ProjectActivities',
+            'rhs_table' => 'projectactivities',
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column' => 'parent_type',
+            'relationship_role_column_value' => 'Opportunities'
         ];
     }
 }

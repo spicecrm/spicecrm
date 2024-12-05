@@ -6,6 +6,7 @@ import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {configurationService} from "../../../services/configuration.service";
 import {broadcast} from "../../../services/broadcast.service";
+import {metadata} from "../../../services/metadata.service";
 
 declare var _: any;
 
@@ -31,12 +32,17 @@ export class SpicePathTrack implements OnInit{
 
     public _modelstage: string;
 
+    @Input() public componentconfig;
+
     /**
      * emits the curetn stage
      */
     @Output() public activeStage$: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(public configuration: configurationService, public model: model, public language: language) {
+    constructor(public configuration: configurationService,
+                public model: model,
+                private metadata: metadata,
+                public language: language) {
 
     }
 
@@ -46,7 +52,6 @@ export class SpicePathTrack implements OnInit{
 
             if(this._modelstage != this.model.getField(this.statusfield)){
                 this._modelstage = this.model.getField(this.statusfield);
-                // set the value internally
                 this.activeStage = this._modelstage;
                 this.activeStage$.emit(this._modelstage);
             }
@@ -58,7 +63,21 @@ export class SpicePathTrack implements OnInit{
      */
     public buildstages() {
         let retArray = [];
-        let stages = this.configuration.getData('spicebeanguides') ? this.configuration.getData('spicebeanguides')[this.model.module].stages : [];
+
+        const moduleKanbans = this.configuration.getData('spicebeanguides')[this.model.module];
+
+        if (!Array.isArray(moduleKanbans) || moduleKanbans.length == 0) return;
+
+        if (!this.componentconfig.kanban) {
+            const defaultConfig = this.metadata.getComponentConfig('SpicePathWithCoaching', this.model.module);
+            this.componentconfig.kanban = defaultConfig.kanban;
+        }
+
+        if (!this.componentconfig.kanban) {
+            this.componentconfig.kanban = this.configuration.getData('spicebeanguides')[this.model.module]?.find(k => k.is_default == 1)?.id;
+        }
+
+        const stages = moduleKanbans.find(k => k.id == this.componentconfig.kanban)?.stages ?? [];
 
         // get teh current stage
         let modelstage = this.model.getField(this.statusfield);
@@ -104,7 +123,18 @@ export class SpicePathTrack implements OnInit{
      * returns the field on the model that holds the status that is used for the path
      */
     get statusfield() {
-        return this.configuration.getData('spicebeanguides')[this.model.module].statusfield;
+            const guides = this.configuration.getData('spicebeanguides');
+            const moduleKanbans = guides?.[this.model.module];
+
+            if (!Array.isArray(moduleKanbans) || moduleKanbans.length === 0) return;
+
+            // Try to get the default kanban first
+            const defaultKanban = moduleKanbans.find(k => k.is_default == 1);
+            if (!defaultKanban?.statusfield) {
+                throw new Error('Status field not found in default kanban');
+            }
+
+            return defaultKanban.statusfield;
     }
 
     /**
@@ -113,11 +143,8 @@ export class SpicePathTrack implements OnInit{
      * @param currentstage the stage to be evaluated for which the class is queried.
      */
     public stageClass(currentstage) {
-
         let itemstati = [];
-
         let modelstatus = this.model.getField(this.statusfield);
-
 
         if (this.beanGuideStatus == 'won' && currentstage.stagedata.spicebeanguide_status == 'won') {
             itemstati.push('slds-is-won');
@@ -130,8 +157,6 @@ export class SpicePathTrack implements OnInit{
         } else if (this.beanGuideStatus == 'lost') {
             itemstati.push('slds-is-incomplete');
         }
-
-        // in case we are the acive item set the add class. Special handling for the current one .. both classes conflict so just set one
         if ((this.activeStage && this.activeStage == currentstage.stage) || (!this.activeStage && modelstatus == currentstage.stage)) {
             if (this.beanGuideStatus == 'lost') {
                 itemstati.push('slds-is-current');
@@ -152,7 +177,6 @@ export class SpicePathTrack implements OnInit{
         if (!modelstatus) {
             itemstati.push('slds-is-incomplete');
         }
-
         return itemstati.join(' ');
     }
 

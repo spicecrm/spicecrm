@@ -70,6 +70,31 @@ $routes = [
             ]
         ]
     ],
+
+    [
+        'method'      => 'post',
+        'route'       => '/common/spiceattachments/count/module/{beanName}',
+        'class'       => SpiceAttachmentsController::class,
+        'function'    => 'getAttachmentsCountPerBean',
+        'description' => 'get spice attachments count for the bean ids given as input',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => false],
+        'parameters'  => [
+            'beanName' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'description' => 'name of a module',
+                'example' => 'Accounts',
+                'required' => true
+            ],
+            'beanIds' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_ARRAY,
+                'subtype'     => ValidationMiddleware::TYPE_STRING,
+                'description' => 'GUID of bean',
+                'required' => false
+            ],
+        ]
+    ],
     [
         'method'      => 'get',
         'route'       => '/common/spiceattachments/module/{beanName}/{beanId}/{attachmentId}',
@@ -100,7 +125,6 @@ $routes = [
             ]
         ]
     ],
-
     [
         'method'      => 'get',
         'route'       => '/common/spiceattachments/module/{beanName}/{beanId}/byfield/{fieldprefix}',
@@ -127,6 +151,41 @@ $routes = [
                 'in' => 'path',
                 'type'        => "string",
                 'description' => 'Prefix of the field',
+                'required' => true
+            ]
+        ]
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/common/spiceattachments/module/{beanName}/{beanId}/byfield/{fieldprefix}/{fieldmd5}',
+        'class'       => SpiceAttachmentsController::class,
+        'function'    => 'getAttachmentForField',
+        'description' => '',
+        'options'     => ['validate' => true],
+        'parameters'  => [
+            'beanName' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'description' => 'name of a module',
+                'example' => 'Accounts',
+                'required' => true
+            ],
+            'beanId' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'description' => 'GUID of bean',
+                'required' => true
+            ],
+            'fieldprefix' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'Prefix of the field',
+                'required' => true
+            ],
+            'fieldmd5' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'thew MD5 Hash of the Field',
                 'required' => true
             ]
         ]
@@ -290,12 +349,6 @@ $routes = [
                 'type'        => ValidationMiddleware::TYPE_GUID,
                 'description' => 'GUID of bean it is cloned from',
                 'required' => true
-            ],
-            'categoryId' => [
-                'in' => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'description' => 'GUID of a category to be cloned',
-                'required' => false
             ],
             'selectedFiles' => [
                 'in' => 'body',

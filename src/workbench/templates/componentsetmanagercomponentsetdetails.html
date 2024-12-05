@@ -8,15 +8,22 @@
     <div class="slds-form-element slds-size_1-of-4 slds-p-left_x-small">
         <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
         <div class="slds-form-element__control">
-            <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="component.package"/>
+            <system-input-package [(ngModel)]="component.package"></system-input-package>
         </div>
     </div>
     <div class="slds-form-element slds-size_1-of-4 slds-p-left_x-small">
         <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
         <div class="slds-form-element__control">
-            <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="component.version"/>
+            <system-input-version [(ngModel)]="component.version"/>
         </div>
     </div>
 </div>
+<div class="slds-grid slds-m-top--small slds-has-divider--bottom-space">
+    <div class="slds-form-element slds-size_1-of-4">
+        <system-checkbox [(ngModel)]="configValues.hideOnMobile">
+            <system-label label="LBL_HIDE_ON_MOBILE"/>
+        </system-checkbox>
+    </div>
+</div>
 
-<workbench-config [component]="configcomponent" [configValues]="configValues"></workbench-config>
+<workbench-config [component]="configcomponent" [module]="module" [configValues]="configValues"></workbench-config>

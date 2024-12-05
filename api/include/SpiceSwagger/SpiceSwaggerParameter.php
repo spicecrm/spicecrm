@@ -23,11 +23,21 @@ class SpiceSwaggerParameter
     }
 
     public function generateSwaggerParameter() {
-        $this->generateIn();
-        $this->swaggerParameter['name']        = $this->parameterName;
-        $this->swaggerParameter['required']    = $this->parameterArray['required'] ?: true;
-        $this->swaggerParameter['description'] = $this->parameterArray['description'];
-        $this->generateSchema();
+        try {
+            $this->generateIn();
+            $this->swaggerParameter['name'] = $this->parameterName;
+            $this->swaggerParameter['required'] = $this->parameterArray['required'] ?? false;
+
+            if ($this->swaggerParameter['in'] === 'path') {
+                $this->swaggerParameter['required'] = true;
+            }
+
+            $this->swaggerParameter['description'] = $this->parameterArray['description'] ?? "";
+            $this->generateSchema();
+        }catch(\Exception $e){
+            error_log('Error generating path for route: '. json_encode($this->parameterArray));
+            error_log('Exception: '. $e->getMessage());
+        }
 
         return $this->swaggerParameter;
     }
@@ -45,6 +55,38 @@ class SpiceSwaggerParameter
         }
     }
 
+    public function generateSwaggerSchemaParameter() {
+        try {
+            $schemaParameter = [
+                'type' => 'object',
+                'properties' => [],
+                'required' => []
+            ];
+
+            if (!empty($this->parameterArray['description'])) {
+                $schemaParameter['description'] = $this->parameterArray['description'];
+            }
+
+            $propertySchema = $this->resolveType($this->parameterArray['type'], $this->parameterArray['subtype'] ?? null);
+            $schemaParameter['properties'][$this->parameterName] = $propertySchema;
+
+            if ($this->parameterArray['required'] ?? false) {
+                $schemaParameter['required'][] = $this->parameterName;
+            }
+
+            if (empty($schemaParameter['required'])) {
+                unset($schemaParameter['required']);
+            }
+
+            return $schemaParameter;
+        }catch(\Exception $e){
+            error_log('Error generating schema parameter for: '. json_encode($this->parameterArray));
+            error_log('Exception: '. $e->getMessage());
+            return null;
+        }
+
+    }
+
     private function generateSchema() {
         if (!empty($this->parameterArray['subtype'])) { // arrays
             $this->swaggerParameter['schema'] = $this->resolveType($this->parameterArray['type'], $this->parameterArray['subtype']);
@@ -56,7 +98,7 @@ class SpiceSwaggerParameter
         $this->swaggerParameter['schema']['example'] = $this->parameterArray['example'];
     }
 
-    private function resolveType(string $type, /*?string*/ $subtype = null): ?array {
+    private function resolveType(string|null $type, /*?string*/ $subtype = null): ?array {
         switch ($type) {
             case 'alphanumeric':
             case 'module':
@@ -118,14 +160,27 @@ class SpiceSwaggerParameter
                 } elseif (is_array($subtype) && isset($subtype['type'])) {
                     return [
                         'type'  => self::TYPE_ARRAY,
-                        'items' => [
-                            $this->resolveType($subtype['type']),
-                        ],
+                        'items' => $this->resolveType($subtype['type']),
+                    ];
+                } else {
+                    return [
+                        'type'  => self::TYPE_ARRAY,
+                        'items' => ['type' => 'string'], // default to string if no subtype
+                    ];
+                }
+            case ValidationMiddleware::TYPE_OBJECT:
+            // todo add schemas for objects
+            case ValidationMiddleware::TYPE_COMPLEX:
+                if (isset($this->parameterArray['schema'])) {
+                    return $this->parameterArray['schema'];
+                } else {
+                    return [
+                        'type' => self::TYPE_OBJECT,
+                        'additionalProperties' => true,
+                        'description' => 'A complex object structure'
                     ];
                 }
 
-            case ValidationMiddleware::TYPE_OBJECT:
-            // todo add schemas for objects
             default:
                 return null;
         }

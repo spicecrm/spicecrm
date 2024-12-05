@@ -10,7 +10,7 @@
 </div>
 <div *ngIf="isEditMode()" class="slds-form-element">
     <div class="slds-form-element__control">
-        <div class="slds-grid--vertical">
+        <div [class]="fielddisplayclass">
             <system-input-radio [name]="fieldid" [value]="o.value" *ngFor="let o of options" [(ngModel)]="value" >{{o.display}}</system-input-radio>
         </div>
     </div>

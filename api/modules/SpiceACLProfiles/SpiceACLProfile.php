@@ -40,7 +40,7 @@ class SpiceACLProfile extends SpiceBean {
     public function retrieve($id = -1, $encode = false, $deleted = true, $relationships = true)
     {
         $bean = parent::retrieve($id, $encode, $deleted, $relationships);
-
+        if(!$bean) return $bean;
         // check if this is a global profile
         $bean->is_global = $this->db->fetchOne("SELECT id FROM spiceaclprofiles_users WHERE deleted = 0 AND user_id = '*' AND spiceaclprofile_id='{$this->id}'") ? true : false;
 

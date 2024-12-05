@@ -40,6 +40,13 @@ export class DashletGeneratorDashletDetails implements OnChanges {
         return this.metadata.getSystemComponents(this.sysModule);
     }
 
+    get dc(){
+        return this.dashlet['component'];
+    }
+    set dc(c){
+        this.dashlet['component'] = c;
+    }
+
     public ngOnChanges() {
         if (this.dashlet) {
             let sysComponent = this.metadata.getSystemComponents().find(component => component.component == this.dashlet.component);

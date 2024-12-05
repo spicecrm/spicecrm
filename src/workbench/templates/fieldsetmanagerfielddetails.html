@@ -19,8 +19,7 @@
         <system-label label="LBL_PACKAGE"></system-label>
     </label>
     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
-        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" placeholder="package"
-               [(ngModel)]="currentField.package"/>
+        <system-input-package [(ngModel)]="currentField.package"/>
     </div>
 </div>
 <div class="slds-form-element slds-m-vertical--xxx-small">
@@ -28,8 +27,7 @@
         <system-label label="LBL_VERSION"></system-label>
     </label>
     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
-        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" placeholder="version"
-               [(ngModel)]="currentField.version"/>
+        <system-input-version [(ngModel)]="currentField.version"/>
     </div>
 </div>
 <div class="slds-form-element slds-m-vertical--xx-small">
@@ -129,13 +127,16 @@
         <system-label label="LBL_FIELDTYPE"></system-label>
     </label>
     <div class="slds-form-element__control">
-        <div class="slds-select_container">
+        <!--div class="slds-select_container">
             <select [disabled]="!view.isEditMode()" class="slds-select" [(ngModel)]="configValues.fieldtype"
                     (change)="selectFieldType()">
                 <option *ngFor="let fieldtype of fieldtypes">{{fieldtype}}</option>
             </select>
-        </div>
+        </div-->
+        <system-select [disabled]="!view.isEditMode()" [ngModel]="configValues.fieldtype" (ngModelChange)="selectFieldType($event)">
+            <system-select-option  *ngFor="let fieldtype of fieldtypes" [value]="fieldtype" [display]="fieldtype"></system-select-option>
+        </system-select>
     </div>
 </div>
 
-<workbench-config [component]="component" [configValues]="configValues"></workbench-config>
+<workbench-config [component]="component" [module]="module" [configValues]="configValues"></workbench-config>

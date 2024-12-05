@@ -46,6 +46,13 @@ $routes = [
                 'example' => '2021-02-23 11:25:06',
                 'required' => false
             ],
+            'planned_activity_user_id' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'description' => 'guid of current user',
+                'example' => 'c7a88116-97e0-11eb-8c42-00fffe0c4f07',
+                'required' => false
+            ],
             'call_id' => [
                 'in' => 'body',
                 'type' => ValidationMiddleware::TYPE_GUID,

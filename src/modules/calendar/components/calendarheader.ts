@@ -48,7 +48,7 @@ export class CalendarHeader implements OnDestroy {
      */
     public showTypeSelector: boolean = false;
     /**
-     * holds the calendar fts moduels
+     * holds the calendar fts modules
      */
     @Input() public modules: any[] = [];
     /**
@@ -181,6 +181,7 @@ export class CalendarHeader implements OnDestroy {
      * go to today
      */
     public goToday() {
+        if (this.calendar.asPicker || this.calendar.isDashlet) return;
         this.calendar.calendarDate = new moment();
     }
 
@@ -238,21 +239,20 @@ export class CalendarHeader implements OnDestroy {
      * @param module
      */
     public toggleVisibleModule(module) {
-        let found = this.calendar.otherCalendars.some(calendar => {
-            if (calendar.name == module) {
-                calendar.visible = !calendar.visible;
-                this.calendar.setOtherCalendars(this.calendar.otherCalendars.slice());
-                return true;
-            }
-        });
-        if (!found) {
-            this.calendar.otherCalendars.push({
+
+        const found = this.calendar.userModules.find(calendar => calendar.name == module);
+
+        if (found) {
+            found.visible = !found.visible;
+        } else {
+            this.calendar.userModules.push({
                 id: this.modelUtils.generateGuid(),
                 name: module,
                 visible: false
             });
-            this.calendar.setOtherCalendars(this.calendar.otherCalendars.slice());
         }
+
+        this.calendar.setUserModules(this.calendar.userModules.slice());
     }
 
     /**
@@ -260,7 +260,7 @@ export class CalendarHeader implements OnDestroy {
      * @param module
      */
     public getIconStyle(module) {
-        return this.calendar.otherCalendars.some(calendar => module == calendar.name && !calendar.visible) ? {'-webkit-filter': 'grayscale(1)','filter': 'grayscale(1)'} : {};
+        return this.calendar.userModules.some(calendar => module == calendar.name && !calendar.visible) ? {'-webkit-filter': 'grayscale(1)','filter': 'grayscale(1)'} : {};
     }
 
     get searchTerm(): string {

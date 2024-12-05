@@ -33,6 +33,7 @@ class DictionaryController
     }
 
     /**
+     * @deprecated
      * repair custom enum
      * @param Request $req
      * @param Response $res
@@ -357,7 +358,7 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
 
 
     /**
-     *
+     * @deprecated
      * legacy & cache table
      */
     public function repairCacheDb(Request $req, Response $res, array $args): Response {

@@ -19,6 +19,8 @@ export class TasksManagerTasks {
 
     public focus: string = '';
 
+    public readonly disableForMobileView = true;
+
     constructor(public language: language, public modellist: modellist) {
 
     }

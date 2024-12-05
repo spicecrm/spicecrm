@@ -333,6 +333,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'len' => 36
         ],
 
+        /* migrated
         'mailbox_id' => [
             'name' => 'mailbox_id',
             'vname' => 'LBL_MAILBOX_ID',
@@ -364,6 +365,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'source' => 'non-db',
             'duplicate_merge' => false,
         ],
+        */
         'event_id' => [
             'name' => 'event_id',
             'vname' => 'LBL_EVENT_ID',

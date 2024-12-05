@@ -2,18 +2,23 @@
 
 namespace SpiceCRM\modules\EmailAddresses;
 
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 /*********************************************************************************
  * SugarCRM Community Edition is a customer relationship management program developed by
@@ -123,6 +128,44 @@ class EmailAddress extends SpiceBean
         $options = SpiceConfig::getInstance()->config['international_email_addresses'] ? FILTER_FLAG_EMAIL_UNICODE : 0;
 
         return (bool) filter_var("$localPart@any.com", FILTER_VALIDATE_EMAIL, $options);
+    }
+
+    /**
+     * fts search all email search modules by the given array of email addresses
+     * @param array $emailAddresses
+     * @return array
+     * @throws \Exception
+     */
+    public static function ftsSearchByEmailAddresses(array $emailAddresses): array
+    {
+        $db = DBManagerFactory::getInstance();
+        $ftsModules = $db->fetchAll("SELECT * FROM sysfts");
+        $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
+        $results = [];
+
+        foreach ($ftsModules as $ftsModule) {
+            $ftsParams = json_decode(html_entity_decode($ftsModule['settings']));
+
+            # check if the module enabled the email search, exists, and have list acl permission
+            if ($ftsParams->emailsearch !== true || !SpiceModules::getInstance()->moduleExists($ftsModule['module']) || !SpiceACL::getInstance()->checkAccess($ftsModule['module'], 'list', true)) continue;
+
+            $fields = array_column(array_filter(SpiceFTSUtils::getBeanIndexProperties($ftsModule['module']),fn($property) => $property['email'] === true),'indexfieldname');
+
+            foreach ($emailAddresses as $emailAddress) {
+                $searchResult = SpiceFTSHandler::getInstance()->searchModule($ftsModule['module'], $emailAddress, [], [], 1000, 0, [], [], false, $fields, false);
+                foreach ($searchResult['hits']['hits'] as $item) {
+                    $bean = BeanFactory::getBean($ftsModule['module'], $item['_id']);
+                    $results[$bean->id] = [
+                        'selected' => false,
+                        'id' => $bean->id,
+                        'module' => $ftsModule['module'],
+                        'data' => $moduleHandler->mapBeanToArray($ftsModule['module'], $bean)
+                    ];
+                }
+            }
+        }
+
+        return $results;
     }
 
     /**

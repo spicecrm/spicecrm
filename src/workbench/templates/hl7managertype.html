@@ -1,0 +1,44 @@
+<div *ngIf="messageDef">
+    <div class="slds-grid">
+        <field-container class="slds-size--1-of-8 slds-p-right--small" [field]="'message_type'" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container>
+        <field-container class="slds-size--3-of-8 slds-p-right--small" [field]="'message_subtype'" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container>
+        <field-container class="slds-size--2-of-8 slds-p-right--small" [field]="'modification_type'" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container>
+        <field-container class="slds-size--1-of-8 slds-p-right--small" [field]="'direction'" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container>
+        <field-container class="slds-size--1-of-8" [field]="'active'" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container>
+    </div>
+    <div class="slds-grid slds-m-top--x-small">
+        <div class="slds-size--1-of-2 slds-p-right--small">
+            <field-container class="slds-m-right--small" [field]="'modules'" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container>
+        </div>
+        <div class="slds-size--1-of-2">
+            <div class="slds-grid">
+                <field-container class="slds-size--1-of-2 slds-p-right--small " [field]="'export_module'" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container>
+                <div class="slds-size--1-of-2 slds-grid slds-grid--vertical-align-end">
+                    <field-container class="slds-grow" [field]="'id'" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container>
+                    <button class="slds-button slds-button--icon slds-m-bottom--x-small" (click)="clipboard.copy(model.getField('id'))"><system-button-icon icon="copy" size="xx-small"></system-button-icon></button>
+                </div>
+            </div>
+            <div class="slds-m-top--x-small">
+                <field-container [field]="'post_hook'" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container>
+            </div>
+        </div>
+    </div>
+
+    <div><!-- system-to-bottom class="slds-scrollable--y" -->
+        <table class="slds-table slds-table--bordered slds-no-row-hover slds-m-top--medium">
+            <thead>
+            <tr>
+                <th></th>
+                <th><system-label label="LBL_ID"></system-label></th>
+                <th><system-label label="LBL_HL7_SEGMENT"></system-label></th>
+                <th><system-label label="LBL_SPICE_MODULE_FIELD"></system-label></th>
+                <th><system-label label="LBL_HL7_FIELD"></system-label></th>
+                <th><system-label label="LBL_IMPORT_METHOD"></system-label></th>
+                <th><system-label label="LBL_CONDITIONAL"></system-label></th>
+                <th><system-label label="LBL_ACTIVE"></system-label></th>
+            </tr>
+            </thead>
+            <tbody hl7-manager-rule *ngFor="let rule of messageDef.rules; let i=index" [rule]="rule" (toggleDetails)="toggleDetails(i,$event)" [showDetails]="showDetails[i]"></tbody>
+        </table>
+    </div>
+</div>

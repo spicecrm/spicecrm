@@ -126,7 +126,7 @@ class BeanFactory
 
         // check that we have a bean name .. otherwise the module is unknown
         if (empty($beanName)) {
-            LoggerManager::getLogger()->error("Unable to instantiate bean of unknown module \"{$module}\".");
+            LoggerManager::getLogger()->debug("Unable to instantiate bean of unknown module \"{$module}\".");
             return false;
         }
 

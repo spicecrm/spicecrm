@@ -51,7 +51,8 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
     public isOpen: boolean = false;
 
     // public clickListener: any;
-    public readonly minutes_interval = 30;
+    @Input()
+    public minutes_interval = 30;
 
     /**
      * option to hide the error message
@@ -77,6 +78,12 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
         public userpreferences: userpreferences,
         public language: language
     ) {
+    }
+
+    /**
+     * set the dropdown values
+     */
+    public ngOnInit() {
         this.dropdownValues = this.getDropdownValues();
     }
 

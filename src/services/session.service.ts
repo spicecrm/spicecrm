@@ -65,6 +65,11 @@ export class session {
     public deviceID;
 
     /**
+     * id of the tenant if the system is using multitenancy and the user is logged in
+     */
+    public tenantID: string;
+
+    /**
      * an object any component can write data into and read data from. Helpful to keep sessiondata
      */
     public sessionData: any = {};
@@ -119,6 +124,7 @@ export class session {
      */
     public loadFromStorage() {
         this.authData.sessionId = sessionStorage.getItem('OAuth-Token') ?? localStorage.getItem('OAuth-Token');
+        this.authData.tenant_id = sessionStorage.getItem('tenant-id') ?? localStorage.getItem('tenant-id');
     }
 
     /**
@@ -129,8 +135,10 @@ export class session {
 
         if (!keepMeLoggedIn) {
             sessionStorage.setItem('OAuth-Token', this.authData.sessionId);
+            if (!!this.authData.tenant_id) sessionStorage.setItem('tenant-id', this.authData.tenant_id);
         } else {
             localStorage.setItem('OAuth-Token', this.authData.sessionId);
+            if (!!this.authData.tenant_id) localStorage.setItem('tenant-id', this.authData.tenant_id);
         }
     }
 
@@ -144,6 +152,7 @@ export class session {
 
         headers = headers.set('OAuth-Token', this.authData.sessionId);
         headers = headers.set('OAuth-Issuer', 'SpiceCRM');
+        if (!!this.authData.tenant_id) headers = headers.set('tenant-id', this.authData.tenant_id);
 
         // @deprecated since 2023.03.001
         // set the developer mode

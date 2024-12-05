@@ -525,7 +525,7 @@ export class modelattachments implements OnDestroy {
             let a = document.createElement("a");
             document.body.appendChild(a);
             a.href = blobUrl;
-            a.download = fileData.filename;
+            a.download = name ? name : fileData.filename;
             a.type = fileData.file_mime_type;
             a.click();
             a.remove();
@@ -651,7 +651,7 @@ export class modelattachments implements OnDestroy {
         // reload file list
         switch (message.messagetype) {
             case 'attachments.uploaded':
-                if (message.messagedata.reload) {
+                if(message.messagedata.reload && message.messagedata.module == this.module && message.messagedata.id == this.id) {
                     this.files = message.messagedata.uploadedFiles;
                 }
                 break;

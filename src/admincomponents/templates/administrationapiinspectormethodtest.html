@@ -26,9 +26,13 @@
                     <administration-api-inspector-method-parameters [apimethod]="apiMethod" [parameterCollector]="parameterCollector" in="query"></administration-api-inspector-method-parameters>
                     <administration-api-inspector-method-parameters [apimethod]="apiMethod" [parameterCollector]="parameterCollector" in="body"></administration-api-inspector-method-parameters>
                 </div>
-                <!--div class="slds-tabs_default__content" [ngClass]="{'slds-hide': activetab != 'request'}" role="tabpanel">Item Two Content</div-->
                 <div class="slds-tabs_default__content" [ngClass]="{'slds-hide': activetab != 'response'}" role="tabpanel">
-                    <pre class="slds-p-horizontal--x-small" style="white-space: pre-wrap">{{this.response}}</pre>
+                    <div *ngIf="this.response else loading">
+                        <pre class="slds-p-horizontal--x-small" style="white-space: pre-wrap">{{this.response}}</pre>
+                    </div>
+                    <ng-template #loading>
+                        <system-spinner></system-spinner>
+                    </ng-template>
                 </div>
             </div>
         </div>

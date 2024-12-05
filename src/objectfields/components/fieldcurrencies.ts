@@ -24,13 +24,13 @@ export class fieldCurrencies extends fieldGeneric {
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public currency: currency) {
         super(model, view, language, metadata, router);
 
-        this.currencies = this.currency.getCurrencies();
+        this.currencies = this.currency.getCurrencies().sort((a, b) => a.name.localeCompare(b.name));
     }
 
     public getCurrencySymbol() {
         let currencyid = -99;
 
         if (this.model.getField(this.fieldname)) currencyid = this.model.getField(this.fieldname);
-        return this.currency.getCurrencySmbol(currencyid);
+        return this.currency.getCurrencySymbol(currencyid);
     }
 }

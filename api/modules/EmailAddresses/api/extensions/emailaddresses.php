@@ -38,7 +38,7 @@ $routes = [
         'route' => '/module/EmailAddress/searchbeans',
         'oldroute' => '/EmailAddress/searchBeans',
         'class' => EmailAddressesController::class,
-        'function' => 'getMailText',
+        'function' => 'searchBeansFts',
         'description' => 'get and parse the body of an email',
         'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
         'parameters' => [

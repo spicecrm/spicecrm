@@ -9,14 +9,14 @@ use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryIndex
 {
-    protected $id;
+    public $id;
 
     /**
      * the index details
      *
      * @var
      */
-    protected $index;
+    public $index;
 
     /**
      * the fields of the index
@@ -25,9 +25,9 @@ class SpiceDictionaryIndex
      */
     protected $indexItems;
 
-    protected $name;
-    protected $indextype;
-    protected $sysdictionarydefinition_id;
+    public $name;
+    public $indextype;
+    public $sysdictionarydefinition_id;
 
     public function __construct($indexId)
     {
@@ -177,7 +177,7 @@ class SpiceDictionaryIndex
         if ($drop && $dictionaryDefinition->type != 'template') {
             $tablename = $dictionaryDefinition ? $dictionaryDefinition->tablename : $indexDictionaryDefinition->tablename;
             $tableIndexes = $db->get_indices($tablename);
-            if ($tableIndexes[$this->getIndexName($tablename)]) {
+            if ($tableIndexes[$this->getIndexName($tablename)] || ($this->index->indextype == 'primary' && $tableIndexes['primary'])) {
                 $db->query($db->add_drop_constraint($tablename, $this->getIndexDefinition($tablename), true));
             }
         }

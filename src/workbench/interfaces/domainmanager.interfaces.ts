@@ -24,6 +24,7 @@ export interface DomainField {
     dbtype: string;
     len?: number;
     required: number;
+    label?: string;
     exclude_from_index: number;
     sysdomaindefinition_id: string;
     sysdomainfieldvalidation_id: string;
@@ -47,10 +48,11 @@ export interface DomainValidation {
     status: 'd'|'a'|'i';
     validation_type: string;
     sort_flag: 'asc'|'desc';
-    order_by: 'sequence'|'name';
+    order_by: 'sequence' | 'enumvalue' | 'label';
     description?: string;
     version?: string;
     package?: string;
+    validationvalues?: {[key: string]: DomainValidationValue};
 }
 
 /**

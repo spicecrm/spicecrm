@@ -4,18 +4,14 @@
 import {
     Component, Injector, OnInit
 } from '@angular/core';
-import {modelutilities} from '../../services/modelutilities.service';
 import {modal} from '../../services/modal.service';
-import {metadata} from '../../services/metadata.service';
-import {language} from '../../services/language.service';
-
-
 import {dictionarymanager} from '../services/dictionarymanager.service';
 
 /**
  * renders a modal to select the type of the relationship
  */
 @Component({
+    selector: 'dictionary-manager-relationship-add',
     templateUrl: '../templates/dictionarymanagerrelationshipadd.html',
 })
 export class DictionaryManagerRelationshipAdd implements OnInit{
@@ -53,6 +49,16 @@ export class DictionaryManagerRelationshipAdd implements OnInit{
      */
     public scope: 'c' | 'g';
 
+    /**
+     * version of the relationship
+     */
+    public version: string = ''
+
+    /**
+     * package of the relationship
+     */
+    public package: string = ''
+
     constructor(public dictionarymanager: dictionarymanager, public modal: modal, public injector: Injector) {
 
     }
@@ -81,8 +87,9 @@ export class DictionaryManagerRelationshipAdd implements OnInit{
         this.modal.openModal(relType.component_add, true, this.injector).subscribe(modalRef => {
             modalRef.instance.relationship.scope = this.scope;
             modalRef.instance.type = relType;
+            modalRef.instance.relationship.version = this.version;
+            modalRef.instance.relationship.package = this.package;
         });
         this.close();
     }
-
 }
