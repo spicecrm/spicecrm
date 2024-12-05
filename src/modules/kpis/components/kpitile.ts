@@ -126,6 +126,13 @@ export class KpiTile implements OnInit {
         }
     }
 
+    /**
+     * returns the display precision
+     */
+    get precision(){
+        return this.kpiTarget?.kpi?.display_precision ? parseInt(this.kpiTarget.kpi.display_precision, 10) : 0;
+    }
+
     get slope(){
         return this.kpiTrendData?.trend?.slope ?? 0;
     }

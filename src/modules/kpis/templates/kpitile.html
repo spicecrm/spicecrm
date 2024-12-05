@@ -23,7 +23,7 @@
                         <div class="slds-truncate slds-text-heading_large" [ngClass]="textColor">
                             @if (!loading) {
                                 @if (kpiTargetValue) {
-                                    <system-display-number [number]="kpiTargetValue.kpi_value" precision="0"/>
+                                    <system-display-number [number]="kpiTargetValue.kpi_value" [precision]="precision"/>
                                 } @else {
                                     ---
                                 }
