@@ -57,9 +57,7 @@ export class KpiTile implements OnInit {
     constructor(
         public model: model,
         public modal: modal,
-        private backend: backend,
-        private toast: toast,
-        private language: language,
+        public backend: backend,
         public injector: Injector
     ) {
     }
@@ -77,6 +75,10 @@ export class KpiTile implements OnInit {
         this.loadKPITargets()
     }
 
+    get targetAchievement(){
+        return this.kpiTargetValue.kpi_value ?  Math.round(this.kpiTargetValue.kpi_value / parseFloat(this.kpiTarget.target) * 100) : 0
+    }
+
     /**
      * retrieves KPITargets for the User
      */
@@ -90,7 +92,7 @@ export class KpiTile implements OnInit {
                 this.addValues.forEach(a => {
                     switch(a.addKey) {
                         case 'kpi_target_achievement':
-                            a.kpiValueAdd = Math.round(data.kpiTargetValue.kpi_value / parseFloat(this.kpiTarget.target) * 100)
+                            a.kpiValueAdd = this.targetAchievement;
                             break;
                         default:
                             a.kpiValueAdd = data.kpiTargetValue[a.addKey]
@@ -130,7 +132,7 @@ export class KpiTile implements OnInit {
      * returns the display precision
      */
     get precision(){
-        return this.kpiTarget?.kpi?.display_precision ? parseInt(this.kpiTarget.kpi.display_precision, 10) : 0;
+        return  this.kpiTarget?.kpi?.display_precision ? parseInt(this.kpiTarget.kpi.display_precision, 10) : 0;
     }
 
     get slope(){
