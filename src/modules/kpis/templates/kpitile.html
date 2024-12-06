@@ -47,7 +47,7 @@
                                     <system-utility-icon [colorclass]="slopeColor" [icon]="slopeIcon" [size]="'x-small'"></system-utility-icon>
                                     @if (trendValue) {
                                         <div class="slds-p-right--xx-small">{{ trendValue }}%</div>
-                                        <system-label [label]="trendValue > 0 && !kpiTargetValue.kpi.inverted ? 'LBL_KPI_BETTER' : 'LBL_KPI_WORSE'"></system-label>
+                                        <system-label [label]="trendValue > 0 && !kpiTargetValue?.kpi?.inverted ? 'LBL_KPI_BETTER' : 'LBL_KPI_WORSE'"></system-label>
                                     }
                                 } @else {
                                     <system-label label="LBL_NO_KPIVALUE_FOUND"></system-label>
