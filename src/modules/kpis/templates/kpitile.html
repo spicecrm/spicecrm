@@ -4,11 +4,16 @@
             <div class="slds-media__body">
                 <h2 class="slds-text-heading--small slds-theme--shade  slds-grid slds-grid--vertical-align-center">
                     <div class="slds-card__header slds-truncate slds-m-bottom--none slds-p-around--xx-small slds-col--bump-right">
-                        <span>{{ kpiTarget.kpi.name }}</span>
+                        <span>
+                            @if(kpiTarget.kpi.display_label){
+                                <system-label [label]="kpiTarget.kpi.display_label"/>
+                            } @else {
+                                {{ kpiTarget.kpi.name }}
+                            }
+                        </span>
                     </div>
-                    @if (kpiTarget.kpi.description && addValues.length > 0){
-                        <!--system-utility-icon size="x-small" icon="info" [title]="kpiTarget.kpi.description"/-->
-                        <system-icon-help-text [helpText]="kpiTarget.kpi.description"/>
+                    @if ((kpiTarget.kpi.description || kpiTarget.kpi.display_label) && addValues.length > 0){
+                        <system-icon-help-text [helpText]="kpiTarget.kpi.display_label ?? kpiTarget.kpi.description"/>
                     }
                     <button *ngIf="kpiTargetValue" class="slds-button slds-button--icon slds-m-horizontal--xx-small" (click)="openHistoryModal()">
                         <system-button-icon icon="graph"/>
