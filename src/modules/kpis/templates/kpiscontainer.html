@@ -9,7 +9,7 @@
             <div class="slds-p-horizontal--x-small slds-grid slds-wrap slds-gutters_direct-xx-small slds-p-bottom--x-small">
                 @for (kpiTarget of kpiGroup.targets; track kpiTarget.id) {
                     <div class="slds-col" [ngClass]="getTileWidthClass">
-                        <kpi-tile [kpiTarget]="kpiTarget"></kpi-tile>
+                        <system-dynamic-component [component]="kpiTarget.kpi.display_component ?? 'KpiTile'" [componentattributes]="{kpiTarget: kpiTarget}"></system-dynamic-component>
                     </div>
                 }
             </div>
@@ -19,7 +19,7 @@
     <div class="slds-grid slds-wrap slds-gutters_direct-xx-small">
         @for (kpiTarget of otherTargets; track kpiTarget.id) {
             <div class="slds-col" [ngClass]="getTileWidthClass">
-                <kpi-tile [kpiTarget]="kpiTarget"></kpi-tile>
+                <system-dynamic-component [component]="kpiTarget.kpi.display_component ?? 'KpiTile'"  [componentattributes]="{kpiTarget: kpiTarget}"></system-dynamic-component>
             </div>
         }
     </div>
