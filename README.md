@@ -40,4 +40,4 @@ SpiceCRM is licensed as Open Source with some additional clauses
 
 ## Copyright
 
-SpiceCRM and the SpiceCRM Logo are registered trademarks of aac services k.s.
+SpiceCRM and the SpiceCRM Logo are registered trademarks of SpiceCRM FlexCo.
