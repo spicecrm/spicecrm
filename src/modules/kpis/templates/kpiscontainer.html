@@ -3,7 +3,13 @@
         <div class="slds-box--border slds-p-around--x-small" [ngClass]="{'slds-m-top--x-small': $index > 0}">
             <div class="slds-p-around--x-small slds-media__body slds-truncate">
                 <h2 class="slds-card__header-title">
-                    {{ kpiGroup.name }}
+                    <span>
+                        @if(kpiGroup.display_label){
+                            <system-label [label]="kpiGroup.display_label"/>
+                        } @else {
+                            {{ kpiGroup.name }}
+                        }
+                    </span>
                 </h2>
             </div>
             <div class="slds-p-horizontal--x-small slds-grid slds-wrap slds-gutters_direct-xx-small slds-p-bottom--x-small">
