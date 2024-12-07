@@ -209,27 +209,27 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'type' => 'varchar',
             'len' => 36
         ],
-        'events_consumer_role' => [
-            'name' => 'events_consumer_role',
-            'vname' => 'LBL_ROLE',
-            'type' => 'enum',
-            'source' => 'non-db',
-            'options' => 'events_consumer_roles_dom'
-        ],
-        'events' => [
-            'name' => 'events',
-            'type' => 'link',
-            'relationship' => 'events_consumers',
-            'module' => 'Events',
-            'bean_name' => 'Event',
-            'source' => 'non-db',
-            'vname' => 'LBL_EVENT',
-            'rel_fields' => [
-                'consumer_role' => [
-                    'map' => 'events_consumer_role'
-                ]
-            ]
-        ],
+//        'events_consumer_role' => [
+//            'name' => 'events_consumer_role',
+//            'vname' => 'LBL_ROLE',
+//            'type' => 'enum',
+//            'source' => 'non-db',
+//            'options' => 'events_consumer_roles_dom'
+//        ],
+//        'events' => [
+//            'name' => 'events',
+//            'type' => 'link',
+//            'relationship' => 'events_consumers',
+//            'module' => 'Events',
+//            'bean_name' => 'Event',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_EVENT',
+//            'rel_fields' => [
+//                'consumer_role' => [
+//                    'map' => 'events_consumer_role'
+//                ]
+//            ]
+//        ],
         'eventbookingblockers' => [
             'name'         => 'eventbookingblockers',
             'type'         => 'link',

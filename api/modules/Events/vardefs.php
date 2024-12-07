@@ -126,69 +126,69 @@ SpiceDictionaryHandler::getInstance()->dictionary['Event'] = [
             'relationship' => 'eventblueprint_events',
             'source' => 'non-db',
         ],
-        'events_account_role' => [
-            'name' => 'events_account_role',
-            'vname' => 'LBL_ROLE',
-            'type' => 'enum',
-            'source' => 'non-db',
-            'options' => 'events_account_roles_dom'
-        ],
-        'events_contact_role' => [
-            'name' => 'events_contact_role',
-            'vname' => 'LBL_ROLE',
-            'type' => 'enum',
-            'source' => 'non-db',
-            'options' => 'events_contact_roles_dom'
-        ],
-        'events_consumer_role' => [
-            'name' => 'events_consumer_role',
-            'vname' => 'LBL_ROLE',
-            'type' => 'enum',
-            'source' => 'non-db',
-            'options' => 'events_consumer_roles_dom'
-        ],
-        'accounts' => [
-            'name' => 'accounts',
-            'type' => 'link',
-            'relationship' => 'events_accounts',
-            'module' => 'Accounts',
-            'bean_name' => 'Account',
-            'source' => 'non-db',
-            'vname' => 'LBL_ACCOUNTS',
-            'rel_fields' => [
-                'account_role' => [
-                    'map' => 'events_account_role'
-                ]
-            ]
-        ],
-        'contacts' => [
-            'name' => 'contacts',
-            'type' => 'link',
-            'relationship' => 'events_contacts',
-            'module' => 'Contacts',
-            'bean_name' => 'Contact',
-            'source' => 'non-db',
-            'vname' => 'LBL_CONTACTS',
-            'rel_fields' => [
-                'contact_role' => [
-                    'map' => 'events_contact_role'
-                ]
-            ]
-        ],
-        'consumers' => [
-            'name' => 'consumers',
-            'type' => 'link',
-            'relationship' => 'events_consumers',
-            'module' => 'Consumers',
-            'bean_name' => 'Consumer',
-            'source' => 'non-db',
-            'vname' => 'LBL_CONSUMERS',
-            'rel_fields' => [
-                'consumer_role' => [
-                    'map' => 'events_consumer_role'
-                ]
-            ]
-        ],
+//        'events_account_role' => [
+//            'name' => 'events_account_role',
+//            'vname' => 'LBL_ROLE',
+//            'type' => 'enum',
+//            'source' => 'non-db',
+//            'options' => 'events_account_roles_dom'
+//        ],
+//        'events_contact_role' => [
+//            'name' => 'events_contact_role',
+//            'vname' => 'LBL_ROLE',
+//            'type' => 'enum',
+//            'source' => 'non-db',
+//            'options' => 'events_contact_roles_dom'
+//        ],
+//        'events_consumer_role' => [
+//            'name' => 'events_consumer_role',
+//            'vname' => 'LBL_ROLE',
+//            'type' => 'enum',
+//            'source' => 'non-db',
+//            'options' => 'events_consumer_roles_dom'
+//        ],
+//        'accounts' => [
+//            'name' => 'accounts',
+//            'type' => 'link',
+//            'relationship' => 'events_accounts',
+//            'module' => 'Accounts',
+//            'bean_name' => 'Account',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_ACCOUNTS',
+//            'rel_fields' => [
+//                'account_role' => [
+//                    'map' => 'events_account_role'
+//                ]
+//            ]
+//        ],
+//        'contacts' => [
+//            'name' => 'contacts',
+//            'type' => 'link',
+//            'relationship' => 'events_contacts',
+//            'module' => 'Contacts',
+//            'bean_name' => 'Contact',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CONTACTS',
+//            'rel_fields' => [
+//                'contact_role' => [
+//                    'map' => 'events_contact_role'
+//                ]
+//            ]
+//        ],
+//        'consumers' => [
+//            'name' => 'consumers',
+//            'type' => 'link',
+//            'relationship' => 'events_consumers',
+//            'module' => 'Consumers',
+//            'bean_name' => 'Consumer',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CONSUMERS',
+//            'rel_fields' => [
+//                'consumer_role' => [
+//                    'map' => 'events_consumer_role'
+//                ]
+//            ]
+//        ],
         'eventregistrations' => [
             'name' => 'eventregistrations',
             'type' => 'link',

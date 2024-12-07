@@ -595,27 +595,27 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'type' => 'varchar',
                 'len' => 36
             ],
-            'events_contact_role' => [
-                'name' => 'events_contact_role',
-                'vname' => 'LBL_ROLE',
-                'type' => 'enum',
-                'source' => 'non-db',
-                'options' => 'events_contact_roles_dom'
-            ],
-            'events' => [
-                'name' => 'events',
-                'type' => 'link',
-                'relationship' => 'events_contacts',
-                'module' => 'Events',
-                'bean_name' => 'Event',
-                'source' => 'non-db',
-                'vname' => 'LBL_EVENT',
-                'rel_fields' => [
-                    'contact_role' => [
-                        'map' => 'events_contact_role'
-                    ]
-                ]
-            ],
+//            'events_contact_role' => [
+//                'name' => 'events_contact_role',
+//                'vname' => 'LBL_ROLE',
+//                'type' => 'enum',
+//                'source' => 'non-db',
+//                'options' => 'events_contact_roles_dom'
+//            ],
+//            'events' => [
+//                'name' => 'events',
+//                'type' => 'link',
+//                'relationship' => 'events_contacts',
+//                'module' => 'Events',
+//                'bean_name' => 'Event',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_EVENT',
+//                'rel_fields' => [
+//                    'contact_role' => [
+//                        'map' => 'events_contact_role'
+//                    ]
+//                ]
+//            ],
 //            'bonuscards' => [
 //                'name' => 'bonuscards',
 //                'type' => 'link',
