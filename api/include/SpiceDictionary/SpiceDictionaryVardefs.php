@@ -2203,15 +2203,15 @@ WHERE relfields.deleted = 0 AND relfields.status = 'a' AND relfields.sysdictiona
     public static function repairAuditTable(array $dict, bool $execute = false){
         $tableName = self::getAuditTableName($dict['table']);
 
-        if (file_exists('metadata/audit_templateMetaData.php')) {
-            require('metadata/audit_templateMetaData.php');
-        }
-
-        // Bug: 52583 Need ability to customize template for audit tables
-        $custom = 'custom/metadata/audit_templateMetaData_' . $tableName . '.php';
-        if (file_exists($custom)) {
-            require($custom);
-        }
+//        if (file_exists('metadata/audit_templateMetaData.php')) {
+//            require('metadata/audit_templateMetaData.php');
+//        }
+//
+//        // Bug: 52583 Need ability to customize template for audit tables
+//        $custom = 'custom/metadata/audit_templateMetaData_' . $tableName . '.php';
+//        if (file_exists($custom)) {
+//            require($custom);
+//        }
 
         $fieldDefs = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
         $indices   = SpiceDictionaryHandler::getInstance()->dictionary['audit']['indices'];
