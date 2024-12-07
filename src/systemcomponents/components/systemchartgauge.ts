@@ -36,7 +36,7 @@ export class SystemChartGauge implements AfterViewInit, AfterContentInit {
     /**
      * an optional padding parameter
      */
-    @Input() public padding: 'none'|'small'|'medium' = 'small';
+    @Input() public padding: 'none'|'small'|'medium'|'x-small'|'xx-small' = 'small';
 
     /**
      * inputs for the chart Options
