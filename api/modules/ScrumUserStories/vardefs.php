@@ -76,15 +76,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['ScrumUserStory'] = [
             'module' => 'ScrumEpics',
             'source' => 'non-db'
         ],
-        'systemdeploymentcrs' => [
-            'name' => 'systemdeploymentcrs',
-            'type' => 'link',
-            'relationship' => 'scrumuserstories_systemdeploymentcrs',
-            'vname' => 'LBL_SYSTEMDEPLOYMENTCRS',
-            'module' => 'SystemDeploymentCRs',
-            'source' => 'non-db',
-            'default' => false
-        ],
+//        'systemdeploymentcrs' => [
+//            'name' => 'systemdeploymentcrs',
+//            'type' => 'link',
+//            'relationship' => 'scrumuserstories_systemdeploymentcrs',
+//            'vname' => 'LBL_SYSTEMDEPLOYMENTCRS',
+//            'module' => 'SystemDeploymentCRs',
+//            'source' => 'non-db',
+//            'default' => false
+//        ],
         'projectwbs_id' => [
             'name' => 'projectwbs_id',
             'vname' => 'LBL_PROJECTWBS',
