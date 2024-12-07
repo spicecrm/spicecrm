@@ -190,13 +190,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'type' => 'text',
             'comment' => 'The campaign description'
         ],
-        'prospectlists' => [
-            'name' => 'prospectlists',
-            'vname' => 'LBL_PROSPECTLISTS',
-            'type' => 'link',
-            'relationship' => 'prospect_list_campaigns',
-            'source' => 'non-db',
-        ],
+//        'prospectlists' => [
+//            'name' => 'prospectlists',
+//            'vname' => 'LBL_PROSPECTLISTS',
+//            'type' => 'link',
+//            'relationship' => 'prospect_list_campaigns',
+//            'source' => 'non-db',
+//        ],
 // CR1000465 cleanup Email
 //        'emailmarketing' => array(
 //            'name' => 'emailmarketing',
