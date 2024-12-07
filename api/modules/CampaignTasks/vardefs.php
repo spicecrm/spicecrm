@@ -182,13 +182,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'type' => 'varchar',
             'len' => '50'
         ],
-        'prospectlists' => [
-            'name' => 'prospectlists',
-            'vname' => 'LBL_PROSPECTLISTS',
-            'type' => 'link',
-            'relationship' => 'prospect_list_campaigntasks',
-            'source' => 'non-db'
-        ],
+//        'prospectlists' => [
+//            'name' => 'prospectlists',
+//            'vname' => 'LBL_PROSPECTLISTS',
+//            'type' => 'link',
+//            'relationship' => 'prospect_list_campaigntasks',
+//            'source' => 'non-db'
+//        ],
         'log_entries' => [
             'name' => 'log_entries',
             'type' => 'link',
@@ -197,14 +197,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'module' => 'CampaignLog',
             'vname' => 'LBL_LOG_ENTRIES',
         ],
-        'calls' => [
-            'name' => 'calls',
-            'type' => 'link',
-            'vname' => 'LBL_CALLS',
-            'relationship' => 'calls_campaigntasks',
-            'source' => 'non-db',
-            'module' => 'Calls'
-        ],
+//        'calls' => [
+//            'name' => 'calls',
+//            'type' => 'link',
+//            'vname' => 'LBL_CALLS',
+//            'relationship' => 'calls_campaigntasks',
+//            'source' => 'non-db',
+//            'module' => 'Calls'
+//        ],
         'eventregistrations' => [
             'name' => 'eventregistrations',
             'vname' => 'LBL_EVENTREGISTRATOINS_LINK',
