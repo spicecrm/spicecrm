@@ -1207,38 +1207,38 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
 //
 //}
 // CR1000333
-if (file_exists('extensions/modules/SystemDeploymentReleases/SystemDeploymentRelease.php')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['systemdeploymentreleases'] = [
-        'vname' => 'LBL_SYSTEMDEPLOYMENTRELEASES',
-        'name' => 'systemdeploymentreleases',
-        'type' => 'link',
-        'module' => 'SystemDeploymentReleases',
-        'bean_name' => 'SystemDeploymentRelease',
-        'relationship' => 'systemdeploymentreleases_users',
-        'source' => 'non-db'
-    ];
-}
-if (file_exists('extensions/modules/SystemDeploymentCRs/SystemDeploymentCR.php')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['cr_user_role'] = [
-        'vname' => 'LBL_ROLE',
-        'name' => 'cr_user_role',
-        'type' => 'multienum',
-        'options' => 'cruser_role_dom',
-        'source' => 'non-db',
-        'comment' => 'representation of user_role column in join table systemdeploymentcrs_users'
-    ];
-    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['systemdeploymentcrs'] = [
-        'name' => 'systemdeploymentcrs',
-        'type' => 'link',
-        'relationship' => 'systemdeploymentcrs_users',
-        'source' => 'non-db',
-        'vname' => 'LBL_SYSTEMDEPLOYMENTCRS',
-        'module' => 'SystemDeploymentCRs',
-        'default' => false,
-        'comment' => '',
-    ];
-
-}
+//if (file_exists('extensions/modules/SystemDeploymentReleases/SystemDeploymentRelease.php')) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['systemdeploymentreleases'] = [
+//        'vname' => 'LBL_SYSTEMDEPLOYMENTRELEASES',
+//        'name' => 'systemdeploymentreleases',
+//        'type' => 'link',
+//        'module' => 'SystemDeploymentReleases',
+//        'bean_name' => 'SystemDeploymentRelease',
+//        'relationship' => 'systemdeploymentreleases_users',
+//        'source' => 'non-db'
+//    ];
+//}
+//if (file_exists('extensions/modules/SystemDeploymentCRs/SystemDeploymentCR.php')) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['cr_user_role'] = [
+//        'vname' => 'LBL_ROLE',
+//        'name' => 'cr_user_role',
+//        'type' => 'multienum',
+//        'options' => 'cruser_role_dom',
+//        'source' => 'non-db',
+//        'comment' => 'representation of user_role column in join table systemdeploymentcrs_users'
+//    ];
+//    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['systemdeploymentcrs'] = [
+//        'name' => 'systemdeploymentcrs',
+//        'type' => 'link',
+//        'relationship' => 'systemdeploymentcrs_users',
+//        'source' => 'non-db',
+//        'vname' => 'LBL_SYSTEMDEPLOYMENTCRS',
+//        'module' => 'SystemDeploymentCRs',
+//        'default' => false,
+//        'comment' => '',
+//    ];
+//
+//}
 if (file_exists("modules/ServiceTickets")) {
     SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['servicetickets'] = [
         'name' => 'servicetickets',
