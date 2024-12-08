@@ -5,7 +5,6 @@ namespace SpiceCRM\includes\SpiceDictionary;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
-use SpiceCRM\includes\ErrorHandlers\Exception;
 
 class SpiceDictionaryRelationship
 {
@@ -89,8 +88,8 @@ class SpiceDictionaryRelationship
 
         // check if left or right is a template ... if it is do not activate
         $activated = false;
-        if((!$this->relationship->lhs_sysdictionarydefinition_id || (new SpiceDictionaryDefinition($this->relationship->lhs_sysdictionarydefinition_id))->type != 'template') && (!$this->relationship->rhs_sysdictionarydefinition_id || (new SpiceDictionaryDefinition($this->relationship->rhs_sysdictionarydefinition_id))->type != 'template')) {
-            $activated = (new $relType['class']((array) $this->relationship))->activate($this);
+        if((!$this->relationship->lhs_sysdictionarydefinition_id || (new SpiceDictionaryDefinition($this->relationship->lhs_sysdictionarydefinition_id, false))->type != 'template') && (!$this->relationship->rhs_sysdictionarydefinition_id || (new SpiceDictionaryDefinition($this->relationship->rhs_sysdictionarydefinition_id, false))->type != 'template')) {
+            $activated = (new $relType['class']((array)$this->relationship))->activate($this);
         }
 
         // set the status
