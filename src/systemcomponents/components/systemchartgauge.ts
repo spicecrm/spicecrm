@@ -124,17 +124,17 @@ export class SystemChartGauge implements AfterViewInit, AfterContentInit {
         if(this.green) {
             options.greenFrom = this.green.from;
             options.greenTo = this.green.to;
-            if(this.green.color) options.greenColor = this.green.color;
+            options.greenColor = this.green.color ?? '#2e844a';
         }
         if(this.yellow) {
             options.yellowFrom = this.yellow.from;
             options.yellowTo = this.yellow.to;
-            if(this.yellow.color) options.yellowColor = this.yellow.color;
+            options.yellowColor = this.yellow.color ?? '#fe9339';
         }
         if(this.red) {
             options.redFrom = this.red.from;
             options.redTo = this.red.to;
-            if(this.red.color) options.redColor = this.red.color;
+            options.redColor = this.red.color ?? '#ea001e';
         }
         return options
     }
