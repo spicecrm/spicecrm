@@ -37,6 +37,7 @@
 /** @var string $object_name */
 /** @var string $module */
 
+/* migrated
 $vardefs = [
     'fields' => [
         'salutation' => [
@@ -634,3 +635,4 @@ $vardefs = [
     ]
 ];
 ?>
+*/
