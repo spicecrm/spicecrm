@@ -435,4 +435,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
     'indices' => []
 ];
 
-VardefManager::createVardef('CampaignTasks', 'CampaignTask', ['default', 'assignable']);
+//VardefManager::createVardef('CampaignTasks', 'CampaignTask', ['default', 'assignable']);

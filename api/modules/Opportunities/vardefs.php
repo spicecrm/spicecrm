@@ -625,7 +625,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
 , 'optimistic_locking' => true,
 ];
 
-VardefManager::createVardef('Opportunities', 'Opportunity', ['default', 'assignable']);
+//VardefManager::createVardef('Opportunities', 'Opportunity', ['default', 'assignable']);
 
 if(file_exists('extensions/modules/SalesDocs')) {
     SpiceDictionaryHandler::getInstance()->dictionary['Opportunity']['fields']['salesdocs'] = [

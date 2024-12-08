@@ -1084,7 +1084,7 @@ if (file_exists('extensions/modules/Potentials')) {
         'vname' => 'LBL_POTENTIALS',
     ];
 }
-VardefManager::createVardef('Contacts', 'Contact', ['default', 'assignable', 'person']);
+//VardefManager::createVardef('Contacts', 'Contact', ['default', 'assignable', 'person']);
 
 SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['primary_address_reference_id'] = [
     'name' => 'primary_address_reference_id',

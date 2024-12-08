@@ -381,7 +381,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket'] = [
     ]
 ];
 
-VardefManager::createVardef('ServiceTickets', 'ServiceTicket', ['default', 'assignable', 'activities']);
+//VardefManager::createVardef('ServiceTickets', 'ServiceTicket', ['default', 'assignable', 'activities']);
 
 if (file_exists('extensions/modules/ServiceOrders')) {
     SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['serviceorders'] = [
