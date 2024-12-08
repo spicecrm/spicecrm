@@ -51,4 +51,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventCapacityType'] = [
     'indices' => []
 ];
 
-VardefManager::createVardef('EventCapacityTypes', 'EventCapacityType', ['default', 'assignable']);
+//VardefManager::createVardef('EventCapacityTypes', 'EventCapacityType', ['default', 'assignable']);

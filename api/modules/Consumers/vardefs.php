@@ -451,4 +451,4 @@ if (file_exists("modules/ServiceTickets")) {
     ];
 }
 
-VardefManager::createVardef('Consumers', 'Consumer', ['default', 'assignable', 'activities', 'person']);
+//VardefManager::createVardef('Consumers', 'Consumer', ['default', 'assignable', 'activities', 'person']);

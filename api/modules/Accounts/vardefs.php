@@ -895,7 +895,7 @@ if (file_exists("extensions/modules/ProductVariants")) {
     ];
     */
 }
-VardefManager::createVardef('Accounts', 'Account', ['default', 'assignable', 'company']);
+//VardefManager::createVardef('Accounts', 'Account', []);
 
 //jc - adding for refactor for import to not use the required_fields array
 //defined in the field_arrays.php file

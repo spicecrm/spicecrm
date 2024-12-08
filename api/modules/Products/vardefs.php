@@ -446,7 +446,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
     */
 ];
 
-VardefManager::createVardef('Products', 'Product', []);
+//VardefManager::createVardef('Products', 'Product', []);
 
 //if(file_exists('extensions/modules/ProjectWBSs')) {
 //    SpiceDictionaryHandler::getInstance()->dictionary['Product']['fields']['projectwbss'] = [

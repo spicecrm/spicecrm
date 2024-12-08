@@ -375,4 +375,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['Document'] = [
     ]
 ];
 
-VardefManager::createVardef('Documents', 'Document', ['default', 'assignable']);
+//VardefManager::createVardef('Documents', 'Document', ['default', 'assignable']);

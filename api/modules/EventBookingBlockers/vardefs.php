@@ -125,7 +125,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventBookingBlocker'] = [
     ]
 ];
 
-VardefManager::createVardef('EventBookingBlockers', 'EventBookingBlocker', ['default', 'assignable']);
+//VardefManager::createVardef('EventBookingBlockers', 'EventBookingBlocker', ['default', 'assignable']);
 
 
 SpiceDictionaryHandler::getInstance()->dictionary['EventBookingBlocker']['fields']['name'] = [

@@ -478,7 +478,7 @@ if(file_exists('extensions/modules/ProjectWBSs')) {
     ];
 }
 
-VardefManager::createVardef('Projects', 'Project', ['default', 'assignable']);
+//VardefManager::createVardef('Projects', 'Project', ['default', 'assignable']);
 
 // CR1000336
 if (file_exists('extensions/modules/SystemDeploymentReleases')) {

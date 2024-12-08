@@ -145,4 +145,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['ScrumUserStory'] = [
     ],
 ];
 // default (Basic) fields & assignable (implements->assigned fields)
-VardefManager::createVardef('ScrumUserStories', 'ScrumUserStory', ['default', 'assignable']);
+//VardefManager::createVardef('ScrumUserStories', 'ScrumUserStory', ['default', 'assignable']);

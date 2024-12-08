@@ -82,6 +82,9 @@ class SpiceDictionaryDefinition
 
         // merge the remaining fields
         foreach ($vardefDetails['fields'] as $fieldName => $definition) {
+
+            if(!$definition['name'] || !$definition['type']) continue;
+
             // write to the cached fields
             $sysDictionaryField = [
                 'id' => SpiceUtils::createGuid(),
@@ -89,7 +92,7 @@ class SpiceDictionaryDefinition
                 'sysdictionarytablename' => $this->tablename,
                 'sysdictionarytableaudited' => $this->definition->audited,
                 'sysdictionarydefinition_id' => $this->id,
-                'fieldname' => $definition['name'],
+                'fieldname' => $definition['name'] ?: $fieldName,
                 'fieldtype' => $definition['type'],
                 'fielddefinition' => json_encode($definition)
             ];

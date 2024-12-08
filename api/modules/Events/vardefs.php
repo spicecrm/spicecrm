@@ -281,4 +281,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['Event'] = [
     ]
 ];
 
-VardefManager::createVardef('Events', 'Event', ['default', 'assignable', 'activities']);
+//VardefManager::createVardef('Events', 'Event', ['default', 'assignable', 'activities']);
