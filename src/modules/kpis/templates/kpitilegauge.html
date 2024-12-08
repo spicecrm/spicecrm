@@ -25,8 +25,8 @@
             @if(loading || kpiTargetValue) {
                 <div class="slds-grid">
                     <div *ngIf="this.kpiTarget.target" style="width: 100px" class="slds-border--right slds-m-right--x-small">
-                        <system-chart-gauge padding="none" *ngIf="!loading" [min]="kpiTarget.min_value" [max]="maxValue" [red]="getRange('red')" [yellow]="getRange('yellow')" [green]="getRange('green')">
-                            <system-chart-data-row [value]="kpiTargetValue.kpi_value" label=""/>
+                        <system-chart-gauge padding="none" *ngIf="!loading" [min]="valueToPercentage(kpiTarget.min_value)" [max]="valueToPercentage(maxValue)" [red]="getRange('red')" [yellow]="getRange('yellow')" [green]="getRange('green')">
+                            <system-chart-data-row [value]="valueToPercentage(kpiTargetValue.kpi_value)" label=""/>
                         </system-chart-gauge>
                     </div>
                     <div class="slds-grow">

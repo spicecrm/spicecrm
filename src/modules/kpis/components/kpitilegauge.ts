@@ -2,7 +2,6 @@ import {Component, Injector, Input, OnInit} from '@angular/core';
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 import {backend} from "../../../services/backend.service";
-import moment from "moment";
 import {KpiTile} from "./kpitile";
 
 @Component({
@@ -44,11 +43,6 @@ export class KpiTileGauge extends KpiTile implements OnInit {
     public percentage: string = '';
 
     /**
-     * a now moment object
-     */
-    public now = moment();
-
-    /**
      * added kpi target values
      */
     public addValues: any[] = [];
@@ -74,6 +68,10 @@ export class KpiTileGauge extends KpiTile implements OnInit {
         return max;
     }
 
+    public valueToPercentage(value){
+        return this.kpiTarget.target ? Math.round(value / this.kpiTarget.target * 100) : 0;
+    }
+
     public getRange(color: 'green'|'yellow'|'red'){
         let from = 0;
         let to = 0;
@@ -81,20 +79,20 @@ export class KpiTileGauge extends KpiTile implements OnInit {
         switch(color){
             case 'red':
                 if(this.kpiTarget.lower_boundary != 0){
-                    from = this.kpiTarget.min_value ?? 0;
-                    to = this.kpiTarget.lower_boundary;
+                    from = this.valueToPercentage(this.kpiTarget.min_value) ?? 0;
+                    to = this.valueToPercentage(this.kpiTarget.lower_boundary);
                 }
                 break;
             case 'yellow':
                 if(this.kpiTarget.upper_boundary != 0){
-                    from = this.kpiTarget.lower_boundary ?? this.kpiTarget.min_value ?? 0;
-                    to = this.kpiTarget.upper_boundary;
+                    from = this.valueToPercentage(this.kpiTarget.lower_boundary) ?? this.valueToPercentage(this.kpiTarget.min_value) ?? 0;
+                    to = this.valueToPercentage(this.kpiTarget.upper_boundary);
                 }
                 break;
             case 'green':
                 if(this.kpiTarget.upper_boundary != 0){
-                    from = this.kpiTarget.upper_boundary;
-                    to = this.maxValue ? this.maxValue : undefined;
+                    from = this.valueToPercentage(this.kpiTarget.upper_boundary);
+                    to = this.valueToPercentage(this.maxValue) ? this.valueToPercentage(this.maxValue) : undefined;
                 }
                 break;
         }
