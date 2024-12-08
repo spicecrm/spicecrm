@@ -378,4 +378,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
     ]
 ];
 
-VardefManager::createVardef('ProspectLists', 'ProspectList', ['assignable', 'default']);
+//VardefManager::createVardef('ProspectLists', 'ProspectList', ['assignable', 'default']);

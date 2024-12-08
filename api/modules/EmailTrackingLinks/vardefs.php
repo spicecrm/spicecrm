@@ -92,4 +92,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTrackingLink'] = [
 
 ];
 
-VardefManager::createVardef('EmailTrackingLinks', 'EmailTrackingLink', ['default', 'assignable']);
+//VardefManager::createVardef('EmailTrackingLinks', 'EmailTrackingLink', ['default', 'assignable']);

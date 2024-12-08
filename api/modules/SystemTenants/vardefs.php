@@ -125,4 +125,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
     ]
 ];
 
-VardefManager::createVardef('SystemTenants', 'SystemTenant', ['default', 'assignable']);
+//VardefManager::createVardef('SystemTenants', 'SystemTenant', ['default', 'assignable']);
