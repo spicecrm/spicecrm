@@ -28,7 +28,7 @@
                         <div class="slds-truncate slds-text-heading_large" [ngClass]="textColor">
                             @if (!loading) {
                                 @if (kpiTargetValue) {
-                                    <system-display-number [number]="kpiTargetValue.kpi_value" [precision]="precision"/>
+                                    <system-display-number system-display-number-large-numbers [number]="kpiTargetValue.kpi_value" [precision]="precision"/><span style="font-size: 75%"> {{this.kpiTarget.kpi.metric}}</span>
                                 } @else {
                                     ---
                                 }
@@ -38,9 +38,9 @@
                                 </div>
                             }
                         </div>
-                        <div class="slds-truncate slds-text-heading_small slds-p-horizontal--xx-small slds-m-top--small">
+                        <!--div class="slds-truncate slds-text-heading_small slds-p-horizontal--xx-small slds-m-top--small">
                             {{ this.kpiTarget.kpi.metric }}
-                        </div>
+                        </div-->
                         <div class="slds-truncate slds-text-heading_small slds-p-horizontal--xx-small slds-m-top--small slds-grid slds-grid--vertical-align-center">
                             @if (!loading) {
                                 @if (kpiTargetValue) {
@@ -70,8 +70,7 @@
                             </div>
                         }
                     </div>
-                    <div *ngIf="addValues.length == 0" class="slds-line-clamp_x-small slds-truncate"
-                         style="min-height: 44px;">
+                    <div *ngIf="addValues.length == 0" class="slds-line-clamp_x-small slds-truncate" style="min-height: 44px;">
                         <span>{{ kpiTarget.kpi.description }}</span>
                     </div>
                 </div>
@@ -80,14 +79,13 @@
                         @for (addValue of addValues; track $index) {
                             <div class="slds-text-align--center slds-p-bottom--xx-small slds-p-horizontal--xx-small"
                                  [ngClass]="addValueClasses($index)">
-                                <system-label class="slds-text-body--small slds-text-color--inverse-weak"
-                                              [label]="addValue.valueLabel"/>
+                                <system-label class="slds-text-body--small slds-text-color--inverse-weak" [label]="addValue.valueLabel"/>
                                 <div class="slds-grid slds-grid--align-center">
                                     <h2 class="slds-text-heading_small slds-truncate">
                                         @if (loading) {
                                             <system-stencil/>
                                         } @else {
-                                            <system-display-number [number]="addValue.kpiValueAdd" precision="0"/>
+                                            <system-display-number system-display-number-large-numbers [number]="addValue.kpiValueAdd" precision="0"/>
                                         }
                                     </h2>
                                     <span class="slds-text-body_small slds-align-bottom slds-p-left--xxx-small">{{ addValue?.valueMetric }}</span>
