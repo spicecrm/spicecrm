@@ -250,20 +250,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             ]
         ],
         */
-        'campaigns' => [
-            'name' => 'campaigns',
-            'type' => 'link',
-            'vname' => 'LBL_CAMPAIGNS',
-            'relationship' => 'prospect_list_campaigns',
-            'source' => 'non-db',
-        ],
-        'campaigntasks' => [
-            'name' => 'campaigntasks',
-            'type' => 'link',
-            'vname' => 'LBL_CAMPAIGNTASKS',
-            'relationship' => 'prospect_list_campaigntasks',
-            'source' => 'non-db',
-        ],
+//        'campaigns' => [
+//            'name' => 'campaigns',
+//            'type' => 'link',
+//            'vname' => 'LBL_CAMPAIGNS',
+//            'relationship' => 'prospect_list_campaigns',
+//            'source' => 'non-db',
+//        ],
+//        'campaigntasks' => [
+//            'name' => 'campaigntasks',
+//            'type' => 'link',
+//            'vname' => 'LBL_CAMPAIGNTASKS',
+//            'relationship' => 'prospect_list_campaigntasks',
+//            'source' => 'non-db',
+//        ],
         /*
         'users' => [
             'name' => 'users',
@@ -378,4 +378,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
     ]
 ];
 
-VardefManager::createVardef('ProspectLists', 'ProspectList', ['assignable', 'default']);
+//VardefManager::createVardef('ProspectLists', 'ProspectList', ['assignable', 'default']);

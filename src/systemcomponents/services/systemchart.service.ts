@@ -30,7 +30,7 @@ export class SystemChartService {
      * holds the chart container
      * @private
      */
-    private options: GoogleChartOptionsI;
+    private options: GoogleChartOptionsI | any;
     /**
      * google chart type
      */
@@ -56,26 +56,60 @@ export class SystemChartService {
     public loadChart(chartContainer: HTMLElement, chartType: GoogleChartTypeOneDimensional | GoogleChartTypeMultiDimensional, options: GoogleChartOptionsI, data: GoogleChartDataI) {
 
         this.chartContainer = chartContainer;
-        this.options = {
-            legend: options.legend ?? {position: 'none'},
-            colors: options.colors,
-            fontSize: options.fontSize ?? 11,
-            isStacked: options.isStacked,
-            is3D: options.is3D,
-            animation: {startup: true, duration: 1000}
-        };
+        switch(chartType){
+            case 'Gauge':
+                this.options = options;
+                break;
+            default:
+                this.options = {
+                    legend: options.legend ?? {position: 'none'},
+                    colors: options.colors,
+                    fontSize: options.fontSize ?? 11,
+                    isStacked: options.isStacked,
+                    is3D: options.is3D,
+                    animation: {startup: true, duration: 1000}
+                };
+                break;
+        }
+
         this.chartType = chartType;
         this.data = data;
 
         this.libLoader.loadLib('googlecharts').subscribe(
             () => {
                 this.zone.runOutsideAngular(() => {
-                    google.charts.load('current', {packages: ['corechart']});
+                    google.charts.load('current', {packages: ['corechart', 'gauge']});
                     google.charts.setOnLoadCallback(() => this.renderChart());
-
                 });
             });
     }
+
+    /**
+     * load the Google chart library
+     */
+    /*
+    public loadGauge(chartContainer: HTMLElement, options: any, data: GoogleChartDataI) {
+
+        this.chartContainer = chartContainer;
+        this.options = {
+            width: 400, height: 120,
+            redFrom: 90, redTo: 100,
+            yellowFrom:75, yellowTo: 90,
+            minorTicks: 5
+        };
+        this.chartType = 'Gauge';
+        this.data = data;
+
+        this.libLoader.loadLib('googlecharts').subscribe(
+            () => {
+                this.zone.runOutsideAngular(() => {
+                    google.charts.load('current', {packages: ['corechart', 'gauge']});
+                    google.charts.setOnLoadCallback(() => this.renderChart());
+                });
+            });
+    }
+    */
+
 
     public setData(data: GoogleChartDataI){
         this.data = data;
@@ -103,7 +137,7 @@ export class SystemChartService {
     private renderChart() {
 
         const data = {
-            chartType: this.chartType + 'Chart',
+            chartType: this.chartType == 'Gauge' ? this.chartType : this.chartType + 'Chart',
             dataTable: this.data,
             options: this.options,
         };
@@ -114,6 +148,28 @@ export class SystemChartService {
         this.addValueClickListener();
 
     }
+
+    /**
+     * render chart from data
+     * @private
+     */
+    /*
+    private renderGauge() {
+
+        const data = google.visualization.arrayToDataTable([
+            ['Label', 'Value'],
+            ['Memory', 80],
+            ['CPU', 55],
+            ['Network', 68]
+        ]);
+
+        let chart = new google.visualization.Gauge(this.chartContainer);
+
+        chart.draw(data, this.options);
+
+    }
+
+     */
 
     /**
      * add select listener on values and emit the selected SystemChartOneDimensionalValue index

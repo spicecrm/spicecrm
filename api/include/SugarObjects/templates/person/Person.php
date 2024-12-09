@@ -3,15 +3,14 @@
 namespace SpiceCRM\includes\SugarObjects\templates\person;
 
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
-use SpiceCRM\includes\SugarObjects\templates\basic\Basic;
 use SpiceCRM\includes\SugarObjects\traits\letterSalutationTrait;
-use SpiceCRM\includes\Localization\Localization;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 
-class Person extends Basic
+class Person extends SpiceBean
 {
     // adds the letter salutation functions
     use letterSalutationTrait;

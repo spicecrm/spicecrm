@@ -85,4 +85,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['Folder'] = [
     ]
 ];
 
-VardefManager::createVardef('Folders', 'Folder', ['default', 'assignable']);
+//VardefManager::createVardef('Folders', 'Folder', ['default', 'assignable']);
