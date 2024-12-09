@@ -81,14 +81,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
             'module' => 'Users',
             'source' => 'non-db'
         ],
-        'deploymentpackages' => [
-            'name'         => 'deploymentpackages',
-            'vname'        => 'LBL_SYSTEMDEPLOYMENTPACKAGES',
-            'type'         => 'link',
-            'module'       => 'SystemDeploymentPackages',
-            'source'       => 'non-db',
-            'relationship' => 'tenants_deploymentpackages',
-        ],
+//        'deploymentpackages' => [
+//            'name'         => 'deploymentpackages',
+//            'vname'        => 'LBL_SYSTEMDEPLOYMENTPACKAGES',
+//            'type'         => 'link',
+//            'module'       => 'SystemDeploymentPackages',
+//            'source'       => 'non-db',
+//            'relationship' => 'tenants_deploymentpackages',
+//        ],
         'companycode_id' => [
             'name'  => 'companycode_id',
             'vname' => 'LBL_COMPANYCODE_ID',
@@ -125,4 +125,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
     ]
 ];
 
-VardefManager::createVardef('SystemTenants', 'SystemTenant', ['default', 'assignable']);
+//VardefManager::createVardef('SystemTenants', 'SystemTenant', ['default', 'assignable']);

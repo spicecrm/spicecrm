@@ -4,34 +4,28 @@
     </system-modal-header>
     <system-modal-content>
         <div class="slds-height_full">
-            <div class="slds-grid slds-grid--vertical-align-center">
-                <div *ngIf="editMode === 'all'" class="slds-form-element__control">
-                    <label class="slds-form-element__label">
-                        <system-label label="LBL_SCOPE"></system-label>
-                    </label>
-                    <system-input-radio-button-group [(ngModel)]="newComponent.scope" [inputOptions]="radioOptions" [disabled]="!!newComponent.id"></system-input-radio-button-group>
-                </div>
-            </div>
-            <div class="slds-grid">
-                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+            <div class="slds-form-element__control slds-size--4-of-4 slds-p-right--xxx-small slds-m-top--x-small slds-grid">
+                <div class="slds-form-element__control slds-size--2-of-4 slds-p-right--xxx-small">
                     <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
                         <system-label label="LBL_ADMIN_ACTION"></system-label>
                     </label>
                     <system-input-text [(ngModel)]="newComponent.adminaction"></system-input-text>
                 </div>
-                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                <div class="slds-form-element__control slds-size--2-of-4 slds-p-right--xxx-small">
                     <label class="slds-form-element__label">
                         <system-label label="LBL_LABEL"></system-label>
                     </label>
                     <system-input-label [(ngModel)]="newComponent.admin_label"></system-input-label>
                 </div>
-                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+            </div>
+            <div class="slds-form-element__control slds-size--4-of-4 slds-p-right--xxx-small slds-m-top--x-small slds-grid">
+                <div class="slds-form-element__control slds-size--2-of-4 slds-p-right--xxx-small">
                     <label class="slds-form-element__label">
                         <system-label label="LBL_COMPONENT"></system-label>
                     </label>
                     <system-input-text [(ngModel)]="newComponent.component"/>
                 </div>
-                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                <div class="slds-form-element__control slds-size--2-of-4 slds-p-right--xxx-small">
                     <label class="slds-form-element__label">
                         <system-label label="LBL_ICON"></system-label>
                     </label>
@@ -45,13 +39,13 @@
                 <textarea class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small ng-untouched ng-pristine ng-valid" [(ngModel)]="newComponent.componentconfig" style="min-height: 80px; max-height: 300px; height: 80px;"></textarea>
             </div>
             <div class="slds-grid slds-m-top--small">
-                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                <div class="slds-form-element__control slds-size--2-of-4 slds-p-right--xxx-small">
                     <label class="slds-form-element__label">
                         <system-label label="LBL_PACKAGE"></system-label>
                     </label>
                     <system-input-package [(ngModel)]="newComponent.package"/>
                 </div>
-                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                <div class="slds-form-element__control slds-size--2-of-4 slds-p-right--xxx-small">
                     <label class="slds-form-element__label">
                         <system-label label="LBL_VERSION"></system-label>
                     </label>
