@@ -58,11 +58,11 @@ export class ObjectPageHeader implements OnInit {
     }
 
     /**
-     * checks if the field "is_inactive" exists on the Bean
+     * checks if the field "is_inactive" exists on the Bean & it's not hidden
      * if true the ObjectSetInactiveIcon is displayed
      */
     get hasInactiveFieldProperty(): boolean {
-        return this.metadata.hasField(this.model._module, 'is_inactive');
+        return this.metadata.hasField(this.model._module, 'is_inactive') && !this.model.getFieldStati('is_inactive').hidden;
     }
 
     /**
