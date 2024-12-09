@@ -51,4 +51,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['UserQuota'] = [
     ]
 ];
 
-VardefManager::createVardef('UserQuotas', 'UserQuota', ['default', 'assignable']);
+//VardefManager::createVardef('UserQuotas', 'UserQuota', ['default', 'assignable']);
