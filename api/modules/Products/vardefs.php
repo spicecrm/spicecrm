@@ -446,15 +446,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
     */
 ];
 
-VardefManager::createVardef('Products', 'Product', []);
+//VardefManager::createVardef('Products', 'Product', []);
 
-if(file_exists('extensions/modules/ProjectWBSs')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Product']['fields']['projectwbss'] = [
-        'name' => 'projectwbss',
-        'type' => 'link',
-        'relationship' => 'projectwbss_products',
-        'module' => 'ProjectWBSs',
-        'source' => 'non-db',
-        'vname' => 'LBL_PROJECTWBSS',
-    ];
-}
+//if(file_exists('extensions/modules/ProjectWBSs')) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['Product']['fields']['projectwbss'] = [
+//        'name' => 'projectwbss',
+//        'type' => 'link',
+//        'relationship' => 'projectwbss_products',
+//        'module' => 'ProjectWBSs',
+//        'source' => 'non-db',
+//        'vname' => 'LBL_PROJECTWBSS',
+//    ];
+//}
