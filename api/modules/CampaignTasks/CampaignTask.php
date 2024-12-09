@@ -554,16 +554,17 @@ class CampaignTask extends SpiceBean
         return true;
     }
 
-    public function getEmailAddress(string $listId, SpiceBean $contact): ?EmailAddress
+    public function getEmailAddress(string $listId, SpiceBean $person): ?EmailAddress
     {
         $db = DBManagerFactory::getInstance();
-        $emailAddrBeanRelId = $db->fetchOne("SELECT email_addr_bean_rel_id from prospect_lists_prospects WHERE prospect_list_id = '$listId' AND related_id ='$contact->id' AND deleted = 0");
+        $emailAddrBeanRelId = $db->getOne("SELECT email_addr_bean_rel_id from prospect_lists_prospects WHERE prospect_list_id = '$listId' AND related_id ='$person->id' AND deleted = 0");
 
-        if(!isset($emailAddrBeanRelId)) {
-            return !$contact->email1 ? null : BeanFactory::newBean('EmailAddresses')->retrieve_by_string_fields(['email_address' => $contact->email1]);
+        // fallback
+        if(empty($emailAddrBeanRelId)) {
+            return !$person->email1 ? null : BeanFactory::newBean('EmailAddresses')->retrieve_by_string_fields(['email_address' => $person->email1]);
         }
 
-        $q = "SELECT eabr.* FROM email_addr_bean_rel eabr where eabr.id ='{$emailAddrBeanRelId['email_addr_bean_rel_id']}' and eabr.bean_id ='$contact->id' and eabr.deleted = 0";
+        $q = "SELECT eabr.* FROM email_addr_bean_rel eabr where eabr.id ='{$emailAddrBeanRelId}' and eabr.bean_id ='$person->id' and eabr.deleted = 0";
         $row = $db->fetchOne($q);
 
         return BeanFactory::getBean('EmailAddresses', $row['email_address_id']);
