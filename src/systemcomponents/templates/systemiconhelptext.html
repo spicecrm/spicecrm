@@ -6,7 +6,7 @@
     </a>
     <div *ngIf="showHelp" class="slds-popover slds-popover_tooltip" role="tooltip" id="help" [ngClass]="{'slds-nubbin_top-left': verticalPositionBottom, 'slds-nubbin_bottom-left': !verticalPositionBottom}" [ngStyle]="verticalPositionBottom ? {'top': bottomdistance, 'left': leftdistance, 'max-width': PopoverMaxWidth} : {'bottom': bottomdistance, 'left': leftdistance, 'max-width': PopoverMaxWidth}" style="position: absolute; display: block; z-index: 50; width: max-content;">
         <div class="slds-popover__body" style="width: 100%">
-            <span style="display: block;white-space:pre-wrap;"><system-label [label]="helpText"/></span>
+            <span style="display: block;white-space:pre-wrap;"><system-label [label]="helpText" length="long"/></span>
         </div>
     </div>
 </div>

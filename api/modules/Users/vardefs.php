@@ -488,57 +488,57 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'vname' => 'LBL_EMPLOYEE'
         ],
-        'calls' => [
-            'name' => 'calls',
-            'type' => 'link',
-            'relationship' => 'calls_users',
-            'source' => 'non-db',
-            'vname' => 'LBL_CALLS'
-        ],
-        'meetings' => [
-            'name' => 'meetings',
-            'type' => 'link',
-            'relationship' => 'meetings_users',
-            'source' => 'non-db',
-            'vname' => 'LBL_MEETINGS'
-        ],
-        'activity_accept_status' => [
-            'name' => 'activity_accept_status',
-            'type' => 'enum',
-            'source' => 'non-db',
-            'vname' => 'LBL_ACTIVITY_ACCEPT_STATUS',
-            'options' => 'dom_meeting_accept_status',
-            'comment' => 'non db field retrieved from the relationship to the meeting call etc'
-        ],
-        'activity_required' => [
-            'name' => 'activity_required',
-            'type' => 'bool',
-            'source' => 'non-db',
-            'vname' => 'LBL_ACTIVITY_REQUIRED',
-            'comment' => 'non db field retrieved from the relationship to the meeting call etc'
-        ],
+//        'calls' => [
+//            'name' => 'calls',
+//            'type' => 'link',
+//            'relationship' => 'calls_users',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CALLS'
+//        ],
+//        'meetings' => [
+//            'name' => 'meetings',
+//            'type' => 'link',
+//            'relationship' => 'meetings_users',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_MEETINGS'
+//        ],
+//        'activity_accept_status' => [
+//            'name' => 'activity_accept_status',
+//            'type' => 'enum',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_ACTIVITY_ACCEPT_STATUS',
+//            'options' => 'dom_meeting_accept_status',
+//            'comment' => 'non db field retrieved from the relationship to the meeting call etc'
+//        ],
+//        'activity_required' => [
+//            'name' => 'activity_required',
+//            'type' => 'bool',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_ACTIVITY_REQUIRED',
+//            'comment' => 'non db field retrieved from the relationship to the meeting call etc'
+//        ],
         // CR1000356
-        'meeting_user_status_accept' => [
-            'name' => 'meeting_user_status_accept',
-            'vname' => 'LBL_USER_STATUS_ACCEPT',
-            'type' => 'link',
-            'source' => 'non-db',
-            'relationship' => 'meetings_users_status_accept',
-        ],
-        'meeting_user_status_decline' => [
-            'name' => 'meeting_status_decline',
-            'vname' => 'LBL_USER_STATUS_DECLINE',
-            'type' => 'link',
-            'source' => 'non-db',
-            'relationship' => 'meetings_users_status_decline',
-        ],
-        'meeting_user_status_tentative' => [
-            'name' => 'meeting_user_status_tentative',
-            'vname' => 'LBL_USER_STATUS_TENTATIVE',
-            'type' => 'link',
-            'source' => 'non-db',
-            'relationship' => 'meetings_users_status_tentative',
-        ],
+//        'meeting_user_status_accept' => [
+//            'name' => 'meeting_user_status_accept',
+//            'vname' => 'LBL_USER_STATUS_ACCEPT',
+//            'type' => 'link',
+//            'source' => 'non-db',
+//            'relationship' => 'meetings_users_status_accept',
+//        ],
+//        'meeting_user_status_decline' => [
+//            'name' => 'meeting_status_decline',
+//            'vname' => 'LBL_USER_STATUS_DECLINE',
+//            'type' => 'link',
+//            'source' => 'non-db',
+//            'relationship' => 'meetings_users_status_decline',
+//        ],
+//        'meeting_user_status_tentative' => [
+//            'name' => 'meeting_user_status_tentative',
+//            'vname' => 'LBL_USER_STATUS_TENTATIVE',
+//            'type' => 'link',
+//            'source' => 'non-db',
+//            'relationship' => 'meetings_users_status_tentative',
+//        ],
         'call_user_status_accept' => [
             'name' => 'call_user_status_accept',
             'vname' => 'LBL_USER_STATUS_ACCEPT',
@@ -569,14 +569,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'vname' => 'LBL_TASKS'
         ],
-        'contacts_sync' => [
-            'name' => 'contacts_sync',
-            'type' => 'link',
-            'relationship' => 'contacts_users',
-            'source' => 'non-db',
-            'vname' => 'LBL_CONTACTS_SYNC',
-            'reportable' => false,
-        ],
+//        'contacts_sync' => [
+//            'name' => 'contacts_sync',
+//            'type' => 'link',
+//            'relationship' => 'contacts_users',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CONTACTS_SYNC',
+//            'reportable' => false,
+//        ],
         'reports_to_id' => [
             'name' => 'reports_to_id',
             'vname' => 'LBL_REPORTS_TO_ID',
@@ -753,48 +753,48 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'type' => 'bool',
         ],
         /* to support Meetings SubPanels */
-        'c_accept_status_fields' => [
-            'name' => 'c_accept_status_fields',
-            'rname' => 'id',
-            'relationship_fields' => [
-                'id' => 'accept_status_id',
-                'accept_status' => 'accept_status_name'
-            ],
-            'vname' => 'LBL_LIST_ACCEPT_STATUS',
-            'type' => 'relate',
-            'link' => 'calls',
-            'link_type' => 'relationship_info',
-            'source' => 'non-db',
-            'importable' => 'false',
-        ],
-        'm_accept_status_fields' => [
-            'name' => 'm_accept_status_fields',
-            'rname' => 'id',
-            'relationship_fields' => [
-                'id' => 'accept_status_id',
-                'accept_status' => 'accept_status_name'
-            ],
-            'vname' => 'LBL_LIST_ACCEPT_STATUS',
-            'type' => 'relate',
-            'link' => 'meetings',
-            'link_type' => 'relationship_info',
-            'source' => 'non-db',
-            'importable' => 'false',
-        ],
-        'accept_status_id' => [
-            'name' => 'accept_status_id',
-            'type' => 'varchar',
-            'source' => 'non-db',
-            'vname' => 'LBL_LIST_ACCEPT_STATUS',
-            'importable' => 'false',
-        ],
-        'accept_status_name' => [
-            'name' => 'accept_status_name',
-            'type' => 'enum',
-            'source' => 'non-db',
-            'vname' => 'LBL_LIST_ACCEPT_STATUS',
-            'options' => 'dom_meeting_accept_status',
-        ],
+//        'c_accept_status_fields' => [
+//            'name' => 'c_accept_status_fields',
+//            'rname' => 'id',
+//            'relationship_fields' => [
+//                'id' => 'accept_status_id',
+//                'accept_status' => 'accept_status_name'
+//            ],
+//            'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//            'type' => 'relate',
+//            'link' => 'calls',
+//            'link_type' => 'relationship_info',
+//            'source' => 'non-db',
+//            'importable' => 'false',
+//        ],
+//        'm_accept_status_fields' => [
+//            'name' => 'm_accept_status_fields',
+//            'rname' => 'id',
+//            'relationship_fields' => [
+//                'id' => 'accept_status_id',
+//                'accept_status' => 'accept_status_name'
+//            ],
+//            'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//            'type' => 'relate',
+//            'link' => 'meetings',
+//            'link_type' => 'relationship_info',
+//            'source' => 'non-db',
+//            'importable' => 'false',
+//        ],
+//        'accept_status_id' => [
+//            'name' => 'accept_status_id',
+//            'type' => 'varchar',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//            'importable' => 'false',
+//        ],
+//        'accept_status_name' => [
+//            'name' => 'accept_status_name',
+//            'type' => 'enum',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//            'options' => 'dom_meeting_accept_status',
+//        ],
         'prospect_lists' => [
             'name' => 'prospect_lists',
             'type' => 'link',
@@ -925,16 +925,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'type' => 'parent',
             'source' => 'non-db',
         ],
-        // service orders many to many
-        'serviceorders' => [
-            'name' => 'serviceorders',
-            'type' => 'link',
-            'relationship' => 'serviceorders_users',
-            'module' => 'ServiceOrders',
-            'bean_name' => 'ServiceOrder',
-            'source' => 'non-db',
-            'vname' => 'LBL_SERVICEORDERS'
-        ],
+//        // service orders many to many
+//        'serviceorders' => [
+//            'name' => 'serviceorders',
+//            'type' => 'link',
+//            'relationship' => 'serviceorders_users',
+//            'module' => 'ServiceOrders',
+//            'bean_name' => 'ServiceOrder',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_SERVICEORDERS'
+//        ],
         'serviceorder_user_role' => [
             'name' => 'serviceorder_user_role',
             'vname' => 'LBL_ROLE',
@@ -1055,14 +1055,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db'
         ],
         */
-        'documentrevisions' => [
-            'name' => 'documentrevisions',
-            'type' => 'link',
-            'relationship' => 'users_documentrevisions',
-            'source' => 'non-db',
-            'module' => 'DocumentRevisions',
-            'vname' => 'LBL_DOCUMENTREVISIONS',
-        ],
+//        'documentrevisions' => [
+//            'name' => 'documentrevisions',
+//            'type' => 'link',
+//            'relationship' => 'users_documentrevisions',
+//            'source' => 'non-db',
+//            'module' => 'DocumentRevisions',
+//            'vname' => 'LBL_DOCUMENTREVISIONS',
+//        ],
     ],
     'indices' => [
         [
@@ -1193,52 +1193,52 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
     ]
 ];
 
-//set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
-if (file_exists('extensions/modules/ServiceQueues/ServiceQueue.php')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['servicequeues'] = [
-        'vname' => 'LBL_SERVICEQUEUES',
-        'name' => 'servicequeues',
-        'type' => 'link',
-        'module' => 'ServiceQueues',
-        'bean_name' => 'ServiceQueue',
-        'relationship' => 'servicequeues_users',
-        'source' => 'non-db'
-    ];
-
-}
+////set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
+//if (file_exists('extensions/modules/ServiceQueues/ServiceQueue.php')) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['servicequeues'] = [
+//        'vname' => 'LBL_SERVICEQUEUES',
+//        'name' => 'servicequeues',
+//        'type' => 'link',
+//        'module' => 'ServiceQueues',
+//        'bean_name' => 'ServiceQueue',
+//        'relationship' => 'servicequeues_users',
+//        'source' => 'non-db'
+//    ];
+//
+//}
 // CR1000333
-if (file_exists('extensions/modules/SystemDeploymentReleases/SystemDeploymentRelease.php')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['systemdeploymentreleases'] = [
-        'vname' => 'LBL_SYSTEMDEPLOYMENTRELEASES',
-        'name' => 'systemdeploymentreleases',
-        'type' => 'link',
-        'module' => 'SystemDeploymentReleases',
-        'bean_name' => 'SystemDeploymentRelease',
-        'relationship' => 'systemdeploymentreleases_users',
-        'source' => 'non-db'
-    ];
-}
-if (file_exists('extensions/modules/SystemDeploymentCRs/SystemDeploymentCR.php')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['cr_user_role'] = [
-        'vname' => 'LBL_ROLE',
-        'name' => 'cr_user_role',
-        'type' => 'multienum',
-        'options' => 'cruser_role_dom',
-        'source' => 'non-db',
-        'comment' => 'representation of user_role column in join table systemdeploymentcrs_users'
-    ];
-    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['systemdeploymentcrs'] = [
-        'name' => 'systemdeploymentcrs',
-        'type' => 'link',
-        'relationship' => 'systemdeploymentcrs_users',
-        'source' => 'non-db',
-        'vname' => 'LBL_SYSTEMDEPLOYMENTCRS',
-        'module' => 'SystemDeploymentCRs',
-        'default' => false,
-        'comment' => '',
-    ];
-
-}
+//if (file_exists('extensions/modules/SystemDeploymentReleases/SystemDeploymentRelease.php')) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['systemdeploymentreleases'] = [
+//        'vname' => 'LBL_SYSTEMDEPLOYMENTRELEASES',
+//        'name' => 'systemdeploymentreleases',
+//        'type' => 'link',
+//        'module' => 'SystemDeploymentReleases',
+//        'bean_name' => 'SystemDeploymentRelease',
+//        'relationship' => 'systemdeploymentreleases_users',
+//        'source' => 'non-db'
+//    ];
+//}
+//if (file_exists('extensions/modules/SystemDeploymentCRs/SystemDeploymentCR.php')) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['cr_user_role'] = [
+//        'vname' => 'LBL_ROLE',
+//        'name' => 'cr_user_role',
+//        'type' => 'multienum',
+//        'options' => 'cruser_role_dom',
+//        'source' => 'non-db',
+//        'comment' => 'representation of user_role column in join table systemdeploymentcrs_users'
+//    ];
+//    SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['systemdeploymentcrs'] = [
+//        'name' => 'systemdeploymentcrs',
+//        'type' => 'link',
+//        'relationship' => 'systemdeploymentcrs_users',
+//        'source' => 'non-db',
+//        'vname' => 'LBL_SYSTEMDEPLOYMENTCRS',
+//        'module' => 'SystemDeploymentCRs',
+//        'default' => false,
+//        'comment' => '',
+//    ];
+//
+//}
 if (file_exists("modules/ServiceTickets")) {
     SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['servicetickets'] = [
         'name' => 'servicetickets',

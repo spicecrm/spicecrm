@@ -23,6 +23,7 @@ class Mailbox extends SpiceBean {
 
     const TRANSPORT_EWS            = 'ews';
     const TRANSPORT_MSGRAPH        = 'MSGraph';
+    const TRANSPORT_PERSONAL_MSGRAPH = 'personalMSGraph';
     const TRANSPORT_IMAP           = 'imap';
     const TRANSPORT_MAILGUN        = 'mailgun';
     const TRANSPORT_SENDGRID       = 'sendgrid';
@@ -266,6 +267,7 @@ class Mailbox extends SpiceBean {
             case self::TRANSPORT_MSGRAPH:
                 return (!empty($this->ews_email)) ? $this->ews_email : $this->ews_username;
             case self::TRANSPORT_PERSONAL_EWS:
+            case self::TRANSPORT_PERSONAL_MSGRAPH:
                 $current_user = AuthenticationController::getInstance()->getCurrentUser();
                 return $current_user->user_name;
             case self::TRANSPORT_GMAIL:

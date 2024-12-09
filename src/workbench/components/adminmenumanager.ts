@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, ComponentRef, Injector, OnInit, QueryList,
     ViewChildren} from "@angular/core";
 import {backend} from "../../services/backend.service";
-import {AdminGroupI, AdminComponentI, RoleModuleI} from "../interfaces/systemui.interfaces";
+import {AdminGroupI, AdminComponentI} from "../interfaces/systemui.interfaces";
 import {toast} from "../../services/toast.service";
 import {modal} from "../../services/modal.service";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
@@ -9,14 +9,13 @@ import {forkJoin} from "rxjs";
 import {AdminMenuManagerEditGroupModal} from "./adminmenumanagereditgroupmodal";
 import {AdminMenuManagerEditComponentModal} from "./adminmenumanagereditcomponentmodal";
 import {configurationService} from "../../services/configuration.service";
-import {SystemViewProviderDirective} from "../../directives/directives/systemviewprovider";
 
 
 @Component({
     selector: 'admin-menu-manager',
     templateUrl: '../templates/adminmenumanager.html',
 })
-export class AdminMenuManager implements OnInit {
+export class AdminMenuManager implements OnInit { 
     public adminGroups: AdminGroupI[] = [];
     public selectedAdminGroup: string;
     public adminComponents: AdminComponentI[] = [];
@@ -32,9 +31,7 @@ export class AdminMenuManager implements OnInit {
         {label: 'custom', value: 'custom'},
     ];
     public  selectedScope: string = 'global';
-    @ViewChildren(SystemViewProviderDirective) private viewProviders: QueryList<SystemViewProviderDirective>;
     public editMode: 'all' | 'custom' | 'none';
-    private adminComponentsBackup: { [key: symbol]: AdminComponentI } = {};
 
 
     constructor(private backend: backend,
@@ -44,20 +41,6 @@ export class AdminMenuManager implements OnInit {
                 public configurationService: configurationService,
                 public injector: Injector) {
         this.editMode = this.configurationService.getCapabilityConfig('core').edit_mode;
-    }
-
-    public saveComponentChanges(adminComponent: AdminComponentI, viewProvider: SystemViewProviderDirective) {
-        viewProvider.view.setViewMode();
-        delete this.adminComponentsBackup[adminComponent.id];
-        const table = adminComponent.scope == 'global' ? 'sysuiadmincomponents' : 'sysuicustomadmincomponents';
-        const data = {...adminComponent};
-        delete data.scope;
-
-        this.backend.postRequest(`configuration/configurator/${table}/${adminComponent.id}`, null, {config: data}).subscribe({
-            next: () => {
-                this.toast.sendToast('LBL_DATA_SAVED', 'success');
-            }
-        });
     }
     public deleteAdminComponent(id: string) {
         this.modal.confirm('MSG_DELETE_RECORD', 'MSG_DELETE_RECORD').subscribe({
@@ -79,19 +62,9 @@ export class AdminMenuManager implements OnInit {
         });
     }
 
-    public editAdminComponent(viewProvider: SystemViewProviderDirective, adminComponent: AdminComponentI) {
-        this.adminComponentsBackup[adminComponent.id] = {...adminComponent};
-        viewProvider.view.setEditMode();
-    }
-    public cancelEditing(viewProvider: SystemViewProviderDirective, index: number) {
-
-        if (!this.adminComponents[index].id) {
-            this.adminComponents.splice(index, 1);
-        } else {
-            this.adminComponents[index] = this.adminComponentsBackup[this.adminComponents[index].id];
-        }
-
-        viewProvider.view.setViewMode();
+    public editAdminComponent(id: string) {
+        const adminComponent = this.adminComponents.find(ac => ac.id == id);
+        this.openEditComponentModal(adminComponent);
     }
 
     private openEditComponentModal(component?:AdminComponentI){
@@ -110,7 +83,7 @@ export class AdminMenuManager implements OnInit {
                     icon: '',
                     version: '',
                     package: '',
-                    scope: 'custom',
+                    scope: this.selectedScope,
                     scope_icon: '',
                     sequence: this.adminComponents.length
                 };
@@ -252,7 +225,7 @@ export class AdminMenuManager implements OnInit {
                 label: '',
                 version: '',
                 package: '',
-                scope: 'custom',
+                scope: this.selectedScope,
                 scope_icon: '',
                 sequence: this.adminGroups.length,
             };

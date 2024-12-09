@@ -13,7 +13,7 @@ $RESTManager = RESTManager::getInstance();
 /**
  * register the Extension
  */
-$RESTManager->registerExtension('emails', '1.0');
+$RESTManager->registerExtension('letters', '1.0');
 
 $routes = [
     [
