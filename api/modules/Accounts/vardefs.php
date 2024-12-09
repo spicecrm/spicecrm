@@ -470,13 +470,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'module' => 'AccountCCDetails'
         ],
         */
-        'events_account_role' => [
-            'name' => 'events_account_role',
-            'vname' => 'LBL_ROLE',
-            'type' => 'enum',
-            'source' => 'non-db',
-            'options' => 'events_account_roles_dom'
-        ],
+//        'events_account_role' => [
+//            'name' => 'events_account_role',
+//            'vname' => 'LBL_ROLE',
+//            'type' => 'enum',
+//            'source' => 'non-db',
+//            'options' => 'events_account_roles_dom'
+//        ],
         'location_events' =>
             [
                 'name' => 'location_events',
@@ -497,20 +497,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'source' => 'non-db',
                 'vname' => 'LBL_EVENTBLUEPRINT_LOCATION',
             ],
-        'events' => [
-            'name' => 'events',
-            'type' => 'link',
-            'relationship' => 'events_accounts',
-            'module' => 'Events',
-            'bean_name' => 'Event',
-            'source' => 'non-db',
-            'vname' => 'LBL_EVENT',
-            'rel_fields' => [
-                'account_role' => [
-                    'map' => 'events_account_role'
-                ]
-            ]
-        ],
+//        'events' => [
+//            'name' => 'events',
+//            'type' => 'link',
+//            'relationship' => 'events_accounts',
+//            'module' => 'Events',
+//            'bean_name' => 'Event',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_EVENT',
+//            'rel_fields' => [
+//                'account_role' => [
+//                    'map' => 'events_account_role'
+//                ]
+//            ]
+//        ],
         'prospectlists_accounts_quantity' => [
             'name' => 'prospectlists_accounts_quantity',
             'vname' => 'LBL_QUANTITY',
@@ -560,16 +560,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'default' => false,
             'comment' => 'One-2-many relationship link'
         ],
-        'agreements_rel' => [
-            'name' => 'agreements_rel',
-            'type' => 'link',
-            'relationship' => 'agreements_accounts',
-            'module' => 'Agreements',
-            'bean_name' => 'Agreement',
-            'source' => 'non-db',
-            'vname' => 'LBL_AGREEMENT',
-            'comment' => 'many-2-many relationship link'
-        ],
+//        'agreements_rel' => [
+//            'name' => 'agreements_rel',
+//            'type' => 'link',
+//            'relationship' => 'agreements_accounts',
+//            'module' => 'Agreements',
+//            'bean_name' => 'Agreement',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_AGREEMENT',
+//            'comment' => 'many-2-many relationship link'
+//        ],
 //        'letters' => [
 //            'name' => 'letters',
 //            'type' => 'link',
@@ -895,7 +895,7 @@ if (file_exists("extensions/modules/ProductVariants")) {
     ];
     */
 }
-VardefManager::createVardef('Accounts', 'Account', ['default', 'assignable', 'company']);
+//VardefManager::createVardef('Accounts', 'Account', []);
 
 //jc - adding for refactor for import to not use the required_fields array
 //defined in the field_arrays.php file

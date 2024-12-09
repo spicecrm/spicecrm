@@ -79,6 +79,15 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
     }
 
     /**
+     * attribute to hide time
+     * @param value
+     */
+    private _displayFromNow: boolean = false;
+    @Input('system-display-datetime-fromnow') set setDisplayFromNow(value: boolean) {
+        this._displayFromNow = true;
+    }
+
+    /**
      * holds the components subscriptions
      *
      * @private
@@ -149,16 +158,20 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
         // if we do not have a date or neither date nor time should be displayed return empty
         if (!this.date || (!this.displayDate && !this.displayTime)) return '';
 
-        let formatArray = [];
-        if (this.displayDate) formatArray.push(this.userpreferences.getDateFormat());
-        if (this.displayTime) formatArray.push(this.userpreferences.getTimeFormat());
-
-        if(moment.isMoment(this.date)) {
-            return this.date.format(formatArray.join(' '));
+        if(this._displayFromNow){
+            return this.date.fromNow();
         } else {
+            let formatArray = [];
+            if (this.displayDate) formatArray.push(this.userpreferences.getDateFormat());
+            if (this.displayTime) formatArray.push(this.userpreferences.getTimeFormat());
 
-            // set the Time Zone for the Field Value only if the Time Zone is set
-            return moment.utc(this.date).tz(this.timeZone).format(formatArray.join(' '));
+            if (moment.isMoment(this.date)) {
+                return this.date.format(formatArray.join(' '));
+            } else {
+
+                // set the Time Zone for the Field Value only if the Time Zone is set
+                return moment.utc(this.date).tz(this.timeZone).format(formatArray.join(' '));
+            }
         }
     }
 
