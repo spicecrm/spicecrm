@@ -18,6 +18,16 @@
         </div>
     </div>
     <div class="slds-grid">
+        <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
+            <system-input-package [disabled]="readonly" [(ngModel)]="relationship.package"/>
+        </div>
+        <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
+            <system-input-version [disabled]="readonly" [(ngModel)]="relationship.version"/>
+        </div>
+    </div>
+    <div class="slds-grid">
         <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
             <label class="slds-form-element__label">
                 <system-label label="LBL_LHS_DICTIONARYDEFINITION"></system-label>
