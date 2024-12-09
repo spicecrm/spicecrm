@@ -66,4 +66,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['MarketingAction'] = [
 
 ];
 
-VardefManager::createVardef('MarketingActions', 'MarketingAction', []);
+//VardefManager::createVardef('MarketingActions', 'MarketingAction', []);

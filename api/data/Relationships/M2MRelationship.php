@@ -64,12 +64,11 @@ class M2MRelationship extends Relationship
             $rhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
             $lhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
             $rhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->rhs_sysdictionaryitem_id);
+            $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
+            $rhsField = SpiceDictionaryField::getField($rhsDictionaryitem, $rhsDictionaryDefinition);
         } catch (Exception $e) {
             return false;
         }
-
-        $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
-        $rhsField = SpiceDictionaryField::getField($rhsDictionaryitem, $rhsDictionaryDefinition);
 
         // get the join definitions
         $joinDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->join_sysdictionarydefinition_id);
@@ -124,6 +123,11 @@ class M2MRelationship extends Relationship
                 'duplicate_merge' => $relationship->relationship->lhs_duplicatemerge
             ];
 
+            // set to load default
+            if($relationship->relationship->lhs_linkdefault){
+                $leftFieldDefs['default'] = true;
+            }
+
             // if we are self referencing add the side
             if($lhsDictionaryDefinition == $rhsDictionaryDefinition){
                 $leftFieldDefs['side'] = 'right';
@@ -155,8 +159,13 @@ class M2MRelationship extends Relationship
                 'source' => 'non-db',
                 'module' => $lhsDictionaryDefinition->getModuleName(),
                 'vname' => $relationship->relationship->rhs_linklabel,
-                'duplicate_merge' => $relationship->relationship->lhs_duplicatemerge
+                'duplicate_merge' => $relationship->relationship->rhs_duplicatemerge
             ];
+
+            // set to load default
+            if($relationship->relationship->rhs_linkdefault){
+                $rightFieldDefs['default'] = true;
+            }
 
             // if we are self referencing add the side
             if($lhsDictionaryDefinition == $rhsDictionaryDefinition){
