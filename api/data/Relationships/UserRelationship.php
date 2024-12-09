@@ -29,7 +29,7 @@ class UserRelationship extends One2MBeanRelationship
         // clear current definitions
         $db = DBManagerFactory::getInstance();
         $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}'");
-        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}");
+        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
 
         try {
             $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);

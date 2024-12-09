@@ -209,39 +209,40 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'type' => 'varchar',
             'len' => 36
         ],
-        'events_consumer_role' => [
-            'name' => 'events_consumer_role',
-            'vname' => 'LBL_ROLE',
-            'type' => 'enum',
-            'source' => 'non-db',
-            'options' => 'events_consumer_roles_dom'
-        ],
-        'events' => [
-            'name' => 'events',
-            'type' => 'link',
-            'relationship' => 'events_consumers',
-            'module' => 'Events',
-            'bean_name' => 'Event',
-            'source' => 'non-db',
-            'vname' => 'LBL_EVENT',
-            'rel_fields' => [
-                'consumer_role' => [
-                    'map' => 'events_consumer_role'
-                ]
-            ]
+//        'events_consumer_role' => [
+//            'name' => 'events_consumer_role',
+//            'vname' => 'LBL_ROLE',
+//            'type' => 'enum',
+//            'source' => 'non-db',
+//            'options' => 'events_consumer_roles_dom'
+//        ],
+//        'events' => [
+//            'name' => 'events',
+//            'type' => 'link',
+//            'relationship' => 'events_consumers',
+//            'module' => 'Events',
+//            'bean_name' => 'Event',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_EVENT',
+//            'rel_fields' => [
+//                'consumer_role' => [
+//                    'map' => 'events_consumer_role'
+//                ]
+//            ]
+//        ],
+
+        'eventbookings' => [
+            'name'         => 'eventbookings',
+            'type'         => 'link',
+            'module'       => 'EventBookings',
+            'relationship' => 'consumer_eventbookings',
+            'source'       => 'non-db',
         ],
         'eventbookingblockers' => [
             'name'         => 'eventbookingblockers',
             'type'         => 'link',
             'module'       => 'EventBookingBlockers',
             'relationship' => 'consumer_eventbookingblockers',
-            'source'       => 'non-db',
-        ],
-        'eventbookings' => [
-            'name'         => 'eventbookings',
-            'type'         => 'link',
-            'module'       => 'EventBookings',
-            'relationship' => 'consumer_eventbookings',
             'source'       => 'non-db',
         ],
         'prospectlists_consumer_quantity' => [
@@ -299,21 +300,21 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'relationship' => 'consumer_eventregistrations',
             'source' => 'non-db',
         ],
-        'emails' => [
-            'name' => 'emails',
-            'vname' => 'LBL_EMAILS',
-            'type' => 'link',
-            'relationship' => 'emails_consumers_rel',
-            'module' => 'Emails',
-            'source' => 'non-db',
-        ],
-        'emails_parent' => [
-            'name' => 'emails_parent',
-            'type' => 'link',
-            'relationship' => 'consumer_emails_parent',
-            'source' => 'non-db',
-            'vname' => 'LBL_EMAILS_AS_PARENT',
-        ],
+//        'emails' => [
+//            'name' => 'emails',
+//            'vname' => 'LBL_EMAILS',
+//            'type' => 'link',
+//            'relationship' => 'emails_consumers_rel',
+//            'module' => 'Emails',
+//            'source' => 'non-db',
+//        ],
+//        'emails_parent' => [
+//            'name' => 'emails_parent',
+//            'type' => 'link',
+//            'relationship' => 'consumer_emails_parent',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_EMAILS_AS_PARENT',
+//        ],
         'salesdocsop' => [
             'name' => 'salesdocsop',
             'type' => 'link',
@@ -389,28 +390,28 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'rhs_key' => 'consumer_id',
             'relationship_type' => 'one-to-many'
         ],
-        'consumer_letters' => [
-            'lhs_module' => 'Consumers',
-            'lhs_table' => 'consumers',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Letters',
-            'rhs_table' => 'letters',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Consumers'
-        ],
-        'consumer_emails_parent' => [
-            'lhs_module' => 'Consumers',
-            'lhs_table' => 'consumers',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Emails',
-            'rhs_table' => 'emails',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Consumers'
-        ],
+//        'consumer_letters' => [
+//            'lhs_module' => 'Consumers',
+//            'lhs_table' => 'consumers',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Letters',
+//            'rhs_table' => 'letters',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Consumers'
+//        ],
+//        'consumer_emails_parent' => [
+//            'lhs_module' => 'Consumers',
+//            'lhs_table' => 'consumers',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Emails',
+//            'rhs_table' => 'emails',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Consumers'
+//        ],
     ],
     //This enables optimistic locking for Saves From EditView
     'optimistic_locking' => true,
@@ -451,4 +452,4 @@ if (file_exists("modules/ServiceTickets")) {
     ];
 }
 
-VardefManager::createVardef('Consumers', 'Consumer', ['default', 'assignable', 'activities', 'person']);
+//VardefManager::createVardef('Consumers', 'Consumer', ['default', 'assignable', 'activities', 'person']);
