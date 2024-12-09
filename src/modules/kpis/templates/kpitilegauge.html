@@ -35,7 +35,7 @@
                                 <div class="slds-truncate slds-text-heading_large" [ngClass]="textColor">
                                     @if (!loading) {
                                         @if (kpiTargetValue) {
-                                            <system-display-number system-display-number-large-numbers [number]="kpiTargetValue.kpi_value" [precision]="precision"/><span style="font-size: 75%"> {{this.kpiTarget.kpi.metric}}</span>
+                                            <system-display-number system-display-number-large-numbers [number]="kpiTargetValue.kpi_value" [precision]="precision" [currency_id]="this.kpiTarget.kpi.metric == 'curr' ? '-99' : ''"/> <span *ngIf="this.kpiTarget.kpi.metric != 'curr' && this.kpiTarget.kpi.metric != 'none'" style="font-size: 75%">{{this.kpiTarget.kpi.metric}}</span>
                                         } @else {
                                             ---
                                         }
@@ -92,10 +92,9 @@
                                                 @if (loading) {
                                                     <system-stencil/>
                                                 } @else {
-                                                    <system-display-number [system-display-number-large-numbers]="addValue?.valueMetric != '%'" [number]="addValue.kpiValueAdd" precision="0"/>
+                                                    <system-display-number system-display-number-large-numbers [number]="addValue.kpiValueAdd" precision="0" [currency_id]="addValue?.valueMetric == 'curr' ? '-99' : ''"/> <span *ngIf="addValue?.valueMetric != 'curr' && addValue?.valueMetric != 'none'" style="font-size: 75%">{{addValue?.valueMetric}}</span>
                                                 }
                                             </h2>
-                                            <span class="slds-text-body_small slds-align-bottom slds-p-left--xxx-small">{{ addValue?.valueMetric }}</span>
                                         </div>
                                     </div>
                                 }
