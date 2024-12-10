@@ -2953,7 +2953,7 @@ abstract class DBManager
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $sql = "INSERT INTO " . $bean->get_audit_table_name();
         //get field defs for the audit table.
-        require('metadata/audit_templateMetaData.php');
+        // require('metadata/audit_templateMetaData.php');
         $fieldDefs = SpiceDictionary::getInstance()->dictionary['audit']['fields'];
 
         $values = [];

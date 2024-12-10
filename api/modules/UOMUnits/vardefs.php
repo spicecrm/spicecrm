@@ -115,4 +115,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['UOMUnit'] = [
     */
 ];
 
-VardefManager::createVardef('UOMUnits', 'UOMUnit', []);
+//VardefManager::createVardef('UOMUnits', 'UOMUnit', []);

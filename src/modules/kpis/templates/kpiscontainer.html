@@ -3,13 +3,19 @@
         <div class="slds-box--border slds-p-around--x-small" [ngClass]="{'slds-m-top--x-small': $index > 0}">
             <div class="slds-p-around--x-small slds-media__body slds-truncate">
                 <h2 class="slds-card__header-title">
-                    {{ kpiGroup.name }}
+                    <span>
+                        @if(kpiGroup.display_label){
+                            <system-label [label]="kpiGroup.display_label"/>
+                        } @else {
+                            {{ kpiGroup.name }}
+                        }
+                    </span>
                 </h2>
             </div>
             <div class="slds-p-horizontal--x-small slds-grid slds-wrap slds-gutters_direct-xx-small slds-p-bottom--x-small">
                 @for (kpiTarget of kpiGroup.targets; track kpiTarget.id) {
                     <div class="slds-col" [ngClass]="getTileWidthClass">
-                        <kpi-tile [kpiTarget]="kpiTarget"></kpi-tile>
+                        <system-dynamic-component [component]="kpiTarget.kpi.display_component ?? 'KpiTile'" [componentattributes]="{kpiTarget: kpiTarget}"></system-dynamic-component>
                     </div>
                 }
             </div>
@@ -19,7 +25,7 @@
     <div class="slds-grid slds-wrap slds-gutters_direct-xx-small">
         @for (kpiTarget of otherTargets; track kpiTarget.id) {
             <div class="slds-col" [ngClass]="getTileWidthClass">
-                <kpi-tile [kpiTarget]="kpiTarget"></kpi-tile>
+                <system-dynamic-component [component]="kpiTarget.kpi.display_component ?? 'KpiTile'"  [componentattributes]="{kpiTarget: kpiTarget}"></system-dynamic-component>
             </div>
         }
     </div>

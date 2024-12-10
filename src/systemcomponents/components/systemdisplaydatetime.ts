@@ -75,7 +75,24 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
      * @param value
      */
     @Input('system-display-datetime-show-dayofweek') set setDisplayDayOfWeek(value: boolean) {
-        this.displayDayOfWeek = true;
+        if (value === false) {
+            this.displayDayOfWeek = false;
+        } else {
+            this.displayDayOfWeek = true;
+        }
+    }
+
+    /**
+     * attribute to hide time
+     * @param value
+     */
+    private _displayFromNow: boolean = false;
+    @Input('system-display-datetime-fromnow') set setDisplayFromNow(value: boolean) {
+        if (value === false) {
+            this._displayFromNow = false;
+        } else {
+            this._displayFromNow = true;
+        }
     }
 
     /**
@@ -149,16 +166,20 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
         // if we do not have a date or neither date nor time should be displayed return empty
         if (!this.date || (!this.displayDate && !this.displayTime)) return '';
 
-        let formatArray = [];
-        if (this.displayDate) formatArray.push(this.userpreferences.getDateFormat());
-        if (this.displayTime) formatArray.push(this.userpreferences.getTimeFormat());
-
-        if(moment.isMoment(this.date)) {
-            return this.date.format(formatArray.join(' '));
+        if(this._displayFromNow === true){
+            return this.date.fromNow();
         } else {
+            let formatArray = [];
+            if (this.displayDate) formatArray.push(this.userpreferences.getDateFormat());
+            if (this.displayTime) formatArray.push(this.userpreferences.getTimeFormat());
 
-            // set the Time Zone for the Field Value only if the Time Zone is set
-            return moment.utc(this.date).tz(this.timeZone).format(formatArray.join(' '));
+            if (moment.isMoment(this.date)) {
+                return this.date.format(formatArray.join(' '));
+            } else {
+
+                // set the Time Zone for the Field Value only if the Time Zone is set
+                return moment.utc(this.date).tz(this.timeZone).format(formatArray.join(' '));
+            }
         }
     }
 
