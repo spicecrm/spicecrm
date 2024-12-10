@@ -480,7 +480,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
     ]
 ];
 
-VardefManager::createVardef('CampaignLog', 'CampaignLog', []); // 'assignable' migrated
+//VardefManager::createVardef('CampaignLog', 'CampaignLog', []); // 'assignable' migrated
 
 if (file_exists('extensions/modules/ServiceFeedbacks')) {
     SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog']['fields']['servicefeedbacks'] = [

@@ -681,5 +681,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
     , 'optimistic_locking' => true,
 ];
 
-VardefManager::createVardef('Leads', 'Lead', ['default', 'assignable',
-    'person']);
+//VardefManager::createVardef('Leads', 'Lead', ['default', 'assignable','person']);
