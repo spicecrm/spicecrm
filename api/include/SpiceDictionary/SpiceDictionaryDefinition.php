@@ -292,6 +292,8 @@ class SpiceDictionaryDefinition
 
                 foreach ($definitions as $i => $definition) {
                     if ($resDef->name != $definition->name) continue;
+                    # delete the global cached dictionary field to prevent duplicate
+                    DBManagerFactory::getInstance()->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryitem_id = '{$definitions[$i]->sysdictionaryitem_id}' AND sysdictionarydefinition_id ='{$item['sysdictionarydefinition_id']}' AND fieldname = '$resDef->name'");
                     $definitions[$i] = $resDef;
                     $exists = true;
                 }
