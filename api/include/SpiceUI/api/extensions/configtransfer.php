@@ -78,10 +78,52 @@ $routes = [
         'class'       => ConfigTransferController::class,
         'function'    => 'generateSystemPackage',
         'description' => 'generate system package and validate all entries',
-        'options'     => ['noAuth' => true, 'true' => false],
+        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
     ],
     [
-        
+        'method'      => 'get',
+        'route'       => '/configuration/backup/list',
+        'class'       => ConfigTransferController::class,
+        'function'    => 'getBackupFiles',
+        'description' => 'get all available backup files',
+        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/configuration/backup/manage',
+        'class'       => ConfigTransferController::class,
+        'function'    => 'backupFileManage',
+        'description' => 'display the content of the backup file',
+        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'parameters'  => [
+            'filePath' => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'path of the file to be displayed',
+                'required'    => true
+            ],
+            'action'   => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'type of action to be performed',
+                'required'    => false
+            ]
+        ]
+    ],
+    [
+        'method'      => 'delete',
+        'route'       => '/configuration/backup/delete',
+        'class'       => ConfigTransferController::class,
+        'function'    => 'deleteBackupFile',
+        'description' => 'delete the selected backup file',
+        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'parameters'  => [
+            'filePath' => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'path of the file to be deleted'
+            ]
+        ]
     ]
 ];
 
