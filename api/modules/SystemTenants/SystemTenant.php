@@ -428,7 +428,7 @@ class SystemTenant extends SpiceBean
             return;
         }
 
-        $authParams = RESTManager::getInstance()->parseAuthParams();
+        $authParams = RESTManager::getInstance()->getAuthParams();
 
         if (!empty($authParams->tenantID)) {
             self::switchToTenant($authParams->tenantID);
