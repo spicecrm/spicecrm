@@ -196,6 +196,7 @@ import {SystemChartDataRow} from "./components/systemchartdatarow";
 import {SystemSelectOption} from "./components/systemselectoption";
 import {SystemChartMultiDimensional} from "./components/systemchartmultidimensional";
 import {SystemChartDataColumn} from "./components/systemchartdatacolumn";
+import {SystemChartGauge} from "./components/systemchartgauge";
 import {SystemRichTextEditorMentionDropdown} from "./components/systemrichtexteditormentiondropdown";
 import {SystemProgressIndicator} from "./components/systemprogressindicator";
 import {SystemProgressIndicatorItem} from "./components/systemprogressindicatoritem";
@@ -392,6 +393,7 @@ import {SystemInputVersion} from "./components/systeminputversion";
         SystemChartDataRow,
         SystemChartDataColumn,
         SystemChartMultiDimensional,
+        SystemChartGauge,
         SystemSelectOption,
         SystemRichTextEditorMentionDropdown,
         SystemProgressIndicator,
@@ -570,7 +572,8 @@ import {SystemInputVersion} from "./components/systeminputversion";
         SystemDropdownMobileModal,
         SystemInputPackage,
         SystemInputVersion,
-        SystemIllustration
+        SystemIllustration,
+        SystemChartGauge
     ]
 })
 export class SystemComponents {}

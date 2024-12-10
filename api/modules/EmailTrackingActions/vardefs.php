@@ -148,4 +148,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTrackingAction'] = [
 
 ];
 
-VardefManager::createVardef('EmailTrackingActions', 'EmailTrackingAction', ['default']);
+//VardefManager::createVardef('EmailTrackingActions', 'EmailTrackingAction', ['default']);

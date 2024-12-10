@@ -363,4 +363,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
 //    'vname' => 'LBL_EMAILTEMPLATES_EMAILS_LINK'
 //];
 
-VardefManager::createVardef('EmailTemplates', 'EmailTemplate', ['default', 'assignable']);
+//VardefManager::createVardef('EmailTemplates', 'EmailTemplate', ['default', 'assignable']);
