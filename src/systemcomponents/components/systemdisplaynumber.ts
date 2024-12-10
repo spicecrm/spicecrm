@@ -109,18 +109,18 @@ export class SystemDisplayNumber implements OnChanges {
     get largeValue(){
         if(!this.largeNumbers) return this.number;
 
-        if(this.number > 1000000000){
+        if(Math.abs(this.number) > 1000000000){
             this.largeNumberPostfix = 'B';
             return this.roundedLargeNumber(this.number / 1000000000);
         }
 
 
-        if(this.number > 1000000){
+        if(Math.abs(this.number) > 1000000){
             this.largeNumberPostfix = 'M';
             return this.roundedLargeNumber(this.number / 1000000);
         }
 
-        if(this.number > 1000){
+        if(Math.abs(this.number) > 1000){
             this.largeNumberPostfix = 'K';
             return this.roundedLargeNumber(this.number / 1000);
         }
