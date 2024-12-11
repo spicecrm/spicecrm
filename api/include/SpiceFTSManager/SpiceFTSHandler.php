@@ -888,27 +888,6 @@ class SpiceFTSHandler
 
         if (!is_array($addFilters)) $addFilters = [];
 
-        $queryParam['query']['bool']['filter']['bool']['must']  = [
-            [
-                'bool' => [
-                    'must' => [
-                        [
-                            'bool' => [
-                                'must_not' => [
-                                    [
-                                        'exists' => [
-                                            'field' => 'haha'
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ];
-
-
         SystemTenant::addFTSFilter($queryParam);
 
         // process additional filters
