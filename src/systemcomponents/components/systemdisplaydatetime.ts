@@ -166,7 +166,7 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
         // if we do not have a date or neither date nor time should be displayed return empty
         if (!this.date || (!this.displayDate && !this.displayTime)) return '';
 
-        if(this._displayFromNow){
+        if(this._displayFromNow === true){
             return this.date.fromNow();
         } else {
             let formatArray = [];

@@ -28,7 +28,7 @@ class SpiceDictionaryField
     }
 
     /**
-     * returns one field by itemid and definitionid
+     * returns one field by definition id and item d or field name
      *
      * @param SpiceDictionaryItem $dictionaryItem
      * @param SpiceDictionaryDefinition $dictionaryDefinition
@@ -36,7 +36,7 @@ class SpiceDictionaryField
      * @throws \Exception
      */
     static function getField(SpiceDictionaryItem $dictionaryItem, SpiceDictionaryDefinition $dictionaryDefinition){
-        $field = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM sysdictionaryfields WHERE sysdictionarydefinition_id='{$dictionaryDefinition->id}' AND sysdictionaryitem_id='{$dictionaryItem->id}'");
+        $field = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM sysdictionaryfields WHERE sysdictionarydefinition_id='{$dictionaryDefinition->id}' AND (sysdictionaryitem_id='$dictionaryItem->id' OR fieldname = '$dictionaryItem->name')");
 
         if(!$field){
             throw new Exception("dictionary field not found for item id $dictionaryItem->id. Dictionary id: $dictionaryDefinition->id");
