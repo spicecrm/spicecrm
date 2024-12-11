@@ -70,10 +70,12 @@ class SpiceDictionaryDomainFields
         $this->domainfields = [];
         $domainfields = $db->query("SELECT * FROM " . self::table);
         while($domainfield = $db->fetchByAssoc($domainfields)){
+            $domainfield['sequence'] = (int)$domainfield['sequence'];
             $this->domainfields[$domainfield['id']] = array_merge($domainfield, ['scope' => 'g']);
         }
         $domainfields = $db->query("SELECT * FROM " . self::customtable);
         while($domainfield = $db->fetchByAssoc($domainfields)){
+            $domainfield['sequence'] = (int)$domainfield['sequence'];
             $this->domainfields[$domainfield['id']] = array_merge($domainfield, ['scope' => 'c']);;
         }
 
