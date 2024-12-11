@@ -345,6 +345,14 @@ $routes = [
     ],
     [
         'method' => 'post',
+        'route' => '/dictionary/domainfields/sequence',
+        'class' => SpiceDictionaryDomainFieldsController::class,
+        'function' => 'postDomainFieldsSequence',
+        'description' => 'posts the domain sequence',
+        'options' => ['adminOnly' => true]
+    ],
+    [
+        'method' => 'post',
         'route' => '/dictionary/domaindefinition/{id}/activate',
         'class' => SpiceDictionaryDomainDefinitionsController::class,
         'function' => 'activateDictionaryDomainDefinition',
