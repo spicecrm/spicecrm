@@ -4,6 +4,7 @@ namespace SpiceCRM\modules\UserAliases;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\modules\Users\User;
 
@@ -21,6 +22,9 @@ class UserAlias extends SpiceBean
      */
     public function save($check_notify = false, $fts_index_bean = true)
     {
+        if (!AuthenticationController::getInstance()->isAdmin()) {
+            throw new Exception("Admin access only");
+        }
 
         if ($this->isNew() && BeanFactory::newBean('Users')->findByUserName($this->alias_name)) {
             throw new Exception("Alias already exists in users");
@@ -31,6 +35,21 @@ class UserAlias extends SpiceBean
         }
 
         return parent::save($check_notify, $fts_index_bean);
+    }
+
+    /**
+     * check if is admin before delete
+     * @param $id
+     * @return void
+     * @throws Exception
+     */
+    public function mark_deleted($id)
+    {
+        if (!AuthenticationController::getInstance()->isAdmin()) {
+            throw new Exception("Admin access only");
+        }
+
+        parent::mark_deleted($id);
     }
 
     /**
