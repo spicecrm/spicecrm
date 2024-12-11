@@ -46,7 +46,7 @@ export class DomainManagerFields {
         values.splice(event.currentIndex, 0, previousItem[0]);
 
         let savingModal = this.modal.await('LBL_SAVING');
-        this.backend.postRequest('/dictionary/domainfields/sequence', {}, {fields: values.map(v => v.id)}).subscribe({
+        this.backend.postRequest('dictionary/domainfields/sequence', {}, {fields: values.map(v => v.id)}).subscribe({
             next: () => {
                 // reindex the array resetting the sequence
                 let i = 0;
