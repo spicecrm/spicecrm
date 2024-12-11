@@ -63,6 +63,30 @@ class SpiceDictionaryDomainFieldsController
     }
 
     /**
+     * posts a Dictionary Item
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function postDomainFieldsSequence(Request $req, Response $res, array $args): Response
+    {
+        // get the body
+        $body = $req->getParsedBody();
+
+        $sequence = 0;
+        foreach ($body['fields'] as $field) {
+            $item = new SpiceDictionaryDomainField($field);
+            $item->domainField->sequence = $sequence;
+            SpiceDictionaryDomainFields::getInstance()->addField((array) $item->domainField);
+            $sequence++;
+        }
+
+        return $res->withJson(['success' => true]);
+    }
+
+    /**
      * posts a Dictionary Definition
      *
      * @param $req
