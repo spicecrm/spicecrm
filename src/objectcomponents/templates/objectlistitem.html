@@ -1,10 +1,18 @@
 <td class="slds-hide--medium">
-    <div class="slds-grid slds-grid--vertical-align-center" >
+    <div (click)="toggleExpanded($event)" class="slds-grid slds-grid--vertical-align-center" >
         <div [ngClass]="model.alert" *ngIf="rowselect">
             <system-checkbox [disabled]="rowselectdisabled" [(ngModel)]="listItem.selected"/>
         </div>
-        <div class="slds-text-align--left slds-truncate slds-grow slds-text-heading_small" system-model-popover>{{model.data.summary_text}}</div>
-        <system-utility-icon [icon]="expanded ? 'chevronup' : 'chevrondown'" size="xx-small" (click)="toggleExpanded($event)"/>
+        <div class="slds-text-align--left slds-truncate slds-grow slds-text-heading_small">
+            @if (!modellist.mobileFieldsetId) {
+                <object-record-fieldset-horizontal-list [system-view-provider]="{editable: false, displayLabels: false}" [fieldset]="modellist.mobileFieldsetId"/>
+            } @else {
+                <span system-model-popover>
+                {{model.data.summary_text}}
+                </span>
+            }
+        </div>
+        <system-utility-icon [icon]="expanded ? 'chevronup' : 'chevrondown'" size="xx-small"/>
     </div>
 </td>
 <ng-container *ngIf="expanded || layout.screenwidth != 'small'">
