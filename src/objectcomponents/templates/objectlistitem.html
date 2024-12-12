@@ -4,9 +4,9 @@
             <system-checkbox [disabled]="rowselectdisabled" [(ngModel)]="listItem.selected"/>
         </div>
         <div class="slds-text-align--left slds-truncate slds-grow slds-text-heading_small">
-            @if (!modellist.mobileFieldsetId) {
+            @if (!expanded && modellist.mobileFieldsetId) {
                 <object-record-fieldset-horizontal-list [system-view-provider]="{editable: false, displayLabels: false}" [fieldset]="modellist.mobileFieldsetId"/>
-            } @else {
+            } @else if (!expanded) {
                 <span system-model-popover>
                 {{model.data.summary_text}}
                 </span>
