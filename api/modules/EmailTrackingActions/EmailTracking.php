@@ -30,13 +30,14 @@ class EmailTracking
      *
      * @param $trackingData string must have the following syntax "ParentType:$parentType:ParentId:$parentId"
      * @return string
+     * @throws Exception
      */
     static function encodeTrackingID(string $trackingData): string
     {
-        $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? "2fs5uhnjcnpxcpg9";
+        $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? throw (new Exception("misconfiguration blowfishkey missing"));
 
         if($key){
-            return urlencode(base64_encode(openssl_encrypt($trackingData, 'blowfish', $key)));
+            return urlencode(base64_encode(openssl_encrypt($trackingData, 'DES-EDE3-CBC', $key)));
         } else {
             return urlencode(base64_encode($trackingData));
         }
@@ -48,15 +49,16 @@ class EmailTracking
      *
      * @param $trackingData
      * @return array
+     * @throws Exception
      */
     static function decodeTrackingID($trackingData): ?array
     {
-        $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? "2fs5uhnjcnpxcpg9";
+        $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ??  throw new Exception("misconfiguration blowfishkey missing");
 
         if (!$key) {
             $decrypted = base64_decode(urldecode($trackingData));
         } else {
-            $decrypted = openssl_decrypt(base64_decode(urldecode($trackingData)), 'blowfish', $key);;
+            $decrypted = openssl_decrypt(base64_decode(urldecode($trackingData)), 'DES-EDE3-CBC', $key);;
         }
 
         if (!$decrypted) return null;

@@ -35,21 +35,15 @@ namespace SpiceCRM\includes;
 
 use Slim\App;
 use Slim\Exception\HttpNotFoundException;
-use Slim\Psr7\Response;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
-use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\Middleware\AdminOnlyAccessMiddleware;
 use SpiceCRM\includes\Middleware\ApiOnlyAccessMiddleware;
 use SpiceCRM\includes\Middleware\ErrorMiddleware;
 use SpiceCRM\includes\Middleware\ExceptionMiddleware;
 use SpiceCRM\includes\Middleware\LoggerMiddleware;
 use SpiceCRM\includes\Middleware\ModuleRouteMiddleware;
-use SpiceCRM\includes\Middleware\RequireAuthenticationMiddleware;
 use SpiceCRM\includes\Middleware\TenantMiddleware;
 use SpiceCRM\includes\Middleware\TransactionMiddleware;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
@@ -59,8 +53,8 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\utils\RESTRateLimiter;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\modules\Contacts\Contact;
-use Throwable;
+use SpiceCRM\modules\UserAliases\UserAlias;
+use SpiceCRM\modules\Users\User;
 use SpiceCRM\includes\Middleware\ipClientsMiddleware;
 
 class RESTManager
@@ -95,6 +89,11 @@ class RESTManager
      * @var bool
      */
     private $isCustomExtension = false;
+    /**
+     * holds the auth params
+     * @var object|null
+     */
+    private ?object $authParams = null;
 
     private function __construct()
     {
@@ -266,10 +265,23 @@ class RESTManager
     }
 
     /**
-     * parse the auth params from the server data
+     * get/parse the auth params
      * @return object {authType: 'credentials' | 'token', authData: {token?: string, username?: string, password?: string, tokenIssuer?: string, impersonationUser?: string}
      */
-    public function parseAuthParams(): object
+    public function getAuthParams(): object
+    {
+        if (!$this->authParams) {
+            $this->parseAuthParams();
+        }
+
+        return $this->authParams;
+    }
+
+    /**
+     * parse the auth params from the server data
+     * authParams: object {authType: 'credentials' | 'token', authData: {token?: string, username?: string, password?: string, tokenIssuer?: string, impersonationUser?: string}
+     */
+    private function parseAuthParams(): void
     {
         // set SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1 in .htaccessfile
 
@@ -319,14 +331,28 @@ class RESTManager
         if ($authType == 'token') {
             $authData['token'] = $token;
         } elseif ($user && $pass) {
-            $authData['username'] = $user;
+            $authData['username'] = self::getUsername($user);
             $authData['password'] = $pass;
             $authData['code2fa'] = $headers['code2fa'];
             $authData['deviceID'] = $headers['device-id'];
             $authData['rememberDevice'] = $headers['remember-device'];
         }
 
-        return (object) ['authData' => (object) $authData, 'authType' => $authType, 'tenantID' => $headers['tenant-id']];
+        $this->authParams = (object) ['authData' => (object) $authData, 'authType' => $authType, 'tenantID' => $headers['tenant-id']];
+    }
+
+    /**
+     * find user by username or check alias
+     * @param string $username
+     * @return User|null
+     */
+    private static function getUsername(string $username): ?string
+    {
+        $user = (BeanFactory::newBean('Users'))->findByUsername($username);
+
+        if (!$user) $user = UserAlias::findUser($username);
+
+        return $user?->user_name ?: $username;
     }
 
 
