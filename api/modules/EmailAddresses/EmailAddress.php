@@ -453,7 +453,7 @@ class EmailAddress extends SpiceBean
             'parent_id' => $id,
             'transaction_id' => $transactionId,
             'date_created' => TimeDate::getInstance()->nowDb(),
-            'created_by' => $currentUser->id,
+            'created_by' => $currentUser->id ?? $id,
             'field_name' => $field,
             'data_type' => $fieldType,
             'before_value' => $valueBefore,
