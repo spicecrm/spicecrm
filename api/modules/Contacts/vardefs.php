@@ -1088,16 +1088,16 @@ if (file_exists("extensions/modules/ServiceFeedbacks")) {
 //        'vname' => 'LBL_SALESVOUCHERS',
 //    ];
 //}
-if (file_exists('extensions/modules/Potentials')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['potentials'] = [
-        'name' => 'potentials',
-        'type' => 'link',
-        'relationship' => 'contacts_potentials',
-        'module' => 'Potentials',
-        'source' => 'non-db',
-        'vname' => 'LBL_POTENTIALS',
-    ];
-}
+//if (file_exists('extensions/modules/Potentials')) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['potentials'] = [
+//        'name' => 'potentials',
+//        'type' => 'link',
+//        'relationship' => 'contacts_potentials',
+//        'module' => 'Potentials',
+//        'source' => 'non-db',
+//        'vname' => 'LBL_POTENTIALS',
+//    ];
+//}
 //VardefManager::createVardef('Contacts', 'Contact', ['default', 'assignable', 'person']);
 
 SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['primary_address_reference_id'] = [

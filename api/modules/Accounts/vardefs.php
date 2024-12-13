@@ -939,14 +939,14 @@ if (file_exists('extensions/modules/Potentials')) {
         'module' => 'Potentials',
         'source' => 'non-db'
     ];
-    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['resellerpotentials'] = [
-        'name' => 'resellerpotentials',
-        'vname' => 'LBL_RESELLERPOTENTIALS',
-        'type' => 'link',
-        'relationship' => 'accounts_potentials_resellers',
-        'module' => 'Potentials',
-        'source' => 'non-db'
-    ];
+//    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['resellerpotentials'] = [
+//        'name' => 'resellerpotentials',
+//        'vname' => 'LBL_RESELLERPOTENTIALS',
+//        'type' => 'link',
+//        'relationship' => 'accounts_potentials_resellers',
+//        'module' => 'Potentials',
+//        'source' => 'non-db'
+//    ];
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['maincompetitorpotentials'] = [
         'name' => 'maincompetitorpotentials',
         'vname' => 'LBL_MAINCOMPETITORPOTENTIALS',
@@ -955,14 +955,14 @@ if (file_exists('extensions/modules/Potentials')) {
         'module' => 'Potentials',
         'source' => 'non-db'
     ];
-    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['ompetitorpotentials'] = [
-        'name' => 'ompetitorpotentials',
-        'vname' => 'LBL_COMPETITORPOTENTIALS',
-        'type' => 'link',
-        'relationship' => 'accounts_potentials_competitors',
-        'module' => 'Potentials',
-        'source' => 'non-db'
-    ];
+//    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['ompetitorpotentials'] = [
+//        'name' => 'ompetitorpotentials',
+//        'vname' => 'LBL_COMPETITORPOTENTIALS',
+//        'type' => 'link',
+//        'relationship' => 'accounts_potentials_competitors',
+//        'module' => 'Potentials',
+//        'source' => 'non-db'
+//    ];
 
 }
 
