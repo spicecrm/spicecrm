@@ -36,6 +36,7 @@
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
+/*
 SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads', 'audited' => true, 'unified_search' => true, 'full_text_search' => true, 'unified_search_default_enabled' => true, 'duplicate_merge' => true,
     'comment' => 'Leads are persons of interest early in a sales cycle', 'fields' => [
 //        'converted' =>
@@ -167,43 +168,25 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
 //            'vname' => 'LBL_REPORTS_TO',
 //            'reportable' => false
 //        ],
-        'contacts' => [
-            'name' => 'contacts',
-            'type' => 'link',
-            'relationship' => 'contact_leads',
-            'module' => "Contacts",
-            'source' => 'non-db',
-            'vname' => 'LBL_CONTACTS',
-            'reportable' => false
-        ],
-        'prospects' => [
-            'name' => 'prospects',
-            'type' => 'link',
-            'relationship' => 'leads_prospects',
-            'link_type' => 'one',
-            'source' => 'non-db',
-            'vname' => 'LBL_PROSPECT',
-            'duplicate_merge' => 'disabled',
-            'module' => 'Prospects'
-        ],
-        /*'acc_name_from_accounts' =>
-        array (
-          'name' => 'acc_name_from_accounts',
-          'rname' => 'name',
-          'id_name' => 'account_id',
-          'vname' => 'LBL_ACCOUNT_NAME_1',
-          'type' => 'relate',
-          'link' => 'accounts',
-          'table' => 'accounts',
-          'join_name'=>'accounts',
-          'isnull' => 'true',
-          'module' => 'Accounts',
-          'dbType' => 'varchar',
-          'len' => '255',
-          'source' => 'non-db',
-          'unified_search' => false,
-        ),
-        */
+//        'contacts' => [
+//            'name' => 'contacts',
+//            'type' => 'link',
+//            'relationship' => 'contact_leads',
+//            'module' => "Contacts",
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CONTACTS',
+//            'reportable' => false
+//        ],
+//        'prospects' => [
+//            'name' => 'prospects',
+//            'type' => 'link',
+//            'relationship' => 'leads_prospects',
+//            'link_type' => 'one',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_PROSPECT',
+//            'duplicate_merge' => 'disabled',
+//            'module' => 'Prospects'
+//        ],
 //        'account_name' =>
 //            [
 //                'name' => 'account_name',
@@ -214,16 +197,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
 //                'full_text_search' => 1,
 //                'comment' => 'Account name for lead',
 //            ],
-        'accounts' =>
-            [
-                'name' => 'accounts',
-                'type' => 'link',
-                'relationship' => 'account_leads',
-                'link_type' => 'one',
-                'source' => 'non-db',
-                'vname' => 'LBL_ACCOUNTS',
-                'duplicate_merge' => false,
-            ],
+//        'accounts' =>
+//            [
+//                'name' => 'accounts',
+//                'type' => 'link',
+//                'relationship' => 'account_leads',
+//                'link_type' => 'one',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_ACCOUNTS',
+//                'duplicate_merge' => false,
+//            ],
 //        'account_description' =>
 //            [
 //                'name' => 'account_description',
@@ -549,25 +532,25 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
 //                'bean_name' => 'Email',
 //                'vname' => 'LBL_EMAILS',
 //            ],
-        'campaigns' =>
-            [
-                'name' => 'campaigns',
-                'type' => 'link',
-                'relationship' => 'lead_campaign_log',
-                'module' => 'CampaignLog',
-                'bean_name' => 'CampaignLog',
-                'source' => 'non-db',
-                'vname' => 'LBL_CAMPAIGNLOG',
-            ],
-        'prospect_lists' =>
-            [
-                'name' => 'prospect_lists',
-                'type' => 'link',
-                'relationship' => 'prospect_list_leads',
-                'module' => 'ProspectLists',
-                'source' => 'non-db',
-                'vname' => 'LBL_PROSPECT_LIST',
-            ],
+//        'campaigns' =>
+//            [
+//                'name' => 'campaigns',
+//                'type' => 'link',
+//                'relationship' => 'lead_campaign_log',
+//                'module' => 'CampaignLog',
+//                'bean_name' => 'CampaignLog',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_CAMPAIGNLOG',
+//            ],
+//        'prospect_lists' =>
+//            [
+//                'name' => 'prospect_lists',
+//                'type' => 'link',
+//                'relationship' => 'prospect_list_leads',
+//                'module' => 'ProspectLists',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_PROSPECT_LIST',
+//            ],
         'checks' => [
             'name' => 'checks',
             'type' => 'text'
@@ -611,23 +594,23 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
 
     ]
     , 'indices' => [
-        ['name' => 'idx_lead_acct_name_first', 'type' => 'index', 'fields' => ['account_name', 'deleted']],
-        ['name' => 'idx_lead_last_first', 'type' => 'index', 'fields' => ['last_name', 'first_name', 'deleted']],
-        ['name' => 'idx_lead_del_stat', 'type' => 'index', 'fields' => ['last_name', 'status', 'deleted', 'first_name']],
-        ['name' => 'idx_lead_opp_del', 'type' => 'index', 'fields' => ['opportunity_id', 'deleted',]],
-        ['name' => 'idx_leads_acct_del', 'type' => 'index', 'fields' => ['account_id', 'deleted',]],
-        ['name' => 'idx_del_user', 'type' => 'index', 'fields' => ['deleted', 'assigned_user_id']],
-        ['name' => 'idx_lead_assigned', 'type' => 'index', 'fields' => ['assigned_user_id']],
-        ['name' => 'idx_lead_contact', 'type' => 'index', 'fields' => ['contact_id']],
-        ['name' => 'idx_reports_to', 'type' => 'index', 'fields' => ['reports_to_id']],
-        ['name' => 'idx_lead_phone_work', 'type' => 'index', 'fields' => ['phone_work']],
-        ['name' => 'idx_leads_id_del', 'type' => 'index', 'fields' => ['id', 'deleted',]],
+//        ['name' => 'idx_lead_acct_name_first', 'type' => 'index', 'fields' => ['account_name', 'deleted']],
+//        ['name' => 'idx_lead_last_first', 'type' => 'index', 'fields' => ['last_name', 'first_name', 'deleted']],
+//        ['name' => 'idx_lead_del_stat', 'type' => 'index', 'fields' => ['last_name', 'status', 'deleted', 'first_name']],
+//        ['name' => 'idx_lead_opp_del', 'type' => 'index', 'fields' => ['opportunity_id', 'deleted',]],
+//        ['name' => 'idx_leads_acct_del', 'type' => 'index', 'fields' => ['account_id', 'deleted',]],
+//        ['name' => 'idx_del_user', 'type' => 'index', 'fields' => ['deleted', 'assigned_user_id']],
+//        ['name' => 'idx_lead_assigned', 'type' => 'index', 'fields' => ['assigned_user_id']],
+//        ['name' => 'idx_lead_contact', 'type' => 'index', 'fields' => ['contact_id']],
+//        ['name' => 'idx_reports_to', 'type' => 'index', 'fields' => ['reports_to_id']],
+//        ['name' => 'idx_lead_phone_work', 'type' => 'index', 'fields' => ['phone_work']],
+//        ['name' => 'idx_leads_id_del', 'type' => 'index', 'fields' => ['id', 'deleted',]],
 
     ]
     , 'relationships' => [
-        'lead_direct_reports' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
-            'rhs_module' => 'Leads', 'rhs_table' => 'leads', 'rhs_key' => 'reports_to_id',
-            'relationship_type' => 'one-to-many']
+//        'lead_direct_reports' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
+//            'rhs_module' => 'Leads', 'rhs_table' => 'leads', 'rhs_key' => 'reports_to_id',
+//            'relationship_type' => 'one-to-many']
 //        'lead_tasks' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
 //            'rhs_module' => 'Tasks', 'rhs_table' => 'tasks', 'rhs_key' => 'parent_id',
 //            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
@@ -645,17 +628,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
 //            'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id',
 //            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
 //            'relationship_role_column_value' => 'Leads'],
-        ,'lead_campaign_log' => [
-            'lhs_module' => 'Leads',
-            'lhs_table' => 'leads',
-            'lhs_key' => 'id',
-            'rhs_module' => 'CampaignLog',
-            'rhs_table' => 'campaign_log',
-            'rhs_key' => 'target_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'target_type',
-            'relationship_role_column_value' => 'Leads'
-        ],
+//        ,'lead_campaign_log' => [
+//            'lhs_module' => 'Leads',
+//            'lhs_table' => 'leads',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'CampaignLog',
+//            'rhs_table' => 'campaign_log',
+//            'rhs_key' => 'target_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'target_type',
+//            'relationship_role_column_value' => 'Leads'
+//        ],
 //        'leads_potential' => [
 //            'lhs_module' => 'Potentials',
 //            'lhs_table' => 'potentials',
@@ -682,3 +665,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
 ];
 
 //VardefManager::createVardef('Leads', 'Lead', ['default', 'assignable','person']);
+*/

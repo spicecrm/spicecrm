@@ -499,17 +499,17 @@ if (file_exists('extensions/modules/SystemDeploymentReleases')) {
 //    );
 }
 
-if (file_exists('extensions/modules/SalesDocs')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Project']['fields']['salesdocs'] = [
-        'name' => 'salesdocs',
-        'type' => 'link',
-        'relationship' => 'salesdocs_projects_parent',
-        'module' => 'SalesDocs',
-        'bean_name' => 'SalesDoc',
-        'source' => 'non-db',
-        'vname' => 'LBL_SALESDOCS',
-    ];
-}
+//if (file_exists('extensions/modules/SalesDocs')) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['Project']['fields']['salesdocs'] = [
+//        'name' => 'salesdocs',
+//        'type' => 'link',
+//        'relationship' => 'salesdocs_projects_parent',
+//        'module' => 'SalesDocs',
+//        'bean_name' => 'SalesDoc',
+//        'source' => 'non-db',
+//        'vname' => 'LBL_SALESDOCS',
+//    ];
+//}
 
 if(file_exists('extensions/modules/ProjectSettlementProfiles')){
     SpiceDictionaryHandler::getInstance()->dictionary['Project']['fields']['projectsettlementprofile_id'] = [
