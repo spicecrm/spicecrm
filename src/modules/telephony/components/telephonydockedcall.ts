@@ -110,6 +110,9 @@ export class TelephonyDockedCall {
 
         // get the config
         this.componentconfig = this.metadata.getComponentConfig('TelephonyDockedCall');
+        if(!this.componentconfig.actionpolicy){
+            this.componentconfig.actionpolicy = 'strict';
+        }
 
         // this is the default endpoint
         let endpoint = 'search/phonenumber';
@@ -145,7 +148,10 @@ export class TelephonyDockedCall {
      * only can be used when the relatedid is set and when the status is connected or disconnected
      */
     get actionsDisabled(){
-        return !this.calldata.relatedid || (this.calldata.status != 'connected' && this.calldata.status != 'disconnected');
+        if(this.componentconfig.actionpolicy == 'strict'){
+            return !this.calldata.relatedid || (this.calldata.status != 'connected' && this.calldata.status != 'disconnected');
+        }
+        return (this.calldata.status != 'connected' && this.calldata.status != 'disconnected');
     }
 
     /**

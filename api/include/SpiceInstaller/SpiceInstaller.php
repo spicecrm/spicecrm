@@ -30,8 +30,6 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use Throwable;
 
-require_once('modules/TableDictionary.php');
-
 
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 class SpiceInstaller
@@ -150,7 +148,7 @@ class SpiceInstaller
         $requirements['bcmath'] = extension_loaded('bcmath');
 
         # check package pear
-        require_once 'System.php';
+        include_once 'System.php';
         $requirements['pear'] = class_exists('System', false);
 
         // db check
@@ -453,6 +451,7 @@ class SpiceInstaller
 
         $db = $this->dbManagerFactory::getTypeInstance($postData['database']['db_type'], ['dbconfig' => ['db_manager' => $postData['database']['db_manager']]]);
         $postData['dboptions']['collation'] = "utf8mb4_unicode_ci";
+        $postData['dboptions']['charset'] = "utf8mb4";
         $db->setOptions($postData['dboptions']);
         if ($dbconfig['db_type'] == 'oci8') {
             $dbconfig['db_schema'] = $postData['database']['db_schema'];
@@ -796,7 +795,7 @@ class SpiceInstaller
      * @return void
      * @throws Exception
      */
-    public function writeDictionaryToCacheTable()
+    public function writeDictionaryToCacheTable(): void
     {
         # write the definitions to the cache table
         $defsHandler = SpiceDictionaryDefinitions::getInstance();
@@ -814,6 +813,7 @@ class SpiceInstaller
     public function createDatabaseIndexes(): void
     {
         $indexHandler = SpiceDictionaryIndexes::getInstance();
+        $indexHandler->reloadItems();
 
         foreach ($indexHandler->dictionaryIndexes as $index) {
             try {

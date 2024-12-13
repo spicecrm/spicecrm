@@ -57,9 +57,7 @@ export class KpiTile implements OnInit {
     constructor(
         public model: model,
         public modal: modal,
-        private backend: backend,
-        private toast: toast,
-        private language: language,
+        public backend: backend,
         public injector: Injector
     ) {
     }
@@ -77,6 +75,10 @@ export class KpiTile implements OnInit {
         this.loadKPITargets()
     }
 
+    get targetAchievement(){
+        return this.kpiTargetValue.kpi_value ?  Math.round(this.kpiTargetValue.kpi_value / parseFloat(this.kpiTarget.target) * 100) : 0
+    }
+
     /**
      * retrieves KPITargets for the User
      */
@@ -86,10 +88,23 @@ export class KpiTile implements OnInit {
             next: (data) => {
                 this.kpiTargetValue = data.kpiTargetValue;
                 this.kpiTrendData = data.kpiTrendData;
+
+                this.addValues.forEach(a => {
+                    switch(a.addKey) {
+                        case 'kpi_target_achievement':
+                            a.kpiValueAdd = this.targetAchievement;
+                            break;
+                        default:
+                            a.kpiValueAdd = data.kpiTargetValue[a.addKey]
+                            break;
+                    }
+                });
+
                 this.getKPIColor();
                 this.loading = false;
             }, error: () => {
-                this.toast.sendToast(this.language.getLabel('LBL_ERR_LOADING_KPITARGETS'), 'error');
+                // this.toast.sendToast(this.language.getLabel('LBL_ERR_LOADING_KPITARGETS'), 'error');
+                this.kpiTargetValue = undefined;
                 this.loading = false;
             }
         });
@@ -111,6 +126,13 @@ export class KpiTile implements OnInit {
         } else {
             this.kpiColor = 'slds-icon-text-default';
         }
+    }
+
+    /**
+     * returns the display precision
+     */
+    get precision(){
+        return  this.kpiTarget?.kpi?.display_precision ? parseInt(this.kpiTarget.kpi.display_precision, 10) : 0;
     }
 
     get slope(){
@@ -157,6 +179,16 @@ export class KpiTile implements OnInit {
 
         this.addValues = [];
 
+        // check if we have a target
+        if(this.kpiTarget.target){
+            this.addValues.push({
+                addKey: 'kpi_target_achievement',
+                kpiValueAdd: undefined,
+                valueLabel: 'LBL_KPI_TARGET_ACHIEVEMENT',
+                valueMetric: '%'
+            });
+        }
+
         // iterate over the range of possible kpi_value_label_? (from 1 to 5)
         for (let i = 1; i <= 5; i++) {
             const labelKey = `kpi_value_label_${i}`;
@@ -166,6 +198,7 @@ export class KpiTile implements OnInit {
             // check if the kpi_value_label_? exists in kpiTarget.kpi
             if (this.kpiTarget.kpi?.[labelKey]) {
                 this.addValues.push({
+                    addKey: addKey,
                     kpiValueAdd: this.kpiTargetValue[addKey],
                     valueLabel: this.kpiTarget.kpi[labelKey],
                     valueMetric: this.kpiTarget.kpi[metricKey]

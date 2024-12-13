@@ -216,6 +216,10 @@ export class modellist implements OnDestroy {
      * whether the list item is currently in view or edit mode
      */
     public listItemMode: string = 'view';
+    /**
+     * mobile fieldset fields
+     */
+    public mobileFieldsetId: string;
 
     constructor(
         public broadcast: broadcast,
@@ -231,6 +235,14 @@ export class modellist implements OnDestroy {
         this.subscribeToBroadcast();
         this.generateStandardLists();
         this.listType$ = new BehaviorSubject<ListTypeI>(this.standardLists[0]);
+    }
+
+    /**
+     * set mobile fieldset
+     * @private
+     */
+    private setMobileFieldset() {
+        this.mobileFieldsetId = this.metadata.getComponentConfig('ObjectList', this.module)?.mobileFieldset;
     }
 
     /**
@@ -262,6 +274,8 @@ export class modellist implements OnDestroy {
     public initialize(module: string, embeddedByComponent?: string) {
 
         this.module = module;
+
+        this.setMobileFieldset();
 
         this.generateStandardLists();
 
@@ -1011,6 +1025,9 @@ export class modellist implements OnDestroy {
 
         // emit that the data changed
         this.listDataChanged$.next(true);
+
+        // emit also that the seldection changed
+        this.selectionChanged$.next(true);
     }
 
     /**

@@ -382,49 +382,49 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'relationship' => 'campaign_leads',
                 'source' => 'non-db',
             ],
-        'c_accept_status_fields' =>
-            [
-                'name' => 'c_accept_status_fields',
-                'rname' => 'id',
-                'relationship_fields' => ['id' => 'accept_status_id', 'accept_status' => 'accept_status_name'],
-                'vname' => 'LBL_LIST_ACCEPT_STATUS',
-                'type' => 'relate',
-                'link' => 'calls',
-                'link_type' => 'relationship_info',
-                'source' => 'non-db',
-                'importable' => 'false',
-                'duplicate_merge' => false,
-            ],
-        'm_accept_status_fields' =>
-            [
-                'name' => 'm_accept_status_fields',
-                'rname' => 'id',
-                'relationship_fields' => ['id' => 'accept_status_id', 'accept_status' => 'accept_status_name'],
-                'vname' => 'LBL_LIST_ACCEPT_STATUS',
-                'type' => 'relate',
-                'link' => 'meetings',
-                'link_type' => 'relationship_info',
-                'source' => 'non-db',
-                'importable' => 'false',
-                'hideacl' => true,
-                'duplicate_merge' => false,
-            ],
-        'accept_status_id' =>
-            [
-                'name' => 'accept_status_id',
-                'type' => 'varchar',
-                'source' => 'non-db',
-                'vname' => 'LBL_LIST_ACCEPT_STATUS',
-            ],
-        'accept_status_name' =>
-            [
-                'name' => 'accept_status_name',
-                'type' => 'enum',
-                'source' => 'non-db',
-                'vname' => 'LBL_LIST_ACCEPT_STATUS',
-                'options' => 'dom_meeting_accept_status',
-                'importable' => 'false',
-            ],
+//        'c_accept_status_fields' =>
+//            [
+//                'name' => 'c_accept_status_fields',
+//                'rname' => 'id',
+//                'relationship_fields' => ['id' => 'accept_status_id', 'accept_status' => 'accept_status_name'],
+//                'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//                'type' => 'relate',
+//                'link' => 'calls',
+//                'link_type' => 'relationship_info',
+//                'source' => 'non-db',
+//                'importable' => 'false',
+//                'duplicate_merge' => false,
+//            ],
+//        'm_accept_status_fields' =>
+//            [
+//                'name' => 'm_accept_status_fields',
+//                'rname' => 'id',
+//                'relationship_fields' => ['id' => 'accept_status_id', 'accept_status' => 'accept_status_name'],
+//                'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//                'type' => 'relate',
+//                'link' => 'meetings',
+//                'link_type' => 'relationship_info',
+//                'source' => 'non-db',
+//                'importable' => 'false',
+//                'hideacl' => true,
+//                'duplicate_merge' => false,
+//            ],
+//        'accept_status_id' =>
+//            [
+//                'name' => 'accept_status_id',
+//                'type' => 'varchar',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//            ],
+//        'accept_status_name' =>
+//            [
+//                'name' => 'accept_status_name',
+//                'type' => 'enum',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//                'options' => 'dom_meeting_accept_status',
+//                'importable' => 'false',
+//            ],
         'webtolead_email1' =>
             [
                 'name' => 'webtolead_email1',
@@ -498,38 +498,38 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'comment' => 'URL of website for the company',
             ],
 
-        'tasks' =>
-            [
-                'name' => 'tasks',
-                'type' => 'link',
-                'relationship' => 'lead_tasks',
-                'source' => 'non-db',
-                'vname' => 'LBL_TASKS',
-            ],
-        'notes' =>
-            [
-                'name' => 'notes',
-                'type' => 'link',
-                'relationship' => 'lead_notes',
-                'source' => 'non-db',
-                'vname' => 'LBL_NOTES',
-            ],
-        'meetings' =>
-            [
-                'name' => 'meetings',
-                'type' => 'link',
-                'relationship' => 'leads_meetings',
-                'source' => 'non-db',
-                'vname' => 'LBL_MEETINGS',
-            ],
-        'calls' =>
-            [
-                'name' => 'calls',
-                'type' => 'link',
-                'relationship' => 'leads_calls',
-                'source' => 'non-db',
-                'vname' => 'LBL_CALLS',
-            ],
+//        'tasks' =>
+//            [
+//                'name' => 'tasks',
+//                'type' => 'link',
+//                'relationship' => 'lead_tasks',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_TASKS',
+//            ],
+//        'notes' =>
+//            [
+//                'name' => 'notes',
+//                'type' => 'link',
+//                'relationship' => 'lead_notes',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_NOTES',
+//            ],
+//        'meetings' =>
+//            [
+//                'name' => 'meetings',
+//                'type' => 'link',
+//                'relationship' => 'leads_meetings',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_MEETINGS',
+//            ],
+//        'calls' =>
+//            [
+//                'name' => 'calls',
+//                'type' => 'link',
+//                'relationship' => 'leads_calls',
+//                'source' => 'non-db',
+//                'vname' => 'LBL_CALLS',
+//            ],
         'oldmeetings' =>
             [
                 'name' => 'oldmeetings',
@@ -538,17 +538,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'source' => 'non-db',
                 'vname' => 'LBL_MEETINGS',
             ],
-        'emails' =>
-            [
-                'name' => 'emails',
-                'type' => 'link',
-                'relationship' => 'emails_leads_rel',
-                'source' => 'non-db',
-                'unified_search' => true,
-                'module' => 'Emails',
-                'bean_name' => 'Email',
-                'vname' => 'LBL_EMAILS',
-            ],
+//        'emails' =>
+//            [
+//                'name' => 'emails',
+//                'type' => 'link',
+//                'relationship' => 'emails_leads_rel',
+//                'source' => 'non-db',
+//                'unified_search' => true,
+//                'module' => 'Emails',
+//                'bean_name' => 'Email',
+//                'vname' => 'LBL_EMAILS',
+//            ],
         'campaigns' =>
             [
                 'name' => 'campaigns',
@@ -601,13 +601,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
             'module' => 'Potentials',
             'source' => 'non-db'
         ],
-        'catalogorders' => [
-            'name' => 'catalogorders',
-            'type' => 'link',
-            'module' => 'CatalogOrders',
-            'relationship' => 'leads_catalogorders',
-            'source' => 'non-db'
-        ]
+//        'catalogorders' => [
+//            'name' => 'catalogorders',
+//            'type' => 'link',
+//            'module' => 'CatalogOrders',
+//            'relationship' => 'leads_catalogorders',
+//            'source' => 'non-db'
+//        ]
 
     ]
     , 'indices' => [
@@ -627,25 +627,25 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
     , 'relationships' => [
         'lead_direct_reports' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
             'rhs_module' => 'Leads', 'rhs_table' => 'leads', 'rhs_key' => 'reports_to_id',
-            'relationship_type' => 'one-to-many'],
-        'lead_tasks' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
-            'rhs_module' => 'Tasks', 'rhs_table' => 'tasks', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Leads']
-        , 'lead_notes' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
-            'rhs_module' => 'Notes', 'rhs_table' => 'notes', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Leads']
+            'relationship_type' => 'one-to-many']
+//        'lead_tasks' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
+//            'rhs_module' => 'Tasks', 'rhs_table' => 'tasks', 'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Leads']
+//        , 'lead_notes' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
+//            'rhs_module' => 'Notes', 'rhs_table' => 'notes', 'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Leads']
 
-        , 'lead_meetings' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
-            'rhs_module' => 'Meetings', 'rhs_table' => 'meetings', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Leads']
-        , 'lead_emails' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
-            'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Leads'],
-        'lead_campaign_log' => [
+//        , 'lead_meetings' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
+//            'rhs_module' => 'Meetings', 'rhs_table' => 'meetings', 'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Leads']
+//        , 'lead_emails' => ['lhs_module' => 'Leads', 'lhs_table' => 'leads', 'lhs_key' => 'id',
+//            'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Leads'],
+        ,'lead_campaign_log' => [
             'lhs_module' => 'Leads',
             'lhs_table' => 'leads',
             'lhs_key' => 'id',
@@ -665,21 +665,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
             'rhs_key' => 'potential_id',
             'relationship_type' => 'one-to-many'
         ],
-        'leads_calls' => [
-            'lhs_module' => 'Leads',
-            'lhs_table' => 'leads',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Calls',
-            'rhs_table' => 'calls',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Leads',
-        ]
+//        'leads_calls' => [
+//            'lhs_module' => 'Leads',
+//            'lhs_table' => 'leads',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Calls',
+//            'rhs_table' => 'calls',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Leads',
+//        ]
     ]
     //This enables optimistic locking for Saves From EditView
     , 'optimistic_locking' => true,
 ];
 
-VardefManager::createVardef('Leads', 'Lead', ['default', 'assignable',
-    'person']);
+//VardefManager::createVardef('Leads', 'Lead', ['default', 'assignable','person']);

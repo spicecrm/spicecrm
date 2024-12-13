@@ -1,3 +1,7 @@
-<button class="slds-button slds-button--neutral slds-button--icon-border slds-m-horizontal--xxx-small" system-title="LBL_FILTER" [disabled]="!enabled" [ngClass]="buttonclasses" (click)="togglefilters()">
-    <system-button-icon icon="filterList"></system-button-icon>
-</button>
+@if(enabled) {
+    <div class="slds-m-horizontal--xxx-small">
+        <button class="slds-button slds-button--icon-border" system-title="LBL_FILTER" [disabled]="!enabled" [ngClass]="buttonclasses" (click)="togglefilters()">
+            <system-button-icon icon="filterList"/>
+        </button>
+    </div>
+}

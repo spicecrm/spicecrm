@@ -60,7 +60,7 @@ class SpiceBeanGuideRestHandler
 
         $statusField = $guide['status_field'];
         $table = $guide['scope'] == 'global' ? 'spicebeanguidestages' : 'spicebeancustomguidestages';
-        $stagesObj = $db->query("SELECT * FROM $table WHERE spicebeanguide_id = '{$guide['id']}' ORDER BY stage_sequence;");
+        $stagesObj = $db->query("SELECT * FROM $table WHERE spicebeanguide_id = '{$guide['id']}' ORDER BY not_in_kanban, stage_sequence;");
 
         $stages = [];
 
@@ -73,14 +73,14 @@ class SpiceBeanGuideRestHandler
                 $stage['checks'] = $this->getStageChecks($guide['id'], $stage['id'], $bean);
                 $stage['texts'] = $this->getStageTexts($stage['id'], $guide['systextid']);
 
-                $stages[] = [
+                $stages[$stage['stage']] = [
                     'stage' => $stage['stage'],
                     'stagedata' => $stage
                 ];
             }
         }
 
-        return $stages;
+        return array_values($stages);
     }
 
     /**

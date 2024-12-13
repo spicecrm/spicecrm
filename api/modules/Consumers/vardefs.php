@@ -42,42 +42,42 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'len' => '100',
             'audited' => true
         ],
-        'activity_accept_status' => [
-            'name' => 'activity_accept_status',
-            'type' => 'enum',
-            'source' => 'non-db',
-            'vname' => 'LBL_ACTIVITY_ACCEPT_STATUS',
-            'options' => 'dom_meeting_accept_status',
-            'comment' => 'non db field retirved from the relationship to the meeting call etc'
-        ],
+//        'activity_accept_status' => [
+//            'name' => 'activity_accept_status',
+//            'type' => 'enum',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_ACTIVITY_ACCEPT_STATUS',
+//            'options' => 'dom_meeting_accept_status',
+//            'comment' => 'non db field retirved from the relationship to the meeting call etc'
+//        ],
         'birthdate' => [
             'name' => 'birthdate',
             'vname' => 'LBL_BIRTHDATE',
             'type' => 'date',
             'comment' => 'The birthdate of the consumer'
         ],
-        'calls_participant' => [
-            'name' => 'calls',
-            'type' => 'link',
-            'relationship' => 'calls_consumers',
-            'source' => 'non-db',
-            'module' => 'Calls',
-            'vname' => 'LBL_CALLS',
-        ],
-        'meetings_participant' => [
-            'name' => 'meetings',
-            'type' => 'link',
-            'relationship' => 'meetings_consumers',
-            'source' => 'non-db',
-            'vname' => 'LBL_MEETINGS',
-        ],
-        'notes_participant' => [
-            'name' => 'notes',
-            'type' => 'link',
-            'relationship' => 'consumer_notes',
-            'source' => 'non-db',
-            'vname' => 'LBL_NOTES',
-        ],
+//        'calls_participant' => [
+//            'name' => 'calls',
+//            'type' => 'link',
+//            'relationship' => 'calls_consumers',
+//            'source' => 'non-db',
+//            'module' => 'Calls',
+//            'vname' => 'LBL_CALLS',
+//        ],
+//        'meetings_participant' => [
+//            'name' => 'meetings',
+//            'type' => 'link',
+//            'relationship' => 'meetings_consumers',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_MEETINGS',
+//        ],
+//        'notes_participant' => [
+//            'name' => 'notes',
+//            'type' => 'link',
+//            'relationship' => 'consumer_notes',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_NOTES',
+//        ],
         'tasks_participant' => [
             'name' => 'tasks',
             'type' => 'link',
@@ -128,54 +128,54 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'relationship' => 'campaign_consumers',
             'source' => 'non-db',
         ],
-        'bonuscards' => [
-            'name' => 'bonuscards',
-            'type' => 'link',
-            'relationship' => 'bonuscards_consumers',
-            'module' => 'BonusCards',
-            'bean_name' => 'BonusCard',
-            'source' => 'non-db',
-            'vname' => 'LBL_BONUSCARDS',
-        ],
-        'c_accept_status_fields' => [
-            'name' => 'c_accept_status_fields',
-            'rname' => 'id',
-            'relationship_fields' => ['id' => 'accept_status_id', 'accept_status' => 'accept_status_name'],
-            'vname' => 'LBL_LIST_ACCEPT_STATUS',
-            'type' => 'relate',
-            'link' => 'calls',
-            'link_type' => 'relationship_info',
-            'source' => 'non-db',
-            'importable' => 'false',
-            'duplicate_merge' => false,
-        ],
-        'm_accept_status_fields' => [
-            'name' => 'm_accept_status_fields',
-            'rname' => 'id',
-            'relationship_fields' => ['id' => 'accept_status_id', 'accept_status' => 'accept_status_name'],
-            'vname' => 'LBL_LIST_ACCEPT_STATUS',
-            'type' => 'relate',
-            'link' => 'meetings',
-            'link_type' => 'relationship_info',
-            'source' => 'non-db',
-            'importable' => 'false',
-            'hideacl' => true,
-            'duplicate_merge' => false,
-        ],
-        'accept_status_id' => [
-            'name' => 'accept_status_id',
-            'type' => 'varchar',
-            'source' => 'non-db',
-            'vname' => 'LBL_LIST_ACCEPT_STATUS',
-        ],
-        'accept_status_name' => [
-            'name' => 'accept_status_name',
-            'type' => 'enum',
-            'source' => 'non-db',
-            'vname' => 'LBL_LIST_ACCEPT_STATUS',
-            'options' => 'dom_meeting_accept_status',
-            'importable' => 'false',
-        ],
+//        'bonuscards' => [
+//            'name' => 'bonuscards',
+//            'type' => 'link',
+//            'relationship' => 'bonuscards_consumers',
+//            'module' => 'BonusCards',
+//            'bean_name' => 'BonusCard',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_BONUSCARDS',
+//        ],
+//        'c_accept_status_fields' => [
+//            'name' => 'c_accept_status_fields',
+//            'rname' => 'id',
+//            'relationship_fields' => ['id' => 'accept_status_id', 'accept_status' => 'accept_status_name'],
+//            'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//            'type' => 'relate',
+//            'link' => 'calls',
+//            'link_type' => 'relationship_info',
+//            'source' => 'non-db',
+//            'importable' => 'false',
+//            'duplicate_merge' => false,
+//        ],
+//        'm_accept_status_fields' => [
+//            'name' => 'm_accept_status_fields',
+//            'rname' => 'id',
+//            'relationship_fields' => ['id' => 'accept_status_id', 'accept_status' => 'accept_status_name'],
+//            'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//            'type' => 'relate',
+//            'link' => 'meetings',
+//            'link_type' => 'relationship_info',
+//            'source' => 'non-db',
+//            'importable' => 'false',
+//            'hideacl' => true,
+//            'duplicate_merge' => false,
+//        ],
+//        'accept_status_id' => [
+//            'name' => 'accept_status_id',
+//            'type' => 'varchar',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//        ],
+//        'accept_status_name' => [
+//            'name' => 'accept_status_name',
+//            'type' => 'enum',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_LIST_ACCEPT_STATUS',
+//            'options' => 'dom_meeting_accept_status',
+//            'importable' => 'false',
+//        ],
         'prospect_lists' => [
             'name' => 'prospect_lists',
             'type' => 'link',
@@ -209,39 +209,40 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'type' => 'varchar',
             'len' => 36
         ],
-        'events_consumer_role' => [
-            'name' => 'events_consumer_role',
-            'vname' => 'LBL_ROLE',
-            'type' => 'enum',
-            'source' => 'non-db',
-            'options' => 'events_consumer_roles_dom'
-        ],
-        'events' => [
-            'name' => 'events',
-            'type' => 'link',
-            'relationship' => 'events_consumers',
-            'module' => 'Events',
-            'bean_name' => 'Event',
-            'source' => 'non-db',
-            'vname' => 'LBL_EVENT',
-            'rel_fields' => [
-                'consumer_role' => [
-                    'map' => 'events_consumer_role'
-                ]
-            ]
+//        'events_consumer_role' => [
+//            'name' => 'events_consumer_role',
+//            'vname' => 'LBL_ROLE',
+//            'type' => 'enum',
+//            'source' => 'non-db',
+//            'options' => 'events_consumer_roles_dom'
+//        ],
+//        'events' => [
+//            'name' => 'events',
+//            'type' => 'link',
+//            'relationship' => 'events_consumers',
+//            'module' => 'Events',
+//            'bean_name' => 'Event',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_EVENT',
+//            'rel_fields' => [
+//                'consumer_role' => [
+//                    'map' => 'events_consumer_role'
+//                ]
+//            ]
+//        ],
+
+        'eventbookings' => [
+            'name'         => 'eventbookings',
+            'type'         => 'link',
+            'module'       => 'EventBookings',
+            'relationship' => 'consumer_eventbookings',
+            'source'       => 'non-db',
         ],
         'eventbookingblockers' => [
             'name'         => 'eventbookingblockers',
             'type'         => 'link',
             'module'       => 'EventBookingBlockers',
             'relationship' => 'consumer_eventbookingblockers',
-            'source'       => 'non-db',
-        ],
-        'eventbookings' => [
-            'name'         => 'eventbookings',
-            'type'         => 'link',
-            'module'       => 'EventBookings',
-            'relationship' => 'consumer_eventbookings',
             'source'       => 'non-db',
         ],
         'prospectlists_consumer_quantity' => [
@@ -258,20 +259,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'vname' => 'LBL_LEADS',
             'module' => 'Leads'
         ],
-        'catalogorders' => [
-            'name' => 'catalogorders',
-            'type' => 'link',
-            'module' => 'CatalogOrders',
-            'relationship' => 'consumers_catalogorders',
-            'source' => 'non-db'
-        ],
-        'inquiries' => [
-            'name' => 'inquiries',
-            'type' => 'link',
-            'module' => 'Inquiries',
-            'relationship' => 'consumer_inquiries',
-            'source' => 'non-db'
-        ],
+//        'catalogorders' => [
+//            'name' => 'catalogorders',
+//            'type' => 'link',
+//            'module' => 'CatalogOrders',
+//            'relationship' => 'consumers_catalogorders',
+//            'source' => 'non-db'
+//        ],
+//        'inquiries' => [
+//            'name' => 'inquiries',
+//            'type' => 'link',
+//            'module' => 'Inquiries',
+//            'relationship' => 'consumer_inquiries',
+//            'source' => 'non-db'
+//        ],
         'agreements' => [
             'name' => 'agreements',
             'type' => 'link',
@@ -299,21 +300,21 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'relationship' => 'consumer_eventregistrations',
             'source' => 'non-db',
         ],
-        'emails' => [
-            'name' => 'emails',
-            'vname' => 'LBL_EMAILS',
-            'type' => 'link',
-            'relationship' => 'emails_consumers_rel',
-            'module' => 'Emails',
-            'source' => 'non-db',
-        ],
-        'emails_parent' => [
-            'name' => 'emails_parent',
-            'type' => 'link',
-            'relationship' => 'consumer_emails_parent',
-            'source' => 'non-db',
-            'vname' => 'LBL_EMAILS_AS_PARENT',
-        ],
+//        'emails' => [
+//            'name' => 'emails',
+//            'vname' => 'LBL_EMAILS',
+//            'type' => 'link',
+//            'relationship' => 'emails_consumers_rel',
+//            'module' => 'Emails',
+//            'source' => 'non-db',
+//        ],
+//        'emails_parent' => [
+//            'name' => 'emails_parent',
+//            'type' => 'link',
+//            'relationship' => 'consumer_emails_parent',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_EMAILS_AS_PARENT',
+//        ],
         'salesdocsop' => [
             'name' => 'salesdocsop',
             'type' => 'link',
@@ -389,28 +390,28 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'rhs_key' => 'consumer_id',
             'relationship_type' => 'one-to-many'
         ],
-        'consumer_letters' => [
-            'lhs_module' => 'Consumers',
-            'lhs_table' => 'consumers',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Letters',
-            'rhs_table' => 'letters',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Consumers'
-        ],
-        'consumer_emails_parent' => [
-            'lhs_module' => 'Consumers',
-            'lhs_table' => 'consumers',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Emails',
-            'rhs_table' => 'emails',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Consumers'
-        ],
+//        'consumer_letters' => [
+//            'lhs_module' => 'Consumers',
+//            'lhs_table' => 'consumers',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Letters',
+//            'rhs_table' => 'letters',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Consumers'
+//        ],
+//        'consumer_emails_parent' => [
+//            'lhs_module' => 'Consumers',
+//            'lhs_table' => 'consumers',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Emails',
+//            'rhs_table' => 'emails',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Consumers'
+//        ],
     ],
     //This enables optimistic locking for Saves From EditView
     'optimistic_locking' => true,
@@ -429,16 +430,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
     ]
 ];
 //avoid PHP Fatal error:  Uncaught Error: Cannot use string offset as an array
-if (file_exists('extensions/modules/SalesVouchers')){
-    SpiceDictionaryHandler::getInstance()->dictionary['Consumer']['fields']['salesvouchers'] = [
-        'name'         => 'salesvouchers',
-        'type'         => 'link',
-        'relationship' => 'consumer_salesvouchers',
-        'module'       => 'SalesVouchers',
-        'source'       => 'non-db',
-        'vname'        => 'LBL_SALESVOUCHERS',
-    ];
-}
+//if (file_exists('extensions/modules/SalesVouchers')){
+//    SpiceDictionaryHandler::getInstance()->dictionary['Consumer']['fields']['salesvouchers'] = [
+//        'name'         => 'salesvouchers',
+//        'type'         => 'link',
+//        'relationship' => 'consumer_salesvouchers',
+//        'module'       => 'SalesVouchers',
+//        'source'       => 'non-db',
+//        'vname'        => 'LBL_SALESVOUCHERS',
+//    ];
+//}
 if (file_exists("modules/ServiceTickets")) {
     SpiceDictionaryHandler::getInstance()->dictionary['Consumer']['fields']['servicetickets'] = [
         'name' => 'servicetickets',
@@ -451,4 +452,4 @@ if (file_exists("modules/ServiceTickets")) {
     ];
 }
 
-VardefManager::createVardef('Consumers', 'Consumer', ['default', 'assignable', 'activities', 'person']);
+//VardefManager::createVardef('Consumers', 'Consumer', ['default', 'assignable', 'activities', 'person']);

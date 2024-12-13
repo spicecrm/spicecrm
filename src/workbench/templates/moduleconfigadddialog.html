@@ -15,12 +15,14 @@
             </div>
         </div>
         <div class="slds-p-vertical_x-small">
-            <system-select [(ngModel)]="moduleSelectedItem" [label]="'LBL_MODULE'" class="slds-p-vertical_x-small">
+            <system-label label="LBL_MODULE"/>
+            <system-select [(ngModel)]="moduleSelectedItem"  class="slds-p-vertical_x-small">
                 <system-select-option *ngFor="let option of moduleSelectList" [value]="option.id" [display]="option.name"/>
             </system-select>
         </div>
         <div class="slds-p-vertical_x-small">
-            <system-select [(ngModel)]="compSelectedItem" [disabled]="compDisabled" [label]="'LBL_COMPONENT'">
+            <system-label label="LBL_COMPONENT"/>
+            <system-select [(ngModel)]="compSelectedItem" [disabled]="compDisabled">
                 <system-select-option *ngFor="let option of compSelectList" [value]="option.id" [display]="option.name"/>
             </system-select>
         </div>
@@ -34,7 +36,8 @@
                 <h2><system-label label="LBL_DEPRECATED_MSG"></system-label></h2>
         </div>
         <div class="slds-p-vertical_x-small">
-            <system-select [(ngModel)]="roleSelectedItem" [label]="'LBL_ROLE'">
+            <system-label label="LBL_ROLE"/>
+            <system-select [(ngModel)]="roleSelectedItem">
                 <system-select-option *ngFor="let option of roleSelectList" [value]="option.id" [display]="option.name" [group]="option.group" />
             </system-select>
         </div>
@@ -48,9 +51,9 @@
                 <system-input-version [(ngModel)]="compSelectedItem.version"/>
             </div>
         </div>
-        <div *ngIf="this.mode == 'copy'" class="slds-text-align_center slds-p-vertical_small slds-text-heading_small">
+        <!--div *ngIf="this.mode == 'copy'" class="slds-text-align_center slds-p-vertical_small slds-text-heading_small">
             <system-label label="LBL_NOTE_COPY_CONFIG_INFO"></system-label>
-        </div>
+        </div-->
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="closeDialog()"><system-label label="LBL_CANCEL"></system-label></button>

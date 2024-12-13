@@ -21,6 +21,7 @@ import {DictionaryManagerDefinitions} from "./components/dictionarymanagerdefini
 import {DictionaryManagerDefinitionTabs} from "./components/dictionarymanagerdefinitiontabs";
 import {DictionaryManagerItems} from "./components/dictionarymanageritems";
 import {DictionaryManagerItemDetails} from "./components/dictionarymanageritemdetails";
+import {DictionaryManagerItemReferenceDetails} from "./components/dictionarymanageritemreferencedetails";
 import {DictionaryManagerAddDefinitionModal} from "./components/dictionarymanageradddefinitionmodal";
 import {DictionaryManagerMigrateDefinitionModal} from "./components/dictionarymanagermigratedefinitionmodal";
 import {DictionaryManagerAddItemModal} from "./components/dictionarymanageradditemmodal";
@@ -46,6 +47,9 @@ import {DictionaryManagerIndexDetails} from "./components/dictionarymanagerindex
 import {DictionaryManagerFields} from "./components/dictionarymanagerfields";
 import {DictionaryManagerDeleteFieldsModal} from "./components/dictionarymanagerdeletefieldsmodal";
 import {DictionaryManagerDeleteModal} from "./components/dictionarymanagerdeletemodal";
+
+import {DictionaryIndexes} from "./components/dictionaryindexes";
+import {DictionaryIndexesDefinitions} from "./components/dictionaryindexesdefinitions";
 
 import {DomainManager} from "./components/domainmanager";
 import {DomainManagerDefinitions} from "./components/domainmanagerdefinitions";
@@ -154,6 +158,9 @@ import {DomainManagerEditDefinitionModal} from "./components/domainmanagereditde
 import {CategoryTreeManagerLinkModal} from "./components/categorytreemanagerlinkmodal";
 import {RoleMenuManager} from "./components/rolemenumanager";
 import {RoleMenuManagerEditRoleModal} from "./components/rolemenumanagereditrolemodal";
+import {AdminMenuManager} from "./components/adminmenumanager";
+import {AdminMenuManagerEditGroupModal} from "./components/adminmenumanagereditgroupmodal"
+import {AdminMenuManagerEditComponentModal} from "./components/adminmenumanagereditcomponentmodal";
 import {GitPullFromRepository} from "./components/gitpullfromrepository";
 import {GitStatusOfRepository} from "./components/gitstatusofrepository";
 import {DictionaryManagerRepairAll} from "./components/dictionarymanagerrepairall";
@@ -178,6 +185,7 @@ import {HL7Manager} from './components/hl7manager';
 import {Hl7ManagerType} from './components/hl7managertype';
 import {HL7ManagerRule} from './components/hl7managerrule';
 import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkanban";
+
 
 @NgModule({
     imports: [
@@ -212,6 +220,7 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         DictionaryManagerDefinitionTabs,
         DictionaryManagerItems,
         DictionaryManagerItemDetails,
+        DictionaryManagerItemReferenceDetails,
         DictionaryManagerItemStatus,
         DictionaryManagerAddDefinitionModal,
         DictionaryManagerCloneDefinitionModal,
@@ -243,6 +252,8 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         DictionaryManagerDeleteFieldsModal,
         DictionaryManagerDeleteModal,
         DictionaryManagerRepairAll,
+        DictionaryIndexes,
+        DictionaryIndexesDefinitions,
         FieldsetManager,
         FieldsetManagerFieldsetDetails,
         FieldsetManagerFieldDetails,
@@ -327,6 +338,9 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         ConfigTransfer,
         RoleMenuManager,
         RoleMenuManagerEditRoleModal,
+        AdminMenuManager,
+        AdminMenuManagerEditGroupModal,
+        AdminMenuManagerEditComponentModal,
         GitPullFromRepository,
         GitStatusOfRepository,
         HooksManager,

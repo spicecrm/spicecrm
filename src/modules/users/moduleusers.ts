@@ -36,6 +36,8 @@ import {UserCreatePassword} from "./components/usercreatepassword";
 import {UserSet2FAModal} from "./components/userset2famodal";
 import {UserSecuritySettingsModal} from "./components/usersecuritysettingsmodal";
 import {UserSecurityPasskeyButton} from "./components/usersecuritypasskeybutton";
+import {UserAliasManagerModal} from "./components/useraliasmanagermodal";
+import {UserAliasManagerButton} from "./components/useraliasmanagerbutton";
 
 @NgModule({
     imports: [
@@ -74,7 +76,9 @@ import {UserSecurityPasskeyButton} from "./components/usersecuritypasskeybutton"
         User2FAConfiguration,
         UserSet2FAModal,
         UserSecuritySettingsModal,
-        UserSecurityPasskeyButton
+        UserSecurityPasskeyButton,
+        UserAliasManagerModal,
+        UserAliasManagerButton
     ]
 })
 export class ModuleUsers {

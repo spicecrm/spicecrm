@@ -2,7 +2,7 @@
  * @module ModuleKPIs
  */
 
-import {Component, Input, OnChanges} from '@angular/core';
+import {Component, ElementRef, Input, OnChanges} from '@angular/core';
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {modal} from "../../../services/modal.service";
@@ -27,6 +27,11 @@ export class KPIsContainer implements OnChanges {
     public groupedTargets: any[] = [];
 
     /**
+     * the other targets
+     */
+    public otherTargets: any[] = [];
+
+    /**
      * parentId the KPITarget is related to
      */
     @Input() public parentId: string = '';
@@ -42,7 +47,8 @@ export class KPIsContainer implements OnChanges {
         public backend: backend,
         public toast: toast,
         public layout: layout,
-        public modal: modal
+        public modal: modal,
+        public elementRef: ElementRef
     ) {
     }
 
@@ -55,6 +61,7 @@ export class KPIsContainer implements OnChanges {
      * @private
      */
     public loadKPIs() {
+        this.otherTargets = [];
         this.groupedTargets = [];
         if(this.parentId && this.parentType) {
             this.loading = true;
@@ -79,6 +86,8 @@ export class KPIsContainer implements OnChanges {
     private groupTargets(kpiTargets: any[]) {
         const groupedTargets: any[] = [];
 
+        let others: any[] = [];
+
         if (kpiTargets.length > 0) {
             // Loop through each kpiTarget in the array
 
@@ -102,24 +111,24 @@ export class KPIsContainer implements OnChanges {
                         group.targets.push(target);
                     }
                 } else {
-                    // If no group, push to the 'other' group
-                    const otherGroup = groupedTargets.find(g => g.name === 'other');
-
-                    if (!otherGroup) {
-                        groupedTargets.push({name: 'other', priority: 999, targets: [target]});
-                    } else {
-                        otherGroup.targets.push(target);
-                    }
+                    this.otherTargets.push(target);
                 }
             });
-
-            // After grouping, sort the groups by priority in asc order
-            groupedTargets.sort((a, b) => a.priority - b.priority);
         }
+
+        if(groupedTargets.length > 0 && this.otherTargets.length > 0){
+            groupedTargets.push({
+                name: 'other',
+                priority: 99,
+                targets: this.otherTargets
+            });
+        }
+
+        // After grouping, sort the groups by priority in asc order
+        groupedTargets.sort((a, b) => a.priority - b.priority);
 
         this.groupedTargets = groupedTargets;
     }
-
 
 
     /**
@@ -127,12 +136,8 @@ export class KPIsContainer implements OnChanges {
      * depending on screen width
      */
     get getTileWidthClass() {
-        if (this.layout.screenwidth == 'small') {
-            return 'slds-size--1-of-1';
-        } else if (this.layout.screenwidth == 'medium') {
-            return 'slds-size--1-of-3';
-        } else {
-            return 'slds-size--1-of-5';
-        }
+        let dim = this.elementRef.nativeElement.getBoundingClientRect()
+        let count = Math.floor(dim.width / 350);
+        return dim.width > 350 ?  'slds-size--1-of-' + count : 'slds-size--1-of-1';
     }
 }

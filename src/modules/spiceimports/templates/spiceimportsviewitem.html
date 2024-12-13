@@ -1,0 +1,18 @@
+<div class="slds-box slds-box--border slds-m-around--x-small slds-theme--default">
+    <div class="slds-p-around--small slds-grid" (click)="selectItem()" [ngClass]="{'slds-theme_shade':item.selected}" style="cursor: pointer">
+        <div class="slds-icon_container">
+            <system-icon [module]="model.getField('module')" size="medium"></system-icon>
+        </div>
+        <div class="slds-grow">
+            <div class="slds-grid slds-grid--align-spread">
+                <div class="slds-text-title_caps slds-truncate"><field-container [fieldconfig]="{link: true}" field="name" fielddisplayclass="slds-p-verical--xx-small"/></div>
+                <div class="slds-col--bump-left slds-truncate"><field-container field="file" fielddisplayclass="slds-p-verical--xx-small"/></div>
+            </div>
+            <ul class="slds-list_horizontal slds-has-dividers_left">
+                <li class="slds-item"><field-container field="created_by_user" fielddisplayclass="slds-p-verical--xx-small"/></li>
+                <li class="slds-item"><field-container field="date_entered" fielddisplayclass="slds-p-verical--xx-small"/></li>
+                <li class="slds-item"><field-container field="status" fielddisplayclass="slds-p-verical--xx-small"/></li>
+            </ul>
+        </div>
+    </div>
+</div>

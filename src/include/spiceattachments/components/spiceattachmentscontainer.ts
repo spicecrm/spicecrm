@@ -102,21 +102,39 @@ export class SpiceAttachmentsContainer implements OnDestroy {
     public initialize(routeParams) {
         this.modelattachments.module = routeParams.module;
         this.modelattachments.id = routeParams.id;
-        this.modelattachments.getAttachmentData(routeParams.attachmentId).subscribe({
-            next: (fileData) => {
-                this.file = fileData;
-                this.type = this.file.file_mime_type.toLowerCase();
-                this.blobFile = atob(this.file.file);
-                this.setTabTitle();
+        if(routeParams.fieldname){
+            this.modelattachments.getAttachmentDataByField(routeParams.fieldname).subscribe({
+                next: (fileData) => {
+                    this.file = fileData;
+                    this.type = this.file.file_mime_type.toLowerCase();
+                    this.blobFile = atob(this.file.file);
+                    this.setTabTitle();
 
-                // set imgsrc data for image
-                if (this.fileType == 'image') {
-                    this.imgData = 'data:' + this.file.file_mime_type.toLowerCase() + ';base64,' + this.file.file;
+                    // set imgsrc data for image
+                    if (this.fileType == 'image') {
+                        this.imgData = 'data:' + this.file.file_mime_type.toLowerCase() + ';base64,' + this.file.file;
+                    }
+                }, error: () => {
+                    this.loadingerror = true;
                 }
-            }, error: () => {
-                this.loadingerror = true;
-            }
-        });
+            });
+        } else {
+            this.modelattachments.getAttachmentData(routeParams.attachmentId).subscribe({
+                next: (fileData) => {
+                    this.file = fileData;
+                    this.type = this.file.file_mime_type.toLowerCase();
+                    this.blobFile = atob(this.file.file);
+                    this.setTabTitle();
+
+                    // set imgsrc data for image
+                    if (this.fileType == 'image') {
+                        this.imgData = 'data:' + this.file.file_mime_type.toLowerCase() + ';base64,' + this.file.file;
+                    }
+                }, error: () => {
+                    this.loadingerror = true;
+                }
+            });
+        }
     }
 
     /**

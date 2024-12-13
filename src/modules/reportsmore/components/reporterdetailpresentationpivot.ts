@@ -225,6 +225,8 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
                         value: record[colum.fieldid],
                         columns: [],
                         endnode: false,
+                        field: this.presData.reportmetadata.fields.find(rec => rec.fieldid == colum.fieldid),
+                        record: record,
                         total: 0
                     };
                     headArray.push(headObject);
@@ -306,9 +308,15 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
         if (!columns) columns = this.pivotArray;
         for (let column of columns) {
             if (column.fieldid == fieldid) {
+                let displayRecord = {};
+                displayRecord[column.fieldid] = column.value;
+                displayRecord[column.fieldid + '_val'] = column.value;
+
                 columnArray.push({
                     value: column.value,
-                    span: this.getColumns(column)
+                    span: this.getColumns(column),
+                    field: column.field,
+                    record: displayRecord
                 });
             } else {
                 columnArray = columnArray.concat(this.getColumnsForId(fieldid, column.columns));
