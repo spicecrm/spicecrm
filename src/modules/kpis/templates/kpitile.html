@@ -77,9 +77,8 @@
                 @if (addValues.length > 0) {
                     <div class="slds-grid slds-border_top">
                         @for (addValue of addValues; track $index) {
-                            <div class="slds-text-align--center slds-p-bottom--xx-small slds-p-horizontal--xx-small"
-                                 [ngClass]="addValueClasses($index)">
-                                <system-label class="slds-text-body--small slds-text-color--inverse-weak" [label]="addValue.valueLabel"/>
+                            <div class="slds-text-align--center slds-p-bottom--xx-small slds-p-horizontal--xx-small" [ngClass]="addValueClasses($index)">
+                                <div class="slds-truncate"><system-label class="slds-text-body--small slds-text-color--inverse-weak" [label]="addValue.valueLabel"/></div>
                                 <div class="slds-grid slds-grid--align-center">
                                     <h2 class="slds-text-heading_small slds-truncate">
                                         @if (loading) {
