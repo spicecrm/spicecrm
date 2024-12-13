@@ -42,6 +42,7 @@ class BeanFactory
         'OrgUnits' => ['beanname' => 'OrgUnit'],
         'SystemTenants' => ['beanname' => 'SystemTenant'],
         'Currencies' => ['beanname' => 'Currency'],
+        'UserAliases' => ['beanname' => 'UserAlias'],
     ];
 
     /**

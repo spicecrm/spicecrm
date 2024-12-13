@@ -47,6 +47,8 @@ use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
+ * @deprecated
+ *
  * Vardefs management
  * @api
  */
@@ -55,6 +57,8 @@ class VardefManager{
     static $linkFields;
 
     /**
+     * @deprecated
+     *
      * this method is called within a vardefs.php file which extends from a SugarObject.
      * It is meant to load the vardefs from the SugarObject.
      */

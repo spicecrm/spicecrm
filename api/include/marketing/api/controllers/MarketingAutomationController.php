@@ -11,6 +11,7 @@ use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\modules\Administration\api\controllers\ConfiguratorController;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Emails\Email;
 
@@ -203,8 +204,8 @@ class MarketingAutomationController
      */
     private function decryptBlowfish($key)
     {
-        $blowfishkey = '2fs5uhnjcnpxcpg9';
-        $method = 'blowfish';
+        $blowfishkey = SpiceConfig::getInstance()->get('emailtracking.blowfishkey');
+        $method = 'DES-EDE3-CBC';
         return openssl_decrypt($key, $method, $blowfishkey);
     }
 

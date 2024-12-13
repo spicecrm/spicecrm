@@ -30,8 +30,6 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use Throwable;
 
-require_once('modules/TableDictionary.php');
-
 
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 class SpiceInstaller
