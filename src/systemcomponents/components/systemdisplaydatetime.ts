@@ -75,7 +75,11 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
      * @param value
      */
     @Input('system-display-datetime-show-dayofweek') set setDisplayDayOfWeek(value: boolean) {
-        this.displayDayOfWeek = true;
+        if (value === false) {
+            this.displayDayOfWeek = false;
+        } else {
+            this.displayDayOfWeek = true;
+        }
     }
 
     /**
@@ -84,7 +88,11 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
      */
     private _displayFromNow: boolean = false;
     @Input('system-display-datetime-fromnow') set setDisplayFromNow(value: boolean) {
-        this._displayFromNow = true;
+        if (value === false) {
+            this._displayFromNow = false;
+        } else {
+            this._displayFromNow = true;
+        }
     }
 
     /**
@@ -158,7 +166,7 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
         // if we do not have a date or neither date nor time should be displayed return empty
         if (!this.date || (!this.displayDate && !this.displayTime)) return '';
 
-        if(this._displayFromNow){
+        if(this._displayFromNow === true){
             return this.date.fromNow();
         } else {
             let formatArray = [];
