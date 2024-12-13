@@ -15,6 +15,7 @@ declare var html_beautify: any;
  * a modal that displays an IDOC formatted properly and allows reprocessing the IDOC
  */
 @Component({
+    selector: 'sap-idcos-viewer',
     templateUrl: '../templates/sapidocsviewer.html'
 })
 export class SAPIDOCsViewer implements AfterViewInit {
@@ -48,7 +49,7 @@ export class SAPIDOCsViewer implements AfterViewInit {
      */
     public formatIdoc() {
         this.libloader.loadLib('jsbeautify').subscribe(loaded => {
-            this.xml = html_beautify(this.model.getField('idoc'), {
+            this.xml = html_beautify(this.decodeHTMLEntities(this.model.getField('idoc')), {
                 indent_size: 4,
                 indent_char: " ",
                 indent_with_tabs: false,
@@ -70,6 +71,27 @@ export class SAPIDOCsViewer implements AfterViewInit {
                 templating: ["auto"]
             });
         });
+    }
+
+    private decodeHTMLEntities(text) {
+        var entities = [
+            ['amp', '&'],
+            ['apos', '\''],
+            ['#x27', '\''],
+            ['#x2F', '/'],
+            ['#39', '\''],
+            ['#47', '/'],
+            ['lt', '<'],
+            ['gt', '>'],
+            ['nbsp', ' '],
+            ['quot', '"']
+        ];
+
+        for (var i = 0, max = entities.length; i < max; ++i) {
+            text = text.replace(new RegExp('&' + entities[i][0] + ';', 'g'), entities[i][1]);
+        }
+
+        return text;
     }
 
     /**
