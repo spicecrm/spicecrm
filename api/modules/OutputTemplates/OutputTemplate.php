@@ -238,7 +238,7 @@ class OutputTemplate extends SpiceBean
     private function retrieveBean()
     {
         if ($this->bean_id) {
-            $this->bean = BeanFactory::getBean($this->module_name, $this->bean_id);
+            $this->bean = BeanFactory::getBean($this->module_name, $this->bean_id, ['forceRetrieve'=>true]);
         }
 
         return $this->bean;
