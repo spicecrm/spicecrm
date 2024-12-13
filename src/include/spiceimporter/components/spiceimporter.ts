@@ -121,7 +121,7 @@ export class SpiceImporter implements OnInit {
                 if (fields.hasOwnProperty(field)) {
                     let thisField = fields[field];
 
-                    if (thisField.type !== 'link' && thisField.type !== 'relate' && (thisField.source != 'non-db' || this.showNonDbFields) && thisField.name != 'id') {
+                    if (thisField.type !== 'link' && thisField.type !== 'relate' && (thisField.source != 'non-db' || this.spiceImporter.showNonDbFields) && thisField.name != 'id') {
 
                         thisField.displayname = thisField.name;
 
@@ -228,7 +228,7 @@ export class SpiceImporter implements OnInit {
     public nextStep() {
         switch (this.spiceImporter.currentImportStep) {
             case 0:
-                if (this.spiceImporter.fileName === '') {
+                if (this.spiceImporter.file.filename === '') {
                     return this.toast.sendToast(this.language.getLabel('MSG_SELECT_VALID_FILE'), 'error');
                 } else {
                     if (this.spiceImporter.importTemplateAction == 'choose' &&
@@ -358,26 +358,27 @@ export class SpiceImporter implements OnInit {
         this.spiceImporter.result = {};
         this.processing = true;
 
-        this.backend.postRequest('module/SpiceImports/import',  null,{
-            objectimport: preparedObjectImport,
-        }).subscribe(res => { 
+        this.backend.postRequest('module/SpiceImports/import',  null,preparedObjectImport).subscribe({
+            next: (res) => {
+                switch (res.status) {
+                    case 'imported':
+                        this.spiceImporter.result = res;
+                        this.toast.sendToast(this.language.getLabel('LBL_SUCCESS'), 'success');
+                        break;
+                    case 'scheduled':
+                        this.gotoModule();
+                        this.toast.sendToast(res.msg, 'success');
+                        break;
+                    case 'error':
+                        this.toast.sendToast(res.msg, 'error', '', false);
+                        break;
+                }
 
-            switch (res.status) {
-                case 'imported':
-                    this.spiceImporter.result = res;
-                    this.toast.sendToast(this.language.getLabel('LBL_SUCCESS'), 'success');
-                    break;
-                case 'scheduled':
-                    this.gotoModule();
-                    this.toast.sendToast(res.msg, 'success');
-                    break;
-                case 'error':
-                    this.toast.sendToast(res.msg, 'error', '', false);
-                    break;
+                this.processing = false;
+                this.spiceImporter.currentImportStep = 4;
+                this.spiceImporter.importid = res.id;
+                this.spiceImporter.importstatus = res.status;
             }
-
-            this.processing = false;
-            this.spiceImporter.currentImportStep = 4;
         });
     }
 
@@ -387,8 +388,7 @@ export class SpiceImporter implements OnInit {
     public prepareObjectImport() {
 
         let objectImport = _.pick(this.spiceImporter,
-            'fileName',
-            'fileId',
+            'file',
             'fileHeader',
             'fileMapping',
             'templateName',

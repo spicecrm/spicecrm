@@ -1,8 +1,6 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
-    <span *ngIf="fieldconfig.displayfromnow">{{displaySpan}}</span>
-    <span *ngIf="!fieldconfig.displayfromnow">{{displayDate}}</span>
-    <span *ngIf="!fieldconfig.displayfromnow" class="slds-p-left--x-small" style="font-style: italic">{{displayTime}}</span>
+    <system-display-datetime [system-display-datetime-fromnow]="!!fieldconfig.displayfromnow" [date]="this.value"></system-display-datetime>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="css_classes">
     <div class="slds-grid">

@@ -409,9 +409,11 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      */
     public setInputVisible(inputContainer: HTMLInputElement, e: MouseEvent) {
         e.stopPropagation();
-        this.inputIsVisible = true;
-        this.cdRef.detectChanges();
-        inputContainer.focus();
-        inputContainer.click();
+        if(!this.disabled) {
+            this.inputIsVisible = true;
+            this.cdRef.detectChanges();
+            inputContainer.focus();
+            inputContainer.click();
+        }
     }
 }

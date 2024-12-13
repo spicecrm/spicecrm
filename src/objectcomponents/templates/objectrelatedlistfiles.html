@@ -37,6 +37,7 @@
                     </div>
                 </div>
                 <button *ngIf="!componentconfig.disableupload" class="slds-m-left--xxx-small slds-button slds-button--icon-border" (click)="selectFile()" system-title="LBL_UPLOAD"><system-utility-icon size="x-small" icon="upload"></system-utility-icon></button>
+                <button class="slds-m-left--xxx-small slds-button slds-button--icon-border" (click)="loadFiles()" system-title="LBL_RELOAD"><system-utility-icon size="x-small" icon="refresh"></system-utility-icon></button>
             </div>
         </header>
         <input #fileupload style="display:none" type="file" multiple (click)="fileupload.value = null" (change)="uploadFile()"/>

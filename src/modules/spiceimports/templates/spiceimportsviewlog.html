@@ -1,0 +1,71 @@
+@if (loading || totalCount > 0) {
+    <div class="slds-theme--default" (system-to-bottom)="loadMore()">
+        <table class="slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_bordered slds-no-row-hover">
+            <thead>
+            <tr class="slds-line-height_reset">
+                <th class="" scope="col" style="width: 2rem;">#</th>
+                <th class="" scope="col">
+                    <div class="slds-truncate slds-p-horizontal--x-small">
+                        <system-label label="LBL_DATE"/>
+                    </div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate slds-p-horizontal--x-small">
+                        <system-label label="LBL_MESSAGE"/>
+                    </div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate slds-p-horizontal--x-small">
+                        <system-label label="LBL_REFERENCE"/>
+                    </div>
+                </th>
+                <th scope="col" style="width: 2rem;"></th>
+            </tr>
+            </thead>
+            <tbody>
+                @for (logEntry of logEntries; track logEntry.id) {
+                    <tr class="slds-hint-parent">
+                        <td data-label="Row">
+                            <div class="slds-truncate">{{ logEntry.rowpointer }}</div>
+                        </td>
+                        <td data-label="Date">
+                            <div class="slds-truncate">
+                                <system-display-datetime [date]="logEntry.date_entered"/>
+                            </div>
+                        </td>
+                        <td data-label="Message">
+                            <div class="slds-truncate">{{ logEntry.msg }}</div>
+                        </td>
+                        <td data-label="Message">
+                            <div *ngIf="logEntry.reference_id" class="slds-grid slds-grid--vertical-align-center">
+                                <system-icon [module]="module" size="x-small"/>
+                                <div class="slds-truncate" system-model-popover [module]="module"
+                                     [id]="logEntry.reference_id">{{ logEntry.reference_summary ?? logEntry.reference_id }}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="slds-text-align--right">
+                            <button class="slds-button slds-button--icon"
+                                    (click)="logEntry.showdetails = !logEntry.showdetails">
+                                <system-button-icon
+                                        [icon]="logEntry.showdetails ? 'chevronup' : 'chevrondown'"></system-button-icon>
+                            </button>
+                        </td>
+                    </tr>
+                    @if (logEntry.showdetails) {
+                        <tr class="slds-p-around--none">
+                            <td colspan="5" class="slds-p-around--none">
+                                <spice-imports-view-log-details [header]="header" [data]="logEntry.data"/>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+            <tbody *ngIf="loading" system-table-stencils columns="3" rows="20" [select]="true" [tools]="true"></tbody>
+        </table>
+    </div>
+} @else {
+    <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+        <system-illustration-no-records><system-label label="LBL_NO_RECORDS"/></system-illustration-no-records>
+    </div>
+}

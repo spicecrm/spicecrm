@@ -58,82 +58,82 @@ SpiceDictionaryHandler::getInstance()->dictionary['Project'] = [
             'source' => 'non-db',
             'vname' => 'LBL_TOTAL_ACTUAL_EFFORT',
         ],
-        'accounts' => [
-            'name' => 'accounts',
-            'type' => 'link',
-            'module' => 'Accounts',
-            'relationship' => 'projects_accounts',
-            'source' => 'non-db',
-            'ignore_role' => true,
-            'vname' => 'LBL_ACCOUNTS',
-        ],
-        'contacts' => [
-            'name' => 'contacts',
-            'type' => 'link',
-            'module' => 'Contacts',
-            'relationship' => 'projects_contacts',
-            'source' => 'non-db',
-            'ignore_role' => true,
-            'vname' => 'LBL_CONTACTS',
-        ],
-        'users' => [
-            'name' => 'users',
-            'type' => 'link',
-            'module' => 'Users',
-            'relationship' => 'projects_users',
-            'source' => 'non-db',
-            'vname' => 'LBL_USERS',
-        ],
-        'opportunities' => [
-            'name' => 'opportunities',
-            'type' => 'link',
-            'module' => 'Opportunities',
-            'relationship' => 'projects_opportunities',
-            'source' => 'non-db',
-            'ignore_role' => true,
-            'vname' => 'LBL_OPPORTUNITIES',
-        ],
-        'notes' => [
-            'name' => 'notes',
-            'type' => 'link',
-            'module' => 'Notes',
-            'relationship' => 'projects_notes',
-            'source' => 'non-db',
-            'vname' => 'LBL_NOTES',
-        ],
-        'tasks' => [
-            'name' => 'tasks',
-            'type' => 'link',
-            'module' => 'Tasks',
-            'relationship' => 'projects_tasks',
-            'source' => 'non-db',
-            'vname' => 'LBL_TASKS',
-        ],
-        'meetings' => [
-            'name' => 'meetings',
-            'type' => 'link',
-            'module' => 'Meetings',
-            'relationship' => 'projects_meetings',
-            'source' => 'non-db',
-            'vname' => 'LBL_MEETINGS',
-        ],
-        'calls' => [
-            'name' => 'calls',
-            'type' => 'link',
-            'module' => 'Calls',
-            'relationship' => 'projects_calls',
-            'source' => 'non-db',
-            'vname' => 'LBL_CALLS',
-            'join_name' => 'calls'
-        ],
-        'emails' => [
-            'name' => 'emails',
-            'type' => 'link',
-            'module' => 'Emails',
-            'relationship' => 'emails_projects_rel',
-            'source' => 'non-db',
-            'vname' => 'LBL_EMAILS',
-        ],
+//        'accounts' => [
+//            'name' => 'accounts',
+//            'type' => 'link',
+//            'module' => 'Accounts',
+//            'relationship' => 'projects_accounts',
+//            'source' => 'non-db',
+//            'ignore_role' => true,
+//            'vname' => 'LBL_ACCOUNTS',
+//        ],
+//        'contacts' => [
+//            'name' => 'contacts',
+//            'type' => 'link',
+//            'module' => 'Contacts',
+//            'relationship' => 'projects_contacts',
+//            'source' => 'non-db',
+//            'ignore_role' => true,
+//            'vname' => 'LBL_CONTACTS',
+//        ],
+//        'users' => [
+//            'name' => 'users',
+//            'type' => 'link',
+//            'module' => 'Users',
+//            'relationship' => 'projects_users',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_USERS',
+//        ],
+//        'opportunities' => [
+//            'name' => 'opportunities',
+//            'type' => 'link',
+//            'module' => 'Opportunities',
+//            'relationship' => 'projects_opportunities',
+//            'source' => 'non-db',
+//            'ignore_role' => true,
+//            'vname' => 'LBL_OPPORTUNITIES',
+//        ],
+//        'notes' => [
+//            'name' => 'notes',
+//            'type' => 'link',
+//            'module' => 'Notes',
+//            'relationship' => 'projects_notes',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_NOTES',
+//        ],
+//        'tasks' => [
+//            'name' => 'tasks',
+//            'type' => 'link',
+//            'module' => 'Tasks',
+//            'relationship' => 'projects_tasks',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_TASKS',
+//        ],
+//        'meetings' => [
+//            'name' => 'meetings',
+//            'type' => 'link',
+//            'module' => 'Meetings',
+//            'relationship' => 'projects_meetings',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_MEETINGS',
+//        ],
+//        'calls' => [
+//            'name' => 'calls',
+//            'type' => 'link',
+//            'module' => 'Calls',
+//            'relationship' => 'projects_calls',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CALLS',
+//            'join_name' => 'calls'
+//        ],
+//        'emails' => [
+//            'name' => 'emails',
+//            'type' => 'link',
+//            'module' => 'Emails',
+//            'relationship' => 'emails_projects_rel',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_EMAILS',
+//        ],
 #migrated
 //        'documents' => [
 //            'name' => 'documents',
@@ -295,72 +295,72 @@ SpiceDictionaryHandler::getInstance()->dictionary['Project'] = [
             'relationship' => 'project_primary_contact',
             'source' => 'non-db',
         ],
-        'products' => [
-            'name' => 'products',
-            'vname' => 'LBL_PRODUCTS',
-            'type' => 'link',
-            'module' => 'Products',
-            'relationship' => 'projects_products',
-            'source' => 'non-db'
-        ]
+//        'products' => [
+//            'name' => 'products',
+//            'vname' => 'LBL_PRODUCTS',
+//            'type' => 'link',
+//            'module' => 'Products',
+//            'relationship' => 'projects_products',
+//            'source' => 'non-db'
+//        ]
     ],
 
     'relationships' => [
-        'projects_notes' => [
-            'lhs_module' => 'Projects',
-            'lhs_table' => 'projects',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Notes',
-            'rhs_table' => 'notes',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Projects'
-        ],
-        'projects_tasks' => [
-            'lhs_module' => 'Projects',
-            'lhs_table' => 'projects',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Tasks',
-            'rhs_table' => 'tasks',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Projects'
-        ],
-        'projects_meetings' => [
-            'lhs_module' => 'Projects',
-            'lhs_table' => 'projects',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Meetings',
-            'rhs_table' => 'meetings',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Projects'
-        ],
-        'projects_calls' => [
-            'lhs_module' => 'Projects',
-            'lhs_table' => 'projects',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Calls',
-            'rhs_table' => 'calls',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Projects'
-        ],
-        'projects_emails' => [
-            'lhs_module' => 'Projects',
-            'lhs_table' => 'projects',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Emails',
-            'rhs_table' => 'emails',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Projects'
-        ],
+//        'projects_notes' => [
+//            'lhs_module' => 'Projects',
+//            'lhs_table' => 'projects',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Notes',
+//            'rhs_table' => 'notes',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Projects'
+//        ],
+//        'projects_tasks' => [
+//            'lhs_module' => 'Projects',
+//            'lhs_table' => 'projects',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Tasks',
+//            'rhs_table' => 'tasks',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Projects'
+//        ],
+//        'projects_meetings' => [
+//            'lhs_module' => 'Projects',
+//            'lhs_table' => 'projects',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Meetings',
+//            'rhs_table' => 'meetings',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Projects'
+//        ],
+//        'projects_calls' => [
+//            'lhs_module' => 'Projects',
+//            'lhs_table' => 'projects',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Calls',
+//            'rhs_table' => 'calls',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Projects'
+//        ],
+//        'projects_emails' => [
+//            'lhs_module' => 'Projects',
+//            'lhs_table' => 'projects',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Emails',
+//            'rhs_table' => 'emails',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Projects'
+//        ],
         'projects_projectactivities' => [
             'lhs_module' => 'Projects',
             'lhs_table' => 'projects',
@@ -478,7 +478,7 @@ if(file_exists('extensions/modules/ProjectWBSs')) {
     ];
 }
 
-VardefManager::createVardef('Projects', 'Project', ['default', 'assignable']);
+//VardefManager::createVardef('Projects', 'Project', ['default', 'assignable']);
 
 // CR1000336
 if (file_exists('extensions/modules/SystemDeploymentReleases')) {

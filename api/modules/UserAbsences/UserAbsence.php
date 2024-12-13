@@ -29,14 +29,6 @@ class UserAbsence extends SpiceBean
 
         return $app_list_strings['userabsences_type_dom'][$this->type].', '.$start;
     }
-    public function bean_implements($interface)
-    {
-        switch ($interface) {
-            case 'ACL':
-                return true;
-        }
-        return false;
-    }
 
     public function getSubstituteIDs()
     {

@@ -100,8 +100,6 @@ class SpiceDictionaryDomainValidations
             }
         }
 
-        $validationsArray[$valname]['validationvalues'] = array_values($validationsArray[$valname]['validationvalues']);
-
         SpiceCache::set('domainvalidations', $validationsArray);
 
         $this->domainValidations = $validationsArray;

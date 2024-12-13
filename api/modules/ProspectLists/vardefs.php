@@ -250,20 +250,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             ]
         ],
         */
-        'campaigns' => [
-            'name' => 'campaigns',
-            'type' => 'link',
-            'vname' => 'LBL_CAMPAIGNS',
-            'relationship' => 'prospect_list_campaigns',
-            'source' => 'non-db',
-        ],
-        'campaigntasks' => [
-            'name' => 'campaigntasks',
-            'type' => 'link',
-            'vname' => 'LBL_CAMPAIGNTASKS',
-            'relationship' => 'prospect_list_campaigntasks',
-            'source' => 'non-db',
-        ],
+//        'campaigns' => [
+//            'name' => 'campaigns',
+//            'type' => 'link',
+//            'vname' => 'LBL_CAMPAIGNS',
+//            'relationship' => 'prospect_list_campaigns',
+//            'source' => 'non-db',
+//        ],
+//        'campaigntasks' => [
+//            'name' => 'campaigntasks',
+//            'type' => 'link',
+//            'vname' => 'LBL_CAMPAIGNTASKS',
+//            'relationship' => 'prospect_list_campaigntasks',
+//            'source' => 'non-db',
+//        ],
         /*
         'users' => [
             'name' => 'users',
@@ -301,14 +301,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'source' => 'non-db',
             'module' => 'ProspectListFilters'
         ],
-        'emailschedules' => [
-            'name' => 'emailschedules',
-            'vname' => 'LBL_EMAIL_SCHEDULES',
-            'type' => 'link',
-            'relationship' => 'prospectlist_emailschedules',
-            'source' => 'non-db',
-            'module' => 'EmailSchedules'
-        ],
+//        'emailschedules' => [
+//            'name' => 'emailschedules',
+//            'vname' => 'LBL_EMAIL_SCHEDULES',
+//            'type' => 'link',
+//            'relationship' => 'prospectlist_emailschedules',
+//            'source' => 'non-db',
+//            'module' => 'EmailSchedules'
+//        ],
         'prospectlistunsubscribes' => [
             'name' => 'prospectlistunsubscribes',
             'vname' => 'LBL_PROSPECTLIST_UNSUBSCRIBES',
@@ -378,4 +378,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
     ]
 ];
 
-VardefManager::createVardef('ProspectLists', 'ProspectList', ['assignable', 'default']);
+//VardefManager::createVardef('ProspectLists', 'ProspectList', ['assignable', 'default']);

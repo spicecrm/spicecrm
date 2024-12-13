@@ -82,6 +82,9 @@ class SpiceDictionaryDefinition
 
         // merge the remaining fields
         foreach ($vardefDetails['fields'] as $fieldName => $definition) {
+
+            if(!$definition['name'] || !$definition['type']) continue;
+
             // write to the cached fields
             $sysDictionaryField = [
                 'id' => SpiceUtils::createGuid(),
@@ -89,7 +92,7 @@ class SpiceDictionaryDefinition
                 'sysdictionarytablename' => $this->tablename,
                 'sysdictionarytableaudited' => $this->definition->audited,
                 'sysdictionarydefinition_id' => $this->id,
-                'fieldname' => $definition['name'],
+                'fieldname' => $definition['name'] ?: $fieldName,
                 'fieldtype' => $definition['type'],
                 'fielddefinition' => json_encode($definition)
             ];
@@ -289,6 +292,8 @@ class SpiceDictionaryDefinition
 
                 foreach ($definitions as $i => $definition) {
                     if ($resDef->name != $definition->name) continue;
+                    # delete the global cached dictionary field to prevent duplicate
+                    DBManagerFactory::getInstance()->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryitem_id = '{$definitions[$i]->sysdictionaryitem_id}' AND sysdictionarydefinition_id ='{$item['sysdictionarydefinition_id']}' AND fieldname = '$resDef->name'");
                     $definitions[$i] = $resDef;
                     $exists = true;
                 }
@@ -337,23 +342,6 @@ class SpiceDictionaryDefinition
                 SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']] = [];
 
                 SpiceDictionaryHandler::loadModuleFiles($module);
-
-                // get the ACL territories for a module
-                $territoryVardefs = self::addACLTerritoryFields($module);
-                if($territoryVardefs) {
-                    SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['fields'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['fields'], $territoryVardefs['fields']);
-                    SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['indices'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['indices'], $territoryVardefs['indices']);
-                    SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['relationships'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['relationships'], $territoryVardefs['relationships']);
-                }
-
-                // get the ACL vardefs for a module
-                $aclVardefs = self::addACLFields($module);
-                if($aclVardefs) {
-                    SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['fields'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['fields'], $aclVardefs['fields']);
-                    SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['indices'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['indices'], $aclVardefs['indices']);
-                    SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['relationships'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['relationships'], $aclVardefs['relationships']);
-                }
-
 
                 // get the module Details and return the data
                 return ['fields' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['fields'],

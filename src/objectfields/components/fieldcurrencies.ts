@@ -27,22 +27,6 @@ export class fieldCurrencies extends fieldGeneric {
         this.currencies = this.currency.getCurrencies().sort((a, b) => a.name.localeCompare(b.name));
     }
 
-    /**
-     * a getter for the value bound top the model
-     */
-    get value() {
-        return this.model.getField(this.fieldname);
-    }
-
-    /**
-     * a setter that returns the value to the model and triggers the validation
-     *
-     * @param val the new value
-     */
-    set value(val) {
-        this.model.setField(this.fieldname, val.id);
-    }
-
     public getCurrencySymbol() {
         let currencyid = -99;
 

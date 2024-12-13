@@ -7,6 +7,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\data\Link2;
 use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryField;
@@ -37,17 +38,23 @@ class One2MBeanRelationship extends One2MRelationship
      * @return void
      */
     public function activate(SpiceDictionaryRelationship $relationship){
-        $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
-        $rhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
-        $lhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
-        $rhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->rhs_sysdictionaryitem_id);
-        $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
-        $rhsField = SpiceDictionaryField::getField($rhsDictionaryitem, $rhsDictionaryDefinition);
 
         // clear current definitions
         $db = DBManagerFactory::getInstance();
         $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}'");
         $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
+
+        // try to find both sides definitions and ids
+        try {
+            $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
+            $rhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
+            $lhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
+            $rhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->rhs_sysdictionaryitem_id);
+            $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
+            $rhsField = SpiceDictionaryField::getField($rhsDictionaryitem, $rhsDictionaryDefinition);
+        } catch(Exception $e){
+            return false;
+        }
 
         // build the Defs
         $defs = [
@@ -62,6 +69,11 @@ class One2MBeanRelationship extends One2MRelationship
             'rhs_key' => $rhsField->fieldname,
             'deleted' => 0
         ];
+
+        if($this->relationship_role_column && $this->relationship_role_column_value){
+            $defs['relationship_role_column'] = $this->relationship_role_column;
+            $defs['relationship_role_column_value'] = $this->relationship_role_column_value;
+        }
 
         // make sure we delete any current relationship with the same name (might be the case if we have the same from legacy)
         $db->query("DELETE FROM relationships WHERE relationship_name='{$defs['relationship_name']}'");
@@ -159,6 +171,9 @@ class One2MBeanRelationship extends One2MRelationship
                 ]);
             }
         }
+
+        // completed the activation
+        return true;
     }
 
     /**

@@ -1144,13 +1144,13 @@ class SpiceBean
     {
         $table_name = $this->get_audit_table_name();
 
-        require('metadata/audit_templateMetaData.php');
-
-        // Bug: 52583 Need ability to customize template for audit tables
-        $custom = 'custom/metadata/audit_templateMetaData_' . $this->getTableName() . '.php';
-        if (file_exists($custom)) {
-            require($custom);
-        }
+//        require('metadata/audit_templateMetaData.php');
+//
+//        // Bug: 52583 Need ability to customize template for audit tables
+//        $custom = 'custom/metadata/audit_templateMetaData_' . $this->getTableName() . '.php';
+//        if (file_exists($custom)) {
+//            require($custom);
+//        }
 
         $fieldDefs = SpiceDictionary::getInstance()->dictionary['audit']['fields'];
         $indices   = SpiceDictionary::getInstance()->dictionary['audit']['indices'];
@@ -1183,13 +1183,13 @@ class SpiceBean
     {
         $table_name = $this->get_audit_table_name();
 
-        require('metadata/audit_templateMetaData.php');
-
-        // Bug: 52583 Need ability to customize template for audit tables
-        $custom = 'custom/metadata/audit_templateMetaData_' . $this->getTableName() . '.php';
-        if (file_exists($custom)) {
-            require($custom);
-        }
+//        require('metadata/audit_templateMetaData.php');
+//
+//        // Bug: 52583 Need ability to customize template for audit tables
+//        $custom = 'custom/metadata/audit_templateMetaData_' . $this->getTableName() . '.php';
+//        if (file_exists($custom)) {
+//            require($custom);
+//        }
 
         $fieldDefs = SpiceDictionary::getInstance()->dictionary['audit']['fields'];
         $indices   = SpiceDictionary::getInstance()->dictionary['audit']['indices'];

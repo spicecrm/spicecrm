@@ -54,12 +54,21 @@ class M2MRelationship extends Relationship
     public function activate(SpiceDictionaryRelationship $relationship){
         $db = DBManagerFactory::getInstance();
 
-        $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
-        $rhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
-        $lhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
-        $rhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->rhs_sysdictionaryitem_id);
-        $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
-        $rhsField = SpiceDictionaryField::getField($rhsDictionaryitem, $rhsDictionaryDefinition);
+        // clear current definitions
+        $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}'");
+        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
+
+        // try to find both sides definitions and ids
+        try {
+            $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
+            $rhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
+            $lhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
+            $rhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->rhs_sysdictionaryitem_id);
+            $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
+            $rhsField = SpiceDictionaryField::getField($rhsDictionaryitem, $rhsDictionaryDefinition);
+        } catch (Exception $e) {
+            return false;
+        }
 
         // get the join definitions
         $joinDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->join_sysdictionarydefinition_id);
@@ -74,9 +83,7 @@ class M2MRelationship extends Relationship
         $joinLhsField = SpiceDictionaryField::getField($joinLhsDictionaryitem, $joinDictionaryDefinition);
         $joinRhsField = SpiceDictionaryField::getField($joinRhsDictionaryitem, $joinDictionaryDefinition);
 
-        // clear current definitions
-        $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}'");
-        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
+
 
         // build the Defs
         $defs = [
@@ -116,6 +123,11 @@ class M2MRelationship extends Relationship
                 'duplicate_merge' => $relationship->relationship->lhs_duplicatemerge
             ];
 
+            // set to load default
+            if($relationship->relationship->lhs_linkdefault){
+                $leftFieldDefs['default'] = true;
+            }
+
             // if we are self referencing add the side
             if($lhsDictionaryDefinition == $rhsDictionaryDefinition){
                 $leftFieldDefs['side'] = 'right';
@@ -147,8 +159,13 @@ class M2MRelationship extends Relationship
                 'source' => 'non-db',
                 'module' => $lhsDictionaryDefinition->getModuleName(),
                 'vname' => $relationship->relationship->rhs_linklabel,
-                'duplicate_merge' => $relationship->relationship->lhs_duplicatemerge
+                'duplicate_merge' => $relationship->relationship->rhs_duplicatemerge
             ];
+
+            // set to load default
+            if($relationship->relationship->rhs_linkdefault){
+                $rightFieldDefs['default'] = true;
+            }
 
             // if we are self referencing add the side
             if($lhsDictionaryDefinition == $rhsDictionaryDefinition){
@@ -170,6 +187,9 @@ class M2MRelationship extends Relationship
                 'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
             ]);
         }
+
+        // completed the activation
+        return true;
     }
 
     /**
@@ -330,38 +350,38 @@ class M2MRelationship extends Relationship
         $lhsLinkName = $this->lhsLink;
         $rhsLinkName = $this->rhsLink;
 
-        if (empty($lhs->$lhsLinkName) && !$lhs->load_relationship($lhsLinkName))
+        if ($lhsLinkName && empty($lhs->$lhsLinkName) && !$lhs->load_relationship($lhsLinkName))
         {
             $lhsClass = get_class($lhs);
             LoggerManager::getLogger()->fatal('relationships', "could not load LHS $lhsLinkName in $lhsClass in M2M");
             return false;
         }
-        if (empty($rhs->$rhsLinkName) && !$rhs->load_relationship($rhsLinkName))
+        if ($rhsLinkName && empty($rhs->$rhsLinkName) && !$rhs->load_relationship($rhsLinkName))
         {
             $rhsClass = get_class($rhs);
             LoggerManager::getLogger()->fatal('relationships', "could not load RHS $rhsLinkName in $rhsClass in M2M");
             return false;
         }
 
-            $lhs->$lhsLinkName->addBean($rhs);
-            $rhs->$rhsLinkName->addBean($lhs);
 
-            $this->callBeforeAdd($lhs, $rhs, $lhsLinkName);
-            $this->callBeforeAdd($rhs, $lhs, $rhsLinkName);
+
+        if($lhsLinkName) $this->callBeforeAdd($lhs, $rhs, $lhsLinkName);
+        if($rhsLinkName) $this->callBeforeAdd($rhs, $lhs, $rhsLinkName);
 
         //Many to many has no additional logic, so just add a new row to the table and notify the beans.
         $dataToInsert = $this->getRowToInsert($lhs, $rhs, $additionalFields);
 
         $this->addRow($dataToInsert);
 
-        if ($this->self_referencing)
+        if($lhsLinkName) $lhs->$lhsLinkName->addBean($rhs);
+        if($rhsLinkName) $rhs->$rhsLinkName->addBean($lhs);
+
+        if ($this->self_referencing) {
             $this->addSelfReferencing($lhs, $rhs, $additionalFields);
+        }
 
-            $lhs->$lhsLinkName->addBean($rhs);
-            $rhs->$rhsLinkName->addBean($lhs);
-
-            $this->callAfterAdd($lhs, $rhs, $lhsLinkName, $dataToInsert);
-            $this->callAfterAdd($rhs, $lhs, $rhsLinkName, $dataToInsert);
+        if($lhsLinkName) $this->callAfterAdd($lhs, $rhs, $lhsLinkName, $dataToInsert);
+        if($rhsLinkName) $this->callAfterAdd($rhs, $lhs, $rhsLinkName, $dataToInsert);
 
         $this->reindexBeans($lhs, $rhs);
 

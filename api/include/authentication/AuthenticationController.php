@@ -164,7 +164,7 @@ class AuthenticationController
     public function authenticate($authParams = null)
     {
         if(!$authParams) {
-            $authParams = RESTManager::getInstance()->parseAuthParams();
+            $authParams = RESTManager::getInstance()->getAuthParams();
         }
 
         if ($authParams->authType == 'none') return;
@@ -213,7 +213,7 @@ class AuthenticationController
         if (LDAPAuthenticate::isLdapEnabled()) $type = 'LDAP';
 
         // if we do not have the audata get it from teh REST Call
-        if(!$authData) $authData = RESTManager::getInstance()->parseAuthParams()->authData;
+        if(!$authData) $authData = RESTManager::getInstance()->getAuthParams()->authData;
         $tokenIssuer = $authData->tokenIssuer;
 
         if (!empty($tokenIssuer)) $type = $tokenIssuer;
@@ -519,7 +519,7 @@ class AuthenticationController
             throw new UnauthorizedException('Tenant expired', 401);
         }
 
-        $tenant->switchToTenant();
+        SystemTenant::switchToTenant($tenant->id);
 
         $this->systemtenantid = $tenant->id;
         $this->systemtenantname = $tenant->name;
