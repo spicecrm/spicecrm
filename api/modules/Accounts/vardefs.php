@@ -825,22 +825,22 @@ if (file_exists("extensions/modules/ServiceOrders")) {
         'module' => 'ServiceOrders',
         'default' => false
     ];
-    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['serviceorders_add'] = [
-        'name' => 'serviceorders_add',
-        'type' => 'link',
-        'relationship' => 'serviceorders_accounts_add',
-        'source' => 'non-db',
-        'vname' => 'LBL_SERVICEORDERS',
-        'module' => 'ServiceOrders',
-        'default' => false
-    ];
-    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['serviceorder_role'] = [
-        'name' => 'serviceorder_role',
-        'type' => 'enum',
-        'options' => 'serviceorders_accounts_roles_dom',
-        'source' => 'non-db',
-        'vname' => 'LBL_SERVICEORDER_ROLE'
-    ];
+//    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['serviceorders_add'] = [
+//        'name' => 'serviceorders_add',
+//        'type' => 'link',
+//        'relationship' => 'serviceorders_accounts_add',
+//        'source' => 'non-db',
+//        'vname' => 'LBL_SERVICEORDERS',
+//        'module' => 'ServiceOrders',
+//        'default' => false
+//    ];
+//    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['serviceorder_role'] = [
+//        'name' => 'serviceorder_role',
+//        'type' => 'enum',
+//        'options' => 'serviceorders_accounts_roles_dom',
+//        'source' => 'non-db',
+//        'vname' => 'LBL_SERVICEORDER_ROLE'
+//    ];
 }
 if (file_exists("modules/ServiceTickets")) {
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['servicetickets'] = [
