@@ -38,135 +38,135 @@ use SpiceCRM\includes\SugarObjects\VardefManager;
 
 SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads', 'audited' => true, 'unified_search' => true, 'full_text_search' => true, 'unified_search_default_enabled' => true, 'duplicate_merge' => true,
     'comment' => 'Leads are persons of interest early in a sales cycle', 'fields' => [
-        'converted' =>
-            [
-                'name' => 'converted',
-                'vname' => 'LBL_CONVERTED',
-                'type' => 'bool',
-                'default' => '0',
-                'comment' => 'Has Lead been converted to a Contact (and other Sugar objects)'
-            ],
-        'refered_by' =>
-            [
-                'name' => 'refered_by',
-                'vname' => 'LBL_REFERRED_BY',
-                'type' => 'varchar',
-                'len' => '100',
-                'comment' => 'Identifies who refered the lead',
-                'merge_filter' => 'enabled',
-            ],
-        'lead_source' =>
-            [
-                'name' => 'lead_source',
-                'vname' => 'LBL_SOURCE',
-                'type' => 'enum',
-                'options' => 'lead_source_dom',
-                'len' => '100',
-                'audited' => true,
-                'comment' => 'Lead source (ex: Web, print)',
-                'merge_filter' => 'enabled',
-            ],
-        'lead_source_description' =>
-            [
-                'name' => 'lead_source_description',
-                'vname' => 'LBL_SOURCE_DESCRIPTION',
-                'type' => 'text',
-                'comment' => 'Description of the lead source'
-            ],
-        'classification' =>
-            [
-                'name' => 'classification',
-                'vname' => 'LBL_CLASSIFICATION',
-                'type' => 'enum',
-                'len' => '100',
-                'options' => 'lead_classification_dom',
-                'audited' => true,
-                'comment' => 'Classification of the lead',
-                'merge_filter' => 'enabled',
-            ],
-        'lead_type' =>
-            [
-                'name' => 'lead_type',
-                'vname' => 'LBL_TYPE',
-                'type' => 'enum',
-                'len' => '3',
-                'options' => 'lead_type_dom',
-                'audited' => true,
-                'default' => 'b2b',
-                'comment' => 'type of the lead .. B2B or B2C',
-                'merge_filter' => 'enabled',
-            ],
-        'status' =>
-            [
-                'name' => 'status',
-                'vname' => 'LBL_STATUS',
-                'type' => 'enum',
-                'len' => '100',
-                'options' => 'lead_status_dom',
-                'audited' => true,
-                'comment' => 'Status of the lead',
-                'merge_filter' => 'enabled',
-            ],
-        'status_description' =>
-            [
-                'name' => 'status_description',
-                'vname' => 'LBL_STATUS_DESCRIPTION',
-                'type' => 'text',
-                'comment' => 'Description of the status of the lead'
-            ],
-        'department' =>
-            [
-                'name' => 'department',
-                'vname' => 'LBL_DEPARTMENT',
-                'type' => 'varchar',
-                'len' => '100',
-                'comment' => 'Department the lead belongs to',
-                'merge_filter' => 'enabled',
-            ],
-        'reports_to_id' =>
-            [
-                'name' => 'reports_to_id',
-                'vname' => 'LBL_REPORTS_TO_ID',
-                'type' => 'id',
-                'reportable' => false,
-                'comment' => 'ID of Contact the Lead reports to'
-            ],
-        'report_to_name' =>
-            [
-                'name' => 'report_to_name',
-                'rname' => 'name',
-                'id_name' => 'reports_to_id',
-                'vname' => 'LBL_REPORTS_TO',
-                'type' => 'relate',
-                'table' => 'contacts',
-                'isnull' => 'true',
-                'module' => 'Contacts',
-                'dbType' => 'varchar',
-                'link' => 'reports_to_link',
-                'len' => 'id',
-                'source' => 'non-db',
-                'reportable' => false,
-            ],
-        'reports_to_link' => [
-            'name' => 'reports_to_link',
-            'type' => 'link',
-            'relationship' => 'lead_direct_reports',
-            'link_type' => 'one',
-            'side' => 'right',
-            'source' => 'non-db',
-            'vname' => 'LBL_REPORTS_TO',
-            'reportable' => false
-        ],
-        'reportees' => [
-            'name' => 'reportees',
-            'type' => 'link',
-            'relationship' => 'lead_direct_reports',
-            'link_type' => 'many',
-            'side' => 'left',
-            'source' => 'non-db',
-            'vname' => 'LBL_REPORTS_TO',
-            'reportable' => false
-        ],
+//        'converted' =>
+//            [
+//                'name' => 'converted',
+//                'vname' => 'LBL_CONVERTED',
+//                'type' => 'bool',
+//                'default' => '0',
+//                'comment' => 'Has Lead been converted to a Contact (and other Sugar objects)'
+//            ],
+//        'refered_by' =>
+//            [
+//                'name' => 'refered_by',
+//                'vname' => 'LBL_REFERRED_BY',
+//                'type' => 'varchar',
+//                'len' => '100',
+//                'comment' => 'Identifies who refered the lead',
+//                'merge_filter' => 'enabled',
+//            ],
+//        'lead_source' =>
+//            [
+//                'name' => 'lead_source',
+//                'vname' => 'LBL_SOURCE',
+//                'type' => 'enum',
+//                'options' => 'lead_source_dom',
+//                'len' => '100',
+//                'audited' => true,
+//                'comment' => 'Lead source (ex: Web, print)',
+//                'merge_filter' => 'enabled',
+//            ],
+//        'lead_source_description' =>
+//            [
+//                'name' => 'lead_source_description',
+//                'vname' => 'LBL_SOURCE_DESCRIPTION',
+//                'type' => 'text',
+//                'comment' => 'Description of the lead source'
+//            ],
+//        'classification' =>
+//            [
+//                'name' => 'classification',
+//                'vname' => 'LBL_CLASSIFICATION',
+//                'type' => 'enum',
+//                'len' => '100',
+//                'options' => 'lead_classification_dom',
+//                'audited' => true,
+//                'comment' => 'Classification of the lead',
+//                'merge_filter' => 'enabled',
+//            ],
+//        'lead_type' =>
+//            [
+//                'name' => 'lead_type',
+//                'vname' => 'LBL_TYPE',
+//                'type' => 'enum',
+//                'len' => '3',
+//                'options' => 'lead_type_dom',
+//                'audited' => true,
+//                'default' => 'b2b',
+//                'comment' => 'type of the lead .. B2B or B2C',
+//                'merge_filter' => 'enabled',
+//            ],
+//        'status' =>
+//            [
+//                'name' => 'status',
+//                'vname' => 'LBL_STATUS',
+//                'type' => 'enum',
+//                'len' => '100',
+//                'options' => 'lead_status_dom',
+//                'audited' => true,
+//                'comment' => 'Status of the lead',
+//                'merge_filter' => 'enabled',
+//            ],
+//        'status_description' =>
+//            [
+//                'name' => 'status_description',
+//                'vname' => 'LBL_STATUS_DESCRIPTION',
+//                'type' => 'text',
+//                'comment' => 'Description of the status of the lead'
+//            ],
+//        'department' =>
+//            [
+//                'name' => 'department',
+//                'vname' => 'LBL_DEPARTMENT',
+//                'type' => 'varchar',
+//                'len' => '100',
+//                'comment' => 'Department the lead belongs to',
+//                'merge_filter' => 'enabled',
+//            ],
+//        'reports_to_id' =>
+//            [
+//                'name' => 'reports_to_id',
+//                'vname' => 'LBL_REPORTS_TO_ID',
+//                'type' => 'id',
+//                'reportable' => false,
+//                'comment' => 'ID of Contact the Lead reports to'
+//            ],
+//        'report_to_name' =>
+//            [
+//                'name' => 'report_to_name',
+//                'rname' => 'name',
+//                'id_name' => 'reports_to_id',
+//                'vname' => 'LBL_REPORTS_TO',
+//                'type' => 'relate',
+//                'table' => 'contacts',
+//                'isnull' => 'true',
+//                'module' => 'Contacts',
+//                'dbType' => 'varchar',
+//                'link' => 'reports_to_link',
+//                'len' => 'id',
+//                'source' => 'non-db',
+//                'reportable' => false,
+//            ],
+//        'reports_to_link' => [
+//            'name' => 'reports_to_link',
+//            'type' => 'link',
+//            'relationship' => 'lead_direct_reports',
+//            'link_type' => 'one',
+//            'side' => 'right',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_REPORTS_TO',
+//            'reportable' => false
+//        ],
+//        'reportees' => [
+//            'name' => 'reportees',
+//            'type' => 'link',
+//            'relationship' => 'lead_direct_reports',
+//            'link_type' => 'many',
+//            'side' => 'left',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_REPORTS_TO',
+//            'reportable' => false
+//        ],
         'contacts' => [
             'name' => 'contacts',
             'type' => 'link',
@@ -204,16 +204,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
           'unified_search' => false,
         ),
         */
-        'account_name' =>
-            [
-                'name' => 'account_name',
-                'vname' => 'LBL_ACCOUNT',
-                'type' => 'varchar',
-                'len' => '255',
-                'unified_search' => true,
-                'full_text_search' => 1,
-                'comment' => 'Account name for lead',
-            ],
+//        'account_name' =>
+//            [
+//                'name' => 'account_name',
+//                'vname' => 'LBL_ACCOUNT',
+//                'type' => 'varchar',
+//                'len' => '255',
+//                'unified_search' => true,
+//                'full_text_search' => 1,
+//                'comment' => 'Account name for lead',
+//            ],
         'accounts' =>
             [
                 'name' => 'accounts',
@@ -224,164 +224,164 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'vname' => 'LBL_ACCOUNTS',
                 'duplicate_merge' => false,
             ],
-        'account_description' =>
-            [
-                'name' => 'account_description',
-                'vname' => 'LBL_ACCOUNT_DESCRIPTION',
-                'type' => 'text',
-                'unified_search' => true,
-                'full_text_search' => 1,
-                'comment' => 'Description of lead account'
-            ],
-        'contact_linked_name' => [
-            'name' => 'contact_linked_name',
-            'rname' => 'name',
-            'id_name' => 'contact_id',
-            'vname' => 'LBL_CONTACT',
-            'type' => 'relate',
-            'link' => 'contact',
-            'table' => 'contacts',
-            'isnull' => 'true',
-            'module' => 'Contacts',
-            'source' => 'non-db',
-            'additionalFields' => ['id' => 'contact_id']
-        ],
-        'contact_id' => [
-            'name' => 'contact_id',
-            'type' => 'id',
-            'reportable' => false,
-            'vname' => 'LBL_CONTACT_ID',
-            'comment' => 'If converted, Contact ID resulting from the conversion'
-        ],
-        'contact' => [
-            'name' => 'contact',
-            'type' => 'link',
-            'link_type' => 'one',
-            'relationship' => 'contact_leads',
-            'source' => 'non-db',
-            'vname' => 'LBL_CONTACT',
-            'reportable' => false,
-            'side' => 'right'
-        ],
-        'consumer_linked_name' => [
-            'name' => 'consumer_linked_name',
-            'rname' => 'name',
-            'id_name' => 'consumer_id',
-            'vname' => 'LBL_CONSUMER',
-            'type' => 'relate',
-            'link' => 'consumer',
-            'table' => 'consumers',
-            'isnull' => 'true',
-            'module' => 'Consumers',
-            'source' => 'non-db',
-            'additionalFields' => ['id' => 'consumer_id']
-        ],
-        'consumer_id' => [
-            'name' => 'consumer_id',
-            'type' => 'id',
-            'reportable' => false,
-            'vname' => 'LBL_CONSUMER_ID',
-            'comment' => 'If converted, Consumer ID resulting from the conversion'
-        ],
-        'consumer' => [
-            'name' => 'consumer',
-            'type' => 'link',
-            'link_type' => 'one',
-            'relationship' => 'consumer_leads',
-            'source' => 'non-db',
-            'vname' => 'LBL_CONSUMER',
-            'module' => 'Consumers',
-            'reportable' => false,
-        ],
-        'account_linked_name' =>
-            [
-                'name' => 'account_linked_name',
-                'rname' => 'name',
-                'id_name' => 'account_id',
-                'vname' => 'LBL_ACCOUNT',
-                'type' => 'relate',
-                'link' => 'accounts',
-                'table' => 'accounts',
-                'isnull' => 'true',
-                'module' => 'Accounts',
-                'source' => 'non-db',
-                'additionalFields' => ['id' => 'account_id']
-            ],
-        'account_id' =>
-            [
-                'name' => 'account_id',
-                'type' => 'id',
-                'reportable' => false,
-                'vname' => 'LBL_ACCOUNT_ID',
-                'comment' => 'If converted, Account ID resulting from the conversion'
-            ],
-        'opportunity_id' =>
-            [
-                'name' => 'opportunity_id',
-                'type' => 'id',
-                'reportable' => false,
-                'vname' => 'LBL_OPPORTUNITY_ID',
-                'comment' => 'If converted, Opportunity ID resulting from the conversion'
-            ],
-        'opportunity' => [
-            'name' => 'opportunity',
-            'type' => 'link',
-            'link_type' => 'one',
-            'relationship' => 'opportunity_leads',
-            'source' => 'non-db',
-            'vname' => 'LBL_OPPORTUNITY',
-        ],
-        'opportunity_name' =>
-            [
-                'name' => 'opportunity_name',
-                'rname' => 'name',
-                'vname' => 'LBL_OPPORTUNITY',
-                'id_name' => 'opportunity_id',
-                'type' => 'relate',
-                'link' => 'opportunity',
-                'table' => 'opportunities',
-                'module' => 'Opportunities',
-                'source' => 'non-db',
-                'comment' => 'Opportunity name associated with lead'
-            ],
-        'opportunity_amount' =>
-            [
-                'name' => 'opportunity_amount',
-                'vname' => 'LBL_OPPORTUNITY_AMOUNT',
-                'type' => 'double',
-                'comment' => 'Amount of the opportunity'
-            ],
-        'campaign_id' =>
-            [
-                'name' => 'campaign_id',
-                'type' => 'id',
-                'reportable' => false,
-                'vname' => 'LBL_CAMPAIGN_ID',
-                'comment' => 'Campaign that generated lead'
-            ],
-
-        'campaign_name' =>
-            [
-                'name' => 'campaign_name',
-                'rname' => 'name',
-                'id_name' => 'campaign_id',
-                'vname' => 'LBL_CAMPAIGN',
-                'type' => 'relate',
-                'link' => 'campaign_leads',
-                'table' => 'campaigns',
-                'isnull' => 'true',
-                'module' => 'Campaigns',
-                'source' => 'non-db',
-                'additionalFields' => ['id' => 'campaign_id']
-            ],
-        'campaign_leads' =>
-            [
-                'name' => 'campaign_leads',
-                'type' => 'link',
-                'vname' => 'LBL_CAMPAIGN',
-                'relationship' => 'campaign_leads',
-                'source' => 'non-db',
-            ],
+//        'account_description' =>
+//            [
+//                'name' => 'account_description',
+//                'vname' => 'LBL_ACCOUNT_DESCRIPTION',
+//                'type' => 'text',
+//                'unified_search' => true,
+//                'full_text_search' => 1,
+//                'comment' => 'Description of lead account'
+//            ],
+//        'contact_linked_name' => [
+//            'name' => 'contact_linked_name',
+//            'rname' => 'name',
+//            'id_name' => 'contact_id',
+//            'vname' => 'LBL_CONTACT',
+//            'type' => 'relate',
+//            'link' => 'contact',
+//            'table' => 'contacts',
+//            'isnull' => 'true',
+//            'module' => 'Contacts',
+//            'source' => 'non-db',
+//            'additionalFields' => ['id' => 'contact_id']
+//        ],
+//        'contact_id' => [
+//            'name' => 'contact_id',
+//            'type' => 'id',
+//            'reportable' => false,
+//            'vname' => 'LBL_CONTACT_ID',
+//            'comment' => 'If converted, Contact ID resulting from the conversion'
+//        ],
+//        'contact' => [
+//            'name' => 'contact',
+//            'type' => 'link',
+//            'link_type' => 'one',
+//            'relationship' => 'contact_leads',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CONTACT',
+//            'reportable' => false,
+//            'side' => 'right'
+//        ],
+//        'consumer_linked_name' => [
+//            'name' => 'consumer_linked_name',
+//            'rname' => 'name',
+//            'id_name' => 'consumer_id',
+//            'vname' => 'LBL_CONSUMER',
+//            'type' => 'relate',
+//            'link' => 'consumer',
+//            'table' => 'consumers',
+//            'isnull' => 'true',
+//            'module' => 'Consumers',
+//            'source' => 'non-db',
+//            'additionalFields' => ['id' => 'consumer_id']
+//        ],
+//        'consumer_id' => [
+//            'name' => 'consumer_id',
+//            'type' => 'id',
+//            'reportable' => false,
+//            'vname' => 'LBL_CONSUMER_ID',
+//            'comment' => 'If converted, Consumer ID resulting from the conversion'
+//        ],
+//        'consumer' => [
+//            'name' => 'consumer',
+//            'type' => 'link',
+//            'link_type' => 'one',
+//            'relationship' => 'consumer_leads',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CONSUMER',
+//            'module' => 'Consumers',
+//            'reportable' => false,
+//        ],
+//        'account_linked_name' =>
+//            [
+//                'name' => 'account_linked_name',
+//                'rname' => 'name',
+//                'id_name' => 'account_id',
+//                'vname' => 'LBL_ACCOUNT',
+//                'type' => 'relate',
+//                'link' => 'accounts',
+//                'table' => 'accounts',
+//                'isnull' => 'true',
+//                'module' => 'Accounts',
+//                'source' => 'non-db',
+//                'additionalFields' => ['id' => 'account_id']
+//            ],
+//        'account_id' =>
+//            [
+//                'name' => 'account_id',
+//                'type' => 'id',
+//                'reportable' => false,
+//                'vname' => 'LBL_ACCOUNT_ID',
+//                'comment' => 'If converted, Account ID resulting from the conversion'
+//            ],
+//        'opportunity_id' =>
+//            [
+//                'name' => 'opportunity_id',
+//                'type' => 'id',
+//                'reportable' => false,
+//                'vname' => 'LBL_OPPORTUNITY_ID',
+//                'comment' => 'If converted, Opportunity ID resulting from the conversion'
+//            ],
+//        'opportunity' => [
+//            'name' => 'opportunity',
+//            'type' => 'link',
+//            'link_type' => 'one',
+//            'relationship' => 'opportunity_leads',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_OPPORTUNITY',
+//        ],
+//        'opportunity_name' =>
+//            [
+//                'name' => 'opportunity_name',
+//                'rname' => 'name',
+//                'vname' => 'LBL_OPPORTUNITY',
+//                'id_name' => 'opportunity_id',
+//                'type' => 'relate',
+//                'link' => 'opportunity',
+//                'table' => 'opportunities',
+//                'module' => 'Opportunities',
+//                'source' => 'non-db',
+//                'comment' => 'Opportunity name associated with lead'
+//            ],
+//        'opportunity_amount' =>
+//            [
+//                'name' => 'opportunity_amount',
+//                'vname' => 'LBL_OPPORTUNITY_AMOUNT',
+//                'type' => 'double',
+//                'comment' => 'Amount of the opportunity'
+//            ],
+//        'campaign_id' =>
+//            [
+//                'name' => 'campaign_id',
+//                'type' => 'id',
+//                'reportable' => false,
+//                'vname' => 'LBL_CAMPAIGN_ID',
+//                'comment' => 'Campaign that generated lead'
+//            ],
+//
+//        'campaign_name' =>
+//            [
+//                'name' => 'campaign_name',
+//                'rname' => 'name',
+//                'id_name' => 'campaign_id',
+//                'vname' => 'LBL_CAMPAIGN',
+//                'type' => 'relate',
+//                'link' => 'campaign_leads',
+//                'table' => 'campaigns',
+//                'isnull' => 'true',
+//                'module' => 'Campaigns',
+//                'source' => 'non-db',
+//                'additionalFields' => ['id' => 'campaign_id']
+//            ],
+//        'campaign_leads' =>
+//            [
+//                'name' => 'campaign_leads',
+//                'type' => 'link',
+//                'vname' => 'LBL_CAMPAIGN',
+//                'relationship' => 'campaign_leads',
+//                'source' => 'non-db',
+//            ],
 //        'c_accept_status_fields' =>
 //            [
 //                'name' => 'c_accept_status_fields',
@@ -425,78 +425,78 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
 //                'options' => 'dom_meeting_accept_status',
 //                'importable' => 'false',
 //            ],
-        'webtolead_email1' =>
-            [
-                'name' => 'webtolead_email1',
-                'vname' => 'LBL_EMAIL_ADDRESS',
-                'type' => 'email',
-                'len' => '100',
-                'source' => 'non-db',
-                'comment' => 'Main email address of lead',
-                'importable' => 'false',
-            ],
-        'webtolead_email2' =>
-            [
-                'name' => 'webtolead_email2',
-                'vname' => 'LBL_OTHER_EMAIL_ADDRESS',
-                'type' => 'email',
-                'len' => '100',
-                'source' => 'non-db',
-                'comment' => 'Secondary email address of lead',
-                'importable' => 'false',
-            ],
-        'webtolead_email_opt_out' =>
-            [
-                'name' => 'webtolead_email_opt_out',
-                'vname' => 'LBL_EMAIL_OPT_OUT',
-                'type' => 'bool',
-                'source' => 'non-db',
-                'comment' => 'Indicator signaling if lead elects to opt out of email campaigns',
-                'importable' => 'false',
-            ],
-        'webtolead_invalid_email' =>
-            [
-                'name' => 'webtolead_invalid_email',
-                'vname' => 'LBL_INVALID_EMAIL',
-                'type' => 'bool',
-                'source' => 'non-db',
-                'comment' => 'Indicator that email address for lead is invalid',
-                'importable' => 'false',
-            ],
-        'birthdate' =>
-            [
-                'name' => 'birthdate',
-                'vname' => 'LBL_BIRTHDATE',
-                'type' => 'date',
-                'comment' => 'The birthdate of the contact'
-            ],
+//        'webtolead_email1' =>
+//            [
+//                'name' => 'webtolead_email1',
+//                'vname' => 'LBL_EMAIL_ADDRESS',
+//                'type' => 'email',
+//                'len' => '100',
+//                'source' => 'non-db',
+//                'comment' => 'Main email address of lead',
+//                'importable' => 'false',
+//            ],
+//        'webtolead_email2' =>
+//            [
+//                'name' => 'webtolead_email2',
+//                'vname' => 'LBL_OTHER_EMAIL_ADDRESS',
+//                'type' => 'email',
+//                'len' => '100',
+//                'source' => 'non-db',
+//                'comment' => 'Secondary email address of lead',
+//                'importable' => 'false',
+//            ],
+//        'webtolead_email_opt_out' =>
+//            [
+//                'name' => 'webtolead_email_opt_out',
+//                'vname' => 'LBL_EMAIL_OPT_OUT',
+//                'type' => 'bool',
+//                'source' => 'non-db',
+//                'comment' => 'Indicator signaling if lead elects to opt out of email campaigns',
+//                'importable' => 'false',
+//            ],
+//        'webtolead_invalid_email' =>
+//            [
+//                'name' => 'webtolead_invalid_email',
+//                'vname' => 'LBL_INVALID_EMAIL',
+//                'type' => 'bool',
+//                'source' => 'non-db',
+//                'comment' => 'Indicator that email address for lead is invalid',
+//                'importable' => 'false',
+//            ],
+//        'birthdate' =>
+//            [
+//                'name' => 'birthdate',
+//                'vname' => 'LBL_BIRTHDATE',
+//                'type' => 'date',
+//                'comment' => 'The birthdate of the contact'
+//            ],
 
-        'portal_name' =>
-            [
-                'name' => 'portal_name',
-                'vname' => 'LBL_PORTAL_NAME',
-                'type' => 'varchar',
-                'len' => '255',
-                'comment' => 'Portal user name when lead created via lead portal',
-            ],
-        'portal_app' =>
-            [
-                'name' => 'portal_app',
-                'vname' => 'LBL_PORTAL_APP',
-                'type' => 'varchar',
-                'len' => '255',
-                'comment' => 'Portal application that resulted in created of lead',
-            ],
-        'website' =>
-            [
-                'name' => 'website',
-                'vname' => 'LBL_WEBSITE',
-                'type' => 'url',
-                'dbType' => 'varchar',
-                'len' => 255,
-                'link_target' => '_blank',
-                'comment' => 'URL of website for the company',
-            ],
+//        'portal_name' =>
+//            [
+//                'name' => 'portal_name',
+//                'vname' => 'LBL_PORTAL_NAME',
+//                'type' => 'varchar',
+//                'len' => '255',
+//                'comment' => 'Portal user name when lead created via lead portal',
+//            ],
+//        'portal_app' =>
+//            [
+//                'name' => 'portal_app',
+//                'vname' => 'LBL_PORTAL_APP',
+//                'type' => 'varchar',
+//                'len' => '255',
+//                'comment' => 'Portal application that resulted in created of lead',
+//            ],
+//        'website' =>
+//            [
+//                'name' => 'website',
+//                'vname' => 'LBL_WEBSITE',
+//                'type' => 'url',
+//                'dbType' => 'varchar',
+//                'len' => 255,
+//                'link_target' => '_blank',
+//                'comment' => 'URL of website for the company',
+//            ],
 
 //        'tasks' =>
 //            [
@@ -572,35 +572,35 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
             'name' => 'checks',
             'type' => 'text'
         ],
-        'potentials' =>
-            [
-                'name' => 'potentials',
-                'type' => 'link',
-                'vname' => 'LBL_POTENTIALS',
-                'relationship' => 'leads_potential',
-                'source' => 'non-db',
-            ],
-        'potential_id' => [
-            'name' => 'potential_id',
-            'vname' => 'LBL_POTENTIAL_ID',
-            'rname' => 'id',
-            'type' => 'char',
-            'len' => 36,
-            'dbType' => 'id',
-            'table' => 'potentials',
-            'module' => 'Potentials'
-        ],
-        'potential_name' => [
-            'name' => 'potential_name',
-            'rname' => 'name',
-            'id_name' => 'potential_id',
-            'vname' => 'LBL_POTENTIAL',
-            'type' => 'relate',
-            'link' => 'potentials',
-            'table' => 'potentials',
-            'module' => 'Potentials',
-            'source' => 'non-db'
-        ],
+//        'potentials' =>
+//            [
+//                'name' => 'potentials',
+//                'type' => 'link',
+//                'vname' => 'LBL_POTENTIALS',
+//                'relationship' => 'leads_potential',
+//                'source' => 'non-db',
+//            ],
+//        'potential_id' => [
+//            'name' => 'potential_id',
+//            'vname' => 'LBL_POTENTIAL_ID',
+//            'rname' => 'id',
+//            'type' => 'char',
+//            'len' => 36,
+//            'dbType' => 'id',
+//            'table' => 'potentials',
+//            'module' => 'Potentials'
+//        ],
+//        'potential_name' => [
+//            'name' => 'potential_name',
+//            'rname' => 'name',
+//            'id_name' => 'potential_id',
+//            'vname' => 'LBL_POTENTIAL',
+//            'type' => 'relate',
+//            'link' => 'potentials',
+//            'table' => 'potentials',
+//            'module' => 'Potentials',
+//            'source' => 'non-db'
+//        ],
 //        'catalogorders' => [
 //            'name' => 'catalogorders',
 //            'type' => 'link',
@@ -656,15 +656,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
             'relationship_role_column' => 'target_type',
             'relationship_role_column_value' => 'Leads'
         ],
-        'leads_potential' => [
-            'lhs_module' => 'Potentials',
-            'lhs_table' => 'potentials',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Leads',
-            'rhs_table' => 'leads',
-            'rhs_key' => 'potential_id',
-            'relationship_type' => 'one-to-many'
-        ],
+//        'leads_potential' => [
+//            'lhs_module' => 'Potentials',
+//            'lhs_table' => 'potentials',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Leads',
+//            'rhs_table' => 'leads',
+//            'rhs_key' => 'potential_id',
+//            'relationship_type' => 'one-to-many'
+//        ],
 //        'leads_calls' => [
 //            'lhs_module' => 'Leads',
 //            'lhs_table' => 'leads',
