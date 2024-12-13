@@ -46,50 +46,50 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
     'duplicate_merge' => true,
     'comment' => 'Accounts are organizations or entities that are the target of selling, support, and marketing activities, or have already purchased products or services',
     'fields' => [
-        'parent_id' => [
-            'name' => 'parent_id',
-            'vname' => 'LBL_PARENT_ACCOUNT_ID',
-            'type' => 'id',
-            'required' => false,
-            'reportable' => false,
-            'audited' => true,
-            'comment' => 'Account ID of the parent of this account',
-        ],
-        'sic_code' => [
-            'name' => 'sic_code',
-            'vname' => 'LBL_SIC_CODE',
-            'type' => 'categories',
-            'required' => false,
-            'source' => 'non-db'
-        ],
-        'sic_code_1' => [
-            'name' => 'sic_code_1',
-            'vname' => 'LBL_SIC_CODE_1',
-            'type' => 'category',
-            'dbType' => 'varchar',
-            'len' => 36
-        ],
-        'sic_code_2' => [
-            'name' => 'sic_code_2',
-            'vname' => 'LBL_SIC_CODE_2',
-            'type' => 'category',
-            'dbType' => 'varchar',
-            'len' => 36
-        ],
-        'sic_code_3' => [
-            'name' => 'sic_code_3',
-            'vname' => 'LBL_SIC_CODE_3',
-            'type' => 'category',
-            'dbType' => 'varchar',
-            'len' => 36
-        ],
-        'sic_code_4' => [
-            'name' => 'sic_code_4',
-            'vname' => 'LBL_SIC_CODE_4',
-            'type' => 'category',
-            'dbType' => 'varchar',
-            'len' => 36
-        ],
+//        'parent_id' => [
+//            'name' => 'parent_id',
+//            'vname' => 'LBL_PARENT_ACCOUNT_ID',
+//            'type' => 'id',
+//            'required' => false,
+//            'reportable' => false,
+//            'audited' => true,
+//            'comment' => 'Account ID of the parent of this account',
+//        ],
+//        'sic_code' => [
+//            'name' => 'sic_code',
+//            'vname' => 'LBL_SIC_CODE',
+//            'type' => 'categories',
+//            'required' => false,
+//            'source' => 'non-db'
+//        ],
+//        'sic_code_1' => [
+//            'name' => 'sic_code_1',
+//            'vname' => 'LBL_SIC_CODE_1',
+//            'type' => 'category',
+//            'dbType' => 'varchar',
+//            'len' => 36
+//        ],
+//        'sic_code_2' => [
+//            'name' => 'sic_code_2',
+//            'vname' => 'LBL_SIC_CODE_2',
+//            'type' => 'category',
+//            'dbType' => 'varchar',
+//            'len' => 36
+//        ],
+//        'sic_code_3' => [
+//            'name' => 'sic_code_3',
+//            'vname' => 'LBL_SIC_CODE_3',
+//            'type' => 'category',
+//            'dbType' => 'varchar',
+//            'len' => 36
+//        ],
+//        'sic_code_4' => [
+//            'name' => 'sic_code_4',
+//            'vname' => 'LBL_SIC_CODE_4',
+//            'type' => 'category',
+//            'dbType' => 'varchar',
+//            'len' => 36
+//        ],
         'parent_name' => [
             'name' => 'parent_name',
             'rname' => 'name',
@@ -311,40 +311,40 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'relationship' => 'campaign_accounts',
             'source' => 'non-db',
         ],
-        'created_by_link' => [
-            'name' => 'created_by_link',
-            'type' => 'link',
-            'relationship' => 'accounts_created_by',
-            'vname' => 'LBL_CREATED_BY',
-            'link_type' => 'one',
-            'module' => 'Users',
-            'bean_name' => 'User',
-            'source' => 'non-db',
-        ],
-        'modified_user_link' => [
-            'name' => 'modified_user_link',
-            'type' => 'link',
-            'relationship' => 'accounts_modified_user',
-            'vname' => 'LBL_MODIFIED_BY',
-            'link_type' => 'one',
-            'module' => 'Users',
-            'bean_name' => 'User',
-            'source' => 'non-db',
-        ],
-        'assigned_user_link' => [
-            'name' => 'assigned_user_link',
-            'type' => 'link',
-            'relationship' => 'accounts_assigned_user',
-            'vname' => 'LBL_ASSIGNED_TO',
-            'link_type' => 'one',
-            'module' => 'Users',
-            'bean_name' => 'User',
-            'source' => 'non-db',
-            'duplicate_merge' => true,
-            'rname' => 'user_name',
-            'id_name' => 'assigned_user_id',
-            'table' => 'users',
-        ],
+//        'created_by_link' => [
+//            'name' => 'created_by_link',
+//            'type' => 'link',
+//            'relationship' => 'accounts_created_by',
+//            'vname' => 'LBL_CREATED_BY',
+//            'link_type' => 'one',
+//            'module' => 'Users',
+//            'bean_name' => 'User',
+//            'source' => 'non-db',
+//        ],
+//        'modified_user_link' => [
+//            'name' => 'modified_user_link',
+//            'type' => 'link',
+//            'relationship' => 'accounts_modified_user',
+//            'vname' => 'LBL_MODIFIED_BY',
+//            'link_type' => 'one',
+//            'module' => 'Users',
+//            'bean_name' => 'User',
+//            'source' => 'non-db',
+//        ],
+//        'assigned_user_link' => [
+//            'name' => 'assigned_user_link',
+//            'type' => 'link',
+//            'relationship' => 'accounts_assigned_user',
+//            'vname' => 'LBL_ASSIGNED_TO',
+//            'link_type' => 'one',
+//            'module' => 'Users',
+//            'bean_name' => 'User',
+//            'source' => 'non-db',
+//            'duplicate_merge' => true,
+//            'rname' => 'user_name',
+//            'id_name' => 'assigned_user_id',
+//            'table' => 'users',
+//        ],
         'campaign_id' => [
             'name' => 'campaign_id',
             'comment' => 'Campaign that generated Account',
@@ -531,14 +531,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
 //            'relationship' => 'account_inquiries',
 //            'source' => 'non-db'
 //        ],
-        'spicetexts' => [
-            'name' => 'spicetexts',
-            'type' => 'link',
-            'relationship' => 'accounts_spicetexts',
-            'module' => 'SpiceTexts',
-            'source' => 'non-db',
-            'vname' => 'LBL_SPICE_TEXTS',
-        ],
+//        'spicetexts' => [
+//            'name' => 'spicetexts',
+//            'type' => 'link',
+//            'relationship' => 'accounts_spicetexts',
+//            'module' => 'SpiceTexts',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_SPICE_TEXTS',
+//        ],
         /*
         'accountvatids' => [
             'name' => 'accountvatids',
@@ -667,21 +667,21 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
         'account_leads' => [
             'lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id', 'rhs_module' => 'Leads', 'rhs_table' => 'leads', 'rhs_key' => 'account_id', 'relationship_type' => 'one-to-many'
         ],
-        'accounts_assigned_user' => [
-            'lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
-            'rhs_module' => 'Accounts', 'rhs_table' => 'accounts', 'rhs_key' => 'assigned_user_id',
-            'relationship_type' => 'one-to-many'
-        ],
-        'accounts_modified_user' => [
-            'lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
-            'rhs_module' => 'Accounts', 'rhs_table' => 'accounts', 'rhs_key' => 'modified_user_id',
-            'relationship_type' => 'one-to-many'
-        ],
-        'accounts_created_by' => [
-            'lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
-            'rhs_module' => 'Accounts', 'rhs_table' => 'accounts', 'rhs_key' => 'created_by',
-            'relationship_type' => 'one-to-many'
-        ],
+//        'accounts_assigned_user' => [
+//            'lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
+//            'rhs_module' => 'Accounts', 'rhs_table' => 'accounts', 'rhs_key' => 'assigned_user_id',
+//            'relationship_type' => 'one-to-many'
+//        ],
+//        'accounts_modified_user' => [
+//            'lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
+//            'rhs_module' => 'Accounts', 'rhs_table' => 'accounts', 'rhs_key' => 'modified_user_id',
+//            'relationship_type' => 'one-to-many'
+//        ],
+//        'accounts_created_by' => [
+//            'lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
+//            'rhs_module' => 'Accounts', 'rhs_table' => 'accounts', 'rhs_key' => 'created_by',
+//            'relationship_type' => 'one-to-many'
+//        ],
         'account_campaign_log' => ['lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
             'rhs_module' => 'CampaignLog', 'rhs_table' => 'campaign_log', 'rhs_key' => 'target_id',
             'relationship_type' => 'one-to-many',
@@ -707,27 +707,27 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'relationship_role_column_value' => 'Accounts',
             'relationship_type' => 'one-to-many'
         ],
-        'accounts_spicetexts' => [
-            'lhs_module' => 'Accounts',
-            'lhs_table' => 'accounts',
-            'lhs_key' => 'id',
-            'rhs_module' => 'SpiceTexts',
-            'rhs_table' => 'spicetexts',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Accounts'
-        ],
-        'account_accountvatids' => [
-            'rhs_module' => 'AccountVATIDs',
-            'rhs_table' => 'accountvatids',
-            'rhs_key' => 'account_id',
-            'lhs_module' => 'Accounts',
-            'lhs_table' => 'accounts',
-            'lhs_key' => 'id',
-            'relationship_type' => 'one-to-many',
-            'default' => true
-        ]
+//        'accounts_spicetexts' => [
+//            'lhs_module' => 'Accounts',
+//            'lhs_table' => 'accounts',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'SpiceTexts',
+//            'rhs_table' => 'spicetexts',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Accounts'
+//        ],
+//        'account_accountvatids' => [
+//            'rhs_module' => 'AccountVATIDs',
+//            'rhs_table' => 'accountvatids',
+//            'rhs_key' => 'account_id',
+//            'lhs_module' => 'Accounts',
+//            'lhs_table' => 'accounts',
+//            'lhs_key' => 'id',
+//            'relationship_type' => 'one-to-many',
+//            'default' => true
+//        ]
     ],
     //This enables optimistic locking for Saves From EditView
     'optimistic_locking' => true,
