@@ -20,6 +20,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
+use SpiceCRM\modules\SystemTenants\SystemTenant;
 use SpiceCRM\modules\Users\User;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -73,6 +74,11 @@ class AuthenticateController
     {
         $parsedBody = $req->getParsedBody();
 
+        # handle tenant switch
+        if (SystemTenant::multitenancyEnabled()) {
+            SystemTenant::processTenantSwitchByUsername($parsedBody['username']);
+        }
+
         $spiceCRMAuth = new SpiceCRMAuthenticate();
         $userId = $spiceCRMAuth->handleCredentials($parsedBody['username'], $parsedBody['password']);
 
@@ -85,7 +91,7 @@ class AuthenticateController
 
         $config2FA = SpiceCRM2FAUtils::get2FAConfig();
 
-        if (!empty($user->user_2fa_method) || in_array($config2FA->require_on, ['always', 'device_change'])) {
+        if ($user->system_generated_password != 1 && (!empty($user->user_2fa_method) || in_array($config2FA->require_on, ['always', 'device_change']))) {
 
             $method = $user->user_2fa_method ?? $config2FA->method;
 

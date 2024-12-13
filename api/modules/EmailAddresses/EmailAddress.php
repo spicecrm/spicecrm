@@ -138,8 +138,7 @@ class EmailAddress extends SpiceBean
      */
     public static function ftsSearchByEmailAddresses(array $emailAddresses): array
     {
-        $db = DBManagerFactory::getInstance();
-        $ftsModules = $db->fetchAll("SELECT * FROM sysfts");
+        $ftsModules = SpiceFTSHandler::getInstance()->modules;
         $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
         $results = [];
 
@@ -183,8 +182,9 @@ class EmailAddress extends SpiceBean
         // get an FTS manager
 
         // determine the modules
-        $modules = $db->query("SELECT * FROM sysfts");
-        while ($module = $db->fetchByAssoc($modules)) {
+        $modules = SpiceFTSHandler::getInstance()->modules;
+
+        foreach ($modules as $module) {
             $emailFields = [];
 
             $ftsParams = json_decode(html_entity_decode($module['settings']));
@@ -428,7 +428,7 @@ class EmailAddress extends SpiceBean
      */
     public static function validateEmailAddressDomain(string $domain): bool
     {
-        return checkdnsrr($domain, 'A');
+        return checkdnsrr($domain, 'A') || checkdnsrr($domain);
     }
 
     /**
@@ -453,7 +453,7 @@ class EmailAddress extends SpiceBean
             'parent_id' => $id,
             'transaction_id' => $transactionId,
             'date_created' => TimeDate::getInstance()->nowDb(),
-            'created_by' => $currentUser->id,
+            'created_by' => $currentUser->id ?? $id,
             'field_name' => $field,
             'data_type' => $fieldType,
             'before_value' => $valueBefore,
@@ -477,8 +477,11 @@ class EmailAddress extends SpiceBean
         if (!$emailAddress) {
             return false;
         }
+        if($newStatus == 'opted_in') $dateField = 'opt_in_date';
+        else if($newStatus == 'opted_out') $dateField = 'opt_out_date';
 
-        $bean->email_addresses->add($emailAddress, ['opt_in_status' => $newStatus]);
+
+        $bean->email_addresses->add($emailAddress, ['opt_in_status' => $newStatus, $dateField => date('Y-m-d H:m:s')]);
 
         return true;
     }

@@ -1314,6 +1314,10 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 $todayDate = date('Y-m-d', time());
                 $thisWhereString .= ' >= \'' . $todayDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' <= \'' . $todayDate . ' 23:59:59\'';
                 break;
+            case 'yesterday':
+                $yesterdayDate = date('Y-m-d', time() - 86400);
+                $thisWhereString .= ' >= \'' . $yesterdayDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' <= \'' . $yesterdayDate . ' 23:59:59\'';
+                break;
             case 'past':
                 $thisWhereString .= ' <= \'' . date('Y-m-d H:i:s', time()) . '\'';
                 break;

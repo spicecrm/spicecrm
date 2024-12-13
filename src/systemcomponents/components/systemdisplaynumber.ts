@@ -63,6 +63,30 @@ export class SystemDisplayNumber implements OnChanges {
         }
     }
 
+    /**
+     * set thisto ture so no values past the comma sre displayed
+     *
+     * @private
+     */
+    @Input() public largeNumbers: boolean = false;
+
+    /**
+     * an attribute that can be set and doies not require the value true poassed in
+     * @param value
+     */
+    @Input('system-display-number-large-numbers') set setLargeNumbers(value) {
+        if (value === false) {
+            this.largeNumbers = false;
+        } else {
+            this.largeNumbers = true;
+        }
+    }
+
+    /**
+     * a postfix for the label
+     */
+    public largeNumberPostfix: 'K'|'M'|'B';
+
     constructor(public language: language, public cdRef: ChangeDetectorRef, public currency: currency, public userpreferences: userpreferences) {
 
     }
@@ -75,6 +99,36 @@ export class SystemDisplayNumber implements OnChanges {
 
         return this.currency.getCurrencySymbol(this.currency_id)
     }
+
+    private roundedLargeNumber(number){
+        if(number > 100) return Math.round(number);
+        if(number > 10) return Math.round(number * 10) / 10;
+        return Math.round(number * 100) / 100;
+    }
+
+    get largeValue(){
+        if(!this.largeNumbers) return this.number;
+
+        if(Math.abs(this.number) > 1000000000){
+            this.largeNumberPostfix = 'B';
+            return this.roundedLargeNumber(this.number / 1000000000);
+        }
+
+
+        if(Math.abs(this.number) > 1000000){
+            this.largeNumberPostfix = 'M';
+            return this.roundedLargeNumber(this.number / 1000000);
+        }
+
+        if(Math.abs(this.number) > 1000){
+            this.largeNumberPostfix = 'K';
+            return this.roundedLargeNumber(this.number / 1000);
+        }
+
+        this.largeNumberPostfix = undefined;
+        return this.value;
+    }
+
 
     /**
      * gets the fornmatted value

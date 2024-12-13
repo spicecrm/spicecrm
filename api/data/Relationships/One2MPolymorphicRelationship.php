@@ -3,17 +3,13 @@
 
 namespace SpiceCRM\data\Relationships;
 
-use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\data\Link2;
-use SpiceCRM\data\SpiceBean;
-use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryField;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationships;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 
@@ -35,16 +31,19 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
     public function activate(SpiceDictionaryRelationship $relationship)
     {
         $db = DBManagerFactory::getInstance();
-
-        $rhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
-        $rhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->rhs_sysdictionaryitem_id);
-        $rhsField = SpiceDictionaryField::getField($rhsDictionaryitem, $rhsDictionaryDefinition);
-        $roleColumnDictionaryitem = new SpiceDictionaryItem($relationship->relationship->relationship_role_column);
-        $roleColumnField = SpiceDictionaryField::getField($roleColumnDictionaryitem, $rhsDictionaryDefinition);
-
         // clear current definitions
         $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}'");
         $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
+
+        try {
+            $rhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
+            $rhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->rhs_sysdictionaryitem_id);
+            $rhsField = SpiceDictionaryField::getField($rhsDictionaryitem, $rhsDictionaryDefinition);
+            $roleColumnDictionaryitem = new SpiceDictionaryItem($relationship->relationship->relationship_role_column);
+            $roleColumnField = SpiceDictionaryField::getField($roleColumnDictionaryitem, $rhsDictionaryDefinition);
+        } catch (Exception $e){
+            return false;
+        }
 
         # add the parent name field on the child (RHS)
         $db->insertQuery('sysdictionaryfields', [
@@ -75,9 +74,13 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
             $db->query("DELETE FROM relationships WHERE id = '$morph->id'");
             $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$morph->id}'");
 
-            $lhsDictionaryDefinition = new SpiceDictionaryDefinition($morph->lhs_sysdictionarydefinition_id);
-            $lhsDictionaryitem = new SpiceDictionaryItem($morph->lhs_sysdictionaryitem_id);
-            $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
+            try {
+                $lhsDictionaryDefinition = new SpiceDictionaryDefinition($morph->lhs_sysdictionarydefinition_id);
+                $lhsDictionaryitem = new SpiceDictionaryItem($morph->lhs_sysdictionaryitem_id);
+                $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
+            } catch (Exception $e){
+                continue;
+            }
 
             $relationship_name = str_replace('{tablename}', $rhsDictionaryDefinition->tablename, $morph->relationship_name);
 
@@ -139,6 +142,9 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
                 ]);
             }
         }
+
+        // completed the activation
+        return true;
     }
 
     /**

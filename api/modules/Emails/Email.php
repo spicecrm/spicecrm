@@ -220,40 +220,11 @@ class Email extends SpiceBean
 
 //                START ZIP ARCHIVE
                 if (!!$this->zip_compress) {
+                    $zipAttachment = $this->createZipFromAttachments();
 
-                // create a zip file in the temporaty directory
-                $tempDir = sys_get_temp_dir();
-                $filename = $this->attachments[0]->filename . '_' . SpiceUtils::createGuid() . '.zip';
-                $path = $tempDir . DIRECTORY_SEPARATOR . $filename;
-
-                //create ZIP folder and add attachments to it
-                $zip = new ZipArchive();
-
-                if ($zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE === TRUE)) {
-                    foreach ($this->attachments as $attachment) {
-                        $zip->addFile("upload/" . $attachment->filemd5, $attachment->filename);
-                    }
-                }
-
-                $zip->close();
-
-                //hash the zip file as md5 and save it to upload folder
-                $filemd5 = md5_file($path);
-                $file = file_get_contents($path);
-                file_put_contents("upload/$filemd5", $file);
-
-                //create a new attachment object
-                $newZipAttachment = new \stdClass();
-                $newZipAttachment->filemd5 = $filemd5;
-                $newZipAttachment->filename = $filename;
-
-                //empty the attachments array and push the created zip attachment to it
-                $this->attachments = [];
-                $this->attachments[0] = $newZipAttachment;
-
-                //delete the zip folder from temporary location
-                unlink($path);
-//                END ZIP ARCHIVE
+                    //empty the attachments array and push the created zip attachment to it
+                    $this->attachments = [];
+                    $this->attachments[0] = $zipAttachment;
             }
                 $result = $this->sendEmail();
                 $this->to_be_sent = false;
@@ -280,6 +251,44 @@ class Email extends SpiceBean
 
             return $result;
         }
+    }
+
+    /**
+     * Creates a ZIP archive containing all attachments
+     * @return object The new ZIP attachment
+     */
+    private function createZipFromAttachments(): object
+    {
+        // create a zip file in the temporary directory
+        $tempDir = sys_get_temp_dir();
+        $filename = $this->attachments[0]->filename . '_' . SpiceUtils::createGuid() . '.zip';
+        $path = $tempDir . DIRECTORY_SEPARATOR . $filename;
+
+        //create ZIP folder and add attachments to it
+        $zip = new ZipArchive();
+
+        if ($zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE === TRUE)) {
+            foreach ($this->attachments as $attachment) {
+                $zip->addFile("upload/" . $attachment->filemd5, $attachment->filename);
+            }
+        }
+
+        $zip->close();
+
+        //hash the zip file as md5 and save it to upload folder
+        $filemd5 = md5_file($path);
+        $file = file_get_contents($path);
+        file_put_contents("upload/$filemd5", $file);
+
+        //create a new attachment object
+        $newZipAttachment = new \stdClass();
+        $newZipAttachment->filemd5 = $filemd5;
+        $newZipAttachment->filename = $filename;
+
+        //delete the zip folder from temporary location
+        unlink($path);
+
+        return $newZipAttachment;
     }
 
     /**
@@ -945,8 +954,8 @@ class Email extends SpiceBean
         foreach ($dom->getElementsByTagName('a') as $node) {
             $marketingaction = $node->getAttribute('data-marketingaction');
             if (!empty($marketingaction)) {
-                $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? "2fs5uhnjcnpxcpg9";
-                $method = 'blowfish';
+                $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? throw new \SpiceCRM\includes\ErrorHandlers\Exception("misconfiguration blowfishkey missing");
+                $method = 'DES-EDE3-CBC';
                 [$parentType, $parentId] = $this->getTrackingParentData();
                 $data = "ParentType:$parentType:ParentId:$parentId:MarketingActions:$marketingaction";
                 $link = openssl_encrypt($data, $method, $key);
@@ -994,7 +1003,6 @@ class Email extends SpiceBean
         if ($mailbox->track_mailbox) {
             $this->findMarketingActions($mailbox->tracking_url);
         }
-
         $mailbox->initTransportHandler();
 //        $mailbox->transport_handler->zip_attachments = true;
         $result = $mailbox->transport_handler->sendMail($this);
@@ -1721,7 +1729,17 @@ class Email extends SpiceBean
 
         // todo deal with attachments lol
         foreach ($message->getAttachments() as $attachment) {
-            $attachmentData = $attachment->getData();
+
+            # if the attachment is a message, the content needs to be converted to a string
+            if ($attachment->getMimeType() == 'message/rfc822') {
+                $stream = tmpfile();
+                $attachment->copyToStream($stream);
+                $attachmentData = file_get_contents(stream_get_meta_data($stream)['uri']);
+                fclose($stream);
+            } else {
+                $attachmentData = $attachment->getData();
+            }
+
             if(!$attachmentData){
                 LoggerManager::getLogger()->fatal('emailattachment', 'Could not getData() of attachment '.$attachment->getFilename().' for email '.$this->id.'. Getting attachment skipped.');
                 continue;
@@ -1817,5 +1835,66 @@ class Email extends SpiceBean
         }
 
         return $content;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function validateEmailForDownload(SpiceBean $email)
+    {
+
+        if (!$email) {
+            throw new Exception('The given email does not exist.');
+        }
+
+        $downloadCounterMax = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_counter_max');
+        $downloadCounter = $email->getFieldValue('downloadlink_counter');
+
+        if ($downloadCounter >= $downloadCounterMax) {
+            throw new Exception('You have reached the limit of downloading the attachments.');
+        }
+
+        $downloadAttachmentsEnabled = $email->getFieldValue('downloadlink_attachments');
+        if (!$downloadAttachmentsEnabled) {
+            throw new Exception('Download Link Attachment not checked');
+        }
+
+        return $email;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function returnDownloadFromDownloadlink($email) {
+        $email = BeanFactory::getBean('Emails', $email);
+
+        if (!$email || empty($email->id)) {
+            throw new \Exception('Email not found.');
+        }
+
+        $newZipAttachment = $this->createZipFromAttachments();
+
+        if (!$newZipAttachment || empty($newZipAttachment->filemd5)) {
+            throw new \RuntimeException('Failed to create ZIP file from attachments.');
+        }
+
+        $zipFilePath = "upload/" . $newZipAttachment->filemd5;
+
+        if (!file_exists($zipFilePath)) {
+            throw new \RuntimeException('ZIP file not found.');
+        }
+
+        try {
+            $zipContents = file_get_contents($zipFilePath);
+            $base64Zip = base64_encode($zipContents);
+
+            return [
+                'success' => true,
+                'base64Zip' => $base64Zip,
+                'filename' => $newZipAttachment->filename,
+            ];
+        } finally {
+            unlink($zipFilePath);
+        }
     }
 }

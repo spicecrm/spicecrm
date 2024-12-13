@@ -327,6 +327,8 @@ class ConfigTransferController
      */
     static function importToTables(Request $req, Response $res, $args): Response
     {
+        set_time_limit(500);
+
         $db = DBManagerFactory::getInstance();
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
         $nowDb = TimeDate::getInstance()->nowDb();

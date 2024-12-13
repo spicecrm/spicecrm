@@ -87,7 +87,7 @@ export class SpiceKanbanManagerDetails implements OnInit {
         if (!!selectedSpiceText) {
             this.selectedStageText = this.kanban.generateTrackableObject(selectedSpiceText, 'spiceTexts');
         } else {
-            const validator = obj => !!obj.name;
+            const validator = obj => !!obj.description;
             const newText = this.generateSpiceTextObject();
             this.selectedStageText = this.kanban.generateTrackableNewObject(newText, 'spiceTexts', validator);
             this.kanban.currentStageTexts.push(newText);

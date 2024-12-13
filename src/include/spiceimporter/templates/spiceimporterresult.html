@@ -1,27 +1,15 @@
-<div class="slds-wrap slds-height_full">
-    <div class="slds-height_full">
-        <table *ngIf="spiceImport.result && spiceImport.result.list && spiceImport.result.list.length > 0"
-               class="slds-table slds-table--bordered slds-table--cell-buffer">
-            <thead>
-            <tr class="slds-text-title--caps">
-                <th scope="col">
-                    <div style="font-weight: 600" class="slds-truncate"><system-label label="LBL_STATUS"></system-label></div>
-                </th>
-                <th colspan="4" scope="col">
-                    <div style="font-weight: 600" class="slds-truncate"><system-label label="LBL_DATA"></system-label></div>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr  [ngStyle]="{'cursor': row.recordId ? 'pointer': 'initial'}" *ngFor="let row of spiceImport.result.list" (click)="row.recordId ? goToRecord(row.recordId): false">
-                <td scope="row">
-                    <div class="slds-truncate">{{row.status}}</div>
-                </td>
-                <td *ngFor="let recordData of row.data">
-                    <div class="slds-truncate">{{recordData}}</div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+<div class="slds-size--1-of-1 slds-height_full">
+    @switch (spiceImport.importstatus){
+        @case ('i') {
+            <spice-imports-view-log [importid]="spiceImport.importid" [module]="model.module"></spice-imports-view-log>
+        }
+        @case ('c') {
+            <spice-imports-view-log [importid]="spiceImport.importid" [module]="model.module"></spice-imports-view-log>
+        }
+        @case ('q') {
+            <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+                <system-illustration illustration="gonefishing"><system-label label="MSG_IMPORT_SCHEDULED"/></system-illustration>
+            </div>
+        }
+    }
 </div>

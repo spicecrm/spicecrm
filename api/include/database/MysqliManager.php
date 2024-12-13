@@ -468,7 +468,7 @@ class MysqliManager extends DBManager
         // CR1000349 mysql8 compatibility: remove hardcoded charset
         $charset = $this->getOption('charset');
         if (empty($charset)) {
-            $charset = 'utf8';
+            $charset = 'utf8mb4';
         }
         mysqli_set_charset($this->database, $charset);
 	    // mysqli_query($this->database,"SET CHARACTER SET ".$charset."");

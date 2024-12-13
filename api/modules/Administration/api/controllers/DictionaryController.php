@@ -220,7 +220,7 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
                             'leaf' => false,
                             'label' => $field_defs['vname'],
                             'link' => $field_name,
-                            'hasRelationshipFields' => $nodeModule->$field_name->relationship->type == 'many-to-many'
+                            'hasRelationshipFields' => in_array($nodeModule->$field_name->relationship->type,  ['many-to-many', 'email-address', 'many-to-many-prospectlists', 'many-to-many-bean'])
                         ];
 
                         $returnArray[] = $entry;
@@ -296,7 +296,7 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
             array_map(function ($field) {
                 $field['id'] = "field:{$field['name']}";
                 return $field;
-            }, $bean->{$args['link']}->relationship->def['fields'])
+            }, is_array($bean->{$args['link']}->relationship->def['fields']) ? $bean->{$args['link']}->relationship->def['fields'] : [])
         );
 
         return $res->withJson(array_values($fields));
