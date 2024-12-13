@@ -420,15 +420,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
     ],
 
     'relationships' => [
-        'campaigns_mailboxes_rel' => [
-            'lhs_module' => 'Mailboxes',
-            'lhs_table' => 'mailboxes',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Campaigns',
-            'rhs_table' => 'campaigns',
-            'rhs_key' => 'mailbox_id',
-            'relationship_type' => 'one-to-many',
-        ],
+//        'campaigns_mailboxes_rel' => [
+//            'lhs_module' => 'Mailboxes',
+//            'lhs_table' => 'mailboxes',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Campaigns',
+//            'rhs_table' => 'campaigns',
+//            'rhs_key' => 'mailbox_id',
+//            'relationship_type' => 'one-to-many',
+//        ],
 
         'campaign_accounts' => ['lhs_module' => 'Campaigns', 'lhs_table' => 'campaigns', 'lhs_key' => 'id',
             'rhs_module' => 'Accounts', 'rhs_table' => 'accounts', 'rhs_key' => 'campaign_id',
