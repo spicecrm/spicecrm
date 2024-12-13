@@ -6,7 +6,7 @@
             <div *ngIf="!fieldconfig.icononly" class="slds-truncate">{{url}}</div>
     </div>
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-grid slds-grid--align-spread"
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-grid slds-grid--align-spread slds-m-top--xx-small"
      [ngClass]="getFieldClass()">
     <input #focus class="slds-input" type="text" [(ngModel)]="value" [ngModelOptions]="modelOptions"/>
     <field-messages [fieldname]="fieldname"></field-messages>
