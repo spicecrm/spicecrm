@@ -954,8 +954,8 @@ class Email extends SpiceBean
         foreach ($dom->getElementsByTagName('a') as $node) {
             $marketingaction = $node->getAttribute('data-marketingaction');
             if (!empty($marketingaction)) {
-                $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? "2fs5uhnjcnpxcpg9";
-                $method = 'blowfish';
+                $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? throw new \SpiceCRM\includes\ErrorHandlers\Exception("misconfiguration blowfishkey missing");
+                $method = 'DES-EDE3-CBC';
                 [$parentType, $parentId] = $this->getTrackingParentData();
                 $data = "ParentType:$parentType:ParentId:$parentId:MarketingActions:$marketingaction";
                 $link = openssl_encrypt($data, $method, $key);
@@ -1729,7 +1729,17 @@ class Email extends SpiceBean
 
         // todo deal with attachments lol
         foreach ($message->getAttachments() as $attachment) {
-            $attachmentData = $attachment->getData();
+
+            # if the attachment is a message, the content needs to be converted to a string
+            if ($attachment->getMimeType() == 'message/rfc822') {
+                $stream = tmpfile();
+                $attachment->copyToStream($stream);
+                $attachmentData = file_get_contents(stream_get_meta_data($stream)['uri']);
+                fclose($stream);
+            } else {
+                $attachmentData = $attachment->getData();
+            }
+
             if(!$attachmentData){
                 LoggerManager::getLogger()->fatal('emailattachment', 'Could not getData() of attachment '.$attachment->getFilename().' for email '.$this->id.'. Getting attachment skipped.');
                 continue;
