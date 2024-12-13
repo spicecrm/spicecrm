@@ -126,6 +126,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'type' => 'varchar',
             'len' => 36
         ],
+        /*
         'output_template_name' => [
             'name' => 'output_template_name',
             'rname' => 'name',
@@ -153,6 +154,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'type' => 'varchar',
             'len' => 36
         ],
+        */
         'mailbox_id' => [
             'name' => 'mailbox_id',
             'vname' => 'LBL_MAILBOX',
@@ -413,6 +415,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'rhs_key' => 'textmessage_template_id',
             'relationship_type' => 'one-to-many'
         ],
+        /*
         'campaigntask_output_template' => [
             'lhs_module' => 'OutputTemplates',
             'lhs_table' => 'outputtemplates',
@@ -422,6 +425,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'rhs_key' => 'output_template_id',
             'relationship_type' => 'one-to-many'
         ],
+        */
         'campaigntasks_questionnaire' => [
             'lhs_module' => 'Questionnaires',
             'lhs_table' => 'questionnaires',
