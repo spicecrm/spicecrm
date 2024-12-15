@@ -1,8 +1,16 @@
-@for(report of reports; track report.id){
-    @if (report.visualization) {
-        <reporter-visualization-container [componentconfig]="{reportid: report.id}" ></reporter-visualization-container>
-    }
-    @if (report.presentation) {
-        <reporter-presentation-container [componentconfig]="{reportid: report.id}"/>
+@if (isLoading || reports.length == 0) {
+    <div class="slds-box--border slds-size--1-of-1 slds-align--absolute-center" style="height: 300px" [system-overlay-loading-spinner]="isLoading">
+        <system-illustration-no-records *ngIf="!isLoading">
+            <system-label label="MSG_NO_REPORTS"/>
+        </system-illustration-no-records>
+    </div>
+} @else {
+    @for(report of reports; track report.id){
+        @if (report.visualization) {
+            <reporter-visualization-container [componentconfig]="{reportid: report.id}" ></reporter-visualization-container>
+        }
+        @if (report.presentation) {
+            <reporter-presentation-container [componentconfig]="{reportid: report.id}"/>
+        }
     }
 }

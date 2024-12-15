@@ -14,15 +14,31 @@ import {backend} from '../../../services/backend.service';
 })
 export class ReporterIntegrationParentContainer implements OnInit{
 
+    /**
+     * holds the reports
+     */
     public reports: any[] = [];
+
+    /**
+     * a loading indicator
+     */
+    public isLoading: boolean = false;
 
     constructor(public backend: backend, public model: model) {
     }
 
+    /**
+     * on init load the reports
+     */
     public ngOnInit() {
+        this.isLoading = true;
         this.backend.getRequest(`module/KReports/plugins/kpublishing/reports/${this.model.module}`).subscribe({
             next: (reports) => {
                 this.reports = reports.sort((a, b) => a.sequence > b.sequence ? -1 : 1);
+                this.isLoading = false;
+            },
+            error: (e) => {
+                this.isLoading = false;
             }
         })
     }
