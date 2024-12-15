@@ -139,7 +139,9 @@ declare var moment: any;
         ReporterFilterItemReference,
         ReporterFilterItemFunction,
         ReporterFilterItemParent,
-        ReporterFilterItemCategory
+        ReporterFilterItemCategory,
+        ReporterVisualizationContainer,
+        ReporterPresentationContainer
     ]
 })
 export class ModuleReports {
