@@ -102,7 +102,7 @@ class ConfServerController
 
         $tables = [
             'spiceaclstandardactions',
-            'spiceaclmodulefield',
+            'spiceaclmodulefields',
             'spiceaclmoduleactions',
             'sysdictionarydefinitions',
             'sysdictionaryindexes',
