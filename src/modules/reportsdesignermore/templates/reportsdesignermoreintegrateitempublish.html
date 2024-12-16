@@ -26,7 +26,8 @@
                     <label class="slds-form-element__label">
                         <system-label label="LBL_MODULE"></system-label>
                     </label>
-                    <div class="slds-combobox_container">
+                    <system-input-module [(ngModel)]="properties.subpanelModule"/>
+                    <!--div class="slds-combobox_container">
                         <div class="slds-form-element slds-lookup">
                             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" role="combobox">
                                 <div *ngIf="!!properties.subpanelModule; else inputContainer" class="slds-form-element__control">
@@ -56,10 +57,10 @@
                                 </ng-template>
                             </div>
                         </div>
-                    </div>
+                    </div-->
                 </div>
             </div>
-            <div class="slds-form-element__row">
+            <!--div class="slds-form-element__row">
                 <div class="slds-form-element slds-size--1-of-1">
                     <label class="slds-form-element__label">
                         <system-label label="LBL_TAB"></system-label>
@@ -75,7 +76,7 @@
                         </select>
                     </div>
                 </div>
-            </div>
+            </div-->
             <div class="slds-form-element__row">
                 <div class="slds-form-element slds-size--1-of-1">
                     <label class="slds-form-element__label">

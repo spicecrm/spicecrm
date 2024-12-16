@@ -1088,16 +1088,16 @@ if (file_exists("extensions/modules/ServiceFeedbacks")) {
 //        'vname' => 'LBL_SALESVOUCHERS',
 //    ];
 //}
-if (file_exists('extensions/modules/Potentials')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['potentials'] = [
-        'name' => 'potentials',
-        'type' => 'link',
-        'relationship' => 'contacts_potentials',
-        'module' => 'Potentials',
-        'source' => 'non-db',
-        'vname' => 'LBL_POTENTIALS',
-    ];
-}
+//if (file_exists('extensions/modules/Potentials')) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['potentials'] = [
+//        'name' => 'potentials',
+//        'type' => 'link',
+//        'relationship' => 'contacts_potentials',
+//        'module' => 'Potentials',
+//        'source' => 'non-db',
+//        'vname' => 'LBL_POTENTIALS',
+//    ];
+//}
 //VardefManager::createVardef('Contacts', 'Contact', ['default', 'assignable', 'person']);
 
 SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['primary_address_reference_id'] = [
@@ -1113,30 +1113,30 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['alt_addr
 ];
 
 // CR1000661
-if(file_exists('extensions/modules/PartnerAgreements')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['partneragreements'] = [
-        'name' => 'partneragreements',
-        'vname' => 'LBL_PARTNERAGREEMENTS',
-        'type' => 'link',
-        'relationship' => 'partneragreements_contacts',
-        'module' => 'PartnerAgreements',
-        'bean_name' => 'PartnerAgreement',
-        'source' => 'non-db',
-    ];
-    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['partneragreement_role'] = [
-        'name' => 'partneragreement_role',
-        'vname' => 'LBL_ROLE',
-        'type' => 'enum',
-        'options' => 'partneragreement_contact_role_dom',
-        'source' => 'non-db',
-        'comment' => 'for relationship field partneragreement_role'
-    ];
-    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['propensity_to_partnership'] = [
-        'name' => 'propensity_to_partnership',
-        'vname' => 'LBL_PROPENSITY_TO_PARTNERSHIP',
-        'type' => 'enum',
-        'options' => 'partneragreement_propensity_role_dom',
-        'source' => 'non-db',
-        'comment' => 'for relationship field propensity_to_partnership'
-    ];
-}
+//if(file_exists('extensions/modules/PartnerAgreements')) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['partneragreements'] = [
+//        'name' => 'partneragreements',
+//        'vname' => 'LBL_PARTNERAGREEMENTS',
+//        'type' => 'link',
+//        'relationship' => 'partneragreements_contacts',
+//        'module' => 'PartnerAgreements',
+//        'bean_name' => 'PartnerAgreement',
+//        'source' => 'non-db',
+//    ];
+//    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['partneragreement_role'] = [
+//        'name' => 'partneragreement_role',
+//        'vname' => 'LBL_ROLE',
+//        'type' => 'enum',
+//        'options' => 'partneragreement_contact_role_dom',
+//        'source' => 'non-db',
+//        'comment' => 'for relationship field partneragreement_role'
+//    ];
+//    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['propensity_to_partnership'] = [
+//        'name' => 'propensity_to_partnership',
+//        'vname' => 'LBL_PROPENSITY_TO_PARTNERSHIP',
+//        'type' => 'enum',
+//        'options' => 'partneragreement_propensity_role_dom',
+//        'source' => 'non-db',
+//        'comment' => 'for relationship field propensity_to_partnership'
+//    ];
+//}
