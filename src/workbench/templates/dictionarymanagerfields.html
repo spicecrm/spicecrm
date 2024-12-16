@@ -16,7 +16,7 @@
     </button>
 </div>
 <div system-to-bottom>
-    <ng-container *ngIf="dictionarymanager.currentDictionaryDefinition; else selectdefinition">
+    @if(dictionarymanager.currentDictionaryDefinition){
         <table  class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--header-fixed slds-no-row-hover">
             <thead>
                 <tr class="slds-line-height_reset">
@@ -104,11 +104,10 @@
                 }
             </tbody>
         </table>
-    </ng-container>
-    <ng-template #selectdefinition>
+    } @else {
         <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
             <system-label label="LBL_SELECT_A_DICTIONARYDEFINITION"/>
         </div>
-    </ng-template>
+    }
 </div>
 
