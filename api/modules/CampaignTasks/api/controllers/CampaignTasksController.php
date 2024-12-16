@@ -196,7 +196,7 @@ class CampaignTasksController
         $campaignLog = BeanFactory::getBean('CampaignLog');
         $list = $campaignLog->get_list(
             "planned_activity_date DESC",
-            "campaigntask_id = '{$args['id']}' AND IFNULL(planned_activity_date, '$now') <= '$now' AND activity_type NOT IN ('completed','converted', 'maxattempts')",
+            "campaigntask_id = '{$args['id']}' AND target_id<>'' AND target_id IS NOT NULL AND target_type <>'' AND target_type IS NOT NULL AND IFNULL(planned_activity_date, '$now') <= '$now' AND activity_type NOT IN ('completed','converted', 'maxattempts')",
             $getParams['offset'] ?: 0,
             $getParams['limit'] ?: 10,
             $getParams['limit'] ?: -1);
@@ -208,21 +208,22 @@ class CampaignTasksController
         $items = [];
 
         foreach ($list['list'] as $item) {
-            $seed = BeanFactory::getBean($item->target_type, $item->target_id);
-            $items[] = [
-                'campaignlog_id' => $item->id,
-                'campaignlog_activity_type' => $item->activity_type,
-                'campaignlog_activity_date' => $item->activity_date,
-                'campaignlog_related_id' => $item->related_id,
-                'campaignlog_planned_activity_date' => $item->planned_activity_date,
-                'campaignlog_planned_activity_user_id' => $item->planned_activity_user_id,
-                'campaignlog_locked_until' => $item->locked_until,
-                'campaignlog_target_type' => $item->target_type,
-                'campaignlog_hits' => $item->hits,
-                'campaignlog_locked_by_id' => $item->locked_by_id,
-                // tbd
-                'data' => $KRESTModuleHandler->mapBeanToArray($item->target_type, $seed)
-            ];
+            if($seed = BeanFactory::getBean($item->target_type, $item->target_id)){
+                $items[] = [
+                    'campaignlog_id' => $item->id,
+                    'campaignlog_activity_type' => $item->activity_type,
+                    'campaignlog_activity_date' => $item->activity_date,
+                    'campaignlog_related_id' => $item->related_id,
+                    'campaignlog_planned_activity_date' => $item->planned_activity_date,
+                    'campaignlog_planned_activity_user_id' => $item->planned_activity_user_id,
+                    'campaignlog_locked_until' => $item->locked_until,
+                    'campaignlog_target_type' => $item->target_type,
+                    'campaignlog_hits' => $item->hits,
+                    'campaignlog_locked_by_id' => $item->locked_by_id,
+                    // tbd
+                    'data' => $KRESTModuleHandler->mapBeanToArray($item->target_type, $seed)
+                ];
+            }
         }
 
         // get the stats
