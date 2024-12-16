@@ -8,6 +8,7 @@ use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\data\BeanFactory;
@@ -195,8 +196,8 @@ class CampaignTasksController
         $now = $timedate->nowDb();
         $campaignLog = BeanFactory::getBean('CampaignLog');
         $list = $campaignLog->get_list(
-            "planned_activity_date DESC",
-            "campaigntask_id = '{$args['id']}' AND IFNULL(planned_activity_date, '$now') <= '$now' AND activity_type NOT IN ('completed','converted', 'maxattempts')",
+            "",
+            "campaigntask_id = '{$args['id']}' AND target_id<>'' AND target_id IS NOT NULL AND target_type <>'' AND target_type IS NOT NULL AND IFNULL(planned_activity_date, '$now') <= '$now' AND activity_type NOT IN ('completed','converted', 'maxattempts')",
             $getParams['offset'] ?: 0,
             $getParams['limit'] ?: 10,
             $getParams['limit'] ?: -1);
@@ -209,21 +210,31 @@ class CampaignTasksController
 
         foreach ($list['list'] as $item) {
             $seed = BeanFactory::getBean($item->target_type, $item->target_id);
-            $items[] = [
-                'campaignlog_id' => $item->id,
-                'campaignlog_activity_type' => $item->activity_type,
-                'campaignlog_activity_date' => $item->activity_date,
-                'campaignlog_related_id' => $item->related_id,
-                'campaignlog_planned_activity_date' => $item->planned_activity_date,
-                'campaignlog_planned_activity_user_id' => $item->planned_activity_user_id,
-                'campaignlog_locked_until' => $item->locked_until,
-                'campaignlog_target_type' => $item->target_type,
-                'campaignlog_hits' => $item->hits,
-                'campaignlog_locked_by_id' => $item->locked_by_id,
-                // tbd
-                'data' => $KRESTModuleHandler->mapBeanToArray($item->target_type, $seed)
-            ];
+            if($seed) {
+                $items[] = [
+                    'campaignlog_id' => $item->id,
+                    'campaignlog_activity_type' => $item->activity_type,
+                    'campaignlog_activity_date' => $item->activity_date,
+                    'campaignlog_related_id' => $item->related_id,
+                    'campaignlog_planned_activity_date' => $item->planned_activity_date,
+                    'campaignlog_planned_activity_date_timestamp' => strtotime($item->planned_activity_date), // for sorting
+                    'campaignlog_planned_activity_user_id' => $item->planned_activity_user_id,
+                    'campaignlog_locked_until' => $item->locked_until,
+                    'campaignlog_target_type' => $item->target_type,
+                    'campaignlog_hits' => $item->hits,
+                    'campaignlog_locked_by_id' => $item->locked_by_id,
+
+                    // tbd
+                    'data' => $KRESTModuleHandler->mapBeanToArray($item->target_type, $seed)
+                ];
+            } else{
+                LoggerManager::getLogger()->error('Target of type '.$item->target_type.'with ID '.$item->target_id.' was not found for CampaignTask with ID '.$args['id']);
+            }
         }
+
+        // sort items by planned_activity_date DESC
+        $date_timestamp = array_column($items, 'campaignlog_planned_activity_date_timestamp');
+        array_multisort($date_timestamp, SORT_DESC, $items);
 
         // get the stats
         $stats = DBManagerFactory::getInstance()->fetchAll("SELECT count(id) count, activity_type FROM campaign_log WHERE campaigntask_id = '{$args['id']}' AND deleted = 0 GROUP BY activity_type");
