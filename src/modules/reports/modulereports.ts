@@ -47,6 +47,7 @@ import {ReporterFieldPercentage} from "./components/reporterfieldpercentage";
 import {ReporterFieldEnum} from "./components/reporterfieldenum";
 import {ReporterFieldDate} from "./components/reporterfielddate";
 import {ReporterFieldDateTime} from "./components/reporterfielddatetime";
+import {ReporterFieldDateTimeUTC} from "./components/reporterfielddatetimeutc";
 import {ReporterFieldColor} from "./components/reporterfieldcolor";
 import {FieldReportCategory} from "./fields/fieldreportcategory";
 
@@ -116,6 +117,7 @@ declare var moment: any;
         ReporterFieldEnum,
         ReporterFieldDate,
         ReporterFieldDateTime,
+        ReporterFieldDateTimeUTC,
         ReporterFieldColor,
         ReporterFieldCategoryTree,
         ReporterFieldNumber,
@@ -137,7 +139,9 @@ declare var moment: any;
         ReporterFilterItemReference,
         ReporterFilterItemFunction,
         ReporterFilterItemParent,
-        ReporterFilterItemCategory
+        ReporterFilterItemCategory,
+        ReporterVisualizationContainer,
+        ReporterPresentationContainer
     ]
 })
 export class ModuleReports {

@@ -477,8 +477,11 @@ class EmailAddress extends SpiceBean
         if (!$emailAddress) {
             return false;
         }
+        if($newStatus == 'opted_in') $dateField = 'opt_in_date';
+        else if($newStatus == 'opted_out') $dateField = 'opt_out_date';
 
-        $bean->email_addresses->add($emailAddress, ['opt_in_status' => $newStatus]);
+
+        $bean->email_addresses->add($emailAddress, ['opt_in_status' => $newStatus, $dateField => date('Y-m-d H:m:s')]);
 
         return true;
     }
