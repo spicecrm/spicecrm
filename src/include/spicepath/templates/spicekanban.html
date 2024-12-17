@@ -1,6 +1,6 @@
 @if (confdata){
 <div cdkDropListGroup (system-to-bottom)="loadmore()" [elementClass]="false" class="slds-m-top--small slds-scrollable slds-height_full slds-size--1-of-1">
-    <div #header class="slds-size--1-of-1 spice-sticky-top">
+    <div #header [class.slds-border--bottom]="componentconfig.sumfield" class="slds-size--1-of-1 spice-sticky-top" style="background-color: rgb(250, 250, 250)">
         <div class="slds-tabs--path slds-p-horizontal--small slds-size--1-of-1" role="application">
             <ul class="slds-tabs--path__nav" role="tablist">
                 <ng-container *ngFor="let stage of stages">
@@ -15,7 +15,7 @@
                 </ng-container>
             </ul>
         </div>
-        <div *ngIf="componentconfig.sumfield" class="slds-grid slds-border--bottom slds-p-horizontal--small slds-size--1-of-1">
+        <div *ngIf="componentconfig.sumfield" class="slds-grid slds-p-horizontal--small slds-size--1-of-1">
             <div style="min-width: 300px;" *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small spice-stage-sum-container" [ngClass]="sizeClass">
                 <div class="slds-text-heading--medium slds-p-vertical--x-small" [ngClass]="{'slds-text-color--inverse-weak': modellist.isLoading}">
                     <ul class="slds-list_horizontal slds-has-dividers_right slds-align_absolute-center">
