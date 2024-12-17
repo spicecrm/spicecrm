@@ -2,60 +2,44 @@
 
 namespace SpiceCRM\modules\SystemTenants\hooks;
 
-use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\modules\SystemTenants\SystemTenant;
 use SpiceCRM\modules\Users\User;
 
 class TenantUserHooks
 {
     /**
-     * before_save hook before creating a new user check if user exists in the master tenant mapping table
-     * @param $bean
-     * @return void
-     * @throws Exception
-     */
-    public function tenantMappingCheckUserExists(User $bean)
-    {
-        if ($bean->fetched_row) return;
-
-        SystemTenant::switchToMaster();
-
-        if (SystemTenant::determineUserTenant($bean->user_name, $_SERVER['HTTP_HOST'])) {
-            throw (new Exception('User already exists in this tenant or other tenant'))->setErrorCode('duplicateUsername');
-        }
-
-        SystemTenant::switchDB(SystemTenant::$currentTenantID);
-    }
-
-    /**
      * after_save hook to add the tenant user to the mapping table
      * @param User $bean
      * @return void
      * @throws \Exception
      */
-    public function addUserTOTenantMappingTable(User $bean)
+    public static function addUserTOTenantMappingTable(User $bean): void
     {
-        if ($bean->fetched_row) return;
+        if (!SystemTenant::multitenancyEnabled() || $bean->fetched_row || !SystemTenant::isInTenantSystem()) return;
 
+        $tenantId = SystemTenant::$currentTenantID;
         SystemTenant::switchToMaster();
 
-        SystemTenant::addUserTOTenantMappingTable($bean->user_name, SystemTenant::$currentTenantID, $_SERVER['HTTP_HOST']);
+        SystemTenant::addUserTOTenantMappingTable($bean->user_name, $tenantId, $_SERVER['HTTP_HOST']);
 
-        SystemTenant::switchDB(SystemTenant::$currentTenantID);
+        SystemTenant::switchDB($tenantId);
     }
 
     /**
-     * after_save hook to add the tenant user to the mapping table
+     * after_delete hook to remove the tenant user from the mapping table
      * @param User $bean
      * @return void
      * @throws \Exception
      */
-    public function removeUserTOTenantMappingTable(User $bean)
+    public static function removeUserFromTenantMappingTable(User $bean): void
     {
+        if (!SystemTenant::multitenancyEnabled() || !SystemTenant::isInTenantSystem()) return;
+
+        $tenantId = SystemTenant::$currentTenantID;
         SystemTenant::switchToMaster();
 
-        SystemTenant::removeUserTOTenantMappingTable($bean->user_name, SystemTenant::$currentTenantID, $_SERVER['HTTP_HOST']);
+        SystemTenant::removeUserFromTenantMappingTable($bean->user_name, $tenantId, $_SERVER['HTTP_HOST']);
 
-        SystemTenant::switchDB(SystemTenant::$currentTenantID);
+        SystemTenant::switchDB($tenantId);
     }
 }
