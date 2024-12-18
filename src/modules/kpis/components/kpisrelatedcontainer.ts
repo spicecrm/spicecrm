@@ -11,6 +11,7 @@ import {session} from "../../../services/session.service";
 import {layout} from "../../../services/layout.service";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 import {Subscription} from "rxjs";
+import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'kpis-related-container',
@@ -23,16 +24,22 @@ export class KPIsRelatedContainer {
     /**
      * indicates that we are loading
      */
-    public loading: boolean = true;
+    public loading: boolean = false;
 
-    public loaded: boolean = false;
+    /**
+     * a searchterm to filter by
+     */
+    public searchTerm: string = '';
 
     /**
      * the other targets
      */
     public targets: any[] = [];
 
-    private loadsubscription: Subscription = new Subscription()
+    /**
+     * decide if a user can recalculate
+     */
+    public canRecalculate: boolean = false;
 
     constructor(
         public session: session,
@@ -41,9 +48,11 @@ export class KPIsRelatedContainer {
         public layout: layout,
         public modal: modal,
         public model: model,
+        public metadata: metadata,
         public elementRef: ElementRef,
         public relatedmodels: relatedmodels
     ) {
+        this.canRecalculate = this.metadata.checkModuleAcl('KPITargetValues', 'create');
     }
 
     /**
@@ -54,11 +63,11 @@ export class KPIsRelatedContainer {
         // Initialize the related Model Service
         this.initializeRelatedModelService();
 
-        this.loadsubscription = this.model.data$.subscribe(modeldata => {
-            this.loadRelated();
-        });
-
+        // load the related models
+        this.loadRelated();
     }
+
+
 
     /**
      * initializes the related model service
@@ -79,26 +88,41 @@ export class KPIsRelatedContainer {
     }
 
     /**
+     * returns filtered targets
+     */
+    get filteredTargets(){
+        return !!this.searchTerm ? this.targets.filter(t => t.kpi.display_label.toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0) : this.targets;
+    }
+
+    /**
+     * to reload the targets
+     */
+    public reload(){
+        this.searchTerm = '';
+        this.loadRelated();
+    }
+
+    /**
      * loads the related records
      */
     public loadRelated() {
-        if (this.loaded) return;
-
-        this.loaded = true;
-
-        // unsubscribe if we loaded once
-        this.loadsubscription.unsubscribe();
+        if(this.loading) return;
 
         // reload
         this.targets = [];
+        this.loading = true;
         this.relatedmodels.getData().subscribe({
             next: () => {
+                this.loading = false;
                 this.relatedmodels.items.forEach(i => {
                     i.kpi = {...this.model.data};
                     i.kpi.display_label = i.parent_name;
                     this.targets.push(i);
                 })
                 this.targets.sort((a, b) => a.kpi.display_label.localeCompare(b.kpi.display_label));
+            },
+            error: () => {
+                this.loading = false;
             }
         });
     }
@@ -111,5 +135,23 @@ export class KPIsRelatedContainer {
         let dim = this.elementRef.nativeElement.getBoundingClientRect()
         let count = Math.floor(dim.width / 350);
         return dim.width > 350 ?  'slds-size--1-of-' + count : 'slds-size--1-of-1';
+    }
+
+    /**
+     * recalculates the KPI
+     */
+    public reCalculate(){
+        if(this.canRecalculate){
+            let awaitModal = this.modal.await('LBL_RECALCULATING');
+           this.backend.postRequest(`module/KPIs/${this.model.id}/recalculate`).subscribe({
+               next: () => {
+                   awaitModal.emit(true);
+                   this.reload();
+               },
+               error: () => {
+                   awaitModal.emit(true);
+               }
+           })
+        }
     }
 }
