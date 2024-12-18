@@ -196,11 +196,11 @@ class SystemTenant extends SpiceBean
 
         (new SpiceInstaller())->initializeSystem($db, 'en_us');
 
+        SpiceConfig::getInstance()->installing = false;
+
         $this->copyConfig($db, $masterConfig, ['fts', 'default_preferences', 'system', 'core', 'multitenancy']);
 
         $tenantAdmin = $this->createTenantAdminUser($db, $sendCredentials);
-
-        SpiceConfig::getInstance()->installing = false;
 
         # switch back to the master system and continue processing
         self::switchToMaster();
