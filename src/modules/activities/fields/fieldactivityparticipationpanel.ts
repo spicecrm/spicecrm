@@ -103,6 +103,9 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
         // filter by available modules and dynamically build the linkname
         this.participantLinks = this.possibleLinks.filter(p => {
             return this.metadata.getModuleDefs(p.module);
+        }).map(l => {
+            l.link = l.name
+            return l;
         });
 
         // set the first as selected type
