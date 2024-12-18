@@ -120,7 +120,7 @@ export class SystemDisplayNumber implements OnChanges {
             return this.roundedLargeNumber(this.number / 1000000);
         }
 
-        if(Math.abs(this.number) > 1000){
+        if(Math.abs(this.number) > 10000){
             this.largeNumberPostfix = 'K';
             return this.roundedLargeNumber(this.number / 1000);
         }
