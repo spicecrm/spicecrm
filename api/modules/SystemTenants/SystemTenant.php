@@ -403,6 +403,15 @@ class SystemTenant extends SpiceBean
     }
 
     /**
+     * get tenant url used in email templates
+     * @return string
+     */
+    public function getTenantUrl(): string
+    {
+        return "https://$this->tenant_domain.{$_SERVER['HTTP_HOST']}";
+    }
+
+    /**
      * validate the inquiry data
      * @param object $data
      * @return object
