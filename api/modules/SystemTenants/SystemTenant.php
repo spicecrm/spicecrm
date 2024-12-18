@@ -291,6 +291,8 @@ class SystemTenant extends SpiceBean
                 $db->query("INSERT INTO config (category, name, value) VALUES ('$category', '$name', '$value')");
             }
         }
+
+        SpiceConfig::getInstance()->reloadConfig(true);
     }
 
     /**
