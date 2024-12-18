@@ -70,6 +70,9 @@ export class KPIsRelatedContainer {
         // pass in the model
         this.relatedmodels.model = this.model;
 
+        // set the max loaded number
+        this.relatedmodels.loaditems = 200;
+
         // set the related model from teh config
         this.relatedmodels.relatedModule = 'KPITargets';
 
