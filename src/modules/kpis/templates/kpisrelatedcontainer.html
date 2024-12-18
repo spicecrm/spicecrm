@@ -1,0 +1,17 @@
+@if (targets.length > 0) {
+    <div class="slds-grid slds-wrap slds-gutters_direct-xx-small">
+        @for (kpiTarget of targets; track kpiTarget.id) {
+            <div class="slds-col" [ngClass]="getTileWidthClass">
+                <system-dynamic-component [component]="model.getField('display_component') ?? 'KpiTile'"  [componentattributes]="{kpiTarget: kpiTarget}"></system-dynamic-component>
+            </div>
+        }
+    </div>
+} @else {
+    <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+        @if (loading) {
+            <system-spinner/>
+        } @else {
+            <system-illustration-no-records/>
+        }
+    </div>
+}
