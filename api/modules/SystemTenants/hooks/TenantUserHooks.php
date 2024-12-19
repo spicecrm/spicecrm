@@ -22,7 +22,7 @@ class TenantUserHooks
 
         SystemTenant::addUserTOTenantMappingTable($bean->user_name, $tenantId, $_SERVER['HTTP_HOST']);
 
-        SystemTenant::switchDB($tenantId);
+        SystemTenant::switchToTenant($tenantId);
     }
 
     /**
@@ -40,6 +40,6 @@ class TenantUserHooks
 
         SystemTenant::removeUserFromTenantMappingTable($bean->user_name, $tenantId, $_SERVER['HTTP_HOST']);
 
-        SystemTenant::switchDB($tenantId);
+        SystemTenant::switchToTenant($tenantId);
     }
 }
