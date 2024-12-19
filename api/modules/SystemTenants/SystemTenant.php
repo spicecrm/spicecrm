@@ -196,11 +196,11 @@ class SystemTenant extends SpiceBean
 
         (new SpiceInstaller())->initializeSystem($db, 'en_us');
 
+        SpiceConfig::getInstance()->installing = false;
+
         $this->copyConfig($db, $masterConfig, ['fts', 'default_preferences', 'system', 'core', 'multitenancy']);
 
         $tenantAdmin = $this->createTenantAdminUser($db, $sendCredentials);
-
-        SpiceConfig::getInstance()->installing = false;
 
         # switch back to the master system and continue processing
         self::switchToMaster();
@@ -291,6 +291,8 @@ class SystemTenant extends SpiceBean
                 $db->query("INSERT INTO config (category, name, value) VALUES ('$category', '$name', '$value')");
             }
         }
+
+        SpiceConfig::getInstance()->reloadConfig(true);
     }
 
     /**
@@ -398,6 +400,15 @@ class SystemTenant extends SpiceBean
     public function getConfirmUrl(): string
     {
         return SpiceConfig::getInstance()->config['site_url'] . "/module/SystemTenants/confirm/$this->id";
+    }
+
+    /**
+     * get tenant url used in email templates
+     * @return string
+     */
+    public function getTenantUrl(): string
+    {
+        return "https://$this->tenant_domain.{$_SERVER['HTTP_HOST']}";
     }
 
     /**
