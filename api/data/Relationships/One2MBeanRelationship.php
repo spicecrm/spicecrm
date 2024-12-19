@@ -152,7 +152,7 @@ class One2MBeanRelationship extends One2MRelationship
                 'fielddefinition' => json_encode([
                     'name' => "{$relationship->relationship->rhs_linkname}_linked",
                     'type' => 'linked',
-                    'rname' => 'user_name',
+                    'rname' => 'name',
                     'id_name' => $rhsField->fieldname,
                     'link' => $relationship->relationship->rhs_linkname,
                     'source' => 'non-db',
