@@ -24,6 +24,13 @@ export class DictionaryManagerRelationships {
 
     public currentRelationship: Relationship;
 
+    /**
+     * a term to filter by
+     */
+    public filterterm: string;
+
+    public showTemplated: boolean = true;
+
     constructor(public dictionarymanager: dictionarymanager, public backend: backend, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
 
     }
@@ -36,7 +43,7 @@ export class DictionaryManagerRelationships {
         // return an empty array when no DictionaryDefinition is set
         if (!this.dictionarymanager.currentDictionaryDefinition) return [];
 
-        return this.dictionarymanager.dictionaryrelationships.filter(r => r.deleted == 0 && (r.lhs_sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition || r.rhs_sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition || r.join_sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition)).sort((a, b) => a.name.localeCompare(b.name));
+        return this.dictionarymanager.dictionaryrelationships.filter(r => r.deleted == 0 && (!this.filterterm || r.name.toLowerCase().indexOf(this.filterterm.toLowerCase()) >= 0 || r.relationship_name.toLowerCase().indexOf(this.filterterm.toLowerCase()) >= 0) && (r.lhs_sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition || r.rhs_sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition || r.join_sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition)).sort((a, b) => a.name.localeCompare(b.name));
     }
 
     /**
@@ -70,8 +77,7 @@ export class DictionaryManagerRelationships {
     /**
      * react to the click to add a new dictionary definition
      */
-    public addDictionaryRelationship(event: MouseEvent) {
-        event.stopPropagation();
+    public addDictionaryRelationship() {
         this.modal.openModal('DictionaryManagerRelationshipAdd', true, this.injector);
     }
 
