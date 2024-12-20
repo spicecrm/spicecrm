@@ -94,7 +94,8 @@ class Person extends SpiceBean
      */
     public function save($check_notify = false, $fts_index_bean = true)
     {
-        $id = parent::save($check_notify, false);
+        # index only if enabled and no email1 handling follows
+        $id = parent::save($check_notify, $fts_index_bean && empty(trim($this->email1)));
 
         if (empty(trim($this->email1))){
             return $this->id;

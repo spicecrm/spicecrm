@@ -450,7 +450,7 @@ if (file_exists('extensions/modules/ServiceQueues')) {
         'required' => false,
     ];
     SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['returntoservicequeues'] = [
-        'vname' => 'LBL_SERVICEQUEUES',
+        'vname' => 'LBL_RETURN_TO_QUEUES',
         'name' => 'returntoservicequeues',
         'type' => 'link',
         'module' => 'ServiceQueues',

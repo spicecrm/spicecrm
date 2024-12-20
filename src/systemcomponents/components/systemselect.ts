@@ -245,10 +245,14 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      * @private
      */
     public itemClicked(listItem: SystemSelectOptionI, event: MouseEvent) {
+        if (listItem.inactive) {
+            event.stopPropagation();
+            return;
+        }
+
         this.emitValue(listItem);
         this.focusedItem = listItem;
         this.value = undefined;
-
         this.inputIsVisible = false;
     }
 
@@ -290,14 +294,16 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      * @private
      */
     public handleEnterPress() {
-        if (!!this.focusedItem) {
+        if (!!this.focusedItem && !this.focusedItem.inactive) {
             this.emitValue(this.focusedItem);
             this.value = undefined;
             this.inputIsVisible = false;
         } else if (this.emitInputValueOnEnterPress) {
             this.focusedItem = this.searchList.find(e => e.id == this.value);
-            this.onChange(this.value);
-            this.inputIsVisible = false;
+            if(!this.focusedItem || !this.focusedItem.inactive){
+                this.onChange(this.value);
+                this.inputIsVisible = false;
+            }
         }
     }
 
@@ -341,9 +347,9 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      * @private
      */
     public navigateThroughResultList(event: KeyboardEvent) {
-
         let list = !this.dropdownTrigger.dropDownOpen ? this.generateSearchList() : this.searchList;
-        list = list.filter(e => !e.isGroup);
+        // Filter out group items and inactive items
+        list = list.filter(e => !e.isGroup && !e.inactive);
 
         if (list.length == 0) {
             return;
@@ -356,9 +362,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
         if (!this.focusedItem || !nextItem) {
             nextItem = list[0];
             this.focusedItem = nextItem;
-
         } else if (!!nextItem) {
-
             this.focusedItem = nextItem;
         }
 

@@ -13,7 +13,7 @@ import {userpreferences} from '../../../services/userpreferences.service';
     templateUrl: '../templates/reporterfieldcurrency.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReporterFieldCurrency implements OnInit {
+export class ReporterFieldCurrency {
     /**
      * report full record
      */
@@ -22,54 +22,16 @@ export class ReporterFieldCurrency implements OnInit {
      * report field
      */
     public field: any = {};
-    /**
-     * display value
-     */
-    public value: string = '';
-    /**
-     * display currency symbol
-     */
-    public currencySymbol: string = '';
 
     constructor(public currency: currency, public userpreferences: userpreferences) {
 
     }
 
-    /**
-     * call to set the display value
-     */
-    public ngOnInit() {
-        this.setCurrencySymbol();
-        this.setFormattedFieldValue();
-    }
-
-    /**
-     * set currency symbol
-     */
-    public setCurrencySymbol() {
-
+    get currencyID(){
         if (!this.record[this.field.fieldid]) return;
-
-        let currencyId = -99;
-
-        const fieldCurrencyId = this.field.fieldid + '_curid';
-        const currencies = this.currency.getCurrencies() || [];
-
-        if (fieldCurrencyId) {
-            currencyId = this.record[fieldCurrencyId];
-        }
-        this.currencySymbol = this.currency.getCurrencySymbol(currencyId);
+        return this.record[this.field.fieldid + '_curid'] ?? '-99';
     }
-
-    /**
-     * set formatted field value
-     */
-    public setFormattedFieldValue() {
-
-        if (this.record[this.field.fieldid]) {
-            this.value = this.userpreferences.formatMoney(parseFloat(this.record[this.field.fieldid]));
-        } else {
-            this.value = '';
-        }
+    get recordField(){
+        return this.record[this.field.fieldid];
     }
 }
