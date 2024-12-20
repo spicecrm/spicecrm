@@ -96,6 +96,19 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
     }
 
     /**
+     * attribute to display the value in utc
+     * @param value
+     */
+    private _displayUTC: boolean = false;
+    @Input('system-display-datetime-utc') set setDisplayUTC(value: boolean) {
+        if (value === false) {
+            this._displayUTC = false;
+        } else {
+            this._displayUTC = true;
+        }
+    }
+
+    /**
      * holds the components subscriptions
      *
      * @private
@@ -178,7 +191,7 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
             } else {
 
                 // set the Time Zone for the Field Value only if the Time Zone is set
-                return moment.utc(this.date).tz(this.timeZone).format(formatArray.join(' '));
+                return this._displayUTC ? moment.utc(this.date).format(formatArray.join(' ')) :  moment.utc(this.date).tz(this.timeZone).format(formatArray.join(' '));
             }
         }
     }

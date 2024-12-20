@@ -70,6 +70,11 @@ class One2MBeanRelationship extends One2MRelationship
             'deleted' => 0
         ];
 
+        if($this->relationship_role_column && $this->relationship_role_column_value){
+            $defs['relationship_role_column'] = $this->relationship_role_column;
+            $defs['relationship_role_column_value'] = $this->relationship_role_column_value;
+        }
+
         // make sure we delete any current relationship with the same name (might be the case if we have the same from legacy)
         $db->query("DELETE FROM relationships WHERE relationship_name='{$defs['relationship_name']}'");
 
@@ -137,6 +142,26 @@ class One2MBeanRelationship extends One2MRelationship
                 'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
             ];
 
+            $db->insertQuery('sysdictionaryfields', [
+                'id' => SpiceUtils::createGuid(),
+                'sysdictionaryname' => $rhsDictionaryDefinition->name,
+                'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
+                'sysdictionarytableaudited' => $rhsDictionaryDefinition->getDefinition()->audited,
+                'fieldname' => "{$relationship->relationship->rhs_linkname}_linked",
+                'fieldtype' => 'linked',
+                'fielddefinition' => json_encode([
+                    'name' => "{$relationship->relationship->rhs_linkname}_linked",
+                    'type' => 'linked',
+                    'rname' => 'name',
+                    'id_name' => $rhsField->fieldname,
+                    'link' => $relationship->relationship->rhs_linkname,
+                    'source' => 'non-db',
+                    'module' => $lhsDictionaryDefinition->getModuleName(),
+                    'vname' => $relationship->relationship->rhs_linklabel
+                ]),
+                'sysdictionaryrelationship_id' => $relationship->id,
+                'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
+            ]);
 
             // json encode the field definition
             $rhsLink['fielddefinition'] = json_encode($rhsLink['fielddefinition']);

@@ -104,7 +104,7 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
         this.participantLinks = this.possibleLinks.filter(p => {
             return this.metadata.getModuleDefs(p.module);
         }).map(l => {
-            l.link = this.model.module.toLowerCase() + '_' + l.name
+            l.link = l.name
             return l;
         });
 
