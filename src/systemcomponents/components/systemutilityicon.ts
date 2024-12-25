@@ -33,7 +33,7 @@ export class SystemUtilityIcon implements OnChanges{
     /**
      * the size of the icon
      */
-    @Input() public size: 'large' | 'small' | 'x-small' | 'xx-small' = 'small';
+    @Input() public size: 'large' | 'default' | 'small' | 'x-small' | 'xx-small' = 'small';
 
     /**
      * a string of classes that can be passed in and is added to the SVG
