@@ -517,7 +517,7 @@ class SystemTenant extends SpiceBean
 
         # assign the admin role to the user
         $systemRoleId = $db->getOne("SELECT id FROM sysuiroles WHERE systemdefault = 1 OR name = 'admin'");
-        $db->query("INSERT INTO sysuiuserroles (id, user_id, sysuirole_id, defaultrole) VALUES (" . $db->getGuidSQL() . ", '1', '$systemRoleId', 1)");
+        $db->query("INSERT INTO sysuiuserroles (id, user_id, sysuirole_id, defaultrole) VALUES (" . $db->getGuidSQL() . ", '{$user->id}', '$systemRoleId', 1)");
 
         return $admin;
     }
