@@ -18,6 +18,22 @@
                     </button>
                 </div>
             </div>
+            @if (!!preferredLogin) {
+                <div class="slds-grid slds-size--1-of-1 slds-m-vertical--x-small spice-hover-display-children">
+                    <div class="slds-size--4-of-8">
+                        <system-utility-icon icon="bookmark" colorclass="slds-icon-text-success" size="x-small" class="slds-m-right--x-small"/>
+                        <system-label label="LBL_PREFERRED_LOGIN"/>
+                    </div>
+                    <div [title]="preferredLogin" class="slds-grow slds-truncate">
+                        {{preferredLogin}}
+                    </div>
+                    <div>
+                        <button (click)="removePreferredLogin()" class="slds-button slds-button--icon">
+                            <system-button-icon icon="delete"/>
+                        </button>
+                    </div>
+                </div>
+            }
             @if (activeMethods.passkey) {
                 <div class="slds-grid slds-size--1-of-1 slds-m-vertical--x-small spice-hover-display-children">
                     <div class="slds-size--4-of-8">
@@ -82,7 +98,7 @@
                         <system-utility-icon icon="email" [colorclass]="activeMethods.email.active ? 'slds-icon-text-success' : 'slds-icon-text-default'" size="x-small" class="slds-m-right--x-small"/>
                         <system-label label="LBL_EMAIL"/>
                     </div>
-                    <div class="slds-grow">
+                    <div [title]="model.data.email1" class="slds-grow slds-truncate">
                         @if (activeMethods.email.active) { {{model.data.email1}} }
                     </div>
                     <div>
@@ -102,7 +118,7 @@
                         <system-utility-icon icon="chat" [colorclass]="activeMethods.sms.active ? 'slds-icon-text-success' : 'slds-icon-text-default'" size="x-small" class="slds-m-right--x-small"/>
                         <system-label label="LBL_SMS"/>
                     </div>
-                    <div class="slds-grow">
+                    <div [title]="model.data.phone_mobile" class="slds-grow slds-truncate">
                         @if (activeMethods.sms.active) { {{model.data.phone_mobile}} }
                     </div>
                     <div>

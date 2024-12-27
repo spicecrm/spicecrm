@@ -74,13 +74,16 @@ export class OutlookLoginPane extends GlobalLogin implements OnInit {
             userinfo_endpoint: microsoftService.config.userinfo_endpoint,
             login_url: microsoftService.config.login_url,
             redirect_uri: microsoftService.config.redirect_uri,
-            client_secret: microsoftService.config.client_secret
+            client_secret: microsoftService.config.client_secret,
+            with_login_hint: microsoftService.config.with_login_hint,
         };
 
         this.oauth2Service.codeFlowLogin().subscribe(code => {
 
             this.http.post(url, {issuer: microsoftService.issuer, code: code}).subscribe(
                 (data: {tokenObject: TokenObjectI, profile}) => {
+
+                    this.oauth2Service.handleSavePreferredLogin(data.profile.email);
 
                     this.login({
                         issuer: microsoftService.issuer, tokenObject: data.tokenObject
