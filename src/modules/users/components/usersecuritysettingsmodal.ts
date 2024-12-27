@@ -54,6 +54,10 @@ export class UserSecuritySettingsModal implements ModalComponentI {
         this.checkOneTimePasswordRegistration();
     }
 
+    get preferredLogin(): string {
+        return localStorage.getItem('OAuth-Username');
+    }
+
     /**
      * toggle default method
      * @param method
@@ -99,7 +103,7 @@ export class UserSecuritySettingsModal implements ModalComponentI {
         if (config.twofactor.email) {
             this.activeMethods.email = {active: config.twofactor.email && !!this.model.data.email1};
             if (!this.model.data.email1) {
-                this.activeMethods.sms.metadata = this.language.getLabel('MSG_MOBILE_PHONE_REQUIRED');
+                this.activeMethods.email.metadata = this.language.getLabel('MSG_MOBILE_PHONE_REQUIRED');
             }
         }
 
@@ -291,5 +295,12 @@ export class UserSecuritySettingsModal implements ModalComponentI {
      */
     public close() {
         this.self.destroy();
+    }
+
+    /**
+     * remove preferred login username
+     */
+    public removePreferredLogin() {
+        localStorage.removeItem('OAuth-Username');
     }
 }
