@@ -78,7 +78,8 @@ export class GlobalLoginOAuth2Button {
             userinfo_endpoint: config.userinfo_endpoint,
             login_url: config.login_url,
             redirect_uri: config.redirect_uri,
-            client_secret: config.client_secret
+            client_secret: config.client_secret,
+            with_login_hint: config.with_login_hint,
         };
 
         // set visible and enable the button
@@ -100,6 +101,8 @@ export class GlobalLoginOAuth2Button {
 
             this.http.post(url, {issuer: this.service.issuer, code: code}).subscribe(
                 (data: {tokenObject: TokenObjectI, profile}) => {
+
+                this.oauth2Service.handleSavePreferredLogin(data.profile.email);
 
                 if (this.authenticatedUser) {
 

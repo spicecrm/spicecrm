@@ -2,6 +2,8 @@ import {Injectable, Renderer2} from '@angular/core';
 import {HttpClient,} from '@angular/common/http';
 import {Auth2ServiceConfigI} from "../globalcomponents/interfaces/globalcomponents.interfaces";
 import {Subject} from "rxjs";
+import {takeUntil} from "rxjs/operators";
+import {broadcast} from "./broadcast.service";
 
 declare var _: any;
 
@@ -20,7 +22,29 @@ export class OAuth2Service {
     constructor(
         protected renderer: Renderer2,
         protected http: HttpClient,
+        private broadcast: broadcast
     ) {
+    }
+
+    /**
+     * save preferred login username
+     * @param username
+     */
+    public handleSavePreferredLogin(username: string) {
+
+        if (!this.config.with_login_hint) return;
+
+        const untilSubject = new Subject<void>();
+        this.broadcast.message$.pipe(takeUntil(untilSubject)).subscribe({
+            next: (res: any) => {
+                if (res.messagetype != 'login') return;
+
+                localStorage.setItem('OAuth-Username', username);
+
+                untilSubject.next();
+                untilSubject.complete();
+            }
+        });
     }
 
     /**
@@ -100,16 +124,19 @@ export class OAuth2Service {
      * @protected
      */
     protected generateLoginUrl(state: string): string {
-
-        const params = new URLSearchParams({
+        const params: any = {
             state: state,
             response_type: 'code',
             client_id: this.config.client_id,
             redirect_uri: this.config.redirect_uri,
             scope: this.config.scope,
-        });
+        };
 
-        return `${this.config.login_url}?${params.toString()}`;
+        if (this.config.with_login_hint && !!localStorage.getItem('OAuth-Username')) {
+            params.login_hint = localStorage.getItem('OAuth-Username');
+        }
+
+        return `${this.config.login_url}?${(new URLSearchParams(params)).toString()}`;
     }
 
     /**
