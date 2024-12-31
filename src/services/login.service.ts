@@ -55,6 +55,10 @@ export class loginService {
      * to be pased to the login so the handler can identify based on the toekn
      */
     public oauthIssuer: string = '';
+    /**
+     * flag set if the user logs out
+     */
+    public loggedOut: boolean = false;
 
     constructor(
         public configurationService: configurationService,
@@ -320,6 +324,9 @@ export class loginService {
      * broadcasts a an ebvenmt that sevrices can subscriber and listen to to cleanup and data that might occur
      */
     public logout(localonly: boolean = false) {
+
+        this.loggedOut = true;
+
         // check if we shoudl also logout on the server
         if(!localonly) {
             this.backend.deleteRequest('authentication/login', {session_id: this.session.authData.sessionId});

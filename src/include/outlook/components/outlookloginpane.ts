@@ -7,7 +7,6 @@ import {
 import {OutlookConfiguration} from '../services/outlookconfiguration.service';
 import {AuthServiceI, TokenObjectI} from "../../../globalcomponents/interfaces/globalcomponents.interfaces";
 import {OAuth2Service} from "../../../services/oauth2.service";
-import {Subscription} from "rxjs";
 import {GlobalLogin} from "../../../globalcomponents/components/globallogin";
 
 /**
@@ -36,7 +35,8 @@ export class OutlookLoginPane extends GlobalLogin implements OnInit {
             this.password = this.outlookConfiguration.password;
             const token = {
                 tokenObject: this.outlookConfiguration.tokenObject,
-                issuer: this.outlookConfiguration.issuer
+                issuer: this.outlookConfiguration.issuer,
+                username: this.outlookConfiguration.username,
             };
             this.login(token);
         } else {
@@ -78,15 +78,18 @@ export class OutlookLoginPane extends GlobalLogin implements OnInit {
             with_login_hint: microsoftService.config.with_login_hint,
         };
 
-        this.oauth2Service.codeFlowLogin().subscribe(code => {
+        let loginHint: string;
+
+        if (this.oauth2Service.config.with_login_hint && localStorage.getItem('OAuth-Issuer') == microsoftService.issuer) {
+            loginHint = localStorage.getItem('OAuth-Username');
+        }
+
+        this.oauth2Service.codeFlowLogin(loginHint).subscribe(code => {
 
             this.http.post(url, {issuer: microsoftService.issuer, code: code}).subscribe(
                 (data: {tokenObject: TokenObjectI, profile}) => {
-
-                    this.oauth2Service.handleSavePreferredLogin(data.profile.email);
-
                     this.login({
-                        issuer: microsoftService.issuer, tokenObject: data.tokenObject
+                        issuer: microsoftService.issuer, tokenObject: data.tokenObject, username: data.profile.email
                     });
                 });
         })

@@ -155,6 +155,11 @@ export class GlobalLogin implements OnDestroy {
             this.initializeNecessaryLanguageData();
             this.load2FAConfig();
         });
+
+        // auto prompt for passkey
+        if (this.promptUser && !this.loginService.loggedOut && localStorage.getItem('OAuth-Issuer') == 'Passkey') {
+            this.checkRegistration(null, localStorage.getItem('OAuth-Username'));
+        }
     }
 
     get passkeyEnabled() {
@@ -246,7 +251,7 @@ export class GlobalLogin implements OnDestroy {
     /**
      * triggers the actual login itself
      */
-    public login(token?: { issuer: string, tokenObject: TokenObjectI }) {
+    public login(token?: { issuer: string, tokenObject: TokenObjectI, username?: string }) {
 
         if (token || (this.username && this.password)) {
 
@@ -274,10 +279,20 @@ export class GlobalLogin implements OnDestroy {
                 next: () => {
                     this.toast.clearAll();
                     this.loggingIn = false;
+
+                    // remember the login issuer for oauth2 and passkey
+                    if (token && token.issuer != 'SpiceCRM') {
+                        localStorage.setItem('OAuth-Issuer', token.issuer);
+                        localStorage.setItem('OAuth-Username', token.username ?? this.session.authData.userName);
+                    }
                 },
                 error: (error) => {
                     this.handleError(error);
                     this.loggingIn = false;
+                    if (token && token.issuer == localStorage.getItem('OAuth-Issuer')) {
+                        localStorage.removeItem('OAuth-Issuer');
+                        localStorage.removeItem('OAuth-Username');
+                    }
                 }
             });
         }
@@ -353,15 +368,15 @@ export class GlobalLogin implements OnDestroy {
     /**
      * check passkey registration and login
      */
-    public async checkRegistration(event: MouseEvent) {
+    public async checkRegistration(event?: MouseEvent, username?: string) {
 
-        event.preventDefault();
+        if (event) event.preventDefault();
 
         if (!window.PublicKeyCredential || !PublicKeyCredential.isConditionalMediationAvailable || !(await PublicKeyCredential.isConditionalMediationAvailable())) {
             return console.error('Passkey authentication Browser not supported.');
         }
 
-        this.loginService.backend.postRequest('authentication/passkey/getArgs', null, {rpId: window.location.hostname, username: this.username}).subscribe({
+        this.loginService.backend.postRequest('authentication/passkey/getArgs', null, {rpId: window.location.hostname, username: username}).subscribe({
             next: async getArgs => {
                 if (getArgs.success === false) {
                     return console.error(getArgs.msg);
@@ -390,7 +405,7 @@ export class GlobalLogin implements OnDestroy {
                     issuer: 'Passkey',
                     tokenObject: {
                         access_token: btoa(JSON.stringify(authenticatorAttestationResponse))
-                    }
+                    },
                 };
 
                 this.login(token);

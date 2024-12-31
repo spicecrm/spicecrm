@@ -18,22 +18,6 @@
                     </button>
                 </div>
             </div>
-            @if (!!preferredLogin) {
-                <div class="slds-grid slds-size--1-of-1 slds-m-vertical--x-small spice-hover-display-children">
-                    <div class="slds-size--4-of-8">
-                        <system-utility-icon icon="bookmark" colorclass="slds-icon-text-success" size="x-small" class="slds-m-right--x-small"/>
-                        <system-label label="LBL_PREFERRED_LOGIN"/>
-                    </div>
-                    <div [title]="preferredLogin" class="slds-grow slds-truncate">
-                        {{preferredLogin}}
-                    </div>
-                    <div>
-                        <button (click)="removePreferredLogin()" class="slds-button slds-button--icon">
-                            <system-button-icon icon="delete"/>
-                        </button>
-                    </div>
-                </div>
-            }
             @if (activeMethods.passkey) {
                 <div class="slds-grid slds-size--1-of-1 slds-m-vertical--x-small spice-hover-display-children">
                     <div class="slds-size--4-of-8">
@@ -56,6 +40,31 @@
                                 <system-button-icon icon="delete"/>
                             </button>
                         }
+                    </div>
+                </div>
+            }
+            @if (!!preferredLoginUsername) {
+                <div class="slds-grid slds-size--1-of-1 slds-m-vertical--x-small spice-hover-display-children">
+                    <div class="slds-size--4-of-8">
+                        <system-utility-icon icon="bookmark" colorclass="slds-icon-text-success" size="x-small" class="slds-m-right--x-small"/>
+                        <system-label label="LBL_PREFERRED_LOGIN"/>
+                    </div>
+                    <div [title]="preferredLoginUsername" class="slds-grow slds-truncate">
+
+                        @switch (preferredLoginMetadata[preferredLoginIssuer]?.icon?.type) {
+                            @case ('img') {
+                                <img [src]="preferredLoginMetadata[preferredLoginIssuer].icon.data" style="max-width: 24px" class="slds-m-right--xx-small" [alt]="preferredLoginIssuer">
+                            }
+                            @case ('icon') {
+                                <system-utility-icon [icon]="preferredLoginMetadata[preferredLoginIssuer].icon.data" colorclass="slds-icon-text-success" size="x-small" class="slds-m-right--xx-small"/>
+                            }
+                        }
+                        {{preferredLoginUsername}}
+                    </div>
+                    <div>
+                        <button (click)="removePreferredLogin()" class="slds-button slds-button--icon">
+                            <system-button-icon icon="delete"/>
+                        </button>
                     </div>
                 </div>
             }

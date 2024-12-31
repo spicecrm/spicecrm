@@ -12,7 +12,7 @@ import {GlobalLoginPasskeyModal} from "../../../globalcomponents/components/glob
 import {backend} from "../../../services/backend.service";
 import {firstValueFrom} from "rxjs";
 import {language} from "../../../services/language.service";
-import {Config2FAI} from "../../../globalcomponents/interfaces/globalcomponents.interfaces";
+import {AuthServiceI, Config2FAI} from "../../../globalcomponents/interfaces/globalcomponents.interfaces";
 
 @Component({
     selector: 'user-security-settings-modal',
@@ -42,6 +42,10 @@ export class UserSecuritySettingsModal implements ModalComponentI {
      * system default method
      */
     public systemDefaultMethod: 'user_defined' | 'one_time_password' | 'email' | 'sms';
+    /**
+     * holds the preferred login metadata
+     */
+    public readonly preferredLoginMetadata: {[key: string]: {icon: {type: 'img' | 'icon', data: string}}} = {};
 
     constructor(public session: session,
                 private modal: modal,
@@ -49,13 +53,41 @@ export class UserSecuritySettingsModal implements ModalComponentI {
                 private language: language,
                 private backend: backend,
                 private config: configurationService) {
+        this.loadPreferredLoginMetadata();
         this.initializeActiveMethods();
         this.checkPasskeyRegistration();
         this.checkOneTimePasswordRegistration();
     }
 
-    get preferredLogin(): string {
+    /**
+     * @return string preferred login username cached in the local storage
+     */
+    get preferredLoginUsername(): string {
         return localStorage.getItem('OAuth-Username');
+    }
+
+    /**
+     * @return string preferred login issuer cached in the local storage
+     */
+    get preferredLoginIssuer(): string {
+        return localStorage.getItem('OAuth-Issuer');
+    }
+
+    /**
+     * load oauth2 service metadata
+     * @private
+     */
+    private loadPreferredLoginMetadata() {
+
+        this.preferredLoginMetadata['Passkey'] = {icon: {type: 'icon', data: 'touch_action'}};
+
+        const services: AuthServiceI[] = this.config.getCapabilityConfig('oauth2');
+
+        if (!Array.isArray(services)) return;
+
+        services.forEach((service) => {
+            this.preferredLoginMetadata[service.issuer] = {icon: {type: 'img', data: service.icon}};
+        });
     }
 
     /**
@@ -301,6 +333,7 @@ export class UserSecuritySettingsModal implements ModalComponentI {
      * remove preferred login username
      */
     public removePreferredLogin() {
+        localStorage.removeItem('OAuth-Issuer');
         localStorage.removeItem('OAuth-Username');
     }
 }

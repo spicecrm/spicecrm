@@ -2,8 +2,6 @@ import {Injectable, Renderer2} from '@angular/core';
 import {HttpClient,} from '@angular/common/http';
 import {Auth2ServiceConfigI} from "../globalcomponents/interfaces/globalcomponents.interfaces";
 import {Subject} from "rxjs";
-import {takeUntil} from "rxjs/operators";
-import {broadcast} from "./broadcast.service";
 
 declare var _: any;
 
@@ -22,42 +20,21 @@ export class OAuth2Service {
     constructor(
         protected renderer: Renderer2,
         protected http: HttpClient,
-        private broadcast: broadcast
     ) {
     }
 
     /**
-     * save preferred login username
-     * @param username
-     */
-    public handleSavePreferredLogin(username: string) {
-
-        if (!this.config.with_login_hint) return;
-
-        const untilSubject = new Subject<void>();
-        this.broadcast.message$.pipe(takeUntil(untilSubject)).subscribe({
-            next: (res: any) => {
-                if (res.messagetype != 'login') return;
-
-                localStorage.setItem('OAuth-Username', username);
-
-                untilSubject.next();
-                untilSubject.complete();
-            }
-        });
-    }
-
-    /**
      * display popup window and return the response
+     * @param loginHint
      */
-    public codeFlowLogin() {
+    public codeFlowLogin(loginHint?: string) {
 
         const resSubject = new Subject<string>();
         let checkForPopupClosedTimer: number;
 
         const state = this.generateState();
 
-        const url = this.generateLoginUrl(state);
+        const url = this.generateLoginUrl(state, loginHint);
 
         const popupWindowRef = window.open(
             url, 'SpiceCRM OAuth2 login',
@@ -121,9 +98,10 @@ export class OAuth2Service {
     /**
      * generate login url with query string
      * @param state
+     * @param loginHint
      * @protected
      */
-    protected generateLoginUrl(state: string): string {
+    protected generateLoginUrl(state: string, loginHint?: string): string {
         const params: any = {
             state: state,
             response_type: 'code',
@@ -132,8 +110,8 @@ export class OAuth2Service {
             scope: this.config.scope,
         };
 
-        if (this.config.with_login_hint && !!localStorage.getItem('OAuth-Username')) {
-            params.login_hint = localStorage.getItem('OAuth-Username');
+        if (loginHint) {
+            params.login_hint = loginHint;
         }
 
         return `${this.config.login_url}?${(new URLSearchParams(params)).toString()}`;
