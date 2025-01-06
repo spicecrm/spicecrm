@@ -21,32 +21,65 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="slds-hint-parent" *ngFor="let pkg of packages; trackBy: trackByFn" #repairRow [ngClass]="{'slds-theme--info': pkg.status == 'processing', 'slds-theme--error': pkg.status == 'error'}">
-                    <td>
-                        <system-utility-icon *ngIf="pkg.status != 'processing'" size="xx-small" [icon]="!pkg.status ? 'funding_requirement' : pkg.status == 'reloaded' ? 'success' : 'error'" [colorclass]="!pkg.status ? 'slds-icon-text-default' : pkg.status == 'reloaded' ? 'slds-icon-text-success' : 'slds-icon-text-error'"/>
-                        <system-spinner *ngIf="pkg.status == 'processing'" size="14" inverse="true"></system-spinner>
-                    </td>
-                    <td>
-                        <div class="slds-truncate">{{pkg.name}}</div>
-                    </td>
-                    <td>
-                        <div class="slds-truncate">{{pkg.message?.text}}</div>
-                    </td>
-                    <td>
-                        <div class="slds-grid slds-grid--vertical-align-center">
-                            <button *ngIf="pkg.status == 'error' && pkg.erroneousDictionaries?.length > 0" [disabled]="isReloadingPackage" (click)="openFixRequiredModal(pkg)" system-title="LBL_FIX_DB_FIELDS_MISMATCH" class="slds-button slds-button--icon slds-m-horizontal--xx-small">
-                                <system-button-icon icon="data_transforms" addclasses="slds-button--icon-inverse" />
-                            </button>
-                            <button (click)="showResponseDetails(pkg)" [disabled]="!pkg.message?.details" class="slds-button slds-button--icon">
-                                <system-button-icon *ngIf="pkg.status == 'error'" icon="info" colorclass="slds-icon-text-inverse"/>
-                                <system-button-icon *ngIf="pkg.status != 'error'" icon="info" [colorclass]="pkg.status != 'success' ? 'slds-icon-text-default' : 'slds-icon-text-success'"/>
-                            </button>
-                            <button *ngIf="!!pkg.status && pkg.status != 'reloaded'" (click)="reloadPackage(pkg)" [disabled]="isReloadingPackage" class="slds-button slds-button--icon slds-m-left--xx-small">
-                                <system-button-icon icon="play"/>
-                            </button>
-                        </div>
+                <tr class="slds-hint-parent">
+                    <td colspan="4">
+                        <system-label label="LBL_LANGUAGES" class="spice-display-block slds-p-vertical--xx-small slds-text-title--caps slds-text-title_bold"/>
                     </td>
                 </tr>
+                @for (lang of languages; track lang.language_code) {
+                    <tr class="slds-hint-parent" [ngClass]="{'slds-theme--info': lang.status == 'processing', 'slds-theme--error': lang.status == 'error'}">
+                        <td>
+                            <system-utility-icon *ngIf="lang.status != 'processing'" size="xx-small" [icon]="!lang.status ? 'text' : lang.status == 'reloaded' ? 'success' : 'error'" [colorclass]="!lang.status ? 'slds-icon-text-default' : lang.status == 'reloaded' ? 'slds-icon-text-success' : 'slds-icon-text-error'"/>
+                            <system-spinner *ngIf="lang.status == 'processing'" size="14" inverse="true"></system-spinner>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">{{lang.language_name}}</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">{{lang.message}}</div>
+                        </td>
+                        <td>
+                            <div class="slds-grid slds-grid--vertical-align-center">
+                                <button *ngIf="!!lang.status && lang.status != 'reloaded'" (click)="reloadLanguage(lang)" [disabled]="isReloadingPackage" class="slds-button slds-button--icon slds-m-left--xx-small">
+                                    <system-button-icon icon="play"/>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                <tr class="slds-hint-parent">
+                    <td colspan="4">
+                        <system-label label="LBL_PACKAGES" class="spice-display-block slds-p-vertical--xx-small slds-text-title--caps slds-text-title_bold"/>
+                    </td>
+                </tr>
+                @for (pkg of packages; track pkg.name) {
+                    <tr class="slds-hint-parent" [ngClass]="{'slds-theme--info': pkg.status == 'processing', 'slds-theme--error': pkg.status == 'error'}">
+                        <td>
+                            <system-utility-icon *ngIf="pkg.status != 'processing'" size="xx-small" [icon]="!pkg.status ? 'funding_requirement' : pkg.status == 'reloaded' ? 'success' : 'error'" [colorclass]="!pkg.status ? 'slds-icon-text-default' : pkg.status == 'reloaded' ? 'slds-icon-text-success' : 'slds-icon-text-error'"/>
+                            <system-spinner *ngIf="pkg.status == 'processing'" size="14" inverse="true"></system-spinner>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">{{pkg.name}}</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">{{pkg.message?.text}}</div>
+                        </td>
+                        <td>
+                            <div class="slds-grid slds-grid--vertical-align-center">
+                                <button *ngIf="pkg.status == 'error' && pkg.erroneousDictionaries?.length > 0" [disabled]="isReloadingPackage" (click)="openFixRequiredModal(pkg)" system-title="LBL_FIX_DB_FIELDS_MISMATCH" class="slds-button slds-button--icon slds-m-horizontal--xx-small">
+                                    <system-button-icon icon="data_transforms" addclasses="slds-button--icon-inverse" />
+                                </button>
+                                <button (click)="showResponseDetails(pkg)" [disabled]="!pkg.message?.details" class="slds-button slds-button--icon">
+                                    <system-button-icon *ngIf="pkg.status == 'error'" icon="info" colorclass="slds-icon-text-inverse"/>
+                                    <system-button-icon *ngIf="pkg.status != 'error'" icon="info" [colorclass]="pkg.status != 'success' ? 'slds-icon-text-default' : 'slds-icon-text-success'"/>
+                                </button>
+                                <button *ngIf="!!pkg.status && pkg.status != 'reloaded'" (click)="reloadPackage(pkg)" [disabled]="isReloadingPackage" class="slds-button slds-button--icon slds-m-left--xx-small">
+                                    <system-button-icon icon="play"/>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
                 </tbody>
             </table>
         </div>
@@ -62,7 +95,7 @@
                 </button>
                 <div class="slds-grid slds-grow slds-grid--vertical-align-center">
                     <system-progress-bar class="slds-size--2-of-4 slds-m-horizontal--x-small" [progress]="progress" [hideText]="true"/>
-                    {{reloadedCount}} / {{packages.length}}
+                    {{reloadedCount}} / {{packages.length + languages.length}}
                 </div>
             </div>
             <div>
