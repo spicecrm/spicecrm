@@ -7,6 +7,7 @@ import {modal} from "../../services/modal.service";
 import {
     DictionaryManagerFixDBFieldsMismatchModal
 } from "../../workbench/components/dictionarymanagerfixdbfieldsmismatchmodal";
+import {language} from "../../services/language.service";
 
 @Component({
     selector: 'package-loader-reload-loaded-modal',
@@ -21,9 +22,18 @@ export class PackageLoaderReloadLoadedModal implements ModalComponentI {
         name: string;
         package: string;
         type: 'essentials' | 'config' | 'content';
-        status?: 'reloaded' | 'error' | 'processing';
+        status?: 'reloaded' | 'error' | 'processing' | 'success';
         erroneousDictionaries?: {name: string; mismatch: any}[];
         message?: {text?: string; details: string};
+    }[] = [];
+    /**
+     * holds the loaded languages
+     */
+    @Input() public languages: {
+        language_code: string;
+        language_name: string;
+        status?: 'reloaded' | 'error' | 'processing' | 'success';
+        message?: string;
     }[] = [];
     /**
      * holds the repository add url
@@ -55,6 +65,7 @@ export class PackageLoaderReloadLoadedModal implements ModalComponentI {
     constructor(private backend: backend,
                 private broadcast: broadcast,
                 private modal: modal,
+                private language: language,
                 private loader: loader) {
     }
 
@@ -63,8 +74,9 @@ export class PackageLoaderReloadLoadedModal implements ModalComponentI {
      * @private
      */
     private updateProgressValue() {
-        this.reloadedCount = this.packages.filter(d => !!d.status).length;
-        this.progress = Math.round(((this.packages.length - (this.packages.length - this.reloadedCount)) / this.packages.length) * 100);
+        this.reloadedCount = this.packages.filter(d => !!d.status).length + this.languages.filter(d => !!d.status).length;
+        const count = (this.languages.length + this.packages.length);
+        this.progress = Math.round(((count - (count - this.reloadedCount)) / count) * 100);
     }
 
     /**
@@ -73,6 +85,11 @@ export class PackageLoaderReloadLoadedModal implements ModalComponentI {
     public reloadAll() {
 
         this.packages.forEach(pkg => {
+            pkg.status = undefined;
+            pkg.message = undefined;
+        });
+
+        this.languages.forEach(pkg => {
             pkg.status = undefined;
             pkg.message = undefined;
         });
@@ -90,13 +107,16 @@ export class PackageLoaderReloadLoadedModal implements ModalComponentI {
      */
     private reloadNext() {
 
+        const lang = this.languages.find(p => !p.status);
         const pkg = this.packages.find(p => !p.status);
 
-        if (!pkg || !this.started) {
+        if ((!pkg && !lang) || !this.started) {
             return this.handleReloadComplete();
         }
 
-        this.reloadPackage(pkg).then(() => {
+        const reloadFunction = () => lang ? this.reloadLanguage(lang) : this.reloadPackage(pkg);
+
+        reloadFunction().then(() => {
             this.updateProgressValue();
             this.reloadNext();
         });
@@ -138,6 +158,37 @@ export class PackageLoaderReloadLoadedModal implements ModalComponentI {
     }
 
     /**
+     * reload language
+     * @param lang
+     */
+    public reloadLanguage(lang): Promise<boolean> {
+
+        this.isReloadingPackage = true;
+        lang.status = 'processing';
+
+        return new Promise(resNext => {
+            this.backend.getRequest(`configuration/packages/language/${lang.language_code}${this.repositoryAddUrl}`).subscribe({
+                next: res => {
+                    lang.status = 'reloaded';
+                    this.isReloadingPackage = false;
+
+                    lang.message = res.queries + ' rows';
+
+                    if (this.language.currentlanguage == lang.language_code) {
+                        this.language.loadLanguage();
+                    }
+
+                    resNext(true);
+                },
+                error: () => {
+                    lang.status = 'error';
+                    resNext(true);
+                }
+            });
+        });
+    }
+
+    /**
      * handle reload complete to reload the config from backend
      * @private
      */
@@ -145,7 +196,7 @@ export class PackageLoaderReloadLoadedModal implements ModalComponentI {
         this.isReloadingPackage = false;
         this.started = false;
 
-        if (!this.packages.some(p => p.status == 'reloaded')) return;
+        if (!this.packages.some(p => p.status == 'reloaded') && !this.languages.some(p => p.status == 'reloaded')) return;
 
         this.isReloadingConfig = true;
 

@@ -145,7 +145,7 @@ class SpiceUIConfHandler
         $db = DBManagerFactory::getInstance();
         $rows = [];
 
-        $where = empty($packages) ? '' : "where package in ('" . implode("','", explode(',', $packages)) . "')";
+        $where = empty($packages) ? "where package != 'system'" : "where package in ('" . implode("','", explode(',', $packages)) . "')";
 
         $result = $db->query(sprintf("SELECT * FROM %s $where", $db->quote($tablename)), false, '', true);
         while ($row = $db->fetchByAssoc($result)) $rows[] = $row;

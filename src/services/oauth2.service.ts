@@ -25,15 +25,16 @@ export class OAuth2Service {
 
     /**
      * display popup window and return the response
+     * @param loginHint
      */
-    public codeFlowLogin() {
+    public codeFlowLogin(loginHint?: string) {
 
         const resSubject = new Subject<string>();
         let checkForPopupClosedTimer: number;
 
         const state = this.generateState();
 
-        const url = this.generateLoginUrl(state);
+        const url = this.generateLoginUrl(state, loginHint);
 
         const popupWindowRef = window.open(
             url, 'SpiceCRM OAuth2 login',
@@ -97,19 +98,23 @@ export class OAuth2Service {
     /**
      * generate login url with query string
      * @param state
+     * @param loginHint
      * @protected
      */
-    protected generateLoginUrl(state: string): string {
-
-        const params = new URLSearchParams({
+    protected generateLoginUrl(state: string, loginHint?: string): string {
+        const params: any = {
             state: state,
             response_type: 'code',
             client_id: this.config.client_id,
             redirect_uri: this.config.redirect_uri,
             scope: this.config.scope,
-        });
+        };
 
-        return `${this.config.login_url}?${params.toString()}`;
+        if (loginHint) {
+            params.login_hint = loginHint;
+        }
+
+        return `${this.config.login_url}?${(new URLSearchParams(params)).toString()}`;
     }
 
     /**

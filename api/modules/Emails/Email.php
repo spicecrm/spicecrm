@@ -1765,7 +1765,7 @@ class Email extends SpiceBean
         $selector = new DOMXPath($doc);
 
         // query all inline images. some images include charset utf-8 in the src
-        return $selector->query("//img[contains(@src, 'data:image/png;base64,') or contains(@src, 'data:image/png;charset=utf-8;base64,')]");
+        return $selector->query("//img[contains(@src, 'data:image/')]");
     }
 
     public function addDocumentAttachment($doc): void
