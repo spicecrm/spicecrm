@@ -46,7 +46,7 @@ export class ObjectListHeaderActionsExportPdfButton {
     }
 
     get disabled() {
-        return !this.metadata.checkModuleAcl(this.model.module, 'delete') || this.modellist.getSelectedCount() < 1;
+        return !this.metadata.checkModuleAcl(this.model.module, 'print') || this.modellist.getSelectedCount() < 1;
     }
 
     get selectedCount() {
