@@ -9,6 +9,7 @@ import {GlobalLoginOAuth2} from "./globalloginoauth2";
 import {configurationService} from "../../services/configuration.service";
 import {OAuth2Service} from "../../services/oauth2.service";
 import {modal} from "../../services/modal.service";
+import {asapScheduler} from "rxjs";
 
 /**
  * a login button that triggers the authentication via OAuth2 if that is enabled for the system
@@ -112,36 +113,44 @@ export class GlobalLoginOAuth2Button {
             loginHint = localStorage.getItem('OAuth-Username');
         }
 
-        this.oauth2Service.codeFlowLogin(loginHint).subscribe(code => {
+        this.oauth2Service.codeFlowLogin(loginHint).subscribe({
+            next: code => {
 
-            this.http.post(url, {issuer: this.service.issuer, code: code}).subscribe({
-                next: (data: {tokenObject: TokenObjectI, profile}) => {
+                this.http.post(url, {issuer: this.service.issuer, code: code}).subscribe({
+                    next: (data: {tokenObject: TokenObjectI, profile}) => {
 
-                    loading.next(true);
-                    loading.complete();
+                        loading.next(true);
+                        loading.complete();
 
-                    if (this.authenticatedUser) {
+                        if (this.authenticatedUser) {
 
-                        if (this.authenticatedUser == data.profile.email) {
+                            if (this.authenticatedUser == data.profile.email) {
 
+                                this.parent.token.emit({
+                                    issuer: this.service.issuer, tokenObject: data.tokenObject, username: data.profile.email
+                                });
+
+                            } else {
+                                this.toast.sendToast('Wrong username', 'warning', 'usernames do not match, please relogin with the proper user');
+                            }
+                        } else {
                             this.parent.token.emit({
                                 issuer: this.service.issuer, tokenObject: data.tokenObject, username: data.profile.email
                             });
-
-                        } else {
-                            this.toast.sendToast('Wrong username', 'warning', 'usernames do not match, please relogin with the proper user');
                         }
-                    } else {
-                        this.parent.token.emit({
-                            issuer: this.service.issuer, tokenObject: data.tokenObject, username: data.profile.email
-                        });
+                    },
+                    error: () => {
+                        loading.next(true);
+                        loading.complete();
                     }
-                },
-                error: () => {
+                });
+            },
+            error: () => {
+                asapScheduler.schedule(() => {
                     loading.next(true);
                     loading.complete();
-                }
-            });
+                });
+            }
         });
     }
 }
