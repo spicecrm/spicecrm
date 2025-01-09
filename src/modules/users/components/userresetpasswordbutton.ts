@@ -25,7 +25,7 @@ export class UserResetPasswordButton {
      *  also no change of password when the user is set to external authentication only
      */
     get disabled() {
-        return this.session.isAdmin && this.model.getField('status') == 'Active' && this.model.getFieldValue('external_auth_only') == false ? false : true;
+        return this.session.isAdmin && this.model.getField('status') == 'Active' /* && this.model.getFieldValue('external_auth_only') == false */ ? false : true;
     }
 
     /**
