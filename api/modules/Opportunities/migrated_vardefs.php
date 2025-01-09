@@ -36,6 +36,7 @@
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
+/*
 SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
     'table' => 'opportunities',
     'audited' => true,
@@ -70,82 +71,82 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'merge_filter' => 'enabled',
         ],
         */
-        'account_name' => [
-            'name' => 'account_name',
-            'rname' => 'name',
-            'id_name' => 'account_id',
-            'vname' => 'LBL_ACCOUNT',
-            'type' => 'relate',
-            'module' => 'Accounts',
-            'link' => 'accounts',
-            'source' => 'non-db',
-            'required' => true,
-        ],
-        'account_id' => [
-            'name' => 'account_id',
-            'vname' => 'LBL_ACCOUNT_ID',
-            'type' => 'id',
+//        'account_name' => [
+//            'name' => 'account_name',
+//            'rname' => 'name',
+//            'id_name' => 'account_id',
+//            'vname' => 'LBL_ACCOUNT',
+//            'type' => 'relate',
+//            'module' => 'Accounts',
+//            'link' => 'accounts',
 //            'source' => 'non-db',
-            'audited' => true,
-        ],
-        'campaign_id' => [
-            'name' => 'campaign_id',
-            'comment' => 'Campaign that generated lead',
-            'vname' => 'LBL_CAMPAIGN_ID',
-            'rname' => 'id',
-            'type' => 'id',
-            'dbType' => 'id',
-            'table' => 'campaigns',
-            'isnull' => 'true',
-            'module' => 'Campaigns',
-            //'dbType' => 'char',
-            'reportable' => false,
-            'duplicate_merge' => false,
-        ],
-        'campaign_name' => [
-            'name' => 'campaign_name',
-            'rname' => 'name',
-            'id_name' => 'campaign_id',
-            'vname' => 'LBL_CAMPAIGN',
-            'type' => 'relate',
-            'link' => 'campaign_opportunities',
-            'isnull' => 'true',
-            'table' => 'campaigns',
-            'module' => 'Campaigns',
-            'source' => 'non-db',
-            'additionalFields' => ['id' => 'campaign_id']
-        ],
-        'campaign_opportunities' => [
-            'name' => 'campaign_opportunities',
-            'type' => 'link',
-            'vname' => 'LBL_CAMPAIGN',
-            'relationship' => 'campaign_opportunities',
-            'source' => 'non-db',
-        ],
-        'potentials' => [
-            'name' => 'potentials',
-            'module' => 'Potentials',
-            'type' => 'link',
-            'vname' => 'LBL_POTENTIALS',
-            'relationship' => 'potentials_opportunities',
-            'source' => 'non-db',
-            'rel_fields' => [
-                'amount' => [
-                    'type' => 'currency',
-                    'map' => 'opportunity_amount'
-                ],
-                'amount_systemcurrency' => [
-                    'type' => 'currency',
-                    'map' => 'opportunity_amount_usdollar'
-                ]
-            ]
-        ],
-        'opportunitypotentials' => [
-            'name' => 'opportunitypotentials',
-            'type' => 'json',
-            'vname' => 'LBL_OPPORTUNITYPOTENTIALS',
-            'source' => 'non-db'
-        ],
+//            'required' => true,
+//        ],
+//        'account_id' => [
+//            'name' => 'account_id',
+//            'vname' => 'LBL_ACCOUNT_ID',
+//            'type' => 'id',
+////            'source' => 'non-db',
+//            'audited' => true,
+//        ],
+//        'campaign_id' => [
+//            'name' => 'campaign_id',
+//            'comment' => 'Campaign that generated lead',
+//            'vname' => 'LBL_CAMPAIGN_ID',
+//            'rname' => 'id',
+//            'type' => 'id',
+//            'dbType' => 'id',
+//            'table' => 'campaigns',
+//            'isnull' => 'true',
+//            'module' => 'Campaigns',
+//            //'dbType' => 'char',
+//            'reportable' => false,
+//            'duplicate_merge' => false,
+//        ],
+//        'campaign_name' => [
+//            'name' => 'campaign_name',
+//            'rname' => 'name',
+//            'id_name' => 'campaign_id',
+//            'vname' => 'LBL_CAMPAIGN',
+//            'type' => 'relate',
+//            'link' => 'campaign_opportunities',
+//            'isnull' => 'true',
+//            'table' => 'campaigns',
+//            'module' => 'Campaigns',
+//            'source' => 'non-db',
+//            'additionalFields' => ['id' => 'campaign_id']
+//        ],
+//        'campaign_opportunities' => [
+//            'name' => 'campaign_opportunities',
+//            'type' => 'link',
+//            'vname' => 'LBL_CAMPAIGN',
+//            'relationship' => 'campaign_opportunities',
+//            'source' => 'non-db',
+//        ],
+//        'potentials' => [
+//            'name' => 'potentials',
+//            'module' => 'Potentials',
+//            'type' => 'link',
+//            'vname' => 'LBL_POTENTIALS',
+//            'relationship' => 'potentials_opportunities',
+//            'source' => 'non-db',
+//            'rel_fields' => [
+//                'amount' => [
+//                    'type' => 'currency',
+//                    'map' => 'opportunity_amount'
+//                ],
+//                'amount_systemcurrency' => [
+//                    'type' => 'currency',
+//                    'map' => 'opportunity_amount_usdollar'
+//                ]
+//            ]
+//        ],
+//        'opportunitypotentials' => [
+//            'name' => 'opportunitypotentials',
+//            'type' => 'json',
+//            'vname' => 'LBL_OPPORTUNITYPOTENTIALS',
+//            'source' => 'non-db'
+//        ],
         /*
         'lead_source' => [
             'name' => 'lead_source',
@@ -321,19 +322,19 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'vname' => 'LBL_LOSS_REASON',
             'type' => 'text'
         ],
-        */
+
         // links
-        'accounts' => [
-            'name' => 'accounts',
-            'type' => 'link',
-            'relationship' => 'accounts_opportunities',
-            'source' => 'non-db',
-            'link_type' => 'one',
-            'module' => 'Accounts',
-            'bean_name' => 'Account',
-            'vname' => 'LBL_ACCOUNT',
-        ],
-        /*
+//        'accounts' => [
+//            'name' => 'accounts',
+//            'type' => 'link',
+//            'relationship' => 'accounts_opportunities',
+//            'source' => 'non-db',
+//            'link_type' => 'one',
+//            'module' => 'Accounts',
+//            'bean_name' => 'Account',
+//            'vname' => 'LBL_ACCOUNT',
+//        ],
+
         'contacts' => [
             'name' => 'contacts',
             'type' => 'link',
@@ -358,8 +359,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'vname' => 'LBL_CONTACTS',
             'hide_history_contacts_emails' => true,
         ],
-        */
-        /*
+
         'users' => [
             'name' => 'users',
             'type' => 'link',
@@ -375,7 +375,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             ],
             'vname' => 'LBL_USERS'
         ],
-        */
+
 //        'tasks' => [
 //            'name' => 'tasks',
 //            'type' => 'link',
@@ -407,7 +407,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
 //        'emails' => [
 //            'name' => 'emails',
 //            'type' => 'link',
-//            'relationship' => 'emails_opportunities_rel',/* reldef in emails */
+//            'relationship' => 'emails_opportunities_rel',
 //            'source' => 'non-db',
 //            'vname' => 'LBL_EMAILS',
 //        ],
@@ -434,32 +434,32 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
 //            'source' => 'non-db',
 //            'vname' => 'LBL_PROJECTS',
 //        ],
-        'leads' => [
-            'name' => 'leads',
-            'type' => 'link',
-            'relationship' => 'opportunity_leads',
-            'source' => 'non-db',
-            'vname' => 'LBL_LEADS',
-        ],
-        'currencies' => [
-            'name' => 'currencies',
-            'type' => 'link',
-            'relationship' => 'opportunity_currencies',
-            'source' => 'non-db',
-            'vname' => 'LBL_CURRENCIES',
-        ],
-        'competitorassessments' => [
-            'name' => 'competitorassessments',
-            'type' => 'link',
-            'relationship' => 'competitorassessments_opportunities',
-            'vname' => 'LBL_COMPETITORASSESSMENTS',
-            'link_type' => 'one',
-            'module' => 'CompetitorAssessments',
-            'bean_name' => 'CompetitorAssessment',
-            'source' => 'non-db',
-            'reportable' => false
-        ],
-        /*
+//        'leads' => [
+//            'name' => 'leads',
+//            'type' => 'link',
+//            'relationship' => 'opportunity_leads',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_LEADS',
+//        ],
+//        'currencies' => [
+//            'name' => 'currencies',
+//            'type' => 'link',
+//            'relationship' => 'opportunity_currencies',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CURRENCIES',
+//        ],
+//        'competitorassessments' => [
+//            'name' => 'competitorassessments',
+//            'type' => 'link',
+//            'relationship' => 'competitorassessments_opportunities',
+//            'vname' => 'LBL_COMPETITORASSESSMENTS',
+//            'link_type' => 'one',
+//            'module' => 'CompetitorAssessments',
+//            'bean_name' => 'CompetitorAssessment',
+//            'source' => 'non-db',
+//            'reportable' => false
+//        ],
+
         'proposals' => [
             'name' => 'proposals',
             'vname' => 'LBL_PROPOSALS',
@@ -468,8 +468,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'link_type' => 'one',
             'source' => 'non-db',
         ],
-        */
-        /*
+
         'opportunitystages' => [
             'name' => 'opportunitystages',
             'type' => 'link',
@@ -480,8 +479,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'bean_name' => 'OpportunityStage',
             'vname' => 'LBL_OPPORTUNITYSTAGES',
         ],
-        */
-        /*
+
         'opportunityrevenuesplit' => [
             'name' => 'opportunityrevenuesplit',
             'type' => 'enum',
@@ -490,8 +488,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'options' => 'opportunityrevenuesplit_dom',
             'vname' => 'LBL_SPLITTYPE'
         ],
-        */
-        /*
+
         'opportunityrevenuelines' => [
             'name' => 'opportunityrevenuelines',
             'type' => 'link',
@@ -503,8 +500,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'vname' => 'LBL_OPPORTUNITYREVENUELINES',
             'default' => true
         ],
-        */
-        /*
+
         'products' => [
             'name' => 'products',
             'type' => 'link',
@@ -522,9 +518,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
                 ]
             ],
         ]
-        */
+
     ],
-    /* migrated
     'indices' => [
         [
             'name' => 'idx_opp_name',
@@ -547,7 +542,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'fields' => ['assigned_user_id', 'deleted', 'sales_stage'],
         ],
     ],
-    */
+
     'relationships' => [
 //        'opportunity_calls' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
 //            'rhs_module' => 'Calls', 'rhs_table' => 'calls', 'rhs_key' => 'parent_id',
@@ -569,21 +564,21 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
 //            'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id',
 //            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
 //            'relationship_role_column_value' => 'Opportunities']
-     'opportunity_leads' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
-            'rhs_module' => 'Leads', 'rhs_table' => 'leads', 'rhs_key' => 'opportunity_id',
-            'relationship_type' => 'one-to-many']
-    , 'opportunity_currencies' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'currency_id',
-            'rhs_module' => 'Currencies', 'rhs_table' => 'currencies', 'rhs_key' => 'id',
-            'relationship_type' => 'one-to-many'],
-    'accounts_opportunities' => [
-        'lhs_module' => 'Accounts',
-        'lhs_table' => 'accounts',
-        'lhs_key' => 'id',
-        'rhs_module' => 'Opportunities',
-        'rhs_table' => 'opportunities',
-        'rhs_key' => 'account_id',
-        'relationship_type' => 'one-to-many',
-    ],
+//     'opportunity_leads' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'id',
+//            'rhs_module' => 'Leads', 'rhs_table' => 'leads', 'rhs_key' => 'opportunity_id',
+//            'relationship_type' => 'one-to-many']
+//    , 'opportunity_currencies' => ['lhs_module' => 'Opportunities', 'lhs_table' => 'opportunities', 'lhs_key' => 'currency_id',
+//            'rhs_module' => 'Currencies', 'rhs_table' => 'currencies', 'rhs_key' => 'id',
+//            'relationship_type' => 'one-to-many'],
+//    'accounts_opportunities' => [
+//        'lhs_module' => 'Accounts',
+//        'lhs_table' => 'accounts',
+//        'lhs_key' => 'id',
+//        'rhs_module' => 'Opportunities',
+//        'rhs_table' => 'opportunities',
+//        'rhs_key' => 'account_id',
+//        'relationship_type' => 'one-to-many',
+//    ],
 //        'opportunities_assigned_user' => [
 //            'lhs_module' => 'Users',
 //            'lhs_table' => 'users',
@@ -611,15 +606,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
 //            'rhs_key' => 'created_by',
 //            'relationship_type' => 'one-to-many'
 //        ],
-        'opportunities_campaign' => [
-            'lhs_module' => 'Campaigns',
-            'lhs_table' => 'campaigns',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Opportunities',
-            'rhs_table' => 'opportunities',
-            'rhs_key' => 'campaign_id',
-            'relationship_type' => 'one-to-many'
-        ]
+//        'opportunities_campaign' => [
+//            'lhs_module' => 'Campaigns',
+//            'lhs_table' => 'campaigns',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Opportunities',
+//            'rhs_table' => 'opportunities',
+//            'rhs_key' => 'campaign_id',
+//            'relationship_type' => 'one-to-many'
+//        ]
     ]
 //This enables optimistic locking for Saves From EditView
 , 'optimistic_locking' => true,
@@ -627,61 +622,63 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
 
 //VardefManager::createVardef('Opportunities', 'Opportunity', ['default', 'assignable']);
 
-if(file_exists('extensions/modules/SalesDocs')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Opportunity']['fields']['salesdocs'] = [
-        'name' => 'salesdocs',
-        'type' => 'link',
-        'relationship' => 'salesdocs_opportunities_parent',
-        'module' => 'SalesDocs',
-        'bean_name' => 'SalesDoc',
-        'source' => 'non-db',
-        'vname' => 'LBL_SALESDOCS',
-    ];
-}
+//if(file_exists('extensions/modules/SalesDocs')) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['Opportunity']['fields']['salesdocs'] = [
+//        'name' => 'salesdocs',
+//        'type' => 'link',
+//        'relationship' => 'salesdocs_opportunities_parent',
+//        'module' => 'SalesDocs',
+//        'bean_name' => 'SalesDoc',
+//        'source' => 'non-db',
+//        'vname' => 'LBL_SALESDOCS',
+//    ];
+//}
 
 // CR1000661
 if(file_exists('extensions/modules/PartnerAgreements')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Opportunity']['fields']['partneragreements'] = [
-        'name' => 'partneragreements',
-        'vname' => 'LBL_PARTNERAGREEMENTS',
-        'type' => 'link',
-        'relationship' => 'partneragreements_opportunities',
-        'module' => 'PartnerAgreements',
-        'bean_name' => 'PartnerAgreement',
-        'source' => 'non-db',
-    ];
+//    SpiceDictionaryHandler::getInstance()->dictionary['Opportunity']['fields']['partneragreements'] = [
+//        'name' => 'partneragreements',
+//        'vname' => 'LBL_PARTNERAGREEMENTS',
+//        'type' => 'link',
+//        'relationship' => 'partneragreements_opportunities',
+//        'module' => 'PartnerAgreements',
+//        'bean_name' => 'PartnerAgreement',
+//        'source' => 'non-db',
+//    ];
 
-    if (file_exists('extensions/modules/Travels')) {
-        SpiceDictionaryHandler::getInstance()->dictionary['Opportunity']['fields']['travels'] = [
-            'name' => 'travels',
-            'type' => 'link',
-            'relationship' => 'opportunities_travels',
-            'source' => 'non-db',
-            'vname' => 'LBL_OPPORTUNITIES',
-            'module' => 'Opportunities',
-            'default' => false
-        ];
-    }
-    if (file_exists('extensions/modules/ProjectActivities')) {
-        SpiceDictionaryHandler::getInstance()->dictionary['Opportunity']['fields']['projectactivities_parent'] = [
-            'name' => 'projectactivities_parent',
-            'type' => 'link',
-            'relationship' => 'opportunity_projectactivities_parent',
-            'source' => 'non-db',
-            'module' => 'ProjectActivities',
-            'bean_name' => 'ProjectActivity',
-            'vname' => 'LBL_PROJECTACTIVITIES_AS_PARENT',
-        ];
-        SpiceDictionaryHandler::getInstance()->dictionary['Opportunity']['relationships']['opportunity_projectactivities_parent'] = [
-            'lhs_module' => 'Opportunities',
-            'lhs_table' => 'opportunities',
-            'lhs_key' => 'id',
-            'rhs_module' => 'ProjectActivities',
-            'rhs_table' => 'projectactivities',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'parent_type',
-            'relationship_role_column_value' => 'Opportunities'
-        ];
-    }
+//    if (file_exists('extensions/modules/Travels')) {
+//        SpiceDictionaryHandler::getInstance()->dictionary['Opportunity']['fields']['travels'] = [
+//            'name' => 'travels',
+//            'type' => 'link',
+//            'relationship' => 'opportunities_travels',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_OPPORTUNITIES',
+//            'module' => 'Opportunities',
+//            'default' => false
+//        ];
+//    }
+
+//    if (file_exists('extensions/modules/ProjectActivities')) {
+//        SpiceDictionaryHandler::getInstance()->dictionary['Opportunity']['fields']['projectactivities_parent'] = [
+//            'name' => 'projectactivities_parent',
+//            'type' => 'link',
+//            'relationship' => 'opportunity_projectactivities_parent',
+//            'source' => 'non-db',
+//            'module' => 'ProjectActivities',
+//            'bean_name' => 'ProjectActivity',
+//            'vname' => 'LBL_PROJECTACTIVITIES_AS_PARENT',
+//        ];
+//        SpiceDictionaryHandler::getInstance()->dictionary['Opportunity']['relationships']['opportunity_projectactivities_parent'] = [
+//            'lhs_module' => 'Opportunities',
+//            'lhs_table' => 'opportunities',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'ProjectActivities',
+//            'rhs_table' => 'projectactivities',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column' => 'parent_type',
+//            'relationship_role_column_value' => 'Opportunities'
+//        ];
+//    }
 }
+*/

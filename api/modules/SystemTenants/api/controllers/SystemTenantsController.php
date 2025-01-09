@@ -30,6 +30,7 @@ class SystemTenantsController
      * @return Response
      */
     public function initialize(Request $req, Response $res, array $args): Response {
+        set_time_limit(300);
         $tenant = BeanFactory::getBean('SystemTenants', $args['id']);
         return $res->withJson($tenant->initializeTenant());
     }

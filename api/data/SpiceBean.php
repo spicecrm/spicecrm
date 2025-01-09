@@ -1319,7 +1319,7 @@ class SpiceBean
 
         // check if we have any numbered fields
         if($this->isNew()){
-            $numberrangeFields = SpiceNumberRanges::getNumberRangeFieldsForBean($this->_module);
+            $numberrangeFields = SpiceNumberRanges::getNumberRangeFieldsForBean($this->_module, true);
             foreach ($numberrangeFields as $numberrangeField){
                 if(empty($this->{$numberrangeField})){
                     $this->{$numberrangeField} = SpiceNumberRanges::getNextNumberForField($this->_module, $numberrangeField);
