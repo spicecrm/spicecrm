@@ -180,6 +180,9 @@ export class ReporterFieldContainer implements OnInit {
                 case "datetime":
                     this.fieldType = 'ReporterFieldDateTime';
                     break;
+                case "datetutc":
+                    this.fieldType = 'ReporterFieldDateTimeUTC';
+                    break;
                 case 'date':
                     this.fieldType = 'ReporterFieldDate';
                     break;

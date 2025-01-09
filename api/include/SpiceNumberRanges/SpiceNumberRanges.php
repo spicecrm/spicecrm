@@ -133,22 +133,22 @@ class SpiceNumberRanges
     }
 
     /**
-     * fethces all numebr range fields for a bean based on the module
-     *
-     * @param $bean
+     * fetches all number range fields for a bean based on the module
+     * @param $module
+     * @param bool $onlyAutoAssign
      * @return array|false
      * @throws \Exception
      */
-    public static function getNumberRangeFieldsForBean($module){
+    public static function getNumberRangeFieldsForBean($module, bool $onlyAutoAssign = false){
         $numberrangeFields = [];
+        $onlyAuthAssignWhere = $onlyAutoAssign ? "AND is_manual != 1" : '';
 
         $db = DBManagerFactory::getInstance();
-        $numberrangeRecords = $db->fetchAll("SELECT field FROM sysnumberrangeallocation WHERE module='{$module}'");
+        $numberrangeRecords = $db->fetchAll("SELECT field FROM sysnumberrangeallocation WHERE module='$module' $onlyAuthAssignWhere");
 
         foreach ($numberrangeRecords as $numberrangeRecord){
             $numberrangeFields[] = $numberrangeRecord['field'];
         }
 
         return $numberrangeFields;
-    }
-}
+    }}

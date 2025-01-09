@@ -18,7 +18,7 @@
                 <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="field.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
             </td>
             <td>
-                <div class="slds-truncate"><system-label-fieldname [module]="aclType.acltype.module" [field]="field.name"/>&nbsp;{{field.name}}</div>
+                <div class="slds-truncate"><system-label-fieldname [module]="aclType.acltype.module" [field]="field.name"/>&nbsp;({{field.name}})</div>
             </td>
             <td style="width: 3rem;">
                 <button class="slds-button slds-button--icon" [disabled]="!canDelete(field)" (click)="deleteField(field)">

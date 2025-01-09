@@ -62,7 +62,7 @@ class UserAlias extends SpiceBean
         static $alias = null;
 
         if (!$alias) {
-            $alias = BeanFactory::newBean('UserAliases')->retrieve_by_string_fields(['alias_name' => $aliasName, 'status' => 'active']);
+            $alias = BeanFactory::newBean('UserAliases')->retrieve_by_string_fields(['alias_name' => $aliasName, 'status' => 'Active']);
         }
         return !$alias ? null : BeanFactory::getBean('Users', $alias->user_id);
     }
