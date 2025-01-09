@@ -45,6 +45,7 @@ use SpiceCRM\includes\SugarObjects\templates\person\Person;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\SystemTenants\hooks\TenantUserHooks;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 
 // workaround for spiceinstaller
@@ -273,6 +274,28 @@ class User extends Person
 
         $this->savePreferencesToDB();
         return $this->id;
+    }
+
+    /**
+     * built-in after save and delete tenant hooks to adjust the tenant mapping table
+     * @param $event
+     * @param $arguments
+     * @return void
+     * @throws Exception
+     */
+    public function call_custom_logic($event, $arguments = null): void
+    {
+        if ($this->processed) return;
+
+        switch ($event) {
+            case 'after_delete':
+                TenantUserHooks::removeUserFromTenantMappingTable($this);
+                break;
+            case 'after_save':
+                TenantUserHooks::addUserTOTenantMappingTable($this);
+                break;
+        }
+        parent::call_custom_logic($event, $arguments);
     }
 
     function get_summary_text()

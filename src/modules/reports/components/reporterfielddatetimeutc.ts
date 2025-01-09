@@ -14,11 +14,11 @@ declare var moment: any;
  * display formatted report record value with date time
  */
 @Component({
-    selector: 'reporter-field-date-time',
-    templateUrl: '../templates/reporterfielddatetime.html',
+    selector: 'reporter-field-date-time-utc',
+    templateUrl: '../templates/reporterfielddatetimeutc.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReporterFieldDateTime {
+export class ReporterFieldDateTimeUTC {
     /**
      * report full record
      */

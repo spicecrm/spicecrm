@@ -17,6 +17,7 @@ import {SystemTenantLoadDemoDataButton} from "./components/systemtenantloaddemod
 import {SystemTenantHeaderBarValidity} from "./components/systemtenantheaderbarvalidity";
 import {SystemTenantHeaderBarSummary} from "./components/systemtenantheaderbarsummary";
 import {SystemTenantHeaderBar} from "./components/systemtenantheaderbar";
+import {SystemTenantWelcomeModal} from "./components/systemtenanwelcomemodal";
 
 @NgModule({
     imports: [
@@ -37,7 +38,8 @@ import {SystemTenantHeaderBar} from "./components/systemtenantheaderbar";
         SystemTenantHeaderBarSummary,
         SystemTenantActivateButton,
         SystemTenantActivateModal,
-        SystemTenantLoadDemoDataButton
+        SystemTenantLoadDemoDataButton,
+        SystemTenantWelcomeModal
     ]
 })
 export class ModuleSystemTenants {

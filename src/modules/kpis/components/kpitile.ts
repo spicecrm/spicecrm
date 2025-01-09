@@ -76,7 +76,7 @@ export class KpiTile implements OnInit {
     }
 
     get targetAchievement(){
-        return this.kpiTargetValue.kpi_value ?  Math.round(this.kpiTargetValue.kpi_value / parseFloat(this.kpiTarget.target) * 100) : 0
+        return this.kpiTargetValue?.kpi_value ?  Math.round(this.kpiTargetValue.kpi_value / parseFloat(this.kpiTarget.target) * 100) : 0
     }
 
     /**
@@ -95,7 +95,7 @@ export class KpiTile implements OnInit {
                             a.kpiValueAdd = this.targetAchievement;
                             break;
                         default:
-                            a.kpiValueAdd = data.kpiTargetValue[a.addKey]
+                            a.kpiValueAdd = data.kpiTargetValue ? data.kpiTargetValue[a.addKey] : 0;
                             break;
                     }
                 });

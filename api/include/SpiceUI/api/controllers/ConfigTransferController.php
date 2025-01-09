@@ -41,6 +41,9 @@ class ConfigTransferController
     {
         $postBody = $req->getParsedBody();
 
+        // set a higher memory limit
+        ini_set('memory_limit', '1024M');
+
         if (!AuthenticationController::getInstance()->getCurrentUser()->is_admin) {
             throw new ForbiddenException('Forbidden to transfer configuration data for non-admins.');
         }
@@ -328,6 +331,9 @@ class ConfigTransferController
     static function importToTables(Request $req, Response $res, $args): Response
     {
         set_time_limit(500);
+
+        // set a higher memory limit
+        ini_set('memory_limit', '1024M');
 
         $db = DBManagerFactory::getInstance();
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
