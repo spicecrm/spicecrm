@@ -7,7 +7,7 @@
         <div class="slds-truncate"><a *ngIf="value && !telehonyActive" [href]="'tel:'+value">{{value}}</a><span *ngIf="value && telehonyActive">{{value}}</span></div>
     </div>
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="css_classes">
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="css_classes">
     <input #focus type="text" class="slds-input" [(ngModel)]="value" [maxlength]="fieldlength" [autocomplete]="fieldid" [ngModelOptions]="modelOptions" />
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>

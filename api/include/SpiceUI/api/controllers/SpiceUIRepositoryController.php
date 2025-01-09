@@ -3,7 +3,9 @@
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use stdClass;
 
@@ -16,11 +18,15 @@ class SpiceUIRepositoryController
         $cached = SpiceCache::get('spiceRepositoryModules');
         if($cached) return $cached;
 
+        $confLoader = new SpiceUIConfLoader();
+
+        $sysuimodulerepositoryColumns = implode(', ', $confLoader->getTableColumns('sysuimodulerepository'));
+
         $db = DBManagerFactory::getInstance();
 
         $retArray = [];
 
-        $modules = $db->query("SELECT * FROM sysuimodulerepository UNION ALL SELECT * FROM sysuicustommodulerepository");
+        $modules = $db->query("SELECT {$sysuimodulerepositoryColumns} FROM sysuimodulerepository UNION ALL SELECT {$sysuimodulerepositoryColumns} FROM sysuicustommodulerepository");
         while ($module = $db->fetchByAssoc($modules)) {
             $retArray[$module['id']] = [
                 'id' => $module['id'],
@@ -35,17 +41,24 @@ class SpiceUIRepositoryController
         return $retArray;
     }
 
+    /**
+     * @throws DatabaseException
+     * @throws \Exception
+     */
     static function getComponents()
     {
         // check if cached
         $cached = SpiceCache::get('spiceRepositoryComponents');
         if($cached) return $cached;
 
+        $confLoader = new SpiceUIConfLoader();
+        $sysobjectrepositoryColumns = implode(', ', $confLoader->getTableColumns('sysuiobjectrepository'));
+
         $db = DBManagerFactory::getInstance();
 
         $retArray = [];
 
-        $components = $db->query("SELECT * FROM sysuiobjectrepository UNION ALL SELECT * FROM sysuicustomobjectrepository");
+        $components = $db->query("SELECT {$sysobjectrepositoryColumns} FROM sysuiobjectrepository UNION ALL SELECT {$sysobjectrepositoryColumns} FROM sysuicustomobjectrepository");
         while ($component = $db->fetchByAssoc($components)) {
             $retArray[$component['object']] = [
                 'path' => $component['path'],
@@ -127,10 +140,13 @@ class SpiceUIRepositoryController
         $cached = SpiceCache::get('spiceUILibraries');
         if($cached) return $cached;
 
+        $confLoader = new SpiceUIConfLoader();
+        $sysuilibsColumns = implode(', ', $confLoader->getTableColumns('sysuilibs'));
+
         $db = DBManagerFactory::getInstance();
 
         $return = [];
-        $sql = "SELECT * FROM (SELECT * FROM sysuilibs UNION SELECT * FROM sysuicustomlibs) libs ORDER BY libs.libsequence ASC";
+        $sql = "SELECT * FROM (SELECT {$sysuilibsColumns} FROM sysuilibs UNION SELECT {$sysuilibsColumns} FROM sysuicustomlibs) libs ORDER BY libs.libsequence ASC";
         $res = $db->query($sql);
         while($row = $db->fetchByAssoc($res))
         {
