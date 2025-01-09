@@ -51,11 +51,15 @@ trait SwiftInlineImagesTrait
         $imageData = $image->getAttribute('src');
 
         // check if the image src has charset param and set the proper data start position
-        $stringPos = strpos('charset=utf-8' , $imageData) == 14 ? 35 : 21;
+        // $stringPos = strpos('charset=utf-8' , $imageData) == 14 ? 35 : 21;
+        $imageArray = explode(',' , $imageData);
 
-        $decodedImageData = base64_decode(substr($imageData, $stringPos));
-        $imageName = SpiceUtils::createGuid() . '.png';
-        $inlineImage = Swift_Image::newInstance($decodedImageData, $imageName, 'image/png')
+        // get the image type
+        $matches = [];
+        $matched = preg_match('/image\/(.*);/', $imageArray[0], $matches );
+        $decodedImageData = base64_decode($imageArray[1]);
+        $imageName = SpiceUtils::createGuid() . '.' . ($matched == 1 ? $matches[1] : 'png');
+        $inlineImage = Swift_Image::newInstance($decodedImageData, $imageName, $matched == 1 ? $matches[0] : 'image/png')
             ->setDisposition('inline');
         return $message->embed($inlineImage);
     }
@@ -72,8 +76,8 @@ trait SwiftInlineImagesTrait
         $doc->loadHTML('<?xml encoding="utf-8"?>' . $message->getBody());
         $selector = new DOMXPath($doc);
 
-        // query all inline images. some images include charset utf-8 in the src
-        $inlineImages = $selector->query("//img[contains(@src, 'data:image/png;base64,') or contains(@src, 'data:image/png;charset=utf-8;base64,')]");
+        // query all inline images.
+        $inlineImages = $selector->query("//img[contains(@src, 'data:image/') and contains(@src, ';base64,')]");
 
         // replace the first one
         $inlineImage = $inlineImages->item(0);
