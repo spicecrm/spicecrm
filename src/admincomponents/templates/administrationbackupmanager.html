@@ -1,0 +1,57 @@
+<div class="slds-p-around--medium">
+    <h2 class="slds-text-heading_medium">
+        <system-label label="LBL_BACKUP_MANAGER"></system-label>
+        ({{ count }}
+        <system-label label="LBL_ITEMS"></system-label>
+        )
+    </h2>
+</div>
+@if (!loading) {
+    <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+        <thead>
+        <tr class="slds-text-title--caps">
+            <th scope="col">
+                <system-label label="LBL_DATE_ENTERED"></system-label>
+            </th>
+            <th class="slds-cell-shrink" scope="col">
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+            @for (file of backupFiles; track $index) {
+                <tr>
+                    <td>{{ file.fileCreated }}</td>
+                    <td>
+                        <ul class="slds-button-group-list">
+                            <li>
+                                <button class="slds-button slds-button_icon slds-button_icon-border-filled"
+                                        aria-pressed="true"
+                                        (click)="manageFile(file.pathName, 'preview' , file.fileCreated)">
+                                    <system-button-icon icon="search"></system-button-icon>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="slds-button slds-button_icon slds-button_icon-border-filled"
+                                        aria-pressed="true"
+                                        (click)="manageFile(file.pathName, 'download', file.fileCreated)">
+                                    <system-button-icon icon="download"></system-button-icon>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="slds-button slds-button_icon slds-button_icon-border-filled"
+                                        aria-pressed=true
+                                        (click)="delete(file.pathName)">
+                                    <system-button-icon icon="delete"></system-button-icon>
+                                </button>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+} @else if (loading) {
+    <div class="slds-align--absolute-center slds-height_full slds-size--1-of-1">
+        <system-spinner></system-spinner>
+    </div>
+}

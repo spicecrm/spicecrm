@@ -169,8 +169,13 @@ class AuthenticateController
             throw new UnauthorizedException("No User with id " . $args['id']);
         }
 
-        if ($userObj->external_auth_only == "1") {
+        // check external auth only flag and reset it if the user is an admin.
+        // if the user is not an admin throw an error
+        if ($userObj->external_auth_only == "1" && !$current_user->is_admin) {
             throw new UnauthorizedException("Password Reset due to external_auth_only unavailable");
+        } else if ($userObj->external_auth_only == "1"){
+            $userObj->external_auth_only = 0;
+            $userObj->save();
         }
 
         $sugarAuthenticationObj = AuthenticationController::getInstance()->getPasswordUtilsInstance();
@@ -180,6 +185,30 @@ class AuthenticateController
 
     }
 
+    /**
+     * marks the user as external auth only
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function authSetExternalAuthOnly(Request $req, Response $res, array $args): Response
+    {
+        $seed = BeanFactory::getBean('Users', $args['id']);
+        if(!$seed){
+            throw new NotFoundException("User not found");
+        }
+
+        if($seed->external_auth_only){
+            throw new BadRequestException("User already has external only flag set");
+        }
+
+        $seed->external_auth_only = 0;
+        $seed->save();
+
+        return $res->withJson(['success' => true]);
+    }
     public function authGetFormat(Request $req, Response $res, array $args): Response
     {
         return $res->withJson([

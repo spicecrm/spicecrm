@@ -28,6 +28,7 @@ export class UserSecuritySettingsModal implements ModalComponentI {
      * user active login methods
      */
     public activeMethods: {
+        externalAuthOnly: false,
         change_pass: { disabled: boolean, metadata?: { last_changed: string } };
         one_time_password: { active: boolean; canDeactivate: boolean, metadata?: { name: string, icon_light: string } };
         passkey?: {
@@ -112,6 +113,7 @@ export class UserSecuritySettingsModal implements ModalComponentI {
         this.systemDefaultMethod = !config.twofactor.onlogin?.enforced ? null : config.twofactor.onlogin?.method;
 
         this.activeMethods = {
+            externalAuthOnly: this.session.authData.user.external_auth_only,
             one_time_password: {
                 active: false,
                 canDeactivate: this.systemDefaultMethod != 'one_time_password' && this.session.authData.canchangepassword,
