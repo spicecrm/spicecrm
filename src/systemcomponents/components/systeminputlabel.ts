@@ -147,7 +147,7 @@ export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
     public addLabel() {
         let label = {
             id: this.modelutilities.generateGuid(),
-            name: '',
+            name: this.searchterm,
             scope: 'custom',
             custom_translations: [],
             global_translations: [],

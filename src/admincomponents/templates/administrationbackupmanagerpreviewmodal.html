@@ -1,0 +1,22 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_BACKUP_FILE_PREVIEW"></system-label><span> "{{ fileCreated }}"</span>
+    </system-modal-header>
+    <system-modal-content [scrollable]="false" [scrollableXY]="true">
+        @if (fileContent != '') {
+                <div style="white-space: pre">{{ fileContent }}</div>
+        } @else {
+            <system-illustration-no-records>
+                <system-label label="LBL_NO_RECORDS_FOUND"></system-label>
+            </system-illustration-no-records>
+        }
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="delete()">
+            <system-label label="LBL_DELETE"/>
+        </button>
+        <button class="slds-button slds-button--neutral" (click)="close()">
+            <system-label label="LBL_CANCEL"/>
+        </button>
+    </system-modal-footer>
+</system-modal>
