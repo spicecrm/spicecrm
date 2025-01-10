@@ -16,7 +16,9 @@ import {view} from "../../services/view.service";
 /*
 * add a pipe to filter by the object
  */
-@Pipe({name: 'objectrepositorymanagerfilter'})
+@Pipe({
+    name: 'objectrepositorymanagerfilter'
+})
 export class ObjectRepositoryManagerFilter {
     public transform(values, filter) {
         if (!filter) {
