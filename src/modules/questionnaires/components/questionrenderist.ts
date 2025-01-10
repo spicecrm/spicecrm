@@ -5,7 +5,9 @@ import { Component, Pipe, OnInit, Input } from '@angular/core';
 import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
 import { QuestionRenderBasic } from './questionrenderbasic';
 
-@Pipe({name: 'questiontypeisttextspipe'})
+@Pipe({
+    name: 'questiontypeisttextspipe'
+})
 export class QuestionTypeISTTextPipe {
 
     public transform( value ): any[] {
@@ -48,7 +50,9 @@ export class QuestionTypeISTTextPipe {
     }
 
 }
-@Pipe({name: 'questiontypeistoptionspipe'})
+@Pipe({
+    name: 'questiontypeistoptionspipe'
+})
 export class QuestionTypeISTOptionsPipe {
     public transform( values ) {
         if ( values ) return values.split(',');

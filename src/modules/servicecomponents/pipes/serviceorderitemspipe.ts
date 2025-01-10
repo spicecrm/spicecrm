@@ -3,7 +3,10 @@
  */
 import {Pipe} from '@angular/core';
 
-@Pipe({name: 'serviceorderitempipe', pure: false})
+@Pipe({
+    name: 'serviceorderitempipe',
+    pure: false
+})
 export class ServiceOrderItemPipe {
     public transform(values) {
         let retValues = [];

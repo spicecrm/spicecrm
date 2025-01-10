@@ -3,7 +3,10 @@
  */
 import {Pipe} from '@angular/core';
 
-@Pipe({name: 'salesdocsitemsdeletedpipe', pure: false})
+@Pipe({
+    name: 'salesdocsitemsdeletedpipe',
+    pure: false
+})
 export class SalesDocsItemsDeletedPipe {
     public transform(values) {
 
