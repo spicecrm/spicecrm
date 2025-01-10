@@ -3,7 +3,6 @@
  */
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
-import {OutlookConfiguration} from '../services/outlookconfiguration.service';
 import {GroupwareService} from "../../groupware/services/groupware.service";
 import {session} from "../../../services/session.service";
 import {broadcast} from "../../../services/broadcast.service";
@@ -26,14 +25,12 @@ declare var Office: any;
     templateUrl: '../templates/outlookpane.html',
     providers: [
         {provide: GroupwareService, useClass: OutlookGroupware},
-        OutlookConfiguration,
         model],
     host: {class: 'slds-height_full'}
 })
 export class OutlookPane implements OnInit {
 
     constructor(
-        public configuration: OutlookConfiguration,
         public groupware: GroupwareService,
         public router: Router,
         public session: session,
