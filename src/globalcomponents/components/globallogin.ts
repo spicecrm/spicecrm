@@ -59,7 +59,7 @@ export class GlobalLogin implements OnDestroy {
     /**
      * holds the prompt user boolean
      */
-    public promptUser: boolean = false;
+    protected _promptUser: boolean = false;
     /**
      * the username
      */
@@ -109,7 +109,7 @@ export class GlobalLogin implements OnDestroy {
      * holds the rxjs subscription to unsubscribe on destroy
      * @private
      */
-    private subscriptions = new Subscription();
+    protected subscriptions = new Subscription();
 
     constructor(public loginService: loginService,
                 public http: HttpClient,
@@ -124,6 +124,12 @@ export class GlobalLogin implements OnDestroy {
                 private language: language,
                 private backend: backend
     ) {
+        this.subscriptions.add(
+            this.configuration.loaded$.subscribe(loaded => {
+                if (loaded) this.afterSysInfoLoad()
+            })
+        );
+
         this.session.loadFromStorage();
 
         if (!!this.session.authData.sessionId) {
@@ -151,15 +157,19 @@ export class GlobalLogin implements OnDestroy {
 
         this.initializeNecessaryLanguageData();
         this.load2FAConfig();
-        this.subscriptions = this.configuration.loaded$.subscribe(() => {
-            this.initializeNecessaryLanguageData();
-            this.load2FAConfig();
-        });
 
         // auto prompt for passkey
         if (this.promptUser && !this.loginService.loggedOut && localStorage.getItem('OAuth-Issuer') == 'Passkey') {
-            this.checkRegistration(null, localStorage.getItem('OAuth-Username'));
+            this.checkPasskeyRegistration(null, localStorage.getItem('OAuth-Username'));
         }
+    }
+
+    get promptUser(): boolean {
+        return this._promptUser;
+    }
+
+    set promptUser(value: boolean) {
+        this._promptUser = value;
     }
 
     get passkeyEnabled() {
@@ -171,6 +181,14 @@ export class GlobalLogin implements OnDestroy {
      */
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
+    }
+
+    /**
+     * handle after sys info load
+     */
+    public afterSysInfoLoad() {
+        this.initializeNecessaryLanguageData();
+        this.load2FAConfig();
     }
 
     /**
@@ -368,7 +386,7 @@ export class GlobalLogin implements OnDestroy {
     /**
      * check passkey registration and login
      */
-    public async checkRegistration(event?: MouseEvent, username?: string) {
+    public async checkPasskeyRegistration(event?: MouseEvent, username?: string) {
 
         if (event) event.preventDefault();
 
