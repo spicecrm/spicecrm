@@ -1,14 +1,8 @@
 /**
  * @module Outlook
  */
-import {
-    Component, inject, OnInit} from '@angular/core';
-
-import {OutlookConfiguration} from '../services/outlookconfiguration.service';
-import {TokenObjectI} from "../../../globalcomponents/interfaces/globalcomponents.interfaces";
-import {OAuth2Service} from "../../../services/oauth2.service";
+import {Component} from '@angular/core';
 import {GlobalLogin} from "../../../globalcomponents/components/globallogin";
-import {Subscription} from "rxjs";
 
 declare var msal;
 declare var Office;
@@ -20,66 +14,37 @@ declare var Office;
 @Component({
     selector: 'outlook-login-pane',
     templateUrl: '../templates/outlookloginpane.html',
-    providers: [OAuth2Service]
 })
-export class OutlookLoginPane extends GlobalLogin implements OnInit {
-
-    private outlookConfiguration: OutlookConfiguration = inject(OutlookConfiguration);
+export class OutlookLoginPane extends GlobalLogin {
     /**
-     * rxjs subscription to unsubscribe
-     * @private
+     * error message on login failure
      */
-    private subscription = new Subscription();
+    public error: string;
 
-    public ngOnInit() {
-        this.initialize();
-        this.subscribeToSysInfo();
+    set promptUser(value: boolean) {
+        this._promptUser = value;
+        if (value && !this.loginService.loggedOut && this.configuration.initialized) {
+            this.microsoftOAuthLogin();
+        }
+    }
+
+    /**
+     * handle login after sys info load
+     */
+    public afterSysInfoLoad() {
+
+        super.afterSysInfoLoad();
+
+        if (this._promptUser && !this.loginService.loggedOut) {
+            this.microsoftOAuthLogin();
+        }
     }
 
     /**
      * unsubscribe from subscription
      */
     public ngOnDestroy() {
-        this.subscription.unsubscribe();
-    }
-
-    /**
-     * subscribe to broadcast to reload the services
-     * @private
-     */
-    private subscribeToSysInfo() {
-        this.subscription.add(
-            this.configuration.loaded$.subscribe((loaded) => {
-                if (loaded) this.microsoftOAuthLogin();
-            })
-        )
-    }
-
-    private initialize() {
-
-        if (this.outlookConfiguration.hasSettings()) {
-            this.username = this.outlookConfiguration.username;
-            this.password = this.outlookConfiguration.password;
-            const token = {
-                tokenObject: this.outlookConfiguration.tokenObject,
-                issuer: this.outlookConfiguration.issuer,
-                username: this.outlookConfiguration.username,
-            };
-            this.login(token);
-        } else {
-            this.goToSettings();
-        }
-    }
-
-    public goToSettings() {
-        this.promptUser = true;
-        // empty credentials saved in office container
-        this.outlookConfiguration.username = '';
-        this.outlookConfiguration.password = '';
-        this.outlookConfiguration.tokenObject = undefined;
-        this.outlookConfiguration.issuer = '';
-        this.outlookConfiguration.saveSettings();
-
+        this.subscriptions.unsubscribe();
     }
 
     /**
@@ -87,11 +52,11 @@ export class OutlookLoginPane extends GlobalLogin implements OnInit {
      */
     public async microsoftOAuthLogin() {
 
+        this.loggingIn = true;
+
         const config = this.configuration.getCapabilityConfig('msgraphconfig');
 
         if (!config?.isActive) return;
-
-        const url = this.configuration.getBackendUrl() + '/authentication/oauth2/accessToken';
 
         const msalConfig: any = {
             auth: {
@@ -116,10 +81,23 @@ export class OutlookLoginPane extends GlobalLogin implements OnInit {
             });
         }
 
-        if (!loginResponse?.accessToken) return;
+        if (!loginResponse?.accessToken) {
+            this.loggingIn = false;
+            this.error = 'failed to login. Check the graph configuration.';
+            return;
+        }
 
         this.login({
             issuer: 'Microsoft', tokenObject: {access_token: loginResponse.accessToken}, username: loginResponse.account.username
         });
+    }
+
+    /**
+     * override check passkey registration to be disabled since login will always be done by outlook
+     * @param event
+     * @param username
+     */
+    public async checkPasskeyRegistration(event?: MouseEvent, username?: string) {
+        return;
     }
 }
