@@ -78,13 +78,13 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "core:build",
+            "buildTarget": "core:build",
             "port": 3333,
             "proxyConfig": "proxy.conf.js"
           },
           "configurations": {
             "outlook": {
-              "browserTarget": "core:build:outlook",
+              "buildTarget": "core:build:outlook",
               "ssl": true
             }
           }
