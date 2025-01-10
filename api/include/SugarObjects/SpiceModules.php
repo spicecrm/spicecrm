@@ -31,6 +31,13 @@ class SpiceModules
      */
     public $modules = [];
 
+    /**
+     * an associative array mapping the module id to the module name
+     *
+     * @var array
+     */
+    public $moduleMap = [];
+
     private $moduleList = [];
 
     private $beanList = [];
@@ -65,7 +72,7 @@ class SpiceModules
 
             $this->modules = [];
             $columns = ['id', 'acl', 'module', 'bean', 'beanfile', 'workflow', 'visible', 'tagging', 'sysdictionarydefinition_id', 'acl_multipleusers'];
-            $modules = DBManagerFactory::getInstance()->query("SELECT ".implode(', ', $columns)." FROM sysmodules UNION ALL SELECT ".implode(', ', $columns)." FROM syscustommodules");
+            $modules = DBManagerFactory::getInstance()->query("SELECT ".implode(', ', $columns).", 'g' scope FROM sysmodules UNION ALL SELECT ".implode(', ', $columns).", 'c' scope FROM syscustommodules");
             while ($module = DBManagerFactory::getInstance()->fetchByAssoc($modules)) {
                 $this->moduleList[$module['module']] = $module['module'];
 
@@ -85,6 +92,10 @@ class SpiceModules
                     $module['audited'] = (bool) SpiceDictionary::getInstance()->getDefs($module['bean'])['audited'];
                 }
 
+                // put to the map
+                $this->moduleMap[$module['id']] = $module['module'];
+
+                // put the array
                 $this->modules[$module['module']] = $module;
 
                 // if we have a bean try to load the beanfile, build it from the name or use the generic sugarbean
@@ -104,6 +115,7 @@ class SpiceModules
                 }
             }
             $cached = [
+                'moduleMap' => $this->moduleMap,
                 'moduleDetails' => $this->modules,
                 'moduleList'    => $this->moduleList,
                 'beanList'      => $this->beanList,
@@ -113,6 +125,7 @@ class SpiceModules
             SpiceCache::set('spiceModules', $cached);
 
         } elseif ($cached) {
+            $this->moduleMap = $cached['moduleMap'];
             $this->modules     = $cached['moduleDetails'];
             $this->moduleList  = $cached['moduleList'];
             $this->beanList    = $cached['beanList'];
@@ -181,9 +194,14 @@ class SpiceModules
      * @param string $modulename
      * @return array
      */
-    public function getModuleDetails(string $modulename): ?array {
-
-        return $this->modules[$modulename] ?: [];
+    public function getModuleDetails(string $modulename = null, string $moduleId = null): ?array {
+        if($modulename) {
+            return $this->modules[$modulename] ?: [];
+        } else if ($moduleId){
+            return $this->modules[$this->moduleMap[$moduleId]] ?: [];
+        } else {
+            return [];
+        }
     }
 
     /**
