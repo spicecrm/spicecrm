@@ -5,9 +5,13 @@ import {
     Component, inject, OnInit} from '@angular/core';
 
 import {OutlookConfiguration} from '../services/outlookconfiguration.service';
-import {AuthServiceI, TokenObjectI} from "../../../globalcomponents/interfaces/globalcomponents.interfaces";
+import {TokenObjectI} from "../../../globalcomponents/interfaces/globalcomponents.interfaces";
 import {OAuth2Service} from "../../../services/oauth2.service";
 import {GlobalLogin} from "../../../globalcomponents/components/globallogin";
+import {Subscription} from "rxjs";
+
+declare var msal;
+declare var Office;
 
 /**
  * A component that handles the display of the SpiceCRM login form in the Outlook add-in
@@ -21,11 +25,34 @@ import {GlobalLogin} from "../../../globalcomponents/components/globallogin";
 export class OutlookLoginPane extends GlobalLogin implements OnInit {
 
     private outlookConfiguration: OutlookConfiguration = inject(OutlookConfiguration);
-
-    private oauth2Service: OAuth2Service = inject(OAuth2Service);
+    /**
+     * rxjs subscription to unsubscribe
+     * @private
+     */
+    private subscription = new Subscription();
 
     public ngOnInit() {
         this.initialize();
+        this.subscribeToSysInfo();
+    }
+
+    /**
+     * unsubscribe from subscription
+     */
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+
+    /**
+     * subscribe to broadcast to reload the services
+     * @private
+     */
+    private subscribeToSysInfo() {
+        this.subscription.add(
+            this.configuration.loaded$.subscribe((loaded) => {
+                if (loaded) this.microsoftOAuthLogin();
+            })
+        )
     }
 
     private initialize() {
@@ -57,41 +84,42 @@ export class OutlookLoginPane extends GlobalLogin implements OnInit {
 
     /**
      * check for microsoft login service and trigger the login automatically
-     * @param service
      */
-    public checkForMicrosoftLoginService(service: AuthServiceI[]) {
+    public async microsoftOAuthLogin() {
 
-        const microsoftService: AuthServiceI = service.find(s => s.config.userinfo_endpoint.includes('microsoft'));
+        const config = this.configuration.getCapabilityConfig('msgraphconfig');
 
-        if (!microsoftService) return;
+        if (!config?.isActive) return;
 
         const url = this.configuration.getBackendUrl() + '/authentication/oauth2/accessToken';
 
-        this.oauth2Service.config = {
-            client_id: microsoftService.config.client_id,
-            scope: microsoftService.config.scope,
-            token_endpoint: microsoftService.config.token_endpoint,
-            userinfo_endpoint: microsoftService.config.userinfo_endpoint,
-            login_url: microsoftService.config.login_url,
-            redirect_uri: microsoftService.config.redirect_uri,
-            client_secret: microsoftService.config.client_secret,
-            with_login_hint: microsoftService.config.with_login_hint,
+        const msalConfig: any = {
+            auth: {
+                clientId: config.client_id,
+                authority: `https://login.microsoftonline.com/${config.tenant_id}`,
+                redirectUri: config.redirect_url,
+            }
         };
 
-        let loginHint: string;
+        let msalInstance = new msal.PublicClientApplication(msalConfig);
 
-        if (this.oauth2Service.config.with_login_hint && localStorage.getItem('OAuth-Issuer') == microsoftService.issuer) {
-            loginHint = localStorage.getItem('OAuth-Username');
+        const loginRequest: any = {scopes: ["user.read", "mail.read"]};
+        const authContext = await Office.auth.getAuthContext();
+
+        loginRequest.loginHint = authContext?.loginHint;
+
+        let loginResponse = await msalInstance.ssoSilent(loginRequest).catch(() => undefined);
+
+        if (!loginResponse) {
+            loginResponse = await msalInstance.loginPopup(loginRequest).catch(() => {
+                return undefined;
+            });
         }
 
-        this.oauth2Service.codeFlowLogin(loginHint).subscribe(code => {
+        if (!loginResponse?.accessToken) return;
 
-            this.http.post(url, {issuer: microsoftService.issuer, code: code}).subscribe(
-                (data: {tokenObject: TokenObjectI, profile}) => {
-                    this.login({
-                        issuer: microsoftService.issuer, tokenObject: data.tokenObject, username: data.profile.email
-                    });
-                });
-        })
+        this.login({
+            issuer: 'Microsoft', tokenObject: {access_token: loginResponse.accessToken}, username: loginResponse.account.username
+        });
     }
 }

@@ -42,7 +42,6 @@
                         <button type="submit" value="Submit" class="slds-button slds-button--brand slds-button_stretch" tabindex="0">Login</button>
                     </form>
                 </div>
-                <global-login-oauth2 class="slds-size--1-of-1" (token)="login($event)" (servicesLoaded)="checkForMicrosoftLoginService($event)"></global-login-oauth2>
             </div>
             <ng-container *ngIf="loginService.session.authData.sessionId">
                 <system-loader-progress></system-loader-progress>
