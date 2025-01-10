@@ -5,7 +5,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
 import { QuestionRenderBasic } from './questionrenderbasic';
 
-@Component( {
+@Component({
     selector: 'question-render-binary',
     templateUrl: '../templates/questionrenderbinary.html',
     styles: [

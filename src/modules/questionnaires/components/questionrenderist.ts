@@ -56,7 +56,7 @@ export class QuestionTypeISTOptionsPipe {
     }
 }
 
-@Component( {
+@Component({
     selector: 'question-render-ist',
     templateUrl: '../templates/questionrenderist.html',
     styles: [

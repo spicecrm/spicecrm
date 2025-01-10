@@ -19,7 +19,7 @@ import { mediafiles } from '../../../services/mediafiles.service';
 import { backend } from '../../../services/backend.service';
 import { modal } from '../../../services/modal.service';
 
-@Component( {
+@Component({
     selector: 'field-media-file',
     templateUrl: '../templates/fieldmediafile.html',
     providers: [ mediafiles ],
