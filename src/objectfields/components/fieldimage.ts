@@ -21,7 +21,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { fieldLabel } from './fieldlabel';
 import { SystemInputMedia } from '../../systemcomponents/components/systeminputmedia';
 
-@Component( {
+@Component({
     selector: 'field-image',
     templateUrl: '../templates/fieldimage.html',
 })
