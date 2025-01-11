@@ -1,9 +1,16 @@
 <orgunits-chart-view-box #box [nodeid]="orgunitid"></orgunits-chart-view-box>
-<ng-container *ngIf="(subOrgUnits.length + subOrgCharts.length) > 0">
-    <div class="slds-grid slds-grid--align-center">
-        <div *ngFor="let subUnit of subUnits; trackBy: trackByFn">
-            <orgunits-chart-view-orgunit *ngIf="subUnit.module=='OrgUnits'" [orgunitid]="subUnit.id"></orgunits-chart-view-orgunit>
-            <orgunits-chart-view-box *ngIf="subUnit.module=='OrgCharts'" [nodeid]="subUnit.id" nodemodule="OrgCharts"></orgunits-chart-view-box>
+@if(staffOrgUnits.length > 0) {
+    <div style="margin-left: 250px;" class="slds-grid slds-grid--vertical slds-grid--align-center">
+        <div *ngFor="let staffUnit of staffUnits; trackBy: trackByFn">
+            <orgunits-chart-view-orgunit *ngIf="staffUnit.module=='OrgUnits'" [orgunitid]="staffUnit.id"/>
         </div>
     </div>
-</ng-container>
+}
+@if((subOrgUnits.length + subOrgCharts.length) > 0) {
+    <div class="slds-grid slds-grid--align-center">
+        <div *ngFor="let subUnit of subUnits; trackBy: trackByFn">
+            <orgunits-chart-view-orgunit *ngIf="subUnit.module=='OrgUnits'" [orgunitid]="subUnit.id"/>
+            <orgunits-chart-view-box *ngIf="subUnit.module=='OrgCharts'" [nodeid]="subUnit.id" nodemodule="OrgCharts"/>
+        </div>
+    </div>
+}
