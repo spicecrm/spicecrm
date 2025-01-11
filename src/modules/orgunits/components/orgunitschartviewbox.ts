@@ -48,6 +48,20 @@ export class OrgunitsChartViewBox implements OnInit,AfterViewInit{
     }
 
     /**
+     * indicates if this is a staff unit
+     */
+    get isStaff(){
+        return this.model.getField('is_staff_unit');
+    }
+
+    /**
+     * check if the unit has staff units and the reduce the bottom margin
+     */
+    get hasStaff(){
+        return this.oview.orgunits.filter(o => o.parent_id == this.model.id && (o.is_staff_unit != false && o.is_staff_unit != 0)).length > 0;
+    }
+
+    /**
      * after view init communicate the native element
      */
     public ngAfterViewInit() {
