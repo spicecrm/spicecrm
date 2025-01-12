@@ -428,6 +428,7 @@ class SpiceACLObject extends SpiceBean
         if ($this->spiceaclowner || $this->spiceaclcreator) {
             // check absence substitutes
             $substituteIds = $absences->getSubstituteIDs();
+
             $userIds = array_merge([$current_user->id], $substituteIds);
 
             // matches for the owner or coOwner
@@ -451,6 +452,22 @@ class SpiceACLObject extends SpiceBean
                     ]
                 ];
             }
+        }
+
+        // matches for the reportees
+        if ($this->spiceaclreportees) {
+            $reporteeIDs = $current_user->getReporteesList();
+
+            $ownermatches[] = [
+                'terms' => [
+                    'assigned_user_id' => $reporteeIDs
+                ]
+            ];
+            $ownermatches[] = [
+                'terms' => [
+                    'assigned_user_ids' => $reporteeIDs
+                ]
+            ];
         }
 
         // get the orgunits of the user and all he is substituting for
@@ -639,7 +656,8 @@ class SpiceACLObject extends SpiceBean
         $ownerWhereClauses = [];
         if($this->spiceaclowner) $ownerWhereClauses[] = '(' . SpiceACLUsers::generateCurrentUserWhereClause($table_name, $bean) . ')';
         if($this->spiceaclcreator) $ownerWhereClauses[] = '(' . SpiceACLUsers::generateCreatedByWhereClause($table_name, $bean) . ')';
-        if($this->spiceaclcreator){
+        if($this->spiceaclreportees) $ownerWhereClauses[] = '(' . SpiceACLUsers::generateReporteesWhereClause($table_name, $bean) . ')';
+        if($this->spiceaclorgunit){
             $w = SpiceACLUsers::generateOrgUnitWhereClause($table_name, $bean);
             if($w !== false) $ownerWhereClauses[] = "($w)";
         }
