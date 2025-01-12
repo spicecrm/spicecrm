@@ -804,4 +804,34 @@ class User extends Person
         return (boolean)$db->getOne("SELECT is_admin FROM users WHERE deleted = 0 AND user_name = '".$db->quote( $username )."'" );
     }
 
+    /**
+     * builds an array with the id of all ids reporting to the user
+     *
+     * @return array
+     */
+    public function getReporteesList(){
+        $reportees = [];
+
+        $this->buildReportees($this->id, $reportees);
+
+        return $reportees;
+    }
+
+    /**
+     * recurisve function to build the reportees per id
+     *
+     * @param $userID
+     * @param $reportees
+     * @return void
+     */
+    private function buildReportees($userID, &$reportees){
+        $reporttoIDs = $this->db->fetchAll("SELECT id FROM users WHERE reports_to_id='{$userID}'");
+        foreach ($reporttoIDs as $reporttoID) {
+            if(!in_array($reporttoID['id'], $reportees) && $reporttoID['id'] != $this->id){
+                $reportees[] = $reporttoID['id'];
+                $this->buildReportees($reporttoID['id'], $reportees);
+            }
+        }
+    }
+
 }

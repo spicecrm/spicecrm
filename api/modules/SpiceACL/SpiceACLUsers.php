@@ -119,6 +119,24 @@ class SpiceACLUsers{
      * @param $bean
      * @return string
      */
+    static function generateReporteesWhereClause($table_name = '', $bean){
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+
+        $userIDs = $current_user->getReporteesList();
+        $userIDs = "'". join("','", $userIDs) . "'";
+
+        if(empty($table_name)) $table_name = $bean->_tablename;
+
+        return "$table_name.assigned_user_id IN ($userIDs)";
+    }
+
+    /**
+     * generates a where clause that matches the creator
+     *
+     * @param $table_name
+     * @param $bean
+     * @return string
+     */
     static function generateOrgUnitWhereClause($table_name = '', $bean){
         // if there is no field assigned_orgunit_id defined just leave it.
         if(!isset($bean->field_defs['assigned_orgunit_id'])) return false;
