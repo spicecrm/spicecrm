@@ -1289,6 +1289,10 @@ export class modellist implements OnDestroy {
      */
     public getListData(quiet: boolean = false): Observable<boolean> {
         let retSub = new Subject<boolean>();
+
+        // preserve the selection
+        let selectedIDs = [...this.getSelectedIDs()];
+
         if (!quiet) {
             // set the service to loading state
             this.isLoading = true;
@@ -1330,6 +1334,9 @@ export class modellist implements OnDestroy {
             next: (res: any) => {
                 // set the listdata
                 this.listData = res;
+
+                // reselect the items
+                this.listData.list.filter(i => selectedIDs.indexOf(i.id) >= 0).forEach(i => i.selected = true);
 
                 // update the timestamp for the last load
                 this.lastLoad = new moment();
