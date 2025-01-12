@@ -85,7 +85,7 @@ export class modellist implements OnDestroy {
     /**
      * emits when the selection of the list has been changed via select all .. to trigger chanmge detection on the components
      */
-    public selectionChanged$: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public selectionChanged$: EventEmitter<boolean|string> = new EventEmitter<boolean|string>();
 
     /**
      * holds an array of fields and direction for multidimensional sorting
@@ -1188,6 +1188,32 @@ export class modellist implements OnDestroy {
     public removeAggregatesOfField(fieldname: string) {
         // Keep only all for other fields selected aggregates:
         this.selectedAggregates = this.selectedAggregates.filter(item => item.split('::', 1)[0] !== fieldname);
+    }
+
+    /**
+     * set a single item as selected
+     *
+     * @param id
+     */
+    public setSelected(id){
+        let item = this.listData.list.find(i => i.id == id);
+        if(item && !item.selected) {
+            item.selected = true;
+            this.selectionChanged$.emit(id);
+        }
+    }
+
+    /**
+     * set a single item to unselected
+     *
+     * @param id
+     */
+    public setUnSelected(id){
+        let item = this.listData.list.find(i => i.id == id);
+        if(item && item.selected) {
+            item.selected = false;
+            this.selectionChanged$.emit(id);
+        }
     }
 
     /*
