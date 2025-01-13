@@ -279,7 +279,7 @@ export class fieldEmailRecipientsInput {
                         this.searchResultsLoading = true;
                     });
 
-                    this.backend.getRequest('module/EmailAddresses/' + this.inputTextValue).subscribe(results => {
+                    this.backend.getRequest('module/EmailAddresses/search/' + this.inputTextValue).subscribe(results => {
                         this.zone.run(() => {
                             if (!!results && results.length > 0) {
                                 this.searchResults = results;
