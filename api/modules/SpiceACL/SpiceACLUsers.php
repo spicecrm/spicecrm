@@ -6,6 +6,7 @@ namespace SpiceCRM\modules\SpiceACL;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\modules\Users\User;
 
 class SpiceACLUsers{
     function manageUsersHash(array $users){
@@ -164,7 +165,7 @@ class SpiceACLUsers{
      */
     static function checkCurrentUserIsOwner($bean){
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $db = DBManagerFactory::getInstance();
+
 
         // check the assigned user first
         if($bean->assigned_user_id == $current_user->id) return true;
@@ -178,7 +179,31 @@ class SpiceACLUsers{
         if(empty($bean->spiceacl_users_hash)) return false;
 
         // check the user hash
-        return $db->fetchByAssoc($db->query("SELECT user_id FROM spiceaclusers_hash WHERE hash_id = '$bean->spiceacl_users_hash' AND user_id='$current_user->id' AND deleted = 0")) ? true : false;
+        $db = DBManagerFactory::getInstance();
+        return $db->fetchOne("SELECT user_id FROM spiceaclusers_hash WHERE hash_id = '{$bean->spiceacl_users_hash}' AND user_id='{$current_user->id}' AND deleted = 0") ? true : false;
+    }
+
+    /**
+     * cheks if the passed in bean matches the user requirements and is assiogned to a reportee
+     *
+     * @param $bean the bean to be checked
+     * @return bool true if access is granted and the current user is consideren manager of an owner
+     */
+    static function checkCurrentUserIsManager($bean){
+        /** @var User $current_user */
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+
+        // check absence substitutes
+        $reporteeeIDs = $current_user->getReporteesList();
+        if(array_search($bean->assigned_user_id, $reporteeeIDs) !== false) return true;
+
+        // check if we have  user hash
+        if(empty($bean->spiceacl_users_hash)) return false;
+
+        // check the user hash
+        $db = DBManagerFactory::getInstance();
+        $usersIn = implode("','", $reporteeeIDs);
+        return $db->fetchOne("SELECT user_id FROM spiceaclusers_hash WHERE hash_id = '{$bean->spiceacl_users_hash}' AND user_id in ('{$usersIn}') AND deleted = 0") ? true : false;
     }
 
     /**
