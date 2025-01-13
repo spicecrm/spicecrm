@@ -18,7 +18,7 @@ $RESTManager->registerExtension('emailaddresses', '1.0');
 $routes = [
     [
         'method' => 'get',
-        'route' => '/module/EmailAddresses/{searchterm}',
+        'route' => '/module/EmailAddresses/search/{searchterm}',
         'oldroute' => '/EmailAddresses/{searchterm}',
         'class' => EmailAddressesController::class,
         'function' => 'searchMailAddress',
