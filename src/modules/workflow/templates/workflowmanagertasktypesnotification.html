@@ -1,16 +1,68 @@
 <system-collapsable-tab [collapsible]="false" tabtitle="LBL_CONFIGURATION" class="slds-m-top--large spice-display-block">
-    <div [system-model-provider]="{id: model.id, data: {
-    assigntype: model.data.type_config.recipient_assigntype,
-    assigntouser: model.data.type_config.recipient_assigntouser,
-    assigntouser_name: model.data.type_config.recipient_assigntouser_name,
-    assigntoorgunit: model.data.type_config.recipient_assigntoorgunit,
-    assigntoorgunit_name: model.data.type_config.recipient_assigntoorgunit_name,
-    assignfile: model.data.type_config.recipient_assignfile,
-    assignclass: model.data.type_config.recipient_assignclass,
-    assignmethod: model.data.type_config.recipient_assignmethod,
-    assignparams: model.data.type_config.recipient_assignparams,
-    }, module: model.module}" (data$)="setRecipient($event)">
-        <workflow-manager-detail-task-assignmentpanel/>
+    <div>
+        <div class="slds-size--1-of-2 slds-m-vertical--x-small">
+            <label class="slds-truncate">
+                <system-label label="LBL_ASSIGNED_TO_TYPE"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <system-select system-select-id-only [(ngModel)]="model.data.type_config.recipient_assigntype">
+                    @for (option of options; track option.value) {
+                        <system-select-option [value]="option.value" [display]="option.display"/>
+                    }
+                </system-select>
+            </div>
+        </div>
+
+        @switch (model.data.type_config.recipient_assigntype) {
+            @case ('1') {
+                <div class="slds-size--1-of-2">
+                    <label class="slds-truncate">
+                        <system-label label="LBL_ASSIGNED_TO"></system-label>
+                    </label>
+                    <div class="slds-form-element__control">
+                        <system-input-relate module="Users" [ngModel]="getRecipientValue('recipient_assigntouser')" (ngModelChange)="setRecipientValue($event, 'recipient_assigntouser')"/>
+                    </div>
+                </div>
+            }
+            @case ('7' || '9') {
+                <div class="slds-size--1-of-2">
+                    <label class="slds-truncate">
+                        <system-label label="LBL_ORGUNIT"></system-label>
+                    </label>
+                    <div class="slds-form-element__control">
+                        <system-input-relate module="OrgUnits" [ngModel]="getRecipientValue('recipient_assigntoorgunit')" (ngModelChange)="setRecipientValue($event, 'recipient_assigntoorgunit')"/>
+                    </div>
+                </div>
+            }
+            @case ('5') {
+                <div class="slds-size--1-of-2 slds-m-bottom--x-small">
+                    <label class="slds-truncate">
+                        <system-label label="LBL_METHOD"></system-label>
+                    </label>
+                    <div class="slds-form-element__control slds-p-left--xx-small">
+                        <system-input-backend-method [(ngModel)]="model.data.type_config.recipient_assignclass"/>
+                    </div>
+                </div>
+                <div class="slds-size--1-of-2">
+                    <label class="slds-truncate">
+                        <system-label label="LBL_PARAMS"></system-label>
+                    </label>
+                    <div class="slds-form-element__control">
+                        <textarea class="slds-textarea" [(ngModel)]="model.data.type_config.recipient_assignparams"></textarea>
+                    </div>
+                </div>
+            }
+            @case ('10') {
+                <div class="slds-size--1-of-2">
+                    <label class="slds-truncate">
+                        <system-label label="LBL_DISTRIBUTIONLIST"></system-label>
+                    </label>
+                    <div class="slds-form-element__control">
+                        <system-input-relate module="DistributionLists" [ngModel]="getRecipientValue('recipient_distribution_list')" (ngModelChange)="setRecipientValue($event, 'recipient_distribution_list')"/>
+                    </div>
+                </div>
+            }
+        }
     </div>
     <div class="slds-form-element slds-m-top--small">
         <label class="slds-form-element__label">

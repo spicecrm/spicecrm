@@ -36,6 +36,7 @@
                             <option value="9">email1 of parent bean</option>
                             <option value="A">email1 of grand parent bean</option>
                             <option value="B">contact person of parent bean</option>
+                            <option value="10">Distribution List</option>
                         </select>
                     </div>
                 </div>
@@ -57,6 +58,16 @@
                 <system-input-backend-method
                         [(ngModel)]="model.data.type_config.emailclass"></system-input-backend-method>
             </div>
+            @if (model.data.type_config.emailtype == '10') {
+                <div class="slds-size--1-of-2">
+                    <label class="slds-truncate">
+                        <system-label label="LBL_DISTRIBUTIONLIST"></system-label>
+                    </label>
+                    <div class="slds-form-element__control">
+                        <system-input-relate module="DistributionLists" [(ngModel)]="distributionList"/>
+                    </div>
+                </div>
+            }
         </div>
         <div class="slds-grid slds-grid--vertical-align-end">
             <div class="slds-size--1-of-6">
