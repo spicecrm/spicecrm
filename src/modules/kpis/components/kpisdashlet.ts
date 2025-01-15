@@ -28,9 +28,9 @@ export class KPIsDashlet implements OnInit {
     public parentType: string = 'Users';
 
     /**
-     * the selected item
+     * an array with all reportees
      */
-    public selectedItem: any;
+    public reportees: any[] = [];
 
     constructor(
         public session: session,
@@ -43,41 +43,22 @@ export class KPIsDashlet implements OnInit {
 
     ngOnInit() {
         this.parentId = this.session.authData.user.id;
-        this.selectedItem = {
-            id: this.session.authData.user.id,
-            summary_text: this.session.authData.user.full_name,
-            module: 'Users',
-            data: this.session.authData.user
-        };
+        this.getReporteeIDs();
     }
 
-    get isAdmin(){
-        return this.session.authData.admin;
-    }
+    private getReporteeIDs(){
+        this.backend.getRequest(`module/KPIs/reportees/${this.session.authData.user.id}`).subscribe({
+            next: (reportees) => {
+                if(reportees.length > 0){
+                    this.reportees = reportees;
+                }
 
-    public clearField() {
-        this.selectedItem = undefined;
-        this.parentId = undefined;
-    }
+                // add the current user
+                this.reportees.push(this.session.authData.user);
 
-    /**
-     * opens a model search modal
-     */
-    public searchWithModal() {
-        this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
-            selectModal.instance.module = 'Users'
-            selectModal.instance.multiselect = false;
-                selectModal.instance.selectedItems.subscribe(items => {
-                    if (items.length) {
-                        this.selectedItem = {
-                            id: items[0].id,
-                            summary_text: items[0].summary_text,
-                            module: 'Users',
-                            data: items[0]
-                        };
-                        this.parentId = this.selectedItem.id;
-                    }
-                });
-        });
+                // sort the users
+                this.reportees.sort((a,b) => a.last_name.localeCompare(b.last_name));
+            }
+        })
     }
 }
