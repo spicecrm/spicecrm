@@ -1002,6 +1002,17 @@ export class calendar implements OnDestroy {
      * load calendar preferences from the user preferences and save changes in calendar
      */
     public getCalendarPreferences() {
+
+        const groupwareDisabled = this.metadata.getComponentConfig('Calendar').groupwareDisabled;
+
+        if (!groupwareDisabled && (this.session.authData.googleToken || (this.configuration.checkCapability('google_oauth') && this.configuration.getCapabilityConfig('google_oauth').serviceaccess))) {
+            this.activeGroupware = 'google';
+        }
+
+        if (!groupwareDisabled && this.configuration.getCapabilityConfig('msgraphconfig').isActive) {
+            this.activeGroupware = 'microsoft';
+        }
+
         if (this.isMobileView || this.isDashlet) return;
 
         this.userPreferences.loadPreferences("Calendar")
@@ -1015,16 +1026,6 @@ export class calendar implements OnDestroy {
                 }
                 this.userPreferencesLoaded = true;
             });
-
-        const groupwareDisabled = this.metadata.getComponentConfig('Calendar').groupwareDisabled;
-
-        if (!groupwareDisabled && (this.session.authData.googleToken || (this.configuration.checkCapability('google_oauth') && this.configuration.getCapabilityConfig('google_oauth').serviceaccess))) {
-            this.activeGroupware = 'google';
-        }
-
-        if (!groupwareDisabled && this.configuration.getCapabilityConfig('msgraphconfig').isActive) {
-            this.activeGroupware = 'microsoft';
-        }
     }
 
     /**
