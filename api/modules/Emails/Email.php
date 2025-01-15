@@ -1754,20 +1754,21 @@ class Email extends SpiceBean
         // todo deal with attachments lol
         foreach ($message->getAttachments() as $attachment) {
 
-            # if the attachment is a message, the content needs to be converted to a string
-            if ($attachment->getMimeType() == 'message/rfc822') {
+            $attachmentData = $attachment->getData();
+
+            # if the attachment is not string, the content needs to be converted to a string
+            if (!is_string($attachmentData) && $attachment->getMimeType() != 'application/octet-stream' && is_callable([$attachment, 'copyToStream'])) {
                 $stream = tmpfile();
                 $attachment->copyToStream($stream);
                 $attachmentData = file_get_contents(stream_get_meta_data($stream)['uri']);
                 fclose($stream);
-            } else {
-                $attachmentData = $attachment->getData();
             }
 
-            if(!$attachmentData){
+            if(!is_string($attachmentData) || empty($attachmentData)){
                 LoggerManager::getLogger()->fatal('emailattachment', 'Could not getData() of attachment '.$attachment->getFilename().' for email '.$this->id.'. Getting attachment skipped.');
                 continue;
             }
+
             $fileArray = [
                 'filename' => $attachment->getFilename(),
                 'file' => base64_encode($attachmentData),
