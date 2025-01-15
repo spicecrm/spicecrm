@@ -1699,7 +1699,7 @@ class SpiceBeanHandler
         if (empty($thisBean->id) && !empty($beanId)) {
             $thisBean->new_with_id = true;
             $thisBean->id = $beanId;
-        } else if ($thisBean->optimistic_lock && !empty($post_params['date_modified'])) {
+        } else if (/*$thisBean->optimistic_lock && */!empty($post_params['date_modified'])) {
             // do an optimistic locking check
             $curDate = date_create_from_format($timedate->get_db_date_format() . ' H:i:s', $thisBean->date_modified);
             $inDate = date_create_from_format($timedate->get_db_date_format() . ' H:i:s', $post_params['date_modified']);
