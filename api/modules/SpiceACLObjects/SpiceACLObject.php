@@ -867,32 +867,32 @@ class SpiceACLObject extends SpiceBean
     {
         $db = DBManagerFactory::getInstance();
 
-        // check if we have a profile that has no specific org objects assigned
-        $objectValuesArray = [];
-        $objectValues = $db->query("SELECT * FROM spiceaclobjectsterritoryelementvalues WHERE spiceaclobject_id ='$this->id'");
-        $allorgObject = true;
-        while ($objectValue = $db->fetchByAssoc($objectValues)) {
-            $values = json_decode(html_entity_decode($objectValue['value']));
-            if (array_search('*', $values) === false)
-                $allorgObject = false;
+        $territory = BeanFactory::getBean('SpiceACLTerritories');
+        $this->allorgobjects = 1;
 
-            $objectValuesArray[$objectValue['spiceaclterritoryelement_id']] = $values;
-        }
+        if ($territory instanceof SpiceACLTerritory) {
+            # check if we have a profile that has no specific org objects assigned
+            $objectValuesArray = [];
+            $objectValues = $db->query("SELECT * FROM spiceaclobjectsterritoryelementvalues WHERE spiceaclobject_id ='$this->id'");
 
-        if (!$allorgObject) {
-            $territory = BeanFactory::getBean('SpiceACLTerritories');
-            if ($territory && $territory instanceof SpiceACLTerritory ) {
-                $territory->activateACLObject($this->spiceacltype_module, $this->id, $objectValuesArray);
+            while ($objectValue = $db->fetchByAssoc($objectValues)) {
+
+                $values = json_decode(html_entity_decode($objectValue['value']));
+
+                if (array_search('*', $values) === false) {
+                    $this->allorgobjects = 0;
+                }
+
+                $objectValuesArray[$objectValue['spiceaclterritoryelement_id']] = $values;
             }
 
-            $this->status = 'r';
-            $this->allorgobjects = 0;
-            $this->save();
-        } else {
-            $this->status = 'r';
-            $this->allorgobjects = 1;
-            $this->save();
+            if ($this->allorgobjects == 0) {
+                $territory->activateACLObject($this->spiceacltype_module, $this->id, $objectValuesArray);
+            }
         }
+
+        $this->status = 'r';
+        $this->save();
 
         return ['status' => 'success'];
     }
