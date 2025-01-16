@@ -1,14 +1,11 @@
 /**
  * @module Outlook
  */
-import {
-    Component, inject, OnInit} from '@angular/core';
-
-import {OutlookConfiguration} from '../services/outlookconfiguration.service';
-import {AuthServiceI, TokenObjectI} from "../../../globalcomponents/interfaces/globalcomponents.interfaces";
-import {OAuth2Service} from "../../../services/oauth2.service";
-import {Subscription} from "rxjs";
+import {Component} from '@angular/core';
 import {GlobalLogin} from "../../../globalcomponents/components/globallogin";
+
+declare var msal;
+declare var Office;
 
 /**
  * A component that handles the display of the SpiceCRM login form in the Outlook add-in
@@ -17,75 +14,90 @@ import {GlobalLogin} from "../../../globalcomponents/components/globallogin";
 @Component({
     selector: 'outlook-login-pane',
     templateUrl: '../templates/outlookloginpane.html',
-    providers: [OAuth2Service]
 })
-export class OutlookLoginPane extends GlobalLogin implements OnInit {
+export class OutlookLoginPane extends GlobalLogin {
+    /**
+     * error message on login failure
+     */
+    public error: string;
 
-    private outlookConfiguration: OutlookConfiguration = inject(OutlookConfiguration);
-
-    private oauth2Service: OAuth2Service = inject(OAuth2Service);
-
-    public ngOnInit() {
-        this.initialize();
-    }
-
-    private initialize() {
-
-        if (this.outlookConfiguration.hasSettings()) {
-            this.username = this.outlookConfiguration.username;
-            this.password = this.outlookConfiguration.password;
-            const token = {
-                tokenObject: this.outlookConfiguration.tokenObject,
-                issuer: this.outlookConfiguration.issuer
-            };
-            this.login(token);
-        } else {
-            this.goToSettings();
+    set promptUser(value: boolean) {
+        this._promptUser = value;
+        if (value && !this.loginService.loggedOut && this.configuration.initialized) {
+            this.microsoftOAuthLogin();
         }
     }
 
-    public goToSettings() {
-        this.promptUser = true;
-        // empty credentials saved in office container
-        this.outlookConfiguration.username = '';
-        this.outlookConfiguration.password = '';
-        this.outlookConfiguration.tokenObject = undefined;
-        this.outlookConfiguration.issuer = '';
-        this.outlookConfiguration.saveSettings();
+    /**
+     * handle login after sys info load
+     */
+    public afterSysInfoLoad() {
 
+        super.afterSysInfoLoad();
+
+        if (this._promptUser && !this.loginService.loggedOut) {
+            this.microsoftOAuthLogin();
+        }
+    }
+
+    /**
+     * unsubscribe from subscription
+     */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
     }
 
     /**
      * check for microsoft login service and trigger the login automatically
-     * @param service
      */
-    public checkForMicrosoftLoginService(service: AuthServiceI[]) {
+    public async microsoftOAuthLogin() {
 
-        const microsoftService: AuthServiceI = service.find(s => s.config.userinfo_endpoint.includes('microsoft'));
+        this.loggingIn = true;
 
-        if (!microsoftService) return;
+        const config = this.configuration.getCapabilityConfig('msgraphconfig');
 
-        const url = this.configuration.getBackendUrl() + '/authentication/oauth2/accessToken';
+        if (!config?.isActive) return;
 
-        this.oauth2Service.config = {
-            client_id: microsoftService.config.client_id,
-            scope: microsoftService.config.scope,
-            token_endpoint: microsoftService.config.token_endpoint,
-            userinfo_endpoint: microsoftService.config.userinfo_endpoint,
-            login_url: microsoftService.config.login_url,
-            redirect_uri: microsoftService.config.redirect_uri,
-            client_secret: microsoftService.config.client_secret
+        const msalConfig: any = {
+            auth: {
+                clientId: config.client_id,
+                authority: `https://login.microsoftonline.com/${config.tenant_id}`,
+                redirectUri: config.redirect_url,
+            }
         };
 
-        this.oauth2Service.codeFlowLogin().subscribe(code => {
+        let msalInstance = new msal.PublicClientApplication(msalConfig);
 
-            this.http.post(url, {issuer: microsoftService.issuer, code: code}).subscribe(
-                (data: {tokenObject: TokenObjectI, profile}) => {
+        const loginRequest: any = {scopes: ["user.read", "mail.read"]};
+        const authContext = await Office.auth.getAuthContext();
 
-                    this.login({
-                        issuer: microsoftService.issuer, tokenObject: data.tokenObject
-                    });
-                });
-        })
+        loginRequest.loginHint = authContext?.loginHint;
+
+        let loginResponse = await msalInstance.ssoSilent(loginRequest).catch(() => undefined);
+
+        if (!loginResponse) {
+            loginResponse = await msalInstance.loginPopup(loginRequest).catch(() => {
+                return undefined;
+            });
+        }
+
+        if (!loginResponse?.accessToken) {
+            this.loggingIn = false;
+            this.error = 'failed to login. Check the graph configuration.';
+            return;
+        }
+
+        this.login({
+            issuer: 'Microsoft', tokenObject: {access_token: loginResponse.accessToken}, username: loginResponse.account.username
+        });
+    }
+
+    /**
+     * override check passkey registration to be disabled since login will always be done by outlook
+     * @param event
+     * @param username
+     */
+    public async checkPasskeyRegistration(event?: MouseEvent, username?: string) {
+        return;
     }
 }

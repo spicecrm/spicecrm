@@ -33,7 +33,7 @@
             <tfoot *ngIf="presData.recordtotal">
             <tr class="slds-theme--info">
                 <td scope="row" *ngFor="let field of displayFields; trackBy: trackByFn" class="slds-text-title_bold slds-theme--info">
-                    <reporter-field-container [field]="field" [record]="presData.recordtotal"></reporter-field-container>
+                    <reporter-field-container [field]="field" [record]="presData.recordtotal" class="slds-grid slds-truncate" [ngClass]="fieldsDisplayClasses[field.fieldid]"></reporter-field-container>
                 </td>
             </tr>
             </tfoot>

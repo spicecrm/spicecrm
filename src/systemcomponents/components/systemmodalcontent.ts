@@ -12,6 +12,10 @@ import {Component, Input} from '@angular/core';
     styles: [':host {position:relative}']
 })
 export class SystemModalContent {
+    /**
+     * sets the scrollable on Y and X axis
+     */
+    @Input() public scrollableXY: boolean = false;
 
     /**
      * sets the margin for the content

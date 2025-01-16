@@ -148,7 +148,9 @@ export class PackageLoader {
     public reloadLoadedPackages() {
 
         this.modal.openStaticModal(PackageLoaderReloadLoadedModal).subscribe(ref => {
-            ref.instance.packages = this.packages.filter(p => p.installed && p.type != 'content').map(p => ({...p})).sort((a, b) => a.package == 'core' ? -1 : a.package.localeCompare(b.package));
+            const availableLanguages = this.language.getAvialableLanguages(true);
+            ref.instance.packages = this.packages.filter(p => p.installed && p.type != 'content').map(p => ({...p})).sort((a, b) => a.package != 'core' ? 1 : a.package.localeCompare(b.package));
+            ref.instance.languages = this.languages.filter(lang => availableLanguages.some(availableLang => availableLang.language == lang.language_code)).map(p => ({...p}));
             ref.instance.repositoryAddUrl = this.repositoryaddurl;
         });
     }
