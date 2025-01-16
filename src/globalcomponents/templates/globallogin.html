@@ -60,7 +60,7 @@
                         <button [disabled]="loggingIn" type="submit" value="Submit" class="slds-button slds-button--brand slds-button_stretch" tabindex="0">
                             <system-label label="LBL_LOGIN"/>
                         </button>
-                        <button *ngIf="passkeyEnabled" (click)="checkRegistration($event)" [disabled]="loggingIn" class="slds-m-left--none slds-m-top--x-small slds-button slds-button--neutral slds-button_stretch" tabindex="0">
+                        <button *ngIf="passkeyEnabled" (click)="checkPasskeyRegistration($event, username)" [disabled]="loggingIn" class="slds-m-left--none slds-m-top--x-small slds-button slds-button--neutral slds-button_stretch" tabindex="0">
                             <system-button-icon icon="key" addclasses="slds-button__icon_left"/>
                             <system-label label="LBL_LOGIN_WITH_PASSKEY"/>
                         </button>

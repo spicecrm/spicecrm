@@ -45,6 +45,7 @@ use SpiceCRM\includes\SugarObjects\templates\person\Person;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\SystemTenants\hooks\TenantUserHooks;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 
 // workaround for spiceinstaller
@@ -273,6 +274,28 @@ class User extends Person
 
         $this->savePreferencesToDB();
         return $this->id;
+    }
+
+    /**
+     * built-in after save and delete tenant hooks to adjust the tenant mapping table
+     * @param $event
+     * @param $arguments
+     * @return void
+     * @throws Exception
+     */
+    public function call_custom_logic($event, $arguments = null): void
+    {
+        if ($this->processed) return;
+
+        switch ($event) {
+            case 'after_delete':
+                TenantUserHooks::removeUserFromTenantMappingTable($this);
+                break;
+            case 'after_save':
+                TenantUserHooks::addUserTOTenantMappingTable($this);
+                break;
+        }
+        parent::call_custom_logic($event, $arguments);
     }
 
     function get_summary_text()
@@ -779,6 +802,36 @@ class User extends Person
     public static function isAdmin_byName( $username ) {
         $db = DBManagerFactory::getInstance();
         return (boolean)$db->getOne("SELECT is_admin FROM users WHERE deleted = 0 AND user_name = '".$db->quote( $username )."'" );
+    }
+
+    /**
+     * builds an array with the id of all ids reporting to the user
+     *
+     * @return array
+     */
+    public function getReporteesList(){
+        $reportees = [];
+
+        $this->buildReportees($this->id, $reportees);
+
+        return $reportees;
+    }
+
+    /**
+     * recurisve function to build the reportees per id
+     *
+     * @param $userID
+     * @param $reportees
+     * @return void
+     */
+    private function buildReportees($userID, &$reportees){
+        $reporttoIDs = $this->db->fetchAll("SELECT id FROM users WHERE reports_to_id='{$userID}'");
+        foreach ($reporttoIDs as $reporttoID) {
+            if(!in_array($reporttoID['id'], $reportees) && $reporttoID['id'] != $this->id){
+                $reportees[] = $reporttoID['id'];
+                $this->buildReportees($reporttoID['id'], $reportees);
+            }
+        }
     }
 
 }

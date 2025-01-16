@@ -53,6 +53,7 @@ export interface DictionaryItem {
     required?: number;
     default_value?: string;
     duplicate_merge?: number;
+    is_sensitive?: number;
     description?: string;
     version?: string;
     package?: string;

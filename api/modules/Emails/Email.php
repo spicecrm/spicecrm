@@ -1544,8 +1544,14 @@ class Email extends SpiceBean
 
         file_put_contents($path, $content);
 
+        // get the email addresses
+        if($beanModule && $beanId) {
+            $parentSeed = BeanFactory::getBean($beanModule, $beanId);
+        }
+
+        // convert the message
         $msg = $messageFactory->parseMessage($documentFactory->createFromFile($path));
-        $this->convertMessageToBean($msg);
+        $this->convertMessageToBean($msg, $parentSeed && $parentSeed->email1 ? strtolower($parentSeed->email1) : null);
 
         unlink($path);
 
@@ -1592,18 +1598,25 @@ class Email extends SpiceBean
         }
 
         // get the email addresses
+        if($beanModule && $beanId) {
+            $parentSeed = BeanFactory::getBean($beanModule, $beanId);
+        }
         foreach (mailparse_rfc822_parse_addresses($bodyParts[0]['headers']['from']) as $sender) {
             $this->recipient_addresses[] = [
                 'email_address' => $sender['address'],
                 'address_type' => 'from',
             ];
+
+            $this->type = $parentSeed && $parentSeed->email1 && strtolower($parentSeed->email1) == strtolower($sender['address']) ? SELF::TYPE_INBOUND : SELF::TYPE_OUTBOUND;
         }
+
 
         foreach (mailparse_rfc822_parse_addresses($bodyParts[0]['headers']['to']) as $recipient) {
             $this->recipient_addresses[] = [
                 'email_address' => $recipient['address'],
                 'address_type' => 'to',
             ];
+
         }
 
         // get the main parts for the email
@@ -1619,7 +1632,7 @@ class Email extends SpiceBean
         $this->date_sent = $date->format(TimeDate::DB_DATETIME_FORMAT);
 
         // set some constants
-        $this->type = self::TYPE_INBOUND;
+        if(!$this->type) $this->type = self::TYPE_INBOUND;
         $this->status = self::STATUS_UNREAD;
         $this->openness = self::OPENNESS_OPEN;
 
@@ -1673,6 +1686,8 @@ class Email extends SpiceBean
         // set the parent
         $this->parent_id = $beanId;
         $this->parent_type = $beanModule;
+
+
     }
 
     private function getHTMLOnly($string)
@@ -1693,7 +1708,7 @@ class Email extends SpiceBean
      * @return SpiceBean
      * @throws Exception
      */
-    private function convertMessageToBean(Swiftmailer\Message $message)
+    private function convertMessageToBean(Swiftmailer\Message $message, $beanEmailAddress = null)
     {
 
         // process the message
@@ -1721,8 +1736,17 @@ class Email extends SpiceBean
                 'email_address' => $recipient->getEmail(),
                 'address_type' => strtolower($recipient->getType()),
             ];
+
+            // check if we can determine inbound or outbound
+            if(!$this->type && $beanEmailAddress && strtolower($recipient->getType()) == 'from'){
+                if(strtolower($recipient->getEmail()) == $beanEmailAddress)
+                    $this->type = strtolower($recipient->getEmail()) == $beanEmailAddress ? self::TYPE_INBOUND : self::TYPE_OUTBOUND;
+            }
         }
-        $this->type = self::TYPE_INBOUND;
+
+        // if not set inbound as default
+        if(!$this->type) $this->type = self::TYPE_INBOUND;
+
         $this->status = self::STATUS_UNREAD;
         $this->openness = self::OPENNESS_OPEN;
         $this->to_be_sent = false;
@@ -1730,20 +1754,21 @@ class Email extends SpiceBean
         // todo deal with attachments lol
         foreach ($message->getAttachments() as $attachment) {
 
-            # if the attachment is a message, the content needs to be converted to a string
-            if ($attachment->getMimeType() == 'message/rfc822') {
+            $attachmentData = $attachment->getData();
+
+            # if the attachment is not string, the content needs to be converted to a string
+            if (!is_string($attachmentData) && $attachment->getMimeType() != 'application/octet-stream' && is_callable([$attachment, 'copyToStream'])) {
                 $stream = tmpfile();
                 $attachment->copyToStream($stream);
                 $attachmentData = file_get_contents(stream_get_meta_data($stream)['uri']);
                 fclose($stream);
-            } else {
-                $attachmentData = $attachment->getData();
             }
 
-            if(!$attachmentData){
+            if(!is_string($attachmentData) || empty($attachmentData)){
                 LoggerManager::getLogger()->fatal('emailattachment', 'Could not getData() of attachment '.$attachment->getFilename().' for email '.$this->id.'. Getting attachment skipped.');
                 continue;
             }
+
             $fileArray = [
                 'filename' => $attachment->getFilename(),
                 'file' => base64_encode($attachmentData),
@@ -1765,7 +1790,7 @@ class Email extends SpiceBean
         $selector = new DOMXPath($doc);
 
         // query all inline images. some images include charset utf-8 in the src
-        return $selector->query("//img[contains(@src, 'data:image/png;base64,') or contains(@src, 'data:image/png;charset=utf-8;base64,')]");
+        return $selector->query("//img[contains(@src, 'data:image/')]");
     }
 
     public function addDocumentAttachment($doc): void

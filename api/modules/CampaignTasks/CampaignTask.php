@@ -112,11 +112,11 @@ class CampaignTask extends SpiceBean
 
         foreach ($chunks as $chunkTargets) {
 
-            $query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id $addQueryCols) VALUES ";
+            $query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, email_addr_bean_rel_id, activity_type, deleted, date_modified, assigned_user_id $addQueryCols) VALUES ";
 
             foreach ($chunkTargets as $target) {
 
-                $query .= "($guidSQL, $currentDate, '$this->campaign_id', '$this->id', $guidSQL, '{$target['prospect_list_id']}', '{$target['related_id']}', '{$target['related_type']}', '$status', 0, $currentDate, '$this->assigned_user_id' $addQueryValues),";
+                $query .= "($guidSQL, $currentDate, '$this->campaign_id', '$this->id', $guidSQL, '{$target['prospect_list_id']}', '{$target['related_id']}', '{$target['related_type']}','{$target['email_addr_bean_rel_id']}', '$status', 0, $currentDate, '$this->assigned_user_id' $addQueryValues),";
             }
 
             # remove the last comma from the query
@@ -450,15 +450,15 @@ class CampaignTask extends SpiceBean
 
         [$sentCount, $testCount] = 0;
 
-        $res = $this->db->query("SELECT plp.related_id, plp.related_type FROM prospect_list_campaigntasks plc INNER JOIN prospect_lists pl ON pl.list_type = 'test' AND plc.campaigntask_id = '{$this->id}' AND plc.prospect_list_id = pl.id INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = pl.id WHERE plc.deleted = 0 AND pl.deleted = 0 AND plp.deleted = 0");
+        $res = $this->db->query("SELECT plp.related_id, plp.related_type, plp.email_addr_bean_rel_id, pl.id FROM prospect_list_campaigntasks plc INNER JOIN prospect_lists pl ON pl.list_type = 'test' AND plc.campaigntask_id = '{$this->id}' AND plc.prospect_list_id = pl.id INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = pl.id WHERE plc.deleted = 0 AND pl.deleted = 0 AND plp.deleted = 0");
 
         while ($row = $this->db->fetchByAssoc($res)) {
 
             $bean = BeanFactory::getBean($row['related_type'], $row['related_id']);
+            $emailAddress = $this->getEmailAddress($row['id'], $bean, $row['email_addr_bean_rel_id']);
+            if (!$bean || !$emailAddress) continue;
 
-            if (!$bean || !$bean->hasEmails()) continue;
-
-            $email = $this->sendEmail($bean, $bean->email1, false, true);
+            $email = $this->sendEmail($bean, $emailAddress->email_address, true, true);
             $testCount++;
             if ($email->status == 'sent') $sentCount++;
         }
@@ -485,7 +485,7 @@ class CampaignTask extends SpiceBean
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         // get the queued emails
-        $queuedEmails = $this->db->limitQuery("SELECT campaign_log.id, target_type, target_id, campaigntask_id, list_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = '$campaignTaskType' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC", 0, 50);
+        $queuedEmails = $this->db->limitQuery("SELECT campaign_log.id, target_type, target_id, campaigntask_id, list_id, email_addr_bean_rel_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = '$campaignTaskType' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC", 0, 50);
 
         while($queuedEmail = $this->db->fetchByAssoc($queuedEmails)){
             /// load the campaign task if we have a new one
@@ -504,7 +504,7 @@ class CampaignTask extends SpiceBean
             /** @var Person $seed */
             $seed = BeanFactory::getBean($queuedEmail['target_type'], $queuedEmail['target_id']);
 
-            $emailAddress = $this->getEmailAddress($queuedEmail['list_id'], $seed);
+            $emailAddress = $this->getEmailAddress($queuedEmail['list_id'], $seed, $queuedEmail['email_addr_bean_rel_id']);
             $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
             $campaignLog->activity_type = "error";
 
@@ -554,10 +554,10 @@ class CampaignTask extends SpiceBean
         return true;
     }
 
-    public function getEmailAddress(string $listId, SpiceBean $person): ?EmailAddress
+    public function getEmailAddress(string $listId, SpiceBean $person, $emailAddrBeanRelId): ?EmailAddress
     {
         $db = DBManagerFactory::getInstance();
-        $emailAddrBeanRelId = $db->getOne("SELECT email_addr_bean_rel_id from prospect_lists_prospects WHERE prospect_list_id = '$listId' AND related_id ='$person->id' AND deleted = 0");
+//        $emailAddrBeanRelId = $db->getOne("SELECT email_addr_bean_rel_id from prospect_lists_prospects WHERE prospect_list_id = '$listId' AND related_id ='$person->id' AND deleted = 0");
 
         // fallback
         if(empty($emailAddrBeanRelId)) {
@@ -851,7 +851,7 @@ class CampaignTask extends SpiceBean
     {
         $exclusionListIds = self::getListIdsByType($this->id, 'exclude');
 
-        $query = 'SELECT ' . ($countOnly ? 'COUNT(distinct plp.related_id) ' : "plp.related_id, plp.related_type, plp.prospect_list_id ");
+        $query = 'SELECT ' . ($countOnly ? 'COUNT(distinct plp.related_id) ' : "plp.related_id, plp.related_type, plp.prospect_list_id, plp.email_addr_bean_rel_id ");
         $query .= "FROM prospect_lists pl INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = pl.id ";
         $query .= "INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = pl.id ";
         $query .= "WHERE plc.campaigntask_id='$this->id' AND pl.deleted=0 AND plc.deleted=0 AND plp.deleted=0 ";
