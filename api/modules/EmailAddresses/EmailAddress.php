@@ -83,6 +83,11 @@ class EmailAddress extends SpiceBean
      */
     public $email_address_caps;
 
+    function get_summary_text()
+    {
+        return $this->email_address;
+    }
+
     /**
      * clean the email address before save
      * @param false $check_notify

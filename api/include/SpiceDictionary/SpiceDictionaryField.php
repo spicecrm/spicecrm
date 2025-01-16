@@ -62,6 +62,7 @@ class SpiceDictionaryField
             if(!empty($dictionaryItem->itemDefinition->default_value) || $dictionaryItem->itemDefinition->default_value == 0) $definition->default = $dictionaryItem->itemDefinition->default_value;
             if($dictionaryItem->itemDefinition->descriptions) $definition->descriptions = $dictionaryItem->itemDefinition->descriptions;
             if($dictionaryItem->itemDefinition->label) $definition->vname = $dictionaryItem->itemDefinition->label;
+            if($dictionaryItem->itemDefinition->is_sensitive) $definition->sensitive = 1;
 
             // write to the cached fields
             $sysDictionaryField = [

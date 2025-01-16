@@ -101,7 +101,7 @@ class SpiceACLObject extends SpiceBean
         // check for territory values
         $this->territoryelementvalues = [];
         $territory = BeanFactory::getBean('SpiceACLTerritories');
-        if ($territory) {
+        if ($territory instanceof SpiceACLTerritory) {
             $territoryelementvalues = $this->db->query("SELECT * FROM spiceaclobjectsterritoryelementvalues WHERE spiceaclobject_id='$this->id'");
             while ($territoryelementvalue = $this->db->fetchByAssoc($territoryelementvalues)) {
                 $this->territoryelementvalues[] = $territoryelementvalue;
@@ -207,13 +207,13 @@ class SpiceACLObject extends SpiceBean
 
             // legacy coreModuleUserQuery
             // caution: before removing legacy, consider that the query goes on spiceaclprofiles_users.user_id='*'
-            $aclUnionQueries[] = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
+            $aclUnionQueries[] = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclreportees, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
 				INNER JOIN spiceaclprofiles_spiceaclobjects spso ON spso.spiceaclobject_id = so.id AND spso.deleted = 0
 				INNER JOIN spiceaclprofiles sp ON sp.id = spso.spiceaclprofile_id
 				INNER JOIN spiceaclprofiles_users spu ON sp.id = spu.spiceaclprofile_id AND spu.deleted = 0
 				INNER JOIN sysmodules st ON st.id = so.sysmodule_id
 				WHERE so.status='r' AND sp.status='r' and (spu.user_id in ($userIDs) or spu.user_id='*')";
-            $aclUnionQueries[] = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
+            $aclUnionQueries[] = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclreportees, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
 				INNER JOIN spiceaclprofiles_spiceaclobjects spso ON spso.spiceaclobject_id = so.id AND spso.deleted = 0
 				INNER JOIN spiceaclprofiles sp ON sp.id = spso.spiceaclprofile_id
 				INNER JOIN spiceaclprofiles_users spu ON sp.id = spu.spiceaclprofile_id AND spu.deleted = 0
@@ -230,7 +230,7 @@ class SpiceACLObject extends SpiceBean
                         $joinParentIdColName = $parent->orgunits->relationship->def['join_key_lhs'];
                     }
 
-                    $aclUnionQueries[] = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
+                    $aclUnionQueries[] = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclreportees, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
                     INNER JOIN spiceaclprofiles_spiceaclobjects spso ON spso.spiceaclobject_id = so.id AND spso.deleted = 0
                     INNER JOIN spiceaclprofiles sp ON sp.id = spso.spiceaclprofile_id
                     INNER JOIN spiceaclprofiles_orgunits spo ON spo.spiceaclprofile_id = sp.id AND spo.deleted=0
@@ -250,14 +250,14 @@ class SpiceACLObject extends SpiceBean
                 $orgunitIds = array_unique($orgunitIds);
                 $orgunitIds = "'" . join("','", $orgunitIds) . "'";
 
-                $aclUnionQueries[] = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
+                $aclUnionQueries[] = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclreportees, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
 				INNER JOIN spiceaclprofiles_spiceaclobjects spso ON spso.spiceaclobject_id = so.id AND spso.deleted = 0
 				INNER JOIN spiceaclprofiles sp ON sp.id = spso.spiceaclprofile_id
 				INNER JOIN spiceaclprofiles_orgunits spo ON sp.id = spo.spiceaclprofile_id AND spo.deleted = 0
 				INNER JOIN sysmodules st ON st.id = so.sysmodule_id
 				WHERE so.status='r' AND sp.status='r' and spo.orgunit_id in ($orgunitIds)";
 
-                $aclUnionQueries[] = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
+                $aclUnionQueries[] = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclreportees, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
 				INNER JOIN spiceaclprofiles_spiceaclobjects spso ON spso.spiceaclobject_id = so.id AND spso.deleted = 0
 				INNER JOIN spiceaclprofiles sp ON sp.id = spso.spiceaclprofile_id
 				INNER JOIN spiceaclprofiles_orgunits spo ON sp.id = spo.spiceaclprofile_id AND spo.deleted = 0
@@ -275,7 +275,7 @@ class SpiceACLObject extends SpiceBean
                 $this->authObjects[$aclobject['id']] = $aclobject;
 
                 // read the org values - check on method_exists because of SpiceCRM core edition
-                if ($territory && method_exists($territory, 'getAclObjectTerritoryValues')) {
+                if ($territory && $territory instanceof SpiceACLTerritory && method_exists($territory, 'getAclObjectTerritoryValues')) {
                     $this->authObjects[$aclobject['id']]['objectterritoryvalues'] = $territory->getAclObjectTerritoryValues($aclobject['id']);
                 }
 
@@ -354,14 +354,15 @@ class SpiceACLObject extends SpiceBean
         // check assigned user OR creator OR in orgunit
         $ownercheck = false;
         if($objectData['spiceaclowner']) $ownercheck = SpiceACLUsers::checkCurrentUserIsOwner($bean);
-        if($objectData['spiceaclcreator']) $ownercheck = SpiceACLUsers::checkCurrentUserIsCreator($bean);
-        if($objectData['spiceaclorgunit']) $ownercheck = SpiceACLUsers::checkCurrentUserIsInOrgUnit($bean);
+        if($objectData['spiceaclreportees'] && !$ownercheck) $ownercheck = SpiceACLUsers::checkCurrentUserIsManager($bean);
+        if($objectData['spiceaclcreator'] && !$ownercheck) $ownercheck = SpiceACLUsers::checkCurrentUserIsCreator($bean);
+        if($objectData['spiceaclorgunit'] && !$ownercheck) $ownercheck = SpiceACLUsers::checkCurrentUserIsInOrgUnit($bean);
         if(($objectData['spiceaclowner'] || $objectData['spiceaclcreator'] || $objectData['spiceaclorgunit']) && !$ownercheck) {
             return false;
         }
 
         // check that the territory matches
-        if ($territory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id'])) {
+        if ($territory && $territory instanceof SpiceACLTerritory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id'])) {
             return false;
         }
 
@@ -390,15 +391,16 @@ class SpiceACLObject extends SpiceBean
         // check assigned user or creator or orgunit
         $ownercheck = false;
         if($objectData['spiceaclowner']) $ownercheck = SpiceACLUsers::checkCurrentUserIsOwner($bean);
-        if($objectData['spiceaclcreator']) $ownercheck = SpiceACLUsers::checkCurrentUserIsCreator($bean);
-        if($objectData['spiceaclorgunit']) $ownercheck = SpiceACLUsers::checkCurrentUserIsInOrgUnit($bean);
-        if(($objectData['spiceaclowner'] || $objectData['spiceaclcreator'] || $objectData['spiceaclorgunit']) && !$ownercheck) {
+        if($objectData['spiceaclreportees'] && !$ownercheck) $ownercheck = SpiceACLUsers::checkCurrentUserIsManager($bean);
+        if($objectData['spiceaclcreator'] && !$ownercheck) $ownercheck = SpiceACLUsers::checkCurrentUserIsCreator($bean);
+        if($objectData['spiceaclorgunit'] && !$ownercheck) $ownercheck = SpiceACLUsers::checkCurrentUserIsInOrgUnit($bean);
+        if(($objectData['spiceaclowner'] || $objectData['spiceaclreportees'] || $objectData['spiceaclcreator'] || $objectData['spiceaclorgunit']) && !$ownercheck) {
             return false;
         }
 
 
         // check that the territory matches
-        if ($territory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id'])) {
+        if ($territory && $territory instanceof SpiceACLTerritory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id'])) {
             return false;
         }
 
@@ -428,6 +430,7 @@ class SpiceACLObject extends SpiceBean
         if ($this->spiceaclowner || $this->spiceaclcreator) {
             // check absence substitutes
             $substituteIds = $absences->getSubstituteIDs();
+
             $userIds = array_merge([$current_user->id], $substituteIds);
 
             // matches for the owner or coOwner
@@ -451,6 +454,22 @@ class SpiceACLObject extends SpiceBean
                     ]
                 ];
             }
+        }
+
+        // matches for the reportees
+        if ($this->spiceaclreportees) {
+            $reporteeIDs = $current_user->getReporteesList();
+
+            $ownermatches[] = [
+                'terms' => [
+                    'assigned_user_id' => $reporteeIDs
+                ]
+            ];
+            $ownermatches[] = [
+                'terms' => [
+                    'assigned_user_ids' => $reporteeIDs
+                ]
+            ];
         }
 
         // get the orgunits of the user and all he is substituting for
@@ -594,7 +613,7 @@ class SpiceACLObject extends SpiceBean
         // territories
         if (!$this->allorgobjects) {
             $territory = BeanFactory::getBean('SpiceACLTerritories');
-            if ($territory) {
+            if ($territory && $territory instanceof SpiceACLTerritory && $territory instanceof('SpiceACLTerritory')) {
                 $hashes = $territory->getTerritoryHashesForObject($this->id, $this->sysmodule_id);
                 if ($hashes !== false) {
                     if (count($hashes) > 0) {
@@ -639,7 +658,8 @@ class SpiceACLObject extends SpiceBean
         $ownerWhereClauses = [];
         if($this->spiceaclowner) $ownerWhereClauses[] = '(' . SpiceACLUsers::generateCurrentUserWhereClause($table_name, $bean) . ')';
         if($this->spiceaclcreator) $ownerWhereClauses[] = '(' . SpiceACLUsers::generateCreatedByWhereClause($table_name, $bean) . ')';
-        if($this->spiceaclcreator){
+        if($this->spiceaclreportees) $ownerWhereClauses[] = '(' . SpiceACLUsers::generateReporteesWhereClause($table_name, $bean) . ')';
+        if($this->spiceaclorgunit){
             $w = SpiceACLUsers::generateOrgUnitWhereClause($table_name, $bean);
             if($w !== false) $ownerWhereClauses[] = "($w)";
         }
@@ -712,7 +732,7 @@ class SpiceACLObject extends SpiceBean
 
         // territories
         $territory = BeanFactory::getBean('SpiceACLTerritories');
-        if ($territory && $this->allorgobjects != 1) {
+        if ($territory && $territory instanceof SpiceACLTerritory && $this->allorgobjects != 1) {
             $hashes = $territory->getTerritoryHashesForObject($this->id, $this->sysmodule_id);
             if ($hashes !== false) {
                 if (count($hashes) > 0) {
@@ -847,32 +867,32 @@ class SpiceACLObject extends SpiceBean
     {
         $db = DBManagerFactory::getInstance();
 
-        // check if we have a profile that has no specific org objects assigned
-        $objectValuesArray = [];
-        $objectValues = $db->query("SELECT * FROM spiceaclobjectsterritoryelementvalues WHERE spiceaclobject_id ='$this->id'");
-        $allorgObject = true;
-        while ($objectValue = $db->fetchByAssoc($objectValues)) {
-            $values = json_decode(html_entity_decode($objectValue['value']));
-            if (array_search('*', $values) === false)
-                $allorgObject = false;
+        $territory = BeanFactory::getBean('SpiceACLTerritories');
+        $this->allorgobjects = 1;
 
-            $objectValuesArray[$objectValue['spiceaclterritoryelement_id']] = $values;
-        }
+        if ($territory instanceof SpiceACLTerritory) {
+            # check if we have a profile that has no specific org objects assigned
+            $objectValuesArray = [];
+            $objectValues = $db->query("SELECT * FROM spiceaclobjectsterritoryelementvalues WHERE spiceaclobject_id ='$this->id'");
 
-        if (!$allorgObject) {
-            $territory = BeanFactory::getBean('SpiceACLTerritories');
-            if ($territory ) {
-                $territory->activateACLObject($this->spiceacltype_module, $this->id, $objectValuesArray);
+            while ($objectValue = $db->fetchByAssoc($objectValues)) {
+
+                $values = json_decode(html_entity_decode($objectValue['value']));
+
+                if (array_search('*', $values) === false) {
+                    $this->allorgobjects = 0;
+                }
+
+                $objectValuesArray[$objectValue['spiceaclterritoryelement_id']] = $values;
             }
 
-            $this->status = 'r';
-            $this->allorgobjects = 0;
-            $this->save();
-        } else {
-            $this->status = 'r';
-            $this->allorgobjects = 1;
-            $this->save();
+            if ($this->allorgobjects == 0) {
+                $territory->activateACLObject($this->spiceacltype_module, $this->id, $objectValuesArray);
+            }
         }
+
+        $this->status = 'r';
+        $this->save();
 
         return ['status' => 'success'];
     }
@@ -885,7 +905,7 @@ class SpiceACLObject extends SpiceBean
     public function deactivate()
     {
         $territory = BeanFactory::getBean('SpiceACLTerritories');
-        if ($territory) {
+        if ($territory && $territory instanceof SpiceACLTerritory ) {
             $territory->deactivateACLObject($this->id);
         }
 

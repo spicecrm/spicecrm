@@ -89,6 +89,8 @@ import {AdministrationGDPRRetentionManager} from "./components/administrationgdp
 import {AdministrationAssetManager} from "./components/administrationassetmanager";
 import {AdministrationMigrateLegacyDoms} from "./components/administrationmigratelegacydoms";
 import {WorkbenchModule} from "../workbench/workbench.module";
+import {AdministrationBackupManager} from "./components/administrationbackupmanager";
+import {AdministrationBackupManagerPreviewModal} from "./components/administrationbackupmanagerpreviewmodal";
 
 
 
@@ -171,6 +173,8 @@ import {WorkbenchModule} from "../workbench/workbench.module";
         AdministrationLoginManagement,
         AdministrationAssetManager,
         AdministrationLoginMethods,
+        AdministrationBackupManager,
+        AdministrationBackupManagerPreviewModal
 
     ]
 

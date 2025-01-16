@@ -28,6 +28,7 @@ export class OrgunitsChartViewBoxAdd {
                     next: (selection) => {
                         switch(selection){
                             case 'addorgunit':
+                            case 'addstaffunit':
                                 this.model.module = 'OrgUnits';
                                 this.model.initialize();
                                 this.model.addModel(null, this.parent, {
@@ -35,6 +36,7 @@ export class OrgunitsChartViewBoxAdd {
                                     parent_name: this.parent.getField('name'),
                                     orgchart_id: this.oview.orgChart.id,
                                     orgchart_name: this.oview.orgChart.getField('name'),
+                                    is_staff_unit: selection == 'addstaffunit'
                                 }).subscribe({
                                     next: (data) => {
                                         this.oview.orgunits.push(data);

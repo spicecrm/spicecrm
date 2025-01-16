@@ -2,6 +2,7 @@
 
 namespace SpiceCRM\includes\SpiceUI;
 
+use DateTime;
 use DirectoryIterator;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
@@ -145,7 +146,7 @@ class SpiceUIConfHandler
         $db = DBManagerFactory::getInstance();
         $rows = [];
 
-        $where = empty($packages) ? '' : "where package in ('" . implode("','", explode(',', $packages)) . "')";
+        $where = empty($packages) ? "where package != 'system'" : "where package in ('" . implode("','", explode(',', $packages)) . "')";
 
         $result = $db->query(sprintf("SELECT * FROM %s $where", $db->quote($tablename)), false, '', true);
         while ($row = $db->fetchByAssoc($result)) $rows[] = $row;
@@ -231,5 +232,25 @@ class SpiceUIConfHandler
                 }
             }
         }
+    }
+
+    /**
+     * retrieves all backup files currently present in the /backups folder
+     * @return array
+     */
+    public function getBackupFiles(): array
+    {
+        $files = [];
+        $dir = new DirectoryIterator(self::$backupFolder);
+
+        foreach ($dir as $file) {
+            if ($file->isFile()) {
+                preg_match('/\b\d{8}\b/', $file->getFileName(), $matches);
+                $date = DateTime::createFromFormat('Ymd', $matches[0]);
+                $files[] = ['fileCreated' => $date->format('Y-m-d'), 'pathName' => $file->getPathname()];
+            }
+        }
+
+        return $files;
     }
 }

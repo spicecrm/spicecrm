@@ -10,7 +10,7 @@ use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
+use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfHandler;
 use SpiceCRM\includes\TimeDate;
@@ -40,6 +40,9 @@ class ConfigTransferController
     public function exportFromTables(Request $req, Response $res, array $args): Response
     {
         $postBody = $req->getParsedBody();
+
+        // set a higher memory limit
+        ini_set('memory_limit', '1024M');
 
         if (!AuthenticationController::getInstance()->getCurrentUser()->is_admin) {
             throw new ForbiddenException('Forbidden to transfer configuration data for non-admins.');
@@ -329,6 +332,9 @@ class ConfigTransferController
     {
         set_time_limit(500);
 
+        // set a higher memory limit
+        ini_set('memory_limit', '1024M');
+
         $db = DBManagerFactory::getInstance();
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
         $nowDb = TimeDate::getInstance()->nowDb();
@@ -398,5 +404,45 @@ class ConfigTransferController
             'backupPeriod' => SpiceUIConfHandler::$daysToKeepBackups,
             'unknownTables' => array_keys($unknownTables)
         ]);
+    }
+
+    /**
+     * retrieves all backup files
+     */
+    public function getBackupFiles (Request $req, Response $res, $args): Response
+    {
+        $confLoader = new SpiceUIConfHandler();
+        return $res->withJson($confLoader->getBackupFiles());
+    }
+
+    /**
+     * displays the selected backup file
+     */
+    public function backupFileManage (Request $req, Response $res, $args): Response
+    {
+        $body = $req->getParsedBody();
+
+        if($body['action'] == 'preview') {
+            return $res->withJson(['fileContent' => file_get_contents($body['filePath'])]);
+        } else {
+            $res->getBody()->write(file_get_contents($body['filePath']));
+            return $res->withHeader('Content-Type', 'application/sql');
+        }
+    }
+
+    /**
+     * deletes the selected backup file
+     * @throws Exception
+     */
+    public function deleteBackupFile(Request $req, Response $res, $args): Response
+    {
+        $params = $req->getQueryParams();
+
+        if(file_exists($params['filePath'])) {
+            unlink($params['filePath']);
+        } else {
+            throw new Exception('Backup file not existing');
+        }
+        return $res->withJson(['success' => true]);
     }
 }
