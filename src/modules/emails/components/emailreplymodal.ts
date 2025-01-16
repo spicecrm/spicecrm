@@ -10,6 +10,7 @@ import {modal} from '../../../services/modal.service';
 import {userpreferences} from '../../../services/userpreferences.service';
 import {session} from "../../../services/session.service";
 import {dockedComposer} from "../../../services/dockedcomposer.service";
+import {emailsService} from "../services/emails.service";
 
 declare var moment: any;
 
@@ -64,6 +65,7 @@ export class EmailReplyModal implements OnInit {
                 public session: session,
                 public userpreferences: userpreferences,
                 public dockedcomposer: dockedComposer,
+                public emailsService: emailsService
     ) {
 
         // initialize the model and the view
@@ -103,59 +105,15 @@ export class EmailReplyModal implements OnInit {
         }
 
         // set the email-history into the body
+        let emailTexts = this.emailsService.composeReplyContent(this.parent);
         this.model.setFields({
             recipient_addresses: recipient_addresses,
             reference_id: this.parent.id,
-            name: this.language.getLabel('LBL_RE') + this.parent.getField('name'),
-            body: '<br><br><br>' + this.buildHistoryText()
+            name: emailTexts.name,
+            body: emailTexts.body
         });
     }
 
-
-    /**
-     * generate the email-history-text and return it
-     */
-    public buildHistoryText() {
-
-        let datetime = new moment.utc(this.parent.getField('date_sent')).tz(this.session.getSessionData('timezone') || moment.tz.guess(true));
-        let hdate = datetime ? datetime.format(this.userpreferences.getDateFormat()) : "";
-        let htime = datetime ? datetime.format(this.userpreferences.getTimeFormat()) : "";
-
-        let historytext = "";
-        historytext += "<br><br>";
-        historytext += "<div data-spice-reply-quote='' class='spicecrm_reply_quote'>";
-        historytext += "<div dir='ltr' class='crm_attr'>";
-        historytext += "<b>" + this.language.getLabel('LBL_FROM') + ":</b> <a href='mailto:" + this.parent.getField('from_addr') + "'>" + this.parent.getField('from_addr') + "</a>";
-        historytext += "<br>";
-        historytext += "<b>" + this.language.getLabel('LBL_DATE_SENT') + ":</b> " + hdate + " " + htime;
-        historytext += "<br>";
-        historytext += "<b>" + this.language.getLabel('LBL_TO') + ":</b> " + this.parent.getField('to_addrs');
-        historytext += "<br>";
-        historytext += "<b>" + this.language.getLabel('LBL_SUBJECT') + ":</b> " + this.parent.getField('name');
-        historytext += "<br><br>";
-        historytext += "</div>";
-
-        historytext += '<blockquote class="crm_quote" style="margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">';
-
-        const body: string = this.parent.getField('body').replace('data-signature=""', '').replace('data-spice-temp-quote=""', '');
-
-        if (body.startsWith('<html>')) {
-            const containerDiv = document.createElement('html');
-            containerDiv.innerHTML = body;
-            const bodyTag = containerDiv.getElementsByTagName('body')[0];
-            historytext += bodyTag ? bodyTag.innerHTML : body;
-            containerDiv.remove();
-
-        } else {
-            historytext += body;
-        }
-
-        historytext += '</blockquote>';
-
-        historytext += '</div>';
-
-        return historytext;
-    }
 
     /**
      * check if the send button is disabled
