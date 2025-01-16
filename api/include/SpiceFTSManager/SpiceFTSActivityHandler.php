@@ -84,7 +84,7 @@ class SpiceFTSActivityHandler
 
             // check acl access for the user as well as if a filter object is set
             //if(!SpiceACL::getInstance()->checkACLAccess($module, 'list') || ($objects && count($objects) > 0 && array_search_insensitive($module, $objects) === false)){
-            if (!SpiceACL::getInstance()->checkAccess($module, 'list') || !$elastichandler->checkIndex($module)) {
+            if ((!SpiceACL::getInstance()->checkAccess($module, 'list') && !SpiceACL::getInstance()->checkAccess($module, 'listrelated')) || !$elastichandler->checkIndex($module)) {
                 continue;
             }
 
