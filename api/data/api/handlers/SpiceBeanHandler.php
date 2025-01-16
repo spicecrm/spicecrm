@@ -155,12 +155,12 @@ class SpiceBeanHandler
 
         $searchParams['start'] = $searchParams['offset']; // Temporary workaround because GET parameter "start" AND "offset" is used.
 
-        // check if we have an ft config
-
+        // determine the path for the list creation
         if (@$searchParams['source'] !== 'db'
             and SpiceFTSHandler::getInstance()->checkModule($beanModule, true)
             and SpiceFTSHandler::getInstance()->checkFilterDefs($beanModule, json_decode(html_entity_decode($listDef['filterdefs'])))
             and SpiceFTSHandler::getInstance()->checkFilterDefs($beanModule, json_decode(html_entity_decode($searchParams['filter'])))
+            and SpiceFTSHandler::getInstance()->checkFilterID($beanModule, $searchParams['modulefilter'])
         ) {
             //  $results = SpiceFTSHandler::getInstance()->getGlobalSearchResults([$beanModule], $searchParams['searchterm'])
             $searchParams['records'] = $searchParams['limit'];
