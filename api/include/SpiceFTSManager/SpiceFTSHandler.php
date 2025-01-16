@@ -345,6 +345,29 @@ class SpiceFTSHandler
         return true;
     }
 
+    /*
+    * static function to check if a module has a FTE definition
+    */
+    public function checkFilterID($module, $filterId)
+    {
+        // check that a filter def has been passed in
+        if (!$filterId) return true;
+
+        $sysFilter = new SysModuleFilters();
+        $sysFilter->filtermodule = $module;
+        $fields = $sysFilter->getFilterFields($filterId);
+
+        $beanHandler = new SpiceFTSBeanHandler($module);
+        $indexedFields = $beanHandler->mapModule();
+
+        foreach ($fields as $field) {
+            // check that we have the field and also a raw value - otherwise the search will not return proper results
+            if (!(isset($indexedFields[$field]) && isset($indexedFields[$field]['fields']['raw']))) return false;
+        }
+
+        return true;
+    }
+
     /**
      * resets all date_indexe fields on a module
      *
