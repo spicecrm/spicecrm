@@ -1100,7 +1100,8 @@ class SpiceBean
             return $records;
         }
 
-        $query = "SELECT {$this->get_audit_table_name()}.*, users.user_name FROM {$this->get_audit_table_name()}, users WHERE users.id = {$this->get_audit_table_name()}.created_by AND parent_id = '$this->id' AND date_created > '$date'";
+        $auditTablename = $this->get_audit_table_name();
+        $query = "SELECT {$auditTablename}.*, users.user_name FROM {$auditTablename}, users WHERE users.id = {$auditTablename}.created_by AND {$auditTablename}.parent_id = '$this->id' AND {$auditTablename}.date_created > '$date'";
         if (count($fields) > 0) {
             $query .= " AND field_name in ('" . implode("','", $fields) . "')";
         }

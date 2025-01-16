@@ -337,7 +337,7 @@ class MysqliManager extends DBManager
      */
     public function getRowCount($result)
     {
-        return mysqli_num_rows($result);
+        return $result ? mysqli_num_rows($result) : 0;
     }
 
 
