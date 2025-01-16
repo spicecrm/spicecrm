@@ -43,7 +43,7 @@ import {EmailCloneAttachmentsModal} from "./components/emailcloneattachmentsmoda
 import {ModuleSpiceAttachments} from "../../include/spiceattachments/spiceattachments";
 import {fieldZipCompress} from "./fields/fieldzipcompress";
 import {fieldReadReceipt} from "./fields/fieldreadreceipt";
-import {EmailReplyToTargetListButton} from "./components/emailreplytotargetlistbutton";
+import {EmailForwardToTargetListButton} from "./components/emailforwardtotargetlistbutton";
 
 @NgModule({
     imports: [
@@ -65,7 +65,7 @@ import {EmailReplyToTargetListButton} from "./components/emailreplytotargetlistb
         EmailsPopoverBody,
         fieldEmailStatus,
         EmailReplyButton,
-        EmailReplyToTargetListButton,
+        EmailForwardToTargetListButton,
         EmailReplyModal,
         EmailSendButton,
         EmailForwardButton,

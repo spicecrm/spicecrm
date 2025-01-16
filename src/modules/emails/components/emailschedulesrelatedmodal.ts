@@ -10,11 +10,12 @@ import {backend} from "../../../services/backend.service";
 import {metadata} from "../../../services/metadata.service";
 import {toast} from "../../../services/toast.service";
 import {emailsService} from "../services/emails.service";
+import {modelattachments} from "../../../services/modelattachments.service";
 
 @Component({
     selector: "email-schedules-related-modal",
     templateUrl: "../templates/emailschedulesrelatedmodal.html",
-    providers: [model, view],
+    providers: [model, view, modelattachments, emailsService]
 })
 export class EmailSchedulesRelatedModal {
     /**
@@ -56,6 +57,7 @@ export class EmailSchedulesRelatedModal {
                 public metadata: metadata,
                 public backend: backend,
                 public emailsService: emailsService,
+                public modelattachments: modelattachments,
                 public toast: toast) {
 
         this.view.isEditable = true;
@@ -85,9 +87,15 @@ export class EmailSchedulesRelatedModal {
             // set the email-history into the body
             let emailTexts = this.emailsService.composeReplyContent(this.referencedEmail);
             this.model.setFields({
-                name: emailTexts.name,
-                body: emailTexts.body
+                email_subject: emailTexts.name,
+                email_body: emailTexts.body
             });
+
+            // clomne teh attachments if we have any
+            this.modelattachments.module = this.model.module;
+            this.modelattachments.id = this.model.id;
+            this.modelattachments.cloneAttachments(this.referencedEmail);
+
         }
     }
 

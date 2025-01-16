@@ -9,14 +9,15 @@ import {modal} from '../../../services/modal.service';
 import {toast} from "../../../services/toast.service";
 import {backend} from "../../../services/backend.service";
 import {Observable, Subject} from "rxjs";
+import {emailsService} from "../services/emails.service";
 
 
 @Component({
-    selector: "email-reply-to-targetlist-button",
-    templateUrl: "../templates/emailreplytotargetlistbutton.html",
-    providers: [model]
+    selector: "email-forward-to-targetlist-button",
+    templateUrl: "../templates/emailforwardtotargetlistbutton.html",
+    providers: [model, emailsService]
 })
-export class EmailReplyToTargetListButton {
+export class EmailForwardToTargetListButton {
 
     /**
      * set as part when the acitonset renders
@@ -49,10 +50,11 @@ export class EmailReplyToTargetListButton {
      */
     public execute() {
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
-            selectModal.instance.module = 'ProespectLists';
+            selectModal.instance.module = 'ProspectLists';
             selectModal.instance.multiselect = false;
             selectModal.instance.selectedItems.subscribe(items => {
                 if (items.length) {
+                    this.model.id = items[0].id;
                     this.model.setData(items[0]);
                     let loadingModal = this.modal.await(this.language.getLabel('LBL_LOADING'));
                     this.checkEmailsLink().subscribe(response => {
