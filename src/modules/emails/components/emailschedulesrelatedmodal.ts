@@ -85,7 +85,7 @@ export class EmailSchedulesRelatedModal {
         // if we have a referenced email then build the context
         if(this.referencedEmail){
             // set the email-history into the body
-            let emailTexts = this.emailsService.composeReplyContent(this.referencedEmail);
+            let emailTexts = this.emailsService.composeReplyContent(this.referencedEmail, 'fwd');
             this.model.setFields({
                 email_subject: emailTexts.name,
                 email_body: emailTexts.body

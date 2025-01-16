@@ -19,10 +19,11 @@ export class emailsService {
 
     }
 
-    public composeReplyContent(email) {
+    public composeReplyContent(email, action: 'reply'|'fwd' = "reply") {
+        let actionLabel = action == 'fwd' ? 'LBL_FW' : 'LBL_RE';
         // set the email-history into the body
         return ({
-            name: this.language.getLabel('LBL_RE') + email.getField('name'),
+            name: this.language.getLabel(actionLabel) + email.getField('name'),
             body: '<br><br><br>' + this.buildHistoryText(email)
         });
     }
