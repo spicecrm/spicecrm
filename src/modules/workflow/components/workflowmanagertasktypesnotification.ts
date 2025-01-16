@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {model} from "../../../services/model.service";
 import {WorkflowManagerService} from "../services/workflowmanager.service";
+import {EnumDisplayOptionArray, language} from "../../../services/language.service";
 
 @Component({
     selector: 'workflow-manager-task-types-notification',
@@ -8,34 +9,32 @@ import {WorkflowManagerService} from "../services/workflowmanager.service";
 })
 export class WorkflowManagerTaskTypesNotification {
 
+    public options: EnumDisplayOptionArray = [];
+
     constructor(public model: model,
+                private language: language,
                 public workflowManagerService: WorkflowManagerService) {
+        this.options = this.language.getFieldDisplayOptions('WorkflowTaskDefinitions', 'assigntype', true);
+        this.options.push({value: '10', display: this.language.getLabel('LBL_DISTRIBUTIONLIST'), status: 'a'});
     }
 
     /**
-     * set recipient
-     * @param data
+     * get recipient value by key
+     * @param key
      */
-    public setRecipient(data) {
+    public getRecipientValue(key: string) {
+        return !this.model.data.type_config[key] ? null : `${this.model.data.type_config[key]}::${this.model.data.type_config[key + '_name']}`;
+    }
 
-        this.model.data.type_config.recipient_assigntype = data.assigntype;
-
-        switch (data.assigntype) {
-            case '1':
-                this.model.data.type_config.recipient_assigntouser = data.assigntouser;
-                this.model.data.type_config.recipient_assigntouser_name = data.assigntouser_name;
-                break;
-            case '5':
-                this.model.data.type_config.recipient_assignfile = data.assignfile;
-                this.model.data.type_config.recipient_assignclass = data.assignclass;
-                this.model.data.type_config.recipient_assignmethod = data.assignmethod;
-                this.model.data.type_config.recipient_assignparams = data.assignparams;
-                break;
-            case '7':
-            case '9':
-                this.model.data.type_config.recipient_assigntoorgunit = data.assigntoorgunit;
-                this.model.data.type_config.recipient_assigntoorgunit_name = data.assigntoorgunit_name;
-                break;
-        }
+    /**
+     * set recipient value and name by key
+     * @param value
+     * @param key
+     */
+    public setRecipientValue(value: string, key: string) {
+        [
+            this.model.data.type_config[key],
+            this.model.data.type_config[key + '_name']
+        ] = value.split('::');
     }
 }

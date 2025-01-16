@@ -46,6 +46,17 @@ export class WorkflowManagerTaskTypesEmail implements OnInit {
         this.contentOption = this.model.data.emailcontclass && this.model.data.emailcontclass.length > 0 ? 'method' : 'email_template';
     }
 
+    get distributionList() {
+        return !this.model.data.type_config.distribution_list_id ? null : `${this.model.data.type_config.distribution_list_id}::${this.model.data.type_config.distribution_list_name}`;
+    }
+
+    set distributionList(value: string) {
+        [
+            this.model.data.type_config.distribution_list_id,
+            this.model.data.type_config.distribution_list_name
+        ] = value.split('::');
+    }
+
     /**
      * load available mailboxes
      * load available email templates
