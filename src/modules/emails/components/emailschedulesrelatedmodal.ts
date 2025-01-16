@@ -9,6 +9,7 @@ import {view} from "../../../services/view.service";
 import {backend} from "../../../services/backend.service";
 import {metadata} from "../../../services/metadata.service";
 import {toast} from "../../../services/toast.service";
+import {emailsService} from "../services/emails.service";
 
 @Component({
     selector: "email-schedules-related-modal",
@@ -44,6 +45,8 @@ export class EmailSchedulesRelatedModal {
      */
     public maxCount: number = 50;
 
+    public referencedEmail: model;
+
     constructor(public language: language,
                 public model: model,
                 @SkipSelf() public parentModel: model,
@@ -52,6 +55,7 @@ export class EmailSchedulesRelatedModal {
                 public modal: modal,
                 public metadata: metadata,
                 public backend: backend,
+                public emailsService: emailsService,
                 public toast: toast) {
 
         this.view.isEditable = true;
@@ -76,6 +80,15 @@ export class EmailSchedulesRelatedModal {
 
         this.fiilterProspects();
 
+        // if we have a referenced email then build the context
+        if(this.referencedEmail){
+            // set the email-history into the body
+            let emailTexts = this.emailsService.composeReplyContent(this.referencedEmail);
+            this.model.setFields({
+                name: emailTexts.name,
+                body: emailTexts.body
+            });
+        }
     }
 
     /**
