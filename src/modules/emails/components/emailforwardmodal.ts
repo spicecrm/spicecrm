@@ -56,7 +56,7 @@ export class EmailForwardModal extends EmailReplyModal {
         this.model.startEdit(false);
         // set the from-addresses to to-addresses and vice versa
         // set the email-history into the body
-        let emailTexts = this.emailsService.composeReplyContent(this.parent);
+        let emailTexts = this.emailsService.composeReplyContent(this.parent, 'fwd');
         this.model.setFields({
             recipient_addresses: [],
             reference_id: this.parent.id,
