@@ -52,6 +52,10 @@ export class socket {
         return !_.isEmpty(this.sockets);
     }
 
+    public disconnectAll(){
+        Object.getOwnPropertyNames(this.sockets).forEach(socket => this.disconnect(socket));
+    }
+
     /**
      * disconnect the socket and reset the socket variables
      */
