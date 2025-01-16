@@ -324,7 +324,7 @@ class RESTManager
         $authType = !empty($token) ? 'token' : ($user && $pass ? 'credentials' : 'none');
 
         $authData = [
-            'impersonationUser' => SpiceConfig::getInstance()->config['system']['impersonation_enabled'] ? $_GET['impersonationuser'] : null,
+            'impersonationUser' => SpiceConfig::getInstance()->config['system']['impersonation_enabled'] ? urldecode($_GET['impersonationuser']) : null,
             'tokenIssuer' => $tokenIssuer
         ];
 
