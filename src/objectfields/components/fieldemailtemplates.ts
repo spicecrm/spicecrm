@@ -101,18 +101,11 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
         if (this.value != '') {
             this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
                 this.backend.getRequest('module/EmailTemplates/' + this.value + '/parse/' + this.model.getFieldValue('parent_type') + '/' + this.model.getFieldValue('parent_id')).subscribe((data: any) => {
-                    // overwrite if no subject or if action confirmed
+                    // nur überschreiben wenn nicht bereits ein subject angegeben wurde.
                     if (!this.model.getField(this.subjectField)) {
                         this.model.setField(this.subjectField, data.subject);
                     }
-                    else {
-                        this.modal.confirm('LBL_OVERWRITE_SUBJECT', 'LBL_OVERWRITE_SUBJECT')
-                            .subscribe(answer => {
-                                if (answer) {
-                                    this.model.setField(this.subjectField, data.subject);
-                                }
-                            });
-                    }
+
                     // create a new document to manage the current html string (body)
                     let virtualDocument = document.implementation.createHTMLDocument("Virtual Document");
                     virtualDocument.documentElement.innerHTML = this.model.getFieldValue(this.bodyField);
