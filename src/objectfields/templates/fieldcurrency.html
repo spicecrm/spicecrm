@@ -1,6 +1,6 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
-    <div class="slds-grid slds-grid--align-end">
+    <div class="slds-grid" [ngClass]="{'slds-grid--align-end': !fieldconfig.leftalign}">
         <system-display-number [number]="value" [currency_id]="currencyId" [precision]="precision"></system-display-number>
     </div>
 </field-generic-display>
@@ -11,14 +11,6 @@
                     {{getCurrencySymbol()}}&nbsp;
             </div>
             <div *ngIf="!fieldconfig.currencyReadonly" class="slds-form-element__control">
-                <!--div class="slds-select_container">
-                    <select class="slds-select" [(ngModel)]="currencyId">
-                        <option *ngFor="let currency of currencies" [value]="currency.id">{{currency.iso}}
-                            ({{currency.symbol}})
-                        </option>
-                    </select>
-
-                </div-->
                 <system-select system-select-id-only [(ngModel)]="currencyId">
                     <system-select-option *ngFor="let currency of currencies" [value]="currency.id" [display]="currency.iso + ' (' + currency.symbol + ')'" [displayselect]="currency.name + ' ' + currency.iso + ' (' + currency.symbol + ')'"/>
                 </system-select>
@@ -26,7 +18,7 @@
         </div>
         <div class="slds-form-element slds-grow">
             @if(displayCalculator) {
-                <system-input-number system-input-number-with-calculator [(ngModel)]="value" [asNumber]="true" [precision]="precision"></system-input-number>
+                <system-input-number system-input-number-with-calculator [system-input-number-leftalign]="fieldconfig.leftalign" [(ngModel)]="value" [asNumber]="true" [precision]="precision"></system-input-number>
             } @else {
                 <system-input-number [(ngModel)]="value" [asNumber]="true" [precision]="precision"></system-input-number>
             }
