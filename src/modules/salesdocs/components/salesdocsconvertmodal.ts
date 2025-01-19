@@ -7,6 +7,7 @@ import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
 import {navigation} from "../../../services/navigation.service";
 import {navigationtab} from "../../../services/navigationtab.service";
+import {configurationService} from "../../../services/configuration.service";
 
 declare var _: any;
 
@@ -27,11 +28,35 @@ export class SalesDocsConvertModal {
      */
     public targetData: any;
 
-    constructor(public model: model, @SkipSelf() public parent: model, public modal: modal, public backend: backend, public navigation: navigation, @Optional() public navigationtab: navigationtab,) {
+    private itemFlowConfig: any;
+
+    constructor(
+        public model: model,
+        @SkipSelf() public parent: model,
+        public modal: modal,
+        public backend: backend,
+        public navigation: navigation,
+        public configuration: configurationService,
+        @Optional() public navigationtab: navigationtab
+    ) {
+        this.itemFlowConfig = this.configuration.getData('salesdocitemtypesflow');
     }
 
     public close() {
         this.self.destroy();
+    }
+
+    public getReadOnly(item){
+        let fromItem = this.parent.data.salesdocitems.beans[item.originating_id];
+
+        let transferRecord = this.itemFlowConfig.find(r =>
+            r.salesdoctype_from == this.parent.getField('salesdoctype') &&
+            r.salesdoctype_to == this.targetData.SalesDoc.salesdoctype &&
+            r.salesdocitemtype_from == fromItem.itemtype &&
+            r.salesdocitemtype_to == item.itemtype
+        );
+
+        return transferRecord ? transferRecord.quantityfixed == 1 : false;
     }
 
     public convert() {
