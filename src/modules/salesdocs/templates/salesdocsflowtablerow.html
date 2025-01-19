@@ -1,4 +1,4 @@
-<th class="slds-tree__item" scope="row">
+<th class="slds-tree__item" scope="row" (click)="navigateToDocument()">
     <field-container [fieldname]="fields[0].field" [fieldconfig]="fields[0].fieldconfig" fielddisplayclass="slds-truncate"></field-container>
 </th>
 <td *ngFor="let field of fields|slice:1">
