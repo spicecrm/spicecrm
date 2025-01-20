@@ -2,6 +2,7 @@
  * @module ModuleSalesDocs
  */
 import {Component, OnInit, SkipSelf, Injector} from "@angular/core";
+import {metadata} from "../../../services/metadata.service";
 import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
@@ -30,7 +31,14 @@ export class SalesDocsConvertSelectType {
 
     public selectedType: string;
 
-    constructor(public model: model, public modal: modal, public configuration: configurationService, public backend: backend, public injector: Injector) {
+    constructor(
+        public metadata: metadata,
+        public model: model,
+        public modal: modal,
+        public configuration: configurationService,
+        public backend: backend,
+        public injector: Injector
+    ) {
         this.determineTargets();
     }
 
@@ -43,6 +51,7 @@ export class SalesDocsConvertSelectType {
         let flows = this.configuration.getData('salesdoctypesflow');
         for (let target of flows.filter(f => f.from == this.model.getFieldValue('salesdoctype'))) {
             let type = types.find(t => t.name == target.to);
+            if(type.aclaction && !this.metadata.checkModuleAcl('SalesDocs', type.aclaction)) continue;
             this.targetTypes.push({
                 type: target.to,
                 label: type ? type.vname : target.to

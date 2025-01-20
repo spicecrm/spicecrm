@@ -46,6 +46,10 @@ export class SalesDocsConvertModal {
         this.self.destroy();
     }
 
+    /**
+     * determine if the quantitiy field shouwl be readonly
+     * @param item
+     */
     public getReadOnly(item){
         let fromItem = this.parent.data.salesdocitems.beans[item.originating_id];
 
