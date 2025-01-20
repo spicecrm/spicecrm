@@ -19,6 +19,8 @@ export class SalesDocsConvertModalItem implements OnInit {
      */
     @Input() public data: any;
 
+    @Input() public quantitiyfixed: boolean;
+
     /**
      * the columns to be displayed
      */
@@ -37,6 +39,14 @@ export class SalesDocsConvertModalItem implements OnInit {
      * initialize the model from the data passed in
      */
     public ngOnInit() {
+        if(this.quantitiyfixed){
+            let quantityItem = this.fieldsetItems.find(fi => fi.field == 'quantity');
+            if(quantityItem){
+                if(!quantityItem.fieldconfig) quantityItem.fieldconfig = {};
+                quantityItem.fieldconfig.readonly = true;
+            }
+        }
+
         this.model.module = 'SalesDocItems';
         this.model.id = this.data.id;
         this.model.setData(this.data);

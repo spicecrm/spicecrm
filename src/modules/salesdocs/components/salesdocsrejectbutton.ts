@@ -13,8 +13,16 @@ import {ObjectActionNewButton} from "../../../objectcomponents/components/object
 })
 export class SalesdocsRejectButton {
 
-    constructor(public language: language, public metadata: metadata, public model: model, public modal: modal, public injector: Injector) {
+    constructor(
+        public model: model,
+        public modal: modal,
+        public injector: Injector
+    ) {
         this.model.module = 'SalesDocs';
+    }
+
+    get disabled(){
+        return this.model.isEditing;
     }
 
     /**

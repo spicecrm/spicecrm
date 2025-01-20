@@ -57,7 +57,22 @@ export class SalesDocsConvertButton implements OnDestroy {
         // check that we can copy from teh salesdoc type
         // flow is defined
         let flowData = this.configuration.getData('salesdoctypesflow');
-        if(!flowData?.find(f => f.from == this.model.getFieldValue('salesdoctype'))){
+        let flowTypes = this.configuration.getData('salesdoctypes');
+        if(!flowData?.find(f => {
+            if(f.from == this.model.getFieldValue('salesdoctype')){
+                let toType = flowTypes.find(t => t.name == f.to);
+                // if we do not have a to record disable))
+                if(!toType) return false;
+                // if we have a toACL Action check acl access
+                if(toType.aclaction){
+                    return this.metadata.checkModuleAcl('SalesDocs', toType.aclaction);
+                } else {
+                    return true;
+                }
+            } else {
+                return false;
+            };
+        })){
             this.disabled = true;
             return;
         }
