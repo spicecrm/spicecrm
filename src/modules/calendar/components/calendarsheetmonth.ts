@@ -370,6 +370,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                     this.spreadEventIntoRanges(event);
 
                 } else {
+                    if(!this.weeksIndices[event.start.week()]) return;
                     const day = this.monthGrid[this.weeksIndices[event.start.week()]][this.daysIndices[`${event.start.month()}${event.start.date()}`]];
 
                     if (!day) return;
@@ -414,6 +415,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
         Array.from({length: daysDiff +1}, (_, i) => moment(event.start).add(i, 'days'))
             .forEach(eventDay => {
+                if(!this.weeksIndices[eventDay.week()]) return;
                 const day = this.monthGrid[this.weeksIndices[eventDay.week()]][this.daysIndices[`${eventDay.month()}${eventDay.date()}`]];
 
                 if (!day) return;
