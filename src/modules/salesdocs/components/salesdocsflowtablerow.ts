@@ -1,9 +1,10 @@
 /**
  * @module ModuleSalesDocs
  */
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, Input, OnInit, Optional} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 /**
  * one row in the modal table providing a view without labels and a proper model
@@ -27,7 +28,11 @@ export class SalesDocsFlowTableRow implements OnInit {
      */
     @Input() public fields: any[] = [];
 
-    constructor(public model: model, public view: view) {
+    constructor(
+        public model: model,
+        public view: view,
+        @Optional() public navigationtab: navigationtab,
+    ) {
         this.view.displayLabels = false;
     }
 
@@ -41,5 +46,10 @@ export class SalesDocsFlowTableRow implements OnInit {
         this.model.setData(this.data);
     }
 
-
+    /**
+     * open the salesdoc
+     */
+    public navigateToDocument(){
+        this.model.goDetail(this.navigationtab?.tabid);
+    }
 }
