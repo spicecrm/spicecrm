@@ -43,6 +43,18 @@ export class EmailForwardToTargetListButton {
         this.model.module = 'ProspectLists';
     }
 
+    /**
+     * a getter that returns the disabled status. This getter checks if it is allowed for the user to create an emailschedule and to list prospectlists
+     */
+    get disabled() {
+        // check ACL if we can create an email
+        if (!this.metadata.checkModuleAcl('EmailSchedules', 'create')) return true;
+
+        // check thats the user can list Prospectlists
+        if (!this.metadata.checkModuleAcl('ProspectLists', 'list')) return true;
+
+        return false;
+    }
 
     /**
      *  execute checkemailslink and await the response
