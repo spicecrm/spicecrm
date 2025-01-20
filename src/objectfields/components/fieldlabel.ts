@@ -44,8 +44,6 @@ export class fieldLabel  implements OnInit{
                     this.alignment = 'right';
                     break;
             }
-
-            if(this.fieldname == 'amount_net') console.log(fieldType);
         }
 
         // set the displayclasses
