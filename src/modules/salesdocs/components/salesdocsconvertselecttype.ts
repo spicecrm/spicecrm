@@ -77,18 +77,30 @@ export class SalesDocsConvertSelectType {
      * @private
      */
     public convert() {
-        let loadmodal = this.modal.await('loading');
-        this.backend.getRequest(`module/SalesDocs/${this.model.id}/convert/${this.selectedType}`).subscribe(
-            targetData => {
-                loadmodal.emit(true);
-                this.modal.openModal('SalesDocsConvertModal', true, this.injector).subscribe(modalref => {
-                    modalref.instance.targetData = targetData;
-                });
-                this.close();
-            },
-            err => {
-                loadmodal.emit(true);
+        let convertRecord = this.configuration.getData('salesdoctypesflow').find(r => r.from == this.model.getFieldValue('salesdoctype') && r.to == this.selectedType);
+        if(convertRecord?.convert_modal){
+            this.modal.openModal(convertRecord?.convert_modal, true, this.injector).subscribe({
+                next: (ref) => {
+                    this.close();
+                }
             });
+        } else {
+            let loadmodal = this.modal.await('loading');
+            this.backend.getRequest(`module/SalesDocs/${this.model.id}/convert/${this.selectedType}`).subscribe({
+                next:
+                    (targetData) => {
+                        loadmodal.emit(true);
+                        this.modal.openModal('SalesDocsConvertModal', true, this.injector).subscribe(modalref => {
+                            modalref.instance.targetData = targetData;
+                        });
+                        this.close();
+                    },
+                error: (err) => {
+                    loadmodal.emit(true);
+                }
+            });
+        }
+
     }
 
 }
