@@ -279,13 +279,17 @@ class SpiceImport extends SpiceBean
 
                     // reset the pointer after the rowcount reaches its limit
                     if ($bucketRowsCount >= $limit) {
-                        $this->status = $processedRowsCount >= $this->rows_total ? 'i' : 'p';
                         break;
                     }
             }
 
+            // close the file handle
             fclose($handle);
 
+                // set the status to processing or imported
+            $this->status = $processedRowsCount >= $this->rows_total ? 'i' : 'p';
+
+            // check if we have an error
             if ($error && $this->status != 'i') $this->status = 'e';
 
             $this->save();
@@ -447,7 +451,7 @@ class SpiceImport extends SpiceBean
     private function addLogEntry($msg, $row, $newBean = null){
         $newGuidSQL = $this->db->getGuidSQL();
         $date = TimeDate::getInstance()->nowDb();
-        $this->db->query("INSERT INTO spiceimportlogs (id, date_entered, rowpointer, import_id, reference_id, reference_summary, msg, data) VALUES ({$newGuidSQL}, '{$date}', {$this->rows_imported} ,  '{$this->id}', '{$newBean->id}', '". ($newBean ? $newBean->get_summary_text() : '')."', '{$msg}', '" . $this->db->quote(implode('";"', $row)) . "')");
+        $this->db->query("INSERT INTO spiceimportlogs (id, date_entered, rowpointer, import_id, reference_id, reference_summary, msg, data) VALUES ({$newGuidSQL}, '{$date}', {$this->rows_imported} ,  '{$this->id}', '{$newBean->id}', '". ($newBean ? $newBean->get_summary_text() : '')."', '{$msg}', '" . $this->db->quote('"' . implode('";"', $row) . '"') . "')");
     }
 
     private function delimiter(){
