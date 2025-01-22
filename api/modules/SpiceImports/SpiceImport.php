@@ -229,7 +229,6 @@ class SpiceImport extends SpiceBean
         if (($handle = fopen(StreamFactory::getPathPrefix('upload') . $this->file_md5, "r")) !== FALSE) {
 
                 // find if the pointer has been set otherwise set it to 0
-                //if(!isset($this->objectimport->rowPointer)) $this->objectimport->rowPointer = 1;
                 if(!$this->rows_imported) $this->rows_imported = 1;
 
                 //count rows for the limit
@@ -260,7 +259,7 @@ class SpiceImport extends SpiceBean
                         foreach ($this->objectimport->checkFields as $check_field)
                             $retrieve[$check_field['moduleField']] = $row[array_search($check_field['mappedField'], $fileHeader)];
                     }
-                    $newBean = BeanFactory::getBean($this->objectimport->module);
+                    $newBean = BeanFactory::getBean($this->module);
 
                     switch ($this->objectimport->importAction) {
                         case 'update':
@@ -281,7 +280,6 @@ class SpiceImport extends SpiceBean
 
                     // reset the pointer after the rowcount reaches its limit
                     if ($bucketRowsCount >= $limit) {
-                        $this->data = json_encode($this->objectimport);
                         $this->status = $processedRowsCount >= $this->rows_total ? 'i' : 'p';
                         break;
                     }
