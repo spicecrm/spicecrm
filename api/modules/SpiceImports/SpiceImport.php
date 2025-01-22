@@ -158,12 +158,17 @@ class SpiceImport extends SpiceBean
         $this->data = json_encode($data);
         $this->objectimport = (object)$data;
         $this->module = $this->objectimport->module;
+        $this->csv_enclosure = $this->objectimport->enclosure;
+        $this->csv_delimiter = $this->objectimport->separator;
+        $this->import_actions = $this->objectimport->importAction;
         $this->name = $this->objectimport->module . "_" . gmdate('Y-m-d H:i:s');
         $this->assigned_user_id = $current_user->id;
 
         $this->file_name = $data['file']['file_name'];
         $this->file_md5 = $data['file']['file_md5'];
         $this->file_mime_type = $data['file']['file_mime_type'];
+
+        $this->rows_total = $this->getRowCount();
 
         if (isset($this->objectimport->templateName)) {
             $this->saveTemplate();
@@ -211,49 +216,38 @@ class SpiceImport extends SpiceBean
         $error = false;
         $list = [];
         if (is_null($this->objectimport)) $this->objectimport = json_decode($this->data);
-        $delimiter = ($this->objectimport->separator == 'comma') ? ',' : ';';
-        $enclosure = chr(8);
         $classMethod = SpiceUtils::loadExecutionClassMethod($this->objectimport->selectedMethod);
-
         $maxRows = (isset(SpiceConfig::getInstance()->config['import_max_records_per_file']) ? SpiceConfig::getInstance()->config['import_max_records_per_file'] : 200);
-
-        switch ($this->objectimport->enclosure) {
-            case 'single':
-                $enclosure = "'";
-                break;
-            case 'double':
-                $enclosure = '"';
-                break;
-        }
         /**
          * get the pointer for the end of the file
          * get the file header
          * set the limit for the file
          */
-        $fileHeader = $this->getFileHeader($delimiter,$enclosure);
+        $fileHeader = $this->getFileHeader($this->delimiter(),$this->enclosure());
         //set limit for rows amount to process in one batch
         $limit = $maxRows;
         if (($handle = fopen(StreamFactory::getPathPrefix('upload') . $this->file_md5, "r")) !== FALSE) {
 
                 // find if the pointer has been set otherwise set it to 0
-                if(!isset($this->objectimport->rowPointer)) $this->objectimport->rowPointer = 1;
+                //if(!isset($this->objectimport->rowPointer)) $this->objectimport->rowPointer = 1;
+                if(!$this->rows_imported) $this->rows_imported = 1;
 
                 //count rows for the limit
                 $processedRowsCount = 0;
                 $bucketRowsCount = 0;
                 $this->status = 'c';
 
-                while (($row = fgetcsv($handle, 1000, $delimiter, $enclosure)) !== FALSE) {
+                while (($row = fgetcsv($handle, 1000, $this->delimiter(),$this->enclosure())) !== FALSE) {
 
                     $processedRowsCount++;
 
                     //skip the first row (header row) or empty row and set the pointer to the first data row
-                    if ([null] === $row || $processedRowsCount < $this->objectimport->rowPointer +1){
+                    if ([null] === $row || $processedRowsCount < $this->rows_imported +1){
                         continue;
                     }
 
                     $bucketRowsCount++;
-                    $this->objectimport->rowPointer++;
+                    $this->rows_imported++;
 
                     // increase row count
 
@@ -288,14 +282,14 @@ class SpiceImport extends SpiceBean
                     // reset the pointer after the rowcount reaches its limit
                     if ($bucketRowsCount >= $limit) {
                         $this->data = json_encode($this->objectimport);
-                        $this->status = 'q';
+                        $this->status = $processedRowsCount >= $this->rows_total ? 'i' : 'p';
                         break;
                     }
             }
 
             fclose($handle);
 
-            if ($error && $this->status != 'q') $this->status = 'e';
+            if ($error && $this->status != 'i') $this->status = 'e';
 
             $this->save();
 
@@ -457,6 +451,57 @@ class SpiceImport extends SpiceBean
         $newGuidSQL = $this->db->getGuidSQL();
         $date = TimeDate::getInstance()->nowDb();
         $this->db->query("INSERT INTO spiceimportlogs (id, date_entered, rowpointer, import_id, reference_id, reference_summary, msg, data) VALUES ({$newGuidSQL}, '{$date}', {$this->objectimport->rowPointer} ,  '{$this->id}', '{$newBean->id}', '". ($newBean ? $newBean->get_summary_text() : '')."', '{$msg}', '" . implode('";"', $row) . "')");
+    }
+
+    private function delimiter(){
+        switch($this->csv_delimiter){
+            case 'semicolon':
+                return ';';
+            case 'comma':
+                return ',';
+            case 'endofline':
+                return "/n/r";
+            default:
+                return ',';
+        }
+    }
+
+    private function enclosure(){
+        switch($this->csv_enclosure){
+            case 'single':
+                return "'";
+            case 'double':
+                return '"';
+            default:
+                return chr(8);
+        }
+    }
+
+    private function getRowCount(){
+        $row = 0;
+        if (($handle = fopen(StreamFactory::getPathPrefix('upload') . $this->file_md5, "r")) !== FALSE) {
+            $fileHeader = fgetcsv($handle, 0, $this->delimiter(), $this->enclosure());
+            $fileHeader = array_map(function ($item) {
+                return !mb_detect_encoding($item, 'utf-8', true) ? mb_convert_encoding($item, 'UTF-8', 'ISO-8859-1') : $item;
+            }, $fileHeader);
+
+            if (!is_array($fileHeader) || count($fileHeader) < 1) {
+                throw new BadRequestException('separator or enclosure settings do not match the file settings');
+            }
+
+            while (($data = fgetcsv($handle, 0, $this->delimiter(), $this->enclosure())) !== FALSE) {
+                if ([null] !== $data) {
+                    if ($row < 2) {
+                        $fileData[] = array_map(function ($item) {
+                            return !mb_detect_encoding($item, 'utf-8', true) ? mb_convert_encoding($item, 'UTF-8') : $item;
+                        }, $data);
+                    }
+                    $row++;
+                }
+            }
+            fclose($handle);
+        }
+        return $row;
     }
 
 }
