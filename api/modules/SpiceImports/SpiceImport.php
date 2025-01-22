@@ -279,13 +279,17 @@ class SpiceImport extends SpiceBean
 
                     // reset the pointer after the rowcount reaches its limit
                     if ($bucketRowsCount >= $limit) {
-                        $this->status = $processedRowsCount >= $this->rows_total ? 'i' : 'p';
                         break;
                     }
             }
 
+            // close the file handle
             fclose($handle);
 
+                // set the status to processing or imported
+            $this->status = $processedRowsCount >= $this->rows_total ? 'i' : 'p';
+
+            // check if we have an error
             if ($error && $this->status != 'i') $this->status = 'e';
 
             $this->save();
