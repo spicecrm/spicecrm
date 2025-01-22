@@ -235,12 +235,12 @@ class SpiceImport extends SpiceBean
                 $processedRowsCount = 0;
                 $bucketRowsCount = 0;
 
-                while (($row = fgetcsv($handle, 1000, $this->delimiter(),$this->enclosure())) !== FALSE) {
+                while ($row = fgetcsv($handle, 0, $this->delimiter(),$this->enclosure())) {
 
                     $processedRowsCount++;
 
                     //skip the first row (header row) or empty row and set the pointer to the first data row
-                    if ([null] === $row || $processedRowsCount < $this->rows_imported +1){
+                    if ($processedRowsCount < $this->rows_imported + 1){
                         continue;
                     }
 
@@ -260,7 +260,7 @@ class SpiceImport extends SpiceBean
                     }
                     $newBean = BeanFactory::getBean($this->module);
 
-                    switch ($this->objectimport->importAction) {
+                    switch ($this->import_action) {
                         case 'update':
                             if (!empty($classMethod)) {
                                 $classMethod->class->{$classMethod->method}($row, $fileHeader, $this->objectimport, $list);
