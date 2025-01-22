@@ -447,7 +447,7 @@ class SpiceImport extends SpiceBean
     private function addLogEntry($msg, $row, $newBean = null){
         $newGuidSQL = $this->db->getGuidSQL();
         $date = TimeDate::getInstance()->nowDb();
-        $this->db->query("INSERT INTO spiceimportlogs (id, date_entered, rowpointer, import_id, reference_id, reference_summary, msg, data) VALUES ({$newGuidSQL}, '{$date}', {$this->rows_imported} ,  '{$this->id}', '{$newBean->id}', '". ($newBean ? $newBean->get_summary_text() : '')."', '{$msg}', '" . implode('";"', $row) . "')");
+        $this->db->query("INSERT INTO spiceimportlogs (id, date_entered, rowpointer, import_id, reference_id, reference_summary, msg, data) VALUES ({$newGuidSQL}, '{$date}', {$this->rows_imported} ,  '{$this->id}', '{$newBean->id}', '". ($newBean ? $newBean->get_summary_text() : '')."', '{$msg}', '" . $this->db->quote(implode('";"', $row)) . "')");
     }
 
     private function delimiter(){
