@@ -4,6 +4,7 @@
 namespace SpiceCRM\modules\SpiceImports\schedulerjobtasks;
 
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\modules\SpiceImports\SpiceImport;
 
 class SpiceImportsSchedulerJobTasks
@@ -15,13 +16,10 @@ class SpiceImportsSchedulerJobTasks
     public function processSpiceImports(): bool {
         //for testing
 //        echo 'importing';
-        /* @var SpiceImport $import */
-        $import = BeanFactory::getBean('SpiceImports');
-        $importList = $import->get_list("date_entered", "spiceimports.status in ('p', 'q') and spiceimports.deleted = '0'", 0 , 5);
         $success = true;
-       // if(!$importList['list']) echo 'nothing to import';
-        /* @var SpiceImport $thisImport */
-        foreach($importList['list'] as $thisImport) {
+        $importIDs = DBManagerFactory::getInstance()->fetchAll("SELECT id FROM spiceimports WHERE status in ('p', 'q') and deleted = '0'");
+        foreach($importIDs as $importID) {
+            $thisImport = BeanFactory::getBean('SpiceImports', $importID['id']);
             $thisImport->objectimport = (object)json_decode( $thisImport->data,true );
             $result = $thisImport->process();
             $success = ( $success && $result['status'] == 'imported' );
