@@ -404,7 +404,13 @@ export class SpiceImporter implements OnInit {
             'selectedMethod',
             'rejectExistingKey'
         );
-        objectImport.fixedFieldsValues = this.model.data;
+
+        // get the fixed values from teh model
+        objectImport.fixedFieldsValues = {};
+        objectImport.fixedFields.forEach(f => {
+            objectImport.fixedFieldsValues[f.field] = this.model.getField(f.field);
+        });
+
         objectImport.module = this.model.module;
 
         if (this.spiceImporter.idField != '') {
