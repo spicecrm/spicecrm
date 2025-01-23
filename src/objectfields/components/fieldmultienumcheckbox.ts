@@ -53,8 +53,6 @@ export class fieldMultienumCheckBox {
             valArray.splice(valIndex, 1);
         }
 
-        if (valArray.length > 0) {
-            this.model.setField(this.fieldname, '^' + valArray.join('^,^') + '^');
-        }
+        this.model.setField(this.fieldname, valArray.map(v => `^${v}^`).join(','));
     }
 }
