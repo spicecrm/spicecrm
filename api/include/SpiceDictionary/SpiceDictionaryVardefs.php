@@ -375,6 +375,7 @@ class SpiceDictionaryVardefs  {
         // override in/add to $vardefs (only fields defined in dictionary itself)
         if(isset($vardefs[$object])){
             if(!is_array($dbDict['fields'])) $dbDict['fields'] = [];
+            if(!is_array($vardefs[$object]['fields'])) $vardefs[$object]['fields'] = [];
             $vardefs[$object]['fields'] = array_merge($vardefs[$object]['fields'], $dbDict['fields']);
 
             if(!is_array($dbDict['indices'])) $dbDict['indices'] = [];
