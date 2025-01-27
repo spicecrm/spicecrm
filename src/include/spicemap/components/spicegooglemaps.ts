@@ -826,7 +826,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
             this.setMarkerCluster();
         }
 
-        if (!this.options.circle) {
+        if (!this.options.circle && this.records.length > 0) {
             this.fitMapBounds();
         }
     }
