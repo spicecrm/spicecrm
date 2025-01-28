@@ -25,8 +25,7 @@ export class MailgunValidateEmailButton  {
 
     public execute(){
         let awaitModal = this.modal.await(this.language.getLabel('LBL_LOADING'));
-
-        this.backend.getRequest(`channels/mailgun/address/validate/`+ this.model.data.email_address).subscribe(
+        this.backend.getRequest(`channels/mailgun/address/validate/${this.model.id}`).subscribe(
             response => {
                 awaitModal.emit(true);
                 if (response) {

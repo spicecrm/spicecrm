@@ -44,7 +44,9 @@ class SpiceModules
 
     private $beanClasses = [];
 
-    private function __construct() {}
+    private function __construct() {
+        $this->loadModules();
+    }
 
     private function __clone() {}
 
