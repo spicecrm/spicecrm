@@ -102,6 +102,20 @@ class SpiceBean
     public $_module;
 
     /**
+     * the dictionary definition id of the bean
+     *
+     * @var string
+     */
+    public $_sysdictionarydefinition_id;
+
+    /**
+     * the dictionary definition name
+     *
+     * @var string
+     */
+    public $_sysdictionarydefinition_name;
+
+    /**
      * the name of the database table for this Bean
      *
      * @var string
@@ -424,7 +438,7 @@ class SpiceBean
     {
         $this->db = DBManagerFactory::getInstance();
 
-        $dictionaryDefs = SpiceDictionary::getInstance()->getDefs($this->_objectname);
+        $dictionaryDefs = SpiceDictionary::getInstance()->getDefs($this->_sysdictionarydefinition_name ?: $this->_objectname);
         $this->field_defs = $dictionaryDefs['fields'];
         $this->optimistic_lock = $dictionaryDefs['optimistic_locking'];
 

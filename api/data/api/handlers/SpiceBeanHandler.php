@@ -1767,6 +1767,7 @@ class SpiceBeanHandler
             switch ($fieldData['type']) {
                 case 'link':
 
+                    // in case of the email address we have a special handling that adds an email address non redundant
                     if ($fieldData['name'] == 'email_addresses' && isset($post_params['email_addresses'])) {
                         $post_params['email_addresses'] = $this->prepareEmailAddresses($post_params['email_addresses']);
                     }
@@ -1885,6 +1886,9 @@ class SpiceBeanHandler
 
     /**
      * handle email addresses
+     * mainly checks if we know the email address already or if it has changed and now is a known or unknown address
+     *
+     *
      * @param array $postBodyEmailAddresses
      * @return array
      */
@@ -1896,7 +1900,7 @@ class SpiceBeanHandler
 
             $addressById = BeanFactory::getBean('EmailAddresses', $id);
 
-            if ($addressById && $addressById->email_address !== $postBodyEmailAddress['email_address']) {
+            if (!$addressById || ($addressById && $addressById->email_address !== $postBodyEmailAddress['email_address'])) {
                 $addressByText = (BeanFactory::newBean('EmailAddresses'))->retrieve_by_string_fields(['email_address_caps' => strtoupper($postBodyEmailAddress['email_address'])]);
                 $emailAddresses['beans_relations_to_delete'][$postBodyEmailAddress['id']] = $postBodyEmailAddress;
                 $postBodyEmailAddress['id'] = $addressByText->id ?? SpiceUtils::createGuid();
