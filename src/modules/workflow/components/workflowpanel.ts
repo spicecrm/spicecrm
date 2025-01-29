@@ -36,6 +36,11 @@ export class WorkflowPanel implements OnInit, OnDestroy {
      */
     public loading: boolean = true;
 
+    /**
+     * the id of a manual workflow selected
+     */
+    public manualWorkflowID: string;
+
     constructor(@Optional() public model: model,
                 public workflow: workflow,
                 public language: language,
@@ -109,9 +114,10 @@ export class WorkflowPanel implements OnInit, OnDestroy {
      * @param definitionId
      */
     public processWorkflow(definitionId: string) {
-        this.modal.confirm('LBL_PROCESS_WORKFLOW', 'LBL_PROCESS_WORKFLOW').subscribe(answer => {
-            if (!answer) return;
-            this.workflow.processManualWorkflow(definitionId);
+        this.modal.confirm(this.workflow.manualDefinitions.find(w => w.id == definitionId).name, 'LBL_PROCESS_WORKFLOW').subscribe(answer => {
+            if(answer) {
+                this.workflow.processManualWorkflow(definitionId);
+            }
         });
     }
 

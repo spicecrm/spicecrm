@@ -477,8 +477,11 @@ class KReport extends SpiceBean
                             $fieldValue = $returnArray [$fieldID . '_val'];
                         break;
                     case 'multienum' :
+
+                        $returnArray[$fieldID . '_val'] = $fieldValue;
+
                         // do not format if we have a function (Count ... etc ... )
-                        if ($this->fieldNameMap [$fieldID] ['sqlFunction'] == '') {
+                        if (str_contains($fieldValue, '^')) {
                             $fieldArray = preg_split('/\^,\^/', $fieldValue);
                             //bugfix 2010-09-22 if only one value is selected
                             if (is_array($fieldArray) && count($fieldArray) > 1) {
@@ -498,6 +501,7 @@ class KReport extends SpiceBean
                                 $fieldValue = $app_list_strings [$this->kQueryArray->queryArray [(isset($fieldArray ['unionid']) ? $fieldArray ['unionid'] : 'root')] ['kQuery']->fieldNameMap [$fieldID] ['fields_name_map_entry'] ['options']] [trim($fieldValue, '^')];
                             }
                         }
+
                         break;
                 }
             }

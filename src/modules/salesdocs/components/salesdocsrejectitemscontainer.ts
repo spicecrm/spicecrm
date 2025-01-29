@@ -59,7 +59,6 @@ export class SalesDocsRejectItemsContainer extends SalesDocsItemsContainer {
         let anyDirty: boolean = false;
         this.rejectItems.forEach(i => {
             if(i.model.isDirty()) {
-                console.log(i.model.getDirtyFields());
                 anyDirty = true
             };
         })

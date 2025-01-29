@@ -482,7 +482,7 @@ class EmailAddress extends SpiceBean
         if (!$emailAddress) {
             return false;
         }
-        if($newStatus == 'opted_in') $dateField = 'opt_in_date';
+        if($newStatus == 'opted_in' || 'pending') $dateField = 'opt_in_date';
         else if($newStatus == 'opted_out') $dateField = 'opt_out_date';
 
 
