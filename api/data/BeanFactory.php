@@ -4,6 +4,7 @@ namespace SpiceCRM\data;
 
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 
@@ -134,18 +135,26 @@ class BeanFactory
         // get the bean
         $bean = $beanClass && class_exists($beanClass) ? new $beanClass() : new SpiceBean();
 
+        // get the module details and the definition id
+        $moduleDetails = SpiceModules::getInstance()->getModuleDetails($module);
+        if($moduleDetails['sysdictionarydefinition_id'] && $dict = new SpiceDictionaryDefinition($moduleDetails['sysdictionarydefinition_id'], false)) {
+            $bean->_sysdictionarydefinition_id = $moduleDetails['sysdictionarydefinition_id'];
+            $bean->_sysdictionarydefinition_name = $dict->name;
+            $bean->_tablename = $dict->tablename;
+        }
+
         // set the base params if not et in the implementation of the Bean
         if(!$bean->module_dir) $bean->module_dir = $module;
         if(!$bean->object_name) $bean->object_name = $beanName;
-        if(!$bean->table_name) $bean->table_name = SpiceDictionary::getInstance()->getDefs($beanName)['table'] ?: strtolower($module); // SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['table'] ?: strtolower($module);
 
         // set the bean module
         $bean->_module = $module;
         $bean->_objectname = $beanName;
         // initialize the bean. Will load the vardefs
         $bean->initialize_bean();
+
         // set the table name (vardefs need to be loaded first as done in initialize_bean())
-        $bean->_tablename = SpiceDictionary::getInstance()->getDefs($beanName)['table'] ?: strtolower($module);
+        if(!$bean->_tablename) $bean->_tablename = SpiceDictionary::getInstance()->getDefs($beanName)['table'] ?: strtolower($module);
 
         if (!empty($id)) {
             if ($forceRetrieve || empty(self::$loadedBeans[$module][$id])) {

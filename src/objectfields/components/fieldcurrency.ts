@@ -74,6 +74,10 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
         if(this.fieldconfig.withcalculator) this.displayCalculator = true;
     }
 
+    get alignmentClass(){
+        return this.fieldconfig?.leftalign ? '' : 'slds-grid--align-end';
+    }
+
    /**
      * sets a default currency id from the preferences or if nothing is set to -99
      */

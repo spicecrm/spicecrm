@@ -19,7 +19,7 @@ $routes = [
         'route'       => '/email/o/{key}',
         'class'       => EmailTrackingActionsController::class,
         'function'    => 'handleTrackingPixel',
-        'description' => '',
+        'description' => 'Handle tracking Pixel',
         'options'     => ['noAuth' => true],
         'parameters' => [
             'key' => [
@@ -36,7 +36,7 @@ $routes = [
         'route'       => '/email/u/{key}',
         'class'       => EmailTrackingActionsController::class,
         'function'    => 'handleUnsubscribe',
-        'description' => '',
+        'description' => 'handles the Unsubscribe',
         'options'     => ['noAuth' => true],
         'parameters' => [
             'key' => [
@@ -53,7 +53,7 @@ $routes = [
         'route'       => '/email/doi/{key}',
         'class'       => EmailTrackingActionsController::class,
         'function'    => 'handleDoubleOptin',
-        'description' => '',
+        'description' => 'handles the Double Optin',
         'options'     => ['noAuth' => true],
         'parameters' => [
             'key' => [
@@ -70,7 +70,7 @@ $routes = [
         'route'       => '/email/t/{key}',
         'class'       => EmailTrackingActionsController::class,
         'function'    => 'handleTrackingLink',
-        'description' => '',
+        'description' => 'handles a tracking link',
         'options'     => ['noAuth' => true],
         'parameters' => [
             'key' => [
