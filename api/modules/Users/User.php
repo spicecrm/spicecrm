@@ -378,6 +378,27 @@ class User extends Person
     }
 
     /**
+     * will get all the orgunits allocated to the user
+     * @return array
+     */
+    public function getOrgUnits($idsOnly = false): array{
+        if($this->parent_id && !empty($this->parent_type)) {
+            $orgunits = $this->get_linked_beans('orgunits');
+            if (count($orgunits) > 0) {
+                if($idsOnly){
+                    $ids = [];
+                    foreach($orgunits as $orgunit){
+                        $ids[] = $orgunit->id;
+                    }
+                    $orgunits = $ids;
+                }
+                return $orgunits;
+            }
+        }
+        return [];
+    }
+
+    /**
      * Generate a new hash from plaintext password
      * @param string $password
      */

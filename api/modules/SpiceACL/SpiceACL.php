@@ -331,7 +331,7 @@ class SpiceACL
                 if ($module) {
                     $db = DBManagerFactory::getInstance();
                     $moduleId = SpiceModules::getInstance()->getModuleId($module);
-                    $customAction = $db->fetchByAssoc($db->query("SELECT id FROM spiceaclmoduleactions WHERE sysmodule_id = '$moduleId' AND action = '$action'"));
+                    $customAction = $db->fetchByAssoc($db->query("SELECT id FROM spiceaclmoduleactions WHERE sysmodule_id = '$moduleId' AND action = '$action' UNION SELECT id FROM spiceaclcustommoduleactions WHERE sysmodule_id = '$moduleId' AND action = '$action' "));
                 }
                 return $customAction['id'] ?: $action;
             /*

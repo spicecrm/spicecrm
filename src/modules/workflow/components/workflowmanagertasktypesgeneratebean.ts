@@ -34,6 +34,22 @@ export class WorkflowManagerTaskTypesGenerateBean implements OnInit, OnDestroy {
      */
     private subscriptions = new Subscription();
 
+    /**
+     * defines the copy types
+     */
+    public copyTypes: any[] = [
+        {
+            method: 'copy',
+            icon: 'data_mapping'
+        }, {
+            method: 'fixed',
+            icon: 'collection_variable'
+        }, {
+            method: 'eval',
+            icon: 'formula'
+        }
+    ]
+
     constructor(@SkipSelf() public model: model,
                 public workflowManager: WorkflowManagerService,
                 private view: view,
@@ -43,7 +59,7 @@ export class WorkflowManagerTaskTypesGenerateBean implements OnInit, OnDestroy {
     /**
      * @return [] mapping fields
      */
-    get mappingFields(): { fromField: string, toField: string, isFixed?: boolean, fixedValue?: any }[] {
+    get mappingFields(): { fromField: string, toField: string, type: string, isFixed?: boolean, fixedValue?: any, evalValue?: any }[] {
         return this.model.data.type_config.mappingFields;
     }
 
@@ -51,7 +67,7 @@ export class WorkflowManagerTaskTypesGenerateBean implements OnInit, OnDestroy {
      * set mapping fields
      * @param val
      */
-    set mappingFields(val: { fromField: string, toField: string, isFixed?: boolean, fixedValue?: any }[]) {
+    set mappingFields(val: { fromField: string, toField: string, fixedValue?: any, evalValue?: any }[]) {
         this.model.data.type_config.mappingFields = val;
     }
 
@@ -70,6 +86,13 @@ export class WorkflowManagerTaskTypesGenerateBean implements OnInit, OnDestroy {
         if (!this.mappingFields) {
             this.mappingFields = [];
         } else {
+            // legacy handling - to be removed in a öater version
+            this.mappingFields.forEach(m => {
+                if(!m.type){
+                    m.type = m.isFixed ? 'fixed' : 'copy'
+                }
+            });
+
             this.onFromFieldChange();
             this.onToFieldChange();
         }
@@ -88,7 +111,8 @@ export class WorkflowManagerTaskTypesGenerateBean implements OnInit, OnDestroy {
     public add() {
         this.mappingFields.push({
             fromField: '',
-            toField: ''
+            toField: '',
+            type: 'copy'
         });
     }
 
@@ -112,21 +136,39 @@ export class WorkflowManagerTaskTypesGenerateBean implements OnInit, OnDestroy {
     }
 
     /**
+     * toggle is fixed value to display a field container or a mapping field selector
+     * @param index
+     */
+    public switchType(index: number) {
+        let typeIndex = this.copyTypes.findIndex(i => i.method == this.mappingFields[index].type );
+        typeIndex++;
+
+        if(typeIndex == this.copyTypes.length) typeIndex = 0;
+
+        this.mappingFields[index].type = this.copyTypes[typeIndex].method;
+    }
+
+    public getTypeIcon(type){
+        return this.copyTypes.find(c => c.method == type)?.icon ?? this.copyTypes[0].icon;
+    }
+
+    /**
      * add required fields immediately after selecting the target module
      */
     public addRequiredFields() {
 
         this.requiredFields.forEach(field => {
+            if(this.mappingFields.findIndex(m => m.toField == field) < 0) {
 
-            const requiredExists = this.mappingFields.some(existing => existing.toField == field);
+                this.mappingFields.push({toField: field, fromField: '', type: 'copy'});
 
-            if (requiredExists) return;
-            this.mappingFields.push({toField: field, fromField: ''});
+                //this.addedToFields = this.mappingFields.map(f => f.toField);
 
-            this.addedToFields = this.mappingFields.map(f => f.toField);
-
-            this.requiredAdded++;
+                //this.requiredAdded++;
+            }
         });
+
+        this.onToFieldChange();
     }
 
     /**
@@ -143,7 +185,7 @@ export class WorkflowManagerTaskTypesGenerateBean implements OnInit, OnDestroy {
      */
     public onToFieldChange() {
         this.requiredAdded = this.mappingFields.filter(f => this.requiredFields.has(f.toField)).length;
-        this.addedToFields = this.mappingFields.map(f => f.toField);
+        // this.addedToFields = this.mappingFields.map(f => f.toField);
     }
 
     /**
@@ -179,15 +221,25 @@ export class WorkflowManagerTaskTypesGenerateBean implements OnInit, OnDestroy {
      * @param data
      * @param fieldObj
      */
-    public setFromFieldFixedValue(data: any, fieldObj: { fromField: string, toField: string, isFixed?: boolean, fixedValue?: any }) {
+    public setFromFieldFixedValue(data: any, fieldObj: {
+        fromField: string,
+        toField: string,
+        fixedValue?: any
+    }) {
         fieldObj.fixedValue = data[fieldObj.toField];
     }
+
 
     /**
      * generate fixed field model data object
      * @param fieldObj
      */
-    public generateFixedFieldModelData(fieldObj: { fromField: string, toField: string, isFixed?: boolean, fixedValue?: any }) {
+    public generateFixedFieldModelData(fieldObj: {
+        fromField: string,
+        toField: string,
+        isFixed?: boolean,
+        fixedValue?: any
+    }) {
         return {[fieldObj.toField]: fieldObj.fixedValue};
     }
 

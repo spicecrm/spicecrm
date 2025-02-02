@@ -1,5 +1,5 @@
 <div class="slds-m-horizontal--x-small slds-p-top--xxx-small">
-    <system-collapsable-tab *ngIf="workflow.manualDefinitions.length > 0" tabtitle="LBL_MANUAL_WORKFLOWS">
+    <!--system-collapsable-tab *ngIf="workflow.manualDefinitions.length > 0" tabtitle="LBL_MANUAL_WORKFLOWS">
         <div *ngIf="!workflow.loading" class="slds-grid slds-p-vertical--small">
             <span *ngFor="let definition of workflow.manualDefinitions" class="slds-pill slds-pill_link">
                 <span class="slds-pill__icon_container">
@@ -19,7 +19,20 @@
         <div *ngIf="workflow.loading" class="slds-p-vertical--small">
             <system-stencil></system-stencil>
         </div>
-    </system-collapsable-tab>
+    </system-collapsable-tab-->
+    <div *ngIf="workflow.manualDefinitions.length > 0" class="slds-m-vertical--x-small slds-box slds-box--border">
+        <div class="slds-grid slds-grid--vertical-align-center slds-p-around--small">
+            <div class="slds-section-title">
+                <system-label label="LBL_MANUAL_WORKFLOWS"/>
+            </div>
+            <system-select system-select-id-only class="slds-col--bump-left" style="min-width: 300px" [(ngModel)]="manualWorkflowID">
+                <system-select-option *ngFor="let definition of workflow.manualDefinitions" [value]="definition.id" [display]="definition.name"></system-select-option>
+            </system-select>
+            <button class="slds-button slds-button--icon-border slds-m-horizontal--xx-small" (click)="processWorkflow(manualWorkflowID)" [disabled]="!manualWorkflowID || workflow.processing">
+                <system-button-icon icon="play"></system-button-icon>
+            </button>
+        </div>
+    </div>
     <div class="slds-section slds-is-open">
         <h3 class="slds-section__title">
             <div class="slds-grid slds-grid--vertical-align-center slds-section__title-action" style="cursor: default">
