@@ -43,6 +43,10 @@ export class ObjectList implements OnDestroy, OnInit {
      * Show drag handle and provide drag&drop functionality.
      */
     @Input() public dragAndDrop = false;
+    /**
+     * autoload list items flag
+     */
+    @Input() public autoload: boolean = true;
 
     constructor(public router: Router,
                 public cdRef: ChangeDetectorRef,
@@ -107,7 +111,7 @@ export class ObjectList implements OnDestroy, OnInit {
     /**
      * gets if the config has no autoload set
      */
-    get noAutoLoad() {
+    get noAutoLoadMore() {
         return this.componentconfig.noautoload === true;
     }
 
@@ -147,7 +151,7 @@ export class ObjectList implements OnDestroy, OnInit {
      * manages the scroll event for the infinite Scroll
      */
     public onScroll() {
-        if (!this.noAutoLoad) {
+        if (!this.noAutoLoadMore) {
             this.modellist.loadMoreList();
         }
     }
@@ -223,7 +227,7 @@ export class ObjectList implements OnDestroy, OnInit {
      * @private
      */
     public loadComponentConfig() {
-        this.componentconfig = this.metadata.getComponentConfig('ObjectList', this.modellist.module);
+        this.componentconfig = {...this.metadata.getComponentConfig('ObjectList', this.modellist.module)};
         if ('disableAutoloadListAll' in this.componentconfig) return;
         this.componentconfig.disableAutoloadListAll = this.modellist.disableAutoloadListAll;
 
@@ -234,7 +238,7 @@ export class ObjectList implements OnDestroy, OnInit {
      * @private
      */
     public getListData() {
-        if (this.modellist.currentList.id != 'all' || !this.componentconfig?.disableAutoloadListAll) {
+        if (this.autoload && (this.modellist.currentList.id != 'all' || !this.componentconfig?.disableAutoloadListAll)) {
             this.modellist.getListData().subscribe(() =>
                 this.cdRef.detectChanges()
             );

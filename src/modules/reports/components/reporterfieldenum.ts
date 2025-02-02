@@ -62,7 +62,13 @@ export class ReporterFieldEnum implements OnInit {
         }
 
         if (fieldName && moduleName) {
-            this.value = this.language.getFieldDisplayOptionValue(moduleName, fieldName, this.record[this.field.fieldid + '_val']);
+            if (this.field.type == 'multienum') {
+                this.value = this.record[this.field.fieldid + '_val']?.split(',').map(value =>
+                    this.language.getFieldDisplayOptionValue(moduleName, fieldName, value.replaceAll('^', ''))
+                ).join(', ') ?? '';
+            } else {
+                this.value = this.language.getFieldDisplayOptionValue(moduleName, fieldName, this.record[this.field.fieldid + '_val']);
+            }
         } else {
             this.value = this.record[this.field.fieldid];
         }

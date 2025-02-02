@@ -6,6 +6,8 @@ import {toast} from '../../../services/toast.service';
 import {language} from '../../../services/language.service';
 import {SpiceImporterService} from '../services/spiceimporter.service';
 import {backend} from "../../../services/backend.service";
+import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
+import {model} from "../../../services/model.service";
 
 /**
  * Render a file selection and preview for the import
@@ -37,22 +39,14 @@ export class SpiceImporterSelect {
      * holds enclosure options
      * @private
      */
-    public enclosureOptions = [
-        {label: "'", value: 'single'},
-        {label: ' ', value: 'none'},
-        {label: '"', value: 'double'},
-    ];
+    public enclosureOptions: InputRadioOptionI[] = [];
 
 
     /**
      * holds delimiter options
      * @private
      */
-    public delimiterOptions = [
-        {label: ';', value: 'semicolon'},
-        {label: ',', value: 'comma'},
-        {label: 'nl', value: 'endofline'}
-    ];
+    public delimiterOptions: InputRadioOptionI[] = [];
 
     constructor(
         public spiceImport: SpiceImporterService,
@@ -60,6 +54,18 @@ export class SpiceImporterSelect {
         public backend: backend,
         public language: language
     ) {
+        this.delimiterOptions = this.language.getFieldDisplayOptions('SpiceImports', 'csv_delimiter', true, true).map(o => {
+            return {
+                value: o.value,
+                label: o.display
+            }
+        });
+        this.enclosureOptions = this.language.getFieldDisplayOptions('SpiceImports', 'csv_enclosure', true, true).map(o => {
+            return {
+                value: o.value,
+                label: o.display
+            }
+        });
     }
 
     /**

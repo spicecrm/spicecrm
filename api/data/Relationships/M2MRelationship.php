@@ -120,7 +120,8 @@ class M2MRelationship extends Relationship
                 'source' => 'non-db',
                 'module' => $rhsDictionaryDefinition->getModuleName(),
                 'vname' => $relationship->relationship->lhs_linklabel,
-                'duplicate_merge' => $relationship->relationship->lhs_duplicatemerge
+                'duplicate_merge' => $relationship->relationship->lhs_duplicatemerge,
+                'duplicate_linked' => $relationship->relationship->lhs_duplicatelinked
             ];
 
             // set to load default
@@ -159,7 +160,8 @@ class M2MRelationship extends Relationship
                 'source' => 'non-db',
                 'module' => $lhsDictionaryDefinition->getModuleName(),
                 'vname' => $relationship->relationship->rhs_linklabel,
-                'duplicate_merge' => $relationship->relationship->rhs_duplicatemerge
+                'duplicate_merge' => $relationship->relationship->rhs_duplicatemerge,
+                'duplicate_linked' => $relationship->relationship->rhs_duplicatelinked
             ];
 
             // set to load default
