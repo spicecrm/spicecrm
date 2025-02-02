@@ -114,6 +114,7 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
                     'source' => 'non-db',
                     'vname' => $relationship->relationship->lhs_linklabel,
                     'duplicate_merge' => $relationship->relationship->lhs_duplicatemerge,
+                    'duplicate_linked' => $relationship->relationship->lhs_duplicatelinked,
                     'default' => $relationship->relationship->lhs_linkdefault ? true : false
                 ]),
                 'sysdictionaryrelationship_id' => $morph->id,
@@ -135,7 +136,8 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
                         'type' => 'link',
                         'relationship' => $relationship_name,
                         'source' => 'non-db',
-                        'duplicate_merge' => $morph->rhs_duplicatemerge
+                        'duplicate_merge' => $morph->rhs_duplicatemerge,
+                        'duplicate_linked' => $morph->rhs_duplicatelinked
                     ]),
                     'sysdictionaryrelationship_id' => $morph->id,
                     'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
