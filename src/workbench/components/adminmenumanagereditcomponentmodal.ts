@@ -32,10 +32,6 @@ export class AdminMenuManagerEditComponentModal {
         scope_icon: '',
     }
     public save$ = new Subject<AdminComponentI>();
-    public radioOptions = [
-        {label: 'custom', value: 'custom'},
-        {label: 'global', value: 'global'},
-    ];
     public editMode: 'all' | 'custom' | 'none';
 
     constructor(public metadata: metadata,
