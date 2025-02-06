@@ -699,7 +699,7 @@ export class calendar implements OnDestroy {
         this.usersCalendars = calendars;
 
         if (save) {
-            this.userPreferences.setPreference("users", this.usersCalendars, true, "Calendar");
+            this.userPreferences.setPreference("Users", this.usersCalendars, true, "Calendar");
         }
     }
 
