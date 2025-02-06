@@ -4,7 +4,7 @@
             <!--a href="javascript:void(0);" class="slds-file__crop"-->
             <div style="height: 165px; width: 294px;" class="slds-align--absolute-center">
                 <img *ngIf="!thumbnail" src="./vendor/sldassets/images/placeholder-img@16x9.jpg"/>
-                <img style="max-height: 100%;max-width: 100%;" *ngIf="thumbnail" [src]="thumbnail" alt="Description of the image" />
+                <img style="max-height: 100%;max-width: 100%;background: repeating-conic-gradient(#666666 90deg, #7F7F7F 90deg 180deg, #666666 180deg 270deg, #7F7F7F 270deg);background-size: 20px 20px;" *ngIf="thumbnail" [src]="thumbnail" alt="Description of the image" />
             </div>
             <figcaption class="slds-file__title slds-is-relative slds-file__title_card">
                 <div class="slds-grid slds-grid--vertical-align-center slds-size--1-of-1">
