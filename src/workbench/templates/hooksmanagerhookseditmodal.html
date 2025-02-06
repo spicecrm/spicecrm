@@ -37,7 +37,7 @@
         </div>
         <div class="slds-grid">
             <div class="slds-form-element__control slds-size--4-of-4">
-                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                <label class="slds-form-element__label"><abbr class="{newLogicHook.type}">* </abbr>
                     <system-label label="LBL_CLASS"></system-label>
                 </label>
                 <system-input-backend-method [(ngModel)]="classMethod"></system-input-backend-method>
@@ -55,13 +55,13 @@
         </div>
         <div class="slds-grid">
             <div class="slds-form-element__control slds-size--2-of-4 slds-p-right--xxx-small">
-                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                <label class="slds-form-element__label"><abbr *ngIf="newLogicHook.type=='global'" class="slds-required">* </abbr>
                     <system-label label="LBL_PACKAGE"></system-label>
                 </label>
                 <system-input-package [(ngModel)]="newLogicHook.package"/>
             </div>
             <div class="slds-form-element__control slds-size--2-of-4 slds-p-right--xxx-small">
-                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                <label class="slds-form-element__label"><abbr *ngIf="newLogicHook.type=='global'" class="slds-required">* </abbr>
                     <system-label label="LBL_VERSION"></system-label>
                 </label>
                 <system-input-version [(ngModel)]="newLogicHook.version"/>
