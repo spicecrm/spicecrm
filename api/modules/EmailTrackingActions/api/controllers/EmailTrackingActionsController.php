@@ -18,6 +18,7 @@ use SpiceCRM\modules\CampaignLog\CampaignLog;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
+use SpiceCRM\modules\NewsletterLogs\NewsletterLog;
 
 class EmailTrackingActionsController
 {
@@ -327,6 +328,49 @@ class EmailTrackingActionsController
 
         $res->getBody()->write($lpContent['content']);
         return $res->withHeader('Content-Type', 'text/html');
+    }
+
+    /**
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws BadRequestException
+     * @throws Exception
+     *
+     */
+    public function getPreferences(Request $req, Response $res, array $args): Response
+    {
+        $data = EmailTracking::decodeTrackingID($args['key']);
+
+        if (!$data) {
+            throw new BadRequestException('Failed to decrypt key');
+        }
+        $return = EmailTracking::getPreferences($data);
+
+        return $res->withJson($return);
+    }
+
+    /**
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws BadRequestException
+     * @throws Exception
+     *
+     */
+    public function handlePreferences(Request $req, Response $res, array $args): Response
+    {
+        $body = $req->getParsedBody();
+        $data = EmailTracking::decodeTrackingID($args['key']);
+
+        if (!$data) {
+            throw new BadRequestException('Failed to decrypt key');
+        }
+        $return = EmailTracking::handlePreferences($data, $body['preferences']);
+
+        return $res->withJson($return);
     }
 
 }
