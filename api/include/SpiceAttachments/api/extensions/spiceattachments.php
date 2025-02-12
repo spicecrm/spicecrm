@@ -350,10 +350,22 @@ $routes = [
                 'description' => 'GUID of bean it is cloned from',
                 'required' => true
             ],
+            'categoryId' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'a predefined category ID',
+                'required' => false
+            ],
             'selectedFiles' => [
                 'in' => 'body',
                 'type'        => ValidationMiddleware::TYPE_ARRAY,
                 'description' => 'Selected Attachments from Email to be cloned',
+                'required' => false
+            ],
+            'excludedFilenames' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_ARRAY,
+                'description' => 'an array of excluded filenames',
                 'required' => false
             ]
         ]
