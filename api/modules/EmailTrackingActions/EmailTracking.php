@@ -8,6 +8,7 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\CampaignLog\CampaignLog;
 use SpiceCRM\modules\Emails\Email;
+use SpiceCRM\modules\EmailTrackingActions\api\controllers\EmailTrackingActionsController;
 use SpiceCRM\modules\NewsletterLogs\NewsletterLog;
 use SpiceCRM\modules\Newsletters\Newsletter;
 
@@ -215,6 +216,12 @@ class EmailTracking
             $target = BeanFactory::getBean($bean->parent_type, $bean->parent_id);
         }
 
+        if(isset($preferences['optInStatus'])){
+            $emailAddress = self::getEmailAddress($bean->email_addr_bean_rel_id, $target);
+            $emailAddress->opt_in_status = $preferences['optInStatus'];
+            $emailAddress->save();
+        }
+
         if ($bean->_module === 'NewsletterLogs') {
             $newsletter = BeanFactory::getBean('Newsletters');
             $return = $newsletter->handlePreferences($bean, $target, $preferences);
@@ -237,4 +244,5 @@ class EmailTracking
         $email->opt_in_status = $row['opt_in_status'];
         return $email;
     }
+
 }

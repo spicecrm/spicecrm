@@ -187,7 +187,7 @@ class EmailTrackingActionsController
         return $this->setEmailOptinStatus($email, 'opted_in');
     }
 
-    private function setEmailOptinStatus($email, string $status): bool
+    public function setEmailOptinStatus($email, string $status): bool
     {
         $recipient = BeanFactory::getBean($email->parent_type, $email->parent_id);
         $emailAddresses = $recipient->get_linked_beans('email_addresses');
