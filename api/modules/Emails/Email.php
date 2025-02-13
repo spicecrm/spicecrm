@@ -1846,7 +1846,7 @@ class Email extends SpiceBean
             $attachments = SpiceAttachments::getAttachmentsForBean('Emails', $this->id, 100, false);
             foreach ($attachments as $attachment) {
                 foreach ($matches[1] as $match) {
-                    if (strpos($match, $attachment['external_id']) !== false || strpos($match, $attachment['filename']) !== false) {
+                    if (($attachment['external_id'] && strpos($match, $attachment['external_id']) !== false) || strpos($match, $attachment['filename']) !== false) {
                         // catch exception so that error on getting attchments would not break fts indexing of the record
                         try {
                             $attachmentDetails = SpiceAttachments::getAttachment($attachment['id'], false);
