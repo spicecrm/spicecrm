@@ -2,6 +2,8 @@ import {Injectable, SkipSelf} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {session} from "../../../services/session.service";
+import {backend} from "../../../services/backend.service";
+import {Subject} from "rxjs";
 
 declare var moment: any;
 
@@ -13,6 +15,7 @@ export class emailsService {
 
     constructor(
         private language: language,
+        private backend: backend,
         private userpreferences: userpreferences,
         private session: session,
     ) {
@@ -20,18 +23,29 @@ export class emailsService {
     }
 
     public composeReplyContent(email, action: 'reply'|'fwd' = "reply") {
+        let retSubject = new Subject<any>();
         let actionLabel = action == 'fwd' ? 'LBL_FW' : 'LBL_RE';
-        // set the email-history into the body
-        return ({
-            name: this.language.getLabel(actionLabel) + email.getField('name'),
-            body: '<br><br><br>' + this.buildHistoryText(email)
-        });
+        this.backend.getRequest(`module/Emails/${email.id}/body/html`).subscribe({
+            next: (body) => {
+                // set the email-history into the body
+                retSubject.next({
+                    name: this.language.getLabel(actionLabel) + email.getField('name'),
+                    body: '<br><br><br>' + this.buildHistoryText(email, body.html)
+                });
+            }, error: () => {
+                retSubject.next({
+                    name: this.language.getLabel(actionLabel) + email.getField('name'),
+                    body: '<br><br><br>' + this.buildHistoryText(email, email.getField('body'))
+                });
+            }
+        })
+        return retSubject.asObservable();
     }
 
     /**
      * generate the email-history-text and return it
      */
-    private buildHistoryText(email) {
+    private buildHistoryText(email, emailbody: string) {
 
         let datetime = new moment.utc(email.getField('date_sent')).tz(this.session.getSessionData('timezone') || moment.tz.guess(true));
         let hdate = datetime ? datetime.format(this.userpreferences.getDateFormat()) : "";
@@ -53,7 +67,7 @@ export class emailsService {
 
         historytext += '<blockquote class="crm_quote" style="margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">';
 
-        const body: string = email.getField('body').replace('data-signature=""', '').replace('data-spice-temp-quote=""', '');
+        const body: string = emailbody.replace('data-signature=""', '').replace('data-spice-temp-quote=""', '');
 
         if (body.startsWith('<html>')) {
             const containerDiv = document.createElement('html');
