@@ -64,22 +64,22 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
         this.spicePageBuilderService.openMediaFilePicker().subscribe(src => {
             if (!!src) {
                 this.element.attributes.src = src;
-                this.element.attributes.inputUrl = '';
+                // this.element.attributes.inputUrl = '';
             }
         });
     }
 
-    public ngOnInit() {
-        super.ngOnInit();
-        if (!this.element.attributes.imageSource) {
-            this.element.attributes.imageSource = 'upload';
-        }
-    }
-
-    public sanitizeContent() {
-        this.sanitizedContent = this.domSanitizer.sanitize(SecurityContext.RESOURCE_URL, this.domSanitizer.bypassSecurityTrustResourceUrl(this.element.attributes.inputUrl));
-        this.element.attributes.src = this.sanitizedContent;
-    }
+    // public ngOnInit() {
+    //     super.ngOnInit();
+    //     if (!this.element.attributes.imageSource) {
+    //         this.element.attributes.imageSource = 'upload';
+    //     }
+    // }
+    //
+    // public sanitizeContent() {
+    //     this.sanitizedContent = this.domSanitizer.sanitize(SecurityContext.RESOURCE_URL, this.domSanitizer.bypassSecurityTrustResourceUrl(this.element.attributes.inputUrl));
+    //     this.element.attributes.src = this.sanitizedContent;
+    // }
 
     /**
      * generate body style object
