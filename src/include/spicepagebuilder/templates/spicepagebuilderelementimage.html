@@ -15,13 +15,9 @@
         </div>
     </div>
     <article (dblclick)="edit()" [ngStyle]="style" class="spice-drop-zone-content">
-        @if (element.attributes.src) {
-            <div [style.background-color]="element.attributes['container-background-color']">
-                <img [src]="element.attributes.src" [ngStyle]="style" alt="SpiceCRM image" style="max-height: 100%">
-            </div>
-        } @else {
-            <div [innerHTML]="element.content" [ngStyle]="style"></div>
-        }
+        <div [style.background-color]="element.attributes['container-background-color']">
+            <img [src]="element.attributes.src" [ngStyle]="style" alt="SpiceCRM image" style="max-height: 100%">
+        </div>
     </article>
     <div class="spice-drop-zone-actions">
         <div class="slds-button-group" role="group">
@@ -43,45 +39,34 @@
         <system-section titlelabel="LBL_ELEMENT_CONTENT" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
             <div class="slds-grid slds-size--1-of-1 slds-height_full slds-p-around--xx-small">
                 <div class="slds-grid slds-height_full slds-size--1-of-1">
-                    @if (element.attributes.imageSource != 'url') {
-                        <div class="slds-form-element slds-grid slds-grid--vertical slds-p-right--xx-small slds-size--1-of-2">
-                            <span class="slds-form-element__label"><system-label label="LBL_IMAGE_FILE"></system-label></span>
-                            <div class="slds-form-element__control slds-grow">
-                                <div class="slds-file-selector slds-file-selector_images slds-height_full">
-                                    <div class="slds-file-selector__dropzone slds-height_full">
-                                        <label class="slds-file-selector__body">
+                    <div class="slds-form-element slds-grid slds-grid--vertical slds-size--1-of-2 slds-p-right--xx-small">
+                <span class="slds-form-element__label">
+                    <system-label label="LBL_IMAGE_FILE"></system-label>
+                </span>
+                        <div class="slds-form-element__control slds-grow">
+                            <div class="slds-file-selector slds-file-selector_images slds-height_full">
+                                <div class="slds-file-selector__dropzone slds-height_full">
+                                    <label class="slds-file-selector__body">
                                 <span (click)="openMediaFilePicker()" class="slds-file-selector__button slds-button slds-button_neutral" style="cursor: pointer">
                                     <system-button-icon icon="upload"></system-button-icon>
                                     <span>
                                         <system-label label="LBL_UPLOAD_IMAGE"></system-label>
                                     </span>
                                 </span>
-                                            <span class="slds-file-selector__text slds-medium-show">
+                                        <span class="slds-file-selector__text slds-medium-show">
                                         <system-label label="LBL_OR_DROP_IMAGE"></system-label>
                                 </span>
-                                        </label>
-                                    </div>
+                                    </label>
                                 </div>
                             </div>
                         </div>
-                    } @else {
-                        <div class="slds-form-element slds-grid slds-grid--vertical slds-p-right--xx-small slds-size--1-of-2">
-                            <span class="slds-form-element__label"><system-label label="LBL_IMAGE_URL"></system-label></span>
-                            <div class="slds-form-element__control">
-                                <input type="text" class="slds-input" (input)="sanitizeContent()" [(ngModel)]="element.attributes.inputUrl">
-                            </div>
-                        </div>
-                    }
-
-                    <div class="slds-height_full slds-size--1-of-2 slds-grid slds-grid--vertical slds-p-left--xx-small">
-                        <span class="slds-form-element__label"> <system-label label="LBL_PREVIEW"></system-label></span>
-                        <div class="slds-grid slds-grid--align-center slds-grid--vertical-align-center slds-grow slds-p-around--x-small slds-text-align--center"
-                             style="min-height: 0; border: 1px solid #ddd; border-radius: 4px;">
-                            @if(!!element.attributes.src) {
-                                <img [src]="element.attributes.src" alt="Spice Image" style="max-height: 100%">
-                            } @else {
-                                <system-illustration-no-records style="max-height: 100%"></system-illustration-no-records>
-                            }
+                    </div>
+                    <div *ngIf="!!element.attributes.src" class="slds-height_full slds-size--1-of-2 slds-grid slds-grid--vertical slds-p-left--xx-small">
+                <span class="slds-form-element__label">
+                    <system-label label="LBL_PREVIEW"></system-label>
+                </span>
+                        <div class="slds-grow slds-p-around--x-small slds-text-align--center" style="min-height: 0; border: 1px solid #ddd; border-radius: 4px;">
+                            <img [src]="element.attributes.src" alt="Spice Image" style="max-height: 100%">
                         </div>
                     </div>
                 </div>
@@ -92,10 +77,6 @@
         <system-section titlelabel="LBL_STYLING" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
             <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small slds-scrollable--y">
                 <div class="slds-size--1-of-1 slds-grid slds-wrap">
-                    <div class="slds-form-element slds-grid slds-size--1-of-1 slds-grid--vertical-align-center">
-                        <label class="slds-form-element__label"><system-label label="LBL_IMAGE_SOURCE"></system-label></label>
-                        <system-input-radio-button-group [(ngModel)]="element.attributes.imageSource" [inputOptions]="[{value: 'upload', label: 'LBL_UPLOAD'}, {value: 'url', label: 'LBL_URL'}]" class="spice-display-block"></system-input-radio-button-group>
-                    </div>
                     <ng-container *ngFor="let styleAttribute of attributesList" [ngSwitch]="styleAttribute.type">
                         <spice-page-builder-input-text *ngSwitchCase="'text'" [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
                         <spice-page-builder-input-text *ngSwitchCase="'textSuffix'" [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name" [suffix]="spicePageBuilderService.defaultSuffix" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
@@ -108,6 +89,3 @@
     </div>
 
 </ng-template>
-
-
-
