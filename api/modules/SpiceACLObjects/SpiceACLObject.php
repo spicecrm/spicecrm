@@ -244,9 +244,13 @@ class SpiceACLObject extends SpiceBean
 
             // get subsitute IDs and see if the current user has an orgunit id
             $substituteOrgunitIds = $absences->getSubstituteEmployeeOrgUnitIDs();
+
+            // get orgunits allocated to the user
+            $userOrgUnits = $current_user->getOrgUnits(true);
+
             // get substitute employee record
-            if($current_user->orgunit_id || count($substituteOrgunitIds) > 0) {
-                $orgunitIds = $current_user->orgunit_id ? array_merge([$current_user->orgunit_id], $substituteOrgunitIds) : $substituteOrgunitIds;
+            if($current_user->orgunit_id || count($substituteOrgunitIds) > 0 || count($userOrgUnits) > 0) {
+                $orgunitIds = $current_user->orgunit_id ? array_merge([$current_user->orgunit_id], $substituteOrgunitIds, $userOrgUnits) : $substituteOrgunitIds;
                 $orgunitIds = array_unique($orgunitIds);
                 $orgunitIds = "'" . join("','", $orgunitIds) . "'";
 
@@ -320,13 +324,6 @@ class SpiceACLObject extends SpiceBean
         }
     }
 
-    public function getUserParentACLObjectQueries($parent, &$aclUnionQueries){
-        switch($parent->_module){
-            case 'Employees':
-
-        }
-
-    }
 
     /*
      * function t check if an object matches a bean
@@ -475,13 +472,15 @@ class SpiceACLObject extends SpiceBean
         // get the orgunits of the user and all he is substituting for
         if ($this->spiceaclorgunit) {
             $substituteOrgUnitIds = $absences->getSubstituteOrgUnitIDs();
-            $orgunitIds =  $current_user->orgunit_id ? array_merge([$current_user->orgunit_id], $substituteOrgUnitIds) : $substituteOrgUnitIds;
-            if(count($orgunitIds) > 0)
-            $ownermatches[] = [
-                'terms' => [
-                    'assigned_orgunit_id' => $orgunitIds
-                ]
-            ];
+            $userOrgUnits = $current_user->getOrgUnits(true);
+            $orgunitIds =  $current_user->orgunit_id ? array_merge([$current_user->orgunit_id], $substituteOrgUnitIds, $userOrgUnits) : $substituteOrgUnitIds;
+            if(count($orgunitIds) > 0){
+                $ownermatches[] = [
+                    'terms' => [
+                        'assigned_orgunit_id' => $orgunitIds
+                    ]
+                ];
+            }
         }
 
         // if we have an ownermatch add it to the fts query

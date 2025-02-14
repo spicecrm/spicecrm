@@ -32,7 +32,7 @@ export class SpicePathTrack implements OnInit{
 
     public _modelstage: string;
 
-    @Input() public componentconfig;
+    @Input() public componentconfig: any = {};
 
     /**
      * emits the curetn stage
@@ -68,16 +68,16 @@ export class SpicePathTrack implements OnInit{
 
         if (!Array.isArray(moduleKanbans) || moduleKanbans.length == 0) return;
 
-        if (!this.componentconfig.kanban) {
+        if (!this.componentconfig?.kanban) {
             const defaultConfig = this.metadata.getComponentConfig('SpicePathWithCoaching', this.model.module);
             this.componentconfig.kanban = defaultConfig.kanban;
         }
 
-        if (!this.componentconfig.kanban) {
+        if (!this.componentconfig?.kanban) {
             this.componentconfig.kanban = this.configuration.getData('spicebeanguides')[this.model.module]?.find(k => k.is_default == 1)?.id;
         }
 
-        const stages = moduleKanbans.find(k => k.id == this.componentconfig.kanban)?.stages ?? [];
+        const stages = moduleKanbans.find(k => k.id == this.componentconfig?.kanban)?.stages ?? [];
 
         // get teh current stage
         let modelstage = this.model.getField(this.statusfield);

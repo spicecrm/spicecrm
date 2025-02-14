@@ -5,18 +5,37 @@
              class="slds-scrollable--y slds-size--1-of-1 slds-grid--vertical slds-height_full slds-p-bottom--small spice-page-builder-panel-drop-list">
             <div *ngFor="let section of inputColumnsSection; trackBy: trackByFn; let index = index" cdkDrag [cdkDragDisabled]="!columnsCounterInputValid" [cdkDragData]="section"
                  class="slds-grow slds-p-around--xx-small slds-grid slds-grid--vertical slds-drag--preview spice-drag-placeholder-visible">
-                <div class="slds-grid slds-grid_align-spread slds-p-bottom--xx-small">
-                    @if (!columnsCounterInputValid) {
-                        <system-label label="LBL_ADD_COLUMNS"></system-label>
-                    } @else {
+                <div class="slds-grid slds-grid_align-spread slds-grid--vertical-align-end slds-p-bottom--xx-small">
+<!--                    @if (!columnsCounterInputValid) {-->
+<!--                        <system-label label="LBL_ADD_COLUMNS"></system-label>-->
+<!--                    } @else {-->
                         <span><system-label label="LBL_CUSTOM"></system-label> {{ section.children?.length }} <system-label label='LBL_COLUMNS'></system-label></span>
-                    }
-                    <input class="slds-input"
-                           type="text"
-                           maxlength="2"
-                           [ngStyle]="columnsCounterInputStyle()"
-                           (ngModelChange)="validateColumnsCounter($event)" [(ngModel)]="columnsCounter"
-                           (input)="addColumns()">
+<!--                    }-->
+<!--                    <input class="slds-input"-->
+<!--                           type="text"-->
+<!--                           maxlength="2"-->
+<!--                           [ngStyle]="columnsCounterInputStyle()"-->
+<!--                           (ngModelChange)="validateColumnsCounter($event)" [(ngModel)]="columnsCounter"-->
+<!--                           (input)="addColumns()">-->
+
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" style="height: 1.7rem" [(ngModel)]="columnsCounter" (ngModelChange)="addColumns()">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="slds-grid slds-grow slds-theme--default" style="min-height: 70px" [ngStyle]="customSectionStyle()">
                     @if (columnsCounterInputValid) {
