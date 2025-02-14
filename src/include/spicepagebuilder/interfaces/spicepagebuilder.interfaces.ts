@@ -164,13 +164,11 @@ export interface RSSI extends ContentElementI {
  * image element to be rendered in the view
  */
 export interface ImageI extends ContentElementI {
-    content: string,
     attributes: {
-        'imageSource': 'upload' | 'url',
         'href?': string,
         'align?': string,
         'alt'?: string,
-        'src': string | SafeResourceUrl,
+        'src': string,
         'title'?: string,
         'border'?: string,
         'border-radius'?: string,
@@ -178,12 +176,11 @@ export interface ImageI extends ContentElementI {
         'height'?: string,
         'padding'?: string,
         'css-class'?: string,
-        'fluid-on-mobile'?: 'true'|'false',
+        'fluid-on-mobile'?: 'true' | 'false',
         'rel'?: string,
         'srcset'?: string,
         'target'?: string,
-        'width'?: string,
-        'inputUrl'?: string
+        'width'?: string
     };
 }
 /**
@@ -218,7 +215,7 @@ export interface TextI extends ContentElementI {
         'align'?: string,
         'padding'?: string,
         'css-class'?: string,
-        'editor-type'?: string
+        // 'editor-type'?: string
     };
 }
 /**
