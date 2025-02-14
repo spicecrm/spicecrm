@@ -22,8 +22,7 @@
                     </label>
                 </div>
             </div>
-
-            <div *ngFor="let fieldObj of mappingFields; let i = index; trackBy: trackByFn" class="slds-grid">
+            <div *ngFor="let fieldObj of mappingFields; let i = index; trackBy: trackByFn" class="slds-grid slds-grid--vertical-align-start">
                 <div class="slds-grid slds-size--1-of-2">
                     <div class="slds-m-vertical--xx-small slds-align--absolute-center" style="width: 8px">
                         <abbr *ngIf="requiredFields.get(fieldObj.toField)" class="slds-required slds-text-title_bold">*</abbr>
@@ -32,19 +31,29 @@
                         <system-input-module-field [(ngModel)]="fieldObj.toField" [omittedFields]="addedToFields" (ngModelChange)="onToFieldChange()" [module]="model.data.type_config.module" class="slds-m-vertical--xx-small spice-display-block" />
                     </div>
                 </div>
-                <div class="slds-grid slds-grow">
-                    <div *ngIf="!fieldObj.isFixed; else fieldContainer" class="slds-form-element slds-m-horizontal--xx-small slds-grow">
-                        <system-input-module-field [(ngModel)]="fieldObj.fromField" [omittedFields]="addedFromFields" (ngModelChange)="onFromFieldChange()" [module]="workflowManager.currentModule.name" class="slds-m-vertical--xx-small spice-display-block" />
-                    </div>
-                    <ng-template #fieldContainer>
-                        <div *ngIf="fieldObj.isFixed" class="slds-form-element slds-m-horizontal--xx-small slds-grow">
-                            <div [system-model-provider]="{module: workflowManager.currentModule.name, id: null, data: generateFixedFieldModelData(fieldObj)}" (data$)="setFromFieldFixedValue($event, fieldObj)" class="slds-form-element__control slds-m-vertical--xxx-small">
-                                <field-container [field]="fieldObj.toField"></field-container>
+                <div class="slds-grid slds-grow slds-grid--vertical-align-start">
+                    @switch(fieldObj.type){
+                        @case ('copy'){
+                            <div class="slds-form-element slds-m-horizontal--xx-small slds-grow">
+                                <system-input-module-field [(ngModel)]="fieldObj.fromField" [omittedFields]="addedFromFields" (ngModelChange)="onFromFieldChange()" [module]="workflowManager.currentModule.name" class="slds-m-vertical--xx-small spice-display-block" />
                             </div>
-                        </div>
-                    </ng-template>
-                    <button (click)="switchFixed(i)"  [disabled]="!fieldObj.toField" [system-title]="fieldObj.isFixed ? 'LBL_FIXED_VALUE' : 'LBL_FIELD'" class="slds-button slds-m-around--xx-small">
-                        <system-button-icon [icon]="fieldObj.isFixed ? 'type' : 'data_mapping'" size="large"></system-button-icon>
+                        }
+                        @case ('fixed'){
+                            <div class="slds-form-element slds-m-horizontal--xx-small slds-grow">
+                                <div [system-model-provider]="{module: workflowManager.currentModule.name, id: null, data: generateFixedFieldModelData(fieldObj)}" (data$)="setFromFieldFixedValue($event, fieldObj)" class="slds-form-element__control slds-m-vertical--xxx-small">
+                                    <field-container [field]="fieldObj.toField"></field-container>
+                                </div>
+                            </div>
+                        }
+                        @case ('eval'){
+                            <div class="slds-grid slds-grid--vertical slds-grow">
+                                <system-input-module-field [(ngModel)]="fieldObj.fromField" [omittedFields]="addedFromFields" (ngModelChange)="onFromFieldChange()" [module]="workflowManager.currentModule.name" class="slds-grow slds-m-vertical--xx-small" />
+                                <system-input-text class="slds-grow slds-m-around--xx-small" [(ngModel)]="fieldObj.evalValue"/>
+                            </div>
+                        }
+                    }
+                    <button (click)="switchType(i)"  [disabled]="!fieldObj.toField" [system-title]="fieldObj.isFixed ? 'LBL_FIXED_VALUE' : 'LBL_FIELD'" class="slds-button slds-m-around--xx-small">
+                        <system-button-icon [icon]="getTypeIcon(fieldObj.type)" size="large"></system-button-icon>
                     </button>
                     <button (click)="remove(i)" class="slds-button slds-m-around--xx-small" system-title="LBL_DELETE">
                         <system-button-icon icon="delete" size="large"></system-button-icon>

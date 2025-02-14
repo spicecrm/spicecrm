@@ -86,7 +86,7 @@
                                         @if (loading) {
                                             <system-stencil/>
                                         } @else {
-                                            <system-display-number system-display-number-large-numbers [number]="addValue.kpiValueAdd" precision="0" [currency_id]="addValue?.valueMetric == 'curr' ? '-99' : ''"/> <span *ngIf="addValue?.valueMetric != 'curr' && addValue?.valueMetric != 'none'" style="font-size: 75%">{{addValue?.valueMetric}}</span>
+                                            <system-display-number system-display-number-large-numbers [number]="addValue.kpiValueAdd" [precision]="addValue.valuePrecision" [currency_id]="addValue?.valueMetric == 'curr' ? '-99' : ''"/> <span *ngIf="addValue?.valueMetric != 'curr' && addValue?.valueMetric != 'none'" style="font-size: 75%">{{addValue?.valueMetric}}</span>
                                         }
                                     </h2>
                                 </div>

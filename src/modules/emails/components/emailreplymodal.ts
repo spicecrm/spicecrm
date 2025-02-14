@@ -105,12 +105,15 @@ export class EmailReplyModal implements OnInit {
         }
 
         // set the email-history into the body
-        let emailTexts = this.emailsService.composeReplyContent(this.parent, 'reply');
-        this.model.setFields({
-            recipient_addresses: recipient_addresses,
-            reference_id: this.parent.id,
-            name: emailTexts.name,
-            body: emailTexts.body
+        this.emailsService.composeReplyContent(this.parent, 'fwd').subscribe({
+            next: (emailTexts) => {
+                this.model.setFields({
+                    recipient_addresses: [],
+                    reference_id: this.parent.id,
+                    name: emailTexts.name,
+                    body: emailTexts.body
+                });
+            }
         });
     }
 

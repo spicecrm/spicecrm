@@ -194,6 +194,7 @@ export class KpiTile implements OnInit {
             const labelKey = `kpi_value_label_${i}`;
             const addKey = `kpi_value_add_${i}`;
             const metricKey = `kpi_value_metric_${i}`;
+            const precisionKey = `kpi_value_precision_${i}`;
 
             // check if the kpi_value_label_? exists in kpiTarget.kpi
             if (this.kpiTarget.kpi?.[labelKey]) {
@@ -201,7 +202,8 @@ export class KpiTile implements OnInit {
                     addKey: addKey,
                     kpiValueAdd: this.kpiTargetValue[addKey],
                     valueLabel: this.kpiTarget.kpi[labelKey],
-                    valueMetric: this.kpiTarget.kpi[metricKey]
+                    valueMetric: this.kpiTarget.kpi[metricKey],
+                    valuePrecision: this.kpiTarget.kpi[precisionKey] ?? 0,
                 });
             }
         }

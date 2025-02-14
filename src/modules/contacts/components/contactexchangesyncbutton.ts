@@ -84,11 +84,11 @@ export class ContactExchangeSyncButton implements OnDestroy {
     public setRoute(){
         this.route = 'module/Contacts/' + this.model.id;
         switch(this.userpreferences.getPreference('microsoftActiveService')){
-            case 'msgraph':
-                this.route+= '/msgraphsync';
+            case 'spicecrmexchange':
+                this.route+= '/exchangesync';
                 break;
             default:
-                this.route+= '/exchangesync';
+                this.route+= '/msgraphsync';
         }
     }
 
