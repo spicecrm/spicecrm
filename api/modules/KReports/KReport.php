@@ -11,6 +11,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguagesRESTHandler;
+use Throwable;
 
 require_once('modules/KReports/utils.php');
 
@@ -1191,8 +1192,12 @@ $db = DBManagerFactory::getInstance();
 
         if (is_array($this->formulaArray)) {
             foreach ($this->formulaArray as $sequence => $formula) {
-                //2013-03-06 suppress error messages
-                @eval($formula . ';');
+                try {
+                    //2013-03-06 suppress error messages
+                    @eval($formula . ';');
+                } catch (Throwable $e) {
+                    // error in process
+                }
             }
         }
     }

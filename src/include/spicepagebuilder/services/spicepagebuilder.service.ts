@@ -138,7 +138,7 @@ export class SpicePageBuilderService {
             tagName: 'image',
             label: 'LBL_IMAGE',
             icon: 'image',
-            content: 'Upload an image or paste an URL...',
+            // content: 'Upload an image or paste an URL...',
             attributes: {
                 align: 'center',
                 padding: '4px',

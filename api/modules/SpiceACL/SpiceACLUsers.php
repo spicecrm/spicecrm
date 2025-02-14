@@ -120,33 +120,17 @@ class SpiceACLUsers{
      * @param $bean
      * @return string
      */
-    static function generateReporteesWhereClause($table_name = '', $bean){
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-
-        $userIDs = $current_user->getReporteesList();
-        $userIDs = "'". join("','", $userIDs) . "'";
-
-        if(empty($table_name)) $table_name = $bean->_tablename;
-
-        return "$table_name.assigned_user_id IN ($userIDs)";
-    }
-
-    /**
-     * generates a where clause that matches the creator
-     *
-     * @param $table_name
-     * @param $bean
-     * @return string
-     */
     static function generateOrgUnitWhereClause($table_name = '', $bean){
         // if there is no field assigned_orgunit_id defined just leave it.
         if(!isset($bean->field_defs['assigned_orgunit_id'])) return false;
 
+        /** @var User $current_user */
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         $absences = BeanFactory::getBean('UserAbsences');
         $substituteOrgunits = $absences->getSubstituteOrgUnitIDs();
-        $orgunitIDs = $current_user->orgunit_id ?  array_merge([$current_user->orgunit_id], $substituteOrgunits) : $substituteOrgunits;
+        $userOrgUnits = $current_user->getOrgUnits(true);
+        $orgunitIDs = $current_user->orgunit_id ?  array_merge([$current_user->orgunit_id], $userOrgUnits, $substituteOrgunits) : $substituteOrgunits;
         if(count($orgunitIDs) == 0) return false;
 
         $orgunitIDs = "'". join("','", $orgunitIDs) . "'";
@@ -241,7 +225,11 @@ class SpiceACLUsers{
         // check absence substitutes
         $absences = BeanFactory::getBean('UserAbsences');
         $substituteOrgUnits = $absences->getSubstituteOrgUnitIDs();
-        if(array_search($bean->assigned_orgunit_id, $substituteOrgUnits) !== false) return true;
+
+        // check orgunits allocated to the User
+        $userOrgUnits = $current_user->getOrgUnits(true);
+
+        if(array_search($bean->assigned_orgunit_id, array_merge($userOrgUnits, $substituteOrgUnits)) !== false) return true;
 
         return false;
     }

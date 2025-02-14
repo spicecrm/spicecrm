@@ -55,6 +55,54 @@ export class modelutilities {
         return regexExp.test(param) == true;
     }
 
+    /**
+     * Checks and formats the content of a field when converting its type from 'text' to 'html'.
+     * @param value The value of the field to be checked and formatted.
+     * @returns The formatted value as an HTML string or the original value.
+     */
+    public checkHtmlFieldTypeContent(value: string): string {
+
+        const REGEX = {
+            lineBreaks: /\r?\n/,
+            htmlTags: /(?<!\w)<|>(?!\w)/g
+        };
+
+        // Helper function to format plain text with line breaks
+        const formatLineBreaks = (text: string): string => {
+            return text
+                .trim()
+                .split(REGEX.lineBreaks)
+                .filter(Boolean)
+                .map(line => `<div>${line}</div><br>`)
+                .join(' ');
+        };
+
+        const hasLineBreaks = REGEX.lineBreaks.test(value);
+        const hasHtmlTags = REGEX.htmlTags.test(value);
+
+        // Case 1: Only line breaks, no HTML
+        if (hasLineBreaks && !hasHtmlTags) {
+            return formatLineBreaks(value);
+        }
+
+        // Case 2: Only HTML, no line breaks
+        if (hasHtmlTags && !hasLineBreaks) {
+            return value;
+        }
+
+        // Case 3: Both HTML and line breaks
+        if (hasHtmlTags && hasLineBreaks) {
+            const htmlTagIndex = value.indexOf('<');
+            const plainText = value.slice(0, htmlTagIndex).trim();
+            const htmlContent = value.slice(htmlTagIndex).trim();
+
+            return formatLineBreaks(plainText) + htmlContent;
+        }
+
+        // Default case: No special formatting needed
+        return value;
+    }
+
     /*
      Data transition functions
      */
@@ -114,6 +162,8 @@ export class modelutilities {
                     }
                 }
                 return value;
+            case "html":
+                return this.checkHtmlFieldTypeContent(value);
             default:
                 return value;
         }
