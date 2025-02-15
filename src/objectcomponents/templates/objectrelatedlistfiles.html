@@ -47,7 +47,8 @@
                         </div>
                     </div>
                 }
-                <button *ngIf="!componentconfig.disableupload" class="slds-m-left--xxx-small slds-button slds-button--icon-border" (click)="selectFile()" system-title="LBL_UPLOAD"><system-utility-icon size="x-small" icon="upload"></system-utility-icon></button>
+                <button *ngIf="!componentconfig.disableupload" class="slds-m-left--xxx-small slds-button slds-button--icon-border" (click)="selectFile()" system-title="LBL_UPLOAD"><system-utility-icon size="x-small" icon="upload"/></button>
+                <button *ngIf="!componentconfig.disableupload" class="slds-m-left--xxx-small slds-button slds-button--icon-border" (click)="addImage()" system-title="LBL_IMAGE"><system-utility-icon size="x-small" icon="image"/></button>
                 <button class="slds-m-left--xxx-small slds-button slds-button--icon-border" (click)="loadFiles()" system-title="LBL_RELOAD"><system-utility-icon size="x-small" icon="refresh"></system-utility-icon></button>
             </div>
         </header>
