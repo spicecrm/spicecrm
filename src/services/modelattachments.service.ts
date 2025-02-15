@@ -169,6 +169,7 @@ export class modelattachments implements OnDestroy {
      *
      * @param parentModel
      * @param categoryId
+     * @param excludedFilenames
      */
     public cloneAttachments(parentModel: model, categoryId?: string, excludedFilenames?: string[]): Observable<any> {
         let retSubject = new Subject();
@@ -178,20 +179,20 @@ export class modelattachments implements OnDestroy {
         }, this.httpRequestsRefID).subscribe({
             next: response => {
                 for (let attId in response) {
-                    if (!this._files.find(a => a.id == attId)) {
+                    if (!this.files.find(a => a.id == attId)) {
                         response[attId].date = new moment(response[attId].date);
-                        this._files.push(response[attId]);
+                        this.files.push(response[attId]);
                     }
                 }
 
                 // set the count
-                this.count = this._files.length;
+                this.count = this.files.length;
 
                 // broadcast the count
                 this.broadcastAttachmentCount();
 
                 // close the subject
-                retSubject.next(this._files);
+                retSubject.next(this.files);
                 retSubject.complete();
             },
             error: error => {
