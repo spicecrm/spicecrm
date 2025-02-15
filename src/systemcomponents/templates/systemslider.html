@@ -1,6 +1,7 @@
 <div class="slds-form-element">
     <div class="slds-form-element__control">
         <div class="slds-slider slds-grid">
+            <div class="slds-p-right--x-small"><ng-content></ng-content></div>
             <div class="slds-align--absolute-center slds-grow slds-is-relative">
                 <input type="range" [min]="min" [step]="step" [max]="max" class="slds-slider__range" [(ngModel)]="value" [disabled]="disabled">
                 <div style="width: 100%; top: calc(50% - 2px); position: absolute; padding-left: 16px; pointer-events: none;" class="slds-grid slds-grid--align-end">
