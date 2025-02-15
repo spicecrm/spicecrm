@@ -72,6 +72,10 @@
     --slds-g-shadow-outline-focus-1: 0 0 3px var(--brand-primary);
     --slds-c-radio-mark-color-foreground: var(--brand-primary);
     --slds-c-radio-shadow-focus: 0 0 3px var(--brand-primary);
+    --slds-c-slider-thumb-color-foreground: var(--brand-primary);
+    --sds-c-slider-thumb-color-foreground-active: var(--color-grey-9);
+    --slds-c-slider-thumb-color-foreground-focus: var(--color-grey-9);
+    --sds-c-slider-thumb-color-foreground-hover: var(--color-grey-7);
 }
 
 html {
