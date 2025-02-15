@@ -433,6 +433,15 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     fill: var(--color-white);
 }
 
+/* disabled fill color if in disabled element */
+.slds-is-disabled .slds-icon_container.slds-icon{
+    fill: var(--slds-g-color-neutral-base-80, #c9c9c9)
+}
+
+/* disabled text color */
+.slds-dropdown__item>a.slds-is-disabled a{
+    color: var(--slds-g-color-neutral-base-80, #c9c9c9)
+}
 
 
 /* fix for scoped tabs when the second tba is selected */
