@@ -3,9 +3,14 @@
 namespace SpiceCRM\modules\EmailTrackingActions;
 
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\modules\CampaignLog\CampaignLog;
 use SpiceCRM\modules\Emails\Email;
+use SpiceCRM\modules\EmailTrackingActions\api\controllers\EmailTrackingActionsController;
+use SpiceCRM\modules\NewsletterLogs\NewsletterLog;
+use SpiceCRM\modules\Newsletters\Newsletter;
 
 class EmailTracking
 {
@@ -36,7 +41,7 @@ class EmailTracking
     {
         $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? throw (new Exception("misconfiguration blowfishkey missing"));
 
-        if($key){
+        if ($key) {
             return urlencode(base64_encode(openssl_encrypt($trackingData, 'DES-EDE3-CBC', $key)));
         } else {
             return urlencode(base64_encode($trackingData));
@@ -53,7 +58,7 @@ class EmailTracking
      */
     static function decodeTrackingID($trackingData): ?array
     {
-        $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ??  throw new Exception("misconfiguration blowfishkey missing");
+        $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? throw new Exception("misconfiguration blowfishkey missing");
 
         if (!$key) {
             $decrypted = base64_decode(urldecode($trackingData));
@@ -74,9 +79,10 @@ class EmailTracking
      * @param $trackingData
      * @return array|mixed|string|string[]|null
      */
-    static function getTrackingPixelSrc($trackingData){
+    static function getTrackingPixelSrc($trackingData)
+    {
         $url = SpiceConfig::getInstance()->get('emailtracking.tracking_pixel_url');
-        if($url){
+        if ($url) {
             $url = str_replace('{refid}', self::encodeTrackingID($trackingData), $url);
         }
         return $url;
@@ -88,7 +94,8 @@ class EmailTracking
      * @param $trackingData
      * @return string
      */
-    static function getTrackingPixel($trackingData){
+    static function getTrackingPixel($trackingData)
+    {
         return '<img style="visibility: hidden" src="' . self::getTrackingPixelSrc($trackingData) . '" alt="emailrefid_' . self::encodeTrackingID($trackingData) . '_" height="1" width="1">';
     }
 
@@ -99,16 +106,18 @@ class EmailTracking
      * @param Email $email
      * @return string
      */
-    static function getUnsubscribeURL(Email $email){
+    static function getUnsubscribeURL(Email $email)
+    {
         $url = SpiceConfig::getInstance()->get('emailtracking.unsubscribeurl');
 
         [$parentType, $parentId] = $email->getTrackingParentData();
 
-        if($url){
+        if ($url) {
             return str_replace('{refid}', self::encodeTrackingID("ParentType:$parentType:ParentId:$parentId"), $url);
         }
         return false;
     }
+
     /**
      * @param Email $email
      * @return string
@@ -170,4 +179,70 @@ class EmailTracking
 
         return $email;
     }
+
+    static function getPreferences($data)
+    {
+        /** @var Email | CampaignLog | NewsletterLog $bean */
+        $bean = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+        $target = BeanFactory::getBean($bean->target_type, $bean->target_id);
+
+        if ($bean->_module === 'Emails') {
+            $target = BeanFactory::getBean($bean->parent_type, $bean->parent_id);
+        }
+        $emailAddress = self::getEmailAddress($bean->email_addr_bean_rel_id, $target);
+
+        $targetData = [
+            'emailAddress' => $emailAddress->email_address,
+            'optInStatus' => $emailAddress->opt_in_status,
+            'firstName' => $target->first_name,
+            'lastName' => $target->last_name,
+        ];
+
+        if ($bean->_module === 'NewsletterLogs') {
+            $newsletter = BeanFactory::getBean('Newsletters');
+            $newsletters = $newsletter->getNewsletterSubscriptionWithRelated($target->_module, $target->id, $bean->email_addr_bean_rel_id);
+            $targetData['newsletters'] = $newsletters;
+        }
+        return $targetData;
+    }
+
+    static function handlePreferences($data, $preferences)
+    {
+        /** @var Email | CampaignLog | NewsletterLog $bean */
+        $bean = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+        $target = BeanFactory::getBean($bean->target_type, $bean->target_id);
+
+        if ($bean->_module === 'Emails') {
+            $target = BeanFactory::getBean($bean->parent_type, $bean->parent_id);
+        }
+
+        if(isset($preferences['optInStatus'])){
+            $emailAddress = self::getEmailAddress($bean->email_addr_bean_rel_id, $target);
+            $emailAddress->opt_in_status = $preferences['optInStatus'];
+            $emailAddress->save();
+        }
+
+        if ($bean->_module === 'NewsletterLogs') {
+            $newsletter = BeanFactory::getBean('Newsletters');
+            $return = $newsletter->handlePreferences($bean, $target, $preferences);
+        }
+
+        return $return;
+    }
+
+    static function getEmailAddress($emailAddrBeanRelId, $target)
+    {
+        $db = DBManagerFactory::getInstance();
+        // fallback
+        if (empty($emailAddrBeanRelId)) {
+            return !$target->email1 ? null : BeanFactory::newBean('EmailAddresses')->retrieve_by_string_fields(['email_address' => $target->email1]);
+        }
+
+        $q = "SELECT eabr.* FROM email_addr_bean_rel eabr where eabr.id ='{$emailAddrBeanRelId}' and eabr.bean_id ='$target->id' and eabr.deleted = 0";
+        $row = $db->fetchOne($q);
+        $email = BeanFactory::getBean('EmailAddresses', $row['email_address_id']);
+        $email->opt_in_status = $row['opt_in_status'];
+        return $email;
+    }
+
 }

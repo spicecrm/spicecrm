@@ -67,4 +67,34 @@ class MailboxTemplateFunctions
         $optoutUrl = str_replace('{refid}', $trackData, SpiceConfig::getInstance()->get('emailtracking.optout_url'));
         return "<a href=\"{$optoutUrl}\" class=\"spice-marketing-optout-link\">$inputString</a>";
     }
+
+    /** opt out url and generate an opt out link
+     * @param $compiler
+     * @param $beans
+     * @param $inputString
+     * @return string
+     */
+    public static function generateManagePreferencesLink($compiler, $beans, $inputString): string
+    {
+        if ($beans['bean'] === 'CampaignLog' || $beans['bean'] === 'NewsletterLogs') {
+            $bean = $beans['bean'];
+        } elseif (isset ($beans['NewsletterLogs'])) {
+            $bean = $beans['NewsletterLogs'];
+        } elseif (isset ($beans['CampaignLog'])){
+            $bean = $beans['CampaignLog'];
+        } else {
+            $emails = isset($beans['Emails']) ? $beans['Emails'] : $beans['bean'];
+        }
+
+        $parentType = $bean->_module;
+        $parentId = $bean->id;
+
+        if(empty($parentId || $parentType)){
+            [$parentType, $parentId] = $emails->getTrackingParentData();
+        }
+
+        $trackData = EmailTracking::encodeTrackingID("ParentType:$parentType:ParentId:$parentId");
+        $preferencesUrl = str_replace('{refid}', $trackData, SpiceConfig::getInstance()->get('emailtracking.manage_preferences_url'));
+        return "<a href=\"{$preferencesUrl}\" class=\"spice-marketing-optout-link\">$inputString</a>";
+    }
 }
