@@ -223,10 +223,19 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * The compression level in case the image for a new jpeg compression the image as jpeg.
      */
-    public imageQuality = 1;
+    public _imageQuality = 1;
     @Input('system-input-media-imagequality') public set quality( value: number ) {
-        this.imageQuality = value;
+        this._imageQuality = value;
 
+    }
+
+    get imageQuality(){
+        return this._imageQuality
+    }
+
+    set imageQuality(q){
+        this._imageQuality = q;
+        this.emitChange();
     }
     /**
      * Holds the data of the crop box from the last crop-end event.
@@ -786,6 +795,41 @@ export class SystemInputMedia implements OnDestroy {
         }
         this.resetModificationStati();
         this.isImported = false;
+    }
+
+    get width(){
+        if(this.cropper) {
+            const box = this.cropper.getCropBoxData();
+            return Math.round(box.width);
+        }
+
+        return this.mediaMetaData.originalWidth;
+    }
+
+    get height(){
+        if(this.cropper) {
+            const box = this.cropper.getCropBoxData();
+            return Math.round(box.height);
+        }
+
+        return this.mediaMetaData.originalHeight;
+    }
+
+    get maxSize(){
+        return this.maxSizeBySystem ?? this.maxSizeInput;
+    }
+
+    get resizedWidth(){
+        if(!this.maxSize) return 0;
+
+        let max = this.height > this.width ? this.height : this.width;
+        return Math.round(this.width * this.maxSize / max);
+    }
+    get resizedHeigth(){
+        if(!this.maxSize) return 0;
+
+        let max = this.height > this.width ? this.height : this.width;
+        return Math.round(this.height * this.maxSize / max);
     }
 
 }
