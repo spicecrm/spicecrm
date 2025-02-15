@@ -139,12 +139,14 @@ export class modelattachments implements OnDestroy {
     private buildBreadCrumbs(folderId) {
         // get the current Item
         let f = this._files.find(f => f.id == folderId);
-        this.folderBreadCrumbs.unshift({
-            id: f.id,
-            name: f.filename
-        });
+        if(f) {
+            this.folderBreadCrumbs.unshift({
+                id: f.id,
+                name: f.filename
+            });
 
-        if (f.folder_id) this.buildBreadCrumbs(f.folder_id);
+            if (f.folder_id) this.buildBreadCrumbs(f.folder_id);
+        }
     }
 
     public buildTree() {

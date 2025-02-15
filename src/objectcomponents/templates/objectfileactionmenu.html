@@ -17,31 +17,36 @@
                         <system-utility-icon icon="download" size="xx-small"/>
                     </a>
                 </li>
+
+                <li class="slds-dropdown__item" role="presentation" (click)="previewFile()">
+                    <a href="javascript:void(0);" role="menuitem" tabindex="-3">
+                        <span class="slds-truncate"><system-label label="LBL_PREVIEW"/></span>
+                        <system-utility-icon icon="preview" size="xx-small"/>
+                    </a>
+                </li>
+                <li class="slds-dropdown__item" role="presentation" (click)="moveFile()" [ngClass]="{'slds-is-disabled': modelattachments.folderTreeItems.length <= 1}">
+                    <a href="javascript:void(0);" role="menuitem" tabindex="-4">
+                        <span class="slds-truncate" [ngClass]="{'slds-disabled-text': modelattachments.folderTreeItems.length <= 1}"><system-label label="LBL_MOVE"/></span>
+                        <system-utility-icon icon="copy" size="xx-small"/>
+                    </a>
+                </li>
                 <li class="slds-dropdown__item" role="presentation" [hidden]="hidden" (click)="deleteFile()">
                     <a href="javascript:void(0);" role="menuitem" tabindex="-2">
                         <span class="slds-truncate"><system-label label="LBL_DELETE"/></span>
                         <system-utility-icon icon="delete" size="xx-small"/>
                     </a>
                 </li>
-                <li class="slds-dropdown__item" role="presentation" (click)="previewFile()">
-                    <a href="javascript:void(0);" role="menuitem" tabindex="-3">
-                        <span class="slds-truncate"><system-label label="LBL_PREVIEW"/></span>
-                    </a>
-                </li>
-                <li class="slds-dropdown__item" role="presentation" (click)="moveFile()">
-                    <a href="javascript:void(0);" role="menuitem" tabindex="-4">
-                        <span class="slds-truncate" [ngClass]="{'slds-disabled-text': modelattachments.folderTreeItems.length <= 1}"><system-label label="LBL_MOVE"/></span>
-                    </a>
-                </li>
             } @else {
-                <li class="slds-dropdown__item" role="presentation"  [hidden]="hidden" (click)="deleteFolder()">
-                    <a href="javascript:void(0);" role="menuitem">
-                        <span class="slds-truncate" [ngClass]="{'slds-disabled-text': modelattachments.itemsInFolder(file.id) > 0}"><system-label label="LBL_DELETE"></system-label></span>
-                    </a>
-                </li>
                 <li class="slds-dropdown__item" role="presentation"  [hidden]="hidden" (click)="renameFolder()">
                     <a href="javascript:void(0);" role="menuitem">
-                        <span class="slds-truncate"><system-label label="LBL_RENAME"></system-label></span>
+                        <span class="slds-truncate"><system-label label="LBL_RENAME"/></span>
+                        <system-utility-icon icon="record_update" size="xx-small"/>
+                    </a>
+                </li>
+                <li class="slds-dropdown__item" role="presentation"  [hidden]="hidden" (click)="deleteFolder()" [ngClass]="{'slds-is-disabled': modelattachments.itemsInFolder(file.id) > 0}">
+                    <a href="javascript:void(0);" role="menuitem">
+                        <span class="slds-truncate"><system-label label="LBL_DELETE"/></span>
+                        <system-utility-icon icon="delete" size="xx-small"/>
                     </a>
                 </li>
             }
