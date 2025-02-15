@@ -40,6 +40,7 @@
     --sds-c-button-brand-color-background: #CA1B21;
     --slds-c-button-brand-color-border: var(--color-grey-5);
     --sds-c-button-neutral-color-background-hover: #CA1B21;
+    --slds-c-button-color-background-hover: #CA1B21;
     --sds-c-button-brand-color-border-hover: #ffffff;
     --sds-c-button-brand-color-background-active: #CA1B21;
     --sds-c-button-brand-color-border-active: #ffffff;
@@ -190,6 +191,10 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 }
 .slds-button span::first-letter {
     text-transform: capitalize;
+}
+
+.slds-button:hover .slds-button__icon{
+    fill: var(--color-white);
 }
 
 /* align text justified */
@@ -421,6 +426,14 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 .slds-button-no-focus:hover{
     background-color: inherit;
 }
+
+.slds-button:hover .slds-icon,
+.slds-button:focus .slds-icon,
+.slds-button.slds-is-pressed .slds-icon{
+    fill: var(--color-white);
+}
+
+
 
 /* fix for scoped tabs when the second tba is selected */
 .slds-tabs--scoped__item, .slds-tabs_scoped__item{
