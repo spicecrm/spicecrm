@@ -311,6 +311,16 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     background: var(--color-gray-4);
     box-shadow: var(--color-border-brand) 4px 0 0 inset;
 }
+/* set indovodual paddings for the tree */
+[aria-level="1"]>.slds-tree__item{padding-left:0rem}
+[aria-level="2"]>.slds-tree__item{padding-left:1rem}
+[aria-level="3"]>.slds-tree__item{padding-left:2rem}
+[aria-level="4"]>.slds-tree__item{padding-left:3rem}
+[aria-level="5"]>.slds-tree__item{padding-left:4rem}
+[aria-level="6"]>.slds-tree__item{padding-left:5rem}
+[aria-level="7"]>.slds-tree__item{padding-left:6rem}
+[aria-level="8"]>.slds-tree__item{padding-left:7rem}
+[aria-level="9"]>.slds-tree__item{padding-left:8rem}
 
 /* for tables: resizable columns */
 .slds-table th.slds-resizable {
