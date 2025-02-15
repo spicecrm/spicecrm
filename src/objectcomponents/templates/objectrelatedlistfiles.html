@@ -4,50 +4,97 @@
             <system-icon [icon]="'file'" [size]="'small'"></system-icon>
             <div class="slds-media__body slds-grid slds-grid--vertical-align-center">
                 <h2>
-                    <a *ngIf="!componentconfig.alwaysExpanded" href="javascript:void(0);" class="slds-text-link--reset">
-                        <span class="slds-text-heading--small"><system-label [label]="componentconfig.label ? componentconfig.label+'' : 'LBL_FILES'"></system-label> ({{this.filteredFiles.length}}/{{modelattachments.files.length}})</span>
-                    </a>
-                    <span *ngIf="componentconfig.alwaysExpanded" class="slds-text-heading--small"><system-label [label]="componentconfig.label ? componentconfig.label+'' : 'LBL_FILES'"></system-label> ({{this.filteredFiles.length}}/{{modelattachments.files.length}})</span>
+                    <span class="slds-text-heading--small slds-grid">
+                        <system-label class="slds-p-right--x-small" [label]="componentconfig.label ? componentconfig.label+'' : 'LBL_FILES'"/>
+                        @if (modelattachments.loading){
+                            <system-spinner size="20"></system-spinner>
+                        } @else {
+                            ({{this.filteredFiles.length}}/{{modelattachments._files.length}})
+                        }
+                    </span>
                 </h2>
-                <system-utility-icon *ngIf="modelattachments.files.length > 0 && !componentconfig.alwaysExpanded" class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen($event)" [@animateicon]="isopen? 'open' : 'closed'"></system-utility-icon>
+                <system-utility-icon *ngIf="!modelattachments.loading && !componentconfig.alwaysExpanded" class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen($event)" [@animateicon]="isopen? 'open' : 'closed'"></system-utility-icon>
             </div>
             <div class="slds-grow slds-grid">
+                <button class="slds-col--bump-left slds-button slds-button--icon-border slds-m-right--xxx-small slds-button_dual-stateful" [ngClass]="{'slds-is-pressed': showFolders}" (click)="toggleFolders()" system-title="LBL_TOGGLE_BIG_THUMBNAIL">
+                    <system-utility-icon size="x-small" icon="side_list"></system-utility-icon>
+                </button>
                 <button class="slds-col--bump-left slds-button slds-button--icon-border slds-m-right--xxx-small" (click)="toggleBigThumbnail()" system-title="LBL_TOGGLE_BIG_THUMBNAIL">
                     <system-utility-icon size="x-small" [icon]="componentconfig?.bigThumbnail ? 'file' : 'ad_set'"></system-utility-icon>
                 </button>
-                <div *ngIf="!componentconfig.disableFilter && width > 500" class="slds-form-element slds-m-horizontal--xxx-small">
-                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left-right">
-                        <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
-                        <input type="text" class="slds-input" [ngModel]="filterTerm" (ngModelChange)="setFilteredFiles('input', $event)">
+                @if (!componentconfig.disableFilter && width > 500) {
+                    <div class="slds-form-element slds-m-horizontal--xxx-small">
+                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left-right">
+                            <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
+                            <input type="text" class="slds-input" [ngModel]="filterTerm" (ngModelChange)="setFilteredFiles('input', $event)">
+                        </div>
                     </div>
-                </div>
-                <div *ngIf="!componentconfig.disableCategories" class="slds-form-element slds-m-horizontal--xxx-small slds-grid slds-grid--vertical-align-center">
-                    <div *ngIf="width > 600" system-title="LBL_CATEGORIES" class="slds-m-horizontal--xxx-small">
-                        <system-utility-icon icon="tile_card_list" size="x-small"></system-utility-icon>
+                }
+                @if (!componentconfig.disableCategories && categories.length > 0) {
+                    <div class="slds-form-element slds-m-horizontal--xxx-small slds-grid slds-grid--vertical-align-center">
+                        <div *ngIf="width > 600" system-title="LBL_CATEGORIES" class="slds-m-horizontal--xxx-small">
+                            <system-utility-icon icon="tile_card_list" size="x-small"></system-utility-icon>
+                        </div>
+                        <div class="slds-select_container slds-m-horizontal--xxx-small">
+                            <select class="slds-select" [ngModel]="selectedCategoryId" (ngModelChange)="setFilteredFiles('category', $event)" style="min-width: 70px;">
+                                <option value="*">
+                                    <system-label label="LBL_ALL"></system-label>
+                                </option>
+                                <option *ngFor="let category of categories" [value]="category.id">
+                                    <system-label [label]="category.label"></system-label>
+                                </option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="slds-select_container slds-m-horizontal--xxx-small">
-                        <select class="slds-select" [ngModel]="selectedCategoryId" (ngModelChange)="setFilteredFiles('category', $event)" style="min-width: 70px;">
-                            <option value="*">
-                                <system-label label="LBL_ALL"></system-label>
-                            </option>
-                            <option *ngFor="let category of categories" [value]="category.id">
-                                <system-label [label]="category.label"></system-label>
-                            </option>
-                        </select>
-                    </div>
-                </div>
+                }
                 <button *ngIf="!componentconfig.disableupload" class="slds-m-left--xxx-small slds-button slds-button--icon-border" (click)="selectFile()" system-title="LBL_UPLOAD"><system-utility-icon size="x-small" icon="upload"></system-utility-icon></button>
                 <button class="slds-m-left--xxx-small slds-button slds-button--icon-border" (click)="loadFiles()" system-title="LBL_RELOAD"><system-utility-icon size="x-small" icon="refresh"></system-utility-icon></button>
             </div>
         </header>
         <input #fileupload style="display:none" type="file" multiple (click)="fileupload.value = null" (change)="uploadFile()"/>
     </div>
-    <div class="slds-card__body slds-card__body_inner" @displaycard *ngIf="isopen">
-        <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
-            <div object-related-card-file *ngFor="let file of filteredFiles" [file]="file" [bigThumbnail]="componentconfig?.bigThumbnail" class="slds-tile slds-card__tile slds-p-horizontal--small slds-hint-parent slds-size--1-of-1 slds-medium-size--1-of-3"></div>
+    @if (isopen) {
+        <div class="slds-card__body slds-card__body_inner" @displaycard>
+            <div class="slds-card__body--inner slds-grid">
+                <div *ngIf="showFolders" class="slds-border--right slds-p-right--small slds-m-right--small">
+                    <system-tree [sourceList]="modelattachments.folderTreeItems" [selectedItem]="treeFolder" [config]="{expandall: true}" (selectedItemChange)="setTreeFolder($event)"/>
+                </div>
+                <div class="slds-grow slds-grid slds-grid--vertical-align-start slds-wrap slds-grid--pull-padded">
+                    @if (filteredFiles.length > 0) {
+                        @for (file of filteredFiles; track file.id) {
+                                <object-related-card-file [file]="file" [bigThumbnail]="componentconfig?.bigThumbnail" class="slds-tile slds-card__tile slds-p-horizontal--small slds-hint-parent slds-size--1-of-1 slds-medium-size--1-of-3"/>
+                        }
+                    } @else if (!modelattachments.loading) {
+                        <div class="slds-align--absolute-center">
+                            <system-illustration-no-records>
+                                <system-label label="LBL_NO_RECORDS"></system-label>
+                            </system-illustration-no-records>
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
-        <div *ngIf="modelattachments.loading" class="slds-p-around--large slds-align--absolute-center">
-            <system-spinner></system-spinner>
-        </div>
-    </div>
+        <footer class="slds-card__footer" @displaycard>
+            <div class="slds-grid slds-grid--align-spread">
+                <nav role="navigation" aria-label="Breadcrumbs">
+                    <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+                        <li class="slds-breadcrumb__item">
+                            <a href="javascript:void(0);" (click)="modelattachments.folderId = null">
+                                <system-icon divClass="slds-p-right--xx-small" [module]="model.module" size="xx-small"/>
+                            </a>
+                        </li>
+                        @for (folderBreadCrumb of modelattachments.folderBreadCrumbs; track folderBreadCrumb.id) {
+                            <li class="slds-breadcrumb__item">
+                                <a href="javascript:void(0);"
+                                   (click)="modelattachments.folderId = folderBreadCrumb.id">{{ folderBreadCrumb.name }}</a>
+                            </li>
+                        }
+                    </ol>
+                </nav>
+                <button class="slds-button slds-button--icon" (click)="addFolder()">
+                    <system-button-icon icon="new"/>
+                </button>
+            </div>
+        </footer>
+    }
 </div>
