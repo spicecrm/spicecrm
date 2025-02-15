@@ -376,6 +376,13 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
     }
 
     /**
+     * triggers a file upload. From the select button firing the hidden file upload input
+     */
+    public addImage() {
+        this.modal.openModal('SpiceAttachmentAddImageModal', true, this.injector);
+    }
+
+    /**
      * does the upload oif the files
      */
     public uploadFile() {
