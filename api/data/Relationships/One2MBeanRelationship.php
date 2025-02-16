@@ -15,6 +15,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 
 /**
@@ -438,6 +439,14 @@ class One2MBeanRelationship extends One2MRelationship
                 $add_where = is_string($params['where']) ? $params['where'] : "$rhsTable." . $this->getOptionalWhereClause($params['where']);
                 if (!empty($add_where))
                     $where .= " AND $add_where";
+            }
+
+            // add teh acl relevant query
+            //SpiceACL::getInstance()->addACLAccessToListArray($ret_array, $this);
+            $retArray = [];
+            SpiceACL::getInstance()->addACLAccessToListArray($retArray, BeanFactory::getBean($this->def['rhs_module']));
+            if($retArray['where']) {
+                $where = "({$where}) AND {$retArray['where']}";
             }
 
             $from = $this->def['rhs_table'];
