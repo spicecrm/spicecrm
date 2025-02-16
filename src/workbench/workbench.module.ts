@@ -179,6 +179,7 @@ import {
 import {DictionaryManagerRelationshipAddUser} from "./components/dictionarymanagerrelationshipadduser";
 import {DictionaryManagerRelationshipAddOrgUnit} from "./components/dictionarymanagerrelationshipaddorgunit";
 import {DictionaryManagerRelationshipContainerUser} from "./components/dictionarymanagerrelationshipcontaineruser";
+import {DictionaryManagerRelationshipContainerOrgunit} from "./components/dictionarymanagerrelationshipcontainerorgunit";
 import {DictionaryManagerFixDBFieldsMismatchModal} from "./components/dictionarymanagerfixdbfieldsmismatchmodal";
 
 import {HL7Manager} from './components/hl7manager';
@@ -353,6 +354,7 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         DictionaryManagerRelationshipAddUser,
         DictionaryManagerRelationshipAddOrgUnit,
         DictionaryManagerRelationshipContainerUser,
+        DictionaryManagerRelationshipContainerOrgunit,
         DictionaryManagerFixDBFieldsMismatchModal,
         HL7Manager,
         Hl7ManagerType,
