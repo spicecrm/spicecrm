@@ -1,7 +1,13 @@
 <div class="slds-tabs--scoped" [ngClass]="{'slds-hide': tabs.length == 0}">
     <ul class="slds-tabs--scoped__nav" role="tablist">
         <li #maintabs *ngFor="let tab of tabs" class="slds-tabs--scoped__item" [ngClass]="{'slds-active': checkTab(tab.module)}" role="presentation" [attr.data-module]="tab.module">
-            <a class="slds-tabs--scoped__link" href="javascript:void(0);" role="tab" (click)="setTab(tab.module)"><system-label-modulename [module]="tab.module" [singular]="true"></system-label-modulename></a>
+            <a class="slds-tabs--scoped__link" href="javascript:void(0);" role="tab" (click)="setTab(tab.module)">
+                @if (activityModelDirty(tab.module)) {
+                    <span class="slds-indicator-container">
+                        <abbr class="slds-indicator_unsaved" system-title="LBL_RECORD_NOT_SAVED" [@slideIn]>*</abbr>
+                    </span>
+                }
+                <system-label-modulename [module]="tab.module" [singular]="true"></system-label-modulename></a>
         </li>
         <li #moretab class="slds-tabs_scoped__item slds-tabs_scoped__overflow-button slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': moreOpen, 'slds-active': moreactive}" (click)="toggleOpen()" role="presentation">
             <a class="slds-tabs--scoped__link" href="javascript:void(0);" role="tab">
