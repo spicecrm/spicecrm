@@ -2,7 +2,7 @@
  * @module ObjectComponents
  */
 import {Component, ElementRef, Injector, Input} from "@angular/core";
-import {language} from "../../services/language.service";
+import {backend} from "../../services/backend.service";
 import {modelattachments} from "../../services/modelattachments.service";
 import {broadcast} from "../../services/broadcast.service";
 import {modal} from '../../services/modal.service';
@@ -10,6 +10,7 @@ import {Router} from "@angular/router";
 import {navigationtab} from "../../services/navigationtab.service";
 import {toast} from "../../services/toast.service";
 import {metadata} from "../../services/metadata.service";
+import {language} from "../../services/language.service";
 
 /**
  * renders the action menu for the attachment
@@ -27,6 +28,7 @@ export class ObjectFileActionMenu {
     constructor(public broadcast: broadcast,
                 public modelattachments: modelattachments,
                 public language: language,
+                public backend: backend,
                 public elementRef: ElementRef,
                 public modalservice: modal,
                 public injector: Injector,
@@ -69,6 +71,52 @@ export class ObjectFileActionMenu {
     }
 
     /**
+     * action to delete the folder
+     *
+     */
+    public deleteFolder() {
+        // chek that we do not have items in the folder
+        if(this.modelattachments.itemsInFolder(this.file.id) > 0) return;
+
+        // prompt and delete
+        this.modalservice.confirm(this.language.getLabel('QST_DELETE_FOLDER'), this.language.getLabel('QST_DELETE_FOLDER', null, 'short')).subscribe((answer) => {
+            if (answer) this.modelattachments.deleteAttachment(this.file.id);
+        });
+    }
+
+    /**
+     * action to delete the folder
+     *
+     */
+    public renameFolder() {
+        this.modal.prompt('input', null, 'LBL_FOLDER_NAME', 'shade', this.file.filename).subscribe({
+            next: (foldername) => {
+                if(foldername && this.file.filename != foldername){
+                    const body = {
+                        filename: foldername
+                    };
+
+                    this.backend.postRequest('common/spiceattachments/' + this.file.id, {}, body).subscribe({
+                        next: (res) => {
+                            // set the new name
+                            this.file.filename = foldername;
+
+                            // rebuild the tree
+                            this.modelattachments.buildTree();
+
+                            // reemit the folderid so the list rebuilds
+                            this.modelattachments.folderId$.next(this.modelattachments.folderId);
+                        },
+                        error: () => {
+
+                        }
+                    });
+                }
+            }
+        })
+    }
+
+    /**
      * triggers the download of the file
      */
     public downloadFile() {
@@ -90,6 +138,19 @@ export class ObjectFileActionMenu {
                 };
             }
         );
+    }
+
+    /**
+     * open edit modal and fill in the input data
+     */
+    public moveFile() {
+        if(this.modelattachments.folderTreeItems.length > 1) {
+            this.modalservice.openModal('SpiceAttachmentsSetFolderModal', true, this.injector).subscribe(
+                modalRef => {
+                    modalRef.instance.attachment = this.file;
+                }
+            );
+        }
     }
 
     /**
