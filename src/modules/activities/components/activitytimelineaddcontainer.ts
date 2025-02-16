@@ -16,11 +16,33 @@ import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {activitiytimeline} from '../../../services/activitiytimeline.service';
+import {navigation} from '../../../services/navigation.service';
+import {modal} from '../../../services/modal.service';
+import {trigger, state, style, transition, animate} from '@angular/animations';
 
 @Component({
     selector: 'activitytimeline-add-container',
-    templateUrl: '../templates/activitytimelineaddcontainer.html'
+    templateUrl: '../templates/activitytimelineaddcontainer.html',
+    animations: [
+        trigger('slideIn', [
+            state('void', style({
+                transform: 'translateX(-100%)',
+                opacity: 0
+            })),
+            state('*', style({
+                transform: 'translateX(0)',
+                opacity: 1
+            })),
+            transition('void => *', [
+                animate('0.3s ease-in')
+            ]),
+            transition('* => void', [
+                animate('0.3s ease-out')
+            ])
+        ])
+    ]
 })
+
 export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChildren('maintabs', {read: ViewContainerRef}) public maintabs: QueryList<any>;
@@ -33,7 +55,14 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
     public moreOpen: boolean = false;
     public moreModules: string[] = [];
 
-    constructor(public model: model, public language: language, public activitiytimeline: activitiytimeline, public metadata: metadata, public elementRef: ElementRef, public renderer: Renderer2) {
+    constructor(public model: model,
+                public language: language,
+                public activitiytimeline: activitiytimeline,
+                public metadata: metadata,
+                public elementRef: ElementRef,
+                public renderer: Renderer2,
+                public modal: modal,
+                public navigation: navigation) {
         this.resizeListener = this.renderer.listen('window', 'resize', e => {
             this.handleOverflow();
         });
@@ -120,6 +149,7 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
 
     public setTab(object) {
         this.currenttab = object;
+        this.activitiytimeline.tabChanged$.next();
     }
 
     public checkTab(object) {
@@ -136,5 +166,13 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
 
     public toggleOpen() {
         this.moreOpen = !this.moreOpen;
+    }
+
+    /**
+     * checks if the module is dirty based of the modules name
+     * @param module
+     */
+    public activityModelDirty(module: string): boolean {
+        return this.navigation.modelsEditing.find(model =>  model.module === module)?.model?.isDirty()
     }
 }
