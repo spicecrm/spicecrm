@@ -470,7 +470,7 @@ class One2MBeanRelationship extends One2MRelationship
                 return [
                     'select' => "SELECT {$this->def['rhs_table']}.id",
                     'from' => "FROM {$this->def['rhs_table']}",
-                    'where' => $where,
+                    'where' =>  $where ? "WHERE {$where}" : ''
                 ];
             }
         }
