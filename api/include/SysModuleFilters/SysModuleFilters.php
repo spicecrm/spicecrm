@@ -218,11 +218,13 @@ class SysModuleFilters
         // build where clause for groupscope and/or groupstate
         if(!empty($module)) $filteredListCondition = $this->buildSQLWhereClauseForLists($group, $tablename, $module, $current_user->id);
 
+        // if we get a condition in teh response use it
         if(!empty($filteredListCondition)) $filterCondition .= " $filteredListCondition ";
 
         if (!empty($filterConditionArray)) {
 
-           if(!empty($filterCondition)) $filterCondition .= " {$group->logicaloperator} ";
+            // a group condition which we might have at this stage is always to be used with an AND statement
+           if(!empty($filterCondition)) $filterCondition .= " AND ";
 
             $filterCondition .= ' (' . implode(' ' . $group->logicaloperator . ' ', $filterConditionArray) . ')';
             if ($group->groupscope == 'own') {
