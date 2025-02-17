@@ -424,7 +424,7 @@ class One2MBeanRelationship extends One2MRelationship
             $rhsTable = $this->def['rhs_table'];
             $rhsTableKey = "{$rhsTable}.{$this->def['rhs_key']}";
             $deleted = !empty($params['deleted']) ? 1 : 0;
-            $where = "WHERE $rhsTableKey = '{$link->getFocus()->$lhsKey}' AND {$rhsTable}.deleted=$deleted";
+            $where = "$rhsTableKey = '{$link->getFocus()->$lhsKey}' AND {$rhsTable}.deleted=$deleted";
 
             //Check for role column
             if(!empty($this->def["relationship_role_column"]) && !empty($this->def["relationship_role_column_value"]))
@@ -453,7 +453,7 @@ class One2MBeanRelationship extends One2MRelationship
 
             if (empty($params['return_as_array'])) {
                 //Limit is not compatible with return_as_array
-                $query = "SELECT id FROM $from $where";
+                $query = "SELECT id FROM $from WHERE $where";
                 // add the sort param from the relationship
                 if($params['sort']['sortfield']){
                     $query .= " ORDER BY {$rhsTable}.{$params['sort']['sortfield']} {$params['sort']['sortdirection']}";
