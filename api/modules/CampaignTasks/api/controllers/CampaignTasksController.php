@@ -517,4 +517,22 @@ class CampaignTasksController
 
         return $res->withJson(['success' => true]);
     }
+
+    /**
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
+     */
+    public function deleteCampaignTask(Request $req, Response $res, array $args): Response
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $query = "UPDATE campaigntasks ct LEFT JOIN campaign_log cl ON ct.id=cl.campaigntask_id
+        SET cl.deleted = 1, ct.deleted = 1
+        WHERE ct.id = '{$args['campaignTaskId']}'";
+        $db->query($query);
+        return $res->withJson(true);
+    }
 }
