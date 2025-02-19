@@ -76,7 +76,7 @@ export class AccountTerritoryDetailsAddButton implements ActionSetItemI, OnInit 
         const options = this.availableCCodes.map(c => ({display: c.name, value: c.id, disabled: this.availableCCodes.length == 1}));
         const defaultValue = options.length == 1 ? options[0].value : undefined;
 
-        this.modal.prompt('input', 'LBL_MAKE_SELECTION', 'LBL_COMPANYCODE', 'shade', defaultValue, options, 'radio').subscribe(answer => {
+        this.modal.prompt('input', null, 'LBL_COMPANYCODE', 'shade', defaultValue, options, 'radio').subscribe(answer => {
             if (!answer) return;
 
             const presets = {
