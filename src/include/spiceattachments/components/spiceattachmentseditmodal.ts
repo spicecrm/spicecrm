@@ -77,27 +77,30 @@ export class SpiceAttachmentsEditModal implements OnInit {
             display_name: this.inputData.display_name ? this.inputData.display_name : ''
         };
 
-        this.backend.postRequest('common/spiceattachments/' + this.attachment.id, {}, body).subscribe(res => {
-           if (!!res && !!res.success) {
+        this.backend.postRequest('common/spiceattachments/' + this.attachment.id, {}, body).subscribe({
+            next: (res) => {
+                if (!!res && !!res.success) {
 
-               if (!!this.inputData.category_ids && this.inputData.category_ids.join(',') != this.attachment.category_ids) {
-                   this.attachment.category_ids = this.inputData.category_ids.join(',');
-               }
-               if (this.inputData.text != this.attachment.text) {
-                   this.attachment.text = this.inputData.text;
-               }
-               if (this.inputData.display_name != this.attachment.display_name) {
-                   this.attachment.display_name = this.inputData.display_name;
-               }
+                    if (!!this.inputData.category_ids && this.inputData.category_ids.join(',') != this.attachment.category_ids) {
+                        this.attachment.category_ids = this.inputData.category_ids.join(',');
+                    }
+                    if (this.inputData.text != this.attachment.text) {
+                        this.attachment.text = this.inputData.text;
+                    }
+                    if (this.inputData.display_name != this.attachment.display_name) {
+                        this.attachment.display_name = this.inputData.display_name;
+                    }
 
-               this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
-           } else {
-               this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
-           }
-           this.self.destroy();
-        }, () => {
-            this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error');
-            this.self.destroy();
+                    this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
+                } else {
+                    this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+                }
+                this.self.destroy();
+            },
+            error: () => {
+                this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error');
+                this.self.destroy();
+            }
         });
     }
 }

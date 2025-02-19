@@ -1367,8 +1367,11 @@ class Email extends SpiceBean
         while ($rel = $db->fetchByAssoc($rels)) {
             foreach ($this->field_defs as $field => $fieldDetails) {
                 if ($fieldDetails['type'] == 'link' && $fieldDetails['relationship'] == $rel['relationship_name']) {
-                    $this->load_relationship($field);
-                    $this->{$field}->add($bean->id);
+                    if($this->load_relationship($field)){
+                        if($this->{$field}->add($bean->id) === true){
+                            return ['id' => $bean->id, 'module' => $bean->_module];
+                        }
+                    }
                     return;
                 }
             }
