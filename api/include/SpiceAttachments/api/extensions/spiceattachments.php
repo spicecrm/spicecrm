@@ -243,7 +243,7 @@ $routes = [
         'class'       => SpiceAttachmentsController::class,
         'function'    => 'spiceUpdateAttachmentData',
         'description' => 'save the attachment changes',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id'       => [
                 'in'          => 'path',
@@ -251,21 +251,32 @@ $routes = [
                 'required'    => true,
                 'description' => 'GUID of the Attachment',
             ],
+            'filename'       => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => false,
+                'description' => 'name of the attachment',
+            ],
             'category_ids' => [
-                'in' => 'query',
+                'in' => 'body',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'description' => 'ids of categories joined with ,',
             ],
             'text'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => ValidationMiddleware::TYPE_STRING,
                 'description' => 'text',
             ],
             'display_name'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => ValidationMiddleware::TYPE_STRING,
                 'description' => 'the name to set as display name for the attachment',
             ],
+            'folder_id'       => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'the id of the folder to be set',
+            ]
         ]
     ],
     [
@@ -312,6 +323,46 @@ $routes = [
                 'in' => 'body',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'description' => 'ids of categories joined with ,',
+            ],
+            'folder_id' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'description' => 'the file Name',
+                'required' => false
+            ]
+        ]
+    ],[
+        'method'      => 'post',
+        'route'       => '/common/spiceattachments/module/{beanName}/{beanId}/folder',
+        'class'       => SpiceAttachmentsController::class,
+        'function'    => 'saveFolder',
+        'description' => 'adds a folder',
+        'options'     => ['validate' => true],
+        'parameters'  => [
+            'beanName' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'description' => 'name of a module',
+                'example' => 'Accounts',
+                'required' => true
+            ],
+            'beanId' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'description' => 'GUID of bean',
+                'required' => true
+            ],
+            'folder_name' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'the folder Name',
+                'required' => true
+            ],
+            'folder_id' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'description' => 'the file Name',
+                'required' => false
             ]
         ]
     ],

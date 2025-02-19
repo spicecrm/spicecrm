@@ -86,7 +86,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
      *
      * keeps if the modal is open or not
      */
-    public isopen: boolean = true;
+    public isopen: boolean = false;
     /**
      * holds the selected category value
      * @private
@@ -119,6 +119,11 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
      * @private
      */
     public filterTimeout: number;
+
+    /**
+     * show or hide folders
+     */
+    public showFolders: boolean = false;
 
     /**
      * holds the components subscriptions
@@ -169,6 +174,33 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
             this.broadcast.message$.subscribe(message => this.handleMessage(message))
         );
 
+        // subscribe to the folder change
+        this.subscriptions.add(
+            this.modelattachments.folderId$.subscribe({
+                next: () => {
+                    this.filteredFiles = this.filterFiles();
+                }
+            })
+        )
+
+        // set to open if we have set to alwysopen per config
+        if(this.componentconfig.alwaysExpanded) this.isopen = true;
+    }
+
+    /**
+     * gets the folder id and consider the root value
+     */
+    get treeFolder(){
+        return this.modelattachments.folderId ?? 'root';
+    }
+
+    /**
+     * sets the folder id and considers the root value
+     *
+     * @param folderId
+     */
+    public  setTreeFolder(folderId){
+        this.modelattachments.folderId = folderId == 'root' ? null : folderId;
     }
 
     public ngOnChanges(changes: SimpleChanges) {
@@ -220,6 +252,9 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
             case 'attachments.loaded':
                 // load attachments only, if we are in the same model
                 if(message.messagedata.reload && message.messagedata.module == this.model.module && message.messagedata.id == this.model.id) {
+                    // open if we have files
+                    if(this.modelattachments._files.length > 0) this.isopen = true;
+                    // keep closed
                     this.setFilteredFiles('category', this.selectedCategoryId);
                 }
                 break;
@@ -241,6 +276,9 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
      * initializes the model attachments service and loads the attachments
      */
     public loadFiles() {
+        // set the name if we have one
+        this.modelattachments.name = this.model.getField('summary_text');
+
         // set input base64 files
         if (this.files.length > 0) {
             this.doupload(this.files);
@@ -338,6 +376,13 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
     }
 
     /**
+     * triggers a file upload. From the select button firing the hidden file upload input
+     */
+    public addImage() {
+        this.modal.openModal('SpiceAttachmentAddImageModal', true, this.injector);
+    }
+
+    /**
      * does the upload oif the files
      */
     public uploadFile() {
@@ -418,19 +463,37 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         switch (action) {
             case 'category':
                 this.selectedCategoryId = value;
-                this.filteredFiles = (value == '*' || !value) ? this.modelattachments.files : this.modelattachments.files
-                    .filter(file => !!file.category_ids && file.category_ids.includes(value));
+                this.filteredFiles = this.filterFiles();
                 break;
             case 'input':
                 const term = value.toLowerCase();
                 this.filterTerm = value;
-
                 window.clearTimeout(this.filterTimeout);
                 this.filterTimeout = window.setTimeout(() => {
-                    this.filteredFiles = value.length == 0 ? this.modelattachments.files : this.modelattachments.files
-                        .filter(file => file.filename.toLowerCase().includes(term) || (!!file.display_name && file.display_name.toLowerCase().includes(term)) || (!!file.text && file.text.toLowerCase().includes(term)));
+                    this.filteredFiles = this.filterFiles();
                 }, 600);
         }
+    }
+
+    /**
+     * return the filtered files
+     * @private
+     */
+    private filterFiles(){
+        let filteredFiles = this.modelattachments.files;
+
+        if(this.selectedCategoryId){
+            filteredFiles = (this.selectedCategoryId == '*' || !this.selectedCategoryId) ? filteredFiles : filteredFiles
+                .filter(file => !!file.category_ids && file.category_ids.includes(this.selectedCategoryId));
+        }
+
+        if(this.filterTerm){
+            const term = this.filterTerm.toLowerCase();
+            filteredFiles = term.length == 0 ? filteredFiles : filteredFiles
+                .filter(file => file.filename.toLowerCase().includes(term) || (!!file.display_name && file.display_name.toLowerCase().includes(term)) || (!!file.text && file.text.toLowerCase().includes(term)));
+        }
+
+        return /*this.showFolders ? filteredFiles.filter(f => f.file_mime_type != 'folder') : */  filteredFiles;
     }
 
     /**
@@ -443,6 +506,11 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         this.componentconfig.bigThumbnail = !this.componentconfig.bigThumbnail;
     }
 
+    public toggleFolders(){
+        this.showFolders = !this.showFolders;
+        this.filteredFiles = this.filterFiles();
+    }
+
     /**
      * make sure on destroy to unsubscribe from the broadcast
      */
@@ -450,4 +518,21 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         this.broadcastSubscription.unsubscribe();
     }
 
+    /**
+     * adds a folder
+     */
+    public addFolder(){
+        this.modal.prompt('input', null, 'LBL_FOLDER_NAME').subscribe({
+            next: (foldername) => {
+                if(foldername){
+                    this.modelattachments.createFolder(foldername).subscribe({
+                        next: (folderID) => {
+                            this.modelattachments.folderId = folderID;
+                            // this.filteredFiles = this.filterFiles();
+                        }
+                    });
+                }
+            }
+        })
+    }
 }

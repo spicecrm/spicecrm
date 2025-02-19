@@ -320,6 +320,22 @@ $routes = [
             ],
         ],
     ],
+    [
+        'method' => 'delete',
+        'route' => '/module/CampaignTasks/{campaignTaskId}/delete',
+        'class' => CampaignTasksController::class,
+        'function' => 'deleteCampaignTask',
+        'description' => 'delete campaign task with its campaignlogs',
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters' => [
+            'campaignTaskId' => [
+                'in' => 'path',
+                'description' => 'id of campaigntask to delete',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'example' => 'a29342d1-897b-11eb-9bff-00fffe0c4f07',
+            ]
+        ]
+    ],
 ];
 
 $RESTManager->registerRoutes($routes);

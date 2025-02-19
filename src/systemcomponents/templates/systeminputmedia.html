@@ -64,6 +64,9 @@
     </div>
     <div #bottomtoolbar role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none slds-rich-text-editor__toolbar_bottom" [ngClass]="{'slds-hide': !showToolBars || !mediaMetaData.fileformat}">
         <div *ngIf="mediaMetaData.fileformat" class="slds-col--bump-right">Format: {{this.mediaMetaData.fileformat.toUpperCase()}}</div>
-        <div *ngIf="mediaBase64">{{mediaMetaData.originalWidth}} &times; {{mediaMetaData.originalHeight}} px<!--span *ngIf="isResized"> &nbsp;&#8594;&nbsp; {{mediaMetaData.width}} &times; {{mediaMetaData.height}} px</span--></div>
+        <div class="slds-p-horizontal--x-small slds-border--right">
+            <system-slider [(ngModel)]="imageQuality" theme="default" min="0" max="1" step="0.1"><system-label label="LBL_IMAGE_QUALITY"/></system-slider>
+        </div>
+        <div *ngIf="mediaBase64" class="slds-m-left--x-small">{{width}} &times; {{height}} px<span *ngIf="maxSize"> &nbsp;&#8594;&nbsp; {{resizedWidth}} &times; {{resizedHeigth}} px</span></div>
     </div>
 </div>
