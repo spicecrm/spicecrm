@@ -1558,17 +1558,10 @@ class SpiceBean
      *
      * @return boolean
      */
-    public function hasEmails()
+    public function hasEmails(): bool
     {
-        if (!empty($this->field_defs['email_addresses']) && $this->field_defs['email_addresses']['type'] == 'link' &&
-            !empty($this->field_defs['email_addresses_non_primary']) && $this->field_defs['email_addresses_non_primary']['type'] == 'email'
-        ) {
-            return true;
-        } else {
-            return false;
-        }
+        return !empty($this->field_defs['email_addresses']) && $this->field_defs['email_addresses']['type'] == 'link';
     }
-
 
     /**
      * Returns the summary text that should show up in the recent history list for this object.
