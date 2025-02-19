@@ -11,7 +11,7 @@ import {navigationtab} from "../../services/navigationtab.service";
 import {Router} from "@angular/router";
 
 @Component({
-    selector: "[object-related-card-file]",
+    selector: "object-related-card-file",
     templateUrl: "../templates/objectrelatedcardfile.html"
 })
 export class ObjectRelatedCardFile {
@@ -37,7 +37,6 @@ export class ObjectRelatedCardFile {
         public injector: Injector,
         public navigationtab: navigationtab,
         public router: Router) {
-
     }
 
     get humanFileSize() {
@@ -75,16 +74,20 @@ export class ObjectRelatedCardFile {
         // disable preview for specific files
         let fileTypeArray = this.file.file_mime_type.toLowerCase().split("/");
 
-        // disable preview for specific files
-        const applicationFile = fileTypeArray[0] == 'application' && fileTypeArray[1] != 'pdf' && fileTypeArray[1] != 'msg';
-        const csvFile = fileTypeArray[0] == 'text' && fileTypeArray[1] == 'csv';
-        if(applicationFile || csvFile) return this.downloadFile();
+        if(fileTypeArray[0] == 'folder'){
+            this.modelattachments.folderId = this.file.id;
+        } else {
+            // disable preview for specific files
+            const applicationFile = fileTypeArray[0] == 'application' && fileTypeArray[1] != 'pdf' && fileTypeArray[1] != 'msg';
+            const csvFile = fileTypeArray[0] == 'text' && fileTypeArray[1] == 'csv';
+            if (applicationFile || csvFile) return this.downloadFile();
 
-        let routePrefix = '';
-        if (this.navigationtab?.tabid) {
-            routePrefix = '/tab/' + this.navigationtab.tabid;
+            let routePrefix = '';
+            if (this.navigationtab?.tabid) {
+                routePrefix = '/tab/' + this.navigationtab.tabid;
+            }
+            this.router.navigate([`${routePrefix}/attachment/${this.file.id}/${this.modelattachments.module}/${this.modelattachments.id}`]);
         }
-        this.router.navigate([`${routePrefix}/attachment/${this.file.id}/${this.modelattachments.module}/${this.modelattachments.id}`]);
     }
 
 }
