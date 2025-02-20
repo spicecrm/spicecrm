@@ -25,7 +25,10 @@ export class GroupwareEmailArchivePaneHeader {
      * Archives an email in SpiceCRM.
      */
     public archive() {
-        this.groupware.archiveEmail();
+        this.groupware.archiveEmail().subscribe({
+            next: () => this.cdRef.detectChanges(),
+            error: () => this.cdRef.detectChanges(),
+        });
     }
 
     /**
@@ -33,16 +36,5 @@ export class GroupwareEmailArchivePaneHeader {
      */
     get canArchive() {
         return this.groupware.archiveto.length > 0;
-    }
-
-    /**
-     * Check if the email has already been archived.
-     */
-    get isArchived() {
-        if (this.groupware.emailId.length === 0) {
-            return false;
-        }
-
-        return true;
     }
 }
