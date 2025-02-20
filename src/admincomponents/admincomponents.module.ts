@@ -2,7 +2,7 @@
  * @module AdminComponentsModule
  */
 import {CommonModule} from '@angular/common';
-import {FormsModule}   from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgModule} from '@angular/core';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
@@ -103,7 +103,8 @@ import {AdministrationBackupManagerPreviewModal} from "./components/administrati
         DragDropModule,
         ObjectComponents,
         ObjectFields,
-        WorkbenchModule
+        WorkbenchModule,
+        ReactiveFormsModule
     ],
     declarations: [
         AdministrationAPIInspector,

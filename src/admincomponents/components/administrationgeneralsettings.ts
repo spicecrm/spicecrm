@@ -8,6 +8,7 @@ import {backend} from '../../services/backend.service';
 import {modal} from '../../services/modal.service';
 import {toast} from "../../services/toast.service";
 import {currency} from "../../services/currency.service";
+import {debounceTime, Subject} from "rxjs";
 
 @Component({
     selector: 'administration-general-setting',
@@ -31,6 +32,7 @@ export class AdministrationGeneralSettings implements OnInit {
             dump_slow_queries: false,
             slow_query_time_msec: 0,
             upload_maxsize: 0,
+            file_types: {},
             international_email_addresses: 0
         },
         cache: {
@@ -50,6 +52,21 @@ export class AdministrationGeneralSettings implements OnInit {
             file_suffix: ''
         }
     };
+
+    /**
+     * action to perform (file types)
+     */
+    public actionToPerform: string;
+
+    /**
+     * file types to include/exclude
+     */
+    public fileTypes: any;
+
+    /**
+     *
+     */
+    public fileTypeChange$: Subject<string> = new Subject<string>();
 
     /**
      * available options from backend
@@ -74,7 +91,9 @@ export class AdministrationGeneralSettings implements OnInit {
         public toast: toast,
         public currency: currency,
     ) {
-
+        this.fileTypeChange$
+            .pipe(debounceTime(1000))
+            .subscribe(() => this.buildFileTypeObject());
     }
 
     /**
@@ -96,11 +115,41 @@ export class AdministrationGeneralSettings implements OnInit {
                         break;
                 }
 
+                try {
+                    const fileTypesString = data?.advanced?.file_types;
+                    const parsedFileType = JSON.parse(fileTypesString);
+
+                    if (parsedFileType && typeof parsedFileType === 'object' && !Array.isArray(parsedFileType)) {
+                        const [key, value] = Object.entries(parsedFileType)[0] || [];
+                        this.actionToPerform = key;
+                        this.fileTypes = value;
+                    }
+                } catch (e) {
+                    this.settings.advanced.file_types = {};
+                }
+
+
                 this._loglevels = this.settings.logger.level.split(',');
                 this.loading = false;
                 modalRef.instance.self.destroy();
             });
         });
+    }
+
+    public onFileTypesChange(value: string): void {
+        this.fileTypeChange$.next(value);
+    }
+
+    /**
+     * build the file type object, example {"exclude": ".msg, .eml"}
+     */
+    public buildFileTypeObject(): void {
+        if (this.actionToPerform && this.fileTypes) {
+            const fileTypeConfig = { [this.actionToPerform]: this.fileTypes };
+            this.settings.advanced.file_types = JSON.stringify(fileTypeConfig);
+        } else {
+            this.settings.advanced.file_types = {};
+        }
     }
 
     /**
