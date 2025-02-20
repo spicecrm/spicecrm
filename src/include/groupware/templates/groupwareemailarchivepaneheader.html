@@ -11,7 +11,14 @@
                             </h1>
                         </div>
                     </div>
-                    <p class="slds-page-header__name-meta"><system-label [label]="isArchived ? 'LBL_ARCHIVED' : 'LBL_NOT_ARCHIVED'"></system-label></p>
+                    <p class="slds-page-header__name-meta">
+                        @if(!!groupware.emailId) {
+                            <system-label label="LBL_ARCHIVED" class="slds-text-color_success"/>
+                            <system-utility-icon icon="check" size="xx-small" colorclass="slds-icon-text-success" class="slds-m-left--xx-small"/>
+                        } @else {
+                            <system-label label="LBL_NOT_ARCHIVED" />
+                        }
+                    </p>
                 </div>
             </div>
         </div>
