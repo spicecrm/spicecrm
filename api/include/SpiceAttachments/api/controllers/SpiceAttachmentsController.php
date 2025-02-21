@@ -156,7 +156,13 @@ class SpiceAttachmentsController
             throw (new ForbiddenException("not allowed to view this record"))->setErrorCode('noModuleView');
         }
 
-        return $res->withJson(SpiceAttachments::getAttachment($args['attachmentId'], false));
+        $attachment = SpiceAttachments::getAttachment($args['attachmentId'], false);
+
+        if ($attachment['file_mime_type'] == 'message/rfc822') {
+            $attachment = SpiceAttachments::convertEmlFile4display($attachment);
+        }
+
+        return $res->withJson($attachment);
     }
 
     /**
