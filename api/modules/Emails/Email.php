@@ -1679,6 +1679,16 @@ class Email extends SpiceBean
                         ];
                         SpiceAttachments::saveAttachmentHashFiles('Emails', $this->id, $fileArray);
                     }
+
+                    if (strpos($bodyPart['headers']['content-type'], 'message/rfc822') !== false) {
+                        $fileArray = [
+                            'filename' => $bodyPart['content-id'], // not sure what to use as the filename as the subject is not easily available at this point
+                            'file' => base64_encode($contents[$index]),
+                            'filemimetype' => $bodyPart['content-type'],
+                            'external_id' => $bodyPart['content-id'],
+                        ];
+                        SpiceAttachments::saveAttachmentHashFiles('Emails', $this->id, $fileArray);
+                    }
                     break;
             }
         }
