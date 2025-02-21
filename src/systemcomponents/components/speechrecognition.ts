@@ -55,7 +55,7 @@ export class SpeechRecognition implements OnInit {
      */
     public richTextEditorString :string;
 
-    public languages = [{id: 'de_DE', name: 'Deutsch'}, {id: 'en_US', name: 'English'}];
+    public languages = [];
     public selectedLanguage = 0;
 
     constructor(public language: language, public metadata: metadata, public toast: toast, public changeDetRef: ChangeDetectorRef, public applicationRef: ApplicationRef) {
@@ -69,8 +69,13 @@ export class SpeechRecognition implements OnInit {
             this.self.destroy();
         }
 
-        if (this.language.currentlanguage === 'de_DE') this.selectedLanguage = 0;
-        else this.selectedLanguage = 1;
+        const availableLanguages = this.language.getAvialableLanguages();
+        this.languages = availableLanguages.map(lang => ({
+            id: lang.language,
+            name: lang.display_label || lang.text
+        }))
+
+        this.selectedLanguage = this.languages.findIndex(lang => lang.id === this.language.currentlanguage);
 
         this.recognition = new ( window.SpeechRecognition || window.webkitSpeechRecognition )();
 
