@@ -4,7 +4,6 @@ import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
 import {GroupwareService} from "../services/groupware.service";
 import {modal} from "../../../services/modal.service";
-import {error} from "@angular/compiler-cli/src/transformers/util";
 
 @Component({
     selector: 'groupware-create-bean',
@@ -22,7 +21,7 @@ export class GroupwareCreateBean implements OnInit {
      * on save or cancel emit the action
      * @private
      */
-    @Output() private action$ = new EventEmitter<void>();
+    @Output() private action$ = new EventEmitter<{id: string}>();
     /**
      * bean module
      * @private
@@ -75,12 +74,13 @@ export class GroupwareCreateBean implements OnInit {
             next: res => {
                 isSaving.next(true);
                 isSaving.complete();
-                this.groupware.relatedBeans.push({
+                const bean = {
                     id: this.model.id,
                     module: this.model.module,
                     data: this.model.data,
-                });
-                this.action$.emit();
+                };
+                this.groupware.relatedBeans.push(bean);
+                this.action$.emit(bean);
             },
             error: () => {
                 isSaving.next(false);

@@ -39,9 +39,8 @@ export class fieldCompanies extends fieldGeneric implements OnInit {
             if (this.userpreferences.companyCodeId) {
                 this.value = this.userpreferences.companyCodeId;
             } else {
-                let companyCodes = this.configuration.getData('companycodes');
+                let companyCodes = this.configuration.getData('companycodes').sort((a, b) => a.name.localeCompare(b.name));
                 if (companyCodes && companyCodes.length > 0) {
-                    companyCodes.sort((a, b) => a.name > b.name ? -1 : 1);
                     this.value = companyCodes[0].id;
                 }
             }
