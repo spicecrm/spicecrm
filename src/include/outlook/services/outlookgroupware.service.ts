@@ -88,8 +88,11 @@ export class OutlookGroupware extends GroupwareService {
                     bean: this.model.utils.spiceModel2backend('Emails', this.model.data)
                 };
 
-                this.backend.postRequest('channels/groupware/outlook/email', {}, data).subscribe(
-                    (res) => {
+                this.backend.postRequest('channels/groupware/outlook/email', {}, data).subscribe({
+                    next: (res) => {
+
+                        this.emailId = res.email_id;
+
                         if (this.archiveattachments.length > 0) {
                             let attachmentData = {
                                 attachmentToken: this.attachments.attachmentToken,
@@ -98,22 +101,21 @@ export class OutlookGroupware extends GroupwareService {
                                 emailId: res.email_id,
                             };
 
-                            this.backend.postRequest('channels/groupware/outlook/attachments', {}, attachmentData).subscribe(
-                                success => {
+                            this.backend.postRequest('channels/groupware/outlook/attachments', {}, attachmentData).subscribe({
+                                next: () => {
                                     loading.next(true);
                                     loading.complete();
                                     retSubject.next(true);
                                     retSubject.complete();
                                 },
-                                error => {
+                                error: () => {
                                     loading.next(true);
                                     loading.complete();
                                     retSubject.error('error archiving attachments');
                                     retSubject.complete();
                                 }
-                            );
+                            });
 
-                            this.emailId = res.email_id;
                         } else {
                             loading.next(true);
                             loading.complete();
@@ -122,12 +124,12 @@ export class OutlookGroupware extends GroupwareService {
                             retSubject.complete();
                         }
                     },
-                    error => {
+                    error: () => {
                         loading.next(true);
                         loading.complete();
                         retSubject.error('error archiving email');
                         retSubject.complete();
-                    }
+                    }}
                 );
             },
             (err) => {
