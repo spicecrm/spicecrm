@@ -225,7 +225,7 @@ class Email extends SpiceBean
                     //empty the attachments array and push the created zip attachment to it
                     $this->attachments = [];
                     $this->attachments[0] = $zipAttachment;
-            }
+                }
                 $result = $this->sendEmail();
                 $this->to_be_sent = false;
             }
@@ -259,6 +259,8 @@ class Email extends SpiceBean
      */
     private function createZipFromAttachments(): object
     {
+        $this->loadAttachments();
+
         // create a zip file in the temporary directory
         $tempDir = sys_get_temp_dir();
         $filename = $this->attachments[0]->filename . '_' . SpiceUtils::createGuid() . '.zip';
@@ -954,8 +956,8 @@ class Email extends SpiceBean
         foreach ($dom->getElementsByTagName('a') as $node) {
             $marketingaction = $node->getAttribute('data-marketingaction');
             if (!empty($marketingaction)) {
-                $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? throw new \SpiceCRM\includes\ErrorHandlers\Exception("misconfiguration blowfishkey missing");
-                $method = 'DES-EDE3-CBC';
+                $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? "2fs5uhnjcnpxcpg9";
+                $method = 'blowfish';
                 [$parentType, $parentId] = $this->getTrackingParentData();
                 $data = "ParentType:$parentType:ParentId:$parentId:MarketingActions:$marketingaction";
                 $link = openssl_encrypt($data, $method, $key);
@@ -1868,36 +1870,33 @@ class Email extends SpiceBean
     /**
      * @throws Exception
      */
-    public function validateEmailForDownload(SpiceBean $email)
+    public function validateEmailForDownload( $doIncrement = false ): true|string
     {
-
-        if (!$email) {
-            throw new Exception('The given email does not exist.');
-        }
+        $downloadAttachmentsEnabled = (int) $this->getFieldValue('downloadlink_attachments');
+        if ( !$downloadAttachmentsEnabled ) return 'notAccessible';
 
         $downloadCounterMax = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_counter_max');
-        $downloadCounter = $email->getFieldValue('downloadlink_counter');
+        $downloadCounter = $this->getFieldValue('download_counter');
 
-        if ($downloadCounter >= $downloadCounterMax) {
-            throw new Exception('You have reached the limit of downloading the attachments.');
+        if ( $downloadCounterMax !== null and $downloadCounter >= $downloadCounterMax) return 'limitExceeded';
+
+        if ( $downloadCounterMax !== null and $doIncrement ) {
+            $this->download_counter++;
+            $this->save();
         }
 
-        $downloadAttachmentsEnabled = $email->getFieldValue('downloadlink_attachments');
-        if (!$downloadAttachmentsEnabled) {
-            throw new Exception('Download Link Attachment not checked');
-        }
-
-        return $email;
+        return true;
     }
 
     /**
      * @throws Exception
      */
-    public function returnDownloadFromDownloadlink($email) {
-        $email = BeanFactory::getBean('Emails', $email);
-
-        if (!$email || empty($email->id)) {
-            throw new \Exception('Email not found.');
+    public function returnDownloadFromDownloadlink( &$errorCode ): false|string
+    {
+        $dummy = $this->validateEmailForDownload( true );
+        if ( $dummy !== true ) {
+            $errorCode = $dummy;
+            return false;
         }
 
         $newZipAttachment = $this->createZipFromAttachments();
@@ -1909,18 +1908,13 @@ class Email extends SpiceBean
         $zipFilePath = "upload/" . $newZipAttachment->filemd5;
 
         if (!file_exists($zipFilePath)) {
-            throw new \RuntimeException('ZIP file not found.');
+            throw new \RuntimeException('ZIP file not found.'); // todo: really this exception type?
         }
 
         try {
-            $zipContents = file_get_contents($zipFilePath);
-            $base64Zip = base64_encode($zipContents);
-
-            return [
-                'success' => true,
-                'base64Zip' => $base64Zip,
-                'filename' => $newZipAttachment->filename,
-            ];
+            $zipContents = file_get_contents( $zipFilePath );
+            $base64zip = base64_encode( $zipContents );
+            return $base64zip;
         } finally {
             unlink($zipFilePath);
         }
