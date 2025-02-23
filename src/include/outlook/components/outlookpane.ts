@@ -44,6 +44,11 @@ export class OutlookPane implements OnInit {
             this.itemChanged();
         });
 
+        this.broadcast.message$.subscribe((message: any) => {
+            if (message.messagetype === 'loader.completed' && message.messagedata === 'loadRepository') {
+                this.itemChanged();
+            }
+        });
     }
 
     /**
