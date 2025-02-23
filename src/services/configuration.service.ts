@@ -203,9 +203,9 @@ export class configurationService {
                         component: SpiceInstaller
                     });
                     this.router.navigate(['/install']);
-                } else if(err.status == '503'){
+                } else {
                     this.initialized = true;
-                    this.loadingError = err.error.error.message;
+                    this.loadingError = err.error ? err.error.error.message : 'unknown system error';
                 }
             }
         });
