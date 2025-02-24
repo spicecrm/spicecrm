@@ -88,6 +88,6 @@ class CalendarRestHandler
     private function getCalendarItems(string $calendarId, string $userId): array
     {
         $db = DBManagerFactory::getInstance();
-        return $db->fetchAll("SELECT module, type, module_filter FROM sysuicalendaritems WHERE calendar_id = '$calendarId' AND owner = '$userId' UNION SELECT module, type, module_filter FROM sysuicustomcalendaritems WHERE calendar_id = '$calendarId' AND owner = '$userId'") ?: [];
+        return $db->fetchAll("SELECT module, type, module_filter FROM sysuicalendaritems WHERE calendar_id = '$calendarId' AND (owner = '$userId' OR owner = '*') UNION SELECT module, type, module_filter FROM sysuicustomcalendaritems WHERE calendar_id = '$calendarId' AND (owner = '$userId' OR owner = '*')") ?: [];
     }
 }
