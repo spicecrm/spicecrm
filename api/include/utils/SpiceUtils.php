@@ -238,7 +238,7 @@ class SpiceUtils
     public static function spiceCleanup(bool $exit = false) {
         if (SpiceConfig::getInstance()->configExists()) { // workaround for installer for now. variable is set in SpiceInstallerController ... find a better way
             $db = DBManagerFactory::getInstance();
-            if($db) $db->disconnect();
+            if($db && $db->database) $db->disconnect();
         }
         if ($exit) {
             exit;

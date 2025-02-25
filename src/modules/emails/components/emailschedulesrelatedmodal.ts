@@ -85,16 +85,23 @@ export class EmailSchedulesRelatedModal {
         // if we have a referenced email then build the context
         if(this.referencedEmail){
             // set the email-history into the body
-            let emailTexts = this.emailsService.composeReplyContent(this.referencedEmail, 'fwd');
-            this.model.setFields({
-                email_subject: emailTexts.name,
-                email_body: emailTexts.body
+            this.emailsService.composeReplyContent(this.referencedEmail, 'fwd').subscribe({
+                next: (emailTexts) => {
+                    this.model.setFields({
+                        recipient_addresses: [],
+                        reference_id: this.referencedEmail.id,
+                        name: emailTexts.name,
+                        body: emailTexts.body
+                    });
+                }
             });
 
-            // clomne teh attachments if we have any
-            this.modelattachments.module = this.model.module;
+            // clone teh attachments if we have any and they are not embedded already
+            let matchedEntries = [...this.referencedEmail.data.body.matchAll(new RegExp(/\<img[\w\W]+?alt="([\w\W]+?)"[\w\W]+?\>/gm))];
+            let excludedFileNames = matchedEntries.map(m => m[1]);
+            this.modelattachments.module = 'Emails';
             this.modelattachments.id = this.model.id;
-            this.modelattachments.cloneAttachments(this.referencedEmail);
+            this.modelattachments.cloneAttachments(this.referencedEmail, null, excludedFileNames);
 
         }
     }

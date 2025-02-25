@@ -1,7 +1,7 @@
 /**
  * @module ModuleActivities
  */
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewContainerRef} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
@@ -9,7 +9,7 @@ import {view} from '../../../services/view.service';
 import {modal} from '../../../services/modal.service';
 import {dockedComposer} from '../../../services/dockedcomposer.service';
 import {activitiytimeline} from '../../../services/activitiytimeline.service';
-import {modelattachments} from "../../../services/modelattachments.service";
+import {navigation} from '../../../services/navigation.service';
 
 /**
  * @ignore
@@ -75,7 +75,15 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
      */
     public parentSubscription: any;
 
-    constructor(public metadata: metadata, public activitiytimeline: activitiytimeline, public model: model, public view: view, public language: language, public modal: modal, public dockedComposer: dockedComposer, public ViewContainerRef: ViewContainerRef) {
+    constructor(public metadata: metadata,
+                public activitiytimeline: activitiytimeline,
+                public model: model,
+                public navigation: navigation,
+                public view: view,
+                public language: language,
+                public modal: modal,
+                public dockedComposer: dockedComposer,
+                public ViewContainerRef: ViewContainerRef) {
     }
 
     /**
@@ -113,6 +121,16 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
 
         // check if the model can be docked into a GlobalDockedComposer
         this.checkCanDock();
+
+        // checks the tab (module) if it's dirty
+        // if not, close the expanded activity and end the edit mode
+        this.activitiytimeline.tabChanged$.subscribe({
+            next: () => {
+                let activeTabDirty = this.navigation.modelsEditing.find(model =>  model.module === this.model.module)?.model?.isDirty();
+                if (!activeTabDirty) this.cancel();
+            }
+        })
+
     }
 
     /**
@@ -122,6 +140,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
      */
     public ngOnDestroy(): void {
         if (this.parentSubscription) this.parentSubscription.unsubscribe();
+        this.activitiytimeline.tabChanged$.unsubscribe();
     }
 
     /**
@@ -142,7 +161,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
      * returns if attachments are allowed. Then displays the attachment panel
      */
     get allowattachments() {
-        return this.componentconfig.allowattachments === true ? true : false;
+        return this.componentconfig.allowattachments === true;
     }
 
     /**
@@ -164,8 +183,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
             this.isExpanded = true;
             this.initializeModule();
 
-            // set start editing here as well so we can block navigating away
-            this.model.startEdit(false);
+            this.model.startEdit();
         }
     }
 

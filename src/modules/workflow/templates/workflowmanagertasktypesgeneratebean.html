@@ -47,7 +47,7 @@
                         }
                         @case ('eval'){
                             <div class="slds-grid slds-grid--vertical slds-grow">
-                                <system-input-module-field [(ngModel)]="fieldObj.fromField" [omittedFields]="addedFromFields" (ngModelChange)="onFromFieldChange()" [module]="workflowManager.currentModule.name" class="slds-grow slds-m-vertical--xx-small" />
+                                <system-input-module-field [(ngModel)]="fieldObj.fromField" (ngModelChange)="onFromFieldChange()" [module]="workflowManager.currentModule.name" class="slds-grow slds-m-vertical--xx-small" />
                                 <system-input-text class="slds-grow slds-m-around--xx-small" [(ngModel)]="fieldObj.evalValue"/>
                             </div>
                         }

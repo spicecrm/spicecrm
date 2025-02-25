@@ -6,7 +6,7 @@
         <system-icon [module]="model.module" size="small"></system-icon>
     </div>
     <div class="slds-media__body">
-        <div class="slds-grid slds-has-flexi-truncate">
+        <div (click)="goDetails()" [style.cursor]="goDetailsEnabled ? 'pointer' : 'initial'" class="slds-grid slds-has-flexi-truncate">
             <span *ngIf="!mainfieldsetfields">{{model.data.summary_text}}</span>
             <ul *ngIf="mainfieldsetfields" class="slds-list_horizontal slds-has-dividers_right slds-truncate">
                 <ng-container *ngFor="let fieldsetitem of mainfieldsetfields">
