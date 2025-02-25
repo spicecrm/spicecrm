@@ -10,6 +10,7 @@ use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfHandler;
@@ -373,7 +374,16 @@ class ConfigTransferController
                 // If there are already unknown tables a rollback will be performed later, so this makes no sense
                 if (!$unknownTables or (isset($params['ignoreUnknownTables']) and $params['ignoreUnknownTables'] === true)) {
                     $affectedTables[$tablename] = true;
-                    $db->deleteAll($tablename);
+
+                    $tableDef = SpiceDictionary::getInstance()->getDefsByTableName('syscustomdictionaryitems');
+
+                    # delete all records except system package
+                    if (!isset($tableDef['fields']['package'])) {
+                        $db->deleteAll($tablename);
+                    } else {
+                        $db->query("DELETE FROM $tablename WHERE package != 'system' OR package is null");
+                    }
+
                     foreach ($rows as $k2 => $v2) {
                         $vals = (array)$v2;
                         unset($vals['date_indexed']); // The new records are not yet fts indexed, so no time stamp should be entered.
