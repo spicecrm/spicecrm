@@ -1037,12 +1037,12 @@ export class model implements OnDestroy {
 
     /**
      * sets a single field on the model
-     *
      * @param field
      * @param value
      * @param silent
+     * @param setDirty
      */
-    public setField(field, value, silent: boolean = false) {
+    public setField(field, value, silent: boolean = false, setDirty: boolean = true) {
         if (!field) return false;
 
         const previousValue = this.data[field];
@@ -1056,6 +1056,11 @@ export class model implements OnDestroy {
 
         if (!silent) {
             this.data$.next(this.data);
+        }
+
+        // also update the backupData if we do not consider this as something that should mark the model as dirty
+        if(!setDirty && !_.isEmpty(this.backupData)){
+            this.backupData[field] = value;
         }
 
         // run the duplicate check
@@ -1150,7 +1155,13 @@ export class model implements OnDestroy {
         let d = {};
         for (let property in this.data) {
             // if (property && (!this.backupData || _.isObject(this.data[property]) || _.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
-            if (property && (!this.backupData || !_.isEqual(this.data[property], this.backupData[property]))) {
+            if (property && (
+                !this.backupData ||
+                !_.isEqual(
+                    this.data[property] === null ? '' : this.data[property],
+                    this.backupData[property] === null ? '' : this.backupData[property]
+                )
+            )) {
                 d[property] = this.data[property];
             }
         }

@@ -40,6 +40,7 @@
     --sds-c-button-brand-color-background: #CA1B21;
     --slds-c-button-brand-color-border: var(--color-grey-5);
     --sds-c-button-neutral-color-background-hover: #CA1B21;
+    --slds-c-button-color-background-hover: #CA1B21;
     --sds-c-button-brand-color-border-hover: #ffffff;
     --sds-c-button-brand-color-background-active: #CA1B21;
     --sds-c-button-brand-color-border-active: #ffffff;
@@ -71,6 +72,10 @@
     --slds-g-shadow-outline-focus-1: 0 0 3px var(--brand-primary);
     --slds-c-radio-mark-color-foreground: var(--brand-primary);
     --slds-c-radio-shadow-focus: 0 0 3px var(--brand-primary);
+    --slds-c-slider-thumb-color-foreground: var(--brand-primary);
+    --sds-c-slider-thumb-color-foreground-active: var(--color-grey-9);
+    --slds-c-slider-thumb-color-foreground-focus: var(--color-grey-9);
+    --sds-c-slider-thumb-color-foreground-hover: var(--color-grey-7);
 }
 
 html {
@@ -192,6 +197,10 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     text-transform: capitalize;
 }
 
+.slds-button:hover .slds-button__icon{
+    fill: var(--color-white);
+}
+
 /* align text justified */
 /* not a slds class, but related to slds classes slds-text-align_left, slds-text-align_center or slds-text-align_right */
 .slds-text-align_justify, .slds-text-align--justify {
@@ -311,6 +320,16 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     background: var(--color-gray-4);
     box-shadow: var(--color-border-brand) 4px 0 0 inset;
 }
+/* set indovodual paddings for the tree */
+[aria-level="1"]>.slds-tree__item{padding-left:0rem}
+[aria-level="2"]>.slds-tree__item{padding-left:1rem}
+[aria-level="3"]>.slds-tree__item{padding-left:2rem}
+[aria-level="4"]>.slds-tree__item{padding-left:3rem}
+[aria-level="5"]>.slds-tree__item{padding-left:4rem}
+[aria-level="6"]>.slds-tree__item{padding-left:5rem}
+[aria-level="7"]>.slds-tree__item{padding-left:6rem}
+[aria-level="8"]>.slds-tree__item{padding-left:7rem}
+[aria-level="9"]>.slds-tree__item{padding-left:8rem}
 
 /* for tables: resizable columns */
 .slds-table th.slds-resizable {
@@ -411,6 +430,23 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 .slds-button-no-focus:hover{
     background-color: inherit;
 }
+
+.slds-button:hover .slds-icon,
+.slds-button:focus .slds-icon,
+.slds-button.slds-is-pressed .slds-icon{
+    fill: var(--color-white);
+}
+
+/* disabled fill color if in disabled element */
+.slds-is-disabled .slds-icon_container.slds-icon{
+    fill: var(--slds-g-color-neutral-base-80, #c9c9c9)
+}
+
+/* disabled text color */
+.slds-dropdown__item>a.slds-is-disabled a{
+    color: var(--slds-g-color-neutral-base-80, #c9c9c9)
+}
+
 
 /* fix for scoped tabs when the second tba is selected */
 .slds-tabs--scoped__item, .slds-tabs_scoped__item{

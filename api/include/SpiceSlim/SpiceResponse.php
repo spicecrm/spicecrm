@@ -21,7 +21,7 @@ class SpiceResponse extends BaseResponse
      * @param int $encodingOptions
      * @return SpiceResponse
      */
-    public function withJson($data, $status = null, $encodingOptions = JSON_INVALID_UTF8_IGNORE): SpiceResponse {
+    public function withJson($data, $status = null, $encodingOptions = JSON_INVALID_UTF8_IGNORE | JSON_PARTIAL_OUTPUT_ON_ERROR): SpiceResponse {
         $json = json_encode($data, $encodingOptions);
 
         // Ensure that the json encoding passed successfully
