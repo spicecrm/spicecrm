@@ -12,6 +12,7 @@ import {language} from "./language.service";
 import {broadcast} from "./broadcast.service";
 import {model} from "./model.service";
 import {modal} from "./modal.service";
+import {readUsedSize} from "chart.js/helpers";
 
 /**
  * @ignore
@@ -38,6 +39,11 @@ export class modelattachments implements OnDestroy {
     public id: string;
 
     /**
+     * the name of an object
+     */
+    public name: string;
+
+    /**
      * the toal attachment count
      */
     public count: number = 0;
@@ -45,7 +51,7 @@ export class modelattachments implements OnDestroy {
     /**
      * the files loaded
      */
-    public files: any[] = [];
+    public _files: any[] = [];
 
     /**
      * inidcates that the list of files is being loaded
@@ -62,6 +68,29 @@ export class modelattachments implements OnDestroy {
      */
     public loaded$: BehaviorSubject<boolean>;
 
+    /**
+     * the current folderid
+     */
+    public _folderId: string = null;
+
+    /**
+     * an emitter that emits when the atatchments are loaded
+     */
+    public folderId$: BehaviorSubject<string>;
+
+    /**
+     * an array for the breadcrumbs
+     */
+    public folderBreadCrumbs: any[] = [];
+
+    /**
+     * holds the folders in a structure for the system-tree
+     */
+    public folderTreeItems: any[] = [];
+
+    /**
+     * a colection of subscriptions
+     */
     public subscriptions: Subscription = new Subscription();
 
     constructor(
@@ -74,6 +103,69 @@ export class modelattachments implements OnDestroy {
         public modal: modal
     ) {
         this.loaded$ = new BehaviorSubject<boolean>(false);
+        this.folderId$ = new BehaviorSubject<string>(null);
+    }
+
+    get files() {
+        return this._files.filter(f => f.folder_id == this._folderId).sort((a, b) => {
+            if (a.file_mime_type == 'folder' && b.file_mime_type != 'folder') return -1;
+            if (b.file_mime_type == 'folder' && a.file_mime_type != 'folder') return 1;
+            return a.filename.localeCompare(b.filename);
+        });
+    }
+
+    set files(f) {
+        this._files = f;
+    }
+
+    get folderId() {
+        return this._folderId;
+    }
+
+    set folderId(f) {
+        this._folderId = f;
+        this.folderId$.next(f);
+
+        // build the breadcrumbs
+        this.folderBreadCrumbs = [];
+        this.buildBreadCrumbs(f);
+    }
+
+    /**
+     * builds the breadcrumbs
+     *
+     * @private
+     */
+    private buildBreadCrumbs(folderId) {
+        // get the current Item
+        let f = this._files.find(f => f.id == folderId);
+        if(f) {
+            this.folderBreadCrumbs.unshift({
+                id: f.id,
+                name: f.filename
+            });
+
+            if (f.folder_id) this.buildBreadCrumbs(f.folder_id);
+        }
+    }
+
+    public buildTree() {
+        this.folderTreeItems = this._files.filter(f => f.file_mime_type == 'folder').map(f => {
+            return {
+                id: f.id,
+                parent_id: f.folder_id ?? 'root',
+                name: f.filename + ' (' + this.itemsInFolder(f.id, true) + ')',
+                clickable: true
+            }
+        });
+
+        // add the top folder
+        this.folderTreeItems.unshift({
+            id: 'root',
+            parent_id: null,
+            name: (this.name ?? 'root') + ' (' + this.itemsInFolder(null, true) + ')',
+            clickable: true
+        })
     }
 
     /**
@@ -122,31 +214,34 @@ export class modelattachments implements OnDestroy {
     public getAttachments(categoryId?: string): Observable<any> {
         let retSubject = new Subject();
 
-        this.files = [];
+        this._files = [];
         this.loading = true;
         this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}`, {categoryId}, this.httpRequestsRefID).subscribe({
             next: response => {
                 for (let attId in response) {
-                    if (!this.files.find(a => a.id == attId)) {
+                    if (!this._files.find(a => a.id == attId)) {
                         response[attId].date = new moment(response[attId].date);
-                        this.files.push(response[attId]);
+                        this._files.push(response[attId]);
                     }
                 }
 
                 // set the count
-                this.count = this.files.length;
+                this.count = this._files.length;
 
                 // broadcast the count
                 this.broadcastAttachmentCount();
 
                 this.loading = false;
-                // this.files = response;
+                // this._files = response;
 
                 // close the subject
-                retSubject.next(this.files);
+                retSubject.next(this._files);
                 retSubject.complete();
 
                 this.loaded = true;
+
+                // build the folder tree
+                this.buildTree();
 
                 // emit on the service
                 this.loaded$.next(true);
@@ -169,10 +264,14 @@ export class modelattachments implements OnDestroy {
      *
      * @param parentModel
      * @param categoryId
+     * @param excludedFilenames
      */
-    public cloneAttachments(parentModel: model, categoryId?: string): Observable<any> {
+    public cloneAttachments(parentModel: model, categoryId?: string, excludedFilenames?: string[]): Observable<any> {
         let retSubject = new Subject();
-        this.backend.postRequest(`common/spiceattachments/module/${this.module}/${this.id}/clone/${parentModel.module}/${parentModel.id}`, {}, {categoryId}, this.httpRequestsRefID).subscribe({
+        this.backend.postRequest(`common/spiceattachments/module/${this.module}/${this.id}/clone/${parentModel.module}/${parentModel.id}`, {}, {
+            categoryId,
+            excludedFilenames
+        }, this.httpRequestsRefID).subscribe({
             next: response => {
                 for (let attId in response) {
                     if (!this.files.find(a => a.id == attId)) {
@@ -257,9 +356,10 @@ export class modelattachments implements OnDestroy {
                 thumbnail: '',
                 user_id: '1',
                 user_name: 'admin',
-                uploadprogress: 0
+                uploadprogress: 0,
+                folder_id: this.folderId
             };
-            this.files.unshift(newfile);
+            this._files.unshift(newfile);
 
             // broadcast the count
             this.count++;
@@ -306,9 +406,10 @@ export class modelattachments implements OnDestroy {
                 thumbnail: '',
                 user_id: this.session.authData.userId,
                 user_name: this.session.authData.userName,
-                uploadprogress: 0
+                uploadprogress: 0,
+                folder_id: this.folderId
             };
-            this.files.unshift(newfile);
+            this._files.unshift(newfile);
 
             // broadcast the count
             this.count++;
@@ -343,9 +444,10 @@ export class modelattachments implements OnDestroy {
                 text: '',
                 thumbnail: file.thumbnail,
                 user_id: this.session.authData.userId,
-                user_name: this.session.authData.userName
+                user_name: this.session.authData.userName,
+                folder_id: this.folderId
             };
-            this.files.unshift(newfile);
+            this._files.unshift(newfile);
         }
     }
 
@@ -369,7 +471,8 @@ export class modelattachments implements OnDestroy {
             file: file.filecontent,
             filename: file.name,
             filemimetype: file.type ? file.type : 'application/octet-stream',
-            category_ids: newfile.category_ids
+            category_ids: newfile.category_ids,
+            folder_id: newfile.folder_id
         };
 
         // determine the upload URL
@@ -379,7 +482,8 @@ export class modelattachments implements OnDestroy {
             url += `/module/${this.module}/${this.id}`;
         }
 
-        this.backend.postRequestWithProgress(url, null, fileBody, progressSubscription, this.httpRequestsRefID).subscribe(retVal => {
+        this.backend.postRequestWithProgress(url, null, fileBody, progressSubscription, this.httpRequestsRefID).subscribe({
+            next: (retVal) => {
                 newfile.id = retVal[0].id;
                 newfile.thumbnail = retVal[0].thumbnail;
                 newfile.filemd5 = retVal[0].filemd5;
@@ -390,7 +494,7 @@ export class modelattachments implements OnDestroy {
                 retSub.next({files: retVal});
                 retSub.complete();
             }
-        );
+        });
 
     }
 
@@ -426,9 +530,10 @@ export class modelattachments implements OnDestroy {
             user_id: '1',
             user_name: 'admin',
             category_ids: systemCategoryId,
-            uploadprogress: 0
+            uploadprogress: 0,
+            folder_id: this.folderId
         };
-        this.files.unshift(newfile);
+        this._files.unshift(newfile);
 
         // broadcast the count
         this.count++;
@@ -444,7 +549,8 @@ export class modelattachments implements OnDestroy {
             file: filecontent,
             filename: filename,
             filemimetype: filetype ? filetype : 'application/octet-stream',
-            category_ids: newfile.category_ids
+            category_ids: newfile.category_ids,
+            folder_id: newfile.folder_id
         };
 
         // determine the upload URL
@@ -454,7 +560,8 @@ export class modelattachments implements OnDestroy {
             url += `/module/${this.module}/${this.id}`;
         }
 
-        this.backend.postRequestWithProgress(url, null, fileBody, progressSubscription, this.httpRequestsRefID).subscribe(retVal => {
+        this.backend.postRequestWithProgress(url, null, fileBody, progressSubscription, this.httpRequestsRefID).subscribe({
+            next: (retVal) => {
                 newfile.id = retVal[0].id;
                 newfile.thumbnail = retVal[0].thumbnail;
                 newfile.filemd5 = retVal[0].filemd5;
@@ -465,7 +572,7 @@ export class modelattachments implements OnDestroy {
                 retSub.next({files: retVal});
                 retSub.complete();
             }
-        );
+        });
 
         return retSub.asObservable();
     }
@@ -491,6 +598,40 @@ export class modelattachments implements OnDestroy {
         return responseSubject.asObservable();
     }
 
+    /**
+     * creates a new folder
+     *
+     * @param folderName
+     */
+    public createFolder(folderName) {
+        let retSubject: Subject<string> = new Subject<string>();
+
+        this.backend.postRequest(`/common/spiceattachments/module/${this.module}/${this.id}/folder`, {}, {
+            folder_name: folderName,
+            folder_id: this._folderId
+        }).subscribe({
+            next: (f) => {
+                this._files.unshift(f);
+                this.buildTree();
+                retSubject.next(f.id);
+            },
+            error: () => {
+                retSubject.error('error creating folder');
+                retSubject.complete();
+            }
+        })
+
+        return retSubject.asObservable();
+    }
+
+    /**
+     * returns the items ina given Folder
+     *
+     * @param folderId
+     */
+    public itemsInFolder(folderId, filesonly = false) {
+        return this._files.filter(f => f.folder_id == folderId && (!filesonly || (filesonly && f.file_mime_type != 'folder'))).length;
+    }
 
     /**
      * delete an attachment
@@ -499,18 +640,26 @@ export class modelattachments implements OnDestroy {
      */
     public deleteAttachment(id) {
         this.backend.deleteRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`, null, this.httpRequestsRefID)
-            .subscribe(res => {
-                let index = this.files.findIndex(f => f.id == id);
-                this.files.splice(index, 1);
+            .subscribe({
+                next: (res) => {
+                    let index = this._files.findIndex(f => f.id == id);
+                    this._files.splice(index, 1);
 
-                // broadcast the count
-                this.count--;
-                this.broadcastAttachmentCount();
-            }, error => {
-                this.toast.sendToast('Cannot delete attachment.', 'error', error.error.error.message, false);
+                    // rebuild the tree
+                    this.buildTree();
+
+                    // emit the current folder id so components redraw
+                    this.folderId$.next(this.folderId);
+
+                    // broadcast the count
+                    this.count--;
+                    this.broadcastAttachmentCount();
+                },
+                error: (error) => {
+                    this.toast.sendToast('Cannot delete attachment.', 'error', error.error.error.message, false);
+                }
             });
     }
-
 
     /**
      * doanloads an attachment int he local browser
@@ -519,16 +668,18 @@ export class modelattachments implements OnDestroy {
      * @param name
      */
     public downloadAttachment(id, name?) {
-        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`, null, this.httpRequestsRefID).subscribe(fileData => {
-            let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
-            let blobUrl = URL.createObjectURL(blob);
-            let a = document.createElement("a");
-            document.body.appendChild(a);
-            a.href = blobUrl;
-            a.download = name ? name : fileData.filename;
-            a.type = fileData.file_mime_type;
-            a.click();
-            a.remove();
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`, null, this.httpRequestsRefID).subscribe({
+            next: (fileData) => {
+                let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
+                let blobUrl = URL.createObjectURL(blob);
+                let a = document.createElement("a");
+                document.body.appendChild(a);
+                a.href = blobUrl;
+                a.download = name ? name : fileData.filename;
+                a.type = fileData.file_mime_type;
+                a.click();
+                a.remove();
+            }
         });
     }
 
@@ -627,9 +778,9 @@ export class modelattachments implements OnDestroy {
 
         this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/${attachmentId}`, null, this.httpRequestsRefID).subscribe({
             next: (fileData) => {
-                    retSubject.next(fileData);
-                    retSubject.complete();
-                },
+                retSubject.next(fileData);
+                retSubject.complete();
+            },
             error: (err) => {
                 retSubject.error(err);
                 retSubject.complete();
@@ -672,8 +823,8 @@ export class modelattachments implements OnDestroy {
         // reload file list
         switch (message.messagetype) {
             case 'attachments.uploaded':
-                if(message.messagedata.reload && message.messagedata.module == this.module && message.messagedata.id == this.id) {
-                    this.files = message.messagedata.uploadedFiles;
+                if (message.messagedata.reload && message.messagedata.module == this.module && message.messagedata.id == this.id) {
+                    this._files = message.messagedata.uploadedFiles;
                 }
                 break;
         }

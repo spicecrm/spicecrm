@@ -126,6 +126,11 @@ export class activitiytimeline {
      */
     public openness$: BehaviorSubject<boolean>;
 
+    /**
+     * fires when the tab is changed
+     */
+    public tabChanged$ = new Subject<void>()
+
     constructor(public metadata: metadata, public backend: backend, public modelutilities: modelutilities, public configurationService: configurationService, public session: session, public broadcast: broadcast) {
         this.serviceSubscriptions.push(this.broadcast.message$.subscribe(message => this.handleMessage(message)));
 

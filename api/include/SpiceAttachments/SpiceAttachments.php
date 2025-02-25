@@ -55,7 +55,8 @@ class SpiceAttachments
                 'thumbnail' => $thisAttachment['thumbnail'],
                 'display_name' => $thisAttachment['display_name'],
                 'category_ids' => $thisAttachment['category_ids'],
-                'external_id' => $thisAttachment['external_id']
+                'external_id' => $thisAttachment['external_id'],
+                'folder_id' => $thisAttachment['folder_id']
             ];
         }
 
@@ -78,7 +79,7 @@ class SpiceAttachments
      * @return array
      * @throws Exception
      */
-    static function cloneAttachmentsForBean($beanName, $beanId, $fromBeanName, $fromBeanId, bool $save = true, $categoryId = null, $selectedFiles = []): array
+    static function cloneAttachmentsForBean($beanName, $beanId, $fromBeanName, $fromBeanId, bool $save = true, $categoryId = null, $selectedFiles = [], $excludedFilenames = []): array
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
@@ -94,6 +95,9 @@ class SpiceAttachments
         $clonedAttachments = [];
 
         foreach ($attachments as $attachment) {
+
+            // do not clone excluded filenames
+            if(array_search($attachment['filename'], $excludedFilenames) !== false) continue;
 
             $attachment['id'] = SpiceUtils::createGuid();
             $attachment['bean_type'] = $beanName;
@@ -203,7 +207,8 @@ class SpiceAttachments
                 'deleted' => '0',
                 'file_mime_type' => $file_mime_type,
                 'category_ids' => $file['category_ids'],
-                'external_id' => $file['external_id']
+                'external_id' => $file['external_id'],
+                'folder_id' => $file['folder_id']
             ]);
             // $db->query("INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type, category_ids) VALUES ('{$guid}', '{$beanName}', '{$beanId}', '" . $current_user->id . "', '" . gmdate('Y-m-d H:i:s') . "', '{$filename}', '{$filesize}', '{$filemd5}', '{$file['text']}', '$thumbnail', 0, '{$file_mime_type}', '{$file['category_ids']}')");
         }
@@ -223,6 +228,47 @@ class SpiceAttachments
             'category_ids' => $file['category_ids']
         ];
         return $attachments;
+    }
+
+    /**
+     * saves a Folder
+     *
+     * @param $beanName
+     * @param $beanId
+     * @param $post
+     * @return mixed
+     * @throws Exception
+     */
+    public static function saveFolder($beanName, $beanId, $postBody): array
+    {
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $db = DBManagerFactory::getInstance();
+
+        $guid = SpiceUtils::createGuid();
+
+        // add the attachment
+        $db->insertQuery('spiceattachments', [
+            'id' => $guid,
+            'bean_type' => $beanName,
+            'bean_id' => $beanId,
+            'user_id' => $current_user->id,
+            'trdate' => TimeDate::getInstance()->nowDb(),
+            'filename' => $postBody['folder_name'],
+            'deleted' => '0',
+            'file_mime_type' => 'folder',
+            'folder_id' => $postBody['folder_id'],
+        ]);
+
+        $folder = [
+            'id' => $guid,
+            'user_id' => $current_user->id,
+            'user_name' => $current_user->user_name,
+            'date' => TimeDate::getInstance()->nowDb(),
+            'filename' => $postBody['folder_name'],
+            'file_mime_type' => 'folder',
+            'folder_id' => $postBody['folder_id'],
+        ];
+        return $folder;
     }
 
     /**
@@ -396,11 +442,17 @@ class SpiceAttachments
     public static function updateAttachmentData($attachmentId, $data): array
     {
         $db = DBManagerFactory::getInstance();
-        $text = $db->quote($data['text']);
-        $displayName = $db->quote($data['display_name']);
-        $category_ids = $db->quote($data['category_ids']);
 
-        $res = $db->query("UPDATE spiceattachments SET text = '$text', category_ids = '$category_ids', display_name = '$displayName' WHERE id = '$attachmentId'");
+        $updates = [];
+
+        if(isset($data['text'])) $updates['text'] = $db->quote($data['text']);
+        if(isset($data['display_name'])) $updates['display_name'] =  $db->quote($data['display_name']);
+        if(isset($data['category_ids'])) $updates['category_ids'] = $db->quote($data['category_ids']);
+        if(isset($data['folder_id'])) $updates['folder_id'] = $db->quote($data['folder_id']);
+        if(isset($data['filename'])) $updates['filename'] = $db->quote($data['filename']);
+
+        $res = $db->updateQuery('spiceattachments', ['id' => $attachmentId], $updates);
+
         return ['success' => $res];
     }
 

@@ -113,6 +113,29 @@ class SpiceAttachmentsController
         return $res->withJson(SpiceAttachments::saveAttachmentHashFiles($args['beanName'], $args['beanId'], array_merge($postBody, $postParams)));
     }
 
+    /**
+     * adds a folder
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     */
+    public function saveFolder(Request $req, Response $res, array $args): Response
+    {
+        // try to load the seed and check if we have access.
+        // It might happen that seed does not yet exists when attachments are managed on new beans
+        // so no explicit check if the bean exists
+        $seed = BeanFactory::getBean($args['beanName'], $args['beanId']); //set encode to false to avoid things like ' being translated to &#039;
+        if ($seed && !$seed->ACLAccess('edit')) {
+            throw (new ForbiddenException("not allowed to edit this record"))->setErrorCode('noModuleView');
+        }
+
+        $postBody = $req->getParsedBody();
+        return $res->withJson(SpiceAttachments::saveFolder($args['beanName'], $args['beanId'], $postBody));
+    }
+
 
     /**
      * deletes an attachment
@@ -232,7 +255,7 @@ class SpiceAttachmentsController
         }
         $params = $req->getParsedBody();
 
-        $clonedAttachments = SpiceAttachments::cloneAttachmentsForBean($args['beanName'], $args['beanId'], $args['fromBeanName'], $args['fromBeanId'], true, $params['categoryId'], $params['selectedFiles']);
+        $clonedAttachments = SpiceAttachments::cloneAttachmentsForBean($args['beanName'], $args['beanId'], $args['fromBeanName'], $args['fromBeanId'], true, $params['categoryId'], $params['selectedFiles'], $params['excludedFilenames']);
         return $res->withJson($clonedAttachments);
     }
 

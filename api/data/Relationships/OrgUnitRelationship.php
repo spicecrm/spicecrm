@@ -12,7 +12,7 @@ use SpiceCRM\includes\utils\SpiceUtils;
 
 class OrgUnitRelationship extends One2MRelationship
 {
-    var $type = "one-to-many";
+    var $type = "orgunit";
 
     /**
      * activate the relationship and add the necessary cache fields
