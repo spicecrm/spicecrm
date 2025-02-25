@@ -1725,6 +1725,8 @@ export class model implements OnDestroy {
                 return moment({hour: this.userpreferences.toUse.calendar_day_start_hour});
             case "calendarEndHour":
                 return moment({hour: this.userpreferences.toUse.calendar_day_end_hour});
+            case "currentUserId":
+                return this.session.authData.userId;
         }
         return "";
     }
