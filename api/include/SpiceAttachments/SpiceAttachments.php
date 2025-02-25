@@ -693,4 +693,41 @@ class SpiceAttachments
             }
         }
     }
+
+    /**
+     * Converts an email attachment in the .eml format into an Email bean in order to be easily concatenated
+     * into a string for display.
+     *
+     * The Email bean is created only during runtime and is not saved in the DB.
+     *
+     * @param array $attachment
+     * @return array
+     */
+    public static function convertEmlFile4display(array $attachment): array {
+        $email = BeanFactory::getBean('Emails');
+        $email->id = SpiceUtils::createGuid();
+        $email->new_with_id = true;
+        $email->file_name = $attachment['filename'];
+        $email->file_mime_type = $attachment['file_mime_type'];
+
+        $decodedFile = base64_decode($attachment['file']);
+
+        $email->file_md5 = md5($decodedFile);
+
+        // convert the message
+        $email->convertEMLToEmail($email->file_md5, $decodedFile);
+
+        $ccString   = implode(', ', array_column($email->cc(), 'email'));
+
+        $inceptionEmail = "<strong>From: </strong>" . implode(', ', array_column($email->from(), 'email')) . "<br>" .
+                          "<strong>To: </strong>" . implode(', ', array_column($email->to(), 'email')) . "<br>" .
+                          (!empty($ccString) ? "<strong>Cc: </strong>" . $ccString . "<br>" : '') .
+                          "<strong>Subject: </strong>" . $email->name . "<br><br>" .
+                          $email->body;
+
+        $attachment['file'] = base64_encode($inceptionEmail);
+        $attachment['file_mime_type'] = 'text/html';
+
+        return $attachment;
+    }
 }
