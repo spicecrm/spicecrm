@@ -22,9 +22,15 @@
             </div>
         }
         @case('text') {
-            <div class="slds-p-around--small slds-text-align--center">
-                <pre>{{rawData}}</pre>
-            </div>
+            @if (type=="text/html") {
+                <div [ngStyle]="objectContainerStyle">
+                    <object [data]="blobUrl" [type]="type" width="100%" height="100%"></object>
+                </div>
+            } @else {
+                <div class="slds-p-around--small slds-text-align--center">
+                    <pre>{{rawData}}</pre>
+                </div>
+            }
         }
         @default {
             <div [ngStyle]="objectContainerStyle">
