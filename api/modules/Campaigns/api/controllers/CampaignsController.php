@@ -5,13 +5,14 @@ namespace SpiceCRM\modules\Campaigns\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse;
 use Psr\Http\Message\RequestInterface;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 require_once 'modules/Campaigns/utils.php';
 
-class ContactsSubscriptionsController {
+class CampaignsController {
 
     /**
      * get a list of subscriptions for specified contact
@@ -50,5 +51,18 @@ class ContactsSubscriptionsController {
             }
         }
         return $res->withJson(['status' => 'success']);
+    }
+
+    public function deleteCampaign(Request $req, Response $res, array $args): Response
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $query = "UPDATE campaigns c INNER JOIN campaigntasks ct ON c.id = ct.campaign_id
+        LEFT JOIN campaign_log cl ON ct.id=cl.campaigntask_id
+        SET c.deleted = 1, cl.deleted = 1, ct.deleted = 1
+        WHERE c.id = '{$args['campaignId']}'";
+
+        $db->query($query);
+        return $res->withJson(true);
     }
 }

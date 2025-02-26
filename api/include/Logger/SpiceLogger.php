@@ -282,7 +282,11 @@ class SpiceLogger implements LoggerTemplate
             "transaction_id" => LoggerManager::getLogger()->getTransactionId()];
 
         // get an instance
-        $instance = DBManagerFactory::getInstance('spicelogger');
+        $instance = DBManagerFactory::getInstance('spicelogger', false);
+
+        // if we failed to get an instance return
+        if(!$instance->database) return;
+
         // make sure to set enable log to false
         $instance->enablelog = false;
         // write the query

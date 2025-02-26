@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, Input, OnInit, SkipSelf} from "@angular/core";
 import {Router} from "@angular/router";
 import {metadata} from "../../services/metadata.service";
 import {footer} from "../../services/footer.service";
@@ -39,7 +39,7 @@ export class ObjectRelatedListItem implements OnInit {
     public expanded: boolean = false;
     public componentconfig: any = {};
 
-    constructor(public metadata: metadata, public footer: footer, public model: model, public relatedmodels: relatedmodels, public view: view, public router: Router, public language: language, public layout: layout, public modalservice: modal) {
+    constructor(public metadata: metadata, public footer: footer, public model: model, @SkipSelf() public parentModel: model, public relatedmodels: relatedmodels, public view: view, public router: Router, public language: language, public layout: layout, public modalservice: modal) {
     }
 
     /**
@@ -53,6 +53,7 @@ export class ObjectRelatedListItem implements OnInit {
         // initialize the model
         this.model.module = this.module;
         this.model.id = this.listitem.id;
+        this.model.parentmodel = this.parentModel;
         this.model.setData(this.listitem);
 
         // load the componentconfig from ObjectRelatedListItem ... if input itemactionset is not defined
