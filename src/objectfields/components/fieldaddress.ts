@@ -347,7 +347,7 @@ export class fieldAddress extends fieldGeneric {
      * a getter for the street
      */
     get street_suffix() {
-        return this.model.getField(this.addresskey + 'address_street_suffix');
+        return this.model.getField(this.addresskey + 'address_street_number_suffix');
     }
 
     /**
@@ -356,7 +356,7 @@ export class fieldAddress extends fieldGeneric {
      * @param value
      */
     set street_suffix(value) {
-        this.model.setField(this.addresskey + 'address_street_suffix', value);
+        this.model.setField(this.addresskey + 'address_street_number_suffix', value);
     }
 
 
