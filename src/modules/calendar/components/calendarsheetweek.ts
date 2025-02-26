@@ -553,7 +553,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         this.nextDaySingleEvents.groupwareEvents = [];
         this.groupwareMultiEvents = [];
         this.arrangeMultiEvents();
-        if (!this.groupwareVisible || this.calendar.isMobileView) {
+        if (!this.groupwareVisible) {
             return this.setSingleEventsStyle();
         }
 
