@@ -52,6 +52,10 @@ export class CalendarHeader implements OnDestroy {
      */
     @Input() public modules: any[] = [];
     /**
+     * calendar sheet type
+     */
+    @Input() public sheetType: 'Day' | 'Three_Days' | 'Week' | 'Month' | 'Schedule';
+    /**
      * emit when a calendar date is picked
      */
     @Output() public datePicked: EventEmitter<any> = new EventEmitter<any>();
@@ -112,7 +116,7 @@ export class CalendarHeader implements OnDestroy {
      */
     get calendarHeader() {
         const focDate = new moment(this.calendar.calendarDate);
-        switch (this.calendar.sheetType) {
+        switch (this.sheetType) {
             case 'Week':
                 return `${this.getFirstDayOfWeek()} - ${this.getLastDayOfWeek()}`;
             case 'Month':
@@ -173,6 +177,7 @@ export class CalendarHeader implements OnDestroy {
      */
     public setType(sheetType) {
         this.calendar.sheetType = sheetType;
+        this.sheetType = sheetType;
         this.calendar.refresh();
         this.showTypeSelector = false;
     }

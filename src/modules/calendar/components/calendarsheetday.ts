@@ -301,7 +301,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     public getGroupwareEvents() {
         this.groupwareEvents = [];
         this.groupwareMultiEvents = [];
-        if (!this.groupwareVisible || this.calendar.isMobileView) {
+        if (!this.groupwareVisible) {
             return this.setEventsStyle();
         }
 
