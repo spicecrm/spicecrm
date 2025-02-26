@@ -11,7 +11,7 @@ import {metadata} from "../../../services/metadata.service";
 import {OutlookGroupware} from "../services/outlookgroupware.service";
 import {OutlookLoginPane} from "./outlookloginpane";
 import {SystemDynamicRouteInterceptor} from "../../../systemcomponents/components/systemdynamicrouteinterceptor";
-import {loginCheck} from "../../../services/login.service";
+import {loginCheck, loginService} from "../../../services/login.service";
 
 declare var Office: any;
 
@@ -36,7 +36,8 @@ export class OutlookPane implements OnInit {
         public session: session,
         public model: model,
         public metadata: metadata,
-        public broadcast: broadcast
+        public broadcast: broadcast,
+        private loginService: loginService
     ) {
         this.adjustRoutes();
         // ToDo: implement pinned pane that relaod when item is changed
@@ -44,6 +45,11 @@ export class OutlookPane implements OnInit {
             this.itemChanged();
         });
 
+        this.broadcast.message$.subscribe((message: any) => {
+            if (message.messagetype === 'loader.completed' && message.messagedata === 'loadRepository') {
+                this.itemChanged();
+            }
+        });
     }
 
     /**
@@ -91,6 +97,7 @@ export class OutlookPane implements OnInit {
 
         const config = this.metadata.getComponentConfig('OutlookPane');
         const mainRoute = !config.mainRoute ? '/groupware/details' : config.mainRoute;
+        this.loginService.redirectUrl = config.mainRoute;
 
         if (this.router.routerState.snapshot.url == mainRoute) {
             this.broadcast.broadcastMessage('groupware.itemchanged');
