@@ -42,6 +42,18 @@ class AccountsNACEController{
      */
     public function getNACECodeFile(Request $req, SpiceResponse $res, array $args): SpiceResponse
     {
+        // get the list of files and check that we only list allowed files
+        $files = scandir('modules/Accounts/siccodefiles');
+
+        foreach($files as $index => $file){
+            if($file == '.' || $file == '..') unset($files[$index]);
+        }
+
+        // if file is not found trow an error
+        if(array_search($args['filename'], $files) === false){
+            throw new BadRequestException("File not allowed");
+        }
+
         // return
         return $res->withJson(['content' => file_get_contents("modules/Accounts/siccodefiles/{$args['filename']}")]);
     }
