@@ -290,7 +290,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         this.groupwareEvents = [];
         this.handleEventsChanges();
 
-        if (!this.groupwareVisible || this.calendar.isMobileView) {
+        if (!this.groupwareVisible) {
             return;
         }
 
