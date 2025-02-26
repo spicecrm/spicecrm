@@ -189,7 +189,7 @@ class ChromeLocalPdfHandler extends PdfHandler
         do {
             if ( $counter !== 0 ) unlink( $tmpPdfFilename );
             $counter++;
-            exec( sprintf('%s --virtual-time-budget=10000 --headless --disable-gpu --print-to-pdf=%s --print-to-pdf-no-header --no-margins %s', escapeshellarg($chromePath), escapeshellarg($tmpPdfFilename), escapeshellarg($tmpHtmlFilename)), $output, $resultCode );
+            exec( sprintf('%s --virtual-time-budget=10000 --headless --disable-gpu --print-to-pdf=%s --no-pdf-header-footer --print-to-pdf-no-header --no-margins %s', escapeshellarg($chromePath), escapeshellarg($tmpPdfFilename), escapeshellarg($tmpHtmlFilename)), $output, $resultCode );
             $fs = filesize( $tmpPdfFilename );
         } while ( $fs < 2000 and $counter < 10 );
         if ( $counter > 1 ) {
