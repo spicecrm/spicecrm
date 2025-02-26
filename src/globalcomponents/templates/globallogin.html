@@ -1,5 +1,6 @@
 <global-login-loading class="slds-size--1-of-1" *ngIf="!configuration.initialized"></global-login-loading>
-<div *ngIf="configuration.initialized" [ngClass]="{'slds-theme--error': configuration.data.startupMode == 'recovery', 'slds-theme--warning': configuration.data.startupMode == 'maintenance', 'slds-theme--default': configuration.data.startupMode != 'maintenance' && configuration.data.startupMode != 'recovery'}" class="slds-grid slds-wrap slds-is-absolute slds-size--1-of-1" style="height:100vh; top: 0px;">
+@if(configuration.initialized && !configuration.loadingError){
+<div [ngClass]="{'slds-theme--error': configuration.data.startupMode == 'recovery', 'slds-theme--warning': configuration.data.startupMode == 'maintenance', 'slds-theme--default': configuration.data.startupMode != 'maintenance' && configuration.data.startupMode != 'recovery'}" class="slds-grid slds-wrap slds-is-absolute slds-size--1-of-1" style="height:100vh; top: 0px;">
     <div class="slds-align--absolute-center slds-size--1-of-1 slds-large-size--1-of-2">
         <div class="slds-size--1-of-1 slds-medium-size--2-of-3 slds-p-around--medium" style="max-width: 500px">
             <!--div class="spiceLoginLogo"-->
@@ -94,3 +95,23 @@
         </ng-container>
     </div>
 </div>
+} @else if(configuration.initialized && configuration.loadingError){
+    <div class="slds-size--1-of-1 slds-height_full slds-theme--offline slds-theme--alert-texture slds-align--absolute-center">
+        <div class="slds-box--border slds-theme--default">
+            <div class="slds-p-around--medium">
+                <div class="slds-p-around--small slds-align--absolute-center" style="max-width: 200px; max-height: 200px;">
+                    <img width="100%" height="auto" src="./config/loginimage"/>
+                </div>
+                <div class="slds-p-around--small slds-align--absolute-center">
+                    There was an error initializing the System. The following Error occured:
+                </div>
+                <div class="slds-p-around--small slds-align--absolute-center">
+                    {{configuration.loadingError}}
+                </div>
+                <div class="slds-p-around--small slds-align--absolute-center">
+                    Please contact your system administrators and try again later.
+                </div>
+            </div>
+        </div>
+    </div>
+}
