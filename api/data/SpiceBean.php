@@ -3041,19 +3041,19 @@ class SpiceBean
 
     /**
      * Iterates over all linked beans of a template bean
-     * and clones them (in case the vardef property 'deepClone' is set).
+     * and clones them (in case the dictionary property 'duplicate_linked' is set).
      *
      * @param object $clone
      */
     private function cloneBeansOfAllLinks(&$clone)
     {
         foreach ($this->field_defs as $v) {
-            if ($v['type'] === 'link' and @$v['deepClone'] === true) {
+            if ($v['type'] === 'link' and @$v['duplicate_linked'] === true) {
                 foreach ($this->get_linked_beans($v['name'], $v['module']) as $v2) {
                     if (!$v2->isCloned()) { # To prevent a recursion: Don´t clone in case this bean has already been cloned.
                         $v2->cloneLinkedBean($v['name'], $clone);
                     } else {
-                        LoggerManager::getLogger()->error('Bean cloning: A recursion has been prevented ( link: ' . $v['name'] . ' in module ' . $this->_module . ', bean to clone: ' . $v2->_objectname . ' ' . $v2->id . ' ). Check configuration in vardefs for property "deepClone".');
+                        LoggerManager::getLogger()->error('Bean cloning: A recursion has been prevented ( link: ' . $v['name'] . ' in module ' . $this->_module . ', bean to clone: ' . $v2->_objectname . ' ' . $v2->id . ' ). Check configuration in dictionary for property "duplicate_linked".');
                     }
                 }
             }

@@ -326,7 +326,7 @@ class SpiceBeanHandler
                     break;
                 case 'owner':
                     $searchParams['owner'] = true;
-                    $whereClauses[] = '( assigned_user_id = ' . $current_user->id .')';
+                    $whereClauses[] = '( assigned_user_id = \'' . $current_user->id .'\')';
 
                     // show only active items
                     if(property_exists($thisBean, 'is_inactive')) {

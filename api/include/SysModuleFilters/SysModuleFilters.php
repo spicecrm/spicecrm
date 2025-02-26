@@ -282,10 +282,10 @@ class SysModuleFilters
                         // build query also for 'all' to avoid errors
                         break;
                     case 'own':
-                        $filteredListCondition .= " ({$tablename}.assigned_user_id = {$currentUserId}) ";
+                        $filteredListCondition .= " ({$tablename}.assigned_user_id = '{$currentUserId}') ";
                         break;
                     case 'creator':
-                        $filteredListCondition .= " ({$tablename}.created_by = {$currentUserId}) ";
+                        $filteredListCondition .= " ({$tablename}.created_by = '{$currentUserId}') ";
                         break;
                 }
             }
