@@ -606,7 +606,7 @@ export class modelattachments implements OnDestroy {
     public createFolder(folderName) {
         let retSubject: Subject<string> = new Subject<string>();
 
-        this.backend.postRequest(`/common/spiceattachments/module/${this.module}/${this.id}/folder`, {}, {
+        this.backend.postRequest(`common/spiceattachments/module/${this.module}/${this.id}/folder`, {}, {
             folder_name: folderName,
             folder_id: this._folderId
         }).subscribe({
