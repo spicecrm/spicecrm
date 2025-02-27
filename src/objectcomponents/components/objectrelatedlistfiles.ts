@@ -75,6 +75,12 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
      * the fileupload elelent
      */
     @ViewChild("fileupload", {read: ViewContainerRef, static: true}) public fileupload: ViewContainerRef;
+
+    /**
+     * the itemcontainer element
+     */
+    @ViewChild("itemcontainer", {read: ViewContainerRef, static: false}) public itemcontainer: ViewContainerRef;
+
     /**
      * @ignore
      *
@@ -308,6 +314,10 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         return this.elementRef.nativeElement.getBoundingClientRect().width;
     }
 
+    get containerWidth(){
+        return this.itemcontainer ? this.itemcontainer.element.nativeElement.getBoundingClientRect().width : 0;
+    }
+
     /**
      * handler for the dragover event.- Checks if we only have files dragged over the div
      *
@@ -509,6 +519,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
     public toggleFolders(){
         this.showFolders = !this.showFolders;
         this.filteredFiles = this.filterFiles();
+        this.cdRef.detectChanges();
     }
 
     /**
