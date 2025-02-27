@@ -240,7 +240,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     public getGroupwareEvents() {
         this.groupwareEvents = [];
 
-        if (!this.groupwareVisible || this.calendar.isMobileView) {
+        if (!this.groupwareVisible) {
             this.setEventDays();
             return;
         }
