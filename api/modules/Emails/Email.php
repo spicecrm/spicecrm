@@ -1869,8 +1869,9 @@ class Email extends SpiceBean
 
     /**
      * @throws Exception
+     * @return boolean|string
      */
-    public function validateEmailForDownload( $doIncrement = false ): true|string
+    public function validateEmailForDownload( $doIncrement = false ): boolean|string
     {
         $downloadAttachmentsEnabled = (int) $this->getFieldValue('downloadlink_attachments');
         if ( !$downloadAttachmentsEnabled ) return 'notAccessible';
