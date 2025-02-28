@@ -14,11 +14,11 @@ class EmailTrackingLink extends SpiceBean
     public $object_name = "EmailTrackingLink";
 
     /**
-     * transforms the basic link into a blowfish encrypted tracked link
+     * transforms the basic link into a encryptionkey encrypted tracked link
      */
     static function transformEmailTrackingLinks($parentType, $parentId, $trackingId, string $handlingLink)
     {
-        $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? throw new Exception("misconfiguration blowfishkey missing");
+        $key = SpiceConfig::getInstance()->get('emailtracking.encryptionkey') ?? throw new Exception("misconfiguration encryptionkey missing");
         $method = 'DES-EDE3-CBC';
         $data = "ParentType:$parentType:ParentId:$parentId:EmailTrackingLinks:$trackingId";
 
