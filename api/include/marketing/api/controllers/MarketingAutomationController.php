@@ -27,7 +27,7 @@ class MarketingAutomationController
      */
     public function handleTrackingPixel(Request $req, Response $res, array $args): Response
     {
-        $decrypted = $this->decryptBlowfish(base64_decode($args['key']));
+        $decrypted = $this->decryptEncryptionKey(base64_decode($args['key']));
 
         if (!$decrypted) {
             throw new BadRequestException('Failed to decrypt key');
@@ -49,7 +49,7 @@ class MarketingAutomationController
      */
     public function handleTrackingUrl(Request $req, Response $res, array $args): Response
     {
-        $decrypted = $this->decryptBlowfish(base64_decode($args['key']));
+        $decrypted = $this->decryptEncryptionKey(base64_decode($args['key']));
 
         if (!$decrypted) {
             throw new BadRequestException('Failed to decrypt key');
@@ -70,7 +70,7 @@ class MarketingAutomationController
      */
     public function handleMarketingAction(Request $req, Response $res, array $args): Response
     {
-        $decrypted = $this->decryptBlowfish(base64_decode($args['key']));
+        $decrypted = $this->decryptEncryptionKey(base64_decode($args['key']));
 
         if (!$decrypted) {
             throw new BadRequestException('Failed to decrypt key');
@@ -202,11 +202,11 @@ class MarketingAutomationController
      * decrypts the key
      * @param $key
      */
-    private function decryptBlowfish($key)
+    private function decryptEncryptionKey($key)
     {
-        $blowfishkey = SpiceConfig::getInstance()->get('emailtracking.blowfishkey');
+        $encryptionKey = SpiceConfig::getInstance()->get('emailtracking.encryptionkey');
         $method = 'DES-EDE3-CBC';
-        return openssl_decrypt($key, $method, $blowfishkey);
+        return openssl_decrypt($key, $method, $encryptionKey);
     }
 
     /**

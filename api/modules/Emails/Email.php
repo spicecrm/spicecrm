@@ -895,7 +895,7 @@ class Email extends SpiceBean
 
     /**
      * @param $trackingurl of the mailbox
-     * generate a tracking pixel with blowfish hash and adds it to the email body
+     * generate a tracking pixel with encryptionkey hash and adds it to the email body
      */
     private function generateTrackingPixel()
     {
@@ -956,8 +956,8 @@ class Email extends SpiceBean
         foreach ($dom->getElementsByTagName('a') as $node) {
             $marketingaction = $node->getAttribute('data-marketingaction');
             if (!empty($marketingaction)) {
-                $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? "2fs5uhnjcnpxcpg9";
-                $method = 'blowfish';
+                $key = SpiceConfig::getInstance()->get('emailtracking.encryptionkey') ?? throw new \SpiceCRM\includes\ErrorHandlers\Exception("misconfiguration encryptionkey missing");
+                $method = 'DES-EDE3-CBC';
                 [$parentType, $parentId] = $this->getTrackingParentData();
                 $data = "ParentType:$parentType:ParentId:$parentId:MarketingActions:$marketingaction";
                 $link = openssl_encrypt($data, $method, $key);
