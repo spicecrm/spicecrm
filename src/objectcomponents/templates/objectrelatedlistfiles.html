@@ -22,7 +22,7 @@
                 <button class="slds-col--bump-left slds-button slds-button--icon-border slds-m-right--xxx-small" (click)="toggleBigThumbnail()" system-title="LBL_TOGGLE_BIG_THUMBNAIL">
                     <system-utility-icon size="x-small" [icon]="componentconfig?.bigThumbnail ? 'file' : 'ad_set'"></system-utility-icon>
                 </button>
-                @if (!componentconfig.disableFilter && width > 500) {
+                @if (!componentconfig.disableFilter && width > 550) {
                     <div class="slds-form-element slds-m-horizontal--xxx-small">
                         <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left-right">
                             <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
@@ -60,10 +60,10 @@
                 <div *ngIf="showFolders" class="slds-border--right slds-p-right--small slds-m-right--small">
                     <system-tree [sourceList]="modelattachments.folderTreeItems" [selectedItem]="treeFolder" [config]="{expandall: true}" (selectedItemChange)="setTreeFolder($event)"/>
                 </div>
-                <div class="slds-grow slds-grid slds-grid--vertical-align-start slds-wrap slds-grid--pull-padded">
+                <div class="slds-grow slds-grid slds-grid--vertical-align-start slds-wrap slds-grid--pull-padded" #itemcontainer>
                     @if (filteredFiles.length > 0) {
                         @for (file of filteredFiles; track file.id) {
-                                <object-related-card-file [file]="file" [bigThumbnail]="componentconfig?.bigThumbnail" class="slds-tile slds-card__tile slds-p-horizontal--small slds-hint-parent slds-size--1-of-1 slds-medium-size--1-of-3"/>
+                                <object-related-card-file [file]="file" [bigThumbnail]="componentconfig?.bigThumbnail" class="slds-tile slds-card__tile slds-p-horizontal--small slds-hint-parent" [ngClass]="{'slds-size--1-of-1': containerWidth < 400, 'slds-size--1-of-2': containerWidth >= 400 && containerWidth < 800, 'slds-size--1-of-3': containerWidth >= 800}"/>
                         }
                     } @else if (!modelattachments.loading) {
                         <div class="slds-align--absolute-center">

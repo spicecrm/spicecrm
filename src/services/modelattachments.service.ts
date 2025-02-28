@@ -107,7 +107,7 @@ export class modelattachments implements OnDestroy {
     }
 
     get files() {
-        return this._files.filter(f => f.folder_id == this._folderId).sort((a, b) => {
+        return this._files.filter(f => (this._folderId && f.folder_id == this._folderId) || (!this._folderId && !f.folder_id)).sort((a, b) => {
             if (a.file_mime_type == 'folder' && b.file_mime_type != 'folder') return -1;
             if (b.file_mime_type == 'folder' && a.file_mime_type != 'folder') return 1;
             return a.filename.localeCompare(b.filename);
@@ -606,7 +606,7 @@ export class modelattachments implements OnDestroy {
     public createFolder(folderName) {
         let retSubject: Subject<string> = new Subject<string>();
 
-        this.backend.postRequest(`/common/spiceattachments/module/${this.module}/${this.id}/folder`, {}, {
+        this.backend.postRequest(`common/spiceattachments/module/${this.module}/${this.id}/folder`, {}, {
             folder_name: folderName,
             folder_id: this._folderId
         }).subscribe({
