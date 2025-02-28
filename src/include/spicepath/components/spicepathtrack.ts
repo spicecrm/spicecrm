@@ -35,6 +35,11 @@ export class SpicePathTrack implements OnInit{
     @Input() public componentconfig: any = {};
 
     /**
+     * if set to true the user cannot click ont eh stage and change
+     */
+    @Input() public locked: boolean = false;
+
+    /**
      * emits the curetn stage
      */
     @Output() public activeStage$: EventEmitter<string> = new EventEmitter<string>();
@@ -186,6 +191,8 @@ export class SpicePathTrack implements OnInit{
      * @param stage the selected stage
      */
     public setActiveStage(stage) {
+        if(this.locked) return;
+
         // only allow if status is open
         // if(this.beanGuideStatus != 'open') return;
 
