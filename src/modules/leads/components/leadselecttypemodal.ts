@@ -53,6 +53,13 @@ export class LeadSelectTypeModal {
         }
     }
 
+    public scanBusinessCard(){
+        if(this.cancreate) {
+            this.modal.openModal("LeadScanBusinessCardModal", true, this.injector);
+            this.close();
+        }
+    }
+
     /**
      * close the modal
      */
