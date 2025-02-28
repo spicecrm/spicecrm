@@ -1,4 +1,4 @@
-<div class="slds-p-around--medium slds-theme--shade">
+<div class="slds-p-around--medium slds-theme--shade slds-border--bottom">
     <div class="slds-page-header__row">
         <div class="slds-page-header__col-title">
             <div class="slds-media">
@@ -116,6 +116,31 @@
             </div>
             <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
                 <div class="slds-p-around--x-small slds-size--1-of-2">
+                    <div class="slds-form-element">
+                        <workbench-config-label [option]="language.getLabel('LBL_FILE_TYPES')"
+                                                [description]="language.getLabel('LBL_FILE_TYPES_EXAMPLE')"/>
+                        <div class="slds-grid">
+                            <div class="slds-form-element slds-size--1-of-7">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <select class="slds-select" [(ngModel)]="actionToPerform" (ngModelChange)="onFileTypesChange($event)">
+                                            <option value="include"><system-label label="LBL_INCLUDE"/></option>
+                                            <option value="exclude"><system-label label="LBL_EXCLUDE"/></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-size--6-of-7 slds-p-left--medium">
+                                <div class="slds-form-element__control">
+                                    <input type="text" class="slds-input" [(ngModel)]="fileTypes" (ngModelChange)="onFileTypesChange($event)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
+                <div class="slds-p-around--x-small slds-size--1-of-2">
                     <div class="slds-grid slds-grid_vertical">
                         <system-label label="LBL_INTERNATIONAL_EMAIL_ADDRESSES"></system-label>
                         <system-checkbox class="slds-p-vertical--xx-small" [(ngModel)]="settings.advanced.international_email_addresses"></system-checkbox>
@@ -203,9 +228,11 @@
         <div class="slds-section__content">
             <div class="slds-grid slds-m-vertical--xx-small">
                 <div class="slds-size--1-of-2">
-                    <div>
-                        <system-label label="LBL_LOGFILE_NAME"></system-label>
-                        <div class="slds-grid slds-p-around--x-small">
+                    <div class="slds-p-around--x-small">
+                        <label class="slds-form-element__label">
+                            <system-label label="LBL_LOGFILE_NAME"/>
+                        </label>
+                        <div class="slds-grid">
                             <div class="slds-form-element__control slds-size--5-of-6 slds-p-right--x-small">
                                 <system-input-text autocomplete="off" [(ngModel)]="settings.logger.file_name"></system-input-text>
                             </div>
