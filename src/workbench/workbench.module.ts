@@ -186,6 +186,7 @@ import {HL7Manager} from './components/hl7manager';
 import {Hl7ManagerType} from './components/hl7managertype';
 import {HL7ManagerRule} from './components/hl7managerrule';
 import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkanban";
+import {DomainManagerDefinitionUsageModal} from "./components/domainmanagerdefinitionusagemodal";
 
 
 @NgModule({
@@ -206,6 +207,7 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         CategoryTreeAddModal,
         DomainManager,
         DomainManagerDefinitions,
+        DomainManagerDefinitionUsageModal,
         DomainManagerFields,
         DomainManagerFieldTabs,
         DomainManagerFieldDetails,

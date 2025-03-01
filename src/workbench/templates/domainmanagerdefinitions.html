@@ -45,6 +45,9 @@
                 <div class="slds-truncate">{{domaindefinition.fieldtype}}</div>
             </td>
             <td>
+                <button class="slds-button slds-button--icon"(click)="domainDefinitionUsage(domaindefinition)">
+                    <system-button-icon size="xx-small" icon="data_graph"></system-button-icon>
+                </button>
                 <button class="slds-button slds-button--icon"(click)="editDomainDefinition(domaindefinition)">
                     <system-button-icon size="xx-small" icon="edit"></system-button-icon>
                 </button>
