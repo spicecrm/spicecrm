@@ -187,6 +187,7 @@ import {Hl7ManagerType} from './components/hl7managertype';
 import {HL7ManagerRule} from './components/hl7managerrule';
 import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkanban";
 import {DomainManagerDefinitionUsageModal} from "./components/domainmanagerdefinitionusagemodal";
+import {DictionaryManagerUsageModal} from "./components/dictionarymanagereusagemodal";
 
 
 @NgModule({
@@ -229,6 +230,7 @@ import {DomainManagerDefinitionUsageModal} from "./components/domainmanagerdefin
         DictionaryManagerCloneDefinitionModal,
         DictionaryManagerMigrateDefinitionModal,
         DictionaryManagerEditDefinitionModal,
+        DictionaryManagerUsageModal,
         DictionaryManagerAddItemModal,
         DictionaryManagerRelationships,
         DictionaryManagerRelationshipsDetails,
