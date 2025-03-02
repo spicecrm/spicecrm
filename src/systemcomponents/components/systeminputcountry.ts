@@ -44,9 +44,12 @@ export class SystemInputCountry implements OnInit, ControlValueAccessor {
     /**
      * set to true if the address inpout shoudl be strict according to the dropdown values
      */
-    public strict: boolean = false;
+    public strict: boolean = true;
     @Input('system-input-country-strict') set setStrict(value) {
         this.strict = true;
+    }
+    @Input('system-input-country-lazy') set setLazy(value) {
+        this.strict = false;
     }
 
     constructor(
@@ -54,8 +57,7 @@ export class SystemInputCountry implements OnInit, ControlValueAccessor {
         public language: language,
         public configuration: configurationService
     ) {
-        let addressmode = this.configuration.data.backendextensions.spiceui.config.format;
-        if (addressmode == 'strict') this.strict = true;
+        if (this.configuration.getCapabilityConfig('address_format').lazy) this.strict = false;
     }
 
     get value() {
