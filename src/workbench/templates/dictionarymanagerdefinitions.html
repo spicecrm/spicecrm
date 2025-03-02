@@ -50,35 +50,40 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected':dictionarymanager.currentDictionaryDefinition == dictionarydefinition.id}"  *ngFor="let dictionarydefinition of dictionarydefinitions; trackBy: trackByFn" (dblclick)="this.isExpanded = false" (click)="setCurrentDictionaryDefinition(dictionarydefinition.id)">
-                <td>
-                    <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionarydefinition.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                    <dictionary-manager-item-status [ngModel]="dictionarydefinition.status" (ngModelChange)="setStatus(dictionarydefinition, $event)"></dictionary-manager-item-status>
-                </td>
-                <td data-label="Dictionary" title="{{dictionarydefinition.name}}">
-                    <div class="slds-truncate">{{dictionarydefinition.name}}</div>
-                </td>
-                <td data-label="Table" title="{{dictionarydefinition.tablename}}">
-                    <div class="slds-truncate">{{dictionarydefinition.tablename}}</div>
-                </td>
-                <td data-label="Type">
-                    <div class="slds-truncate">{{dictionarydefinition.sysdictionary_type}}</div>
-                </td>
-                <td *ngIf="isExpanded" data-label="Contenttype">
-                    <div class="slds-truncate">{{dictionarydefinition.sysdictionary_contenttype}}</div>
-                </td>
-                <td *ngIf="isExpanded" data-label="audited">
-                    <system-checkbox system-checkbox-asinteger disabled [ngModel]="dictionarydefinition.audited"/>
-                </td>
-                <td>
-                    <button class="slds-button slds-button--icon" (click)="editDictionaryDefinition(dictionarydefinition)">
-                        <system-button-icon size="xx-small" icon="edit"></system-button-icon>
-                    </button>
-                    <button class="slds-button slds-button--icon" [disabled]="dictionarydefinition.status == 'a' || !dictionarymanager.canChange(dictionarydefinition.scope)" (click)="delete(dictionarydefinition.id)">
-                        <system-button-icon size="xx-small" icon="delete"></system-button-icon>
-                    </button>
-                </td>
-            </tr>
+            @for (dictionarydefinition of dictionarydefinitions; track dictionarydefinition.id) {
+                <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected':dictionarymanager.currentDictionaryDefinition == dictionarydefinition.id}" (dblclick)="this.isExpanded = false" (click)="setCurrentDictionaryDefinition(dictionarydefinition.id)">
+                    <td>
+                        <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionarydefinition.scope == 'g' ? 'world' : 'people'"/>
+                        <dictionary-manager-item-status [ngModel]="dictionarydefinition.status" (ngModelChange)="setStatus(dictionarydefinition, $event)"/>
+                    </td>
+                    <td data-label="Dictionary" title="{{dictionarydefinition.name}}">
+                        <div class="slds-truncate">{{ dictionarydefinition.name }}</div>
+                    </td>
+                    <td data-label="Table" title="{{dictionarydefinition.tablename}}">
+                        <div class="slds-truncate">{{ dictionarydefinition.tablename }}</div>
+                    </td>
+                    <td data-label="Type">
+                        <div class="slds-truncate">{{ dictionarydefinition.sysdictionary_type }}</div>
+                    </td>
+                    <td *ngIf="isExpanded" data-label="Contenttype">
+                        <div class="slds-truncate">{{ dictionarydefinition.sysdictionary_contenttype }}</div>
+                    </td>
+                    <td *ngIf="isExpanded" data-label="audited">
+                        <system-checkbox system-checkbox-asinteger disabled [ngModel]="dictionarydefinition.audited"/>
+                    </td>
+                    <td>
+                        <button class="slds-button slds-button--icon" (click)="editDictionaryDefinition(dictionarydefinition)">
+                            <system-button-icon size="xx-small" icon="edit"/>
+                        </button>
+                        <button *ngIf="dictionarydefinition.sysdictionary_type == 'template'" class="slds-button slds-button--icon" (click)="dictionaryDefinitionUsage(dictionarydefinition)">
+                            <system-button-icon size="xx-small" icon="data_graph"/>
+                        </button>
+                        <button class="slds-button slds-button--icon" [disabled]="dictionarydefinition.status == 'a' || !dictionarymanager.canChange(dictionarydefinition.scope)" (click)="delete(dictionarydefinition.id)">
+                            <system-button-icon size="xx-small" icon="delete"/>
+                        </button>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>
