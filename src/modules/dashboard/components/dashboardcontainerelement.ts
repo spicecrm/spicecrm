@@ -1,17 +1,20 @@
 /**
  * @module ModuleDashboard
  */
-import {AfterViewInit, Component, Input, Renderer2, ViewChild, ViewContainerRef} from "@angular/core";
+import {AfterViewInit, Component, Input, OnDestroy, Renderer2, ViewChild, ViewContainerRef} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {dashboardlayout} from "../services/dashboardlayout.service";
 import {view} from "../../../services/view.service";
 import {model} from "../../../services/model.service";
+import {Subscription} from "rxjs";
+import {navigation} from "../../../services/navigation.service";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 @Component({
     selector: "dashboard-container-element",
     templateUrl: "../templates/dashboardcontainerelement.html"
 })
-export class DashboardContainerElement implements AfterViewInit {
+export class DashboardContainerElement implements AfterViewInit, OnDestroy {
     @ViewChild("containerelement", {read: ViewContainerRef, static: false}) public containerelement: ViewContainerRef;
 
     public componentRefs: any[] = [];
@@ -23,12 +26,15 @@ export class DashboardContainerElement implements AfterViewInit {
     public mouseStart: any = null;
     public mouseTarget: string = "";
     public isMoving: boolean = false;
-
+    public refreshInterval: any;
+    private activeTabSubscription: Subscription;
     constructor(public dashboardlayout: dashboardlayout,
                 public metadata: metadata,
                 public renderer: Renderer2,
                 public model: model,
-                public view: view) {
+                public view: view,
+                public navigation: navigation,
+                public navigationtab: navigationtab ) {
     }
 
     get containerClass() {
@@ -39,14 +45,54 @@ export class DashboardContainerElement implements AfterViewInit {
         };
     }
 
-    public ngAfterViewInit() {
+    ngAfterViewInit() {
         this.renderDashlet();
+        this.startDashletRefresh();
+
+        this.activeTabSubscription = this.navigation.activeTab$.subscribe(activeTabId => {
+            if ((activeTabId === 'main' && !this.navigationtab.tabid) || (activeTabId === this.navigationtab.tabid)) {
+                this.startDashletRefresh();
+            } else {
+                this.stopDashletRefresh();
+            }
+        });
+    }
+
+    ngOnDestroy() {
+        this.stopDashletRefresh();
+        if (this.activeTabSubscription) {
+            this.activeTabSubscription.unsubscribe();
+        }
+    }
+
+    /**
+     * Start the refresh interval to reload Dashlet if not already running
+     */
+    public startDashletRefresh() {
+
+       const refreshInterval = this.item.componentconfig?.refresh_interval ?? this.model.getField('refresh_interval');
+
+        if( refreshInterval > 0) {
+            setTimeout(() => {
+                this.refreshInterval = setInterval(() => this.renderDashlet(), refreshInterval * 1000);
+            } , 10000);
+        }
+
+    }
+
+    private stopDashletRefresh() {
+        if (this.refreshInterval) {
+            clearTimeout(this.refreshInterval);
+            this.refreshInterval = null;
+        }
     }
 
     public renderDashlet() {
         for (let component of this.componentRefs) {
             component.destroy();
         }
+        this.componentRefs = [];
+
         // assign the isAuthorized on setTimeout callback function to avoid angular change detection error "ExpressionChangedAfterItHasBeenCheckedError"
         window.setTimeout(() => this.isAuthorized = this.item.module ? this.metadata.checkModuleAcl(this.item.module, this.item.acl_action ? this.item.acl_action : "list") : true);
         if (this.item.component && this.isAuthorized) {

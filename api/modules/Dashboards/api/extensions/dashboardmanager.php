@@ -191,9 +191,15 @@ $routes = [
                             'description' => 'Name of the component class',
                         ],
                         'componentconfig' => [
-                            'type'        => ValidationMiddleware::TYPE_COMPLEX,
+                            'type'        => ValidationMiddleware::TYPE_OBJECT,
                             'required'    => false,
                             'description' => 'Configuration of the dashboard component. Saved as JSON in the DB.',
+                            'parameters' => [
+                                'refresh_interval'    => [
+                                    'type'        => ValidationMiddleware::TYPE_NUMERIC,
+                                    'description' => '',
+                                ],
+                            ]
                         ],
                         'created_by'      => [
                             'type'        => ValidationMiddleware::TYPE_GUID,
