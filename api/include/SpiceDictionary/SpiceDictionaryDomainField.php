@@ -53,6 +53,7 @@ class SpiceDictionaryDomainField
         $definition->type = $this->domainField->fieldtype ?: $this->domainField->dbtype;
         $definition->sysdomaindefinition_id = $this->domainField->sysdomaindefinition_id;
         $definition->sysdomainfieldvalidation_id = $this->domainField->sysdomainfieldvalidation_id;
+        $definition->duplicate_merge = (int) $sysdictionaryItem->itemDefinition->duplicate_merge;
 
         // set the defualt value
         $definition->default = $this->domainField->defaultvalue;
