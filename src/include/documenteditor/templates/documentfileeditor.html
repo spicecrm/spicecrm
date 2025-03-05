@@ -5,7 +5,7 @@
                 @if (fileName){
                     <div class="slds-grid slds-grid--vertical-align-center">
                         <system-file-icon [filemimetype]="model.getFieldValue(fieldName + '_mime_type')" [filename]="fileName" divClass="slds-p-right--xx-small" size="x-small"></system-file-icon>
-                        <div class="slds-truncate slds-grow"><a href="javascript:void(0);" (click)="downloadFile()">{{ fileName }}.docx</a></div>
+                        <div class="slds-truncate slds-grow"><a href="javascript:void(0);" (click)="downloadFile()">{{ fileName }} {{fileName.endsWith('docx') ? '' : '.docx'}}</a></div>
                         <button class="slds-button slds-button--icon right slds-m-left--xx-small" (click)="downloadFile()">
                             <system-button-icon icon="download"/>
                         </button>
@@ -39,7 +39,27 @@
             <object [data]="blobUrl" class="slds-size--1-of-1 slds-height_full"></object>
         } @else if (isViewMode) {
             <system-illustration-no-data class="slds-align--absolute-center slds-height_full">
-                <system-label label="LBL_NO_DATA"/>
+                @if (!fileName) {
+                    <div class="slds-file-selector slds-file-selector_files">
+                        <div class="slds-file-selector__dropzone" (system-drop-file)="onDrop($event)">
+                            <input #fileContainer type="file" accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document" (click)="fileContainer.value = null" (change)="uploadFiles(fileContainer.files)" [id]="fileUploadId" class="slds-file-selector__input slds-assistive-text">
+                            <label class="slds-file-selector__body" [for]="fileUploadId">
+                            <span class="slds-file-selector__button slds-button slds-button_neutral">
+                                <system-button-icon icon="upload"></system-button-icon>
+                                <system-label label="LBL_UPLOAD_FILES"/>
+                            </span>
+                                <span class="slds-file-selector__text slds-medium-show">
+                                <system-label label="LBL_OR" class="slds-m-right--xx-small"/> <system-label label="LBL_DROP_FILES"/>
+                            </span>
+                            </label>
+                        </div>
+                    </div>
+                }
+                <div class="slds-m-top--small">
+                    <button (click)="setEditMode(true)" class="slds-button slds-button--icon-border-filled">
+                        <system-button-icon [icon]="!fileName ? 'add' : 'edit'"/>
+                    </button>
+                </div>
             </system-illustration-no-data>
         }@else {
             <document-editor [file]="docxFile"/>

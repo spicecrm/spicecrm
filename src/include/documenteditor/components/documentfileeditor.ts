@@ -41,6 +41,10 @@ export class DocumentFileEditor implements OnInit {
      */
     public blobUrl: SafeUrl;
     /**
+     * blob url for pdf preview
+     */
+    public fileUploadId: string;
+    /**
      * document editor reference
      * @private
      */
@@ -53,6 +57,7 @@ export class DocumentFileEditor implements OnInit {
                 public view: view,
                 public helper: helper,
                 public model: model) {
+        this.fileUploadId = window._.uniqueId('TxEditorFileUpload_');
     }
 
     /**
@@ -194,6 +199,60 @@ export class DocumentFileEditor implements OnInit {
                     this.cdRef.detectChanges();
                 }
             })
+        );
+    }
+
+    /**
+     * handles the drop event iof a file is dropped onto the file upload field
+     * @param files
+     * @private
+     */
+    public onDrop(files) {
+        if (files && files.length == 1) {
+            this.uploadFiles(files);
+        }
+    }
+
+    /**
+     * the upload itself
+     *
+     * @param files an array with files
+     */
+    public uploadFiles(files) {
+
+        this.isLoading = true;
+        this.cdRef.detectChanges();
+
+        this.modelattachments.uploadAttachmentsBase64(files).subscribe(() => {
+                let file = this.modelattachments.files[0];
+                let modelValues: any = {};
+
+                this.model.startEdit(true, true);
+                // somewhat ugly logic to get the prefix from the field .. it has to end with name
+                modelValues[this.fieldName + '_name'] = file.filename;
+                modelValues[this.fieldName + '_size'] = file.filesize;
+                modelValues[this.fieldName + '_mime_type'] = file.file_mime_type;
+                modelValues[this.fieldName + '_md5'] = file.filemd5;
+
+                // update the model
+                this.model.setFields(modelValues);
+                this.model.save();
+
+                this.modelattachments.readFile(files[0]).subscribe(fileContent => {
+
+                    this.isLoading = false;
+                    this.cdRef.detectChanges();
+
+                    this.docxFile = {
+                        content: fileContent.filecontent,
+                        mimeType: fileContent.type,
+                        dateModified: fileContent.lastModified,
+                    };
+                    this.setEditMode(true);
+                });
+
+
+            }
         );
     }
 }
