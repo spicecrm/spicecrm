@@ -32,8 +32,8 @@ class TrackingProcessor extends Processor {
      * @param $encrypted
      * @return false|string
      */
-    private function decryptBlowfishHash($encrypted) {
-        $this->key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey');
+    private function decryptEncryptionKeyHash($encrypted) {
+        $this->key = SpiceConfig::getInstance()->get('emailtracking.encryptionkey');
         return openssl_decrypt($encrypted, $this->method, $this->key);
     }
 
@@ -42,7 +42,7 @@ class TrackingProcessor extends Processor {
      */
     private function decodeTrackingPixel($string) {
         $encrypted =  base64_decode($string);
-        $decrypted = $this->decryptBlowfishHash($encrypted);
+        $decrypted = $this->decryptEncryptionKeyHash($encrypted);
 
         if($decrypted) {
             $data = explode(':', $decrypted);
