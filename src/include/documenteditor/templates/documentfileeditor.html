@@ -1,0 +1,49 @@
+<div [ngStyle]="!isFullscreen ? null : {'position': 'fixed'}" style="inset: 0; z-index: 9999" class="slds-height_full slds-grid slds-grid--vertical slds-theme--default">
+    <div class="slds-size--1-of-1 slds-p-bottom--xx-small">
+        <div class="slds-grid slds-grid--align-spread slds-p-horizontal--xx-small slds-p-top--xx-small">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                @if (fileName){
+                    <div class="slds-grid slds-grid--vertical-align-center">
+                        <system-file-icon [filemimetype]="model.getFieldValue(fieldName + '_mime_type')" [filename]="fileName" divClass="slds-p-right--xx-small" size="x-small"></system-file-icon>
+                        <div class="slds-truncate slds-grow"><a href="javascript:void(0);" (click)="downloadFile()">{{ fileName }}.docx</a></div>
+                        <button class="slds-button slds-button--icon right slds-m-left--xx-small" (click)="downloadFile()">
+                            <system-button-icon icon="download"/>
+                        </button>
+                    </div>
+                    @if (docxFile) {
+                        <system-display-datetime [date]="docxFile.dateModified" class="slds-m-left--small"></system-display-datetime>
+                    }
+                }
+            </div>
+            <div>
+                <button (click)="toggleFullscreen()" class="slds-button slds-button--icon slds-button--neutral slds-m-right--xx-small" style="padding: 7px 10px;">
+                    <system-button-icon [icon]="!isFullscreen ? 'expand' : 'contract'"></system-button-icon>
+                </button>
+                @if (!isViewMode) {
+                    <button (click)="setEditMode(false)" class="slds-button slds-button--icon slds-button--neutral" style="padding: 7px 10px;">
+                        <system-button-icon icon="close"/>
+                    </button>
+                    <button (click)="save()" class="slds-button slds-button--icon slds-button--brand" style="padding: 7px 10px;">
+                        <system-button-icon icon="save"/>
+                    </button>
+                } @else {
+                    <button (click)="setEditMode(true)" class="slds-button slds-button--icon slds-button--brand" style="padding: 7px 10px;">
+                        <system-button-icon icon="edit"/>
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+    <div [system-overlay-loading-spinner]="isLoading" class="slds-grow">
+        @if (isViewMode && blobUrl) {
+            <object [data]="blobUrl" class="slds-size--1-of-1 slds-height_full"></object>
+        } @else if (isViewMode) {
+            <system-illustration-no-data class="slds-align--absolute-center slds-height_full">
+                <system-label label="LBL_NO_DATA"/>
+            </system-illustration-no-data>
+        }@else {
+            <document-editor [file]="docxFile"/>
+        }
+    </div>
+
+</div>

@@ -457,6 +457,34 @@ class SpiceAttachments
     }
 
     /**
+     * save attachment file content
+     * @param $file
+     * @return array
+     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     */
+    public static function saveAttachmentFile($file): array
+    {
+        $upload_file = new UploadFile('file');
+        $decodedFile = base64_decode($file['file']);
+
+        $upload_file->set_for_soap(null, $decodedFile);
+
+        if(!$upload_file->final_move($file['filemd5'])){
+            throw new \SpiceCRM\includes\ErrorHandlers\Exception('Error moving file');
+        }
+
+        $prefix = StreamFactory::getPathPrefix('upload');
+
+        $modifiedTimestamp = filemtime($prefix . $file['filemd5']);
+        $dateModified = !$modifiedTimestamp ? '' : TimeDate::getInstance()->fromTimestamp($modifiedTimestamp)->format(TimeDate::DB_DATETIME_FORMAT);
+
+        return [
+            'filesize' => filesize($prefix . $file['filemd5']),
+            'date_modified' => $dateModified
+        ];
+    }
+
+    /**
      * get attachment categories from the database
      * @param $module
      * @param bool $systemOnly
