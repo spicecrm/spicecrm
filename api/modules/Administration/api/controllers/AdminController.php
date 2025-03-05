@@ -172,7 +172,7 @@ class AdminController
                 'site_url' => SpiceConfig::getInstance()->config['site_url'],
                 'unique_key' => SpiceConfig::getInstance()->config['unique_key'],
                 'startup_mode' => SpiceConfig::getInstance()->config['system']['startup_mode'],
-                'edit_mode' => SpiceConfig::getInstance()->config['system']['edit_mode'],
+                'edit_mode' => SpiceConfig::getInstance()->config['system']['edit_mode']
             ],
             'advanced' => [
                 'stack_trace_errors' => SpiceUtils::getStackTrace(),
@@ -181,7 +181,8 @@ class AdminController
                 'slow_query_time_msec' => SpiceConfig::getInstance()->config['slow_query_time_msec'],
                 'upload_maxsize' => SpiceConfig::getInstance()->config['upload_maxsize'],
                 'upload_dir' => SpiceConfig::getInstance()->config['upload_dir'],
-                'international_email_addresses' => SpiceConfig::getInstance()->config['international_email_addresses'],
+                'file_types' => SpiceConfig::getInstance()->config['attachments']['file_types'],
+                'international_email_addresses' => SpiceConfig::getInstance()->config['international_email_addresses']
             ],
             'cache' => [
                 'class' => SpiceConfig::getInstance()->config['cache']['class'] ?? 'SpiceCacheFile',
@@ -191,7 +192,7 @@ class AdminController
                 'memcached_host' => SpiceConfig::getInstance()->config['cache']['memcached_host'] ?? '127.0.0.1',
                 'memcached_port' => SpiceConfig::getInstance()->config['cache']['memcached_port'] ?? 11211,
                 'file_location' => SpiceConfig::getInstance()->config['cache']['file_location'] ?? 'cache',
-                'file_transparentnames' => SpiceConfig::getInstance()->config['cache']['file_transparentnames'] ?? false,
+                'file_transparentnames' => SpiceConfig::getInstance()->config['cache']['file_transparentnames'] ?? false
             ],
             'logger' => SpiceConfig::getInstance()->config['logger']
         ]);
@@ -242,8 +243,20 @@ class AdminController
             // handle advanced settings
             foreach ($postBody['advanced'] as $itemname => $itemvalue) {
                 if(!$itemvalue) continue;
-                SpiceConfig::getInstance()->config[$itemname] = $itemvalue;
-                $diffArray[$itemname] = $itemvalue;
+
+                # exclude "attachment_file_types" to be written in the config_override
+                if($itemname === "file_types") {
+                    if($db->fetchOne("SELECT * FROM config WHERE category = 'attachments' AND name = '$itemname'")) {
+                        $query = "UPDATE config SET value = '$itemvalue' WHERE category = 'attachments' AND name = '$itemname'";
+                    } else {
+                        $query = "INSERT INTO config (category, name, value) VALUES ('attachments', '$itemname', '$itemvalue')";
+                    }
+                    $db->query($query);
+                } else {
+                    SpiceConfig::getInstance()->config[$itemname] = $itemvalue;
+                    $diffArray[$itemname] = $itemvalue;
+                }
+
             }
 
             // handle the cache settings

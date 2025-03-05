@@ -121,7 +121,7 @@ class EmailTrackingActionsController
      */
     public function handleMarketingAction(Request $req, Response $res, array $args): Response
     {
-        $decrypted = $this->decryptBlowfish(base64_decode($args['key']));
+        $decrypted = $this->decryptEncryptionKey(base64_decode($args['key']));
 
         if (!$decrypted) {
             throw new BadRequestException('Failed to decrypt key');
@@ -156,6 +156,18 @@ class EmailTrackingActionsController
 
         return $res->withJson(['redirectUrl' => $this->getRedirectUrl($marketingAction, $email->id)]);
     }
+
+    /**
+     * decrypts the key
+     * @param $key
+     */
+    private function decryptEncryptionKey($key)
+    {
+        $encryptionKey = SpiceConfig::getInstance()->get('emailtracking.encryptionkey');
+        $method = 'DES-EDE3-CBC';
+        return openssl_decrypt($key, $method, $encryptionKey);
+    }
+
 
     /**
      * generate redirect url from the marketing action
