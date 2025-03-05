@@ -140,8 +140,13 @@ export class DocumentFileEditor implements OnInit {
             };
 
             this.backend.postRequest(`common/spiceattachments/module/${this.model.module}/${this.model.id}/byfield/${this.fieldName}`, null, body).subscribe(res => {
-                this.docxFile.dateModified = res.date_modified;
-                this.docxFile.content = file.content;
+
+                this.docxFile = {
+                    content: file.content,
+                    mimeType: file.mimeType,
+                    dateModified: res.date_modified,
+                };
+
                 this.isLoading = false;
                 this.setEditMode(false);
                 this.toast.sendToast('LBL_DATA_SAVED', 'success');
