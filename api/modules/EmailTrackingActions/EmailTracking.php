@@ -39,7 +39,7 @@ class EmailTracking
      */
     static function encodeTrackingID(string $trackingData): string
     {
-        $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? throw (new Exception("misconfiguration blowfishkey missing"));
+        $key = SpiceConfig::getInstance()->get('emailtracking.encryptionkey') ?? throw (new Exception("misconfiguration encryptionkey missing"));
 
         if ($key) {
             return urlencode(base64_encode(openssl_encrypt($trackingData, 'DES-EDE3-CBC', $key)));
@@ -58,7 +58,7 @@ class EmailTracking
      */
     static function decodeTrackingID($trackingData): ?array
     {
-        $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? throw new Exception("misconfiguration blowfishkey missing");
+        $key = SpiceConfig::getInstance()->get('emailtracking.encryptionkey') ?? throw new Exception("misconfiguration encryptionkey missing");
 
         if (!$key) {
             $decrypted = base64_decode(urldecode($trackingData));

@@ -11,7 +11,8 @@ import {
     Input,
     OnChanges,
     OnDestroy,
-    Renderer2, SimpleChanges,
+    Renderer2,
+    SimpleChanges,
     ViewChild,
     ViewContainerRef
 } from "@angular/core";
@@ -75,6 +76,12 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
      * the fileupload elelent
      */
     @ViewChild("fileupload", {read: ViewContainerRef, static: true}) public fileupload: ViewContainerRef;
+
+    /**
+     * the itemcontainer element
+     */
+    @ViewChild("itemcontainer", {read: ViewContainerRef, static: false}) public itemcontainer: ViewContainerRef;
+
     /**
      * @ignore
      *
@@ -126,6 +133,26 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
     public showFolders: boolean = false;
 
     /**
+     * if configured, limit the file types to be considered on upload
+     */
+    public fileTypeActionObject: any;
+
+    /**
+     * checks if the upload is allowed
+     */
+    public allowUpload: boolean = true;
+
+    /**
+     * file types that are allowed/not allowed
+     */
+    public fileTypes: string;
+
+    /**
+     * message to be displayed based on the configured file types and the action to perform
+     */
+    public toastMessage: string;
+
+    /**
      * holds the components subscriptions
      *
      * @private
@@ -159,6 +186,9 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         if(!this.defaultCategoryId && !this.selectedCategoryId) {
             this.selectedCategoryId = '*';
         }
+
+        // if the config exists, limit the file based on it
+        this.fileTypeActionObject = this.configurationService.getCapabilityConfig('admin')?.fileTypes;
     }
 
     /**
@@ -308,6 +338,10 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         return this.elementRef.nativeElement.getBoundingClientRect().width;
     }
 
+    get containerWidth(){
+        return this.itemcontainer ? this.itemcontainer.element.nativeElement.getBoundingClientRect().width : 0;
+    }
+
     /**
      * handler for the dragover event.- Checks if we only have files dragged over the div
      *
@@ -352,9 +386,50 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
     }
 
     /**
+     * extracts the file types that are configured in the general settings
+     * and performs a check if the types are allowed to be uploaded
+     * @param filesObject
+     * @param files
+     */
+    public handleConfiguredFileTypesAndActions(filesObject: any, files: File): void {
+        let parsedObject = JSON.parse(filesObject);
+        const [action, fileTypes] = Object.entries(parsedObject)[0]
+
+        this.fileTypes = String(fileTypes);
+
+        // extract file names
+        let fileNames: string[] = [];
+        Object.entries(files).forEach(obj => fileNames.push((obj[1]['name'])))
+
+        // extract files that are in the upload process
+        let fileTypesToBeUploaded: string[] = [];
+        fileNames.forEach(fileName => {
+            const extension = fileName.split('.')[1] || 'no-extension';
+            fileTypesToBeUploaded.push(extension);
+        });
+
+        // reset allowUpload if previously set to false
+        this.allowUpload = true;
+
+        // check each file type based on file types that we allow/not allow
+        fileTypesToBeUploaded.forEach(file => {
+            const isFileIncluded = String(fileTypes).includes(file);
+
+            if (
+                (action === 'exclude' && isFileIncluded) ||
+                (action === 'include' && !isFileIncluded)
+            ) {
+                this.allowUpload = false;
+                this.toastMessage = `'${fileTypes}' ${this.language.getLabel(
+                    action === 'exclude' ? 'LBL_FILETYPES_NOT_ALLOWED' : 'LBL_FILETYPES_ALLOWED'
+                )}`;
+            }
+        });
+    }
+
+    /**
      * handle the drop and upload the files
-     *
-     * @param event the drop event
+     * @param files
      */
     public fileDrop(files) {
         if(this.componentconfig.disableupload && this.componentconfig.disableupload === true){
@@ -362,8 +437,14 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
             return false;
         }
 
-        if (files && files.length >= 1) {
+        if (this.fileTypeActionObject) {
+            this.handleConfiguredFileTypesAndActions(this.fileTypeActionObject, files);
+        }
+
+        if (files && files.length >= 1 && this.allowUpload) {
             this.doupload(files);
+        } else {
+            this.toast.sendToast(this.toastMessage, 'error')
         }
     }
 
@@ -387,7 +468,16 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
      */
     public uploadFile() {
         let files = this.fileupload.element.nativeElement.files;
-        this.doupload(files);
+
+        if (this.fileTypeActionObject) {
+            this.handleConfiguredFileTypesAndActions(this.fileTypeActionObject, files);
+        }
+
+        if(this.allowUpload) {
+            this.doupload(files);
+        } else {
+            this.toast.sendToast(this.toastMessage, 'error');
+        }
     }
 
     /**
@@ -509,6 +599,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
     public toggleFolders(){
         this.showFolders = !this.showFolders;
         this.filteredFiles = this.filterFiles();
+        this.cdRef.detectChanges();
     }
 
     /**
