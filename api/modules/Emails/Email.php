@@ -1641,6 +1641,8 @@ class Email extends SpiceBean
         $this->status = self::STATUS_UNREAD;
         $this->openness = self::OPENNESS_OPEN;
 
+        $emlAttachments = [];
+
         // parse the parts
         foreach ($bodyParts as $index => $bodyPart) {
             switch ($bodyPart['content-type']) {
@@ -1676,6 +1678,13 @@ class Email extends SpiceBean
                 default:
                     // check if this is a file
                     if (strpos($bodyPart['headers']['content-disposition'], 'filename') !== false) {
+                        // ignore file attachments inside eml attachments
+                        foreach ($emlAttachments as $emlAttachment) {
+                            if ($bodyPart['starting-pos'] >= $emlAttachment['start'] && $bodyPart['ending-pos'] <= $emlAttachment['end']) {
+                                break 2;
+                            }
+                        }
+
                         $fileArray = [
                             'filename' => $bodyPart['content-name'],
                             'file' => base64_encode($contents[$index]),
@@ -1686,8 +1695,13 @@ class Email extends SpiceBean
                     }
 
                     if (strpos($bodyPart['headers']['content-type'], 'message/rfc822') !== false) {
+                        $emlAttachments[] = [
+                            'start' => $bodyPart['starting-pos'],
+                            'end'   => $bodyPart['ending-pos'],
+                        ];
+
                         $fileArray = [
-                            'filename' => $bodyPart['content-id'], // not sure what to use as the filename as the subject is not easily available at this point
+                            'filename' => $bodyPart['content-id'] ?? "Email", // not sure what to use as the filename as the subject is not easily available at this point
                             'file' => base64_encode($contents[$index]),
                             'filemimetype' => $bodyPart['content-type'],
                             'external_id' => $bodyPart['content-id'],
