@@ -6,6 +6,7 @@ import {Router} from "@angular/router";
 import {toast} from "../../../services/toast.service";
 import {language} from "../../../services/language.service";
 import {modal} from "../../../services/modal.service";
+import {session} from "../../../services/session.service";
 
 @Component({
     selector: 'project-activity-track-time-modal',
@@ -36,13 +37,19 @@ export class ProjectActivityTrackTimeModal implements OnInit {
         private router: Router,
         private toast: toast,
         private language: language,
-        private modal: modal
+        private modal: modal,
+        private session: session
     ) {
-        this.model.module = 'ProjectActivities';
-        this.model.initialize();
 
-        // force copy rule execution for parent
-        this.model.executeCopyRules(this.parent);
+        if(!this.parent.id && this.session.authData.user.parent_id && this.session.authData.user.parent_type){
+            this.parent.module = this.session.authData.user.parent_type;
+            this.parent.id = this.session.authData.user.parent_id;
+            this.parent.initialize();
+            this.parent.setField('name', this.session.authData.user.full_name)
+        }
+
+        this.model.module = 'ProjectActivities';
+        this.model.initialize(this.parent);
 
         let componentConfig = this.metadata.getComponentConfig('ProjectActivityTrackTimeModal', 'ProjectActivities');
         if (componentConfig.fieldset) {
