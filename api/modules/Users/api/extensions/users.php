@@ -69,6 +69,14 @@ $routes = [
     ],
     [
         'method'      => 'post',
+        'route'       => '/module/Users/Employees/create',
+        'class'       => UsersController::class,
+        'function'    => 'generateEmployees',
+        'description' => 'generates Employees for all users and links them',
+        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true ]
+    ],
+    [
+        'method'      => 'post',
         'route'       => '/module/Users/{id}/create',
         'class'       => UsersController::class,
         'function'    => 'createUser',
@@ -186,15 +194,7 @@ $routes = [
                 'required' => true
             ],
         ]
-    ],
-    [
-        'method'      => 'post',
-        'route'       => '/module/Users/Employees/create',
-        'class'       => UsersController::class,
-        'function'    => 'generateEmployees',
-        'description' => 'generates Employees for all users and links them',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true ]
-    ],
+    ]
 ];
 
 /**

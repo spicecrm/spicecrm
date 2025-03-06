@@ -427,12 +427,16 @@ class UsersController
      */
     public function generateEmployees(Request $req, Response $res, array $args): Response {
 
+        set_time_limit(120);
+
         $seed = BeanFactory::getBean('Users');
 
         $users = $seed->get_full_list([], "status = 'Active' AND (parent_id IS NULL OR parent_id = '') AND is_admin = 0 AND is_api_user = 0");
 
         foreach ($users as $user) {
             $e = BeanFactory::getBean('Employees');
+
+            $e->salutation = 'Mr.';
             $e->first_name = $user->first_name;
             $e->last_name = $user->last_name;
             $e->phone_home = $user->phone_home;
