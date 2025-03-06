@@ -24,7 +24,7 @@ export class AccountTerritoryDetailsAddButton implements ActionSetItemI, OnInit 
      * available cc details excluding the cc details already linked to the account
      * @private
      */
-    private availableCCodes: { id: string; name: string; }[] = [];
+    private availableCCodes: { id: string; name: string; companycode: string }[] = [];
 
     constructor(private modal: modal,
                 private model: model,
@@ -74,7 +74,7 @@ export class AccountTerritoryDetailsAddButton implements ActionSetItemI, OnInit 
 
             const presets = {
                 companycode_id: answer,
-                name: this.availableCCodes.find(c => c.id == answer).name,
+                name: this.availableCCodes.find(c => c.id == answer).companycode,
                 account_id: this.parentModel.id
             };
 
