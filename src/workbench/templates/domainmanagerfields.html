@@ -48,14 +48,13 @@
                     <div class="slds-truncate">{{domainfield.len}}</div>
                 </td>
                 <td data-label="Type" class="slds-p-vertical--none">
-                    <system-checkbox disabled [ngModel]="domainfield.required == '1'"></system-checkbox>
+                    <system-checkbox disabled [indeterminate]="domainfield.required == '0'" [ngModel]="domainfield.required == '2' ? 0 : 1"></system-checkbox>
                 </td>
                 <td data-label="Type" class="slds-p-vertical--none">
                     <div *ngIf="domainfield.sysdomainfieldvalidation_id" class="slds-grid slds-grid--vertical-align-center">
                         <div class="slds-truncate">{{validationName(domainfield.sysdomainfieldvalidation_id)}}</div>
                         <button class="slds-button slds-button--icon" (click)="unlinkValidation(domainfield)"><system-button-icon icon="unlinked"></system-button-icon></button>
                     </div>
-
                 </td>
                 <td>
                     <button class="slds-col--bump-left slds-button slds-button--icon" (click)="showValidation(domainfield)">

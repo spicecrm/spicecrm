@@ -421,7 +421,7 @@ class SpiceBeanController
     {
         $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
         $params = $req->getQueryParams();
-        return $res->withJson($moduleHandler->acceptBeanAsDuplicate($args['beanName'], $args['beanIdLeft'], $args['beanIdRight'], $params['deleted']));
+        return $res->withJson($moduleHandler->acceptBeanAsDuplicate($args['beanName'], $args['beanId'], $args['beanIdRight'], $params['deleted']));
     }
 
 }

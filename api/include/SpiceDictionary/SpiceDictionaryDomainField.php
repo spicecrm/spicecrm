@@ -45,28 +45,47 @@ class SpiceDictionaryDomainField
      * @return void
      */
     public function getDefinition(SpiceDictionaryItem $sysdictionaryItem = null){
-        $definiton = new stdClass();
-        $definiton->sysdictionarydomainfield_id = $this->id;
-        $definiton->sysdictionaryitem_id = $sysdictionaryItem->id;
-        $definiton->name = $sysdictionaryItem ? str_replace("{sysdictionaryitems.name}", $sysdictionaryItem->name, $this->domainField->name) : $this->domainField->name;
-        $definiton->type = $this->domainField->fieldtype ?: $this->domainField->dbtype;
-        $definiton->sysdomaindefinition_id = $this->domainField->sysdomaindefinition_id;
-        $definiton->sysdomainfieldvalidation_id = $this->domainField->sysdomainfieldvalidation_id;
-        if($this->domainField->required == 1) $definiton->required = 1;
+        $definition = new stdClass();
+        $definition->sysdictionarydomainfield_id = $this->id;
+        $definition->sysdictionaryitem_id = $sysdictionaryItem->id;
+        $definition->name = $sysdictionaryItem ? str_replace("{sysdictionaryitems.name}", $sysdictionaryItem->name, $this->domainField->name) : $this->domainField->name;
+        if($sysdictionaryItem->itemDefinition->label && !$definition->vname) $definition->vname = $sysdictionaryItem->itemDefinition->label;
+        $definition->type = $this->domainField->fieldtype ?: $this->domainField->dbtype;
+        $definition->sysdomaindefinition_id = $this->domainField->sysdomaindefinition_id;
+        $definition->sysdomainfieldvalidation_id = $this->domainField->sysdomainfieldvalidation_id;
+        $definition->duplicate_merge = (int) $sysdictionaryItem->itemDefinition->duplicate_merge;
+
+        // set the defualt value
+        $definition->default = $this->domainField->defaultvalue;
+        if(!empty($sysdictionaryItem->itemDefinition->default_value) || $sysdictionaryItem->itemDefinition->default_value == 0) $definition->default = $sysdictionaryItem->itemDefinition->default_value;
+
+        // add the description
+        if($sysdictionaryItem->itemDefinition->descriptions) $definition->descriptions = $sysdictionaryItem->itemDefinition->descriptions;
+
+        // handle the required setting
+        switch($this->domainField->required){
+            case 0:
+                $definition->required = $sysdictionaryItem->itemDefinition->required == '1' ? 1 : 0;
+                break;
+            case 1:
+                $definition->required = 1;
+                break;
+            case 2:
+                $definition->required = 0;
+                break;
+        }
 
         // switch the non-db field
         if($this->domainField->dbtype == 'non-db') {
-            $definiton->source = 'non-db';
+            $definition->source = 'non-db';
         } else {
-            $definiton->dbtype = $this->domainField->dbtype;
+            $definition->dbtype = $this->domainField->dbtype;
         }
         // set a label if we have one
-        if($this->domainField->label) $definiton->vname = $this->domainField->label;
-        if($this->domainField->len) $definiton->len = $this->domainField->len;
+        if($this->domainField->label) $definition->vname = $this->domainField->label;
+        if($this->domainField->len) $definition->len = $this->domainField->len;
 
-        $definiton->default = $this->domainField->defaultvalue;
-
-        return $definiton;
+        return $definition;
 
     }
 

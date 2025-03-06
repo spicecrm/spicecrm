@@ -94,6 +94,19 @@ class SpiceACLUsers{
     }
 
     /**
+     * generates a where clause for the reportees of the current user
+     *
+     * @param $table_name
+     * @param $bean
+     * @return string
+     */
+    static function generateReporteesWhereClause($table_name = '', $bean){
+        $reporteeIDs = AuthenticationController::getInstance()->getCurrentUser()->getReporteesList();
+
+        return count($reporteeIDs) > 0 ? "$table_name.assigned_user_id IN ('" . implode("','", $reporteeIDs) ."')" : false;
+    }
+
+    /**
      * generates a where clause that matches the creator
      *
      * @param $table_name
