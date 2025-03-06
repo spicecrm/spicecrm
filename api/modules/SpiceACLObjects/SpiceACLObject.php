@@ -245,8 +245,8 @@ class SpiceACLObject extends SpiceBean
             // get subsitute IDs and see if the current user has an orgunit id
             $substituteOrgunitIds = $absences->getSubstituteEmployeeOrgUnitIDs();
 
-            // get orgunits allocated to the user
-            $userOrgUnits = $current_user->getOrgUnits(true);
+            // get orgunits allocated to the user if we have a user
+            $userOrgUnits = $current_user ? $current_user->getOrgUnits(true) : [];
 
             // get substitute employee record
             if($current_user->orgunit_id || count($substituteOrgunitIds) > 0 || count($userOrgUnits) > 0) {
@@ -657,7 +657,9 @@ class SpiceACLObject extends SpiceBean
         $ownerWhereClauses = [];
         if($this->spiceaclowner) $ownerWhereClauses[] = '(' . SpiceACLUsers::generateCurrentUserWhereClause($table_name, $bean) . ')';
         if($this->spiceaclcreator) $ownerWhereClauses[] = '(' . SpiceACLUsers::generateCreatedByWhereClause($table_name, $bean) . ')';
-        if($this->spiceaclreportees) $ownerWhereClauses[] = '(' . SpiceACLUsers::generateReporteesWhereClause($table_name, $bean) . ')';
+        if($this->spiceaclreportees && $reporteesWhere = SpiceACLUsers::generateReporteesWhereClause($table_name, $bean)) {
+            $ownerWhereClauses[] = '(' . $reporteesWhere . ')';
+        }
         if($this->spiceaclorgunit){
             $w = SpiceACLUsers::generateOrgUnitWhereClause($table_name, $bean);
             if($w !== false) $ownerWhereClauses[] = "($w)";

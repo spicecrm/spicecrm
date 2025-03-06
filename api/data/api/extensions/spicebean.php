@@ -1133,7 +1133,7 @@ $routes = [
     ],
     [
         'method' => 'post',
-        'route' => '/module/{beanName}/{beanIdLeft}/{beanIdRight}/acceptasduplicate',
+        'route' => '/module/{beanName}/{beanId}/{beanIdRight}/acceptasduplicate',
         'class' => SpiceBeanController::class,
         'function' => 'acceptAsDuplicate',
         'description' => 'Sets accepted status on two duplicate Beans',
@@ -1145,7 +1145,7 @@ $routes = [
                 'required' => true,
                 'description' => 'The name of the module',
             ],
-            'beanIdLeft' => [
+            'beanId' => [
                 'in' => 'path',
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'required' => true,
