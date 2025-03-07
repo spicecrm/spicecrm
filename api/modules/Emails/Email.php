@@ -895,7 +895,7 @@ class Email extends SpiceBean
 
     /**
      * @param $trackingurl of the mailbox
-     * generate a tracking pixel with blowfish hash and adds it to the email body
+     * generate a tracking pixel with encryptionkey hash and adds it to the email body
      */
     private function generateTrackingPixel()
     {
@@ -956,8 +956,8 @@ class Email extends SpiceBean
         foreach ($dom->getElementsByTagName('a') as $node) {
             $marketingaction = $node->getAttribute('data-marketingaction');
             if (!empty($marketingaction)) {
-                $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? "2fs5uhnjcnpxcpg9";
-                $method = 'blowfish';
+                $key = SpiceConfig::getInstance()->get('emailtracking.encryptionkey') ?? throw new \SpiceCRM\includes\ErrorHandlers\Exception("misconfiguration encryptionkey missing");
+                $method = 'DES-EDE3-CBC';
                 [$parentType, $parentId] = $this->getTrackingParentData();
                 $data = "ParentType:$parentType:ParentId:$parentId:MarketingActions:$marketingaction";
                 $link = openssl_encrypt($data, $method, $key);
@@ -1641,6 +1641,8 @@ class Email extends SpiceBean
         $this->status = self::STATUS_UNREAD;
         $this->openness = self::OPENNESS_OPEN;
 
+        $emlAttachments = [];
+
         // parse the parts
         foreach ($bodyParts as $index => $bodyPart) {
             switch ($bodyPart['content-type']) {
@@ -1676,6 +1678,13 @@ class Email extends SpiceBean
                 default:
                     // check if this is a file
                     if (strpos($bodyPart['headers']['content-disposition'], 'filename') !== false) {
+                        // ignore file attachments inside eml attachments
+                        foreach ($emlAttachments as $emlAttachment) {
+                            if ($bodyPart['starting-pos'] >= $emlAttachment['start'] && $bodyPart['ending-pos'] <= $emlAttachment['end']) {
+                                break 2;
+                            }
+                        }
+
                         $fileArray = [
                             'filename' => $bodyPart['content-name'],
                             'file' => base64_encode($contents[$index]),
@@ -1684,7 +1693,21 @@ class Email extends SpiceBean
                         ];
                         SpiceAttachments::saveAttachmentHashFiles('Emails', $this->id, $fileArray);
                     }
-                    break;
+
+                    if (strpos($bodyPart['headers']['content-type'], 'message/rfc822') !== false) {
+                        $emlAttachments[] = [
+                            'start' => $bodyPart['starting-pos'],
+                            'end'   => $bodyPart['ending-pos'],
+                        ];
+
+                        $fileArray = [
+                            'filename' => $bodyPart['content-id'] ?? "Email", // not sure what to use as the filename as the subject is not easily available at this point
+                            'file' => base64_encode($contents[$index]),
+                            'filemimetype' => $bodyPart['content-type'],
+                            'external_id' => $bodyPart['content-id'],
+                        ];
+                        SpiceAttachments::saveAttachmentHashFiles('Emails', $this->id, $fileArray);
+                    }
             }
         }
 
@@ -1869,8 +1892,9 @@ class Email extends SpiceBean
 
     /**
      * @throws Exception
+     * @return boolean|string
      */
-    public function validateEmailForDownload( $doIncrement = false ): true|string
+    public function validateEmailForDownload( $doIncrement = false ): boolean|string
     {
         $downloadAttachmentsEnabled = (int) $this->getFieldValue('downloadlink_attachments');
         if ( !$downloadAttachmentsEnabled ) return 'notAccessible';

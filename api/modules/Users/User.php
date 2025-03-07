@@ -366,13 +366,13 @@ class User extends Person
      */
     public function getPrimaryOrgUnit(){
         if($this->parent_id && !empty($this->parent_type)){
-            $orgUnits = $this->get_linked_beans('orgunitprimary');
-            if($orgUnits){ // should be only 1
-                foreach($orgUnits as $orgUnit){
-                    $this->orgunit_id = $orgUnit->id;
-                    $this->orgunit_name = $orgUnit->name;
-                    $this->orgunit_assigned_user_id = $orgUnit->assigned_user_id;
-                }
+            $orgUnitId = $this->db->getOne("SELECT orgunit_id FROM orgunits_beans WHERE bean_id = '$this->id' AND is_primary = 1 AND deleted != 1");
+            $orgUnit = $orgUnitId ? BeanFactory::getBean('OrgUnits', $orgUnitId) : null;
+
+            if($orgUnit){
+                $this->orgunit_id = $orgUnit->id;
+                $this->orgunit_name = $orgUnit->name;
+                $this->orgunit_assigned_user_id = $orgUnit->assigned_user_id;
             }
         }
     }
@@ -381,21 +381,24 @@ class User extends Person
      * will get all the orgunits allocated to the user
      * @return array
      */
-    public function getOrgUnits($idsOnly = false): array{
-        if($this->parent_id && !empty($this->parent_type)) {
-            $orgunits = $this->get_linked_beans('orgunits');
-            if (count($orgunits) > 0) {
-                if($idsOnly){
-                    $ids = [];
-                    foreach($orgunits as $orgunit){
-                        $ids[] = $orgunit->id;
-                    }
-                    $orgunits = $ids;
+    public function getOrgUnits($idsOnly = false): array
+    {
+        $orgUnits = [];
+
+        if ($this->parent_id && !empty($this->parent_type)) {
+
+            $query = $this->db->query("SELECT orgunit_id FROM orgunits_beans WHERE bean_id = '$this->id' AND deleted != 1");
+
+            while ($row = $this->db->fetchByAssoc($query)) {
+                if ($idsOnly) {
+                    $orgUnits[] = $row['orgunit_id'];
+                } else if ($orgUnit = BeanFactory::getBean('OrgUnits', $row['orgunit_id'])) {
+                    $orgUnits[] = $orgUnit;
                 }
-                return $orgunits;
             }
         }
-        return [];
+
+        return $orgUnits;
     }
 
     /**
