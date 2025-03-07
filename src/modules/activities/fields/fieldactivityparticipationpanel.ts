@@ -232,12 +232,17 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
                 if(defaultID){
                     let beanData = this.navigation.getRegisteredModel(defaultID, pl.module);
                     if(beanData) {
-                        if (!this.model.data[pl.name]) this.model.data[pl.name] = {beans: {}};
+                        if (!this.model.data[pl.name]) {
+                            this.model.data[pl.name] = {beans: {}}
+                            // sets the backupData, so it doesn't trigger validation on init
+                            this.model.backupData[pl.name] = {beans: {}}
+                        }
                         this.model.data[pl.name].beans[defaultID] = beanData.data;
+                        this.model.backupData[pl.name].beans[defaultID] = beanData.data;
                     }
                     break;
                 }
-            };
+            }
         }
     }
 
@@ -357,6 +362,11 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
         if (!this.model.data[participant.link].beans_relations_to_delete) this.model.data[participant.link].beans_relations_to_delete = {};
         this.model.data[participant.link].beans_relations_to_delete[participant.id] = participant;
         delete (this.model.data[participant.link].beans[participant.id]);
+
+        // perform the same action but for backupData, so the validation is not triggered on the initialization
+        if (!this.model.backupData[participant.link].beans_relations_to_delete) this.model.backupData[participant.link].beans_relations_to_delete = {};
+        this.model.backupData[participant.link].beans_relations_to_delete[participant.id] = participant;
+        delete (this.model.backupData[participant.link].beans[participant.id]);
 
         // remove th pill
         this.participants = this.participants.filter(item => item.id != participant.id);

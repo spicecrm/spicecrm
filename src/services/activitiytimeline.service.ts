@@ -127,9 +127,9 @@ export class activitiytimeline {
     public openness$: BehaviorSubject<boolean>;
 
     /**
-     * fires when the tab is changed
+     * holds the dirty models
      */
-    public tabChanged$ = new Subject<void>()
+    public dirtyModels: { [key: string]: boolean; } = {};
 
     constructor(public metadata: metadata, public backend: backend, public modelutilities: modelutilities, public configurationService: configurationService, public session: session, public broadcast: broadcast) {
         this.serviceSubscriptions.push(this.broadcast.message$.subscribe(message => this.handleMessage(message)));
