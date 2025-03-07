@@ -173,14 +173,6 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
         this.moreOpen = !this.moreOpen;
     }
 
-    /**
-     * checks if the module is dirty based on the model id
-     * @param tab
-     */
-    public activityModelDirty(tab): boolean {
-        return this.activitiytimeline.dirtyModels[tab.module];
-    }
-
     public pushChildComponentRef(tab, cRef: ComponentRef<any>) {
         tab.cRef = cRef;
 

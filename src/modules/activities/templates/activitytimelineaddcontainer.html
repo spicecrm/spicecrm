@@ -2,7 +2,7 @@
     <ul class="slds-tabs--scoped__nav" role="tablist">
         <li #maintabs *ngFor="let tab of tabs" class="slds-tabs--scoped__item" [ngClass]="{'slds-active': checkTab(tab.module)}" role="presentation" [attr.data-module]="tab.module">
             <a class="slds-tabs--scoped__link" href="javascript:void(0);" role="tab" (click)="setTab(tab)">
-                @if (activityModelDirty(tab)) {
+                @if (tab.isDirty) {
                     <span class="slds-indicator-container">
                         <abbr class="slds-indicator_unsaved" system-title="LBL_RECORD_NOT_SAVED" [@slideIn]>*</abbr>
                     </span>

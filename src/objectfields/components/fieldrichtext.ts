@@ -142,7 +142,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      * @param val the new value
      */
     set value(val) {
-        this.model.setField(this.fieldname, val, false, false);
+        this.model.setField(this.fieldname, val);
     }
 
     /**
