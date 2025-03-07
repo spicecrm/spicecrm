@@ -33,26 +33,32 @@
         </tr>
         </thead>
         <tbody>
-        <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected':domainmanager.currentDomainDefinition == domaindefinition.id}"  *ngFor="let domaindefinition of domaindefinitions; trackBy: trackByFn" (click)="setCurrentDomainDefintion(domaindefinition.id)" >
-            <td>
-                <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="domaindefinition.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                <dictionary-manager-item-status [ngModel]="domaindefinition.status" (ngModelChange)="setStatus(domaindefinition, $event)" style="cursor:pointer"></dictionary-manager-item-status>
-            </td>
-            <td data-label="Domain" >
-                <div class="slds-truncate">{{domaindefinition.name}}</div>
-            </td>
-            <td data-label="Type">
-                <div class="slds-truncate">{{domaindefinition.fieldtype}}</div>
-            </td>
-            <td>
-                <button class="slds-button slds-button--icon"(click)="editDomainDefinition(domaindefinition)">
-                    <system-button-icon size="xx-small" icon="edit"></system-button-icon>
-                </button>
-                <button class="slds-button slds-button--icon" [disabled]="domaindefinition.status == 'a'" (click)="deleteDomainDefinition(domaindefinition.id)">
-                    <system-button-icon size="xx-small" icon="delete"></system-button-icon>
-                </button>
-            </td>
-        </tr>
+        @for(domaindefinition of domaindefinitions; track domaindefinition.id) {
+            <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected':domainmanager.currentDomainDefinition == domaindefinition.id}" (click)="setCurrentDomainDefintion(domaindefinition.id)">
+                <td>
+                    <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="domaindefinition.scope == 'g' ? 'world' : 'people'"/>
+                    <dictionary-manager-item-status [ngModel]="domaindefinition.status" (ngModelChange)="setStatus(domaindefinition, $event)" style="cursor:pointer"/>
+                </td>
+                <td data-label="Domain">
+                    <div class="slds-truncate">{{ domaindefinition.name }}</div>
+                </td>
+                <td data-label="Type">
+                    <div class="slds-truncate">{{ domaindefinition.fieldtype }}</div>
+                </td>
+                <td>
+                    <button class="slds-button slds-button--icon" (click)="editDomainDefinition(domaindefinition)">
+                        <system-button-icon size="xx-small" icon="edit"/>
+                    </button>
+                    <button class="slds-button slds-button--icon" (click)="domainDefinitionUsage(domaindefinition)">
+                        <system-button-icon size="xx-small" icon="data_graph"/>
+                    </button>
+                    <button class="slds-button slds-button--icon" [disabled]="domaindefinition.status == 'a'"
+                            (click)="deleteDomainDefinition(domaindefinition.id)">
+                        <system-button-icon size="xx-small" icon="delete"/>
+                    </button>
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
 </div>

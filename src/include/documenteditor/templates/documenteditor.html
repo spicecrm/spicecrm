@@ -1,0 +1,7 @@
+@if (!token && !isLoading) {
+    <system-illustration-page-not-available>Invalid Token</system-illustration-page-not-available>
+} @else {
+    <div class="slds-height_full slds-size--1-of-1" [system-overlay-loading-spinner]="isLoading">
+        <div [id]="editorId" class="slds-height_full slds-size--1-of-1"></div>
+    </div>
+}
