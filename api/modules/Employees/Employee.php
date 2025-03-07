@@ -28,9 +28,11 @@ class Employee extends Person {
      * @return false|mixed
      */
     public function getPrimaryOrgUnit(){
-        $orgunit = $this->get_linked_beans('orgunitprimary');
-        if(count($orgunit) > 0){
-            return $orgunit[0];
+
+        $orgUnitId = $this->db->getOne("SELECT orgunit_id FROM orgunits_beans WHERE bean_id = '$this->id' AND is_primary = 1 AND deleted != 1");
+
+        if($orgUnitId){
+            return BeanFactory::getBean('OrgUnits', $orgUnitId);
         }
 
         // BWC fallback check employees.orgunit_id
