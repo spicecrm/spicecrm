@@ -126,11 +126,6 @@ export class activitiytimeline {
      */
     public openness$: BehaviorSubject<boolean>;
 
-    /**
-     * holds the dirty models
-     */
-    public dirtyModels: { [key: string]: boolean; } = {};
-
     constructor(public metadata: metadata, public backend: backend, public modelutilities: modelutilities, public configurationService: configurationService, public session: session, public broadcast: broadcast) {
         this.serviceSubscriptions.push(this.broadcast.message$.subscribe(message => this.handleMessage(message)));
 

@@ -124,12 +124,6 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
 
         // check if the model can be docked into a GlobalDockedComposer
         this.checkCanDock();
-
-        this.subscription.add(
-            this.model.data$.subscribe(() => {
-                this.activitiytimeline.dirtyModels[this.model.module] = this.model.isDirty();
-            })
-        );
     }
 
     /**
