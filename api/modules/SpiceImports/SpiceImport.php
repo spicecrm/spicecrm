@@ -205,6 +205,14 @@ class SpiceImport extends SpiceBean
     }
 
     /**
+     * return classmethod for import
+     * @return mixed
+     */
+    public function getObjectImportSelectedMethod(){
+        return $this->objectimport->selectedMethod;
+    }
+
+    /**
      * processes the data row by row in the csv file
      * pointer is used to show locations in file for dividing the processing into smaller pieces
      * specifiv method of processing can be defined
@@ -216,7 +224,7 @@ class SpiceImport extends SpiceBean
         $error = false;
         $list = [];
         if (is_null($this->objectimport)) $this->objectimport = json_decode($this->data);
-        $classMethod = SpiceUtils::loadExecutionClassMethod($this->objectimport->selectedMethod);
+        $classMethod = SpiceUtils::loadExecutionClassMethod($this->getObjectImportSelectedMethod());
         $maxRows = (isset(SpiceConfig::getInstance()->config['import_max_records_per_file']) ? SpiceConfig::getInstance()->config['import_max_records_per_file'] : 200);
         /**
          * get the pointer for the end of the file

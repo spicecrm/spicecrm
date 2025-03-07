@@ -14,6 +14,8 @@ import {modal} from '../../services/modal.service';
 import {domainmanager} from '../services/domainmanager.service';
 import {DomainDefinition} from "../interfaces/domainmanager.interfaces";
 import {DomainManagerEditDefinitionModal} from "./domainmanagereditdefinitionmodal";
+import {DomainManagerDefinitionUsageModal} from "./domainmanagerdefinitionusagemodal";
+import {dictionarymanager} from "../services/dictionarymanager.service";
 
 /**
  * provides a list of the defined domain definitons .. part of the domain manager
@@ -21,6 +23,7 @@ import {DomainManagerEditDefinitionModal} from "./domainmanagereditdefinitionmod
 @Component({
     selector: 'domain-manager-definitions',
     templateUrl: '../templates/domainmanagerdefinitions.html',
+    providers: [dictionarymanager]
 })
 export class DomainManagerDefinitions {
 
@@ -33,7 +36,18 @@ export class DomainManagerDefinitions {
 
     public definitionsfiltertype: string = ''
 
-    constructor(public domainmanager: domainmanager, public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities, public broadcast: broadcast, public toast: toast, public modal: modal, public injector: Injector) {
+    constructor(
+        public domainmanager: domainmanager,
+        public dictionarymanager: dictionarymanager,
+        public backend: backend,
+        public metadata: metadata,
+        public language: language,
+        public modelutilities: modelutilities,
+        public broadcast: broadcast,
+        public toast: toast,
+        public modal: modal,
+        public injector: Injector
+    ) {
 
     }
 
@@ -163,6 +177,17 @@ export class DomainManagerDefinitions {
     public editDomainDefinition(definition: DomainDefinition) {
 
         this.modal.openStaticModal(DomainManagerEditDefinitionModal, true, this.injector).subscribe(modalRef => {
+            modalRef.instance.domaindefinition = definition;
+        });
+
+    }
+
+    /**
+     * open edit domain definition
+     */
+    public domainDefinitionUsage(definition: DomainDefinition) {
+
+        this.modal.openStaticModal(DomainManagerDefinitionUsageModal, true, this.injector).subscribe(modalRef => {
             modalRef.instance.domaindefinition = definition;
         });
 

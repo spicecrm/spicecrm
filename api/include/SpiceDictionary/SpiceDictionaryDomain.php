@@ -93,11 +93,14 @@ class SpiceDictionaryDomain
                 $definition->source = 'non-db';
                 unset($definitions->dbtype);
             }
-            if($dictionaryitem->itemDefinition->required == 1) $definition->required = 1;
-            if(!empty($dictionaryitem->itemDefinition->default_value) || $dictionaryitem->itemDefinition->default_value == 0) $definition->default = $dictionaryitem->itemDefinition->default_value;
-            if($dictionaryitem->itemDefinition->descriptions) $definition->descriptions = $dictionaryitem->itemDefinition->descriptions;
+
+            // if($dictionaryitem->itemDefinition->required == 1) $definition->required = 1;
+            // if(!empty($dictionaryitem->itemDefinition->default_value) || $dictionaryitem->itemDefinition->default_value == 0) $definition->default = $dictionaryitem->itemDefinition->default_value;
+            // if($dictionaryitem->itemDefinition->descriptions) $definition->descriptions = $dictionaryitem->itemDefinition->descriptions;
             // ToDO: temp fix to preserve domain level field name
-            if($dictionaryitem->itemDefinition->label && !$definition->vname) $definition->vname = $dictionaryitem->itemDefinition->label;
+            // if($dictionaryitem->itemDefinition->label && !$definition->vname) $definition->vname = $dictionaryitem->itemDefinition->label;
+
+
 
             // write labelinputhelper to cache
             if(!empty($dictionaryitem->itemDefinition->labelinputhelper)) $definition->popupHelp = $dictionaryitem->itemDefinition->labelinputhelper;

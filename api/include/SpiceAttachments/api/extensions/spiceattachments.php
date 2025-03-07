@@ -192,6 +192,53 @@ $routes = [
     ],
     [
         'method'      => 'post',
+        'route'       => '/common/spiceattachments/module/{beanName}/{beanId}/byfield/{fieldprefix}',
+        'class'       => SpiceAttachmentsController::class,
+        'function'    => 'saveAttachmentContentByField',
+        'description' => '',
+        'options'     => ['validate' => true],
+        'parameters'  => [
+            'beanName' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'description' => 'name of a module',
+                'example' => 'Accounts',
+                'required' => true
+            ],
+            'beanId' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'description' => 'GUID of bean',
+                'required' => true
+            ],
+            'fieldprefix' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'Prefix of the field',
+                'required' => true
+            ],
+            'file_mime_type' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'the mime type',
+                'required' => false
+            ],
+            'file_name' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'the file name',
+                'required' => false
+            ],
+            'file' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'thew file content of the Field',
+                'required' => true
+            ]
+        ]
+    ],
+    [
+        'method'      => 'post',
         'route'       => '/common/spiceattachments',
         'oldroute'    => '/spiceAttachments',
         'class'       => SpiceAttachmentsController::class,

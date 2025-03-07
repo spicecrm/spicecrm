@@ -5,10 +5,12 @@ namespace SpiceCRM\includes\SpiceAttachments\api\controllers;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\TimeDate;
 
 class SpiceAttachmentsController
 {
@@ -232,11 +234,50 @@ class SpiceAttachmentsController
             'filesize' => filesize($prefix . $seed->{$args['fieldprefix'] . '_md5'}),
             'file_mime_type' => $seed->{$args['fieldprefix'] . '_mime_type'},
             'file' => $file,
-            'filemd5' => $seed->{$args['fieldprefix'] . '_md5'}
+            'filemd5' => $seed->{$args['fieldprefix'] . '_md5'},
         ];
+
+        $modifiedTimestamp = filemtime($prefix . $seed->{$args['fieldprefix'] . '_md5'});
+        $dateModified = !$modifiedTimestamp ? '' : TimeDate::getInstance()->fromTimestamp($modifiedTimestamp)->format(TimeDate::DB_DATETIME_FORMAT);
+
+        $attachment['date_modified'] = $dateModified;
 
         return $res->withJson($attachment);
     }
+
+    /**
+     * update attachment file content
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function saveAttachmentContentByField(Request $req, Response $res, array $args): Response
+    {
+        $postBody = $req->getParsedBody();
+
+        $seed = BeanFactory::getBean($args['beanName'], $args['beanId']);
+
+        if ($seed && !$seed->ACLAccess('view')) {
+            throw (new ForbiddenException("not allowed to view this record"))->setErrorCode('noModuleView');
+        }
+
+        # if file does not exist yet create a new one
+        if (!$seed->{$args['fieldprefix'] . '_md5'}) {
+            $seed->{$args['fieldprefix'] . '_md5'} = md5(base64_decode($postBody['file']));
+            $seed->{$args['fieldprefix'] . '_mime_type'} = $postBody['file_mime_type'];
+            $seed->{$args['fieldprefix'] . '_name'} = $postBody['file_name'];
+            $seed->save();
+        }
+
+        $postBody['filemd5'] = $seed->{$args['fieldprefix'] . '_md5'};
+
+        $response = SpiceAttachments::saveAttachmentFile($postBody);
+
+        return $res->withJson($response);
+    }
+
 
     /**
      * clones the attachments from one bean to another one
@@ -255,7 +296,7 @@ class SpiceAttachmentsController
         }
         $params = $req->getParsedBody();
 
-        $clonedAttachments = SpiceAttachments::cloneAttachmentsForBean($args['beanName'], $args['beanId'], $args['fromBeanName'], $args['fromBeanId'], true, $params['categoryId'], $params['selectedFiles'], $params['excludedFilenames']);
+        $clonedAttachments = SpiceAttachments::cloneAttachmentsForBean($args['beanName'], $args['beanId'], $args['fromBeanName'], $args['fromBeanId'], true, $params['categoryId'], $params['selectedFiles'], $params['excludedFilenames']?:[]);
         return $res->withJson($clonedAttachments);
     }
 

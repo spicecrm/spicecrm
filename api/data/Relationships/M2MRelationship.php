@@ -18,6 +18,7 @@ use SpiceCRM\data\Link2;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 /**
  * Represents a many to many relationship that is table based.
@@ -597,14 +598,19 @@ class M2MRelationship extends Relationship
 
     public function getQuery($link, $params = [])
     {
+        $rel_table = $this->getRelationshipTable();
+
+        $joinRelated = false;
         if ($this->linkIsLHS($link)) {
             $knownKey = $this->def['join_key_lhs'];
             $targetKey = $this->def['join_key_rhs'];
             $relatedSeed = BeanFactory::getBean($this->getRHSModule());
             $relatedSeedKey = $this->def['rhs_key'];
             $seedFocusKey = $this->def['lhs_key'];
-            if (!empty($params['where']))
+            if (!empty($params['where'])) {
                 $whereTable = (empty($params['right_join_table_alias']) ? $relatedSeed->_tablename : $params['right_join_table_alias']);
+            }
+            $relatedJoin = " INNER JOIN " . $this->def['rhs_table'] . ' ON ' . $this->def['rhs_table'] . '.' . $this->def['rhs_key'] . ' = ' . $rel_table . '.' . $this->def['join_key_rhs'];
         }
         else
         {
@@ -613,10 +619,12 @@ class M2MRelationship extends Relationship
             $relatedSeed = BeanFactory::getBean($this->getLHSModule());
             $relatedSeedKey = $this->def['lhs_key'];
             $seedFocusKey = $this->def['rhs_key'];
-            if (!empty($params['where']))
+            if (!empty($params['where'])) {
                 $whereTable = (empty($params['left_join_table_alias']) ? $relatedSeed->_tablename : $params['left_join_table_alias']);
+            }
+            $relatedJoin = " INNER JOIN " . $this->def['lhs_table'] . ' ON ' . $this->def['lhs_table'] . '.' . $this->def['lhs_key'] . ' = ' . $rel_table . '.' . $this->def['join_key_lhs'];
         }
-        $rel_table = $this->getRelationshipTable();
+
 
         $where = "$rel_table.$knownKey = '{$link->getFocus()->$seedFocusKey}'" . $this->getRoleWhere();
 
@@ -627,14 +635,25 @@ class M2MRelationship extends Relationship
                 $where .= " AND {$rel_table}.{$targetKey}={$whereTable}.{$relatedSeedKey} AND {$add_where}";
         }
 
+
+
+        // add teh acl relevant query
+        //SpiceACL::getInstance()->addACLAccessToListArray($ret_array, $this);
+        $retArray = [];
+        SpiceACL::getInstance()->addACLAccessToListArray($retArray, $relatedSeed);
+        if($retArray['where']) {
+            $where = "({$where}) AND {$retArray['where']}";
+            $joinRelated = true;
+        }
+
         $deleted = !empty($params['deleted']) ? 1 : 0;
         $from = $rel_table . " ";
         if (!empty($params['where'])) {
             $from .= ", $whereTable";
-            if (isset($relatedSeed->custom_fields)) {
-                $customJoin = $relatedSeed->custom_fields->getJOIN();
-                $from .= $customJoin ? $customJoin['join'] : '';
-            }
+//            if (isset($relatedSeed->custom_fields)) {
+//                $customJoin = $relatedSeed->custom_fields->getJOIN();
+//                $from .= $customJoin ? $customJoin['join'] : '';
+//            }
         }
 
         $sort = '';
@@ -655,17 +674,15 @@ class M2MRelationship extends Relationship
 
             if ($this->linkIsLHS($link)) {
                 // if we have an order by and the inner join, we need to reset $from .= ", $whereTable" to $from = $rel_table . " ";
-                $from = $rel_table . " ";
                 if (is_null($sortFieldTable))$sortFieldTable = $this->def['rhs_table'];
-                $from .= " INNER JOIN " . $this->def['rhs_table'] . ' ON ' . $this->def['rhs_table'] . '.' . $this->def['rhs_key'] . ' = ' . $rel_table . '.' . $this->def['join_key_rhs'];
+                $joinRelated = true;
                 if($params['sort']['sortfield']) { // CR1000382
                     $sort = ' ORDER BY ' . $sortFieldTable . '.' . $sortField . ' ' . ($params['sort']['sortdirection'] ?: 'ASC');
                 }
             } else {
                 // if we have an order by and the inner join, we need to reset $from .= ", $whereTable" to $from = $rel_table . " ";
-                $from = $rel_table . " ";
                 if (is_null($sortFieldTable))$sortFieldTable = $this->def['lhs_table'];
-                $from .= " INNER JOIN " . $this->def['lhs_table'] . ' ON ' . $this->def['lhs_table'] . '.' . $this->def['lhs_key'] . ' = ' . $rel_table . '.' . $this->def['join_key_lhs'];
+                $joinRelated = true;
                 if($params['sort']['sortfield']) { // CR1000382
                     $sort = ' ORDER BY ' . $sortFieldTable . '.' . $sortField . ' ' . ($params['sort']['sortdirection'] ?: 'ASC');
                 }
@@ -685,6 +702,12 @@ class M2MRelationship extends Relationship
         }
 
         if (empty($params['return_as_array'])) {
+
+            // if we shoudl join the related table do this
+            if($joinRelated) {
+                $from .= $relatedJoin;
+            }
+
             // 20reasons add the relid to the query
             // $query = "SELECT $targetKey id FROM $from WHERE $where AND $rel_table.deleted=$deleted";
             $query = "SELECT $rel_table.id relid, $rel_table.$targetKey id $relFieldsSelect FROM $from WHERE $where AND $rel_table.deleted=$deleted ".$this->getRoleFilterForJoin()." $sort";  // CR1000269: added $this->getRoleFilterForJoin()
@@ -708,7 +731,7 @@ class M2MRelationship extends Relationship
                 // 20reasons add the relid to the query
                 //'select' => "SELECT $targetKey id",
                 'select' => "SELECT $rel_table.id relid, $rel_table.$targetKey id $relFieldsSelect",
-                'from' => "FROM $from",
+                'from' => $joinRelated ? "FROM $from $relatedJoin" : "FROM $from",
                 'where' => "WHERE $where AND $rel_table.deleted=$deleted ".$this->getRoleFilterForJoin(), // CR1000269: added $this->getRoleFilterForJoin()
                 'sort' => $sort
             ];
