@@ -142,17 +142,20 @@ export class DashboardAddElement {
         let acl_action: string = '';
         let dashlet_id: string = '';
         let label: string = '';
+        let refresh_interval: number;
 
         switch (this.dashletType) {
             case 'dashletVisualization':
                 component = 'ReporterVisualizationDashlet';
                 componentconfig = {reportid: dashlet.id};
                 module = 'KReports';
+                refresh_interval = 0;
                 break;
             case 'dashletPresentation':
                 component = 'ReporterPresentationDashlet';
                 componentconfig = {reportid: dashlet.id};
                 module = 'KReports';
+                refresh_interval = 0;
                 break;
             case 'Generic':
                 component = dashlet.component;
@@ -174,7 +177,8 @@ export class DashboardAddElement {
             dashletconfig,
             icon,
             acl_action,
-            dashlet_id
+            dashlet_id,
+            refresh_interval,
         });
 
         this.self.destroy();

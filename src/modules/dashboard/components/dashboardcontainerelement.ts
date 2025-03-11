@@ -70,7 +70,7 @@ export class DashboardContainerElement implements AfterViewInit, OnDestroy {
      */
     public startDashletRefresh() {
 
-       const refreshInterval = this.item.componentconfig?.refresh_interval ?? this.model.getField('refresh_interval');
+       const refreshInterval = this.item.refresh_interval ?? this.model.getField('refresh_interval');
 
         if( refreshInterval > 0) {
             setTimeout(() => {
