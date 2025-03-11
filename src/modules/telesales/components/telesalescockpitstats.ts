@@ -16,14 +16,15 @@ import {TeleSalesCockpitListItem} from "./telesalescockpitlistitem";
 export class TeleSalesCockpitStats {
 
     public statSequence = [
-        'completed', 'attempted', 'maxattempts', 'targeted'
+        'completed', 'attempted', 'maxattempts', 'targeted', 'initial'
     ]
 
     public statColorClass = {
         completed: 'slds-theme--success',
         attempted: 'slds-theme--warning',
         maxattempts: 'slds-theme--error',
-        targeted: 'slds-theme--shade'
+        targeted: 'slds-theme--shade',
+        initial: 'slds-theme--shade'
     }
 
     constructor(
