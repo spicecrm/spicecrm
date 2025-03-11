@@ -141,7 +141,7 @@ class Person extends SpiceBean
     private function setPrimaryEmailAddress(string $primaryEmailAddressId, $relFieldsValues = [])
     {
 
-        if(!$this->email_addresses) return;
+        if(!$this->load_relationship('email_addresses')) return;
 
         $relationExists = false;
         $linkedEmailAddresses = $this->get_linked_beans('email_addresses');
