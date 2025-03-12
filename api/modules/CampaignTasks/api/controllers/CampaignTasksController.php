@@ -9,6 +9,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
@@ -215,7 +216,7 @@ class CampaignTasksController
                     'campaignlog_activity_date' => $item->activity_date,
                     'campaignlog_related_id' => $item->related_id,
                     'campaignlog_planned_activity_date' => $item->planned_activity_date,
-                    'campaignlog_planned_activity_user_id' => $item->planned_activity_user_id,
+                    'campaignlog_planned_activity_user_id' => $this->getPlannedActivityUser($item->planned_activity_date, $item->planned_activity_user_id),
                     'campaignlog_locked_until' => $item->locked_until,
                     'campaignlog_target_type' => $item->target_type,
                     'campaignlog_hits' => $item->hits,
@@ -231,7 +232,19 @@ class CampaignTasksController
 
         return $res->withJson(['items' => $items, 'row_count' => $list['row_count'], 'stats' => $stats]);
     }
-
+    public function getPlannedActivityUser($plannedActivityDate, $userId){
+        if(!empty($userId)){
+            $reserved = SpiceConfig::getInstance()->get('telesales.reserved_for');
+            $newDate = date('Y-m-d H:i:s', strtotime($plannedActivityDate . +  $reserved. ' hours'));
+            $date = date('Y-m-d H:i:s');
+            if($newDate<$date){
+                return $userId = null;
+            }
+            else {
+                return $userId;
+            }
+        }
+    }
     /**
      * returns the stats for the campaigntask
      *
