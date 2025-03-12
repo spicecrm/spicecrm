@@ -350,7 +350,7 @@ export class dashboardlayout {
                                     height: Math.round(position.height / this.elementHeight)
                                 },
                                 is_new: true,
-                                refresh_interval: dashlet.refresh_interval, // Corrected line
+                                refresh_interval: dashlet.refresh_interval ?? null,
                             };
                             this.dashboardElements = [...this.dashboardElements, element];
                         }
@@ -361,10 +361,6 @@ export class dashboardlayout {
     public addDashletInterval() {
         const currentDashlet = this.dashboardElements.find(element => element.id === this.editing);
         if (!currentDashlet) return;
-
-        // if (!currentDashlet.componentconfig) {
-        //     currentDashlet.componentconfig = {};
-        // }
 
         const currentInterval =  currentDashlet.refresh_interval ?? this.model.getField('refresh_interval');
 

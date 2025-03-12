@@ -165,6 +165,7 @@ export class DashboardAddElement {
                 label = dashlet.label;
                 icon = dashlet.icon;
                 acl_action = dashlet.acl_action;
+                refresh_interval = dashlet.refresh_interval ?? null;
                 break;
         }
 
