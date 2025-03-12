@@ -134,7 +134,11 @@ class DashboardManagerController{
             $sql .= "', '" . $db->quote(json_encode($postbodyitem['componentconfig']));
             $sql .= "', '" . $db->quote(json_encode($postbodyitem['position']));
             $sql .= "', '" . $postbodyitem['dashlet_id'];
-            $sql .= "', '" . $postbodyitem['refresh_interval'] . "')";
+            if (isset($postbodyitem['refresh_interval'])) {
+                $sql .= "', '" . $postbodyitem['refresh_interval'] . "')";
+            } else {
+                $sql .= "', NULL)";
+            };
             if( !$db->query($sql) ) throw ( new Exception( $db->last_error ))->setFatal(true);
         }
         return $res->withJson(['status' => $status]);
