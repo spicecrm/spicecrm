@@ -191,7 +191,7 @@ class SpiceBeanController
             throw new ForbiddenException("no rights to Edit Bean");
         }
 
-        if($seed->field_defs[$args['imagefield']]->type != 'image'){
+        if($seed->field_defs[$args['imagefield']]['type'] != 'image'){
             throw new BadRequestException("this is not an image field upload rejected");
         }
 
@@ -223,7 +223,7 @@ class SpiceBeanController
             throw new ForbiddenException("no rights to Edit Bean");
         }
 
-        if($seed->field_defs[$args['imagefield']]->type != 'image'){
+        if($seed->field_defs[$args['imagefield']]['type'] != 'image'){
             throw new BadRequestException("this is not an image field upload rejected");
         }
 
