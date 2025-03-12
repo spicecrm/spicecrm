@@ -118,6 +118,7 @@ import {ObjectRecordViewDetail2and1} from './components/objectrecordviewdetail2a
 import {ObjectRecordViewDetailsplit} from './components/objectrecordviewdetailsplit';
 import {ObjectRecordCreateContainer} from "./components/objectrecordcreatecontainer";
 import {ObjectPageHeader} from './components/objectpageheader';
+import {ObjectPageHeaderIcon} from './components/objectpageheadericon';
 import {ObjectPageHeaderTags} from './components/objectpageheadertags';
 import {ObjectPageHeaderTagPicker} from './components/objectpageheadertagpicker';
 import {ObjectPageHeaderDetails} from './components/objectpageheaderdetails';
@@ -339,6 +340,7 @@ import {ObjectListHeaderActionsBulkSetStatusButton} from "./actions/objectlisthe
         ObjectRecordViewDetail2and1,
         ObjectRecordViewDetailsplit,
         ObjectPageHeader,
+        ObjectPageHeaderIcon,
         ObjectPageHeaderTags,
         ObjectPageHeaderTagPicker,
         ObjectPageHeaderDetails,

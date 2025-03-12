@@ -15,148 +15,148 @@ $RESTManager->registerExtension('module', '2.0', ['disableAutoloadListAll' => Sp
 
 $routes = [
     [
-        'method'      => 'get',
-        'route'       => '/module/{beanName}',
-        'oldroute'    => '/module/{beanName}',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'getBeanList',
+        'method' => 'get',
+        'route' => '/module/{beanName}',
+        'oldroute' => '/module/{beanName}',
+        'class' => SpiceBeanController::class,
+        'function' => 'getBeanList',
         'description' => 'Get bean list',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
-            'beanName'   => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
             'aggregates' => [
-                'in'          => 'query',
+                'in' => 'query',
                 'description' => 'a JSON object for selected aggregates',
-                'type'        => ValidationMiddleware::TYPE_JSON,
+                'type' => ValidationMiddleware::TYPE_JSON,
             ],
-            'buckets'    => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_COMPLEX,
-                'required'    => false,
+            'buckets' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_COMPLEX,
+                'required' => false,
                 'description' => '',
             ],
-            'filter'     => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_COMPLEX,
-                'required'    => false,
+            'filter' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_COMPLEX,
+                'required' => false,
                 'description' => '',
             ],
-            'filtercontext'     => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+            'filtercontext' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
                 'description' => 'additonal values that can be passed in',
             ],
-            'limit'      => [
-                'in'          => 'query',
+            'limit' => [
+                'in' => 'query',
                 'description' => 'the maximum number of record to be retrieved',
-                'type'        => ValidationMiddleware::TYPE_NUMERIC,
-                'default'     => 25,
-                'required'    => false
+                'type' => ValidationMiddleware::TYPE_NUMERIC,
+                'default' => 25,
+                'required' => false
             ],
-            'listid'     => [
-                'in'          => 'query',
+            'listid' => [
+                'in' => 'query',
                 'description' => 'a listid that identifies the list to be loaded. Allowed values are all, own or the guid of a listid stored in teh database',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
-                'default'     => 'all',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
+                'default' => 'all',
             ],
-            'offset'     => [
-                'in'          => 'query',
+            'offset' => [
+                'in' => 'query',
                 'description' => 'the offset to start from for a paginated query',
-                'type'        => ValidationMiddleware::TYPE_NUMERIC,
-                'default'     => 0,
-                'required'    => false
+                'type' => ValidationMiddleware::TYPE_NUMERIC,
+                'default' => 0,
+                'required' => false
             ],
-            'orderby'    => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_COMPLEX,
-                'required'    => false,
+            'orderby' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_COMPLEX,
+                'required' => false,
                 'description' => '',
             ],
             'searchtags' => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_ARRAY,
-                'subtype'     => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_ARRAY,
+                'subtype' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
                 'description' => '',
             ],
             'searchfields' => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_COMPLEX,
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_COMPLEX,
                 'description' => '',
             ],
             'searchgeo' => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
                 'description' => 'json string containing radius and start geocoded point for radius search',
             ],
             'searchterm' => [
-                'in'          => 'query',
+                'in' => 'query',
                 'description' => 'a searchterm to search by',
-                'type'        => ValidationMiddleware::TYPE_STRING,
+                'type' => ValidationMiddleware::TYPE_STRING,
             ],
             'sortfields' => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_COMPLEX,
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_COMPLEX,
                 'description' => '',
             ],
-            'source'     => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+            'source' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
                 'description' => '',
             ],
-            'start'      => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_NUMERIC,
-                'required'    => false,
+            'start' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_NUMERIC,
+                'required' => false,
                 'description' => '',
             ],
-            'modulefilter'      => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+            'modulefilter' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
                 'description' => 'a module filter to be applied',
             ],
-            'relatefilter'      => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+            'relatefilter' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
                 'description' => 'a relate module filter to be applied',
             ],
-            'fields'      => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+            'fields' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
                 'description' => 'encoded fields - DEPRECATED and to be removed',
             ],
             'resolvelinks' => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_BOOL,
-                'required'    => false,
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'required' => false,
                 'description' => 'telling to resolve the links in that particular request',
             ]
         ]
     ],
     [
-        'method'      => 'post',
-        'route'       => '/module/{beanName}',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'postBean',
+        'method' => 'post',
+        'route' => '/module/{beanName}',
+        'class' => SpiceBeanController::class,
+        'function' => 'postBean',
         'description' => 'Post bean (insert or update)',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
-            'beanName'   => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
             // bean in body
@@ -170,179 +170,179 @@ $routes = [
         ],
     ],
     [
-        'method'      => 'post',
-        'route'       => '/module/{beanName}/export',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'exportBeanList',
+        'method' => 'post',
+        'route' => '/module/{beanName}/export',
+        'class' => SpiceBeanController::class,
+        'function' => 'exportBeanList',
         'description' => 'Export bean list',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
-            'beanName'    => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'listid'      => [
-                'in'          => 'body',
+            'listid' => [
+                'in' => 'body',
                 'description' => 'a listid that identifies the list to be loaded. Allowed values are all, own or the guid of a listid stored in teh database',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
-                'default'     => 'all',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
+                'default' => 'all',
             ],
-            'fields'      => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_COMPLEX,
-                'required'    => false,
+            'fields' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_COMPLEX,
+                'required' => false,
                 'description' => 'can be a string, or an array or a json encoded array',
             ],
-            'ids'         => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_ARRAY,
-                'subtype'     => ValidationMiddleware::TYPE_GUID,
-                'required'    => false,
+            'ids' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_ARRAY,
+                'subtype' => ValidationMiddleware::TYPE_GUID,
+                'required' => false,
                 'description' => 'An array of GUIDs',
             ],
             'whereclause' => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
                 'description' => 'this does not seem to come from the request. it is just set later on. (╯°□°）╯︵ ┻━┻',
             ],
-            'orderby'     => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+            'orderby' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
                 'description' => '',
             ],
-            'source'      => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+            'source' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
                 'description' => '',
             ],
-            'filter'      => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_COMPLEX,
-                'required'    => false,
+            'filter' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_COMPLEX,
+                'required' => false,
                 'description' => '',
             ],
-            'records'     => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_COMPLEX,
-                'required'    => false,
+            'records' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_COMPLEX,
+                'required' => false,
                 'description' => 'this does not seem to come from the request. it is just set later on. (╯°□°）╯︵ ┻━┻',
             ],
-            'searchterm'  => [
-                'in'          => 'body',
+            'searchterm' => [
+                'in' => 'body',
                 'description' => 'a searchterm to search by',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
             ],
-            'searchtags'  => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_ARRAY,
-                'subtype'     => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+            'searchtags' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_ARRAY,
+                'subtype' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
                 'description' => '',
             ],
-            'aggregates'  => [
-                'in'          => 'body',
+            'aggregates' => [
+                'in' => 'body',
                 'description' => 'a JSON object for selected aggregates',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
             ],
-            'sortfields'  => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_COMPLEX,
+            'sortfields' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_COMPLEX,
                 'description' => '',
-                'required'    => false,
+                'required' => false,
             ],
 
         ],
     ],
     [
-        'method'      => 'post',
-        'route'       => '/module/{beanName}/duplicates',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'checkBeanDuplicates',
+        'method' => 'post',
+        'route' => '/module/{beanName}/duplicates',
+        'class' => SpiceBeanController::class,
+        'function' => 'checkBeanDuplicates',
         'description' => 'Check bean duplicates',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true, 'excludeBodyValidation' => true],
-        'parameters'  => [
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters' => [
             'beanName' => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ]
         ]
     ],
 
     [
-        'method'      => 'post',
-        'route'       => '/module/{beanName}/massupdate/{action}',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'massUpdate',
+        'method' => 'post',
+        'route' => '/module/{beanName}/massupdate/{action}',
+        'class' => SpiceBeanController::class,
+        'function' => 'massUpdate',
         'description' => 'massupdate beans',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true, 'excludeBodyValidation' => true],
-        'parameters'  => [
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters' => [
             'beanName' => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
             'action' => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_ENUM,
-                'required'    => true,
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_ENUM,
+                'required' => true,
                 'description' => 'the action to be performed',
                 'options' => ['assign']
             ]
         ]
     ],
     [
-        'method'      => 'patch',
-        'route'       => '/module/{beanName}',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'patchBeans',
+        'method' => 'patch',
+        'route' => '/module/{beanName}',
+        'class' => SpiceBeanController::class,
+        'function' => 'patchBeans',
         'description' => 'Delete or mass update beans',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters' => [
             'beanName' => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'action'=> [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_ENUM,
-                'options'     => ['DELETE', 'UPDATE'],
-                'required'    => true,
+            'action' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_ENUM,
+                'options' => ['DELETE', 'UPDATE'],
+                'required' => true,
                 'description' => 'the action to be performed'
             ],
-            'ids'      => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_ARRAY,
-                'subtype'     => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+            'ids' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_ARRAY,
+                'subtype' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => 'Bean GUIDs'
             ],
         ],
     ],
     [
-        'method'      => 'get',
-        'route'       => '/module/{beanName}/find',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'findBeanByStringFields',
+        'method' => 'get',
+        'route' => '/module/{beanName}/find',
+        'class' => SpiceBeanController::class,
+        'function' => 'findBeanByStringFields',
         'description' => 'Find a bean based on the provided retrieve fields',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
-            'beanName'        => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
             'retrieveFields' => [
@@ -350,74 +350,74 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_OBJECT,
                 'description' => 'object with retrieve fields',
                 'example' => '{active: true}',
-                'required'    => true,
+                'required' => true,
             ]
         ],
     ],
     [
-        'method'      => 'get',
-        'route'       => '/module/{beanName}/{beanId}',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'getBean',
+        'method' => 'get',
+        'route' => '/module/{beanName}/{beanId}',
+        'class' => SpiceBeanController::class,
+        'function' => 'getBean',
         'description' => 'Get bean',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
-            'beanName'        => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'beanId'          => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => 'GUID of the bean',
             ],
-            'trackaction'     => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_STRING, // maybe change to enum
-                'required'    => false,
+            'trackaction' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_STRING, // maybe change to enum
+                'required' => false,
                 'description' => '',
             ],
             'includeReminder' => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_STRING, // should actually be bool
-                'required'    => false,
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_STRING, // should actually be bool
+                'required' => false,
                 'description' => '',
             ],
-            'includeNotes'    => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_STRING, // should actually be bool
-                'required'    => false,
+            'includeNotes' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_STRING, // should actually be bool
+                'required' => false,
                 'description' => '',
             ],
         ],
     ],
     [
-        'method'      => 'post',
-        'route'       => '/module/{beanName}/{beanId}',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'addBean',
+        'method' => 'post',
+        'route' => '/module/{beanName}/{beanId}',
+        'class' => SpiceBeanController::class,
+        'function' => 'addBean',
         'description' => 'Add bean',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true, 'excludeBodyValidation' => true],
-        'parameters'  => [
-            'beanName'        => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'beanId'          => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => 'GUID of the bean',
             ],
-            'templateId'          => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+            'templateId' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
                 'description' => 'GUID or other id type for a bean that is being duplicated',
             ],
             // bean in body
@@ -431,125 +431,125 @@ $routes = [
         ],
     ],
     [
-        'method'      => 'delete',
-        'route'       => '/module/{beanName}/{beanId}',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'deleteBean',
+        'method' => 'delete',
+        'route' => '/module/{beanName}/{beanId}',
+        'class' => SpiceBeanController::class,
+        'function' => 'deleteBean',
         'description' => 'Delete bean',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
-            'beanName'        => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'beanId'          => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => 'GUID of the bean',
             ],
         ],
     ],
     [
-        'method'      => 'get',
-        'route'       => '/module/{beanName}/{beanId}/duplicates',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'getBeanDuplicates',
+        'method' => 'get',
+        'route' => '/module/{beanName}/{beanId}/duplicates',
+        'class' => SpiceBeanController::class,
+        'function' => 'getBeanDuplicates',
         'description' => 'Get bean duplicates',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
-            'beanName'        => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'beanId'          => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => 'GUID of the bean',
             ],
         ],
     ],
     [
-        'method'      => 'get',
-        'route'       => '/module/{beanName}/{externalId}/external',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'getBeanByExternalId',
+        'method' => 'get',
+        'route' => '/module/{beanName}/{externalId}/external',
+        'class' => SpiceBeanController::class,
+        'function' => 'getBeanByExternalId',
         'description' => 'Get bean by external id',
-        'options'     => ['moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
-            'beanName'        => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['moduleRoute' => true, 'validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'externalId'          => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
+            'externalId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
                 'description' => 'an external id',
             ],
-            'idonly'          => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_BOOL,
-                'required'    => false,
+            'idonly' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'required' => false,
                 'description' => 'set to true to only get the id in response',
             ],
         ],
     ],
     [
-        'method'      => 'get',
-        'route'       => '/module/{beanName}/{beanId}/auditlog',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'getBeanAuditlog',
+        'method' => 'get',
+        'route' => '/module/{beanName}/{beanId}/auditlog',
+        'class' => SpiceBeanController::class,
+        'function' => 'getBeanAuditlog',
         'description' => 'Get bean auditlog',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters' => [
             'beanName' => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'beanId'   => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => 'GUID of the bean',
             ],
-            'grouped'     => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_BOOL,
-                'required'    => false,
+            'grouped' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'required' => false,
                 'description' => 'if the result shoudl be returned as an array grouped by the transaction id',
             ],
-            'user'     => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+            'user' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
                 'description' => 'User name',
             ],
-            'field'    => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+            'field' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
                 'description' => 'Field name',
             ],
         ],
     ],
     [
-        'method'      => 'post',
-        'route'       => '/module/Timeline/{beanName}/{beanId}',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'loadFTSTimeline',
+        'method' => 'post',
+        'route' => '/module/Timeline/{beanName}/{beanId}',
+        'class' => SpiceBeanController::class,
+        'function' => 'loadFTSTimeline',
         'description' => 'get held items in timeline stream for specified bean',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
-        'parameters'  => [
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters' => [
             'beanName' => [
                 'in' => 'path',
                 'type' => ValidationMiddleware::TYPE_MODULE,
@@ -612,521 +612,521 @@ $routes = [
         ]
     ],
     [
-        'method'      => 'post',
-        'route'       => '/module/{beanName}/{beanId}/checklist/{fieldName}/{item}',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'postChecklist',
+        'method' => 'post',
+        'route' => '/module/{beanName}/{beanId}/checklist/{fieldName}/{item}',
+        'class' => SpiceBeanController::class,
+        'function' => 'postChecklist',
         'description' => 'Post checklist',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
-            'beanName'        => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'beanId'          => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => 'GUID of the bean',
             ],
             'fieldName' => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
                 'description' => '',
             ],
-            'item'      => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
+            'item' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
                 'description' => ''
             ],
         ],
     ],
     [
-        'method'      => 'delete',
-        'route'       => '/module/{beanName}/{beanId}/checklist/{fieldName}/{item}',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'deleteChecklist',
+        'method' => 'delete',
+        'route' => '/module/{beanName}/{beanId}/checklist/{fieldName}/{item}',
+        'class' => SpiceBeanController::class,
+        'function' => 'deleteChecklist',
         'description' => 'Delete checklist',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
-            'beanName'        => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'beanId'          => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => 'GUID of the bean',
             ],
             'fieldName' => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
                 'description' => '',
             ],
-            'item'      => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
+            'item' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
                 'description' => ''
             ],
         ],
     ],
     [
-        'method'      => 'get',
-        'route'       => '/module/{beanName}/{beanId}/related/{linkName}',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'getRelatedBean',
+        'method' => 'get',
+        'route' => '/module/{beanName}/{beanId}/related/{linkName}',
+        'class' => SpiceBeanController::class,
+        'function' => 'getRelatedBean',
         'description' => 'Get related bean',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
-            'beanName'           => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'beanId'             => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => 'GUID of the bean',
             ],
-            'linkName'           => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
+            'linkName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
                 'description' => 'The name of the link',
             ],
-            'modulefilter'       => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => false,
+            'modulefilter' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => false,
                 'description' => 'Module filter GUID',
             ],
-            'fieldfilters'       => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_COMPLEX,
-                'required'    => false,
+            'fieldfilters' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_COMPLEX,
+                'required' => false,
                 'description' => '',
             ],
-            'sort'               => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_OBJECT,
-                'required'    => false,
+            'sort' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_OBJECT,
+                'required' => false,
                 'description' => '',
                 'parameters' => [
                     'sortfield' => [
-                        'type'        => ValidationMiddleware::TYPE_STRING,
-                        'required'    => true,
+                        'type' => ValidationMiddleware::TYPE_STRING,
+                        'required' => true,
                         'description' => 'the sort fieldname'
                     ],
                     'sortdirection' => [
-                        'type'        => ValidationMiddleware::TYPE_ENUM,
-                        'required'    => true,
+                        'type' => ValidationMiddleware::TYPE_ENUM,
+                        'required' => true,
                         'description' => 'the sort direction',
                         'options' => ['ASC', 'DESC']
                     ]
                 ]
             ],
-            'offset'             => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_NUMERIC,
-                'required'    => false,
+            'offset' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_NUMERIC,
+                'required' => false,
                 'description' => '',
             ],
-            'limit'              => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_NUMERIC,
-                'required'    => false,
+            'limit' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_NUMERIC,
+                'required' => false,
                 'description' => '',
             ],
             'relationshipFields' => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_COMPLEX,
-                'required'    => false,
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_COMPLEX,
+                'required' => false,
                 'description' => '',
             ],
-            'getcount'           => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_BOOL,
-                'required'    => false,
+            'getcount' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'required' => false,
                 'description' => '',
             ],
-            'excludeinactive'           => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_BOOL,
-                'required'    => false,
+            'excludeinactive' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'required' => false,
                 'description' => 'set to excludeinactive',
             ],
-            'module'   => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => false,
+            'module' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => false,
                 'description' => 'The name of the module',
             ],
             'forceResolveLinks' => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
                 'description' => 'Forces resolving the links (when default=true in vardefs).',
             ],
             'searchterm' => [
-                'in'          => 'query',
+                'in' => 'query',
                 'description' => 'a searchterm to search by',
-                'type'        => ValidationMiddleware::TYPE_STRING,
+                'type' => ValidationMiddleware::TYPE_STRING,
             ],
 
         ],
     ],
     [
-        'method'      => 'post',
-        'route'       => '/module/{beanName}/{beanId}/related/{linkName}',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'addRelatedBean',
+        'method' => 'post',
+        'route' => '/module/{beanName}/{beanId}/related/{linkName}',
+        'class' => SpiceBeanController::class,
+        'function' => 'addRelatedBean',
         'description' => 'Add related bean',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => false],
-        'parameters'  => [
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => false],
+        'parameters' => [
             'beanName' => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'beanId'   => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => 'GUID of the bean',
             ],
             'linkName' => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
                 'description' => 'The name of the link',
             ],
             'beansData' => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_ARRAY,
-                'subtype'     => ValidationMiddleware::TYPE_OBJECT,
-                'required'    => true,
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_ARRAY,
+                'subtype' => ValidationMiddleware::TYPE_OBJECT,
+                'required' => true,
                 'description' => 'An array with GUIDs of related beans',
             ],
         ],
     ],
     [
-        'method'      => 'put',
-        'route'       => '/module/{beanName}/{beanId}/related/{linkName}',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'setRelatedBean',
+        'method' => 'put',
+        'route' => '/module/{beanName}/{beanId}/related/{linkName}',
+        'class' => SpiceBeanController::class,
+        'function' => 'setRelatedBean',
         'description' => 'Set related bean',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true, 'excludeBodyValidation' => true],
-        'parameters'  => [
-            'beanName'       => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'beanId'         => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => 'GUID of the bean',
             ],
-            'linkName'       => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
+            'linkName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
                 'description' => 'The name of the link',
             ],
-            'id'             => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+            'id' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => 'GUID of the related bean',
             ],
-            'deleted'        => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_BOOL,
-                'required'    => false,
+            'deleted' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'required' => false,
                 'description' => 'Deleted flag',
             ],
-            'date_modified'  => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_DATETIME,
-                'required'    => false,
+            'date_modified' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_DATETIME,
+                'required' => false,
                 'description' => 'Date modified',
             ],
-            'date_entered'  => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_DATETIME,
-                'required'    => false,
+            'date_entered' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_DATETIME,
+                'required' => false,
                 'description' => 'Date entered',
             ],
-            'date_indexed'  => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_DATETIME,
-                'required'    => false,
+            'date_indexed' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_DATETIME,
+                'required' => false,
                 'description' => 'Date indexed',
             ],
-            'name'           => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+            'name' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
                 'description' => '',
             ],
             'emailaddresses' => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_ARRAY,
-                'subtype'     => ValidationMiddleware::TYPE_EMAIL,
-                'required'    => false,
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_ARRAY,
+                'subtype' => ValidationMiddleware::TYPE_EMAIL,
+                'required' => false,
                 'description' => '',
             ],
-            'file'           => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_BASE64,
-                'required'    => false,
+            'file' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_BASE64,
+                'required' => false,
                 'description' => 'The base64 contents of the file',
             ],
-            'filename'       => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+            'filename' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
                 'description' => 'The file name',
             ],
-            'favorite'       => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_BOOL,
-                'required'    => false,
+            'favorite' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'required' => false,
                 'description' => '',
             ],
             // possibly there are more
         ],
     ],
     [
-        'method'      => 'put',
-        'route'       => '/module/{beanName}/{beanId}/related/beans/{linkName}',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'setRelatedBeans',
+        'method' => 'put',
+        'route' => '/module/{beanName}/{beanId}/related/beans/{linkName}',
+        'class' => SpiceBeanController::class,
+        'function' => 'setRelatedBeans',
         'description' => 'Set related beans',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true, 'excludeBodyValidation' => true],
-        'parameters'  => [
-            'beanName'       => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'beanId'         => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => 'GUID of the bean',
             ],
-            'linkName'       => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
+            'linkName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
                 'description' => 'The name of the link',
             ],
-            'id'             => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => false,
+            'id' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => false,
                 'description' => 'GUID of the related bean',
             ],
-            'deleted'        => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_BOOL,
-                'required'    => false,
+            'deleted' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'required' => false,
                 'description' => 'Deleted flag',
             ],
-            'date_modified'  => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_DATETIME,
-                'required'    => false,
+            'date_modified' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_DATETIME,
+                'required' => false,
                 'description' => 'Date modified',
             ],
-            'date_entered'  => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_DATETIME,
-                'required'    => false,
+            'date_entered' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_DATETIME,
+                'required' => false,
                 'description' => 'Date entered',
             ],
-            'date_indexed'  => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_DATETIME,
-                'required'    => false,
+            'date_indexed' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_DATETIME,
+                'required' => false,
                 'description' => 'Date indexed',
             ],
-            'name'           => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => false,
+            'name' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
                 'description' => '',
             ],
             'emailaddresses' => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_ARRAY,
-                'required'    => false,
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_ARRAY,
+                'required' => false,
                 'description' => 'array of related beans to be updated',
             ]
             // possibly there are more
         ],
     ],
     [
-        'method'      => 'delete',
-        'route'       => '/module/{beanName}/{beanId}/related/{linkName}',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'deleteRelatedBean',
+        'method' => 'delete',
+        'route' => '/module/{beanName}/{beanId}/related/{linkName}',
+        'class' => SpiceBeanController::class,
+        'function' => 'deleteRelatedBean',
         'description' => 'Delete related bean',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
-            'beanName'   => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'beanId'     => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => 'GUID of the bean',
             ],
-            'linkName'   => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
+            'linkName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
                 'description' => 'The name of the link',
             ],
             'relatedids' => [
-                'in'          => 'query',
-                'type'        => ValidationMiddleware::TYPE_COMPLEX,
-                'required'    => true,
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_COMPLEX,
+                'required' => true,
                 'description' => 'An array of GUIDs or just a GUID',
             ],
         ],
     ],
     [
-        'method'      => 'post',
-        'route'       => '/module/{beanName}/{beanId}/mergebeans',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'mergeBeans',
+        'method' => 'post',
+        'route' => '/module/{beanName}/{beanId}/mergebeans',
+        'class' => SpiceBeanController::class,
+        'function' => 'mergeBeans',
         'description' => 'Merge beans',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
-            'beanName'        => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'beanId'          => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => 'GUID of the bean',
             ],
             'duplicates' => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_ARRAY,
-                'subtype'     => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_ARRAY,
+                'subtype' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => '',
             ],
-            'fields'          => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_ARRAY,
+            'fields' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_ARRAY,
                 // todo array fieldName => beanId
-                'required'    => true,
+                'required' => true,
                 'description' => '',
             ],
 
         ],
     ],
     [
-        'method'      => 'get',
-        'route'       => '/module/{beanName}/{beanId}/{fieldName}/html',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'getBeanFieldHtmlContent',
+        'method' => 'get',
+        'route' => '/module/{beanName}/{beanId}/{fieldName}/html',
+        'class' => SpiceBeanController::class,
+        'function' => 'getBeanFieldHtmlContent',
         'description' => 'get bean field html content ',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
-            'beanName'   => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'beanId'   => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => 'The id of the bean',
             ],
-            'fieldName'   => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
+            'fieldName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
                 'description' => 'field name to get the html content',
             ]
         ]
     ],
     [
-        'method'      => 'put',
-        'route'       => '/module/{beanName}/{beanId}/inactive',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'manageActiveState',
+        'method' => 'put',
+        'route' => '/module/{beanName}/{beanId}/inactive',
+        'class' => SpiceBeanController::class,
+        'function' => 'manageActiveState',
         'description' => 'manages the is_inactive flag on a Bean',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
-            'beanName'   => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'beanId'   => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => 'The id of the bean',
             ],
-            'isInactive'   => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
+            'isInactive' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
                 'description' => 'value if the Bean is active or inactive',
             ]
         ]
     ],
     [
-        'method'      => 'delete',
-        'route'       => '/module/{beanName}/{beanId}/inactive',
-        'class'       => SpiceBeanController::class,
-        'function'    => 'deleteInactiveBean',
+        'method' => 'delete',
+        'route' => '/module/{beanName}/{beanId}/inactive',
+        'class' => SpiceBeanController::class,
+        'function' => 'deleteInactiveBean',
         'description' => 'sets delete flag on a Bean',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
-        'parameters'  => [
-            'beanName'   => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'required'    => true,
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
                 'description' => 'The name of the module',
             ],
-            'beanId'   => [
-                'in'          => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'required'    => true,
+            'beanId' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
                 'description' => 'The id of the bean',
             ]
         ]
@@ -1165,6 +1165,70 @@ $routes = [
             ]
         ],
     ],
+    [
+        'method' => 'post',
+        'route' => '/module/{beanName}/{beanId}/image/{imagefield}',
+        'class' => SpiceBeanController::class,
+        'function' => 'saveImageData',
+        'description' => 'saves the Image',
+        'options' => ['validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'description' => 'the module',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true
+            ],
+            'beanId' => [
+                'in' => 'path',
+                'description' => 'ID of the bean',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
+                'example' => '40109eab-ddc0-01fb-3a85-b3f3f87cfa1c'
+            ],
+            'imagedata' => [
+                'in' => 'body',
+                'description' => 'base64 encoded String for the image',
+                'type' => ValidationMiddleware::TYPE_BASE64,
+                'required' => true
+            ],
+            'imagefield' => [
+                'in' => 'path',
+                'description' => 'the field to save the image to',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true
+            ]
+        ]
+    ],
+    [
+        'method' => 'delete',
+        'route' => '/module/{beanName}/{beanId}/image/{imagefield}',
+        'class' => SpiceBeanController::class,
+        'function' => 'deleteImageData',
+        'description' => 'deletes the Image',
+        'options' => ['validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'description' => 'the module',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true
+            ],
+            'beanId' => [
+                'in' => 'path',
+                'description' => 'ID of the bean',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
+                'example' => '40109eab-ddc0-01fb-3a85-b3f3f87cfa1c'
+            ],
+            'imagefield' => [
+                'in' => 'path',
+                'description' => 'the field to save the image to',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true
+            ]
+        ]
+    ]
 ];
 
 /**
