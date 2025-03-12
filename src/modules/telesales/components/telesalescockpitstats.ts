@@ -24,7 +24,7 @@ export class TeleSalesCockpitStats {
         attempted: 'slds-theme--warning',
         maxattempts: 'slds-theme--error',
         targeted: 'slds-theme--shade',
-        initial: 'slds-theme--shade'
+        initial: 'slds-theme--info'
     }
 
     constructor(
