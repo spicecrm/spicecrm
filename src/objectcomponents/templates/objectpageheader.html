@@ -2,7 +2,7 @@
     <div class="slds-grid">
         <div class="slds-col slds-grow" style="min-width: 105px;">
             <div class="slds-media slds-no-space slds-grow">
-                <system-icon [module]="moduleName" (click)="goToModule()"></system-icon>
+                <object-page-header-icon [imagefield]="componentconfig.imagefield"/>
                 <div class="slds-media__body">
                     <ul class="slds-list_horizontal slds-has-dividers_left slds-line-height--reset">
                         @if (layout.screenwidth != 'small') {
