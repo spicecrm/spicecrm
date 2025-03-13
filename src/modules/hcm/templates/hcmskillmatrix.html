@@ -1,0 +1,111 @@
+@if (treeNodes.length > 0) {
+    <div class="slds-is-relative" system-to-bottom marginBottom="40"
+         [system-overlay-loading-spinner]="modellist.isLoading">
+        <table class="slds-table slds-table_bordered slds-table_edit slds-table_fixed-layout slds-table--header-fixed slds-tree slds-table_tree">
+            <thead>
+                <tr class="slds-line-height_reset" [system-view-provider]="{displayLabels: false}">
+                    <th style="width: 250px">
+                        <div class="slds-truncate slds-p-around--x-small">
+                            <system-label label="LBL_SKILL"/>&nbsp;/&nbsp;<system-label label="LBL_EMPLOYEE"/>
+                        </div>
+                    </th>
+                    @for (record of displayRecords; track record.id) {
+                        <th class="slds-text-align--center"
+                            [system-model-provider]="{module: modellist.module, id: record.id, data: record}">
+                            <div class="slds-truncate">
+                                <field-container field="full_name" [fieldconfig]="{link: true}"/>
+                            </div>
+                        </th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (treeNode of treeNodes; track treeNode.id) {
+                    <tr [attr.aria-level]="treeNode.level" [attr.aria-posinset]="treeNode.level" aria-selected="false"
+                        class="slds-hint-parent"
+                        tabindex="0">
+                        <td class="slds-tree__item" scope="row">
+                            <!--button class="slds-button slds-button_icon slds-button_icon-x-small slds-m-right_x-small slds-is-disabled" aria-hidden="true">
+
+                            </button-->
+                            <div class="slds-truncate">
+                                <system-label [label]="treeNode.node_name"/>
+                            </div>
+                        </td>
+                        @for (record of displayRecords; track record.id) {
+                            <td class="slds-text-align--center" role="gridcell">
+                                @if (treeNode.selectable) {
+                                    @if (employeeSkills[record.id]) {
+                                        @if (checkSkill(record.id, treeNode.values)) {
+                                            <system-utility-icon size="x-small" icon="success"
+                                                                 colorclass="slds-icon-text-success"/>
+                                        } @else {
+                                            <system-utility-icon size="x-small" icon="error"
+                                                                 colorclass="slds-icon-text-error"/>
+                                        }
+                                    } @else {
+                                        <system-utility-icon size="x-small" icon="spinner"
+                                                             colorclass="slds-icon-text-default"/>
+                                    }
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div #footer class="slds-utility-bar_container slds-is-absolute__bottom slds-size--1-of-1">
+        <div class="slds-utility-bar" style="height: fit-content; position: static">
+            <div class="slds-grid slds-size--1-of-1 slds-grid_vertical-align-center slds-grid--align-spread slds-wrap">
+                <div class="slds-grid slds-grid_vertical-align-center slds-p-horizontal--x-small slds-size--1-of-1 slds-p-vertical--xx-small slds-medium-size--1-of-4">
+                    <div class="slds-form-element__control slds-col">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="sortField"
+                                    (ngModelChange)="modellist.reLoadList()">
+                                <option value="select" [hidden]="sortField != ''">
+                                    <system-label label="LBL_SELECT"></system-label>
+                                </option>
+                                <option *ngFor="let field of sortfields" [value]="field">
+                                    <system-label-fieldname [module]="modellist.module"
+                                                            [field]="field"></system-label-fieldname>
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="slds-form-element__control slds-col slds-p-left--x-small">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="sortDirection"
+                                    (ngModelChange)="modellist.reLoadList()">
+                                <option value="ASC">
+                                    <system-label label="LBL_ASCENDING"></system-label>
+                                </option>
+                                <option value="DESC">
+                                    <system-label label="LBL_DESCENDING"></system-label>
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-grid slds-grid_vertical-align-center slds-p-horizontal--x-small slds-p-vertical--xx-small">
+                    <!--button class="slds-button slds-button--icon" [disabled]="firstRecord == 0"><system-button-icon icon="jump_to_left"></system-button-icon></button-->
+                    <button class="slds-button slds-button--icon" [disabled]="firstRecord == 0"
+                            (click)="displayPrevious()">
+                        <system-button-icon icon="chevronleft"></system-button-icon>
+                    </button>
+                    <button class="slds-button slds-button--icon"
+                            [disabled]="firstRecord + displayedRecords >= modellist.listData.totalcount">
+                        <system-button-icon icon="chevronright" (click)="displayNext()"></system-button-icon>
+                    </button>
+                    <!--button class="slds-button slds-button--icon"><system-button-icon icon="jump_to_right"></system-button-icon></button-->
+                </div>
+            </div>
+        </div>
+    </div>
+} @else {
+    <div system-to-bottom-noscroll class="slds-align--absolute-center">
+        <system-illustration-no-data>
+            <system-label label="LBL_NO_SKILL_CATALOGUE"></system-label>
+        </system-illustration-no-data>
+    </div>
+}
