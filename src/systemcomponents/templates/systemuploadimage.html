@@ -11,6 +11,7 @@
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button *ngIf="imageLoaded" class="slds-button slds-button--neutral" (click)="delete()"><system-label label="LBL_DELETE"></system-label></button>
         <button [disabled]="!imageBase64" class="slds-button slds-button--brand" (click)="getcroppedImage()"><system-label label="LBL_USE"></system-label></button>
     </system-modal-footer>
 </system-modal>

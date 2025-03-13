@@ -1,0 +1,56 @@
+<object-related-card [componentconfig]="componentconfig">
+    <ng-container *ngIf="aclAccess; else noaccess">
+        <div class="slds-border--top">
+            <!--object-relatedlist-table [listfields]="listfields" [editable]="editable" [editcomponentset]="editcomponentset" [sequencefield]="componentconfig.sequencefield" [listitemactionset]="listitemactionset"></object-relatedlist-table-->
+            <table class="slds-table slds-table_bordered slds-table_edit slds-table_fixed-layout slds-table--header-fixed slds-tree slds-table_tree">
+                <thead>
+                <tr class="slds-line-height_reset" [system-view-provider]="{displayLabels: false}">
+                    <th style="width: 50%">
+                        <div class="slds-truncate slds-p-around--x-small">
+                            <system-label label="LBL_SKILL"/>
+                        </div>
+                    </th>
+                    <th style="width: 50%" class="slds-text-align--center">
+                        <div class="slds-truncate slds-p-around--x-small">
+                            <system-label label="LBL_REQUIRED"/>
+                        </div>
+                    </th>
+                    <th style="width: 50%" class="slds-text-align--center">
+                        <div class="slds-truncate slds-p-around--x-small">
+                            <system-label label="LBL_HCMJOBPROFILESCOPE"/>
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                    @for (treeNode of filteredTreenodes; track treeNode.id) {
+                        <tr [attr.aria-level]="treeNode.level" [attr.aria-posinset]="treeNode.level" aria-selected="false"
+                            class="slds-hint-parent"
+                            tabindex="0">
+                            <td class="slds-tree__item" scope="row">
+                                <div class="slds-truncate">
+                                    <system-label [label]="treeNode.node_name"/>
+                                </div>
+                            </td>
+                            <td class="slds-text-align--center" role="gridcell">
+                                @if (treeNode.selectable) {
+                                    @if(isRequired(treeNode.values)){
+                                        <system-utility-icon size="x-small" icon="success" colorclass="slds-icon-text-success" system-title="LBL_REQUIRED"/>
+                                    } @else {
+                                        <system-utility-icon size="x-small" icon="check" colorclass="slds-icon-text-light" system-title="LBL_OPTIONAL"/>
+                                    }
+                                }
+                            </td>
+                            <td class="slds-text-align--center" role="gridcell">
+                                {{getScopeName(treeNode.values)}}
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </ng-container>
+    <ng-template #noaccess>
+        <system-illustration-no-access></system-illustration-no-access>
+    </ng-template>
+</object-related-card>

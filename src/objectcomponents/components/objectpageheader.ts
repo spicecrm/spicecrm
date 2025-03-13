@@ -46,11 +46,11 @@ export class ObjectPageHeader implements OnInit {
 
     public ngOnInit() {
         // get the Componentconfig if not set yet
-        let componentconfig = this.componentconfig && !_.isEmpty(this.componentconfig) ? this.componentconfig : this.metadata.getComponentConfig('ObjectPageHeader', this.model.module);
+        this.componentconfig = this.componentconfig && !_.isEmpty(this.componentconfig) ? this.componentconfig : this.metadata.getComponentConfig('ObjectPageHeader', this.model.module);
 
         // set the actionset & fiedset
-        this.actionSet = componentconfig.actionset;
-        this.fieldset = componentconfig.fieldset;
+        this.actionSet = this.componentconfig.actionset;
+        this.fieldset = this.componentconfig.fieldset;
     }
 
     get moduleName() {
@@ -90,4 +90,8 @@ export class ObjectPageHeader implements OnInit {
         }
     }
 
+
+    get image() {
+        return this.model.getField(this.componentconfig.imagefield);
+    }
 }
