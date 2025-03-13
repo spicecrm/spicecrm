@@ -37,7 +37,7 @@ export class DocumentEditor implements AfterViewInit, OnDestroy, OnChanges {
     /**
      * api token
      */
-    public settings: {token: string, serverUrl: string};
+    public settings: {token: string, serverUrl: string, scriptUrl: string};
     /**
      * is loading flag
      */
@@ -98,8 +98,9 @@ export class DocumentEditor implements AfterViewInit, OnDestroy, OnChanges {
                 }
 
                 this.zone.runOutsideAngular(() => {
-                    this.libLoader.loadLib('tx-editor').subscribe({
+                    this.libLoader.loadFromSource([this.settings.scriptUrl]).subscribe({
                         next: () => {
+                            this.libLoader.loadedLibs.push({name: 'tx-editor', status: 'loaded'});
                             this.initializeEditor();
                         },
                         error: () => {
@@ -108,6 +109,9 @@ export class DocumentEditor implements AfterViewInit, OnDestroy, OnChanges {
                     });
                 });
             },
+            error: () => {
+                this.setIsLoading(false);
+            }
         });
     }
 
@@ -150,7 +154,7 @@ export class DocumentEditor implements AfterViewInit, OnDestroy, OnChanges {
         if (TXTextControl.removeFromDom) {
             TXTextControl.removeFromDom();
         }
-        this.libLoader.unloadLib('tx-editor');
+        this.libLoader.removeLibFromHead(this.settings.scriptUrl);
     }
 
     /**
