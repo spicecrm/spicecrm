@@ -22,7 +22,7 @@ class TXControlEditorController
     {
         $config = (object) SpiceConfig::getInstance()->get('DocXEditor');
 
-        if (!$config->clientId || !$config->clientSecret || !$config->serverUrl) {
+        if (!$config->clientId || !$config->clientSecret || !$config->serverUrl || !$config->scriptUrl) {
             throw new Exception('DocXEditor settings missing');
         }
 
@@ -62,6 +62,6 @@ class TXControlEditorController
 
         $result = json_decode(substr($result, $info['header_size']));
 
-        return $res->withJson(['token' => $result->access_token, 'serverUrl' => $config->serverUrl]);
+        return $res->withJson(['scriptUrl' => $config->scriptUrl,'token' => $result->access_token, 'serverUrl' => $config->serverUrl]);
     }
 }
