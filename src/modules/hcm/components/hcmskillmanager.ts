@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnDestroy, OnInit} from "@angular/core";
+import {ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
 import {navigation} from "../../../services/navigation.service";
@@ -188,6 +188,7 @@ export class HCMSkillManager implements OnInit, OnDestroy{
             this.backend.postRequest(`module/HCMSkills/forhcmjobprofile/${this.model.id}`, {}, {skills: nodes}).subscribe({
                 next: (res) => {
                     saving.emit(true);
+                    this.relatedmodels.getData();
                     this.self.destroy();
                 },
                 error: () => {

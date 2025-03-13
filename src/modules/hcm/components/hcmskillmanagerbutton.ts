@@ -31,7 +31,7 @@ export class HCMSkillManagerButton {
 
     public execute() {
         // get the scopes
-        let preparing = this.modal.await('LBL_PREPARING')
+        let preparing = this.modal.await('LBL_LOADING')
         this.backend.getRequest(`module/${this.model.module}/${this.model.id}/related/hcmjobprofilescopes?module=HCMJobProfileScopes&getcount=1&offset=0&limit=-99`).subscribe({
             next: (res) => {
                 this.modal.openModal('HCMSkillManager', true, this.injector).subscribe({
