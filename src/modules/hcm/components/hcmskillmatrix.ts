@@ -7,8 +7,6 @@ import {broadcast} from "../../../services/broadcast.service";
 import {configurationService} from "../../../services/configuration.service";
 import {backend} from "../../../services/backend.service";
 import {Subscription} from "rxjs";
-import _default from "chart.js/dist/plugins/plugin.tooltip";
-import numbers = _default.defaults.animations.numbers;
 
 declare var _: any;
 
