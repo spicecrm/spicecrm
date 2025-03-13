@@ -4,6 +4,7 @@
 namespace SpiceCRM\data\api\controllers;
 
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -166,6 +167,70 @@ class SpiceBeanController
 
         $bean = $moduleHandler->add_bean($args['beanName'], $args['beanId'], $params, $req->getQueryParams());
         return $res->withJson($bean);
+    }
+
+
+    /**
+     * adds an image to the record
+     *
+     * @param \Slim\Psr7\Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     */
+    public function SaveImageData(\Slim\Psr7\Request $req, Response $res, array $args): Response
+    {
+        // try to get the seed and check the access
+        $seed = BeanFactory::getBean($args['beanName'], $args['beanId']);
+        if(!$seed){
+            throw new NotFoundException("bean with id {$args['beanId']} not found");
+        }
+
+        if(!$seed->ACLAccess('edit')){
+            throw new ForbiddenException("no rights to Edit Bean");
+        }
+
+        if($seed->field_defs[$args['imagefield']]['type'] != 'image'){
+            throw new BadRequestException("this is not an image field upload rejected");
+        }
+
+        $body = $req->getParsedBody();
+        $seed->{$args['imagefield']} = 'data:image/png;base64,'. $body['imagedata'];
+        $seed->save();
+
+        return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * deltes an image from the record
+     *
+     * @param \Slim\Psr7\Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     */
+    public function deleteImageData(\Slim\Psr7\Request $req, Response $res, array $args): Response
+    {
+        // try to get the seed and check the access
+        $seed = BeanFactory::getBean($args['beanName'], $args['beanId']);
+        if(!$seed){
+            throw new NotFoundException("bean with id {$args['beanId']} not found");
+        }
+
+        if(!$seed->ACLAccess('edit')){
+            throw new ForbiddenException("no rights to Edit Bean");
+        }
+
+        if($seed->field_defs[$args['imagefield']]['type'] != 'image'){
+            throw new BadRequestException("this is not an image field upload rejected");
+        }
+
+        $seed->{$args['imagefield']} = '';
+        $seed->save();
+
+        return $res->withJson(['success' => true]);
     }
 
     public function deleteBean(Request $req, Response $res, array $args): Response
