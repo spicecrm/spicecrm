@@ -53,11 +53,11 @@ class ContactsController
             $msgraphContact = new MSGraphBeanHandler($current_user, $contact);
             $found= $msgraphContact->getItem();
             if($found->error && $found->error->code == 'ErrorItemNotFound'){
-                $response   = $msgraphContact->createItem();
+                $msgraphContact->createItem();
             } else{
-                $response   = $msgraphContact->updateItem();
+                $msgraphContact->updateItem();
             }
-            return $res->withJson($response);
+            return $res->withJson(['success' => true]);
         } catch (Exception $e) {
             return $res->withJson(['message' => $e->getMessage(), 'code' => $e->getCode()]);
         }
@@ -70,8 +70,8 @@ class ContactsController
         if(!$contact) return $res->withJson(['message' => 'Contact bean not found for id '.$args['id'], 'code' => 404]);
 
         $msgraphContact = new MSGraphBeanHandler($current_user, $contact);
-        $response   = $msgraphContact->deleteItem();
+        $msgraphContact->deleteItem();
 
-        return $res->withJson($response);
+        return $res->withJson(['success' => true]);
     }
 }
