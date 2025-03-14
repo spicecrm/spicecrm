@@ -138,14 +138,23 @@ export class libloader {
         if (!lib) return;
 
         this.scripts[lib.name].forEach(script => {
-            const scriptElement = document.head.querySelector(`link[href="${script.src}"],script[src="${script.src}"]`);
-
-            if (scriptElement) {
-                scriptElement.remove();
-            }
+            this.removeLibFromHead(script.src);
         });
 
         this.loadedLibs = this.loadedLibs.filter(lib => lib.name != name);
+    }
+
+    /**
+     * remove library element from head
+     * @param src
+     */
+    public removeLibFromHead(src: string) {
+
+        const scriptElement = document.head.querySelector(`link[href="${src}"],script[src="${src}"]`);
+
+        if (scriptElement) {
+            scriptElement.remove();
+        }
     }
 
     /**

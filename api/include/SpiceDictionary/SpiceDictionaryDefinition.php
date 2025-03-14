@@ -44,6 +44,26 @@ class SpiceDictionaryDefinition
     }
 
     /**
+     * returns all items for a defintion including items from templates
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function getItems(){
+        $retItems = array();
+        $items = SpiceDictionaryItems::getInstance()->getItems($this->id);
+        foreach ($items as $item){
+            if($item['sysdictionary_ref_id']){
+                $refItems = SpiceDictionaryItems::getInstance()->getItems($item['sysdictionary_ref_id']);
+                $retItems = array_merge($retItems,$refItems);
+            } else {
+                $retItems[] = $item;
+            }
+        }
+        return $retItems;
+    }
+
+    /**
      * repairs the dictionary Definition
      * @param bool $relationships
      * @param bool $execute
