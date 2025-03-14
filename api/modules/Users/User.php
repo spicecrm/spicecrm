@@ -365,12 +365,12 @@ class User extends Person
                 $this->first_name = $parent->first_name;
                 $this->last_name = $parent->last_name;
                 $this->full_name = $parent->full_name;
-                $this->full_name = $parent->full_name;
                 $this->title = $parent->title;
                 $this->phone_home = $parent->phone_home;
                 $this->phone_mobile = $parent->phone_mobile;
                 $this->phone_work = $parent->phone_work;
                 $this->phone_other = $parent->phone_other;
+                $this->parent_name = $parent->full_name;
             }
         }
 
