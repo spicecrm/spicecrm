@@ -12,7 +12,7 @@ import {backend} from "../../services/backend.service";
     selector: 'object-page-header-icon',
     templateUrl: '../templates/objectpageheadericon.html'
 })
-export class ObjectPageHeaderIcon implements OnInit{
+export class ObjectPageHeaderIcon{
 
     /**
      * an image field on the model
@@ -28,10 +28,6 @@ export class ObjectPageHeaderIcon implements OnInit{
         public metadata: metadata,
         public backend: backend
     ) {
-    }
-
-    public ngOnInit() {
-        console.log(this.imagefield);
     }
 
     /**
