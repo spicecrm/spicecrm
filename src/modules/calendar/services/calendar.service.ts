@@ -389,8 +389,7 @@ export class calendar implements OnDestroy {
 
                         for (let event of events) {
 
-                            if ((userId == this.owner && !!event.data.external_id && !!this.calendarData.google && this.calendarData.google.some(e => e.id == event.data.external_id)) ||
-                                (calendarId == 'owner' && this.userModules.some(calendar => calendar.name == event.module && !calendar.visible))) {
+                            if ((calendarId == 'owner' && this.userModules.some(calendar => calendar.name == event.module && !calendar.visible))) {
                                 continue;
                             }
 
@@ -497,7 +496,6 @@ export class calendar implements OnDestroy {
                 .subscribe(res => {
                     if (res.events && res.events.length > 0) {
                         for (let event of res.events) {
-                            if (!!this.calendarData['owner'] && this.calendarData['owner'].some(e => e.data.external_id == event.id)) continue;
 
                             event.start = moment(moment(event.start.dateTime ?? event.start.date)
                                 .format(!event.start.dateTime && !!event.start.date ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:00'));
@@ -551,7 +549,6 @@ export class calendar implements OnDestroy {
                     next: res => {
                         if (res.events && res.events.length > 0) {
                             for (let event of res.events) {
-                                if (!!this.calendarData['owner'] && this.calendarData['owner'].some(e => e.data.external_id == event.id)) continue;
 
                                 event.start = moment(moment.utc(event.start.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:00'));
                                 event.end = moment(moment.utc(event.end.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:00'));
