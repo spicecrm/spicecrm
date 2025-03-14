@@ -10,14 +10,25 @@
                     </div>
                 </div>
                 <div class="slds-size--1-of-4 slds-form-element slds-m-around--xxx-small">
-                    <div *ngIf="dictionaryitem.sysdomaindefinition_id" class="slds-form-element__control slds-p-right--xx-small">
-                        <label class="slds-form-element__label"><system-label label="LBL_DOMAIN"></system-label></label>
-                        <input type="text" disabled class="slds-input" [ngModel]="dictionarymanager.getDomainName(dictionaryitem.sysdomaindefinition_id)"/>
-                    </div>
-                    <div *ngIf="dictionaryitem.sysdictionary_ref_id" class="slds-form-element__control slds-p-left--xx-small">
-                        <label class="slds-form-element__label"><system-label label="LBL_TEMPLATE"></system-label></label>
-                        <input type="text" disabled class="slds-input" [ngModel]="dictionarymanager.getDictionaryDefinitionName(dictionaryitem.sysdictionary_ref_id)"/>
-                    </div>
+                    @if(!dictionaryitem.sysdictionary_ref_id) {
+                        <div class="slds-form-element__control slds-p-right--xx-small">
+                            <label class="slds-form-element__label">
+                                <system-label label="LBL_DOMAIN"></system-label>
+                            </label>
+                            @if(dictionaryitem.status == 'a'){
+                                <input type="text" [disabled]="dictionaryitem.status == 'a'" class="slds-input" [ngModel]="dictionarymanager.getDomainName(dictionaryitem.sysdomaindefinition_id)"/>
+                            } @else {
+                                <system-select system-select-id-only [(ngModel)]="dictionaryitem.sysdomaindefinition_id">
+                                    <system-select-option *ngFor="let domain of domains" [value]="domain.id" [display]="domain.name"/>
+                                </system-select>
+                            }
+                        </div>
+                    } @else {
+                        <div class="slds-form-element__control slds-p-left--xx-small">
+                            <label class="slds-form-element__label"><system-label label="LBL_TEMPLATE"></system-label></label>
+                            <input type="text" disabled class="slds-input" [ngModel]="dictionarymanager.getDictionaryDefinitionName(dictionaryitem.sysdictionary_ref_id)"/>
+                        </div>
+                    }
                 </div>
                 <div class="slds-size--1-of-4 slds-form-element__control slds-m-around--xxx-small">
                     <label class="slds-form-element__label"><system-label label="LBL_SCOPE"></system-label></label>
@@ -29,7 +40,7 @@
                     </div>
                 </div>
             </div>
-            <ng-container *ngIf="dictionaryitem.sysdomaindefinition_id">
+            @if(!dictionaryitem.sysdictionary_ref_id) {
                 <div>
                     <label class="slds-form-element__label">
                         <system-label label="LBL_LABEL"></system-label>
@@ -44,22 +55,32 @@
                         <system-input-label [(ngModel)]="dictionaryitem.labelinputhelper"></system-input-label>
                     </div>
                     <div class="slds-size--1-of-2 slds-form-element__control slds-p-left--xx-small">
-                        <label class="slds-form-element__label"><system-label label="LBL_DEFAULT_VALUE"/></label>
+                        <label class="slds-form-element__label">
+                            <system-label label="LBL_DEFAULT_VALUE"/>
+                        </label>
                         <system-input-text [(ngModel)]="dictionaryitem.default_value"></system-input-text>
                     </div>
                 </div>
                 <div class="slds-grid slds-p-vertical--xx-small">
                     <div class="slds-size--1-of-4 slds-form-element__control">
-                        <system-checkbox [(ngModel)]="dictionaryitem.required" [asinteger]="true"><system-label label="LBL_REQUIRED"/></system-checkbox>
+                        <system-checkbox [(ngModel)]="dictionaryitem.required" [asinteger]="true">
+                            <system-label label="LBL_REQUIRED"/>
+                        </system-checkbox>
                     </div>
                     <div class="slds-size--1-of-4 slds-form-element__control">
-                        <system-checkbox [(ngModel)]="dictionaryitem.non_db" [asinteger]="true"><system-label label="LBL_NON_DB"/></system-checkbox>
+                        <system-checkbox [(ngModel)]="dictionaryitem.non_db" [asinteger]="true">
+                            <system-label label="LBL_NON_DB"/>
+                        </system-checkbox>
                     </div>
                     <div class="slds-size--1-of-4 slds-form-element__control">
-                        <system-checkbox [(ngModel)]="dictionaryitem.duplicate_merge" [asinteger]="true"><system-label label="LBL_DUPLICATE_MERGE"/></system-checkbox>
+                        <system-checkbox [(ngModel)]="dictionaryitem.duplicate_merge" [asinteger]="true">
+                            <system-label label="LBL_DUPLICATE_MERGE"/>
+                        </system-checkbox>
                     </div>
                     <div class="slds-size--1-of-4 slds-form-element__control">
-                        <system-checkbox [(ngModel)]="dictionaryitem.is_sensitive" [asinteger]="true"><system-label label="LBL_SENSITIVE"/></system-checkbox>
+                        <system-checkbox [(ngModel)]="dictionaryitem.is_sensitive" [asinteger]="true">
+                            <system-label label="LBL_SENSITIVE"/>
+                        </system-checkbox>
                     </div>
                 </div>
                 <div class="slds-form-element slds-m-vertical--xxx-small">
@@ -70,7 +91,7 @@
                         <system-input-text maxlength="150" [(ngModel)]="dictionaryitem.description"></system-input-text>
                     </div>
                 </div>
-            </ng-container>
+            }
             <div class="slds-grid slds-m-vertical--xxx-small slds-gutters_direct-xx-small">
                 <div class="slds-col slds-size--1-of-2 slds-form-element">
                     <label class="slds-form-element__label">
