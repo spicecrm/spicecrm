@@ -43,6 +43,16 @@ class SpiceDictionaryDomain
         return $fieldNames;
     }
 
+
+    /**
+     * returns a handler class if one is defined
+     *
+     * @return mixed
+     */
+    public function getHandlerClass(){
+        return $this->domainDefinition->handlerclass;
+    }
+
     /**
      * returns an array of fielddefinitions
      *
@@ -88,7 +98,7 @@ class SpiceDictionaryDomain
         $definitions = $this->getFieldDefinitions($dictionaryitem);
 
         foreach ($definitions as &$definition){
-            $definition->sysdomaindefinition_id = $dictionaryitem->item->sysdomaindefinition_id;
+            // $definition->sysdomaindefinition_id = $dictionaryitem->item->sysdomaindefinition_id;
             if($dictionaryitem->itemDefinition->non_db){
                 $definition->source = 'non-db';
                 unset($definitions->dbtype);

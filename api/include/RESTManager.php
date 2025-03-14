@@ -135,6 +135,8 @@ class RESTManager
 
         if(class_exists('\SpiceCRM\custom\includes\Middleware\TransactionMiddleware')){
             $this->app->add(\SpiceCRM\custom\includes\Middleware\TransactionMiddleware::class);
+        } else if(class_exists('\SpiceCRM\extensions\includes\Middleware\TransactionMiddleware')){
+            $this->app->add(\SpiceCRM\extensions\includes\Middleware\TransactionMiddleware::class);
         } else {
             $this->app->add(TransactionMiddleware::class);
         }
