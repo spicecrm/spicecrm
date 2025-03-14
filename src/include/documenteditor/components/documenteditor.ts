@@ -37,7 +37,7 @@ export class DocumentEditor implements AfterViewInit, OnDestroy, OnChanges {
     /**
      * api token
      */
-    public token: string;
+    public settings: {token: string, serverUrl: string, scriptUrl: string};
     /**
      * is loading flag
      */
@@ -86,20 +86,21 @@ export class DocumentEditor implements AfterViewInit, OnDestroy, OnChanges {
 
         this.setIsLoading(true);
 
-        this.backend.getRequest('configuration/configurator/editor/DocXEditor').subscribe({
+        this.backend.getRequest('common/TXControl/settings').subscribe({
             next: config => {
 
-                this.token = config?.token;
+                this.settings = config;
                 this.cdRef.detectChanges();
 
-                if (!this.token) {
+                if (!this.settings.token) {
                     this.setIsLoading(false);
                     return;
                 }
 
                 this.zone.runOutsideAngular(() => {
-                    this.libLoader.loadLib('tx-editor').subscribe({
+                    this.libLoader.loadFromSource([this.settings.scriptUrl]).subscribe({
                         next: () => {
+                            this.libLoader.loadedLibs.push({name: 'tx-editor', status: 'loaded'});
                             this.initializeEditor();
                         },
                         error: () => {
@@ -108,6 +109,9 @@ export class DocumentEditor implements AfterViewInit, OnDestroy, OnChanges {
                     });
                 });
             },
+            error: () => {
+                this.setIsLoading(false);
+            }
         });
     }
 
@@ -150,7 +154,7 @@ export class DocumentEditor implements AfterViewInit, OnDestroy, OnChanges {
         if (TXTextControl.removeFromDom) {
             TXTextControl.removeFromDom();
         }
-        this.libLoader.unloadLib('tx-editor');
+        this.libLoader.removeLibFromHead(this.settings.scriptUrl);
     }
 
     /**
@@ -163,9 +167,12 @@ export class DocumentEditor implements AfterViewInit, OnDestroy, OnChanges {
             this.loadContent();
         });
         TXTextControl.init({
-            connectionId: '',
             containerID: this.editorId,
-            webSocketURL: `wss://backend.textcontrol.com/TXWebSocket?access-token=${this.token}`
+            serviceURL: this.settings.serverUrl,
+            reconnectTimeout: 0,
+            authSettings: {
+                accessToken: this.settings.token
+            }
         });
     }
 
