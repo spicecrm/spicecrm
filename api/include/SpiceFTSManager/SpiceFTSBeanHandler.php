@@ -68,7 +68,7 @@ class SpiceFTSBeanHandler
     /**
      * returns the aggregates defined for the bean
      */
-    function getAggregates()
+    function getAggregates(): array
     {
         $aggregates = [];
         foreach ($this->indexProperties as $indexProperty) {
@@ -79,7 +79,8 @@ class SpiceFTSBeanHandler
                     'indexfieldname' => $indexProperty['indexfieldname'],
                     'fielddetails' => $details,
                     'type' => $indexProperty['aggregate'],
-                    'collapsed' => $indexProperty['aggregatecollapsed'] == 1 ? true : false,
+                    'label' => $indexProperty['name'],
+                    'collapsed' => $indexProperty['aggregatecollapsed'] == 1,
                     'priority' => $indexProperty['aggregatepriority'],
                     'system' => $indexProperty['aggregatesystem']
                 ];
