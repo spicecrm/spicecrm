@@ -32,6 +32,8 @@
                 <system-input-version [(ngModel)]="domaindefinition.version"/>
             </div>
         </div>
+        <label class="slds-form-element__label"><system-label label="LBL_HANDLER_CLASS"></system-label></label>
+        <system-input-text [ngModel]="domaindefinition.handlerclass"></system-input-text>
         <label class="slds-form-element__label"><system-label label="LBL_COMMENT"></system-label></label>
         <textarea class="slds-textarea" [ngModel]="domaindefinition.description"></textarea>
     </system-modal-content>
