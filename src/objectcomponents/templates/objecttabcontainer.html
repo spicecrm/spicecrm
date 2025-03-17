@@ -1,8 +1,8 @@
 <div class="slds-tabs--default slds-height_full slds-grid slds-grid--vertical">
     <ul class="slds-tabs--default__nav slds-is-relative" role="tablist">
         @for(tab of tabs; track tab.tabid; let tabindex = $index) {
-            <li #maintabs class="slds-tabs--default__item slds-text-title--caps" role="presentation" (click)="setActiveTab(tabindex)" [attr.data-tabid]="tab.tabid">
-                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab" aria-selected="false">
+            <li #maintabs class="slds-tabs--default__item slds-text-title--caps" role="presentation" [ngClass]="{'slds-is-active': tab.tabid == activeTab}" (click)="setActiveTab(tab.tabid)" [attr.data-tabid]="tab.tabid">
+                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab" [attr.aria-selected]="tab.tabid == activeTab">
                     <object-tab-container-item-header [tab]="tab"></object-tab-container-item-header>
                 </a>
             </li>
@@ -14,7 +14,7 @@
             <div class="slds-dropdown slds-dropdown_right">
                 <ul class="slds-dropdown__list slds-dropdown_length-with-icon-10" role="menu">
                     @for(tab of tabs; track tab; let tabindex = $index) {
-                        <li #moretabs class="slds-dropdown__item" role="presentation" (click)="setActiveTab(tabindex)" [attr.data-tabid]="tab.tabid">
+                        <li #moretabs class="slds-dropdown__item" role="presentation" (click)="setActiveTab(tab.tabid)" [attr.data-tabid]="tab.tabid">
                             <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab" aria-selected="false">
                                 <object-tab-container-item-header [tab]="tab"></object-tab-container-item-header>
                             </a>
@@ -24,9 +24,9 @@
             </div>
         </li>
     </ul>
-    <ng-container *ngFor="let tab of tabs; let tabindex = index">
-        <div *ngIf="checkRenderTab(tabindex)" class="slds-tabs--default__content slds-grow" style="min-height: 0" role="tabpanel" [ngClass]="{'slds-show': tabindex == activeTab, 'slds-hide': tabindex != activeTab, 'slds-p-bottom--none': componentconfig?.noBottomPadding }">
+    @for(tab of tabs; track tab.tabid) {
+        <div *ngIf="checkRenderTab(tab.tabid)" class="slds-tabs--default__content slds-grow" style="min-height: 0" role="tabpanel" [ngClass]="{'slds-show': tab.tabid == activeTab, 'slds-hide': tab.tabid != activeTab, 'slds-p-bottom--none': componentconfig?.noBottomPadding }">
             <object-tab-container-item *ngIf="tab.componentset" [componentset]="tab.componentset"></object-tab-container-item>
         </div>
-    </ng-container>
+    }
 </div>
