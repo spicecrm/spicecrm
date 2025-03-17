@@ -27,7 +27,6 @@ export class ObjectTabContainer implements OnInit, OnDestroy, AfterViewInit {
 
     public resizeListener: any;
     public moreOpen: boolean = false;
-    public moreTabs: string[] = [];
     private subscription = new Subscription();
 
     /**
