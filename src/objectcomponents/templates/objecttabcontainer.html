@@ -1,10 +1,27 @@
 <div class="slds-tabs--default slds-height_full slds-grid slds-grid--vertical">
-    <ul class="slds-tabs--default__nav" role="tablist">
-        <li *ngFor="let tab of tabs; let tabindex = index" class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': tabindex === activeTab, 'slds-hide': isHidden(tab)}"
-            role="presentation" (click)="setActiveTab(tabindex)">
-            <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab" aria-selected="false">
-                <object-tab-container-item-header [tab]="tab"></object-tab-container-item-header>
+    <ul class="slds-tabs--default__nav slds-is-relative" role="tablist">
+        @for(tab of tabs; track tab.tabid; let tabindex = $index) {
+            <li #maintabs class="slds-tabs--default__item slds-text-title--caps" role="presentation" (click)="setActiveTab(tabindex)" [attr.data-tabid]="tab.tabid">
+                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab" aria-selected="false">
+                    <object-tab-container-item-header [tab]="tab"></object-tab-container-item-header>
+                </a>
+            </li>
+        }
+        <li #moretab class="slds-tabs_default__overflow-button slds-dropdown-trigger slds-dropdown-trigger_click slds-is-absolute" style="right: 0px" [ngClass]="{'slds-is-open': moreOpen, 'slds-active': moreactive}" (click)="toggleOpen()" role="presentation">
+            <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab">
+                <!--system-label label="LBL_MORE"/--><system-utility-icon class="slds-p-horizontal--xx-small" icon="chevrondown" size="x-small"></system-utility-icon>
             </a>
+            <div class="slds-dropdown slds-dropdown_right">
+                <ul class="slds-dropdown__list slds-dropdown_length-with-icon-10" role="menu">
+                    @for(tab of tabs; track tab; let tabindex = $index) {
+                        <li #moretabs class="slds-dropdown__item" role="presentation" (click)="setActiveTab(tabindex)" [attr.data-tabid]="tab.tabid">
+                            <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab" aria-selected="false">
+                                <object-tab-container-item-header [tab]="tab"></object-tab-container-item-header>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
         </li>
     </ul>
     <ng-container *ngFor="let tab of tabs; let tabindex = index">
