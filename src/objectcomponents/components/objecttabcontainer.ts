@@ -32,7 +32,7 @@ export class ObjectTabContainer implements OnInit, OnDestroy, AfterViewInit {
     /**
      * the index of the active tab
      */
-    public activeTab: number = 0;
+    public activeTab: string;
 
     /**
      * holds which tabs have been activated. Since they are only rnedered when clicked or set to forcerender
@@ -62,18 +62,12 @@ export class ObjectTabContainer implements OnInit, OnDestroy, AfterViewInit {
         public renderer: Renderer2,
         protected session: session) {
 
+        // add a resize listener
         this.resizeListener = this.renderer.listen('window', 'resize', e => {
             this.handleOverflow();
         });
 
-    }
-
-    /**
-     * loads the tabs
-     */
-    public ngOnInit() {
-        this.buildTabs();
-
+        // add a subscription so we ge the information when the model is loaded to han dle ACL visibility
         this.subscription.add(
             this.model.loaded$.subscribe({
                 next: (loaded) => {
@@ -83,6 +77,13 @@ export class ObjectTabContainer implements OnInit, OnDestroy, AfterViewInit {
                 }
             })
         )
+    }
+
+    /**
+     * loads the tabs
+     */
+    public ngOnInit() {
+        this.buildTabs();
     }
 
     /**
@@ -120,6 +121,9 @@ export class ObjectTabContainer implements OnInit, OnDestroy, AfterViewInit {
             cItem.tabid = item.id;
             this.tabs.push(cItem);
         }
+
+        // set the first as actrive tab
+        if(!this.activeTab) this.setActiveTab(this.tabs[0].tabid);
     }
 
     /**
@@ -147,17 +151,20 @@ export class ObjectTabContainer implements OnInit, OnDestroy, AfterViewInit {
      * chanmge teh active tab and render it
      * @param index
      */
-    public setActiveTab(index) {
-        this.activatedTabs.push(index);
-        this.activeTab = index;
+    public setActiveTab(tabid) {
+        this.activatedTabs.push(tabid);
+        this.activeTab = tabid;
+
+        // handle the overflow
+        this.handleOverflow();
     }
 
     /**
      * checks if the tab is to be rendered or forced to be rendered. If not is will be (by ngIf only be rendered when the tab is selected
      * @param tabindex
      */
-    public checkRenderTab(tabindex) {
-        return tabindex == this.activeTab || this.activatedTabs.indexOf(tabindex) > -1 || (this.tabs && this.tabs[tabindex].forcerender);
+    public checkRenderTab(tabid) {
+        return tabid == this.activeTab || this.activatedTabs.indexOf(tabid) > -1 || (this.tabs && this.tabs.find(t => t.tabid == tabid).forcerender);
     }
 
     get moreactive() {
@@ -186,20 +193,32 @@ export class ObjectTabContainer implements OnInit, OnDestroy, AfterViewInit {
         let moreTabIds = [];
 
         let usedWidth = 0;
+
+        // get the active tab and display in any case
+        let at = this.maintabs.find(t => t.element.nativeElement.attributes.getNamedItem('data-tabid').value == this.activeTab);
+        if(at){
+            let itemwidth = at.element.nativeElement.getBoundingClientRect().width;
+            usedWidth += itemwidth;
+        }
+
         this.maintabs.forEach((thisitem) => {
-            // check if the tab is to be hidden in any case
-            let item = this.items.find(i => i.id == thisitem.element.nativeElement.attributes.getNamedItem('data-tabid').value);
-            if(this.isHidden(item.componentconfig)){
-                thisitem.element.nativeElement.classList.add('slds-hide');
-            } else {
-                let itemwidth = thisitem.element.nativeElement.getBoundingClientRect().width;
-                usedWidth += itemwidth;
-                if (showmore || usedWidth > totalwidth - morewidth) {
-                    thisitem.element.nativeElement.classList.add('slds-hide');
-                    moreTabIds.push(thisitem.element.nativeElement.attributes.getNamedItem('data-tabid').value);
-                    showmore = true;
-                }
+            if(thisitem.element.nativeElement.attributes.getNamedItem('data-tabid').value == this.activeTab){
                 thisitem.element.nativeElement.classList.remove('slds-hidden');
+            } else {
+                // check if the tab is to be hidden in any case
+                let item = this.items.find(i => i.id == thisitem.element.nativeElement.attributes.getNamedItem('data-tabid').value);
+                if(this.isHidden(item.componentconfig)){
+                    thisitem.element.nativeElement.classList.add('slds-hide');
+                } else {
+                    let itemwidth = thisitem.element.nativeElement.getBoundingClientRect().width;
+                    usedWidth += itemwidth;
+                    if (showmore || usedWidth > totalwidth - morewidth) {
+                        thisitem.element.nativeElement.classList.add('slds-hide');
+                        moreTabIds.push(thisitem.element.nativeElement.attributes.getNamedItem('data-tabid').value);
+                        showmore = true;
+                    }
+                    thisitem.element.nativeElement.classList.remove('slds-hidden');
+                }
             }
         });
 
