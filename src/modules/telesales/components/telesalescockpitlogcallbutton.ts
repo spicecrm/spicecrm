@@ -49,7 +49,13 @@ export class TeleSalesCockpitLogCallButton {
             }
         });
     }
+    get displayLabel() {
+        // see if we have a label configured
+        if (this.actionconfig.label) return this.actionconfig.label;
 
+        // else standard labels
+        return 'LBL_LOG_CALL';
+    }
     public updateItem() {
         let item = this.telecockpitservice.selectedListItem;
         item.hits++;
