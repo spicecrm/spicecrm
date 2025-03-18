@@ -1,0 +1,11 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    <div class="slds-grid slds-grid_vertical-align-center">
+        <div style="width:16px; height: 16px;" [ngStyle]="{backgroundColor: value}"></div>
+        <div class="slds-p-left--small">{{value}}</div>
+    </div>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-p-vertical--xx-small" [ngClass]="getFieldClass()">
+    <system-input-color [(ngModel)]="value"></system-input-color>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>
