@@ -17,6 +17,8 @@ export class TeleSalesCockpitLogCallButton {
 
     public parent: any = undefined;
 
+    public actionconfig: any = {};
+
     constructor(public language: language,
                 public telecockpitservice: telecockpitservice,
                 public model: model,
