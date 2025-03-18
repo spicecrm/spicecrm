@@ -14,6 +14,9 @@ import {ModuleActivities} from "../activities/moduleactivities";
 
 import {HCMSkillMatrix} from "./components/hcmskillmatrix";
 import {CdkDropList} from "@angular/cdk/drag-drop";
+import {HCMSkillManager} from "./components/hcmskillmanager";
+import {HCMSkillManagerButton} from "./components/hcmskillmanagerbutton";
+import {HCMJobProfileSkillPanel} from "./components/hcmjobprofileskillpanel";
 
 @NgModule({
     imports: [
@@ -28,7 +31,10 @@ import {CdkDropList} from "@angular/cdk/drag-drop";
         CdkDropList
     ],
     declarations: [
-        HCMSkillMatrix
+        HCMSkillMatrix,
+        HCMSkillManagerButton,
+        HCMSkillManager,
+        HCMJobProfileSkillPanel
     ]
 })
 export class ModuleHCM {}

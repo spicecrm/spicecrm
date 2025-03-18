@@ -201,4 +201,11 @@ export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
         this.label = value;
     }
 
+    /**
+     * allow only admins to add labels
+     */
+    get allowAddLabel(): boolean {
+        return this.modelutilities.session.isAdmin;
+    }
+
 }

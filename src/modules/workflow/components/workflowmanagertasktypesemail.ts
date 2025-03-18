@@ -8,6 +8,7 @@ import {configurationService} from "../../../services/configuration.service";
 import {backend} from "../../../services/backend.service";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {WorkflowManagerService} from "../services/workflowmanager.service";
+import {Router} from "@angular/router";
 
 /**
  * @ignore
@@ -39,6 +40,7 @@ export class WorkflowManagerTaskTypesEmail implements OnInit {
 
     constructor(private metadata: metadata,
                 public model: model,
+                public router: Router,
                 private backend: backend,
                 private userpreferences: userpreferences,
                 public workflowManagerService: WorkflowManagerService,
@@ -117,5 +119,12 @@ export class WorkflowManagerTaskTypesEmail implements OnInit {
      */
     public setEmailTemplate(value: { id, name }) {
         this.model.data.type_config.emailtemplate_id = value.id;
+    }
+
+    /**
+     * navigate to the chosen template
+     */
+    public navigate(): void {
+        this.router.navigate([`/module/EmailTemplates/${this.model.data.type_config.emailtemplate_id}`]);
     }
 }

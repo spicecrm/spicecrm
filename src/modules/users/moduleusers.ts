@@ -38,6 +38,7 @@ import {UserSecuritySettingsModal} from "./components/usersecuritysettingsmodal"
 import {UserSecurityPasskeyButton} from "./components/usersecuritypasskeybutton";
 import {UserAliasManagerModal} from "./components/useraliasmanagermodal";
 import {UserAliasManagerButton} from "./components/useraliasmanagerbutton";
+import {UserManagementPanel} from "./components/usermanagementpanel";
 
 @NgModule({
     imports: [
@@ -78,7 +79,8 @@ import {UserAliasManagerButton} from "./components/useraliasmanagerbutton";
         UserSecuritySettingsModal,
         UserSecurityPasskeyButton,
         UserAliasManagerModal,
-        UserAliasManagerButton
+        UserAliasManagerButton,
+        UserManagementPanel
     ]
 })
 export class ModuleUsers {

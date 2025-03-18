@@ -116,6 +116,12 @@ export class model implements OnDestroy {
     public data$: BehaviorSubject<any>;
 
     /**
+     * a behavioural subject to indicate that the model is loaded
+     * in opposite to the data$ this only emits when the model is loaded from the backend
+     */
+    public loaded$: BehaviorSubject<any>;
+
+    /**
      * holds observable of a field and its value
      */
     public field$: BehaviorSubject<{ field: string, value: any }> = new BehaviorSubject({field: null, value: null});
@@ -305,7 +311,11 @@ export class model implements OnDestroy {
         private sanitizer: DomSanitizer
     ) {
 
+        // create the data subject
         this.data$ = new BehaviorSubject(this.data);
+
+        // create the loaded subject
+        this.loaded$ = new BehaviorSubject(false);
 
         this.subscriptions.add(
             this.broadcast.message$.subscribe(data => {
@@ -529,6 +539,7 @@ export class model implements OnDestroy {
                 this.evaluateValidationRules(null, 'initialize');
                 this.emitFieldsChanges(res);
                 this.data$.next(res);
+                this.loaded$.next(true);
                 this.broadcast.broadcastMessage("model.loaded", {id: this.id, module: this.module, data: this.data});
                 responseSubject.next(res);
                 responseSubject.complete();
@@ -1200,6 +1211,7 @@ export class model implements OnDestroy {
                     this.data = res;
                     this.isNew = false;
                     this.data$.next(res);
+                    this.loaded$.next(true);
                     this.broadcast.broadcastMessage("model.save", {
                         id: this.id,
                         reference: this.reference,
