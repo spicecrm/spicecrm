@@ -177,6 +177,9 @@ export class ObjectTabContainer implements OnInit, OnDestroy, AfterViewInit {
 
     public handleOverflow() {
 
+        // check that we have the tabs loaded
+        if(!this.maintabs) return;
+
         // make sure we set all to hidden
         this.maintabs.forEach(thisitem => {
             thisitem.element.nativeElement.classList.remove('slds-hide');
