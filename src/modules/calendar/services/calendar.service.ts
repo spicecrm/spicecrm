@@ -459,6 +459,19 @@ export class calendar implements OnDestroy {
     }
 
     /**
+     * check if the groupware event is synced to crm
+     * @param externalId
+     * @private
+     */
+    private isGroupwareEventSynced(externalId: string) {
+        if (!this.calendarData.owner) return false;
+        if (!this.availableCalendars.some(c => c.id == 'owner' && c.visible)){
+            return false;
+        }
+        return this.calendarData.owner.some(e => e.data.external_id == externalId);
+    }
+
+    /**
      * load events for the active groupware service
      * @param startDate
      * @param endDate
@@ -511,14 +524,16 @@ export class calendar implements OnDestroy {
                     }
                     this.isLoading = false;
                     this.cdRef.detectChanges();
-                    responseSubject.next(this.calendarData.google);
+                    responseSubject.next(
+                        this.calendarData.google.filter(e => !this.isGroupwareEventSynced(e.id))
+                    );
                     responseSubject.complete();
                 });
             return responseSubject.asObservable();
         } else {
             let filteredEntries = [];
             for (let event of this.calendarData.google) {
-                if (event.start < endDate && event.end > startDate) {
+                if (event.start < endDate && event.end > startDate && !this.isGroupwareEventSynced(event.id)) {
                     filteredEntries.push(event);
                 }
             }
@@ -562,7 +577,9 @@ export class calendar implements OnDestroy {
                         }
                         this.isLoading = false;
                         this.cdRef.detectChanges();
-                        responseSubject.next(this.calendarData.microsoft);
+                        responseSubject.next(
+                            this.calendarData.microsoft.filter(e => !this.isGroupwareEventSynced(e.id))
+                        );
                         responseSubject.complete();
                     },
                     error: err => {
@@ -577,7 +594,7 @@ export class calendar implements OnDestroy {
         } else {
             let filteredEntries = [];
             for (let event of this.calendarData.microsoft) {
-                if (event.start < endDate && event.end > startDate) {
+                if (event.start < endDate && event.end > startDate && !this.isGroupwareEventSynced(event.id)) {
                     filteredEntries.push(event);
                 }
             }
