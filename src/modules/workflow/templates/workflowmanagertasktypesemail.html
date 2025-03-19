@@ -7,13 +7,27 @@
                     <system-label label="LBL_MAILBOX"></system-label>
                 </label>
                 <div class="slds-form-element__control">
-                    <div class="slds-select_container slds-m-vertical--xx-small">
-                        <select class="slds-select" [disabled]="mailboxes.length == 0"
+                    <div class="slds-grid slds-m-vertical--xx-small slds-size--1-of-1" >
+                        <select class="slds-select"
+                                [(ngModel)]="model.data.type_config.mailbox_type">
+                            <option value="method">system method</option>
+                            <option value="id">mailbox</option>
+                        </select>
+                        <select class="slds-select" *ngIf="model.data.type_config.mailbox_type == 'id'" [disabled]="mailboxes.length == 0"
                                 [(ngModel)]="model.data.type_config.mailbox_id">
                             <ng-container *ngFor="let o of mailboxes">
                                 <option [value]="o.value">{{o.display}}</option>
                             </ng-container>
                         </select>
+                    </div>
+                </div>
+                <div *ngIf="model.data.type_config.mailbox_type == 'method'" class="slds-size--1-of-1 slds-m-vertical--xx-small">
+                    <label class="slds-truncate">
+                        <system-label label="LBL_CLASS"></system-label>
+                    </label>
+                    <div class="slds-form-element__control slds-m-left--xx-small">
+                        <system-input-backend-method
+                                [(ngModel)]="model.data.type_config.mailbox_method"></system-input-backend-method>
                     </div>
                 </div>
             </div>
@@ -41,23 +55,26 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="slds-grid">
-            <div *ngIf="model.data.type_config.emailtype == '6'" class="slds-size--1-of-2">
-                <label class="slds-truncate">
-                    <system-label label="LBL_TO"></system-label>
-                </label>
-                <div class="slds-form-element__control">
-                    <input type="text" [(ngModel)]="model.data.type_config.emailto" class="slds-input">
+            <div>
+                <div *ngIf="model.data.type_config.emailtype == '6'" class="slds-size--1-of-2">
+                    <label class="slds-truncate">
+                        <system-label label="LBL_TO"></system-label>
+                    </label>
+                    <div class="slds-form-element__control">
+                        <input type="text" [(ngModel)]="model.data.type_config.emailto" class="slds-input">
+                    </div>
+                </div>
+                <div *ngIf="model.data.type_config.emailtype == '7'" class="slds-size--1-of-1 slds-m-vertical--xx-small">
+                    <label class="slds-truncate">
+                        <system-label label="LBL_CLASS"></system-label>
+                    </label>
+                    <div class="slds-form-element__control slds-m-left--xx-small">
+                        <system-input-backend-method
+                                [(ngModel)]="model.data.type_config.emailclass"></system-input-backend-method>
+                    </div>
                 </div>
             </div>
-            <div *ngIf="model.data.type_config.emailtype == '7'" class="slds-size--1-of-2 slds-m-left--x-small">
-                <label class="slds-truncate slds-float_left">
-                    <system-label label="LBL_CLASS"></system-label>
-                </label>
-                <system-input-backend-method
-                        [(ngModel)]="model.data.type_config.emailclass"></system-input-backend-method>
-            </div>
+        </div>
             @if (model.data.type_config.emailtype == '10') {
                 <div class="slds-size--1-of-2">
                     <label class="slds-truncate">
