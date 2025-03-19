@@ -10,6 +10,7 @@ import {modal} from '../../../services/modal.service';
 import {dockedComposer} from '../../../services/dockedcomposer.service';
 import {activitiytimeline} from '../../../services/activitiytimeline.service';
 import {navigation} from '../../../services/navigation.service';
+import {Subscription} from "rxjs";
 
 /**
  * @ignore
@@ -73,7 +74,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
      *
      * a handler to the parent subscription
      */
-    public parentSubscription: any;
+    public subscription = new Subscription();
 
     constructor(public metadata: metadata,
                 public activitiytimeline: activitiytimeline,
@@ -96,12 +97,14 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
 
         // subscribe to the parent models data Observable
         // name is not necessarily loaded
-        this.parentSubscription = this.activitiytimeline.parent.data$.subscribe(data => {
-            // if we still have the same model .. update
-            if (data.id == this.model.getField('parent_id')) {
-                this.model.setField('parent_name', data.summary_text);
-            }
-        });
+        this.subscription.add(
+            this.activitiytimeline.parent.data$.subscribe(data => {
+                // if we still have the same model .. update
+                if (data.id == this.model.getField('parent_id')) {
+                    this.model.setField('parent_name', data.summary_text);
+                }
+            })
+        );
 
         // set view to editbale and edit mode
         this.view.isEditable = true;
@@ -121,16 +124,6 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
 
         // check if the model can be docked into a GlobalDockedComposer
         this.checkCanDock();
-
-        // checks the tab (module) if it's dirty
-        // if not, close the expanded activity and end the edit mode
-        this.activitiytimeline.tabChanged$.subscribe({
-            next: () => {
-                let activeTabDirty = this.navigation.modelsEditing.find(model =>  model.module === this.model.module)?.model?.isDirty();
-                if (!activeTabDirty) this.cancel();
-            }
-        })
-
     }
 
     /**
@@ -139,8 +132,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
      * cancels the subscription on the parent
      */
     public ngOnDestroy(): void {
-        if (this.parentSubscription) this.parentSubscription.unsubscribe();
-        this.activitiytimeline.tabChanged$.unsubscribe();
+        if (this.subscription) this.subscription.unsubscribe();
     }
 
     /**

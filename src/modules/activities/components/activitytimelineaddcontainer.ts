@@ -10,7 +10,7 @@ import {
     ViewContainerRef,
     ElementRef,
     Renderer2,
-    OnDestroy, ViewChild
+    OnDestroy, ViewChild, ComponentRef
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
@@ -19,6 +19,7 @@ import {activitiytimeline} from '../../../services/activitiytimeline.service';
 import {navigation} from '../../../services/navigation.service';
 import {modal} from '../../../services/modal.service';
 import {trigger, state, style, transition, animate} from '@angular/animations';
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'activitytimeline-add-container',
@@ -47,6 +48,7 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
 
     @ViewChildren('maintabs', {read: ViewContainerRef}) public maintabs: QueryList<any>;
     @ViewChildren('moretabs', {read: ViewContainerRef}) public moretabs: QueryList<any>;
+
     @ViewChild('moretab', {read: ViewContainerRef, static: false}) public moretab: ViewContainerRef;
 
     public currenttab: string = '';
@@ -54,6 +56,7 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
     public resizeListener: any;
     public moreOpen: boolean = false;
     public moreModules: string[] = [];
+    private subscription = new Subscription();
 
     constructor(public model: model,
                 public language: language,
@@ -67,7 +70,6 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
             this.handleOverflow();
         });
     }
-
 
     public ngOnInit() {
         let config = this.metadata.getComponentConfig('ActivityTimelineAddContainer', this.model.module);
@@ -95,6 +97,7 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
     }
 
     public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
         this.resizeListener();
     }
 
@@ -147,9 +150,11 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
 
     }
 
-    public setTab(object) {
-        this.currenttab = object;
-        this.activitiytimeline.tabChanged$.next();
+    public setTab(tab) {
+        if (tab.module == this.currenttab) return;
+        this.currenttab = tab.module;
+
+        if (!tab.cRef.instance.model.isDirty()) tab.cRef.instance.cancel();
     }
 
     public checkTab(object) {
@@ -168,11 +173,13 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
         this.moreOpen = !this.moreOpen;
     }
 
-    /**
-     * checks if the module is dirty based of the modules name
-     * @param module
-     */
-    public activityModelDirty(module: string): boolean {
-        return this.navigation.modelsEditing.find(model =>  model.module === module)?.model?.isDirty()
+    public pushChildComponentRef(tab, cRef: ComponentRef<any>) {
+        tab.cRef = cRef;
+
+        this.subscription.add(
+            cRef.instance.model.data$.subscribe(() =>
+                tab.isDirty = cRef.instance.model.isDirty()
+            )
+        );
     }
 }
