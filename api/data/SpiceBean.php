@@ -7,6 +7,7 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
 use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
 use stdClass;
@@ -1998,20 +1999,27 @@ class SpiceBean
         $this->fill_in_additional_detail_fields();
 
         // get the domainItems
-        /*
         if($this->_sysdictionarydefinition_id) {
             $items = (new SpiceDictionaryDefinition($this->_sysdictionarydefinition_id))->getItems();
             foreach ($items as $item) {
                 if($item['sysdomaindefinition_id']){
                     $domain = (new SpiceDictionaryDomain($item['sysdomaindefinition_id']));
                     if($handlerClass = $domain->getHandlerClass()) {
+                        $fields = $domain->getFields(new SpiceDictionaryItem($item['id']));
+                        $curVals = [];
+                        foreach ($fields as $field) {
+                            $curVals[$field] = $this->$field;
+                        }
                         $handler = new $handlerClass();
-                        $result = $handler->onRetrieve($domain, $this);
+                        if($handler->onRetrieve($domain, $curVals, $this)) {
+                            foreach ($fields as $field) {
+                                $this->$field =$curVals[$field];
+                            }
+                        }
                     }
                 }
             }
         }
-        */
 
         if ($relationships) {
             $this->fill_in_relationship_fields();
