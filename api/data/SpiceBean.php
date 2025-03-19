@@ -5,6 +5,10 @@ namespace SpiceCRM\data;
 
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
 use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
 use stdClass;
 use SpiceCRM\includes\AddressReferences\AddressReferences;
@@ -1332,7 +1336,7 @@ class SpiceBean
         $this->call_custom_logic("before_save", $custom_logic_arguments);
         unset($custom_logic_arguments);
 
-        // check if we have any numbered fields
+        // check if we have any numbered fields or missing defaults
         if($this->isNew()){
             $numberrangeFields = SpiceNumberRanges::getNumberRangeFieldsForBean($this->_module, true);
             foreach ($numberrangeFields as $numberrangeField){
@@ -1993,6 +1997,29 @@ class SpiceBean
 
         $this->is_updated_dependent_fields = false;
         $this->fill_in_additional_detail_fields();
+
+        // get the domainItems
+        if($this->_sysdictionarydefinition_id) {
+            $items = (new SpiceDictionaryDefinition($this->_sysdictionarydefinition_id))->getItems();
+            foreach ($items as $item) {
+                if($item['sysdomaindefinition_id']){
+                    $domain = (new SpiceDictionaryDomain($item['sysdomaindefinition_id']));
+                    if($handlerClass = $domain->getHandlerClass()) {
+                        $fields = $domain->getFields(new SpiceDictionaryItem($item['id']));
+                        $curVals = [];
+                        foreach ($fields as $field) {
+                            $curVals[$field] = $this->$field;
+                        }
+                        $handler = new $handlerClass();
+                        if($handler->onRetrieve($domain, $curVals, $this)) {
+                            foreach ($fields as $field) {
+                                $this->$field =$curVals[$field];
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         if ($relationships) {
             $this->fill_in_relationship_fields();

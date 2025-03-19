@@ -1,0 +1,14 @@
+@if(imagefield) {
+    <div class="slds-is-relative slds-p-right--small" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+        <div style="width: 32px; height: 32px">
+            <system-icon *ngIf="!image" [module]="model.module"></system-icon>
+            <img style="height: 32px; width: 32px" *ngIf="image" [src]="image"/>
+        </div>
+        <div [ngStyle]="editstyle" class="slds-is-absolute__top slds-align--absolute-center" style="transition: .5s; height: 32px; width: 32px;" (click)="changeImage()">
+            <div class="slds-is-absolute__top" style="background: white;height: 32px; width: 32px; opacity: .7;"></div>
+            <system-utility-icon icon="edit" size="x-small" style="z-index: 1;"></system-utility-icon>
+        </div>
+    </div>
+} @else {
+    <system-icon [module]="model.module" (click)="goToModule()"></system-icon>
+}
