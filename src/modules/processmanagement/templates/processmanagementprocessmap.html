@@ -1,0 +1,5 @@
+<div system-to-bottom>
+    @for(processCategory of processCategories; track processCategory.id){
+        <process-management-process-category [processCategory]="processCategory"/>
+    }
+</div>

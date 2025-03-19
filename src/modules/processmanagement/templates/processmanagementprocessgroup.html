@@ -1,0 +1,21 @@
+<div class="slds-box slds-box--border slds-m-bottom--x-small">
+    <div class="slds-p-around--x-small slds-text-align--center slds-theme--shade slds-truncate">
+        {{processGroup.name}}
+    </div>
+    @if (processes.length == 0) {
+        <div class="slds-p-around--medium slds-align--absolute-center">
+            <system-illustration-no-records/>
+        </div>
+    } @else {
+        @for (process of processes; track process.id) {
+            <div class="slds-box slds-box--border slds-m-around--x-small">
+                <div class="slds-p-around--xx-small">
+                    {{process.name}}
+                </div>
+            </div>
+        }
+    }
+    <div class="slds-p-around--x-small slds-text-align--center slds-border--top">
+        <process-management-add-process-button [processGroup]="processGroup" (added)="getProcesses()"/>
+    </div>
+</div>
