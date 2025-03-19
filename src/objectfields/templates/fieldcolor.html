@@ -1,7 +1,7 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
     <div class="slds-grid slds-grid_vertical-align-center">
-        <div style="width:16px; height: 16px;" [ngStyle]="{backgroundColor: value}"></div>
+        <div style="width:16px; height: 16px;border: 1px solid #d2d2d2" [ngStyle]="{backgroundColor: value}"></div>
         <div class="slds-p-left--small">{{value}}</div>
     </div>
 </field-generic-display>
