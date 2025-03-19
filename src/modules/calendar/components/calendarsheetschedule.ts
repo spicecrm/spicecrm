@@ -79,6 +79,9 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
                 next: calendar => {
                     if (calendar.type == 'other') {
                         this.getOwnerEvents(calendar);
+                        if (calendar.id == 'owner' && this.groupwareVisible) {
+                            this.getGroupwareEvents();
+                        }
                     } else {
                         this.getUserEvents(calendar);
                     }

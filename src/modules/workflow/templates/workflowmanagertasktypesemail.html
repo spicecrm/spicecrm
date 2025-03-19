@@ -7,8 +7,13 @@
                     <system-label label="LBL_MAILBOX"></system-label>
                 </label>
                 <div class="slds-form-element__control">
-                    <div class="slds-select_container slds-m-vertical--xx-small">
-                        <select class="slds-select" [disabled]="mailboxes.length == 0"
+                    <div class="slds-grid slds-m-vertical--xx-small slds-size--1-of-1" >
+                        <select class="slds-select"
+                                [(ngModel)]="model.data.type_config.mailbox_type">
+                            <option value="method">system method</option>
+                            <option value="id">mailbox</option>
+                        </select>
+                        <select class="slds-select" *ngIf="model.data.type_config.mailbox_type == 'id'" [disabled]="mailboxes.length == 0"
                                 [(ngModel)]="model.data.type_config.mailbox_id">
                             <ng-container *ngFor="let o of mailboxes">
                                 <option [value]="o.value">{{o.display}}</option>
@@ -16,47 +21,62 @@
                         </select>
                     </div>
                 </div>
-            </div>
-            <div class="slds-size--1-of-2 slds-m-left--xx-small">
-                <label class="slds-truncate slds-float_left">
-                    <system-label label="LBL_TYPE"></system-label>
-                </label>
-                <div class="slds-form-element__control">
-                    <div class="slds-select_container slds-m-vertical--xx-small">
-                        <select class="slds-select" [(ngModel)]="model.data.type_config.emailtype">
-                            <option value="1">user assigned to Task</option>
-                            <option value="2">user assigned to Bean</option>
-                            <option value="3">user created Bean</option>
-                            <option value="4">manager assigned to Bean</option>
-                            <option value="5">manager created Bean</option>
-                            <option value="C">manager assigned to organizational unit of the user assigned to bean</option>
-                            <option value="6">email address</option>
-                            <option value="7">system routine</option>
-                            <option value="8">user creator to Bean</option>
-                            <option value="9">email1 of parent bean</option>
-                            <option value="A">email1 of grand parent bean</option>
-                            <option value="B">contact person of parent bean</option>
-                            <option value="10">Distribution List</option>
-                        </select>
+                <div *ngIf="model.data.type_config.mailbox_type == 'method'" class="slds-size--1-of-1 slds-m-vertical--xx-small">
+                    <label class="slds-truncate">
+                        <system-label label="LBL_CLASS"></system-label>
+                    </label>
+                    <div class="slds-form-element__control slds-m-left--xx-small">
+                        <system-input-backend-method
+                                [(ngModel)]="model.data.type_config.mailbox_method"></system-input-backend-method>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="slds-grid">
-            <div *ngIf="model.data.type_config.emailtype == '6'" class="slds-size--1-of-2">
-                <label class="slds-truncate">
-                    <system-label label="LBL_TO"></system-label>
-                </label>
-                <div class="slds-form-element__control">
-                    <input type="text" [(ngModel)]="model.data.type_config.emailto" class="slds-input">
+            <div class="slds-size--1-of-2 slds-m-left--xx-small">
+                <div>
+                    <label class="slds-truncate slds-float_left">
+                        <system-label label="LBL_TYPE"></system-label>
+                    </label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container slds-m-vertical--xx-small">
+                            <select class="slds-select" [(ngModel)]="model.data.type_config.emailtype">
+                                <option value="1">user assigned to Task</option>
+                                <option value="2">user assigned to Bean</option>
+                                <option value="3">user created Bean</option>
+                                <option value="4">manager assigned to Bean</option>
+                                <option value="5">manager created Bean</option>
+                                <option value="C">manager assigned to organizational unit of the user assigned to bean
+                                </option>
+                                <option value="6">email address</option>
+                                <option value="7">system routine</option>
+                                <option value="8">user creator to Bean</option>
+                                <option value="9">email1 of parent bean</option>
+                                <option value="A">email1 of grand parent bean</option>
+                                <option value="B">contact person of parent bean</option>
+                                <option value="10">Distribution List</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <div *ngIf="model.data.type_config.emailtype == '6'" class="slds-size--1-of-2">
+                            <label class="slds-truncate">
+                                <system-label label="LBL_TO"></system-label>
+                            </label>
+                            <div class="slds-form-element__control">
+                                <input type="text" [(ngModel)]="model.data.type_config.emailto" class="slds-input">
+                            </div>
+                        </div>
+                        <div *ngIf="model.data.type_config.emailtype == '7'"
+                             class="slds-size--1-of-1 slds-m-vertical--xx-small">
+                            <label class="slds-truncate">
+                                <system-label label="LBL_CLASS"></system-label>
+                            </label>
+                            <div class="slds-form-element__control slds-m-left--xx-small">
+                                <system-input-backend-method
+                                        [(ngModel)]="model.data.type_config.emailclass"></system-input-backend-method>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div *ngIf="model.data.type_config.emailtype == '7'" class="slds-size--1-of-2 slds-m-left--x-small">
-                <label class="slds-truncate slds-float_left">
-                    <system-label label="LBL_CLASS"></system-label>
-                </label>
-                <system-input-backend-method
-                        [(ngModel)]="model.data.type_config.emailclass"></system-input-backend-method>
             </div>
             @if (model.data.type_config.emailtype == '10') {
                 <div class="slds-size--1-of-2">
@@ -90,24 +110,31 @@
                     <system-select-option *ngFor="let option of emailTemplates" [value]="option.id" [display]="option.name"/>
                 </system-select>
                 <div *ngIf="!!model.data.type_config.emailtemplate_id" class="slds-pill_container">
-                <span class="slds-pill slds-size--1-of-1">
-                    <span class="slds-icon_container slds-pill__icon_container">
-                        <system-icon module="EmailTemplates"></system-icon>
+                    <span class="slds-pill slds-size--1-of-1">
+                        <span class="slds-icon_container slds-pill__icon_container">
+                            <system-icon module="EmailTemplates"></system-icon>
+                        </span>
+                        <span class="slds-pill__label">
+                            <ng-container *ngFor="let template of emailTemplates">
+                                    <ng-container *ngIf="model.data.type_config.emailtemplate_id == template.id">
+                                        {{ template.name }}
+                                    </ng-container>
+                            </ng-container>
+                        </span>
+                        <span (click)="model.data.type_config.emailtemplate_id = ''"
+                              class="slds-icon_container slds-pill__remove" style="cursor: pointer">
+                            <system-utility-icon icon="close"></system-utility-icon>
+                        </span>
                     </span>
-                    <span class="slds-pill__label">
-                        <ng-container *ngFor="let template of emailTemplates">
-                                <ng-container *ngIf="model.data.type_config.emailtemplate_id == template.id">
-                                    {{template.name}}
-                                </ng-container>
-                        </ng-container>
-                    </span>
-                    <span (click)="model.data.type_config.emailtemplate_id = ''"
-                          class="slds-icon_container slds-pill__remove" style="cursor: pointer">
-                        <system-utility-icon icon="close"></system-utility-icon>
-                    </span>
-                </span>
                 </div>
             </div>
+            @if (model.data.type_config.emailtemplate_id && contentOption == 'email_template') {
+                <button class="slds-button slds-button--icon-border-filled slds-button--icon slds-m-left--xx-small"
+                        system-title="LBL_NAVIGATE_TO_TEMPLATE"
+                        (click)="navigate()">
+                    <system-button-icon icon="forward_up"></system-button-icon>
+                </button>
+            }
             <div *ngIf="contentOption == 'method'" class="slds-grow slds-m-left--x-small">
                 <system-input-backend-method
                         [(ngModel)]="model.data.type_config.emailcontclass"></system-input-backend-method>

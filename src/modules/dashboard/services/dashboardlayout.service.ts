@@ -335,9 +335,7 @@ export class dashboardlayout {
                                 id: this.editing,
                                 name: dashlet.name,
                                 component: dashlet.component,
-                                componentconfig: {
-                                    refresh_interval: this.model.getField('refresh_interval')
-                                },
+                                componentconfig: dashlet.componentconfig,
                                 dashletconfig: dashlet.dashletconfig,
                                 dashlet_id: dashlet.dashlet_id,
                                 module: dashlet.module,
@@ -352,6 +350,7 @@ export class dashboardlayout {
                                     height: Math.round(position.height / this.elementHeight)
                                 },
                                 is_new: true,
+                                refresh_interval: dashlet.refresh_interval ?? null,
                             };
                             this.dashboardElements = [...this.dashboardElements, element];
                         }
@@ -363,18 +362,14 @@ export class dashboardlayout {
         const currentDashlet = this.dashboardElements.find(element => element.id === this.editing);
         if (!currentDashlet) return;
 
-        if (!currentDashlet.componentconfig) {
-            currentDashlet.componentconfig = {};
-        }
-
-        const currentInterval =  currentDashlet.componentconfig.refresh_interval ?? this.model.getField('refresh_interval');
+        const currentInterval =  currentDashlet.refresh_interval ?? this.model.getField('refresh_interval');
 
         this.modal.input('LBL_DASHLET_REFRESH_SECONDS', 'LBL_DASHLET_REFRESH', null, currentInterval
         ).subscribe(newInterval => {
             if (newInterval !== false) {
                 const parsedInterval = parseInt(newInterval, 10);
                 if (!isNaN(parsedInterval)) {
-                    currentDashlet.componentconfig.refresh_interval = parsedInterval;
+                    currentDashlet.refresh_interval = parsedInterval;
                 }
             }
         });

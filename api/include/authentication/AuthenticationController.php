@@ -419,6 +419,8 @@ class AuthenticationController
             throw new UnauthorizedException('User not found', 404);
         }
 
+        $userObj->retrieveViewDetails();
+
         return $userObj;
     }
 
