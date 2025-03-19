@@ -1,0 +1,17 @@
+<div class="slds-box slds-box--border slds-m-bottom--small">
+    <div class="slds-p-around--small slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-text-heading--label" [ngStyle]="{backgroundColor: processCategory.color, color: processCategory.fontcolor}">
+        <div>
+            @if(processCategory.label){
+                <system-label [label]="processCategory.label"/>
+            } @else {
+                {{processCategory.name}}
+            }
+        </div>
+        <process-management-add-processgroup-button [processCategory]="processCategory"/>
+    </div>
+    <div class="slds-p-around--small slds-grid slds-gutters_direct-xx-small slds-grid--align-center slds-wrap">
+        @for (processGroup of processGroups; track processGroup.id){
+            <process-management-process-group class="slds-size--1-of-4 slds-col" [processGroup]="processGroup"/>
+        }
+    </div>
+</div>
