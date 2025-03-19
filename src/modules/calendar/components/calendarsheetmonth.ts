@@ -191,6 +191,9 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 next: calendar => {
                     if (calendar.type == 'other') {
                         this.getOwnerEvents(calendar);
+                        if (calendar.id == 'owner' && this.groupwareVisible) {
+                            this.getGroupwareEvents();
+                        }
                     } else {
                         this.getUserEvents(calendar);
                     }

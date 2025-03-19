@@ -12,6 +12,9 @@
                     @if (!options) {
                         <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                             @switch (type) {
+                                @case ('input_password') {
+                                    <system-input-password [(ngModel)]="value"></system-input-password>
+                                }
                                 @case ('input_date') {
                                     <system-input-date [(ngModel)]="value"></system-input-date>
                                 }
