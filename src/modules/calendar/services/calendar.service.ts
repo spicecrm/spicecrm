@@ -389,8 +389,7 @@ export class calendar implements OnDestroy {
 
                         for (let event of events) {
 
-                            if ((userId == this.owner && !!event.data.external_id && !!this.calendarData.google && this.calendarData.google.some(e => e.id == event.data.external_id)) ||
-                                (calendarId == 'owner' && this.userModules.some(calendar => calendar.name == event.module && !calendar.visible))) {
+                            if ((calendarId == 'owner' && this.userModules.some(calendar => calendar.name == event.module && !calendar.visible))) {
                                 continue;
                             }
 
@@ -460,6 +459,19 @@ export class calendar implements OnDestroy {
     }
 
     /**
+     * check if the groupware event is synced to crm
+     * @param externalId
+     * @private
+     */
+    private isGroupwareEventSynced(externalId: string) {
+        if (!this.calendarData.owner) return false;
+        if (!this.availableCalendars.some(c => c.id == 'owner' && c.visible)){
+            return false;
+        }
+        return this.calendarData.owner.some(e => e.data.external_id == externalId);
+    }
+
+    /**
      * load events for the active groupware service
      * @param startDate
      * @param endDate
@@ -497,7 +509,6 @@ export class calendar implements OnDestroy {
                 .subscribe(res => {
                     if (res.events && res.events.length > 0) {
                         for (let event of res.events) {
-                            if (!!this.calendarData['owner'] && this.calendarData['owner'].some(e => e.data.external_id == event.id)) continue;
 
                             event.start = moment(moment(event.start.dateTime ?? event.start.date)
                                 .format(!event.start.dateTime && !!event.start.date ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:00'));
@@ -513,14 +524,16 @@ export class calendar implements OnDestroy {
                     }
                     this.isLoading = false;
                     this.cdRef.detectChanges();
-                    responseSubject.next(this.calendarData.google);
+                    responseSubject.next(
+                        this.calendarData.google.filter(e => !this.isGroupwareEventSynced(e.id))
+                    );
                     responseSubject.complete();
                 });
             return responseSubject.asObservable();
         } else {
             let filteredEntries = [];
             for (let event of this.calendarData.google) {
-                if (event.start < endDate && event.end > startDate) {
+                if (event.start < endDate && event.end > startDate && !this.isGroupwareEventSynced(event.id)) {
                     filteredEntries.push(event);
                 }
             }
@@ -551,7 +564,6 @@ export class calendar implements OnDestroy {
                     next: res => {
                         if (res.events && res.events.length > 0) {
                             for (let event of res.events) {
-                                if (!!this.calendarData['owner'] && this.calendarData['owner'].some(e => e.data.external_id == event.id)) continue;
 
                                 event.start = moment(moment.utc(event.start.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:00'));
                                 event.end = moment(moment.utc(event.end.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:00'));
@@ -565,7 +577,9 @@ export class calendar implements OnDestroy {
                         }
                         this.isLoading = false;
                         this.cdRef.detectChanges();
-                        responseSubject.next(this.calendarData.microsoft);
+                        responseSubject.next(
+                            this.calendarData.microsoft.filter(e => !this.isGroupwareEventSynced(e.id))
+                        );
                         responseSubject.complete();
                     },
                     error: err => {
@@ -580,7 +594,7 @@ export class calendar implements OnDestroy {
         } else {
             let filteredEntries = [];
             for (let event of this.calendarData.microsoft) {
-                if (event.start < endDate && event.end > startDate) {
+                if (event.start < endDate && event.end > startDate && !this.isGroupwareEventSynced(event.id)) {
                     filteredEntries.push(event);
                 }
             }
