@@ -8,6 +8,7 @@ export interface DomainDefinition {
     scope: 'c'|'g';
     status: 'd'|'a'|'i';
     fieldtype: string;
+    handlerclass?: string;
     description?: string;
     version?: string;
     package?: string;
