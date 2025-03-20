@@ -57,6 +57,7 @@ export class ProcessManagementProcessMap implements OnInit {
         this.backend.getRequest('module/ProcessMGMTCategories').subscribe({
             next: (processCategories) => {
                 this.processCategories = processCategories.list;
+                this.loading = false;
             }
         });
     }
