@@ -256,7 +256,7 @@ class SpiceFTSSearchtermParser
             // the Must not multi matches
             foreach ($matches[1] as $index => $match) {
                 if (empty($match)) continue;
-                $query['must_not'][] = ['multi_match' => $this->buildMultiMatchQuery(trim($matches[1][$index], '"'), $indexProperties)];
+                $query['must_not'][] = ['multi_match' => $this->buildMultiMatchQuery(trim($matches[1][$index], '"'), $indexSettings, $indexProperties)];
                 $element = str_replace($matches[0][$index], '', $element);
             }
         }
