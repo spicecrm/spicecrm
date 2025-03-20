@@ -1,4 +1,4 @@
-<div system-to-bottom>
+<div system-to-bottom [system-overlay-loading-spinner]="loading">
     @for(processCategory of processCategories; track processCategory.id){
         <process-management-process-category [processCategory]="processCategory"/>
     }
