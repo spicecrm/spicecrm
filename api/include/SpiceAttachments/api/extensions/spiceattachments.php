@@ -280,6 +280,11 @@ $routes = [
                 'in' => 'body',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'description' => 'ids of categories joined with ,',
+            ],
+            'folder_id'       => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'the id of the folder to be set',
             ]
         ]
     ],
