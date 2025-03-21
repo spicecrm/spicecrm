@@ -1,5 +1,5 @@
 <div class="slds-is-relative" style="display: inline;">
-    <a (mouseover)="showHelp=!!helpText" (mouseout)="showHelp=true" (click)="verticalPositionBottom=!verticalPositionBottom">
+    <a (mouseover)="showHelp=!!helpText" (mouseout)="showHelp=false" (click)="verticalPositionBottom=!verticalPositionBottom">
         <span class="slds-icon_container slds-icon-utility-info">
             <system-custom-icon [ngStyle]="{'color': showHelp==true  ? ghovercolor : gcolor}" [icon]="gicon" [file]="gfile" [size]="gsizeClass" [desaturate]="gdesaturate" [addclasses]="gaddClass" [divClass]="gdivClass"></system-custom-icon>
         </span>
