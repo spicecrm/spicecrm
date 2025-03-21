@@ -40,7 +40,9 @@
             <object-workflow-button/>
             <!--object-subscription-button></object-subscription-button-->
             <!--object-reminder-button></object-reminder-button-->
+            @if (!componentconfig.hideStatusNetwork) {
                 <object-status-network-button [onlyDropdown]="layout.screenwidth == 'small'" class="slds-m-around--xxx-small"/>
+            }
                 <object-action-container [actionset]="actionSet" [onlyDropdown]="layout.screenwidth == 'small'" class="slds-m-around--xxx-small"/>
         </div>
     </div>

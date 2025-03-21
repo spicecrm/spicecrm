@@ -1,11 +1,10 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
-    <ng-container *ngIf="fieldconfig.display_as_translated; else labelContainer">
+    @if(fieldconfig.display_as_translated){
         <system-label [label]="value"/>
-    </ng-container>
-    <ng-template #labelContainer>
-        {{value}}
-    </ng-template>
+    } @else {
+        <system-label [label]="value"/> ({{value}})
+    }
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-top--xx-small" [ngClass]="css_classes">
     <system-input-label [(ngModel)]="value"></system-input-label>
