@@ -45,6 +45,16 @@ class SpiceDictionaryDomainValidations
             return;
         }
 
+        $this->reloadItems();
+    }
+
+    /**
+     * reload the items from the database
+     * @return void
+     * @throws \Exception
+     */
+    public function reloadItems(): void
+    {
         $db = DBManagerFactory::getInstance();
         $validationsArray = [];
         $domainfields = $db->query("SELECT * FROM sysdomainfieldvalidations");
