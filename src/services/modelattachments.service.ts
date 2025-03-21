@@ -357,7 +357,7 @@ export class modelattachments implements OnDestroy {
                 user_id: '1',
                 user_name: 'admin',
                 uploadprogress: 0,
-                folder_id: this.folderId
+                folder_id: this.folderId ?? ''
             };
             this._files.unshift(newfile);
 
