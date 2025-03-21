@@ -1,17 +1,20 @@
 <div class="slds-box slds-box--border slds-m-bottom--small">
-    <div class="slds-p-around--small slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-text-heading--label" [ngStyle]="{backgroundColor: processCategory.color, color: processCategory.fontcolor}">
-        <div>
-            @if(processCategory.label){
-                <system-label [label]="processCategory.label"/>
-            } @else {
-                {{processCategory.name}}
-            }
+    <div class="slds-grid">
+        <div style="width: 20px" [ngStyle]="{backgroundColor: processCategory.color, color: processCategory.color}">x</div>
+        <div style="width: calc(100% - 20px)">
+            <div class="slds-grid slds-p-around--small slds-grid--align-spread slds-text-heading--label slds-theme--shade">
+                @if(processCategory.label){
+                    <system-label [label]="processCategory.label"/>
+                } @else {
+                    {{processCategory.name}}
+                }
+                <process-management-add-processgroup-button [processCategory]="processCategory"/>
+            </div>
+            <div class="slds-p-around--small slds-grid slds-gutters_direct-xx-small slds-grid--align-center slds-wrap">
+                @for (processGroup of processGroups; track processGroup.id){
+                    <process-management-process-group class="slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-5 slds-col" [processGroup]="processGroup"/>
+                }
+            </div>
         </div>
-        <process-management-add-processgroup-button [processCategory]="processCategory"/>
-    </div>
-    <div class="slds-p-around--small slds-grid slds-gutters_direct-xx-small slds-grid--align-center slds-wrap">
-        @for (processGroup of processGroups; track processGroup.id){
-            <process-management-process-group class="slds-size--1-of-4 slds-col" [processGroup]="processGroup"/>
-        }
     </div>
 </div>

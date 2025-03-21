@@ -65,9 +65,19 @@ class SpiceDictionaryDomainFields
             $this->domainfields = $cached;
         }
 
-        // get the dab and laod the data
+        $this->reloadItems();
+    }
+
+    /**
+     * reload the items from the database
+     * @return void
+     * @throws \Exception
+     */
+    public function reloadItems(): void 
+    {
         $db = DBManagerFactory::getInstance();
         $this->domainfields = [];
+
         $domainfields = $db->query("SELECT * FROM " . self::table);
         while($domainfield = $db->fetchByAssoc($domainfields)){
             $domainfield['sequence'] = (int)$domainfield['sequence'];
