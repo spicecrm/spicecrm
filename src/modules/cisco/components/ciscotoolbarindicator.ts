@@ -351,7 +351,7 @@ export class CiscoToolbarIndicator implements OnDestroy {
     }
 
     public checkAccess() {
-        this._canAccess = this.metadata.checkModuleAcl('Calls', 'ciscocall');
+        this._canAccess = this.metadata.checkModuleAcl('Calls', 'ciscocalls');
     }
 
 }
