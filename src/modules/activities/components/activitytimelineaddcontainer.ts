@@ -175,11 +175,10 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
 
     public pushChildComponentRef(tab, cRef: ComponentRef<any>) {
         tab.cRef = cRef;
+    }
 
-        this.subscription.add(
-            cRef.instance.model.data$.subscribe(() =>
-                tab.isDirty = cRef.instance.model.isDirty()
-            )
-        );
+    public checkTabDirty(module: string): boolean {
+        const tab = this.tabs.find(tab => tab.module === module);
+        return tab?.cRef?.instance?.model?.isDirty() ?? false;
     }
 }
