@@ -42,6 +42,11 @@ export class SystemRichTextSourceModal implements OnInit, OnDestroy {
     public eventListener: any[] = [];
     public beautifyenabled: boolean = false;
 
+    /**
+     * the splitmode showing both or just oine of the windows
+     */
+    public splitMode: 'left'|'split'|'right' = 'split';
+
     @ViewChild('sourceeditor', {static: true}) public sourceEditor: any;
 
     constructor(
