@@ -46,28 +46,18 @@ class SysModuleFiltersController
 
     }
 
-    private function checkAdmin()
-    {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        if (!$current_user->is_admin) {
-            throw (new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
-
-        }
-    }
-
     function getFilters(Request $req, Response $res, array $args): Response {
-        $db = DBManagerFactory::getInstance();
-
-        $this->checkAdmin();
-
         $filters = [];
-        $filtersObj = "SELECT 'global' filterscope, fltrs.* FROM sysmodulefilters fltrs  WHERE fltrs.module = '{$args['module']}' UNION ";
-        $filtersObj .= "SELECT 'custom' filterscope, cfltrs.* FROM syscustommodulefilters cfltrs  WHERE cfltrs.module = '{$args['module']}'";
-        $filtersObj = $db->query($filtersObj);
-        while ($filter = $db->fetchByAssoc($filtersObj)) {
-            $filter['scope'] = $filter['filterscope'];
-            unset($filter['filterscope']);
-            $filters[] = $filter;
+        $filtersObjs = [];
+        $filtersObjs[] = "SELECT 'global' filterscope, fltrs.* FROM sysmodulefilters fltrs  WHERE fltrs.module = '{$args['module']}'";
+        $filtersObjs[] = "SELECT 'custom' filterscope, cfltrs.* FROM syscustommodulefilters cfltrs  WHERE cfltrs.module = '{$args['module']}'";
+        foreach($filtersObjs as $filtersObj) {
+            $filterRecords = DBManagerFactory::getInstance()->fetchAll($filtersObj);
+            foreach ($filterRecords as $filter){
+                $filter['scope'] = $filter['filterscope'];
+                unset($filter['filterscope']);
+                $filters[] = $filter;
+            }
         }
 
         return $res->withJson($filters);
@@ -80,7 +70,6 @@ class SysModuleFiltersController
     function saveFilter(Request $req, Response $res, array $args): Response
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $this->checkAdmin();
         $filterdata = $req->getParsedBody();
 
         if (isset($filterdata['scope'])) {
@@ -111,7 +100,6 @@ class SysModuleFiltersController
      */
     function deleteFilter(Request $req, Response $res, array $args): Response {
         $db = DBManagerFactory::getInstance();
-        $this->checkAdmin();
         $id = $db->quote($args['filter']);
         SystemDeploymentCR::deleteDBEntry('sysmodulefilters', $id, "sysmodulefilters/{$args['module']}");
         SystemDeploymentCR::deleteDBEntry('syscustommodulefilters', $id, "syscustommodulefilters/{$args['module']}");
