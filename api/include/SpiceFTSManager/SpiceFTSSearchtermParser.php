@@ -13,6 +13,26 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
  */
 class SpiceFTSSearchtermParser
 {
+    /**
+     * @var int the minimum nGram length as set in the config
+     */
+    var $minNgram = 3;
+
+    /**
+     * the comntructor
+     */
+    public final function __construct()
+    {
+        // get the min ntram length
+        $this->minNgram = SpiceConfig::getInstance()->get('fts.min_ngram', 3);
+    }
+
+    private function checkMinNGramLength($searchvalue){
+        if(strlen($searchvalue) < $this->minNgram){
+            throw new BadRequestException("Minimum NGram Length ({$this->minNgram}) not matched in query");
+        }
+    }
+
     public function sanitizteSearchTerm($searchTerm)
     {
         $sanitizedTerms = [];
@@ -131,6 +151,8 @@ class SpiceFTSSearchtermParser
                 }
 
                 if(count($matchedFields) > 0) {
+                    // check the min nGram length
+                    $this->checkMinNGramLength(trim($matches[1][$index], '"'));
                     if(strpos($matches[0][$index], '-') === 0){
                         $this->buildExcludeTermsWildcardQuery(trim($matches[1][$index], '"'), $matchedFields, $query);
                     } else {
@@ -182,6 +204,7 @@ class SpiceFTSSearchtermParser
                 }
 
                 if(count($matchedFields) > 0) {
+                    $this->checkMinNGramLength(trim($matches[1][$index], '"'));
                     if(strpos($matches[0][$index], '-') === 0){
                         $query['must_not'][] = [
                             'multi_match' => $this->buildMultiMatchQuery(trim($matches[1][$index], '"'), $indexSettings, $matchedFields)
@@ -220,7 +243,7 @@ class SpiceFTSSearchtermParser
         if (preg_match_all('/-?"(.*?)"/', $element, $matches)) {
             foreach ($matches[1] as $index => $match) {
                 if (empty($match)) continue;
-
+                $this->checkMinNGramLength(trim($matches[1][$index], '"'));
                 if(strpos($matches[0][$index], '-') === 0){
                     $this->buildExcludeTermsWildcardQuery(trim($matches[1][$index], '"'), $matchedFields, $query);
                 } else {
@@ -256,6 +279,7 @@ class SpiceFTSSearchtermParser
             // the Must not multi matches
             foreach ($matches[1] as $index => $match) {
                 if (empty($match)) continue;
+                $this->checkMinNGramLength(trim($matches[1][$index], '"'));
                 $query['must_not'][] = ['multi_match' => $this->buildMultiMatchQuery(trim($matches[1][$index], '"'), $indexSettings, $indexProperties)];
                 $element = str_replace($matches[0][$index], '', $element);
             }
