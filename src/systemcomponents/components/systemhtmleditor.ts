@@ -414,6 +414,8 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                                     else delete aTag.dataset.trackinglink;
                                     if (anchorData.marketingAction) aTag.dataset.marketingaction = anchorData.marketingAction;
                                     else delete aTag.dataset.marketingaction;
+                                    if (anchorData.emailAction) aTag.dataset.emailaction = anchorData.emailAction;
+                                    else delete aTag.dataset.emailaction;
                                 } else {
                                     if (!anchorData.text) anchorData.text = anchorData.url;
                                     this.editorService.restoreSelection();
@@ -422,6 +424,7 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                                     let dataAttributes: any = {};
                                     if (anchorData.linkType === 'conv' && !!anchorData.trackByMethod) dataAttributes.trackinglink = anchorData.trackingId;
                                     if (anchorData.linkType === 'mark') dataAttributes.marketingaction = anchorData.marketingAction;
+                                    if (anchorData.linkType === 'email') dataAttributes.emailaction = anchorData.emailAction;
                                     this.editorService.insertAnchor(anchorData.url, linkContent, dataAttributes);
                                 }
                                 this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
