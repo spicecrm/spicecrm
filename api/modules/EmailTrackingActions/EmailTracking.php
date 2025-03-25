@@ -199,17 +199,16 @@ class EmailTracking
         $emailAddress = self::getEmailAddress($bean->email_addr_bean_rel_id, $target);
 
         $targetData = [
-            'emailAddress' => $emailAddress->email_address,
-            'optInStatus' => $emailAddress->opt_in_status,
+            'parentType' => $target->_module,
+            'parentId' => $target->id,
             'firstName' => $target->first_name,
             'lastName' => $target->last_name,
+            'emailAddress' => $emailAddress->email_address,
+            'optInStatus' => $emailAddress->opt_in_status,
         ];
-
-        if ($bean->_module === 'NewsletterLogs') {
             $newsletter = BeanFactory::getBean('Newsletters');
             $newsletters = $newsletter->getNewsletterSubscriptionWithRelated($target->_module, $target->id, $bean->email_addr_bean_rel_id);
             $targetData['newsletters'] = $newsletters;
-        }
         return $targetData;
     }
 
