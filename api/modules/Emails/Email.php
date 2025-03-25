@@ -911,7 +911,11 @@ class Email extends SpiceBean
     {
         $handlingLink = SpiceConfig::getInstance()->get('emailtracking.tracking_clicks_url');
 
-        if (!$handlingLink) return;
+        // removed to always parese the email
+        // if (!$handlingLink) return;
+
+        // boolean flag to see if we made any changes ... otherwise we leave the body untouched
+        $tracked = false;
 
         // load the document with proper encoding
         $dom = new DOMDocument();
@@ -937,15 +941,20 @@ class Email extends SpiceBean
                 $trackingLink = EmailTrackingLink::transformEmailTrackingLinks($parentType, $parentId, $trackingId, $handlingLink);
                 $this->assignBeanToEmail($trackingId, 'EmailTrackingLinks');
                 $node->setAttribute('href', $trackingLink);
+                $tracked = true;
             } else if ($node->hasAttribute('data-unsubscribelink')) {
                 $node->setAttribute('href', EmailTracking::getUnsubscribeURL($this));
+                $tracked = true;
             }else if ($node->hasAttribute('data-doilink')) {
                 $node->setAttribute('href', EmailTracking::getDoubleOptinUrl($this));
+                $tracked = true;
             }
         }
 
         // save full html or body only depending on what we got in
-        $this->body = strpos($this->body, '<html>') >= 0 ? $dom->saveHTML() : str_replace(['<body>', '</body>'], '', $dom->saveHTML($dom->getElementsByTagName('body')->item(0))); // $dom->saveHTML('body');
+        if($tracked){
+            $this->body = strpos($this->body, '<html>') >= 0 ? $dom->saveHTML() : str_replace(['<body>', '</body>'], '', $dom->saveHTML($dom->getElementsByTagName('body')->item(0))); // $dom->saveHTML('body');
+        }
     }
 
     /**
