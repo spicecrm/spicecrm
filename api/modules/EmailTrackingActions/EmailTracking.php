@@ -7,6 +7,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\CampaignLog\CampaignLog;
+use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\EmailTrackingActions\api\controllers\EmailTrackingActionsController;
 use SpiceCRM\modules\NewsletterLogs\NewsletterLog;
@@ -184,25 +185,30 @@ class EmailTracking
     {
         /** @var Email | CampaignLog | NewsletterLog $bean */
         $bean = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+        if(!$bean){
+            throw new Exception('Bean module ' .  $data['ParentType'] .', id ' . $data['ParentId']. ' not found');
+        }
         $target = BeanFactory::getBean($bean->target_type, $bean->target_id);
 
         if ($bean->_module === 'Emails') {
             $target = BeanFactory::getBean($bean->parent_type, $bean->parent_id);
         }
+        if(!$target){
+            throw new Exception('Target not found');
+        }
         $emailAddress = self::getEmailAddress($bean->email_addr_bean_rel_id, $target);
 
         $targetData = [
-            'emailAddress' => $emailAddress->email_address,
-            'optInStatus' => $emailAddress->opt_in_status,
+            'parentType' => $target->_module,
+            'parentId' => $target->id,
             'firstName' => $target->first_name,
             'lastName' => $target->last_name,
+            'emailAddress' => $emailAddress->email_address,
+            'optInStatus' => $emailAddress->opt_in_status,
         ];
-
-        if ($bean->_module === 'NewsletterLogs') {
             $newsletter = BeanFactory::getBean('Newsletters');
             $newsletters = $newsletter->getNewsletterSubscriptionWithRelated($target->_module, $target->id, $bean->email_addr_bean_rel_id);
             $targetData['newsletters'] = $newsletters;
-        }
         return $targetData;
     }
 
@@ -210,24 +216,46 @@ class EmailTracking
     {
         /** @var Email | CampaignLog | NewsletterLog $bean */
         $bean = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+        if(!$bean){
+            throw new Exception('Bean module ' .  $data['ParentType'] .', id ' . $data['ParentId']. ' not found');
+        }
         $target = BeanFactory::getBean($bean->target_type, $bean->target_id);
 
         if ($bean->_module === 'Emails') {
             $target = BeanFactory::getBean($bean->parent_type, $bean->parent_id);
         }
 
+        if(!$target){
+            throw new Exception('Target not found');
+        }
+
         if(isset($preferences['optInStatus'])){
-            $emailAddress = self::getEmailAddress($bean->email_addr_bean_rel_id, $target);
-            $emailAddress->opt_in_status = $preferences['optInStatus'];
-            $emailAddress->save();
+            if($preferences['optInStatus'] === 'opted_in' || $preferences['optInStatus'] =='opted_out'){
+                $target->load_relationship('email_addresses');
+                $emailAddress = self::getEmailAddress($bean->email_addr_bean_rel_id, $target);
+                EmailAddress::setOptInStatus($target, $emailAddress, $preferences['optInStatus']);
+            }
+            else{
+                throw new Exception('Opt In Status not found');
+            }
         }
 
-        if ($bean->_module === 'NewsletterLogs') {
+        if ($bean->_module === 'NewsletterLogs'||isset($preferences['newsletters'])) {
             $newsletter = BeanFactory::getBean('Newsletters');
-            $return = $newsletter->handlePreferences($bean, $target, $preferences);
+            $newsletters = $newsletter->handlePreferences($bean, $target, $preferences);
+        } else {
+            $emailAddress = self::getEmailAddress($bean->email_addr_bean_rel_id, $target);
+            return  $emailAddress->opt_in_status;
         }
-
-        return $return;
+        $emailAddress = self::getEmailAddress($bean->email_addr_bean_rel_id, $target);
+        $targetData = [
+            'emailAddress' => $emailAddress->email_address,
+            'optInStatus' => $emailAddress->opt_in_status,
+            'firstName' => $target->first_name,
+            'lastName' => $target->last_name,
+            'newsletters' => $newsletters
+        ];
+        return $targetData;
     }
 
     static function getEmailAddress($emailAddrBeanRelId, $target)
