@@ -942,12 +942,18 @@ class Email extends SpiceBean
                 $this->assignBeanToEmail($trackingId, 'EmailTrackingLinks');
                 $node->setAttribute('href', $trackingLink);
                 $tracked = true;
-            } else if ($node->hasAttribute('data-unsubscribelink')) {
-                $node->setAttribute('href', EmailTracking::getUnsubscribeURL($this));
-                $tracked = true;
-            }else if ($node->hasAttribute('data-doilink')) {
-                $node->setAttribute('href', EmailTracking::getDoubleOptinUrl($this));
-                $tracked = true;
+            } else if ($node->hasAttribute('data-emailaction')) {
+                $emailAction= $node->getAttribute('data-emailaction');
+                switch($emailAction) {
+                    case 'unsubscribe':
+                        $node->setAttribute('href', EmailTracking::getUnsubscribeURL($this));
+                        $tracked = true;
+                        break;
+                    case 'doi':
+                        $node->setAttribute('href', EmailTracking::getDoubleOptinUrl($this));
+                        $tracked = true;
+                        break;
+                }
             }
         }
 
