@@ -922,22 +922,26 @@ class Email extends SpiceBean
         /** @var \DOMElement $node */
         foreach ($dom->getElementsByTagName('a') as $node) {
 
-            if (!$node->hasAttribute('data-trackinglink')) continue;
+            if ($node->hasAttribute('data-trackinglink')) {
+                $trackingId = $node->getAttribute('data-trackinglink');
 
-            $trackingId = $node->getAttribute('data-trackinglink');
+                if (empty($trackingId)) {
+                    $trackingId = EmailTrackingLink::getTrackingLinkId(
+                        $node->getAttribute('href'),
+                        $node->getAttribute('text'),
+                        $this->id,
+                        'Emails'
+                    );
+                }
 
-            if (empty($trackingId)) {
-                $trackingId = EmailTrackingLink::getTrackingLinkId(
-                    $node->getAttribute('href'),
-                    $node->getAttribute('text'),
-                    $this->id,
-                    'Emails'
-                );
+                $trackingLink = EmailTrackingLink::transformEmailTrackingLinks($parentType, $parentId, $trackingId, $handlingLink);
+                $this->assignBeanToEmail($trackingId, 'EmailTrackingLinks');
+                $node->setAttribute('href', $trackingLink);
+            } else if ($node->hasAttribute('data-unsubscribelink')) {
+                $node->setAttribute('href', EmailTracking::getUnsubscribeURL($this));
+            }else if ($node->hasAttribute('data-doilink')) {
+                $node->setAttribute('href', EmailTracking::getDoubleOptinUrl($this));
             }
-
-            $trackingLink = EmailTrackingLink::transformEmailTrackingLinks($parentType, $parentId, $trackingId, $handlingLink);
-            $this->assignBeanToEmail($trackingId, 'EmailTrackingLinks');
-            $node->setAttribute('href', $trackingLink);
         }
 
         // save full html or body only depending on what we got in
