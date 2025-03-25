@@ -125,7 +125,7 @@ class EmailTracking
      */
     static function getDoubleOptinUrl(Email $email)
     {
-        $url = SpiceConfig::getInstance()->get('emailtracking.double_option_iurl');
+        $url = SpiceConfig::getInstance()->get('emailtracking.double_optin_url');
 
         [$parentType, $parentId] = $email->getTrackingParentData();
 
