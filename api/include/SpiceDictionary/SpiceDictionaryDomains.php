@@ -65,8 +65,19 @@ class SpiceDictionaryDomains
             $this->domaindefinitions = $cached;
         }
 
+        $this->reloadItems();
+    }
+
+    /**
+     * reload the items from the database
+     * @return void
+     * @throws \Exception
+     */
+    public function reloadItems(): void
+    {
         $db = DBManagerFactory::getInstance();
         $this->domaindefinitions = [];
+
         $domaindefinitions = $db->query("SELECT * FROM " . self::table);
         while ($domaindefinition = $db->fetchByAssoc($domaindefinitions)) {
             $this->domaindefinitions[$domaindefinition['id']] = array_merge($domaindefinition, ['scope' => 'g']);
@@ -76,7 +87,6 @@ class SpiceDictionaryDomains
             $this->domaindefinitions[$domaindefinition['id']] = array_merge($domaindefinition, ['scope' => 'c']);;
         }
 
-        // write Cache
         $this->writeCache();
     }
 

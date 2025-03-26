@@ -1,65 +1,78 @@
 <system-modal size="small">
     <system-modal-header (close)="cancel()">
-        <system-label *ngIf="!alterMode" label="LBL_ADD_LINK"></system-label>
-        <system-label *ngIf="alterMode" label="LBL_EDIT_LINK"></system-label>
+        @if (alterMode){
+            <system-label label="LBL_EDIT_LINK"/>
+        } @else {
+            <system-label label="LBL_ADD_LINK"/>
+        }
     </system-modal-header>
     <system-modal-content>
         <fieldset class="slds-form-element slds-m-bottom--x-small">
             <div class="slds-form-element__control slds-grid">
-                <span class="slds-radio">
-                    <input type="radio" id="radioConvLink" name="linkType" value="conv" [(ngModel)]="linkType" />
-                    <label class="slds-radio__label" for="radioConvLink">
-                        <span class="slds-radio_faux"></span>
-                        <span class="slds-form-element__label"><system-label label="LBL_CONVENTIONAL_LINK"></system-label></span>
-                    </label>
-                </span>
-                <span class="slds-radio slds-m-left--small">
-                    <input type="radio" id="radioMarketingLink" name="linkType" value="mark" [(ngModel)]="linkType" />
-                    <label class="slds-radio__label" for="radioMarketingLink">
-                        <span class="slds-radio_faux"></span>
-                        <span class="slds-form-element__label"><system-label label="LBL_MARKETING_ACTION_LINK"></system-label></span>
-                  </label>
-                </span>
+                <system-input-radio value="conf" name="linkType" [(ngModel)]="linkType"><system-label label="LBL_CONVENTIONAL_LINK"/></system-input-radio>
+                <system-input-radio value="mark" name="linkType" [(ngModel)]="linkType"><system-label label="LBL_MARKETING_ACTION_LINK"/></system-input-radio>
+                <system-input-radio value="email" name="linkType" [(ngModel)]="linkType"><system-label label="LBL_EMAIL_ACTION_LINK"/></system-input-radio>
             </div>
         </fieldset>
-        <div *ngIf="linkType==='conv'" class="slds-form-element__control" [ngClass]="{'slds-has-error':!!urlErrorLabel}">
-            <label class="slds-form-element__label">
-                <abbr class="slds-required">*</abbr>
-                <system-label label="LBL_URL"></system-label></label>
-            <system-input-text [(ngModel)]="url" (ngModelChange)="checkUrl()"></system-input-text>
-            <div *ngIf="urlErrorLabel" class="slds-form-element__help"><system-label [label]="urlErrorLabel"></system-label></div>
-        </div>
+        @if (linkType==='conv'){
+            <div  class="slds-form-element__control" [ngClass]="{'slds-has-error':!!urlErrorLabel}">
+                <label class="slds-form-element__label">
+                    <abbr class="slds-required">*</abbr>
+                    <system-label label="LBL_URL"/></label>
+                <system-input-text [(ngModel)]="url" (ngModelChange)="checkUrl()"></system-input-text>
+                <div *ngIf="urlErrorLabel" class="slds-form-element__help"><system-label [label]="urlErrorLabel"/></div>
+            </div>
+        }
         <div class="slds-grid slds-m-top--small slds-gutters_x-small">
-            <div *ngIf="!alterMode" class="slds-form-element__control slds-col">
-                <label class="slds-form-element__label"><system-label label="LBL_TEXT"></system-label></label>
-                <system-input-text [(ngModel)]="text" (blur)="changeTextIsUrl()"></system-input-text>
-            </div>
-            <div *ngIf="linkType==='mark'" class="slds-form-element slds-col" [ngClass]="{'slds-has-error':!!marketingActionErrorLabel}">
-                <label class="slds-form-element__label" for="marketingAction"><system-label label="LBL_MARKETING_ACTION"></system-label></label>
-                <div class="slds-form-element__control">
-                    <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="marketingAction" id="marketingAction" [disabled]="editorService.marketingActions == null">
-                            <!--option value=""></option-->
-                            <option *ngFor="let action of editorService.marketingActions" [ngValue]="action.id">{{action.name}}</option>
-                        </select>
+            @if (!alterMode){
+                <div class="slds-form-element__control slds-col">
+                    <label class="slds-form-element__label"><system-label label="LBL_TEXT"/></label>
+                    <system-input-text [(ngModel)]="text" (blur)="changeTextIsUrl()"/>
+                </div>
+            }
+            @switch (linkType){
+                @case('mark'){
+                    <div class="slds-form-element slds-col" [ngClass]="{'slds-has-error':!!marketingActionErrorLabel}">
+                        <label class="slds-form-element__label"><system-label label="LBL_MARKETING_ACTION"/></label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="marketingAction" [disabled]="editorService.marketingActions == null">
+                                    <!--option value=""></option-->
+                                    <option *ngFor="let action of editorService.marketingActions" [ngValue]="action.id">{{action.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div *ngIf="marketingActionErrorLabel" class="slds-form-element__help"><system-label [label]="marketingActionErrorLabel"></system-label></div>
                     </div>
-                </div>
-                <div *ngIf="marketingActionErrorLabel" class="slds-form-element__help"><system-label [label]="marketingActionErrorLabel"></system-label></div>
-            </div>
-            <ng-container *ngIf="linkType==='conv'">
-                <div class="slds-form-element slds-col slds-grow-none">
-                    <label class="slds-form-element__label"><system-label label="LBL_CLICKS_TRACKABLE"></system-label></label>
-                    <system-input-radio-button-group [ngModel]="trackByMethod" (ngModelChange)="setTrackByMethod($event)" [inputOptions]="[{value: 'id', label: 'LBL_BY_ID'}, {value: undefined, icon: 'topic2', label: 'LBL_NONE'}, {value: 'url', icon: 'link', label: 'LBL_BY_URL'}]" class="spice-display-block"></system-input-radio-button-group>
-                </div>
-            </ng-container>
+                }
+                @case('email'){
+                    <div  class="slds-form-element slds-col">
+                        <label class="slds-form-element__label"><system-label label="LBL_EMAIL_ACTION"/></label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="emailAction" >
+                                    <option value="doi"><system-label label="LBL_DOI"/></option>
+                                    <option value="unsubscribe"><system-label label="LBL_UNSUBSCRIBE"/></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                }
+                @case('conv'){
+                    <div class="slds-form-element slds-col slds-grow-none">
+                        <label class="slds-form-element__label"><system-label label="LBL_CLICKS_TRACKABLE"/></label>
+                        <system-input-radio-button-group [ngModel]="trackByMethod" (ngModelChange)="setTrackByMethod($event)" [inputOptions]="[{value: 'id', label: 'LBL_BY_ID'}, {value: undefined, icon: 'topic2', label: 'LBL_NONE'}, {value: 'url', icon: 'link', label: 'LBL_BY_URL'}]" class="spice-display-block"/>
+                    </div>
+                }
+            }
         </div>
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="cancel()">
-            <system-label label="LBL_CANCEL"></system-label>
+            <system-label label="LBL_CANCEL"/>
         </button>
         <button class="slds-button slds-button--brand" (click)="submit()">
-            <system-label label="LBL_OK"></system-label>
+            <system-label label="LBL_OK"/>
         </button>
     </system-modal-footer>
 </system-modal>
