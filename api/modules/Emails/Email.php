@@ -959,7 +959,7 @@ class Email extends SpiceBean
 
         // save full html or body only depending on what we got in
         if($tracked){
-            $this->body = strpos($this->body, '<html>') >= 0 ? $dom->saveHTML() : str_replace(['<body>', '</body>'], '', $dom->saveHTML($dom->getElementsByTagName('body')->item(0))); // $dom->saveHTML('body');
+            $this->body = strpos($this->body, '<html>') >= 0 ? $dom->saveHTML($dom->getElementsByTagName('html')->item(0)) : str_replace(['<body>', '</body>'], '', $dom->saveHTML($dom->getElementsByTagName('body')->item(0))); // $dom->saveHTML('body');
         }
     }
 
