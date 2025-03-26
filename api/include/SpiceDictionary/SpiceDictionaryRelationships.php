@@ -220,11 +220,16 @@ class SpiceDictionaryRelationships
 
         $query = $db->query("SELECT * FROM sysdictionaryrelationshippolymorphs WHERE lhs_sysdictionarydefinition_id = '$definitionId'");
         while ($polymorph = $db->fetchByAssoc($query)){
-            $relationship = new SpiceDictionaryRelationship($polymorph['relationship_id']);
-            $relationship->relationship->lhs_sysdictionarydefinition_id = $definitionId;
-            $relationship->relationship->lhs_sysdictionaryitem_id = $polymorph['lhs_sysdictionaryitem_id'];
-            $relationship->relationship->relationship_name = $polymorph['relationship_name'];
-            $relationships[] = json_decode(json_encode($relationship->relationship), true);
+            try {
+                $relationship = new SpiceDictionaryRelationship($polymorph['relationship_id']);
+                $relationship->relationship->lhs_sysdictionarydefinition_id = $definitionId;
+                $relationship->relationship->lhs_sysdictionaryitem_id = $polymorph['lhs_sysdictionaryitem_id'];
+                $relationship->relationship->relationship_name = $polymorph['relationship_name'];
+                $relationships[] = json_decode(json_encode($relationship->relationship), true);
+            } catch (Exception $ignored) {
+                # do nothing if the relationship does not exist in the system.
+                # Reason is probably the package containing the relationship does not exist
+            }
         }
 
         return $relationships;

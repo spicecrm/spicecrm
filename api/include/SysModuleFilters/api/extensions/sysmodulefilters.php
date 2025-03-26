@@ -2,7 +2,6 @@
 /***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SysModuleFilters\api\controllers\SysModuleFiltersController;
-use Slim\Routing\RouteCollectorProxy;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 
 $routes = [
@@ -13,7 +12,7 @@ $routes = [
         'class' => SysModuleFiltersController::class,
         'function' => 'getFilters',
         'description' => '',
-        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'module' => [
                 'in' => 'path',
@@ -53,7 +52,7 @@ $routes = [
         'class' => SysModuleFiltersController::class,
         'function' => 'saveFilter',
         'description' => '',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'module' => [
                 'in' => 'path',
@@ -124,7 +123,7 @@ $routes = [
         'class' => SysModuleFiltersController::class,
         'function' => 'deleteFilter',
         'description' => '',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'module' => [
                 'in' => 'path',

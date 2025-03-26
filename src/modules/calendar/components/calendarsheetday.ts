@@ -251,12 +251,17 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      */
     public adjustEvent(event) {
         if (!event.isMulti) {
-            let endInRange = event.end.hour() > this.calendar.startHour && event.start.hour() < this.calendar.startHour;
-            let startInRange = event.start.hour() < this.calendar.endHour && event.end.hour() > this.calendar.endHour;
-            if (endInRange) {
+            const sameDay = event.start.date() == event.end.date();
+
+            if ((sameDay || event.start.date() == this.setdate.date()) && event.start.hour() < this.calendar.startHour) {
                 event.start = event.start.hour(this.calendar.startHour).minute(0);
             }
-            if (startInRange) {
+
+            if (!sameDay && (event.start.hour() > this.calendar.endHour || event.start.date() != this.setdate.date())) {
+                event.start.add(1, 'days').hour(this.calendar.startHour).minute(0);
+            }
+
+            if (event.end.hour() > this.calendar.endHour || (!sameDay && event.end.date() != this.setdate.date())) {
                 event.end = event.end.hour(this.calendar.endHour).minute(59);
             }
         }
@@ -377,7 +382,20 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      * @param events
      */
     public filterEvents(events): any {
-        return events.filter(event => event.end.hour() > this.calendar.startHour || event.start.hour() < this.calendar.endHour);
+        return events.filter(event => {
+
+            if (event.isMulti) return true;
+
+            const sameDay = event.start.date() == event.end.date();
+
+            if (!sameDay && event.start.hour() > this.calendar.endHour && event.end.hour() < this.calendar.startHour) {
+                return false;
+            } else if (sameDay && (event.start.hour() > this.calendar.endHour || event.end.hour() < this.calendar.startHour)) {
+                return false;
+            }
+
+            return true;
+        });
     }
 
     /**

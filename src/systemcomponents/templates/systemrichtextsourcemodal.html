@@ -1,11 +1,11 @@
 <system-modal size="large" >
     <system-modal-header (close)="close()"><system-label label="LBL_SOURCE_EDITOR"></system-label></system-modal-header>
-    <system-modal-content>
+    <system-modal-content margin="xx-small">
         <div class="slds-grid" style="height: 70vh;">
-            <div class="slds-size--1-of-2 slds-p-right--xx-small" >
+            <div class="slds-p-right--xx-small" [ngClass]="{'slds-hide': splitMode == 'right', 'slds-size--1-of-2': splitMode == 'split', 'slds-size--1-of-1': splitMode == 'left'}">
                 <div class="slds-box slds-theme--default slds-scrollable_y slds-rich-text-editor__output" [innerHtml]="sanitizedHtml" style="height: 100%;"></div>
             </div>
-            <div class="slds-size--1-of-2 slds-p-left--x-small">
+            <div class="slds-p-left--x-small" [ngClass]="{'slds-hide': splitMode == 'left', 'slds-size--1-of-2': splitMode == 'split', 'slds-size--1-of-1': splitMode == 'right'}">
                 <div class="slds-p-bottom--xx-small slds-grid">
                     <div class="slds-grow slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left-right slds-global-search__form-element" role="none">
                         <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
@@ -31,8 +31,23 @@
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()">
-            <system-label label="LBL_CLOSE"></system-label>
-        </button>
+        <div class="slds-grid slds-grid_vertical-align-center">
+            <div class="slds-button-group" role="group">
+                <button [disabled]="splitMode == 'left'" class="slds-button slds-button--icon-border" (click)="splitMode = 'left'">
+                    <system-button-icon icon="toggle_panel_left"></system-button-icon>
+                </button>
+                <button [disabled]="splitMode == 'split'" class="slds-button slds-button--icon-border" (click)="splitMode= 'split'">
+                    <system-button-icon icon="full_width_view"></system-button-icon>
+                </button>
+                <button [disabled]="splitMode == 'right'" class="slds-button slds-button--icon-border" (click)="splitMode='right'">
+                    <system-button-icon icon="toggle_panel_right"></system-button-icon>
+                </button>
+            </div>
+            <div class="slds-col--bump-left">
+                <button class="slds-button slds-button--neutral" (click)="close()">
+                    <system-label label="LBL_CLOSE"></system-label>
+                </button>
+            </div>
+        </div>
     </system-modal-footer>
 </system-modal>
