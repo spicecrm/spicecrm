@@ -7,7 +7,7 @@
             <h2 id="header43" class="slds-text-heading--medium">{{modalTitle}}</h2>
         </div>
         <div class="slds-modal__content slds-p-around--medium">
-            <div class="slds-form-element slds-m-top--small">
+            <div class="slds-form-element">
                 <label class="slds-form-element__label"><system-label label="LBL_ITEM_NAME"></system-label></label>
                 <div class="slds-form-element__control">
                     <input type="text" class="slds-input" placeholder="name" [(ngModel)]="fieldsetname" />
@@ -24,13 +24,13 @@
                     </div>
                 </div>
             </div>
-            <div class="slds-form-element slds-p-right--x-small">
+            <div class="slds-form-element">
                 <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
                 <div class="slds-form-element__control">
                     <system-input-package [(ngModel)]="fieldsetpackage"></system-input-package>
                 </div>
             </div>
-            <div class="slds-form-element slds-p-right--x-small">
+            <div class="slds-form-element">
                 <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
                 <div class="slds-form-element__control">
                     <system-input-version [(ngModel)]="fieldsetversion"></system-input-version>

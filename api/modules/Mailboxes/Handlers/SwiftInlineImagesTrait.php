@@ -77,7 +77,7 @@ trait SwiftInlineImagesTrait
         $selector = new DOMXPath($doc);
 
         // query all inline images.
-        $inlineImages = $selector->query("//img[contains(@src, 'data:image/') and contains(@src, ';base64,')]");
+        $inlineImages = $selector->query("//img[contains(@src, 'data:image/') or contains(@src, 'data:IMAGE/')]");
 
         // replace the first one
         $inlineImage = $inlineImages->item(0);
