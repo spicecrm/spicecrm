@@ -953,6 +953,10 @@ class Email extends SpiceBean
                         $node->setAttribute('href', EmailTracking::getDoubleOptinUrl($this));
                         $tracked = true;
                         break;
+                    case 'manage':
+                        $node->setAttribute('href', EmailTracking::getManagePreferencesUrl($this));
+                        $tracked = true;
+                        break;
                 }
             }
         }
