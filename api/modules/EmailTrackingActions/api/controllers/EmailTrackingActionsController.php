@@ -199,24 +199,50 @@ class EmailTrackingActionsController
         return $this->setEmailOptinStatus($email, 'opted_in');
     }
 
-    public function setEmailOptinStatus($email, string $status): bool
+    public function setEmailOptinStatus($bean, string $status): bool
     {
-        $recipient = BeanFactory::getBean($email->parent_type, $email->parent_id);
-        $emailAddresses = $recipient->get_linked_beans('email_addresses');
-        foreach ($emailAddresses as $address) {
-            foreach ($email->to() as $emailAddress) {
-                if ($address->email_address == $emailAddress['email']) {
-                    if (EmailAddress::setOptInStatus($recipient, $address, $status)) {
-                        return true;
-                    } else {
-                        throw new BadRequestException('could not set the opt-in status for this address');
+        if($bean->_module === 'Emails'){
+            $recipient = BeanFactory::getBean($bean->parent_type, $bean->parent_id);
+            $emailAddresses = $recipient->get_linked_beans('email_addresses');
+            foreach ($emailAddresses as $address) {
+                foreach ($bean->to() as $emailAddress) {
+                    if ($address->email_address == $emailAddress['email']) {
+                        if (EmailAddress::setOptInStatus($recipient, $address, $status)) {
+                            return true;
+                        } else {
+                            throw new BadRequestException('could not set the opt-in status for this address');
+                        }
                     }
                 }
             }
         }
+        elseif($bean->_module === 'CampaignLog' || $bean->_module === 'NewsletterLogs'){
+            $recipient = BeanFactory::getBean($bean->target_type, $bean->target_id);
+            $recipient->load_relationship('email_addresses');
+            $emailAddress = $this->getEmailAddress($recipient, $bean->email_addr_bean_rel_id);
+            if (EmailAddress::setOptInStatus($recipient, $emailAddress, $status)) {
+                return true;
+            } else {
+                throw new BadRequestException('could not set the opt-in status for this address');
+            }
+        }
         return true;
     }
+    public function getEmailAddress(SpiceBean $person, $emailAddrBeanRelId): ?EmailAddress
+    {
+        $db = DBManagerFactory::getInstance();
+//        $emailAddrBeanRelId = $db->getOne("SELECT email_addr_bean_rel_id from prospect_lists_prospects WHERE prospect_list_id = '$listId' AND related_id ='$person->id' AND deleted = 0");
 
+        // fallback
+        if(empty($emailAddrBeanRelId)) {
+            return !$person->email1 ? null : BeanFactory::newBean('EmailAddresses')->retrieve_by_string_fields(['email_address' => $person->email1]);
+        }
+
+        $q = "SELECT eabr.* FROM email_addr_bean_rel eabr where eabr.id ='{$emailAddrBeanRelId}' and eabr.bean_id ='$person->id' and eabr.deleted = 0";
+        $row = $db->fetchOne($q);
+
+        return BeanFactory::getBean('EmailAddresses', $row['email_address_id']);
+    }
     /**
      * sets the optin status of a recipient's email address to opted out
      * @param $email SpiceBean
