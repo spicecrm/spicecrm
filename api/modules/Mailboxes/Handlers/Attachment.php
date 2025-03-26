@@ -19,6 +19,7 @@ class Attachment extends AbstractAttachment
 
     public function __construct($part) {
         $this->part     = $part;
+        $this->external_id = str_replace(['<', '>'], '', $part->id);
 
         if ($this->part->ifdparameters) { // attachments
             $this->filename = $this->part->dparameters[0]->value;
