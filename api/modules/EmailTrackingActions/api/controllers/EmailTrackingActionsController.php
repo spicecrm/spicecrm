@@ -216,16 +216,7 @@ class EmailTrackingActionsController
                 }
             }
         }
-        elseif($bean->_module === 'CampaignLog'){
-            $recipient = BeanFactory::getBean($bean->related_type, $bean->related_id);
-            $emailAddress = $this->getEmailAddress($recipient, $bean->email_addr_bean_rel_id);
-            if (EmailAddress::setOptInStatus($recipient, $emailAddress, $status)) {
-                return true;
-            } else {
-                throw new BadRequestException('could not set the opt-in status for this address');
-            }
-        }
-        elseif($bean->_module === 'NewsletterLogs'){
+        elseif($bean->_module === 'CampaignLog' || $bean->_module === 'NewsletterLogs'){
             $recipient = BeanFactory::getBean($bean->target_type, $bean->target_id);
             $emailAddress = $this->getEmailAddress($recipient, $bean->email_addr_bean_rel_id);
             if (EmailAddress::setOptInStatus($recipient, $emailAddress, $status)) {
