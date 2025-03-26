@@ -218,6 +218,7 @@ class EmailTrackingActionsController
         }
         elseif($bean->_module === 'CampaignLog' || $bean->_module === 'NewsletterLogs'){
             $recipient = BeanFactory::getBean($bean->target_type, $bean->target_id);
+            $recipient->load_relationship('email_addresses');
             $emailAddress = $this->getEmailAddress($recipient, $bean->email_addr_bean_rel_id);
             if (EmailAddress::setOptInStatus($recipient, $emailAddress, $status)) {
                 return true;
