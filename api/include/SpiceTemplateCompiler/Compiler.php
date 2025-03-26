@@ -320,6 +320,7 @@ class Compiler
                                     $forArray[1] => $linkedBean,
                                     'spicefor' => new SpiceFor([
                                         'index' => $index,
+                                        'index_one_based' => $index + 1,
                                         'first' => ( $index === 0 ),
                                         'last' => ( $index === count( $linkedBeans ) - 1 ),
                                         'inner' => ( $index > 0 and $index < count( $linkedBeans ) - 1 ),
