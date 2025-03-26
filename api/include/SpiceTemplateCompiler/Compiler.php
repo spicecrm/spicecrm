@@ -271,31 +271,39 @@ class Compiler
                     else if($node->getAttribute('data-spicefor')){
                         $spicefor = $node->getAttribute('data-spicefor');
 
-                        // CR1000360
-                        // split looking for pipes
-                        $attributeParts = preg_split("/(\|)/", $spicefor);
-                        $countParts = count($attributeParts);
-                        $params = [];
+                        // check if we have a curly brackets statement
+                        $matches = [];
+                        $matched = preg_match("/{(.*?)}/", $spicefor,  $matches);
+                        if($matched) {
+                            $linkedBeans = $this->handleSubstitution($matches[1], $beans);
+                            $forArray = explode(" as ", $spicefor);
+                        } else {
+                            // CR1000360
+                            // split looking for pipes
+                            $attributeParts = preg_split("/(\|)/", $spicefor);
+                            $countParts = count($attributeParts);
+                            $params = [];
 
-                        // scenario 1: we have 1 parts only. This means NO additional parameters
-                        // $attributeParts[0] = bean.linkname as linkedbean (the full haystack returned when no match)
-                        if($countParts == 1){
-                            $forArray = explode(" as ", $attributeParts[0]);
+                            // scenario 1: we have 1 parts only. This means NO additional parameters
+                            // $attributeParts[0] = bean.linkname as linkedbean (the full haystack returned when no match)
+                            if ($countParts == 1) {
+                                $forArray = explode(" as ", $attributeParts[0]);
+                            }
+
+                            // scenario 2: we have 3 parts. This means additional parameters
+                            // CR1000360 check on params (like filter)
+                            // $attributeParts[0] = bean.linkname
+                            // $attributeParts[1] = some_urlencode_sring (the string between the pipes)
+                            // $attributeParts[2] = as linkedbean
+                            if ($countParts == 3) {
+                                // string " as linkedbean" to "linkedbean"
+                                $attributeParts[2] = substr($attributeParts[2], 4, strlen($attributeParts[2]));
+                                $forArray = [$attributeParts[0], $attributeParts[2]];
+                                $params = $this->parsePipeToArray($attributeParts[1]);
+                            }
+
+                            $linkedBeans = $this->getLinkedBeans($forArray[0], NULL, $beans, $params); // CR1000360 added $params
                         }
-
-                        // scenario 2: we have 3 parts. This means additional parameters
-                        // CR1000360 check on params (like filter)
-                        // $attributeParts[0] = bean.linkname
-                        // $attributeParts[1] = some_urlencode_sring (the string between the pipes)
-                        // $attributeParts[2] = as linkedbean
-                        if($countParts == 3){
-                            // string " as linkedbean" to "linkedbean"
-                            $attributeParts[2] = substr($attributeParts[2], 4, strlen($attributeParts[2]));
-                            $forArray = [$attributeParts[0], $attributeParts[2]];
-                            $params = $this->parsePipeToArray($attributeParts[1]);
-                        }
-
-                        $linkedBeans = $this->getLinkedBeans($forArray[0], NULL, $beans, $params); // CR1000360 added $params
                         foreach ($linkedBeans as $index => $linkedBean) {
                             // set the params for teh first or last entry
                             $params = [];

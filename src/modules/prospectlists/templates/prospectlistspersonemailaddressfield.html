@@ -20,16 +20,19 @@
                                     </span>
                                 </ng-container>
                             </ng-container>
-                            <button *ngIf="!!value" (click)="value = undefined; $event.stopImmediatePropagation();" class="slds-button slds-button--icon">
-                                <system-button-icon icon="clear"/>
-                            </button>
+<!--                            <button *ngIf="!!value" (click)="value = undefined; $event.stopImmediatePropagation();" class="slds-button slds-button&#45;&#45;icon">-->
+<!--                                <system-button-icon icon="clear"/>-->
+<!--                            </button>-->
                         </div>
                         <system-utility-icon size="x-small" icon="down" addclasses="slds-input__icon slds-input__icon_right" />
                     </div>
-                    <div class="slds-dropdown slds-dropdown_length-10 slds-dropdown_fluid" style="max-width: 350px" role="listbox" tabindex="0" aria-busy="false">
+                    <div class="slds-dropdown slds-dropdown_length-10 slds-dropdown_fluid" role="listbox" tabindex="0" aria-busy="false">
                         <ul class="slds-listbox slds-listbox_vertical" role="presentation">
                             <li *ngFor="let emailAddress of emailAddresses | keyvalue" (click)="value = emailAddress.value" role="presentation" class="slds-listbox__item">
                                 <div [class.slds-text-color--inverse-weak]="emailAddress.value.invalid_email == '1'" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
+                                    <div class="slds-grid slds-grid--vertical-align-center">
+                                        <system-input-radio value="1" [(ngModel)]="emailAddress.value.primary_address" [disabled]="true" system-title="LBL_PRIMARY" class="slds-truncate"/>
+                                    </div>
                                     <span class="slds-media__figure slds-listbox__option-icon">
                                         <system-utility-icon *ngIf="emailAddress.value.relid == value" icon="check" size="x-small" colorclass="slds-icon-text-success"/>
                                     </span>
