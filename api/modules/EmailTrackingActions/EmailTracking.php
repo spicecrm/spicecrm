@@ -109,7 +109,7 @@ class EmailTracking
      */
     static function getUnsubscribeURL(Email $email)
     {
-        $url = SpiceConfig::getInstance()->get('emailtracking.unsubscribeurl');
+        $url = SpiceConfig::getInstance()->get('emailtracking.unsubscribeurl') ?: SpiceConfig::getInstance()->config['site_url'] . '/{refid}';
 
         [$parentType, $parentId] = $email->getTrackingParentData();
 
@@ -125,7 +125,23 @@ class EmailTracking
      */
     static function getDoubleOptinUrl(Email $email)
     {
-        $url = SpiceConfig::getInstance()->get('emailtracking.double_optin_url');
+        $url = SpiceConfig::getInstance()->get('emailtracking.double_optin_url') ?: SpiceConfig::getInstance()->config['site_url'] . '/{refid}';
+
+        [$parentType, $parentId] = $email->getTrackingParentData();
+
+        if ($url) {
+            return str_replace('{refid}', self::encodeTrackingID("ParentType:$parentType:ParentId:$parentId"), $url);
+        }
+        return false;
+    }
+
+    /**
+     * @param Email $email
+     * @return string
+     */
+    static function getManagePreferencesUrl(Email $email)
+    {
+        $url = SpiceConfig::getInstance()->get('emailtracking.manage_preferences_url') ?: SpiceConfig::getInstance()->config['site_url'] . '/{refid}';
 
         [$parentType, $parentId] = $email->getTrackingParentData();
 
