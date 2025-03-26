@@ -63,14 +63,10 @@ class M2MProspectListRelationship extends M2MRelationship
 
         $leftID = $row[$leftIDName];
         $rightID = $row[$rightIDName];
-        $emailAddressbeanrelId = $row['email_addr_bean_rel_id'];
 
+        $query = "SELECT * FROM {$this->getRelationshipTable()} WHERE $leftIDName='$leftID' AND $rightIDName='$rightID' AND email_addr_bean_rel_id='{$row['email_addr_bean_rel_id']}' AND deleted=0";
 
-        $query = "SELECT * FROM {$this->getRelationshipTable()} WHERE $leftIDName='$leftID' AND $rightIDName='$rightID' AND email_addr_bean_rel_id='$emailAddressbeanrelId' AND deleted=0";
-
-        $db = DBManagerFactory::getInstance();
-        $result = $db->query($query);
-        $row = $db->fetchByAssoc($result);
+        $row = DBManagerFactory::getInstance()->fetchOne($query);
         if (!empty($row)) {
             return $row;
         } else {
