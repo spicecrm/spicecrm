@@ -8,6 +8,7 @@ use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\SpiceSingleton;
 use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class TXControlHandler extends SpiceSingleton
 {
@@ -38,6 +39,7 @@ class TXControlHandler extends SpiceSingleton
         ];
 
         $compiler = new Compiler(null);
+        $compiler->app_list_strings = SpiceUtils::returnAppListStringsLanguage();
 
         foreach ($info->mergeFields as $field) {
             $parsedBlock = $compiler->compileblock("{{$field->name}}", ['bean' => $bean]);
