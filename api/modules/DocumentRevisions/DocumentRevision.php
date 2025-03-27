@@ -3,7 +3,12 @@ namespace SpiceCRM\modules\DocumentRevisions;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\DataStreams\StreamFactory;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\TXControlEditor\TXControlHandler;
+
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
@@ -55,8 +60,17 @@ class DocumentRevision extends SpiceBean {
             $this->revision = $this->getNextDocumentRevision();
         }
 
+        if ($this->isNew()) {
+            $document = BeanFactory::getBean('Documents', $this->document_id);
+            $this->file_md5 = $document->file_md5;
+            $this->generatePdf();
+        }
+
         if($this->documentrevisionstatus == 'r' && $this->documentrevisionstatus != $this->fetched_row['documentrevisionstatus']){
             $this->archiveAllRevisions();
+
+            $this->released_date = $timedate->nowDb();
+            $this->released_by = AuthenticationController::getInstance()->getCurrentUser()->id;
 
             $current_date = $this->db->now();
             $guidSQL = $this->db->getGuidSQL();
@@ -64,10 +78,14 @@ class DocumentRevision extends SpiceBean {
             $document = BeanFactory::getBean('Documents', $this->document_id);
             $document->revision = $this->revision;
             $document->revision_date = $timedate->nowDb();
-            $document->file_name = $this->file_name;
-            $document->file_md5 = $this->file_md5;
-            $document->file_mime_type = $this->file_mime_type;
+            $document->file_released_name = $this->file_name;
+            $document->file_released_md5 = $this->file_md5;
+            $document->file_released_mime_type = $this->file_mime_type;
+
+            $this->generatePdf();
+
             // create entries for user_documentrevisions to track who read/accepted them later on
+
             if ($document->acceptance_required = "1"){
                 $orgBeans = $document->get_linked_beans('orgunits', 'OrgUnits');
                 foreach ($orgBeans as $orgBean){
@@ -85,6 +103,27 @@ class DocumentRevision extends SpiceBean {
 
         return parent::save($check_notify, $fts_index_bean);
 	}
+
+    /**
+     * generate pdf file from docx
+     * @return void
+     * @throws Exception
+     */
+    private function generatePdf(): void
+    {
+        # remove the old file
+        if (!empty($this->file_pdf_md5)) {
+            unlink(StreamFactory::getPathPrefix('upload') . $this->file_pdf_md5);
+        }
+
+        $file = base64_encode(file_get_contents(StreamFactory::getPathPrefix('upload') . $this->file_md5));
+        $pdf = base64_decode(TXControlHandler::getInstance()->parse($file, 'PDF', $this));
+        $this->file_pdf_md5 = md5($pdf);
+        $this->file_pdf_mime_type = 'application/pdf';
+        $this->file_pdf_name = $this->file_name;
+
+        file_put_contents(StreamFactory::getPathPrefix('upload') . $this->file_pdf_md5, $pdf);
+    }
 
 	function get_summary_text()
 	{
