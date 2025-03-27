@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, OnInit, ViewChild} from '@angular/core';
 import {modelattachments} from "../../../services/modelattachments.service";
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
@@ -8,6 +8,8 @@ import {toast} from "../../../services/toast.service";
 import {map, tap} from "rxjs/operators";
 import {SafeUrl} from "@angular/platform-browser";
 import {helper} from "../../../services/helper.service";
+import {modal} from "../../../services/modal.service";
+import {Subject} from "rxjs";
 
 @Component({
     selector: 'document-file-editor',
@@ -55,6 +57,8 @@ export class DocumentFileEditor implements OnInit {
                 private backend: backend,
                 private toast: toast,
                 public view: view,
+                private modal: modal,
+                private injector: Injector,
                 public helper: helper,
                 public model: model) {
         this.fileUploadId = window._.uniqueId('TxEditorFileUpload_');
@@ -89,14 +93,47 @@ export class DocumentFileEditor implements OnInit {
     }
 
     public ngOnInit() {
+        this.loadAttachments();
+    }
+
+    /**
+     * load attachments
+     * @private
+     */
+    private loadAttachments() {
+
+        const subject = new Subject<void>();
+
         this.modelattachments.module = this.model.module;
         this.modelattachments.id = this.model.id;
-        this.getFileContent().subscribe(docFile => this.docxFile = docFile);
-        this.getFileContent('_pdf').subscribe(pdfFile => {
-            const blob = this.helper.b64toBlob(pdfFile.content, 'application/pdf');
-            this.blobUrl = this.helper.dataToBlobUrl(blob);
-            this.cdRef.detectChanges();
+
+        this.getFileContent().subscribe({
+            next: docFile => {
+                this.docxFile = docFile;
+
+                subject.next();
+                subject.complete();
+            },
+            error: () => {
+                subject.next();
+                subject.complete();
+            }
         });
+        this.getFileContent('_pdf').subscribe({
+            next: pdfFile => {
+                const blob = this.helper.b64toBlob(pdfFile.content, 'application/pdf');
+                this.blobUrl = this.helper.dataToBlobUrl(blob);
+                this.cdRef.detectChanges();
+                subject.next();
+                subject.complete();
+            },
+            error: () => {
+                subject.next();
+                subject.complete();
+            }
+        });
+
+        return subject.asObservable();
     }
 
     /**
@@ -237,14 +274,15 @@ export class DocumentFileEditor implements OnInit {
                 let modelValues: any = {};
 
                 this.model.startEdit(true, true);
-                // somewhat ugly logic to get the prefix from the field .. it has to end with name
-                modelValues[this.fieldName + '_name'] = file.filename;
-                modelValues[this.fieldName + '_size'] = file.filesize;
-                modelValues[this.fieldName + '_mime_type'] = file.file_mime_type;
-                modelValues[this.fieldName + '_md5'] = file.filemd5;
 
                 // update the model
-                this.model.setFields(modelValues);
+                this.model.setFields({
+                    [this.fieldName + '_name']: file.filename,
+                    [this.fieldName + '_size']: file.filesize,
+                    [this.fieldName + '_mime_type']: file.file_mime_type,
+                    [this.fieldName + '_md5']: file.filemd5,
+                });
+
                 this.model.save();
 
                 this.modelattachments.readFile(files[0]).subscribe(fileContent => {
@@ -259,9 +297,48 @@ export class DocumentFileEditor implements OnInit {
                     };
                     this.setEditMode(true);
                 });
-
-
             }
         );
+    }
+
+    /**
+     * copy from other docx
+     */
+    public copyFrom() {
+        this.modal.openModal('ObjectModalModuleLookup', true, this.injector)
+            .subscribe(selectModal => {
+                selectModal.instance.module = 'Documents';
+                selectModal.instance.multiselect = false;
+                selectModal.instance.selectedItems.subscribe(items => {
+
+                    if (!items.length || !items[0][this.fieldName + '_md5']) return;
+
+                    const loading = this.modal.await('LBL_PROCESSING');
+
+                    this.model.startEdit(true, true);
+                    this.model.setFields({
+                        [this.fieldName + '_md5']: items[0][this.fieldName + '_md5'],
+                        [this.fieldName + '_name']: this.model.getField('summary_text'),
+                        [this.fieldName + '_mime_type']: items[0][this.fieldName + '_mime_type'],
+                        [this.fieldName + '_pdf_md5']: items[0][this.fieldName + '_pdf_md5'],
+                        [this.fieldName + '_pdf_name']: this.model.getField('summary_text'),
+                        [this.fieldName + '_pdf_mime_type']: items[0][this.fieldName + '_pdf_mime_type'],
+                    }, true);
+
+                    this.model.save().subscribe({
+                        next: () => {
+                            this.loadAttachments().subscribe(() => {
+                                loading.next(true);
+                                loading.complete();
+                                this.setEditMode(true);
+                            });
+                        },
+                        error: () => {
+                            loading.next(true);
+                            loading.complete();
+                        }
+                    });
+                });
+            });
     }
 }

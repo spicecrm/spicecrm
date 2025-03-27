@@ -59,6 +59,11 @@
                     <button (click)="setEditMode(true)" class="slds-button slds-button--icon-border-filled">
                         <system-button-icon [icon]="!fileName ? 'add' : 'edit'"/>
                     </button>
+                    @if (!fileName) {
+                        <button (click)="copyFrom()" class="slds-button slds-button--icon-border-filled">
+                            <system-button-icon icon="copy"/>
+                        </button>
+                    }
                 </div>
             </system-illustration-no-data>
         }@else {
