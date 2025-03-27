@@ -57,7 +57,7 @@ export class DocumentEditor implements AfterViewInit, OnDestroy, OnChanges {
         },
         plain: {
             mimeType: 'text/plain',
-            txControlType: 'RichTextFormat'
+            txControlType: 'PlainText'
         }
     };
 

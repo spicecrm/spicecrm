@@ -144,6 +144,8 @@ export class DocumentFileEditor implements OnInit {
                 file_name: this.model.getField('summary_text')
             };
 
+            this.parseAndGeneratePdf(file);
+
             this.backend.postRequest(`common/spiceattachments/module/${this.model.module}/${this.model.id}/byfield/${this.fieldName}`, null, body).subscribe(res => {
 
                 this.docxFile = {
@@ -151,26 +153,33 @@ export class DocumentFileEditor implements OnInit {
                     mimeType: file.mimeType,
                     dateModified: res.date_modified,
                 };
-
-                this.isLoading = false;
-                this.setEditMode(false);
-                this.toast.sendToast('LBL_DATA_SAVED', 'success');
             });
         });
+    }
 
-        this.editor.getContent('pdf').then(file => {
+    /**
+     * parse and generate pdf
+     * @param file
+     * @private
+     */
+    private parseAndGeneratePdf(file) {
 
+        this.backend.postRequest(`common/TXControl/parse/module/${this.model.module}/${this.model.id}`, null, {content: file.content, format: 'PDF'}).subscribe(parseContent => {
             const body = {
-                file: file.content,
+                file: parseContent.content,
                 file_mime_type: file.mimeType,
                 file_name: this.model.getField('summary_text')
             };
 
-            const blob = this.helper.b64toBlob(file.content, 'application/pdf');
+            const blob = this.helper.b64toBlob(parseContent.content, 'application/pdf');
             this.blobUrl = this.helper.dataToBlobUrl(blob);
 
+            this.isLoading = false;
+            this.setEditMode(false);
+            this.toast.sendToast('LBL_DATA_SAVED', 'success');
             this.backend.postRequest(`common/spiceattachments/module/${this.model.module}/${this.model.id}/byfield/${this.fieldName + '_pdf'}`, null, body);
         });
+
     }
 
     /**
