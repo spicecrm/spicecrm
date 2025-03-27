@@ -7,6 +7,7 @@ import {navigationtab} from "../../../services/navigationtab.service";
 import {modelattachments} from "../../../services/modelattachments.service";
 import {helper} from "../../../services/helper.service";
 import {modal} from "../../../services/modal.service";
+import {backend} from "../../../services/backend.service";
 
 /**
  * Display spice attachment in a new tab
@@ -63,6 +64,7 @@ export class SpiceAttachmentsContainer implements OnDestroy {
         public navigationtab: navigationtab,
         public modelattachments: modelattachments,
         public helper: helper,
+        private backend: backend,
         public modal: modal) {
         this.componentSubscriptions.add(
             this.navigationtab.activeRoute$.subscribe(route => {
@@ -105,15 +107,27 @@ export class SpiceAttachmentsContainer implements OnDestroy {
         if(routeParams.fieldname){
             this.modelattachments.getAttachmentDataByField(routeParams.fieldname).subscribe({
                 next: (fileData) => {
-                    this.file = fileData;
-                    this.type = this.file.file_mime_type.toLowerCase();
-                    this.blobFile = atob(this.file.file);
-                    this.setTabTitle();
 
-                    // set imgsrc data for image
-                    if (this.fileType == 'image') {
-                        this.imgData = 'data:' + this.file.file_mime_type.toLowerCase() + ';base64,' + this.file.file;
+                    this.file = fileData;
+
+                    // generate pdf preview of the docx file
+                    if (fileData.file_mime_type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+
+                        this.handleDocXPreview(routeParams, this.file.file);
+
+                    } else {
+
+                        this.type = this.file.file_mime_type.toLowerCase();
+
+                        this.blobFile = atob(this.file.file);
+                        this.setTabTitle();
+
+                        // set imgsrc data for image
+                        if (this.fileType == 'image') {
+                            this.imgData = 'data:' + this.file.file_mime_type.toLowerCase() + ';base64,' + this.file.file;
+                        }
                     }
+
                 }, error: () => {
                     this.loadingerror = true;
                 }
@@ -122,19 +136,46 @@ export class SpiceAttachmentsContainer implements OnDestroy {
             this.modelattachments.getAttachmentData(routeParams.attachmentId).subscribe({
                 next: (fileData) => {
                     this.file = fileData;
-                    this.type = this.file.file_mime_type.toLowerCase();
-                    this.blobFile = atob(this.file.file);
-                    this.setTabTitle();
 
-                    // set imgsrc data for image
-                    if (this.fileType == 'image') {
-                        this.imgData = 'data:' + this.file.file_mime_type.toLowerCase() + ';base64,' + this.file.file;
+                    // generate pdf preview of the docx file
+                    if (fileData.file_mime_type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+
+                        this.handleDocXPreview(routeParams, this.file.file);
+
+                    } else {
+
+                        this.type = this.file.file_mime_type.toLowerCase();
+                        this.blobFile = atob(this.file.file);
+                        this.setTabTitle();
+
+                        // set imgsrc data for image
+                        if (this.fileType == 'image') {
+                            this.imgData = 'data:' + this.file.file_mime_type.toLowerCase() + ';base64,' + this.file.file;
+                        }
                     }
                 }, error: () => {
                     this.loadingerror = true;
                 }
             });
         }
+    }
+
+    private handleDocXPreview(routeParams, content) {
+        this.backend.postRequest(`common/TXControl/parse/module/${routeParams.module}/${routeParams.id}`, null, {content: content, format: 'PDF'}).subscribe({
+            next: parseContent => {
+                this.file.file = parseContent.content;
+                this.file.file_mime_type = 'application/pdf';
+                this.type = this.file.file_mime_type;
+                this.blobFile = atob(this.file.file);
+                this.setTabTitle();
+            },
+            error: () => {
+                this.type = this.file.file_mime_type;
+                this.blobFile = atob(this.file.file);
+                this.setTabTitle();
+            }
+        });
+
     }
 
     /**
