@@ -10,6 +10,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
 use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
+use SpiceCRM\includes\WebHook\WebHook;
 use stdClass;
 use SpiceCRM\includes\AddressReferences\AddressReferences;
 use SpiceCRM\includes\database\DBManager;
@@ -1554,6 +1555,17 @@ class SpiceBean
             $logicHook = LogicHook::getInstance();
             $logicHook->call_custom_logic($this->_module, $this, $event, $arguments);
             $this->logicHookDepth[$event]--;
+
+            // handle WebHooks
+            switch ($event) {
+                case 'after_save':
+                    Webhook::getInstance()->callWebhook($this->isNew() ? 'create' : 'update', $this);
+                    break;
+                case 'after_delete':
+                    Webhook::getInstance()->callWebhook('delete', $this);
+                    break;
+            }
+
         }
     }
 
