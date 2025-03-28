@@ -11,6 +11,7 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {MailgunValidateAllButton} from "./components/mailgunvalidateallbutton";
 import {MailgunValidateEmailButton} from "./components/mailgunvalidateemailbutton";
+import {fieldMailgunReasons} from "./fields/fieldmailgunreasons";
 
 @NgModule(
     {
@@ -24,8 +25,8 @@ import {MailgunValidateEmailButton} from "./components/mailgunvalidateemailbutto
         ],
         declarations: [
             MailgunValidateAllButton,
-            MailgunValidateEmailButton
-
+            MailgunValidateEmailButton,
+            fieldMailgunReasons
         ]
     })
 export class MailgunModule {
