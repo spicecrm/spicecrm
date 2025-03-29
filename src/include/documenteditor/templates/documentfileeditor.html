@@ -26,7 +26,7 @@
                     <button (click)="save()" class="slds-button slds-button--icon slds-button--brand" style="padding: 7px 10px;">
                         <system-button-icon icon="save"/>
                     </button>
-                } @else {
+                } @else if (isEditorActive) {
                     <button (click)="setEditMode(true)" class="slds-button slds-button--icon slds-button--brand" style="padding: 7px 10px;">
                         <system-button-icon icon="edit"/>
                     </button>
@@ -39,7 +39,7 @@
             <object [data]="blobUrl" class="slds-size--1-of-1 slds-height_full"></object>
         } @else if (isViewMode) {
             <system-illustration-no-data class="slds-align--absolute-center slds-height_full">
-                @if (!fileName) {
+                @if (!componentconfig?.create_disabled && isEditorActive && !fileName && !attachmentId) {
                     <div class="slds-file-selector slds-file-selector_files">
                         <div class="slds-file-selector__dropzone" (system-drop-file)="onDrop($event)">
                             <input #fileContainer type="file" accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document" (click)="fileContainer.value = null" (change)="uploadFiles(fileContainer.files)" [id]="fileUploadId" class="slds-file-selector__input slds-assistive-text">
@@ -55,16 +55,20 @@
                         </div>
                     </div>
                 }
-                <div class="slds-m-top--small">
-                    <button (click)="setEditMode(true)" class="slds-button slds-button--icon-border-filled">
-                        <system-button-icon [icon]="!fileName ? 'add' : 'edit'"/>
-                    </button>
-                    @if (!fileName) {
-                        <button (click)="copyFrom()" class="slds-button slds-button--icon-border-filled">
-                            <system-button-icon icon="copy"/>
-                        </button>
-                    }
-                </div>
+                @if (isEditorActive) {
+                    <div class="slds-m-top--small">
+                        @if (fileName || attachmentId || !componentconfig?.create_disabled) {
+                            <button (click)="setEditMode(true)" class="slds-button slds-button--icon-border-filled">
+                                <system-button-icon [icon]="!fileName && !attachmentId ? 'add' : 'edit'"/>
+                            </button>
+                        }
+                        @if (!componentconfig?.create_disabled && !fileName && !attachmentId) {
+                            <button (click)="copyFrom()" class="slds-button slds-button--icon-border-filled">
+                                <system-button-icon icon="copy"/>
+                            </button>
+                        }
+                    </div>
+                }
             </system-illustration-no-data>
         }@else {
             <document-editor [file]="docxFile"/>

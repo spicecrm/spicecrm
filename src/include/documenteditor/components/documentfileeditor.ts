@@ -1,4 +1,13 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, OnInit, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Injector,
+    Input,
+    OnChanges,
+    OnInit, SimpleChanges,
+    ViewChild
+} from '@angular/core';
 import {modelattachments} from "../../../services/modelattachments.service";
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
@@ -10,6 +19,7 @@ import {SafeUrl} from "@angular/platform-browser";
 import {helper} from "../../../services/helper.service";
 import {modal} from "../../../services/modal.service";
 import {Subject} from "rxjs";
+import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     selector: 'document-file-editor',
@@ -21,7 +31,7 @@ import {Subject} from "rxjs";
     },
 })
 
-export class DocumentFileEditor implements OnInit {
+export class DocumentFileEditor implements OnInit, OnChanges {
     /**
      * holds the docx file
      */
@@ -29,7 +39,7 @@ export class DocumentFileEditor implements OnInit {
     /**
      * holds the component config passed from a componentset component renderer
      */
-    public componentconfig: { field_name: string };
+    @Input() public componentconfig: {create_disabled: boolean, field_name: string };
     /**
      * is loading flag
      */
@@ -39,6 +49,10 @@ export class DocumentFileEditor implements OnInit {
      */
     public isFullscreen: boolean = false;
     /**
+     * is editor active flag
+     */
+    public isEditorActive: boolean = false;
+    /**
      * blob url for pdf preview
      */
     public blobUrl: SafeUrl;
@@ -46,6 +60,10 @@ export class DocumentFileEditor implements OnInit {
      * blob url for pdf preview
      */
     public fileUploadId: string;
+    /**
+     * blob url for pdf preview
+     */
+    @Input() public attachmentId: string;
     /**
      * document editor reference
      * @private
@@ -60,8 +78,18 @@ export class DocumentFileEditor implements OnInit {
                 private modal: modal,
                 private injector: Injector,
                 public helper: helper,
+                private configurationService: configurationService,
                 public model: model) {
         this.fileUploadId = window._.uniqueId('TxEditorFileUpload_');
+        const config = this.configurationService.getCapabilityConfig('txcontrol');
+        this.isEditorActive = config?.isActive;
+    }
+
+    /**
+     * determine if to handle attachment directly or through the md5 field on the bean
+     */
+    get useDirectAttachment(): boolean {
+        return !!this.attachmentId;
     }
 
     /**
@@ -92,8 +120,17 @@ export class DocumentFileEditor implements OnInit {
         return (this.model.checkAccess('edit') || this.model.checkAccess('create'));
     }
 
+    public ngOnChanges(changes: SimpleChanges) {
+        if (changes.attachmentId && this.attachmentId) {
+            this.loadAttachments();
+        }
+    }
+
     public ngOnInit() {
-        this.loadAttachments();
+
+        if (this.fieldName && !this.attachmentId) {
+            this.loadAttachments();
+        }
     }
 
     /**
@@ -110,28 +147,36 @@ export class DocumentFileEditor implements OnInit {
         this.getFileContent().subscribe({
             next: docFile => {
                 this.docxFile = docFile;
-
-                subject.next();
-                subject.complete();
-            },
-            error: () => {
-                subject.next();
-                subject.complete();
-            }
-        });
-        this.getFileContent('_pdf').subscribe({
-            next: pdfFile => {
-                const blob = this.helper.b64toBlob(pdfFile.content, 'application/pdf');
-                this.blobUrl = this.helper.dataToBlobUrl(blob);
                 this.cdRef.detectChanges();
-                subject.next();
-                subject.complete();
+                if (this.useDirectAttachment) {
+                    subject.next();
+                    subject.complete();
+                }
             },
             error: () => {
-                subject.next();
-                subject.complete();
+                if (this.useDirectAttachment) {
+                    subject.error(false);
+                    subject.complete();
+                }
             }
         });
+
+        // get the pdf preview from the model field md5. For attachment direct pdf source is unknown
+        if (!this.useDirectAttachment) {
+            this.getFileContent('_pdf').subscribe({
+                next: pdfFile => {
+                    const blob = this.helper.b64toBlob(pdfFile.content, 'application/pdf');
+                    this.blobUrl = this.helper.dataToBlobUrl(blob);
+                    this.cdRef.detectChanges();
+                    subject.next();
+                    subject.complete();
+                },
+                error: () => {
+                    subject.error(false);
+                    subject.complete();
+                }
+            });
+        }
 
         return subject.asObservable();
     }
@@ -140,7 +185,11 @@ export class DocumentFileEditor implements OnInit {
      * downloads the file
      */
     public downloadFile() {
-        this.modelattachments.downloadAttachmentForField(this.model.module, this.model.id, this.fieldName, this.model.getField(this.fieldName));
+        if (this.useDirectAttachment) {
+            this.modelattachments.downloadAttachment(this.attachmentId, this.model.getField('summary_text'));
+        } else {
+            this.modelattachments.downloadAttachmentForField(this.model.module, this.model.id, this.fieldName, this.model.getField(this.fieldName));
+        }
     }
 
     /**
@@ -157,9 +206,9 @@ export class DocumentFileEditor implements OnInit {
      * @param editMode
      */
     public setEditMode(editMode: boolean) {
-        if (editMode) {
+        if (editMode && this.isEditorActive) {
             this.view.setEditMode();
-        } else {
+        } else if (!editMode) {
             this.view.setViewMode();
         }
 
@@ -175,16 +224,20 @@ export class DocumentFileEditor implements OnInit {
 
         this.editor.getContent('docx').then(file => {
 
-            const body = {
-                file: file.content,
-                file_mime_type: file.mimeType,
-                file_name: this.model.getField('summary_text')
-            };
-
             this.parseAndGeneratePdf(file);
 
-            this.backend.postRequest(`common/spiceattachments/module/${this.model.module}/${this.model.id}/byfield/${this.fieldName}`, null, body).subscribe(res => {
+            // for attachment only update is allowed
+            let requestFn = () => this.backend.putRequest(`common/spiceattachments/module/${this.model.module}/${this.model.id}/byid/${this.attachmentId}`, null, {file: file.content});
 
+            if (!this.useDirectAttachment) {
+                requestFn = () => this.backend.postRequest(`common/spiceattachments/module/${this.model.module}/${this.model.id}/byfield/${this.fieldName}`, null, {
+                    file: file.content,
+                    file_mime_type: file.mimeType,
+                    file_name: this.model.getField('summary_text'),
+                });
+            }
+
+            requestFn().subscribe(res => {
                 this.docxFile = {
                     content: file.content,
                     mimeType: file.mimeType,
@@ -214,7 +267,11 @@ export class DocumentFileEditor implements OnInit {
             this.isLoading = false;
             this.setEditMode(false);
             this.toast.sendToast('LBL_DATA_SAVED', 'success');
-            this.backend.postRequest(`common/spiceattachments/module/${this.model.module}/${this.model.id}/byfield/${this.fieldName + '_pdf'}`, null, body);
+
+            // for attachment only preview pdf without save
+            if (!this.useDirectAttachment) {
+                this.backend.postRequest(`common/spiceattachments/module/${this.model.module}/${this.model.id}/byfield/${this.fieldName + '_pdf'}`, null, body);
+            }
         });
 
     }
@@ -224,12 +281,18 @@ export class DocumentFileEditor implements OnInit {
      */
     public getFileContent(fieldSuffix: string = '') {
 
-        if (!this.fieldName) return;
+        if (!this.fieldName && !this.useDirectAttachment) return;
 
         this.isLoading = true;
 
+        let getAttachmentMethod = () => this.modelattachments.getAttachmentDataByField(this.fieldName + fieldSuffix);
+
+        if (this.useDirectAttachment) {
+            getAttachmentMethod = () => this.modelattachments.getAttachmentData(this.attachmentId);
+        }
+
         // setEditMode
-        return this.modelattachments.getAttachmentDataByField(this.fieldName + fieldSuffix).pipe(
+        return getAttachmentMethod().pipe(
             map(fileData => ({
                 content: fileData.file,
                 mimeType: fileData.file_mime_type,
