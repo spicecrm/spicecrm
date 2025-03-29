@@ -2,6 +2,7 @@
 
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TXControlEditor\api\controllers\TXControlEditorController;
 
 /**
@@ -42,12 +43,14 @@ $routes = [
     ]
 ];
 
+$config = SpiceConfig::getInstance()->get('DocXEditor.clientId');
+
 /**
  * register the Extension
  */
 $RESTManager->registerExtension(
     'txcontrol',
     '1.0',
-    [],
+    ['isActive' => !empty($config)],
     $routes
 );
