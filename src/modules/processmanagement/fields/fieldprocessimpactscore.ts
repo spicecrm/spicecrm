@@ -1,5 +1,5 @@
 /**
- * @module ObjectFields
+ * @module ModuleProcessManagement
  */
 import {Component} from '@angular/core';
 import {model} from '../../../services/model.service';
