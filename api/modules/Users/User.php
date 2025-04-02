@@ -853,9 +853,15 @@ class User extends Person
      * @return array
      */
     public function getReporteesList(){
-        $reportees = [];
+        if( $_SESSION['reportees'] && isset($_SESSION['reportees'][$this->id])){
+            return $_SESSION['reportees'][$this->id];
+        }
 
+        $reportees = [];
         $this->buildReportees($this->id, $reportees);
+
+        if(!$_SESSION['reportees']) $_SESSION['reportees'] = [];
+        $_SESSION['reportees'][$this->id] = $reportees;
 
         return $reportees;
     }
