@@ -212,22 +212,20 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      */
     public buildSheetDays() {
         this.sheetDays = [];
-        let d = 0;
-        let dayIndex = this.calendar.weekStartDay;
+        let dayIndex = 0;
 
-        while (d < this.calendar.weekDaysCount) {
-            let focDate = new moment(this.setdate);
-            focDate.day(dayIndex);
+        while (dayIndex < this.calendar.weekDaysCount) {
+            const focDate = moment(this.setdate).startOf('week');
+            focDate.add(dayIndex, 'days');
+
             this.sheetDays.push({
-                index: d,
+                index: dayIndex,
                 date: moment(focDate),
-                day: dayIndex,
                 color: this.isToday(moment(focDate)) ? this.calendar.todayColor : '#000000',
                 dateTextDayShort: moment(focDate).format('ddd'),
                 dateTextDayNumber: moment(focDate).format('D'),
                 events: []
             });
-            d++;
             dayIndex++;
         }
     }
@@ -299,7 +297,8 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         const startDateDifference = ((+event.start.diff(weekStartDate, 'days') > 0) ? +event.start.diff(weekStartDate, 'days') : 0);
         const left = startDateDifference * multiEventsContainerWidth;
         const max = this.calendar.weekDaysCount - startDateDifference;
-        const eventLength = Math.abs(eventEnd.diff(eventStart, 'days')) + (eventEnd.hour() > eventStart.hour() || eventEnd.minute() > eventStart.minute() ? 1 : 0);
+        // if the end day time is 0 it will not be included in the length
+        const eventLength = moment(eventEnd).startOf('day').diff(moment(eventStart).startOf('day'), 'day') + (eventEnd.hour() > 0 || eventEnd.minute() > 0 ? 1 : 0);
         const width = (eventLength > max ? max : eventLength) * multiEventsContainerWidth;
 
         event.style = {
