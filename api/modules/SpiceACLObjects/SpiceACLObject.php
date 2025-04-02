@@ -291,11 +291,7 @@ class SpiceACLObject extends SpiceBean
                     $this->authObjects[$aclobject['id']]['objectactions'][] = $objectAction['spiceaclaction_id'];
 
                 // get the standard values
-                $fieldStandardValues = $this->db->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues, spiceaclmodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclmodulefields.id AND spiceaclobject_id='{$aclobject['id']}'");
-                // get the custom values
-                $fieldCustomValues = $this->db->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclcustommodulefields.name FROM spiceaclobjectvalues, spiceaclcustommodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclcustommodulefields.id AND spiceaclobject_id='{$aclobject['id']}'");
-                // merge the values
-                $objectValues = array_merge($fieldStandardValues ?: [], $fieldCustomValues ?: []);
+                $objectValues = SpiceACL::getInstance()->getACLObjectValues($aclobject['id']);
                 foreach ($objectValues as $thisObjectValue) {
                     $this->authObjects[$aclobject['id']]['objectelementvalues'][$thisObjectValue['name']] = [
                         'operator' => $thisObjectValue['operator'],
