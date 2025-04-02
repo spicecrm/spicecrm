@@ -129,7 +129,7 @@ class LoggerManager
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
 
         // log the call
-        if( ($this->_levelCategories[$method] !== false || ($currentUser->id && $this->_userLevelCategories[$currentUser->id][$method] !== false))){
+        if( ($this->_levelCategories[$method] === true || ($currentUser->id && $this->_userLevelCategories[$currentUser->id] && $this->_userLevelCategories[$currentUser->id][$method] === true))){
 
             //now we get the logger type this allows for having a file logger an email logger, a firebug logger or any other logger you wish you can set different levels to log differently
             $logger = (!empty($this->_logMapping[$method])) ? $this->_logMapping[$method] : $this->_logMapping['default'];
