@@ -30,6 +30,12 @@ class SpiceACL
     var $aclObject = null;
     var $territory = null;
 
+    /**
+     * cached Object Values
+     */
+    var $aclObjectValues = [];
+
+
     private static $instance;
 
     private function __construct()
@@ -681,5 +687,21 @@ class SpiceACL
         }
 
         return $fieldControlArray;
+    }
+
+    /**
+     * fetches and caches the objectvalues
+     *
+     * @param $aclObjectId
+     * @return array|mixed
+     * @throws \Exception
+     */
+    public function getACLObjectValues($aclObjectId){
+        if(!isset($this->aclObjectValues[$aclObjectId])){
+            $standardValues = DBManagerFactory::getInstance()->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues, spiceaclmodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclmodulefields.id AND spiceaclobject_id='{$aclObjectId}'");
+            $customValues = DBManagerFactory::getInstance()->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclcustommodulefields.name FROM spiceaclobjectvalues, spiceaclcustommodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclcustommodulefields.id AND spiceaclobject_id='$aclObjectId}'");
+            $this->aclObjectValues[$aclObjectId] = array_merge($standardValues ?: [], $customValues ?: []);
+        }
+        return $this->aclObjectValues[$aclObjectId];
     }
 }
