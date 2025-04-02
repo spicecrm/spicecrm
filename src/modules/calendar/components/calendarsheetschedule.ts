@@ -167,6 +167,17 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     }
 
     /**
+     * get event days difference
+     * @private
+     * @param start
+     * @param end
+     */
+    private getDaysDiff(start, end): number {
+        return moment(end).startOf('day').diff(moment(start).startOf('day'), 'day')
+            + (start.date() == end.date() || (end.hour() > 0 || end.minute() > 0) ? 1 : 0);
+    }
+
+    /**
      * group events by day
      * @param events
      */
@@ -175,38 +186,38 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
         let date = new moment(this.setdate).hour(0).minute(0).second(0);
 
         for (let event of events) {
-            let start = new moment(event.start).hour(0).minute(0).second(0);
-            let end = new moment(event.end).hour(0).minute(0).second(0);
-            for (let eventDay = moment(start); eventDay.diff(end, 'days') <= 0; eventDay.add(1, 'days')) {
-                let sameDay = date.year() == eventDay.year() && date.month() == eventDay.month() && date.date() == eventDay.date();
 
-                if (eventDay.isAfter(date) || sameDay) {
-                    event.timeText = !event.isMulti ? `${event.start.format('HH:mm')} - ${event.end.format('HH:mm')} ` : 'All Day';
-                    let day = {
-                        year: eventDay.year(),
-                        month: eventDay.month(),
-                        day: eventDay.date(),
-                        date: moment(eventDay),
-                        dateText: moment(eventDay).format('MMM D, YYYY'),
-                        dayShortText: moment(eventDay).format('ddd'),
-                        events: [event]
-                    };
-                    let dayIndex = -1;
+            Array.from({length: this.getDaysDiff(event.start, event.end)}, (_, i) => moment(event.start).add(i, 'days'))
+                .forEach(eventDay => {
+                    let sameDay = date.year() == eventDay.year() && date.month() == eventDay.month() && date.date() == eventDay.date();
 
-                    days.some((day, index) => {
-                        if (day.year == eventDay.year() && day.month == eventDay.month() && day.day == eventDay.date()) {
-                            dayIndex = index;
-                            return true;
+                    if (eventDay.isAfter(date) || sameDay) {
+                        event.timeText = !event.isMulti ? `${event.start.format('HH:mm')} - ${event.end.format('HH:mm')} ` : 'All Day';
+                        let day = {
+                            year: eventDay.year(),
+                            month: eventDay.month(),
+                            day: eventDay.date(),
+                            date: moment(eventDay),
+                            dateText: moment(eventDay).format('MMM D, YYYY'),
+                            dayShortText: moment(eventDay).format('ddd'),
+                            events: [event]
+                        };
+                        let dayIndex = -1;
+
+                        days.some((day, index) => {
+                            if (day.year == eventDay.year() && day.month == eventDay.month() && day.day == eventDay.date()) {
+                                dayIndex = index;
+                                return true;
+                            }
+                        });
+
+                        if (days.length > 0 && dayIndex > -1) {
+                            days[dayIndex].events.push({...event});
+                        } else {
+                            days.push(day);
                         }
-                    });
-
-                    if (days.length > 0 && dayIndex > -1) {
-                        days[dayIndex].events.push({...event});
-                    } else {
-                        days.push(day);
                     }
-                }
-            }
+                });
         }
         return days;
     }
