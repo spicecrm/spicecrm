@@ -291,7 +291,12 @@ class SpiceLogger implements LoggerTemplate
             "description" => $instance->quote($message),
             "transaction_id" => LoggerManager::getLogger()->getTransactionId()
         ];
-        $instance->queryOnly("INSERT INTO syslogs (" . implode(",", array_keys($log)) . ") VALUES ('" . implode("','", $log) . "')", true);
+
+        try {
+            $instance->queryOnly("INSERT INTO syslogs (" . implode(",", array_keys($log)) . ") VALUES (" . implode("','", $log) . "')", true);
+        } catch (\Exception $exception){
+            // do nothing
+        }
 
         $this->loggingToLogTable = false;
     }
