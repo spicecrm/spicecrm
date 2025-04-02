@@ -10,6 +10,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\modules\SpiceACL\SpiceACLUsers;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\UserAbsences\UserAbsence;
@@ -495,11 +496,7 @@ class SpiceACLObject extends SpiceBean
 
         // add Values
         // get the standard values
-        $fieldStandardValues = $this->db->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues, spiceaclmodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclmodulefields.id AND spiceaclobject_id='$this->id'");
-        // get the custom values
-        $fieldCustomValues = $this->db->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclcustommodulefields.name FROM spiceaclobjectvalues, spiceaclcustommodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclcustommodulefields.id AND spiceaclobject_id='$this->id'");
-        // merge the values
-        $fieldvalues = array_merge($fieldStandardValues ?: [], $fieldCustomValues ?: []);
+        $fieldvalues = SpiceACL::getInstance()->getACLObjectValues($this->id);
         foreach ($fieldvalues as $fieldvalue) {
             switch ($fieldvalue['operator']) {
                 // equal =
@@ -670,11 +667,7 @@ class SpiceACLObject extends SpiceBean
 
         // add Values
         // get the standard values
-        $fieldStandardValues = $this->db->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues, spiceaclmodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclmodulefields.id AND spiceaclobject_id='$this->id'");
-        // get the custom values
-        $fieldCustomValues = $this->db->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclcustommodulefields.name FROM spiceaclobjectvalues, spiceaclcustommodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclcustommodulefields.id AND spiceaclobject_id='$this->id'");
-        // merge the values
-        $fieldvalues = array_merge($fieldStandardValues ?: [], $fieldCustomValues ?: []);
+        $fieldvalues = SpiceACL::getInstance()->getACLObjectValues($this->id);
         foreach ($fieldvalues as $fieldvalue) {
             switch ($fieldvalue['operator']) {
                 case 'EQ':
