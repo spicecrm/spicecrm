@@ -14,6 +14,7 @@ import {MathExpressionCompilerService} from "../../../services/mathexpressioncom
 import {modal} from "../../../services/modal.service";
 import {Subscription} from "rxjs";
 import {broadcast} from "../../../services/broadcast.service";
+import {MomentService} from "../../../services/moment.service";
 
 /* @ignore */
 declare var moment: any;
@@ -68,6 +69,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
                 public userPrefs: userpreferences,
                 public injector: Injector,
                 public mathExpCompiler: MathExpressionCompilerService,
+                private momentService: MomentService,
                 public planningService: SalesPlanningService) {
     }
 
@@ -148,8 +150,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
                 quarters: 'Q',
                 years: 'YYYY'
             };
-            let lang = this.language.currentlanguage.substring(0, 2);
-            moment.locale(lang);
+
             let date = new moment(dateStart);
             let i = 0;
             while (i < +segments) {
