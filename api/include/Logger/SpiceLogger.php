@@ -280,8 +280,8 @@ class SpiceLogger implements LoggerTemplate
         $instance->enablelog = false;
 
         // create the log entry and write to the DB
-        $log = ["id" => SpiceUtils::createGuid(),
-            "table_name" => "syslogs",
+        $log = [
+            "id" => SpiceUtils::createGuid(),
             "log_level" =>$level,
             "log_sublevel" => $sublevel,
             "pid" => getmypid(),
