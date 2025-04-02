@@ -63,10 +63,15 @@ class DocumentRevision extends SpiceBean {
         if ($this->isNew()) {
             $document = BeanFactory::getBean('Documents', $this->document_id);
             $this->file_md5 = $document->file_md5;
+            $this->file_name = $document->file_name;
+            $this->file_mime_type = $document->file_mime_type;
             $this->generatePdf();
         }
 
-        if($this->documentrevisionstatus == 'r' && $this->documentrevisionstatus != $this->fetched_row['documentrevisionstatus']){
+        if($this->documentrevisionstatus == 'g' && $this->documentrevisionstatus != $this->fetched_row['documentrevisionstatus']){
+            $this->reviewed_date = $timedate->nowDb();
+            $this->reviewed_by = AuthenticationController::getInstance()->getCurrentUser()->id;
+        } else if($this->documentrevisionstatus == 'r' && $this->documentrevisionstatus != $this->fetched_row['documentrevisionstatus']){
             $this->archiveAllRevisions();
 
             $this->released_date = $timedate->nowDb();
