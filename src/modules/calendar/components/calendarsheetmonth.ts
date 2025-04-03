@@ -373,7 +373,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                     this.spreadEventIntoRanges(event);
 
                 } else {
-                    if(!this.weeksIndices[event.start.week()]) return;
+                    if(this.weeksIndices[event.start.week()] == undefined) return;
                     const day = this.monthGrid[this.weeksIndices[event.start.week()]][this.daysIndices[`${event.start.month()}${event.start.date()}`]];
 
                     if (!day) return;
@@ -393,17 +393,10 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * @private
      * @param start
      * @param end
-     * @param isAllDay
      */
-    private getDaysDiff(start, end, isAllDay: boolean): number {
-
-        let eventDaysDiff = Math.ceil(end.diff(start, 'day', true).toFixed(1));
-
-        if (!isAllDay && eventDaysDiff > 0 && end.hour() == 0 && end.minute() == 0) {
-            eventDaysDiff--;
-        }
-
-        return eventDaysDiff;
+    private getDaysDiff(start, end): number {
+        return moment(end).startOf('day').diff(moment(start).startOf('day'), 'day')
+            + (start.date() == end.date() || (end.hour() > 0 || end.minute() > 0) ? 1 : 0);
     }
 
     /**
@@ -414,11 +407,11 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      */
     private spreadEventIntoRanges(event) {
 
-        const daysDiff = this.getDaysDiff(event.start, event.end, event.isAllDay);
+        const daysDiff = this.getDaysDiff(event.start, event.end);
 
-        Array.from({length: daysDiff +1}, (_, i) => moment(event.start).add(i, 'days'))
+        Array.from({length: daysDiff}, (_, i) => moment(event.start).add(i, 'days'))
             .forEach(eventDay => {
-                if(!this.weeksIndices[eventDay.week()]) return;
+                if(this.weeksIndices[eventDay.week()] == undefined) return;
                 const day = this.monthGrid[this.weeksIndices[eventDay.week()]][this.daysIndices[`${eventDay.month()}${eventDay.date()}`]];
 
                 if (!day) return;
@@ -430,7 +423,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                     if (day.date.isSame(lastDayOfWeek, 'days')) {
                         event.existsInRanges[day.date.week()].to = lastDayOfWeek.format();
                     }
-                    if (day.date.isSame(event.end, 'days') || daysDiff == 0) {
+                    if (day.date.isSame(event.end, 'days') || daysDiff == 1) {
                         event.existsInRanges[day.date.week()].to = day.date.format();
                     }
                 } else if (!event.existsInRanges[day.date.week()].to && event.end.isBefore(lastDayOfWeek)) {
@@ -495,11 +488,14 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         this.weeksIndices = {};
         this.daysIndices = {};
 
-        const firstWeek = moment(this.setdate.format()).date(1).day(this.calendar.weekStartDay).format();
+        const endOfFirstWeekOfMonth = moment(this.setdate).startOf('month').startOf('week').add(this.calendar.weekDaysCount -1, 'days');
+        const firstOfLastWeekOfMonth = moment(this.setdate).endOf('month').startOf('week');
+        const firstWeek = (endOfFirstWeekOfMonth.month() < this.setdate.month() ? moment(endOfFirstWeekOfMonth).add(1, 'week') : moment(this.setdate.format()).startOf('month')).startOf('week');
+        const weeksCount = firstOfLastWeekOfMonth.diff(firstWeek, 'week') + 1;
 
         this.monthGrid = Array.from(
-            {length: 5},
-            (_, w) => moment(moment(firstWeek).add(w, 'weeks'))
+            {length: weeksCount},
+            (_, w) => moment(firstWeek).add(w, 'weeks')
         ).map(w => Array.from(
             {length: this.calendar.weekDaysCount},
             (_, i) => {
@@ -582,7 +578,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         }
 
         const startDate = moment(range.from);
-        const length = this.getDaysDiff(startDate, moment(range.to), event.isAllDay) + 1;
+        const length = this.getDaysDiff(startDate, moment(range.to));
 
         const sheetContainer = this.sheetContainer.element.nativeElement;
 

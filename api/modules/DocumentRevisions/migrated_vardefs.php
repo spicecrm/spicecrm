@@ -36,6 +36,7 @@
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
+/* migrated
 SpiceDictionaryHandler::getInstance()->dictionary['DocumentRevision'] = [
     'table' => 'document_revisions',
     'audited' => true,
@@ -173,3 +174,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['DocumentRevision'] = [
 ];
 
 //VardefManager::createVardef('DocumentRevisions', 'DocumentRevision', ['default', 'assignable']);
+*/

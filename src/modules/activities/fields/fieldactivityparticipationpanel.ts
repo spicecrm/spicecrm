@@ -363,10 +363,10 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
         this.model.data[participant.link].beans_relations_to_delete[participant.id] = participant;
         delete (this.model.data[participant.link].beans[participant.id]);
 
-        // perform the same action but for backupData, so the validation is not triggered on the initialization
-        if (!this.model.backupData[participant.link].beans_relations_to_delete) this.model.backupData[participant.link].beans_relations_to_delete = {};
+        // add backupData so it matches the data... needed for the dirty flag
+        this.model.backupData[participant.link] = {beans: {}}
+        this.model.backupData[participant.link].beans_relations_to_delete = {}
         this.model.backupData[participant.link].beans_relations_to_delete[participant.id] = participant;
-        delete (this.model.backupData[participant.link].beans[participant.id]);
 
         // remove th pill
         this.participants = this.participants.filter(item => item.id != participant.id);

@@ -8,6 +8,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarObjects\traits\letterSalutationTrait;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 
 class Person extends SpiceBean
@@ -263,8 +264,13 @@ class Person extends SpiceBean
      */
     public function getVCardContent() {
         global $app_list_strings;
+
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $currentLanguage = $current_user->getPreference('language');
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($currentLanguage);
+
         $content = "BEGIN:VCARD\nVERSION:4.0\n";
-        $content .= "N:{$this->last_name};{$this->first_name};;{$this->salutation} {$this->degree1};{$this->degree2}\n";
+        $content .= "N:{$this->last_name};{$this->first_name};;{$app_list_strings['salutation_dom'][$this->salutation]} {$this->degree1};{$this->degree2}\n";
         $content .= "FN:{$this->salutation} {$this->degree1} {$this->first_name} {$this->last_name} {$this->degree2}\n";
         $content .= $this->email1 && $this->email1 != "" ? "EMAIL;TYPE=INTERNET:{$this->email1}\n" : "";
         $content .= $this->account_name && $this->account_name != "" ? "ORG:{$this->account_name}\n" : "";
