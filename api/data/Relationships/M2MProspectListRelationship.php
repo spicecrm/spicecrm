@@ -1,6 +1,7 @@
 <?php
 namespace SpiceCRM\data\Relationships;
 
+use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\Link2;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
@@ -58,13 +59,19 @@ class M2MProspectListRelationship extends M2MRelationship
     {
         $leftIDName = $this->def['join_key_lhs'];
         $rightIDName = $this->def['join_key_rhs'];
-        if (empty($row[$leftIDName]) || empty($row[$rightIDName]) || empty($row['email_addr_bean_rel_id']))
+        if (empty($row[$leftIDName]) || empty($row[$rightIDName])) {
             return false;
+        }
 
         $leftID = $row[$leftIDName];
         $rightID = $row[$rightIDName];
+        $roleCheck = $this->getRoleWhere();
+        $listBean = BeanFactory::newBean($this->getLHSModule());
 
-        $query = "SELECT * FROM {$this->getRelationshipTable()} WHERE $leftIDName='$leftID' AND $rightIDName='$rightID' AND email_addr_bean_rel_id='{$row['email_addr_bean_rel_id']}' AND deleted=0";
+        # if the allow multiple emails per target flag is set check for the email address rel field, otherwise perform regular m2m check
+        $emailAddressWhere = "AND (not exists(select id from $listBean->_tablename where allow_multiple_emails_per_target = 1 and id = '$leftID' and deleted = 0) or email_addr_bean_rel_id='{$row['email_addr_bean_rel_id']}')";
+
+        $query = "SELECT * FROM {$this->getRelationshipTable()} WHERE $leftIDName='$leftID' AND $rightIDName='$rightID' $emailAddressWhere $roleCheck AND deleted=0";
 
         $row = DBManagerFactory::getInstance()->fetchOne($query);
         if (!empty($row)) {

@@ -53,7 +53,7 @@ export class SystemModelProviderDirective implements OnDestroy {
      * @param provided_model
      */
     @Input('system-model-provider')
-    set provided_model(provided_model: { module: string, id?: string, data: any, clone?: boolean }) {
+    set provided_model(provided_model: {parent?: model, module: string, id?: string, data: any, clone?: boolean }) {
 
         if (!provided_model.module) return;
 
@@ -67,7 +67,7 @@ export class SystemModelProviderDirective implements OnDestroy {
         if (provided_model.data) {
 
             // if (provided_model.data.isNew) {
-                this.model.initialize();
+                this.model.initialize(provided_model.parent);
             // }
 
             // set the data
@@ -80,7 +80,7 @@ export class SystemModelProviderDirective implements OnDestroy {
             // if no data was found BUT an ID, load it from backend... isLoading will be set inside getData()
             this.model.getData();
         } else {
-            this.model.initialize();
+            this.model.initialize(provided_model.parent);
             this.model.isLoading = false;
         }
     }
