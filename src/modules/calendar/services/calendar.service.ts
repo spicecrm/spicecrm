@@ -10,10 +10,11 @@ import {userpreferences} from "../../../services/userpreferences.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {modal} from "../../../services/modal.service";
 import {language} from "../../../services/language.service";
-import {map, take} from "rxjs/operators";
+import {take} from "rxjs/operators";
 import {CdkDragEnd} from "@angular/cdk/drag-drop";
 import {configurationService} from "../../../services/configuration.service";
 import {metadata} from "../../../services/metadata.service";
+import {MomentService} from "../../../services/moment.service";
 
 
 /**
@@ -199,6 +200,7 @@ export class calendar implements OnDestroy {
                 public metadata: metadata,
                 public cdRef: ChangeDetectorRef,
                 @Optional() @Inject('calendarConfigOverride') private calendarConfigOverride: {isDashlet?: boolean, sheetType?: 'Day' | 'Three_Days' | 'Week' | 'Month' | 'Schedule', sheetHourHeight?: number},
+                private momentService: MomentService,
                 public userPreferences: userpreferences) {
         this.loadOverrideConfig();
         this.loadCalendarModules();
@@ -237,7 +239,7 @@ export class calendar implements OnDestroy {
      * @param value: moment
      */
     set calendarDate(value) {
-        this._calendarDate = new moment(value).locale(this.language.currentlanguage.substring(0, 2));
+        this._calendarDate = new moment(value);
         this.session.setSessionData('calendarDate', this._calendarDate);
     }
 
@@ -1058,28 +1060,13 @@ export class calendar implements OnDestroy {
         this._calendarDate = moment(date ? date : this._calendarDate);
     }
 
-
-    /*
-     * will return the full translation for a week day according to current language
-     * @param dayIndex: number
-     * @return weekdayLong: string
-     */
-    public weekdayLong(dayIndex) {
-        let lang = this.language.currentlanguage.substring(0, 2);
-        moment.locale(lang);
-        return moment.weekdays(dayIndex);
-    }
-
-
     /*
      * will return the short translation for a week day according to current language
      * @param dayIndex: number
      * @return weekdayLong: string
      */
     public weekdayShort(dayIndex) {
-        let lang = this.language.currentlanguage.substring(0, 2);
-        moment.locale(lang);
-        return moment.weekdaysShort(dayIndex);
+        return this.momentService.weekdaysShort()[dayIndex];
     }
 
     /*
@@ -1088,8 +1075,6 @@ export class calendar implements OnDestroy {
      * @return weekdayLong: string
      */
     public monthShort(monthIndex) {
-        let lang = this.language.currentlanguage.substring(0, 2);
-        moment.locale(lang);
         return moment.monthsShort('-MMM-', monthIndex);
     }
 }

@@ -53,6 +53,7 @@ class PageBuilderController
             'name' => $params['name'],
             'type' => $params['type'],
             'content' => $params['content'],
+            'image' => $params['image']
         ];
 
         $db = DBManagerFactory::getInstance();

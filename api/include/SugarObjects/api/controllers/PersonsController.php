@@ -21,7 +21,7 @@ class PersonsController
             throw new NotFoundException('Bean not found');
         }
         $content = $bean->getVCardContent();
-        return $res->withHeader('Content-Type', 'text/x-vcard', 'charset=utf-8')
-            ->write($content);
+        $res->getBody()->write($content);
+        return $res->withHeader('Content-Type', 'text/x-vcard', 'charset=utf-8');
     }
 }

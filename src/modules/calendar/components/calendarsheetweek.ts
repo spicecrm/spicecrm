@@ -212,22 +212,20 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      */
     public buildSheetDays() {
         this.sheetDays = [];
-        let d = 0;
-        let dayIndex = this.calendar.weekStartDay;
+        let dayIndex = 0;
 
-        while (d < this.calendar.weekDaysCount) {
-            let focDate = new moment(this.setdate);
-            focDate.day(dayIndex);
+        while (dayIndex < this.calendar.weekDaysCount) {
+            const focDate = moment(this.setdate).startOf('week');
+            focDate.add(dayIndex, 'days');
+
             this.sheetDays.push({
-                index: d,
+                index: dayIndex,
                 date: moment(focDate),
-                day: dayIndex,
                 color: this.isToday(moment(focDate)) ? this.calendar.todayColor : '#000000',
                 dateTextDayShort: moment(focDate).format('ddd'),
                 dateTextDayNumber: moment(focDate).format('D'),
                 events: []
             });
-            d++;
             dayIndex++;
         }
     }
@@ -299,7 +297,8 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         const startDateDifference = ((+event.start.diff(weekStartDate, 'days') > 0) ? +event.start.diff(weekStartDate, 'days') : 0);
         const left = startDateDifference * multiEventsContainerWidth;
         const max = this.calendar.weekDaysCount - startDateDifference;
-        const eventLength = Math.abs(eventEnd.diff(eventStart, 'days')) + (eventEnd.hour() > eventStart.hour() || eventEnd.minute() > eventStart.minute() ? 1 : 0);
+        // if the end day time is 0 it will not be included in the length
+        const eventLength = moment(eventEnd).startOf('day').diff(moment(eventStart).startOf('day'), 'day') + (eventEnd.hour() > 0 || eventEnd.minute() > 0 ? 1 : 0);
         const width = (eventLength > max ? max : eventLength) * multiEventsContainerWidth;
 
         event.style = {
@@ -524,8 +523,8 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
             this.calendar.loadEvents(this.startDate, this.endDate, this.calendar.owner, calendar.id).subscribe(events => {
                 if (events.length > 0) {
                     events.forEach(e => this.adjustEvent(e));
-                    this.ownerEvents = this.ownerEvents.concat(events.filter(event => !event.isMulti));
-                    this.ownerMultiEvents = this.ownerMultiEvents.concat(events.filter(event => event.isMulti));
+                    this.ownerEvents = this.ownerEvents.concat(events.filter(e => !e.isMulti && this.inHoursRange(e)));
+                    this.ownerMultiEvents = this.ownerMultiEvents.concat(events.filter(e => e.isMulti));
                     this.generateNextDaySingleEvents('ownerEvents');
                     this.arrangeMultiEvents();
                     this.setSingleEventsStyle();
@@ -535,15 +534,46 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         });
     }
 
+    /**
+     * check if event hours in calendar ours range
+     * @param event
+     * @private
+     */
+    private inHoursRange(event): boolean {
+
+        if (event.isMulti) return true;
+
+        const sameDay = event.start.date() == event.end.date();
+
+        if (!sameDay && event.start.hour() > this.calendar.endHour && event.end.hour() < this.calendar.startHour) {
+            return false;
+        } else if (sameDay && (event.start.hour() > this.calendar.endHour || event.end.hour() < this.calendar.startHour)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * set event start and end hour to fit in the calendar range hours
+     * @param event
+     */
     public adjustEvent(event) {
         if (!event.isMulti) {
-            let endInRange = event.end.hour() > this.calendar.startHour && event.start.hour() < this.calendar.startHour;
-            let startInRange = event.start.hour() < this.calendar.endHour && event.end.hour() > this.calendar.endHour;
-            if (endInRange) {
+            const sameDay = event.start.date() == event.end.date();
+
+            if ((sameDay && event.start.hour() < this.calendar.startHour) || (!sameDay && event.start.hour() < this.calendar.startHour)) {
                 event.start = event.start.hour(this.calendar.startHour).minute(0);
             }
-            if (startInRange) {
+
+            if (!sameDay && event.start.hour() > this.calendar.endHour && event.end.hour() > this.calendar.startHour) {
+                event.start.add(1, 'days').hour(this.calendar.startHour).minute(0);
+            }
+
+            if (event.end.hour() > this.calendar.endHour) {
                 event.end = event.end.hour(this.calendar.endHour).minute(59);
+            } else if (!sameDay && event.end.hour() < this.calendar.startHour) {
+                event.end.subtract(1, 'days').hour(this.calendar.endHour).minute(59);
             }
         }
     }
@@ -564,8 +594,8 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
             .subscribe(events => {
                 if (events.length > 0) {
                     events.forEach(e => this.adjustEvent(e));
-                    this.groupwareEvents = events.filter(event => !event.isMulti);
-                    this.groupwareMultiEvents = events.filter(event => event.isMulti);
+                    this.groupwareEvents = events.filter(e => !e.isMulti && this.inHoursRange(e));
+                    this.groupwareMultiEvents = events.filter(e => e.isMulti);
                     this.generateNextDaySingleEvents('groupwareEvents');
                     this.arrangeMultiEvents();
                     this.setSingleEventsStyle();
@@ -597,6 +627,8 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         this.calendar.loadEvents(this.startDate, this.endDate, calendar.id, calendar.id).subscribe(events => {
             if (events.length > 0) {
                 events.forEach(event => {
+
+                    if (!this.inHoursRange(event)) return;
 
                     this.adjustEvent(event);
 

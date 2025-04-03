@@ -23,9 +23,11 @@
         <thead>
         <tr>
             <th *ngIf="layout.screenwidth != 'small'" scope="col"></th>
-            <th *ngFor="let weekday of weekdays; let index = index" scope="col">
-                <abbr [title]="weekdayLong(index)">{{weekday}}</abbr>
-            </th>
+            @for (weekday of weekdays(); track $index) {
+                <th scope="col">
+                    <abbr [title]="weekdayLong($index)">{{weekday}}</abbr>
+                </th>
+            }
         </tr>
         </thead>
         <tbody>
@@ -42,7 +44,7 @@
         </tbody>
         <tbody *ngIf="dual">
         <tr>
-            <td [attr.colspan]="weekdays.length +1" class="slds-theme--shade">
+            <td [attr.colspan]="weekdays().length +1" class="slds-theme--shade">
                 <div class="slds-grid slds-m-vertical--xx-small">
                     <h2 class="slds-size--1-of-2">
                         {{secondMonth}}

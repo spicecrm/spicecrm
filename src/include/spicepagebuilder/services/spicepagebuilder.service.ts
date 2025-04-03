@@ -431,11 +431,11 @@ export class SpicePageBuilderService {
      * @param content
      * @param type
      */
-    public saveCustomElement(content: SectionI | ContentElementI, type: 'section' | 'item') {
+    public saveCustomElement(content: SectionI | ContentElementI, type: 'section' | 'item', image: any = null) {
 
         this.isMouseIn = undefined;
 
-        this.modal.input('LBL_ENTER_NAME', 'LBL_NAME').subscribe(name => {
+        this.modal.input(null, 'LBL_NAME').subscribe(name => {
 
             if (!name) return;
 
@@ -444,6 +444,7 @@ export class SpicePageBuilderService {
                 name: name,
                 type: type,
                 content: content,
+                image: image
             };
 
             switch (type) {

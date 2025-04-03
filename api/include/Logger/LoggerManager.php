@@ -79,7 +79,19 @@ class LoggerManager
 		'off'        => 0,
     ];
 
+    /**
+     * the general system log levels
+     *
+     * @var array
+     */
     private  $_levelCategories = [];
+
+    /**
+     * user based log levels
+     *
+     * @var array
+     */
+    private  $_userLevelCategories = [];
     private  $_dbconfig = [
 
     ];
@@ -113,14 +125,11 @@ class LoggerManager
  	    )
  	{
 
-         // just check if we have the level at all
-         if(!isset($this->_levelCategories[$method])) return false;
-
         // get the current user is
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
 
         // log the call
-        if( (array_search('*',$this->_levelCategories[$method]) !== false || ($currentUser->id && array_search($currentUser->id,$this->_levelCategories[$method]) !== false))){
+        if( ($this->_levelCategories[$method] === true || ($currentUser->id && $this->_userLevelCategories[$currentUser->id] && $this->_userLevelCategories[$currentUser->id][$method] === true))){
 
             //now we get the logger type this allows for having a file logger an email logger, a firebug logger or any other logger you wish you can set different levels to log differently
             $logger = (!empty($this->_logMapping[$method])) ? $this->_logMapping[$method] : $this->_logMapping['default'];
@@ -221,13 +230,13 @@ class LoggerManager
 
         $levels = SpiceConfig::getInstance()->get('logger.level');
         foreach(explode(',', $levels) as $level){
-            $this->_levelCategories[$level] = ['*'];
+            $this->_levelCategories[$level] = true;
         }
 
         if(DBManagerFactory::getInstance('spicelogger')) {
             $res = DBManagerFactory::getInstance('spicelogger')->queryOnly("SELECT log_level level, user_id FROM syslogusers WHERE logstatus = 1");
             while ($row = DBManagerFactory::getInstance('spicelogger')->fetchByAssoc($res)) {
-                $this->_levelCategories[$row['level']][$row['user_id']] = true;
+                $this->_userLevelCategories[$row['user_id']][$row['level']] = true;
             }
         }
     }

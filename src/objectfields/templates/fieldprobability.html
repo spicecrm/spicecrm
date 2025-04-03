@@ -1,10 +1,10 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
     <div class="slds-text-align_right">
-        {{value}}
+        {{value}}%
     </div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="getFieldClass()">
-    <input class="slds-input slds-text-align_right" type="number"[(ngModel)]="value" />
+    <input class="slds-input slds-text-align_right" type="number"[(ngModel)]="value" />%
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>

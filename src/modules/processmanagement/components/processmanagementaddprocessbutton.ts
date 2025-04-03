@@ -1,5 +1,5 @@
 /**
- * @module ModulePriceConditions
+ * @module ModuleProcessManagement
  */
 import {Component, EventEmitter, Input, OnInit, Output, SkipSelf} from '@angular/core';
 import {Router} from '@angular/router';

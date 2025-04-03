@@ -11,6 +11,7 @@ import {configurationService} from './configuration.service';
 import {modal} from './modal.service';
 import {session} from './session.service';
 import {metadata} from "./metadata.service";
+import {MomentService} from "./moment.service";
 
 /**
  * @ignore
@@ -81,7 +82,8 @@ export class userpreferences {
         public broadcast: broadcast,
         public modalservice: modal,
         public session: session,
-        public metadata: metadata
+        public metadata: metadata,
+        private momentService: MomentService
     ) {
         this.toUse = this.preferences.global;
         // this.retrievePrefsFromConfigService();
@@ -107,6 +109,9 @@ export class userpreferences {
 
         this.completePreferencesWithDefaults();
         this.session.setTimezone(this.toUse.timezone); // Tell the UI the current time zone.
+        let lang = this.language.currentlanguage.substring(0, 2);
+
+        this.momentService.setLocale(lang, this.toUse.week_day_start);
 
         // if we have a role set it
         if(this.preferences.global.userrole){

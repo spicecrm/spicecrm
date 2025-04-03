@@ -8,6 +8,7 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {ObjectFields} from "../../objectfields/objectfields";
 import {DocumentFileEditor} from "./components/documentfileeditor";
 import {DocumentEditor} from "./components/documenteditor";
+import {DocumentFileEditorStandalone} from "./components/documentfileeditorstandalone";
 
 @NgModule({
     imports: [
@@ -22,6 +23,7 @@ import {DocumentEditor} from "./components/documenteditor";
     declarations: [
         DocumentEditor,
         DocumentFileEditor,
+        DocumentFileEditorStandalone
     ],
     providers: [],
 })

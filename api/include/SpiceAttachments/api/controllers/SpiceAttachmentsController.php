@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceAttachments\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -246,7 +247,7 @@ class SpiceAttachmentsController
     }
 
     /**
-     * update attachment file content
+     * update/create attachment file content
      * @param Request $req
      * @param Response $res
      * @param array $args
@@ -259,8 +260,8 @@ class SpiceAttachmentsController
 
         $seed = BeanFactory::getBean($args['beanName'], $args['beanId']);
 
-        if ($seed && !$seed->ACLAccess('view')) {
-            throw (new ForbiddenException("not allowed to view this record"))->setErrorCode('noModuleView');
+        if ($seed && !$seed->ACLAccess('edit')) {
+            throw (new ForbiddenException("not allowed to edit this record"))->setErrorCode('noModuleEdit');
         }
 
         # if file does not exist yet create a new one
@@ -274,6 +275,42 @@ class SpiceAttachmentsController
         $postBody['filemd5'] = $seed->{$args['fieldprefix'] . '_md5'};
 
         $response = SpiceAttachments::saveAttachmentFile($postBody);
+
+        return $res->withJson($response);
+    }
+
+    /**
+     * update attachment file content by id
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function updateAttachmentContentById(Request $req, Response $res, array $args): Response
+    {
+        $postBody = $req->getParsedBody();
+
+        $seed = BeanFactory::getBean($args['beanName'], $args['beanId']);
+
+        if ($seed && !$seed->ACLAccess('edit')) {
+            throw (new ForbiddenException("not allowed to edit this record"))->setErrorCode('noModuleEdit');
+        }
+
+        $attachment = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM spiceattachments WHERE id = '{$args['attachmentId']}'");
+
+        if (!$attachment) {
+            throw new NotFoundException('attachment not found');
+        }
+
+        $md5 = md5(base64_decode($postBody['file']));
+
+        $response = SpiceAttachments::saveAttachmentFile([
+            'filemd5' => $md5,
+            'file' => $postBody['file'],
+        ]);
+
+        DBManagerFactory::getInstance()->updateQuery('spiceattachments', ['id' => $args['attachmentId']], ['filemd5' => $md5]);
 
         return $res->withJson($response);
     }
