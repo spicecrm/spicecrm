@@ -60,18 +60,26 @@ class DocumentRevision extends SpiceBean {
             $this->revision = $this->getNextDocumentRevision();
         }
 
+        $generatePdf = false;
+
         if ($this->isNew()) {
             $document = BeanFactory::getBean('Documents', $this->document_id);
             $this->file_md5 = $document->file_md5;
             $this->file_name = $document->file_name;
             $this->file_mime_type = $document->file_mime_type;
-            $this->generatePdf();
+            $this->file_pdf_mime_type = 'application/pdf';
+            $this->file_pdf_name = $this->file_name;
+
+            $generatePdf = true;
         }
 
         if($this->documentrevisionstatus == 'g' && $this->documentrevisionstatus != $this->fetched_row['documentrevisionstatus']){
             $this->reviewed_date = $timedate->nowDb();
             $this->reviewed_by = AuthenticationController::getInstance()->getCurrentUser()->id;
         } else if($this->documentrevisionstatus == 'r' && $this->documentrevisionstatus != $this->fetched_row['documentrevisionstatus']){
+
+            $generatePdf = true;
+
             $this->archiveAllRevisions();
 
             $this->released_date = $timedate->nowDb();
@@ -86,8 +94,6 @@ class DocumentRevision extends SpiceBean {
             $document->file_released_name = $this->file_name;
             $document->file_released_md5 = $this->file_md5;
             $document->file_released_mime_type = $this->file_mime_type;
-
-            $this->generatePdf();
 
             // create entries for user_documentrevisions to track who read/accepted them later on
 
@@ -106,28 +112,27 @@ class DocumentRevision extends SpiceBean {
             $document->save();
         }
 
-        return parent::save($check_notify, $fts_index_bean);
+        $saved = parent::save($check_notify, $fts_index_bean);
+
+        if ($generatePdf) $this->generatePdf();
+
+        return $saved;
 	}
 
     /**
      * generate pdf file from docx
      * @return void
-     * @throws Exception
+     * @throws \Exception
      */
     private function generatePdf(): void
     {
-        # remove the old file
-        if (!empty($this->file_pdf_md5)) {
-            unlink(StreamFactory::getPathPrefix('upload') . $this->file_pdf_md5);
-        }
-
         $file = base64_encode(file_get_contents(StreamFactory::getPathPrefix('upload') . $this->file_md5));
         $pdf = base64_decode(TXControlHandler::getInstance()->parse($file, 'PDF', $this));
         $this->file_pdf_md5 = md5($pdf);
-        $this->file_pdf_mime_type = 'application/pdf';
-        $this->file_pdf_name = $this->file_name;
 
         file_put_contents(StreamFactory::getPathPrefix('upload') . $this->file_pdf_md5, $pdf);
+
+        $this->db->updateQuery($this->_tablename, ['id' => $this->id], ['file_pdf_md5' => $this->file_pdf_md5]);
     }
 
 	function get_summary_text()
