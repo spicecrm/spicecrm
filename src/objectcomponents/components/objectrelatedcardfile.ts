@@ -78,9 +78,10 @@ export class ObjectRelatedCardFile {
             this.modelattachments.folderId = this.file.id;
         } else {
             // disable preview for specific files
-            const applicationFile = fileTypeArray[0] == 'application' && fileTypeArray[1] != 'pdf' && fileTypeArray[1] != 'msg';
+            const applicationFile =  fileTypeArray[0] == 'application' && !['pdf', 'msg', 'vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(fileTypeArray[1]);
             const csvFile = fileTypeArray[0] == 'text' && fileTypeArray[1] == 'csv';
-            if (applicationFile || csvFile) return this.downloadFile();
+
+            if(applicationFile || csvFile) return this.downloadFile();
 
             let routePrefix = '';
             if (this.navigationtab?.tabid) {

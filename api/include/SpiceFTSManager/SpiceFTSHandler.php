@@ -6,6 +6,7 @@ namespace SpiceCRM\includes\SpiceFTSManager;
 use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -194,6 +195,12 @@ class SpiceFTSHandler
                     break;
                 }
             }
+        }
+
+        // if we have a searchterm check the min NGRam length
+        if($postBody['searchterm'] && strlen($postBody['searchterm']) < SpiceConfig::getInstance()->get('fts.min_ngram', 3)) {
+            $ngramLength = SpiceConfig::getInstance()->get('fts.min_ngram', 3);
+            throw new BadRequestException("Minimum NGram Length ({$ngramLength}) not matched in searchterm");
         }
 
         // use FTS

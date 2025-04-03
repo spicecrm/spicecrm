@@ -14,6 +14,7 @@ import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {CdkDropListGroup} from "@angular/cdk/drag-drop";
 import {TagElementI} from "../interfaces/spicepagebuilder.interfaces";
 import {toast} from "../../../services/toast.service";
+import {libloader} from "../../../services/libloader.service";
 
 /**
  * render spice page builder panel and renderer
@@ -44,8 +45,12 @@ export class SpicePageBuilder implements AfterViewInit {
 
     constructor(public spicePageBuilderService: SpicePageBuilderService,
                 private toast: toast,
+                private libloader: libloader,
                 public cdRef: ChangeDetectorRef) {
         this.pageBuilderChange$ = this.spicePageBuilderService.response;
+
+        this.libloader.loadLib('html2canvas');
+
     }
 
     @Input()

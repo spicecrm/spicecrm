@@ -911,7 +911,11 @@ class Email extends SpiceBean
     {
         $handlingLink = SpiceConfig::getInstance()->get('emailtracking.tracking_clicks_url');
 
-        if (!$handlingLink) return;
+        // removed to always parese the email
+        // if (!$handlingLink) return;
+
+        // boolean flag to see if we made any changes ... otherwise we leave the body untouched
+        $tracked = false;
 
         // load the document with proper encoding
         $dom = new DOMDocument();
@@ -922,26 +926,45 @@ class Email extends SpiceBean
         /** @var \DOMElement $node */
         foreach ($dom->getElementsByTagName('a') as $node) {
 
-            if (!$node->hasAttribute('data-trackinglink')) continue;
+            if ($node->hasAttribute('data-trackinglink')) {
+                $trackingId = $node->getAttribute('data-trackinglink');
 
-            $trackingId = $node->getAttribute('data-trackinglink');
+                if (empty($trackingId)) {
+                    $trackingId = EmailTrackingLink::getTrackingLinkId(
+                        $node->getAttribute('href'),
+                        $node->getAttribute('text'),
+                        $this->id,
+                        'Emails'
+                    );
+                }
 
-            if (empty($trackingId)) {
-                $trackingId = EmailTrackingLink::getTrackingLinkId(
-                    $node->getAttribute('href'),
-                    $node->getAttribute('text'),
-                    $this->id,
-                    'Emails'
-                );
+                $trackingLink = EmailTrackingLink::transformEmailTrackingLinks($parentType, $parentId, $trackingId, $handlingLink);
+                $this->assignBeanToEmail($trackingId, 'EmailTrackingLinks');
+                $node->setAttribute('href', $trackingLink);
+                $tracked = true;
+            } else if ($node->hasAttribute('data-emailaction')) {
+                $emailAction= $node->getAttribute('data-emailaction');
+                switch($emailAction) {
+                    case 'unsubscribe':
+                        $node->setAttribute('href', EmailTracking::getUnsubscribeURL($this));
+                        $tracked = true;
+                        break;
+                    case 'doi':
+                        $node->setAttribute('href', EmailTracking::getDoubleOptinUrl($this));
+                        $tracked = true;
+                        break;
+                    case 'manage':
+                        $node->setAttribute('href', EmailTracking::getManagePreferencesUrl($this));
+                        $tracked = true;
+                        break;
+                }
             }
-
-            $trackingLink = EmailTrackingLink::transformEmailTrackingLinks($parentType, $parentId, $trackingId, $handlingLink);
-            $this->assignBeanToEmail($trackingId, 'EmailTrackingLinks');
-            $node->setAttribute('href', $trackingLink);
         }
 
         // save full html or body only depending on what we got in
-        $this->body = strpos($this->body, '<html>') >= 0 ? $dom->saveHTML() : str_replace(['<body>', '</body>'], '', $dom->saveHTML($dom->getElementsByTagName('body')->item(0))); // $dom->saveHTML('body');
+        if($tracked){
+            $this->body = strpos($this->body, '<html>') >= 0 ? $dom->saveHTML($dom->getElementsByTagName('html')->item(0)) : str_replace(['<body>', '</body>'], '', $dom->saveHTML($dom->getElementsByTagName('body')->item(0))); // $dom->saveHTML('body');
+        }
     }
 
     /**
@@ -1818,7 +1841,7 @@ class Email extends SpiceBean
         $selector = new DOMXPath($doc);
 
         // query all inline images. some images include charset utf-8 in the src
-        return $selector->query("//img[contains(@src, 'data:image/')]");
+        return $selector->query("//img[contains(@src, 'data:image/') or contains(@src, 'data:IMAGE/')]");
     }
 
     public function addDocumentAttachment($doc): void

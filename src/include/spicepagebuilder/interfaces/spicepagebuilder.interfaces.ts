@@ -46,7 +46,8 @@ export interface CustomElement {
     id?: string,
     name: string,
     type: 'section' | 'item',
-    content: SectionI | ContentElementI
+    content: SectionI | ContentElementI,
+    image?: string
 }
 /**
  * column element to be rendered in the view
