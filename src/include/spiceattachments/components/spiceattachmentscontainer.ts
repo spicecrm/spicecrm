@@ -204,7 +204,7 @@ export class SpiceAttachmentsContainer implements OnDestroy {
      * @private
      */
     private handleDocXPreview(routeParams, content) {
-        this.backend.postRequest(`common/TXControl/parse/module/${routeParams.module}/${routeParams.id}`, null, {content: content, format: 'PDF'}).subscribe({
+        this.backend.postRequest(`common/TXControl/convert/module/${routeParams.module}/${routeParams.id}`, null, {content: content, format: 'PDF'}).subscribe({
             next: parseContent => {
                 this.isLoading = false;
                 this.file.file = parseContent.content;
