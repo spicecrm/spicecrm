@@ -42,6 +42,10 @@ export class SpicePageBuilder implements AfterViewInit {
      * @private
      */
     public dropListGroupDefined: boolean = false;
+    /**
+     * holds the renderer container class
+     */
+    @Input() public rendererClass: string;
 
     constructor(public spicePageBuilderService: SpicePageBuilderService,
                 private toast: toast,

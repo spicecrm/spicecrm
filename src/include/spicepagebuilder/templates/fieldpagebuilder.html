@@ -4,6 +4,9 @@
     </div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-height_full" [ngClass]="getFieldClass()">
-    <spice-page-builder [pageContent]="model.data[bodySPBFieldName]" (pageBuilderChange$)="onPageBuilderChange($event)" class="spice-display-block slds-height_full"></spice-page-builder>
+    @if (stylesheet?.content) {
+        <link rel="stylesheet" type="text/css" [href]="stylesheet.contentSafeResourceUrl">
+    }
+    <spice-page-builder [pageContent]="model.data[bodySPBFieldName]" [rendererClass]="!this.stylesheet?.id ? '' : (' spice-page-builder-' + stylesheet.id)" (pageBuilderChange$)="onPageBuilderChange($event)" class="spice-display-block slds-height_full"></spice-page-builder>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>
