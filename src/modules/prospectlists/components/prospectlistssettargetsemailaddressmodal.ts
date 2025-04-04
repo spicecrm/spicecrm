@@ -22,7 +22,7 @@ export class ProspectListsSetTargetsEmailAddressModal implements ModalComponentI
     /**
      * filtered items by show/hide all action needed
      */
-    public filteredItems: { id: string, summary_text: string, email_addresses: {beans: any};}[] = [];
+    public filteredItems: { id: string, summary_text: string, allow_multiple_emails_per_target?: boolean, email_addresses: {beans: any};}[] = [];
     /**
      * list of completed items ids
      */
@@ -37,6 +37,10 @@ export class ProspectListsSetTargetsEmailAddressModal implements ModalComponentI
     public emailAddressFieldName: string;
 
     public showAll: boolean = false;
+    /**
+     * reference to the parent model
+     */
+    public parent: model;
 
     constructor(public model: model, private view: view) {
         this.view.isEditable = true;
