@@ -127,8 +127,10 @@ export class fieldModelAttachment extends fieldGeneric {
      * opens file/url in a new tab
      * module/:module/:moduleId/:attachment/:attachmentId
      */
-    public openInTab() {
-
+    public openInTab(e) {
+        // no open of record just file
+        e.preventDefault();
+        e.stopPropagation();
 
         let fileTypeArray = this.mime_type.toLowerCase().split("/");
 
