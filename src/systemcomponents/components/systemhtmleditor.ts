@@ -64,6 +64,11 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
     @Input() public innerheight: string;
 
     /**
+     * set the ediotor to resizable or not
+     */
+    @Input() public resizeable: boolean = true;
+
+    /**
      * enable/disable using the media file module
      * @private
      */
@@ -137,7 +142,10 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
             resize: 'none',
             position: 'fixed',
             'z-index': 9999
-        } : {height: (+this.innerHeight + 50) + 'px'};
+        } : {
+            height: (+this.innerHeight + 50) + 'px',
+            resize: this.resizeable ? 'vertical' : 'none'
+        };
     }
 
     public ngOnInit() {
