@@ -53,6 +53,7 @@ export class SpicePageBuilderElementSection implements OnInit {
         {name: 'border-right', type: 'text'},
         {name: 'border-bottom', type: 'text'},
         {name: 'border-left', type: 'text'},
+        {name: 'inner-border', type: 'text'},
         {name: 'background-position', type: 'text'},
         {name: 'background-repeat', type: 'text'},
         {name: 'background-size', type: 'text'},
