@@ -21,8 +21,8 @@ export class SpicePageBuilderElementHeading extends SpicePageBuilderElementText 
     /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[] = [
-        {name: 'color', type: 'color'},
+    public readonly attributesList: AttributeObjectI[][] = [
+        [{name: 'color', type: 'color'},
         {name: 'container-background-color', type: 'color'},
         {name: 'font-size', type: 'textSuffix'},
         {name: 'font-style', type: 'text'},
@@ -34,7 +34,7 @@ export class SpicePageBuilderElementHeading extends SpicePageBuilderElementText 
         {name: 'text-transform', type: 'text'},
         {name: 'align', type: 'text'},
         {name: 'padding', type: 'sides'},
-        {name: 'css-class', type: 'text'}
+        {name: 'css-class', type: 'text'}]
     ];
     /**
      * hold the sanitized content html

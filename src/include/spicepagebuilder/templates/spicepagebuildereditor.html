@@ -2,7 +2,7 @@
     <system-modal-header (close)="cancel()">
         <system-label label="LBL_EDIT"></system-label> <system-label [label]="element.label"></system-label>
     </system-modal-header>
-    <system-modal-content [grow]="true">
+    <system-modal-content [grow]="grow" margin="xx-small">
         <div class="slds-height_full slds-size--1-of-1" [ngSwitch]="element.tagName">
             <spice-page-builder-element-heading *ngSwitchCase="'heading'" [element]="element" [isEditMode]="true"></spice-page-builder-element-heading>
             <spice-page-builder-element-text *ngSwitchCase="'text'" [element]="element" [isEditMode]="true"></spice-page-builder-element-text>

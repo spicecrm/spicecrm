@@ -87,7 +87,8 @@ export interface DividerI extends ContentElementI {
         'border-width'?: string,
         'padding'?: string,
         'css-class'?: string,
-        'width'?: string
+        'width'?: string,
+        align?: string
     };
 }
 /**
@@ -250,11 +251,13 @@ export interface EditorAttributeI {
  */
 export interface AttributeObjectI {
     name: string;
-    type: 'color'|'text'|'sides'|'textSuffix';
+    type: 'color'|'text'|'sides'|'textSuffix'|'width'|'halign';
+    class?: string;
 }
 
-
-
+export interface AttributeObjectArray{
+    attributes
+}
 
 
 

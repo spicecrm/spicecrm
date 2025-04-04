@@ -24,12 +24,12 @@ export class SpicePageBuilderElementSpacer extends SpicePageBuilderElement {
     /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[] = [
-        {name: 'width', type: 'textSuffix'},
+    public readonly attributesList: AttributeObjectI[][] = [
+        [{name: 'width', type: 'textSuffix'},
         {name: 'padding', type: 'sides'},
         {name: 'container-background-color', type: 'color'},
         {name: 'vertical-align', type: 'text'},
-        {name: 'css-class', type: 'text'}
+        {name: 'css-class', type: 'text'}]
     ];
 
     constructor(public domSanitizer: DomSanitizer,

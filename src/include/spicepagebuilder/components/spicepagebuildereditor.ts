@@ -35,6 +35,12 @@ export class SpicePageBuilderEditor {
      * holds a reference to the component for destroy
      */
     public self: any = {};
+
+    /**
+     * set to grow the modal by default
+     */
+    public grow: boolean = true;
+
     /**
      * code container reference to beatify
      */
