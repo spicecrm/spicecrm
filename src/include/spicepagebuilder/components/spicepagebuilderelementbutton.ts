@@ -26,8 +26,8 @@ export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
     /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[] = [
-        {name: 'href', type: 'text'},
+    public readonly attributesList: AttributeObjectI[][] = [
+        [{name: 'href', type: 'text'},
         {name: 'rel', type: 'text'},
         {name: 'target', type: 'text'},
         {name: 'align', type: 'text'},
@@ -49,7 +49,7 @@ export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
         {name: 'letter-spacing', type: 'textSuffix'},
         {name: 'text-decoration', type: 'text'},
         {name: 'text-transform', type: 'text'},
-        {name: 'css-class', type: 'text'}
+        {name: 'css-class', type: 'text'}]
     ];
 
     constructor(public domSanitizer: DomSanitizer,

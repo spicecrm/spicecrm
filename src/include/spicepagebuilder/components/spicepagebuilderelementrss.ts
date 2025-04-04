@@ -25,8 +25,8 @@ export class SpicePageBuilderElementRSS extends SpicePageBuilderElement {
     /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[] = [
-        {name: 'align', type: 'text'},
+    public readonly attributesList: AttributeObjectI[][] = [
+        [{name: 'align', type: 'text'},
         {name: 'width', type: 'textSuffix'},
         {name: 'border', type: 'text'},
         {name: 'border-top', type: 'text'},
@@ -43,7 +43,7 @@ export class SpicePageBuilderElementRSS extends SpicePageBuilderElement {
         {name: 'letter-spacing', type: 'textSuffix'},
         {name: 'text-decoration', type: 'text'},
         {name: 'text-transform', type: 'text'},
-        {name: 'css-class', type: 'text'}
+        {name: 'css-class', type: 'text'}]
     ];
     /**
      * style attributes list for the item children

@@ -1,0 +1,33 @@
+<div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small slds-scrollable--y">
+    @for (styleAttributeGroup of attributesList; track styleAttributeGroup){
+        <div class="slds-size--1-of-1 slds-grid slds-gutters_direct-xx-small slds-wrap">
+                @for (styleAttribute of styleAttributeGroup; track styleAttribute.name){
+                    <div class="slds-col" [ngClass]="styleAttribute.class ?? 'slds-size--1-of-2'">
+                        @switch (styleAttribute.type){
+                            @case ('textSuffix'){
+                                <spice-page-builder-input-text [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name" [suffix]="spicePageBuilderService.defaultSuffix"/>
+                            }
+                            @case ('width'){
+                                <spice-page-builder-input-width [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
+                            }
+                            @case ('sides'){
+                                <spice-page-builder-input-sides [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
+                            }
+                            @case ('color'){
+                                <spice-page-builder-input-color [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
+                            }
+                            @case ('halign'){
+                                <spice-page-builder-input-horizontal-align [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
+                            }
+                            @case ('textdecoration'){
+                                <spice-page-builder-input-text-decoration [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
+                            }
+                            @default {
+                                <spice-page-builder-input-text [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
+                            }
+                        }
+                    </div>
+                }
+        </div>
+    }
+</div>
