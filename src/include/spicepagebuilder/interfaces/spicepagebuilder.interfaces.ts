@@ -87,7 +87,8 @@ export interface DividerI extends ContentElementI {
         'border-width'?: string,
         'padding'?: string,
         'css-class'?: string,
-        'width'?: string
+        'width'?: string,
+        align?: string
     };
 }
 /**
@@ -166,22 +167,22 @@ export interface RSSI extends ContentElementI {
  */
 export interface ImageI extends ContentElementI {
     attributes: {
-        'href?': string,
-        'align?': string,
-        'alt'?: string,
-        'src': string,
-        'title'?: string,
-        'border'?: string,
+        href?: string,
+        align?: string,
+        alt?: string,
+        src: string,
+        title?: string,
+        border?: string,
         'border-radius'?: string,
         'container-background-color'?: string,
-        'height'?: string,
-        'padding'?: string,
+        height?: string,
+        padding?: string,
         'css-class'?: string,
         'fluid-on-mobile'?: 'true' | 'false',
-        'rel'?: string,
-        'srcset'?: string,
-        'target'?: string,
-        'width'?: string
+        rel?: string,
+        srcset?: string,
+        target?: string,
+        width?: string
     };
 }
 /**
@@ -250,11 +251,13 @@ export interface EditorAttributeI {
  */
 export interface AttributeObjectI {
     name: string;
-    type: 'color'|'text'|'sides'|'textSuffix';
+    type: 'color'|'text'|'sides'|'textSuffix'|'width'|'halign'|'textdecoration';
+    class?: string;
 }
 
-
-
+export interface AttributeObjectArray{
+    attributes
+}
 
 
 

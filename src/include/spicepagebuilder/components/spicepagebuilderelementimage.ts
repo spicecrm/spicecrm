@@ -30,8 +30,8 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
     /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[] = [
-        {name: 'title', type: 'text'},
+    public readonly attributesList: AttributeObjectI[][] = [
+        [{name: 'title', type: 'text'},
         {name: 'href', type: 'text'},
         {name: 'alt', type: 'text'},
         {name: 'fluid-on-mobile', type: 'text'},
@@ -40,13 +40,13 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
         {name: 'target', type: 'text'},
         {name: 'usemap', type: 'text'},
         {name: 'border', type: 'text'},
-        {name: 'border-radius', type: 'textSuffix'},
+        {name: 'border-radius', type: 'width'},
         {name: 'align', type: 'text'},
         {name: 'height', type: 'textSuffix'},
         {name: 'padding', type: 'sides'},
         {name: 'width', type: 'textSuffix'},
         {name: 'container-background-color', type: 'color'},
-        {name: 'css-class', type: 'text'}
+        {name: 'css-class', type: 'text'}]
     ];
 
     constructor(public domSanitizer: DomSanitizer,
@@ -86,8 +86,17 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
      */
     public generateStyle() {
         super.generateStyle([
-            'border', 'border-radius', 'align', 'height', 'padding', 'width'
+            'container-background-color','border', 'border-radius', 'height', 'padding', 'width'
         ]);
+
+        switch(this.element.attributes.align){
+            case 'center':
+                this.style.margin = '0 auto';
+                break;
+            case 'right':
+                this.style.float = 'right';
+                break;
+        }
     }
 
 }
