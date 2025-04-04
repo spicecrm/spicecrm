@@ -38,16 +38,6 @@ export class SpicePageBuilderPanel {
      */
     public _columnsCounter: number = 1;
 
-    /**
-     * the number of maximum columns allowed for the custom section
-     */
-    public maxNumberOfColumns: number = 12;
-
-    /**
-     * validity of the input for the number of columns
-     */
-    public columnsCounterInputValid: boolean = true;
-
     constructor(public spicePageBuilderService: SpicePageBuilderService, private cdRef: ChangeDetectorRef) {
     }
 
@@ -57,7 +47,7 @@ export class SpicePageBuilderPanel {
     public ngOnInit() {
         this.spicePageBuilderService.loadCustomElements();
         this.generateInputColumns();
-        this.generateSections();
+        // this.generateSections();
     }
 
     public ngAfterViewInit(){
@@ -169,39 +159,4 @@ export class SpicePageBuilderPanel {
     set columnsCounter(value) {
         this._columnsCounter = value;
     }
-
-    /**
-     * Validate the column counter input: ensure the value is a number and does not exceed the maximum number of columns.
-     * @param newValue
-     */
-    public validateColumnsCounter(newValue) {
-        this.columnsCounterInputValid = newValue > 0 && newValue <= this.maxNumberOfColumns && /^\d*$/.test(newValue.toString());
-    }
-
-    /**
-     * generate section style based on the columns input validity
-     */
-    public customSectionStyle() {
-        if (this.columnsCounterInputValid) {
-            return {
-                border: '2px solid #ca1b21',
-                cursor: 'move',
-            }
-        } else {
-            return {
-                border: '2px solid #444444',
-                cursor: 'not-allowed',
-            }
-        }
-    }
-
-    public columnsCounterInputStyle() {
-        return {
-            'min-height': '1rem',
-            'line-height': '1rem',
-            'padding-inline': '.5rem',
-            width: '2rem'
-        }
-    }
-
 }
