@@ -169,7 +169,7 @@ export class SpicePageBuilderService {
             tagName: 'button',
             label: 'LBL_BUTTON',
             content: 'New Button',
-            icon: 'link',
+            icon: 'button_choice',
             attributes: {
                 'border-radius': '4px',
                 'background-color': '#ca1b21',

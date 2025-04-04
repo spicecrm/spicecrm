@@ -3,20 +3,10 @@
         <div cdkDropList (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragExit($event)" cdkDropListSortingDisabled [cdkDropListEnterPredicate]="noReturnPredicate"
              [cdkDropListData]="sections"
              class="slds-scrollable--y slds-size--1-of-1 slds-grid--vertical slds-height_full slds-p-bottom--small spice-page-builder-panel-drop-list">
-            <div *ngFor="let section of inputColumnsSection; trackBy: trackByFn; let index = index" cdkDrag [cdkDragDisabled]="!columnsCounterInputValid" [cdkDragData]="section"
+            <div *ngFor="let section of inputColumnsSection; trackBy: trackByFn; let index = index" cdkDrag [cdkDragData]="section"
                  class="slds-grow slds-p-around--xx-small slds-grid slds-grid--vertical slds-drag--preview spice-drag-placeholder-visible">
                 <div class="slds-grid slds-grid_align-spread slds-grid--vertical-align-end slds-p-bottom--xx-small">
-<!--                    @if (!columnsCounterInputValid) {-->
-<!--                        <system-label label="LBL_ADD_COLUMNS"></system-label>-->
-<!--                    } @else {-->
                         <span><system-label label="LBL_CUSTOM"></system-label> {{ section.children?.length }} <system-label label='LBL_COLUMNS'></system-label></span>
-<!--                    }-->
-<!--                    <input class="slds-input"-->
-<!--                           type="text"-->
-<!--                           maxlength="2"-->
-<!--                           [ngStyle]="columnsCounterInputStyle()"-->
-<!--                           (ngModelChange)="validateColumnsCounter($event)" [(ngModel)]="columnsCounter"-->
-<!--                           (input)="addColumns()">-->
 
                     <div class="slds-form-element__control">
                         <div class="slds-select_container">
@@ -37,10 +27,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="slds-grid slds-grow slds-theme--default" style="min-height: 70px" [ngStyle]="customSectionStyle()">
-                    @if (columnsCounterInputValid) {
+                <div class="slds-grid slds-grow slds-theme--default" style="min-height: 70px; border: 2px solid #ca1b21">
                         <div *ngFor="let item of section.children; trackBy: trackByFn; let last = last" [style.border-right]="!last ? '2px solid #ca1b21' : 0" class="slds-grow"></div>
-                    }
                 </div>
             </div>
 
