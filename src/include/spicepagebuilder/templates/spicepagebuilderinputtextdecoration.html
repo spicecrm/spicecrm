@@ -1,0 +1,13 @@
+<div class="slds-form-element">
+    <label class="slds-form-element__label">
+        <system-label [label]="label"></system-label>
+    </label>
+    <div class="slds-select_container slds-size--1-of-1">
+        <select class="slds-select" [(ngModel)]="value" (ngModelChange)="emitValue()">
+            <option value=""><system-label label="LBL_NONE"/></option>
+            <option value="underline"><system-label label="LBL_UNDERLINE"/></option>
+            <option value="overline"><system-label label="LBL_OVERLINE"/></option>
+            <option value="line-through"><system-label label="LBL_LINE_TROUGH"/></option>
+        </select>
+    </div>
+</div>

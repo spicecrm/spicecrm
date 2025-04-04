@@ -16,6 +16,7 @@ import {SpicePageBuilderInputWidth} from './components/spicepagebuilderinputwidt
 import {SpicePageBuilderInputSides} from './components/spicepagebuilderinputsides';
 import {SpicePageBuilderInputColor} from './components/spicepagebuilderinputcolor';
 import {SpicePageBuilderInputHorizontalAlign} from "./components/spicepagebuilderinputhorizontalalign";
+import {SpicePageBuilderInputTextDecoration} from "./components/spicepagebuilderinputtextdecoration";
 import {SpicePageBuilderElement} from './components/spicepagebuilderelement';
 import {SpicePageBuilderElementImage} from './components/spicepagebuilderelementimage';
 import {SpicePageBuilderElementText} from './components/spicepagebuilderelementtext';
@@ -41,6 +42,7 @@ import {SpicePageBuilderElementHeading} from "./components/spicepagebuildereleme
 import {SpicePageBuilderElementAttributes} from "./components/spicepagebuilderelementattributes";
 
 
+
 @NgModule({
     declarations: [
         SpicePageBuilder,
@@ -51,6 +53,7 @@ import {SpicePageBuilderElementAttributes} from "./components/spicepagebuilderel
         SpicePageBuilderInputText,
         SpicePageBuilderInputWidth,
         SpicePageBuilderInputHorizontalAlign,
+        SpicePageBuilderInputTextDecoration,
         SpicePageBuilderInputSides,
         SpicePageBuilderInputColor,
         SpicePageBuilderEditor,
