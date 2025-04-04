@@ -3,15 +3,13 @@
 namespace SpiceCRM\modules\EmailTrackingActions;
 
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\extensions\modules\NewsletterLogs\NewsletterLog;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\CampaignLog\CampaignLog;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Emails\Email;
-use SpiceCRM\modules\EmailTrackingActions\api\controllers\EmailTrackingActionsController;
-use SpiceCRM\modules\NewsletterLogs\NewsletterLog;
-use SpiceCRM\modules\Newsletters\Newsletter;
 
 class EmailTracking
 {
