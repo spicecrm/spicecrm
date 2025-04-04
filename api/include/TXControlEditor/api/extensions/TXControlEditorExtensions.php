@@ -40,6 +40,28 @@ $routes = [
                 'required' => false
             ],
         ],
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/common/TXControl/convert/module/{module}/{beanId}',
+        'class'       => TXControlEditorController::class,
+        'function'    => 'convertContent',
+        'description' => 'Parse TX control content',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters'  => [
+            'content' => [
+                'content' => 'body',
+                'description' => 'DocX content',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true
+            ],
+            'format' => [
+                'content' => 'body',
+                'description' => 'Return format options: "PDF", "PDFA", "RTF", "DOC", "DOCX", "HTML", "TX"',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false
+            ],
+        ],
     ]
 ];
 

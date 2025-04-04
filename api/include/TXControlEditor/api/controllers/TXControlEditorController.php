@@ -32,7 +32,7 @@ class TXControlEditorController
     }
 
     /**
-     * parse content
+     * convert content
      * @param Request $req
      * @param Response $res
      * @param array $args
@@ -53,6 +53,31 @@ class TXControlEditorController
 
         $payload = (object) $req->getParsedBody();
         $parsedContent = TXControlHandler::getInstance()->parse($payload->content, $payload->format, $bean);
+        return $res->withJson(['content' => $parsedContent]);
+    }
+
+    /**
+     * convert content
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function convertContent(Request $req, Response $res, array $args): Response
+    {
+        if (!SpiceACL::getInstance()->checkAccess($args['module'], 'edit', true)) {
+            throw (new ForbiddenException("Forbidden to edit in module {$args['module']}."))->setErrorCode('noModuleEdit');
+        }
+
+        $bean = BeanFactory::getBean($args['module'], $args['beanId']);
+
+        if (!$bean->ACLAccess('edit')) {
+            throw (new ForbiddenException('Forbidden to edit record.'))->setErrorCode('noRecordEdit');
+        }
+
+        $payload = (object) $req->getParsedBody();
+        $parsedContent = TXControlHandler::getInstance()->convert($payload->content, $payload->format);
         return $res->withJson(['content' => $parsedContent]);
     }
 }
