@@ -494,7 +494,7 @@ export class SpicePageBuilderService {
     /**
      * set the current editing element
      */
-    public openEditModal(element: ContentElementI | SectionI) {
+    public openEditModal(element: ContentElementI | SectionI, grow: boolean = true) {
 
         this.isMouseIn = undefined;
         this.cdRef.detectChanges();
@@ -502,6 +502,7 @@ export class SpicePageBuilderService {
 
         this.modal.openModal('SpicePageBuilderEditor', true, this.injector).subscribe(modalRef => {
             modalRef.instance.element = JSON.parse(JSON.stringify(element));
+            modalRef.instance.grow = grow;
             modalRef.instance.response.subscribe(res => {
                 subject.next(res);
                 if (!!res) {
