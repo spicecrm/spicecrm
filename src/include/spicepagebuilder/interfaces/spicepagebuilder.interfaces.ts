@@ -251,7 +251,7 @@ export interface EditorAttributeI {
  */
 export interface AttributeObjectI {
     name: string;
-    type: 'color'|'text'|'sides'|'textSuffix'|'width'|'halign';
+    type: 'color'|'text'|'sides'|'textSuffix'|'width'|'halign'|'textdecoration';
     class?: string;
 }
 

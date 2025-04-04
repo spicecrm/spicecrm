@@ -40,7 +40,7 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
         {name: 'target', type: 'text'},
         {name: 'usemap', type: 'text'},
         {name: 'border', type: 'text'},
-        {name: 'border-radius', type: 'textSuffix'},
+        {name: 'border-radius', type: 'width'},
         {name: 'align', type: 'text'},
         {name: 'height', type: 'textSuffix'},
         {name: 'padding', type: 'sides'},
