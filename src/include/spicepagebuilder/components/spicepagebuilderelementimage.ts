@@ -30,8 +30,8 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
     /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[] = [
-        {name: 'title', type: 'text'},
+    public readonly attributesList: AttributeObjectI[][] = [
+        [{name: 'title', type: 'text'},
         {name: 'href', type: 'text'},
         {name: 'alt', type: 'text'},
         {name: 'fluid-on-mobile', type: 'text'},
@@ -46,7 +46,7 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
         {name: 'padding', type: 'sides'},
         {name: 'width', type: 'textSuffix'},
         {name: 'container-background-color', type: 'color'},
-        {name: 'css-class', type: 'text'}
+        {name: 'css-class', type: 'text'}]
     ];
 
     constructor(public domSanitizer: DomSanitizer,

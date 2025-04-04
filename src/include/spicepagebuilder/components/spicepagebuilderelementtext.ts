@@ -24,8 +24,8 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
     /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[] = [
-        {name: 'color', type: 'color'},
+    public readonly attributesList: AttributeObjectI[][] = [
+        [{name: 'color', type: 'color'},
         {name: 'container-background-color', type: 'color'},
         {name: 'font-size', type: 'textSuffix'},
         {name: 'font-style', type: 'text'},
@@ -37,12 +37,17 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
         {name: 'text-transform', type: 'text'},
         {name: 'align', type: 'text'},
         {name: 'padding', type: 'sides'},
-        {name: 'css-class', type: 'text'}
+        {name: 'css-class', type: 'text'}]
     ];
     /**
      * hold the sanitized content html
      */
     public sanitizedContent: SafeHtml = '';
+
+    /**
+     * holds the info if the styles panel is expanded
+     */
+    public styleExpanded: boolean = false;
 
     constructor(public domSanitizer: DomSanitizer,
                 public modal: modal,
@@ -61,6 +66,18 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
             this.element.attributes["editor-type"] = 'richText';
         }
         this.sanitizeContent();
+    }
+
+    get editorStyle(){
+        if(this.styleExpanded){
+            return {
+                height: '50%'
+            }
+        } else {
+            return {
+                height: 'calc(100% - 40px)'
+            }
+        }
     }
 
     /**
