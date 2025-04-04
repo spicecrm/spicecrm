@@ -17,6 +17,53 @@ class TXControlHandler extends SpiceSingleton
      * @var null|object
      */
     private ?object $token = null;
+
+    /**
+     * parse content replace the placeholders with the bean values
+     * @param string $pdfContent
+     * @param string $format
+     * @return string
+     * @throws Exception
+     */
+    public function convert(string $pdfContent, string $format): string
+    {
+        $config = (object) SpiceConfig::getInstance()->get('DocXEditor');
+
+        $token = $this->getToken();
+
+        $curl = curl_init();
+
+        $curlOptions = [
+            CURLOPT_URL => "$config->serverUrl/documentprocessing/document/convert?returnFormat=$format",
+            CURLOPT_POST => 1,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER => 1,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_POSTFIELDS => json_encode($pdfContent),
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                "Authorization: Bearer " . $token->access_token,
+            ]
+        ];
+
+        curl_setopt_array($curl, $curlOptions);
+        $logEntryHandler = new APILogEntryHandler();
+        $logEntryHandler->generateOutgoingLogEntry($curlOptions, 'txcontrol');
+
+        $result = curl_exec($curl);
+        $info = curl_getinfo($curl);
+
+        $logEntryHandler->updateOutgoingLogEntry($curl, $result);
+        $logEntryHandler->writeOutogingLogEntry();
+
+        if (!$result || $info['http_code'] != 200) {
+            throw new Exception('DocXEditor failed to process document');
+        }
+
+        return json_decode(substr($result, $info['header_size']));
+    }
+
     /**
      * parse content replace the placeholders with the bean values
      * @param string $pdfContent
