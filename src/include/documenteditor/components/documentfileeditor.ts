@@ -39,7 +39,7 @@ export class DocumentFileEditor implements OnInit, OnChanges {
     /**
      * holds the component config passed from a componentset component renderer
      */
-    @Input() public componentconfig: {create_disabled: boolean, field_name: string };
+    @Input() public componentconfig: {create_disabled: boolean, field_name: string, with_parsed_pdf: boolean };
     /**
      * is loading flag
      */
@@ -254,7 +254,9 @@ export class DocumentFileEditor implements OnInit, OnChanges {
      */
     private parseAndGeneratePdf(file) {
 
-        this.backend.postRequest(`common/TXControl/parse/module/${this.model.module}/${this.model.id}`, null, {content: file.content, format: 'PDF'}).subscribe(parseContent => {
+        const action = this.componentconfig?.with_parsed_pdf ? 'parse' : 'convert';
+
+        this.backend.postRequest(`common/TXControl/${action}/module/${this.model.module}/${this.model.id}`, null, {content: file.content, format: 'PDF'}).subscribe(parseContent => {
             const body = {
                 file: parseContent.content,
                 file_mime_type: file.mimeType,
