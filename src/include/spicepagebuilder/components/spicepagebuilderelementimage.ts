@@ -86,8 +86,17 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
      */
     public generateStyle() {
         super.generateStyle([
-            'border', 'border-radius', 'align', 'height', 'padding', 'width'
+            'container-background-color','border', 'border-radius', 'height', 'padding', 'width'
         ]);
+
+        switch(this.element.attributes.align){
+            case 'center':
+                this.style.margin = '0 auto';
+                break;
+            case 'right':
+                this.style.float = 'right';
+                break;
+        }
     }
 
 }
