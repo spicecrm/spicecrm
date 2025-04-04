@@ -264,13 +264,15 @@ class SpiceAttachmentsController
             throw (new ForbiddenException("not allowed to edit this record"))->setErrorCode('noModuleEdit');
         }
 
-        # if file does not exist yet create a new one
+        # if file does not exist set the name and mime type
         if (!$seed->{$args['fieldprefix'] . '_md5'}) {
-            $seed->{$args['fieldprefix'] . '_md5'} = md5(base64_decode($postBody['file']));
             $seed->{$args['fieldprefix'] . '_mime_type'} = $postBody['file_mime_type'];
             $seed->{$args['fieldprefix'] . '_name'} = $postBody['file_name'];
-            $seed->save();
         }
+
+        $seed->{$args['fieldprefix'] . '_md5'} = md5(base64_decode($postBody['file']));
+
+        $seed->save();
 
         $postBody['filemd5'] = $seed->{$args['fieldprefix'] . '_md5'};
 
