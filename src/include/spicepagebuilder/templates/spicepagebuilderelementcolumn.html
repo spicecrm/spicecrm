@@ -1,4 +1,4 @@
-<div [ngStyle]="style" cdkDropList #dropList="cdkDropList" [cdkDropListEnterPredicate]="contentPredicate" [cdkDropListData]="column"
+<div [ngStyle]="displayStyle" cdkDropList #dropList="cdkDropList" [cdkDropListEnterPredicate]="contentPredicate" [cdkDropListData]="column"
      (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragExit($event)" (cdkDropListDropped)="onDrop($event)"
      class="slds-grid slds-grid--vertical spice-page-builder-renderer-drop-list">
     <ng-container *ngFor="let element of column.children; trackBy: trackByFn" [ngSwitch]="element.tagName">
