@@ -43,22 +43,53 @@ export class SpicePageBuilderElementSection implements OnInit {
     /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[] = [
-        {name: 'background-color', type: 'color'},
-        {name: 'color', type: 'color'},
-        {name: 'padding', type: 'sides'},
+    public readonly mainAttributesList: AttributeObjectI[][] = [
+        [
+            {name: 'background-color', type: 'color'},
+            {name: 'padding', type: 'sides'}
+        ]
+    ];
+    /**
+     * list of the editable attributes
+     */
+    public readonly attributesList: AttributeObjectI[][] = [[
+        {name: 'color', type: 'color',},
         {name: 'css-class', type: 'text'},
         {name: 'border', type: 'text'},
         {name: 'border-top', type: 'text'},
         {name: 'border-right', type: 'text'},
         {name: 'border-bottom', type: 'text'},
         {name: 'border-left', type: 'text'},
-        {name: 'inner-border', type: 'text'},
-        {name: 'background-position', type: 'text'},
-        {name: 'background-repeat', type: 'text'},
-        {name: 'background-size', type: 'text'},
-        {name: 'background-url', type: 'text'},
+        {name: 'inner-border', type: 'text'}
+    ], [
+        {name: 'background-position', type: 'text', class: 'slds-size--1-of-4'},
+        {name: 'background-repeat', type: 'text', class: 'slds-size--1-of-4'},
+        {name: 'background-size', type: 'text', class: 'slds-size--1-of-4'},
+        {name: 'background-url', type: 'text', class: 'slds-size--1-of-4'}
+    ]
     ];
+
+    /**
+     * list of the editable attributes
+     */
+    public readonly columnAttributesList: AttributeObjectI[][] = [
+        [
+            {name: 'width', type: 'width', class: 'slds-size--1-of-4'},
+            {name: 'background-color', type: 'color', class: 'slds-size--1-of-4'},
+            {name: 'padding', type: 'sides', class: 'slds-size--1-of-2'}
+        ], [
+            {name: 'border', type: 'border'},
+            {name: 'border-radius', type: 'width'},
+            {name: 'border-top', type: 'border'},
+            {name: 'border-right', type: 'border'},
+            {name: 'border-left', type: 'border'},
+            {name: 'border-bottom', type: 'border'}
+        ], [
+            {name: 'inner-border', type: 'border'},
+            {name: 'css-class', type: 'text'}
+        ]
+    ];
+
 
     constructor(
         public elementRef: ElementRef,
@@ -142,9 +173,9 @@ export class SpicePageBuilderElementSection implements OnInit {
      */
     public handleEditResponse(res) {
         this.section.attributes = res.attributes;
-        this.section.children.forEach((input, index) =>{
+        this.section.children.forEach((input, index) => {
             input.attributes = res.children[index].attributes
-        } );
+        });
         this.generateStyle();
         this.spicePageBuilderService.emitData();
         this.cdRef.detectChanges();
