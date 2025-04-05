@@ -15,8 +15,11 @@ import {SpicePageBuilderInputText} from './components/spicepagebuilderinputtext'
 import {SpicePageBuilderInputWidth} from './components/spicepagebuilderinputwidth';
 import {SpicePageBuilderInputSides} from './components/spicepagebuilderinputsides';
 import {SpicePageBuilderInputColor} from './components/spicepagebuilderinputcolor';
+import {SpicePageBuilderInputBorder} from "./components/spicepagebuilderinputborder";
 import {SpicePageBuilderInputHorizontalAlign} from "./components/spicepagebuilderinputhorizontalalign";
 import {SpicePageBuilderInputTextDecoration} from "./components/spicepagebuilderinputtextdecoration";
+import {SpicePageBuilderInputFontStyle} from "./components/spicepagebuilderinputfontstyle";
+import {SpicePageBuilderInputFontWeight} from "./components/spicepagebuilderinputfontweight";
 import {SpicePageBuilderElement} from './components/spicepagebuilderelement';
 import {SpicePageBuilderElementImage} from './components/spicepagebuilderelementimage';
 import {SpicePageBuilderElementText} from './components/spicepagebuilderelementtext';
@@ -55,7 +58,10 @@ import {SpicePageBuilderElementAttributes} from "./components/spicepagebuilderel
         SpicePageBuilderInputHorizontalAlign,
         SpicePageBuilderInputTextDecoration,
         SpicePageBuilderInputSides,
+        SpicePageBuilderInputBorder,
         SpicePageBuilderInputColor,
+        SpicePageBuilderInputFontStyle,
+        SpicePageBuilderInputFontWeight,
         SpicePageBuilderEditor,
         SpicePageBuilderElement,
         SpicePageBuilderElementBody,

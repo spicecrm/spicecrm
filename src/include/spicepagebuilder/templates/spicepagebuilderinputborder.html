@@ -1,0 +1,30 @@
+<fieldset class="slds-form-element slds-form-element_compound">
+    <div class="slds-form-element__control">
+        <div class="slds-form-element__row">
+            <div class="slds-size_1-of-3 slds-p-top--xxx-small">
+                <spice-page-builder-input-width [(ngModel)]="width" (ngModelChange)="emitJoinedValue()" [label]="label"></spice-page-builder-input-width>
+            </div>
+            <div class="slds-size_1-of-3 slds-p-top--xxx-small">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><system-label label="LBL_STYLE"/></label>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="style" (ngModelChange)="emitJoinedValue()">
+                            <option value=""><system-label label="LBL_NONE"/></option>
+                            <option value="solid"><system-label label="LBL_LINE_STYLE_SOLID"/></option>
+                            <option value="dotted"><system-label label="LBL_LINE_STYLE_DOTTED"/></option>
+                            <option value="dashed"><system-label label="LBL_LINE_STYLE_DASHED"/></option>
+                            <option value="double"><system-label label="LBL_LINE_STYLE_DOUBLE"/></option>
+                            <!--option value="groove"><system-label label="LBL_GROOVE"/></option>
+                            <option value="ridge"><system-label label="LBL_RIDGE"/></option>
+                            <option value="inset"><system-label label="LBL_INSET"/></option>
+                            <option value="outset"><system-label label="LBL_OUTSET"/></option-->
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-size_1-of-3 slds-p-top--xxx-small">
+                <spice-page-builder-input-color [(ngModel)]="color" (ngModelChange)="emitJoinedValue()" label="LBL_COLOR"/>
+            </div>
+        </div>
+    </div>
+</fieldset>

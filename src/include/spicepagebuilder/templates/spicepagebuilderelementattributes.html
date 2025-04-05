@@ -22,6 +22,15 @@
                             @case ('textdecoration'){
                                 <spice-page-builder-input-text-decoration [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
                             }
+                            @case ('fontstyle'){
+                                <spice-page-builder-input-font-style [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
+                            }
+                            @case ('fontweight'){
+                                <spice-page-builder-input-font-weight [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
+                            }
+                            @case ('border'){
+                                <spice-page-builder-input-border [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
+                            }
                             @default {
                                 <spice-page-builder-input-text [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
                             }

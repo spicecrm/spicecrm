@@ -30,9 +30,9 @@ export class SpicePageBuilderElementHeading extends SpicePageBuilderElementText 
         {name: 'line-height', type: 'textSuffix'},
         {name: 'letter-spacing', type: 'textSuffix'},
         {name: 'height', type: 'textSuffix'},
-        {name: 'text-decoration', type: 'text'},
+        {name: 'text-decoration', type: 'textdecoration'},
         {name: 'text-transform', type: 'text'},
-        {name: 'align', type: 'text'},
+        {name: 'align', type: 'halign'},
         {name: 'padding', type: 'sides'},
         {name: 'css-class', type: 'text'}]
     ];

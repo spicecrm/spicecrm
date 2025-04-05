@@ -13,7 +13,7 @@ import {ColumnI, PanelElementI} from "../interfaces/spicepagebuilder.interfaces"
 @Component({
     selector: 'spice-page-builder-element-column',
     templateUrl: '../templates/spicepagebuilderelementcolumn.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
     /**
@@ -63,6 +63,11 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
     /** Predicate method that only allows sections to be dropped into a list. */
     public contentPredicate(item: CdkDrag) {
         return item.data.tagName != 'section';
+    }
+
+    get displayStyle(){
+        this.generateStyle();
+        return this.style;
     }
 
     /**
