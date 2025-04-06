@@ -19,8 +19,14 @@
                             @case ('halign'){
                                 <spice-page-builder-input-horizontal-align [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
                             }
+                            @case ('valign'){
+                                <spice-page-builder-input-vertical-align [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
+                            }
                             @case ('textdecoration'){
                                 <spice-page-builder-input-text-decoration [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
+                            }
+                            @case ('texttransform'){
+                                <spice-page-builder-input-text-transformn [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
                             }
                             @case ('fontstyle'){
                                 <spice-page-builder-input-font-style [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>

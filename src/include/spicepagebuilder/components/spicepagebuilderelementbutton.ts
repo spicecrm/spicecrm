@@ -30,15 +30,15 @@ export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
             {name: 'background-color', type: 'color'}
         ], [
             {name: 'font-size', type: 'textSuffix', class: 'slds-size--1-of-4'},
+            {name: 'line-height', type: 'textSuffix', class: 'slds-size--1-of-4'},
             {name: 'font-style', type: 'fontstyle', class: 'slds-size--1-of-4'},
-            {name: 'font-weight', type: 'fontweight', class: 'slds-size--1-of-4'},
-            {name: 'text-decoration', type: 'textdecoration', class: 'slds-size--1-of-4'}
+            {name: 'font-weight', type: 'fontweight', class: 'slds-size--1-of-4'}
         ], [
             {name: 'letter-spacing', type: 'textSuffix'},
             {name: 'css-class', type: 'text'}
         ], [
-            {name: 'line-height', type: 'textSuffix'},
-            {name: 'text-transform', type: 'text'},
+            {name: 'text-decoration', type: 'textdecoration'},
+            {name: 'text-transform', type: 'texttransform'},
         ]
     ];
 
@@ -53,7 +53,7 @@ export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
             {name: 'height', type: 'textSuffix', class: 'slds-size--1-of-4'},
             {name: 'width', type: 'width', class: 'slds-size--1-of-4'},
             {name: 'align', type: 'halign', class: 'slds-size--1-of-4'},
-            {name: 'vertical-align', type: 'halign', class: 'slds-size--1-of-4'}
+            {name: 'vertical-align', type: 'valign', class: 'slds-size--1-of-4'}
         ], [
             {name: 'padding', type: 'sides'},
             {name: 'inner-padding', type: 'sides'}
