@@ -47,6 +47,8 @@ export class DocumentNewFromTemplateButton {
             selectModal.instance.modulefilter = this.actionconfig.modulefilter;
 
             selectModal.instance.selectedItems.subscribe(items => {
+                this.model.id = this.model.utils.generateGuid();
+                this.model.initialize();
                 let presets = {
                     file_name: items[0].file_name,
                     file_mime_type: items[0].file_mime_type,
