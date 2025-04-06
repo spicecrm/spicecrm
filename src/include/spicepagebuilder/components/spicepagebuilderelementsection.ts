@@ -45,8 +45,9 @@ export class SpicePageBuilderElementSection implements OnInit {
      */
     public readonly mainAttributesList: AttributeObjectI[][] = [
         [
-            {name: 'background-color', type: 'color'},
-            {name: 'padding', type: 'sides'}
+            {name: 'background-color', type: 'color', class: 'slds-size--1-of-4'},
+            {name: 'direction', type: 'direction', class: 'slds-size--1-of-4'},
+            {name: 'padding', type: 'sides', class: 'slds-size--1-of-2'}
         ]
     ];
     /**
@@ -133,6 +134,7 @@ export class SpicePageBuilderElementSection implements OnInit {
             'background-repeat': this.section.attributes['background-repeat'],
             'background-size': this.section.attributes['background-size'],
             'background-url': this.section.attributes['background-url'],
+            'direction': this.section.attributes['direction']
         };
     }
 
