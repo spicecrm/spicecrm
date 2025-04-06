@@ -57,7 +57,7 @@ export class SpicePageBuilderElementSection implements OnInit {
         {name: 'color', type: 'color',},
         {name: 'css-class', type: 'text'},
         {name: 'border', type: 'border'},
-        {name: 'inner-border', type: 'border'},
+        {name: 'border-radius', type: 'width'},
         {name: 'border-top', type: 'border'},
         {name: 'border-right', type: 'border'},
         {name: 'border-bottom', type: 'border'},
