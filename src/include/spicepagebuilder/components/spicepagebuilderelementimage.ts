@@ -43,9 +43,11 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
             {name: 'width', type: 'textSuffix'},
             {name: 'height', type: 'textSuffix'},
             {name: 'align', type: 'halign'},
-            {name: 'padding', type: 'sides'},
             {name: 'container-background-color', type: 'color'},
-            {name: 'css-class', type: 'text'}
+        ], [
+            {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'css-class', type: 'text', class: 'slds-size--1-of-1'}
         ]
     ];
 
