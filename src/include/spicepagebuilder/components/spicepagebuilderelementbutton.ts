@@ -55,8 +55,8 @@ export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
             {name: 'align', type: 'halign', class: 'slds-size--1-of-4'},
             {name: 'vertical-align', type: 'valign', class: 'slds-size--1-of-4'}
         ], [
-            {name: 'padding', type: 'sides'},
-            {name: 'inner-padding', type: 'sides'}
+            {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'},
+            {name: 'inner-padding', type: 'padding', class: 'slds-size--1-of-1'}
         ], [
             {name: 'border', type: 'border', class: 'slds-size--1-of-1'}
         ], [
