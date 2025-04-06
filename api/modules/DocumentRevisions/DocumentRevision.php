@@ -91,9 +91,9 @@ class DocumentRevision extends SpiceBean {
             $document = BeanFactory::getBean('Documents', $this->document_id);
             $document->revision = $this->revision;
             $document->revision_date = $timedate->nowDb();
-            $document->file_released_name = $this->file_name;
-            $document->file_released_md5 = $this->file_md5;
-            $document->file_released_mime_type = $this->file_mime_type;
+            $document->file_released_name = $this->file_pdf_name;
+            $document->file_released_md5 = $this->file_pdf_md5;
+            $document->file_released_mime_type = $this->file_pdf_mime_type;
 
             // create entries for user_documentrevisions to track who read/accepted them later on
 
