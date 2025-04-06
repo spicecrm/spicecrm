@@ -56,12 +56,12 @@ export class SpicePageBuilderElementSection implements OnInit {
     public readonly attributesList: AttributeObjectI[][] = [[
         {name: 'color', type: 'color',},
         {name: 'css-class', type: 'text'},
-        {name: 'border', type: 'text'},
-        {name: 'border-top', type: 'text'},
-        {name: 'border-right', type: 'text'},
-        {name: 'border-bottom', type: 'text'},
-        {name: 'border-left', type: 'text'},
-        {name: 'inner-border', type: 'text'}
+        {name: 'border', type: 'border'},
+        {name: 'inner-border', type: 'border'},
+        {name: 'border-top', type: 'border'},
+        {name: 'border-right', type: 'border'},
+        {name: 'border-bottom', type: 'border'},
+        {name: 'border-left', type: 'border'}
     ], [
         {name: 'background-position', type: 'text', class: 'slds-size--1-of-4'},
         {name: 'background-repeat', type: 'text', class: 'slds-size--1-of-4'},

@@ -37,7 +37,7 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
             {name: 'letter-spacing', type: 'textSuffix'},
             {name: 'height', type: 'textSuffix'},
             {name: 'text-decoration', type: 'textdecoration'},
-            {name: 'text-transform', type: 'text'},
+            {name: 'text-transform', type: 'texttransform'},
             {name: 'align', type: 'halign'},
             {name: 'padding', type: 'sides'},
             {name: 'css-class', type: 'text'}]
