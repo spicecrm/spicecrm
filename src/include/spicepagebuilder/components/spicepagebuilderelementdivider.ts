@@ -43,10 +43,10 @@ export class SpicePageBuilderElementDivider extends SpicePageBuilderElement {
         [
             {name: 'container-background-color', type: 'color'},
             {name: 'border-style', type: 'text'}
-        ],
-        [
-            {name: 'padding', type: 'sides'},
-            {name: 'css-class', type: 'text'}
+        ], [
+            {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'css-class', type: 'text', class: 'slds-size--1-of-1'}
         ]
     ];
 

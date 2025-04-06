@@ -45,9 +45,10 @@ export class SpicePageBuilderElementSection implements OnInit {
      */
     public readonly mainAttributesList: AttributeObjectI[][] = [
         [
-            {name: 'background-color', type: 'color', class: 'slds-size--1-of-4'},
-            {name: 'direction', type: 'direction', class: 'slds-size--1-of-4'},
-            {name: 'padding', type: 'sides', class: 'slds-size--1-of-2'}
+            {name: 'background-color', type: 'color', class: 'slds-size--1-of-2'},
+            {name: 'direction', type: 'direction', class: 'slds-size--1-of-2'},
+        ], [
+            {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
         ]
     ];
     /**
@@ -75,9 +76,10 @@ export class SpicePageBuilderElementSection implements OnInit {
      */
     public readonly columnAttributesList: AttributeObjectI[][] = [
         [
-            {name: 'width', type: 'width', class: 'slds-size--1-of-4'},
-            {name: 'background-color', type: 'color', class: 'slds-size--1-of-4'},
-            {name: 'padding', type: 'sides', class: 'slds-size--1-of-2'}
+            {name: 'width', type: 'width', class: 'slds-size--1-of-2'},
+            {name: 'background-color', type: 'color', class: 'slds-size--1-of-2'}
+        ], [
+            {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
         ], [
             {name: 'border', type: 'border'},
             {name: 'border-radius', type: 'width'},

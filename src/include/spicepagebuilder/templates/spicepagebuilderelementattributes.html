@@ -13,6 +13,9 @@
                             @case ('sides'){
                                 <spice-page-builder-input-sides [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
                             }
+                            @case ('padding'){
+                                <spice-page-builder-input-padding [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
+                            }
                             @case ('color'){
                                 <spice-page-builder-input-color [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
                             }

@@ -39,9 +39,11 @@ export class SpicePageBuilderElementHeading extends SpicePageBuilderElementText 
             {name: 'container-background-color', type: 'color'},
             {name: 'letter-spacing', type: 'textSuffix'},
             {name: 'height', type: 'textSuffix'},
-            {name: 'align', type: 'halign'},
-            {name: 'padding', type: 'sides'},
-            {name: 'css-class', type: 'text'}
+            {name: 'align', type: 'halign'}
+        ], [
+            {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'css-class', type: 'text', class: 'slds-size--1-of-1'}
         ]
     ];
     /**
