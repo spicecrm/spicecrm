@@ -42,7 +42,7 @@ import {SpicePageBuilder} from './components/spicepagebuilder';
 
 import {fieldPageBuilder} from './fields/fieldpagebuilder';
 
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DirectivesModule} from "../../directives/directives";
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {SpicePageBuilderElementRSS} from "./components/spicepagebuilderelementrss";
@@ -50,6 +50,7 @@ import {SpicePageBuilderElementHeading} from "./components/spicepagebuildereleme
 import {SpicePageBuilderElementAttributes} from "./components/spicepagebuilderelementattributes";
 
 
+import {SpicePageBuilderElementImageUrl} from "./components/spicepagebuilderelementimageurl";
 
 @NgModule({
     declarations: [
@@ -85,7 +86,8 @@ import {SpicePageBuilderElementAttributes} from "./components/spicepagebuilderel
         SpicePageBuilderElementButton,
         SpicePageBuilderElementCode,
         SpicePageBuilderElementRSS,
-        fieldPageBuilder
+        fieldPageBuilder,
+        SpicePageBuilderElementImageUrl
     ],
     exports: [
         SpicePageBuilder
@@ -96,7 +98,8 @@ import {SpicePageBuilderElementAttributes} from "./components/spicepagebuilderel
         SystemComponents,
         FormsModule,
         DirectivesModule,
-        DragDropModule
+        DragDropModule,
+        ReactiveFormsModule
     ]
 })
 export class ModuleSpicePageBuilder {
