@@ -134,7 +134,17 @@ export class SpicePageBuilderService {
         },
         {
             tagName: 'image',
-            label: 'LBL_IMAGE',
+            label: 'LBL_MEDIA_FILES',
+            icon: 'image',
+            attributes: {
+                align: 'center',
+                padding: '0px',
+                target: '_blank'
+            }
+        },{
+            tagName: 'image-url',
+            label: 'LBL_IMAGE_URL',
+            content: 'Paste an Image URL...',
             icon: 'image',
             attributes: {
                 align: 'center',
