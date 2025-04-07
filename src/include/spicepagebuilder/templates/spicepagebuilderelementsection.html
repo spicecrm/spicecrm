@@ -38,11 +38,19 @@
             <spice-page-builder-element-attributes [attributesList]="mainAttributesList" [element]="section"/>
         </div>
         @for ( column of section.children; track column; let index = $index) {
-            <h3 class="slds-section__title slds-theme_shade"><system-label label="LBL_COLUMN"/>&nbsp;{{index}}</h3>
+            <h3 class="slds-m-horizontal--small slds-section__title slds-theme_shade">
+                <div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center slds-size--1-of-1 ">
+                    <div><system-label label="LBL_COLUMN"/>&nbsp;{{index + 1}}</div>
+                    <button *ngIf="index > 0" class="slds-button slds-button--icon" (click)="deleteColumn(index)"><system-button-icon icon="delete"/></button>
+                </div>
+            </h3>
             <div class="slds-size--1-of-1 slds-grid slds-wrap">
                 <spice-page-builder-element-attributes class="slds-size--1-of-1" [attributesList]="columnAttributesList" [element]="column"/>
             </div>
         }
+        <div class="slds-size--1-of-1 slds-p-around--small slds-align--absolute-center">
+            <button class="slds-button slds-button--brand" (click)="addColumn()"><system-label label="LBL_ADD_COLUMN"/></button>
+        </div>
         <system-section titlelabel="LBL_STYLING" [expanded]="false">
             <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small slds-scrollable--y">
                 <spice-page-builder-element-attributes [attributesList]="attributesList" [element]="section"/>
