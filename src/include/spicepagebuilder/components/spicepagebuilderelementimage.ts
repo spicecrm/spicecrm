@@ -37,9 +37,10 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
             {name: 'href', type: 'text'},
             {name: 'fluid-on-mobile', type: 'text'},
             {name: 'srcset', type: 'text'},
-            {name: 'target', type: 'text'},
-            {name: 'border', type: 'text'},
-            {name: 'border-radius', type: 'width'},
+            {name: 'target', type: 'text'}
+        ], [
+            {name: 'border', type: 'borders', class: 'slds-size--1-of-1'}
+        ], [
             {name: 'width', type: 'textSuffix'},
             {name: 'height', type: 'textSuffix'},
             {name: 'align', type: 'halign'},
@@ -88,7 +89,7 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
      */
     public generateStyle() {
         super.generateStyle([
-            'container-background-color', 'border', 'border-radius', 'height', 'padding', 'width'
+            'container-background-color', 'border', 'inner-border', 'border-radius', 'height', 'padding', 'width'
         ]);
 
         switch (this.element.attributes.align) {

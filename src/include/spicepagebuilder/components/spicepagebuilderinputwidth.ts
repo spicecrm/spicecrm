@@ -29,6 +29,10 @@ export class SpicePageBuilderInputWidth implements ControlValueAccessor {
      */
     @Input() public label: string = '';
     /**
+     * name of the style attribute
+     */
+    @Input() public disabled: boolean = false;
+    /**
      * holds the sides value
      */
     public value: number | string = '';

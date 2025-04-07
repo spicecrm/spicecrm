@@ -54,21 +54,18 @@ export class SpicePageBuilderElementSection implements OnInit {
     /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[][] = [[
-        {name: 'color', type: 'color',},
-        {name: 'css-class', type: 'text'},
-        {name: 'border', type: 'border'},
-        {name: 'border-radius', type: 'width'},
-        {name: 'border-top', type: 'border'},
-        {name: 'border-right', type: 'border'},
-        {name: 'border-bottom', type: 'border'},
-        {name: 'border-left', type: 'border'}
-    ], [
-        {name: 'background-position', type: 'text', class: 'slds-size--1-of-4'},
-        {name: 'background-repeat', type: 'text', class: 'slds-size--1-of-4'},
-        {name: 'background-size', type: 'text', class: 'slds-size--1-of-4'},
-        {name: 'background-url', type: 'text', class: 'slds-size--1-of-4'}
-    ]
+    public readonly attributesList: AttributeObjectI[][] = [
+        [
+            {name: 'color', type: 'color',},
+            {name: 'css-class', type: 'text'},
+        ], [
+            {name: 'border', type: 'borders', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'background-position', type: 'text', class: 'slds-size--1-of-4'},
+            {name: 'background-repeat', type: 'text', class: 'slds-size--1-of-4'},
+            {name: 'background-size', type: 'text', class: 'slds-size--1-of-4'},
+            {name: 'background-url', type: 'text', class: 'slds-size--1-of-4'}
+        ]
     ];
 
     /**
@@ -81,15 +78,11 @@ export class SpicePageBuilderElementSection implements OnInit {
         ], [
             {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
         ], [
-            {name: 'border', type: 'border'},
-            {name: 'border-radius', type: 'width'},
-            {name: 'border-top', type: 'border'},
-            {name: 'border-right', type: 'border'},
-            {name: 'border-left', type: 'border'},
-            {name: 'border-bottom', type: 'border'}
+            {name: 'border', type: 'borders', class: 'slds-size--1-of-1'}
+        ],[
+            {name: 'inner-border', type: 'borders', class: 'slds-size--1-of-1'}
         ], [
-            {name: 'inner-border', type: 'border'},
-            {name: 'css-class', type: 'text'}
+            {name: 'css-class', type: 'text', class: 'slds-size--1-of-1'}
         ]
     ];
 

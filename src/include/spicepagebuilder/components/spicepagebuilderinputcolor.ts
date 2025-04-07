@@ -25,6 +25,10 @@ export class SpicePageBuilderInputColor implements ControlValueAccessor {
      */
     @Input() public label: string = '';
     /**
+     * to disable the control
+     */
+    @Input() public disabled: boolean = false;
+    /**
      * holds the sides value
      */
     public value: string = '';

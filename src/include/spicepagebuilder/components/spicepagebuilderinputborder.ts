@@ -84,7 +84,7 @@ export class SpicePageBuilderInputBorder implements ControlValueAccessor {
     public emitJoinedValue() {
         const suffix = this.spicePageBuilderService.defaultSuffix;
         this.onChange(
-            `${this.width} ${this.style} ${this.color}`
+            this.style ? `${this.width} ${this.style} ${this.color}` : undefined
         );
     }
 }
