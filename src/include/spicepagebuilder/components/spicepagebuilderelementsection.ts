@@ -170,11 +170,49 @@ export class SpicePageBuilderElementSection implements OnInit {
      */
     public handleEditResponse(res) {
         this.section.attributes = res.attributes;
+        this.section.children = res.children;
         this.section.children.forEach((input, index) => {
             input.attributes = res.children[index].attributes
         });
         this.generateStyle();
         this.spicePageBuilderService.emitData();
         this.cdRef.detectChanges();
+    }
+
+    /**
+     * add new column to the section element
+     * @returns void
+     */
+    public addColumn(): void {
+        let newSection = JSON.parse(JSON.stringify(this.spicePageBuilderService.panelDefaultColumn))
+        const childrenCount = this.section.children.length;
+        const childWidth = `${100 / childrenCount}%`;
+        newSection.attributes.width = childWidth;
+        this.section.children.push(newSection);
+
+        this.recalculateColumnSizes();
+        this.cdRef.detectChanges();
+    }
+    /**
+     * add new column to the section element
+     * @returns void
+     */
+    public deleteColumn(index): void {
+        this.section.children.splice(index, 1);
+        this.recalculateColumnSizes();
+        this.cdRef.detectChanges();
+    }
+
+    private  recalculateColumnSizes(){
+        let totalWidth = 0;
+        this.section.children.forEach(c => {
+            totalWidth += parseInt(c.attributes.width, 10);
+        })
+        this.section.children.forEach(c => {
+            let cWidth = parseInt(c.attributes.width, 10);
+            let nWidth = Math.round(100/totalWidth * cWidth);
+            c.attributes.width = c.attributes.width.replace(cWidth.toString(), nWidth.toString());
+
+        })
     }
 }
