@@ -2,7 +2,7 @@
  * @module ModuleSpiceAttachments
  */
 import {
-    Component, Injector, ViewChild, ViewContainerRef
+    Component, Injector, Optional, ViewChild, ViewContainerRef
 } from '@angular/core';
 import {Router} from "@angular/router";
 import {model} from "../../../services/model.service";
@@ -44,7 +44,7 @@ export class fieldModelAttachment extends fieldGeneric {
         public modal: modal,
         public helper: helper,
         public backend: backend,
-        public navigationtab: navigationtab
+        @Optional() public navigationtab: navigationtab
     ) {
         super(model, view, language, metadata, router);
     }

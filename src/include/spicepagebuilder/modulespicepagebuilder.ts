@@ -14,8 +14,17 @@ import {SpicePageBuilderService} from './services/spicepagebuilder.service';
 import {SpicePageBuilderInputText} from './components/spicepagebuilderinputtext';
 import {SpicePageBuilderInputWidth} from './components/spicepagebuilderinputwidth';
 import {SpicePageBuilderInputSides} from './components/spicepagebuilderinputsides';
+import {SpicePageBuilderInputPadding} from './components/spicepagebuilderinputpadding';
 import {SpicePageBuilderInputColor} from './components/spicepagebuilderinputcolor';
+import {SpicePageBuilderInputBorder} from "./components/spicepagebuilderinputborder";
+import {SpicePageBuilderInputBorders} from "./components/spicepagebuilderinputborders";
 import {SpicePageBuilderInputHorizontalAlign} from "./components/spicepagebuilderinputhorizontalalign";
+import {SpicePageBuilderInputVerticalAlign} from "./components/spicepagebuilderinputverticalalign";
+import {SpicePageBuilderInputTextDecoration} from "./components/spicepagebuilderinputtextdecoration";
+import {SpicePageBuilderInputTextTransform} from "./components/spicepagebuilderinputtexttransform";
+import {SpicePageBuilderInputFontStyle} from "./components/spicepagebuilderinputfontstyle";
+import {SpicePageBuilderInputFontWeight} from "./components/spicepagebuilderinputfontweight";
+import {SpicePageBuilderInputDirection} from "./components/spicepagebuilderinputdirection";
 import {SpicePageBuilderElement} from './components/spicepagebuilderelement';
 import {SpicePageBuilderElementImage} from './components/spicepagebuilderelementimage';
 import {SpicePageBuilderElementText} from './components/spicepagebuilderelementtext';
@@ -41,6 +50,7 @@ import {SpicePageBuilderElementHeading} from "./components/spicepagebuildereleme
 import {SpicePageBuilderElementAttributes} from "./components/spicepagebuilderelementattributes";
 
 
+
 @NgModule({
     declarations: [
         SpicePageBuilder,
@@ -51,8 +61,17 @@ import {SpicePageBuilderElementAttributes} from "./components/spicepagebuilderel
         SpicePageBuilderInputText,
         SpicePageBuilderInputWidth,
         SpicePageBuilderInputHorizontalAlign,
+        SpicePageBuilderInputVerticalAlign,
+        SpicePageBuilderInputTextDecoration,
+        SpicePageBuilderInputTextTransform,
         SpicePageBuilderInputSides,
+        SpicePageBuilderInputPadding,
+        SpicePageBuilderInputBorder,
+        SpicePageBuilderInputBorders,
         SpicePageBuilderInputColor,
+        SpicePageBuilderInputFontStyle,
+        SpicePageBuilderInputFontWeight,
+        SpicePageBuilderInputDirection,
         SpicePageBuilderEditor,
         SpicePageBuilderElement,
         SpicePageBuilderElementBody,
