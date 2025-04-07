@@ -95,10 +95,8 @@ class EmailTrackingActionsController
 
         $this->setEmailToOptedOut($seed);
 
-        if($seed->_module === 'NewsletterLogs'){
-            $newsletter = BeanFactory::getBean('Newsletters');
-            $newsletter->unsubscribeTargetFromAllNewsletters($seed->target_id);
-        }
+        // unsubscribe from all newsletters if subscribed
+        $this->unsubscribeFromNewsletters($seed);
 
         $redirectUrl = SpiceConfig::getInstance()->get('emailtracking.unsubscribe_redirect_url');
 
@@ -233,6 +231,19 @@ class EmailTrackingActionsController
         }
         return true;
     }
+
+    public function unsubscribeFromNewsletters($seed){
+
+        $newsletter = BeanFactory::getBean('Newsletters');
+        if($seed->_module === 'Emails') {
+            $recipient = BeanFactory::getBean($seed->parent_type, $seed->parent_id);
+        }
+        elseif($seed->_module === 'CampaignLog' || $seed->_module === 'NewsletterLogs'){
+            $recipient = BeanFactory::getBean($seed->target_type, $seed->target_id);
+        }
+        $newsletter->unsubscribeTargetFromAllNewsletters($recipient->id);
+    }
+
     public function getEmailAddress(SpiceBean $person, $emailAddrBeanRelId): ?EmailAddress
     {
         $db = DBManagerFactory::getInstance();
