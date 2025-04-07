@@ -8,31 +8,26 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
  * render four input fields to handle editing style attributes like margin or padding
  */
 @Component({
-    selector: 'spice-page-builder-input-color',
-    templateUrl: '../templates/spicepagebuilderinputcolor.html',
+    selector: 'spice-page-builder-input-font-style',
+    templateUrl: '../templates/spicepagebuilderinputfontstyle.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
         {
             multi: true,
             provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => SpicePageBuilderInputColor)
+            useExisting: forwardRef(() => SpicePageBuilderInputFontStyle)
         }
     ]
 })
-export class SpicePageBuilderInputColor implements ControlValueAccessor {
+export class SpicePageBuilderInputFontStyle implements ControlValueAccessor {
     /**
      * name of the style attribute
      */
     @Input() public label: string = '';
     /**
-     * to disable the control
-     */
-    @Input() public disabled: boolean = false;
-    /**
      * holds the sides value
      */
     public value: string = '';
-
     /**
      * save on touched function for ControlValueAccessor
      */
@@ -75,9 +70,11 @@ export class SpicePageBuilderInputColor implements ControlValueAccessor {
     }
 
     /**
-     * emit color value
+     * emit joined value
      */
     public emitValue() {
-        this.onChange(this.value);
+        this.onChange(
+            this.value
+        );
     }
 }

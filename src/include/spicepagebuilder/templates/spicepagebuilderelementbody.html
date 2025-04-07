@@ -1,13 +1,25 @@
-<div [ngStyle]="style" cdkDropList #dropList="cdkDropList" (cdkDropListEntered)="dragEntered = true"
-     (cdkDropListExited)="dragEntered = false" (cdkDropListDropped)="onDrop($event)"
-     [cdkDropListEnterPredicate]="sectionPredicate" [cdkDropListData]="body"
-     style="min-height: 100%; width: 100%" class="spice-page-builder-renderer-drop-list">
-    <spice-page-builder-element-section *ngFor="let section of body.children; trackBy: trackByFn"
-                                         [ngStyle]="section.style" [cdkDragData]="section"
-                                         (delete$)="onSectionDelete(section)" [section]="section" cdkDrag
-                                         class="spice-display-block slds-drag--preview"></spice-page-builder-element-section>
-    <div *ngIf="!dragEntered && body.children?.length == 0" class="slds-align--absolute-center slds-height_full slds-size--1-of-1 slds-text-title--caps slds-truncate">
-        <system-label label="LBL_DROP_SECTION_HERE"></system-label>
+@if (!isEditMode) {
+    <div cdkDropList #dropList="cdkDropList" (cdkDropListEntered)="dragEntered = true"
+         (cdkDropListExited)="dragEntered = false" (cdkDropListDropped)="onDrop($event)"
+         [cdkDropListEnterPredicate]="sectionPredicate" [cdkDropListData]="body"
+         style="min-height: 100%; width: 100%; margin: auto" class="spice-page-builder-renderer-drop-list">
+        <spice-page-builder-element-section *ngFor="let section of body.children; trackBy: trackByFn"
+                                            [ngStyle]="section.style" [cdkDragData]="section"
+                                            (delete$)="onSectionDelete(section)" [section]="section" cdkDrag
+                                            class="spice-display-block slds-drag--preview"></spice-page-builder-element-section>
+        <div *ngIf="!dragEntered && body.children?.length == 0" class="slds-align--absolute-center slds-height_full slds-size--1-of-1 slds-text-title--caps slds-truncate">
+            <system-label label="LBL_DROP_SECTION_HERE"></system-label>
+        </div>
     </div>
-</div>
-
+} @else {
+    <div>
+        <system-section titlelabel="LBL_STYLING" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
+            <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small slds-scrollable--y">
+                <div class="slds-size--1-of-1 slds-grid slds-wrap">
+                    <spice-page-builder-input-text [(ngModel)]="body.attributes.width" label="width" [suffix]="spicePageBuilderService.defaultSuffix" class="slds-p-horizontal--xxx-small slds-size--1-of-2"/>
+                    <spice-page-builder-input-color [(ngModel)]="body.attributes['background-color']" label="background-color" class="slds-p-horizontal--xxx-small slds-size--1-of-2"/>
+                </div>
+            </div>
+        </system-section>
+    </div>
+}

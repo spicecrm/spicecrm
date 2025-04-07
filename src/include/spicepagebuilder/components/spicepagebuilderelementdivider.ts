@@ -43,10 +43,10 @@ export class SpicePageBuilderElementDivider extends SpicePageBuilderElement {
         [
             {name: 'container-background-color', type: 'color'},
             {name: 'border-style', type: 'text'}
-        ],
-        [
-            {name: 'padding', type: 'sides'},
-            {name: 'css-class', type: 'text'}
+        ], [
+            {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'css-class', type: 'text', class: 'slds-size--1-of-1'}
         ]
     ];
 
@@ -60,18 +60,11 @@ export class SpicePageBuilderElementDivider extends SpicePageBuilderElement {
     }
 
     get displayStyle(){
-        let style:any = {'padding': this.element.attributes['padding'], 'background-color': this.element.attributes['container-background-color'], 'width': this.element.attributes['width']};
-
-        switch(this.element.attributes.align){
-            case 'center':
-                style.margin = '0 auto';
-                break;
-            case 'right':
-                style.float = 'right';
-                break;
+        let styles = this.returnStyle(['padding', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left']);
+        if(this.element.attributes['container-background-color']){
+            styles['background-color'] = this.element.attributes['container-background-color'];
         }
-
-        return style;
+        return styles;
     }
 
     /**
@@ -79,7 +72,20 @@ export class SpicePageBuilderElementDivider extends SpicePageBuilderElement {
      */
     public generateStyle() {
         super.generateStyle([
-            'border-color', 'border-style', 'border-width', 'align'
+            'border-color', 'border-style', 'border-width', 'align', 'width'
         ]);
+
+        switch(this.element.attributes.align){
+            case 'center':
+                this.style.margin = '0 auto';
+                break;
+            case 'right':
+                this.style.float = 'right';
+                this.style.margin = '0px';
+                break;
+            case 'left':
+                this.style.margin = '0px';
+                break;
+        }
     }
 }
