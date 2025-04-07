@@ -40,6 +40,9 @@
                             @case ('border'){
                                 <spice-page-builder-input-border [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
                             }
+                            @case ('borders'){
+                                <spice-page-builder-input-borders [attributes]="element.attributes" [attribute]="styleAttribute.name" [label]="styleAttribute.name"/>
+                            }
                             @case ('direction'){
                                 <spice-page-builder-input-direction [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
                             }

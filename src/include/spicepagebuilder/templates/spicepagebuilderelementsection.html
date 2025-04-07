@@ -29,9 +29,7 @@
             </div>
         </div>
         <article [ngStyle]="style" class="spice-drop-zone-content slds-grid">
-            <spice-page-builder-element-column *ngFor="let column of section.children; trackBy: trackByFn"
-                                               [column]="column" [style.width]="column.attributes.width"
-                                               class="spice-display-block slds-height_full"></spice-page-builder-element-column>
+            <spice-page-builder-element-column *ngFor="let column of section.children; trackBy: trackByFn" [column]="column" [style.width]="column.attributes.width" class="spice-display-block slds-height_full"></spice-page-builder-element-column>
         </article>
     </div>
 } @else {
@@ -42,7 +40,7 @@
         @for ( column of section.children; track column; let index = $index) {
             <h3 class="slds-section__title slds-theme_shade"><system-label label="LBL_COLUMN"/>&nbsp;{{index}}</h3>
             <div class="slds-size--1-of-1 slds-grid slds-wrap">
-                <spice-page-builder-element-attributes [attributesList]="columnAttributesList" [element]="column"/>
+                <spice-page-builder-element-attributes class="slds-size--1-of-1" [attributesList]="columnAttributesList" [element]="column"/>
             </div>
         }
         <system-section titlelabel="LBL_STYLING" [expanded]="false">
