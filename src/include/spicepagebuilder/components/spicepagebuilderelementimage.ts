@@ -31,22 +31,25 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
      * list of the editable attributes
      */
     public readonly attributesList: AttributeObjectI[][] = [
-        [{name: 'title', type: 'text'},
-        {name: 'href', type: 'text'},
-        {name: 'alt', type: 'text'},
-        {name: 'fluid-on-mobile', type: 'text'},
-        {name: 'rel', type: 'text'},
-        {name: 'srcset', type: 'text'},
-        {name: 'target', type: 'text'},
-        {name: 'usemap', type: 'text'},
-        {name: 'border', type: 'text'},
-        {name: 'border-radius', type: 'textSuffix'},
-        {name: 'align', type: 'text'},
-        {name: 'height', type: 'textSuffix'},
-        {name: 'padding', type: 'sides'},
-        {name: 'width', type: 'textSuffix'},
-        {name: 'container-background-color', type: 'color'},
-        {name: 'css-class', type: 'text'}]
+        [
+            {name: 'title', type: 'text'},
+            {name: 'alt', type: 'text'},
+            {name: 'href', type: 'text'},
+            {name: 'fluid-on-mobile', type: 'text'},
+            {name: 'srcset', type: 'text'},
+            {name: 'target', type: 'text'}
+        ], [
+            {name: 'border', type: 'borders', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'width', type: 'textSuffix'},
+            {name: 'height', type: 'textSuffix'},
+            {name: 'align', type: 'halign'},
+            {name: 'container-background-color', type: 'color'},
+        ], [
+            {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'css-class', type: 'text', class: 'slds-size--1-of-1'}
+        ]
     ];
 
     constructor(public domSanitizer: DomSanitizer,
@@ -86,10 +89,10 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
      */
     public generateStyle() {
         super.generateStyle([
-            'container-background-color','border', 'border-radius', 'height', 'padding', 'width'
+            'container-background-color', 'border', 'inner-border', 'border-radius', 'height', 'padding', 'width'
         ]);
 
-        switch(this.element.attributes.align){
+        switch (this.element.attributes.align) {
             case 'center':
                 this.style.margin = '0 auto';
                 break;

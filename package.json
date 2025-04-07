@@ -17,6 +17,7 @@
     "croppie": "2.6.5",
     "less": "4.1.2",
     "libphonenumber-js": "1.11.12",
+    "mjml": "^4.15.3",
     "moment": "2.30.1",
     "moment-timezone": "0.5.46",
     "rxjs": "7.8.1",
