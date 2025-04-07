@@ -75,34 +75,10 @@ export class SpicePageBuilderElementHeading extends SpicePageBuilderElementText 
         super.handleEditResponse(res);
     }
 
-    public updateStyleForPreview(attribute) {
-        this.style = {...this.style, [attribute]: this.element.attributes[attribute]};
-    }
-
     /**
      * sanitize the html content
      */
     public sanitizeContent() {
         this.sanitizedContent = this.domSanitizer.bypassSecurityTrustHtml(this.element.content);
-    }
-
-    public toggleFontWeight() {
-        this.element.attributes["font-weight"] = this.element.attributes["font-weight"] === '600' ? '400' : '600';
-        this.updateStyleForPreview("font-weight");
-    }
-
-    public toggleFontStyleItalic() {
-        this.element.attributes["font-style"] = this.element.attributes["font-style"] === 'italic' ? 'normal' : 'italic';
-        this.updateStyleForPreview("font-style")
-    }
-
-    public toggleFontStyleUnderline() {
-        this.element.attributes["text-decoration"] = this.element.attributes["text-decoration"] === 'underline' ? 'none' : 'underline';
-        this.updateStyleForPreview("text-decoration");
-    }
-
-    public changeFontSize(fontSize) {
-        this.element.attributes["font-size"] = fontSize;
-        this.updateStyleForPreview("font-size");
     }
 }

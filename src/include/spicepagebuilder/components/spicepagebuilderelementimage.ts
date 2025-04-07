@@ -1,8 +1,8 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, Input, SecurityContext} from '@angular/core';
-import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, Input} from '@angular/core';
+import {DomSanitizer} from "@angular/platform-browser";
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {modal} from "../../../services/modal.service";
 import {AttributeObjectI, ImageI} from "../interfaces/spicepagebuilder.interfaces";
@@ -21,12 +21,6 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
      * containers to be rendered
      */
     @Input() public declare element: ImageI;
-
-    /**
-     * sanitized content... containing the image URL
-     */
-    public sanitizedContent: SafeResourceUrl;
-
     /**
      * list of the editable attributes
      */
@@ -67,22 +61,9 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
         this.spicePageBuilderService.openMediaFilePicker().subscribe(src => {
             if (!!src) {
                 this.element.attributes.src = src;
-                // this.element.attributes.inputUrl = '';
             }
         });
     }
-
-    // public ngOnInit() {
-    //     super.ngOnInit();
-    //     if (!this.element.attributes.imageSource) {
-    //         this.element.attributes.imageSource = 'upload';
-    //     }
-    // }
-    //
-    // public sanitizeContent() {
-    //     this.sanitizedContent = this.domSanitizer.sanitize(SecurityContext.RESOURCE_URL, this.domSanitizer.bypassSecurityTrustResourceUrl(this.element.attributes.inputUrl));
-    //     this.element.attributes.src = this.sanitizedContent;
-    // }
 
     /**
      * generate body style object
