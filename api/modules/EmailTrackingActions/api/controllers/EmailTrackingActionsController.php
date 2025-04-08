@@ -427,4 +427,24 @@ class EmailTrackingActionsController
         return $res->withJson($return);
     }
 
+    /**
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws BadRequestException
+     * @throws Exception
+     *
+     */
+    public function createPreview(Request $req, Response $res, array $args): Response
+    {
+        $data = EmailTracking::decodeTrackingID($args['key']);
+
+        if (!$data) {
+            throw new BadRequestException('Failed to decrypt key');
+        }
+        $bean = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+        $res->getBody()->write($bean->body);
+        return $res->withHeader('Content-Type', 'text/html');
+    }
 }
