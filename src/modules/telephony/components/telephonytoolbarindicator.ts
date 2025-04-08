@@ -223,7 +223,7 @@ export class TelephonyToolbarIndicator {
      */
     public connectSocket() {
 
-        if (!this.username) return;
+        // if (!this.username) return;
 
         this.subscriptions.add(
             this.socket.initializeNamespace('telephonyGeneric').subscribe(event => {
@@ -244,7 +244,7 @@ export class TelephonyToolbarIndicator {
      */
     public disconnectSocket() {
         if (this.socket) {
-            this.socket.leaveRoom('telephonyGeneric', `telephonyGeneric::${this.username}`);
+            this.socket.leaveRoom('telephonyGeneric', `telephonyGeneric::${this.session.authData.userId}`);
         }
     }
 
