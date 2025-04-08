@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\extensions\modules\LandingPages\LandingPage;
+use SpiceCRM\extensions\modules\NewsletterLogs\NewsletterLog;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
@@ -18,7 +19,6 @@ use SpiceCRM\modules\CampaignLog\CampaignLog;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
-use SpiceCRM\modules\NewsletterLogs\NewsletterLog;
 
 class EmailTrackingActionsController
 {
@@ -86,14 +86,17 @@ class EmailTrackingActionsController
         $this->logTrackingAction($data, 'unsubscribe');
 
         // get the email seed
-        /** @var Email | CampaignLog $seed */
+        /** @var Email | CampaignLog | NewsletterLog $seed */
         $seed = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
 
         if (!$seed) {
-            new NotFoundException('Email or CampaignLog not found');
+            new NotFoundException('Email or CampaignLog or NewsletterLog not found');
         }
 
         $this->setEmailToOptedOut($seed);
+
+        // unsubscribe from all newsletters if subscribed
+        $this->unsubscribeFromNewsletters($seed);
 
         $redirectUrl = SpiceConfig::getInstance()->get('emailtracking.unsubscribe_redirect_url');
 
@@ -228,6 +231,19 @@ class EmailTrackingActionsController
         }
         return true;
     }
+
+    public function unsubscribeFromNewsletters($seed){
+
+        $newsletter = BeanFactory::getBean('Newsletters');
+        if($seed->_module === 'Emails') {
+            $recipient = BeanFactory::getBean($seed->parent_type, $seed->parent_id);
+        }
+        elseif($seed->_module === 'CampaignLog' || $seed->_module === 'NewsletterLogs'){
+            $recipient = BeanFactory::getBean($seed->target_type, $seed->target_id);
+        }
+        $newsletter->unsubscribeTargetFromAllNewsletters($recipient->id);
+    }
+
     public function getEmailAddress(SpiceBean $person, $emailAddrBeanRelId): ?EmailAddress
     {
         $db = DBManagerFactory::getInstance();

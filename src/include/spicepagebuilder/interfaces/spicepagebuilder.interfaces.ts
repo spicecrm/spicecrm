@@ -1,4 +1,3 @@
-import {SafeResourceUrl} from "@angular/platform-browser";
 /**
  * container element to be rendered in the view
  */
@@ -185,6 +184,10 @@ export interface ImageI extends ContentElementI {
         width?: string
     };
 }
+
+export interface ImageUrlI extends ImageI {
+    content: string
+}
 /**
  * spacer element to be rendered in the view
  */
@@ -217,7 +220,7 @@ export interface TextI extends ContentElementI {
         'align'?: string,
         'padding'?: string,
         'css-class'?: string,
-        // 'editor-type'?: string
+        'line-height-auto'?: boolean;
     };
 }
 /**

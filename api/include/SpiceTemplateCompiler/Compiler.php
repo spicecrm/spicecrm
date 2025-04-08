@@ -119,6 +119,20 @@ class Compiler
         #$html = preg_replace("/\n|\r|\t/", "", html_entity_decode($txt, ENT_QUOTES));
         $dom->loadHTML('<?xml encoding="utf-8"?>' . html_entity_decode($txt, ENT_QUOTES));
 
+        preg_match_all('/<img[^>]+src="([^"]*)"/i', $txt, $matches);
+
+        # escaping the ampersands and ensuring the proper img URL encoding
+        $fixedImgSources = [];
+        foreach ($matches[1] as $src) {
+            $fixedSrc = str_replace('&', '&amp;', $src);
+            $fixedImgSources[] = $fixedSrc;
+        }
+
+        $tags = $dom->getElementsByTagName('img');
+        foreach ($tags as $index => $tag) {
+            $tag->setAttribute('src', $fixedImgSources[$index]);
+        }
+
         // handle the beans array
         $beans = ['bean' => $bean];
         foreach($additionalBeans as $beanName => $beanObject){
