@@ -598,9 +598,8 @@ class EmailsController
             $email->body = str_replace("\n", "", $email->body);
         }
 
-        // clone the attachments
-        $email->id = SpiceUtils::createGuid();
-
+        //save test email for easier testing of marketing actions
+        $email->save();
         $email->sendEmail();
 
         return $res->withJson(['success' => true]);
