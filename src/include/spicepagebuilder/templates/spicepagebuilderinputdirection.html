@@ -4,9 +4,9 @@
     </label>
     <div class="slds-select_container slds-size--1-of-1">
         <select class="slds-select" [(ngModel)]="value" (ngModelChange)="emitValue()">
-            <option value="left"><system-label label="LBL_ALIGN_LEFT"/></option>
-            <option value="center"><system-label label="LBL_ALIGN_CENTER"/></option>
-            <option value="right"><system-label label="LBL_ALIGN_RIGHT"/></option>
+            <option value=""><system-label label="LBL_INHERITED"/></option>
+            <option value="ltr"><system-label label="LBL_DIRECTION_LTR"/></option>
+            <option value="rtl"><system-label label="LBL_DIRECTION_RTL"/></option>
         </select>
     </div>
 </div>

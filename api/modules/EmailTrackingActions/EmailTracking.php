@@ -211,18 +211,20 @@ class EmailTracking
             throw new Exception('Target not found');
         }
         $emailAddress = self::getEmailAddress($bean->email_addr_bean_rel_id, $target);
-
         $targetData = [
             'parentType' => $target->_module,
             'parentId' => $target->id,
+            'salutation' =>$target->salutation,
             'firstName' => $target->first_name,
             'lastName' => $target->last_name,
+            'newsletter_account_name' => $target->newsletter_account_name,
             'emailAddress' => $emailAddress->email_address,
             'optInStatus' => $emailAddress->opt_in_status,
         ];
-            $newsletter = BeanFactory::getBean('Newsletters');
-            $newsletters = $newsletter->getNewsletterSubscriptionWithRelated($target->_module, $target->id, $bean->email_addr_bean_rel_id);
-            $targetData['newsletters'] = $newsletters;
+        $newsletter = BeanFactory::getBean('Newsletters');
+        $newsletters = $newsletter->getNewsletterSubscriptionWithRelated($target->_module, $target->id, $bean->email_addr_bean_rel_id);
+        $targetData['newsletters'] = $newsletters;
+
         return $targetData;
     }
 
@@ -263,12 +265,16 @@ class EmailTracking
         }
         $emailAddress = self::getEmailAddress($bean->email_addr_bean_rel_id, $target);
         $targetData = [
-            'emailAddress' => $emailAddress->email_address,
-            'optInStatus' => $emailAddress->opt_in_status,
+            'parentType' => $target->_module,
+            'parentId' => $target->id,
+            'salutation' =>$target->salutation,
             'firstName' => $target->first_name,
             'lastName' => $target->last_name,
-            'newsletters' => $newsletters
+            'newsletter_account_name' => $target->newsletter_account_name,
+            'emailAddress' => $emailAddress->email_address,
+            'optInStatus' => $emailAddress->opt_in_status,
         ];
+        $targetData['newsletters'] = $newsletters;
         return $targetData;
     }
 

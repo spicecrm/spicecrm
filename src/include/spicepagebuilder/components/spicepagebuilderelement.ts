@@ -80,6 +80,14 @@ export class SpicePageBuilderElement implements OnInit {
     }
 
     /**
+     * returns a style Object
+     * @param pickList
+     */
+    public returnStyle(pickList?: string[]) {
+        return JSON.parse(JSON.stringify(!pickList ? this.element.attributes : _.pick(this.element.attributes, pickList)));
+    }
+
+    /**
      * set the hovered element level
      * @param value
      */

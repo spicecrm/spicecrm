@@ -118,8 +118,7 @@ export class SpicePageBuilderService {
             attributes: {
                 'font-size': '16px',
                 'line-height': '24px',
-                'padding': '4px',
-                'container-background-color': '#ffffff'
+                'padding': '4px'
             }
         },
         {
@@ -130,18 +129,26 @@ export class SpicePageBuilderService {
             attributes: {
                 'font-size': '13px',
                 'line-height': '14px',
-                'padding': '4px',
-                'container-background-color': '#ffffff'
+                'padding': '4px'
             }
         },
         {
             tagName: 'image',
-            label: 'LBL_IMAGE',
+            label: 'LBL_MEDIA_FILES',
             icon: 'image',
-            // content: 'Upload an image or paste an URL...',
             attributes: {
                 align: 'center',
-                padding: '4px',
+                padding: '0px',
+                target: '_blank'
+            }
+        },{
+            tagName: 'image-url',
+            label: 'LBL_IMAGE_URL',
+            content: 'Paste an Image URL...',
+            icon: 'image',
+            attributes: {
+                align: 'center',
+                padding: '0px',
                 target: '_blank'
             }
         },

@@ -16,7 +16,11 @@
     </div>
     <article (dblclick)="edit()" [ngStyle]="style" class="spice-drop-zone-content">
         <div [style.background-color]="element.attributes['container-background-color']">
-            <img [src]="element.attributes.src" [ngStyle]="style" alt="SpiceCRM image" style="max-height: 100%; max-width: 100%;">
+            @if (element.attributes.src) {
+                <img [src]="element.attributes.src" [ngStyle]="style" alt="SpiceCRM image" style="max-height: 100%">
+            } @else {
+                <div [innerHTML]="element.content"></div>
+            }
         </div>
     </article>
     <div class="spice-drop-zone-actions">
@@ -37,36 +41,23 @@
 <ng-template #editContainer>
     <div style="height: 50%">
         <system-section titlelabel="LBL_ELEMENT_CONTENT" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
-            <div class="slds-grid slds-size--1-of-1 slds-height_full slds-p-around--xx-small">
-                <div class="slds-grid slds-height_full slds-size--1-of-1">
-                    <div class="slds-form-element slds-grid slds-grid--vertical slds-size--1-of-2 slds-p-right--xx-small">
-                <span class="slds-form-element__label">
-                    <system-label label="LBL_IMAGE_FILE"></system-label>
-                </span>
-                        <div class="slds-form-element__control slds-grow">
-                            <div class="slds-file-selector slds-file-selector_images slds-height_full">
-                                <div class="slds-file-selector__dropzone slds-height_full">
-                                    <label class="slds-file-selector__body">
-                                <span (click)="openMediaFilePicker()" class="slds-file-selector__button slds-button slds-button_neutral" style="cursor: pointer">
-                                    <system-button-icon icon="upload"></system-button-icon>
-                                    <span>
-                                        <system-label label="LBL_UPLOAD_IMAGE"></system-label>
-                                    </span>
-                                </span>
-                                        <span class="slds-file-selector__text slds-medium-show">
-                                        <system-label label="LBL_OR_DROP_IMAGE"></system-label>
-                                </span>
-                                    </label>
-                                </div>
-                            </div>
+            <div class="slds-p-around--xx-small" style="height: 100%">
+                <div class="slds-height_full slds-grid slds-grid--vertical">
+                    <div class="slds-form-element slds-grid slds-grid--vertical slds-p-horizontal--xxx-small slds-size--1-of-1">
+                        <span class="slds-form-element__label"><system-label label="LBL_IMAGE_URL"/></span>
+                        <div class="slds-form-element__control">
+                            <input type="text" class="slds-input" [(ngModel)]="imageURL" (ngModelChange)="sanitize()">
                         </div>
                     </div>
-                    <div *ngIf="!!element.attributes.src" class="slds-height_full slds-size--1-of-2 slds-grid slds-grid--vertical slds-p-left--xx-small">
-                <span class="slds-form-element__label">
-                    <system-label label="LBL_PREVIEW"></system-label>
-                </span>
-                        <div class="slds-grow slds-p-around--x-small slds-text-align--center" style="min-height: 0; border: 1px solid #ddd; border-radius: 4px;">
-                            <img [src]="element.attributes.src" alt="Spice Image" style="max-height: 100%">
+                    <div class="slds-grid slds-grid--vertical slds-grow">
+                        <span class="slds-form-element__label"> <system-label label="LBL_PREVIEW"/></span>
+                        <div class="slds-grid slds-grid--align-center slds-grid--vertical-align-center slds-grow slds-p-around--x-small slds-text-align--center"
+                             style="min-height: 0; border: 1px solid #ddd; border-radius: 4px;">
+                            @if(!!imageURL) {
+                                <img [src]="imageURL" alt="Spice Image" style="max-height: 100%">
+                            } @else {
+                                <system-label label="LBL_PASTE_URL"/>
+                            }
                         </div>
                     </div>
                 </div>

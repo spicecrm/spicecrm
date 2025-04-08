@@ -1,0 +1,19 @@
+<div class="slds-form-element">
+    <label class="slds-form-element__label">
+        <system-label [label]="label"></system-label>
+    </label>
+    <div class="slds-select_container slds-size--1-of-1">
+        <select class="slds-select" [(ngModel)]="value" (ngModelChange)="emitValue()">
+            <option value=""><system-label label="LBL_INHERITED"/></option>
+            <option value="100"><system-label label="LBL_FONT_WEIGHT_LIGHT"/></option>
+            <option value="200">200</option>
+            <option value="300">300</option>
+            <option value="400"><system-label label="LBL_NORMAL"/></option>
+            <option value="500">500</option>
+            <option value="600">600</option>
+            <option value="700"><system-label label="LBL_FONT_WEIGHT_BOLD"/></option>
+            <option value="800">800</option>
+            <option value="900">900</option>
+        </select>
+    </div>
+</div>

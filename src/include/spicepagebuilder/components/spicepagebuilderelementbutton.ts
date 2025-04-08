@@ -23,33 +23,43 @@ export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
      * containers to be rendered
      */
     @Input() public declare element: ButtonI;
+
+    public readonly mainAttributesList: AttributeObjectI[][] = [
+        [
+            {name: 'color', type: 'color'},
+            {name: 'background-color', type: 'color'}
+        ], [
+            {name: 'font-size', type: 'textSuffix', class: 'slds-size--1-of-4'},
+            {name: 'line-height', type: 'textSuffix', class: 'slds-size--1-of-4'},
+            {name: 'font-style', type: 'fontstyle', class: 'slds-size--1-of-4'},
+            {name: 'font-weight', type: 'fontweight', class: 'slds-size--1-of-4'}
+        ], [
+            {name: 'letter-spacing', type: 'textSuffix'},
+            {name: 'css-class', type: 'text'}
+        ], [
+            {name: 'text-decoration', type: 'textdecoration'},
+            {name: 'text-transform', type: 'texttransform'},
+        ]
+    ];
+
     /**
      * list of the editable attributes
      */
     public readonly attributesList: AttributeObjectI[][] = [
-        [{name: 'href', type: 'text'},
-        {name: 'rel', type: 'text'},
-        {name: 'target', type: 'text'},
-        {name: 'align', type: 'text'},
-        {name: 'width', type: 'textSuffix'},
-        {name: 'container-background-color', type: 'color'},
-        {name: 'border', type: 'text'},
-        {name: 'border-top', type: 'text'},
-        {name: 'border-right', type: 'text'},
-        {name: 'border-bottom', type: 'text'},
-        {name: 'border-left', type: 'text'},
-        {name: 'height', type: 'textSuffix'},
-        {name: 'padding', type: 'sides'},
-        {name: 'inner-padding', type: 'sides'},
-        {name: 'line-height', type: 'textSuffix'},
-        {name: 'vertical-align', type: 'text'},
-        {name: 'font-size', type: 'textSuffix'},
-        {name: 'font-style', type: 'text'},
-        {name: 'font-weight', type: 'text'},
-        {name: 'letter-spacing', type: 'textSuffix'},
-        {name: 'text-decoration', type: 'text'},
-        {name: 'text-transform', type: 'text'},
-        {name: 'css-class', type: 'text'}]
+        [
+            {name: 'target', type: 'text'},
+            {name: 'container-background-color', type: 'color'}
+        ], [
+            {name: 'height', type: 'textSuffix', class: 'slds-size--1-of-4'},
+            {name: 'width', type: 'width', class: 'slds-size--1-of-4'},
+            {name: 'align', type: 'halign', class: 'slds-size--1-of-4'},
+            {name: 'vertical-align', type: 'valign', class: 'slds-size--1-of-4'}
+        ], [
+            {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'},
+            {name: 'inner-padding', type: 'padding', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'border', type: 'borders', class: 'slds-size--1-of-1'}
+        ]
     ];
 
     constructor(public domSanitizer: DomSanitizer,
@@ -60,6 +70,7 @@ export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
                 public spicePageBuilderService: SpicePageBuilderService) {
         super(domSanitizer, modal, injector, cdRef, spicePageBuilderService);
         this.model.module = 'EmailTrackingLinks';
+        this.growEditorModal = false;
     }
 
     /**
@@ -79,8 +90,21 @@ export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
         super.generateStyle([
             'width', 'border', 'border-top', 'border-right', 'border-bottom', 'border-left', 'border-radius',
             'height', 'line-height', 'vertical-align', 'font-size', 'font-style', 'font-weight', 'text-align',
-            'letter-spacing', 'text-decoration', 'text-transform', 'background-color', 'align', 'color'
+            'letter-spacing', 'text-decoration', 'text-transform', 'background-color', 'color'
         ]);
+
+        switch (this.element.attributes.align) {
+            case 'center':
+                this.style.margin = '0 auto';
+                break;
+            case 'right':
+                this.style.float = 'right';
+                this.style.margin = '0px';
+                break;
+            case 'left':
+                this.style.margin = '0px';
+                break;
+        }
     }
 
     /**

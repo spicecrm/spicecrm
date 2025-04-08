@@ -38,11 +38,11 @@ export class SpicePageBuilderElementRSS extends SpicePageBuilderElement {
         {name: 'line-height', type: 'textSuffix'},
         {name: 'vertical-align', type: 'text'},
         {name: 'font-size', type: 'textSuffix'},
-        {name: 'font-style', type: 'text'},
-        {name: 'font-weight', type: 'text'},
+        {name: 'font-style', type: 'fontstyle'},
+        {name: 'font-weight', type: 'fontweight'},
         {name: 'letter-spacing', type: 'textSuffix'},
-        {name: 'text-decoration', type: 'text'},
-        {name: 'text-transform', type: 'text'},
+        {name: 'text-decoration', type: 'textdecoration'},
+        {name: 'text-transform', type: 'texttransform'},
         {name: 'css-class', type: 'text'}]
     ];
     /**
@@ -56,7 +56,7 @@ export class SpicePageBuilderElementRSS extends SpicePageBuilderElement {
             {name: 'color', type: 'color'},
             {name: 'font-size', type: 'textSuffix'},
             {name: 'line-height', type: 'textSuffix'},
-            {name: 'font-weight', type: 'text'},
+            {name: 'font-weight', type: 'fontweight'},
             {name: 'padding', type: 'sides'},
             {name: 'container-background-color', type: 'color'},
         ],
