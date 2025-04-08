@@ -63,7 +63,7 @@ export class TelephonyToolbarIndicator {
         this.callid = this.modelutilities.generateGuid();
         this.getPreferences();
 
-        let telephonyConfig = this.configuration.getCapabilityConfig(telephony);
+        let telephonyConfig = this.configuration.getCapabilityConfig('telephony');
         if(telephonyConfig.testmode == 1) this.testmode = true;
     }
 
