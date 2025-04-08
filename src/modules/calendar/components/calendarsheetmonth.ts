@@ -247,10 +247,9 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     public buildSheetDays() {
         this.sheetDays = [];
         let i = 0;
-        let dayIndex = this.calendar.weekStartDay;
-        let days = moment.weekdaysShort();
+        let dayIndex = 0;
         while (i < this.calendar.weekDaysCount) {
-            this.sheetDays.push({index: i, text: days[dayIndex], day: dayIndex});
+            this.sheetDays.push({index: i, text: this.calendar.weekdayShort(dayIndex), day: dayIndex});
             i++;
             dayIndex++;
             if (dayIndex > 6) {
