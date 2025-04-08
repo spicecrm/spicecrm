@@ -11,6 +11,7 @@ import {socket} from "../../../services/socket.service";
 import {backend} from "../../../services/backend.service";
 import {TelephonyPreferences} from "./telephonypreferences";
 import {configurationService} from "../../../services/configuration.service";
+import {session} from "../../../services/session.service";
 
 /**
  * @ignore
@@ -58,10 +59,11 @@ export class TelephonyToolbarIndicator {
         public socket: socket,
         public backend: backend,
         public telephony: telephony,
+        public session: session,
         public configuration: configurationService
     ) {
         this.callid = this.modelutilities.generateGuid();
-        this.getPreferences();
+        this.connectSocket();
 
         let telephonyConfig = this.configuration.getCapabilityConfig('telephony');
         if(telephonyConfig.testmode == 1) this.testmode = true;
@@ -110,16 +112,6 @@ export class TelephonyToolbarIndicator {
         this.enabled = !this.enabled;
     }
 
-    /**
-     * get the preferences and check if we have a username set
-     */
-    public getPreferences() {
-        this.backend.getRequest('channels/voice/telephonyGeneric/preferences').subscribe(prefs => {
-            if (!prefs.username) return;
-            this.username = prefs.username;
-            this.connectSocket();
-        });
-    }
 
     /**
      * adds the call
@@ -240,7 +232,7 @@ export class TelephonyToolbarIndicator {
         );
 
         // join the room
-        this.socket.joinRoom('telephonyGeneric', `telephonyGeneric::${this.username}`);
+        this.socket.joinRoom('telephonyGeneric', `telephonyGeneric::${this.session.authData.userId}`);
 
         if (this.socket.connected) {
             this.status = 'connected';
