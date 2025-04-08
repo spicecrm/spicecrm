@@ -36,8 +36,10 @@ use SpiceCRM\data\BeanFactory;
 use DateInterval;
 use DateTime;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 
 class SysModuleFilters
@@ -52,6 +54,20 @@ class SysModuleFilters
      * @var the module of the filter we currently analyze
      */
     var $filtermodule;
+
+    /**
+     * @var int the minimum nGram length as set in the config
+     */
+    var $minNgram = 3;
+
+    /**
+     * the comntructor
+     */
+    public final function __construct()
+    {
+        // get the min ntram length
+        $this->minNgram = SpiceConfig::getInstance()->get('fts.min_ngram', 3);
+    }
 
     /**
      * static function used in the spiceui rest extension to load all module filters and return to the UI
@@ -253,6 +269,11 @@ class SysModuleFilters
             $settings = SpiceFTSUtils::getBeanIndexSettings($module);
             $geocondition = "(6371*acos(cos(radians( {$group->geography->lat}))*cos(radians({$tablename}.{$settings['geolat']}))*cos(radians({$tablename}.{$settings['geolng']})-radians({$group->geography->lng}))+sin(radians({$group->geography->lat}))*sin(radians({$tablename}.{$settings['geolat']})))) < {$group->geography->radius}";
             $filterCondition = "($filterCondition) AND ($geocondition)";
+        }
+
+        // check if we shoudl select deleted records
+        if($group->deleted) {
+            $filterCondition = "($filterCondition) AND ({$tablename}.deleted = 1)";
         }
 
         return $filterCondition;
@@ -702,6 +723,12 @@ class SysModuleFilters
         return count($filterCondition) > 0 ? ['bool' => $filterCondition] : [];
     }
 
+    private function checkMinNGramLength($searchvalue){
+        if(strlen($searchvalue) < $this->minNgram){
+            throw new BadRequestException("Minimum NGram Length ({$this->minNgram}) not matched in query");
+        }
+    }
+
     /**
      * builds the filter for a single condition
      *
@@ -731,6 +758,7 @@ class SysModuleFilters
             case 'notempty':
                 return ['exists' => ["field" => $condition->field]];
             case 'equals':
+                $this->checkMinNGramLength($condition->filtervalue);
                 $seed = BeanFactory::getBean($this->filtermodule);
                 $isMultiEnum = $seed->field_defs[$condition->field]['type'] == 'multienum';
                 if ($isMultiEnum) {
@@ -815,10 +843,13 @@ class SysModuleFilters
             case 'false':
                 return ['term' => [$condition->field . '.raw' => 0]];
             case 'starts':
+                $this->checkMinNGramLength($condition->filtervalue);
                 return ['wildcard' => [$condition->field . '.raw' => $condition->filtervalue . '*']];
             case 'contains':
+                $this->checkMinNGramLength($condition->filtervalue);
                 return ['match' => [$condition->field => $condition->filtervalue]];
             case 'ncontains':
+                $this->checkMinNGramLength($condition->filtervalue);
                 return ['bool' => ['must_not' => [['match' => [$condition->field => $condition->filtervalue]]]]];
             case 'greater':
                 return ['range' => [$condition->field . '.raw' => ['gt' => $condition->filtervalue]]];

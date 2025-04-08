@@ -17,6 +17,7 @@ import {ProcessManagementProcessCategory} from "./components/processmanagementpr
 import {ProcessManagementAddProcessGroupButton} from "./components/processmanagementaddprocessgroupbutton";
 import {ProcessManagementProcessGroup} from "./components/processmanagementprocessgroup";
 import {ProcessManagementAddProcessButton} from "./components/processmanagementaddprocessbutton";
+import {ProcessManagementProcessMapDashlet} from "./components/processmanagementprocessmapdashlet";
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import {ProcessManagementAddProcessButton} from "./components/processmanagementa
     ],
     declarations: [
         ProcessManagementProcessMap,
+        ProcessManagementProcessMapDashlet,
         ProcessManagementProcessCategory,
         ProcessManagementAddProcessGroupButton,
         ProcessManagementProcessGroup,

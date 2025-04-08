@@ -2,7 +2,7 @@
  * @module ModuleSpiceAttachments
  */
 import {
-    Component, Injector, ViewChild, ViewContainerRef
+    Component, Injector, Optional, ViewChild, ViewContainerRef
 } from '@angular/core';
 import {Router} from "@angular/router";
 import {model} from "../../../services/model.service";
@@ -44,7 +44,7 @@ export class fieldModelAttachment extends fieldGeneric {
         public modal: modal,
         public helper: helper,
         public backend: backend,
-        public navigationtab: navigationtab
+        @Optional() public navigationtab: navigationtab
     ) {
         super(model, view, language, metadata, router);
     }
@@ -127,15 +127,18 @@ export class fieldModelAttachment extends fieldGeneric {
      * opens file/url in a new tab
      * module/:module/:moduleId/:attachment/:attachmentId
      */
-    public openInTab() {
-
+    public openInTab(e) {
+        // no open of record just file
+        e.preventDefault();
+        e.stopPropagation();
 
         let fileTypeArray = this.mime_type.toLowerCase().split("/");
 
         // disable preview for specific files
-        const applicationFile = fileTypeArray[0] == 'application' && fileTypeArray[1] != 'pdf' && fileTypeArray[1] != 'msg';
+        const applicationFile =  fileTypeArray[0] == 'application' && !['pdf', 'msg', 'vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(fileTypeArray[1]);
         const csvFile = fileTypeArray[0] == 'text' && fileTypeArray[1] == 'csv';
-        if(applicationFile) return this.downloadFile();
+
+        if(applicationFile || csvFile) return this.downloadFile();
 
         let routePrefix = '';
         if (this.navigationtab?.tabid) {

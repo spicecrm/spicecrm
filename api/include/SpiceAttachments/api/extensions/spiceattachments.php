@@ -236,6 +236,40 @@ $routes = [
                 'required' => true
             ]
         ]
+    ],    [
+        'method'      => 'put',
+        'route'       => '/common/spiceattachments/module/{beanName}/{beanId}/byid/{attachmentId}',
+        'class'       => SpiceAttachmentsController::class,
+        'function'    => 'updateAttachmentContentById',
+        'description' => '',
+        'options'     => ['validate' => true],
+        'parameters'  => [
+            'beanName' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'description' => 'name of a module',
+                'example' => 'Accounts',
+                'required' => true
+            ],
+            'beanId' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'description' => 'GUID of bean',
+                'required' => true
+            ],
+            'attachmentId' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'Prefix of the field',
+                'required' => true
+            ],
+            'file' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'thew file content of the Field',
+                'required' => true
+            ]
+        ]
     ],
     [
         'method'      => 'post',

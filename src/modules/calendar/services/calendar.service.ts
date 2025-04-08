@@ -10,10 +10,11 @@ import {userpreferences} from "../../../services/userpreferences.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {modal} from "../../../services/modal.service";
 import {language} from "../../../services/language.service";
-import {map, take} from "rxjs/operators";
+import {take} from "rxjs/operators";
 import {CdkDragEnd} from "@angular/cdk/drag-drop";
 import {configurationService} from "../../../services/configuration.service";
 import {metadata} from "../../../services/metadata.service";
+import {MomentService} from "../../../services/moment.service";
 
 
 /**
@@ -31,6 +32,10 @@ declare var _: any;
  */
 @Injectable()
 export class calendar implements OnDestroy {
+    /**
+     * reference id will be sent with each backend request to enable canceling the pending requests
+     */
+    public httpRequestsRefID: string = window._.uniqueId('calendar_http_ref_');
     /**
      * emits when a user calendar is refactored
      */
@@ -199,6 +204,7 @@ export class calendar implements OnDestroy {
                 public metadata: metadata,
                 public cdRef: ChangeDetectorRef,
                 @Optional() @Inject('calendarConfigOverride') private calendarConfigOverride: {isDashlet?: boolean, sheetType?: 'Day' | 'Three_Days' | 'Week' | 'Month' | 'Schedule', sheetHourHeight?: number},
+                private momentService: MomentService,
                 public userPreferences: userpreferences) {
         this.loadOverrideConfig();
         this.loadCalendarModules();
@@ -237,7 +243,7 @@ export class calendar implements OnDestroy {
      * @param value: moment
      */
     set calendarDate(value) {
-        this._calendarDate = new moment(value).locale(this.language.currentlanguage.substring(0, 2));
+        this._calendarDate = new moment(value);
         this.session.setSessionData('calendarDate', this._calendarDate);
     }
 
@@ -373,7 +379,9 @@ export class calendar implements OnDestroy {
         const calendar = this.availableCalendars.find(c => c.id == calendarId);
         const userCalendar = this.usersCalendars.find(c => c.id == userId);
 
+
         if (forceReload || this.doReload(start, end, calendarId)) {
+            this.backend.cancelPendingRequests([this.httpRequestsRefID + '_load_events']);
             this.isLoading = true;
             this.cdRef.detectChanges();
             let responseSubject = new Subject<any[]>();
@@ -382,7 +390,7 @@ export class calendar implements OnDestroy {
             this.currentEnd[calendarId] = end;
             this.currentStart[calendarId] = start;
 
-            this.backend.getRequest(`module/Calendar/${calendarId}/user/${userId}`, params)
+            this.backend.getRequest(`module/Calendar/${calendarId}/user/${userId}`, params, this.httpRequestsRefID + '_load_events')
                 .subscribe({
                     next: events => {
                         this.calendarData[calendarId] = [];
@@ -496,6 +504,7 @@ export class calendar implements OnDestroy {
     public loadGoogleEvents(startDate, endDate) {
 
         if (this.doReload(startDate, endDate, "google")) {
+            this.backend.cancelPendingRequests([this.httpRequestsRefID + '_load_google_events']);
             this.isLoading = true;
             this.cdRef.detectChanges();
             let responseSubject = new Subject<any[]>();
@@ -505,7 +514,7 @@ export class calendar implements OnDestroy {
             this.currentEnd.google = endDate;
             this.currentStart.google = startDate;
 
-            this.backend.getRequest("channels/groupware/gsuite/calendar/events", params)
+            this.backend.getRequest("channels/groupware/gsuite/calendar/events", params, this.httpRequestsRefID + '_load_google_events')
                 .subscribe(res => {
                     if (res.events && res.events.length > 0) {
                         for (let event of res.events) {
@@ -550,16 +559,17 @@ export class calendar implements OnDestroy {
     public loadMicrosoftEvents(startDate, endDate) {
 
         if (this.doReload(startDate, endDate, "microsoft")) {
+            this.backend.cancelPendingRequests([this.httpRequestsRefID + '_load_microsoft_events']);
             this.isLoading = true;
             this.cdRef.detectChanges();
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
-            let params = {startdate: startDate.format(format), enddate: endDate.format(format), searchTerm: this.searchTerm};
+            let params = {startdate: moment(startDate).startOf('day').format(format), enddate: moment(endDate).endOf('day').format(format), searchTerm: this.searchTerm};
             this.calendarData.microsoft = [];
             this.currentEnd.microsoft = endDate;
             this.currentStart.microsoft = startDate;
 
-            this.backend.getRequest(`channels/groupware/microsoft/calendar/events/${this.owner}`, params)
+            this.backend.getRequest(`channels/groupware/microsoft/calendar/events/${this.owner}`, params, this.httpRequestsRefID + '_load_microsoft_events')
                 .subscribe({
                     next: res => {
                         if (res.events && res.events.length > 0) {
@@ -1058,28 +1068,13 @@ export class calendar implements OnDestroy {
         this._calendarDate = moment(date ? date : this._calendarDate);
     }
 
-
-    /*
-     * will return the full translation for a week day according to current language
-     * @param dayIndex: number
-     * @return weekdayLong: string
-     */
-    public weekdayLong(dayIndex) {
-        let lang = this.language.currentlanguage.substring(0, 2);
-        moment.locale(lang);
-        return moment.weekdays(dayIndex);
-    }
-
-
     /*
      * will return the short translation for a week day according to current language
      * @param dayIndex: number
      * @return weekdayLong: string
      */
     public weekdayShort(dayIndex) {
-        let lang = this.language.currentlanguage.substring(0, 2);
-        moment.locale(lang);
-        return moment.weekdaysShort(dayIndex);
+        return this.momentService.weekdaysShort()[dayIndex];
     }
 
     /*
@@ -1088,8 +1083,6 @@ export class calendar implements OnDestroy {
      * @return weekdayLong: string
      */
     public monthShort(monthIndex) {
-        let lang = this.language.currentlanguage.substring(0, 2);
-        moment.locale(lang);
         return moment.monthsShort('-MMM-', monthIndex);
     }
 }

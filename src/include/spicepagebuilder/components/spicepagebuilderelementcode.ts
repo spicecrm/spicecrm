@@ -28,7 +28,7 @@ export class SpicePageBuilderElementCode extends SpicePageBuilderElement impleme
     /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[] = [];
+    public readonly attributesList: AttributeObjectI[][] = [];
     /**
      * is true when the beatify library is loaded
      */

@@ -1,6 +1,8 @@
 <?php
 
+use SpiceCRM\includes\Middleware\ValidationMiddleware;
 use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TXControlEditor\api\controllers\TXControlEditorController;
 
 /**
@@ -16,8 +18,54 @@ $routes = [
         'function'    => 'getSettings',
         'description' => 'Returns the tx control settings with the token',
         'options'     => ['noAuth' => false, 'adminOnly' => false],
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/common/TXControl/parse/module/{module}/{beanId}',
+        'class'       => TXControlEditorController::class,
+        'function'    => 'parseContent',
+        'description' => 'Parse TX control content',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters'  => [
+            'content' => [
+                'content' => 'body',
+                'description' => 'DocX content',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true
+            ],
+            'format' => [
+                'content' => 'body',
+                'description' => 'Return format options: "PDF", "PDFA", "RTF", "DOC", "DOCX", "HTML", "TX"',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false
+            ],
+        ],
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/common/TXControl/convert/module/{module}/{beanId}',
+        'class'       => TXControlEditorController::class,
+        'function'    => 'convertContent',
+        'description' => 'Parse TX control content',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters'  => [
+            'content' => [
+                'content' => 'body',
+                'description' => 'DocX content',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true
+            ],
+            'format' => [
+                'content' => 'body',
+                'description' => 'Return format options: "PDF", "PDFA", "RTF", "DOC", "DOCX", "HTML", "TX"',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false
+            ],
+        ],
     ]
 ];
+
+$config = SpiceConfig::getInstance()->get('DocXEditor.clientId');
 
 /**
  * register the Extension
@@ -25,6 +73,6 @@ $routes = [
 $RESTManager->registerExtension(
     'txcontrol',
     '1.0',
-    [],
+    ['isActive' => !empty($config)],
     $routes
 );

@@ -24,25 +24,36 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
     /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[] = [
-        {name: 'color', type: 'color'},
-        {name: 'container-background-color', type: 'color'},
-        {name: 'font-size', type: 'textSuffix'},
-        {name: 'font-style', type: 'text'},
-        {name: 'font-weight', type: 'text'},
-        {name: 'line-height', type: 'textSuffix'},
-        {name: 'letter-spacing', type: 'textSuffix'},
-        {name: 'height', type: 'textSuffix'},
-        {name: 'text-decoration', type: 'text'},
-        {name: 'text-transform', type: 'text'},
-        {name: 'align', type: 'text'},
-        {name: 'padding', type: 'sides'},
-        {name: 'css-class', type: 'text'}
+    public readonly attributesList: AttributeObjectI[][] = [
+        [
+            {name: 'color', type: 'color'},
+            {name: 'container-background-color', type: 'color'}
+        ], [
+            {name: 'font-size', type: 'textSuffix', class: 'slds-size--1-of-3'},
+            {name: 'font-style', type: 'text', class: 'slds-size--1-of-3'},
+            {name: 'font-weight', type: 'text', class: 'slds-size--1-of-3'}
+        ], [
+            {name: 'line-height', type: 'textSuffix'},
+            {name: 'letter-spacing', type: 'textSuffix'},
+            {name: 'height', type: 'textSuffix'},
+            {name: 'text-decoration', type: 'textdecoration'},
+            {name: 'text-transform', type: 'texttransform'},
+            {name: 'align', type: 'halign'}
+        ], [
+            {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'css-class', type: 'text', class: 'slds-size--1-of-1'}
+        ]
     ];
     /**
      * hold the sanitized content html
      */
     public sanitizedContent: SafeHtml = '';
+
+    /**
+     * holds the info if the styles panel is expanded
+     */
+    public styleExpanded: boolean = false;
 
     constructor(public domSanitizer: DomSanitizer,
                 public modal: modal,
@@ -61,6 +72,18 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
             this.element.attributes["editor-type"] = 'richText';
         }
         this.sanitizeContent();
+    }
+
+    get editorStyle() {
+        if (this.styleExpanded) {
+            return {
+                height: '50%'
+            }
+        } else {
+            return {
+                height: 'calc(100% - 40px)'
+            }
+        }
     }
 
     /**
@@ -86,7 +109,11 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
     public generateStyle() {
         super.generateStyle([
             'color', 'font-size', 'font-style', 'font-weight', 'line-height', 'letter-spacing',
-            'text-decoration', 'text-transform', 'align', 'padding', 'height'
+            'text-decoration', 'text-transform', 'padding', 'height'
         ]);
+
+        if (this.element.attributes.align) {
+            this.style['text-align'] = this.element.attributes.align;
+        }
     }
 }

@@ -1,0 +1,16 @@
+<div class="slds-form-element slds-m-left--xx-small">
+    <label class="slds-form-element__label">
+        <system-label [label]="label"></system-label>
+    </label>
+    <div class="slds-form-element__control" [class.slds-input-has-fixed-addon]="!!unit">
+        <div class="slds-grid slds-size--1-of-1 slds-gutters_direct-xx-small">
+            <input type="number" [disabled]="disabled" [(ngModel)]="value" (ngModelChange)="emitJoinedValue()" class="slds-input slds-col slds-grow">
+            <div class="slds-select_container slds-col" style="width: 100px">
+                <select [disabled]="disabled" class="slds-select" [(ngModel)]="unit" (ngModelChange)="emitJoinedValue()">
+                    <option value="px">px</option>
+                    <option value="%">%</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>

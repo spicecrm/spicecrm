@@ -2,9 +2,9 @@
     <system-modal-header (close)="close()">
         <system-label label="LBL_SELECT_EMAIL_PERSONS_EMAIL_ADDRESS"/>
     </system-modal-header>
-    <system-modal-content>
-        <table class="slds-table slds-table_bordered slds-table--fixed-layout">
-            <thead>
+    <system-modal-content margin="none">
+        <table class="slds-table slds-table--fixed-layout " >
+            <thead class="slds-border_bottom">
             <tr class="slds-line-height_reset">
                 <th class="" scope="col">
                     <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
@@ -15,13 +15,17 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let item of items" [system-model-provider]="{module: model.module, data: item, id: item.id}" class="slds-hint-parent">
+            <tr *ngFor="let item of filteredItems" [system-model-provider]="{module: model.module, data: item, id: item.id, parent: this.parent}"  class="slds-hint-parent" >
                 <td>
                     <div class="slds-truncate">{{item.summary_text}}</div>
                 </td>
                 <td>
                     <div class="slds-truncate">
-                        <field-container [field]="emailAddressFieldName" [fieldconfig]="{fieldtype: 'prospectListsPersonEmailAddress'}"/>
+                        @if (model.module == 'ProspectLists' && !item.allow_multiple_emails_per_target) {
+                            <system-label label="LBL_SELECTION_DISABLED_IN_LIST"/>
+                        } @else {
+                            <field-container [field]="emailAddressFieldName" [fieldconfig]="{fieldtype: 'prospectListsPersonEmailAddress', readonly: completedItemsIds.includes(item.id)}"/>
+                        }
                     </div>
                 </td>
             </tr>
@@ -29,6 +33,14 @@
         </table>
     </system-modal-content>
     <system-modal-footer>
+        @if (completedItemsIds.length > 0) {
+            <span class="slds-m-right--xx-small">
+                <system-label label="LBL_HIDDEN"/> {{completedItemsIds.length}} <system-label label="LBL_OF"/> {{items.length}} <system-label label="LBL_RECORDS"/>
+            </span>
+            <system-checkbox (ngModelChange)="setShowAll($event)" [ngModel]="showAll">
+                <system-label label="LBL_SHOW_ALL"></system-label>
+            </system-checkbox>
+        }
         <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"/></button>
         <button class="slds-button slds-button--brand" (click)="confirm()"><system-label label="LBL_CONFIRM"/></button>
     </system-modal-footer>

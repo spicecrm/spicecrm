@@ -1,4 +1,3 @@
-import {SafeResourceUrl} from "@angular/platform-browser";
 /**
  * container element to be rendered in the view
  */
@@ -46,7 +45,8 @@ export interface CustomElement {
     id?: string,
     name: string,
     type: 'section' | 'item',
-    content: SectionI | ContentElementI
+    content: SectionI | ContentElementI,
+    image?: string
 }
 /**
  * column element to be rendered in the view
@@ -86,7 +86,8 @@ export interface DividerI extends ContentElementI {
         'border-width'?: string,
         'padding'?: string,
         'css-class'?: string,
-        'width'?: string
+        'width'?: string,
+        align?: string
     };
 }
 /**
@@ -165,23 +166,27 @@ export interface RSSI extends ContentElementI {
  */
 export interface ImageI extends ContentElementI {
     attributes: {
-        'href?': string,
-        'align?': string,
-        'alt'?: string,
-        'src': string,
-        'title'?: string,
-        'border'?: string,
+        href?: string,
+        align?: string,
+        alt?: string,
+        src: string,
+        title?: string,
+        border?: string,
         'border-radius'?: string,
         'container-background-color'?: string,
-        'height'?: string,
-        'padding'?: string,
+        height?: string,
+        padding?: string,
         'css-class'?: string,
         'fluid-on-mobile'?: 'true' | 'false',
-        'rel'?: string,
-        'srcset'?: string,
-        'target'?: string,
-        'width'?: string
+        rel?: string,
+        srcset?: string,
+        target?: string,
+        width?: string
     };
+}
+
+export interface ImageUrlI extends ImageI {
+    content: string
 }
 /**
  * spacer element to be rendered in the view
@@ -215,7 +220,7 @@ export interface TextI extends ContentElementI {
         'align'?: string,
         'padding'?: string,
         'css-class'?: string,
-        // 'editor-type'?: string
+        'line-height-auto'?: boolean;
     };
 }
 /**
@@ -249,11 +254,13 @@ export interface EditorAttributeI {
  */
 export interface AttributeObjectI {
     name: string;
-    type: 'color'|'text'|'sides'|'textSuffix';
+    type: 'color'|'text'|'sides'|'padding'|'textSuffix'|'width'|'halign'|'valign'|'textdecoration'|'texttransform'|'border'|'borders'|'fontstyle'|'fontweight'|'direction';
+    class?: string;
 }
 
-
-
+export interface AttributeObjectArray{
+    attributes
+}
 
 
 

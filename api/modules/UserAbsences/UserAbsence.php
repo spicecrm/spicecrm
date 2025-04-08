@@ -32,17 +32,25 @@ class UserAbsence extends SpiceBean
 
     public function getSubstituteIDs()
     {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $db = DBManagerFactory::getInstance();
-        $timeDate = TimeDate::getInstance();
-        $userIDs = [];
-        $today = new DateTime();
-        $today = $today->format($timeDate->get_date_format());
-        $substituteids = $db->query("SELECT distinct assigned_user_id FROM userabsences WHERE representative_id='{$current_user->id}' AND date_start <= '$today' AND date_end >= '$today' AND deleted = 0");
-        while ($substitute = $db->fetchByAssoc($substituteids)) {
-            $userIDs[] = $substitute['assigned_user_id'];
+
+        if(isset($_SESSION['user_substituting_for'])){
+            return $_SESSION['user_substituting_for'];
+        } else {
+            $current_user = AuthenticationController::getInstance()->getCurrentUser();
+            $db = DBManagerFactory::getInstance();
+            $timeDate = TimeDate::getInstance();
+            $userIDs = [];
+            $today = new DateTime();
+            $today = $today->format($timeDate->get_date_format());
+            $substituteids = $db->query("SELECT distinct assigned_user_id FROM userabsences WHERE representative_id='{$current_user->id}' AND date_start <= '$today' AND date_end >= '$today' AND deleted = 0");
+            while ($substitute = $db->fetchByAssoc($substituteids)) {
+                $userIDs[] = $substitute['assigned_user_id'];
+            }
+
+            $_SESSION['user_substituting_for'] = $userIDs;
+
+            return $userIDs;
         }
-        return $userIDs;
     }
 
     /**

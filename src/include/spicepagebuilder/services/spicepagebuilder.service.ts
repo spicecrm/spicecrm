@@ -118,8 +118,7 @@ export class SpicePageBuilderService {
             attributes: {
                 'font-size': '16px',
                 'line-height': '24px',
-                'padding': '4px',
-                'container-background-color': '#ffffff'
+                'padding': '4px'
             }
         },
         {
@@ -130,18 +129,26 @@ export class SpicePageBuilderService {
             attributes: {
                 'font-size': '13px',
                 'line-height': '14px',
-                'padding': '4px',
-                'container-background-color': '#ffffff'
+                'padding': '4px'
             }
         },
         {
             tagName: 'image',
-            label: 'LBL_IMAGE',
+            label: 'LBL_MEDIA_FILES',
             icon: 'image',
-            // content: 'Upload an image or paste an URL...',
             attributes: {
                 align: 'center',
-                padding: '4px',
+                padding: '0px',
+                target: '_blank'
+            }
+        },{
+            tagName: 'image-url',
+            label: 'LBL_IMAGE_URL',
+            content: 'Paste an Image URL...',
+            icon: 'image',
+            attributes: {
+                align: 'center',
+                padding: '0px',
                 target: '_blank'
             }
         },
@@ -169,7 +176,7 @@ export class SpicePageBuilderService {
             tagName: 'button',
             label: 'LBL_BUTTON',
             content: 'New Button',
-            icon: 'link',
+            icon: 'button_choice',
             attributes: {
                 'border-radius': '4px',
                 'background-color': '#ca1b21',
@@ -431,11 +438,11 @@ export class SpicePageBuilderService {
      * @param content
      * @param type
      */
-    public saveCustomElement(content: SectionI | ContentElementI, type: 'section' | 'item') {
+    public saveCustomElement(content: SectionI | ContentElementI, type: 'section' | 'item', image: any = null) {
 
         this.isMouseIn = undefined;
 
-        this.modal.input('LBL_ENTER_NAME', 'LBL_NAME').subscribe(name => {
+        this.modal.input(null, 'LBL_NAME').subscribe(name => {
 
             if (!name) return;
 
@@ -444,6 +451,7 @@ export class SpicePageBuilderService {
                 name: name,
                 type: type,
                 content: content,
+                image: image
             };
 
             switch (type) {
@@ -493,7 +501,7 @@ export class SpicePageBuilderService {
     /**
      * set the current editing element
      */
-    public openEditModal(element: ContentElementI | SectionI) {
+    public openEditModal(element: ContentElementI | SectionI, grow: boolean = true) {
 
         this.isMouseIn = undefined;
         this.cdRef.detectChanges();
@@ -501,6 +509,7 @@ export class SpicePageBuilderService {
 
         this.modal.openModal('SpicePageBuilderEditor', true, this.injector).subscribe(modalRef => {
             modalRef.instance.element = JSON.parse(JSON.stringify(element));
+            modalRef.instance.grow = grow;
             modalRef.instance.response.subscribe(res => {
                 subject.next(res);
                 if (!!res) {
