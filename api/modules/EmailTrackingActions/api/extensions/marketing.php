@@ -84,6 +84,23 @@ $routes = [
     ],
     [
         'method' => 'get',
+        'route' => '/email/v/{key}',
+        'class' => EmailTrackingActionsController::class,
+        'function' => 'createPreview',
+        'description' => 'creates content preview',
+        'options' => ['noAuth' => true],
+        'parameters' => [
+            'key' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'description' => '',
+                'example' => '',
+                'required' => true
+            ]
+        ]
+    ],
+    [
+        'method' => 'get',
         'route' => '/email/m/{key}',
         'class' => EmailTrackingActionsController::class,
         'function' => 'getPreferences',
