@@ -33,6 +33,10 @@ declare var _: any;
 @Injectable()
 export class calendar implements OnDestroy {
     /**
+     * reference id will be sent with each backend request to enable canceling the pending requests
+     */
+    public httpRequestsRefID: string = window._.uniqueId('calendar_http_ref_');
+    /**
      * emits when a user calendar is refactored
      */
     public userCalendarChange$ = new Subject<{id: string, name: string, visible: boolean, color: string, type: 'user' | 'other'} | {id: string, type: 'user' | 'other'}>();
@@ -375,7 +379,9 @@ export class calendar implements OnDestroy {
         const calendar = this.availableCalendars.find(c => c.id == calendarId);
         const userCalendar = this.usersCalendars.find(c => c.id == userId);
 
+
         if (forceReload || this.doReload(start, end, calendarId)) {
+            this.backend.cancelPendingRequests([this.httpRequestsRefID + '_load_events']);
             this.isLoading = true;
             this.cdRef.detectChanges();
             let responseSubject = new Subject<any[]>();
@@ -384,7 +390,7 @@ export class calendar implements OnDestroy {
             this.currentEnd[calendarId] = end;
             this.currentStart[calendarId] = start;
 
-            this.backend.getRequest(`module/Calendar/${calendarId}/user/${userId}`, params)
+            this.backend.getRequest(`module/Calendar/${calendarId}/user/${userId}`, params, this.httpRequestsRefID + '_load_events')
                 .subscribe({
                     next: events => {
                         this.calendarData[calendarId] = [];
@@ -498,6 +504,7 @@ export class calendar implements OnDestroy {
     public loadGoogleEvents(startDate, endDate) {
 
         if (this.doReload(startDate, endDate, "google")) {
+            this.backend.cancelPendingRequests([this.httpRequestsRefID + '_load_google_events']);
             this.isLoading = true;
             this.cdRef.detectChanges();
             let responseSubject = new Subject<any[]>();
@@ -507,7 +514,7 @@ export class calendar implements OnDestroy {
             this.currentEnd.google = endDate;
             this.currentStart.google = startDate;
 
-            this.backend.getRequest("channels/groupware/gsuite/calendar/events", params)
+            this.backend.getRequest("channels/groupware/gsuite/calendar/events", params, this.httpRequestsRefID + '_load_google_events')
                 .subscribe(res => {
                     if (res.events && res.events.length > 0) {
                         for (let event of res.events) {
@@ -552,16 +559,17 @@ export class calendar implements OnDestroy {
     public loadMicrosoftEvents(startDate, endDate) {
 
         if (this.doReload(startDate, endDate, "microsoft")) {
+            this.backend.cancelPendingRequests([this.httpRequestsRefID + '_load_microsoft_events']);
             this.isLoading = true;
             this.cdRef.detectChanges();
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
-            let params = {startdate: startDate.format(format), enddate: endDate.format(format), searchTerm: this.searchTerm};
+            let params = {startdate: moment(startDate).startOf('day').format(format), enddate: moment(endDate).endOf('day').format(format), searchTerm: this.searchTerm};
             this.calendarData.microsoft = [];
             this.currentEnd.microsoft = endDate;
             this.currentStart.microsoft = startDate;
 
-            this.backend.getRequest(`channels/groupware/microsoft/calendar/events/${this.owner}`, params)
+            this.backend.getRequest(`channels/groupware/microsoft/calendar/events/${this.owner}`, params, this.httpRequestsRefID + '_load_microsoft_events')
                 .subscribe({
                     next: res => {
                         if (res.events && res.events.length > 0) {
