@@ -142,7 +142,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      * @return startDate: moment
      */
     get startDate() {
-        return new moment(this.setdate).day(this.calendar.weekStartDay).hour(this.calendar.startHour).minute(0).second(0);
+        return new moment(this.setdate).startOf('week').hour(this.calendar.startHour).minute(0).second(0);
     }
 
     /**
@@ -170,6 +170,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         }
 
         if (changes.setdate) {
+            this.buildSheetDays();
             this.getOwnerEvents();
             this.getUsersEvents();
         }
