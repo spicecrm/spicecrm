@@ -49,7 +49,7 @@
                         <label class="slds-form-element__label"><system-label label="LBL_EDIT_WITH"></system-label></label>
                         <system-input-radio-button-group [(ngModel)]="element.attributes['editor-type']" [inputOptions]="[{value: 'richText', label: 'LBL_RICH_TEXT_EDITOR'}, {value: 'html', label: 'LBL_HTML'}]" class="spice-display-block"></system-input-radio-button-group>
                     </div>
-                    <spice-page-builder-element-attributes [attributesList]="attributesList" [element]="element"/>
+                    <spice-page-builder-element-attributes class="slds-size--1-of-1" [attributesList]="attributesList" [element]="element"/>
                 </div>
             </div>
         </system-section>

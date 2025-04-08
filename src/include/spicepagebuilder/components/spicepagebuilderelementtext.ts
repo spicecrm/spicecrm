@@ -29,18 +29,21 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
             {name: 'color', type: 'color'},
             {name: 'container-background-color', type: 'color'}
         ], [
-            {name: 'font-size', type: 'textSuffix', class:'slds-size--1-of-3'},
-            {name: 'font-style', type: 'text', class:'slds-size--1-of-3'},
-            {name: 'font-weight', type: 'text', class:'slds-size--1-of-3'}
+            {name: 'font-size', type: 'textSuffix', class: 'slds-size--1-of-3'},
+            {name: 'font-style', type: 'text', class: 'slds-size--1-of-3'},
+            {name: 'font-weight', type: 'text', class: 'slds-size--1-of-3'}
         ], [
             {name: 'line-height', type: 'textSuffix'},
             {name: 'letter-spacing', type: 'textSuffix'},
             {name: 'height', type: 'textSuffix'},
             {name: 'text-decoration', type: 'textdecoration'},
-            {name: 'text-transform', type: 'text'},
-            {name: 'align', type: 'halign'},
-            {name: 'padding', type: 'sides'},
-            {name: 'css-class', type: 'text'}]
+            {name: 'text-transform', type: 'texttransform'},
+            {name: 'align', type: 'halign'}
+        ], [
+            {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'css-class', type: 'text', class: 'slds-size--1-of-1'}
+        ]
     ];
     /**
      * hold the sanitized content html
@@ -109,7 +112,7 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
             'text-decoration', 'text-transform', 'padding', 'height'
         ]);
 
-        if(this.element.attributes.align){
+        if (this.element.attributes.align) {
             this.style['text-align'] = this.element.attributes.align;
         }
     }

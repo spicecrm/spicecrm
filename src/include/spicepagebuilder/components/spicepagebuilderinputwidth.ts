@@ -10,7 +10,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 @Component({
     selector: 'spice-page-builder-input-width',
     templateUrl: '../templates/spicepagebuilderinputwidth.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    // changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
         {
             multi: true,
@@ -28,6 +28,10 @@ export class SpicePageBuilderInputWidth implements ControlValueAccessor {
      * name of the style attribute
      */
     @Input() public label: string = '';
+    /**
+     * name of the style attribute
+     */
+    @Input() public disabled: boolean = false;
     /**
      * holds the sides value
      */
@@ -73,7 +77,7 @@ export class SpicePageBuilderInputWidth implements ControlValueAccessor {
         let unitpos = value.search('px') >= 0 ? value.search('px') : value.search('%');
         this.value = parseFloat(value.substring(0, unitpos));
         this.unit = value.substring(unitpos);
-        this.cdRef.detectChanges();
+        // this.cdRef.detectChanges();
     }
 
     /**

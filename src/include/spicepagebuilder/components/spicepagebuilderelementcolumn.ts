@@ -13,7 +13,7 @@ import {ColumnI, PanelElementI} from "../interfaces/spicepagebuilder.interfaces"
 @Component({
     selector: 'spice-page-builder-element-column',
     templateUrl: '../templates/spicepagebuilderelementcolumn.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
     /**
@@ -65,21 +65,26 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
         return item.data.tagName != 'section';
     }
 
+    get displayStyle(){
+        this.generateStyle();
+        return this.style;
+    }
+
     /**
      * generate body style object
      */
     public generateStyle() {
-        this.style = {
-            'background-color': this.column.attributes['background-color'],
-            'border': this.column.attributes.border,
-            'border-top': this.column.attributes['border-top'],
-            'border-right': this.column.attributes['border-right'],
-            'border-bottom': this.column.attributes['border-bottom'],
-            'border-left': this.column.attributes['border-left'],
-            'border-radius': this.column.attributes['border-radius'],
-            'vertical-align': this.column.attributes['vertical-align'],
-            'padding': this.column.attributes.padding,
-        };
+        this.style = {};
+        if(this.column.attributes['background-color']) this.style['background-color'] = this.column.attributes['background-color'];
+        if(this.column.attributes['border']) this.style['border'] = this.column.attributes['border'];
+        if(this.column.attributes['border-top']) this.style['border-top'] = this.column.attributes['border-top'];
+        if(this.column.attributes['border-right']) this.style['border-right'] = this.column.attributes['border-right'];
+        if(this.column.attributes['border-bottom']) this.style['border-bottom'] = this.column.attributes['border-bottom'];
+        if(this.column.attributes['border-left']) this.style['border-left'] = this.column.attributes['border-left'];
+        // border radius is not supported on the table element
+        // if(this.column.attributes['border-radius']) this.style['border-radius'] = this.column.attributes['border-radius'];
+        if(this.column.attributes['vertical-align']) this.style['vertical-align'] = this.column.attributes['vertical-align'];
+        if(this.column.attributes['padding']) this.style['padding'] = this.column.attributes['padding'];
     }
 
     /**
