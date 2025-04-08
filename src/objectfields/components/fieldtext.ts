@@ -22,12 +22,7 @@ export class fieldText extends fieldGeneric implements OnInit {
     /**
      * sets if speech recognition is turned on
      */
-    public speechRecognition = false;
-
-    /**
-     * displays/hides volume icon
-     */
-    public hideVolumeIcon: boolean = false;
+    public speechRecognition = true;
 
     /**
      * if the user resizes manually
@@ -85,10 +80,8 @@ export class fieldText extends fieldGeneric implements OnInit {
     public ngOnInit() {
         super.ngOnInit();
         if (window.SpeechRecognition || window.webkitSpeechRecognition) {
-            this.speechRecognition = this.fieldconfig.speechRecognition; // boolean
+            this.speechRecognition = true; // boolean
         }
-
-        this.hideVolumeIcon = this.fieldconfig.hideVolumeIcon; // boolean
 
         this.getFieldLength();
         this.setStripHtml();
