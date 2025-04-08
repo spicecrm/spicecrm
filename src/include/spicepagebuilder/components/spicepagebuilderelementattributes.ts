@@ -14,7 +14,7 @@ import {SpicePageBuilderElement} from "./spicepagebuilderelement";
 @Component({
     selector: 'spice-page-builder-element-attributes',
     templateUrl: '../templates/spicepagebuilderelementattributes.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderElementAttributes  {
     /**

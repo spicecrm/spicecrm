@@ -73,6 +73,7 @@ class DocumentRevision extends SpiceBean {
             $generatePdf = true;
         }
 
+        $released = false;
         if($this->documentrevisionstatus == 'g' && $this->documentrevisionstatus != $this->fetched_row['documentrevisionstatus']){
             $this->reviewed_date = $timedate->nowDb();
             $this->reviewed_by = AuthenticationController::getInstance()->getCurrentUser()->id;
@@ -85,18 +86,28 @@ class DocumentRevision extends SpiceBean {
             $this->released_date = $timedate->nowDb();
             $this->released_by = AuthenticationController::getInstance()->getCurrentUser()->id;
 
+            $released = true;
+        }
+
+        // save the revision
+        $saved = parent::save($check_notify, $fts_index_bean);
+
+        // generate the PDF
+        if ($generatePdf) $this->generatePdf();
+
+        // if we have released update the docum,ent
+        if($released){
             $current_date = $this->db->now();
             $guidSQL = $this->db->getGuidSQL();
             // load and update the document
             $document = BeanFactory::getBean('Documents', $this->document_id);
             $document->revision = $this->revision;
             $document->revision_date = $timedate->nowDb();
-            $document->file_released_name = $this->file_name;
-            $document->file_released_md5 = $this->file_md5;
-            $document->file_released_mime_type = $this->file_mime_type;
+            $document->file_released_name = $this->file_pdf_name;
+            $document->file_released_md5 = $this->file_pdf_md5;
+            $document->file_released_mime_type = $this->file_pdf_mime_type;
 
             // create entries for user_documentrevisions to track who read/accepted them later on
-
             if ($document->acceptance_required = "1"){
                 $orgBeans = $document->get_linked_beans('orgunits', 'OrgUnits');
                 foreach ($orgBeans as $orgBean){
@@ -111,10 +122,6 @@ class DocumentRevision extends SpiceBean {
             }
             $document->save();
         }
-
-        $saved = parent::save($check_notify, $fts_index_bean);
-
-        if ($generatePdf) $this->generatePdf();
 
         return $saved;
 	}
@@ -133,6 +140,8 @@ class DocumentRevision extends SpiceBean {
         file_put_contents(StreamFactory::getPathPrefix('upload') . $this->file_pdf_md5, $pdf);
 
         $this->db->updateQuery($this->_tablename, ['id' => $this->id], ['file_pdf_md5' => $this->file_pdf_md5]);
+
+        $this->file_pdf_md5 = $this->file_pdf_md5;
     }
 
 	function get_summary_text()

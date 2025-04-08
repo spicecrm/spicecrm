@@ -43,22 +43,49 @@ export class SpicePageBuilderElementSection implements OnInit {
     /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[] = [
-        {name: 'background-color', type: 'color'},
-        {name: 'color', type: 'color'},
-        {name: 'padding', type: 'sides'},
-        {name: 'css-class', type: 'text'},
-        {name: 'border', type: 'text'},
-        {name: 'border-top', type: 'text'},
-        {name: 'border-right', type: 'text'},
-        {name: 'border-bottom', type: 'text'},
-        {name: 'border-left', type: 'text'},
-        {name: 'inner-border', type: 'text'},
-        {name: 'background-position', type: 'text'},
-        {name: 'background-repeat', type: 'text'},
-        {name: 'background-size', type: 'text'},
-        {name: 'background-url', type: 'text'},
+    public readonly mainAttributesList: AttributeObjectI[][] = [
+        [
+            {name: 'background-color', type: 'color', class: 'slds-size--1-of-2'},
+            {name: 'direction', type: 'direction', class: 'slds-size--1-of-2'},
+        ], [
+            {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
+        ]
     ];
+    /**
+     * list of the editable attributes
+     */
+    public readonly attributesList: AttributeObjectI[][] = [
+        [
+            {name: 'color', type: 'color',},
+            {name: 'css-class', type: 'text'},
+        ], [
+            {name: 'border', type: 'borders', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'background-position', type: 'text', class: 'slds-size--1-of-4'},
+            {name: 'background-repeat', type: 'text', class: 'slds-size--1-of-4'},
+            {name: 'background-size', type: 'text', class: 'slds-size--1-of-4'},
+            {name: 'background-url', type: 'text', class: 'slds-size--1-of-4'}
+        ]
+    ];
+
+    /**
+     * list of the editable attributes
+     */
+    public readonly columnAttributesList: AttributeObjectI[][] = [
+        [
+            {name: 'width', type: 'width', class: 'slds-size--1-of-2'},
+            {name: 'background-color', type: 'color', class: 'slds-size--1-of-2'}
+        ], [
+            {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'border', type: 'borders', class: 'slds-size--1-of-1'}
+        ],[
+            {name: 'inner-border', type: 'borders', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'css-class', type: 'text', class: 'slds-size--1-of-1'}
+        ]
+    ];
+
 
     constructor(
         public elementRef: ElementRef,
@@ -102,6 +129,7 @@ export class SpicePageBuilderElementSection implements OnInit {
             'background-repeat': this.section.attributes['background-repeat'],
             'background-size': this.section.attributes['background-size'],
             'background-url': this.section.attributes['background-url'],
+            'direction': this.section.attributes['direction']
         };
     }
 
@@ -142,11 +170,49 @@ export class SpicePageBuilderElementSection implements OnInit {
      */
     public handleEditResponse(res) {
         this.section.attributes = res.attributes;
-        this.section.children.forEach((input, index) =>{
+        this.section.children = res.children;
+        this.section.children.forEach((input, index) => {
             input.attributes = res.children[index].attributes
-        } );
+        });
         this.generateStyle();
         this.spicePageBuilderService.emitData();
         this.cdRef.detectChanges();
+    }
+
+    /**
+     * add new column to the section element
+     * @returns void
+     */
+    public addColumn(): void {
+        let newSection = JSON.parse(JSON.stringify(this.spicePageBuilderService.panelDefaultColumn))
+        const childrenCount = this.section.children.length;
+        const childWidth = `${100 / childrenCount}%`;
+        newSection.attributes.width = childWidth;
+        this.section.children.push(newSection);
+
+        this.recalculateColumnSizes();
+        this.cdRef.detectChanges();
+    }
+    /**
+     * add new column to the section element
+     * @returns void
+     */
+    public deleteColumn(index): void {
+        this.section.children.splice(index, 1);
+        this.recalculateColumnSizes();
+        this.cdRef.detectChanges();
+    }
+
+    private  recalculateColumnSizes(){
+        let totalWidth = 0;
+        this.section.children.forEach(c => {
+            totalWidth += parseInt(c.attributes.width, 10);
+        })
+        this.section.children.forEach(c => {
+            let cWidth = parseInt(c.attributes.width, 10);
+            let nWidth = Math.round(100/totalWidth * cWidth);
+            c.attributes.width = c.attributes.width.replace(cWidth.toString(), nWidth.toString());
+
+        })
     }
 }
