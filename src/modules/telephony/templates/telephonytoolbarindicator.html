@@ -7,18 +7,26 @@
       <li class="slds-dropdown__item" role="separator">
         <a href="javascript:void(0);"><system-label label="LBL_SOCKET"></system-label><system-checkbox [ngModel]="socket.connected" [disabled]="true"></system-checkbox></a>
       </li>
-      <li class="slds-dropdown__item slds-has-divider--top" role="separator" (click)="doAddCall()">
-        <a href="javascript:void(0);"><system-label label="LBL_ADD_CALL"></system-label></a>
-      </li>
-      <li class="slds-dropdown__item slds-has-divider--top" role="separator" (click)="doConnectCall()">
-        <a href="javascript:void(0);"><system-label label="LBL_CONNECT_CALL"></system-label></a>
-      </li>
-      <li class="slds-dropdown__item slds-has-divider--top" role="separator" (click)="doDisconnectCall()">
-        <a href="javascript:void(0);"><system-label label="LBL_DISCONNECT_CALL"></system-label></a>
-      </li>
-      <li class="slds-dropdown__item slds-has-divider--top" role="separator" (click)="setPreferences()">
+        @if(testmode) {
+            <li class="slds-dropdown__item slds-has-divider--top" role="separator" (click)="doAddCall()">
+                <a href="javascript:void(0);">
+                    <system-label label="LBL_ADD_CALL"></system-label>
+                </a>
+            </li>
+            <li class="slds-dropdown__item slds-has-divider--top" role="separator" (click)="doConnectCall()">
+                <a href="javascript:void(0);">
+                    <system-label label="LBL_CONNECT_CALL"></system-label>
+                </a>
+            </li>
+            <li class="slds-dropdown__item slds-has-divider--top" role="separator" (click)="doDisconnectCall()">
+                <a href="javascript:void(0);">
+                    <system-label label="LBL_DISCONNECT_CALL"></system-label>
+                </a>
+            </li>
+        }
+      <!--li class="slds-dropdown__item slds-has-divider--top" role="separator" (click)="setPreferences()">
         <a href="javascript:void(0);"><system-label label="LBL_PREFERENCES"></system-label></a>
-      </li>
+      </li-->
     </ul>
   </div>
 </div>

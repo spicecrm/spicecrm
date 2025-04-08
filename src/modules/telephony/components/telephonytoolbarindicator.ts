@@ -10,6 +10,7 @@ import {Subscription} from "rxjs";
 import {socket} from "../../../services/socket.service";
 import {backend} from "../../../services/backend.service";
 import {TelephonyPreferences} from "./telephonypreferences";
+import {configurationService} from "../../../services/configuration.service";
 
 /**
  * @ignore
@@ -46,15 +47,24 @@ export class TelephonyToolbarIndicator {
      */
     public username: string;
 
+    /**
+     * indicate if we are in testmode
+     */
+    public testmode: boolean = false;
+
     constructor(
         public modal: modal,
         public modelutilities: modelutilities,
         public socket: socket,
         public backend: backend,
-        public telephony: telephony
+        public telephony: telephony,
+        public configuration: configurationService
     ) {
         this.callid = this.modelutilities.generateGuid();
         this.getPreferences();
+
+        let telephonyConfig = this.configuration.getCapabilityConfig(telephony);
+        if(telephonyConfig.testmode == 1) this.testmode = true;
     }
 
     /**
