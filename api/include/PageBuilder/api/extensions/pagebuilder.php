@@ -44,10 +44,10 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'description' => 'content of the custom element',
             ],
-            'image' => [
+            'stylesheet' => [
                 'in' => 'body',
                 'type' => ValidationMiddleware::TYPE_STRING,
-                'description' => 'an image url of the custom element'
+                'description' => 'stylesheet of the custom element',
             ]
         ]
     ],
