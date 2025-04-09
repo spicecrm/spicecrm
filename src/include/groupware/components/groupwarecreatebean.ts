@@ -70,6 +70,8 @@ export class GroupwareCreateBean implements OnInit {
 
         const isSaving = this.modal.await('LBL_SAVING_DATA');
 
+        if (!this.model.validate()) return;
+
         this.model.save(true).subscribe({
             next: res => {
                 isSaving.next(true);
