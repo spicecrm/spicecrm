@@ -1,3 +1,5 @@
+import {SafeResourceUrl} from "@angular/platform-browser";
+
 /**
  * container element to be rendered in the view
  */
@@ -46,7 +48,7 @@ export interface CustomElement {
     name: string,
     type: 'section' | 'item',
     content: SectionI | ContentElementI,
-    image?: string
+    image?: number
 }
 /**
  * column element to be rendered in the view
@@ -258,10 +260,13 @@ export interface AttributeObjectI {
     class?: string;
 }
 
-export interface AttributeObjectArray{
-    attributes
+export interface StylesheetObjI {
+    fieldName: string;
+    id: string;
+    content?: string;
+    contentResourceUrl?: string;
+    contentSafeResourceUrl?: SafeResourceUrl
 }
-
 
 
 
