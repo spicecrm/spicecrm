@@ -8,7 +8,5 @@ export interface outlookNameValuePairI {
 }
 
 export interface OutlookAttachmentI {
-    attachmentToken: string;
-    ewsUrl: string;
     attachments: any[];
 }
