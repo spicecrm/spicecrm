@@ -42,6 +42,10 @@ export class SystemInputRadioButtonGroup implements ControlValueAccessor, AfterV
      */
     @Input() public readonly disabled: boolean = false;
     /**
+     * container class
+     */
+    @Input() public readonly containerClass: string = 'slds-m-right--x-small';
+    /**
      * the value to be set
      */
     public groupName: string;
