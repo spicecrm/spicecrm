@@ -12,6 +12,7 @@
     "@angular/platform-browser": "18.2.8",
     "@angular/platform-browser-dynamic": "18.2.8",
     "@angular/router": "18.2.8",
+    "ace-builds": "^1.39.1",
     "chart.js": "^4.4.5",
     "cropperjs": "1.6.2",
     "croppie": "2.6.5",

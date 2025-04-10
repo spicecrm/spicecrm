@@ -1,4 +1,4 @@
-<div class="slds-radio_button-group slds-m-right--x-small">
+<div class="slds-radio_button-group" [ngClass]="containerClass">
     <span *ngFor="let inputOption of inputOptions; trackBy: trackByFn" class="slds-button slds-radio_button">
         <input type="radio" [(ngModel)]="modelValue" [value]="inputOption.value" [disabled]="disabled || inputOption.disabled" [name]="groupName" [id]="inputOption.id">
         <label class="slds-radio_button__label slds-height_full" [for]="inputOption.id">
