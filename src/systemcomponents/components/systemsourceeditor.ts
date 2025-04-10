@@ -73,6 +73,9 @@ export class SystemSourceEditor implements OnInit, OnDestroy, ControlValueAccess
     public ngOnInit() {
 
         Ace.config.set('basePath', './vendor/ace-editor');
+        Ace.config.set('modePath', './vendor/ace-editor');
+        Ace.config.set('themePath', './vendor/ace-editor');
+        Ace.config.set('workerPath', './vendor/ace-editor');
 
         const extensions = [
             './vendor/ace-editor/ext-language_tools.js',
