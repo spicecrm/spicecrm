@@ -7,7 +7,7 @@ import {
     ContentElementI,
     CustomElement,
     PanelElementI,
-    SectionI,
+    SectionI, StylesheetObjI,
     TagElementI
 } from "../interfaces/spicepagebuilder.interfaces";
 import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
@@ -53,6 +53,10 @@ export class SpicePageBuilderService {
      * hold the current hovered item type
      */
     public isMouseIn: 'section' | 'content';
+    /**
+     * holds the stylesheet data
+     */
+    public stylesheet: StylesheetObjI;
     /**
      * page structure object
      */
@@ -438,7 +442,7 @@ export class SpicePageBuilderService {
      * @param content
      * @param type
      */
-    public saveCustomElement(content: SectionI | ContentElementI, type: 'section' | 'item', image: any = null) {
+    public saveCustomElement(content: SectionI | ContentElementI, type: 'section' | 'item') {
 
         this.isMouseIn = undefined;
 
@@ -446,29 +450,37 @@ export class SpicePageBuilderService {
 
             if (!name) return;
 
-            const element = {
+            const element: CustomElement = {
                 id: this.helper.generateGuid(),
                 name: name,
                 type: type,
-                content: content,
-                image: image
+                content: content
             };
 
-            switch (type) {
-                case 'item':
-                    this.customItems = [...this.customItems, {...element}];
-                    break;
-                case 'section':
-                    this.customSections = [...this.customSections, {...element}];
-                    break;
-            }
+            const body = {
+                ...element,
+                content: JSON.stringify(element.content),
+                stylesheet: this.stylesheet.content
+            };
 
-            this.cdRef.detectChanges();
+            this.backend.postRequest('common/PageBuilder/customElements', null, body).subscribe({
+                next: res => {
 
-            element.content = JSON.stringify(element.content) as any;
+                    element.image = res.image;
 
-            this.backend.postRequest('common/PageBuilder/customElements', null, element).subscribe({
-                next: () => this.toast.sendToast('LBL_DATA_SAVED', 'success'),
+                    switch (type) {
+                        case 'item':
+                            this.customItems = [...this.customItems, {...element}];
+                            break;
+                        case 'section':
+                            this.customSections = [...this.customSections, {...element}];
+                            break;
+                    }
+
+                    this.cdRef.detectChanges();
+
+                    this.toast.sendToast('LBL_DATA_SAVED', 'success');
+                },
                 error: () => this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error')
             });
         })
