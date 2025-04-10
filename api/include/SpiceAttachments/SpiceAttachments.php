@@ -323,15 +323,14 @@ class SpiceAttachments
 
     /**
      * save an email attachment for Outlook
-     * @param \Email $email
      * @param OutlookAttachment $attachment
+     * @return null
      */
-    public static function saveEmailAttachmentFromOutlook(Email $email, OutlookAttachment $attachment) {
+    public static function saveEmailAttachmentFromOutlook(OutlookAttachment $attachment) {
         $filepath = StreamFactory::getPathPrefix('upload') . $attachment->fileMd5;
         touch($filepath);
 
-        $byteContent = base64_decode($attachment->content);
-        file_put_contents($filepath, $byteContent);
+        file_put_contents($filepath, $attachment->content);
 
         // if we have an image create a thumbnail
         $attachment->thumbnail = self::createThumbnail($attachment->fileMd5, $attachment->fileMimeType);
