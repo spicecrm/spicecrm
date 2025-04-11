@@ -164,7 +164,6 @@ export class DictionaryManagerDefinitions {
     public setCurrentDictionaryDefinition(definitionId: string) {
         if(definitionId != this.dictionarymanager.currentDictionaryDefinition) {
             this.dictionarymanager.currentDictionaryDefinition = definitionId;
-            this.dictionarymanager.currentDictionaryDefinition$.next();
             // this.dictionarymanager.currentDictionaryScope = scope;
             this.dictionarymanager.currentDictionaryItem = null;
             this.dictionarymanager.currentDictionaryIndex = null;
