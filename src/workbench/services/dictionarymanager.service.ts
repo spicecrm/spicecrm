@@ -121,6 +121,10 @@ export class dictionarymanager {
     public currentDictionaryDefinition: string;
 
     /**
+     * the currently selected dictionary element emit
+     */
+    public currentDictionaryDefinition$: Subject<void> = new Subject<void>();
+    /**
      * the currently selected dictionary item
      */
     public currentDictionaryItem: string;
