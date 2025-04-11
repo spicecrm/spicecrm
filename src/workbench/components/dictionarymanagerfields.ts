@@ -41,7 +41,7 @@ export class DictionaryManagerFields implements OnInit, OnDestroy {
 
     public ngOnInit() {
         this.dictionaryitems = this.buildDictionaryitems();
-        this.subscription = this.dictionarymanager.currentDictionaryDefinition$.subscribe(
+        this.subscription = this.dictionarymanager.currentDictionaryFields$.subscribe(
             () => this.dictionaryitems = this.buildDictionaryitems()
         );
     }
