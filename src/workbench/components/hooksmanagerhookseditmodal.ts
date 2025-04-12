@@ -28,6 +28,8 @@ export class HooksManagerHooksEditModal implements OnInit {
 
     public classMethod: string = '';
 
+
+
     constructor(
         public backend: backend,
         public language: language,
@@ -112,4 +114,5 @@ export class HooksManagerHooksEditModal implements OnInit {
             this.self.destroy();
         }
     }
+
 }
