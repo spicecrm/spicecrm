@@ -58,6 +58,11 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
     public participantLinks: any[] = []
 
     /**
+     * holds the linknames fieldconfig option
+     */
+    public linknames: any[] = [];
+
+    /**
      * indicates that the search box is open
      */
     public lookupSearchOpen: boolean = false;
@@ -152,6 +157,12 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
         if (this.fieldconfig.relatefilterfield) {
             this.createRelateFilter();
         }
+
+        // check on linknames
+        if(this.fieldconfig.linknames){
+            this.linknames = this.fieldconfig.linknames.split(',');
+            this.handleParticipantLinks();
+        }
     }
 
     public ngOnDestroy() {
@@ -167,6 +178,15 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
         if (!clickedInside) {
             this.closePopups();
         }
+    }
+
+    /**
+     * update the participantLinks if linknames are set
+     */
+    public handleParticipantLinks(){
+        this.participantLinks = this.participantLinks.filter(item => this.linknames.includes(item.link));
+        // set the first as selected type
+        if(this.participantLinks.length > 0) this.lookupType = this.participantLinks[0];
     }
 
     /**
