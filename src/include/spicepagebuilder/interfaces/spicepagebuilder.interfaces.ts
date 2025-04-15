@@ -73,7 +73,7 @@ export interface ColumnI extends TagElementI {
  * content element to be rendered in the view
  */
 export interface ContentElementI {
-    label: string,
+    label?: string,
     tagName: string;
     attributes: any;
 }
@@ -232,6 +232,76 @@ export interface HTMLCodeI extends ContentElementI {
     content: string;
 }
 /**
+ * spacer element to be rendered in the view
+ */
+export interface SocialMediaI extends TagElementI {
+    children: SocialMediaElementI[];
+    attributes: {
+        'attribute'?: string,
+        'align'?: string,
+        'border-radius'?: string,
+        'color'?: string,
+        'css-class'?: string,
+        'container-background-color'?: string,
+        'font-family'?: string,
+        'font-size'?: string,
+        'font-style'?: string,
+        'font-weight'?: string,
+        'icon-height'?: string,
+        'icon-size'?: string,
+        'inner-padding'?: string,
+        'line-height'?: string,
+        'mode'?: 'vertical' | 'horizontal',
+        'padding'?: string,
+        'padding-bottom'?: string,
+        'padding-left'?: string,
+        'padding-right'?: string,
+        'padding-top'?: string,
+        'icon-padding'?: string,
+        'text-padding'?: string,
+        'text-decoration'?: string,
+    }
+}
+/**
+ * spacer element to be rendered in the view
+ */
+export interface SocialMediaElementI extends ContentElementI {
+    content: string;
+    attributes: {
+        'src': string;
+        'href': string;
+        'align'?: string;
+        'alt'?: string;
+        'background-color'?: string;
+        'border-radius'?: string;
+        'color'?: string;
+        'css-class'?: string;
+        'font-family'?: string;
+        'font-size'?: string;
+        'font-style'?: string;
+        'font-weight'?: string;
+        'icon-height'?: string;
+        'icon-size'?: string;
+        'line-height'?: string;
+        'name'?: string;
+        'padding'?: string;
+        'padding-bottom'?: string;
+        'padding-left'?: string;
+        'padding-right'?: string;
+        'padding-top'?: string;
+        'icon-padding'?: string;
+        'icon-position'?: string;
+        'text-padding'?: string;
+        'sizes'?: string;
+        'srcset'?: string;
+        'rel'?: string;
+        'target'?: string;
+        'title'?: string;
+        'text-decoration'?: string;
+        'vertical-align'?: string;
+    }
+}
+/**
  * available panel element
  */
 export interface PanelElementI extends ContentElementI {
@@ -256,8 +326,9 @@ export interface EditorAttributeI {
  */
 export interface AttributeObjectI {
     name: string;
-    type: 'color'|'text'|'sides'|'padding'|'textSuffix'|'width'|'halign'|'valign'|'textdecoration'|'texttransform'|'border'|'borders'|'fontstyle'|'fontweight'|'direction';
+    type: 'color'|'text'|'sides'|'padding'|'textSuffix'|'width'|'halign'|'valign'|'textdecoration'|'texttransform'|'border'|'borders'|'fontstyle'|'fontweight'|'direction' | 'options';
     class?: string;
+    options?: {value: string, label?: string}[]
 }
 
 export interface StylesheetObjI {

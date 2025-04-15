@@ -118,7 +118,20 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
                                 event.currentIndex, 0, image
                             );
                             this.cdRef.detectChanges();
+                            this.spicePageBuilderService.emitData();
                         }
+                    });
+                    break;
+                case 'social':
+
+                    const social: PanelElementI = JSON.parse(JSON.stringify(event.item.data));
+
+                    this.spicePageBuilderService.openEditModal(social).subscribe(socialRes => {
+                        this.column.children.splice(
+                            event.currentIndex, 0, socialRes
+                        );
+                        this.cdRef.detectChanges();
+                        this.spicePageBuilderService.emitData();
                     });
                     break;
                 default:
@@ -128,12 +141,12 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
                     this.column.children.splice(
                         event.currentIndex, 0, element
                     );
+                    this.spicePageBuilderService.emitData();
             }
         } else {
             moveItemInArray(this.column.children, event.previousIndex, event.currentIndex);
+            this.spicePageBuilderService.emitData();
         }
-
-        this.spicePageBuilderService.emitData();
 
         this.dragEntered = false;
     }

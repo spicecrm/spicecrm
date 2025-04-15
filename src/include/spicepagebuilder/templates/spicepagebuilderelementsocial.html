@@ -1,0 +1,105 @@
+@if (!isEditMode){
+    <div class="spice-drop-zone" [class.slds-is-hovered]="spicePageBuilderService.isMouseIn == 'content'" (mouseenter)="setIsMouseIn(true)" (mouseleave)="setIsMouseIn(false)" tabindex="-1">
+        <div class="spice-drop-zone-label">
+            <div class="slds-media slds-media_center">
+                <div class="slds-media__figure">
+                    <system-icon icon="text" sprite="utility" size="x-small" divClass="slds-current-color"></system-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-truncate">
+                        <system-label label="LBL_SOCIAL_MEDIA"></system-label>
+                    </h2>
+                </div>
+                <button (click)="spicePageBuilderService.saveCustomElement(element, 'item')" class="slds-button slds-button--icon slds-m-right--xx-small">
+                    <system-button-icon icon="save" [inverse]="true"></system-button-icon>
+                </button>
+            </div>
+        </div>
+        <article [ngStyle]="style" (dblclick)="edit()" class="spice-drop-zone-content slds-grid">
+            @for (item of element.children; track $index) {
+                <div [ngStyle]="childrenStyles[item.attributes.name].container" class="slds-grid">
+                    <div [style.padding]="element.attributes['inner-padding']">
+                        <div [ngStyle]="childrenStyles[item.attributes.name].iconContainer">
+                            <img [ngStyle]="childrenStyles[item.attributes.name].icon" [src]="item.attributes.src">
+                        </div>
+                    </div>
+                    <a [ngStyle]="childrenStyles[item.attributes.name].text" href="javascript:void(0)">
+                        {{item.content}}
+                    </a>
+                </div>
+            }
+        </article>
+        <div class="spice-drop-zone-actions">
+            <div class="slds-button-group" role="group">
+                <button cdkDragHandle class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_MOVE">
+                    <system-button-icon icon="move" addclasses="slds-icon"></system-button-icon>
+                </button>
+                <button (click)="edit()" class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_EDIT">
+                    <system-button-icon icon="edit" addclasses="slds-icon"></system-button-icon>
+                </button>
+                <button (click)="delete$.emit()" class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_DELETE">
+                    <system-button-icon icon="delete" addclasses="slds-icon"></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+} @else {
+    <div [ngStyle]="editorStyle">
+        <div class="slds-size--1-of-1 slds-scrollable--y slds-height_full slds-p-around--xx-small" style="min-height: 0">
+            @if (element.children.length > 0 ) {
+                <div class="slds-grid slds-m-bottom--xx-small slds-size--1-of-1" style="padding-right: 75px; padding-left: 40px">
+                    <label class="slds-size--1-of-3"><system-label label="LBL_SOURCE"/> </label>
+                    <label class="slds-size--1-of-3"><system-label label="LBL_TEXT"/> </label>
+                    <label class="slds-size--1-of-3"><system-label label="LBL_LINK"/> </label>
+                </div>
+            }
+            @for (item of element.children; track $index) {
+                <div class=" slds-size--1-of-1 slds-box slds-m-bottom--x-small" style="padding: 0 .5rem .5rem">
+                   <div class="slds-grid slds-grid--vertical-align-end slds-size--1-of-1">
+                       <div [style.background-color]="item.attributes['background-color']" class="slds-p-around--xx-small" style="border-radius: 4px">
+                           @if (item.attributes.src) {
+                               <img [src]="item.attributes.src" style="height: 24px;"/>
+                           }
+                       </div>
+                       <div class="slds-grow slds-grid">
+                           <spice-page-builder-input-text [disabled]="true" [ngModel]="item.attributes.name" [suffix]="" class="slds-size--1-of-3 slds-p-left--x-small"/>
+                           <spice-page-builder-input-text [(ngModel)]="item.content" [suffix]="" class="slds-size--1-of-3 slds-p-left--x-small"/>
+                           <spice-page-builder-input-text [(ngModel)]="item.attributes.href" [suffix]="" class="slds-size--1-of-3 slds-p-left--x-small"/>
+                       </div>
+                         <div class="slds-grid slds-m-left--x-small">
+                           <button (click)="deleteChild($index)" class="slds-button slds-button--icon-border-filled">
+                               <system-button-icon icon="delete"/>
+                           </button>
+                           <button (click)="elementStylesExpanded = item.attributes.name == elementStylesExpanded ? null : item.attributes.name" class="slds-button slds-button--icon-border-filled">
+                               <system-button-icon [icon]="item.attributes.name == elementStylesExpanded ? 'up' : 'down'"/>
+                           </button>
+                       </div>
+                   </div>
+                    @if (elementStylesExpanded == item.attributes.name) {
+                        <div class="slds-size--1-of-1 slds-grid slds-has-divider--top-space">
+                            <spice-page-builder-element-attributes class="slds-size--1-of-1" [attributesList]="attributesListElement" [element]="item"/>
+                        </div>
+                    }
+                </div>
+
+            }
+            <div class="slds-size--1-of-1 slds-grid slds-grid--align-center slds-m-top--medium">
+                <button (click)="addMedia()" class="slds-button slds-button--icon-border-filled">
+                    <system-button-icon icon="add"/>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div style="max-height: 50%" class="slds-scrollable--y">
+        <system-section titlelabel="LBL_STYLING" class="spice-collapsible-tab-grow" [expanded]="styleExpanded" (toggleExpanded)="styleExpanded = $event">
+            <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small slds-scrollable--y">
+                <div class="slds-size--1-of-1 slds-grid slds-wrap">
+                    <spice-page-builder-element-attributes class="slds-size--1-of-1" [attributesList]="attributesList" [element]="element"/>
+                </div>
+            </div>
+        </system-section>
+    </div>
+}
+
+
+

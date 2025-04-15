@@ -8,35 +8,30 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
  * render four input fields to handle editing style attributes like margin or padding
  */
 @Component({
-    selector: 'spice-page-builder-input-text',
-    templateUrl: '../templates/spicepagebuilderinputtext.html',
+    selector: 'spice-page-builder-input-options',
+    templateUrl: '../templates/spicepagebuilderinputoptions.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
         {
             multi: true,
             provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => SpicePageBuilderInputText)
+            useExisting: forwardRef(() => SpicePageBuilderInputOptions)
         }
     ]
 })
-export class SpicePageBuilderInputText implements ControlValueAccessor {
-    /**
-     * name of the style attribute
-     */
-    @Input() public suffix: string;
+export class SpicePageBuilderInputOptions implements ControlValueAccessor {
     /**
      * name of the style attribute
      */
     @Input() public label: string = '';
     /**
-     * disabled flag
+     * the select options
      */
-    @Input() public disabled: boolean = false;
+    @Input() public options: {value: string, label?: string}[] = [];
     /**
      * holds the sides value
      */
-    public value: number | string = '';
-
+    public value: string = '';
     /**
      * save on touched function for ControlValueAccessor
      */
@@ -74,16 +69,16 @@ export class SpicePageBuilderInputText implements ControlValueAccessor {
      */
     public writeValue(value: any) {
         if (!value) return;
-        this.value = !this.suffix ? value : parseFloat(value);
+        this.value = value;
         this.cdRef.detectChanges();
     }
 
     /**
      * emit joined value
      */
-    public emitJoinedValue() {
+    public emitValue() {
         this.onChange(
-            !this.suffix ? this.value : this.value + this.suffix
+            this.value
         );
     }
 }
