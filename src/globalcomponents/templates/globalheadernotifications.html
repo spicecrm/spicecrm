@@ -65,6 +65,7 @@
             <system-checkbox-toggle [ngModel]="userPreferences.toUse.showRealtimeNotifications" (ngModelChange)="setSetting('showRealtimeNotifications', $event)" label="LBL_REALTIME_NOTIFICATIONS" class="slds-m-bottom--xx-small spice-display-block"></system-checkbox-toggle>
             <system-checkbox-toggle *ngIf="desktopNotificationsStatus !== 'denied' && !desktopNotificationsDisabled; else desktopNotificationDeniedContainer" [ngModel]="userPreferences.toUse.displayDesktopNotifications" (ngModelChange)="setDisplayDesktopNotification($event)" label="LBL_DESKTOP_NOTIFICATIONS" class="slds-m-bottom--xx-small spice-display-block"></system-checkbox-toggle>
             <system-checkbox-toggle [ngModel]="userPreferences.toUse.sendEmailNotifications" (ngModelChange)="setSetting('sendEmailNotifications', $event)" label="LBL_EMAIL_NOTIFICATIONS" class="slds-m-bottom--xx-small spice-display-block"></system-checkbox-toggle>
+            <system-checkbox-toggle [ngModel]="userPreferences.toUse.sendSummaryEmailNotifications" (ngModelChange)="setSetting('sendSummaryEmailNotifications', $event)" label="LBL_SUMMARY_EMAIL_NOTIFICATIONS" class="slds-m-bottom--xx-small spice-display-block"></system-checkbox-toggle>
             <ng-template #desktopNotificationDeniedContainer>
                 <div class="slds-grid slds-grid--align-spread">
                     <span class="slds-grow slds-text-body--small">

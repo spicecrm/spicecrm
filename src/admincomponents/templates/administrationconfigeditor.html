@@ -31,6 +31,9 @@
                         @case('enum'){
                             <administration-configeditor-enum  [value]="configvalues[item.name]" (newvalue)="configvalues[item.name] = $event" [options]="item.options"></administration-configeditor-enum>
                         }
+                        @case('json'){
+                            <system-source-editor [(ngModel)]="configvalues[item.name]" language="json" style="height: 300px; width: 100%"/>
+                        }
                         @case('country'){
                             <system-input-country system-input-country-strict [(ngModel)]="configvalues[item.name]"/>
                         }
