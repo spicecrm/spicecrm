@@ -75,7 +75,9 @@ class LoggerMiddleware
             $this->logEntry->request_args   = json_encode($route->getArguments());
         }
 
-        $this->logEntry->url = (string) $request->getUri();    // will be converted to the complete url when be used in text context, therefore it is cast to a string...
+        // will be converted to the complete url when be used in text context, therefore it is cast to a string...
+        // due to size constraints the query params (everything after the question mark) will be cut
+        $this->logEntry->url = explode('?', (string) $request->getUri())[0];
 
         $this->logEntry->ip             = $request->getServerParams()['REMOTE_ADDR'];
         $this->logEntry->request_params     = json_encode($_GET);
