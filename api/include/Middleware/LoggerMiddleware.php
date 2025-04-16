@@ -82,7 +82,10 @@ class LoggerMiddleware
         $this->logEntry->request_headers  =  json_encode($request->getHeaders());
         $this->logEntry->request_body    = "";
         if ($this->logEntry->method == 'POST' || $this->logEntry->method == 'PUT') {
-            $this->logEntry->request_body    = $request->getBody()->getContents();
+            $request->getBody()->rewind();
+            $raw = $request->getBody()->getContents();
+            $parsed = json_encode($request->getParsedBody());
+            $this->logEntry->request_body = $raw ?: $parsed;
         }
         $this->logEntry->date_entered   = gmdate('Y-m-d H:i:s');
         $this->logEntry->date_timestamp = APILogEntryHandler::getTimestamp();
