@@ -1,6 +1,6 @@
 <div class="slds-box slds-box--border slds-m-bottom--x-small">
     <div class="slds-p-around--x-small slds-text-align--center slds-theme--shade slds-truncate">
-        {{processGroup.name}}
+        <field-container field="name" [fieldconfig]="{link: true}" fielddisplayclass="slds-p-verical--small"/>
     </div>
     @if (processes.length == 0) {
         <div class="slds-p-around--medium slds-align--absolute-center">
@@ -8,9 +8,9 @@
         </div>
     } @else {
         @for (process of processes; track process.id) {
-            <div class="slds-box slds-box--border slds-m-around--x-small" [system-model-provider]="{module: 'ProcessMGMTProcesses', id: process.id, data: process}">
+            <div class="slds-box slds-box--border slds-m-around--x-small" [ngClass]="{'slds-theme--info': process.isexternal == '1'}" [system-model-provider]="{module: 'ProcessMGMTProcesses', id: process.id, data: process}">
                 <div class="slds-p-around--x-small">
-                    <field-container field="name" fieldconfig="{link: true}" fielddisplayclass="slds-p-verical--small"/>
+                    <field-container field="name" [fieldconfig]="{link: true}" fielddisplayclass="slds-p-verical--small"/>
                 </div>
             </div>
         }
