@@ -500,7 +500,7 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 
 .spice-drop-zone {
     position:relative;
-    z-index:8000;
+    z-index:1;
     width: 100%;
 }
 .spice-drop-zone article:focus {
