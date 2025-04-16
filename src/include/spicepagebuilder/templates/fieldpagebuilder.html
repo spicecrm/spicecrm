@@ -7,6 +7,6 @@
     @if (stylesheet?.content) {
         <link rel="stylesheet" type="text/css" [href]="stylesheet.contentSafeResourceUrl">
     }
-    <spice-page-builder [pageContent]="model.data[bodySPBFieldName]" [rendererClass]="!this.stylesheet?.id ? '' : (' spice-page-builder-' + stylesheet.id)" (pageBuilderChange$)="onPageBuilderChange($event)" class="spice-display-block slds-height_full"></spice-page-builder>
+    <spice-page-builder [pageContent]="model.data[bodySPBFieldName]" [stylesheet]="stylesheet" (pageBuilderChange$)="onPageBuilderChange($event)" class="spice-display-block slds-height_full"></spice-page-builder>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>
