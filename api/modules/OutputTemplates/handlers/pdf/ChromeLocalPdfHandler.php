@@ -3,6 +3,12 @@
 
 namespace SpiceCRM\modules\OutputTemplates\handlers\pdf;
 
+use HeadlessChromium\BrowserFactory;
+use HeadlessChromium\Clip;
+use HeadlessChromium\Exception\CommunicationException;
+use HeadlessChromium\Exception\EvaluationFailed;
+use HeadlessChromium\Exception\JavascriptException;
+use HeadlessChromium\Page;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -163,6 +169,70 @@ class ChromeLocalPdfHandler extends PdfHandler
         # echo $htmlOutput; exit;
 
         return $htmlOutput;
+    }
+
+    /**
+     * generate screenshot
+     * @param $html
+     * @param string|null $selector
+     * @param string|null $format png | jpeg
+     * @return string
+     * @throws \Exception
+     */
+    public static function getScreenshot($html, ?string $selector = null, ?string $format = 'png'): string
+    {
+        $browserFactory = new BrowserFactory();
+        $browser = $browserFactory->createBrowser();
+
+        try {
+            $page = $browser->createPage();
+            $page->setHtml($html);
+            $options = ['format' => $format];
+
+            $options += self::getScreenshotElementRect($page, $selector);
+
+            return $page->screenshot($options)->getBase64(3000);
+
+        } catch (\Exception $e) {
+            throw new \Exception('Error occurred while generating screenshot: ' . $e->getMessage());
+        } finally {
+            $browser->close();
+        }
+    }
+
+    /**
+     * get screenshot element rect by css selector
+     * @param Page $page
+     * @param string|null $selector
+     * @return array
+     * @throws CommunicationException
+     * @throws EvaluationFailed
+     * @throws JavascriptException
+     * @throws \Exception
+     */
+    private static function getScreenshotElementRect(Page $page, ?string $selector): array
+    {
+        if (!$selector) return [];
+
+        # validate the selector
+        if (!preg_match('/^[a-zA-Z0-9\-_.#+>\s*]+$/', $selector)) {
+            throw new \Exception('ChromeLocalPdfHandler::getScreenshot Invalid html selector');
+        }
+
+        $options = [];
+
+        $rect = $page->evaluate("(() => {
+                const el = document.querySelector('$selector');
+                if (!el) return null;
+                const r = el.getBoundingClientRect();
+                return { x: r.x, y: r.y, width: r.width, height: r.height };})()"
+        )->getReturnValue();
+
+        if ($rect) {
+            $options['clip'] = new Clip($rect['x'], $rect['y'], $rect['width'], $rect['height']);
+        }
+
+        return $options;
     }
 
     /**

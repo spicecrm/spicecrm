@@ -1,9 +1,11 @@
-import {Injectable, SkipSelf} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {session} from "../../../services/session.service";
+import {modelattachments} from "../../../services/modelattachments.service";
 import {backend} from "../../../services/backend.service";
 import {Subject} from "rxjs";
+import {model} from "../../../services/model.service";
 
 declare var moment: any;
 
@@ -18,6 +20,7 @@ export class emailsService {
         private backend: backend,
         private userpreferences: userpreferences,
         private session: session,
+        private modelattachments: modelattachments,
     ) {
 
     }
@@ -69,7 +72,7 @@ export class emailsService {
 
         const body: string = emailbody.replace('data-signature=""', '').replace('data-spice-temp-quote=""', '');
 
-        if (body.startsWith('<html>')) {
+        if (this.textIsHtml(body)) {
             const containerDiv = document.createElement('html');
             containerDiv.innerHTML = body;
             const bodyTag = containerDiv.getElementsByTagName('body')[0];
@@ -77,7 +80,7 @@ export class emailsService {
             containerDiv.remove();
 
         } else {
-            historytext += body;
+            historytext += body.replace(/\n|\r/g, '<br>');
         }
 
         historytext += '</blockquote>';
@@ -85,5 +88,34 @@ export class emailsService {
         historytext += '</div>';
 
         return historytext;
+    }
+
+    /**
+     * check if you can find out that the text is html
+     * it is the case when we find a body end tag
+     * @param text
+     */
+    public textIsHtml(text) {
+        if(!text) return false;
+        const regexToCheck = [/<\/body>/gi, /<\/html>/gi, /<\/div>/gi, /<\/p>/gi];
+        regexToCheck.forEach(regex => {
+            if(text.search(regex) > -1){
+                return true;
+            }
+        });
+        return false;
+    }
+
+    /**
+     * loads the parent attachments and skips the inline images
+     * @param parent
+     * @param model
+     */
+    public loadParentAttachments(parent: model, model: model): void {
+        let matchedEntries = [...parent.data.body.matchAll(new RegExp(/\<img[\w\W]+?alt="([\w\W]+?)"[\w\W]+?\>/gm))];
+        let excludedFileNames = matchedEntries.map(m => m[1]);
+        this.modelattachments.module = model.module;
+        this.modelattachments.id = model.id;
+        this.modelattachments.cloneAttachments(parent, null, excludedFileNames);
     }
 }

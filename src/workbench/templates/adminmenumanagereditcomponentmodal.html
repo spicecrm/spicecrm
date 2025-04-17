@@ -36,7 +36,7 @@
                 <label class="slds-form-element__label">
                     <system-label label="LBL_COMPONENT_CONFIG"></system-label>
                 </label>
-                <textarea class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small ng-untouched ng-pristine ng-valid" [(ngModel)]="newComponent.componentconfig" style="min-height: 80px; max-height: 300px; height: 80px;"></textarea>
+                <system-source-editor [(ngModel)]="newComponent.componentconfig" language="json" style="height: 300px"/>
             </div>
             <div class="slds-grid slds-m-top--small">
                 <div class="slds-form-element__control slds-size--2-of-4 slds-p-right--xxx-small">
