@@ -13,8 +13,6 @@ import {
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {AttributeObjectI, SectionI} from "../interfaces/spicepagebuilder.interfaces";
 
-declare var html2canvas: any;
-
 /**
  * Parse and renders renderer container
  */
@@ -145,10 +143,7 @@ export class SpicePageBuilderElementSection implements OnInit {
      * save element as custom
      */
     public saveAsCustom() {
-        html2canvas(this.elementRef.nativeElement).then(canvas => {
-            let url = canvas.toDataURL();
-            this.spicePageBuilderService.saveCustomElement(this.section, 'section', url);
-        });
+        this.spicePageBuilderService.saveCustomElement(this.section, 'section');
     }
 
     /**

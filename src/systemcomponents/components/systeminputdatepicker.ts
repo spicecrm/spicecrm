@@ -370,11 +370,8 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     public buildGridWeeks(grid, date) {
         let fdom = new moment(date);
         // move to first day of month
-        fdom.date(1);
-        // go the the previous week if the month starts on sunday and the week starts on monday
-        if (fdom.day() == 0 && this.weekStartDay == 1) fdom.subtract(7, 'd');
-        // move to week start day
-        fdom.day(this.weekStartDay);
+        fdom.startOf('month').startOf('week');
+
         // build 6 weeks
         let j = 0;
         while (j < 6) {

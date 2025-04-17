@@ -69,7 +69,7 @@ export class emailsService {
 
         const body: string = emailbody.replace('data-signature=""', '').replace('data-spice-temp-quote=""', '');
 
-        if (body.startsWith('<html>')) {
+        if (this.textIsHtml(body)) {
             const containerDiv = document.createElement('html');
             containerDiv.innerHTML = body;
             const bodyTag = containerDiv.getElementsByTagName('body')[0];
@@ -77,7 +77,7 @@ export class emailsService {
             containerDiv.remove();
 
         } else {
-            historytext += body;
+            historytext += body.replace(/\n|\r/g, '<br>');
         }
 
         historytext += '</blockquote>';
@@ -85,5 +85,21 @@ export class emailsService {
         historytext += '</div>';
 
         return historytext;
+    }
+
+    /**
+     * check if you can find out that the text is html
+     * it is the case when we find a body end tag
+     * @param text
+     */
+    public textIsHtml(text) {
+        if(!text) return false;
+        const regexToCheck = [/<\/body>/gi, /<\/html>/gi, /<\/div>/gi, /<\/p>/gi];
+        regexToCheck.forEach(regex => {
+            if(text.search(regex) > -1){
+                return true;
+            }
+        });
+        return false;
     }
 }

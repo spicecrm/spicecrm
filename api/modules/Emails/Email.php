@@ -957,6 +957,10 @@ class Email extends SpiceBean
                         $node->setAttribute('href', EmailTracking::getManagePreferencesUrl($this));
                         $tracked = true;
                         break;
+                    case 'preview':
+                        $node->setAttribute('href', EmailTracking::getPreviewUrl($this));
+                        $tracked = true;
+                        break;
                 }
             }
         }

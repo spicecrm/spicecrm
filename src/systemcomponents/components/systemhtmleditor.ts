@@ -343,8 +343,8 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
         this.modal.openModal('SystemRichTextSourceModal', true, this.viewContainerRef.injector)
             .pipe(take(1))
             .subscribe(componentRef => {
-                componentRef.instance._html = this._html;
-                componentRef.instance.html.subscribe(newHtml => {
+                componentRef.instance.sourceCode = this._html;
+                componentRef.instance.sourceCode$.subscribe(newHtml => {
                     // update our internal value
                     this._html = newHtml;
 

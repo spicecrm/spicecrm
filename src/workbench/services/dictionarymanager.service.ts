@@ -121,6 +121,10 @@ export class dictionarymanager {
     public currentDictionaryDefinition: string;
 
     /**
+     * the currently selected dictionary element emit
+     */
+    public currentDictionaryFields$: Subject<void> = new Subject<void>();
+    /**
      * the currently selected dictionary item
      */
     public currentDictionaryItem: string;
@@ -335,10 +339,14 @@ export class dictionarymanager {
     public loadDatabaseFields(dictionaryname) {
         this.dictionarydatabasefields = [];
         // check if we have a template
-        if(this.currentIsTemplate()) return;
+        if(this.currentIsTemplate()) {
+            this.currentDictionaryFields$.next();
+            return;
+        }
         this.backend.getRequest(`dictionary/columns/${dictionaryname}`).subscribe({
             next: (fields) => {
-                this.dictionarydatabasefields = fields
+                this.dictionarydatabasefields = fields;
+                this.currentDictionaryFields$.next();
             }
         });
     }
