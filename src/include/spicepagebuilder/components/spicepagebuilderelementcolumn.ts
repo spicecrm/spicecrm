@@ -118,8 +118,29 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
                                 event.currentIndex, 0, image
                             );
                             this.cdRef.detectChanges();
+                            this.spicePageBuilderService.emitData();
                         }
                     });
+                    break;
+                case 'social':
+
+                    const social: PanelElementI = JSON.parse(JSON.stringify(event.item.data));
+
+                    if (event.item.data.children.length > 1) {
+                        this.column.children.splice(
+                            event.currentIndex, 0, social
+                        );
+                        this.cdRef.detectChanges();
+                        this.spicePageBuilderService.emitData();
+                    } else {
+                        this.spicePageBuilderService.openEditModal(social).subscribe(socialRes => {
+                            this.column.children.splice(
+                                event.currentIndex, 0, socialRes
+                            );
+                            this.cdRef.detectChanges();
+                            this.spicePageBuilderService.emitData();
+                        });
+                    }
                     break;
                 default:
                     const element: PanelElementI = JSON.parse(JSON.stringify(event.item.data));
@@ -128,12 +149,12 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
                     this.column.children.splice(
                         event.currentIndex, 0, element
                     );
+                    this.spicePageBuilderService.emitData();
             }
         } else {
             moveItemInArray(this.column.children, event.previousIndex, event.currentIndex);
+            this.spicePageBuilderService.emitData();
         }
-
-        this.spicePageBuilderService.emitData();
 
         this.dragEntered = false;
     }

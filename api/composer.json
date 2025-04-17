@@ -35,7 +35,8 @@
     "sendgrid/sendgrid": "^8.0",
     "google/cloud-storage": "^1.30",
     "phpoffice/phpspreadsheet": "^1.29",
-    "lbuchs/webauthn": "v2.0.0"
+    "lbuchs/webauthn": "v2.0.0",
+    "chrome-php/chrome": "^1.13"
   },
   "minimum-stability": "rc",
   "description": ""

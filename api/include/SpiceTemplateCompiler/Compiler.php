@@ -316,7 +316,11 @@ class Compiler
                                 $params = $this->parsePipeToArray($attributeParts[1]);
                             }
 
-                            $linkedBeans = $this->getLinkedBeans($forArray[0], NULL, $beans, $params); // CR1000360 added $params
+                            if (str_starts_with($forArray[0], 'value.') && $this->additionalValues[explode('.', $forArray[0])[1]]) {
+                                $linkedBeans = $this->additionalValues[explode('.', $forArray[0])[1]];
+                            } else {
+                                $linkedBeans = $this->getLinkedBeans($forArray[0], NULL, $beans, $params); // CR1000360 added $params
+                            }
                         }
                         foreach ($linkedBeans as $index => $linkedBean) {
                             // set the params for teh first or last entry

@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Injector, OnInit
+    Component, Injector, OnDestroy, OnInit
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
@@ -15,12 +15,13 @@ import {language} from '../../services/language.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryDefinition, DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 import {DomainField} from "../interfaces/domainmanager.interfaces";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'dictionary-manager-fields',
     templateUrl: '../templates/dictionarymanagerfields.html',
 })
-export class DictionaryManagerFields implements OnInit{
+export class DictionaryManagerFields implements OnInit, OnDestroy {
 
     /**
      * the curretn dictionaryitem
@@ -32,12 +33,21 @@ export class DictionaryManagerFields implements OnInit{
 
     public filterdbonly: boolean = false;
 
+    private subscription: Subscription = new Subscription();
+
     constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
 
     }
 
     public ngOnInit() {
         this.dictionaryitems = this.buildDictionaryitems();
+        this.subscription = this.dictionarymanager.currentDictionaryFields$.subscribe(
+            () => this.dictionaryitems = this.buildDictionaryitems()
+        );
+    }
+
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 
     /**

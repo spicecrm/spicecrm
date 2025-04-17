@@ -20,12 +20,12 @@ class TXControlHandler extends SpiceSingleton
 
     /**
      * parse content replace the placeholders with the bean values
-     * @param string $pdfContent
-     * @param string $format
+     * @param string $content supported formats .rtf, .doc, .docx, .html, .pdf and .tx.
+     * @param string $format supported convert formats "PDF", "PDFA", "RTF", "DOC", "DOCX", "HTML" and "TX"
      * @return string
      * @throws Exception
      */
-    public function convert(string $pdfContent, string $format): string
+    public function convert(string $content, string $format): string
     {
         $config = (object) SpiceConfig::getInstance()->get('DocXEditor');
 
@@ -40,7 +40,7 @@ class TXControlHandler extends SpiceSingleton
             CURLOPT_HEADER => 1,
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_POSTFIELDS => json_encode($pdfContent),
+            CURLOPT_POSTFIELDS => json_encode($content),
             CURLOPT_HTTPHEADER => [
                 'Content-Type: application/json',
                 "Authorization: Bearer " . $token->access_token,

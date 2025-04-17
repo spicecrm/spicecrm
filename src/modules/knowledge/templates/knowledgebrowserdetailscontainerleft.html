@@ -1,26 +1,34 @@
-<div #headercontainer *ngIf="model.id" class="slds-grid slds-grid--vertical-align-center slds-border--bottom" style="border-radius: 0; height: 52px">
-    <nav role="navigation" aria-label="Breadcrumbs" class="slds-grid slds-grid_vertical-align-center slds-p-around--x-small">
-        <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
-            <li *ngFor="let breadcrumb of breadcrumbs; trackBy: trackByFn" class="slds-breadcrumb__item slds-text-title--caps">
-                <a style="cursor: pointer" (click)="navigateTo(breadcrumb.id)">{{breadcrumb.name}}</a>
-            </li>
-            <li class="slds-breadcrumb__item slds-text-title--caps">
-                <a style="cursor: pointer"><strong>{{model.data.name}}</strong></a>
-            </li>
-        </ol>
-    </nav>
-    <div *ngIf="hasContent" class="slds-col_bump-left">
-        <button class="slds-button slds-button--icon slds-m-right--xx-small" (click)="print()">
-            <system-button-icon size="large" icon="print"></system-button-icon>
-        </button>
+<div class="slds-grid slds-grid--vertical slds-height_full">
+    <div *ngIf="model.id" class="slds-grid slds-grid--vertical-align-center slds-border--bottom" style="border-radius: 0; height: 52px">
+        <nav role="navigation" aria-label="Breadcrumbs" class="slds-grid slds-grid_vertical-align-center slds-p-around--x-small">
+            <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+                @for (breadcrumb of breadcrumbs; track breadcrumb.id) {
+                    <li class="slds-breadcrumb__item slds-text-title--caps">
+                        <a style="cursor: pointer" (click)="navigateTo(breadcrumb.id)">{{breadcrumb.name}}</a>
+                    </li>
+                }
+                <li class="slds-breadcrumb__item slds-text-title--caps">
+                    <a style="cursor: pointer"><strong>{{model.data.name}}</strong></a>
+                </li>
+            </ol>
+        </nav>
+        <!-- temporary commented out until the new document print implemented
+        <div *ngIf="blobUrl" class="slds-col_bump-left">
+            <button class="slds-button slds-button--icon slds-m-right--xx-small" (click)="print()">
+                <system-button-icon size="large" icon="print"></system-button-icon>
+            </button>
+        </div> -->
     </div>
-</div>
-<div *ngIf="model.id && hasContent" class="slds-grid" style="height: calc(100% - 52px)">
-    <div [innerHTML]="html" style="height: 100%; width: 100%;" class="slds-scrollable--y spice-scrollbar slds-p-around--x-small slds-theme--default slds-rich-text-editor__output"></div>
-</div>
-<div *ngIf="model.isLoading" class="slds-align--absolute-center" [ngStyle]="iframeContainerStyle">
-    <system-spinner></system-spinner>
-</div>
-<div *ngIf="!model.isLoading && !hasContent" class="slds-align--absolute-center slds-text-heading--medium" [ngStyle]="iframeContainerStyle">
-    <span><system-label label="MSG_NO_RECORDS_FOUND"></system-label></span>
+    <div [system-overlay-loading-spinner]="isLoading" class="slds-grow">
+        @if (blobUrl) {
+            <object [data]="blobUrl" class="slds-size--1-of-1 slds-height_full"></object>
+        } @else if (!isLoading) {
+            <div class="slds-align--absolute-center">
+                <system-illustration-no-data>
+                    <system-label label="LBL_NO_DATA"/>
+                </system-illustration-no-data>
+            </div>
+        }
+
+    </div>
 </div>

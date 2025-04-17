@@ -21,8 +21,6 @@ export class OutlookGroupware extends GroupwareService {
      * attachment list.
      */
     public attachments: OutlookAttachmentI = {
-        attachmentToken: '',
-        ewsUrl: '',
         attachments: [],
     };
     public iframeUrl: string = '';
@@ -95,8 +93,6 @@ export class OutlookGroupware extends GroupwareService {
 
                         if (this.archiveattachments.length > 0) {
                             let attachmentData = {
-                                attachmentToken: this.attachments.attachmentToken,
-                                ewsUrl: this.attachments.ewsUrl,
                                 outlookAttachments: this.archiveattachments,
                                 emailId: res.email_id,
                             };
@@ -149,52 +145,14 @@ export class OutlookGroupware extends GroupwareService {
      * as well as the EWS server URL and a temporary attachment token used to download the attachments in the backend.
      */
     public getAttachments(): Observable<any> {
-        let responseSubject = new Subject<any>();
 
-        this.attachments.ewsUrl = Office.context.mailbox.ewsUrl;
-
-        if (this.attachments.attachmentToken == '') {
-            this.getAttachmentToken().subscribe(
-                (res: any) => {
-                    this.attachments.attachmentToken = res;
-
-                    for (let i = 0; i < Office.context.mailbox.item.attachments.length; i++) {
-                        this.attachments.attachments[i] = _.clone(Office.context.mailbox.item.attachments[i]);
-                        this.attachments.attachments[i].selected = false;
-                    }
-
-                    responseSubject.next(this.attachments);
-                    responseSubject.complete();
-                },
-                (err) => {
-                    responseSubject.error(err);
-                }
-            );
-        } else {
-            responseSubject.error('No attachment token found.');
+        for (let i = 0; i < Office.context.mailbox.item.attachments.length; i++) {
+            this.attachments.attachments[i] = _.clone(Office.context.mailbox.item.attachments[i]);
+            this.attachments.attachments[i].selected = false;
+            this.attachments.attachments[i].emailExtId = Office.context.mailbox.item.itemId;
         }
 
-        return responseSubject.asObservable();
-    }
-
-    /**
-     * Load the attachment token.
-     */
-    public getAttachmentToken(): Observable<any> {
-        let responseSubject = new Subject<any>();
-
-        if (this.attachments.attachmentToken == '') {
-            Office.context.mailbox.getCallbackTokenAsync(res => {
-                if (res.status === Office.AsyncResultStatus.Succeeded) {
-                    responseSubject.next(res.value);
-                    responseSubject.complete();
-                } else {
-                    responseSubject.error("Could not get callback token: " + res.error.message);
-                }
-            });
-        }
-
-        return responseSubject.asObservable();
+        return of(this.attachments);
     }
 
     /**

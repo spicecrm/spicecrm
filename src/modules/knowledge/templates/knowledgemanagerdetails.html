@@ -10,7 +10,7 @@
         <div *ngIf="selectedBook?.html?.length == 0"><system-label label="LBL_NO_DESCRIPTION_FOUND"></system-label></div>
     </div>
 </div>
-<div [hidden]="!docId || docId == ''" class="slds-p-around--xxx-small" style="background-color: #fff">
+<div [hidden]="!docId || docId == ''" class="slds-p-around--xxx-small slds-height_full" style="background-color: #fff">
     <div #detailscontent></div>
 </div>
 <div system-to-bottom *ngIf="model.isLoading" class="slds-align_absolute-center">
