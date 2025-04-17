@@ -4,11 +4,13 @@
 namespace SpiceCRM\data;
 
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\ErrorHandlers\ValidationException;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
+use SpiceCRM\includes\SpiceDictionary\validators\ValidatorFactory;
 use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
 use SpiceCRM\includes\WebHook\WebHook;
 use stdClass;
@@ -375,6 +377,29 @@ class SpiceBean
     public $mergeRelatedData = [];
 
     /**
+     * @var bool indicator if we are in the save
+     */
+    public bool $in_save = false;
+
+    /**
+     * @var string TODO that should probably go into the dictionary
+     */
+    public string $modified_by_name;
+
+    /**
+     * set in code to disable validation
+     *
+     * @var bool
+     */
+    public bool $disableValidation = false;
+
+    /**
+     * holds all BEAN dictionary based values
+     * @var array
+     */
+    private array $beanValues = [];
+
+    /**
      * Constructor for the bean, it performs following tasks:
      *
      * 1. Initalized a database connections
@@ -394,36 +419,76 @@ class SpiceBean
     }
 
     /**
-     * generic setter for the bean values
+     * Magic setter function
      *
-     * @param string $name
-     * @param mixed $value
+     * Uses the field definition from the dictionary to perform validation unless turned off with the disableValidation flag.
+     * Stores the value in the bean attribute e.g. $bean->attribute
+     * and in the $beanValues array.
+     *
+     * @param string $attributeName
+     * @param mixed $attributeValue
      * @return void
-     * @throws Exception
+     * @throws ValidationException
      */
-    /*
-    public function __set(string $name, mixed $value): void {
-
-        // if we do not have the field defined throw an error if we are in strict mode
-        if(SpiceConfig::getInstance()->get('systemvardefs.strict') && !$this->field_defs[$name]){
-            throw new Exception("property {$name} not defined on {$this->_module}");
+    public function __set(string $attributeName, mixed $attributeValue): void {
+        if (property_exists($this, $attributeName)) {
+            $this->{$attributeName} = $attributeValue;
         }
 
-        $this->_data->{$name} = $value;
+        if ($this->disableValidation == false) {
+            $dictionaryField = $this->getDictionaryField($attributeName);
+            if (!$dictionaryField) {
+                throw new ValidationException('No field definition found for ' . $attributeName);
+            }
+
+            $this->validateField($attributeName, $attributeValue, $dictionaryField);
+        }
+
+        $this->beanValues[$attributeName] = $attributeValue;
     }
-    */
 
     /**
-     * generic getter for the bean values
+     * Magic getter function.
      *
-     * @param string $name
+     * Returns the value of the attribute from the beanValues array.
+     * If it doesn't exist it returns the values from the bean attribute.
+     *
+     * @param string $attributeName
      * @return mixed
      */
-    /*
-    public function __get(string $name): mixed {
-        return $this->_data->{$name};
+    public function __get(string $attributeName): mixed {
+        if (isset($this->beanValues[$attributeName])) {
+            return $this->beanValues[$attributeName];
+        }
+
+        if (property_exists($this, $attributeName)) {
+            return $this->{$attributeName};
+        }
+
+        return null;
     }
-    */
+
+    /**
+     * Performs the technical and logical validation for values of an attribute.
+     *
+     * @param string $attributeName
+     * @param mixed $attributeValue
+     * @param array $dictionaryField
+     * @return void
+     */
+    private function validateField(string $attributeName, mixed $attributeValue, array $dictionaryField): void {
+        if (isset($dictionaryField['sysdictionarydomainfield_id'])) {
+            $validators = ValidatorFactory::getInstance()->getValidators($dictionaryField['sysdictionarydomainfield_id']);
+
+            if ($validators['technical']) {
+                $validators['technical']($attributeValue, $dictionaryField);
+            }
+
+            if ($validators['logical']) {
+                $validators['logical']($attributeValue, $dictionaryField);
+            }
+        }
+    }
 
     public function getBeanDataArray(){
         $data = (array) $this->_data;
@@ -3161,5 +3226,15 @@ class SpiceBean
             ];
         };
         return $templates;
+    }
+
+    /**
+     * Returns the dictionary field definition for a given field.
+     *
+     * @param string $attributeName
+     * @return array|null
+     */
+    protected function getDictionaryField(string $attributeName): ?array {
+        return $this->field_defs[$attributeName] ?? null;
     }
 }
