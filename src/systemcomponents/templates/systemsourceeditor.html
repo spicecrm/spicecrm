@@ -1,0 +1,30 @@
+<div class="slds-height_full slds-size--1-of-1 slds-grid slds-grid--vertical">
+    @if (showToolbar) {
+        <div class="slds-grid slds-grid--align-end slds-p-bottom--xx-small">
+            <ng-content></ng-content>
+            <button (click)="undo()" system-title="LBL_UNDO"
+                    class="slds-m-left--xx-small slds-button slds-button--icon-border slds-button--neutral">
+                <system-button-icon icon="undo"></system-button-icon>
+            </button>
+            <button (click)="redo()" system-title="LBL_UNDO"
+                    class="slds-m-left--xx-small slds-button slds-button--icon-border slds-button--neutral">
+                <system-button-icon icon="redo"></system-button-icon>
+            </button>
+            <button (click)="toggleShowWhitespaces()" system-title="LBL_SHOW_WHITESPACES"
+                    class="slds-m-left--xx-small slds-button slds-button--icon-border slds-button--neutral">
+                <system-button-icon icon="quotation_marks"></system-button-icon>
+            </button>
+            <button (click)="beautify()" system-title="LBL_FORMAT"
+                    class="slds-m-left--xx-small slds-button slds-button--icon-border slds-button--neutral">
+                <system-button-icon icon="right_align_text"></system-button-icon>
+            </button>
+            @if (canOpenInModal) {
+                <button (click)="openInModal()" class="slds-m-left--xx-small">
+                    <system-button-icon icon="new_window"/>
+                </button>
+            }
+        </div>
+    }
+
+    <div #sourceEditor class="slds-grow slds-box slds-m-around--none slds-theme--default slds-scrollable_y"></div>
+</div>

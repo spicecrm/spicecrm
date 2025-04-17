@@ -82,6 +82,15 @@ class WebHook
         }
         // list($user, $pass) = explode(":", $hook['webHook']['custom_headers']);
 
+        // build the custom headers
+        $headers = [
+            'Content-Type:application/json',
+        ];
+        $customHeaders = json_decode(html_entity_decode($hook['custom_headers']));
+        foreach ($customHeaders as $customHeader) {
+            $headers[] = "{$headers[$customHeader->name]}:{$customHeader->value}";
+        }
+
         $curl = curl_init();
         $curlOptions = [
             CURLOPT_SSL_VERIFYPEER => $hook['ssl_verifypeer'],
@@ -94,7 +103,6 @@ class WebHook
             CURLOPT_HEADER => 1,
             CURLOPT_HTTPHEADER => [
                 'Content-Type:application/json'
-                //'Authorization: Basic ' . $user . ':' . $pass,
             ],
         ];
         curl_setopt_array($curl, $curlOptions);

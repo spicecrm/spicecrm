@@ -15,7 +15,7 @@ import {view} from "../../../services/view.service";
 @Component({
     selector:'process-management-process-group',
     templateUrl: '../templates/processmanagementprocessgroup.html',
-    providers: [view]
+    providers: [view, model]
 })
 export class ProcessManagementProcessGroup implements OnInit{
 
@@ -45,18 +45,35 @@ export class ProcessManagementProcessGroup implements OnInit{
 
     public ngOnInit() {
         this.getProcesses();
+
+        this.model.module = 'ProcessMGMTGroups';
+        this.model.id = this.processGroup.id;
+        this.model.initialize();
+        this.model.setData(this.processGroup);
+
     }
 
     public getProcesses(){
         this.processes = [];
-        this.backend.getRequest(`module/ProcessMGMTGroups/${this.processGroup.id}/related/processmgmtprocesses`, {limit: '-99'}).subscribe({
-            next: (related) => {
-                for (let id in related) {
-                    this.processes.push(related[id]);
-                }
-                this.processes.sort((a, b) => {return a.sequence_number > b.sequence_number ? 1 : -1;})
+        if(this.processGroup.processmgmtprocesses?.beans){
+            for (let id in this.processGroup.processmgmtprocesses.beans) {
+                this.processes.push(this.processGroup.processmgmtprocesses.beans[id]);
             }
-        })
+            this.processes.sort((a, b) => {
+                return a.sequence_number > b.sequence_number ? 1 : -1;
+            })
+        } else {
+            this.backend.getRequest(`module/ProcessMGMTGroups/${this.processGroup.id}/related/processmgmtprocesses`, {limit: '-99'}).subscribe({
+                next: (related) => {
+                    for (let id in related) {
+                        this.processes.push(related[id]);
+                    }
+                    this.processes.sort((a, b) => {
+                        return a.sequence_number > b.sequence_number ? 1 : -1;
+                    })
+                }
+            })
+        }
     }
 
 }

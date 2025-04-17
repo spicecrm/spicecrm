@@ -16,7 +16,7 @@ RewriteEngine On
 # RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
 RewriteRule ^.*\.git.* - [R=404]
-RewriteRule ^.*.json - [R=404]
+RewriteRule ^.*\.json - [R=404]
 RewriteRule ^.*\src.* - [R=404]
 RedirectMatch 404 /\..*$
 
