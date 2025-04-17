@@ -59,11 +59,14 @@ export class KnowledgeBrowserDetailsContainerLeft {
         this.isLoading = true;
         this.modelattachments.module = this.model.module;
         this.modelattachments.id = this.model.id;
-        this.modelattachments.getAttachmentDataByField('file_pdf').subscribe(fileData => {
-            fileData.file;
-            const blob = this.helper.b64toBlob(fileData.file, 'application/pdf');
-            this.blobUrl = this.helper.dataToBlobUrl(blob);
-            this.isLoading = false;
+        this.modelattachments.getAttachmentDataByField('file_pdf').subscribe({
+            next: fileData => {
+                fileData.file;
+                const blob = this.helper.b64toBlob(fileData.file, 'application/pdf');
+                this.blobUrl = this.helper.dataToBlobUrl(blob);
+                this.isLoading = false;
+            },
+            error: () => this.isLoading = false
         });
     }
 
