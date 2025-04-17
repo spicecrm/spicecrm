@@ -198,14 +198,19 @@ $routes = [
                             'required'    => true,
                             'description' => 'Module name of the bean',
                         ],
+                        'name' => [
+                            'type'        => ValidationMiddleware::TYPE_STRING,
+                            'required'    => false,
+                            'description' => 'Name of the bean',
+                        ],
                         'selected' => [
                             'type'        => ValidationMiddleware::TYPE_BOOL,
-                            'required'    => true,
+                            'required'    => false,
                             'description' => 'selected bean',
                         ],
                         'summary_text' => [
                             'type'        => ValidationMiddleware::TYPE_STRING,
-                            'required'    => true,
+                            'required'    => false,
                             'description' => 'bean summary text (usually name)',
                         ],
                         'data' => [
@@ -281,6 +286,11 @@ $routes = [
                             'required'    => true,
                             'description' => 'File MIME type',
                         ],
+                        'emailExtId'    => [
+                            'type'        => ValidationMiddleware::TYPE_STRING,
+                            'required'    => true,
+                            'description' => 'Email external id',
+                        ],
                         'size'           => [
                             'type'        => ValidationMiddleware::TYPE_NUMERIC,
                             'required'    => true,
@@ -310,19 +320,7 @@ $routes = [
                 ],
                 'required'    => true,
                 'description' => 'An array with Outlook attachments',
-            ],
-            'ewsUrl'             => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
-                'description' => 'EWS URL',
-            ],
-            'attachmentToken'    => [
-                'in'          => 'body',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'required'    => true,
-                'description' => 'Authorization token',
-            ],
+            ]
         ],
     ],
     [

@@ -207,6 +207,7 @@ import {SystemDropdownMobileModal} from "./components/systemdropdownmobilemodal"
 import {CdkPortalOutlet} from "@angular/cdk/portal";
 import {SystemInputPackage} from "./components/systeminputpackage";
 import {SystemInputVersion} from "./components/systeminputversion";
+import {SystemSourceEditor} from "./components/systemsourceeditor";
 
 
 @NgModule({
@@ -402,7 +403,8 @@ import {SystemInputVersion} from "./components/systeminputversion";
         SystemInputDictionary,
         SystemInputRoles,
         SystemSelectModuleModal,
-        SystemDropdownMobileModal
+        SystemDropdownMobileModal,
+        SystemSourceEditor
     ],
     exports: [
         PaginationControlsComponent,
@@ -573,7 +575,8 @@ import {SystemInputVersion} from "./components/systeminputversion";
         SystemInputPackage,
         SystemInputVersion,
         SystemIllustration,
-        SystemChartGauge
+        SystemChartGauge,
+        SystemSourceEditor
     ]
 })
 export class SystemComponents {}

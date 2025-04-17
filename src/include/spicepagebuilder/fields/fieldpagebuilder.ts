@@ -13,6 +13,7 @@ import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {view} from "../../../services/view.service";
 import * as less from 'less';
+import {StylesheetObjI} from "../interfaces/spicepagebuilder.interfaces";
 
 @Component({
     selector: 'field-page-builder',
@@ -33,7 +34,7 @@ export class fieldPageBuilder extends fieldGeneric implements OnInit, AfterViewI
     /**
      * holds the stylesheet data
      */
-    public stylesheet: {fieldName: string; id: string; content?: string; contentResourceUrl?: string; contentSafeResourceUrl?: SafeResourceUrl};
+    public stylesheet: StylesheetObjI;
 
     constructor(public model: model,
                 public view: view,

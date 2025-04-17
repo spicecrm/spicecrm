@@ -45,7 +45,7 @@ export class EmailForwardModal extends EmailReplyModal {
                 public backend: backend,
                 public emailsService: emailsService
     ) {
-        super(language, metadata, model, parent, view, prefs, modal, session, userpreferences, dockedcomposer,emailsService);
+        super(language, metadata, model, parent, view, modelattachments, prefs, modal, session, userpreferences, dockedcomposer,emailsService);
     }
 
     /**
@@ -68,15 +68,6 @@ export class EmailForwardModal extends EmailReplyModal {
             }
         });
 
-        this.loadParentAttachments();
+        this.emailsService.loadParentAttachments(this.parent, this.model);
     }
-
-    public loadParentAttachments() {
-        let matchedEntries = [...this.parent.data.body.matchAll(new RegExp(/\<img[\w\W]+?alt="([\w\W]+?)"[\w\W]+?\>/gm))];
-        let excludedFileNames = matchedEntries.map(m => m[1]);
-        this.modelattachments.module = 'Emails';
-        this.modelattachments.id = this.model.id;
-        this.modelattachments.cloneAttachments(this.parent, null, excludedFileNames);
-    }
-
 }

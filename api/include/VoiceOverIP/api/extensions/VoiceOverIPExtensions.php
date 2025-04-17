@@ -2,6 +2,7 @@
 
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\VoiceOverIP\api\controllers\VoiceOverIPController;
 
 /**
@@ -79,12 +80,14 @@ $routes = [
     ]
 ];
 
+
+
 /**
  * register the Extension
  */
 $RESTManager->registerExtension(
     'telephony',
     '1.0',
-    [],
+    ['testmode' => SpiceConfig::getInstance()->get('telephony.testmode')],
     $routes
 );

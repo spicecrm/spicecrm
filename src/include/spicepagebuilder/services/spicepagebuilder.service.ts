@@ -7,7 +7,7 @@ import {
     ContentElementI,
     CustomElement,
     PanelElementI,
-    SectionI,
+    SectionI, StylesheetObjI,
     TagElementI
 } from "../interfaces/spicepagebuilder.interfaces";
 import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
@@ -53,6 +53,30 @@ export class SpicePageBuilderService {
      * hold the current hovered item type
      */
     public isMouseIn: 'section' | 'content';
+    /**
+     * holds the stylesheet data
+     */
+    public stylesheet: StylesheetObjI;
+    /**
+     * predefined social media with icons
+     */
+    public predefinedSocialMedia = [
+        { name: 'whatsapp', background: '#26d366', icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzYwIiBoZWlnaHQ9IjM2MiIgdmlld0JveD0iMCAwIDM2MCAzNjIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMzA3LjU0NiA1Mi41NjU1QzI3My43MDkgMTguNjg1IDIyOC43MDYgMC4wMTcxODk1IDE4MC43NTYgMEM4MS45NTEgMCAxLjUzODQ2IDgwLjQwNCAxLjUwNDA4IDE3OS4yMzVDMS40ODY4OSAyMTAuODI5IDkuNzQ2NDYgMjQxLjY2NyAyNS40MzE5IDI2OC44NDRMMCAzNjEuNzM2TDk1LjAyMzYgMzM2LjgxMUMxMjEuMjAzIDM1MS4wOTYgMTUwLjY4MyAzNTguNjE2IDE4MC42NzkgMzU4LjYyNUgxODAuNzU2QzI3OS41NDQgMzU4LjYyNSAzNTkuOTY2IDI3OC4yMTIgMzYwIDE3OS4zODFDMzYwLjAxNyAxMzEuNDgzIDM0MS4zOTIgODYuNDU0NyAzMDcuNTQ2IDUyLjU3NDFWNTIuNTY1NVpNMTgwLjc1NiAzMjguMzU0SDE4MC42OTZDMTUzLjk2NiAzMjguMzQ2IDEyNy43NDQgMzIxLjE2IDEwNC44NjUgMzA3LjU4OUw5OS40MjQyIDMwNC4zNThMNDMuMDM0IDMxOS4xNDlMNTguMDgzNCAyNjQuMTY4TDU0LjU0MjMgMjU4LjUzQzM5LjYzMDQgMjM0LjgwOSAzMS43NDkgMjA3LjM5MSAzMS43NjYyIDE3OS4yNDRDMzEuODAwNiA5Ny4xMDM2IDk4LjYzMzQgMzAuMjcwNyAxODAuODE3IDMwLjI3MDdDMjIwLjYxIDMwLjI4NzkgMjU4LjAxNSA0NS44MDE1IDI4Ni4xNDUgNzMuOTY2NUMzMTQuMjc2IDEwMi4xMjMgMzI5Ljc1NSAxMzkuNTYyIDMyOS43MzggMTc5LjM2NEMzMjkuNzAzIDI2MS41MTMgMjYyLjg3MSAzMjguMzQ2IDE4MC43NTYgMzI4LjM0NlYzMjguMzU0Wk0yNjIuNDc1IDIxNi43NzdDMjU3Ljk5NyAyMTQuNTM0IDIzNS45NzggMjAzLjcwNCAyMzEuODY5IDIwMi4yMDlDMjI3Ljc2MSAyMDAuNzEzIDIyNC43NzkgMTk5Ljk2NiAyMjEuNzk2IDIwNC40NTJDMjE4LjgxNCAyMDguOTM5IDIxMC4yMjggMjE5LjAyOSAyMDcuNjE1IDIyMi4wMTFDMjA1LjAwMiAyMjUuMDAyIDIwMi4zODkgMjI1LjM3MiAxOTcuOTExIDIyMy4xMjhDMTkzLjQzNCAyMjAuODg1IDE3OS4wMDMgMjE2LjE1OCAxNjEuODkxIDIwMC45MDJDMTQ4LjU3OCAxODkuMDI0IDEzOS41ODcgMTc0LjM2MiAxMzYuOTc1IDE2OS44NzVDMTM0LjM2MiAxNjUuMzg5IDEzNi43IDE2Mi45NjUgMTM4LjkzNCAxNjAuNzM5QzE0MC45NDUgMTU4LjcyOCAxNDMuNDEyIDE1NS41MDUgMTQ1LjY1NSAxNTIuODkyQzE0Ny44OTkgMTUwLjI3OSAxNDguNjM4IDE0OC40MDYgMTUwLjEzMyAxNDUuNDIzQzE1MS42MjkgMTQyLjQzMiAxNTAuODgxIDEzOS44MiAxNDkuNzY0IDEzNy41NzZDMTQ4LjY0NiAxMzUuMzMzIDEzOS42OTEgMTEzLjI4NyAxMzUuOTUyIDEwNC4zMjNDMTMyLjMxNiA5NS41OTA5IDEyOC42MjEgOTYuNzc3IDEyNS44NzkgOTYuNjMwOUMxMjMuMjY2IDk2LjUwMTkgMTIwLjI4NCA5Ni40NzYyIDExNy4yOTMgOTYuNDc2MkMxMTQuMzAyIDk2LjQ3NjIgMTA5LjQ1NCA5Ny41OTM1IDEwNS4zNDYgMTAyLjA4QzEwMS4yMzggMTA2LjU2NiA4OS42NjkxIDExNy40MDQgODkuNjY5MSAxMzkuNDQxQzg5LjY2OTEgMTYxLjQ3OCAxMDUuNzE2IDE4Mi43ODUgMTA3Ljk1OSAxODUuNzc2QzExMC4yMDIgMTg4Ljc2NyAxMzkuNTQ0IDIzNC4wMDEgMTg0LjQ2OSAyNTMuNDA4QzE5NS4xNTMgMjU4LjAyMyAyMDMuNDk4IDI2MC43ODIgMjEwLjAwNCAyNjIuODQ1QzIyMC43MzEgMjY2LjI1NyAyMzAuNDk0IDI2NS43NzYgMjM4LjIxMiAyNjQuNjI0QzI0Ni44MTYgMjYzLjMzNSAyNjQuNzEgMjUzLjc4NiAyNjguNDQgMjQzLjMyNkMyNzIuMTcgMjMyLjg2NiAyNzIuMTcgMjIzLjg5MyAyNzEuMDUzIDIyMi4wMjhDMjY5LjkzNiAyMjAuMTYzIDI2Ni45NDUgMjE5LjAzNyAyNjIuNDY3IDIxNi43OTRMMjYyLjQ3NSAyMTYuNzc3WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==' },
+        { name: 'facebook-noshare', background: '#3b5998', icon: 'https://www.mailjet.com/images/theme/v1/icons/ico-social/facebook.png'},
+        { name: 'twitter-noshare', background: '#55acee', icon: 'https://www.mailjet.com/images/theme/v1/icons/ico-social/twitter.png'},
+        { name: 'google-noshare', background: '#dc4e41', icon: 'https://www.mailjet.com/images/theme/v1/icons/ico-social/google-plus.png'},
+        { name: 'pinterest-noshare', background: '#bd081c', icon: 'https://www.mailjet.com/images/theme/v1/icons/ico-social/pinterest.png'},
+        { name: 'linkedin-noshare', background: '#0077b5', icon: 'https://www.mailjet.com/images/theme/v1/icons/ico-social/linkedin.png'},
+        { name: 'tumblr-noshare', background: '#344356', icon: 'https://www.mailjet.com/images/theme/v1/icons/ico-social/tumblr.png'},
+        { name: 'xing-noshare', background: '#296366', icon: 'https://www.mailjet.com/images/theme/v1/icons/ico-social/xing.png'},
+        { name: 'instagram-noshare', background: '#3f729b', icon: 'https://www.mailjet.com/images/theme/v1/icons/ico-social/instagram.png'},
+        { name: 'youtube-noshare', background: '#EB3323', icon: 'https://www.mailjet.com/images/theme/v1/icons/ico-social/youtube.png'},
+        { name: 'snapchat-noshare', background: '#FFFA54', icon: 'https://www.mailjet.com/images/theme/v1/icons/ico-social/snapchat.png'},
+        { name: 'web-noshare', background: '#4BADE9', icon: 'https://www.mailjet.com/images/theme/v1/icons/ico-social/web.png'},
+        { name: 'github-noshare', background: '#000000', icon: 'https://www.mailjet.com/images/theme/v1/icons/ico-social/github.png'},
+        { name: 'vimeo-noshare', background: '#53B4E7', icon: 'https://www.mailjet.com/images/theme/v1/icons/ico-social/vimeo.png'},
+        { name: 'custom', icon: ''},
+    ];
     /**
      * page structure object
      */
@@ -110,6 +134,21 @@ export class SpicePageBuilderService {
      * hold the available content elements
      */
     public readonly panelElements: PanelElementI[] = [
+        {
+            tagName: 'social',
+            label: 'LBL_SOCIAL_MEDIA',
+            icon: 'socialshare',
+            attributes: {
+                'mode': 'horizontal',
+                'padding': '4px',
+                'align': 'center',
+                'text-padding': '4px 4px 4px 0px',
+                'icon-size': '20px',
+                'icon-padding': '4px',
+                'inner-padding': '4px',
+            },
+            children: []
+        },
         {
             tagName: 'heading',
             label: 'LBL_HEADING',
@@ -301,7 +340,7 @@ export class SpicePageBuilderService {
     public readonly panelDefaultSection: SectionI = {
         tagName: 'section',
         children: [],
-        attributes: {padding: '0'}
+        attributes: {padding: '0px'}
     };
     /**
      * holds the panel default column
@@ -438,7 +477,7 @@ export class SpicePageBuilderService {
      * @param content
      * @param type
      */
-    public saveCustomElement(content: SectionI | ContentElementI, type: 'section' | 'item', image: any = null) {
+    public saveCustomElement(content: SectionI | ContentElementI, type: 'section' | 'item') {
 
         this.isMouseIn = undefined;
 
@@ -446,29 +485,37 @@ export class SpicePageBuilderService {
 
             if (!name) return;
 
-            const element = {
+            const element: CustomElement = {
                 id: this.helper.generateGuid(),
                 name: name,
                 type: type,
-                content: content,
-                image: image
+                content: content
             };
 
-            switch (type) {
-                case 'item':
-                    this.customItems = [...this.customItems, {...element}];
-                    break;
-                case 'section':
-                    this.customSections = [...this.customSections, {...element}];
-                    break;
-            }
+            const body = {
+                ...element,
+                content: JSON.stringify(element.content),
+                stylesheet: this.stylesheet.content
+            };
 
-            this.cdRef.detectChanges();
+            this.backend.postRequest('common/PageBuilder/customElements', null, body).subscribe({
+                next: res => {
 
-            element.content = JSON.stringify(element.content) as any;
+                    element.image = res.image;
 
-            this.backend.postRequest('common/PageBuilder/customElements', null, element).subscribe({
-                next: () => this.toast.sendToast('LBL_DATA_SAVED', 'success'),
+                    switch (type) {
+                        case 'item':
+                            this.customItems = [...this.customItems, {...element}];
+                            break;
+                        case 'section':
+                            this.customSections = [...this.customSections, {...element}];
+                            break;
+                    }
+
+                    this.cdRef.detectChanges();
+
+                    this.toast.sendToast('LBL_DATA_SAVED', 'success');
+                },
                 error: () => this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error')
             });
         })

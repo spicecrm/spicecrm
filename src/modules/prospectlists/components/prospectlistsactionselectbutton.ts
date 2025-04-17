@@ -25,14 +25,17 @@ export class ProspectListsActionSelectButton extends ObjectActionSelectButton {
      */
     public addSelectedItems(selectedItems) {
         const addrField = this.actionconfig?.email_address_field_name ?? 'prospectlists_person_email_addr_bean_rel_id';
-        const invalidCheckFn = item => Object.keys(item.email_addresses.beans).filter(relId => item.email_addresses.beans[relId].invalid_email != 1).length > 0;
+        const checkValidFn = item => Object.keys(item.email_addresses.beans).filter(relId => item.email_addresses.beans[relId].invalid_email != 1).length > 0;
+        const validate = !!this.parent.getField('allow_multiple_emails_per_target');
         let items = [];
 
         // if a list is adding targets filter out the targets with no valid email address
-        if (this.model.module != 'ProspectLists') {
-            items = selectedItems.filter(item => invalidCheckFn(item));
-            // if the contact is adding related lists, then check on the target if at least one valid email address exists
-        } else if(invalidCheckFn(this.parent.data)) {
+        if (validate && this.model.module != 'ProspectLists') {
+            items = selectedItems.filter(item => checkValidFn(item));
+        }
+
+        // if the contact is adding related lists, then check on the target if at least one valid email address exists
+        if(!validate || (this.model.module == 'ProspectLists' && checkValidFn(this.parent.data))) {
             items = selectedItems;
         }
 

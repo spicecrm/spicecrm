@@ -23,11 +23,19 @@
     </div>
     <div class="slds-grid slds-p-vertical--xx-small">
         <system-label class="slds-size--1-of-4 slds-p-vertical--xx-small" label="LBL_GOOGLE_CLIENTJSON"></system-label>
-        <textarea class="slds-input slds-grow" rows="7" [disabled]="loading" [(ngModel)]="configvalues.calendarconfig"></textarea>
+        @if (loading) {
+            <textarea class="slds-input slds-grow" rows="7" [disabled]="true" [ngModel]="configvalues.calendarconfig"></textarea>
+        } @else {
+            <system-source-editor [(ngModel)]="configvalues.calendarconfig" language="json" style="height: 300px; width: 100%"/>
+        }
     </div>
     <div class="slds-grid slds-p-vertical--xx-small">
         <system-label class="slds-size--1-of-4 slds-p-vertical--xx-small" label="LBL_GOOGLE_SERVICEUSERKEY"></system-label>
-        <textarea class="slds-input slds-grow" rows="7" [disabled]="loading" [(ngModel)]="configvalues.serviceuserkey"></textarea>
+        @if (loading) {
+            <textarea class="slds-input slds-grow" rows="7" [disabled]="true" [ngModel]="configvalues.serviceuserkey"></textarea>
+        } @else {
+            <system-source-editor [(ngModel)]="configvalues.serviceuserkey" language="json" style="height: 300px; width: 100%"/>
+        }
     </div>
     <div class="slds-grid slds-p-vertical--xx-small">
         <system-label class="slds-size--1-of-4 slds-p-vertical--xx-small" label="LBL_GOOGLE_SERVICEUSERSCOPE"></system-label>
