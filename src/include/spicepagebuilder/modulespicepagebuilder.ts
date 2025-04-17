@@ -51,6 +51,8 @@ import {SpicePageBuilderElementAttributes} from "./components/spicepagebuilderel
 
 
 import {SpicePageBuilderElementImageUrl} from "./components/spicepagebuilderelementimageurl";
+import {SpicePageBuilderElementSocial} from "./components/spicepagebuilderelementsocial";
+import {SpicePageBuilderInputOptions} from "./components/spicepagebuilderinputoptions";
 
 @NgModule({
     declarations: [
@@ -87,7 +89,9 @@ import {SpicePageBuilderElementImageUrl} from "./components/spicepagebuilderelem
         SpicePageBuilderElementCode,
         SpicePageBuilderElementRSS,
         fieldPageBuilder,
-        SpicePageBuilderElementImageUrl
+        SpicePageBuilderElementImageUrl,
+        SpicePageBuilderElementSocial,
+        SpicePageBuilderInputOptions
     ],
     exports: [
         SpicePageBuilder

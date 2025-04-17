@@ -3,7 +3,7 @@
  */
 import {
 
-    Component, ComponentRef
+    Component, ComponentRef, OnInit
 } from '@angular/core';
 import {backend} from "../../services/backend.service";
 import {language} from "../../services/language.service";
@@ -21,10 +21,10 @@ import {HooksManager} from "./hooksmanager";
 @Component({
     selector: 'web-hooks-manager-edit-modal',
     templateUrl: '../templates/webhooksmanagereditmodal.html',
-    providers:[WebHooksManager, HooksManager],
+    providers: [WebHooksManager, HooksManager],
 
 })
-export class WebHooksManagerEditModal {
+export class WebHooksManagerEditModal implements OnInit {
 
     public self: ComponentRef<WebHooksManagerEditModal>;
 
@@ -41,7 +41,25 @@ export class WebHooksManagerEditModal {
      */
     public urlRegexp: RegExp = new RegExp("(https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*))");
 
+    /**
+     * the array for the custom headers
+     */
+    public customHeaders: { name?: string, value?: string }[] = [];
 
+    public newWebHook: WebHookI = {
+        id: '',
+        module: '',
+        event: 'create',
+        url: '',
+        active: 1,
+        send_data: false,
+        modulefilter_id: '',
+        fieldset_id: '',
+        ssl_verifypeer: true,
+        ssl_verifyhost: true,
+        custom_headers: '',
+    };
+    public save$ = new Subject<WebHookI>();
 
     constructor(
         public backend: backend,
@@ -55,20 +73,10 @@ export class WebHooksManagerEditModal {
 
     }
 
-    public newWebHook: WebHookI = {
-        id: '',
-        module: '',
-        event: 'create',
-        url: '',
-        active: 1,
-        send_data: false,
-        modulefilter_id: '',
-        fieldset_id: '',
-        ssl_verifypeer: true,
-        ssl_verifyhost: true,
-        custom_headers : '',
-    };
-    public save$ = new Subject<WebHookI>();
+    public ngOnInit() {
+        // parse the headers
+        this.customHeaders = this.newWebHook.custom_headers ? JSON.parse(this.newWebHook.custom_headers) : [];
+    }
 
     /**
      * close the modal
@@ -76,31 +84,45 @@ export class WebHooksManagerEditModal {
     public close() {
         this.self.destroy();
     }
-    public canSave(){
+
+    public canSave() {
         this.urlCondition = this.newWebHook.url.length > 0 && this.urlRegexp.test(this.newWebHook.url);
-        if(!this.newWebHook.module || !this.newWebHook.event || !this.newWebHook.url || !this.urlCondition){
+        if (!this.newWebHook.module || !this.newWebHook.event || !this.newWebHook.url || !this.urlCondition) {
             return false;
         }
         return true;
     }
+
     /**
      * save web hook
      */
     public saveHook() {
-            if (!this.newWebHook.id) {
-                this.newWebHook.id = this.modelutilities.generateGuid();
-            }
-
-            const table = 'syswebhooks';
-            let loadingModal = this.modal.await('LBL_LOADING');
-            this.backend.postRequest(`configuration/configurator/${table}/${this.newWebHook.id}`, null, {config: this.newWebHook}).subscribe({
-                next: () => {
-                    this.save$.next(this.newWebHook);
-                    this.save$.complete();
-                    loadingModal.emit(true);
-                    this.toast.sendToast('LBL_DATA_SAVED', 'success');
-                }
-            });
-            this.self.destroy();
+        if (!this.newWebHook.id) {
+            this.newWebHook.id = this.modelutilities.generateGuid();
         }
+
+        // json stringify the headers
+        this.newWebHook.custom_headers = JSON.stringify(this.customHeaders);
+
+        const table = 'syswebhooks';
+        let loadingModal = this.modal.await('LBL_LOADING');
+        this.backend.postRequest(`configuration/configurator/${table}/${this.newWebHook.id}`, null, {config: this.newWebHook}).subscribe({
+            next: () => {
+                this.save$.next(this.newWebHook);
+                this.save$.complete();
+                loadingModal.emit(true);
+                this.toast.sendToast('LBL_DATA_SAVED', 'success');
+            }
+        });
+        this.self.destroy();
+    }
+
+
+    public addCustomHeader() {
+        this.customHeaders.push({name: undefined, value: undefined})
+    }
+
+    public deleteCustomHeader(index) {
+        this.customHeaders.splice(index, 1);
+    }
 }

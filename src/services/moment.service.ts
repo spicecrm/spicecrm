@@ -25,17 +25,18 @@ export class MomentService {
 
         language = language.substring(0, 2);
 
-        if (weekStartDay) {
-            const localeSpecs = {
-                week: {
-                    dow: weekStartDay == 'Monday' ? 1 : 0,
-                    doy: weekStartDay == 'Monday' ? 4 : 6
-                }
-            };
-            moment.updateLocale(language, localeSpecs);
-        } else {
-            moment.locale(language);
+        if (!weekStartDay) {
+            weekStartDay = moment.localeData().firstDayOfWeek() == 1 ? 'Monday' : 'Sunday';
         }
+
+        const localeSpecs = {
+            week: {
+                dow: weekStartDay == 'Monday' ? 1 : 0,
+                doy: weekStartDay == 'Monday' ? 4 : 6
+            }
+        };
+
+        moment.updateLocale(language, localeSpecs);
         this.weekdaysShort.set(moment.weekdaysShort(true));
         this.weekdaysMin.set(moment.weekdaysMin(true));
     }

@@ -46,6 +46,9 @@
                             @case ('direction'){
                                 <spice-page-builder-input-direction [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
                             }
+                            @case ('options'){
+                                <spice-page-builder-input-options [(ngModel)]="element.attributes[styleAttribute.name]" [options]="styleAttribute.options" [label]="styleAttribute.name"/>
+                            }
                             @default {
                                 <spice-page-builder-input-text [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
                             }

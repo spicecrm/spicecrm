@@ -149,6 +149,23 @@ class EmailTracking
         return false;
     }
 
+    /**
+     * encode data into preview url
+     * @param Email $email
+     * @return string
+     */
+    static function getPreviewUrl(Email $email)
+    {
+        $url = SpiceConfig::getInstance()->config['site_url'] . '/email/v/{refid}';
+
+        [$parentType, $parentId] = $email->getTrackingParentData();
+
+        if ($url) {
+            return str_replace('{refid}', self::encodeTrackingID("ParentType:$parentType:ParentId:$parentId"), $url);
+        }
+        return false;
+    }
+
     static function sendDOIEmail($bean, $mailboxId, $additionalValues = null, $additionalBeans = [])
     {
         $emailtemplate_id = SpiceConfig::getInstance()->get('emailtracking.double_optin_emailtemplate_id');

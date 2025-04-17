@@ -19,7 +19,14 @@
                                 @switch (field.type){
                                     @case('json'){
                                         @if (isEditMode(field)) {
-                                            <textarea class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" style="min-height: 250px;" [(ngModel)]="entry.data[field.name]"></textarea>
+                                            <system-source-editor [(ngModel)]="entry.data[field.name]" language="json" style="height: 300px"/>
+                                        } @else {
+                                            <span class="slds-truncate_container_25" style="max-width: 200px;">{{entry.data[field.name]}}</span>
+                                        }
+                                    }
+                                    @case('css'){
+                                        @if (isEditMode(field)) {
+                                            <system-source-editor [(ngModel)]="entry.data[field.name]" language="css" style="height: 300px"/>
                                         } @else {
                                             <span class="slds-truncate_container_25" style="max-width: 200px;">{{entry.data[field.name]}}</span>
                                         }
