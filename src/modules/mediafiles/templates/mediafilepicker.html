@@ -1,15 +1,24 @@
 <system-modal size="large">
     <system-modal-header (close)="closePopup()">{{language.getModuleCombinedLabel('LBL_SEARCH', modellist.module)}}</system-modal-header>
     <system-modal-content margin="none" [grow]="true">
-        <div class="slds-height_full">
+        <div #tilescontainer class="slds-height_full">
             <object-modal-module-lookup-header></object-modal-module-lookup-header>
             <div class="slds-is-relative" [ngStyle]="contentStyle()">
-                <div class="slds-grid slds-wrap" [ngStyle]="containerStyle">
-                    <media-files-tile *ngFor="let listItem of modellist.listData.list" [data]="listItem" [selectbox]="true" (click)="pick(listItem.id)"></media-files-tile>
-                </div>
-                <div *ngIf="!modellist.isLoading && modellist.listData.totalcount == 0" class="slds-align--absolute-center" style="height: calc(100% - 35px)">
-                    <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
-                </div>
+                @if (modellist.isLoading) {
+                    <div class="slds-grid slds-wrap" [ngStyle]="containerStyle">
+                        <media-files-stencil *ngFor="let s of [].constructor(stencilCount)"/>
+                    </div>
+                } @else {
+                    @if (modellist.listData.totalcount == 0) {
+                        <div  class="slds-align--absolute-center" style="height: calc(100% - 35px)">
+                            <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
+                        </div>
+                    } @else {
+                        <div class="slds-grid slds-wrap" [ngStyle]="containerStyle">
+                            <media-files-tile *ngFor="let listItem of modellist.listData.list" [data]="listItem" [selectbox]="true" (click)="pick(listItem.id)"></media-files-tile>
+                        </div>
+                    }
+                }
                 <object-modal-module-lookup-aggregates></object-modal-module-lookup-aggregates>
             </div>
         </div>
