@@ -8,13 +8,14 @@
                     </span>
                     <span class="slds-pill__label slds-p-left--xx-small">{{selectedBook.name}}</span>
                     <span>
-                        <button class="slds-button slds-button--icon" (click)="printBook(selectedBook)">
-                            <system-button-icon icon="print"></system-button-icon>
-                        </button>
-                        <button *ngIf="selectedBook.acl.edit" class="slds-button slds-button--icon" (click)="editBook(selectedBook)">
+<!--                 temporary commented out
+       <button class="slds-button slds-button&#45;&#45;icon" (click)="printBook(selectedBook)">-->
+<!--                            <system-button-icon icon="print"></system-button-icon>-->
+<!--                        </button>-->
+                        <button *ngIf="selectedBook.acl?.edit" class="slds-button slds-button--icon" (click)="editBook(selectedBook)">
                             <system-button-icon icon="edit"></system-button-icon>
                         </button>
-                        <button *ngIf="selectedBook.acl.delete" class="slds-button slds-button--icon" (click)="deleteBook(selectedBook)">
+                        <button *ngIf="selectedBook.acl?.delete" class="slds-button slds-button--icon" (click)="deleteBook(selectedBook)">
                             <system-button-icon icon="delete"></system-button-icon>
                         </button>
                         <button class="slds-button slds-button--icon slds-pill__remove" (click)="deselectBook()">
