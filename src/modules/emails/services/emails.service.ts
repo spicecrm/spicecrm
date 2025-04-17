@@ -1,9 +1,11 @@
-import {Injectable, SkipSelf} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {session} from "../../../services/session.service";
+import {modelattachments} from "../../../services/modelattachments.service";
 import {backend} from "../../../services/backend.service";
 import {Subject} from "rxjs";
+import {model} from "../../../services/model.service";
 
 declare var moment: any;
 
@@ -18,6 +20,7 @@ export class emailsService {
         private backend: backend,
         private userpreferences: userpreferences,
         private session: session,
+        private modelattachments: modelattachments,
     ) {
 
     }
@@ -101,5 +104,18 @@ export class emailsService {
             }
         });
         return false;
+    }
+
+    /**
+     * loads the parent attachments and skips the inline images
+     * @param parent
+     * @param model
+     */
+    public loadParentAttachments(parent: model, model: model): void {
+        let matchedEntries = [...parent.data.body.matchAll(new RegExp(/\<img[\w\W]+?alt="([\w\W]+?)"[\w\W]+?\>/gm))];
+        let excludedFileNames = matchedEntries.map(m => m[1]);
+        this.modelattachments.module = model.module;
+        this.modelattachments.id = model.id;
+        this.modelattachments.cloneAttachments(parent, null, excludedFileNames);
     }
 }

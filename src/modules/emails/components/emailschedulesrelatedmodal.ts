@@ -95,15 +95,9 @@ export class EmailSchedulesRelatedModal {
                     });
                 }
             });
-
-            // clone teh attachments if we have any and they are not embedded already
-            let matchedEntries = [...this.referencedEmail.data.body.matchAll(new RegExp(/\<img[\w\W]+?alt="([\w\W]+?)"[\w\W]+?\>/gm))];
-            let excludedFileNames = matchedEntries.map(m => m[1]);
-            this.modelattachments.module = 'Emails';
-            this.modelattachments.id = this.model.id;
-            this.modelattachments.cloneAttachments(this.referencedEmail, null, excludedFileNames);
-
         }
+
+        this.emailsService.loadParentAttachments(this.referencedEmail, this.model);
     }
 
     /**
