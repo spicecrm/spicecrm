@@ -33,7 +33,7 @@ class TrackingProcessor extends Processor {
      * @return false|string
      */
     private function decryptEncryptionKeyHash($encrypted) {
-        $this->key = SpiceConfig::getInstance()->get('emailtracking.encryptionkey');
+        $this->key = SpiceConfig::getInstance()->get('emailtracking.encryptionkey') ?? SpiceConfig::getInstance()->config['unique_key'];
         return openssl_decrypt($encrypted, $this->method, $this->key);
     }
 
