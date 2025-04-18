@@ -174,6 +174,8 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
         const defaultConfig = this.metadata.getComponentConfig('SpiceKanban', this.modellist.module);
 
+        this.componentconfig = {...this.componentconfig};
+
         if (!this.componentconfig.kanban) {
             this.componentconfig.kanban = defaultConfig.kanban;
         }
