@@ -166,7 +166,7 @@ class EmailTrackingActionsController
      */
     private function decryptEncryptionKey($key)
     {
-        $encryptionKey = SpiceConfig::getInstance()->get('emailtracking.encryptionkey');
+        $encryptionKey = SpiceConfig::getInstance()->get('emailtracking.encryptionkey') ?? SpiceConfig::getInstance()->config['unique_key'];
         $method = 'DES-EDE3-CBC';
         return openssl_decrypt($key, $method, $encryptionKey);
     }
