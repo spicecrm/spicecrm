@@ -57,7 +57,7 @@ export class OrgunitsChartViewBox implements OnInit,AfterViewInit{
     /**
      * sets custom color styles
      */
-    get colorStyle(){
+    public colorStyle(withBorder: boolean = false){
         let styles: any = {};
 
         if(this.model.getField('color_bg')){
@@ -67,6 +67,12 @@ export class OrgunitsChartViewBox implements OnInit,AfterViewInit{
         if(this.model.getField('color_tx')){
             styles.color = this.model.getField('color_tx');
         }
+
+        if(withBorder &&  this.model.getField('color_bd')){
+            styles['border-color'] = this.model.getField('color_bd');
+        }
+
+
 
         return styles;
     }
