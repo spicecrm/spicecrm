@@ -1,9 +1,7 @@
 @if (componentset) {
     @if (model.isLoading) {
         <div class="slds-grid slds-grid--vertical">
-            @for (stencil of stencils; track stencil){
-                <system-card-stencil/>
-            }
+            <system-card-stencil *ngFor="let stencil of stencils"/>
         </div>
     } @else if (!hasAccess) {
         <div class="slds-box slds-box--border slds-align--absolute-center">
