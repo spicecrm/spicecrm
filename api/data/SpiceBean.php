@@ -407,7 +407,7 @@ class SpiceBean
      * holds all BEAN dictionary based values
      * @var array
      */
-    private array $beanValues = [];
+    protected array $beanValues = [];
 
     /**
      * Constructor for the bean, it performs following tasks:
@@ -454,6 +454,7 @@ class SpiceBean
             $this->validateField($attributeName, $attributeValue, $dictionaryField);
         }
 
+        $this->{$attributeName} = $attributeValue;
         $this->beanValues[$attributeName] = $attributeValue;
     }
 
