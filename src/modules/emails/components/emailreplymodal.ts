@@ -11,13 +11,14 @@ import {userpreferences} from '../../../services/userpreferences.service';
 import {session} from "../../../services/session.service";
 import {dockedComposer} from "../../../services/dockedcomposer.service";
 import {emailsService} from "../services/emails.service";
+import {modelattachments} from "../../../services/modelattachments.service";
 
 declare var moment: any;
 
 @Component({
     selector: 'email-reply-modal',
     templateUrl: '../templates/emailreplymodal.html',
-    providers: [view, model, emailsService]
+    providers: [view, model, emailsService, modelattachments]
 })
 export class EmailReplyModal implements OnInit {
 
@@ -60,6 +61,7 @@ export class EmailReplyModal implements OnInit {
                 public model: model,
                 @SkipSelf() public parent: model,
                 public view: view,
+                public modelattachments: modelattachments,
                 public prefs: userpreferences,
                 public modal: modal,
                 public session: session,
@@ -115,6 +117,8 @@ export class EmailReplyModal implements OnInit {
                 });
             }
         });
+
+        this.emailsService.loadParentAttachments(this.parent, this.model);
     }
 
 
