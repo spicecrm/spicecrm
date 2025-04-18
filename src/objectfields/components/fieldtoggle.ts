@@ -19,11 +19,6 @@ import {modal} from "../../services/modal.service";
 export class fieldToggle extends fieldGeneric implements OnInit{
 
     /**
-     * the hidden property hiding the toggle field if the user does not have the proper access rights
-     */
-    public hidden: boolean = false;
-
-    /**
      * holds the current user id
      * @private
      */
@@ -48,16 +43,11 @@ export class fieldToggle extends fieldGeneric implements OnInit{
         public metadata: metadata,
         public router: Router,
         public modal: modal,
-        ) {
+    ) {
         super(model, view, language, metadata, router);
     }
 
     public ngOnInit(): void {
-        // if acl action is required and user has no access, hide the field
-        if (this.fieldconfig.acl && !this.metadata.checkModuleAcl(this.model.module, this.fieldconfig.acl)) {
-            this.hidden = true;
-        }
-
         this.currentUser = this.metadata.session.authData.user.id;
         this.currentUser = this.model.data.assigned_user_id;
 
@@ -70,25 +60,27 @@ export class fieldToggle extends fieldGeneric implements OnInit{
     }
 
     /**
-     * disables the field
-     * @return boolean
-     * */
-    get disabled(): boolean {
-        return !this.metadata.checkModuleAcl(this.model.module, 'edit') || !this.userCanEdit();
-    }
-
-    /**
      * manages visibility of the toggle
      * default: visible if the current_user is the created_by user of the bean
      * visibility for assigned_user can be set up in the field config
      * @return boolean
      */
-    private userCanEdit(): boolean {
-        if(this.fieldconfig.assignedUserAccess) {
-            return this.currentUser === this.assignedUser;
-        } else {
-            return this.currentUser === this.createdBy;
+    get hidden(): boolean {
+        if (this.fieldconfig.acl && !this.metadata.checkModuleAcl(this.model.module, this.fieldconfig.acl)) {
+            return true;
         }
+        if (this.fieldconfig.assignedUserAccess) {
+            return this.currentUser !== this.assignedUser;
+        }
+        return this.currentUser !== this.createdBy;
+    }
+
+    /**
+     * disables the field
+     * @return boolean
+     * */
+    get disabled(): boolean {
+        return this.hidden;
     }
 
     /**

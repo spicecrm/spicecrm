@@ -8,12 +8,7 @@
         </div>
     } @else {
         @for (process of processes; track process.id) {
-            <div class="slds-box slds-box--border slds-m-around--x-small slds-is-relative" [system-model-provider]="{module: 'ProcessMGMTProcesses', id: process.id, data: process}">
-                <div class="slds-p-around--x-small">
-                    <field-container field="name" [fieldconfig]="{link: true}" fielddisplayclass="slds-p-verical--small"/>
-                </div>
-                <div *ngIf="process.isexternal" class="slds-is-absolute slds-text-color_success" style="top:1px; right: 3px;font-size: 8px; font-weight: bold; text-transform: uppercase;"><system-label label="LBL_EXTERNAL"/></div>
-            </div>
+            <process-management-process-process [process]="process"/>
         }
     }
     <div class="slds-p-around--x-small slds-text-align--center slds-border--top">
