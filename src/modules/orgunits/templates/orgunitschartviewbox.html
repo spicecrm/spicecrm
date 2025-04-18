@@ -1,6 +1,6 @@
 <div style="margin: 1rem auto; width: 200px" [ngClass]="{'slds-m-vertical--none' : isStaff, 'slds-m-bottom--none': hasStaff}" class="slds-is-relative">
     <div class="slds-p-around--small">
-        <div #box class="slds-box slds-align--absolute-center slds-is-relative" [ngStyle]="colorStyle(true)" [ngClass]="{'slds-theme--alt-inverse': nodemodule == 'OrgUnits' && !isStaff, 'slds-theme--shade': nodemodule == 'OrgUnits' && isStaff, 'slds-theme--info': nodemodule == 'OrgCharts'}" (mouseenter)="displayButtons = true" (mouseleave)="displayButtons=false">
+        <div #box class="slds-box slds-align--absolute-center slds-is-relative" [ngStyle]="colorStyle(true)" [ngClass]="{'slds-theme--alert-texture': model.data.alert_texture, 'slds-theme--alt-inverse': nodemodule == 'OrgUnits' && !isStaff, 'slds-theme--shade': nodemodule == 'OrgUnits' && isStaff, 'slds-theme--info': nodemodule == 'OrgCharts'}" (mouseenter)="displayButtons = true" (mouseleave)="displayButtons=false">
             <div *ngIf="displayButtons" class="slds-is-absolute slds-grid" style="top: 5px; right: 5px;">
                 <button class="slds-button slds-button--icon" (click)="edit()">
                     <system-button-icon [ngStyle]="colorStyle()" [ngClass]="{'slds-theme--alt-inverse': nodemodule == 'OrgUnits' && !isStaff, 'slds-theme--shade': nodemodule == 'OrgUnits' && isStaff, 'slds-theme--info': nodemodule == 'OrgCharts'}" icon="edit"></system-button-icon>
@@ -13,7 +13,7 @@
                 <orgunits-chart-view-box-add [customStyles]="colorStyle()"/>
             </div>
             <!-- adds trhe remark in teh top left corenr -->
-            <div *ngIf="model.data.remark" class="slds-is-absolute slds-text-body--small" style="top: 3px; left: 5px;">
+            <div *ngIf="model.data.remark" class="slds-is-absolute slds-text-body--small" [ngStyle]="remarkStyle" style="top: 3px; left: 5px;">
                 {{model.data.remark}}
             </div>
         </div>

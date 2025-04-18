@@ -72,8 +72,14 @@ export class OrgunitsChartViewBox implements OnInit,AfterViewInit{
             styles['border-color'] = this.model.getField('color_bd');
         }
 
+        return styles;
+    }
 
-
+    get remarkStyle(){
+        let styles: any = {};
+        if(this.model.getField('color_rm')){
+            styles.color = this.model.getField('color_rm');
+        }
         return styles;
     }
 
