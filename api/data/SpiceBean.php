@@ -382,9 +382,19 @@ class SpiceBean
     public bool $in_save = false;
 
     /**
-     * @var string TODO that should probably go into the dictionary
+     * @var string TODO check if that should go into the dictionary
      */
     public string $modified_by_name;
+
+    /**
+     * @var array TODO check if that should go into the dictionary
+     */
+    private array $audit_enabled_fields;
+
+    /**
+     * @var array TODO check if that should go into the dictionary
+     */
+    private array $firstlog_enabled_fields = [];
 
     /**
      * set in code to disable validation
@@ -466,6 +476,36 @@ class SpiceBean
         }
 
         return null;
+    }
+
+    /**
+     * Magic isset function.
+     *
+     * @param string $attributeName
+     * @return bool
+     */
+    public function __isset(string $attributeName): bool
+    {
+        if (isset($this->beanValues[$attributeName])) {
+            return true;
+        }
+
+        if (isset($this->$attributeName)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Magi unset function.
+     *
+     * @param string $attributeName
+     * @return void
+     */
+    public function __unset(string $attributeName): void
+    {
+        unset($this->beanValues[$attributeName]);
     }
 
     /**
@@ -957,18 +997,18 @@ class SpiceBean
         //find all definitions of type link.
         if (!empty($fieldDefs[$rel_name])) {
             //initialize a variable of type Link
-            $class = '\SpiceCRM\data\Link2';
+            $class = Link2::class;
             if (isset($this->$rel_name) && $this->$rel_name instanceof $class) {
-                if ( $forceReload ) $this->$rel_name->load();
+                if ($forceReload) {
+                    $this->$rel_name->load();
+                }
                 return true;
             }
             //if rel_name is provided, search the fieldef array keys by name.
             if (isset($fieldDefs[$rel_name]['type']) && $fieldDefs[$rel_name]['type'] == 'link') {
                 $this->$rel_name = new $class($rel_name, $this);
 
-                if (empty($this->$rel_name) ||
-                    (method_exists($this->$rel_name, "loadedSuccesfully") && !$this->$rel_name->loadedSuccesfully())
-                ) {
+                if (!$this->$rel_name->loadedSuccesfully()) {
                     unset($this->$rel_name);
                     return false;
                 }
@@ -2336,23 +2376,29 @@ class SpiceBean
 
     function fill_in_link_field($linkFieldName, $def)
     {
-        $idField = $linkFieldName;
-        //If the id_name provided really was an ID, don't try to load it as a link. Use the normal link
-        // CR1000476: remove check on type shall be id. Not always the case (see companycode_id in Users)
-        // if (!empty($this->field_defs[$linkFieldName]['type']) && $this->field_defs[$linkFieldName]['type'] == "id" && !empty($def['link'])) {
-        // check field type
-        $typeIsId = false;
-        if ($this->field_defs[$linkFieldName]['type'] == "id" ||
-            $this->field_defs[$linkFieldName]['dbType'] == "id" ||
-            $this->field_defs[$linkFieldName]['dbtype'] == "id") {
-            $typeIsId = true;
-        }
-        if (!empty($this->field_defs[$linkFieldName]['type']) && $typeIsId && !empty($def['link'])) {
-            $linkFieldName = $def['link'];
-        }
+        /**
+         * CR1001802 none of it is most likely necessary.
+         */
 
-        // ToDo Check why the above was added
-        if($def['link']) $linkFieldName = $def['link'];
+//        $idField = $linkFieldName;
+//        //If the id_name provided really was an ID, don't try to load it as a link. Use the normal link
+//        // CR1000476: remove check on type shall be id. Not always the case (see companycode_id in Users)
+//        // if (!empty($this->field_defs[$linkFieldName]['type']) && $this->field_defs[$linkFieldName]['type'] == "id" && !empty($def['link'])) {
+//        // check field type
+//        $typeIsId = false;
+//        if ($this->field_defs[$linkFieldName]['type'] == "id" ||
+//            $this->field_defs[$linkFieldName]['dbType'] == "id" ||
+//            $this->field_defs[$linkFieldName]['dbtype'] == "id") {
+//            $typeIsId = true;
+//        }
+//        if (!empty($this->field_defs[$linkFieldName]['type']) && $typeIsId && !empty($def['link'])) {
+//            $linkFieldName = $def['link'];
+//        }
+//
+//        // ToDo Check why the above was added
+//        if($def['link']) {
+//            $linkFieldName = $def['link'];
+//        }
 
         if ($this->load_relationship($linkFieldName)) {
             $list = $this->$linkFieldName->get();
