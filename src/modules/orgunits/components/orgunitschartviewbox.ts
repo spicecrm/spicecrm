@@ -55,6 +55,23 @@ export class OrgunitsChartViewBox implements OnInit,AfterViewInit{
     }
 
     /**
+     * sets custom color styles
+     */
+    get colorStyle(){
+        let styles: any = {};
+
+        if(this.model.getField('color_bg')){
+            styles['background-color'] = this.model.getField('color_bg');
+        }
+
+        if(this.model.getField('color_tx')){
+            styles.color = this.model.getField('color_tx');
+        }
+
+        return styles;
+    }
+
+    /**
      * check if the unit has staff units and the reduce the bottom margin
      */
     get hasStaff(){
