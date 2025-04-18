@@ -81,3 +81,7 @@
 .ck.ck-list__item .ck-button.ck-on:hover:not(.ck-disabled), .ck.ck-list__item .ck-button.ck-on {
     background: var(--brand-primary) !important;
 }
+
+.spice-document-editor .dropDownMenu {
+    max-width: 250px !important;
+}
