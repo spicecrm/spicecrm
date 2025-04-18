@@ -1,0 +1,13 @@
+<div class="slds-box slds-box--border slds-m-around--x-small slds-is-relative" [ngClass]="{'slds-theme--alert-texture': process.alert_texture}" [ngStyle]="processStyle">
+    <div class="slds-p-vertical--x-small slds-p-horizontal--small">
+        <field-container field="name" [fieldconfig]="{link: true}" fielddisplayclass="slds-p-verical--small"/>
+    </div>
+    @if (process.remark) {
+        <div class="slds-is-absolute slds-text-color_success" style="top:1px; right: 3px;font-size: 8px; font-weight: bold; text-transform: uppercase;" [ngStyle]="processRemarkStyle">
+            {{process.remark}}
+        </div>
+    }
+    @if (process.isexternal) {
+        <div class="slds-is-absolute slds-theme--warning" system-title="LBL_EXTERNAL" style="top:3px; left: 3px; height: 6px; width: 6px; border-radius: 3px"></div>
+    }
+</div>
