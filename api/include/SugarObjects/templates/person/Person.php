@@ -260,9 +260,11 @@ class Person extends SpiceBean
 
     /**
      * Generate VCARD content
-     * @return $content
+     * @return string $content
+     * @throws \Exception
      */
-    public function getVCardContent() {
+    public function getVCardContent(): string
+    {
         global $app_list_strings;
 
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
@@ -275,15 +277,17 @@ class Person extends SpiceBean
         $content .= $this->email1 && $this->email1 != "" ? "EMAIL;TYPE=INTERNET:{$this->email1}\n" : "";
         $content .= $this->account_name && $this->account_name != "" ? "ORG:{$this->account_name}\n" : "";
         $content .= $this->phone_work && $this->phone_work != "" ? "TEL;TYPE=WORK:{$this->phone_work}\n" : "";
+        $content .= $this->phone_fax && $this->phone_fax != "" ? "TEL;TYPE=WORK;TYPE=FAX:{$this->phone_fax}\n" : "";
         $content .= $this->phone_home && $this->phone_home != "" ? "TEL;TYPE=HOME:{$this->phone_home}\n" : "";
         $content .= $this->phone_mobile && $this->phone_mobile != "" ? "TEL;TYPE=CELL:{$this->phone_mobile}\n" : "";
         $content .= $this->phone_other && $this->phone_other != "" ? "TEL:{$this->phone_other}\n" : "";
         $title = $app_list_strings && $app_list_strings['contacts_title_dom'] ? $app_list_strings['contacts_title_dom'][$this->title_dd] : null;
         $content .= $title && $title != "" ? "TITLE:{$title}\n" : "";
         $content .= "ADR:;";
+        $content .= ";";
         $content .= $this->primary_address_street && $this->primary_address_street != "" ? "{$this->primary_address_street};" : ';';
         $content .= $this->primary_address_city && $this->primary_address_city != "" ? "{$this->primary_address_city};" : ';';
-        $content .= $this->primary_address_state && $this->primary_address_state != "" ? "{$this->primary_address_state};" : ';';
+        $content .= ";";
         $content .= $this->primary_address_postalcode && $this->primary_address_postalcode != "" ? "{$this->primary_address_postalcode};" : ';';
         $content .= $this->primary_address_country && $this->primary_address_country != "" ? "{$this->primary_address_country}" : '';
         $content .= "\nEND:VCARD";
