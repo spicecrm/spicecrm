@@ -23,7 +23,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'getCampaignTaskItems',
         'description' => 'get campaign tasks defined for a specific campaign',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id' => [
                 'in' => 'path',
@@ -52,7 +52,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'getCampaignTaskStats',
         'description' => 'return stats on the campaign log for a campagntask',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id' => [
                 'in' => 'path',
@@ -68,7 +68,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'activateCampaignTask',
         'description' => 'delete old campaign logs and activate campaign task by inserting new ones (prospect lists of type test will be ignored)',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id'    => [
                 'in'          => 'path',
@@ -82,7 +82,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'activateEventTask',
         'description' => 'delete old campaign logs and activate campaign task by inserting new ones (prospect lists of type test will be ignored)',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id'    => [
                 'in'          => 'path',
@@ -97,7 +97,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'getTargetCount',
         'description' => 'returns the number of targets via linked target lists',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id'    => [
                 'in'          => 'path',
@@ -112,7 +112,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'mailmergeCampaignTask',
         'description' => 'genereate a PDF for a mailmerge campaign',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id'    => [
                 'in'          => 'path',
@@ -138,7 +138,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'sendCampaignTaskTestEmail',
         'description' => 'send a test mail for campaign task',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id'    => [
                 'in'          => 'path',
@@ -154,7 +154,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'queueCampaignTaskEmail',
         'description' => '',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id'    => [
                 'in'          => 'path',
@@ -170,7 +170,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'liveCompileEmailBody',
         'description' => '',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id' => [
                 'in' => 'path',
@@ -180,7 +180,7 @@ $routes = [
             'module' => [
                 'in' => 'path',
                 'type' => ValidationMiddleware::TYPE_ENUM,
-                'options' => ['CampaignTasks', 'Newsletters'],
+                'options' => ['CampaignTasks', 'Newsletters', 'NewsletterIssues'],
                 'description' => 'name of parent module',
                 'example' => 'Accounts',
                 'required' => true
@@ -212,6 +212,12 @@ $routes = [
                 'description' => 'html field',
                 'example' => '',
                 'required' => false
+            ],
+            'stylesheet_id' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'description' => 'the ID of a stylesheet to be applied',
+                'required' => false
             ]
         ]
     ],
@@ -221,7 +227,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'getExportReports',
         'description' => 'get all reports based on CampaignTasks module',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['validate' => true],
     ],
     [
         'method'      => 'get',
@@ -319,7 +325,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'deactivateCampaignTask',
         'description' => 'delete old campaign logs and set activated flag to false',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id'    => [
                 'in'          => 'path',
@@ -334,7 +340,7 @@ $routes = [
         'class' => CampaignTasksController::class,
         'function' => 'deleteCampaignTask',
         'description' => 'delete campaign task with its campaignlogs',
-        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options' => ['validate' => true],
         'parameters' => [
             'campaignTaskId' => [
                 'in' => 'path',
