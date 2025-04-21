@@ -165,7 +165,7 @@ $routes = [
     ],
     [
         'method'      => 'post',
-        'route'       => '/module/CampaignTasks/{id}/livecompile/{parentmodule}/{parentid}',
+        'route'       => '/module/{module}/{id}/livecompile/{parentmodule}/{parentid}',
         'oldroute'    => '/CampaignTasks/liveCompile/{module}/{parent}',
         'class'       => CampaignTasksController::class,
         'function'    => 'liveCompileEmailBody',
@@ -176,6 +176,14 @@ $routes = [
                 'in' => 'path',
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'description' => ''
+            ],
+            'module' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_ENUM,
+                'options' => ['CampaignTasks', 'Newsletters'],
+                'description' => 'name of parent module',
+                'example' => 'Accounts',
+                'required' => true
             ],
             'parentmodule' => [
                 'in' => 'path',
