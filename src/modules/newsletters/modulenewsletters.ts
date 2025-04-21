@@ -13,6 +13,7 @@ import {DirectivesModule} from "../../directives/directives";
 import {NewsletterIssueCreateNewButton} from "./components/newsletterissuecreatenewbutton";
 import {NewsletterIssueSendMailButton} from "./components/newsletterissuesendmailbutton";
 import {NewsletterIssueSendTestEmailButton} from "./components/newsletterissuesendtestemailbutton";
+import {NewsletterIssueSendSeedEmailButton} from "./components/newsletterissuesendseedemailbutton";
 
 @NgModule({
     imports: [
@@ -27,7 +28,8 @@ import {NewsletterIssueSendTestEmailButton} from "./components/newsletterissuese
     declarations: [
         NewsletterIssueCreateNewButton,
         NewsletterIssueSendMailButton,
-        NewsletterIssueSendTestEmailButton
+        NewsletterIssueSendTestEmailButton,
+        NewsletterIssueSendSeedEmailButton
     ]
 })
 export class ModuleNewsletters {}
