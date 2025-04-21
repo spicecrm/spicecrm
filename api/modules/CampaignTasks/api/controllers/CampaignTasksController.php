@@ -380,7 +380,11 @@ class CampaignTasksController
         $emailTemplate->body_html = $params['html'];
         $bean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
 
-        $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
+        $campaignTask = BeanFactory::getBean($args['module'], $args['id']);
+
+        if(!$campaignTask){
+            throw new NotFoundException("record for {$args['module']} with ID {$args['id']} not found");
+        }
 
         # set the current user to the one assigned to the task. fallback set the admin user
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
