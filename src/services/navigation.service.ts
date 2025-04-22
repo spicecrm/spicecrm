@@ -785,9 +785,6 @@ export class navigation {
             if (this.layout.screenwidth == 'small') this.objectTabs = [];
 
             for (let objectTab of this.objectTabs) {
-
-                if (this.activeTab != objectTab.id) continue;
-
                 if (this.matchPath(objectTab, routeData) && this.matchRouteParams(objectTab, routeParams)) {
                     // set the path since the path might be changed dues to the reference path of routes for the tabbed navigation
                     // but do not change it when the only difference is the tabid
