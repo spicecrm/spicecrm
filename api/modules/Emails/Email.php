@@ -899,15 +899,26 @@ class Email extends SpiceBean
      */
     private function generateTrackingPixel()
     {
-        $data = $this->_module . ':' . $this->id;
-        $this->body .= '<img src="' . EmailTracking::getTrackingPixelSrc($data) . '" height="1" width="1">';
+        return '<img style="visibility: hidden;" src="' . EmailTracking::getTrackingPixelSrc($this->_module . ':' . $this->id) . '" height="1" width="1">';
+    }
+
+    /**
+     * @param $trackingurl of the mailbox
+     * generate a tracking pixel DOM Element to be appended to the email
+     */
+    private function generateTrackingPixelDOMElement(DOMDocument $dom)
+    {
+        $img = $dom->createElement('img');
+        $img->setAttribute('style', "visibility: hidden; height: 0px; width: 0px;");
+        $img->setAttribute('src', EmailTracking::getTrackingPixelSrc($this->_module . ':' . $this->id));
+        return $img;
     }
 
     /**
      * search for trackable links and replace them with encrypted crm web hook urls
      * @throws Exception
      */
-    private function replaceEmailTrackingLinks()
+    private function replaceEmailTrackingLinks($trackMailbox)
     {
         $handlingLink = SpiceConfig::getInstance()->get('emailtracking.tracking_clicks_url');
 
@@ -917,9 +928,19 @@ class Email extends SpiceBean
         // boolean flag to see if we made any changes ... otherwise we leave the body untouched
         $tracked = false;
 
+
         // load the document with proper encoding
         $dom = new DOMDocument();
         $dom->loadHTML( '<?xml encoding="utf-8"?>'.$this->body);
+
+        // if we track the mailbox add the tracking pixel
+        if ($trackMailbox) {
+            // $this->body .= $this->generateTrackingPixel();
+            $img = $this->generateTrackingPixelDOMElement($dom);
+            $body = $dom->getElementsByTagName('body')->item(0);
+            $body->appendChild($img);
+            $tracked = true;
+        }
 
         [$parentType, $parentId] = $this->getTrackingParentData();
 
@@ -969,6 +990,8 @@ class Email extends SpiceBean
         if($tracked){
             $this->body = strpos($this->body, '<html>') >= 0 ? $dom->saveHTML($dom->getElementsByTagName('html')->item(0)) : str_replace(['<body>', '</body>'], '', $dom->saveHTML($dom->getElementsByTagName('body')->item(0))); // $dom->saveHTML('body');
         }
+
+
     }
 
     /**
@@ -1027,11 +1050,16 @@ class Email extends SpiceBean
             }
         }
 
-        $this->replaceEmailTrackingLinks();
 
+
+        $this->replaceEmailTrackingLinks($mailbox->track_mailbox);
+
+        /*
         if ($mailbox->track_mailbox) {
             $this->findMarketingActions($mailbox->tracking_url);
         }
+        */
+
         $mailbox->initTransportHandler();
 //        $mailbox->transport_handler->zip_attachments = true;
         $result = $mailbox->transport_handler->sendMail($this);
