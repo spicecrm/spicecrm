@@ -934,6 +934,7 @@ class Email extends SpiceBean
         $dom->loadHTML( '<?xml encoding="utf-8"?>'.$this->body);
 
         // if we track the mailbox add the tracking pixel
+        /*
         if ($trackMailbox) {
             // $this->body .= $this->generateTrackingPixel();
             $img = $this->generateTrackingPixelDOMElement($dom);
@@ -941,6 +942,7 @@ class Email extends SpiceBean
             $body->appendChild($img);
             $tracked = true;
         }
+        */
 
         [$parentType, $parentId] = $this->getTrackingParentData();
 
