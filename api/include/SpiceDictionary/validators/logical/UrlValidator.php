@@ -6,8 +6,9 @@ use SpiceCRM\includes\ErrorHandlers\ValidationException;
 
 class UrlValidator extends LogicalValidator
 {
-    protected function validate(mixed $value, array $definition): void {
-        if (!filter_var($value, FILTER_VALIDATE_URL)) {
+    protected function validate(mixed $value, array $definition): void
+    {
+        if (!filter_var($value, FILTER_VALIDATE_URL) && $value !== "") {
             throw new ValidationException(
                 "Parameter " . $this->getName($definition) . " is not a valid URL",
                 null,
