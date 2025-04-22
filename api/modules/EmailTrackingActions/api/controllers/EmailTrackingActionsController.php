@@ -56,15 +56,14 @@ class EmailTrackingActionsController
     {
         $data = EmailTracking::decodeTrackingID($args['key']);
 
-        if (!$data) {
-            throw new BadRequestException('Failed to decrypt key');
+        if ($data) {
+            $this->logTrackingAction($data, 'opened');
         }
 
-        $this->logTrackingAction($data, 'opened');
-
         // return an image - 1x1 transparent pixel
-        $res->getBody()->write(base64_decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=="));
-        return $res->withHeader('Content-Type', 'image/png');
+        //$res->getBody()->write(base64_decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=="));
+        $res->getBody()->write(base64_decode("R0lGODlhAQABAIAAANvf7wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="));
+        return $res->withHeader('Content-Type', 'image/gif');
     }
 
     /**
@@ -114,7 +113,7 @@ class EmailTrackingActionsController
         if($landingPage && SpiceConfig::getInstance()->get('emailtracking.unsubscribelandingpage') && $landingPage->retrieve(SpiceConfig::getInstance()->get('emailtracking.unsubscribelandingpage'))) {
             $lpContent = $landingPage->parse($seed);
         } else {
-            $lpContent = 'unsubscribed';
+            $lpContent['content'] = 'unsubscribed';
         }
 
 
