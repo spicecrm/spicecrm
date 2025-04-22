@@ -80,11 +80,8 @@ class EmailTracking
      */
     static function getTrackingPixelSrc($trackingData)
     {
-        $url = SpiceConfig::getInstance()->get('emailtracking.tracking_pixel_url');
-        if ($url) {
-            $url = str_replace('{refid}', self::encodeTrackingID($trackingData), $url);
-        }
-        return $url;
+        $url = SpiceConfig::getInstance()->get('emailtracking.tracking_pixel_url') ?: SpiceConfig::getInstance()->config['site_url'] . '/email/o/' . self::encodeTrackingID($trackingData);
+        return str_replace('{refid}', self::encodeTrackingID($trackingData), $url);
     }
 
     /**
