@@ -4,16 +4,17 @@ namespace SpiceCRM\includes\SpiceDictionary\validators\technical;
 
 use DateTime;
 use SpiceCRM\includes\ErrorHandlers\ValidationException;
+use SpiceCRM\includes\TimeDate;
 
-class DateValidator extends TechnicalValidator
+class TimeValidator extends TechnicalValidator
 {
     protected function validate(mixed $value, array $definition): void
     {
-        $date = DateTime::createFromFormat("Y-m-d", $value);
+        $dateTime = DateTime::createFromFormat(TimeDate::DB_TIME_FORMAT, $value);
 
-        if (!$date) {
+        if (!$dateTime) {
             throw new ValidationException(
-                "Parameter " . $this->getName($definition) . " is not a date",
+                "Parameter " . $this->getName($definition) . " is not a valid time",
                 null,
                 $this->getName($definition),
             );
