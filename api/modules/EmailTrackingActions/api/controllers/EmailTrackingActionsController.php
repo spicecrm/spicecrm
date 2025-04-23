@@ -14,6 +14,7 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\CampaignLog\CampaignLog;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
@@ -56,15 +57,14 @@ class EmailTrackingActionsController
     {
         $data = EmailTracking::decodeTrackingID($args['key']);
 
-        if (!$data) {
-            throw new BadRequestException('Failed to decrypt key');
+        if ($data) {
+            $this->logTrackingAction($data, 'opened', false);
         }
 
-        $this->logTrackingAction($data, 'opened');
-
         // return an image - 1x1 transparent pixel
-        $res->getBody()->write(base64_decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=="));
-        return $res->withHeader('Content-Type', 'image/png');
+        //$res->getBody()->write(base64_decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=="));
+        $res->getBody()->write(base64_decode("R0lGODlhAQABAIAAANvf7wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="));
+        return $res->withHeader('Content-Type', 'image/gif');
     }
 
     /**
@@ -114,7 +114,7 @@ class EmailTrackingActionsController
         if($landingPage && SpiceConfig::getInstance()->get('emailtracking.unsubscribelandingpage') && $landingPage->retrieve(SpiceConfig::getInstance()->get('emailtracking.unsubscribelandingpage'))) {
             $lpContent = $landingPage->parse($seed);
         } else {
-            $lpContent = 'unsubscribed';
+            $lpContent['content'] = 'unsubscribed';
         }
 
 
@@ -300,10 +300,10 @@ class EmailTrackingActionsController
      * @param $data
      * @param $action
      */
-    private function logTrackingAction($data, $action)
+    private function logTrackingAction($data, $action, $once = true)
     {
         $trackedAction = BeanFactory::getBean('EmailTrackingActions');
-        if (!$trackedAction->retrieve_by_string_fields(['parent_type' => $data['ParentType'], 'parent_id' => $data['ParentId'], 'action' => $action], true, false)) {
+        if (!$once || !$trackedAction->retrieve_by_string_fields(['parent_type' => $data['ParentType'], 'parent_id' => $data['ParentId'], 'action' => $action], true, false)) {
             $trackedAction = BeanFactory::newBean('EmailTrackingActions');
             $trackedAction->parent_type = $data['ParentType'];
             $trackedAction->parent_id = $data['ParentId'];
@@ -317,13 +317,41 @@ class EmailTrackingActionsController
 
             $trackedAction->save();
 
-            switch ($action) {
-                case 'opened':
-                    // set the email to opened
-                    $seed = BeanFactory::getBean('Emails', $data['Emails']);
-                    $seed->status = 'opened';
-                    $seed->save();
-                    break;
+            if($data['ParentType'] && $data['ParentId']) {
+                switch ($action) {
+                    case 'opened':
+                        // set the email to opened
+                        $seed = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+                        if ($seed) {
+                            switch ($data['ParentType']) {
+                                case 'NewsletterLogs':
+                                case 'CampaignLog':
+                                    $seed->activity_type = 'opened';
+                                    $seed->activity_date = TimeDate::getInstance()->nowDb();
+                                    break;
+                                default;
+                                    $seed->status = 'opened';
+                                    break;
+                            }
+
+                            $seed->save();
+                        }
+                        break;
+                        case 'unsubscribe':
+                        // set the email to opened
+                        $seed = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+                        if ($seed) {
+                            switch ($data['ParentType']) {
+                                case 'NewsletterLogs':
+                                case 'CampaignLog':
+                                    $seed->activity_type = 'unsubscribe';
+                                    $seed->activity_date = TimeDate::getInstance()->nowDb();
+                                    $seed->save();
+                                    break;
+                            }
+                        }
+                        break;
+                }
             }
         }
     }
@@ -448,8 +476,21 @@ class EmailTrackingActionsController
         if (!$data) {
             throw new BadRequestException('Failed to decrypt key');
         }
-        $bean = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
-        $res->getBody()->write($bean->body);
+
+        $body = '';
+        switch ($data['ParentType']) {
+            case 'Emails':
+                $bean = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+                $body = $bean->body;
+                break;
+            case 'CampaignTasks':
+            case 'NewsletterLogs':
+                $bean = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+                $body = $bean->getBody();
+                break;
+        }
+
+        $res->getBody()->write($body);
         return $res->withHeader('Content-Type', 'text/html');
     }
 }
