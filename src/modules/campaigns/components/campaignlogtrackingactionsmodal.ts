@@ -31,6 +31,11 @@ export class CampaignLogTrackingActionsModal implements OnInit{
      */
     public actionEntries: any[] = [];
 
+    /**
+     * indicate if we are loaded
+     */
+    public loaded = false;
+
     constructor(
         public language: language,
         public model: model,
@@ -46,6 +51,7 @@ export class CampaignLogTrackingActionsModal implements OnInit{
     }
 
     public ngOnInit() {
+        let loadingModal = this.modal.await('LBL_LOADING');
         this.backend.getRequest(`module/${this.model.module}/${this.model.id}/related/emailtrackingactions`, {
             module: 'EmailTrackingActions',
             offset: 0,
@@ -58,6 +64,17 @@ export class CampaignLogTrackingActionsModal implements OnInit{
 
                 // sort according to date entered
                 this.actionEntries.sort((a, b) => moment(a.date_entered).isBefore (moment(b.date_entered)) ? 1 : -1);
+
+                loadingModal.emit(true);
+                this.loaded = true;
+                if(this.actionEntries.length == 0){
+                    this.toast.sendToast('LBL_NO_RECORDS_FOUND', 'info');
+                    this.close();
+                }
+            },
+            error: (e) => {
+                this.toast.sendToast('LBL_ERROR_LOADING_RECORDS', 'error');
+                this.close();
             }
         });
     }

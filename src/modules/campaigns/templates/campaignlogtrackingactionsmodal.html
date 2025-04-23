@@ -1,46 +1,63 @@
-<system-modal size="large">
-    <system-modal-header (close)="close()"><system-label label="LBL_DETAILS"/></system-modal-header>
-    <system-modal-content margin="none">
-        <table class="slds-table slds-table_bordered">
-            <thead>
+@if(loaded) {
+    <system-modal size="large">
+        <system-modal-header (close)="close()">
+            <system-label label="LBL_DETAILS"/>
+        </system-modal-header>
+        <system-modal-content margin="none">
+            <table class="slds-table slds-table_bordered">
+                <thead>
                 <tr class="slds-line-height_reset">
                     <th scope="col">
-                        <div class="slds-truncate"><system-label label="LBL_DATE"/></div>
+                        <div class="slds-truncate">
+                            <system-label label="LBL_DATE"/>
+                        </div>
                     </th>
                     <th scope="col">
-                        <div class="slds-truncate"><system-label label="LBL_ACTION"/></div>
+                        <div class="slds-truncate">
+                            <system-label label="LBL_ACTION"/>
+                        </div>
                     </th>
                     <th scope="col">
-                        <div class="slds-truncate"><system-label label="LBL_IPADDRESS"/></div>
+                        <div class="slds-truncate">
+                            <system-label label="LBL_IPADDRESS"/>
+                        </div>
                     </th>
                     <th scope="col">
-                        <div class="slds-truncate"><system-label label="LBL_USER_AGENT"/></div>
+                        <div class="slds-truncate">
+                            <system-label label="LBL_USER_AGENT"/>
+                        </div>
                     </th>
                 </tr>
-            </thead>
-            <tbody>
-                @for (actionEntry of actionEntries; track actionEntry.id) {
-                    <tr class="slds-hint-parent" [system-model-provider]="{module: 'EmailTrackingActions', id: actionEntry.id, data: actionEntry}">
-                        <td>
-                            <field-container field="date_entered" fielddisplayclass="slds-p-around--none"></field-container>
-                        </td>
-                        <td>
-                            <field-container field="action" fielddisplayclass="slds-p-around--none"></field-container>
-                        </td>
-                        <td>
-                            <field-container field="ip_address" fielddisplayclass="slds-p-around--none"></field-container>
-                        </td>
-                        <td>
-                            <field-container field="user_agent" fielddisplayclass="slds-p-around--none"></field-container>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </system-modal-content>
-    <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()">
-            <system-label label="LBL_CLOSE"/>
-        </button>
-    </system-modal-footer>
-</system-modal>
+                </thead>
+                <tbody>
+                    @for (actionEntry of actionEntries; track actionEntry.id) {
+                        <tr class="slds-hint-parent"
+                            [system-model-provider]="{module: 'EmailTrackingActions', id: actionEntry.id, data: actionEntry}">
+                            <td>
+                                <field-container field="date_entered"
+                                                 fielddisplayclass="slds-p-around--none"></field-container>
+                            </td>
+                            <td>
+                                <field-container field="action"
+                                                 fielddisplayclass="slds-p-around--none"></field-container>
+                            </td>
+                            <td>
+                                <field-container field="ip_address"
+                                                 fielddisplayclass="slds-p-around--none"></field-container>
+                            </td>
+                            <td>
+                                <field-container field="user_agent"
+                                                 fielddisplayclass="slds-p-around--none"></field-container>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </system-modal-content>
+        <system-modal-footer>
+            <button class="slds-button slds-button--neutral" (click)="close()">
+                <system-label label="LBL_CLOSE"/>
+            </button>
+        </system-modal-footer>
+    </system-modal>
+}
