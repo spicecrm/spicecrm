@@ -476,8 +476,21 @@ class EmailTrackingActionsController
         if (!$data) {
             throw new BadRequestException('Failed to decrypt key');
         }
-        $bean = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
-        $res->getBody()->write($bean->body);
+
+        $body = '';
+        switch ($data['ParentType']) {
+            case 'Emails':
+                $bean = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+                $body = $bean->body;
+                break;
+            case 'CampaignTasks':
+            case 'NewsletterLogs':
+                $bean = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+                $body = $bean->getBody();
+                break;
+        }
+
+        $res->getBody()->write($body);
         return $res->withHeader('Content-Type', 'text/html');
     }
 }
