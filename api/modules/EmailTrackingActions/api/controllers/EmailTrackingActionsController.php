@@ -57,7 +57,7 @@ class EmailTrackingActionsController
         $data = EmailTracking::decodeTrackingID($args['key']);
 
         if ($data) {
-            $this->logTrackingAction($data, 'opened');
+            $this->logTrackingAction($data, 'opened', false);
         }
 
         // return an image - 1x1 transparent pixel
@@ -299,10 +299,10 @@ class EmailTrackingActionsController
      * @param $data
      * @param $action
      */
-    private function logTrackingAction($data, $action)
+    private function logTrackingAction($data, $action, $once = true)
     {
         $trackedAction = BeanFactory::getBean('EmailTrackingActions');
-        if (!$trackedAction->retrieve_by_string_fields(['parent_type' => $data['ParentType'], 'parent_id' => $data['ParentId'], 'action' => $action], true, false)) {
+        if (!$once || !$trackedAction->retrieve_by_string_fields(['parent_type' => $data['ParentType'], 'parent_id' => $data['ParentId'], 'action' => $action], true, false)) {
             $trackedAction = BeanFactory::newBean('EmailTrackingActions');
             $trackedAction->parent_type = $data['ParentType'];
             $trackedAction->parent_id = $data['ParentId'];
