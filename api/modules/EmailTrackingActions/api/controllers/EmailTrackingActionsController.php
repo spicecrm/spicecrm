@@ -316,13 +316,17 @@ class EmailTrackingActionsController
 
             $trackedAction->save();
 
-            switch ($action) {
-                case 'opened':
-                    // set the email to opened
-                    $seed = BeanFactory::getBean('Emails', $data['Emails']);
-                    $seed->status = 'opened';
-                    $seed->save();
-                    break;
+            if($data['ParentType'] && $data['ParentId']) {
+                switch ($action) {
+                    case 'opened':
+                        // set the email to opened
+                        $seed = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+                        if ($seed) {
+                            $seed->status = 'opened';
+                            $seed->save();
+                        }
+                        break;
+                }
             }
         }
     }
