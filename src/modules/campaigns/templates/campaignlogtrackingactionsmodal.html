@@ -20,7 +20,7 @@
             </thead>
             <tbody>
                 @for (actionEntry of actionEntries; track actionEntry.id) {
-                    <tr class="slds-hint-parent" [system-model-provider]="{module: 'EmailTrackinActions', id: actionEntry.id, data: actionEntry}">
+                    <tr class="slds-hint-parent" [system-model-provider]="{module: 'EmailTrackingActions', id: actionEntry.id, data: actionEntry}">
                         <td>
                             <field-container field="date_entered" fielddisplayclass="slds-p-around--none"></field-container>
                         </td>

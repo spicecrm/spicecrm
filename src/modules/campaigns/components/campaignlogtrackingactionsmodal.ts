@@ -55,6 +55,9 @@ export class CampaignLogTrackingActionsModal implements OnInit{
                 for(let id in res){
                     this.actionEntries.push(res[id]);
                 }
+
+                // sort according to date entered
+                this.actionEntries.sort((a, b) => moment(a.date_entered).isBefore (moment(b.date_entered)) ? 1 : -1);
             }
         });
     }
