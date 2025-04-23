@@ -38,7 +38,9 @@ namespace SpiceCRM\modules\CampaignLog;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
+use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 
 
 class CampaignLog extends SpiceBean {
@@ -76,5 +78,37 @@ class CampaignLog extends SpiceBean {
 
             break;
         }
+    }
+
+    /**
+     * rendewrs the content dynamically
+     *
+     * @return mixed
+     */
+    public function getBody(){
+        // get the seed
+        $seed = BeanFactory::getBean($this->target_type, $this->target_id);
+
+        /** @var EmailTemplate $emailTemplate */
+        $emailTemplate = BeanFactory::getBean('EmailTemplates');
+        $campaignTask= BeanFactory::getBean('CampaignTasks', $this->campaigntask_id);
+        if(!empty($campaignTask->email_template_id)){
+            $emailTemplate->retrieve($campaignTask->email_template_id);
+        } else {
+            $emailTemplate->subject = $campaignTask->email_subject;
+            $emailTemplate->body_html = $campaignTask->email_body;
+            $emailTemplate->style = $campaignTask->email_stylesheet_id;
+        }
+
+        $email = BeanFactory::getBean('Emails');
+        $mailbox = BeanFactory::getBean('Mailboxes', $campaignTask->mailbox_id);
+        $email->id = SpiceUtils::createGuid();
+        $email->new_with_id = true;
+
+        $addBeans['Emails'] = $email;
+
+        $parsedContent = $emailTemplate->parse($seed, ['campaignTask' => $this->id], $addBeans);
+
+        return $parsedContent['body_html'];
     }
 }
