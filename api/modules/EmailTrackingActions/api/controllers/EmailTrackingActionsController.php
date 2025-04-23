@@ -337,6 +337,20 @@ class EmailTrackingActionsController
                             $seed->save();
                         }
                         break;
+                        case 'unsubscribe':
+                        // set the email to opened
+                        $seed = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+                        if ($seed) {
+                            switch ($data['ParentType']) {
+                                case 'NewsletterLogs':
+                                case 'CampaignLog':
+                                    $seed->activity_type = 'unsubscribe';
+                                    $seed->activity_date = TimeDate::getInstance()->nowDb();
+                                    $seed->save();
+                                    break;
+                            }
+                        }
+                        break;
                 }
             }
         }
