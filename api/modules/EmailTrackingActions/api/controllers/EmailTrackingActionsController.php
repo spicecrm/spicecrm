@@ -14,6 +14,7 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\CampaignLog\CampaignLog;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
@@ -325,7 +326,8 @@ class EmailTrackingActionsController
                             switch ($data['ParentType']) {
                                 case 'NewsletterLogs':
                                 case 'CampaignLog':
-                                    $seed->activty_type = 'opened';
+                                    $seed->activity_type = 'opened';
+                                    $seed->activity_date = TimeDate::getInstance()->nowDb();
                                     break;
                                 default;
                                     $seed->status = 'opened';
