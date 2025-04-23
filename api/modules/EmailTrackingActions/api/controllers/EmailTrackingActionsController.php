@@ -322,7 +322,16 @@ class EmailTrackingActionsController
                         // set the email to opened
                         $seed = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
                         if ($seed) {
-                            $seed->status = 'opened';
+                            switch ($data['ParentType']) {
+                                case 'NewsletterLogs':
+                                case 'CampaignLog':
+                                    $seed->activty_type = 'opened';
+                                    break;
+                                default;
+                                    $seed->status = 'opened';
+                                    break;
+                            }
+
                             $seed->save();
                         }
                         break;
