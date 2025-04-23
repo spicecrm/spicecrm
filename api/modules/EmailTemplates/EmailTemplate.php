@@ -67,7 +67,7 @@ class EmailTemplate extends SpiceBean {
 	}
 
 
-    function parse( $bean, $additionalValues = null, $additionalBeans = [], $additionalStyles = [] ){
+    function parse( $bean, $additionalValues = null, $additionalBeans = [], $additionalStyles = [], $addtionalHeadItems = [] ){
         global $app_list_strings;
         $app_list_strings = SpiceUtils::returnAppListStringsLanguage($this->language);
 
@@ -76,7 +76,7 @@ class EmailTemplate extends SpiceBean {
         $retArray = [
             'subject' => $this->parsePlainTextField('subject', $bean, $additionalValues ),
             'body' => $this->parseHTMLTextField('body', $bean, $additionalValues, $additionalBeans, $additionalStyles ),
-            'body_html' => $this->parseHTMLTextField('body_html', $bean, $additionalValues, $additionalBeans, $additionalStyles ),
+            'body_html' => $this->parseHTMLTextField('body_html', $bean, $additionalValues, $additionalBeans, $additionalStyles, $addtionalHeadItems ),
             'attachments' => array_merge($this->getAttachmentsWithFiles(), $pdfFiles)
         ];
         $retArray['subject'] = preg_replace('#\s+#', ' ', trim( $retArray['subject'] )); // multiple white spaces -> one
@@ -151,11 +151,11 @@ class EmailTemplate extends SpiceBean {
     }
 
 
-    public function parseHTMLTextField( $field, $parentbean = null, $additionalValues = null, $additionalBeans = [], $additionalStyles = [] )
+    public function parseHTMLTextField( $field, $parentbean = null, $additionalValues = null, $additionalBeans = [], $additionalStyles = [], $addtionalHeadItems = [] )
     {
         $templateCompiler = new Compiler($this);
         $templateCompiler->idsOfParentTemplates = array_merge( $this->idsOfParentTemplates, [$this->id] );
-        $html = $templateCompiler->compile($this->$field, $parentbean, $this->language, $additionalValues, $additionalBeans, [...$additionalStyles, $this->style]);
+        $html = $templateCompiler->compile($this->$field, $parentbean, $this->language, $additionalValues, $additionalBeans, [...$additionalStyles, $this->style], false, $addtionalHeadItems);
         return html_entity_decode($html);
     }
 
