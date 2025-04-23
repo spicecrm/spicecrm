@@ -91,7 +91,7 @@ export class EmailSchedulesRelatedModal {
                         recipient_addresses: [],
                         reference_id: this.referencedEmail.id,
                         name: emailTexts.name,
-                        body: emailTexts.body
+                        email_body: emailTexts.body
                     });
                 }
             });
