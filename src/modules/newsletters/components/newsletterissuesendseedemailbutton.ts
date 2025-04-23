@@ -20,6 +20,27 @@ export class NewsletterIssueSendSeedEmailButton {
         return !this.model.getField('newsletter_linked')?.placement_seed_prospectlist_id;
     }
 
+    /**
+     * handle the disabled status
+     */
+    get disabled() {
+
+        // not if activated already
+        if (this.model.getField('activated')) {
+            return true;
+            return;
+        }
+
+        // not if not allowed to edit
+        if (!this.model.checkAccess('edit')) {
+            return true;
+            return;
+        }
+
+        // not if editing
+        return this.model.isEditing;
+    }
+
     public execute() {
 
         let loading = this.modal.await('LBL_SENDING');

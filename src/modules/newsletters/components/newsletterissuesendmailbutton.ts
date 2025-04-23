@@ -16,7 +16,7 @@ import {Subscription} from "rxjs";
 export class NewsletterIssueSendMailButton {
 
     public sending: boolean = false;
-    public disabled: boolean = false;
+
     /**
      * holds the rxjs subscriptions
      * @private
@@ -72,36 +72,22 @@ export class NewsletterIssueSendMailButton {
     /**
      * handle the disabled status
      */
-    public handleDisabled() {
+    get disabled() {
 
         // not if activated already
         if (this.model.getField('activated')) {
-            this.disabled = true;
+            return true;
             return;
         }
 
-        // not if editing
+        // not if not allowed to edit
         if (!this.model.checkAccess('edit')) {
-            this.disabled = true;
+            return true;
             return;
         }
-
-        // mailrelais is set
-        if (!this.model.getField('mailbox_id')) {
-            this.disabled = true;
-            return;
-        }
-
-        // template is set is set
-        /*
-        if (!this.model.data.email_template_id) {
-            this.disabled = true;
-            return;
-        }
-        */
 
         // not if editing
-        this.disabled = this.model.isEditing;
+        return this.model.isEditing;
     }
 
     /**
