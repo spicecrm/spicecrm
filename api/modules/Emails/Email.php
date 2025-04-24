@@ -922,6 +922,11 @@ class Email extends SpiceBean
     {
         $handlingLink = SpiceConfig::getInstance()->get('emailtracking.tracking_clicks_url');
 
+        // set the default handlink link
+        if(!$handlingLink){
+            $handlingLink = SpiceConfig::getInstance()->config['site_url'] . '/email/t/{refid}';
+        }
+
         // removed to always parese the email
         // if (!$handlingLink) return;
 
