@@ -637,9 +637,9 @@ export class navigation {
         let modelIndex = this.modelregister.findIndex(m => m.id == id);
         if (modelIndex >= 0) {
             let module = this.modelregister[modelIndex].model.module;
-            let id = this.modelregister[modelIndex].model.id;
-            if (this.modelregister.filter(m => m.id != id && m.model.module == module && m.model.id == id).length == 0) {
-                this.socket.leaveRoom('module', Md5.hashStr(`${module}:${id}`).toString());
+            let modelid = this.modelregister[modelIndex].model.id;
+            if (this.modelregister.filter(m => m.id != id && m.model.module == module && m.model.id == modelid).length == 0) {
+                this.socket.leaveRoom('module', Md5.hashStr(`${module}:${modelid}`).toString());
             }
             this.modelregister.splice(modelIndex, 1);
         }
@@ -1000,7 +1000,8 @@ export class navigation {
             // tslint:disable:no-conditional-assignment
             let modelIndex = -1;
             while ((modelIndex = this.modelregister.findIndex(model => model.tabid == tabid)) >= 0) {
-                this.modelregister.splice(modelIndex, 1);
+                //this.modelregister.splice(modelIndex, 1);
+                this.unregisterModel(this.modelregister[modelIndex].id)
             }
 
             // find any tab that has the id as a parent id
@@ -1015,7 +1016,7 @@ export class navigation {
                     // tslint:disable:no-conditional-assignment
                     let modelIndex = -1;
                     while ((modelIndex = this.modelregister.findIndex(model => model.tabid == tabid)) >= 0) {
-                        this.modelregister.splice(modelIndex, 1);
+                        this.unregisterModel(this.modelregister[modelIndex].id)
                     }
                 }
                 index--;
