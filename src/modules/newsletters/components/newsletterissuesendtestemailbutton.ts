@@ -41,7 +41,7 @@ export class NewsletterIssueSendTestEmailButton {
     get disabled() {
 
         // not if activated already
-        if (this.model.getField('activated')) {
+        if (!this.model.getField('status') || this.model.getField('status') != 'planned') {
             return true;
             return;
         }

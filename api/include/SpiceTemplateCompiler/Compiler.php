@@ -107,7 +107,7 @@ class Compiler
      */
     public $idsOfParentTemplates = [];
 
-    public function compile($txt, $bean = null, $lang = null, array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null, $bodyContentOnly = false)
+    public function compile($txt, $bean = null, $lang = null, array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null, $bodyContentOnly = false, $headItems = [])
     {
         $this->additionalValues = $additionalValues;
         $this->lang = empty( $lang ) ? AuthenticationController::getInstance()->getCurrentUser()?->getPreference('language') : $lang;
@@ -148,6 +148,10 @@ class Compiler
             $additionalStyleId = !$additionalStyleId ? [] : [$additionalStyleId];
         }
 
+        // add additonal Head Items
+        foreach ($headItems as $headItem) $this->addHeadItem($headItem);
+
+        // add addtional style items
         foreach ($additionalStyleId as $id) $this->addStyleTag($id);
 
         if ($bodyContentOnly) {
@@ -186,6 +190,35 @@ class Compiler
         $styleElement->appendChild($typeAttr);
 
         $head->appendChild($styleElement);
+    }
+
+    /**
+     * add attributes to the header
+     *
+     * headitem needs to have type and optional content
+     * and an array of attributes
+     *
+     * @return void
+     * @throws \Exception
+     */
+    private function addHeadItem($headItem): void
+    {
+
+        $head = $this->root->getElementsByTagName('head')[0];
+
+        if (!$head) {
+            $head = $this->doc->createElement('head');
+            $this->doc->appendChild($head);
+        }
+
+        $headElement = $this->doc->createElement($headItem['type'], html_entity_decode($headItem['content'], ENT_QUOTES));
+        foreach ($headItem['attrs'] as $attrName => $attrValue) {
+            $addAttr = $this->doc->createAttribute($attrName);
+            $addAttr->value = $attrValue;
+            $headElement->appendChild($addAttr);
+        }
+
+        $head->appendChild($headElement);
     }
 
     /**

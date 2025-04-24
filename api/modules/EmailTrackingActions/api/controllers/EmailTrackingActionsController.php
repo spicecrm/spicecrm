@@ -39,7 +39,7 @@ class EmailTrackingActionsController
         }
 
         $trackingLink = BeanFactory::getBean('EmailTrackingLinks', $data['EmailTrackingLinks']);
-        $this->logTrackingAction($data, 'clicked');
+        $this->logTrackingAction($data, 'link', false);
 
         return $res->withHeader('Location', $trackingLink->url)
             ->withStatus(302);
@@ -111,7 +111,7 @@ class EmailTrackingActionsController
         // load the unsub landingpage content
         /** @var LandingPage $landingPage */
         $landingPage = BeanFactory::getBean('LandingPages', SpiceConfig::getInstance()->get('emailtracking.unsubscribelandingpage'));
-        if($landingPage && SpiceConfig::getInstance()->get('emailtracking.unsubscribelandingpage') && $landingPage->retrieve(SpiceConfig::getInstance()->get('emailtracking.unsubscribelandingpage'))) {
+        if ($landingPage && SpiceConfig::getInstance()->get('emailtracking.unsubscribelandingpage') && $landingPage->retrieve(SpiceConfig::getInstance()->get('emailtracking.unsubscribelandingpage'))) {
             $lpContent = $landingPage->parse($seed);
         } else {
             $lpContent['content'] = 'unsubscribed';
@@ -209,7 +209,7 @@ class EmailTrackingActionsController
 
     public function setEmailOptinStatus($bean, string $status): bool
     {
-        if($bean->_module === 'Emails'){
+        if ($bean->_module === 'Emails') {
             $recipient = BeanFactory::getBean($bean->parent_type, $bean->parent_id);
             $emailAddresses = $recipient->get_linked_beans('email_addresses');
             foreach ($emailAddresses as $address) {
@@ -223,8 +223,7 @@ class EmailTrackingActionsController
                     }
                 }
             }
-        }
-        elseif($bean->_module === 'CampaignLog' || $bean->_module === 'NewsletterLogs'){
+        } elseif ($bean->_module === 'CampaignLog' || $bean->_module === 'NewsletterLogs') {
             $recipient = BeanFactory::getBean($bean->target_type, $bean->target_id);
             $recipient->load_relationship('email_addresses');
             $emailAddress = $this->getEmailAddress($recipient, $bean->email_addr_bean_rel_id);
@@ -237,13 +236,13 @@ class EmailTrackingActionsController
         return true;
     }
 
-    public function unsubscribeFromNewsletters($seed){
+    public function unsubscribeFromNewsletters($seed)
+    {
 
         $newsletter = BeanFactory::getBean('Newsletters');
-        if($seed->_module === 'Emails') {
+        if ($seed->_module === 'Emails') {
             $recipient = BeanFactory::getBean($seed->parent_type, $seed->parent_id);
-        }
-        elseif($seed->_module === 'CampaignLog' || $seed->_module === 'NewsletterLogs'){
+        } elseif ($seed->_module === 'CampaignLog' || $seed->_module === 'NewsletterLogs') {
             $recipient = BeanFactory::getBean($seed->target_type, $seed->target_id);
         }
         $newsletter->unsubscribeTargetFromAllNewsletters($recipient->id);
@@ -255,7 +254,7 @@ class EmailTrackingActionsController
 //        $emailAddrBeanRelId = $db->getOne("SELECT email_addr_bean_rel_id from prospect_lists_prospects WHERE prospect_list_id = '$listId' AND related_id ='$person->id' AND deleted = 0");
 
         // fallback
-        if(empty($emailAddrBeanRelId)) {
+        if (empty($emailAddrBeanRelId)) {
             return !$person->email1 ? null : BeanFactory::newBean('EmailAddresses')->retrieve_by_string_fields(['email_address' => $person->email1]);
         }
 
@@ -264,6 +263,7 @@ class EmailTrackingActionsController
 
         return BeanFactory::getBean('EmailAddresses', $row['email_address_id']);
     }
+
     /**
      * sets the optin status of a recipient's email address to opted out
      * @param $email SpiceBean
@@ -317,38 +317,27 @@ class EmailTrackingActionsController
 
             $trackedAction->save();
 
-            if($data['ParentType'] && $data['ParentId']) {
+            if ($data['ParentType'] && $data['ParentId']) {
                 switch ($action) {
                     case 'opened':
+                    case 'clicked':
+                    case 'link':
+                    case 'unsubscribe':
                         // set the email to opened
                         $seed = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
                         if ($seed) {
                             switch ($data['ParentType']) {
                                 case 'NewsletterLogs':
                                 case 'CampaignLog':
-                                    $seed->activity_type = 'opened';
+                                    $seed->activity_type = $action;
                                     $seed->activity_date = TimeDate::getInstance()->nowDb();
                                     break;
                                 default;
-                                    $seed->status = 'opened';
+                                    $seed->status = $action;
                                     break;
                             }
 
                             $seed->save();
-                        }
-                        break;
-                        case 'unsubscribe':
-                        // set the email to opened
-                        $seed = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
-                        if ($seed) {
-                            switch ($data['ParentType']) {
-                                case 'NewsletterLogs':
-                                case 'CampaignLog':
-                                    $seed->activity_type = 'unsubscribe';
-                                    $seed->activity_date = TimeDate::getInstance()->nowDb();
-                                    $seed->save();
-                                    break;
-                            }
                         }
                         break;
                 }
@@ -393,7 +382,7 @@ class EmailTrackingActionsController
         }
 
         // get the email seed
-        /** @var Email | CampaignLog  $seed */
+        /** @var Email | CampaignLog $seed */
         $seed = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
 
         $this->setEmailToOptedIn($seed);
@@ -476,8 +465,21 @@ class EmailTrackingActionsController
         if (!$data) {
             throw new BadRequestException('Failed to decrypt key');
         }
-        $bean = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
-        $res->getBody()->write($bean->body);
+
+        $body = '';
+        switch ($data['ParentType']) {
+            case 'Emails':
+                $bean = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+                $body = $bean->body;
+                break;
+            case 'CampaignTasks':
+            case 'NewsletterLogs':
+                $bean = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+                $body = $bean->getBody();
+                break;
+        }
+
+        $res->getBody()->write($body);
         return $res->withHeader('Content-Type', 'text/html');
     }
 }
