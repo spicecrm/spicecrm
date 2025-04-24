@@ -16,7 +16,7 @@ class EmailTrackingLink extends SpiceBean
     /**
      * transforms the basic link into a encryptionkey encrypted tracked link
      */
-    static function transformEmailTrackingLinks($parentType, $parentId, $trackingId, string $handlingLink)
+    static function transformEmailTrackingLinks($parentType, $parentId, $trackingId, $handlingLink)
     {
         $key = SpiceConfig::getInstance()->get('emailtracking.encryptionkey') ?? SpiceConfig::getInstance()->config['unique_key'];
         $method = 'DES-EDE3-CBC';
