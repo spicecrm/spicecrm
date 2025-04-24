@@ -7,7 +7,6 @@ import {toast} from '../../../services/toast.service';
 import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
 import {modal} from "../../../services/modal.service";
-import {Subscription} from "rxjs";
 
 @Component({
     selector: 'newsletter-issue-send-mail-button',
@@ -15,59 +14,12 @@ import {Subscription} from "rxjs";
 })
 export class NewsletterIssueSendMailButton {
 
-    public sending: boolean = false;
-
-    /**
-     * holds the rxjs subscriptions
-     * @private
-     */
-    private subscriptions = new Subscription();
-
     constructor(public language: language,
                 public model: model,
                 public backend: backend,
                 public toast: toast,
                 public modal: modal) {
-        // this.subscriptions.add(
-        //     this.model.mode$.subscribe(mode => {
-        //         this.handleDisabled();
-        //     })
-        // );
-        //
-        // this.subscriptions.add(
-        //     this.model.data$.subscribe(data => {
-        //         this.handleDisabled();
-        //     })
-        // );
     }
-
-    /**
-     * sends emails to que
-     * writes campaign_log entry in the backend
-     */
-    public execute() {
-        let loading = this.modal.await('LBL_SENDING');
-
-        if (!this.sending) {
-            this.sending = true;
-            this.backend.postRequest(`module/NewsletterIssues/${this.model.id}/queue`).subscribe({
-                next: () => {
-                    this.sending = false;
-                    loading.emit(true);
-                    loading.complete();
-                    this.model.getData();
-                    this.model.broadcast.broadcastMessage('relatedmodels.reload', {module: 'NewsletterLogs'});
-                    this.toast.sendToast(this.language.getLabel("LBL_QUEUED"));
-                }, error: err => {
-                    this.sending = false;
-                    loading.emit(true);
-                    loading.complete();
-                    this.toast.sendToast(err.error.error?.lbl, 'error');
-                }
-            });
-        }
-    }
-
 
     /**
      * handle the disabled status
@@ -75,7 +27,7 @@ export class NewsletterIssueSendMailButton {
     get disabled() {
 
         // not if activated already
-        if (this.model.getField('activated')) {
+        if (!this.model.getField('status') || this.model.getField('status') != 'planned') {
             return true;
             return;
         }
@@ -91,9 +43,31 @@ export class NewsletterIssueSendMailButton {
     }
 
     /**
-     * unsubscribe from rxjs subscriptions
+     * sends emails to que
+     * writes campaign_log entry in the backend
      */
-    public ngOnDestroy() {
-        this.subscriptions.unsubscribe();
+    public execute() {
+        this.modal.prompt('confirm', 'MSG_QUEUE_NEWSLETTER', 'MSG_QUEUE_NEWSLETTER').subscribe({
+            next: (res) => {
+                if(res){
+                    let loading = this.modal.await('LBL_SENDING');
+                    this.backend.postRequest(`module/NewsletterIssues/${this.model.id}/queue`).subscribe({
+                        next: () => {
+
+                            loading.emit(true);
+                            loading.complete();
+                            this.model.getData();
+                            this.model.broadcast.broadcastMessage('relatedmodels.reload', {module: 'NewsletterLogs'});
+                            this.toast.sendToast(this.language.getLabel("LBL_QUEUED"));
+                        }, error: err => {
+
+                            loading.emit(true);
+                            loading.complete();
+                            this.toast.sendToast(err.error.error?.lbl, 'error');
+                        }
+                    });
+                }
+            }
+        })
     }
 }

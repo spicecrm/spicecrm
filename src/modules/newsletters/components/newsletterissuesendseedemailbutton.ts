@@ -13,10 +13,11 @@ import {language} from "../../../services/language.service";
 export class NewsletterIssueSendSeedEmailButton {
 
     public sending: boolean = false;
+
     constructor(public modal: modal, public backend: backend, public model: model, public toast: toast, public language: language) {
     }
 
-    get hidden(){
+    get hidden() {
         return !this.model.getField('newsletter_linked')?.placement_seed_prospectlist_id;
     }
 
@@ -26,7 +27,7 @@ export class NewsletterIssueSendSeedEmailButton {
     get disabled() {
 
         // not if activated already
-        if (this.model.getField('activated')) {
+        if (!this.model.getField('status') || this.model.getField('status') != 'planned') {
             return true;
             return;
         }
@@ -42,21 +43,26 @@ export class NewsletterIssueSendSeedEmailButton {
     }
 
     public execute() {
-
-        let loading = this.modal.await('LBL_SENDING');
-        this.sending = true;
-        this.backend.postRequest(`module/NewsletterIssues/${this.model.id}/sendseedmail`).subscribe({
-            next: res => {
-                loading.emit(true);
-                loading.complete();
-                this.toast.sendToast(`${this.language.getLabel('LBL_SEED_MAILS_SENT')} ${res.sent} from ${res.total}`, 'success');
-                this.sending = false;
-            }, error: (err) => {
-                loading.emit(true);
-                loading.complete();
-                this.toast.sendToast(err.error.error?.lbl, 'error');
-                this.sending = false;
+        this.modal.prompt('confirm', 'MSG_SEND_SEED', 'MSG_SEND_SEED').subscribe({
+            next: (res) => {
+                if (res) {
+                    let loading = this.modal.await('LBL_SENDING');
+                    this.sending = true;
+                    this.backend.postRequest(`module/NewsletterIssues/${this.model.id}/sendseedmail`).subscribe({
+                        next: res => {
+                            loading.emit(true);
+                            loading.complete();
+                            this.toast.sendToast(`${this.language.getLabel('LBL_SEED_MAILS_SENT')} ${res.sent} from ${res.total}`, 'success');
+                            this.sending = false;
+                        }, error: (err) => {
+                            loading.emit(true);
+                            loading.complete();
+                            this.toast.sendToast(err.error.error?.lbl, 'error');
+                            this.sending = false;
+                        }
+                    });
+                }
             }
-        });
+        })
     }
 }
