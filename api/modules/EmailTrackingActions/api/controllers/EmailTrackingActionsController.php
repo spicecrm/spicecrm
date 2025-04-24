@@ -39,7 +39,7 @@ class EmailTrackingActionsController
         }
 
         $trackingLink = BeanFactory::getBean('EmailTrackingLinks', $data['EmailTrackingLinks']);
-        $this->logTrackingAction($data, 'link');
+        $this->logTrackingAction($data, 'link', false);
 
         return $res->withHeader('Location', $trackingLink->url)
             ->withStatus(302);
