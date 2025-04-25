@@ -140,23 +140,6 @@ class EmailAddressRelationship extends M2MRelationship
             'sysdictionarydefinition_id' => $lhsDictionaryDefinition->id
         ]);
 
-        $db->insertQuery('sysdictionaryfields', [
-            'id' => SpiceUtils::createGuid(),
-            'sysdictionaryname' => $lhsDictionaryDefinition->name,
-            'sysdictionarytablename' => $lhsDictionaryDefinition->tablename,
-            'sysdictionarytableaudited' => $lhsDictionaryDefinition->getDefinition()->audited,
-            'fieldname' => 'email1',
-            'fieldtype' => 'link',
-            'fielddefinition' => json_encode([
-                'name' => 'email1',
-                'type' => 'varchar',
-                'source' => 'non-db',
-                'vname' => 'LBL_EMAIL1'
-            ]),
-            'sysdictionaryrelationship_id' => $relationship->id,
-            'sysdictionarydefinition_id' => $lhsDictionaryDefinition->id
-        ]);
-
         // completed the activation
         return true;
     }

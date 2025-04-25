@@ -120,23 +120,17 @@ class SpiceSocket
         ];
         curl_setopt_array($curl, $curlOptions);
 
-        $logEntryHandler = new APILogEntryHandler();
-        $logEntryHandler->generateOutgoingLogEntry($curlOptions, 'socket');
+        if ($coreConfig['socket_logo_enabled'] == 1) {
+            $logEntryHandler = new APILogEntryHandler();
+            $logEntryHandler->generateOutgoingLogEntry($curlOptions, 'socket');
+        }
 
         $response = curl_exec($curl);
 
-        /**
-        $info = curl_getinfo($curl);
-
-        $debugPath = __CLASS__ . '::' . __FUNCTION__ . ' line ' . __LINE__;
-        $debugMessageUrl = "$debugPath url per POST " . print_r($coreConfig['socket_backend'], true);
-        LoggerManager::getLogger()->debug($debugMessageUrl);
-        LoggerManager::getLogger()->debug("$debugPath response" . print_r($response, true));
-        LoggerManager::getLogger()->debug("$debugPath info" . print_r($info, true));
-        */
-
-        $logEntryHandler->updateOutgoingLogEntry($curl, $response);
-        $logEntryHandler->writeOutogingLogEntry();
+        if ($coreConfig['socket_logo_enabled'] == 1) {
+            $logEntryHandler->updateOutgoingLogEntry($curl, $response);
+            $logEntryHandler->writeOutogingLogEntry();
+        }
 
         if (!$response) {
             $info = curl_getinfo($curl);

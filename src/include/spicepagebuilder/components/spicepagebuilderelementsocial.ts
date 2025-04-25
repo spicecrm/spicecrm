@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, Component, inject, Input, OnInit} from '@angular/core';
-import {AttributeObjectI, SocialMediaElementI, SocialMediaI} from "../interfaces/spicepagebuilder.interfaces";
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {AttributeObjectI, SocialMediaI} from "../interfaces/spicepagebuilder.interfaces";
 import {SpicePageBuilderElement} from "./spicepagebuilderelement";
 import {firstValueFrom} from "rxjs";
 
@@ -45,7 +45,7 @@ export class SpicePageBuilderElementSocial extends SpicePageBuilderElement imple
             {name: 'text-padding', type: 'padding', class: 'slds-size--1-of-2'},
         ],
         [
-            {name: 'border', type: 'borders', class: 'slds-size--1-of-2'},
+            {name: 'border', type: 'borders', class: 'slds-size--1-of-1'},
         ],
         [
             {name: 'align', type: 'halign', class: 'slds-size--1-of-4'},
@@ -80,9 +80,11 @@ export class SpicePageBuilderElementSocial extends SpicePageBuilderElement imple
             {name: 'icon-position', type: 'options', class: 'slds-size--1-of-4', options: [{label: 'LBL_LEFT', value: 'left'}, {label: 'LBL_RIGHT', value: 'right'}]},
         ],
         [
-            {name: 'border', type: 'borders', class: 'slds-size--1-of-2'},
-            {name: 'css-class', type: 'text', class: 'slds-size--1-of-4'},
-            {name: 'align', type: 'halign', class: 'slds-size--1-of-4'},
+            {name: 'css-class', type: 'text', class: 'slds-size--1-of-2'},
+            {name: 'align', type: 'halign', class: 'slds-size--1-of-2'},
+        ],
+        [
+            {name: 'border', type: 'borders', class: 'slds-size--1-of-1'},
         ],
     ];
 

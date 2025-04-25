@@ -18,6 +18,11 @@ import {backend} from "../../../services/backend.service";
 })
 export class OrgunitsChartViewBoxAdd {
 
+    /**
+     * enables inheritance of custom color styles
+     */
+    @Input() customStyles: any = {};
+
     constructor(public oview: orgunitsViewService, public backend: backend, public modal: modal, public model: model, @SkipSelf() public parent: model) {
     }
 
