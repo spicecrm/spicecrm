@@ -206,8 +206,8 @@ FROM sysuicustomfieldsets LEFT JOIN sysuicustomfieldsetsitems ON sysuicustomfiel
                     'fieldset' => $fieldsetItem['fieldset'],
                     'sequence' => $fieldsetItem['sequence'],
                     'fieldconfig' => json_encode($fieldsetItem['fieldconfig']),
-                    'package' => $fieldsetItem['package'],
-                    'version' => $fieldsetItem['version'],
+                    'package' => $fieldsetItem['package'] ?: $fieldsetData['package'],
+                    'version' => $fieldsetItem['version'] ?: $fieldsetData['version']
                 ];
 
                 $name = $name . $fieldsetItem['field'];
@@ -248,8 +248,8 @@ FROM sysuicustomfieldsets LEFT JOIN sysuicustomfieldsetsitems ON sysuicustomfiel
             'fieldset' => $fieldsetItem['fieldset'],
             'sequence' => $fieldsetItem['sequence'],
             'fieldconfig' => json_encode($fieldsetItem['fieldconfig']),
-            'package' => $fieldsetItem['package'],
-            'version' => $fieldsetData['version'],
+            'package' => $fieldsetItem['package'] ?: $fieldsetData['package'],
+            'version' => $fieldsetData['version'] ?: $fieldsetData['version']
         ];
 
         $itemName = $fieldsetItem['field'];

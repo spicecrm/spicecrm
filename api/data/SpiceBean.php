@@ -1440,6 +1440,8 @@ class SpiceBean
         // call the custom business logic
         $custom_logic_arguments['check_notify'] = $check_notify;
 
+        $this->callDomainHandlerMethod('beforeSave');
+
         $this->call_custom_logic("before_save", $custom_logic_arguments);
         unset($custom_logic_arguments);
 
@@ -1512,6 +1514,8 @@ class SpiceBean
         AddressReferences::getInstance()->updateReferencedBeansAddress($this);
 
         $this->call_custom_logic('after_save', '');
+
+        $this->callDomainHandlerMethod('afterSave');
 
         //unset current bean_action
         $this->set_bean_action(null);
@@ -2116,28 +2120,7 @@ class SpiceBean
         $this->is_updated_dependent_fields = false;
         $this->fill_in_additional_detail_fields();
 
-        // get the domainItems
-        if($this->_sysdictionarydefinition_id) {
-            $items = (new SpiceDictionaryDefinition($this->_sysdictionarydefinition_id))->getItems();
-            foreach ($items as $item) {
-                if($item['sysdomaindefinition_id']){
-                    $domain = (new SpiceDictionaryDomain($item['sysdomaindefinition_id']));
-                    if($handlerClass = $domain->getHandlerClass()) {
-                        $fields = $domain->getFields(new SpiceDictionaryItem($item['id']));
-                        $curVals = [];
-                        foreach ($fields as $field) {
-                            $curVals[$field] = $this->$field;
-                        }
-                        $handler = new $handlerClass();
-                        if($handler->onRetrieve($domain, $curVals, $this)) {
-                            foreach ($fields as $field) {
-                                $this->$field =$curVals[$field];
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        $this->callDomainHandlerMethod('onRetrieve');
 
         if ($relationships) {
             $this->fill_in_relationship_fields();
@@ -2178,6 +2161,45 @@ class SpiceBean
         $this->call_custom_logic("after_retrieve", $custom_logic_arguments);
         unset($custom_logic_arguments);
         return $this;
+    }
+
+    /**
+     * call domain handler method
+     * @param string $method onRetrieve | beforeSave | afterSave
+     * @return void
+     * @throws Exception
+     */
+    private function callDomainHandlerMethod(string $method): void
+    {
+        if (!$this->_sysdictionarydefinition_id) return;
+
+        $items = (new SpiceDictionaryDefinition($this->_sysdictionarydefinition_id))->getItems();
+
+        foreach ($items as $item) {
+
+            if (!$item['sysdomaindefinition_id']) continue;
+
+            $domain = (new SpiceDictionaryDomain($item['sysdomaindefinition_id']));
+
+            $handlerClass = $domain->getHandlerClass();
+
+            if (!$handlerClass) continue;
+
+            $fields = $domain->getFields(new SpiceDictionaryItem($item['id']));
+            $curVals = [];
+
+            foreach ($fields as $field) {
+                $curVals[$field] = $this->$field;
+            }
+
+            $handler = new $handlerClass();
+
+            if($handler->$method($domain, $curVals, $this)) {
+                foreach ($fields as $field) {
+                    $this->$field = $curVals[$field];
+                }
+            }
+        }
     }
 
     /**

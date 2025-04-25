@@ -38,7 +38,7 @@ class EmailTracking
      */
     static function encodeTrackingID(string $trackingData): string
     {
-        $key = SpiceConfig::getInstance()->get('emailtracking.encryptionkey') ?? throw (new Exception("misconfiguration encryptionkey missing"));
+        $key = SpiceConfig::getInstance()->get('emailtracking.encryptionkey') ?? SpiceConfig::getInstance()->config['unique_key'];
 
         if ($key) {
             return urlencode(base64_encode(openssl_encrypt($trackingData, 'DES-EDE3-CBC', $key)));
@@ -57,7 +57,7 @@ class EmailTracking
      */
     static function decodeTrackingID($trackingData): ?array
     {
-        $key = SpiceConfig::getInstance()->get('emailtracking.encryptionkey') ?? throw new Exception("misconfiguration encryptionkey missing");
+        $key = SpiceConfig::getInstance()->get('emailtracking.encryptionkey') ?? SpiceConfig::getInstance()->config['unique_key'];
 
         if (!$key) {
             $decrypted = base64_decode(urldecode($trackingData));
@@ -80,11 +80,8 @@ class EmailTracking
      */
     static function getTrackingPixelSrc($trackingData)
     {
-        $url = SpiceConfig::getInstance()->get('emailtracking.tracking_pixel_url');
-        if ($url) {
-            $url = str_replace('{refid}', self::encodeTrackingID($trackingData), $url);
-        }
-        return $url;
+        $url = SpiceConfig::getInstance()->get('emailtracking.tracking_pixel_url') ?: SpiceConfig::getInstance()->config['site_url'] . '/email/o/' . self::encodeTrackingID($trackingData);
+        return str_replace('{refid}', self::encodeTrackingID($trackingData), $url);
     }
 
     /**
@@ -95,7 +92,8 @@ class EmailTracking
      */
     static function getTrackingPixel($trackingData)
     {
-        return '<img style="visibility: hidden" src="' . self::getTrackingPixelSrc($trackingData) . '" alt="emailrefid_' . self::encodeTrackingID($trackingData) . '_" height="1" width="1">';
+        // return '<img style="visibility: hidden" src="' . self::getTrackingPixelSrc($trackingData) . '" data-refid="'.self::encodeTrackingID($trackingData).'" alt="emailrefid_' . self::encodeTrackingID($trackingData) . '_" height="1" width="1">';
+        return '<img style="visibility: hidden" src="' . self::getTrackingPixelSrc($trackingData) . '" data-refid="'.self::encodeTrackingID($trackingData).'" alt="" height="1" width="1">';
     }
 
 

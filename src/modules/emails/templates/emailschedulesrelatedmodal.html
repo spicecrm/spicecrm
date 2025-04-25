@@ -10,7 +10,7 @@
                     <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='recipients'">{{this.language.getLabel('LBL_RECIPIENTS')}}</a>
                 </li>
             </ul>
-            <div class="slds-tabs_scoped__content slds-p-around--xx-small" style="height: 70vh" [ngClass]="{'slds-hide': activetab!='emails'}" role="tabpanel">
+            <div class="slds-tabs_scoped__content slds-p-around--xx-small" [ngClass]="{'slds-hide': activetab!='emails'}" role="tabpanel">
                 <system-dynamic-component component="CampaignTaskEmailPanel"></system-dynamic-component>
                 <system-dynamic-component component="SpiceAttachmentsPanel"></system-dynamic-component>
             </div>

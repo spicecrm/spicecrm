@@ -19,6 +19,7 @@ import {MediaFilesTile} from './components/mediafilestile';
 import {fieldMediaFilesImage} from './fields/fieldmediafilesimage';
 import {fieldMediaFile} from './fields/fieldmediafile';
 import {fieldMediaFileImage} from './fields/fieldmediafileimage';
+import {MediaFilesStencil} from "./components/mediafilesstencil";
 
 @NgModule({
     imports: [
@@ -36,6 +37,7 @@ import {fieldMediaFileImage} from './fields/fieldmediafileimage';
         MediaFileUploader,
         MediaFilesList,
         MediaFilesTile,
+        MediaFilesStencil,
         fieldMediaFilesImage,
         fieldMediaFile,
         fieldMediaFileImage
