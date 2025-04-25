@@ -208,13 +208,13 @@ class SpiceACLObject extends SpiceBean
 
             // legacy coreModuleUserQuery
             // caution: before removing legacy, consider that the query goes on spiceaclprofiles_users.user_id='*'
-            $aclUnionQueries[] = "SELECT so.id, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclreportees, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
+            $aclUnionQueries[] = "SELECT so.id, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclreportees, so.spiceaclcreator, so.spiceaclorgunit FROM spiceaclobjects so
 				INNER JOIN spiceaclprofiles_spiceaclobjects spso ON spso.spiceaclobject_id = so.id AND spso.deleted = 0
 				INNER JOIN spiceaclprofiles sp ON sp.id = spso.spiceaclprofile_id
 				INNER JOIN spiceaclprofiles_users spu ON sp.id = spu.spiceaclprofile_id AND spu.deleted = 0
 				INNER JOIN sysmodules st ON st.id = so.sysmodule_id
 				WHERE so.status='r' AND sp.status='r' and (spu.user_id in ($userIDs) or spu.user_id='*')";
-            $aclUnionQueries[] = "SELECT so.id, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclreportees, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
+            $aclUnionQueries[] = "SELECT so.id, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclreportees, so.spiceaclcreator, so.spiceaclorgunit FROM spiceaclobjects so
 				INNER JOIN spiceaclprofiles_spiceaclobjects spso ON spso.spiceaclobject_id = so.id AND spso.deleted = 0
 				INNER JOIN spiceaclprofiles sp ON sp.id = spso.spiceaclprofile_id
 				INNER JOIN spiceaclprofiles_users spu ON sp.id = spu.spiceaclprofile_id AND spu.deleted = 0
@@ -231,7 +231,7 @@ class SpiceACLObject extends SpiceBean
                         $joinParentIdColName = $parent->orgunits->relationship->def['join_key_lhs'];
                     }
 
-                    $aclUnionQueries[] = "SELECT so.id, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclreportees, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
+                    $aclUnionQueries[] = "SELECT so.id, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclreportees, so.spiceaclcreator, so.spiceaclorgunit FROM spiceaclobjects so
                     INNER JOIN spiceaclprofiles_spiceaclobjects spso ON spso.spiceaclobject_id = so.id AND spso.deleted = 0
                     INNER JOIN spiceaclprofiles sp ON sp.id = spso.spiceaclprofile_id
                     INNER JOIN spiceaclprofiles_orgunits spo ON spo.spiceaclprofile_id = sp.id AND spo.deleted=0
@@ -255,14 +255,14 @@ class SpiceACLObject extends SpiceBean
                 $orgunitIds = array_unique($orgunitIds);
                 $orgunitIds = "'" . join("','", $orgunitIds) . "'";
 
-                $aclUnionQueries[] = "SELECT so.id, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclreportees, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
+                $aclUnionQueries[] = "SELECT so.id, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclreportees, so.spiceaclcreator, so.spiceaclorgunit FROM spiceaclobjects so
 				INNER JOIN spiceaclprofiles_spiceaclobjects spso ON spso.spiceaclobject_id = so.id AND spso.deleted = 0
 				INNER JOIN spiceaclprofiles sp ON sp.id = spso.spiceaclprofile_id
 				INNER JOIN spiceaclprofiles_orgunits spo ON sp.id = spo.spiceaclprofile_id AND spo.deleted = 0
 				INNER JOIN sysmodules st ON st.id = so.sysmodule_id
 				WHERE so.status='r' AND sp.status='r' and spo.orgunit_id in ($orgunitIds)";
 
-                $aclUnionQueries[] = "SELECT so.id, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclreportees, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
+                $aclUnionQueries[] = "SELECT so.id, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclreportees, so.spiceaclcreator, so.spiceaclorgunit FROM spiceaclobjects so
 				INNER JOIN spiceaclprofiles_spiceaclobjects spso ON spso.spiceaclobject_id = so.id AND spso.deleted = 0
 				INNER JOIN spiceaclprofiles sp ON sp.id = spso.spiceaclprofile_id
 				INNER JOIN spiceaclprofiles_orgunits spo ON sp.id = spo.spiceaclprofile_id AND spo.deleted = 0
