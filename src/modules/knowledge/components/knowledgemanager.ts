@@ -21,9 +21,6 @@ export class KnowledgeManager implements AfterViewInit {
     public config: any = {canadd: true, draggable: true, expandall: false};
     public activeTab: string = "tree";
 
-    @ViewChild("maincontainer", {read: ViewContainerRef, static: true}) public maincontainer: ViewContainerRef;
-    @ViewChild("tabsheadercontainer", {read: ViewContainerRef, static: true}) public tabsHeaderContainer: ViewContainerRef;
-
     constructor(public language: language,
                 public model: model,
                 public modal: modal,
@@ -54,20 +51,6 @@ export class KnowledgeManager implements AfterViewInit {
 
     get selectedDoc() {
         return this.knowledgeService.selectedDoc;
-    }
-
-    get treeContainerStyle() {
-        if (this.tabsHeaderContainer) {
-            let rect = this.tabsHeaderContainer.element.nativeElement.getBoundingClientRect();
-            return {height: `calc(100vh - ${rect.bottom}px)`};
-        }
-    }
-
-    get detailsContainerStyle() {
-        if (this.maincontainer) {
-            let rect = this.maincontainer.element.nativeElement;
-            return {height: `calc(100vh - ${rect.offsetTop}px)`};
-        }
     }
 
     get isLoading() {

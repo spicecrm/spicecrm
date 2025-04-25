@@ -10,12 +10,14 @@ import {backend} from '../../../services/backend.service';
 import {language} from '../../../services/language.service';
 import {configurationService} from '../../../services/configuration.service';
 import {processmanagement} from "../services/processmanagement.service";
+import {view} from "../../../services/view.service";
 
 @Component({
     selector:'process-management-process-category',
-    templateUrl: '../templates/processmanagementprocesscategory.html'
+    templateUrl: '../templates/processmanagementprocesscategory.html',
+    providers: [view, model]
 })
-export class ProcessManagementProcessCategory {
+export class ProcessManagementProcessCategory implements OnInit{
 
     /**
      * the process category
@@ -26,12 +28,21 @@ export class ProcessManagementProcessCategory {
         public language: language,
         public metadata: metadata,
         public model: model,
+        public view: view,
         public router: Router,
         public backend: backend,
         public configuration: configurationService,
         public processmanagement: processmanagement
     ) {
+        view.isEditable = false;
+        view.displayLabels = false;
+    }
 
+    public ngOnInit() {
+        this.model.module = 'ProcessMGMTCategories';
+        this.model.id = this.processCategory.id;
+        this.model.initialize();
+        this.model.setData(this.processCategory);
     }
 
     get processGroups(){

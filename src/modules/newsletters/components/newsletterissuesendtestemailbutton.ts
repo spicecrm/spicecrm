@@ -34,4 +34,26 @@ export class NewsletterIssueSendTestEmailButton {
             }
         });
     }
+
+    /**
+     * handle the disabled status
+     */
+    get disabled() {
+
+        // not if activated already
+        if (this.model.getField('status') != '' && this.model.getField('status') != 'planned') {
+            return true;
+            return;
+        }
+
+        // not if editing
+        if (!this.model.checkAccess('edit')) {
+            return true;
+            return;
+        }
+
+
+        // not if editing
+        return this.model.isEditing;
+    }
 }

@@ -237,7 +237,14 @@ class ProspectListsController
     {
         /** @var ProspectList $list */
         $list = BeanFactory::getBean('ProspectLists', $args['id']);
-        return $res->withJson($list->get_entry_count());
+
+        if(!$list) {
+            throw new NotFoundException('List with the given ID not found');
+        }
+
+        $params = $req->getQueryParams();
+
+        return $res->withJson($list->get_entry_count($params['detailed']));
     }
 
     public function checkExistingBeanEmailAddressInItems(Request $req, Response $res, $args): Response

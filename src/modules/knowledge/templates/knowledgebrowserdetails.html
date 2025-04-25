@@ -1,6 +1,6 @@
 <div #detailscontainer class="slds-grid" [ngStyle]="detailsContainerStyle">
     <div *ngIf="docId && docId != ''" [ngClass]="containerLeftClass" style="height: 100%">
-        <knowledge-browser-details-container-left [html]="model?.data?.description" [breadcrumbs]="breadcrumbs"></knowledge-browser-details-container-left>
+        <knowledge-browser-details-container-left [id]="model?.id" [breadcrumbs]="breadcrumbs"></knowledge-browser-details-container-left>
     </div>
     <div [class.slds-hide]="!docId || inAddModal" class="slds-size--1-of-3 slds-theme--default slds-border--left">
         <knowledge-browser-details-container-right [selectedDoc]="docId"></knowledge-browser-details-container-right>

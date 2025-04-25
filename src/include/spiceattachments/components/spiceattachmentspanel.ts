@@ -320,10 +320,10 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      */
     private broadcastUpload() {
         this._modelattachments.broadcast.broadcastMessage('attachments.uploaded', {
-            module: this._modelattachments.module,
-            id: this._modelattachments.id,
-            uploadedFiles: this._modelattachments.files,
-            uniqueID: this._modelattachments.httpRequestsRefID,
+            module: this.modelattachments.module,
+            id: this.modelattachments.id,
+            uploadedFiles: this.modelattachments.files,
+            uniqueID: this.modelattachments.httpRequestsRefID,
             reload: true
         })
     }

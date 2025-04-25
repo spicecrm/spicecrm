@@ -126,13 +126,21 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
 
                     const social: PanelElementI = JSON.parse(JSON.stringify(event.item.data));
 
-                    this.spicePageBuilderService.openEditModal(social).subscribe(socialRes => {
+                    if (event.item.data.children.length > 1) {
                         this.column.children.splice(
-                            event.currentIndex, 0, socialRes
+                            event.currentIndex, 0, social
                         );
                         this.cdRef.detectChanges();
                         this.spicePageBuilderService.emitData();
-                    });
+                    } else {
+                        this.spicePageBuilderService.openEditModal(social).subscribe(socialRes => {
+                            this.column.children.splice(
+                                event.currentIndex, 0, socialRes
+                            );
+                            this.cdRef.detectChanges();
+                            this.spicePageBuilderService.emitData();
+                        });
+                    }
                     break;
                 default:
                     const element: PanelElementI = JSON.parse(JSON.stringify(event.item.data));

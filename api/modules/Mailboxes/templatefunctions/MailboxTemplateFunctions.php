@@ -40,11 +40,11 @@ class MailboxTemplateFunctions
     {
         if (empty($beans['Emails']) && empty($beans['bean']) && $beans['bean']->_module != 'Emails') return '';
 
-        $emails = isset($beans['Emails']) ? $beans['Emails'] : $beans['bean'];
+        $parentBean = isset($beans['Emails']) ? $beans['Emails'] : $beans['bean'];
 
-        [$parentType, $parentId] = $emails->getTrackingParentData();
+        // [$parentType, $parentId] = $emails->getTrackingParentData();
 
-        $trackData = EmailTracking::encodeTrackingID("ParentType:$parentType:ParentId:$parentId");
+        $trackData = EmailTracking::encodeTrackingID("ParentType::{$parentBean->_module}ParentId:{$parentBean->id}");
         $doubleOptinUrl = str_replace('{refid}', $trackData, SpiceConfig::getInstance()->get('emailtracking.double_optin_url'));
         return "<a href=\"{$doubleOptinUrl}\" class=\"spice-marketing-double-optin-link\">$inputString</a>";
     }

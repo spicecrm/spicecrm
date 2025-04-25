@@ -4,9 +4,10 @@
         <div style="width: calc(100% - 20px)">
             <div class="slds-grid slds-p-around--small slds-grid--align-spread slds-text-heading--label slds-theme--shade">
                 @if(processCategory.label){
-                    <system-label [label]="processCategory.label"/>
+                    <!--system-label [label]="processCategory.label"/-->
+                    <field-container field="label" [fieldconfig]="{link: true, display_as_translated:true}" fielddisplayclass="slds-p-verical--small"/>
                 } @else {
-                    {{processCategory.name}}
+                    <field-container field="name" [fieldconfig]="{link: true}" fielddisplayclass="slds-p-verical--small"/>
                 }
                 <process-management-add-processgroup-button [processCategory]="processCategory"/>
             </div>

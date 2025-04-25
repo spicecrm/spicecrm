@@ -1,8 +1,9 @@
 <?php
 namespace SpiceCRM\includes\SpiceSocket;
 
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceSocketHooks
 {
@@ -12,16 +13,18 @@ class SpiceSocketHooks
      */
     public function updateSocket(SpiceBean &$bean)
     {
-        $moduleHandler = new SpiceBeanHandler();
+        // check if we have a current user - if not do not try to get a session but create a random guid and session
+        // if not also declare it a systemupdate
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         SpiceSocket::getInstance()->emit(
             'module',
-            $bean->systemUpdate ? 'systemupdate' : 'update',
+            $bean->systemUpdate || !$current_user->id ? 'systemupdate' : 'update',
             md5("$bean->_module:$bean->id"),
             [
                 'id' => $bean->id,
                 'module' => $bean->_module,
-                'sessionId' => md5(session_id())
+                'sessionId' => $current_user->id ? md5(session_id()) : md5(SpiceUtils::createGuid())
             ]
         );
     }
