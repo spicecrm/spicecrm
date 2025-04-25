@@ -12,7 +12,7 @@ class DateTimeValidator extends LogicalValidator
     {
         $dateTime = DateTime::createFromFormat(TimeDate::DB_DATETIME_FORMAT, $value);
 
-        if (!$dateTime) {
+        if (!$dateTime && $value !== "") {
             throw new ValidationException(
                 "Parameter " . $this->getName($definition) . " is not a datetime",
                 null,
