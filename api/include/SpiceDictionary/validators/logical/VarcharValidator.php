@@ -6,8 +6,9 @@ use SpiceCRM\includes\ErrorHandlers\ValidationException;
 
 class VarcharValidator extends LogicalValidator
 {
-    protected function validate(mixed $value, array $definition): void {
-        if (!is_string($value) && $value !== 1) { // todo maybe cast 1 to "1" in rest middleware?
+    protected function validate(mixed $value, array $definition): void
+    {
+        if (!is_string($value) && $value !== 1) {
             throw new ValidationException(
                 "Parameter " . $this->getName($definition) . " is not a string",
                 null,

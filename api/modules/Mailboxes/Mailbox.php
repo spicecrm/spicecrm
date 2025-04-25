@@ -17,6 +17,111 @@ class Mailbox extends SpiceBean {
 
     public $transport_handler;
 
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    private string $imap_inbox_dir;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    private string $imap_pop3_display_name;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    private string $imap_pop3_encryption;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    private string $imap_pop3_host;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    private string $imap_pop3_password;
+
+    /**
+     * @var int TODO check if that should go into the dictionary
+     */
+    private int $imap_pop3_port;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    private string $imap_pop3_protocol_type;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    private string $imap_pop3_username;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    private string $imap_sent_dir;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    private string $imap_trash_dir;
+
+    /**
+     * @var bool TODO check if that should go into the dictionary
+     */
+    private bool $imap_delete_after_fetch;
+
+    /**
+     * @var bool TODO check if that should go into the dictionary
+     */
+    private bool $smtp_allow_self_signed;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    private string $smtp_auth;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    private string $smtp_encryption;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    private string $smtp_host;
+
+    /**
+     * @var int TODO check if that should go into the dictionary
+     */
+    private int $smtp_port;
+
+    /**
+     * @var bool TODO check if that should go into the dictionary
+     */
+    private bool $smtp_verify_peer;
+
+    /**
+     * @var bool TODO check if that should go into the dictionary
+     */
+    private bool $smtp_verify_peer_name;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    private string $reply_to;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    private string $shared_mailbox_auth_user;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    private string $shared_mailbox_user;
+
     const LOG_NONE  = 0;
     const LOG_ERROR = 1;
     const LOG_DEBUG = 2;
