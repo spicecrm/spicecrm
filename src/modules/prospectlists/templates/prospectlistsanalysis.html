@@ -1,0 +1,24 @@
+<div class="slds-box slds-box--border">
+    <div class="slds-p-around--small slds-border--bottom slds-grid slds-grid--vertical-align-center">
+        <system-icon icon="calibration" size="small"/>
+        <h2>
+            <system-label label="LBL_PROSPECTLIST_ANALYSIS"/>
+        </h2>
+        <button *ngIf="canRefresh" [disabled]="isLoading" class="slds-col--bump-left slds-button slds-button--icon" (click)="loadData()">
+            <system-button-icon icon="refresh"/>
+        </button>
+    </div>
+    @if (isLoading){
+        <div class="slds-p-vertical_large slds-align--absolute-center">
+            <system-spinner/>
+        </div>
+    } @else {
+        <system-chart-one-dimensional chartType="Pie" [legend]="{position: 'right', alignment: 'center'}">
+            @for (result of results; track result.related_type) {
+                <system-chart-data-row [label]="language.getModuleName(result.related_type)" [value]="result.num"/>
+            }
+        </system-chart-one-dimensional>
+    }
+    <!-- show the top bar with label and reload button -->
+
+</div>
