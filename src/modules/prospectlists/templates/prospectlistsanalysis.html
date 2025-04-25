@@ -13,12 +13,16 @@
             <system-spinner/>
         </div>
     } @else {
-        <system-chart-one-dimensional chartType="Pie" [legend]="{position: 'right', alignment: 'center'}">
-            @for (result of results; track result.related_type) {
-                <system-chart-data-row [label]="language.getModuleName(result.related_type)" [value]="result.num"/>
-            }
-        </system-chart-one-dimensional>
+        @if (results.length > 0) {
+            <system-chart-one-dimensional chartType="Pie" [legend]="{position: 'right', alignment: 'center'}">
+                @for (result of results; track result.related_type) {
+                    <system-chart-data-row [label]="language.getModuleName(result.related_type)" [value]="result.num"/>
+                }
+            </system-chart-one-dimensional>
+        } @else {
+            <div class="slds-p-vertical_large slds-align--absolute-center">
+                <system-illustration-no-records/>
+            </div>
+        }
     }
-    <!-- show the top bar with label and reload button -->
-
 </div>
