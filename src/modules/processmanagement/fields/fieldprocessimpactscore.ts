@@ -91,7 +91,6 @@ export class fieldProcessImpactScore extends fieldEnum {
      * @private
      */
     private handleMessage(message){
-        console.log(message);
         if(message.messagetype == 'model.save' && message.messagedata.module == 'ProcessRiskAssessments' &&  message.messagedata.data.status == 'A' &&  message.messagedata.data.processrisk_id == this.model.id && !!message.messagedata.data.score){
             this.value = message.messagedata.data.score;
         }
