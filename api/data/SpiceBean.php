@@ -2266,7 +2266,8 @@ class SpiceBean
             if (0 == strcmp($field['type'], 'relate') && !empty($field['module'])) {
                 $name = $field['name'];
                 if (empty($this->$name)) {
-                    if (empty($this->{$field['id_name']})) {
+                    // only try to load if the id field is a non-db field
+                    if (empty($this->{$field['id_name']}) && $this->field_defs[$field['id_name']]['source'] == 'non-db') {
                         $this->fill_in_link_field($field['id_name'], $field);
                     }
                     if (!empty($this->{$field['id_name']}) && ($this->_objectname != $field['module'] || ($this->_objectname == $field['module'] && $this->{$field['id_name']} != $this->id))) {
