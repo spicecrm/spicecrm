@@ -136,6 +136,7 @@
                 <th class="slds-resizable"><system-label class="slds-th__action" label="LBL_ROUTE_ARGUMENTS"></system-label></th>
                 <th class="slds-resizable"><system-label class="slds-th__action" label="LBL_URL_PARAMETERS"></system-label></th>
                 <th style="width:2.5rem"></th>
+                <th style="width:2.5rem"></th>
             </tr>
             </thead>
             <tbody #tbody>
@@ -153,6 +154,11 @@
                 <td>
                     <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="showEntryInModal(entry)">
                         <system-button-icon [icon]="'expand'" [size]="'medium'"></system-button-icon>
+                    </button>
+                </td>
+                <td>
+                    <button *ngIf="entry.direction==='I'" class="slds-button slds-button--icon-border slds-button_icon-small" (click)="showReplayModal(entry)">
+                        <system-button-icon [icon]="'play'" [size]="'medium'"></system-button-icon>
                     </button>
                 </td>
             </tr>
