@@ -263,6 +263,19 @@ export class APIlogViewer {
     }
 
     /**
+     * open the entry in a modal with all details
+     *
+     * @param entry
+     * @private
+     */
+    public showReplayModal(entry) {
+        this.modal.openModal('APIlogViewerReplayModal').subscribe(modal => {
+            modal.instance.entry = entry;
+            modal.instance.logtable = this.logtable;
+        });
+    }
+
+    /**
      * open a CRM Log viewer modal with thetransaction
      * ToDo: reimplement this
      *

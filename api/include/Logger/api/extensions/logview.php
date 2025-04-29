@@ -253,6 +253,42 @@ $routes = [
                 'required' => true
             ]
         ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/admin/apilog/replay/{id}',
+        'class'       => LogViewController::class,
+        'function'    => 'APIlogReplay',
+        'description' => '',
+        'options'     => [ 'noAuth' => false, 'adminOnly' => true, 'validate' => true ],
+        'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'GUID of the requested REST log entry.',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true
+            ],
+            'bodyParams' => [
+                'in' => 'body',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_COMPLEX
+            ],
+            'getParams' => [
+                'in' => 'body',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_COMPLEX
+            ],
+            'headers' => [
+                'in' => 'body',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_COMPLEX
+            ],
+            'password' => [
+                'in' => 'body',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ]
+        ]
     ]
 ];
 
