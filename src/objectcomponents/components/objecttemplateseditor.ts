@@ -203,6 +203,7 @@ export class ObjectTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
                     this.model.setFields({
                         [this.fieldsNames.bodyHtmlField]: items[0].body_html,
                         [this.fieldsNames.bodySPBField]: items[0].body_spb,
+                        [this.fieldsNames.subjectField]: items[0].name,
                         editor_type: items[0].editor_type
                     });
                 });
