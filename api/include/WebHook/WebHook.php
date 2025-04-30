@@ -88,7 +88,7 @@ class WebHook
         ];
         $customHeaders = json_decode(html_entity_decode($hook['custom_headers']));
         foreach ($customHeaders as $customHeader) {
-            $headers[] = "{$headers[$customHeader->name]}:{$customHeader->value}";
+            $headers[] = "{$customHeader->name}:{$customHeader->value}";
         }
 
         $curl = curl_init();
@@ -101,9 +101,7 @@ class WebHook
             CURLOPT_POSTFIELDS => json_encode($body),
             // CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
             CURLOPT_HEADER => 1,
-            CURLOPT_HTTPHEADER => [
-                'Content-Type:application/json'
-            ],
+            CURLOPT_HTTPHEADER => $headers
         ];
         curl_setopt_array($curl, $curlOptions);
         $logEntryHandler = new APILogEntryHandler();
