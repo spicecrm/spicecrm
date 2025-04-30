@@ -365,10 +365,17 @@ class SpiceDictionaryRelationships
 
         #repair the join table for m2m relationship
         if ($repairJoinTable && !empty($relationshipDefinition['join_table'])) {
-            # generate the repair query
-            $sql = SpiceDictionaryDefinitions::getInstance()->repairVardefDefinition($relationshipDefinition['join_table'], false, false);
-            # execute the query
-            if (!empty($sql)) DBManagerFactory::getInstance()->query($sql, true);
+
+            $dictionaryId = SpiceDictionaryDefinitions::getInstance()->getIdByName($relationshipDefinition['join_table']);
+
+            if (!$dictionaryId) {
+                $sql = SpiceDictionaryDefinitions::getInstance()->repairVardefDefinition($relationshipDefinition['join_table'], false, false);
+                # execute the query
+                if (!empty($sql)) DBManagerFactory::getInstance()->query($sql, true);
+            } else {
+                $dictionary = new SpiceDictionaryDefinition($dictionaryId);
+                $dictionary->repair(false);
+            }
         }
 
         return true;
