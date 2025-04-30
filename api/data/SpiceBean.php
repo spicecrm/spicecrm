@@ -447,11 +447,12 @@ class SpiceBean
 
         if ($this->disableValidation == false) {
             $dictionaryField = $this->getDictionaryField($attributeName);
-            if (!$dictionaryField) {
-                throw new ValidationException('No field definition found for ' . $attributeName);
+            if ($dictionaryField) {
+                $this->validateField($attributeName, $attributeValue, $dictionaryField);
+            } else {
+                // Accept it for now that some fields have no dictionary definitions.
+                // throw new ValidationException('No field definition found for ' . $attributeName);
             }
-
-            $this->validateField($attributeName, $attributeValue, $dictionaryField);
         }
 
         $this->{$attributeName} = $attributeValue;
