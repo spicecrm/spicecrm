@@ -26,7 +26,7 @@ export class ObjectActionDownloadIcsButton {
      */
     public execute() {
         let fileName = this.model.module + '_' + this.model.getField('summary_text') + '.ics';
-        let awaitModal = this.modal.await();
+        let awaitModal = this.modal.await('LBL_LOADING');
 
         this.backend.downloadFile({route: `module/${this.model.module}/${this.model.id}/ics`}, fileName, 'text/bin')
             .subscribe({
