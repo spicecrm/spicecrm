@@ -514,7 +514,7 @@ class SpiceBeanController
         $content .= "DTSTAMP:" . gmdate('Ymd\THis\Z') . "\r\n";
         $content .= "DTSTART:" . date('Ymd\THis', strtotime($bean->date_start)) . "\r\n";
         $content .= "DTEND:" . date('Ymd\THis', strtotime($bean->date_end)) . "\r\n";
-        $content .= "SUMMARY: $bean->summary_text\r\n";
+        $content .= "SUMMARY: $bean->name\r\n";
         $content .= "DESCRIPTION: $bean->description\r\n";
         $content .= "END:VEVENT\r\n";
         $content .= "END:VCALENDAR\r\n";
