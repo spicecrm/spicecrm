@@ -39,7 +39,7 @@ export class WebHooksManagerEditModal implements OnInit {
     /**
      * Regex for password
      */
-    public urlRegexp: RegExp = new RegExp("(https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*))");
+    public urlRegexp: RegExp = new RegExp("^https?:\\/\\/[a-zA-Z0-9._:-]+(\\/[a-zA-Z0-9._~:/?#\\[\\]@!$&'()*+,;=\\-]*)?$");
 
     /**
      * the array for the custom headers
