@@ -2,6 +2,7 @@
 
 namespace SpiceCRM\includes\SpiceNotifications;
 
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
@@ -25,6 +26,7 @@ class SpiceNotifications
 
     private $bean;
     private $assignedUser;
+    private $socketEnabled = true;
 
     const TYPE_ASSIGNMENT = 'assign';
     const TYPE_CHANGE     = 'change';
@@ -43,6 +45,9 @@ class SpiceNotifications
         $this->notificationType = $type;
         $this->notificationText = $text;
         $this->bean = $bean;
+        if (SpiceModules::getInstance()->getModuleDetails($bean->_module)['socket_disabled'] == 1) {
+            $this->socketEnabled = false;
+        }
         $this->assignedUser = BeanFactory::getBean('Users', $this->userId);
     }
 
@@ -88,7 +93,9 @@ class SpiceNotifications
             }
         }
 
-        SpiceSocket::getInstance()->emit('notifications', 'new', $data['user_id'], $data);
+        if ($this->socketEnabled) {
+            SpiceSocket::getInstance()->emit('notifications', 'new', $data['user_id'], $data);
+        }
     }
 
     private function sendEmailNotification()
