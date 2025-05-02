@@ -3,6 +3,7 @@ namespace SpiceCRM\includes\SpiceSocket;
 
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceSocketHooks
@@ -13,6 +14,13 @@ class SpiceSocketHooks
      */
     public function updateSocket(SpiceBean &$bean)
     {
+
+        $moduleDetails = SpiceModules::getInstance()->getModuleDetails($bean->_module);
+
+        if ($moduleDetails['socket_disabled'] == 1) {
+            return;
+        }
+
         // check if we have a current user - if not do not try to get a session but create a random guid and session
         // if not also declare it a systemupdate
         $current_user = AuthenticationController::getInstance()->getCurrentUser();

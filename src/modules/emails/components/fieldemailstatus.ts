@@ -24,11 +24,11 @@ export class fieldEmailStatus extends fieldGeneric {
             case 'opened':
             case 'read':
                 return 'email_open';
-            case 'bounced':
             case 'bounced_checked':
                 return 'turn_off_notifications';
             case 'deferred':
                 return 'hourglass';
+            case 'bounced':
             case 'send_error_checked':
             case 'send_error':
             case 'error':
