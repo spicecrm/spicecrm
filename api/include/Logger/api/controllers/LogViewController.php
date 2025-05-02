@@ -239,7 +239,7 @@ class LogViewController{
 
         curl_close($curl);
 
-        return $res->withJson(['success' => true, 'res'=>$response, 'id'=>$args['id'],'url'=>$url]);
+        return $res->withJson(['url'=>$url,'success' => !isset( $response['error'] ), 'res'=>$response, 'id'=>$args['id'],'url'=>$url]);
     }
 
 }
