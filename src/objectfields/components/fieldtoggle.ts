@@ -80,7 +80,7 @@ export class fieldToggle extends fieldGeneric implements OnInit{
      * @return boolean
      * */
     get disabled(): boolean {
-        return this.hidden;
+        return !this.model.checkAccess('edit');
     }
 
     /**
