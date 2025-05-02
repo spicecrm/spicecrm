@@ -1,14 +1,14 @@
 /**
  * @module WorkbenchModule
  */
-import {Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 /**
  * a modal to dsiplay an API Log entry record
  */
 @Component({
     templateUrl: '../templates/apilogviewerreplayitem.html',
-    selector: "[apilogviewer-replay-item]",
+    selector: "[apilogviewer-replay-item]"
 })
 export class APIlogViewerReplayItem {
 
@@ -41,5 +41,10 @@ export class APIlogViewerReplayItem {
         if ( type === 'null' ) this.objekt[this.key] = null;
         if ( type === 'boolean' ) this.objekt[this.key] = false;
         this.valueType = type;
+    }
+
+    public dummy( x: number, y )
+    {
+        return 'asdf';
     }
 }

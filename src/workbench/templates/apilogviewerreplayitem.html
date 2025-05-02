@@ -21,10 +21,14 @@
     </span>
     <table *ngIf="valueType === 'object' || valueType === 'array'" class="slds-table slds-box slds-table slds-table--bordered" style="padding:0.75rem" [ngClass]="{'slds-m-bottom--small':!isLast}">
         <ng-container *ngIf="valueType === 'object'">
-            <tr *ngFor="let property of objekt[key] | keyvalue; last as isLast" apilogviewer-replay-item [key]="property.key" [objekt]="objekt[key]" [editMode]="editMode" [isLast]="isLast"></tr>
+            @for ( property of objekt[key] | keyvalue; let isLast = $last; track $index ) {
+                <tr apilogviewer-replay-item [key]="property.key" [objekt]="objekt[key]" [editMode]="editMode" [isLast]="isLast"></tr>
+            }
         </ng-container>
         <ng-container *ngIf="valueType === 'array'">
-            <tr *ngFor="let item of objekt[key]; let rowIndex = index; last as isLast" apilogviewer-replay-item [key]="rowIndex" [objekt]="objekt[key]" [editMode]="editMode" [isLast]="isLast"></tr>
+            @for ( item of objekt[key]; let rowIndex = $index; let isLast = $last; track $index ) {
+                <tr apilogviewer-replay-item [key]="rowIndex" [objekt]="objekt[key]" [editMode]="editMode" [isLast]="isLast"></tr>
+            }
         </ng-container>
     </table>
 </td>

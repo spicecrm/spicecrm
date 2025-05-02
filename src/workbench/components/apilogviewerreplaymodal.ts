@@ -1,13 +1,13 @@
 /**
  * @module WorkbenchModule
  */
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {language} from '../../services/language.service';
-import {backend} from '../../services/backend.service';
-import {toast} from '../../services/toast.service';
-import {libloader} from '../../services/libloader.service';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { language } from '../../services/language.service';
+import { backend } from '../../services/backend.service';
+import { toast } from '../../services/toast.service';
+import { libloader } from '../../services/libloader.service';
 import { modal } from '../../services/modal.service';
-import {helper} from '../../services/helper.service';
+import { helper } from '../../services/helper.service';
 
 declare var html_beautify: any;
 declare var _: any;
@@ -16,7 +16,7 @@ declare var _: any;
  * a modal to dsiplay an API Log entry record
  */
 @Component({
-    templateUrl: '../templates/apilogviewerreplaymodal.html',
+    templateUrl: '../templates/apilogviewerreplaymodal.html'
 })
 export class APIlogViewerReplayModal {
 
@@ -68,6 +68,10 @@ export class APIlogViewerReplayModal {
 
     public contentType = '';
 
+    public hasBodyData: boolean;
+
+    public canEdit = false;
+
     constructor(public language: language, public backend: backend, public toast: toast, public libloader: libloader, public modal: modal, public helper: helper ) {
         this.libloader.loadLib('jsbeautify').subscribe(loaded => {
             this.beautifyenabled = true;
@@ -92,6 +96,8 @@ export class APIlogViewerReplayModal {
                 this.setRequestHeaders();
                 this.getBody( this.record.request_body );
                 this.contentType = this.determineContentType( this._requestheaders );
+                this.hasBodyData = this.record.request_body && this.record.request_body != "{}";
+                this.canEdit = this.contentType === 'application/json';
                 this.isLoading = false;
             },
             error: (error) => {
@@ -185,13 +191,6 @@ export class APIlogViewerReplayModal {
         return [];
     }
 
-    /**
-     * retruns if we have a non empty request
-     */
-    get hasBodyData() {
-        return this.record.request_body && this.record.request_body != "{}";
-    }
-
     // Close the modal.
     public close() {
         this.self.destroy();
@@ -220,7 +219,6 @@ export class APIlogViewerReplayModal {
 
     public doReplay(): void
     {
-        this.self.destroy();
         this.modal.prompt('confirm', 'This could create data or change existing data. Are you sure you want to continue?', 'Confirm Replay').subscribe({
            next: confirmation => {
                if ( !confirmation ) return;
@@ -243,7 +241,12 @@ export class APIlogViewerReplayModal {
         this.backend.postRequest('admin/apilog/replay/'+this.entry.id, null, { headers: null, getParams: null, bodyParams: this.replayData ? JSON.stringify( this.replayData ) : undefined, password: password ? password : undefined }).subscribe({
             next: (response) => {
                 this.isLoading = false;
-                this.toast.sendToast('REPLAY SUCCESSFUL', 'success');
+                if ( response.success ) {
+                    this.toast.sendToast( 'REPLAY SUCCESSFUL', 'success' );
+                    this.self.destroy();
+                } else {
+                    this.toast.sendToast('ERROR REPLAYING', 'error');
+                }
             },
             error: (error) => {
                 this.isLoading = false;
@@ -336,8 +339,9 @@ export class APIlogViewerReplayModal {
         }
     }
 
-    public get canEdit() {
-        return this.contentType === 'application/json';
+    public dummy( x: number, y )
+    {
+        return 'asdf';
     }
 
 }
