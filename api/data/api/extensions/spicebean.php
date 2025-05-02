@@ -1228,6 +1228,28 @@ $routes = [
                 'required' => true
             ]
         ]
+    ],
+    [
+        'method' => 'get',
+        'route' => '/module/{beanName}/{beanId}/ics',
+        'class' => SpiceBeanController::class,
+        'function' => 'convertToIcs',
+        'description' => 'converts a meeting or a call to ics format',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters'  => [
+            'beanName' => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'required'    => true,
+                'description' => 'The name of the module',
+            ],
+            'beanId'     => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'required'    => true,
+                'description' => 'GUID of the bean',
+            ],
+        ],
     ]
 ];
 
