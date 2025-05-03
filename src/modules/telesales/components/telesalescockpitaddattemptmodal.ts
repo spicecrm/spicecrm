@@ -66,7 +66,7 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
         this.model.startEdit(false);
         this.model.setData({
             hits: parseInt(this.selectedListItem.hits) + 1,
-            planned_activity_date: new moment().add((this.campaignTask.telesales_attempt_delay ? this.campaignTask.telesales_attempt_delay : 1), 'days'),
+            planned_activity_date: new moment().add((this.campaignTask.telesales_attempt_delay ? this.campaignTask.telesales_attempt_delay : 1), 'hours'),
             activity_type: this.selectedListItem.activity_type,
             activity_date: new moment(),
         }, false);

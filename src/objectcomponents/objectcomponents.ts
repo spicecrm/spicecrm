@@ -237,6 +237,7 @@ import {ObjectListHeaderActionsExportPdfButton} from "./components/objectlisthea
 import {ObjectActionPdfExportRelatedButton} from "./components/objectactionpdfexportrelatedbutton";
 import {ObjectTemplateSendTestEmailModal} from "./components/objecttemplatesendtestemailmodal";
 import {ObjectListHeaderActionsBulkSetStatusButton} from "./actions/objectlistheaderactionsbulksetstatusbutton";
+import {ObjectActionDownloadIcsButton} from "./components/objectactiondownloadicsbutton";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -448,7 +449,8 @@ import {ObjectListHeaderActionsBulkSetStatusButton} from "./actions/objectlisthe
         ObjectTemplatesPreview,
         ObjectActionDownloadEmailButton,
         ObjectTemplateSendTestEmailModal,
-        ObjectListHeaderActionsBulkSetStatusButton
+        ObjectListHeaderActionsBulkSetStatusButton,
+        ObjectActionDownloadIcsButton
     ],
     exports: [
         ObjectListViewHeader,
@@ -502,7 +504,8 @@ import {ObjectListHeaderActionsBulkSetStatusButton} from "./actions/objectlisthe
         ObjectRecordFieldsetContainer,
         ObjectActionContainerItem,
         ObjectActionDownloadEmailButton,
-        ObjectTemplateSendTestEmailModal
+        ObjectTemplateSendTestEmailModal,
+        ObjectActionDownloadIcsButton
     ]
 })
 export class ObjectComponents {}
