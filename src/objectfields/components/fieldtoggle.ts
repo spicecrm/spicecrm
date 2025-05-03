@@ -66,7 +66,7 @@ export class fieldToggle extends fieldGeneric implements OnInit{
      * @return boolean
      */
     get hidden(): boolean {
-        if (this.fieldconfig.acl && !this.metadata.checkModuleAcl(this.model.module, this.fieldconfig.acl)) {
+        if (this.fieldconfig.acl && !this.model.checkAccess(this.fieldconfig.acl)) {
             return true;
         }
         if (this.fieldconfig.assignedUserAccess) {
@@ -80,7 +80,7 @@ export class fieldToggle extends fieldGeneric implements OnInit{
      * @return boolean
      * */
     get disabled(): boolean {
-        return this.hidden;
+        return !this.model.checkAccess('edit');
     }
 
     /**
