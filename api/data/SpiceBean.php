@@ -1395,6 +1395,8 @@ class SpiceBean
             Relationship::resaveRelatedBeans();
         }
 
+        $this->callDomainHandlerMethod('afterSave');
+
         // call fts manager to index the bean
         if ($fts_index_bean) {
 
@@ -1408,8 +1410,6 @@ class SpiceBean
         AddressReferences::getInstance()->updateReferencedBeansAddress($this);
 
         $this->call_custom_logic('after_save', '');
-
-        $this->callDomainHandlerMethod('afterSave');
 
         //unset current bean_action
         $this->set_bean_action(null);
