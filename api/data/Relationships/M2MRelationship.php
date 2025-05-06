@@ -643,7 +643,6 @@ class M2MRelationship extends Relationship
         SpiceACL::getInstance()->addACLAccessToListArray($retArray, $relatedSeed);
         if($retArray['where']) {
             $where = "({$where}) AND {$retArray['where']}";
-            $joinRelated = true;
         }
 
         $deleted = !empty($params['deleted']) ? 1 : 0;
@@ -672,17 +671,18 @@ class M2MRelationship extends Relationship
 
             if(is_null($sortField)) $sortField = $params['sort']['sortfield'];
 
+            $from = "$rel_table ";
+            $joinRelated = true;
+
             if ($this->linkIsLHS($link)) {
                 // if we have an order by and the inner join, we need to reset $from .= ", $whereTable" to $from = $rel_table . " ";
                 if (is_null($sortFieldTable))$sortFieldTable = $this->def['rhs_table'];
-                $joinRelated = true;
                 if($params['sort']['sortfield']) { // CR1000382
                     $sort = ' ORDER BY ' . $sortFieldTable . '.' . $sortField . ' ' . ($params['sort']['sortdirection'] ?: 'ASC');
                 }
             } else {
                 // if we have an order by and the inner join, we need to reset $from .= ", $whereTable" to $from = $rel_table . " ";
                 if (is_null($sortFieldTable))$sortFieldTable = $this->def['lhs_table'];
-                $joinRelated = true;
                 if($params['sort']['sortfield']) { // CR1000382
                     $sort = ' ORDER BY ' . $sortFieldTable . '.' . $sortField . ' ' . ($params['sort']['sortdirection'] ?: 'ASC');
                 }
@@ -703,7 +703,7 @@ class M2MRelationship extends Relationship
 
         if (empty($params['return_as_array'])) {
 
-            // if we shoudl join the related table do this
+            // if we should join the related table do this
             if($joinRelated) {
                 $from .= $relatedJoin;
             }
