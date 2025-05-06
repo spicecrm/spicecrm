@@ -41,16 +41,11 @@ export class fieldActivityStatus extends fieldEnum implements OnInit, OnDestroy 
         this.getOptions();
         this.timeZone = this.session.getSessionData('timezone', false);
         this.subscribeToChanges();
+        this.calculateDate();
     }
 
     public subscribeToChanges() {
-        this.subscriptions.add(
-            this.model.observeFieldChanges('date_start').subscribe({
-                next: (value) => {
-                    this.setStatusBasedOnDate();
-                }
-            })
-        );
+        this.subscriptions.add(this.model.observeFieldChanges('date_start').subscribe(({ value }) => this.calculateDate(value)));
     }
 
     /**
@@ -71,20 +66,20 @@ export class fieldActivityStatus extends fieldEnum implements OnInit, OnDestroy 
     /**
      * checks whether the start date is before or after now
      * sets the value for status field accordingly
+     * @param newStart (optional) A raw ISO date string to use instead of the current model value
      */
-    public setStatusBasedOnDate() {
-        if (this.model.isNew && this.view.isEditMode()) {
-            // retrieve value from the field$ observable, this.model.data.date_start is not yet updated at this point
-            const startDate = moment(this.model.field$.value.value).format('YYYY-MM-DD HH:MM a');
-
-            let now = new moment.tz(this.timeZone || moment.tz.guess(true)).format('YYYY-MM-DD HH:MM a');
-
-            if (startDate <= now) {
-                this.model.setField(this.fieldname, 'Held');
-            } else {
-                this.model.setField(this.fieldname, 'Planned');
-            }
+    public calculateDate(newStart?: string) {
+        const startRaw = newStart ?? this.model.getField('date_start');
+        if (!startRaw || !moment(startRaw).isValid()) {
+            return;
         }
+
+        const tz = this.timeZone || moment.tz.guess();
+        const start = moment.tz(startRaw, tz);
+        const current = moment.tz(tz);
+
+        const status = start.isSameOrBefore(current) ? 'Held' : 'Planned';
+        this.model.setField(this.fieldname, status);
     }
 
     /**
