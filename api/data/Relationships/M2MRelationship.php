@@ -643,11 +643,12 @@ class M2MRelationship extends Relationship
         SpiceACL::getInstance()->addACLAccessToListArray($retArray, $relatedSeed);
         if($retArray['where']) {
             $where = "({$where}) AND {$retArray['where']}";
+            $joinRelated = true;
         }
 
         $deleted = !empty($params['deleted']) ? 1 : 0;
         $from = $rel_table . " ";
-        if (!empty($params['where'])) {
+        if (!empty($params['where']) && !$joinRelated) {
             $from .= ", $whereTable";
 //            if (isset($relatedSeed->custom_fields)) {
 //                $customJoin = $relatedSeed->custom_fields->getJOIN();
