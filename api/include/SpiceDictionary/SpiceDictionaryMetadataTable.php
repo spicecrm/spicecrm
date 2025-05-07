@@ -57,7 +57,7 @@ abstract class SpiceDictionaryMetadataTable extends SpiceSingleton
 
     public function getItemByLabel(string $label): mixed {
         foreach ($this->data as $item) {
-            if (strtolower($item['label']) == strtolower($label)) {
+            if (strtolower($item['label']) == strtolower($label) && $item['deleted'] == 0 && $item['active'] != 0) {
                 return new $item['class']();
             }
         }
