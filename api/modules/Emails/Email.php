@@ -1931,7 +1931,7 @@ class Email extends SpiceBean
 
         // check for embedded files, if they are attached embed them as base64 ref
         $matches = [];
-        if (preg_match_all('/src\s*=\s*"(.+?)"/', html_entity_decode($content), $matches)) {
+        if (preg_match_all('/src\s*=\s*"(.+?)"/i', html_entity_decode($content), $matches)) {
             $attachments = SpiceAttachments::getAttachmentsForBean('Emails', $this->id, 100, false);
             foreach ($attachments as $attachment) {
                 foreach ($matches[1] as $match) {
