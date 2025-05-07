@@ -401,12 +401,6 @@ class Email extends SpiceBean
             if (empty($addresses)) continue;
 
             foreach ($addresses as $address) {
-                $existingIndex = array_search($address, array_column($this->recipient_addresses, 'email_address'));
-
-                if (empty($address) || ($existingIndex !== false && $this->recipient_addresses[$existingIndex]['address_type'] == $type)) {
-                    continue;
-                }
-
                 $this->addEmailAddress($type, $address);
             }
 
@@ -1330,10 +1324,15 @@ class Email extends SpiceBean
 
     function addEmailAddress($type, $address)
     {
-        if (!$address) return null;
+        $existingIndex = array_search($address, array_column($this->recipient_addresses, 'email_address'));
+
+        if (!$address || ($existingIndex !== false && $this->recipient_addresses[$existingIndex]['address_type'] == $type)) {
+            return null;
+        }
+
         $this->recipient_addresses[] = [
             'address_type' => $type,
-            'email_address' => $address
+            'email_address' => $this->emailAddress->splitEmailAddress($address)['email']
         ];
     }
 
@@ -1932,7 +1931,7 @@ class Email extends SpiceBean
 
         // check for embedded files, if they are attached embed them as base64 ref
         $matches = [];
-        if (preg_match_all('/src\s*=\s*"(.+?)"/', html_entity_decode($content), $matches)) {
+        if (preg_match_all('/src\s*=\s*"(.+?)"/i', html_entity_decode($content), $matches)) {
             $attachments = SpiceAttachments::getAttachmentsForBean('Emails', $this->id, 100, false);
             foreach ($attachments as $attachment) {
                 foreach ($matches[1] as $match) {

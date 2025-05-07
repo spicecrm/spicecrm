@@ -176,10 +176,10 @@ class WebHook
             CURLOPT_SSL_VERIFYPEER => $hook['ssl_verifypeer'],
             CURLOPT_SSL_VERIFYHOST => $hook['ssl_verifyhost'],
             CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT_MS => 500,
             CURLOPT_URL => $hook['url'],
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => json_encode($body),
-            // CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
             CURLOPT_HEADER => 1,
             CURLOPT_HTTPHEADER => $headers
         ];
