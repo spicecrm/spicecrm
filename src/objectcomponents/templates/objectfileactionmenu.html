@@ -1,4 +1,4 @@
-<div class="slds-dropdown-trigger slds-dropdown-trigger--click" system-dropdown-trigger>
+<div class="slds-dropdown-trigger slds-dropdown-trigger--click" [system-dropdown-trigger]>
     <button class="slds-button slds-button--icon-border-filled slds-button--icon-x-small" aria-haspopup="true">
         <system-button-icon [icon]="'down'"></system-button-icon>
     </button>
@@ -37,13 +37,13 @@
                     </a>
                 </li>
             } @else {
-                <li class="slds-dropdown__item" role="presentation"  [hidden]="hidden" (click)="renameFolder()">
+                <li class="slds-dropdown__item" role="presentation" [hidden]="hidden" (click)="renameFolder()">
                     <a href="javascript:void(0);" role="menuitem">
                         <span class="slds-truncate"><system-label label="LBL_RENAME"/></span>
                         <system-utility-icon icon="record_update" size="xx-small"/>
                     </a>
                 </li>
-                <li class="slds-dropdown__item" role="presentation"  [hidden]="hidden" (click)="deleteFolder()" [ngClass]="{'slds-is-disabled': modelattachments.itemsInFolder(file.id) > 0}">
+                <li class="slds-dropdown__item" role="presentation" [hidden]="hidden" (click)="deleteFolder()" [ngClass]="{'slds-is-disabled': modelattachments.itemsInFolder(file.id) > 0}">
                     <a href="javascript:void(0);" role="menuitem">
                         <span class="slds-truncate"><system-label label="LBL_DELETE"/></span>
                         <system-utility-icon icon="delete" size="xx-small"/>
