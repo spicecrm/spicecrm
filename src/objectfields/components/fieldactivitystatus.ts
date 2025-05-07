@@ -44,6 +44,10 @@ export class fieldActivityStatus extends fieldEnum implements OnInit, OnDestroy 
     }
 
     public subscribeToChanges() {
+        if (this.model.isNew && this.model.getField('date_start')){
+            this.setStatusBasedOnDate();
+        }
+
         this.subscriptions.add(
             this.model.observeFieldChanges('date_start').subscribe({
                 next: (value) => {
@@ -74,10 +78,9 @@ export class fieldActivityStatus extends fieldEnum implements OnInit, OnDestroy 
      */
     public setStatusBasedOnDate() {
         if (this.model.isNew && this.view.isEditMode()) {
-            // retrieve value from the field$ observable, this.model.data.date_start is not yet updated at this point
-            const startDate = moment(this.model.field$.value.value).format('YYYY-MM-DD HH:MM a');
+            const startDate = moment(this.model.data.date_start).format('YYYY-MM-DD HH:mm a');
 
-            let now = new moment.tz(this.timeZone || moment.tz.guess(true)).format('YYYY-MM-DD HH:MM a');
+            let now = new moment.tz(this.timeZone || moment.tz.guess(true)).format('YYYY-MM-DD HH:mm a');
 
             if (startDate <= now) {
                 this.model.setField(this.fieldname, 'Held');
