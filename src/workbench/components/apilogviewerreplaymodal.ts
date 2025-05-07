@@ -78,7 +78,8 @@ export class APIlogViewerReplayModal {
         });
     }
 
-    public ngOnInit() {
+    public ngOnInit()
+    {
         this.loadFullData();
     }
 
@@ -87,17 +88,18 @@ export class APIlogViewerReplayModal {
      *
      * @private
      */
-    public loadFullData() {
+    public loadFullData()
+    {
         this.isLoading = true;
         this.backend.getRequest(`admin/apilog/${this.entry.id}`, {logtable: this.logtable}).subscribe({
             next: (response) => {
                 this.record = response;
                 // try to parse the headers so we know how to handle post and response params
                 this.setRequestHeaders();
-                this.getBody( this.record.request_body );
+                this.replayData = ( this.record.request_body ? JSON.parse( this.record.request_body ) : null );
                 this.contentType = this.determineContentType( this._requestheaders );
                 this.hasBodyData = this.record.request_body && this.record.request_body != "{}";
-                this.canEdit = this.contentType === 'application/json';
+                this.canEdit = ( this.contentType === 'application/json' ) && this.hasBodyData;
                 this.isLoading = false;
             },
             error: (error) => {
@@ -213,17 +215,13 @@ export class APIlogViewerReplayModal {
         return this.getFormattedBody(this.determineContentType(this._requestheaders), this.record.request_body);
     }
 
-    public getBody(content) {
-        this.replayData = ( content ? JSON.parse(content) : null );
-    }
-
     public doReplay(): void
     {
-        this.modal.prompt('confirm', 'This could create data or change existing data. Are you sure you want to continue?', 'Confirm Replay').subscribe({
+        this.modal.prompt('confirm', this.language.getLabel('LBL_CONFIRM_API_REPLAY', '', 'long'), this.language.getLabel('LBL_CONFIRM_API_REPLAY')).subscribe({
            next: confirmation => {
                if ( !confirmation ) return;
                console.log(this.record);
-               if ( this.record.needsAuthorization ) this.modal.prompt('input_password', 'The API requires authorization for this route. Please provide your password:', 'Password needed').subscribe({
+               if ( this.record.needsAuthorization ) this.modal.prompt('input_password', this.language.getLabel('LBL_API_REPLAY_PW_PROMPT', '', 'long'), this.language.getLabel('LBL_API_REPLAY_PW_PROMPT')).subscribe({
                    next: ( val: string|boolean ) => {
                        if ( val !== false ) { // @ts-ignore
                            this.sendReplay( val );
@@ -337,11 +335,6 @@ export class APIlogViewerReplayModal {
         } catch (e) {
             return this.record[param];
         }
-    }
-
-    public dummy( x: number, y )
-    {
-        return 'asdf';
     }
 
 }
