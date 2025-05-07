@@ -103,7 +103,7 @@ export class SystemFilterBuilderFilterExpressionFields implements OnChanges, Con
         let fields = this.metadata.getModuleFields(this.module);
         for (let field in fields) {
 
-            if (!this.displayAllFields && !(fields[field].type == 'linked' && fields[field].name == 'assigned_user')) {
+            if (!this.displayAllFields) {
                 // no links
                 if(fields[field].type == 'link') continue;
 
@@ -117,7 +117,7 @@ export class SystemFilterBuilderFilterExpressionFields implements OnChanges, Con
                 if(fields[field].type == 'id') continue;
 
                 // no non-db fields
-                if(fields[field].source == 'non-db' && fields[field].type != 'relate') continue;
+                if(fields[field].source == 'non-db' && fields[field].type != 'relate' && fields[field].type != 'linked') continue;
             }
 
             this.fields.push({
