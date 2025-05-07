@@ -12,6 +12,7 @@ use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -487,6 +488,39 @@ class SpiceBeanController
         $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
         $params = $req->getQueryParams();
         return $res->withJson($moduleHandler->acceptBeanAsDuplicate($args['beanName'], $args['beanId'], $args['beanIdRight'], $params['deleted']));
+    }
+
+    /**
+     * Converts a bean (call/meeting) to a .ics file
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws NotFoundException
+     */
+    public function convertToIcs(Request $req, Response $res, array $args): Response
+    {
+        $bean = BeanFactory::getBean($args['beanName'], $args['beanId']);
+        if (!$bean) {
+            throw new NotFoundException('Bean not found');
+        }
+
+        $content = "BEGIN:VCALENDAR\r\n";
+        $content .= "VERSION:2.0\r\n";
+        $content .= "PRODID:-//SpiceCrm\r\n";
+        $content .= "BEGIN:VEVENT\r\n";
+        $content .= "UID:" . SpiceUtils::createGuid() . "\r\n";
+        $content .= "DTSTAMP:" . gmdate('Ymd\THis\Z') . "\r\n";
+        $content .= "DTSTART:" . date('Ymd\THis', strtotime($bean->date_start)) . "\r\n";
+        $content .= "DTEND:" . date('Ymd\THis', strtotime($bean->date_end)) . "\r\n";
+        $content .= "SUMMARY: $bean->name\r\n";
+        $content .= "DESCRIPTION: $bean->description\r\n";
+        $content .= "END:VEVENT\r\n";
+        $content .= "END:VCALENDAR\r\n";
+
+        $res->getBody()->write($content);
+        return $res->withHeader('Content-Type', 'text/calendar');
     }
 
 }

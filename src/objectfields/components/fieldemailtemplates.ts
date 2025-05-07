@@ -96,7 +96,7 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
         this.availableTemplates = emailTemplates.filter(
             et => et.type == 'email'
                 && (et.for_bean == '*' || et.for_bean == this.model.getFieldValue('parent_type'))
-                && ( !et.editor_type || allowedEditorTypes.includes( et.editor_type ))
+                && ( allowedEditorTypes.length == 0 || !et.editor_type || allowedEditorTypes.includes( et.editor_type ))
         );
         this.availableTemplates.sort((a, b) =>  a.name.localeCompare(b.name));
         this.isLoaded = true;

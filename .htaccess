@@ -5,6 +5,11 @@
   Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; preload"
 </IfModule>
 
+<IfModule mod_headers.c>
+  SetEnvIf Request_URI "^/api/channels/voice/CISCO/events/handle" ADD_CUSTOM_HEADER=1
+  RequestHeader set force-authorization-none "true" env=ADD_CUSTOM_HEADER
+</IfModule>
+
 # no directory listing access
 Options -Indexes
 
@@ -35,6 +40,8 @@ RewriteRule ^sldassets/?(.*) %{REQUEST_URI} [L,R=301]
 
 # Remove server signature
 ServerSignature Off
+
+
 
 # enforce no cache
 <FilesMatch "^(?!.*\.([0-9a-z]{20})\.).*$">
