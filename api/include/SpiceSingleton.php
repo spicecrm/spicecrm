@@ -11,7 +11,7 @@ abstract class SpiceSingleton
      */
     protected static $instance = null;
 
-    final protected function __construct() {}
+    protected function __construct() {}
 
     final protected function __clone() {}
 

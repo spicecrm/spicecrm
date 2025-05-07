@@ -1,4 +1,4 @@
-<div class="slds-card slds-card_boundary slds-m-bottom--medium" (system-drop-file)="fileDrop($event)">
+<div class="slds-card slds-card_boundary slds-m-bottom--medium" (system-drop-file)="fileDrop($event)" [disabled]="!canUpload">
     <div class="slds-card__header slds-grid">
         <header class="slds-size--1-of-1 slds-grid slds-grid--vertical-align-center">
             <system-icon [icon]="'file'" [size]="'small'"></system-icon>
@@ -47,8 +47,8 @@
                         </div>
                     </div>
                 }
-                <button *ngIf="!componentconfig.disableupload" class="slds-m-left--xxx-small slds-button slds-button--icon-border" (click)="selectFile()" system-title="LBL_UPLOAD"><system-utility-icon size="x-small" icon="upload"/></button>
-                <button *ngIf="!componentconfig.disableupload" class="slds-m-left--xxx-small slds-button slds-button--icon-border" (click)="addImage()" system-title="LBL_IMAGE"><system-utility-icon size="x-small" icon="image"/></button>
+                <button *ngIf="!componentconfig.disableupload" class="slds-m-left--xxx-small slds-button slds-button--icon-border" [disabled]="!canUpload" [ngClass]="{'slds-is-disabled': !canUpload}" (click)="selectFile()" system-title="LBL_UPLOAD"><system-utility-icon size="x-small" icon="upload"/></button>
+                <button *ngIf="!componentconfig.disableupload" class="slds-m-left--xxx-small slds-button slds-button--icon-border" [disabled]="!canUpload" [ngClass]="{'slds-is-disabled': !canUpload}" (click)="addImage()" system-title="LBL_IMAGE"><system-utility-icon size="x-small" icon="image"/></button>
                 <button class="slds-m-left--xxx-small slds-button slds-button--icon-border" (click)="loadFiles()" system-title="LBL_RELOAD"><system-utility-icon size="x-small" icon="refresh"></system-utility-icon></button>
             </div>
         </header>
@@ -92,7 +92,7 @@
                         }
                     </ol>
                 </nav>
-                <button class="slds-button slds-button--icon" (click)="addFolder()">
+                <button class="slds-button slds-button--icon" [disabled]="!canUpload" (click)="addFolder()">
                     <system-button-icon icon="new"/>
                 </button>
             </div>
