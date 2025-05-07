@@ -36,7 +36,7 @@ class SpiceFTSSearchtermParser
     public function sanitizteSearchTerm($searchTerm)
     {
         $sanitizedTerms = [];
-        $terms = explode('OR', $searchTerm);
+        $terms = explode(' OR ', $searchTerm);
         foreach ($terms as $term) {
             $sanitizedTerms[] = mb_strtolower(trim((string)$term), (SpiceConfig::getInstance()->config['fts']['searchterm_encoding'] ? SpiceConfig::getInstance()->config['fts']['searchterm_encoding'] : 'UTF-8'));
         }
@@ -54,7 +54,7 @@ class SpiceFTSSearchtermParser
     public function parse($searchTerm, $indexSettings, $indexProperties)
     {
         // split the string by OR
-        $termParts = explode("OR", $searchTerm);
+        $termParts = explode(" OR ", $searchTerm);
         if (count($termParts) == 1) {
             /*
             return [
