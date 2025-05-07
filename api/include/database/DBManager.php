@@ -2060,8 +2060,12 @@ abstract class DBManager
     public function insertSQL(SpiceBean $bean)
     {
         // get column names and values
-        $sql = $this->insertParams($bean->getTableName(), $bean->getFieldDefinitions(), get_object_vars($bean),
-            isset($bean->field_defs) ? $bean->field_defs : null, false);
+        $sql = $this->insertParams(
+            $bean->getTableName(),
+            $bean->getFieldDefinitions(),
+            get_object_vars($bean),
+            isset($bean->field_defs) ? $bean->field_defs : null,
+            false);
         return $sql;
     }
 

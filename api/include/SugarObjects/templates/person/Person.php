@@ -90,80 +90,12 @@ class Person extends SpiceBean
     }
 
     /**
-     * handle saving/adding the primary email address
-     * @see parent::save()
-     */
-    public function save($check_notify = false, $fts_index_bean = true)
-    {
-        # index only if enabled and no email1 handling follows
-        $id = parent::save($check_notify, $fts_index_bean && empty(trim($this->email1)));
-
-        if (empty(trim($this->email1))){
-            return $this->id;
-        }
-
-        $primaryEmailAddressId = EmailAddress::getEmailAddressId($this->email1);
-
-        if (!$primaryEmailAddressId) {
-            $newEmailAddress = BeanFactory::newBean('EmailAddresses');
-            $newEmailAddress->email_address = $this->email1;
-            $newEmailAddress->email_address_caps = strtoupper($this->email1);
-            $primaryEmailAddressId = $newEmailAddress->save();
-        }
-
-        if (!empty($this->opt_in_status)) {
-            $this->setPrimaryEmailAddress($primaryEmailAddressId, ['opt_in_status' => $this->opt_in_status]);
-        } else {
-            $this->setPrimaryEmailAddress($primaryEmailAddressId);
-        }
-
-        if ($fts_index_bean) {
-            # index the person after adding the primary email address to ensure indexing it
-            SpiceFTSHandler::getInstance()->indexBean($this);
-        }
-
-        return $id;
-    }
-
-    /**
      * fill in primary email address opt in status
      * @param $status
      */
     public function fillInPrimaryEmailAddressOptInStatus($status)
     {
         $this->primary_email_opt_in_status = $status;
-    }
-
-    /**
-     * set the primary email address from the email1 field
-     * @param string $primaryEmailAddressId
-     * @param array $relFieldsValues
-     */
-    private function setPrimaryEmailAddress(string $primaryEmailAddressId, $relFieldsValues = [])
-    {
-
-        if(!$this->load_relationship('email_addresses')) return;
-
-        $relationExists = false;
-        $linkedEmailAddresses = $this->get_linked_beans('email_addresses');
-
-        if (!is_array($linkedEmailAddresses)) return;
-
-        foreach ($linkedEmailAddresses as $linkedEmailAddress) {
-
-            if ($primaryEmailAddressId == $linkedEmailAddress->id) {
-
-                $relationExists = true;
-                $this->email_addresses->add($linkedEmailAddress->id, ['primary_address' => 1]);
-            } else {
-                $this->email_addresses->add($linkedEmailAddress->id, ['primary_address' => 0]);
-            }
-        }
-
-        if (!$relationExists) {
-            $relFieldsValues['primary_address'] = 1;
-            $this->email_addresses->add($primaryEmailAddressId, $relFieldsValues);
-        }
     }
 
     /**
@@ -292,33 +224,6 @@ class Person extends SpiceBean
         $content .= $this->primary_address_country && $this->primary_address_country != "" ? "{$this->primary_address_country}" : '';
         $content .= "\nEND:VCARD";
         return $content;
-    }
-
-    /**
-     * override sugar function fill in additional fields on retrieve
-     */
-    public function fill_in_additional_detail_fields()
-    {
-        parent::fill_in_additional_detail_fields();
-        $this->fillInEmail1Field();
-    }
-
-    /**
-     * fill in the email1 field called by fill_in_additional_detail_fields
-     */
-    public function fillInEmail1Field() {
-        $emailAddress = $this->db->fetchOne("SELECT email_address FROM email_addresses ea, email_addr_bean_rel ear WHERE ear.bean_id='{$this->id}' AND ear.bean_module='{$this->_module}'  AND ear.primary_address=1 AND ear.deleted != 1 AND ear.email_address_id = ea.id AND ea.deleted != 1");
-        if($emailAddress){
-            $this->email1 = $emailAddress['email_address'];
-        } else $this->email1 = '';
-        /* performance increase
-        $emailAddresses = $this->get_linked_beans('email_addresses');
-        foreach ($emailAddresses as $emailAddress) {
-            if ($emailAddress->primary_address != 1) continue;
-            $this->email1 = $emailAddress->email_address;
-            break;
-        }
-        */
     }
 
     /*

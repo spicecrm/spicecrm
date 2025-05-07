@@ -44,7 +44,7 @@ export class EmailSchedulesRelatedModal {
     /**
      * the max number of count to be allowed to send emails to
      */
-    public maxCount: number = 50;
+    public maxCount: number;
 
     public referencedEmail: model;
 
@@ -62,6 +62,8 @@ export class EmailSchedulesRelatedModal {
 
         this.view.isEditable = true;
         this.view.setEditMode();
+
+        this.maxCount = +(this.model.configuration.getCapabilityConfig('emailschedules')?.maxEmailCount ?? 50);
 
     }
 
