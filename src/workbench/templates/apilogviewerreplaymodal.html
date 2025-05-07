@@ -1,5 +1,5 @@
 <system-modal size="large">
-    <system-modal-header (close)="close()">Replay API Request
+    <system-modal-header (close)="close()">{{language.getLabel('LBL_REPLAY_API_REQUEST')}}
         <span class="slds-text-heading_small slds-p-top_x-small" style="display:block">
                 <span class="slds-p-horizontal--x-small slds-theme--info slds-text-color--inverse" style="opacity:0.66">{{entry.route}}</span>
         </span>
@@ -86,7 +86,7 @@
     </system-modal-content>
     <system-modal-footer>
         <div class="slds-grid slds-grid_align-spread">
-            <span class="slds-col--bump-right"><button *ngIf="canEdit && editMode === false" class="slds-button slds-button--brand" (click)="editMode=true"><system-label label="LBL_EDIT_DATA"></system-label></button></span>
+            <span class="slds-col--bump-right"><button *ngIf="activeTab==='body' && canEdit && editMode === false" class="slds-button slds-button--brand" (click)="editMode=true"><system-label label="LBL_EDIT_DATA"></system-label></button></span>
             <button class="slds-button slds-button--neutral" (click)="cancelReplay()"><system-label label="LBL_CANCEL"></system-label></button>
             <button class="slds-button slds-button--brand" (click)="doReplay()"><system-label label="LBL_START_START"></system-label> …</button>
         </div>
