@@ -114,7 +114,7 @@ class ValidationMiddleware
     private function checkParameterPresence(): void {
         $pathParams  = $this->route->getArguments();
         $queryParams = $this->request->getQueryParams();
-        $bodyParams  = $this->request->getParsedBody();
+        $bodyParams  = $this->request->getParsedBody() ?: [];
 
         foreach ($this->routeDefinition['parameters'] as $paramName => $paramDefinition) {
             if (!isset($paramDefinition['required'])

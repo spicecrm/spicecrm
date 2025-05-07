@@ -58,15 +58,17 @@ export class fieldProcessImpactScore extends fieldEnum {
 
 
     private calculateRisk(){
-        if(this.view.isEditMode() && this.model.getField('risk_impact') >= 0 && this.model.getField('risk_probability') >= 0){
-            let risk = this.model.getField('risk_impact') + this.model.getField('risk_probability');
-            if(risk >= 13){
+        if(this.view.isEditMode() && this.model.getField('risk_impact') >= 0 && this.model.getField('risk_probability') >= 0 && this.model.getField('risk_frequency') >= 0){
+            let risk = this.model.getField('risk_impact') + this.model.getField('risk_probability') + this.model.getField('risk_frequency');
+            if(risk >= 20){
                 this.value = 'H';
-            } else if(risk >= 8){
+            } else if(risk >= 10){
                 this.value = 'M';
             } else {
                 this.value = 'L'
             }
+        } else {
+            this.value = 'L'
         }
     }
 
@@ -89,7 +91,6 @@ export class fieldProcessImpactScore extends fieldEnum {
      * @private
      */
     private handleMessage(message){
-        console.log(message);
         if(message.messagetype == 'model.save' && message.messagedata.module == 'ProcessRiskAssessments' &&  message.messagedata.data.status == 'A' &&  message.messagedata.data.processrisk_id == this.model.id && !!message.messagedata.data.score){
             this.value = message.messagedata.data.score;
         }

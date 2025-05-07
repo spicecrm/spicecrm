@@ -290,6 +290,15 @@ class RESTManager
         // get the headers
         $headers = $this->getHeaders();
 
+        // specific handling if header sets enforced authorization none we process unauthorized
+        // this uspports passing by any accidentially or unwanted added authorization headers
+        // it can be overwritten e.g. in .htaccess or any other rule in between
+        // in this ca<se the user will simply not be authorized and the request will be handled anonymously
+        if($headers['force-authorization-none'] == 'true') {
+            $this->authParams = (object) [ 'authType' => 'none'];
+            return;
+        }
+
         $token = null;
         $tokenIssuer = null;
         $user = null;

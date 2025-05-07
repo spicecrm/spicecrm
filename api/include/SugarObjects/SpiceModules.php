@@ -73,7 +73,7 @@ class SpiceModules
             unset($_SESSION['SpiceUI']['modules']);
 
             $this->modules = [];
-            $columns = ['id', 'acl', 'module', 'bean', 'beanfile', 'workflow', 'visible', 'tagging', 'sysdictionarydefinition_id', 'acl_multipleusers'];
+            $columns = ['id', 'acl', 'module', 'bean', 'beanfile', 'workflow', 'visible', 'tagging', 'sysdictionarydefinition_id', 'acl_multipleusers', 'socket_disabled'];
             $modules = DBManagerFactory::getInstance()->query("SELECT ".implode(', ', $columns).", 'g' scope FROM sysmodules UNION ALL SELECT ".implode(', ', $columns).", 'c' scope FROM syscustommodules");
             while ($module = DBManagerFactory::getInstance()->fetchByAssoc($modules)) {
                 $this->moduleList[$module['module']] = $module['module'];
