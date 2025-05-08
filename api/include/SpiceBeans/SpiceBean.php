@@ -10,6 +10,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
 use SpiceCRM\includes\SpiceDictionary\validators\ValidatorFactory;
 use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
 use SpiceCRM\includes\WebHook\WebHook;
@@ -999,7 +1000,7 @@ class SpiceBean
         //find all definitions of type link.
         if (!empty($fieldDefs[$rel_name])) {
             //initialize a variable of type Link
-            $class = Link2::class;
+            $class = SpiceDictionaryLink::class;
             if (isset($this->$rel_name) && $this->$rel_name instanceof $class) {
                 if ($forceReload) {
                     $this->$rel_name->load();

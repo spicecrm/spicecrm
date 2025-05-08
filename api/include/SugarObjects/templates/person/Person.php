@@ -6,6 +6,7 @@ use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarObjects\traits\letterSalutationTrait;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -23,7 +24,7 @@ class Person extends SpiceBean
     var $createLocaleFormattedName = true;
 
     /**
-     * @var Link2
+     * @var SpiceDictionaryLink
      */
     public $email_addresses;
 
