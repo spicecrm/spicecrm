@@ -218,6 +218,13 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
     }
 
     /**
+     * check that we have edit rights on the record
+     */
+    get canUpload(){
+        return this.metadata.checkModuleAcl('Application', "manageattachments") || this.model.checkAccess('edit');
+    }
+
+    /**
      * gets the folder id and consider the root value
      */
     get treeFolder(){

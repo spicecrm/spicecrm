@@ -1,7 +1,7 @@
 /**
  * @module ModuleCampaigns
  */
-import {Component, Injector, OnDestroy, OnInit} from '@angular/core';
+import {Component, Injector, OnDestroy, OnInit, Input} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
@@ -16,6 +16,10 @@ import {Subscription} from "rxjs";
     templateUrl: '../templates/campaigntaskemailpanel.html'
 })
 export class CampaignTaskEmailPanel implements OnInit, OnDestroy {
+    /**
+     * set to true if email content needs to be preserved
+     */
+    @Input() preserveEmailContent: boolean = false;
     /**
      * holds the component config set from the workbench
      */
@@ -133,8 +137,17 @@ export class CampaignTaskEmailPanel implements OnInit, OnDestroy {
                 selectModal.instance.multiselect = false;
                 selectModal.instance.selectedItems.subscribe(items => {
                     if (items.length) {
-                        this.model.setField('email_subject', items[0].subject);
-                        this.model.setField('email_body', items[0].body_html);
+                        if(this.preserveEmailContent) {
+                            // extract the email content in order to be preserved when template is added
+                            let emailContent: HTMLElement;
+                            emailContent = document.querySelector('.spicecrm_reply_quote')
+                            this.model.setField('email_body', '');
+                            let newBody = [items[0].body_html, '<div class="spicecrm_reply_quote">' + emailContent.innerHTML + '<div><br><br>'].join('<p><br></p>')
+                            this.model.setField('email_body', newBody);
+                        } else {
+                            this.model.setField('email_body', items[0].body_html)
+                            this.model.setField('email_subject', items[0].subject);
+                        }
                         this.setSanitizedHTMLValue();
                     }
                 });
