@@ -19,6 +19,7 @@ use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SysCategoryTrees\SysCategoryTree;
+use SpiceCRM\includes\TimeDate;
 
 /**
  * Class SpiceUtils

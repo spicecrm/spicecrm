@@ -52,10 +52,10 @@ class SysCategoryTreesController
         $params = $req->getQueryParams();
 
         $return = [];
-        $where = "syscategorytree_id = '{$args['id']}'";
+        $where = "syscategorytree_id = '{$args['id']}' AND deleted = 0 ";
         if(!$params['all']){
             $dbNow = TimeDate::getInstance()->nowDb();
-            $where .= " AND deleted = 0 AND node_status = 'a' AND valid_from <= '{$dbNow}' AND valid_to >= '{$dbNow}'";
+            $where .= " AND node_status = 'a' AND valid_from <= '{$dbNow}' AND valid_to >= '{$dbNow}'";
         }
         $rows = $db->query("SELECT * FROM syscategorytreenodes WHERE $where");
         while ($row = $db->fetchByAssoc($rows)) {
