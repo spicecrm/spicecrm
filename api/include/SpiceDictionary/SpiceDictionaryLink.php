@@ -1,17 +1,19 @@
 <?php
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
-namespace SpiceCRM\data;
+namespace SpiceCRM\includes\SpiceDictionary;
 
 use SpiceCRM\data\Relationships\Relationship;
 use SpiceCRM\data\Relationships\RelationshipFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
 /*********************************************************************************
 
  * Description:  Represents a relationship from a single bean's perspective.
- * Does not actively do work but is used by sugarbean to manipulate relationships.
+ * Does not actively do work but is used by spicebean to manipulate relationships.
  * Work is deferred to the relationship classes.
  *
  * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
@@ -24,7 +26,7 @@ use SpiceCRM\includes\SugarObjects\VardefManager;
  * Represents a relationship from a single beans perspective.
  * @api
  */
-class Link2
+class SpiceDictionaryLink
 {
 
     protected $relationship; //relationship object this link is tied to.
@@ -41,7 +43,7 @@ class Link2
     /**
      * @param  $linkName String name of a link field in the module's vardefs
      * @param  $bean SpiceBean focus bean for this link (one half of a relationship)
-     * @param  $linkDef Array Optional vardef for the link in case it can't be found in the passed in bean for the global dictionary
+     * @param  $linkDef array Optional vardef for the link in case it can't be found in the passed in bean for the global dictionary
      * @return void
      *
      */

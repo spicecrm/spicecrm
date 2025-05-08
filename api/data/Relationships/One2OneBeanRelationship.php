@@ -3,7 +3,6 @@
 
 namespace SpiceCRM\data\Relationships;
 
-use SpiceCRM\data\Link2;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
 
 /**

@@ -1,11 +1,9 @@
 <?php
 namespace SpiceCRM\data\Relationships;
 
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\data\Link2;
-use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -83,7 +81,7 @@ class M2MProspectListRelationship extends M2MRelationship
 
 
     /**
-     * @param  $link Link2 loads the relationship for this link.
+     * @param  $link \SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink loads the relationship for this link.
      * @return void
      */
     public function load($link, $params = [])

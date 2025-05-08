@@ -3,18 +3,15 @@
 
 namespace SpiceCRM\data\Relationships;
 
-use SpiceCRM\data\Link2;
-use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
-use SpiceCRM\includes\SpiceCache\SpiceCacheMemory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryField;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
-use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 
@@ -159,7 +156,7 @@ class EmailAddressRelationship extends M2MRelationship
    }
 
     /**
-     * @param  $link Link2 loads the relationship for this link.
+     * @param  $link \SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink loads the relationship for this link.
      * @return void
      */
     public function load($link, $params = [])

@@ -2,9 +2,9 @@
 
 namespace SpiceCRM\data\Relationships;
 
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\data\Link2;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
 
 class M2MBeanRelationship extends M2MRelationship
 {
@@ -125,7 +125,7 @@ class M2MBeanRelationship extends M2MRelationship
     }
 
     /**
-     * @param  $link Link2 loads the relationship for this link.
+     * @param  $link SpiceDictionaryLink loads the relationship for this link.
      * @return void
      */
     public function load($link, $params = [])

@@ -83,7 +83,7 @@ abstract class Relationship
     /**
      * Gets the query to load a link.
      * This is currently public, but should prob be made protected later.
-     * See Link2->getQuery
+     * See SpiceDictionaryLink->getQuery
      * @abstract
      * @param  $link Link Object to get query for.
      * @return string|array query used to load this relationship

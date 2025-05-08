@@ -7,15 +7,14 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryField;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\data\Link2;
-use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
@@ -485,13 +484,13 @@ class M2MRelationship extends Relationship
 
         if (empty($_SESSION['disable_workflow']) || $_SESSION['disable_workflow'] != "Yes")
         {
-            if ($lhs->$lhsLinkName instanceof Link2)
+            if ($lhs->$lhsLinkName instanceof SpiceDictionaryLink)
             {
                 $lhs->$lhsLinkName->load();
                 $this->callBeforeDelete($lhs, $rhs, $lhsLinkName);
             }
 
-            if ($rhs->$rhsLinkName instanceof Link2)
+            if ($rhs->$rhsLinkName instanceof SpiceDictionaryLink)
             {
                 $rhs->$rhsLinkName->load();
                 $this->callBeforeDelete($rhs, $lhs, $rhsLinkName);
@@ -516,13 +515,13 @@ class M2MRelationship extends Relationship
 
         if (empty($_SESSION['disable_workflow']) || $_SESSION['disable_workflow'] != "Yes")
         {
-            if ($lhs->$lhsLinkName instanceof Link2)
+            if ($lhs->$lhsLinkName instanceof SpiceDictionaryLink)
             {
                 $lhs->$lhsLinkName->load();
                 $this->callAfterDelete($lhs, $rhs, $lhsLinkName);
             }
 
-            if ($rhs->$rhsLinkName instanceof Link2)
+            if ($rhs->$rhsLinkName instanceof SpiceDictionaryLink)
             {
                 $rhs->$rhsLinkName->load();
                 $this->callAfterDelete($rhs, $lhs, $rhsLinkName);
@@ -552,7 +551,7 @@ class M2MRelationship extends Relationship
     }
 
     /**
-     * @param  $link Link2 loads the relationship for this link.
+     * @param  $link \SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink loads the relationship for this link.
      * @return void
      */
     public function load($link, $params = [])

@@ -1399,7 +1399,7 @@ class SpiceFTSHandler
 
                     foreach ($seed->field_defs as $field => $fieldData) {
                         //if (!isset($hit['_source']{$field}))
-                        if(is_string($seed->$field)) { // might be Link2 Object! so check on it
+                        if(is_string($seed->$field)) { // might be SpiceDictionaryLink Object! so check on it
                             $hit['_source'][$field] = html_entity_decode($seed->$field, ENT_QUOTES);
                         }
                     }

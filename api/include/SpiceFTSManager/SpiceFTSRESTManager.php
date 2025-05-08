@@ -35,6 +35,7 @@ use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SystemTenants\SystemTenant;
@@ -395,7 +396,7 @@ class SpiceFTSRESTManager
             //2011-08-15 add relationship fields in many-to.many relationships
             //2012-03-20 change for 6.4
             if (
-                $thisLink != '' && get_class($thisLink) == 'Link2'
+                $thisLink != '' && get_class($thisLink) == SpiceDictionaryLink::class
             ) {
                 if ($thisLink != '' && $thisLink->_relationship->relationship_type == 'many-to-many')
                     $functionsArray[] = [

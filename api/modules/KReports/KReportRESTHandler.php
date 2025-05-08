@@ -6,6 +6,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
@@ -741,7 +742,7 @@ class KReporterRESTHandler
         //2011-08-15 add relationship fields in many-to.many relationships
         //2012-03-20 change for 6.4
         if (
-            $thisLink != '' && get_class($thisLink) == 'Link2'
+            $thisLink != '' && get_class($thisLink) == SpiceDictionaryLink::class
         ) {
             if ($thisLink != '' && $thisLink->_relationship->relationship_type == 'many-to-many')
                 $functionsArray[] = [
