@@ -1053,7 +1053,7 @@ class SpiceBean
 
         if ($this->load_relationship($field_name)) {
 
-            // Link2 style
+            // SpiceDictionaryLink style
             if ($end_index != -1 || !empty($deleted) || !empty($optional_where) || !empty($searchterm)) {
 
                 // BEGIN CR1000382: move sort_array content to 'sorthook' when sortfield is non-db
