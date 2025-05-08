@@ -3,10 +3,10 @@
 
 namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\includes\RESTManager;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 

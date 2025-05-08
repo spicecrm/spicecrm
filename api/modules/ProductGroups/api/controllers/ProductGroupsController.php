@@ -3,16 +3,16 @@
 
 namespace SpiceCRM\modules\ProductGroups\api\controllers;
 
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\modules\SpiceACL\SpiceACL;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\SpiceACL\SpiceACL;
 use stdClass;
 
 class ProductGroupsController

@@ -5,26 +5,26 @@ namespace SpiceCRM\modules\CampaignTasks;
 
 use SpiceCRM\extensions\modules\TextMessages\TextMessage;
 use SpiceCRM\extensions\modules\TextMessageTemplates\TextMessageTemplate;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
-use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
+use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\EmailTemplates\EmailTemplate;
-use SpiceCRM\modules\OutputTemplates\OutputTemplate;
-use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
-use SpiceCRM\modules\Users\User;
-use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\modules\Mailboxes\Mailbox;
+use SpiceCRM\modules\OutputTemplates\OutputTemplate;
+use SpiceCRM\modules\Users\User;
 
 class CampaignTask extends SpiceBean
 {

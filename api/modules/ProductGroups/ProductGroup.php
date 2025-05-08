@@ -3,9 +3,9 @@
 
 namespace SpiceCRM\modules\ProductGroups;
 
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
 class ProductGroup extends SpiceBean
 {

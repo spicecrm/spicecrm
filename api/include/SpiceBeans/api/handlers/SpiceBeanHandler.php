@@ -1,7 +1,7 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
 
-namespace SpiceCRM\data\api\handlers;
+namespace SpiceCRM\includes\SpiceBeans\api\handlers;
 
 use SpiceCRM\includes\AddressReferences\AddressReferences;
 use SpiceCRM\includes\authentication\AuthenticationController;
