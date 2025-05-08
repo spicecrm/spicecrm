@@ -8,12 +8,18 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceSocket\SpiceSocket;
+use SpiceCRM\includes\WebHook\WebHook;
 
 class TransactionMiddleware
 {
     public function __invoke(Request $request, RequestHandler $handler): Response {
+        // start the DB Transaction
         $this->startTransaction();
+        // start the FTS Transaction
         SpiceFTSHandler::getInstance()->startTransaction();
+        // start the Webhook Transaction
+        WebHook::getInstance()->startTransaction();
+        // if we have a socket start the Socket Transaction
         if (class_exists(SpiceSocket::class)) {
             SpiceSocket::getInstance()->startTransaction();
         }
@@ -22,6 +28,7 @@ class TransactionMiddleware
             $response = $handler->handle($request);
             $this->commitTransaction();
             $this->commitFts();
+            WebHook::getInstance()->commitTransaction();
             if (class_exists(SpiceSocket::class)) {
                 SpiceSocket::getInstance()->commitTransaction();
             }

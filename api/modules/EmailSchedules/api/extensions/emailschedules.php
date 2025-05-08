@@ -1,6 +1,7 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\EmailSchedules\api\controllers\EmailSchedulesController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 
@@ -12,7 +13,7 @@ $RESTManager = RESTManager::getInstance();
 /**
  * register the Extension
  */
-$RESTManager->registerExtension('emailschedules', '1.0');
+$RESTManager->registerExtension('emailschedules', '1.0', ['maxEmailCount' => SpiceConfig::getInstance()->get('emailforward.max_email_count')]);
 
 $routes = [
     [

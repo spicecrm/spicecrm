@@ -398,13 +398,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'source' => 'non-db',
             'duplicate_merge' => false,
         ],
-        'campaigntasks' => [
-            'name' => 'campaigntasks',
-            'type' => 'link',
-            'relationship' => 'campaign_campaigntasks',
-            'source' => 'non-db',
-            'module' => 'CampaignTasks'
-        ]
+//        'campaigntasks' => [
+//            'name' => 'campaigntasks',
+//            'type' => 'link',
+//            'relationship' => 'campaign_campaigntasks',
+//            'source' => 'non-db',
+//            'module' => 'CampaignTasks'
+//        ]
     ],
     'indices' => [
 //        array(
