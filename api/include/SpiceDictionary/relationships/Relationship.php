@@ -1,13 +1,11 @@
 <?php
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
-namespace SpiceCRM\data\Relationships;
+namespace SpiceCRM\includes\SpiceDictionary\relationships;
 
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;

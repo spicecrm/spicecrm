@@ -1,6 +1,6 @@
 <?php
 
-namespace SpiceCRM\data\Relationships;
+namespace SpiceCRM\includes\SpiceDictionary\relationships;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
@@ -10,10 +10,15 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\utils\SpiceUtils;
 
-class OrgUnitRelationship extends One2MRelationship
+class UserRelationship extends One2MBeanRelationship
 {
-    var $type = "orgunit";
 
+    /**
+     * set the type
+     *
+     * @var string
+     */
+    var $type = "user";
     /**
      * activate the relationship and add the necessary cache fields
      * @param SpiceDictionaryRelationship $relationship
@@ -37,9 +42,8 @@ class OrgUnitRelationship extends One2MRelationship
             return false;
         }
 
-        // delete the fields if they remian from teh vardefs
+        // legacy delete if coming from vardefs
         $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionarydefinition_id = '$rhsDictionaryDefinition->id' AND fieldname = '{$relationship->relationship->rhs_relatename}'");
-
 
         // build the Defs
         $defs = [
@@ -90,7 +94,7 @@ class OrgUnitRelationship extends One2MRelationship
                     'fielddefinition' => json_encode([
                         'name' => $relationship->relationship->rhs_relatename,
                         'type' => 'linked',
-                        'rname' => 'name',
+                        'rname' => 'user_name',
                         'id_name' => $rhsField->fieldname,
                         'link' => $relationship->relationship->rhs_linkname,
                         'source' => 'non-db',
@@ -101,9 +105,9 @@ class OrgUnitRelationship extends One2MRelationship
                     'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
                 ]);
             }
-        }
 
-        // completed the activation
-        return true;
+            // completed the activation
+            return true;
+        }
     }
 }

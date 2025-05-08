@@ -1,7 +1,7 @@
 <?php
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
-namespace SpiceCRM\data\Relationships;
+namespace SpiceCRM\includes\SpiceDictionary\relationships;
 
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
 

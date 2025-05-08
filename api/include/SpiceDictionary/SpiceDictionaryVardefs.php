@@ -29,20 +29,17 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\data\Relationships\RelationshipFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
-use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\relationships\RelationshipFactory;
+use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\modules\Relationships\Relationship;
 
 class SpiceDictionaryVardefs  {
 

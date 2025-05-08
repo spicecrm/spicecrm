@@ -1,5 +1,5 @@
 <?php
-namespace SpiceCRM\data\Relationships;
+namespace SpiceCRM\includes\SpiceDictionary\relationships;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;

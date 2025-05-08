@@ -3,11 +3,11 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
-use SpiceCRM\data\Relationships\Relationship;
-use SpiceCRM\data\Relationships\RelationshipFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\relationships\Relationship;
+use SpiceCRM\includes\SpiceDictionary\relationships\RelationshipFactory;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
 /*********************************************************************************
@@ -246,7 +246,7 @@ class SpiceDictionaryLink
     }
 
     /**
-     * @return Relationship the relationship object this link references
+     * @return \SpiceCRM\includes\SpiceDictionary\relationships\Relationship the relationship object this link references
      */
     public function getRelationshipObject()
     {
