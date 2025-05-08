@@ -3,13 +3,13 @@
 
 namespace SpiceCRM\modules\MediaFiles\api\controllers;
 
-use SpiceCRM\modules\MediaFiles\MediaFile;
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\modules\MediaFiles\MediaFile;
 
 class MediaFilesController
 {
