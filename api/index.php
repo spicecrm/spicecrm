@@ -5,19 +5,18 @@
 // require the autoloader
 require_once 'vendor/autoload.php';
 
-use Slim\Factory\AppFactory;
 use DI\Container;
+use Slim\Factory\AppFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\Middleware\DeveloperMiddleware;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponseFactory;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SystemTenants\SystemTenant;
 
 register_shutdown_function([SpiceUtils::class, 'spiceCleanup']);

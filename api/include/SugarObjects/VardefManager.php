@@ -37,11 +37,12 @@
 namespace SpiceCRM\includes\SugarObjects;
 
 use FilesystemIterator;
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\utils\FileUtils;
 use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;

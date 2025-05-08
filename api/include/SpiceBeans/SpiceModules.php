@@ -1,6 +1,6 @@
 <?php
 
-namespace SpiceCRM\includes\SugarObjects;
+namespace SpiceCRM\includes\SpiceBeans;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
@@ -18,7 +18,7 @@ class SpiceModules
 {
 
     /**
-     * for the singelton implementation
+     * for the singleton implementation
      *
      * @var
      */
