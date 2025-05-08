@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\modules\Users\api\controllers;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\modules\UserPreferences\UserPreference;

@@ -3,8 +3,8 @@
 
 namespace SpiceCRM\modules\SpiceImports;
 
-use SpiceCRM\data\SpiceBean;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;

@@ -7,7 +7,7 @@
  */
 
 namespace SpiceCRM\includes\SpiceUI;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\modules\SystemDeploymentPackages\SystemDeploymentPackageSource;

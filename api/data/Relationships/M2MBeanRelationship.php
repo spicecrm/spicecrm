@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\data\Relationships;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\data\Link2;
 use SpiceCRM\includes\database\DBManagerFactory;
 

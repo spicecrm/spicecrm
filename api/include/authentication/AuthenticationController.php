@@ -4,7 +4,7 @@
 namespace SpiceCRM\includes\authentication;
 
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\authentication\GoogleAuthenticate\GoogleAuthenticate;
 use SpiceCRM\includes\authentication\interfaces\AccessUtilsI;
 use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;

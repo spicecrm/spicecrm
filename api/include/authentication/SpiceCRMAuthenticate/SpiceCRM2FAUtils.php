@@ -5,7 +5,7 @@ namespace SpiceCRM\includes\authentication\SpiceCRMAuthenticate;
 use DateInterval;
 use Exception;
 use libphonenumber\PhoneNumberUtil;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\extensions\modules\TextMessages\TextMessage;
 use SpiceCRM\includes\authentication\api\controllers\AuthenticateController;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;

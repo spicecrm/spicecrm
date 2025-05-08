@@ -4,7 +4,7 @@
 namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\data\Link2;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 
 /**
  * 1-1 Bean relationship

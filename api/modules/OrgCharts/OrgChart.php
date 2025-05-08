@@ -2,8 +2,8 @@
 /***** SPICE-HEADER-SPACEHOLDER *****/
 namespace SpiceCRM\modules\OrgCharts;
 
-use SpiceCRM\data\SpiceBean;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 /**

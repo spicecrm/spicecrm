@@ -1,6 +1,6 @@
 <?php
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
-namespace SpiceCRM\data;
+namespace SpiceCRM\includes\SpiceBeans;
 
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;

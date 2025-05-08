@@ -1,7 +1,7 @@
 <?php
 namespace SpiceCRM\modules\EmailSchedules\schedulerjobtasks;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 
 class EmailSchedulesSchedulerJobTasks
 {

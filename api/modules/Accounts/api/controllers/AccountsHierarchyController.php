@@ -3,7 +3,7 @@
 namespace SpiceCRM\modules\Accounts\api\controllers;
 
 use Psr\http\Message\RequestInterface;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse;
 use Psr\Http\Message\ServerRequestInterface as Request;

@@ -11,8 +11,8 @@ use DateTime;
 use Hfig\MAPI;
 use Hfig\MAPI\Mime\Swiftmailer;
 use Hfig\MAPI\OLE\Pear;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
@@ -73,7 +73,7 @@ class Email extends SpiceBean
      */
     private ?string $runtime_tracking_parent_id = null;
     /**
-     * @var false|\SpiceCRM\data\SpiceBean
+     * @var false|\SpiceCRM\includes\SpiceBeans\SpiceBean
      */
     public $emailAddress;
 

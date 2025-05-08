@@ -5,7 +5,7 @@ namespace SpiceCRM\modules\Letters\api\controllers;
 
 use Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;

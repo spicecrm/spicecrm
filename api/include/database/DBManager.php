@@ -37,7 +37,7 @@
 namespace SpiceCRM\includes\database;
 
 use Exception;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\resource\ResourceManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;

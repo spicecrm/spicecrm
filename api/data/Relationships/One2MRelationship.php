@@ -4,7 +4,7 @@
 namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 
 
 /**

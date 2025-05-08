@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\CompanyFiscalPeriods;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 
 class CompanyFiscalPeriod extends SpiceBean {
 

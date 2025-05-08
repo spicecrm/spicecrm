@@ -1,7 +1,7 @@
 <?php
 namespace SpiceCRM\includes\SpiceBeanGuides\api\controllers;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceBeanGuides\SpiceBeanGuideRestHandler;
 use Psr\Http\Message\ServerRequestInterface as Request;

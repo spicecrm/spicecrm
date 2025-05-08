@@ -16,7 +16,7 @@ use Swift_Mime_ContentEncoder_PlainContentEncoder;
 use Swift_RfcComplianceException;
 use Swift_SmtpTransport;
 use Swift_TransportException;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;

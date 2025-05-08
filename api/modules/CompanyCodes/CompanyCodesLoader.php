@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\CompanyCodes;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 
 class CompanyCodesLoader{

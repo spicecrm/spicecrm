@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\data\Relationships;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 
 /**
  * Represents 1-1 relationship

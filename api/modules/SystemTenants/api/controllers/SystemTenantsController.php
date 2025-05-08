@@ -7,7 +7,7 @@ namespace SpiceCRM\modules\SystemTenants\api\controllers;
 use Exception;
 use SpiceCRM\extensions\modules\LandingPages\LandingPage;
 use SpiceCRM\modules\SystemTenants\SystemTenant;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
