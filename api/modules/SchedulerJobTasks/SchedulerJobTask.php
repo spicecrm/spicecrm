@@ -8,6 +8,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SugarObjects\templates\basic\Basic;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -38,6 +39,10 @@ class SchedulerJobTask extends SpiceBean
      * holds the job  failure constant
      */
     const JOB_TASK_RESOLUTION_FAILURE = 'failed';
+    /**
+     * holds the job  failure constant when only supposedly running but actually dead
+     */
+    const JOB_TASK_RESOLUTION_ZOMBIE = 'failed (zombie)';
     /**
      * holds the name of the subdirectory of modules or includes wherein the scheduler job task classes are kept
      */
