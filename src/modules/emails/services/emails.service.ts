@@ -112,7 +112,7 @@ export class emailsService {
      * @param model
      */
     public loadParentAttachments(parent: model, model: model): void {
-        let matchedEntries = [...parent.data.body.matchAll(new RegExp(/\<img[\w\W]+?alt="([\w\W]+?)"[\w\W]+?\>/gm))];
+        let matchedEntries = [...parent.data.body.matchAll(new RegExp(/<img[^>]+?src="cid:([^"]+)"[^>]*>/gm))];
         let excludedFileNames = matchedEntries.map(m => m[1]);
         this.modelattachments.module = model.module;
         this.modelattachments.id = model.id;
