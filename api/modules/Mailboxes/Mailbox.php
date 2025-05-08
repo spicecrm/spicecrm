@@ -4,12 +4,12 @@
 namespace SpiceCRM\modules\Mailboxes;
 
 use Exception;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Mailboxes\processors\MailboxProcessor;
-use SpiceCRM\includes\authentication\AuthenticationController;
 
 class Mailbox extends SpiceBean {
 
@@ -318,9 +318,9 @@ class Mailbox extends SpiceBean {
 
         if (SpiceConfig::getInstance()->installing) return false;
 
-//        $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
+//        $db = \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance();
 //        if(is_null($db)){
-//            $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
+//            $db = \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance();
 //        }
 //        $defaultId = null;
 //        $q = "SELECT id FROM mailboxes WHERE is_default=1 AND deleted=0";

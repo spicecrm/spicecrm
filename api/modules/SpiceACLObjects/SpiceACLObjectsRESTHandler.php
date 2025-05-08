@@ -3,10 +3,10 @@
 
 namespace SpiceCRM\modules\SpiceACLObjects;
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
 use stdClass;
 

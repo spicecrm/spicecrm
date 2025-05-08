@@ -4,9 +4,8 @@ namespace SpiceCRM\includes\SpiceBeanGuides;
 
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
-use stdClass;
 
 class SpiceBeanGuideRestHandler
 {

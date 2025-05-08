@@ -29,11 +29,11 @@
 
 namespace SpiceCRM\includes\SysTrashCan;
 
-use SpiceCRM\includes\TimeDate;
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class SysTrashCan

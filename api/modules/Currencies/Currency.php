@@ -37,10 +37,6 @@
 namespace SpiceCRM\modules\Currencies;
 
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SysCurrencies\SysCurrencies;
 
 /**

@@ -2,8 +2,8 @@
 
 namespace SpiceCRM\includes\SysCategoryTrees;
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSingleton;
 
 class SysCategoryTree extends SpiceSingleton

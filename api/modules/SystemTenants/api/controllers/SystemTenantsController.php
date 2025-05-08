@@ -5,19 +5,19 @@
 namespace SpiceCRM\modules\SystemTenants\api\controllers;
 
 use Exception;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\extensions\modules\LandingPages\LandingPage;
-use SpiceCRM\modules\SystemTenants\SystemTenant;
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDemoData\SpiceDemoDataGenerator;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\SystemTenants\SystemTenant;
 
 class SystemTenantsController
 {

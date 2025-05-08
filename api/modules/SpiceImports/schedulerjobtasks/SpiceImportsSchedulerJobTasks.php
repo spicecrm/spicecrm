@@ -4,8 +4,7 @@
 namespace SpiceCRM\modules\SpiceImports\schedulerjobtasks;
 
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\modules\SpiceImports\SpiceImport;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 class SpiceImportsSchedulerJobTasks
 {

@@ -4,8 +4,8 @@
 namespace SpiceCRM\modules\SpiceTexts\api\controllers;
 
 use Exception;
-use SpiceCRM\includes\database\DBManagerFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 class SpiceTextController

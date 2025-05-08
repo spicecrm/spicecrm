@@ -4,7 +4,7 @@ namespace SpiceCRM\modules\SystemTenants\schedulerjobtasks;
 
 use Exception;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\modules\SystemTenants\SystemTenant;
 
 class SystemTenantSchedulerJobs

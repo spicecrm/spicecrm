@@ -1,21 +1,20 @@
 <?php
 /***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
 
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Configurator\Configurator;
 use SpiceCRM\modules\KReports\KReportPluginManager;
 use SpiceCRM\modules\KReports\KReportPresentationManager;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 require_once 'modules/KReports/KReportVisualizationManager.php';
 
@@ -1643,9 +1642,9 @@ class KReporterRESTHandler
 //    public function saveMapping($params){
 //        $return = [];
 //        $q = "UPDATE kreportgroupings SET "
-//                . "mapping='".\SpiceCRM\includes\database\DBManagerFactory::getInstance()->quote($params['mapping'])."'"
+//                . "mapping='".\SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance()->quote($params['mapping'])."'"
 //                . "WHERE id='".$params['groupingid']."'";
-//        if(\SpiceCRM\includes\database\DBManagerFactory::getInstance()->query($q)){
+//        if(\SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance()->query($q)){
 //            $return = array('success' => 1, 'groupingid' => $params['groupingid']);
 //        }
 //        else

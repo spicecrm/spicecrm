@@ -2,10 +2,8 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
-use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
-use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 class SpiceDictionaryIndex
 {

@@ -5,10 +5,10 @@ namespace SpiceCRM\modules\SpiceACL;
 
 use SpiceCRM\extensions\modules\SpiceACLTerritories\SpiceACLTerritory;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 class SpiceACL
 {

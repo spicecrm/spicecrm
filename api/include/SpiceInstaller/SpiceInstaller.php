@@ -5,11 +5,11 @@ namespace SpiceCRM\includes\SpiceInstaller;
 
 use Exception;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManager;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\database\DBManager;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -475,7 +475,7 @@ class SpiceInstaller
      * load the dictionary dump file
      * creates the system dictionary tables without indexes from teh dump for the system fields
      * save the dump file hash in the config for later comparison
-     * @param DBManager $db
+     * @param \SpiceCRM\includes\SpiceDictionary\database\DBManager $db
      * @return void
      * @throws Exception
      */

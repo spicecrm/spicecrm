@@ -2,11 +2,10 @@
 namespace SpiceCRM\includes\SpiceDictionary;
 
 use Exception;
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceSingleton;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceSingleton;
 
 class SpiceDictionaryHandler extends SpiceSingleton
 {

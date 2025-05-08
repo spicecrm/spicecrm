@@ -2,8 +2,8 @@
 
 namespace SpiceCRM\includes\SpiceDictionary\relationships;
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
 
 class M2MBeanRelationship extends M2MRelationship
