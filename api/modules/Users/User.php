@@ -37,7 +37,7 @@
 namespace SpiceCRM\modules\Users;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;

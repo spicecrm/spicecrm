@@ -3,8 +3,8 @@
 
 namespace SpiceCRM\modules\ProductGroups;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
 class ProductGroup extends SpiceBean

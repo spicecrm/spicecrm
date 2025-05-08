@@ -3,8 +3,8 @@
 namespace SpiceCRM\modules\EmailAddresses;
 
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;

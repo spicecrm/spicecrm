@@ -29,7 +29,7 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\data\Relationships\RelationshipFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;

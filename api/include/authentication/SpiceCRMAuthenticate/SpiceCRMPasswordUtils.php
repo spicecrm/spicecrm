@@ -5,7 +5,7 @@ namespace SpiceCRM\includes\authentication\SpiceCRMAuthenticate;
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 use DateTime;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;

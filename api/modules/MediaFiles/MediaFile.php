@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\MediaFiles;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\Logger\LoggerManager;

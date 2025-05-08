@@ -2,7 +2,7 @@
 namespace SpiceCRM\modules\EmailTemplates\api\controllers;
 
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;

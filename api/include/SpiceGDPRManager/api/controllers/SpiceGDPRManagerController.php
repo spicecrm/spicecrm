@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\includes\SpiceGDPRManager\api\controllers;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;

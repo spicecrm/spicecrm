@@ -4,7 +4,7 @@
 namespace SpiceCRM\modules\MediaFiles\api\controllers;
 
 use SpiceCRM\modules\MediaFiles\MediaFile;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;

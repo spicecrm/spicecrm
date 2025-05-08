@@ -7,7 +7,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\modules\Emails\Email;
 use Exception;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\modules\Mailboxes\processors\MailboxProcessor;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 

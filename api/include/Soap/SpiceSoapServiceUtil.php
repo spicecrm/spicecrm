@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\includes\Soap;
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\LanguageManager;

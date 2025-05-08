@@ -4,7 +4,7 @@
 namespace SpiceCRM\modules\SchedulerJobs\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;

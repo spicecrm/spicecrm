@@ -4,7 +4,7 @@
 namespace SpiceCRM\includes\SpiceFTSManager;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;

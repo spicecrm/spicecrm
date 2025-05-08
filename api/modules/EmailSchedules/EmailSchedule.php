@@ -1,8 +1,8 @@
 <?php
 namespace SpiceCRM\modules\EmailSchedules;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\utils\SpiceUtils;

@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\includes\database;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use Exception;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;

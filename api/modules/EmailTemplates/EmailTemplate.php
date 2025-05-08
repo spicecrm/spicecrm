@@ -2,8 +2,8 @@
 namespace SpiceCRM\modules\EmailTemplates;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;

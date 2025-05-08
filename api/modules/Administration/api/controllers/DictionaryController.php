@@ -3,7 +3,7 @@ namespace SpiceCRM\modules\Administration\api\controllers;
 
 use Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;

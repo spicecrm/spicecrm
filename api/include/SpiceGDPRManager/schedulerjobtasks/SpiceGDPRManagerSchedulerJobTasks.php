@@ -3,8 +3,8 @@
 namespace SpiceCRM\includes\SpiceGDPRManager\schedulerjobtasks;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\Logger\LoggerManager;

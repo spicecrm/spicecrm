@@ -32,7 +32,7 @@ namespace SpiceCRM\includes\SysModuleFilters;
 use Cassandra\Time;
 use DateTimeZone;
 use Exception;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use DateInterval;
 use DateTime;
 use SpiceCRM\includes\database\DBManagerFactory;

@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\SpiceImports\schedulerjobtasks;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\modules\SpiceImports\SpiceImport;
 

@@ -4,8 +4,8 @@
 namespace SpiceCRM\modules\Mailboxes;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Mailboxes\processors\MailboxProcessor;
@@ -329,7 +329,7 @@ class Mailbox extends SpiceBean {
 //            $defaultId = $row['id'];
 //        }
 
-//        $defaultMailbox =  \SpiceCRM\data\BeanFactory::getBean('Mailboxes', $defaultId);
+//        $defaultMailbox =  \SpiceCRM\includes\SpiceBeans\BeanFactory::getBean('Mailboxes', $defaultId);
 
         $defaultMailbox = BeanFactory::getBean('Mailboxes');
         $defaultMailbox = $defaultMailbox->retrieve_by_string_fields(['is_default' => true]);

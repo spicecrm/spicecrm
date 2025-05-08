@@ -4,7 +4,7 @@
 
 namespace SpiceCRM\modules\Mailboxes\processors;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Mailboxes\processors\Processor;

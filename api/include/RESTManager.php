@@ -35,7 +35,7 @@ namespace SpiceCRM\includes;
 
 use Slim\App;
 use Slim\Exception\HttpNotFoundException;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\Middleware\AdminOnlyAccessMiddleware;

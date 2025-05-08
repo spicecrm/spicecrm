@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\modules\Emails\api\controllers;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use Exception;
 use SpiceCRM\extensions\modules\Mailboxes\Handlers\OutlookAttachmentHandler;
 use SpiceCRM\includes\database\DBManagerFactory;

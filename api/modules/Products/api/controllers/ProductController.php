@@ -6,7 +6,7 @@ namespace SpiceCRM\modules\Products\api\controllers;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use stdClass;

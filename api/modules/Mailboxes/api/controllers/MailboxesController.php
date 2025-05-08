@@ -8,7 +8,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\modules\Emails\Email;
 use Exception;
 use SpiceCRM\modules\Mailboxes\processors\MailboxProcessor;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 

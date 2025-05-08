@@ -4,7 +4,7 @@
 namespace SpiceCRM\includes\authentication\DeploymentTrustedTokenAuthenticate;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
 use SpiceCRM\includes\authentication\interfaces\AuthResponse;
 use SpiceCRM\includes\database\DBManagerFactory;

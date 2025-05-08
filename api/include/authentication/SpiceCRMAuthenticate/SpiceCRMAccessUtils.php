@@ -6,7 +6,7 @@ namespace SpiceCRM\includes\authentication\SpiceCRMAuthenticate;
 
 use DateInterval;
 use Exception;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\authentication\interfaces\AccessUtilsI;
 use SpiceCRM\includes\database\DBManagerFactory;

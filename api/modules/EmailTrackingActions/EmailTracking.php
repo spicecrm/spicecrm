@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\modules\EmailTrackingActions;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\extensions\modules\NewsletterLogs\NewsletterLog;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;

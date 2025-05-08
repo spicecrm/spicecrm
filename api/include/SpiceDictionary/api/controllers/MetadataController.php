@@ -4,7 +4,7 @@
 namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\RESTManager;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;

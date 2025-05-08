@@ -4,8 +4,8 @@ namespace SpiceCRM\modules\EmailTrackingActions\api\controllers;
 
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\extensions\modules\LandingPages\LandingPage;
 use SpiceCRM\extensions\modules\NewsletterLogs\NewsletterLog;
 use SpiceCRM\includes\database\DBManagerFactory;

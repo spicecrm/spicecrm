@@ -5,7 +5,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceFavorites\SpiceFavorites;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 
 class SpiceFavoritesController {
 

@@ -4,7 +4,7 @@
 namespace SpiceCRM\includes\SpiceInstaller;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\SpiceCache\SpiceCacheFile;
@@ -25,7 +25,7 @@ use SpiceCRM\modules\SystemDeploymentPackages\SystemDeploymentPackageSource;
 use SpiceCRM\modules\Administration\api\controllers\AdminController;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageLoader;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use Throwable;
