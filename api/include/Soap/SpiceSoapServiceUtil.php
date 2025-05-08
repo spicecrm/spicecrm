@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\Soap;
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -500,7 +501,7 @@ class SpiceSoapServiceUtil
 
     function get_name_value($field, $value)
     {
-        if ($value instanceof Link2 && !method_exists($value, '__toString'))
+        if ($value instanceof SpiceDictionaryLink && !method_exists($value, '__toString'))
             $value = '';
         return ['name' => $field, 'value' => $value];
     }

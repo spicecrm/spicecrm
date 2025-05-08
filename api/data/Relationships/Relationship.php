@@ -6,8 +6,10 @@ namespace SpiceCRM\data\Relationships;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\SysTrashCan\SysTrashCan;
 use SpiceCRM\includes\TimeDate;
@@ -75,7 +77,7 @@ abstract class Relationship
 
     /**
      * @abstract
-     * @param $link Link2 loads the rows for this relationship that match the given link
+     * @param $link SpiceDictionaryLink loads the rows for this relationship that match the given link
      * @return void
      */
     public abstract function load($link, $params = []);
@@ -104,7 +106,7 @@ abstract class Relationship
 
     /**
      * @abstract
-     * @param Link2 $link
+     * @param SpiceDictionaryLink $link
      * @return string|array the query to join against the related modules table for the given link.
      */
     public abstract function getJoin($link);
@@ -124,7 +126,7 @@ abstract class Relationship
     public abstract function getRelationshipTable();
 
     /**
-     * @param  $link Link2 removes all the beans associated with this link from the relationship
+     * @param  $link SpiceDictionaryLink removes all the beans associated with this link from the relationship
      * @return boolean     true if all beans were successfully removed or there
      *                     were not related beans, false otherwise
      */
