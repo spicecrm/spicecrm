@@ -2,8 +2,8 @@
 
 namespace SpiceCRM\includes\SpiceDictionary\relationships;
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryField;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;

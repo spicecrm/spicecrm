@@ -34,10 +34,9 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 
-namespace SpiceCRM\includes\database;
+namespace SpiceCRM\includes\SpiceDictionary\database;
 
 use Exception;
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -119,10 +118,10 @@ class DBManagerFactory
             switch ($type) {
                 case "mysql":
                 case "mysqli":
-                    $my_db_manager = '\\SpiceCRM\\includes\\database\\MysqliManager';
+                    $my_db_manager = MysqliManager::class;
                     break;
                 case "mssql":
-                    $my_db_manager = '\\SpiceCRM\\includes\\database\\SqlsrvManager';
+                    $my_db_manager = SqlsrvManager::class;
                     break;
                 default:
                     $my_db_manager = self::getManagerByType($type, false);

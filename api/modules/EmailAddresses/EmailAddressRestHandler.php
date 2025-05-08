@@ -1,9 +1,9 @@
 <?php
 namespace SpiceCRM\modules\EmailAddresses;
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 class EmailAddressRestHandler
 {

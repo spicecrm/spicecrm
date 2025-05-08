@@ -2,11 +2,11 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
-use SpiceCRM\includes\database\DBManager;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\database\DBManager;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\VardefManager;

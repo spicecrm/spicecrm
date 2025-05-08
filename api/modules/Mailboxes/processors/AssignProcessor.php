@@ -4,7 +4,7 @@
 namespace SpiceCRM\modules\Mailboxes\processors;
 
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 class AssignProcessor extends Processor
 {

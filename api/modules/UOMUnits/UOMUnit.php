@@ -3,7 +3,7 @@
 namespace SpiceCRM\modules\UOMUnits;
 
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 
 class UOMUnit extends SpiceBean {

@@ -3,10 +3,10 @@ namespace SpiceCRM\modules\Administration\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceBeans\SpiceModules;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageLoader;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;

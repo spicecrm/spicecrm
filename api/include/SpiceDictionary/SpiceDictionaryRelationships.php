@@ -3,10 +3,10 @@
 namespace SpiceCRM\includes\SpiceDictionary;
 
 use Exception;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryRelationships

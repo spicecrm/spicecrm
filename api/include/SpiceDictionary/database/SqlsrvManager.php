@@ -33,9 +33,8 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-namespace SpiceCRM\includes\database;
+namespace SpiceCRM\includes\SpiceDictionary\database;
 
-use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;

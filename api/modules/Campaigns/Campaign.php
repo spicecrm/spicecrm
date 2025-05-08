@@ -1,9 +1,8 @@
 <?php
 namespace SpiceCRM\modules\Campaigns;
 
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by

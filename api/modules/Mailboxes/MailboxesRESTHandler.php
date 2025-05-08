@@ -3,13 +3,12 @@
 
 namespace SpiceCRM\modules\Mailboxes;
 
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\modules\Emails\Email;
 use Exception;
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\modules\Mailboxes\processors\MailboxProcessor;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\modules\Emails\Email;
+use SpiceCRM\modules\Mailboxes\processors\MailboxProcessor;
 
 /**
  * Class MailboxesRESTHandler

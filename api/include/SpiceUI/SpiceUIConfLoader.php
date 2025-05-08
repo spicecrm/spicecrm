@@ -42,12 +42,12 @@
 namespace SpiceCRM\includes\SpiceUI;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManager;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\database\DBManager;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\relationships\RelationshipFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
@@ -408,7 +408,7 @@ class SpiceUIConfLoader
     {
         if (in_array($table, ['sysfts', 'syslangs'])) return;
 
-        /** @var DBManager $db */
+        /** @var \SpiceCRM\includes\SpiceDictionary\database\DBManager $db */
         $db = DBManagerFactory::getInstance();
 
         //$deleteWhere = "package IN('" . implode("','", $packages) . "') OR package IS NULL OR package=''";

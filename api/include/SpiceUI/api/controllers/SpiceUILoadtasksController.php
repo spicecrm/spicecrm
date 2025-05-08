@@ -2,13 +2,13 @@
 
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
-use SpiceCRM\includes\database\DBManagerFactory;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use stdClass;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 class SpiceUILoadtasksController
 {

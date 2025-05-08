@@ -2,13 +2,12 @@
 
 namespace SpiceCRM\includes\SpiceLanguages\api\controllers;
 
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceLanguages\SpiceLanguagesRESTHandler;
-use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
-use SpiceCRM\includes\ErrorHandlers\BadRequestException;
-use Slim\Routing\RouteCollectorProxy;
 use Slim\Psr7\Request as Request;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguagesRESTHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 

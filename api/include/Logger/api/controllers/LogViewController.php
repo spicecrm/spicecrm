@@ -1,13 +1,13 @@
 <?php
 namespace SpiceCRM\includes\Logger\api\controllers;
 
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\Logger\LogViewer;
-use SpiceCRM\includes\Logger\APIlogViewer;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\Logger\APIlogViewer;
+use SpiceCRM\includes\Logger\LogViewer;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 
 class LogViewController{

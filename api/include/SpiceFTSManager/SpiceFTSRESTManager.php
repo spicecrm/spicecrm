@@ -29,12 +29,12 @@
 namespace SpiceCRM\includes\SpiceFTSManager;
 
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;

@@ -2,10 +2,10 @@
 
 namespace SpiceCRM\includes\TXControlEditor\schedulerjobtasks;
 
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\TXControlEditor\TXControlHandler;
 
 class TXControlSchedulerJobTasks

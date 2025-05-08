@@ -4,7 +4,7 @@ namespace SpiceCRM\modules\TextSnippets;
 
 use Exception;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
 use SpiceCRM\includes\utils\SpiceUtils;
 

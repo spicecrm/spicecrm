@@ -5,9 +5,7 @@
 namespace SpiceCRM\modules\Mailboxes\processors;
 
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\modules\Mailboxes\processors\Processor;
 
 class TrackingProcessor extends Processor {
     private $method = 'DES-EDE3-CBC';

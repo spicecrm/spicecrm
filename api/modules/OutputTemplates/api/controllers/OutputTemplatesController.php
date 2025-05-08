@@ -3,7 +3,6 @@
 namespace SpiceCRM\modules\OutputTemplates\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ConflictException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -11,6 +10,7 @@ use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceSocket\SpiceSocket;

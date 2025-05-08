@@ -30,12 +30,11 @@
 namespace SpiceCRM\includes\SysModuleFilters\api\controllers;
 
 use Exception;
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
-use SpiceCRM\includes\authentication\AuthenticationController;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 class SysModuleFiltersController

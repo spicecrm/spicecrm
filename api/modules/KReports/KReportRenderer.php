@@ -8,7 +8,7 @@ namespace SpiceCRM\modules\KReports;
  * renderes are returned from getXtyperenderer and are the sames as in the userinterface in Sencha
  */
 
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 

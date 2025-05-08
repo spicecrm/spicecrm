@@ -4,7 +4,7 @@ namespace SpiceCRM\includes\SpiceDictionary\domainhandlers;
 
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 

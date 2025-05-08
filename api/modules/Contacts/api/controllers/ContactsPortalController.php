@@ -2,22 +2,22 @@
 
 namespace SpiceCRM\modules\Contacts\api\controllers;
 
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
-use SpiceCRM\includes\ErrorHandlers\Exception;
-use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
-use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 use SpiceCRM\modules\Users\User;
 use stdClass;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\includes\utils\SpiceUtils;
 
 class ContactsPortalController {
 

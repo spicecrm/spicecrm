@@ -5,13 +5,13 @@ namespace SpiceCRM\includes\SpiceBeans;
 
 use SpiceCRM\includes\AddressReferences\AddressReferences;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManager;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ValidationException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SpiceDictionary\database\DBManager;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\relationships\Relationship;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
@@ -89,7 +89,7 @@ class SpiceBean
     /**
      * A pointer to the database object
      *
-     * @var DBManager
+     * @var \SpiceCRM\includes\SpiceDictionary\database\DBManager
      */
     var $db;
 

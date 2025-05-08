@@ -34,18 +34,17 @@
  * "Powered by SugarCRM".
  ********************************************************************************/
 
-namespace SpiceCRM\includes\database;
+namespace SpiceCRM\includes\SpiceDictionary\database;
 
 use Exception;
-use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\resource\ResourceManager;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\ErrorHandlers\DatabaseException;
-use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 /*********************************************************************************

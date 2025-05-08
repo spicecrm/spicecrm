@@ -3,14 +3,14 @@
 
 namespace SpiceCRM\modules\KReports;
 
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguagesRESTHandler;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 use Throwable;
 
 require_once('modules/KReports/utils.php');
