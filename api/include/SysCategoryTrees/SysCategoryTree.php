@@ -3,8 +3,8 @@
 namespace SpiceCRM\includes\SysCategoryTrees;
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
 use SpiceCRM\includes\SpiceSingleton;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
 
 class SysCategoryTree extends SpiceSingleton
 {

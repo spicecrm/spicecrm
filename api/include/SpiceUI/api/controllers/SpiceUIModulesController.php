@@ -2,14 +2,14 @@
 
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSActivityHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSBeanHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SysCategoryTrees\SysCategoryTree;
 use SpiceCRM\includes\SysModuleLists\SysModuleListManager;
 use SpiceCRM\modules\SpiceACL\SpiceACL;

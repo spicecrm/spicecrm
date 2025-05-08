@@ -3,16 +3,15 @@
 
 namespace SpiceCRM\modules\SpiceACLObjects;
 
+use SpiceCRM\extensions\modules\SpiceACLTerritories\SpiceACLTerritory;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
-use SpiceCRM\extensions\modules\SpiceACLTerritories\SpiceACLTerritory;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\modules\SpiceACL\SpiceACLUsers;
-use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\UserAbsences\UserAbsence;
 
 /**
