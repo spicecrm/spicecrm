@@ -1,9 +1,9 @@
 <?php
-namespace SpiceCRM\includes\SugarObjects\api\controllers;
+namespace SpiceCRM\includes\SpiceBeans\api\controllers;
 
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 class PersonsController

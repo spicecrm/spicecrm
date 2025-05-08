@@ -1,15 +1,15 @@
 <?php
-namespace SpiceCRM\includes\SugarObjects\api\controllers;
+namespace SpiceCRM\includes\SpiceBeans\api\controllers;
 
-use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\includes\ErrorHandlers\BadRequestException;
-use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
-use SpiceCRM\includes\ErrorHandlers\Exception;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\authentication\AuthenticationController;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class GdprController {
 
