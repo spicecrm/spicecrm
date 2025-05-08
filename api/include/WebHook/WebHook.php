@@ -136,7 +136,7 @@ class WebHook
      */
     public function callWebhook($event, $bean)
     {
-        if($this->hooksMap && isset($this->hooksMap[$bean->_module]) && isset($this->hooksMap[$bean->_module][$event])) {
+        if($this->hooksMap && isset($this->hooksMap[$bean->_module]) && isset($this->hooksMap[$bean->_module][$event]) && $this->hooksMap[$bean->_module][$event]['active']) {
             if($this->inTransaction) {
                 $this->HooksBuffer[] = [
                     'event' => $event,

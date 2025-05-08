@@ -50,6 +50,7 @@ SpiceLanguageManager::setCurrentLanguage();
  * ----- Run the Job Tasks -------
  */
 $spiceCronJobs = new SpiceCronJobs();
+$spiceCronJobs->cleanZombieJobs();
 $spiceCronJobs->runJobs($argv[1]);
 
 if (session_id()) session_destroy();
