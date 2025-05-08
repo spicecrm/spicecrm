@@ -81,7 +81,8 @@ export class SpicePageBuilderElementSection implements OnInit {
         ],[
             {name: 'inner-border', type: 'borders', class: 'slds-size--1-of-1'}
         ], [
-            {name: 'css-class', type: 'text', class: 'slds-size--1-of-1'}
+            {name: 'vertical-align', type: 'valign', class: 'slds-size--1-of-2'},
+            {name: 'css-class', type: 'text', class: 'slds-size--1-of-2'}
         ]
     ];
 
