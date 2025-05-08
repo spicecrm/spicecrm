@@ -3,39 +3,38 @@
 
 namespace SpiceCRM\includes\SpiceBeans;
 
+use SpiceCRM\includes\AddressReferences\AddressReferences;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\database\DBManager;
+use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ValidationException;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
-use SpiceCRM\includes\SpiceDictionary\validators\ValidatorFactory;
-use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
-use SpiceCRM\includes\WebHook\WebHook;
-use stdClass;
-use SpiceCRM\includes\AddressReferences\AddressReferences;
-use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SpiceDictionary\relationships\Relationship;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
+use SpiceCRM\includes\SpiceDictionary\validators\ValidatorFactory;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceNotes\SpiceNotes;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotificationsLoader;
+use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
+use SpiceCRM\includes\SugarCleaner;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SysTrashCan\SysTrashCan;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\EncryptionUtils;
-use SpiceCRM\includes\SugarCleaner;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\data\Relationships\Relationship;
+use SpiceCRM\includes\WebHook\WebHook;
+use SpiceCRM\modules\SpiceACL\SpiceACL;
+use stdClass;
 
 
 /* * *******************************************************************************
