@@ -68,6 +68,10 @@ export class ObjectRecordDetailsTab implements OnInit {
      * this is mainly driven by the required model state
      */
     get hidden() {
+        // check that we have acl access
+        if(this.componentconfig.acl && !this.model.checkAccess(this.componentconfig.acl)) return true;
+
+        // check that we have model state access
         return (this.componentconfig.requiredmodelstate && !this.model.checkModelState(this.componentconfig.requiredmodelstate));
     }
 }
