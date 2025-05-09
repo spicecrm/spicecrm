@@ -79,7 +79,7 @@ class SpiceAttachments
      * @return array
      * @throws Exception
      */
-    static function cloneAttachmentsForBean($beanName, $beanId, $fromBeanName, $fromBeanId, bool $save = true, $categoryId = null, $selectedFiles = [], $excludedFilenames = []): array
+    static function cloneAttachmentsForBean($beanName, $beanId, $fromBeanName, $fromBeanId, bool $save = true, $categoryId = null, $selectedFiles = [], $excludedFileIDs = []): array
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
@@ -97,7 +97,7 @@ class SpiceAttachments
         foreach ($attachments as $attachment) {
 
             // do not clone excluded filenames
-            if(array_search($attachment['filename'], $excludedFilenames) !== false) continue;
+            if(array_search($attachment['external_id'], $excludedFileIDs) !== false) continue;
 
             $attachment['id'] = SpiceUtils::createGuid();
             $attachment['bean_type'] = $beanName;
