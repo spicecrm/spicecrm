@@ -445,13 +445,14 @@ class SpiceBean
             $this->{$attributeName} = $attributeValue;
         }
 
-        if ($this->disableValidation == false) {
+        if ($this->disableValidation == false && SpiceConfig::getInstance()->get('systemvardefs.disable_bean_validation') == false) {
             $dictionaryField = $this->getDictionaryField($attributeName);
             if ($dictionaryField) {
                 $this->validateField($attributeName, $attributeValue, $dictionaryField);
             } else {
-                // Accept it for now that some fields have no dictionary definitions.
-                // throw new ValidationException('No field definition found for ' . $attributeName);
+                 if (SpiceConfig::getInstance()->get('systemvardefs.disable_strict_property_check') == false) {
+                     throw new ValidationException('No field definition found for ' . $attributeName);
+                 }
             }
         }
 
