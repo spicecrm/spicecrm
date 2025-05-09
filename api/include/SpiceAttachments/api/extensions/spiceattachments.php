@@ -499,10 +499,10 @@ $routes = [
                 'description' => 'Selected Attachments from Email to be cloned',
                 'required' => false
             ],
-            'excludedFilenames' => [
+            'excludedFileIDs' => [
                 'in' => 'body',
                 'type' => ValidationMiddleware::TYPE_ARRAY,
-                'description' => 'an array of excluded filenames',
+                'description' => 'an array of excluded file ids',
                 'required' => false
             ]
         ]

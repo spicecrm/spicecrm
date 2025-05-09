@@ -60,6 +60,16 @@ class UserPreference extends SpiceBean
 
     protected $_userFocus;
 
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    protected string $modified_user_id;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    protected string $created_by;
+
     public function setUser(User $user = null){
         $this->_userFocus = $user;
         $this->tracker_visibility = false;
