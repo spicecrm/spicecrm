@@ -117,7 +117,7 @@ class WebHook
             $hookDefinition = $this->hooksMap[$hook['module']][$hook['event']];
 
             // reload the bean enforcing retrieve
-            $seed = BeanFactory::getBean($hook['module'], $hook['id'], ['forceRetrieve' => true], $hookDefinition['event'] == 'delete');
+            $seed = BeanFactory::getBean($hook['module'], $hook['id'], ['forceRetrieve' => true], !($hookDefinition['event'] == 'delete'));
 
             // make the call
             $this->makeCall($hookDefinition, $seed, false);
