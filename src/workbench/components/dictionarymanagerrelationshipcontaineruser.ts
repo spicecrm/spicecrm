@@ -40,6 +40,14 @@ export class DictionaryManagerRelationshipContainerUser {
         this.generateRelationshipFields(val);
     }
 
+    get rhs_duplicatemerge(){
+        return this.relationship.rhs_duplicatemerge == 1;
+    }
+
+    set rhs_duplicatemerge(value){
+        this.relationship.rhs_duplicatemerge = value ? 1 : 0;
+    }
+
     /**
      * generate relationship fields from name
      * @param name
