@@ -389,8 +389,15 @@ class EmailTrackingActionsController
 
         $redirectUrl = SpiceConfig::getInstance()->get('emailtracking.double_optin_redirect_url');
 
+        [$parentType, $parentId] = $seed->getTrackingParentData();
+
+
         if ($seed->_module == 'Emails') {
             $redirectUrl = $seed->getMailbox()->double_optin_redirect_url ?: $redirectUrl;
+        }
+
+        if ($redirectUrl) {
+            return str_replace('{refid}', EmailTracking::encodeTrackingID("ParentType:$parentType:ParentId:$parentId"), $redirectUrl);
         }
 
         if (!empty($redirectUrl)) {
