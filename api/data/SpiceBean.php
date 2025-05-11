@@ -102,6 +102,18 @@ class SpiceBean
     public $id;
 
     /**
+     * @var add a default name field
+     */
+    public $name;
+
+    /**
+     * add a default relid field as this is used by the relationships
+     *
+     * @var
+     */
+    public $relid;
+
+    /**
      * the module this has been created for, set by the BeanFactory
      *
      * @var string
