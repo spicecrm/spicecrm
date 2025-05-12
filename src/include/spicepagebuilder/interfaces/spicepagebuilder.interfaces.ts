@@ -38,6 +38,7 @@ export interface SectionI extends TagElementI {
         'background-repeat'?: string;
         'background-size'?: string;
         'background-url'?: string;
+        'is-group'?:boolean;
     };
 }
 /**
@@ -326,7 +327,7 @@ export interface EditorAttributeI {
  */
 export interface AttributeObjectI {
     name: string;
-    type: 'color'|'text'|'sides'|'padding'|'textSuffix'|'width'|'halign'|'valign'|'textdecoration'|'texttransform'|'border'|'borders'|'fontstyle'|'fontweight'|'direction' | 'options';
+    type: 'color'|'text'|'sides'|'padding'|'textSuffix'|'width'|'halign'|'valign'|'textdecoration'|'texttransform'|'border'|'borders'|'fontstyle'|'fontweight'|'direction'|'options'|'bool';
     class?: string;
     options?: {value: string, label?: string}[]
 }

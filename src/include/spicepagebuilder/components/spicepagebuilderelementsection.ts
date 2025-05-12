@@ -44,7 +44,8 @@ export class SpicePageBuilderElementSection implements OnInit {
     public readonly mainAttributesList: AttributeObjectI[][] = [
         [
             {name: 'background-color', type: 'color', class: 'slds-size--1-of-2'},
-            {name: 'direction', type: 'direction', class: 'slds-size--1-of-2'},
+            {name: 'direction', type: 'direction', class: 'slds-size--1-of-4'},
+            {name: 'is-group', type: 'bool', class: 'slds-size--1-of-4'},
         ], [
             {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
         ]
