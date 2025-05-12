@@ -43,8 +43,8 @@ export class fieldFullName extends fieldGeneric {
     }
 
     get value() {
-        // return this.filterUndefined(this.language.getFieldDisplayOptionValue(this.model.module, this.fieldsalutation, this.model.getField(this.fieldsalutation))) + ' ' + this.filterUndefined(this.model.getField(this.fielddegree)) + ' ' + this.filterUndefined(this.model.getField(this.fieldfirstname)) + ' ' + this.filterUndefined(this.model.getField(this.fieldlastname)) + ' ' + this.filterUndefined(this.model.getField(this.fieldlasttitle));
-        return this.filterUndefined(this.getNameFormat());
+        let v = this.filterUndefined(this.getNameFormat());
+        return v != '' ? v  : this.model.getField(this.fieldname);
     }
 
 
@@ -89,7 +89,7 @@ export class fieldFullName extends fieldGeneric {
     }
 
     public filterUndefined(value) {
-        return value ? value : '';
+        return value ? value.trim().replace(/undefined/g, '') : '';
     }
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public userpreferences:userpreferences) {
