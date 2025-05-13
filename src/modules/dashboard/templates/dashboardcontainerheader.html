@@ -7,7 +7,7 @@
     <div class="slds-col slds-has-flexi-truncate slds-grid slds-grid--vertical-align-center">
         <system-spinner size="16" class="slds-p-right--small" *ngIf="dashboardlayout.isloading"></system-spinner>
         <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
-            {{model.data.name}}
+            {{language.getLabel(model.data.name)}}
         </h1>
         <button *ngIf="editable && model.id" class="slds-button slds-show--large" (click)="editModal()">
             <system-button-icon icon="edit"></system-button-icon>
