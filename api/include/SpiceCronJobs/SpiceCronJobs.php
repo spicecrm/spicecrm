@@ -164,11 +164,13 @@ class SpiceCronJobs
     {
         if ( SpiceUtils::isWindows() ) {
             $result = exec("tasklist /fi \"pid eq $processId\" /nh /fo:csv");
+            if ( $result === false ) return true; # exec() failed, so we don't know if the process is dead.
             $result = explode('","', $result );
-            return $result === false or count( $result ) > 1;
+            return count( $result ) > 1;
         } else {
             $result = exec("ps -p $processId -o comm=");
-            return empty( $result );
+            if ( $result === false ) return true; # exec() failed, so we don't know if the process is dead.
+            return !empty( $result );
         }
     }
 
