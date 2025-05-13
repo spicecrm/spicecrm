@@ -389,8 +389,24 @@ class EmailTrackingActionsController
 
         $redirectUrl = SpiceConfig::getInstance()->get('emailtracking.double_optin_redirect_url');
 
-        if ($seed->_module == 'Emails') {
+        [$parentType, $parentId] = $seed->getTrackingParentData();
+
+        if($seed->_module == 'NewsletterLogs'){
+            $newsletter = BeanFactory::getBean('Newsletters', $seed->newsletter_id);
+            $mailbox = BeanFactory::getBean('Mailboxes', $newsletter->mailbox_id);
+            $redirectUrl = $mailbox->double_optin_redirect_url ?: $redirectUrl;
+        }
+        else if($seed->_module == 'CampaignLog'){
+            $campaignTask = BeanFactory::getBean('CampaignTasks', $seed->campaigntask_id);
+            $mailbox = BeanFactory::getBean('Mailboxes', $campaignTask->mailbox_id);
+            $redirectUrl = $mailbox->double_optin_redirect_url ?: $redirectUrl;
+        }
+        else if ($seed->_module == 'Emails') {
             $redirectUrl = $seed->getMailbox()->double_optin_redirect_url ?: $redirectUrl;
+        }
+
+        if ($redirectUrl) {
+            return str_replace('{refid}', EmailTracking::encodeTrackingID("ParentType:$parentType:ParentId:$parentId"), $redirectUrl);
         }
 
         if (!empty($redirectUrl)) {
