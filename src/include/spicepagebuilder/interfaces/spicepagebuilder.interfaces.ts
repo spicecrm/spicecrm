@@ -340,73 +340,14 @@ export interface StylesheetObjI {
     contentSafeResourceUrl?: SafeResourceUrl
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+export interface JSONNodeI {
+    tagName?: string;
+    children?: JSONNodeI[];
+    content?: string;
+    attributes?: any;
+    showDate?: string;
+    count?: number;
+    href?: string;
+    trackingLink?: string;
+    trackByMethod?: string;
+}
