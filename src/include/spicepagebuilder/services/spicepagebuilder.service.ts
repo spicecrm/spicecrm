@@ -674,7 +674,7 @@ export class SpicePageBuilderService {
             return undefined;
         }
 
-        return this.replaceTrackingLinksAttributes(
+        return this.modifyHtmlResponse(
             htmlRes.html
         );
     }
@@ -685,9 +685,15 @@ export class SpicePageBuilderService {
      * @param {string} html - The HTML string containing tracking link patterns to be replaced.
      * @return {string} The modified HTML string with replaced tracking link attributes.
      */
-    private replaceTrackingLinksAttributes(html: string): string {
+    private modifyHtmlResponse(html: string): string {
 
         if (!html) return undefined;
+
+        const borderRemoval = 'border:0;border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;';
+
+        // Replace table and td style blocks and the default border
+        html = html.replace(/(table,\s*td\s*\{)[^}]*\}/, `$1${borderRemoval}}`)
+            .replace(/border="0"/g, '');
 
         // Replace pattern: #trackable-by-id::<UUID>"
         html = html.replace(/#trackable-by-id::(.{36})"/gi, '" data-trackinglink="$1"');
