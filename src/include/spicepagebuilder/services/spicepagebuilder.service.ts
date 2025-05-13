@@ -18,6 +18,7 @@ import {toast} from "../../../services/toast.service";
 import {helper} from "../../../services/helper.service";
 import {configurationService} from "../../../services/configuration.service";
 import * as mjml2html from 'mjml-browser';
+import {skip} from "rxjs/operators";
 
 /** @ignore */
 declare var _;
@@ -666,7 +667,7 @@ export class SpicePageBuilderService {
             JSON.parse(JSON.stringify(this.page))
         );
 
-        const htmlRes = mjml2html(xml);
+        const htmlRes = mjml2html(xml, {validationLevel: 'skip'});
 
         if (htmlRes.errors.length > 0) {
             this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
