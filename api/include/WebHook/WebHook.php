@@ -117,7 +117,7 @@ class WebHook
             $hookDefinition = $this->hooksMap[$hook['module']][$hook['event']];
 
             // reload the bean enforcing retrieve
-            $seed = BeanFactory::getBean($hook['module'], $hook['id'], ['forceRetrieve' => true], $hookDefinition['event'] == 'delete');
+            $seed = BeanFactory::getBean($hook['module'], $hook['id'], ['forceRetrieve' => true], !($hookDefinition['event'] == 'delete'));
 
             // make the call
             $this->makeCall($hookDefinition, $seed, false);
@@ -136,7 +136,7 @@ class WebHook
      */
     public function callWebhook($event, $bean)
     {
-        if($this->hooksMap && isset($this->hooksMap[$bean->_module]) && isset($this->hooksMap[$bean->_module][$event])) {
+        if($this->hooksMap && isset($this->hooksMap[$bean->_module]) && isset($this->hooksMap[$bean->_module][$event]) && $this->hooksMap[$bean->_module][$event]['active']) {
             if($this->inTransaction) {
                 $this->HooksBuffer[] = [
                     'event' => $event,
