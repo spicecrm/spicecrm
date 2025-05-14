@@ -391,8 +391,17 @@ class EmailTrackingActionsController
 
         [$parentType, $parentId] = $seed->getTrackingParentData();
 
-
-        if ($seed->_module == 'Emails') {
+        if($seed->_module == 'NewsletterLogs'){
+            $newsletter = BeanFactory::getBean('Newsletters', $seed->newsletter_id);
+            $mailbox = BeanFactory::getBean('Mailboxes', $newsletter->mailbox_id);
+            $redirectUrl = $mailbox->double_optin_redirect_url ?: $redirectUrl;
+        }
+        else if($seed->_module == 'CampaignLog'){
+            $campaignTask = BeanFactory::getBean('CampaignTasks', $seed->campaigntask_id);
+            $mailbox = BeanFactory::getBean('Mailboxes', $campaignTask->mailbox_id);
+            $redirectUrl = $mailbox->double_optin_redirect_url ?: $redirectUrl;
+        }
+        else if ($seed->_module == 'Emails') {
             $redirectUrl = $seed->getMailbox()->double_optin_redirect_url ?: $redirectUrl;
         }
 
