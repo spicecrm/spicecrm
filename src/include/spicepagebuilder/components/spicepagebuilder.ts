@@ -26,7 +26,7 @@ import {toast} from "../../../services/toast.service";
 })
 export class SpicePageBuilder implements AfterViewInit {
 
-    @Output() public pageBuilderChange$: EventEmitter<TagElementI>;
+    @Output() public pageBuilderChange$: EventEmitter<{obj: TagElementI, html: string}>;
     /**
      * reference of this component to allow destroying
      * @public
