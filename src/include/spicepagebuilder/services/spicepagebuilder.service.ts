@@ -6,8 +6,10 @@ import {
     ColumnI,
     ContentElementI,
     CustomElement,
+    JSONNodeI,
     PanelElementI,
-    SectionI, StylesheetObjI,
+    SectionI,
+    StylesheetObjI,
     TagElementI
 } from "../interfaces/spicepagebuilder.interfaces";
 import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
@@ -15,6 +17,8 @@ import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {helper} from "../../../services/helper.service";
 import {configurationService} from "../../../services/configuration.service";
+import * as mjml2html from 'mjml-browser';
+import {skip} from "rxjs/operators";
 
 /** @ignore */
 declare var _;
@@ -36,7 +40,7 @@ export class SpicePageBuilderService {
     /**
      * hold a response subject to emit the data to the page builder modal listener
      */
-    public response = new EventEmitter<any>();
+    public response = new EventEmitter<{obj: TagElementI, html: string}>();
     /**
      * hold the unique dom id for the panel drop list
      */
@@ -448,7 +452,10 @@ export class SpicePageBuilderService {
      * emits the page data to the page builder listener
      */
     public emitData(isNull?: boolean) {
-        this.response.next(!isNull ? this.page : null);
+        this.response.next(!isNull ? {
+            obj: this.page,
+            html: this.generateHtml()
+        }: undefined);
     }
 
     /**
@@ -566,5 +573,217 @@ export class SpicePageBuilderService {
         });
 
         return subject.asObservable();
+    }
+
+    /**
+     * Converts a JSON representation of a node into an HTML string.
+     * @param {JSONNodeI} node - The JSON representation of the node including tag name, attributes, content, and children.
+     * @param {string} [prefix=''] - The optional prefix to be added before the tag name, commonly used for specific tag naming conventions.
+     * @return {string} The generated HTML string based on the provided JSON node.
+     */
+    private json2xml(node: JSONNodeI, prefix: string = ''): string {
+
+        let isGroup = false;
+
+        if (node.attributes) {
+            isGroup = node.attributes['is-group'];
+            // Remove unwanted attributes
+            delete node.attributes['editor-type'];
+            delete node.attributes['is-group'];
+            delete node.attributes['border_border_values'];
+            delete node.attributes['inner-border_border_values'];
+        }
+
+        switch (node.tagName) {
+            case 'rss':
+                this.prepareRSSTag(node);
+                break;
+            case 'button':
+                this.prepareButtonTag(node);
+                break;
+            case 'heading':
+                node.tagName = 'text';
+                break;
+            case 'text':
+                if (!node.attributes['font-family']) {
+                    node.attributes['font-family'] = 'inherit';
+                }
+                break;
+            case 'image-url':
+                node.tagName = 'image';
+                break;
+        }
+
+        const attributesString = this.lineAttributes(node.attributes);
+
+        const innerContent = this.generateInnerContent(node, isGroup)
+
+        return `<${prefix}${node.tagName}${attributesString}>${innerContent}</${prefix}${node.tagName}>`;
+    }
+
+    /**
+     * Generates the inner content for a given JSON node based on its properties.
+     *
+     * @param {JSONNodeI} node - The JSON node object containing content, children, and other properties.
+     * @param {boolean} isGroup - Indicates if the content belongs to a group.
+     * @return {string} Returns the generated inner content as a string.
+     */
+    private generateInnerContent(node: JSONNodeI, isGroup: boolean): string {
+        let innerContent = '';
+
+        if (node.content) {
+            innerContent = node.tagName !== 'raw'
+                ? node.content
+                : `<!-- htmlmin:ignore --><div style="font-size: initial;">${node.content.replace(/[\r\n]/g, '')}</div><!-- htmlmin:ignore -->`;
+        } else if (node.children) {
+            innerContent = node.children.map(child => this.json2xml(child, 'mj-')).join('');
+        }
+
+        // Handle section group
+        if (node.tagName === 'section' && isGroup) {
+            innerContent = `<mj-group>${innerContent}</mj-group>`;
+        }
+
+        return innerContent;
+    }
+
+    /**
+     * Modifies the 'href' attribute of the provided JSONNodeI object to include a tracking identifier if a tracking link is present.
+     * @param {JSONNodeI} node - The JSON node object containing attributes and tracking information.
+     * @return {void} Does not return any value.
+     */
+    private prepareButtonTag(node: JSONNodeI): void {
+        if (!node.trackingLink) return;
+        node.attributes['href'] += `#trackable-by-${node.trackByMethod}::${node.trackingLink}`;
+    }
+
+    /**
+     * Converts XML content into HTML by processing it with MJML parsing and replacing tracking link attributes.
+     * @return {string} The resulting HTML string after conversion and processing.
+     */
+    private generateHtml(): string {
+
+        const xml = this.json2xml(
+            JSON.parse(JSON.stringify(this.page))
+        );
+
+        const htmlRes = mjml2html(xml, {validationLevel: 'skip'});
+
+        if (htmlRes.errors.length > 0) {
+            this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+            console.error('mjml', htmlRes.errors);
+            return undefined;
+        }
+
+        return this.modifyHtmlResponse(
+            htmlRes.html
+        );
+    }
+
+    /**
+     * Replaces specific tracking link patterns in the provided HTML string with data attributes.
+     *
+     * @param {string} html - The HTML string containing tracking link patterns to be replaced.
+     * @return {string} The modified HTML string with replaced tracking link attributes.
+     */
+    private modifyHtmlResponse(html: string): string {
+
+        if (!html) return undefined;
+
+        const borderRemoval = 'border:0;border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;';
+
+        // Replace table and td style blocks and the default border
+        html = html.replace(/(table,\s*td\s*\{)[^}]*\}/, `$1${borderRemoval}}`)
+            .replace(/border="0"/g, '');
+
+        // Replace pattern: #trackable-by-id::<UUID>"
+        html = html.replace(/#trackable-by-id::(.{36})"/gi, '" data-trackinglink="$1"');
+
+        // Replace pattern: #trackable-by-url::"
+        html = html.replace('#trackable-by-url::"', '" data-trackinglink=""');
+
+        return html;
+    }
+
+    /**
+     * Prepares and modifies an RSS tag structure based on the given JSON node.
+     * @param {JSONNodeI} node - The JSON node object to be processed and prepared as an RSS tag.
+     */
+    private prepareRSSTag(node: JSONNodeI) {
+
+        node.tagName = 'section';
+
+        if (node.showDate === '0') {
+            this.removeDateItem(node.children);
+        }
+
+        if (node.count && node.count > 1 && node.children?.length) {
+            for (let i = 1; i < node.count; i++) {
+                node.children.push(node.children[0]);
+            }
+        }
+
+        if (node.href && node.count) {
+            node.children?.push(this.generateRSSMetadataElement(node.href, node.count));
+        }
+
+        node.content = undefined;
+    }
+
+    /**
+     * Removes items with a CSS class of 'rss-date' from the child elements of the provided nodes.
+     * This method processes the first row of children from the provided array, identifying specific columns
+     * and modifying their children based on a filter condition.
+     *
+     * @param {JSONNodeI[] | undefined} children
+     */
+    private removeDateItem(children: JSONNodeI[] | undefined): void {
+
+        const firstRow = children[0]?.children?.[0]?.children;
+
+        firstRow.forEach((col, colIdx) => {
+            if (col.attributes?.['css-class'] !== 'rss-item-content-column') return;
+
+            firstRow[colIdx].children = (col.children ?? []).filter(
+                item => item.attributes?.['css-class'] !== 'rss-date'
+            );
+        });
+    }
+
+    /**
+     * Generates a JSONNodeI object representing an RSS metadata element.
+     * @param {string} href The URL to be used in the RSS metadata.
+     * @param {number} count The count or string to be included in the RSS metadata.
+     * @return {JSONNodeI} The generated metadata element as a JSONNodeI object.
+     */
+    private generateRSSMetadataElement(href: string, count: number): JSONNodeI {
+        return {
+            tagName: 'column',
+            children: [
+                {
+                    tagName: 'raw',
+                    content: `<div data-spice-rss="${href}" data-spice-rss-count="${count}"></div>`
+                }
+            ]
+        };
+    }
+
+    /**
+     * Constructs a string representation of attributes based on the provided key-value pairs.
+     * @param {Record<string, any>} attributes - An object containing key-value pairs where the key is the attribute name and the value is the attribute value.
+     * @return {string} A formatted string of attributes that can be used in an HTML element. Each key-value pair is formatted as `key="value"` and separated by a space.
+     */
+    private lineAttributes(attributes: Record<string, any>): string {
+
+        if (!attributes) return '';
+
+        let res = '';
+
+        Object.entries(attributes).forEach(([key, value]) => {
+            if (!value) return;
+            res += `${key}="${value}" `;
+        });
+
+        return ` ${res.trim()}`;
     }
 }
