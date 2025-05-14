@@ -40,10 +40,6 @@ class SchedulerJobTask extends SpiceBean
      */
     const JOB_TASK_RESOLUTION_FAILURE = 'failed';
     /**
-     * holds the job  failure constant when only supposedly running but actually dead
-     */
-    const JOB_TASK_RESOLUTION_ZOMBIE = 'failed (zombie)';
-    /**
      * holds the name of the subdirectory of modules or includes wherein the scheduler job task classes are kept
      */
     const SCHEDULER_JOB_TASKS_DIRECTORY = 'schedulerjobtasks';
@@ -145,7 +141,7 @@ class SchedulerJobTask extends SpiceBean
     /**
      * create a new job log entry
      */
-    private function writeLog()
+    public function writeLog()
     {
         $db = DBManagerFactory::getInstance();
         $guid = SpiceUtils::createGuid();
