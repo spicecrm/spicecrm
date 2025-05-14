@@ -10,7 +10,7 @@
     <div class="slds-form-element">
         <div class="slds-form-element__control">
             <div class="slds-combobox_container">
-                <div [system-dropdown-trigger]="(emailAddresses | keyvalue).length == 0" class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click">
+                <div [fitTriggerWidth]="true" [system-dropdown-trigger]="(emailAddresses | keyvalue).length == 0" class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click">
                     <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
                         <div [class.slds-theme--shade]="(emailAddresses | keyvalue).length == 0" role="combobox" tabindex="0" class="slds-input_faux slds-combobox__input" aria-expanded="false" aria-haspopup="listbox">
                             <ng-container *ngFor="let addr of emailAddresses | keyvalue; trackBy: trackByFn">
