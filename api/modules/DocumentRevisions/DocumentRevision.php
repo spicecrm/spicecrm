@@ -47,10 +47,6 @@ use SpiceCRM\includes\TXControlEditor\TXControlHandler;
 
 class DocumentRevision extends SpiceBean {
 
-	function __construct() {
-		parent::__construct();
-		$this->disable_row_level_security = true; //no direct access to this module.
-	}
 
 	function save($check_notify = false, $fts_index_bean = true){
         $timedate = TimeDate::getInstance();
