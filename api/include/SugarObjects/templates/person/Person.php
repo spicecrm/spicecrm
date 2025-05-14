@@ -136,10 +136,10 @@ class Person extends SpiceBean
                                 'summary_text' => $linkedBean->get_summary_text(),
                                 'date_entered' => $linkedBean->date_entered,
                                 'created_by' => $linkedBean->created_by,
-                                'created_by_name' => $linkedBean->created_by_name,
+                                'created_by_name' => $linkedBean->created_by_user->name,
                                 'date_modified' => $linkedBean->date_modified,
                                 'modified_user_id' => $linkedBean->modified_user_id,
-                                'modified_by_name' => $linkedBean->modified_by_name,
+                                'modified_by_name' => $linkedBean->modified_by_user->name,
                                 'gdpr_data_agreement' => $linkedBean->gdpr_data_agreement,
                                 'gdpr_marketing_agreement' => $linkedBean->gdpr_marketing_agreement
                             ];
