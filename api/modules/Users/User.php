@@ -696,7 +696,6 @@ class User extends Person
         $mod_strings = LanguageManager::loadDatabaseLanguage(LanguageManager::getDefaultLanguage());
 
         $emailTemp = BeanFactory::getBean('EmailTemplates');
-        $emailTemp->disable_row_level_security = true;
         if ($emailTemp->retrieve($templateId) == '') {
             $result['message'] = $mod_strings['LBL_EMAIL_TEMPLATE_MISSING']['default'];
             return $result;
