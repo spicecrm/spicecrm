@@ -56,8 +56,6 @@ use SpiceCRM\modules\Users\User;
 class UserPreference extends SpiceBean
 {
 
-    public $disable_row_level_security = true;
-
     protected $_userFocus;
 
     /**
