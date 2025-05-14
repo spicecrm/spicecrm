@@ -1054,7 +1054,7 @@ class SpiceBean
      *
      * Internal function, do not override.
      */
-    function get_linked_beans($field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "")
+    function get_linked_beans($field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "", $relationships = false)
     {
         if($searchterm){
             $searchterm = strtolower($searchterm);
@@ -1084,10 +1084,11 @@ class SpiceBean
                     'offset' => $begin_index,
                     'limit' => ($end_index - $begin_index),
                     'sort' => $sort_array,
-                    'searchterm' => $searchterm
+                    'searchterm' => $searchterm,
+                    'relationships' => $relationships
                 ]));
             } else {
-                return array_values($this->$field_name->getBeans(['sort' => $sort_array]));
+                return array_values($this->$field_name->getBeans(['sort' => $sort_array, 'relationships' => $relationships]));
             }
         }
         return [];
@@ -2406,6 +2407,14 @@ class SpiceBean
             if (0 == strcmp($field['type'], 'parent') && !empty($this->{$field['id_name']}) && !empty($this->{$field['type_name']})) {
                 $mod = BeanFactory::getBean($this->{$field['type_name']}, $this->{$field['id_name']}, ['relationships' => false]);
                 $this->{$field['name']} = $mod->name;
+            }
+
+            // fill in linked as well
+            if (0 == strcmp($field['type'], 'linked') && !empty($this->{$field['id_name']}) && $field['link']) {
+                $mod = BeanFactory::getBean($field['module'], $this->{$field['id_name']}, ['relationships' => false]);
+                if($mod){
+                    $this->{$field['name']} = $mod;
+                }
             }
 
         }
