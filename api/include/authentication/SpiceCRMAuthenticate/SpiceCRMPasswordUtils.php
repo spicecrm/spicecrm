@@ -213,7 +213,6 @@ class SpiceCRMPasswordUtils
         $db->query(sprintf("delete from users_password_tokens where id != '%s' and user_id = '%s'", $db->quote($token), $user_id));
 
         $emailTempl = $this->getProperEmailTemplate($user_id, 'sendTokenForNewPassword');
-        $emailTempl->disable_row_level_security = true;
 
         //replace instance variables in email templates
         $memmy = $emailTempl->parse(null, ['token' => $token]);
