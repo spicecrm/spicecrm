@@ -89,6 +89,16 @@ export class modelattachments implements OnDestroy {
     public folderTreeItems: any[] = [];
 
     /**
+     * total file size of the attachments
+     */
+    public totalFileSize: string;
+
+    /**
+     * emits the action when the attachment is deleted
+     */
+    public attachmentDeleted$: Subject<boolean> = new Subject<boolean>();
+
+    /**
      * a colection of subscriptions
      */
     public subscriptions: Subscription = new Subscription();
@@ -641,7 +651,7 @@ export class modelattachments implements OnDestroy {
     public deleteAttachment(id) {
         this.backend.deleteRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`, null, this.httpRequestsRefID)
             .subscribe({
-                next: (res) => {
+                next: () => {
                     let index = this._files.findIndex(f => f.id == id);
                     this._files.splice(index, 1);
 
@@ -654,6 +664,8 @@ export class modelattachments implements OnDestroy {
                     // broadcast the count
                     this.count--;
                     this.broadcastAttachmentCount();
+
+                    this.attachmentDeleted$.next(true);
                 },
                 error: (error) => {
                     this.toast.sendToast('Cannot delete attachment.', 'error', error.error.error.message, false);
