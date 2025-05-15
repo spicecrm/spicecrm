@@ -112,7 +112,7 @@ class EventBooking extends SpiceBean
                  or !preg_match('#^(\d{4})-(\d\d)-(\d\d)$#', $bodyParams['birthdate'], $matches )
                  or !checkdate( $matches[2], $matches[3], $matches[1] )
                  or !isset( $bodyParams['gender'] )
-                 or ( $bodyParams['gender'] !== 'm' and $bodyParams['gender'] !== 'f' )
+                 or ( !preg_match('#^m|f|d|i|o$#', $bodyParams['gender'] ))
             ) {
                 throw ( new BadRequestException('Invalid Data.'))->setErrorCode('invalidPersonalData');
             }
@@ -125,7 +125,14 @@ class EventBooking extends SpiceBean
             $participant->first_name = $bodyParams['firstName'];
             $participant->last_name = $bodyParams['lastName'];
             $participant->phone1 = $bodyParams['mobilePhone'];
-            $participant->salutation = $bodyParams['gender'] === 'm' ? 'Mr.' : ( $bodyParams['gender'] === 'f' ? 'Ms.' : null );
+            switch ( $bodyParams['gender'] ) {
+                case 'm': $participant->salutation = 'Mr.'; break;
+                case 'f': $participant->salutation = 'Ms.'; break;
+                case 'i': $participant->salutation = 'Mi.'; break;
+                case 'd': $participant->salutation = 'Mx.'; break;
+                case 'o': $participant->salutation = 'Mo.'; break;
+                default: $participant->salutation = null;
+            }
             $participant->primary_address_city = $bodyParams['city'];
             $participant->primary_address_street = $bodyParams['street'];
             $participant->primary_address_postalcode = $bodyParams['postalCode'];

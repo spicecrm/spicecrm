@@ -102,6 +102,18 @@ class SpiceBean
     public $id;
 
     /**
+     * @var add a default name field
+     */
+    public $name;
+
+    /**
+     * add a default relid field as this is used by the relationships
+     *
+     * @var
+     */
+    public $relid;
+
+    /**
      * the module this has been created for, set by the BeanFactory
      *
      * @var string
@@ -445,13 +457,14 @@ class SpiceBean
             $this->{$attributeName} = $attributeValue;
         }
 
-        if ($this->disableValidation == false) {
+        if ($this->disableValidation == false && SpiceConfig::getInstance()->get('systemvardefs.disable_bean_validation') == false) {
             $dictionaryField = $this->getDictionaryField($attributeName);
             if ($dictionaryField) {
                 $this->validateField($attributeName, $attributeValue, $dictionaryField);
             } else {
-                // Accept it for now that some fields have no dictionary definitions.
-                // throw new ValidationException('No field definition found for ' . $attributeName);
+                 if (SpiceConfig::getInstance()->get('systemvardefs.disable_strict_property_check') == false) {
+                     throw new ValidationException('No field definition found for ' . $attributeName);
+                 }
             }
         }
 
@@ -1041,7 +1054,7 @@ class SpiceBean
      *
      * Internal function, do not override.
      */
-    function get_linked_beans($field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "")
+    function get_linked_beans($field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "", $relationships = false)
     {
         if($searchterm){
             $searchterm = strtolower($searchterm);
@@ -1071,10 +1084,11 @@ class SpiceBean
                     'offset' => $begin_index,
                     'limit' => ($end_index - $begin_index),
                     'sort' => $sort_array,
-                    'searchterm' => $searchterm
+                    'searchterm' => $searchterm,
+                    'relationships' => $relationships
                 ]));
             } else {
-                return array_values($this->$field_name->getBeans(['sort' => $sort_array]));
+                return array_values($this->$field_name->getBeans(['sort' => $sort_array, 'relationships' => $relationships]));
             }
         }
         return [];
@@ -2393,6 +2407,14 @@ class SpiceBean
             if (0 == strcmp($field['type'], 'parent') && !empty($this->{$field['id_name']}) && !empty($this->{$field['type_name']})) {
                 $mod = BeanFactory::getBean($this->{$field['type_name']}, $this->{$field['id_name']}, ['relationships' => false]);
                 $this->{$field['name']} = $mod->name;
+            }
+
+            // fill in linked as well
+            if (0 == strcmp($field['type'], 'linked') && !empty($this->{$field['id_name']}) && $field['link']) {
+                $mod = BeanFactory::getBean($field['module'], $this->{$field['id_name']}, ['relationships' => false]);
+                if($mod){
+                    $this->{$field['name']} = $mod;
+                }
             }
 
         }
