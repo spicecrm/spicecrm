@@ -60,6 +60,8 @@ class Email extends SpiceBean
     const STATUS_READ = 'read';
     const STATUS_CREATED = 'created';
 
+    const STATUS_DRAFT = 'draft';
+
     const TYPE_INBOUND = 'inbound';
     const TYPE_OUTBOUND = 'out';
     /**
@@ -125,10 +127,18 @@ class Email extends SpiceBean
         return ['date_activity' => $retvalue];
     }
 
+    public function save($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
+    {
+        if($this->status == self::STATUS_DRAFT){
+            return $this->saveDraft($check_notify, $fts_index_bean,  $ignoreInvalidEmailAddresses);
+        }
+        return $this->saveEmail($check_notify, $fts_index_bean,  $ignoreInvalidEmailAddresses);
+    }
+
     /**
      * Overrides save handler
      */
-    public function save($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
+    public function saveEmail($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
     {
         $timedate = TimeDate::getInstance();
 
@@ -147,10 +157,7 @@ class Email extends SpiceBean
                     $mailbox->initTransportHandler();
             }
 
-            if (empty($this->id)) {
-                $this->id = SpiceUtils::createGuid();
-                $this->new_with_id = true;
-            }
+            $this->generateGUID();
 
             if (!empty($this->reference_id) && $this->new_with_id) {
                 $this->cloneRelatedBeansFromReference();
@@ -161,24 +168,7 @@ class Email extends SpiceBean
                 $this->status = self::STATUS_CREATED;
             }
 
-            $this->from_addr_name = $this->cleanEmails($this->from_addr_name);
-            if (empty($this->from_addr) && !empty($mailbox)) {
-                $this->from_addr = $mailbox->getEmailAddress();
-            } elseif (empty($this->from_addr) && !empty($this->from_addr_name)) {
-                $this->from_addr = $this->from_addr_name;
-            } elseif (empty($this->from_addr)) {
-                $this->from_addr = $mailbox->imap_pop3_username;
-            }
-            if (!empty($this->to_addrs)) {
-                $this->to_addrs = $this->cleanEmails($this->to_addrs);
-            }
-            if (!empty($this->to_addrs_names) && empty($this->to_addrs)) {
-                $this->to_addrs = $this->cleanEmails($this->to_addrs_names);
-            }
-            $this->to_addrs_names = $this->extractAddresses($this->to_addrs_names);
-            $this->cc_addrs_names = $this->cleanEmails($this->cc_addrs_names);
-            $this->bcc_addrs_names = $this->cleanEmails($this->bcc_addrs_names);
-            $this->reply_to_addr = $this->cleanEmails($this->reply_to_addr);
+            $this->setEmailAddresses();
             $this->description = SugarCleaner::cleanHtml($this->description);
             $this->description_html = SugarCleaner::cleanHtml($this->description_html, true);
             $this->raw_source = SugarCleaner::cleanHtml($this->raw_source, true);
@@ -253,6 +243,49 @@ class Email extends SpiceBean
         }
     }
 
+    public function saveDraft($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
+    {
+        $timedate = TimeDate::getInstance();
+        $mailbox = null;
+        if (!empty($this->mailbox_id)) {
+                $mailbox = $this->getMailbox();
+            }
+
+        $this->generateGUID();
+
+        if (!empty($this->reference_id) && $this->new_with_id) {
+            $this->cloneRelatedBeansFromReference();
+        }
+
+        $this->setEmailAddresses();
+        $this->description = SugarCleaner::cleanHtml($this->description);
+        $this->description_html = SugarCleaner::cleanHtml($this->description_html, true);
+        // disable cache! timedate->now() return null at this time
+        $timedate->allow_cache = false;
+
+        // check assigned user
+        if(empty($this->assigned_user_id)){
+            $this->assigned_user_id = AuthenticationController::getInstance()->getCurrentUser()->id;
+        }
+
+        // save without indexing
+        parent::save($check_notify, false);
+
+        if (!is_array($this->recipient_addresses) || empty($this->recipient_addresses)) {
+            $this->fillInEmailAddressesFromLegacyFields();
+
+        }
+        $this->handleFromAddress();
+        $this->saveRecipientAddresses($ignoreInvalidEmailAddresses);
+
+        // process the indexing after the addresseshave been saved so relationships are updated
+        if ($fts_index_bean) {
+            SpiceFTSHandler::getInstance()->indexBean($this);
+        }
+
+        $this->new_with_id = false;
+        return parent::save($check_notify, $fts_index_bean);
+    }
     /**
      * Creates a ZIP archive containing all attachments
      * @return object The new ZIP attachment
@@ -291,6 +324,34 @@ class Email extends SpiceBean
         unlink($path);
 
         return $newZipAttachment;
+    }
+
+    private function setEmailAddresses(): void
+    {
+        $this->from_addr_name = $this->cleanEmails($this->from_addr_name);
+        if (empty($this->from_addr) && !empty($mailbox)) {
+            $this->from_addr = $mailbox->getEmailAddress();
+        } elseif (empty($this->from_addr) && !empty($this->from_addr_name)) {
+            $this->from_addr = $this->from_addr_name;
+        }
+        if (!empty($this->to_addrs)) {
+            $this->to_addrs = $this->cleanEmails($this->to_addrs);
+        }
+        if (!empty($this->to_addrs_names) && empty($this->to_addrs)) {
+            $this->to_addrs = $this->cleanEmails($this->to_addrs_names);
+        }
+        $this->to_addrs_names = $this->extractAddresses($this->to_addrs_names);
+        $this->cc_addrs_names = $this->cleanEmails($this->cc_addrs_names);
+        $this->bcc_addrs_names = $this->cleanEmails($this->bcc_addrs_names);
+        $this->reply_to_addr = $this->cleanEmails($this->reply_to_addr);
+    }
+
+    private function generateGUID(): void
+    {
+        if (empty($this->id)) {
+            $this->id = SpiceUtils::createGuid();
+            $this->new_with_id = true;
+        }
     }
 
     /**
@@ -673,7 +734,7 @@ class Email extends SpiceBean
         $this->correctCharsetTag();
 
         // get the email addresses
-       $ret->retrieveEmailAddresses();
+        $ret->retrieveEmailAddresses();
 
         $ret->date_start = '';
         $ret->time_start = '';
