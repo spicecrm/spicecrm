@@ -10,6 +10,7 @@ import {modelattachments} from "../../../services/modelattachments.service";
 import {navigationtab} from "../../../services/navigationtab.service";
 import {Router} from "@angular/router";
 import {SpiceAttachmentsPanel} from "./spiceattachmentspanel";
+import {firstValueFrom} from "rxjs";
 
 /**
  * displays a quicknote that is read in teh stream
@@ -226,10 +227,11 @@ export class SpiceAttachmentFile {
     /**
      * action to delete the file
      */
-    public deleteFile() {
+    public async deleteFile() {
         if (this.editmode) {
             this.modelattachments.deleteAttachment(this.file.id);
-            this.attachmentsPanelComponent.loadFiles();
+            let finishedDeleting = await firstValueFrom(this.modelattachments.attachmentDeleted$)
+            if (finishedDeleting) this.attachmentsPanelComponent.loadFiles()
         }
     }
 }
