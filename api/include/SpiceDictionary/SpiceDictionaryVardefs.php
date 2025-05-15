@@ -85,25 +85,27 @@ class SpiceDictionaryVardefs  {
 
 
     /**
+     * @deprecated
      * checks if the System is set for database managed vardefs
      * @return false
      */
     public static function isDbManaged(){
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']){
-            return true;
-        }
-        return false;
+//        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']){
+//            return true;
+//        }
+        return true;
     }
 
     /**
+     * @deprecated
      * checks if the System is set for database managed domains
      * @return false
      */
     public static function isDomainManaged(){
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['domains']) && SpiceConfig::getInstance()->config['systemvardefs']['domains']){
-            return true;
-        }
-        return false;
+//        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['domains']) && SpiceConfig::getInstance()->config['systemvardefs']['domains']){
+//            return true;
+//        }
+        return true;
     }
 
 

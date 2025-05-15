@@ -19,7 +19,7 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
     /**
      * containers to be rendered
      */
-    @Input() public readonly column: ColumnI;
+    @Input() public column: ColumnI;
     /**
      * holds the drag entered value
      */
@@ -76,6 +76,7 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
     public generateStyle() {
         this.style = {};
         if(this.column.attributes['background-color']) this.style['background-color'] = this.column.attributes['background-color'];
+        if(this.column.attributes['inner-background-color']) this.style['background-color'] = this.column.attributes['inner-background-color'];
         if(this.column.attributes['border']) this.style['border'] = this.column.attributes['border'];
         if(this.column.attributes['border-top']) this.style['border-top'] = this.column.attributes['border-top'];
         if(this.column.attributes['border-right']) this.style['border-right'] = this.column.attributes['border-right'];

@@ -1,12 +1,13 @@
 /**
  * @module Outlook
  */
-import {Injectable} from "@angular/core";
+import {inject, Injectable} from "@angular/core";
 import {GroupwareService} from "../../../include/groupware/services/groupware.service";
 import {Observable, of, Subject} from "rxjs";
 import {OutlookAttachmentI} from "../interfaces/outlook.interfaces";
 import {GroupwareEmail} from "../../../include/groupware/interfaces/groupwareemail.interface";
 import {map} from "rxjs/operators";
+import {toast} from "../../../services/toast.service";
 
 declare var Office: any;
 declare var _: any;
@@ -24,6 +25,8 @@ export class OutlookGroupware extends GroupwareService {
         attachments: [],
     };
     public iframeUrl: string = '';
+
+    private toast: toast = inject(toast);
 
     /**
      * Loads the email data from Outlook and assembles it into a GroupwareEmail object.
@@ -101,12 +104,14 @@ export class OutlookGroupware extends GroupwareService {
                                 next: () => {
                                     loading.next(true);
                                     loading.complete();
+                                    this.toast.sendToast('LBL_ARCHIVED', 'success');
                                     retSubject.next(true);
                                     retSubject.complete();
                                 },
                                 error: () => {
                                     loading.next(true);
                                     loading.complete();
+                                    this.toast.sendToast('LBL_ARCHIVED', 'success');
                                     retSubject.error('error archiving attachments');
                                     retSubject.complete();
                                 }
@@ -115,6 +120,7 @@ export class OutlookGroupware extends GroupwareService {
                         } else {
                             loading.next(true);
                             loading.complete();
+                            this.toast.sendToast('LBL_ARCHIVED', 'success');
 
                             retSubject.next(true);
                             retSubject.complete();
@@ -123,6 +129,7 @@ export class OutlookGroupware extends GroupwareService {
                     error: () => {
                         loading.next(true);
                         loading.complete();
+                        this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                         retSubject.error('error archiving email');
                         retSubject.complete();
                     }}
@@ -134,6 +141,7 @@ export class OutlookGroupware extends GroupwareService {
                 retSubject.complete();
                 loading.next(true);
                 loading.complete();
+                this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
             }
         );
 

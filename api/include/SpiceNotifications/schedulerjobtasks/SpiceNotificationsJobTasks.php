@@ -24,8 +24,8 @@ class SpiceNotificationsJobTasks
     public function sendSummaryEmailNotifications(?string $params = null): bool
     {
         $db = DBManagerFactory::getInstance();
-        $dateFrom = date("Y-m-d 23:59:59");
-        $dateTo = date("Y-m-d 00:00:00");
+        $dateTo = date("Y-m-d 23:59:59");
+        $dateFrom = date("Y-m-d 00:00:00");
 
         $query = $db->query("select * from spicenotifications s WHERE notification_date >= '$dateFrom' AND notification_date < '$dateTo' ORDER BY user_id, notification_date desc");
 
