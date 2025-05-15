@@ -61,6 +61,9 @@ export class EmailSendButton {
         return (!name || !body || !mailbox || !recipientAddresses || !recipientTo || sizeTooBig) ? true : this.sending;
     }
 
+    get buttonLabel(): string {
+        return this.model.getFieldValue('date_scheduled') ? 'LBL_SEND_EMAIL_LATER' : 'LBL_SEND';
+    }
 
     /**
      * the method invoed when selecting the action. It sends the email
@@ -72,6 +75,7 @@ export class EmailSendButton {
             this.sending = true;
             this.model.setFields({
                 type: 'out',
+                status: 'created',
                 to_be_sent: true,
                 from_addr: this.model.getField('from_addr_name'),
                 to_addrs: this.model.getField('to_addrs_names'),
