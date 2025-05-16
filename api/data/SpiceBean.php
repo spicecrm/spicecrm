@@ -1413,8 +1413,6 @@ class SpiceBean
             $this->date_modified = TimeDate::getInstance()->nowDb();
         }
 
-        if (!empty($this->modified_by_name))
-            $this->old_modified_by_name = $this->modified_by_name;
         if ($this->update_modified_by) {
             $this->modified_user_id = 1;
 
