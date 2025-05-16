@@ -4,6 +4,7 @@ namespace SpiceCRM\modules\EmailTrackingLinks;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class EmailTrackingLink extends SpiceBean
@@ -13,12 +14,12 @@ class EmailTrackingLink extends SpiceBean
     public $object_name = "EmailTrackingLink";
 
     /**
-     * transforms the basic link into a blowfish encrypted tracked link
+     * transforms the basic link into a encryptionkey encrypted tracked link
      */
-    static function transformEmailTrackingLinks($parentType, $parentId, $trackingId, string $handlingLink)
+    static function transformEmailTrackingLinks($parentType, $parentId, $trackingId, $handlingLink)
     {
-        $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? "2fs5uhnjcnpxcpg9";
-        $method = 'blowfish';
+        $key = SpiceConfig::getInstance()->get('emailtracking.encryptionkey') ?? SpiceConfig::getInstance()->config['unique_key'];
+        $method = 'DES-EDE3-CBC';
         $data = "ParentType:$parentType:ParentId:$parentId:EmailTrackingLinks:$trackingId";
 
         $link = openssl_encrypt($data, $method, $key);

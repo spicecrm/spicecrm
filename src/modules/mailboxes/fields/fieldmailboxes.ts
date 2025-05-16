@@ -92,7 +92,6 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
      */
     public ngOnInit() {
         super.ngOnInit();
-        this.setValueFromPreferences();
         this.getOptions();
         this.setConfigSettings(this.value);
     }
@@ -113,10 +112,16 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
                     // cache the options
                     this.configuration.setData(`mailboxes${this.scope}`, this.options);
 
+                    // set teh value from teh preferences
+                    this.setValueFromPreferences();
+
                     this.cdRef.detectChanges();
                 });
         } else {
             this.options = options;
+
+            // set teh value from the preferences
+            this.setValueFromPreferences();
         }
     }
 
@@ -140,13 +145,17 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
         if (!!this.value || !!this.fieldconfig.disableCache) return;
 
         const fromPreferences = this.userpreferences.getPreference(`defaultmailbox_${this.scope}`);
-        if (fromPreferences && this.isEditMode()) this.model.setField(this.fieldname, fromPreferences);
+        if (fromPreferences && this.isEditMode()) this.model.setField(this.fieldname, fromPreferences, false, false);
 
         this.subscriptions.add(
             this.model.mode$.subscribe(mode => {
                 if (mode != 'edit' || !!this.value) return;
                 const fromPreferences = this.userpreferences.getPreference(`defaultmailbox_${this.scope}`);
-                if (fromPreferences) this.model.setField(this.fieldname, fromPreferences);
+                if (fromPreferences) {
+                    this.model.setField(this.fieldname, fromPreferences)
+                } else if (this.options.length > 0){
+                    this.model.setField(this.fieldname, this.options[0].id)
+                };
             })
         );
     }
@@ -178,7 +187,13 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
      * get config to disable zip compress checkbox
      */
     get zipDisabled() {
-        return !this.mailboxZipConfig || this.mailboxZipConfig == '0';
+        const isDisabled = !this.mailboxZipConfig || this.mailboxZipConfig == '0' || this.model.getField('downloadlink_attachments') == 1;
+
+        if (isDisabled) {
+            this.model.setField('zip_compress', undefined, false, false);
+        }
+
+        return isDisabled;
     }
 
     /**
@@ -230,6 +245,10 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
      * @param value
      */
     public setZip(value) {
+        if (this.zipDisabled) {
+            value = 0;
+        }
+
         this.model.setField('zip_compress', value);
     }
 

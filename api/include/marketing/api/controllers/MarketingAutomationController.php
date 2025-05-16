@@ -11,6 +11,7 @@ use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\modules\Administration\api\controllers\ConfiguratorController;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Emails\Email;
 
@@ -26,7 +27,7 @@ class MarketingAutomationController
      */
     public function handleTrackingPixel(Request $req, Response $res, array $args): Response
     {
-        $decrypted = $this->decryptBlowfish(base64_decode($args['key']));
+        $decrypted = $this->decryptEncryptionKey(base64_decode($args['key']));
 
         if (!$decrypted) {
             throw new BadRequestException('Failed to decrypt key');
@@ -48,7 +49,7 @@ class MarketingAutomationController
      */
     public function handleTrackingUrl(Request $req, Response $res, array $args): Response
     {
-        $decrypted = $this->decryptBlowfish(base64_decode($args['key']));
+        $decrypted = $this->decryptEncryptionKey(base64_decode($args['key']));
 
         if (!$decrypted) {
             throw new BadRequestException('Failed to decrypt key');
@@ -69,7 +70,7 @@ class MarketingAutomationController
      */
     public function handleMarketingAction(Request $req, Response $res, array $args): Response
     {
-        $decrypted = $this->decryptBlowfish(base64_decode($args['key']));
+        $decrypted = $this->decryptEncryptionKey(base64_decode($args['key']));
 
         if (!$decrypted) {
             throw new BadRequestException('Failed to decrypt key');
@@ -201,11 +202,11 @@ class MarketingAutomationController
      * decrypts the key
      * @param $key
      */
-    private function decryptBlowfish($key)
+    private function decryptEncryptionKey($key)
     {
-        $blowfishkey = '2fs5uhnjcnpxcpg9';
-        $method = 'blowfish';
-        return openssl_decrypt($key, $method, $blowfishkey);
+        $encryptionKey = SpiceConfig::getInstance()->get('emailtracking.encryptionkey') ?? SpiceConfig::getInstance()->config['unique_key'];
+        $method = 'DES-EDE3-CBC';
+        return openssl_decrypt($key, $method, $encryptionKey);
     }
 
     /**

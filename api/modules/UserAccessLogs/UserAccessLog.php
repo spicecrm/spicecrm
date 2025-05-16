@@ -12,7 +12,6 @@ use SpiceCRM\includes\utils\SpiceUtils;
 
 class UserAccessLog extends SpiceBean
 {
-    public $disable_row_level_security = true;
 
     public function __construct()
     {

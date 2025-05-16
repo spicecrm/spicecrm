@@ -13,6 +13,7 @@ import {dockedComposer} from "../../../services/dockedcomposer.service";
 import {EmailReplyModal} from "./emailreplymodal";
 import {modelattachments} from "../../../services/modelattachments.service";
 import {backend} from "../../../services/backend.service";
+import {emailsService} from "../services/emails.service";
 
 declare var moment: any;
 
@@ -21,7 +22,7 @@ declare var moment: any;
  */
 @Component({
     templateUrl: '../templates/emailreplymodal.html',
-    providers: [view, model, modelattachments]
+    providers: [view, model, modelattachments, emailsService]
 })
 export class EmailForwardModal extends EmailReplyModal {
 
@@ -41,9 +42,10 @@ export class EmailForwardModal extends EmailReplyModal {
                 public userpreferences: userpreferences,
                 public dockedcomposer: dockedComposer,
                 public modelattachments: modelattachments,
-                public backend: backend
+                public backend: backend,
+                public emailsService: emailsService
     ) {
-        super(language, metadata, model, parent, view, prefs, modal, session, userpreferences, dockedcomposer);
+        super(language, metadata, model, parent, view, modelattachments, prefs, modal, session, userpreferences, dockedcomposer,emailsService);
     }
 
     /**
@@ -54,20 +56,18 @@ export class EmailForwardModal extends EmailReplyModal {
         this.model.startEdit(false);
         // set the from-addresses to to-addresses and vice versa
         // set the email-history into the body
-        this.model.setFields({
-            recipient_addresses: [],
-            reference_id: this.parent.id,
-            name: this.language.getLabel('LBL_FW') + this.parent.getField('name'),
-            body: '<br><br><br>' + this.buildHistoryText()
+        //let emailTexts = this.emailsService.composeReplyContent(this.parent, 'fwd');
+        this.emailsService.composeReplyContent(this.parent, 'fwd').subscribe({
+            next: (emailTexts) => {
+                this.model.setFields({
+                    recipient_addresses: [],
+                    reference_id: this.parent.id,
+                    name: emailTexts.name,
+                    body: emailTexts.body
+                });
+            }
         });
 
-        this.loadParentAttachments();
+        this.emailsService.loadParentAttachments(this.parent, this.model);
     }
-
-    public loadParentAttachments() {
-        this.modelattachments.module = 'Emails';
-        this.modelattachments.id = this.model.id;
-        this.modelattachments.cloneAttachments(this.parent);
-    }
-
 }

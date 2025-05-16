@@ -16,6 +16,7 @@ import {metadata} from './metadata.service';
 import {modelutilities} from "./modelutilities.service";
 import {backend} from "./backend.service";
 import {TokenObjectI} from "../globalcomponents/interfaces/globalcomponents.interfaces";
+import {socket} from "./socket.service";
 
 interface loginAuthDataIf {
     userName: string;
@@ -55,6 +56,10 @@ export class loginService {
      * to be pased to the login so the handler can identify based on the toekn
      */
     public oauthIssuer: string = '';
+    /**
+     * flag set if the user logs out
+     */
+    public loggedOut: boolean = false;
 
     constructor(
         public configurationService: configurationService,
@@ -64,6 +69,7 @@ export class loginService {
         public toast: toast,
         public helper: helper,
         public session: session,
+        public socket: socket,
         public broadcast: broadcast,
         public modelutilities: modelutilities,
         public modal: modal,
@@ -320,12 +326,18 @@ export class loginService {
      * broadcasts a an ebvenmt that sevrices can subscriber and listen to to cleanup and data that might occur
      */
     public logout(localonly: boolean = false) {
+
+        this.loggedOut = true;
+
         // check if we shoudl also logout on the server
         if(!localonly) {
             this.backend.deleteRequest('authentication/login', {session_id: this.session.authData.sessionId});
         }
         this.session.endSession();
         this.loader.reset();
+
+        // disconnect all sockets
+        this.socket.disconnectAll();
 
         // broadcast that the user loged out
         this.broadcast.broadcastMessage('logout');

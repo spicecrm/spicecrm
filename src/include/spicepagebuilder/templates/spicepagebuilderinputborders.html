@@ -1,0 +1,44 @@
+<div class="slds-box slds-box--border slds-m-vertical--x-small">
+    <fieldset class="slds-form-element slds-form-element_compound slds-p-around--x-small">
+        <div class="slds-form-element__control">
+            <div class="slds-form-element__row">
+                <div class="slds-size--1-of-2">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label">{{label}}</label>
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="border_values">
+                                <option value="none"><system-label label="LBL_BORDER_NONE"/></option>
+                                <option value="uniform"><system-label label="LBL_BORDER_UNIFORM"/></option>
+                                <option value="distinct"><system-label label="LBL_BORDER_DISTINCT"/></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-size--1-of-2">
+                    <spice-page-builder-input-width [(ngModel)]="attributes[attribute + '-radius']" label="LBL_RADIUS"/>
+                </div>
+            </div>
+            <div class="slds-form-element__row" *ngIf="border_values == 'uniform'">
+                <div class="slds-size--1-of-1">
+                    <spice-page-builder-input-border [(ngModel)]="attributes[attribute]" label="border"/>
+                </div>
+            </div>
+            <div class="slds-form-element__row" *ngIf="border_values == 'distinct'">
+                <div class="slds-size--1-of-2">
+                    <spice-page-builder-input-border [(ngModel)]="attributes[attribute + '-top']" label="border-top"/>
+                </div>
+                <div class="slds-size--1-of-2">
+                    <spice-page-builder-input-border [(ngModel)]="attributes[attribute + '-right']" label="border-right"/>
+                </div>
+            </div>
+            <div class="slds-form-element__row" *ngIf="border_values== 'distinct'">
+                <div class="slds-size--1-of-2">
+                    <spice-page-builder-input-border [(ngModel)]="attributes[attribute + '-bottom']" label="border-bottom"/>
+                </div>
+                <div class="slds-size--1-of-2">
+                    <spice-page-builder-input-border [(ngModel)]="attributes[attribute + '-left']" label="border-left"/>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>

@@ -10,6 +10,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SysCurrencies\SysCurrencies;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -212,6 +213,41 @@ class SystemTemplateFunctions {
         if (empty($inputString)) return '';
 
         return SpiceUtils::currencyFormatNumber($inputString);
+
+    }
+
+    /**
+     * returns a currency Symbol
+     *
+     * @param $compiler
+     * @param $beans
+     * @param $inputString
+     * @return string
+     */
+    static function getCurrencySymbol($compiler, $beans, $inputString){
+
+        if (empty($inputString)) return '';
+
+        $currency = SysCurrencies::getInstance()->getCurrencyByID($inputString);
+
+        return $currency->currency_symbol;
+
+    }
+    /**
+     * returns a currency ISO4217
+     *
+     * @param $compiler
+     * @param $beans
+     * @param $inputString
+     * @return string
+     */
+    static function getCurrencyISO($compiler, $beans, $inputString){
+
+        if (empty($inputString)) return '';
+
+        $currency = SysCurrencies::getInstance()->getCurrencyByID($inputString);
+
+        return $currency->iso4217;
 
     }
 

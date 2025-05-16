@@ -3,24 +3,24 @@
         <div class="slds-grid slds-grid--vertical-align-center slds-grow">
             <div class="slds-grid slds-grid--vertical-align-center slds-no-space">
                 <system-icon [module]="model.module"></system-icon>
-                <object-list-types></object-list-types>
+                <object-list-types/>
             </div>
-            <system-input-search-term [(ngModel)]="searchTerm" (onSearchTermClear)="clearSearchTerm()" (onEnterPress)="reloadList()" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', model.module)" class="slds-grow"></system-input-search-term>
+            <system-input-search-term [(ngModel)]="searchTerm" (onSearchTermClear)="clearSearchTerm()" (onEnterPress)="reloadList()" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', model.module)" class="slds-grow"/>
         </div>
         <div [class.slds-m-top--x-small]="layout.screenwidth == 'small'" class="slds-grid slds-grid--vertical-align-center slds-grow slds-grid--align-end slds-p-left--small">
-            <object-listview-header-details></object-listview-header-details>
+            <object-listview-header-details/>
             <div class="slds-col slds-no-flex slds-grid slds-align-bottom slds-p-left--small">
-                <object-listview-settings class="slds-show--medium"></object-listview-settings>
-                <object-listview-header-list-selector></object-listview-header-list-selector>
+                <object-listview-settings class="slds-show--medium"/>
+                <object-listview-header-list-selector/>
                 <button class="slds-button slds-button--neutral slds-button--icon-border slds-m-horizontal--xxx-small" system-title="LBL_RELOAD" (click)="modellist.reLoadList()">
-                    <system-button-icon [icon]="modellist.isLoading ? 'close' : 'refresh'"></system-button-icon>
+                    <system-button-icon [icon]="modellist.isLoading ? 'close' : 'refresh'"/>
                 </button>
-                <object-listview-aggregates-button class="slds-show--medium"></object-listview-aggregates-button>
-                <object-listview-filter-button class="slds-show--medium"></object-listview-filter-button>
+                <object-listview-aggregates-button class="slds-show--medium"/>
+                <object-listview-filter-button class="slds-show--medium"/>
             </div>
-            <object-action-container [actionset]="actionSet" class="slds-m-left--xx-small"></object-action-container>
+            <object-action-container [actionset]="actionSet" class="slds-m-left--xx-small"/>
         </div>
     </div>
 </div>
-<object-listview-filter-panel @animatepanel *ngIf="modellist.displayFilters"></object-listview-filter-panel>
-<object-listview-aggregates-panel @animatepanel *ngIf="modellist.displayAggregates"></object-listview-aggregates-panel>
+<object-listview-filter-panel @animatepanel *ngIf="modellist.displayFilters"/>
+<object-listview-aggregates-panel @animatepanel *ngIf="modellist.displayAggregates"/>

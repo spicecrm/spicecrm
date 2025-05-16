@@ -1,0 +1,33 @@
+<system-modal size="small">
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_ALIASES"/>
+    </system-modal-header>
+    <system-modal-content>
+        <ul [system-overlay-loading-spinner]="relatedModels.isloading" class="slds-has-dividers_around-space">
+            @for (alias of relatedModels.items; track alias.id) {
+                <li class="slds-item slds-grid">
+                    <span class="slds-truncate slds-grow">{{alias.alias_name}}</span>
+                    <div (click)="toggleActivate(alias)" style="cursor:pointer;">
+                        <system-utility-icon [colorclass]="alias.status != 'Active' ? 'slds-icon-text-light' : 'slds-icon-text-success'" icon="light_bulb" size="x-small"/>
+                    </div>
+                    <button (click)="delete(alias.id)" class="slds-m-left--xx-small slds-button slds-button--icon">
+                        <system-button-icon icon="delete"/>
+                    </button>
+                </li>
+            }
+            @if (relatedModels.items.length == 0) {
+                <div class="slds-align--absolute-center">
+                    <system-label label="LBL_NO_ENTRIES"/>
+                </div>
+            }
+        </ul>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--brand" (click)="create()">
+            <system-label label="LBL_ADD"/>
+        </button>
+        <button class="slds-button slds-button--neutral" (click)="close()">
+            <system-label label="LBL_CLOSE"/>
+        </button>
+    </system-modal-footer>
+</system-modal>

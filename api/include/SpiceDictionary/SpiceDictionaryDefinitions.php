@@ -193,7 +193,7 @@ class SpiceDictionaryDefinitions
         DBManagerFactory::getInstance()->deleteQuery('sysdictionaryfields', "sysdictionaryname = '$name'");
 
         $this->writeVardefToFieldsTable($name, $dic);
-        $repairFields = array_filter($dic['fields'], fn($d) => $d['source'] != 'non-db');
+        $repairFields = $dic['fields'] ? array_filter($dic['fields'], fn($d) => $d['source'] != 'non-db') : [];
 
         // do the repair
         $sql = DBManagerFactory::getInstance()->repairTableParams($dic['table'], $repairFields, $dic['indices'], false);

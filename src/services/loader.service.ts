@@ -151,6 +151,8 @@ export class loader {
      * @param refresh - forces a refresh of the config resetting locally stored data
      */
     public load(refresh: boolean = true): Observable<boolean> {
+        // set active loadtask to Loadtasks
+        this.activeLoader = 'Loadtasks'
 
         // clean the DBs for the config and also for the languages and config
         if(refresh){

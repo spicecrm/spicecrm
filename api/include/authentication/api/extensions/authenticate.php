@@ -126,6 +126,23 @@ $routes = [
         ],
     ],
     [
+        'method' => 'put',
+        'route' => '/module/Users/{id}/externalauthonly',
+        'class' => AuthenticateController::class,
+        'function' => 'authSetExternalAuthOnly',
+        'description' => '',
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'ID of the user',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
+                'example' => '40109eab-ddc0-01fb-3a85-b3f3f87cfa1c'
+            ]
+        ]
+    ],
+    [
         'method' => 'get',
         'oldroute' => '/user/preferencesformats',
         'route' => '/module/Users/preferencesformats',

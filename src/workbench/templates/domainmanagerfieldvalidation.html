@@ -98,10 +98,10 @@
                             <input type="text" [(ngModel)]="validationvalue.description" class="slds-input"/>
                         </td>
                         <td *ngIf="view == 'extended'">
-                            <input type="text" [(ngModel)]="validationvalue.version" class="slds-input"/>
+                            <system-input-version [(ngModel)]="validationvalue.version"/>
                         </td>
                         <td *ngIf="view == 'extended'">
-                            <input type="text" [(ngModel)]="validationvalue.package" class="slds-input"/>
+                            <system-input-package [(ngModel)]="validationvalue.package"/>
                         </td>
                         <td class="slds-text-align--center" style="min-height: 40px;">
                             <!-- no delete when status is active -->

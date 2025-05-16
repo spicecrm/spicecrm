@@ -53,6 +53,12 @@ export class view {
     public labels: 'default' | 'long' | 'short' = 'default';
 
     /**
+     * if set to true the fieldlabels will be aligned with the fieldtype
+     * usefuly for e.g. currencies in lists
+     */
+    public alignLabels: boolean = false;
+
+    /**
      * the size for the responsive design
      */
     public _size: 'regular' | 'small' = 'regular';

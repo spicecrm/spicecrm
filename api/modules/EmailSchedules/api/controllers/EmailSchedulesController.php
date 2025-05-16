@@ -10,6 +10,7 @@ use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -71,9 +72,10 @@ class EmailSchedulesController
 
         $emailscheduleId = $this->saveBean($postBody, $args['id']);
 
-        // limit to a maximum of 50
-        if(count($postBody['ids']) > 50){
-            throw new ForbiddenException('Maximum Number for email schedules is 50');
+        # limit the email count
+        $maxEmailCount = SpiceConfig::getInstance()->config['emailforward'] ?: 50;
+        if(count($postBody['ids']) > $maxEmailCount){
+            throw new ForbiddenException("Maximum Number for email schedules is $maxEmailCount" );
         }
 
         if (!empty($emailscheduleId) && count($postBody['ids']) > 0) {
@@ -242,9 +244,10 @@ class EmailSchedulesController
         }
 
 
-        // limit to a maximum of 50
-        if(count($relatedbeans) + count($postBody['linkedbeans']) > 50){
-            throw new ForbiddenException('Maximum Number for email schedules is 50');
+        # limit the email count
+        $maxEmailCount = SpiceConfig::getInstance()->config['emailforward'] ?: 50;
+        if(count($relatedbeans) + count($postBody['linkedbeans']) > $maxEmailCount){
+            throw new ForbiddenException("Maximum Number for email schedules is $maxEmailCount");
         }
 
         // create the scheduleid

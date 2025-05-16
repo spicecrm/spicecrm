@@ -29,6 +29,7 @@ import {AccountHierarchy} from "./components/accounthierarchy";
 import {AccountHierarchyNode} from "./components/accounthierarchynode";
 import {AccountVATIDField} from "./components/accountvatidfield";
 import {AccountNACELoader} from "./components/accountnaceloader";
+import {AccountTerritoryDetailsAddButton} from "./components/accountterritorydetailsaddbutton";
 
 @NgModule({
     imports: [
@@ -54,7 +55,8 @@ import {AccountNACELoader} from "./components/accountnaceloader";
         AccountHierarchy,
         AccountHierarchyNode,
         AccountVATIDField,
-        AccountNACELoader
+        AccountNACELoader,
+        AccountTerritoryDetailsAddButton
     ],
     providers: [
         ACManagerService

@@ -52,9 +52,17 @@ export class CalendarHeader implements OnDestroy {
      */
     @Input() public modules: any[] = [];
     /**
+     * calendar sheet type
+     */
+    @Input() public sheetType: 'Day' | 'Three_Days' | 'Week' | 'Month' | 'Schedule';
+    /**
      * emit when a calendar date is picked
      */
     @Output() public datePicked: EventEmitter<any> = new EventEmitter<any>();
+    /**
+     * holds the calendar date
+     */
+    @Input() setdate;
 
     constructor(public language: language,
                 public navigation: navigation,
@@ -111,8 +119,8 @@ export class CalendarHeader implements OnDestroy {
      * @return calendar header
      */
     get calendarHeader() {
-        const focDate = new moment(this.calendar.calendarDate);
-        switch (this.calendar.sheetType) {
+        const focDate = new moment(this.setdate);
+        switch (this.sheetType) {
             case 'Week':
                 return `${this.getFirstDayOfWeek()} - ${this.getLastDayOfWeek()}`;
             case 'Month':
@@ -130,7 +138,7 @@ export class CalendarHeader implements OnDestroy {
      * @return string compact calendar header
      */
     get compactCalendarHeader() {
-        const focDate = new moment(this.calendar.calendarDate);
+        const focDate = new moment(this.setdate);
         return focDate.format('MMM, YYYY');
     }
 
@@ -138,7 +146,7 @@ export class CalendarHeader implements OnDestroy {
      * @return string week number display
      */
     get weekNumberDisplay() {
-        let focDate = new moment(this.calendar.calendarDate);
+        let focDate = new moment(this.setdate);
         return `${this.language.getLabel('LBL_WEEK')} ${focDate.format('w')}`;
     }
 
@@ -146,8 +154,8 @@ export class CalendarHeader implements OnDestroy {
      * @return first day of week
      */
     public getFirstDayOfWeek() {
-        let focDate = new moment(this.calendar.calendarDate);
-        focDate.day(this.calendar.weekStartDay);
+        let focDate = new moment(this.setdate);
+        focDate.startOf('week');
         return focDate.format('MMM D');
     }
 
@@ -155,7 +163,7 @@ export class CalendarHeader implements OnDestroy {
      * @return last day of week
      */
     public getLastDayOfWeek() {
-        let focDate = new moment(this.calendar.calendarDate);
+        let focDate = new moment(this.setdate);
         focDate.day(this.calendar.weekDaysCount);
         return focDate.format('MMM D');
     }
@@ -173,6 +181,7 @@ export class CalendarHeader implements OnDestroy {
      */
     public setType(sheetType) {
         this.calendar.sheetType = sheetType;
+        this.sheetType = sheetType;
         this.calendar.refresh();
         this.showTypeSelector = false;
     }

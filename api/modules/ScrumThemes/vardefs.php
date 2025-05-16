@@ -92,4 +92,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['ScrumTheme'] = [
     'indices' => [],
 ];
 // default (Basic) fields & assignable (implements->assigned fields)
-VardefManager::createVardef('ScrumThemes', 'ScrumTheme', ['default', 'assignable']);
+//VardefManager::createVardef('ScrumThemes', 'ScrumTheme', ['default', 'assignable']);

@@ -18,6 +18,11 @@ import {backend} from "../../../services/backend.service";
 })
 export class OrgunitsChartViewBoxAdd {
 
+    /**
+     * enables inheritance of custom color styles
+     */
+    @Input() customStyles: any = {};
+
     constructor(public oview: orgunitsViewService, public backend: backend, public modal: modal, public model: model, @SkipSelf() public parent: model) {
     }
 
@@ -28,6 +33,7 @@ export class OrgunitsChartViewBoxAdd {
                     next: (selection) => {
                         switch(selection){
                             case 'addorgunit':
+                            case 'addstaffunit':
                                 this.model.module = 'OrgUnits';
                                 this.model.initialize();
                                 this.model.addModel(null, this.parent, {
@@ -35,6 +41,7 @@ export class OrgunitsChartViewBoxAdd {
                                     parent_name: this.parent.getField('name'),
                                     orgchart_id: this.oview.orgChart.id,
                                     orgchart_name: this.oview.orgChart.getField('name'),
+                                    is_staff_unit: selection == 'addstaffunit'
                                 }).subscribe({
                                     next: (data) => {
                                         this.oview.orgunits.push(data);

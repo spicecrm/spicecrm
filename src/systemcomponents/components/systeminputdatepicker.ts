@@ -9,14 +9,14 @@ import {
     Input,
     OnChanges,
     OnInit,
-    Output
+    Output, WritableSignal
 } from '@angular/core';
 import {language} from '../../services/language.service';
 import {userpreferences} from "../../services/userpreferences.service";
 import {layout} from "../../services/layout.service";
 import {backend} from "../../services/backend.service";
 import {configurationService} from "../../services/configuration.service";
-import {config} from "rxjs";
+import {MomentService} from "../../services/moment.service";
 
 /* @ignore */
 declare var moment: any;
@@ -88,7 +88,9 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
                 public userPreferences: userpreferences,
                 public backend: backend,
                 public config: configurationService,
+                private momentService: MomentService,
                 public cdRef: ChangeDetectorRef) {
+
         let preferences = this.userPreferences.unchangedPreferences.global;
         this.weekStartDay = preferences.week_day_start == "Monday" ? 1 : 0 || this.weekStartDay;
     }
@@ -132,18 +134,8 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     /*
     * @return weekDays: string[]
     */
-    get weekdays() {
-        let lang = this.language.currentlanguage.substring(0, 2);
-        moment.locale(lang);
-        let weekDays = moment.weekdaysMin();
-        switch (this.weekStartDay) {
-            case 1:
-                let sun = weekDays.shift();
-                weekDays.push(sun);
-                return weekDays;
-            default:
-                return weekDays;
-        }
+    get weekdays(): WritableSignal<string[]> {
+        return this.momentService.weekdaysMin;
     }
 
     public ngOnInit() {
@@ -217,8 +209,6 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @return weekdayLong: string
     */
     public weekdayLong(dayIndex) {
-        let lang = this.language.currentlanguage.substring(0, 2);
-        moment.locale(lang);
         return moment.weekdays(dayIndex + this.weekStartDay);
     }
 
@@ -380,11 +370,8 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     public buildGridWeeks(grid, date) {
         let fdom = new moment(date);
         // move to first day of month
-        fdom.date(1);
-        // go the the previous week if the month starts on sunday and the week starts on monday
-        if (fdom.day() == 0 && this.weekStartDay == 1) fdom.subtract(7, 'd');
-        // move to week start day
-        fdom.day(this.weekStartDay);
+        fdom.startOf('month').startOf('week');
+
         // build 6 weeks
         let j = 0;
         while (j < 6) {

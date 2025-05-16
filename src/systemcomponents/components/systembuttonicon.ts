@@ -32,7 +32,7 @@ export class SystemButtonIcon implements OnChanges {
     /**
      * override the size
      */
-    @Input() public size: ''|'large' | 'small' | 'x-small' | 'xx-small' = "";
+    @Input() public size: ''|'large' | 'small' | 'x-small' | 'xx-small' | 'medium' = "";
 
     /**
      * an optional color class: can be any of the avialable SLDS icon color classes

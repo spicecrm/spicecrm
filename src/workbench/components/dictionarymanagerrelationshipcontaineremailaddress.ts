@@ -43,6 +43,10 @@ export class DictionaryManagerRelationshipContainerEmailAddress implements OnIni
     constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
     }
 
+    get relatedIds(): DictionaryDefinition[] {
+        return this.dictionarymanager.dictionarydefinitions.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
     /**
      * initialize and build the names
      */

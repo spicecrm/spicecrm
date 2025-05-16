@@ -13,6 +13,7 @@ import {fieldGeneric} from './fieldgeneric';
 import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
 import {relateFilter} from "../../services/interfaces.service";
+import {modelutilities} from "../../services/modelutilities.service";
 
 @Component({
     selector: 'field-relate',
@@ -42,6 +43,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
         public modal: modal,
         public backend: backend,
         public toast: toast,
+        public modelutilities: modelutilities
     ) {
         super(model, view, language, metadata, router);
     }
@@ -277,6 +279,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
             selectModal.instance.module = this.relateType;
             selectModal.instance.modulefilter = this.fieldconfig.modulefilter;
+            selectModal.instance.filtercontext = this.handleFilterContext();
             selectModal.instance.multiselect = false;
             selectModal.instance.relatefilter = this.relateFilter;
             this.subscriptions.add(
@@ -288,5 +291,21 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
             );
             selectModal.instance.searchTerm = this.relateSearchTerm;
         });
+    }
+
+    /**
+     * check on optional filtercontextdata
+     * and return filtercontext object
+     */
+    public handleFilterContext(){
+        if(this.fieldconfig.filtercontextdata){
+            const filterContextConfig = this.fieldconfig.filtercontextdata.split(',');
+            let filterContextData = {};
+            filterContextConfig.forEach(key => {
+                filterContextData[key] = this.modelutilities.spice2backend(this.model.module, key, this.model.getField(key));
+            });
+            return {id: this.model._id, module: this.model._module, data: filterContextData};
+        }
+        return {};
     }
 }

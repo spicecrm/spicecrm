@@ -53,7 +53,7 @@ export class DictionaryManagerRelationshipsDetails {
         this.dictionaryRelationshipFields = this.dictionarymanager.dictionaryrelationshipfields.filter(f => f.sysdictionaryrelationship_id == this.dictionaryRelationship.id);
     }
 
-    get readonly(){
+    get readonly() {
         return this.dictionaryRelationship.status == 'a' || (
             this.dictionaryRelationship.rhs_sysdictionarydefinition_id != this.dictionarymanager.currentDictionaryDefinition
             && this.dictionaryRelationship.lhs_sysdictionarydefinition_id != this.dictionarymanager.currentDictionaryDefinition
@@ -64,7 +64,7 @@ export class DictionaryManagerRelationshipsDetails {
     /**
      * close the modal
      */
-    public close(){
+    public close() {
         // set back the values from teh backup
         this.dictionaryRelationship = JSON.parse(this.backup);
         this.dictionarymanager.updateRelationshipInArray(this.dictionaryRelationship);
@@ -79,22 +79,27 @@ export class DictionaryManagerRelationshipsDetails {
      */
     public save() {
 
-        const relationshipFields = this.dictionaryRelationshipFields.filter(f => !!f.map_to_fieldname || !f.isNew)
-            .map(field => {
+        const relationshipFields = this.dictionaryRelationshipFields.filter(f => !!f.map_to_fieldname || !f.isNew).map(field => {
 
-                // mark empty entries as deleted if they are not new
-                if (!field.isNew && !field.map_to_fieldname) {
-                    field.deleted = 1;
-                }
+            // mark empty entries as deleted if they are not new
+            if (!field.isNew && !field.map_to_fieldname) {
+                field.deleted = 1;
+            }
 
-                delete field.isNew;
-                return field;
-            });
+            delete field.isNew;
+            return field;
+        });
 
-        this.backend.postRequest(`dictionary/relationship/${this.dictionaryRelationship.id}`, {}, {relationship: this.dictionaryRelationship, relationshipFields}).subscribe({
+
+        this.backend.postRequest(`dictionary/relationship/${this.dictionaryRelationship.id}`, {}, {
+            relationship: this.dictionaryRelationship,
+            relationshipFields: relationshipFields,
+            relationshippolymorphs: this.dictionaryRelationshipPolymorphs
+        }).subscribe({
             next: () => {
                 this.dictionarymanager.updateRelationshipInArray(this.dictionaryRelationship);
-                this.dictionarymanager.dictionaryrelationshipfields = relationshipFields;
+                this.dictionarymanager.updateRelationshippFieldsInArray(relationshipFields);
+                this.dictionarymanager.updateRelationshipPolymorphsInArray(this.dictionaryRelationshipPolymorphs);
                 this.self.destroy();
             }
         });

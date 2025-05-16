@@ -4,8 +4,15 @@
 namespace SpiceCRM\data;
 
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\ErrorHandlers\ValidationException;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
+use SpiceCRM\includes\SpiceDictionary\validators\ValidatorFactory;
 use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
+use SpiceCRM\includes\WebHook\WebHook;
 use stdClass;
 use SpiceCRM\includes\AddressReferences\AddressReferences;
 use SpiceCRM\includes\database\DBManager;
@@ -95,11 +102,37 @@ class SpiceBean
     public $id;
 
     /**
+     * @var add a default name field
+     */
+    public $name;
+
+    /**
+     * add a default relid field as this is used by the relationships
+     *
+     * @var
+     */
+    public $relid;
+
+    /**
      * the module this has been created for, set by the BeanFactory
      *
      * @var string
      */
     public $_module;
+
+    /**
+     * the dictionary definition id of the bean
+     *
+     * @var string
+     */
+    public $_sysdictionarydefinition_id;
+
+    /**
+     * the dictionary definition name
+     *
+     * @var string
+     */
+    public $_sysdictionarydefinition_name;
 
     /**
      * the name of the database table for this Bean
@@ -356,6 +389,39 @@ class SpiceBean
     public $mergeRelatedData = [];
 
     /**
+     * @var bool indicator if we are in the save
+     */
+    public bool $in_save = false;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    public string $modified_by_name;
+
+    /**
+     * @var array TODO check if that should go into the dictionary
+     */
+    private array $audit_enabled_fields;
+
+    /**
+     * @var array TODO check if that should go into the dictionary
+     */
+    private array $firstlog_enabled_fields = [];
+
+    /**
+     * set in code to disable validation
+     *
+     * @var bool
+     */
+    public bool $disableValidation = false;
+
+    /**
+     * holds all BEAN dictionary based values
+     * @var array
+     */
+    protected array $beanValues = [];
+
+    /**
      * Constructor for the bean, it performs following tasks:
      *
      * 1. Initalized a database connections
@@ -375,36 +441,109 @@ class SpiceBean
     }
 
     /**
-     * generic setter for the bean values
+     * Magic setter function
      *
-     * @param string $name
-     * @param mixed $value
+     * Uses the field definition from the dictionary to perform validation unless turned off with the disableValidation flag.
+     * Stores the value in the bean attribute e.g. $bean->attribute
+     * and in the $beanValues array.
+     *
+     * @param string $attributeName
+     * @param mixed $attributeValue
      * @return void
-     * @throws Exception
+     * @throws ValidationException
      */
-    /*
-    public function __set(string $name, mixed $value): void {
-
-        // if we do not have the field defined throw an error if we are in strict mode
-        if(SpiceConfig::getInstance()->get('systemvardefs.strict') && !$this->field_defs[$name]){
-            throw new Exception("property {$name} not defined on {$this->_module}");
+    public function __set(string $attributeName, mixed $attributeValue): void {
+        if (property_exists($this, $attributeName)) {
+            $this->{$attributeName} = $attributeValue;
         }
 
-        $this->_data->{$name} = $value;
+        if ($this->disableValidation == false && SpiceConfig::getInstance()->get('systemvardefs.disable_bean_validation') == false) {
+            $dictionaryField = $this->getDictionaryField($attributeName);
+            if ($dictionaryField) {
+                $this->validateField($attributeName, $attributeValue, $dictionaryField);
+            } else {
+                 if (SpiceConfig::getInstance()->get('systemvardefs.disable_strict_property_check') == false) {
+                     throw new ValidationException('No field definition found for ' . $attributeName);
+                 }
+            }
+        }
+
+        $this->{$attributeName} = $attributeValue;
+        $this->beanValues[$attributeName] = $attributeValue;
     }
-    */
 
     /**
-     * generic getter for the bean values
+     * Magic getter function.
      *
-     * @param string $name
+     * Returns the value of the attribute from the beanValues array.
+     * If it doesn't exist it returns the values from the bean attribute.
+     *
+     * @param string $attributeName
      * @return mixed
      */
-    /*
-    public function __get(string $name): mixed {
-        return $this->_data->{$name};
+    public function __get(string $attributeName): mixed {
+        if (isset($this->beanValues[$attributeName])) {
+            return $this->beanValues[$attributeName];
+        }
+
+        if (property_exists($this, $attributeName)) {
+            return $this->{$attributeName};
+        }
+
+        return null;
     }
-    */
+
+    /**
+     * Magic isset function.
+     *
+     * @param string $attributeName
+     * @return bool
+     */
+    public function __isset(string $attributeName): bool
+    {
+        if (isset($this->beanValues[$attributeName])) {
+            return true;
+        }
+
+        if (isset($this->$attributeName)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Magi unset function.
+     *
+     * @param string $attributeName
+     * @return void
+     */
+    public function __unset(string $attributeName): void
+    {
+        unset($this->beanValues[$attributeName]);
+    }
+
+    /**
+     * Performs the technical and logical validation for values of an attribute.
+     *
+     * @param string $attributeName
+     * @param mixed $attributeValue
+     * @param array $dictionaryField
+     * @return void
+     */
+    private function validateField(string $attributeName, mixed $attributeValue, array $dictionaryField): void {
+        if (isset($dictionaryField['sysdictionarydomainfield_id'])) {
+            $validators = ValidatorFactory::getInstance()->getValidators($dictionaryField['sysdictionarydomainfield_id']);
+
+            if ($validators['technical']) {
+                $validators['technical']($attributeValue, $dictionaryField);
+            }
+
+            if ($validators['logical']) {
+                $validators['logical']($attributeValue, $dictionaryField);
+            }
+        }
+    }
 
     public function getBeanDataArray(){
         $data = (array) $this->_data;
@@ -424,7 +563,7 @@ class SpiceBean
     {
         $this->db = DBManagerFactory::getInstance();
 
-        $dictionaryDefs = SpiceDictionary::getInstance()->getDefs($this->_objectname);
+        $dictionaryDefs = SpiceDictionary::getInstance()->getDefs($this->_sysdictionarydefinition_name ?: $this->_objectname);
         $this->field_defs = $dictionaryDefs['fields'];
         $this->optimistic_lock = $dictionaryDefs['optimistic_locking'];
 
@@ -873,18 +1012,18 @@ class SpiceBean
         //find all definitions of type link.
         if (!empty($fieldDefs[$rel_name])) {
             //initialize a variable of type Link
-            $class = '\SpiceCRM\data\Link2';
+            $class = Link2::class;
             if (isset($this->$rel_name) && $this->$rel_name instanceof $class) {
-                if ( $forceReload ) $this->$rel_name->load();
+                if ($forceReload) {
+                    $this->$rel_name->load();
+                }
                 return true;
             }
             //if rel_name is provided, search the fieldef array keys by name.
             if (isset($fieldDefs[$rel_name]['type']) && $fieldDefs[$rel_name]['type'] == 'link') {
                 $this->$rel_name = new $class($rel_name, $this);
 
-                if (empty($this->$rel_name) ||
-                    (method_exists($this->$rel_name, "loadedSuccesfully") && !$this->$rel_name->loadedSuccesfully())
-                ) {
+                if (!$this->$rel_name->loadedSuccesfully()) {
                     unset($this->$rel_name);
                     return false;
                 }
@@ -915,7 +1054,7 @@ class SpiceBean
      *
      * Internal function, do not override.
      */
-    function get_linked_beans($field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "")
+    function get_linked_beans($field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "", $relationships = false)
     {
         if($searchterm){
             $searchterm = strtolower($searchterm);
@@ -945,10 +1084,11 @@ class SpiceBean
                     'offset' => $begin_index,
                     'limit' => ($end_index - $begin_index),
                     'sort' => $sort_array,
-                    'searchterm' => $searchterm
+                    'searchterm' => $searchterm,
+                    'relationships' => $relationships
                 ]));
             } else {
-                return array_values($this->$field_name->getBeans(['sort' => $sort_array]));
+                return array_values($this->$field_name->getBeans(['sort' => $sort_array, 'relationships' => $relationships]));
             }
         }
         return [];
@@ -1100,7 +1240,8 @@ class SpiceBean
             return $records;
         }
 
-        $query = "SELECT {$this->get_audit_table_name()}.*, users.user_name FROM {$this->get_audit_table_name()}, users WHERE users.id = {$this->get_audit_table_name()}.created_by AND parent_id = '$this->id' AND date_created > '$date'";
+        $auditTablename = $this->get_audit_table_name();
+        $query = "SELECT {$auditTablename}.*, users.user_name FROM {$auditTablename}, users WHERE users.id = {$auditTablename}.created_by AND {$auditTablename}.parent_id = '$this->id' AND {$auditTablename}.date_created > '$date'";
         if (count($fields) > 0) {
             $query .= " AND field_name in ('" . implode("','", $fields) . "')";
         }
@@ -1144,13 +1285,13 @@ class SpiceBean
     {
         $table_name = $this->get_audit_table_name();
 
-        require('metadata/audit_templateMetaData.php');
-
-        // Bug: 52583 Need ability to customize template for audit tables
-        $custom = 'custom/metadata/audit_templateMetaData_' . $this->getTableName() . '.php';
-        if (file_exists($custom)) {
-            require($custom);
-        }
+//        require('metadata/audit_templateMetaData.php');
+//
+//        // Bug: 52583 Need ability to customize template for audit tables
+//        $custom = 'custom/metadata/audit_templateMetaData_' . $this->getTableName() . '.php';
+//        if (file_exists($custom)) {
+//            require($custom);
+//        }
 
         $fieldDefs = SpiceDictionary::getInstance()->dictionary['audit']['fields'];
         $indices   = SpiceDictionary::getInstance()->dictionary['audit']['indices'];
@@ -1183,13 +1324,13 @@ class SpiceBean
     {
         $table_name = $this->get_audit_table_name();
 
-        require('metadata/audit_templateMetaData.php');
-
-        // Bug: 52583 Need ability to customize template for audit tables
-        $custom = 'custom/metadata/audit_templateMetaData_' . $this->getTableName() . '.php';
-        if (file_exists($custom)) {
-            require($custom);
-        }
+//        require('metadata/audit_templateMetaData.php');
+//
+//        // Bug: 52583 Need ability to customize template for audit tables
+//        $custom = 'custom/metadata/audit_templateMetaData_' . $this->getTableName() . '.php';
+//        if (file_exists($custom)) {
+//            require($custom);
+//        }
 
         $fieldDefs = SpiceDictionary::getInstance()->dictionary['audit']['fields'];
         $indices   = SpiceDictionary::getInstance()->dictionary['audit']['indices'];
@@ -1314,12 +1455,14 @@ class SpiceBean
         // call the custom business logic
         $custom_logic_arguments['check_notify'] = $check_notify;
 
+        $this->callDomainHandlerMethod('beforeSave');
+
         $this->call_custom_logic("before_save", $custom_logic_arguments);
         unset($custom_logic_arguments);
 
-        // check if we have any numbered fields
+        // check if we have any numbered fields or missing defaults
         if($this->isNew()){
-            $numberrangeFields = SpiceNumberRanges::getNumberRangeFieldsForBean($this->_module);
+            $numberrangeFields = SpiceNumberRanges::getNumberRangeFieldsForBean($this->_module, true);
             foreach ($numberrangeFields as $numberrangeField){
                 if(empty($this->{$numberrangeField})){
                     $this->{$numberrangeField} = SpiceNumberRanges::getNextNumberForField($this->_module, $numberrangeField);
@@ -1372,6 +1515,8 @@ class SpiceBean
         if (empty($GLOBALS['resavingRelatedBeans'])) {
             Relationship::resaveRelatedBeans();
         }
+
+        $this->callDomainHandlerMethod('afterSave');
 
         // call fts manager to index the bean
         if ($fts_index_bean) {
@@ -1535,6 +1680,17 @@ class SpiceBean
             $logicHook = LogicHook::getInstance();
             $logicHook->call_custom_logic($this->_module, $this, $event, $arguments);
             $this->logicHookDepth[$event]--;
+
+            // handle WebHooks
+            switch ($event) {
+                case 'after_save':
+                    Webhook::getInstance()->callWebhook($this->isNew() ? 'create' : 'update', $this);
+                    break;
+                case 'after_delete':
+                    Webhook::getInstance()->callWebhook('delete', $this);
+                    break;
+            }
+
         }
     }
 
@@ -1543,17 +1699,10 @@ class SpiceBean
      *
      * @return boolean
      */
-    public function hasEmails()
+    public function hasEmails(): bool
     {
-        if (!empty($this->field_defs['email_addresses']) && $this->field_defs['email_addresses']['type'] == 'link' &&
-            !empty($this->field_defs['email_addresses_non_primary']) && $this->field_defs['email_addresses_non_primary']['type'] == 'email'
-        ) {
-            return true;
-        } else {
-            return false;
-        }
+        return !empty($this->field_defs['email_addresses']) && $this->field_defs['email_addresses']['type'] == 'link';
     }
-
 
     /**
      * Returns the summary text that should show up in the recent history list for this object.
@@ -1986,6 +2135,8 @@ class SpiceBean
         $this->is_updated_dependent_fields = false;
         $this->fill_in_additional_detail_fields();
 
+        $this->callDomainHandlerMethod('onRetrieve');
+
         if ($relationships) {
             $this->fill_in_relationship_fields();
             // save related fields values for audit
@@ -2025,6 +2176,45 @@ class SpiceBean
         $this->call_custom_logic("after_retrieve", $custom_logic_arguments);
         unset($custom_logic_arguments);
         return $this;
+    }
+
+    /**
+     * call domain handler method
+     * @param string $method onRetrieve | beforeSave | afterSave
+     * @return void
+     * @throws Exception
+     */
+    private function callDomainHandlerMethod(string $method): void
+    {
+        if (!$this->_sysdictionarydefinition_id) return;
+
+        $items = (new SpiceDictionaryDefinition($this->_sysdictionarydefinition_id))->getItems();
+
+        foreach ($items as $item) {
+
+            if (!$item['sysdomaindefinition_id']) continue;
+
+            $domain = (new SpiceDictionaryDomain($item['sysdomaindefinition_id']));
+
+            $handlerClass = $domain->getHandlerClass();
+
+            if (!$handlerClass) continue;
+
+            $fields = $domain->getFields(new SpiceDictionaryItem($item['id']));
+            $curVals = [];
+
+            foreach ($fields as $field) {
+                $curVals[$field] = $this->$field;
+            }
+
+            $handler = new $handlerClass();
+
+            if($handler->$method($domain, $curVals, $this)) {
+                foreach ($fields as $field) {
+                    $this->$field = $curVals[$field];
+                }
+            }
+        }
     }
 
     /**
@@ -2197,7 +2387,8 @@ class SpiceBean
             if (0 == strcmp($field['type'], 'relate') && !empty($field['module'])) {
                 $name = $field['name'];
                 if (empty($this->$name)) {
-                    if (empty($this->{$field['id_name']})) {
+                    // only try to load if the id field is a non-db field
+                    if (empty($this->{$field['id_name']}) && $this->field_defs[$field['id_name']]['source'] == 'non-db') {
                         $this->fill_in_link_field($field['id_name'], $field);
                     }
                     if (!empty($this->{$field['id_name']}) && ($this->_objectname != $field['module'] || ($this->_objectname == $field['module'] && $this->{$field['id_name']} != $this->id))) {
@@ -2218,29 +2409,43 @@ class SpiceBean
                 $this->{$field['name']} = $mod->name;
             }
 
+            // fill in linked as well
+            if (0 == strcmp($field['type'], 'linked') && !empty($this->{$field['id_name']}) && $field['link']) {
+                $mod = BeanFactory::getBean($field['module'], $this->{$field['id_name']}, ['relationships' => false]);
+                if($mod){
+                    $this->{$field['name']} = $mod;
+                }
+            }
+
         }
         $fill_in_rel_depth--;
     }
 
     function fill_in_link_field($linkFieldName, $def)
     {
-        $idField = $linkFieldName;
-        //If the id_name provided really was an ID, don't try to load it as a link. Use the normal link
-        // CR1000476: remove check on type shall be id. Not always the case (see companycode_id in Users)
-        // if (!empty($this->field_defs[$linkFieldName]['type']) && $this->field_defs[$linkFieldName]['type'] == "id" && !empty($def['link'])) {
-        // check field type
-        $typeIsId = false;
-        if ($this->field_defs[$linkFieldName]['type'] == "id" ||
-            $this->field_defs[$linkFieldName]['dbType'] == "id" ||
-            $this->field_defs[$linkFieldName]['dbtype'] == "id") {
-            $typeIsId = true;
-        }
-        if (!empty($this->field_defs[$linkFieldName]['type']) && $typeIsId && !empty($def['link'])) {
-            $linkFieldName = $def['link'];
-        }
+        /**
+         * CR1001802 none of it is most likely necessary.
+         */
 
-        // ToDo Check why the above was added
-        if($def['link']) $linkFieldName = $def['link'];
+//        $idField = $linkFieldName;
+//        //If the id_name provided really was an ID, don't try to load it as a link. Use the normal link
+//        // CR1000476: remove check on type shall be id. Not always the case (see companycode_id in Users)
+//        // if (!empty($this->field_defs[$linkFieldName]['type']) && $this->field_defs[$linkFieldName]['type'] == "id" && !empty($def['link'])) {
+//        // check field type
+//        $typeIsId = false;
+//        if ($this->field_defs[$linkFieldName]['type'] == "id" ||
+//            $this->field_defs[$linkFieldName]['dbType'] == "id" ||
+//            $this->field_defs[$linkFieldName]['dbtype'] == "id") {
+//            $typeIsId = true;
+//        }
+//        if (!empty($this->field_defs[$linkFieldName]['type']) && $typeIsId && !empty($def['link'])) {
+//            $linkFieldName = $def['link'];
+//        }
+//
+//        // ToDo Check why the above was added
+//        if($def['link']) {
+//            $linkFieldName = $def['link'];
+//        }
 
         if ($this->load_relationship($linkFieldName)) {
             $list = $this->$linkFieldName->get();
@@ -3033,19 +3238,19 @@ class SpiceBean
 
     /**
      * Iterates over all linked beans of a template bean
-     * and clones them (in case the vardef property 'deepClone' is set).
+     * and clones them (in case the dictionary property 'duplicate_linked' is set).
      *
      * @param object $clone
      */
     private function cloneBeansOfAllLinks(&$clone)
     {
         foreach ($this->field_defs as $v) {
-            if ($v['type'] === 'link' and @$v['deepClone'] === true) {
+            if ($v['type'] === 'link' and @$v['duplicate_linked'] === true) {
                 foreach ($this->get_linked_beans($v['name'], $v['module']) as $v2) {
                     if (!$v2->isCloned()) { # To prevent a recursion: Don´t clone in case this bean has already been cloned.
                         $v2->cloneLinkedBean($v['name'], $clone);
                     } else {
-                        LoggerManager::getLogger()->error('Bean cloning: A recursion has been prevented ( link: ' . $v['name'] . ' in module ' . $this->_module . ', bean to clone: ' . $v2->_objectname . ' ' . $v2->id . ' ). Check configuration in vardefs for property "deepClone".');
+                        LoggerManager::getLogger()->error('Bean cloning: A recursion has been prevented ( link: ' . $v['name'] . ' in module ' . $this->_module . ', bean to clone: ' . $v2->_objectname . ' ' . $v2->id . ' ). Check configuration in dictionary for property "duplicate_linked".');
                     }
                 }
             }
@@ -3114,5 +3319,15 @@ class SpiceBean
             ];
         };
         return $templates;
+    }
+
+    /**
+     * Returns the dictionary field definition for a given field.
+     *
+     * @param string $attributeName
+     * @return array|null
+     */
+    protected function getDictionaryField(string $attributeName): ?array {
+        return $this->field_defs[$attributeName] ?? null;
     }
 }

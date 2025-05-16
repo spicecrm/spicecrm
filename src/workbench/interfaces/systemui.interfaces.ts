@@ -29,6 +29,32 @@ export interface RoleI {
     systemTreeDefs: object;
 }
 
+export interface AdminGroupI {
+    id: string;
+    name: string;
+    label: string;
+    sequence?: number;
+    version: string;
+    package: string;
+    scope: string;
+    scope_icon: string;
+}
+
+export interface AdminComponentI {
+    id: string;
+    admingroup?: string;
+    adminaction: string;
+    admin_label: string;
+    component: string;
+    componentconfig: string;
+    sequence?: number;
+    icon: string;
+    version: string;
+    package: string;
+    scope: string;
+    scope_icon: string;
+}
+
 export interface LogicHookI {
     id: string;
     module: string;

@@ -6,6 +6,7 @@ import {language} from '../../../services/language.service';
 import {view} from '../../../services/view.service';
 import {backend} from '../../../services/backend.service';
 import {model} from '../../../services/model.service';
+import {metadata} from "../../../services/metadata.service";
 
 declare var _: any;
 
@@ -21,6 +22,7 @@ export class AccountTerritoryDetails implements OnInit {
     constructor(public language: language,
                 public model: model,
                 public backend: backend,
+                public metadata: metadata,
                 public view: view) {
 
     }

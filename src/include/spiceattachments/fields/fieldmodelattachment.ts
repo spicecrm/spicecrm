@@ -2,7 +2,7 @@
  * @module ModuleSpiceAttachments
  */
 import {
-    Component, Injector, ViewChild, ViewContainerRef
+    Component, Injector, Optional, ViewChild, ViewContainerRef
 } from '@angular/core';
 import {Router} from "@angular/router";
 import {model} from "../../../services/model.service";
@@ -15,6 +15,7 @@ import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 import {Observable, Subject} from "rxjs";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 
 /**
@@ -42,7 +43,8 @@ export class fieldModelAttachment extends fieldGeneric {
         public modelattachments: modelattachments,
         public modal: modal,
         public helper: helper,
-        public backend: backend
+        public backend: backend,
+        @Optional() public navigationtab: navigationtab
     ) {
         super(model, view, language, metadata, router);
     }
@@ -119,6 +121,31 @@ export class fieldModelAttachment extends fieldGeneric {
         });
 
         return retSubject.asObservable();
+    }
+
+    /**
+     * opens file/url in a new tab
+     * module/:module/:moduleId/:attachment/:attachmentId
+     */
+    public openInTab(e) {
+        // no open of record just file
+        e.preventDefault();
+        e.stopPropagation();
+
+        let fileTypeArray = this.mime_type.toLowerCase().split("/");
+
+        // disable preview for specific files
+        const applicationFile =  fileTypeArray[0] == 'application' && !['pdf', 'msg', 'vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(fileTypeArray[1]);
+        const csvFile = fileTypeArray[0] == 'text' && fileTypeArray[1] == 'csv';
+
+        if(applicationFile || csvFile) return this.downloadFile();
+
+        let routePrefix = '';
+        if (this.navigationtab?.tabid) {
+            routePrefix = '/tab/' + this.navigationtab.tabid;
+        }
+        // attachment/:module/:id/fieldname/:fieldname
+        this.router.navigate([`${routePrefix}/attachment/${this.model.module}/${this.model.id}/fieldname/${this.fieldname}`]);
     }
 
     /**

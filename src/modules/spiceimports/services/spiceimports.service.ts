@@ -19,6 +19,9 @@ export class spiceimportsservice {
     items: any[] = [];
     activeItemLogs: any[] = undefined;
 
+    public filtermodule: string = '';
+    public filterstatus: string = '';
+
     constructor(public backend: backend) {
     }
 
@@ -41,6 +44,25 @@ export class spiceimportsservice {
                 this.activeItemLogs = logs;
                 this.isloadingLogs = false;
             });
+    }
+
+    get filtereditems(){
+
+        if(this.filtermodule && this.filterstatus) {
+            return this.items.filter(item => {
+                return (item.module === this.filtermodule && item.status === this.filterstatus);
+            });
+        } else if(this.filtermodule) {
+            return this.items.filter(item => {
+                return (item.module === this.filtermodule);
+            });
+        } else if(this.filterstatus) {
+            return this.items.filter(item => {
+                return (item.status === this.filterstatus);
+            });
+        }
+
+        return this.items;
     }
 
     loadData() {

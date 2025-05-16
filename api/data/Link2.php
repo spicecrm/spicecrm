@@ -288,7 +288,7 @@ class Link2
                 return REL_LHS;
         }
 
-        LoggerManager::getLogger()->error("Unable to get proper side for link {$this->name} in {$this->focus->_module}");
+        LoggerManager::getLogger()->developer("Unable to get proper side for link {$this->name} in {$this->focus->_module}");
     }
 
     /**

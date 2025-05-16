@@ -414,6 +414,51 @@ class UsersController
         return $res->withJson(['success' => true]);
     }
 
+    /**
+     * generates Employee Records for all users that not yet do have one and links the employee to the user
+     * does not do it for admin and API users
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     */
+    public function generateEmployees(Request $req, Response $res, array $args): Response {
+
+        set_time_limit(120);
+
+        $seed = BeanFactory::getBean('Users');
+
+        $users = $seed->get_full_list([], "status = 'Active' AND (parent_id IS NULL OR parent_id = '') AND is_admin = 0 AND is_api_user = 0");
+
+        foreach ($users as $user) {
+            $e = BeanFactory::getBean('Employees');
+
+            $e->salutation = 'Mr.';
+            $e->first_name = $user->first_name;
+            $e->last_name = $user->last_name;
+            $e->phone_home = $user->phone_home;
+            $e->phone_mobile = $user->phone_mobile;
+            $e->phone_work = $user->phone_work;
+            $e->address_street = $user->address_street;
+            $e->address_street_number = $user->address_street_number;
+            $e->address_city = $user->address_city;
+            $e->address_state = $user->address_state;
+            $e->address_country = $user->address_country;
+            $e->email1 = $user->email1;
+            $e->save();
+
+            $user->parent_type = 'Employees';
+            $user->parent_id = $e->id;
+            $user->save();
+        }
+
+        // return
+        return $res->withJson(['success' => true]);
+    }
+
 
     /**
      * CR1000453

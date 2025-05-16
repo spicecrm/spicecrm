@@ -121,6 +121,10 @@ export class dictionarymanager {
     public currentDictionaryDefinition: string;
 
     /**
+     * the currently selected dictionary element emit
+     */
+    public currentDictionaryFields$: Subject<void> = new Subject<void>();
+    /**
      * the currently selected dictionary item
      */
     public currentDictionaryItem: string;
@@ -172,6 +176,36 @@ export class dictionarymanager {
         // trigger the change detection
         this.dictionaryrelationships= [...this.dictionaryrelationships];
 
+    }
+
+    /**
+     * update the input relationship in the relationship array
+     * @param relationship
+     */
+    public updateRelationshipPolymorphsInArray(polymorphs: RelationshipPolymorph[]) {
+        polymorphs.forEach(p => {
+            const idx = this.dictionaryrelationshippolymorphs.findIndex(x => x.id == p.id);
+            if(idx >= 0) {
+                this.dictionaryrelationshippolymorphs[idx] = {...p};
+            } else {
+                this.dictionaryrelationshippolymorphs.push({...p})
+            }
+        })
+    }
+
+    /**
+     * update the input relationshipfields in the relationshipfields array
+     * @param relationship
+     */
+    public updateRelationshippFieldsInArray(fields: RelationshipField[]) {
+        fields.forEach(f => {
+            const idx = this.dictionaryrelationshipfields.findIndex(x => x.id == f.id);
+            if(idx >= 0) {
+                this.dictionaryrelationshipfields[idx] = {...f};
+            } else {
+                this.dictionaryrelationshipfields.push({...f})
+            }
+        })
     }
 
     /**
@@ -305,10 +339,14 @@ export class dictionarymanager {
     public loadDatabaseFields(dictionaryname) {
         this.dictionarydatabasefields = [];
         // check if we have a template
-        if(this.currentIsTemplate()) return;
+        if(this.currentIsTemplate()) {
+            this.currentDictionaryFields$.next();
+            return;
+        }
         this.backend.getRequest(`dictionary/columns/${dictionaryname}`).subscribe({
             next: (fields) => {
-                this.dictionarydatabasefields = fields
+                this.dictionarydatabasefields = fields;
+                this.currentDictionaryFields$.next();
             }
         });
     }
@@ -391,6 +429,16 @@ export class dictionarymanager {
     public getDictionaryDefinitionName(refid) {
         let d = this.dictionarydefinitions.find(d => d.id == refid);
         return d ? d.name : refid;
+    }
+
+    /**
+     * returns the domain name for the given id
+     *
+     * @param domainid
+     */
+    public getDictionaryDefinitionTableName(refid) {
+        let d = this.dictionarydefinitions.find(d => d.id == refid);
+        return d ? d.tablename : refid;
     }
 
 

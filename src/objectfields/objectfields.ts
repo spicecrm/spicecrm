@@ -15,6 +15,7 @@ import {fieldGeneric} from './components/fieldgeneric';
 import {fieldSet} from './components/fieldset';
 import {field} from './components/field';
 import {fieldBlank} from './components/fieldblank';
+import {fieldColor} from './components/fieldcolor';
 import {fieldLabel} from './components/fieldlabel';
 import {fieldLabelPopover} from './components/fieldlabelpopover';
 import {fieldContainer} from './components/fieldcontainer';
@@ -178,6 +179,7 @@ declare var _: any;
         fieldTotalAmount,
         fieldCurrencies,
         fieldCompanies,
+        fieldColor,
         fieldEnum,
         fieldLanguage,
         fieldEmailTo,

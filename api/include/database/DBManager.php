@@ -1764,6 +1764,39 @@ abstract class DBManager
     }
 
     /**
+     * Runs a query and returns the limited rows as an array
+     *
+     * @param string $sql SQL Statement to execute
+     * @param bool $dieOnError True if we want to call die if the query returns errors
+     * @param string $msg Message to log if error occurs
+     * @param bool $suppress Message to log if error occurs
+     * @param bool $idAsKey
+     * @return array | false    single row from the query
+     */
+    public function fetchLimit(string $sql, int $start, int $count, bool $dieOnError = false, string $msg = '', bool $suppress = false, bool $idAsKey = false)
+    {
+        $this->checkConnection();
+        $queryresult = $this->limitQuery($sql, $start, $count, $dieOnError, $msg);
+        $this->checkError($msg . ' Fetch One Failed:' . $sql, $dieOnError);
+
+        if (!$queryresult) return false;
+
+        // get the rows
+        while($row = $this->fetchByAssoc($queryresult)){
+            if ($idAsKey) {
+                $rows[$row['id']] = $row;
+            } else {
+                $rows[] = $row;
+            }
+        }
+
+        if (!$rows) return false;
+
+        $this->freeResult($queryresult);
+        return $rows;
+    }
+
+    /**
      * Returns the number of rows affected by the last query
      * @abstract
      * See also affected_rows capability, will return 0 unless the DB supports it
@@ -2027,8 +2060,12 @@ abstract class DBManager
     public function insertSQL(SpiceBean $bean)
     {
         // get column names and values
-        $sql = $this->insertParams($bean->getTableName(), $bean->getFieldDefinitions(), get_object_vars($bean),
-            isset($bean->field_defs) ? $bean->field_defs : null, false);
+        $sql = $this->insertParams(
+            $bean->getTableName(),
+            $bean->getFieldDefinitions(),
+            get_object_vars($bean),
+            isset($bean->field_defs) ? $bean->field_defs : null,
+            false);
         return $sql;
     }
 
@@ -2920,7 +2957,7 @@ abstract class DBManager
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $sql = "INSERT INTO " . $bean->get_audit_table_name();
         //get field defs for the audit table.
-        require('metadata/audit_templateMetaData.php');
+        // require('metadata/audit_templateMetaData.php');
         $fieldDefs = SpiceDictionary::getInstance()->dictionary['audit']['fields'];
 
         $values = [];

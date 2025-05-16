@@ -1,14 +1,17 @@
 /**
  * @module ModuleACL
  */
-import {Component, ElementRef, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, ElementRef, OnChanges, OnInit, ViewChild, ViewContainerRef} from "@angular/core";
+import {model} from "../../../services/model.service";
 import {modelutilities} from "../../../services/modelutilities.service";
+import {aclobjectsmanager} from "../services/aclobjectsmanager.service";
 
 @Component({
     selector: 'aclobjects-manager',
     templateUrl: "../templates/aclobjectsmanager.html",
+    providers: [aclobjectsmanager, model]
 })
-export class ACLObjectsManager {
+export class ACLObjectsManager implements OnInit {
 
     @ViewChild("managercontent", {read: ViewContainerRef, static: true}) elementmanagercontent: ViewContainerRef;
 
@@ -21,15 +24,16 @@ export class ACLObjectsManager {
     public activeObject: any = {};
 
     constructor(
+        public aclobjectsmanager: aclobjectsmanager,
         public modelutilities: modelutilities,
-        public elementRef: ElementRef
-    ) {}
+        public elementRef: ElementRef,
+        public model: model
+    ) {
+        this.model.module = 'SpiceACLObjects';
+    }
 
-    get contentStyle(){
-        let rect = this.elementmanagercontent.element.nativeElement.getBoundingClientRect();
-        return {
-            height: "calc(100% - " + rect.top + "px"
-        };
+    public ngOnInit() {
+        this.aclobjectsmanager.currentModel = this.model;
     }
 
     public setObject(objectid){

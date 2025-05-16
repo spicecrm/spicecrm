@@ -1,4 +1,4 @@
-<article class="slds-card" [ngClass]="{'slds-disabled-text': disabled}">
+<article class="slds-card" [ngClass]="{'slds-disabled-text': disabled}" style="height: 155px;">
     <div [ngClass]="{'slds-hidden': loading}">
         <div class="slds-card__header slds-grid">
             <header class="slds-media slds-media_center slds-has-flexi-truncate">
@@ -24,7 +24,7 @@
             <div class="slds-grid slds-gutters_direct-x-small">
                 <div class="slds-size--1-of-2 slds-col">
                     <div class="slds-text-heading_small slds-p-vertical--xx-small"><system-label label="LBL_DETAILS"></system-label></div>
-                    <div class="slds-text-align--justify">{{package.description}}</div>
+                    <div class="slds-text-align--justify slds-line-clamp" [title]="package.description">{{package.description}}</div>
                 </div>
                 <div class="slds-size--1-of-2 slds-col">
                     <div class="slds-text-heading_small slds-p-vertical--xx-small"><system-label label="LBL_PREREQUISITES"></system-label></div>

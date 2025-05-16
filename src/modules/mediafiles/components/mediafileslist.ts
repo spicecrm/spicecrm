@@ -53,6 +53,13 @@ export class MediaFilesList extends ObjectList implements OnDestroy {
         this.cdRef.detectChanges();
     }
 
+    get stencilCount(){
+        let bbox = this.elementRef.nativeElement.getBoundingClientRect();
+        let count = Math.floor((bbox.width - 10) / 320);
+        return count * 3
+    }
+
+
     get containerStyle() {
         let bbox = this.elementRef.nativeElement.getBoundingClientRect();
         let count = Math.floor((bbox.width - 10) / 320);

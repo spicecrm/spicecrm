@@ -197,6 +197,8 @@ export class helper {
             if (!type) return 'unknown'; // The function input is not valid, it is not in the format 'type/subtype'.
             // Check the type part:
             switch (type) {
+                case 'folder':
+                    return 'folder';
                 case 'image':
                 case 'png':
                 case 'jpeg':

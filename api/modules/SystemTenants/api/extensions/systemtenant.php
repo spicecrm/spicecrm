@@ -96,6 +96,57 @@ $routes = [
             ]
         ]
     ],
+    [
+        'method' => 'post',
+        'route' => '/module/Inquiries/SystemTenants/create',
+        'class' => SystemTenantsController::class,
+        'function' => 'createTenant',
+        'description' => 'loads demo data for a tenant',
+        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'parameters' => [
+            'emailAddress' => [
+                'in' => 'body',
+                'description' => 'the email address',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'me@example.com'
+            ],
+            'phoneMobile' => [
+                'in' => 'body',
+                'description' => 'the phone number',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => '+63901234567'
+            ],
+            'lastName' => [
+                'in' => 'body',
+                'description' => 'the last name',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'any last name'
+            ],
+            'firstName' => [
+                'in' => 'body',
+                'description' => 'the first name',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'any first name'
+            ]
+        ]
+    ],
+    [
+        # todo improve security
+        'method' => 'get',
+        'route' => '/module/SystemTenants/confirm/{id}',
+        'class' => SystemTenantsController::class,
+        'function' => 'confirmTenant',
+        'description' => 'confirm tenant',
+        'options' => ['noAuth' => true, 'adminOnly' => false],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'the id of the tenant',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'example' => '325235235235'
+            ],
+        ]
+    ],
 ];
 
 $RESTManager->registerRoutes($routes);

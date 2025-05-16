@@ -1,31 +1,33 @@
 @if (confdata){
-<div class="slds-m-top--small slds-scrollable--x slds-grid slds-grid--vertical slds-height_full">
-    <div class="slds-tabs--path slds-p-horizontal--small" role="application" style="width: max-content; min-width: 100%;">
-        <ul class="slds-tabs--path__nav" role="tablist">
-            <ng-container *ngFor="let stage of stages">
-                <li style="min-width: 300px;" class="slds-tabs--path__item slds-is-incomplete" role="presentation">
-                    <a class="slds-tabs--path__link" aria-selected="false" role="tab" href="javascript:void(0);" aria-live="assertive">
+<div cdkDropListGroup (system-to-bottom)="loadmore()" [elementClass]="false" class="slds-m-top--small slds-scrollable slds-height_full slds-size--1-of-1">
+    <div #header [class.slds-border--bottom]="componentconfig.sumfield" class="slds-size--1-of-1 spice-sticky-top" style="background-color: rgb(250, 250, 250)">
+        <div class="slds-tabs--path slds-p-horizontal--small slds-size--1-of-1" role="application">
+            <ul class="slds-tabs--path__nav" role="tablist">
+                <ng-container *ngFor="let stage of stages">
+                    <li style="min-width: 300px;" class="slds-tabs--path__item slds-is-incomplete" role="presentation">
+                        <a class="slds-tabs--path__link" aria-selected="false" role="tab" href="javascript:void(0);" aria-live="assertive">
                         <span class="slds-tabs--path__stage">
                       <system-utility-icon icon="check" size="x-small"></system-utility-icon>
                     </span>
-                        <span class="slds-tabs--path__title"><system-label [label]="getStageLabel(stage.stagedata)"></system-label> ({{getStageCount(stage.stagedata)}})</span>
-                    </a>
-                </li>
-            </ng-container>
-        </ul>
-    </div>
-    <div *ngIf="this.componentconfig.sumfield" class="slds-grid slds-border--bottom slds-p-horizontal--small" style="width: max-content; min-width: 100%;">
-        <div style="min-width: 300px;" *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small spice-stage-sum-container" [ngClass]="sizeClass">
-            <div class="slds-text-heading--medium slds-p-vertical--x-small" [ngClass]="{'slds-text-color--inverse-weak': modellist.isLoading}">
-                <ul class="slds-list_horizontal slds-has-dividers_right slds-align_absolute-center">
-                    <li *ngFor="let sumfield of sumfields" class="slds-item">
-                        <spice-kanban-sumfield [symbol]="getCurrencySymbol(sumfield)" [title]="getTitle(sumfield)" [value]="getStageSum(stage.stagedata, sumfield)"></spice-kanban-sumfield>
+                            <span class="slds-tabs--path__title"><system-label [label]="getStageLabel(stage.stagedata)"></system-label> ({{getStageCount(stage.stagedata)}})</span>
+                        </a>
                     </li>
-                </ul>
+                </ng-container>
+            </ul>
+        </div>
+        <div *ngIf="componentconfig.sumfield" class="slds-grid slds-p-horizontal--small slds-size--1-of-1">
+            <div style="min-width: 300px;" *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small spice-stage-sum-container" [ngClass]="sizeClass">
+                <div class="slds-text-heading--medium slds-p-vertical--x-small" [ngClass]="{'slds-text-color--inverse-weak': modellist.isLoading}">
+                    <ul class="slds-list_horizontal slds-has-dividers_right slds-align_absolute-center">
+                        <li *ngFor="let sumfield of sumfields" class="slds-item">
+                            <spice-kanban-sumfield [symbol]="getCurrencySymbol(sumfield)" [title]="getTitle(sumfield)" [value]="getStageSum(stage.stagedata, sumfield)"></spice-kanban-sumfield>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-    <div (system-to-bottom)="loadmore()" class="slds-scrollable--y kanbancontainer slds-grow" [system-overlay-loading-spinner]="modellist.isLoading" style="width: max-content; min-width: 100%" cdkDropListGroup>
+    <div [system-overlay-loading-spinner]="modellist.isLoading" class="kanbancontainer" style="min-height: 100%">
         <div class="slds-grid slds-p-horizontal--small">
             <div style="min-width: 300px;" *ngFor="let stage of stages" (cdkDropListDropped)="handleDrop($event)" cdkDropList [cdkDropListData]="stage" [cdkDropListEnterPredicate]="dropEnterAllowed(stage)" [ngClass]="sizeClass" class="spice-stage-items-container slds-col slds-p-horizontal--xx-small slds-m-top--x-small">
                 <div *ngFor="let item of this.modellist.listData.list|spicekanbanstagepipe:stage.stage:stages;trackBy:trackbyfn" cdkDrag [cdkDragDisabled]="!allowDrag(item)" [cdkDragData]="item" class=" slds-m-vertical--xx-small slds-kanban-drag--preview ">
@@ -37,7 +39,7 @@
             <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
         </div>
     </div>
-    <div class="slds-utility-bar_container spice-sticky-bottom spice-sticky-left slds-size--1-of-1">
+    <div #footer class="slds-utility-bar_container spice-sticky-bottom spice-sticky-left slds-size--1-of-1">
         <div #kanbanUtilityBar class="slds-utility-bar" style="height: fit-content; position: static">
             <div class="slds-grid slds-size--1-of-1 slds-grid--align-spread slds-wrap">
                 <div class="slds-grid slds-grid_vertical-align-center slds-p-horizontal--x-small slds-size--1-of-1 slds-p-vertical--xx-small slds-medium-size--1-of-4">

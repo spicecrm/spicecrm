@@ -29,7 +29,10 @@
                 </div>
                 <div *ngIf="!editingRadius" class="slds-align-middle slds-m-left--x-small slds-grid slds-grow">
                     <span class="slds-truncate">
-                        {{mapOptions.circle?.radius + 'km around ' + mapOptions.circle?.center?.address}}
+                        {{mapOptions.circle?.radius}} {{mapOptions.unitSystem == 'IMPERIAL' ? 'mile' : 'km'}}
+                        @if (mapOptions.circle?.center?.address) {
+                            <system-label label="LBL_AROUND"/> {{mapOptions.circle?.center?.address}}
+                        }
                     </span>
                     <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="startRadiusEditing()">
                         <system-button-icon [icon]="'edit'"></system-button-icon>
@@ -42,7 +45,7 @@
         <spice-google-maps-list-header *ngIf="!!componentconfig.showListHeader"></spice-google-maps-list-header>
         <div style="display: block; width: 100%; min-height: 0;" class="slds-grow slds-is-relative">
             <object-list class="slds-grow slds-height_full slds-size--1-of-1" style="display: block"></object-list>
-            <div @animatepanel *ngIf="modelList.displayAggregates" class="slds-is-absolute slds-panel slds-panel--filters slds-filters__body slds-nowrap  slds-scrollable--y" style="width: 320px; height: 100%; top:0; right: 0;z-index: 99;" [system-model-provider]="{module: modelList.module}">
+            <div @animatepanel *ngIf="componentconfig.showAggregate && modelList.displayAggregates" class="slds-is-absolute slds-panel slds-panel--filters slds-filters__body slds-nowrap  slds-scrollable--y" style="width: 320px; height: 100%; top:0; right: 0;z-index: 99;" [system-model-provider]="{module: modelList.module, data: null}">
                 <div class="slds-filters__body slds-grid_vertical">
                     <div class="slds-m-vertical--xx-small" *ngFor="let aggregate of modelList.moduleAggregates">
                         <object-listview-aggregate [aggregate]="aggregate"></object-listview-aggregate>

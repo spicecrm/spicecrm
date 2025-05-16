@@ -2,24 +2,15 @@
  * @module ModuleACL
  */
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
     Component,
-    ElementRef,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
-    Output,
-    EventEmitter,
     Input,
     OnInit
 } from '@angular/core';
-import {metadata} from '../../../services/metadata.service';
-import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {modelutilities} from '../../../services/modelutilities.service';
-import {navigation} from '../../../services/navigation.service';
-
+import {configurationService} from "../../../services/configuration.service";
+import {ACLAction, ACLType} from "../interfaces/aclinterfaces";
+import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'acltypes-manager-types-add-action',
@@ -32,31 +23,27 @@ export class ACLTypesManagerTypesAddAction implements OnInit{
      */
     private self: any = {};
 
-    currentactions: any[] = [];
-    _currentActions: string[] = [];
+
+    @Input() public aclType: ACLType;
 
     /**
-     * the action bound int he modal
+     * sets the allowed change scope
      */
-    public action: string = '';
+    public changescope: 'all' | 'custom' | 'none' = 'none';
 
-    /**
-     * the description bound to the modal
-     */
-    public description: string = '';
+    public aclAction: ACLAction;
 
-    /**
-     * an event emitter triggering when the action is added
-     */
-    private addaction: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities) {
-
+    constructor(public backend: backend, public modelutilities: modelutilities, public configurationService: configurationService, public toast: toast) {
+        // set teh change scope
+        this.changescope = this.configurationService.getCapabilityConfig('core').edit_mode;
     }
 
     ngOnInit(){
-        for(let currentaction of this.currentactions){
-            this._currentActions.push(currentaction.action);
+        this.aclAction = {
+            id: this.modelutilities.generateGuid(),
+            sysmodule_id: this.aclType.acltype.id,
+            scope: 'c'
         }
     }
 
@@ -65,11 +52,19 @@ export class ACLTypesManagerTypesAddAction implements OnInit{
     }
 
     get adddisabled(){
-        return this.action == '' || this._currentActions.indexOf(this.action) >= 0;
+        return this.aclAction.action == '' || this.aclType.aclactions.map(a => a.action).indexOf(this.aclAction.action) >= 0;
     }
 
     add(){
-        this.addaction.emit({action: this.action, description: this.description});
+        this.backend.postRequest('module/SpiceACLObjects/modules/'+this.aclType.acltype.id+'/actions/'+this.aclAction.id, {}, this.aclAction).subscribe({
+            next: (actiondata) => {
+                this.aclType.aclactions.push(this.aclAction);
+                this.aclType.aclactions.sort((a, b) => a.action.localeCompare(b.action));
+            },
+            error: (e) => {
+                this.toast.sendToast('Error adding field', 'error')
+            }
+        });
         this.close();
     }
 

@@ -1,9 +1,38 @@
-<div [system-overlay-loading-spinner]="spicePageBuilderService.isLoading" class="slds-grid slds-grid--vertical slds-height_full slds-p-around--x-small slds-scrollable--y">
+<div [system-overlay-loading-spinner]="spicePageBuilderService.isLoading" class="slds-grid slds-grid--vertical slds-height_full slds-p-horizontal--x-small slds-scrollable--y">
     <system-section titlelabel="LBL_SECTIONS" class="spice-collapsible-tab-grow" style="max-height: 50%; height: initial">
         <div cdkDropList (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragExit($event)" cdkDropListSortingDisabled [cdkDropListEnterPredicate]="noReturnPredicate"
              [cdkDropListData]="sections"
-             class="slds-scrollable--y slds-grid slds-size--1-of-1 slds-grid--vertical slds-height_full slds-p-bottom--small spice-page-builder-panel-drop-list">
-            <div *ngFor="let section of sections; trackBy: trackByFn" cdkDrag [cdkDragData]="section"
+             class="slds-scrollable--y slds-size--1-of-1 slds-grid--vertical slds-height_full slds-p-bottom--small spice-page-builder-panel-drop-list">
+            <div *ngFor="let section of inputColumnsSection; trackBy: trackByFn; let index = index" cdkDrag [cdkDragData]="section"
+                 class="slds-grow slds-p-around--xx-small slds-grid slds-grid--vertical slds-drag--preview spice-drag-placeholder-visible">
+                <div class="slds-grid slds-grid_align-spread slds-grid--vertical-align-center slds-p-bottom--xx-small">
+                        <span><system-label label="LBL_SECTION"/> {{ section.children?.length }} <system-label label='LBL_COLUMNS'></system-label></span>
+
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" style="height: 1.7rem" [(ngModel)]="columnsCounter" (ngModelChange)="addColumns()">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-grid slds-grow slds-theme--default" style="min-height: 70px; border: 2px solid #ca1b21">
+                        <div *ngFor="let item of section.children; trackBy: trackByFn; let last = last" [style.border-right]="!last ? '2px solid #ca1b21' : 0" class="slds-grow"></div>
+                </div>
+            </div>
+
+            <div *ngFor="let section of sections; trackBy: trackByFn; let index = index" cdkDrag [cdkDragData]="section"
                  class="slds-grow slds-p-around--xx-small slds-grid slds-grid--vertical slds-drag--preview spice-drag-placeholder-visible">
                 <div>
                     {{section.children?.length}} <system-label label="LBL_COLUMNS"></system-label>
@@ -12,14 +41,18 @@
                     <div *ngFor="let item of section.children; trackBy: trackByFn; let last = last" [style.border-right]="!last ? '2px solid #ca1b21' : 0" class="slds-grow"></div>
                 </div>
             </div>
-            <div *ngFor="let section of customSections" cdkDrag [cdkDragData]="section.content"
+            <div *ngFor="let customSection of customSections" cdkDrag [cdkDragData]="customSection.content"
                  class="slds-grow slds-p-around--xx-small slds-grid slds-grid--vertical slds-drag--preview spice-drag-placeholder-visible spice-hover-display-children">
                 <div>
-                    {{section.name}}
+                    {{customSection.name}}
                 </div>
                 <div class="slds-grid slds-grow slds-theme--default slds-grid--align-center slds-grid--vertical-align-center slds-is-relative" style="border: 2px solid #ca1b21; cursor: move; min-height: 70px">
-                    <system-utility-icon icon="user" size="large"></system-utility-icon>
-                    <button (click)="spicePageBuilderService.deleteCustomElement(section.id, 'section')" class="slds-button slds-button--icon slds-is-absolute__top slds-p-around--xxx-small spice-hover-child" style="right: 0">
+                    @if (customSection.image){
+                        <img [src]="customSection.image">
+                    } @else {
+                        <system-utility-icon icon="user" size="large"></system-utility-icon>
+                    }
+                    <button (click)="spicePageBuilderService.deleteCustomElement(customSection.id, 'section')" class="slds-button slds-button--icon slds-is-absolute__top slds-p-around--xxx-small spice-hover-child" style="right: 0">
                         <system-utility-icon icon="delete" size="xx-small"></system-utility-icon>
                     </button>
                 </div>

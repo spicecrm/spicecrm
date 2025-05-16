@@ -174,7 +174,7 @@ class ConfiguratorController{
                 if($field['foreign']['dictionary']){
                     $selectFields = $field['foreign']['value'] . ' value';
                     if($field['foreign']['display']) $selectFields .= ', ' . $field['foreign']['display'] . ' display';
-                    $foreignkeys[$field['name']] = $db->fetchAll(" SELECT {$selectFields} FROM {$field['foreign']['dictionary']}");
+                    $foreignkeys[$field['name']] = $db->fetchAll(" SELECT {$selectFields} FROM {$field['foreign']['dictionary']}") ?: [];
                 }
 
                 //in case of module

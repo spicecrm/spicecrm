@@ -169,4 +169,12 @@ export class ObjectListItem implements OnInit, OnDestroy {
         e.stopPropagation();
         this.expanded = !this.expanded;
     }
+
+    public toggleSelected(selected){
+        if(selected) {
+            this.modellist.setSelected(this.model.id);
+        } else {
+            this.modellist.setUnSelected(this.model.id);
+        }
+    }
 }

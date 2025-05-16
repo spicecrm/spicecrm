@@ -22,6 +22,7 @@ import {SpiceImporterCheck} from './components/spiceimportercheck';
 import {SpiceImporterUpdate} from "./components/spiceimporterupdate";
 import {SpiceImporterResult} from './components/spiceimporterresult';
 import {SpiceImporter} from './components/spiceimporter';
+import {ModuleSpiceImports} from "../../modules/spiceimports/modulespiceimports";
 
 @NgModule({
     imports: [
@@ -31,7 +32,8 @@ import {SpiceImporter} from './components/spiceimporter';
         GlobalComponents,
         ObjectComponents,
         ObjectFields,
-        DirectivesModule
+        DirectivesModule,
+        ModuleSpiceImports
     ],
     declarations: [
         SpiceImporter,

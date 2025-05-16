@@ -124,7 +124,7 @@ export class ObjectRecordView implements OnInit, OnDestroy {
 
                     // update the tab info
                     this.navigationtab.setTabInfo({
-                        displayname: message.messagedata.data.summary_text,
+                        displayname: message.messagedata.data.summary_text ?? '---',
                         displaymodule: this.model.module
                     });
                 }
@@ -134,7 +134,7 @@ export class ObjectRecordView implements OnInit, OnDestroy {
 
     public setTabTitle() {
         this.navigationtab.setTabInfo({
-            displayname: this.model.getField('summary_text'),
+            displayname: this.model.getField('summary_text') ?? '---',
             displaymodule: this.model.module
         });
     }

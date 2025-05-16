@@ -7,6 +7,7 @@ use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSActivityHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
+use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 class CalendarRestHandler
 {
@@ -22,7 +23,7 @@ class CalendarRestHandler
                 if ($field['activitytype'] == 'activityenddate')
                     $dateEndFieldName = $field['fieldname'];
             }
-            if ($dateStartFieldName) {
+            if ($dateStartFieldName && SpiceACL::getInstance()->checkACLAccess($module, 'list')) {
                 $result[] = [
                     'name' => $module,
                     'dateStartFieldName' => $dateStartFieldName,
@@ -87,6 +88,6 @@ class CalendarRestHandler
     private function getCalendarItems(string $calendarId, string $userId): array
     {
         $db = DBManagerFactory::getInstance();
-        return $db->fetchAll("SELECT module, type, module_filter FROM sysuicalendaritems WHERE calendar_id = '$calendarId' AND owner = '$userId' UNION SELECT module, type, module_filter FROM sysuicustomcalendaritems WHERE calendar_id = '$calendarId' AND owner = '$userId'") ?: [];
+        return $db->fetchAll("SELECT module, type, module_filter FROM sysuicalendaritems WHERE calendar_id = '$calendarId' AND (owner = '$userId' OR owner = '*') UNION SELECT module, type, module_filter FROM sysuicustomcalendaritems WHERE calendar_id = '$calendarId' AND (owner = '$userId' OR owner = '*')") ?: [];
     }
 }

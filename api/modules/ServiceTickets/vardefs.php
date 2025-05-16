@@ -381,7 +381,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket'] = [
     ]
 ];
 
-VardefManager::createVardef('ServiceTickets', 'ServiceTicket', ['default', 'assignable', 'activities']);
+//VardefManager::createVardef('ServiceTickets', 'ServiceTicket', ['default', 'assignable', 'activities']);
 
 if (file_exists('extensions/modules/ServiceOrders')) {
     SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['serviceorders'] = [
@@ -450,7 +450,7 @@ if (file_exists('extensions/modules/ServiceQueues')) {
         'required' => false,
     ];
     SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['returntoservicequeues'] = [
-        'vname' => 'LBL_SERVICEQUEUES',
+        'vname' => 'LBL_RETURN_TO_QUEUES',
         'name' => 'returntoservicequeues',
         'type' => 'link',
         'module' => 'ServiceQueues',

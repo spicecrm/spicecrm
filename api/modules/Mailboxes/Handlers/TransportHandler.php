@@ -128,6 +128,20 @@ abstract class TransportHandler
             $style = '<style>'.$email->getStylesheet($this->mailbox->stylesheet).'</style>';
         }
 
+        $landingPageUrl = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_landingpage_url');
+        // Check if downloadlink_attachments is enabled
+        $downloadAttachmentsEnabled = $email->getFieldValue('downloadlink_attachments');
+
+        if ($downloadAttachmentsEnabled == 1) {
+
+            if ($landingPageUrl && $email->id) {
+
+                $originalLink = "{$landingPageUrl}?id={$email->id}";
+
+                $downloadLink = "<div><a href=\"$originalLink\">Download Attachments</a></div>";
+            }
+        }
+
         if(strpos($email->body, '<html') === false) {
             $bodyParts[] = '<html>';
         }
@@ -148,10 +162,11 @@ abstract class TransportHandler
 
         if(strpos($email->body, '</body>') === false){
             $bodyParts[] = $bodySource;
+            $bodyParts[] = $downloadLink;
             $bodyParts[] = $footer;
             $bodyParts[] = '</body>';
         } else{
-            $bodySource = str_replace('</body>', $footer.'</body>', $bodySource);
+            $bodySource = str_replace('</body>',$downloadLink . $footer.'</body>', $bodySource);
             $bodyParts[] = $bodySource;
         }
 

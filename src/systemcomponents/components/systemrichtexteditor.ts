@@ -82,6 +82,11 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     @Input() public innerheight: string;
 
     /**
+     * set the ediotor to resizable or not
+     */
+    @Input() public resizeable: boolean = true;
+
+    /**
      * enable/disable using the media file module
      * @private
      */
@@ -176,8 +181,11 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             height: '100vh',
             resize: 'none',
             position: 'fixed',
-            'z-index': 9999
-        } : {height: (+this.innerHeight + (this.readOnly ? 0 : 50)) + 'px'};
+            'z-index': 9999,
+        } : {
+            height: (+this.innerHeight + (this.readOnly ? 0 : 50)) + 'px',
+            resize: this.resizeable ? 'vertical' : 'none'
+        };
     }
 
     /**

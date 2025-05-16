@@ -11,7 +11,14 @@
     <div class="slds-tile__detail" style="margin-left: -2rem;">
         <spice-path-model></spice-path-model>
         <div class="slds-text-body--small">
-            <system-componentset *ngIf="componentset" [componentset]="componentset"></system-componentset>
+            <div class="slds-grid">
+                <div class="slds-size--1-of-2">
+                    <system-componentset *ngIf="componentSetLeft" [componentset]="componentSetLeft"/>
+                </div>
+                <div class="slds-size--1-of-2">
+                    <system-componentset *ngIf="componentSetRight" [componentset]="componentSetRight"/>
+                </div>
+            </div>
         </div>
     </div>
     <object-action-menu class="slds-hide--medium" [buttonsize]="'x-small'" [actionset]="actionset"></object-action-menu>

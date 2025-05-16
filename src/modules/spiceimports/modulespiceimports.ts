@@ -17,6 +17,14 @@ import {SpiceImports} from './components/spiceimports';
 import {SpiceImportsList} from './components/spiceimportslist';
 import {SpiceImportsListItem} from './components/spiceimportslistitem';
 import {Spiceimportslogs} from './components/spiceimportslogs';
+import {SpiceImportsHeader} from "./components/spiceimportsheader";
+import {DirectivesModule} from "../../directives/directives";
+import {SpiceImportsView} from "./components/spiceimportsview";
+import {SpiceImportsViewItems} from "./components/spiceimportsviewitems";
+import {SpiceImportsViewItem} from "./components/spiceimportsviewitem";
+import {SpiceImportsViewLog} from "./components/spiceimportsviewlog";
+import {SpiceImportsViewLogDetails} from "./components/spiceimportsviewlogdetails";
+import {SpiceImportsViewLogContainer} from "./components/spiceimportsviewlogcontainer";
 
 @NgModule({
     imports: [
@@ -26,12 +34,23 @@ import {Spiceimportslogs} from './components/spiceimportslogs';
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule
     ],
     declarations: [
         SpiceImports,
+        SpiceImportsHeader,
         SpiceImportsList,
         SpiceImportsListItem,
         Spiceimportslogs,
+        SpiceImportsView,
+        SpiceImportsViewItems,
+        SpiceImportsViewItem,
+        SpiceImportsViewLog,
+        SpiceImportsViewLogDetails,
+        SpiceImportsViewLogContainer
+    ],
+    exports: [
+        SpiceImportsViewLog
     ],
     providers: [
         spiceimportsservice

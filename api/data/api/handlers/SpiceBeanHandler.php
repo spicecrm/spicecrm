@@ -326,7 +326,7 @@ class SpiceBeanHandler
                     break;
                 case 'owner':
                     $searchParams['owner'] = true;
-                    $whereClauses[] = '( assigned_user_id = ' . $current_user->id .')';
+                    $whereClauses[] = '( assigned_user_id = \'' . $current_user->id .'\')';
 
                     // show only active items
                     if(property_exists($thisBean, 'is_inactive')) {
@@ -1492,7 +1492,7 @@ class SpiceBeanHandler
             return $retArray;
     }
 
-    public function add_related($beanModule, $beanId, $linkName, $idsWithAdditionalValues)
+    public function add_related($beanModule, $beanId, $linkName, $idsOrBeansData)
     {
 
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'edit', true))
@@ -1514,17 +1514,30 @@ class SpiceBeanHandler
 
         $relFields = $thisBean->field_defs[$linkName]['rel_fields'];
 
-        foreach ($idsWithAdditionalValues as $idWithAdditionalValue) {
-            $additionalValues = [];
-            foreach ($relFields as $relfield => $relmapdata) {
-                if (isset($idWithAdditionalValue[$relmapdata['map']])) {
-                    $additionalValues[$relfield] = $idWithAdditionalValue[$relmapdata['map']];
+        foreach ($idsOrBeansData as $idOrBeanData) {
+
+            # if id only just update the relationship
+            if (is_string($idOrBeanData)) {
+                $result = $thisBean->{$linkName}->add($idOrBeanData);
+                if ($result !== true) {
+                    throw new Exception("Something went wrong by adding $idOrBeanData to $linkName");
                 }
+                $retArray[$idOrBeanData] = $thisBean->{$linkName}->relationship->relid;
+            } else {
+                # if bean data provided update the additional values for the m2m relationship
+
+                $additionalValues = [];
+                foreach ($relFields as $relfield => $relmapdata) {
+                    if (isset($idOrBeanData[$relmapdata['map']])) {
+                        $additionalValues[$relfield] = $idOrBeanData[$relmapdata['map']];
+                    }
+                }
+                $result = $thisBean->{$linkName}->add($idOrBeanData['id'], $additionalValues);
+                if ($result !== true)
+                    throw new Exception("Something went wrong by adding {$idOrBeanData['id']} to $linkName");
+                $retArray[$idOrBeanData['id']] = $thisBean->{$linkName}->relationship->relid;
+
             }
-            $result = $thisBean->{$linkName}->add($idWithAdditionalValue['id'], $additionalValues);
-            if ($result !== true)
-                throw new Exception("Something went wrong by adding {$idWithAdditionalValue['id']} to $linkName");
-            $retArray[$idWithAdditionalValue['id']] = $thisBean->{$linkName}->relationship->relid;
         }
 
         // reindex the curent bean since the added relationship might add to the indexed data
@@ -1686,7 +1699,7 @@ class SpiceBeanHandler
         if (empty($thisBean->id) && !empty($beanId)) {
             $thisBean->new_with_id = true;
             $thisBean->id = $beanId;
-        } else if ($thisBean->optimistic_lock && !empty($post_params['date_modified'])) {
+        } else if (/*$thisBean->optimistic_lock && */!empty($post_params['date_modified'])) {
             // do an optimistic locking check
             $curDate = date_create_from_format($timedate->get_db_date_format() . ' H:i:s', $thisBean->date_modified);
             $inDate = date_create_from_format($timedate->get_db_date_format() . ' H:i:s', $post_params['date_modified']);
@@ -1754,6 +1767,7 @@ class SpiceBeanHandler
             switch ($fieldData['type']) {
                 case 'link':
 
+                    // in case of the email address we have a special handling that adds an email address non redundant
                     if ($fieldData['name'] == 'email_addresses' && isset($post_params['email_addresses'])) {
                         $post_params['email_addresses'] = $this->prepareEmailAddresses($post_params['email_addresses']);
                     }
@@ -1872,6 +1886,9 @@ class SpiceBeanHandler
 
     /**
      * handle email addresses
+     * mainly checks if we know the email address already or if it has changed and now is a known or unknown address
+     *
+     *
      * @param array $postBodyEmailAddresses
      * @return array
      */
@@ -1883,7 +1900,7 @@ class SpiceBeanHandler
 
             $addressById = BeanFactory::getBean('EmailAddresses', $id);
 
-            if ($addressById && $addressById->email_address !== $postBodyEmailAddress['email_address']) {
+            if (!$addressById || ($addressById && $addressById->email_address !== $postBodyEmailAddress['email_address'])) {
                 $addressByText = (BeanFactory::newBean('EmailAddresses'))->retrieve_by_string_fields(['email_address_caps' => strtoupper($postBodyEmailAddress['email_address'])]);
                 $emailAddresses['beans_relations_to_delete'][$postBodyEmailAddress['id']] = $postBodyEmailAddress;
                 $postBodyEmailAddress['id'] = $addressByText->id ?? SpiceUtils::createGuid();

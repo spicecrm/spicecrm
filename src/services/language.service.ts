@@ -12,6 +12,7 @@ import {metadata} from './metadata.service';
 import {Observable} from 'rxjs';
 import {StoreService} from "./store.service";
 import {DomainValidation, DomainValidationValue} from "../workbench/interfaces/domainmanager.interfaces";
+import {MomentService} from "./moment.service";
 
 /**
  * @ignore
@@ -53,6 +54,7 @@ export class language {
         public session: session,
         public broadcast: broadcast,
         public storeService: StoreService,
+        private momentService: MomentService,
         public metadata: metadata
     ) {
 
@@ -72,6 +74,8 @@ export class language {
         if (!language) language = this.getDefaultLanguage();
 
         this._currentlanguage = language;
+
+        this.momentService.setLocale(language);
 
         this.storeService.readStoreAll(this.storeDBName, 'languages').then(languages => {
 
@@ -122,6 +126,7 @@ export class language {
                 this.languagedata.languages = {available: languages};
 
                 this._currentlanguage = languages.find(l => l.isCurrent)?.language_code;
+                this.momentService.setLocale(this._currentlanguage);
 
                 this.storeService.readStore(this.storeDBName, 'applang', this.currentlanguage).subscribe({
                     next: applang => this.languagedata.applang = applang,

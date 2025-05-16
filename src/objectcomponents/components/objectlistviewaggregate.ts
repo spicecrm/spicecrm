@@ -131,7 +131,7 @@ export class ObjectListViewAggregate {
                 nameItems.push(this.language.getModuleName(this.aggregate.fielddetails.module, true));
             }
 
-            nameItems.push(this.language.getFieldDisplayName(this.aggregate.fielddetails.module, this.aggregate.fielddetails.field));
+            nameItems.push(this.language.getLabel(this.aggregate.label));
         }
         return nameItems;
     }

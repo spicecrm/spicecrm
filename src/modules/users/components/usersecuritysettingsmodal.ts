@@ -12,7 +12,7 @@ import {GlobalLoginPasskeyModal} from "../../../globalcomponents/components/glob
 import {backend} from "../../../services/backend.service";
 import {firstValueFrom} from "rxjs";
 import {language} from "../../../services/language.service";
-import {Config2FAI} from "../../../globalcomponents/interfaces/globalcomponents.interfaces";
+import {AuthServiceI, Config2FAI} from "../../../globalcomponents/interfaces/globalcomponents.interfaces";
 
 @Component({
     selector: 'user-security-settings-modal',
@@ -28,6 +28,7 @@ export class UserSecuritySettingsModal implements ModalComponentI {
      * user active login methods
      */
     public activeMethods: {
+        externalAuthOnly: false,
         change_pass: { disabled: boolean, metadata?: { last_changed: string } };
         one_time_password: { active: boolean; canDeactivate: boolean, metadata?: { name: string, icon_light: string } };
         passkey?: {
@@ -42,6 +43,10 @@ export class UserSecuritySettingsModal implements ModalComponentI {
      * system default method
      */
     public systemDefaultMethod: 'user_defined' | 'one_time_password' | 'email' | 'sms';
+    /**
+     * holds the preferred login metadata
+     */
+    public readonly preferredLoginMetadata: {[key: string]: {icon: {type: 'img' | 'icon', data: string}}} = {};
 
     constructor(public session: session,
                 private modal: modal,
@@ -49,9 +54,41 @@ export class UserSecuritySettingsModal implements ModalComponentI {
                 private language: language,
                 private backend: backend,
                 private config: configurationService) {
+        this.loadPreferredLoginMetadata();
         this.initializeActiveMethods();
         this.checkPasskeyRegistration();
         this.checkOneTimePasswordRegistration();
+    }
+
+    /**
+     * @return string preferred login username cached in the local storage
+     */
+    get preferredLoginUsername(): string {
+        return localStorage.getItem('OAuth-Username');
+    }
+
+    /**
+     * @return string preferred login issuer cached in the local storage
+     */
+    get preferredLoginIssuer(): string {
+        return localStorage.getItem('OAuth-Issuer');
+    }
+
+    /**
+     * load oauth2 service metadata
+     * @private
+     */
+    private loadPreferredLoginMetadata() {
+
+        this.preferredLoginMetadata['Passkey'] = {icon: {type: 'icon', data: 'touch_action'}};
+
+        const services: AuthServiceI[] = this.config.getCapabilityConfig('oauth2');
+
+        if (!Array.isArray(services)) return;
+
+        services.forEach((service) => {
+            this.preferredLoginMetadata[service.issuer] = {icon: {type: 'img', data: service.icon}};
+        });
     }
 
     /**
@@ -76,6 +113,7 @@ export class UserSecuritySettingsModal implements ModalComponentI {
         this.systemDefaultMethod = !config.twofactor.onlogin?.enforced ? null : config.twofactor.onlogin?.method;
 
         this.activeMethods = {
+            externalAuthOnly: this.session.authData.user.external_auth_only,
             one_time_password: {
                 active: false,
                 canDeactivate: this.systemDefaultMethod != 'one_time_password' && this.session.authData.canchangepassword,
@@ -99,7 +137,7 @@ export class UserSecuritySettingsModal implements ModalComponentI {
         if (config.twofactor.email) {
             this.activeMethods.email = {active: config.twofactor.email && !!this.model.data.email1};
             if (!this.model.data.email1) {
-                this.activeMethods.sms.metadata = this.language.getLabel('MSG_MOBILE_PHONE_REQUIRED');
+                this.activeMethods.email.metadata = this.language.getLabel('MSG_MOBILE_PHONE_REQUIRED');
             }
         }
 
@@ -291,5 +329,13 @@ export class UserSecuritySettingsModal implements ModalComponentI {
      */
     public close() {
         this.self.destroy();
+    }
+
+    /**
+     * remove preferred login username
+     */
+    public removePreferredLogin() {
+        localStorage.removeItem('OAuth-Issuer');
+        localStorage.removeItem('OAuth-Username');
     }
 }

@@ -15,6 +15,11 @@ export class ObjectRelateContainer implements OnInit {
     public componentconfig: any = {};
     public componentset: string;
 
+    /**
+     * holds an array with items for the number of stencils to be rendered
+     */
+    public stencils: any[] = [];
+
     constructor(public model: model, public metadata: metadata) {
     }
 
@@ -25,6 +30,9 @@ export class ObjectRelateContainer implements OnInit {
         } else {
             this.componentset = this.componentconfig.componentset;
         }
+
+        // fill the array with items so the stencils get rendered. Default is 3 but can be set from the config
+        this.stencils = Array(this.componentconfig.stencils ?? 3);
     }
 
     /**

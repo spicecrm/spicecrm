@@ -60,6 +60,8 @@ class Email extends SpiceBean
     const STATUS_READ = 'read';
     const STATUS_CREATED = 'created';
 
+    const STATUS_DRAFT = 'draft';
+
     const TYPE_INBOUND = 'inbound';
     const TYPE_OUTBOUND = 'out';
     /**
@@ -125,10 +127,18 @@ class Email extends SpiceBean
         return ['date_activity' => $retvalue];
     }
 
+    public function save($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
+    {
+        if($this->status == self::STATUS_DRAFT){
+            return $this->saveDraft($check_notify, $fts_index_bean,  $ignoreInvalidEmailAddresses);
+        }
+        return $this->saveEmail($check_notify, $fts_index_bean,  $ignoreInvalidEmailAddresses);
+    }
+
     /**
      * Overrides save handler
      */
-    public function save($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
+    public function saveEmail($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
     {
         $timedate = TimeDate::getInstance();
 
@@ -147,10 +157,7 @@ class Email extends SpiceBean
                     $mailbox->initTransportHandler();
             }
 
-            if (empty($this->id)) {
-                $this->id = SpiceUtils::createGuid();
-                $this->new_with_id = true;
-            }
+            $this->generateGUID();
 
             if (!empty($this->reference_id) && $this->new_with_id) {
                 $this->cloneRelatedBeansFromReference();
@@ -161,24 +168,7 @@ class Email extends SpiceBean
                 $this->status = self::STATUS_CREATED;
             }
 
-            $this->from_addr_name = $this->cleanEmails($this->from_addr_name);
-            if (empty($this->from_addr) && !empty($mailbox)) {
-                $this->from_addr = $mailbox->getEmailAddress();
-            } elseif (empty($this->from_addr) && !empty($this->from_addr_name)) {
-                $this->from_addr = $this->from_addr_name;
-            } elseif (empty($this->from_addr)) {
-                $this->from_addr = $mailbox->imap_pop3_username;
-            }
-            if (!empty($this->to_addrs)) {
-                $this->to_addrs = $this->cleanEmails($this->to_addrs);
-            }
-            if (!empty($this->to_addrs_names) && empty($this->to_addrs)) {
-                $this->to_addrs = $this->cleanEmails($this->to_addrs_names);
-            }
-            $this->to_addrs_names = $this->extractAddresses($this->to_addrs_names);
-            $this->cc_addrs_names = $this->cleanEmails($this->cc_addrs_names);
-            $this->bcc_addrs_names = $this->cleanEmails($this->bcc_addrs_names);
-            $this->reply_to_addr = $this->cleanEmails($this->reply_to_addr);
+            $this->setEmailAddresses();
             $this->description = SugarCleaner::cleanHtml($this->description);
             $this->description_html = SugarCleaner::cleanHtml($this->description_html, true);
             $this->raw_source = SugarCleaner::cleanHtml($this->raw_source, true);
@@ -220,41 +210,12 @@ class Email extends SpiceBean
 
 //                START ZIP ARCHIVE
                 if (!!$this->zip_compress) {
+                    $zipAttachment = $this->createZipFromAttachments();
 
-                // create a zip file in the temporaty directory
-                $tempDir = sys_get_temp_dir();
-                $filename = $this->attachments[0]->filename . '_' . SpiceUtils::createGuid() . '.zip';
-                $path = $tempDir . DIRECTORY_SEPARATOR . $filename;
-
-                //create ZIP folder and add attachments to it
-                $zip = new ZipArchive();
-
-                if ($zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE === TRUE)) {
-                    foreach ($this->attachments as $attachment) {
-                        $zip->addFile("upload/" . $attachment->filemd5, $attachment->filename);
-                    }
+                    //empty the attachments array and push the created zip attachment to it
+                    $this->attachments = [];
+                    $this->attachments[0] = $zipAttachment;
                 }
-
-                $zip->close();
-
-                //hash the zip file as md5 and save it to upload folder
-                $filemd5 = md5_file($path);
-                $file = file_get_contents($path);
-                file_put_contents("upload/$filemd5", $file);
-
-                //create a new attachment object
-                $newZipAttachment = new \stdClass();
-                $newZipAttachment->filemd5 = $filemd5;
-                $newZipAttachment->filename = $filename;
-
-                //empty the attachments array and push the created zip attachment to it
-                $this->attachments = [];
-                $this->attachments[0] = $newZipAttachment;
-
-                //delete the zip folder from temporary location
-                unlink($path);
-//                END ZIP ARCHIVE
-            }
                 $result = $this->sendEmail();
                 $this->to_be_sent = false;
             }
@@ -279,6 +240,117 @@ class Email extends SpiceBean
             parent::save($check_notify, $fts_index_bean);
 
             return $result;
+        }
+    }
+
+    public function saveDraft($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
+    {
+        $timedate = TimeDate::getInstance();
+        $mailbox = null;
+        if (!empty($this->mailbox_id)) {
+                $mailbox = $this->getMailbox();
+            }
+
+        $this->generateGUID();
+
+        if (!empty($this->reference_id) && $this->new_with_id) {
+            $this->cloneRelatedBeansFromReference();
+        }
+
+        $this->setEmailAddresses();
+        $this->description = SugarCleaner::cleanHtml($this->description);
+        $this->description_html = SugarCleaner::cleanHtml($this->description_html, true);
+        // disable cache! timedate->now() return null at this time
+        $timedate->allow_cache = false;
+
+        // check assigned user
+        if(empty($this->assigned_user_id)){
+            $this->assigned_user_id = AuthenticationController::getInstance()->getCurrentUser()->id;
+        }
+
+        // save without indexing
+        parent::save($check_notify, false);
+
+        if (!is_array($this->recipient_addresses) || empty($this->recipient_addresses)) {
+            $this->fillInEmailAddressesFromLegacyFields();
+
+        }
+        $this->handleFromAddress();
+        $this->saveRecipientAddresses($ignoreInvalidEmailAddresses);
+
+        // process the indexing after the addresseshave been saved so relationships are updated
+        if ($fts_index_bean) {
+            SpiceFTSHandler::getInstance()->indexBean($this);
+        }
+
+        $this->new_with_id = false;
+        return parent::save($check_notify, $fts_index_bean);
+    }
+    /**
+     * Creates a ZIP archive containing all attachments
+     * @return object The new ZIP attachment
+     */
+    private function createZipFromAttachments(): object
+    {
+        $this->loadAttachments();
+
+        // create a zip file in the temporary directory
+        $tempDir = sys_get_temp_dir();
+        $filename = $this->attachments[0]->filename . '_' . SpiceUtils::createGuid() . '.zip';
+        $path = $tempDir . DIRECTORY_SEPARATOR . $filename;
+
+        //create ZIP folder and add attachments to it
+        $zip = new ZipArchive();
+
+        if ($zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE === TRUE)) {
+            foreach ($this->attachments as $attachment) {
+                $zip->addFile("upload/" . $attachment->filemd5, $attachment->filename);
+            }
+        }
+
+        $zip->close();
+
+        //hash the zip file as md5 and save it to upload folder
+        $filemd5 = md5_file($path);
+        $file = file_get_contents($path);
+        file_put_contents("upload/$filemd5", $file);
+
+        //create a new attachment object
+        $newZipAttachment = new \stdClass();
+        $newZipAttachment->filemd5 = $filemd5;
+        $newZipAttachment->filename = $filename;
+
+        //delete the zip folder from temporary location
+        unlink($path);
+
+        return $newZipAttachment;
+    }
+
+    private function setEmailAddresses(): void
+    {
+        $this->from_addr_name = $this->cleanEmails($this->from_addr_name);
+        if (empty($this->from_addr) && !empty($mailbox)) {
+            $this->from_addr = $mailbox->getEmailAddress();
+        } elseif (empty($this->from_addr) && !empty($this->from_addr_name)) {
+            $this->from_addr = $this->from_addr_name;
+        }
+        if (!empty($this->to_addrs)) {
+            $this->to_addrs = $this->cleanEmails($this->to_addrs);
+        }
+        if (!empty($this->to_addrs_names) && empty($this->to_addrs)) {
+            $this->to_addrs = $this->cleanEmails($this->to_addrs_names);
+        }
+        $this->to_addrs_names = $this->extractAddresses($this->to_addrs_names);
+        $this->cc_addrs_names = $this->cleanEmails($this->cc_addrs_names);
+        $this->bcc_addrs_names = $this->cleanEmails($this->bcc_addrs_names);
+        $this->reply_to_addr = $this->cleanEmails($this->reply_to_addr);
+    }
+
+    private function generateGUID(): void
+    {
+        if (empty($this->id)) {
+            $this->id = SpiceUtils::createGuid();
+            $this->new_with_id = true;
         }
     }
 
@@ -390,12 +462,6 @@ class Email extends SpiceBean
             if (empty($addresses)) continue;
 
             foreach ($addresses as $address) {
-                $existingIndex = array_search($address, array_column($this->recipient_addresses, 'email_address'));
-
-                if (empty($address) || ($existingIndex !== false && $this->recipient_addresses[$existingIndex]['address_type'] == $type)) {
-                    continue;
-                }
-
                 $this->addEmailAddress($type, $address);
             }
 
@@ -668,7 +734,7 @@ class Email extends SpiceBean
         $this->correctCharsetTag();
 
         // get the email addresses
-       $ret->retrieveEmailAddresses();
+        $ret->retrieveEmailAddresses();
 
         $ret->date_start = '';
         $ret->time_start = '';
@@ -884,53 +950,110 @@ class Email extends SpiceBean
 
     /**
      * @param $trackingurl of the mailbox
-     * generate a tracking pixel with blowfish hash and adds it to the email body
+     * generate a tracking pixel with encryptionkey hash and adds it to the email body
      */
     private function generateTrackingPixel()
     {
-        $data = $this->_module . ':' . $this->id;
-        $this->body .= '<img src="' . EmailTracking::getTrackingPixelSrc($data) . '" height="1" width="1">';
+        return '<img style="visibility: hidden;" src="' . EmailTracking::getTrackingPixelSrc($this->_module . ':' . $this->id) . '" height="1" width="1">';
+    }
+
+    /**
+     * @param $trackingurl of the mailbox
+     * generate a tracking pixel DOM Element to be appended to the email
+     */
+    private function generateTrackingPixelDOMElement(DOMDocument $dom)
+    {
+        $img = $dom->createElement('img');
+        $img->setAttribute('style', "visibility: hidden; height: 0px; width: 0px;");
+        $img->setAttribute('src', EmailTracking::getTrackingPixelSrc($this->_module . ':' . $this->id));
+        return $img;
     }
 
     /**
      * search for trackable links and replace them with encrypted crm web hook urls
      * @throws Exception
      */
-    private function replaceEmailTrackingLinks()
+    private function replaceEmailTrackingLinks($trackMailbox)
     {
         $handlingLink = SpiceConfig::getInstance()->get('emailtracking.tracking_clicks_url');
 
-        if (!$handlingLink) return;
+        // set the default handlink link
+        if(!$handlingLink){
+            $handlingLink = SpiceConfig::getInstance()->config['site_url'] . '/email/t/{refid}';
+        }
+
+        // removed to always parese the email
+        // if (!$handlingLink) return;
+
+        // boolean flag to see if we made any changes ... otherwise we leave the body untouched
+        $tracked = false;
+
 
         // load the document with proper encoding
         $dom = new DOMDocument();
         $dom->loadHTML( '<?xml encoding="utf-8"?>'.$this->body);
+
+        // if we track the mailbox add the tracking pixel
+        /*
+        if ($trackMailbox) {
+            // $this->body .= $this->generateTrackingPixel();
+            $img = $this->generateTrackingPixelDOMElement($dom);
+            $body = $dom->getElementsByTagName('body')->item(0);
+            $body->appendChild($img);
+            $tracked = true;
+        }
+        */
 
         [$parentType, $parentId] = $this->getTrackingParentData();
 
         /** @var \DOMElement $node */
         foreach ($dom->getElementsByTagName('a') as $node) {
 
-            if (!$node->hasAttribute('data-trackinglink')) continue;
+            if ($node->hasAttribute('data-trackinglink')) {
+                $trackingId = $node->getAttribute('data-trackinglink');
 
-            $trackingId = $node->getAttribute('data-trackinglink');
+                if (empty($trackingId)) {
+                    $trackingId = EmailTrackingLink::getTrackingLinkId(
+                        $node->getAttribute('href'),
+                        $node->getAttribute('text'),
+                        $this->id,
+                        'Emails'
+                    );
+                }
 
-            if (empty($trackingId)) {
-                $trackingId = EmailTrackingLink::getTrackingLinkId(
-                    $node->getAttribute('href'),
-                    $node->getAttribute('text'),
-                    $this->id,
-                    'Emails'
-                );
+                $trackingLink = EmailTrackingLink::transformEmailTrackingLinks($parentType, $parentId, $trackingId, $handlingLink);
+                $this->assignBeanToEmail($trackingId, 'EmailTrackingLinks');
+                $node->setAttribute('href', $trackingLink);
+                $tracked = true;
+            } else if ($node->hasAttribute('data-emailaction')) {
+                $emailAction= $node->getAttribute('data-emailaction');
+                switch($emailAction) {
+                    case 'unsubscribe':
+                        $node->setAttribute('href', EmailTracking::getUnsubscribeURL($this));
+                        $tracked = true;
+                        break;
+                    case 'doi':
+                        $node->setAttribute('href', EmailTracking::getDoubleOptinUrl($this));
+                        $tracked = true;
+                        break;
+                    case 'manage':
+                        $node->setAttribute('href', EmailTracking::getManagePreferencesUrl($this));
+                        $tracked = true;
+                        break;
+                    case 'preview':
+                        $node->setAttribute('href', EmailTracking::getPreviewUrl($this));
+                        $tracked = true;
+                        break;
+                }
             }
-
-            $trackingLink = EmailTrackingLink::transformEmailTrackingLinks($parentType, $parentId, $trackingId, $handlingLink);
-            $this->assignBeanToEmail($trackingId, 'EmailTrackingLinks');
-            $node->setAttribute('href', $trackingLink);
         }
 
         // save full html or body only depending on what we got in
-        $this->body = strpos($this->body, '<html>') >= 0 ? $dom->saveHTML() : str_replace(['<body>', '</body>'], '', $dom->saveHTML($dom->getElementsByTagName('body')->item(0))); // $dom->saveHTML('body');
+        if($tracked){
+            $this->body = strpos($this->body, '<html>') >= 0 ? $dom->saveHTML($dom->getElementsByTagName('html')->item(0)) : str_replace(['<body>', '</body>'], '', $dom->saveHTML($dom->getElementsByTagName('body')->item(0))); // $dom->saveHTML('body');
+        }
+
+
     }
 
     /**
@@ -945,8 +1068,8 @@ class Email extends SpiceBean
         foreach ($dom->getElementsByTagName('a') as $node) {
             $marketingaction = $node->getAttribute('data-marketingaction');
             if (!empty($marketingaction)) {
-                $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? "2fs5uhnjcnpxcpg9";
-                $method = 'blowfish';
+                $key = SpiceConfig::getInstance()->get('emailtracking.encryptionkey') ?? SpiceConfig::getInstance()->config['unique_key'];
+                $method = 'DES-EDE3-CBC';
                 [$parentType, $parentId] = $this->getTrackingParentData();
                 $data = "ParentType:$parentType:ParentId:$parentId:MarketingActions:$marketingaction";
                 $link = openssl_encrypt($data, $method, $key);
@@ -989,11 +1112,15 @@ class Email extends SpiceBean
             }
         }
 
-        $this->replaceEmailTrackingLinks();
 
+
+        $this->replaceEmailTrackingLinks($mailbox->track_mailbox);
+
+        /*
         if ($mailbox->track_mailbox) {
             $this->findMarketingActions($mailbox->tracking_url);
         }
+        */
 
         $mailbox->initTransportHandler();
 //        $mailbox->transport_handler->zip_attachments = true;
@@ -1258,10 +1385,15 @@ class Email extends SpiceBean
 
     function addEmailAddress($type, $address)
     {
-        if (!$address) return null;
+        $existingIndex = array_search($address, array_column($this->recipient_addresses, 'email_address'));
+
+        if (!$address || ($existingIndex !== false && $this->recipient_addresses[$existingIndex]['address_type'] == $type)) {
+            return null;
+        }
+
         $this->recipient_addresses[] = [
             'address_type' => $type,
-            'email_address' => $address
+            'email_address' => $this->emailAddress->splitEmailAddress($address)['email']
         ];
     }
 
@@ -1359,8 +1491,11 @@ class Email extends SpiceBean
         while ($rel = $db->fetchByAssoc($rels)) {
             foreach ($this->field_defs as $field => $fieldDetails) {
                 if ($fieldDetails['type'] == 'link' && $fieldDetails['relationship'] == $rel['relationship_name']) {
-                    $this->load_relationship($field);
-                    $this->{$field}->add($bean->id);
+                    if($this->load_relationship($field)){
+                        if($this->{$field}->add($bean->id) === true){
+                            return ['id' => $bean->id, 'module' => $bean->_module];
+                        }
+                    }
                     return;
                 }
             }
@@ -1536,8 +1671,14 @@ class Email extends SpiceBean
 
         file_put_contents($path, $content);
 
+        // get the email addresses
+        if($beanModule && $beanId) {
+            $parentSeed = BeanFactory::getBean($beanModule, $beanId);
+        }
+
+        // convert the message
         $msg = $messageFactory->parseMessage($documentFactory->createFromFile($path));
-        $this->convertMessageToBean($msg);
+        $this->convertMessageToBean($msg, $parentSeed && $parentSeed->email1 ? strtolower($parentSeed->email1) : null);
 
         unlink($path);
 
@@ -1584,18 +1725,25 @@ class Email extends SpiceBean
         }
 
         // get the email addresses
+        if($beanModule && $beanId) {
+            $parentSeed = BeanFactory::getBean($beanModule, $beanId);
+        }
         foreach (mailparse_rfc822_parse_addresses($bodyParts[0]['headers']['from']) as $sender) {
             $this->recipient_addresses[] = [
                 'email_address' => $sender['address'],
                 'address_type' => 'from',
             ];
+
+            $this->type = $parentSeed && $parentSeed->email1 && strtolower($parentSeed->email1) == strtolower($sender['address']) ? SELF::TYPE_INBOUND : SELF::TYPE_OUTBOUND;
         }
+
 
         foreach (mailparse_rfc822_parse_addresses($bodyParts[0]['headers']['to']) as $recipient) {
             $this->recipient_addresses[] = [
                 'email_address' => $recipient['address'],
                 'address_type' => 'to',
             ];
+
         }
 
         // get the main parts for the email
@@ -1611,9 +1759,11 @@ class Email extends SpiceBean
         $this->date_sent = $date->format(TimeDate::DB_DATETIME_FORMAT);
 
         // set some constants
-        $this->type = self::TYPE_INBOUND;
+        if(!$this->type) $this->type = self::TYPE_INBOUND;
         $this->status = self::STATUS_UNREAD;
         $this->openness = self::OPENNESS_OPEN;
+
+        $emlAttachments = [];
 
         // parse the parts
         foreach ($bodyParts as $index => $bodyPart) {
@@ -1650,6 +1800,13 @@ class Email extends SpiceBean
                 default:
                     // check if this is a file
                     if (strpos($bodyPart['headers']['content-disposition'], 'filename') !== false) {
+                        // ignore file attachments inside eml attachments
+                        foreach ($emlAttachments as $emlAttachment) {
+                            if ($bodyPart['starting-pos'] >= $emlAttachment['start'] && $bodyPart['ending-pos'] <= $emlAttachment['end']) {
+                                break 2;
+                            }
+                        }
+
                         $fileArray = [
                             'filename' => $bodyPart['content-name'],
                             'file' => base64_encode($contents[$index]),
@@ -1658,13 +1815,29 @@ class Email extends SpiceBean
                         ];
                         SpiceAttachments::saveAttachmentHashFiles('Emails', $this->id, $fileArray);
                     }
-                    break;
+
+                    if (strpos($bodyPart['headers']['content-type'], 'message/rfc822') !== false) {
+                        $emlAttachments[] = [
+                            'start' => $bodyPart['starting-pos'],
+                            'end'   => $bodyPart['ending-pos'],
+                        ];
+
+                        $fileArray = [
+                            'filename' => $bodyPart['content-id'] ?? "Email", // not sure what to use as the filename as the subject is not easily available at this point
+                            'file' => base64_encode($contents[$index]),
+                            'filemimetype' => $bodyPart['content-type'],
+                            'external_id' => $bodyPart['content-id'],
+                        ];
+                        SpiceAttachments::saveAttachmentHashFiles('Emails', $this->id, $fileArray);
+                    }
             }
         }
 
         // set the parent
         $this->parent_id = $beanId;
         $this->parent_type = $beanModule;
+
+
     }
 
     private function getHTMLOnly($string)
@@ -1685,7 +1858,7 @@ class Email extends SpiceBean
      * @return SpiceBean
      * @throws Exception
      */
-    private function convertMessageToBean(Swiftmailer\Message $message)
+    private function convertMessageToBean(Swiftmailer\Message $message, $beanEmailAddress = null)
     {
 
         // process the message
@@ -1713,19 +1886,39 @@ class Email extends SpiceBean
                 'email_address' => $recipient->getEmail(),
                 'address_type' => strtolower($recipient->getType()),
             ];
+
+            // check if we can determine inbound or outbound
+            if(!$this->type && $beanEmailAddress && strtolower($recipient->getType()) == 'from'){
+                if(strtolower($recipient->getEmail()) == $beanEmailAddress)
+                    $this->type = strtolower($recipient->getEmail()) == $beanEmailAddress ? self::TYPE_INBOUND : self::TYPE_OUTBOUND;
+            }
         }
-        $this->type = self::TYPE_INBOUND;
+
+        // if not set inbound as default
+        if(!$this->type) $this->type = self::TYPE_INBOUND;
+
         $this->status = self::STATUS_UNREAD;
         $this->openness = self::OPENNESS_OPEN;
         $this->to_be_sent = false;
 
         // todo deal with attachments lol
         foreach ($message->getAttachments() as $attachment) {
+
             $attachmentData = $attachment->getData();
-            if(!$attachmentData){
+
+            # if the attachment is not string, the content needs to be converted to a string
+            if (!is_string($attachmentData) && $attachment->getMimeType() != 'application/octet-stream' && is_callable([$attachment, 'copyToStream'])) {
+                $stream = tmpfile();
+                $attachment->copyToStream($stream);
+                $attachmentData = file_get_contents(stream_get_meta_data($stream)['uri']);
+                fclose($stream);
+            }
+
+            if(!is_string($attachmentData) || empty($attachmentData)){
                 LoggerManager::getLogger()->fatal('emailattachment', 'Could not getData() of attachment '.$attachment->getFilename().' for email '.$this->id.'. Getting attachment skipped.');
                 continue;
             }
+
             $fileArray = [
                 'filename' => $attachment->getFilename(),
                 'file' => base64_encode($attachmentData),
@@ -1747,7 +1940,7 @@ class Email extends SpiceBean
         $selector = new DOMXPath($doc);
 
         // query all inline images. some images include charset utf-8 in the src
-        return $selector->query("//img[contains(@src, 'data:image/png;base64,') or contains(@src, 'data:image/png;charset=utf-8;base64,')]");
+        return $selector->query("//img[contains(@src, 'data:image/') or contains(@src, 'data:IMAGE/')]");
     }
 
     public function addDocumentAttachment($doc): void
@@ -1799,11 +1992,11 @@ class Email extends SpiceBean
 
         // check for embedded files, if they are attached embed them as base64 ref
         $matches = [];
-        if (preg_match_all('/src\s*=\s*"(.+?)"/', html_entity_decode($content), $matches)) {
+        if (preg_match_all('/src\s*=\s*"(.+?)"/i', html_entity_decode($content), $matches)) {
             $attachments = SpiceAttachments::getAttachmentsForBean('Emails', $this->id, 100, false);
             foreach ($attachments as $attachment) {
                 foreach ($matches[1] as $match) {
-                    if (strpos($match, $attachment['external_id']) !== false || strpos($match, $attachment['filename']) !== false) {
+                    if (($attachment['external_id'] && strpos($match, $attachment['external_id']) !== false) || strpos($match, $attachment['filename']) !== false) {
                         // catch exception so that error on getting attchments would not break fts indexing of the record
                         try {
                             $attachmentDetails = SpiceAttachments::getAttachment($attachment['id'], false);
@@ -1817,5 +2010,59 @@ class Email extends SpiceBean
         }
 
         return $content;
+    }
+
+    /**
+     * @throws Exception
+     * @return boolean|string
+     */
+    public function validateEmailForDownload( $doIncrement = false ): bool|string
+    {
+        $downloadAttachmentsEnabled = (int) $this->getFieldValue('downloadlink_attachments');
+        if ( !$downloadAttachmentsEnabled ) return 'notAccessible';
+
+        $downloadCounterMax = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_counter_max');
+        $downloadCounter = $this->getFieldValue('download_counter');
+
+        if ( $downloadCounterMax !== null and $downloadCounter >= $downloadCounterMax) return 'limitExceeded';
+
+        if ( $downloadCounterMax !== null and $doIncrement ) {
+            $this->download_counter++;
+            $this->save();
+        }
+
+        return true;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function returnDownloadFromDownloadlink( &$errorCode ): false|string
+    {
+        $dummy = $this->validateEmailForDownload( true );
+        if ( $dummy !== true ) {
+            $errorCode = $dummy;
+            return false;
+        }
+
+        $newZipAttachment = $this->createZipFromAttachments();
+
+        if (!$newZipAttachment || empty($newZipAttachment->filemd5)) {
+            throw new \RuntimeException('Failed to create ZIP file from attachments.');
+        }
+
+        $zipFilePath = "upload/" . $newZipAttachment->filemd5;
+
+        if (!file_exists($zipFilePath)) {
+            throw new \RuntimeException('ZIP file not found.'); // todo: really this exception type?
+        }
+
+        try {
+            $zipContents = file_get_contents( $zipFilePath );
+            $base64zip = base64_encode( $zipContents );
+            return $base64zip;
+        } finally {
+            unlink($zipFilePath);
+        }
     }
 }

@@ -32,6 +32,11 @@ export class configurationService {
     public initialized: boolean = false;
 
     /**
+     * holds an error if loading
+     */
+    public loadingError: string;
+
+    /**
      * set to true if the sysinfo is getting reloaded
      */
     public reloading: boolean = false;
@@ -198,6 +203,9 @@ export class configurationService {
                         component: SpiceInstaller
                     });
                     this.router.navigate(['/install']);
+                } else {
+                    this.initialized = true;
+                    this.loadingError = err.error ? err.error.error.message : 'unknown system error';
                 }
             }
         });

@@ -29,7 +29,7 @@ export class GlobalLoginOAuth2 implements OnDestroy {
     /**
      * emits the token
      */
-    @Output() public token = new EventEmitter<{issuer: string, tokenObject: TokenObjectI}>();
+    @Output() public token = new EventEmitter<{issuer: string, tokenObject: TokenObjectI, username: string}>();
     /**
      * emits the token
      */
