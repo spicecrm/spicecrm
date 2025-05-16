@@ -21,7 +21,8 @@ import {layout} from '../../services/layout.service';
 import {metadata} from '../../services/metadata.service';
 import {Subject, Subscription} from "rxjs";
 import {ObjectModalModuleLookupHeader} from "./objectmodalmodulelookupheader";
-import {relateFilter} from "../../services/interfaces.service";
+import {listDataI, relateFilter} from "../../services/interfaces.service";
+import {indexOf} from "underscore";
 
 /**
  * provides a lookup modal with a modellist and the option to select a model
@@ -29,10 +30,7 @@ import {relateFilter} from "../../services/interfaces.service";
 @Component({
     selector: 'object-modal-module-lookup',
     templateUrl: '../templates/objectmodalmodulelookup.html',
-    providers: [view, modellist, model],
-    styles: [
-        '::ng-deep table.singleselect tr:hover td { cursor: pointer; }',
-    ]
+    providers: [view, modellist, model]
 })
 export class ObjectModalModuleLookup implements OnInit, OnDestroy {
 
@@ -58,6 +56,24 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
      * set to true to enable multiselect, default to false
      */
     public multiselect: boolean = false;
+
+    /**
+     * holds the saved selected items
+     *
+     * @private
+     */
+    private savedSelectedItems: any[] = [];
+
+    /**
+     * a boolean to toggle if the regular list or the selected items are shown
+     */
+    public showSelected: boolean = false;
+
+    /**
+     * a backup of the listdata for the toggle
+     * in case the saved selected are shown the listdata is backup and then written back to the service when toggled back
+     */
+    public listDataBackup: listDataI;
 
     /**
      * the mdule for the list
@@ -152,13 +168,88 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
         if (this.searchTerm != '') {
             this.doSearch();
         }
+
+        // in case of multiselect allow saved selection
+        if(this.multiselect){
+            this.subscriptions.add(this.modellist.selectionChanged$.subscribe({
+                next: (s) => {
+                    this.listSelectionChanged(s);
+                }
+            }));
+
+            this.subscriptions.add(this.modellist.listDataChanged$.subscribe({
+                next: (s) => {
+                    this.listDataChanged();
+                }
+            }));
+        }
     }
+
 
     /**
      * unsubscribe from teh list type change
      */
     public ngOnDestroy(): void {
         this.subscriptions.unsubscribe();
+
+        // write the backup data back to the listservice
+        if(this.listDataBackup){
+            this.modellist.listData = this.listDataBackup;
+        }
+    }
+
+    /**
+     * handles the list selection change
+     *
+     * @param event
+     * @private
+     */
+    private listSelectionChanged(event){
+        let currentSelectedItems = this.modellist.getSelectedItems();
+        if(typeof event === 'string'){
+            if(currentSelectedItems.findIndex(i => i.id == event) == -1 && this.savedSelectedItems.findIndex(i => i.id == event) >= 0){
+                this.savedSelectedItems.splice(this.savedSelectedItems.findIndex(i => i.id == event), 1);
+            } else if (currentSelectedItems.findIndex(i => i.id == event) >= 0 && this.savedSelectedItems.findIndex(i => i.id == event) == -1){
+                this.savedSelectedItems.push(JSON.parse(JSON.stringify(currentSelectedItems.find(i => i.id == event))));
+            }
+        }
+    }
+
+    /**
+     * handles the list data change
+     * @private
+     */
+    private listDataChanged(){
+        if(!this.showSelected) {
+            if (this.savedSelectedItems.length > 0) {
+                this.modellist.listData.list.filter(i => this.savedSelectedItems.findIndex(si => si.id == i.id) >= 0).forEach(i => i.selected = true);
+            }
+        }
+    }
+
+    get selectedCount(){
+        return this.savedSelectedItems.filter(s => s.selected).length;
+    }
+
+    public toggleShowSelected(){
+        this.showSelected = !this.showSelected;
+
+        if(this.showSelected){
+            this.listDataBackup = JSON.parse(JSON.stringify(this.modellist.listData));
+            this.modellist.listData = {
+                list: JSON.parse(JSON.stringify(this.savedSelectedItems)),
+                totalcount: this.savedSelectedItems.length
+            };
+        } else {
+            // this.savedSelectedItems = JSON.parse(JSON.stringify(this.modellist.getSelectedItems()));
+            this.modellist.listData = JSON.parse(JSON.stringify(this.listDataBackup));
+            this.listDataBackup = undefined;
+
+            // check if all are still selected and unselect all no longer selected
+            this.modellist.listData.list.filter(i => i.selected).forEach(i => {
+                if(this.savedSelectedItems.findIndex(si => si.id == i.id) == -1) i.selected = false;
+            })
+        }
     }
 
     /**
@@ -220,12 +311,8 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     }
 
 
-    get selectedCount() {
-        return this.modellist.getSelectedCount();
-    }
-
     public selectItems() {
-        this.selectedItems.emit(this.modellist.getSelectedItems());
+        this.selectedItems.emit(this.savedSelectedItems.filter(s => s.selected));
         this.usedSearchTerm.emit(this.searchTerm);
         this.self.destroy();
     }

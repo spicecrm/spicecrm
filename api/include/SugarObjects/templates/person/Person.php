@@ -3,15 +3,15 @@
 namespace SpiceCRM\includes\SugarObjects\templates\person;
 
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
-use SpiceCRM\includes\SugarObjects\templates\basic\Basic;
 use SpiceCRM\includes\SugarObjects\traits\letterSalutationTrait;
-use SpiceCRM\includes\Localization\Localization;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 
-class Person extends Basic
+class Person extends SpiceBean
 {
     // adds the letter salutation functions
     use letterSalutationTrait;
@@ -90,79 +90,12 @@ class Person extends Basic
     }
 
     /**
-     * handle saving/adding the primary email address
-     * @see parent::save()
-     */
-    public function save($check_notify = false, $fts_index_bean = true)
-    {
-        $id = parent::save($check_notify, false);
-
-        if (empty(trim($this->email1))){
-            return $this->id;
-        }
-
-        $primaryEmailAddressId = EmailAddress::getEmailAddressId($this->email1);
-
-        if (!$primaryEmailAddressId) {
-            $newEmailAddress = BeanFactory::newBean('EmailAddresses');
-            $newEmailAddress->email_address = $this->email1;
-            $newEmailAddress->email_address_caps = strtoupper($this->email1);
-            $primaryEmailAddressId = $newEmailAddress->save();
-        }
-
-        if (!empty($this->opt_in_status)) {
-            $this->setPrimaryEmailAddress($primaryEmailAddressId, ['opt_in_status' => $this->opt_in_status]);
-        } else {
-            $this->setPrimaryEmailAddress($primaryEmailAddressId);
-        }
-
-        if ($fts_index_bean) {
-            # index the person after adding the primary email address to ensure indexing it
-            SpiceFTSHandler::getInstance()->indexBean($this);
-        }
-
-        return $id;
-    }
-
-    /**
      * fill in primary email address opt in status
      * @param $status
      */
     public function fillInPrimaryEmailAddressOptInStatus($status)
     {
         $this->primary_email_opt_in_status = $status;
-    }
-
-    /**
-     * set the primary email address from the email1 field
-     * @param string $primaryEmailAddressId
-     * @param array $relFieldsValues
-     */
-    private function setPrimaryEmailAddress(string $primaryEmailAddressId, $relFieldsValues = [])
-    {
-
-        if(!$this->email_addresses) return;
-
-        $relationExists = false;
-        $linkedEmailAddresses = $this->get_linked_beans('email_addresses');
-
-        if (!is_array($linkedEmailAddresses)) return;
-
-        foreach ($linkedEmailAddresses as $linkedEmailAddress) {
-
-            if ($primaryEmailAddressId == $linkedEmailAddress->id) {
-
-                $relationExists = true;
-                $this->email_addresses->add($linkedEmailAddress->id, ['primary_address' => 1]);
-            } else {
-                $this->email_addresses->add($linkedEmailAddress->id, ['primary_address' => 0]);
-            }
-        }
-
-        if (!$relationExists) {
-            $relFieldsValues['primary_address'] = 1;
-            $this->email_addresses->add($primaryEmailAddressId, $relFieldsValues);
-        }
     }
 
     /**
@@ -203,10 +136,10 @@ class Person extends Basic
                                 'summary_text' => $linkedBean->get_summary_text(),
                                 'date_entered' => $linkedBean->date_entered,
                                 'created_by' => $linkedBean->created_by,
-                                'created_by_name' => $linkedBean->created_by_name,
+                                'created_by_name' => $linkedBean->created_by_user->name,
                                 'date_modified' => $linkedBean->date_modified,
                                 'modified_user_id' => $linkedBean->modified_user_id,
-                                'modified_by_name' => $linkedBean->modified_by_name,
+                                'modified_by_name' => $linkedBean->modified_by_user->name,
                                 'gdpr_data_agreement' => $linkedBean->gdpr_data_agreement,
                                 'gdpr_marketing_agreement' => $linkedBean->gdpr_marketing_agreement
                             ];
@@ -259,56 +192,38 @@ class Person extends Basic
 
     /**
      * Generate VCARD content
-     * @return $content
+     * @return string $content
+     * @throws \Exception
      */
-    public function getVCardContent() {
+    public function getVCardContent(): string
+    {
         global $app_list_strings;
+
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $currentLanguage = $current_user->getPreference('language');
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($currentLanguage);
+
         $content = "BEGIN:VCARD\nVERSION:4.0\n";
-        $content .= "N:{$this->last_name};{$this->first_name};;{$this->salutation} {$this->degree1};{$this->degree2}\n";
+        $content .= "N:{$this->last_name};{$this->first_name};;{$app_list_strings['salutation_dom'][$this->salutation]} {$this->degree1};{$this->degree2}\n";
         $content .= "FN:{$this->salutation} {$this->degree1} {$this->first_name} {$this->last_name} {$this->degree2}\n";
         $content .= $this->email1 && $this->email1 != "" ? "EMAIL;TYPE=INTERNET:{$this->email1}\n" : "";
         $content .= $this->account_name && $this->account_name != "" ? "ORG:{$this->account_name}\n" : "";
         $content .= $this->phone_work && $this->phone_work != "" ? "TEL;TYPE=WORK:{$this->phone_work}\n" : "";
+        $content .= $this->phone_fax && $this->phone_fax != "" ? "TEL;TYPE=WORK;TYPE=FAX:{$this->phone_fax}\n" : "";
         $content .= $this->phone_home && $this->phone_home != "" ? "TEL;TYPE=HOME:{$this->phone_home}\n" : "";
         $content .= $this->phone_mobile && $this->phone_mobile != "" ? "TEL;TYPE=CELL:{$this->phone_mobile}\n" : "";
         $content .= $this->phone_other && $this->phone_other != "" ? "TEL:{$this->phone_other}\n" : "";
         $title = $app_list_strings && $app_list_strings['contacts_title_dom'] ? $app_list_strings['contacts_title_dom'][$this->title_dd] : null;
         $content .= $title && $title != "" ? "TITLE:{$title}\n" : "";
         $content .= "ADR:;";
+        $content .= ";";
         $content .= $this->primary_address_street && $this->primary_address_street != "" ? "{$this->primary_address_street};" : ';';
         $content .= $this->primary_address_city && $this->primary_address_city != "" ? "{$this->primary_address_city};" : ';';
-        $content .= $this->primary_address_state && $this->primary_address_state != "" ? "{$this->primary_address_state};" : ';';
+        $content .= ";";
         $content .= $this->primary_address_postalcode && $this->primary_address_postalcode != "" ? "{$this->primary_address_postalcode};" : ';';
         $content .= $this->primary_address_country && $this->primary_address_country != "" ? "{$this->primary_address_country}" : '';
         $content .= "\nEND:VCARD";
         return $content;
-    }
-
-    /**
-     * override sugar function fill in additional fields on retrieve
-     */
-    public function fill_in_additional_detail_fields()
-    {
-        parent::fill_in_additional_detail_fields();
-        $this->fillInEmail1Field();
-    }
-
-    /**
-     * fill in the email1 field called by fill_in_additional_detail_fields
-     */
-    public function fillInEmail1Field() {
-        $emailAddress = $this->db->fetchOne("SELECT email_address FROM email_addresses ea, email_addr_bean_rel ear WHERE ear.bean_id='{$this->id}' AND ear.bean_module='{$this->_module}'  AND ear.primary_address=1 AND ear.deleted != 1 AND ear.email_address_id = ea.id AND ea.deleted != 1");
-        if($emailAddress){
-            $this->email1 = $emailAddress['email_address'];
-        } else $this->email1 = '';
-        /* performance increase
-        $emailAddresses = $this->get_linked_beans('email_addresses');
-        foreach ($emailAddresses as $emailAddress) {
-            if ($emailAddress->primary_address != 1) continue;
-            $this->email1 = $emailAddress->email_address;
-            break;
-        }
-        */
     }
 
     /*

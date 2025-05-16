@@ -6,6 +6,7 @@ import {Subject} from "rxjs";
 import {backend} from "../../services/backend.service";
 
 @Component({
+    selector:'system-richtext-link',
     templateUrl: '../templates/systemrichtextlink.html',
     providers: [model]
 })
@@ -15,6 +16,7 @@ export class SystemRichTextLink implements OnInit {
     @Input() public text = ''; // The text of the link.
     @Input() public toTrack = false; // Should clicks on the link be trackable?
     @Input() public marketingAction = '';
+    @Input() public emailAction = '';
     @Input() public trackingId = '';
     @Input() public parent: model;
 
@@ -51,13 +53,14 @@ export class SystemRichTextLink implements OnInit {
         trackByMethod: 'id' | 'url',
         trackingId: string,
         text: string,
-        linkType: 'conv' | 'mark',
+        linkType: 'conv' | 'mark' | 'email',
         marketingAction: string,
+        emailAction: string,
     }>();
 
     public self: any;
 
-    public linkType: 'conv' | 'mark' = 'conv';
+    public linkType: 'conv' | 'mark' | 'email' = 'conv';
 
     public editorService: systemrichtextservice;
     /**
@@ -199,7 +202,8 @@ export class SystemRichTextLink implements OnInit {
             text: undefined as string,
             linkType: this.linkType,
             trackByMethod: this.trackByMethod,
-            marketingAction: this.linkType === 'mark' ? this.marketingAction : undefined
+            marketingAction: this.linkType === 'mark' ? this.marketingAction : undefined,
+            emailAction: this.linkType === 'email' ? this.emailAction : undefined
         };
         if (!this.alterMode) responseObject.text = this.text.trim();
         this.response.next(responseObject);

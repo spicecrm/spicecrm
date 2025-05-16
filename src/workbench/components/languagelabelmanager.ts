@@ -75,17 +75,14 @@ export class LanguageLabelManagerComponent {
         return this.selected_label[`${this.translation_scope}_translations`];
     }
 
-    public search(search_term = null) {
+    public search() {
         this.page = 1;
 
-        search_term = !search_term ? this.search_term : search_term;
-        if (!search_term) {
-            return false;
-        }
+        let searchTermTrimmed = this.search_term.trim();
 
         this.selected_label = null;
         this.is_searching = true;
-        this.backend.getRequest('configuration/syslanguages/labels/search/' + this.search_term).subscribe(
+        this.backend.getRequest('configuration/syslanguages/labels/search/' + searchTermTrimmed).subscribe(
             (res) => {
                 this.labels = res;
                 this.is_searching = false;

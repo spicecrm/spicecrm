@@ -1,10 +1,18 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {AfterViewInit, ChangeDetectionStrategy, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component, HostBinding,
+    Input,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
-import {BodyI} from "../interfaces/spicepagebuilder.interfaces";
+import {AttributeObjectI, BodyI} from "../interfaces/spicepagebuilder.interfaces";
 
 /**
  * Parse and renders renderer body
@@ -30,9 +38,20 @@ export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
     /**
      * hold the style object for the element
      */
-    public style = {};
-
-    constructor(public spicePageBuilderService: SpicePageBuilderService) {
+    @HostBinding('style') public style: {width: string; 'background-color': string};
+    /**
+     * hold the edit mode boolean
+     */
+    @Input() public isEditMode: boolean = false;
+    /**
+     * list of the editable attributes
+     */
+    public readonly attributesList: AttributeObjectI[] = [
+        {name: 'width', type: 'text'},
+        {name: 'background-color', type: 'color'}
+    ];
+    constructor(public spicePageBuilderService: SpicePageBuilderService,
+                private cdRef: ChangeDetectorRef) {
     }
 
     /**
@@ -105,6 +124,28 @@ export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
             moveItemInArray(this.body.children, event.previousIndex, event.currentIndex);
         }
 
+        this.spicePageBuilderService.emitData();
+    }
+
+    /**
+     * open edit modal
+     */
+    public edit() {
+
+        this.spicePageBuilderService.openEditModal(this.body).subscribe({
+            next: res => {
+                if (!!res) this.handleEditResponse(res);
+            }
+        });
+    }
+
+    /**
+     * handle edit changes
+     */
+    public handleEditResponse(res) {
+        this.body.attributes = res.attributes;
+        this.generateStyle();
+        this.cdRef.markForCheck();
         this.spicePageBuilderService.emitData();
     }
 }

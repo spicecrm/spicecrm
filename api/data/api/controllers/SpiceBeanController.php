@@ -4,6 +4,7 @@
 namespace SpiceCRM\data\api\controllers;
 
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -11,6 +12,7 @@ use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -168,6 +170,70 @@ class SpiceBeanController
         return $res->withJson($bean);
     }
 
+
+    /**
+     * adds an image to the record
+     *
+     * @param \Slim\Psr7\Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     */
+    public function SaveImageData(\Slim\Psr7\Request $req, Response $res, array $args): Response
+    {
+        // try to get the seed and check the access
+        $seed = BeanFactory::getBean($args['beanName'], $args['beanId']);
+        if(!$seed){
+            throw new NotFoundException("bean with id {$args['beanId']} not found");
+        }
+
+        if(!$seed->ACLAccess('edit')){
+            throw new ForbiddenException("no rights to Edit Bean");
+        }
+
+        if($seed->field_defs[$args['imagefield']]['type'] != 'image'){
+            throw new BadRequestException("this is not an image field upload rejected");
+        }
+
+        $body = $req->getParsedBody();
+        $seed->{$args['imagefield']} = 'data:image/png;base64,'. $body['imagedata'];
+        $seed->save();
+
+        return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * deltes an image from the record
+     *
+     * @param \Slim\Psr7\Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     */
+    public function deleteImageData(\Slim\Psr7\Request $req, Response $res, array $args): Response
+    {
+        // try to get the seed and check the access
+        $seed = BeanFactory::getBean($args['beanName'], $args['beanId']);
+        if(!$seed){
+            throw new NotFoundException("bean with id {$args['beanId']} not found");
+        }
+
+        if(!$seed->ACLAccess('edit')){
+            throw new ForbiddenException("no rights to Edit Bean");
+        }
+
+        if($seed->field_defs[$args['imagefield']]['type'] != 'image'){
+            throw new BadRequestException("this is not an image field upload rejected");
+        }
+
+        $seed->{$args['imagefield']} = '';
+        $seed->save();
+
+        return $res->withJson(['success' => true]);
+    }
+
     public function deleteBean(Request $req, Response $res, array $args): Response
     {
         $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
@@ -247,7 +313,7 @@ class SpiceBeanController
     {
         $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
         $postBody = $req->getParsedBody();
-        return $res->withJson($moduleHandler->add_related($args['beanName'], $args['beanId'], $args['linkName'], $postBody['beansData']));
+        return $res->withJson($moduleHandler->add_related($args['beanName'], $args['beanId'], $args['linkName'], $postBody['beansData'] ?? $postBody));
     }
 
     public function setRelatedBean(Request $req, Response $res, array $args): Response
@@ -421,7 +487,40 @@ class SpiceBeanController
     {
         $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
         $params = $req->getQueryParams();
-        return $res->withJson($moduleHandler->acceptBeanAsDuplicate($args['beanName'], $args['beanIdLeft'], $args['beanIdRight'], $params['deleted']));
+        return $res->withJson($moduleHandler->acceptBeanAsDuplicate($args['beanName'], $args['beanId'], $args['beanIdRight'], $params['deleted']));
+    }
+
+    /**
+     * Converts a bean (call/meeting) to a .ics file
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws NotFoundException
+     */
+    public function convertToIcs(Request $req, Response $res, array $args): Response
+    {
+        $bean = BeanFactory::getBean($args['beanName'], $args['beanId']);
+        if (!$bean) {
+            throw new NotFoundException('Bean not found');
+        }
+
+        $content = "BEGIN:VCALENDAR\r\n";
+        $content .= "VERSION:2.0\r\n";
+        $content .= "PRODID:-//SpiceCrm\r\n";
+        $content .= "BEGIN:VEVENT\r\n";
+        $content .= "UID:" . SpiceUtils::createGuid() . "\r\n";
+        $content .= "DTSTAMP:" . gmdate('Ymd\THis\Z') . "\r\n";
+        $content .= "DTSTART:" . date('Ymd\THis', strtotime($bean->date_start)) . "\r\n";
+        $content .= "DTEND:" . date('Ymd\THis', strtotime($bean->date_end)) . "\r\n";
+        $content .= "SUMMARY: $bean->name\r\n";
+        $content .= "DESCRIPTION: $bean->description\r\n";
+        $content .= "END:VEVENT\r\n";
+        $content .= "END:VCALENDAR\r\n";
+
+        $res->getBody()->write($content);
+        return $res->withHeader('Content-Type', 'text/calendar');
     }
 
 }

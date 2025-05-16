@@ -199,6 +199,8 @@ export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
                     } else {
                         this.generateOutput(templates[0].id);
                     }
+                } else {
+                    this.toast.sendToast('MSG_NO_TEMPLATES_FOUNSD', 'warning');
                 }
             },
             error: (e) => {

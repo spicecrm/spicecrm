@@ -19,6 +19,14 @@ class VoiceOverIP
     protected $config;
     protected $channelPrefix;
 
+    const STATE_HANGUP     = 'HANGUP';
+    const STATE_CONNECTED  = 'CONNECTED';
+    const STATE_PROCEEDING = 'PROCEEDING';
+    const STATE_RINGING    = 'RINGING';
+    const STATE_INCOMING   = 'INCOMING';
+
+    const CALL_DIRECTIONS = [self::DIRECTION_INCOMING, self::DIRECTION_OUTGOING];
+
     /**
      * Returns the users preferences.
      *

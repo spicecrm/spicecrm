@@ -3,14 +3,19 @@ namespace SpiceCRM\includes\google;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class GoogleAPIRestHandler
 {
+    // check if we can geocode
+    static function canGeoCode()
+    {
+        return !!SpiceConfig::getInstance()->get('googleapi.geocodingkey');
+    }
+
     public function search($term, $locationbias = 'ipbias')
     {
-
-
         $results = [
             'status' => 'NOK'
         ];
@@ -23,20 +28,37 @@ class GoogleAPIRestHandler
             $lang = strtolower(substr($currentLanguage, 0, 2));
         }
 
-        $ch = curl_init();
         // https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=sol4 it&inputtype=textquery&fields=photos,formatted_address,name,place_id&key=AIzaSyCmw4Z9h4lf9eUGVyjKPyr9yr1s8WeXlPM
         $geocodingkey = SpiceConfig::getInstance()->config['googleapi']['geocodingkey'] ?: SpiceConfig::getInstance()->config['googleapi']['mapskey'];
-        $url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?key={$geocodingkey}&locationbias=".trim($locationbias)."&inputtype=textquery&language={$lang}&fields=photos,formatted_address,name,place_id&input=" . urlencode($term);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 
         // Timeout in seconds
         // curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
+        $ch = curl_init();
+        $curlOptions = [
+            CURLOPT_SSL_VERIFYPEER => 0,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_URL            => "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?key={$geocodingkey}&locationbias=".trim($locationbias)."&inputtype=textquery&language={$lang}&fields=photos,formatted_address,name,place_id&input=" . urlencode($term),
+            CURLOPT_HEADER         => 1
+        ];
+        curl_setopt_array($ch, $curlOptions);
+
+        // Timeout in seconds
+        // curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+        $logEntryHandler = new APILogEntryHandler();
+        $logEntryHandler->generateOutgoingLogEntry($curlOptions, '/google/search');
+        $logEntryHandler->writeOutogingLogEntry();
+
         $response = curl_exec($ch);
+
+        $logEntryHandler->updateOutgoingLogEntry($ch, $response);
+
+        $info = curl_getinfo($ch);
+        curl_close($ch);
+
+        $response = substr($response, $info['header_size']);
 
         if ($response) {
             $results = json_decode($response);
@@ -61,19 +83,34 @@ class GoogleAPIRestHandler
             $lang = strtolower(substr($currentLanguage, 0, 2));
         }
 
-        $ch = curl_init();
         $geocodingkey = SpiceConfig::getInstance()->config['googleapi']['geocodingkey'] ?: SpiceConfig::getInstance()->config['googleapi']['mapskey'];
-        $url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?key={$geocodingkey}&types=geocode&language={$lang}&input=" . urlencode($term);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+
+
+        $ch = curl_init();
+        $curlOptions = [
+            CURLOPT_SSL_VERIFYPEER => 0,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_URL            => "https://maps.googleapis.com/maps/api/place/autocomplete/json?key={$geocodingkey}&types=geocode&language={$lang}&input=" . urlencode($term),
+            CURLOPT_HEADER         => 1
+        ];
+        curl_setopt_array($ch, $curlOptions);
 
         // Timeout in seconds
         // curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
+        $logEntryHandler = new APILogEntryHandler();
+        $logEntryHandler->generateOutgoingLogEntry($curlOptions, '/google/autocomplete');
+        $logEntryHandler->writeOutogingLogEntry();
+
         $response = curl_exec($ch);
+
+        $logEntryHandler->updateOutgoingLogEntry($ch, $response);
+
+        $info = curl_getinfo($ch);
+        curl_close($ch);
+
+        $response = substr($response, $info['header_size']);
 
         if ($response) {
             $results = json_decode($response);
@@ -98,16 +135,30 @@ class GoogleAPIRestHandler
             $lang = strtolower(substr($currentLanguage, 0, 2));
         }
 
-        $ch = curl_init();
         $geocodingkey = SpiceConfig::getInstance()->config['googleapi']['geocodingkey'] ?: SpiceConfig::getInstance()->config['googleapi']['mapskey'];
-        $url = "https://maps.googleapis.com/maps/api/place/details/json?language={$lang}&key={$geocodingkey}&placeid={$placeid}";
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+
+        $ch = curl_init();
+        $curlOptions = [
+            CURLOPT_SSL_VERIFYPEER => 0,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_URL            => "https://maps.googleapis.com/maps/api/place/details/json?language={$lang}&key={$geocodingkey}&placeid={$placeid}",
+            CURLOPT_HEADER         => 1
+        ];
+        curl_setopt_array($ch, $curlOptions);
+
+        $logEntryHandler = new APILogEntryHandler();
+        $logEntryHandler->generateOutgoingLogEntry($curlOptions, '/google/placedetails');
+        $logEntryHandler->writeOutogingLogEntry();
 
         $response = curl_exec($ch);
+
+        $logEntryHandler->updateOutgoingLogEntry($ch, $response);
+
+        $info = curl_getinfo($ch);
+        curl_close($ch);
+
+        $response = substr($response, $info['header_size']);
 
         if ($response) {
             $responseObject = json_decode($response);
@@ -141,5 +192,41 @@ class GoogleAPIRestHandler
         }
 
         return $results;
+    }
+
+    public function geocodeAddress($searchString){
+        $geocodingkey = SpiceConfig::getInstance()->get('googleapi.geocodingkey');
+
+        $curl = curl_init();
+        $curlOptions = [
+            CURLOPT_SSL_VERIFYPEER => 0,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_URL            => "https://maps.googleapis.com/maps/api/geocode/json?address={$searchString}&key={$geocodingkey}",
+            CURLOPT_HEADER         => 1
+        ];
+        curl_setopt_array($curl, $curlOptions);
+
+        $logEntryHandler = new APILogEntryHandler();
+        $logEntryHandler->generateOutgoingLogEntry($curlOptions, '/google/geocode');
+        $logEntryHandler->writeOutogingLogEntry();
+
+        $response = curl_exec($curl);
+
+        $logEntryHandler->updateOutgoingLogEntry($curl, $response);
+
+        $errors = curl_error($curl);
+        $info = curl_getinfo($curl);
+        curl_close($curl);
+
+        if ($response) {
+            $body = substr($response, $info['header_size']);
+            $results = json_decode($body);
+
+            return $results;
+
+        }
+
+        return false;
     }
 }

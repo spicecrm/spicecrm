@@ -202,6 +202,20 @@ export class DictionaryManagerRepairAll {
     }
 
     /**
+     * returns the number of errors
+     */
+    get errorCount(){
+        return this.definitions.filter(d => d.status == 'e').length;
+    }
+
+    /**
+     * returns the number of errors
+     */
+    get alteredCount(){
+        return this.definitions.filter(d => !!d.sql).length;
+    }
+
+    /**
      * generic trackby function to cater to the dynamic filter
      * @param index
      * @param item
@@ -253,7 +267,7 @@ export class DictionaryManagerRepairAll {
      * returns the processed count
      */
     get processedCount() {
-        return this.filtereddefinitions.filter(d => d.status != 'n').length
+        return this.definitions.filter(d => d.status != 'n').length
     }
 
     /**

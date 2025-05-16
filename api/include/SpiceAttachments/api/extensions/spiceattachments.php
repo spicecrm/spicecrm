@@ -192,6 +192,87 @@ $routes = [
     ],
     [
         'method'      => 'post',
+        'route'       => '/common/spiceattachments/module/{beanName}/{beanId}/byfield/{fieldprefix}',
+        'class'       => SpiceAttachmentsController::class,
+        'function'    => 'saveAttachmentContentByField',
+        'description' => '',
+        'options'     => ['validate' => true],
+        'parameters'  => [
+            'beanName' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'description' => 'name of a module',
+                'example' => 'Accounts',
+                'required' => true
+            ],
+            'beanId' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'description' => 'GUID of bean',
+                'required' => true
+            ],
+            'fieldprefix' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'Prefix of the field',
+                'required' => true
+            ],
+            'file_mime_type' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'the mime type',
+                'required' => false
+            ],
+            'file_name' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'the file name',
+                'required' => false
+            ],
+            'file' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'thew file content of the Field',
+                'required' => true
+            ]
+        ]
+    ],    [
+        'method'      => 'put',
+        'route'       => '/common/spiceattachments/module/{beanName}/{beanId}/byid/{attachmentId}',
+        'class'       => SpiceAttachmentsController::class,
+        'function'    => 'updateAttachmentContentById',
+        'description' => '',
+        'options'     => ['validate' => true],
+        'parameters'  => [
+            'beanName' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'description' => 'name of a module',
+                'example' => 'Accounts',
+                'required' => true
+            ],
+            'beanId' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'description' => 'GUID of bean',
+                'required' => true
+            ],
+            'attachmentId' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'Prefix of the field',
+                'required' => true
+            ],
+            'file' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'thew file content of the Field',
+                'required' => true
+            ]
+        ]
+    ],
+    [
+        'method'      => 'post',
         'route'       => '/common/spiceattachments',
         'oldroute'    => '/spiceAttachments',
         'class'       => SpiceAttachmentsController::class,
@@ -233,6 +314,11 @@ $routes = [
                 'in' => 'body',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'description' => 'ids of categories joined with ,',
+            ],
+            'folder_id'       => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'the id of the folder to be set',
             ]
         ]
     ],
@@ -243,7 +329,7 @@ $routes = [
         'class'       => SpiceAttachmentsController::class,
         'function'    => 'spiceUpdateAttachmentData',
         'description' => 'save the attachment changes',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id'       => [
                 'in'          => 'path',
@@ -251,21 +337,32 @@ $routes = [
                 'required'    => true,
                 'description' => 'GUID of the Attachment',
             ],
+            'filename'       => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => false,
+                'description' => 'name of the attachment',
+            ],
             'category_ids' => [
-                'in' => 'query',
+                'in' => 'body',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'description' => 'ids of categories joined with ,',
             ],
             'text'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => ValidationMiddleware::TYPE_STRING,
                 'description' => 'text',
             ],
             'display_name'       => [
-                'in'          => 'query',
+                'in'          => 'body',
                 'type'        => ValidationMiddleware::TYPE_STRING,
                 'description' => 'the name to set as display name for the attachment',
             ],
+            'folder_id'       => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'the id of the folder to be set',
+            ]
         ]
     ],
     [
@@ -312,6 +409,46 @@ $routes = [
                 'in' => 'body',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'description' => 'ids of categories joined with ,',
+            ],
+            'folder_id' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'description' => 'the file Name',
+                'required' => false
+            ]
+        ]
+    ],[
+        'method'      => 'post',
+        'route'       => '/common/spiceattachments/module/{beanName}/{beanId}/folder',
+        'class'       => SpiceAttachmentsController::class,
+        'function'    => 'saveFolder',
+        'description' => 'adds a folder',
+        'options'     => ['validate' => true],
+        'parameters'  => [
+            'beanName' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'description' => 'name of a module',
+                'example' => 'Accounts',
+                'required' => true
+            ],
+            'beanId' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'description' => 'GUID of bean',
+                'required' => true
+            ],
+            'folder_name' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'the folder Name',
+                'required' => true
+            ],
+            'folder_id' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'description' => 'the file Name',
+                'required' => false
             ]
         ]
     ],
@@ -350,10 +487,22 @@ $routes = [
                 'description' => 'GUID of bean it is cloned from',
                 'required' => true
             ],
+            'categoryId' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'a predefined category ID',
+                'required' => false
+            ],
             'selectedFiles' => [
                 'in' => 'body',
                 'type'        => ValidationMiddleware::TYPE_ARRAY,
                 'description' => 'Selected Attachments from Email to be cloned',
+                'required' => false
+            ],
+            'excludedFileIDs' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_ARRAY,
+                'description' => 'an array of excluded file ids',
                 'required' => false
             ]
         ]

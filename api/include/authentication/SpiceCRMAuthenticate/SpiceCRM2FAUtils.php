@@ -16,6 +16,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
+use SpiceCRM\modules\SystemTenants\SystemTenant;
 use SpiceCRM\modules\Users\User;
 
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
@@ -226,17 +227,25 @@ class SpiceCRM2FAUtils
      * @return void
      * @throws UnauthorizedException | Exception
      */
-    public static function send2FACodeBySMS(string $userId)
+    public static function send2FACodeBySMS(string $userId): void
     {
         $db = DBManagerFactory::getInstance();
         $code = self::generateCode($userId);
-        $mailboxId = self::get2FAConfig()->sms_mailbox_id;
 
         $phoneNumber = $db->getOne("SELECT phone_mobile FROM users WHERE id = '$userId'");
 
         if (!$phoneNumber) {
             throw new UnauthorizedException("User mobile phone number missing", 5);
         }
+
+        # send the code in the master system to use its mailbox
+        $tenantId = SystemTenant::$currentTenantID;
+
+        if (SystemTenant::multitenancyEnabled()) {
+            SystemTenant::switchToMaster();
+        }
+
+        $mailboxId = self::get2FAConfig()->sms_mailbox_id;
 
         if (!$mailboxId) {
             throw new UnauthorizedException("Missing configuration mailbox id", 5);
@@ -249,6 +258,10 @@ class SpiceCRM2FAUtils
         $sms->description = "Your CRM login code is $code";
         $sms->msisdn = $phoneNumber;
         $sms->send();
+
+        if (SystemTenant::multitenancyEnabled()) {
+            SystemTenant::switchToTenant($tenantId);
+        }
     }
 
     /**
@@ -257,17 +270,30 @@ class SpiceCRM2FAUtils
      * @return void
      * @throws UnauthorizedException | Exception
      */
-    public static function send2FACodeByEmail(string $userId)
+    public static function send2FACodeByEmail(string $userId): void
     {
         $db = DBManagerFactory::getInstance();
         $code = self::generateCode($userId);
-        $mailboxId = self::get2FAConfig()->email_mailbox_id;
 
-        $emailAddress = $db->getOne("SELECT email_address FROM email_addresses ea, email_addr_bean_rel ear WHERE ear.bean_id='$userId' AND ear.bean_module= 'Users'  AND ear.primary_address = 1 AND ear.deleted != 1 AND ear.email_address_id = ea.id AND ea.deleted != 1");
+        $emailAddress = $db->getOne("SELECT user_email FROM users WHERE id ='$userId' AND deleted != 1");
+
+        if (empty($emailAddress)) {
+            $emailAddress = $db->getOne("SELECT email_address FROM email_addresses ea, email_addr_bean_rel ear WHERE ear.bean_id='$userId' AND ear.bean_module= 'Users'  AND ear.primary_address = 1 AND ear.deleted != 1 AND ear.email_address_id = ea.id AND ea.deleted != 1");
+        }
 
         if (!$emailAddress) {
             throw new UnauthorizedException("User email address missing", 5);
         }
+
+
+        # send the code in the master system to use its mailbox
+        $tenantId = SystemTenant::$currentTenantID;
+
+        if (SystemTenant::multitenancyEnabled()) {
+            SystemTenant::switchToMaster();
+        }
+
+        $mailboxId = self::get2FAConfig()->email_mailbox_id;
 
         if (!$mailboxId) {
             throw new UnauthorizedException("Missing configuration mailbox id", 5);
@@ -282,6 +308,10 @@ class SpiceCRM2FAUtils
         $email->addEmailAddress('to', $emailAddress);
 
         $email->sendEmail();
+
+        if (SystemTenant::multitenancyEnabled()) {
+            SystemTenant::switchToTenant($tenantId);
+        }
     }
 
     /**

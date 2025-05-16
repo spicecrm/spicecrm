@@ -107,14 +107,17 @@ class SpiceDictionaryRelationships
     /**
      * repairs the relationships for the one definiton
      *
-     * @param $sysdictionaryDefinitonId
+     * @param string $sysdictionaryDefinitonId
+     * @param string|null $package
      * @return void
+     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
      */
-    public function repairForDctionaryDefinition(string $sysdictionaryDefinitonId){
+    public function repairForDctionaryDefinition(string $sysdictionaryDefinitonId, ?string $package = null){
 
         // get the relationships directly linked
         $relationships = $this->getRelationships($sysdictionaryDefinitonId);
         foreach ($relationships as $relationship){
+            if ($package && $relationship['package'] != $package) continue;
             (new SpiceDictionaryRelationship($relationship['id']))->deactivate(false)->activate(false);
         }
 
@@ -123,7 +126,7 @@ class SpiceDictionaryRelationships
         foreach($items as $item){
             $relationships = $this->getRelationships($item['sysdictionary_ref_id']);
             foreach ($relationships as $relationship){
-
+                if ($package && $relationship['package'] != $package) continue;
                 // activate
                 (new SpiceDictionaryRelationship($relationship['id']))->deactivate(false, $item['sysdictionary_ref_id'], $sysdictionaryDefinitonId)->activate(false, $item['sysdictionary_ref_id'], $sysdictionaryDefinitonId);
             }
@@ -217,11 +220,16 @@ class SpiceDictionaryRelationships
 
         $query = $db->query("SELECT * FROM sysdictionaryrelationshippolymorphs WHERE lhs_sysdictionarydefinition_id = '$definitionId'");
         while ($polymorph = $db->fetchByAssoc($query)){
-            $relationship = new SpiceDictionaryRelationship($polymorph['relationship_id']);
-            $relationship->relationship->lhs_sysdictionarydefinition_id = $definitionId;
-            $relationship->relationship->lhs_sysdictionaryitem_id = $polymorph['lhs_sysdictionaryitem_id'];
-            $relationship->relationship->relationship_name = $polymorph['relationship_name'];
-            $relationships[] = json_decode(json_encode($relationship->relationship), true);
+            try {
+                $relationship = new SpiceDictionaryRelationship($polymorph['relationship_id']);
+                $relationship->relationship->lhs_sysdictionarydefinition_id = $definitionId;
+                $relationship->relationship->lhs_sysdictionaryitem_id = $polymorph['lhs_sysdictionaryitem_id'];
+                $relationship->relationship->relationship_name = $polymorph['relationship_name'];
+                $relationships[] = json_decode(json_encode($relationship->relationship), true);
+            } catch (Exception $ignored) {
+                # do nothing if the relationship does not exist in the system.
+                # Reason is probably the package containing the relationship does not exist
+            }
         }
 
         return $relationships;
@@ -357,10 +365,17 @@ class SpiceDictionaryRelationships
 
         #repair the join table for m2m relationship
         if ($repairJoinTable && !empty($relationshipDefinition['join_table'])) {
-            # generate the repair query
-            $sql = SpiceDictionaryDefinitions::getInstance()->repairVardefDefinition($relationshipDefinition['join_table'], false, false);
-            # execute the query
-            if (!empty($sql)) DBManagerFactory::getInstance()->query($sql, true);
+
+            $dictionaryId = SpiceDictionaryDefinitions::getInstance()->getIdByName($relationshipDefinition['join_table']);
+
+            if (!$dictionaryId) {
+                $sql = SpiceDictionaryDefinitions::getInstance()->repairVardefDefinition($relationshipDefinition['join_table'], false, false);
+                # execute the query
+                if (!empty($sql)) DBManagerFactory::getInstance()->query($sql, true);
+            } else {
+                $dictionary = new SpiceDictionaryDefinition($dictionaryId);
+                $dictionary->repair(false);
+            }
         }
 
         return true;

@@ -56,9 +56,17 @@ use SpiceCRM\modules\Users\User;
 class UserPreference extends SpiceBean
 {
 
-    public $disable_row_level_security = true;
-
     protected $_userFocus;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    protected string $modified_user_id;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    protected string $created_by;
 
     public function setUser(User $user = null){
         $this->_userFocus = $user;

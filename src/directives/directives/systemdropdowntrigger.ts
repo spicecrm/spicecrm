@@ -52,6 +52,11 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
      * @private
      */
     @Input() private autoClose: boolean = false;
+    /**
+     * A boolean flag that determines whether the trigger element's width
+     * should match the width of its associated dropdown trigger component.
+     */
+    @Input() public fitTriggerWidth: boolean = false;
     /*
     * @input dropdowntrigger: boolean = false
     */
@@ -254,25 +259,20 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
             }
         }
 
+        if (this.fitTriggerWidth) {
+            // set the max width of the dropdown to match the trigger element width.
+            this.renderer.setStyle(this.dropdownElement, 'max-width', this.elementRef.nativeElement.getBoundingClientRect().width + 'px');
+        }
+
         // from right to left direction
         if (triggerRect.right - this.dropdownElement.clientWidth > 10 || triggerRect.right > window.innerWidth * 0.30) {
             this.renderer.setStyle(this.dropdownElement, 'right', (window.innerWidth - triggerRect.right) + 'px');
             this.renderer.setStyle(this.dropdownElement, 'left', 'auto');
 
-            // ToDo: check why this was added ... sets regular dropdowns to being too small
-            if(this.triggerElement.nodeName == 'INPUT') {
-                this.renderer.setStyle(this.dropdownElement, 'max-width', triggerRect.width + 'px');
-            }
-
             // from left to right direction
         } else {
             this.renderer.setStyle(this.dropdownElement, 'left', triggerRect.left + 'px');
             this.renderer.setStyle(this.dropdownElement, 'right', 'auto');
-
-            // on overflow adjust the width
-            if (triggerRect.right < window.innerWidth * 0.70) {
-                this.renderer.setStyle(this.dropdownElement, 'max-width', triggerRect.width + 'px');
-            }
         }
 
         // make sure we detect changes in case we are on a push strategy

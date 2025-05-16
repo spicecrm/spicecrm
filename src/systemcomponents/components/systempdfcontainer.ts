@@ -56,6 +56,6 @@ export class SystemPDFContainer implements OnChanges{
             byteArrays.push(byteArray);
         }
 
-        return new Blob(byteArrays);
+        return new Blob(byteArrays, {type: 'application/pdf'});
     }
 }

@@ -15,3 +15,9 @@ docs
 dev_server.url
 /**/.DS_store
 vendor/bpmn-js/spice/node_modules
+/socket/src/combined.log
+/socket/src/error.log
+/socket/combined.log
+/socket/error.log
+/socket/src/*.js
+/socket/src/*.js.map

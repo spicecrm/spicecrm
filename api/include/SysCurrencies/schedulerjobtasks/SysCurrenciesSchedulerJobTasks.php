@@ -96,7 +96,7 @@ class SysCurrenciesSchedulerJobTasks
         if($response){
             foreach ($response as $iso => $rateDetails) {
                 // check if we have the record already
-                if($db->fetchOne("SELECT id FROM syscurrencyexchangerates WHERE id='{$rateDetails->id}'")){
+                if($db->fetchOne("SELECT id FROM syscurrenciesexchangerates WHERE id='{$rateDetails->id}'")){
                     continue;
                 }
 

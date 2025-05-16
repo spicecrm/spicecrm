@@ -8,6 +8,8 @@ import {Auth2ServiceConfigI, AuthServiceI, TokenObjectI} from "../interfaces/glo
 import {GlobalLoginOAuth2} from "./globalloginoauth2";
 import {configurationService} from "../../services/configuration.service";
 import {OAuth2Service} from "../../services/oauth2.service";
+import {modal} from "../../services/modal.service";
+import {asapScheduler} from "rxjs";
 
 /**
  * a login button that triggers the authentication via OAuth2 if that is enabled for the system
@@ -35,6 +37,7 @@ export class GlobalLoginOAuth2Button {
         public http: HttpClient,
         public oauth2Service: OAuth2Service,
         public configurationService: configurationService,
+        private modal: modal,
         @Host() private parent: GlobalLoginOAuth2,
         public toast: toast
     ) {
@@ -78,46 +81,76 @@ export class GlobalLoginOAuth2Button {
             userinfo_endpoint: config.userinfo_endpoint,
             login_url: config.login_url,
             redirect_uri: config.redirect_uri,
-            client_secret: config.client_secret
+            client_secret: config.client_secret,
+            with_login_hint: config.with_login_hint,
         };
 
         // set visible and enable the button
         this.disabled = false;
+
+        if (!this.parent.loginService.loggedOut && localStorage.getItem('OAuth-Issuer') == this.service.issuer) {
+            this.signIn();
+        }
     }
 
     /**
      * sign in with oauth2
      * @param event
      */
-    public signIn(event) {
+    public signIn(event?: MouseEvent) {
 
-        event.preventDefault();
-        event.stopPropagation();
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        const loading = this.modal.await('LBL_PROCESSING');
 
         const url = this.configurationService.getBackendUrl() + '/authentication/oauth2/accessToken';
+        let loginHint: string;
 
-        this.oauth2Service.codeFlowLogin().subscribe(code => {
+        if (localStorage.getItem('OAuth-Issuer') == this.service.issuer) {
+            loginHint = localStorage.getItem('OAuth-Username');
+        }
 
-            this.http.post(url, {issuer: this.service.issuer, code: code}).subscribe(
-                (data: {tokenObject: TokenObjectI, profile}) => {
+        this.oauth2Service.codeFlowLogin(loginHint).subscribe({
+            next: code => {
 
-                if (this.authenticatedUser) {
+                this.http.post(url, {issuer: this.service.issuer, code: code}).subscribe({
+                    next: (data: {tokenObject: TokenObjectI, profile}) => {
 
-                    if (this.authenticatedUser == data.profile.email) {
+                        loading.next(true);
+                        loading.complete();
 
-                        this.parent.token.emit({
-                            issuer: this.service.issuer, tokenObject: data.tokenObject
-                        });
+                        if (this.authenticatedUser) {
 
-                    } else {
-                        this.toast.sendToast('Wrong username', 'warning', 'usernames do not match, please relogin with the proper user');
+                            if (this.authenticatedUser == data.profile.email) {
+
+                                this.parent.token.emit({
+                                    issuer: this.service.issuer, tokenObject: data.tokenObject, username: data.profile.email
+                                });
+
+                            } else {
+                                this.toast.sendToast('Wrong username', 'warning', 'usernames do not match, please relogin with the proper user');
+                            }
+                        } else {
+                            this.parent.token.emit({
+                                issuer: this.service.issuer, tokenObject: data.tokenObject, username: data.profile.email
+                            });
+                        }
+                    },
+                    error: () => {
+                        loading.next(true);
+                        loading.complete();
                     }
-                } else {
-                    this.parent.token.emit({
-                        issuer: this.service.issuer, tokenObject: data.tokenObject
-                    });
-                }
-            });
-        })
+                });
+            },
+            error: () => {
+                asapScheduler.schedule(() => {
+                    loading.next(true);
+                    loading.complete();
+                });
+            }
+        });
     }
 }

@@ -22,17 +22,6 @@ class MediaFile extends SpiceBean {
         parent::__construct();
     }
 
-    public function bean_implements($interface) {
-        switch($interface) {
-            case 'ACL': return true;
-        }
-        return false;
-    }
-
-    public function get_summary_text() {
-        return $this->name;
-    }
-
     public function save( $check_notify = false, $fts_index_bean = true ) {
 
 

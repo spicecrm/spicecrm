@@ -214,6 +214,7 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
                     if($nodeModule->load_relationship($field_name)) {
                         //BUGFIX 2010/07/13 to display alternative module name if vname is not maintained
                         $entry = [
+                            'id' => $field_defs['id'],
                             'path' => "link:$module:$field_name",
                             'module' => $nodeModule->$field_name->getRelatedModuleName(),
                             'parentModule' => $module,
@@ -221,7 +222,7 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
                             'leaf' => false,
                             'label' => $field_defs['vname'],
                             'link' => $field_name,
-                            'hasRelationshipFields' => $nodeModule->$field_name->relationship->type == 'many-to-many'
+                            'hasRelationshipFields' => in_array($nodeModule->$field_name->relationship->type,  ['many-to-many', 'email-address', 'many-to-many-prospectlists', 'many-to-many-bean'])
                         ];
 
                         $returnArray[] = $entry;
@@ -231,6 +232,7 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
 
             //2013-01-09 add support for Studio Relate Fields
             // get all relate fields where the link is empty ... those with link we get via the link anyway properly
+            /*
             if ($field_defs['type'] == 'relate') {
                 if (isset($field_defs['module']))
                     $returnArray[] = [
@@ -249,6 +251,7 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
                         'label' => $field_defs['vname']
                     ];
             }
+            */
         }
 
         // 2013-08-21 BUG #492 added sorting for the module tree
@@ -297,7 +300,7 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
             array_map(function ($field) {
                 $field['id'] = "field:{$field['name']}";
                 return $field;
-            }, $bean->{$args['link']}->relationship->def['fields'])
+            }, is_array($bean->{$args['link']}->relationship->def['fields']) ? $bean->{$args['link']}->relationship->def['fields'] : [])
         );
 
         return $res->withJson(array_values($fields));

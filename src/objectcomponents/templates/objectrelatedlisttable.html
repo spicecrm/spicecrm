@@ -1,4 +1,4 @@
-<table *ngIf="!noAccess;else noaccess" class="slds-table slds-table--fixed-layout slds-table--header-fixed slds-max-medium-table_stacked-horizontal" [ngClass]="{'slds-table--bordered':!isSmall, 'slds-no-row-hover':nowDragging}">
+<table *ngIf="!noAccess;else noaccess" class="slds-table slds-table--fixed-layout slds-table--header-fixed slds-max-medium-table_stacked" [ngClass]="{'slds-table--bordered':!isSmall, 'slds-no-row-hover':nowDragging}">
     <thead>
     <tr class="slds-text-title--caps">
         <th *ngIf="isSequenced" class="slds-cell-shrink" scope="col"></th>

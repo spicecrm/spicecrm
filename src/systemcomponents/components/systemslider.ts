@@ -30,16 +30,22 @@ export class SystemSlider implements ControlValueAccessor {
     @Input() public step: string;
     @Input() public disabled: boolean = false;
     @Input() public displayValue: boolean = true;
-
+    @Input() public theme: 'default'|'shade' = 'shade';
 
     public _value: number = 0;
-
 
     constructor() {
     }
 
     get value() {
         return this._value;
+    }
+
+    get displayBarValue(){
+        let min = this.min ? parseFloat(this.min) : 0;
+        let max = this.max ? parseFloat(this.max) : 0;
+        let range = max - min;
+        return range ? this._value / range * 100 : 0;
     }
 
     set value(value) {

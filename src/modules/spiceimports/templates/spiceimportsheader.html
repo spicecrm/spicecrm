@@ -1,0 +1,30 @@
+<div class="slds-page-header">
+    <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+            <div class="slds-media">
+                <system-icon module="SpiceImports"></system-icon>
+                <div class="slds-media__body">
+                    <div class="slds-page-header__name">
+                        <div class="slds-page-header__name-title">
+                            <h1>
+                                <span class="slds-page-header__title slds-truncate"><system-label label="LBL_IMPORTS"></system-label></span>
+                            </h1>
+                        </div>
+                    </div>
+                    <p class="slds-page-header__name-meta">{{spiceimportsservice.filtereditems.length}} <system-label label="LBL_OF"/> {{spiceimportsservice.items.length}} <system-label label="LBL_ITEMS"/></p>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <system-label class="slds-p-horizontal--x-small" label="LBL_MODULE"/>
+            <system-input-module class="slds-select" [(ngModel)]="spiceimportsservice.filtermodule"></system-input-module>
+            <system-label class="slds-p-horizontal--x-small" label="LBL_STATUS"/>
+            <div class="slds-select_container" style="width: 200px;">
+                <select [(ngModel)]="spiceimportsservice.filterstatus" class="slds-select">
+                    <option value=""></option>
+                    <option *ngFor="let option of filterstatusoptions" [value]="option.value"><system-label [label]="option.label"></system-label></option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>

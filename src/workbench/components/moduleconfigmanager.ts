@@ -553,7 +553,6 @@ export class ModuleConfigManager {
                             if (childItemIndex !== -1) {
                                 this.treelist.splice(childItemIndex, 1);
                                 this.treelist = [...this.treelist];
-                                this.selectedComponent = {};
                                 this.configuration.reloadTaskData(table.includes('default') ? 'componentdefaultconfigs' : 'componentmoduleconfigs');
                                 this.toast.sendToast('LBL_DELETED');
                             } else {
@@ -561,6 +560,7 @@ export class ModuleConfigManager {
                             }
 
                             this.removeParent();
+                            this.selectedComponent = {};
 
                         },
                         error: () => {
@@ -579,8 +579,8 @@ export class ModuleConfigManager {
         const parentsArr = this.treelist.filter(item => !item.parent_id);
         parentsArr.forEach(item => {
             if (!item.systemTreeDefs.hasChildren) {
-                let parrentIndex = this.treelist.findIndex(item => item.id === this.selectedComponent.component);
-                this.treelist.splice(parrentIndex, 1);
+                let parentIndex = this.treelist.findIndex(item => item.id === this.selectedComponent.component);
+                this.treelist.splice(parentIndex, 1);
                 this.treelist = [...this.treelist];
             }
         })

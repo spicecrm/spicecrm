@@ -24,7 +24,7 @@ export class fieldPhone extends fieldGeneric {
     /**
      * returns true if the telephony service is active
      */
-    get telehonyActive() {
+    get telephonyActive() {
         return this.telephony.isActive;
     }
 

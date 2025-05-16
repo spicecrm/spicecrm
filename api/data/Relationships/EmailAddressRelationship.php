@@ -6,6 +6,7 @@ namespace SpiceCRM\data\Relationships;
 use SpiceCRM\data\Link2;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceCache\SpiceCacheMemory;
@@ -33,43 +34,26 @@ class EmailAddressRelationship extends M2MRelationship
      * @return void
      */
     public function activate(SpiceDictionaryRelationship $relationship){
-        $db = DBManagerFactory::getInstance();
 
-        $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
-        $lhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
-        $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
+        $relationshipName = $relationship->relationship->relationship_name;
 
-
-        $relationshipName = strtolower($lhsDictionaryDefinition->getModuleName()) . '_email_addresses';
-
-        // build the Defs
-        $defs = [
-            'id' => $relationship->id,
-            'relationship_name' => $relationshipName,
-            'relationship_type' => $this->type,
-            'lhs_table' => $lhsDictionaryDefinition->tablename,
-            'lhs_module' => $lhsDictionaryDefinition->getModuleName(),
-            'lhs_key' => $lhsField->fieldname,
-            'rhs_table' => 'email_addresses',
-            'rhs_module' => 'EmailAddresses',
-            'rhs_key' => 'id',
-            'join_table' => 'email_addr_bean_rel',
-            'join_key_lhs' => 'bean_id',
-            'join_key_rhs' => 'email_address_id',
-            'deleted' => 0
-        ];
-
-        // make sure we delete any current relationship with the same name (might be the case if we have the same from legacy)
-        // $db->query("DELETE FROM relationships WHERE relationship_name like '{$relationshipName}%'");
         // clear current definitions
         $db = DBManagerFactory::getInstance();
-        $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}' OR relationship_name like '{$relationshipName}%'");
+        $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}' OR relationship_name = '{$relationshipName}_primary' OR relationship_name = '$relationshipName'");
         $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
+
+        try {
+            $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
+            $lhsDictionaryItem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
+            $lhsField = SpiceDictionaryField::getField($lhsDictionaryItem, $lhsDictionaryDefinition);
+        } catch (Exception $e){
+            return false;
+        }
 
         // add to the relationships
         $db->insertQuery('relationships', [
             'id' => $relationship->id,
-            'relationship_name' => $relationshipName,
+            'relationship_name' => $relationship->relationship->relationship_name,
             'relationship_type' => $this->type,
             'lhs_table' => $lhsDictionaryDefinition->tablename,
             'lhs_module' => $lhsDictionaryDefinition->getModuleName(),
@@ -114,11 +98,23 @@ class EmailAddressRelationship extends M2MRelationship
             'fieldtype' => 'link',
             'fielddefinition' => json_encode([
                 'name' => 'email_addresses',
+                'default' => true,
                 'type' => 'link',
                 'relationship' => $relationshipName,
                 'source' => 'non-db',
                 'module' => 'EmailAddresses',
-                'vname' => 'LBL_EMAIL_ADDRESSES'
+                'vname' => 'LBL_EMAIL_ADDRESSES',
+                'rel_fields' => [
+                    'opt_in_status' => [
+                        'type' => 'enum',
+                        'map' => 'opt_in_status',
+                        'options' => 'email_optin_status',
+                    ],
+                    'primary_address' => [
+                        'type' => 'bool',
+                        'map' => 'primary_address'
+                    ]
+                ]
             ]),
             'sysdictionaryrelationship_id' => $relationship->id,
             'sysdictionarydefinition_id' => $lhsDictionaryDefinition->id
@@ -133,7 +129,7 @@ class EmailAddressRelationship extends M2MRelationship
             'fieldname' => 'email_addresses_primary',
             'fieldtype' => 'link',
             'fielddefinition' => json_encode([
-                'name' => 'email_addresses',
+                'name' => 'email_addresses_primary',
                 'type' => 'link',
                 'relationship' => $relationshipName . '_primary',
                 'source' => 'non-db',
@@ -144,24 +140,8 @@ class EmailAddressRelationship extends M2MRelationship
             'sysdictionarydefinition_id' => $lhsDictionaryDefinition->id
         ]);
 
-        $db->insertQuery('sysdictionaryfields', [
-            'id' => SpiceUtils::createGuid(),
-            'sysdictionaryname' => $lhsDictionaryDefinition->name,
-            'sysdictionarytablename' => $lhsDictionaryDefinition->tablename,
-            'sysdictionarytableaudited' => $lhsDictionaryDefinition->getDefinition()->audited,
-            'fieldname' => 'email1',
-            'fieldtype' => 'link',
-            'fielddefinition' => json_encode([
-                'name' => 'email1',
-                'type' => 'varchar',
-                'source' => 'non-db',
-                'vname' => 'LBL_EMAIL1'
-            ]),
-            'sysdictionaryrelationship_id' => $relationship->id,
-            'sysdictionarydefinition_id' => $lhsDictionaryDefinition->id
-        ]);
-
-
+        // completed the activation
+        return true;
     }
 
     /**
@@ -172,9 +152,11 @@ class EmailAddressRelationship extends M2MRelationship
      * @throws \Exception
      */
     public  function deactivate(SpiceDictionaryRelationship $relationship){
-        DBManagerFactory::getInstance()->query("DELETE FROM relationships WHERE id='{$relationship->id}'");
-        DBManagerFactory::getInstance()->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id='{$relationship->id}'");
-    }
+        $db = DBManagerFactory::getInstance();
+        $relationshipName = $relationship->relationship->relationship_name;
+        $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}' OR relationship_name = '{$relationshipName}_primary' OR relationship_name = '$relationshipName'");
+        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
+   }
 
     /**
      * @param  $link Link2 loads the relationship for this link.

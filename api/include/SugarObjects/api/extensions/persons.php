@@ -12,20 +12,20 @@ $RESTManager = RESTManager::getInstance();
 $routes = [
     [
         'method'      => 'get',
-        'route'       => '/module/{module}/{id}/vcard',
+        'route'       => '/module/{beanName}/{beanId}/vcard',
         'oldroute'    => '/{module}/convert/{id}/to/VCard',
         'class'       => PersonsController::class,
         'function'    => 'convertToVCard',
         'description' => '',
         'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
         'parameters'  => [
-            'module' => [
+            'beanName' => [
                 'in'          => 'path',
                 'type'        => ValidationMiddleware::TYPE_MODULE,
                 'required'    => true,
                 'description' => 'The name of the module.',
             ],
-            'id'     => [
+            'beanId'     => [
                 'in'          => 'path',
                 'type'        => ValidationMiddleware::TYPE_GUID,
                 'required'    => true,

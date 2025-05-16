@@ -284,7 +284,7 @@ export class fieldHtml extends fieldGeneric implements OnInit {
 
     public setStylesheetField() {
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
-        if (!_.isEmpty(fieldDefs.stylesheet_id_field)) {
+        if (fieldDefs && !_.isEmpty(fieldDefs.stylesheet_id_field)) {
             this.stylesheetField = fieldDefs.stylesheet_id_field;
         }
     }

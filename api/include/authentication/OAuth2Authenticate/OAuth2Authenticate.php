@@ -12,6 +12,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
+use SpiceCRM\modules\UserAliases\UserAlias;
 use SpiceCRM\modules\Users\User;
 
 class OAuth2Authenticate implements AuthenticatorI
@@ -208,7 +209,11 @@ class OAuth2Authenticate implements AuthenticatorI
         $user->findByUserName($userProfile->email);
 
         if (empty($user->id)) {
-            throw new UnauthorizedException('User not found');
+            // fallback on Aliases
+            $user = UserAlias::findUser($userProfile->email);
+            if(!$user || empty($user->id)) {
+                throw new UnauthorizedException('User not found');
+            }
         }
 
         return new AuthResponse($user->user_name);

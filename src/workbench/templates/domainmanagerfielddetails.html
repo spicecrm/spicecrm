@@ -31,7 +31,14 @@
             </div>
             <div class="slds-large-size--1-of-5 slds-p-horizontal--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_REQUIRED"></system-label></label>
-                <system-checkbox [asinteger]="true" [(ngModel)]="_field.required"></system-checkbox>
+                <!--system-checkbox [asinteger]="true" [(ngModel)]="_field.required"></system-checkbox-->
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="_field.required">
+                        <option value="0"><system-label label="LBL_INHERITED"/></option>
+                        <option value="1"><system-label label="LBL_ALWAYS_REQUIRED"/></option>
+                        <option value="2"><system-label label="LBL_NEVER_REQUIRED"/></option>
+                    </select>
+                </div>
             </div>
             <div class="slds-large-size--1-of-5 slds-p-horizontal--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_EXCLUDE_FROM_INDEX"></system-label></label>

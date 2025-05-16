@@ -170,6 +170,11 @@ $routes = [
                 'in' => 'path',
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_GUID
+            ],
+            'detailed' => [
+                'in' => 'query',
+                'description' => 'if the results shoudl be grouped by type of record',
+                'type' => ValidationMiddleware::TYPE_BOOL
             ]
         ]
     ],

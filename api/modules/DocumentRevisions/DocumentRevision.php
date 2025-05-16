@@ -3,7 +3,12 @@ namespace SpiceCRM\modules\DocumentRevisions;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\DataStreams\StreamFactory;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\TXControlEditor\TXControlHandler;
+
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
@@ -42,10 +47,6 @@ use SpiceCRM\includes\TimeDate;
 
 class DocumentRevision extends SpiceBean {
 
-	function __construct() {
-		parent::__construct();
-		$this->disable_row_level_security = true; //no direct access to this module.
-	}
 
 	function save($check_notify = false, $fts_index_bean = true){
         $timedate = TimeDate::getInstance();
@@ -55,18 +56,53 @@ class DocumentRevision extends SpiceBean {
             $this->revision = $this->getNextDocumentRevision();
         }
 
-        if($this->documentrevisionstatus == 'r' && $this->documentrevisionstatus != $this->fetched_row['documentrevisionstatus']){
+        $generatePdf = false;
+
+        if ($this->isNew()) {
+            $document = BeanFactory::getBean('Documents', $this->document_id);
+            $this->file_md5 = $document->file_md5;
+            $this->file_name = $document->file_name;
+            $this->file_mime_type = $document->file_mime_type;
+            $this->file_pdf_mime_type = 'application/pdf';
+            $this->file_pdf_name = $this->file_name;
+
+            $generatePdf = true;
+        }
+
+        $released = false;
+        if($this->documentrevisionstatus == 'g' && $this->documentrevisionstatus != $this->fetched_row['documentrevisionstatus']){
+            $this->reviewed_date = $timedate->nowDb();
+            $this->reviewed_by = AuthenticationController::getInstance()->getCurrentUser()->id;
+        } else if($this->documentrevisionstatus == 'r' && $this->documentrevisionstatus != $this->fetched_row['documentrevisionstatus']){
+
+            $generatePdf = true;
+
             $this->archiveAllRevisions();
 
+            $this->released_date = $timedate->nowDb();
+            $this->released_by = AuthenticationController::getInstance()->getCurrentUser()->id;
+
+            $released = true;
+        }
+
+        // save the revision
+        $saved = parent::save($check_notify, $fts_index_bean);
+
+        // generate the PDF
+        if ($generatePdf) $this->generatePdf();
+
+        // if we have released update the docum,ent
+        if($released){
             $current_date = $this->db->now();
             $guidSQL = $this->db->getGuidSQL();
             // load and update the document
             $document = BeanFactory::getBean('Documents', $this->document_id);
             $document->revision = $this->revision;
             $document->revision_date = $timedate->nowDb();
-            $document->file_name = $this->file_name;
-            $document->file_md5 = $this->file_md5;
-            $document->file_mime_type = $this->file_mime_type;
+            $document->file_released_name = $this->file_pdf_name;
+            $document->file_released_md5 = $this->file_pdf_md5;
+            $document->file_released_mime_type = $this->file_pdf_mime_type;
+
             // create entries for user_documentrevisions to track who read/accepted them later on
             if ($document->acceptance_required = "1"){
                 $orgBeans = $document->get_linked_beans('orgunits', 'OrgUnits');
@@ -83,8 +119,26 @@ class DocumentRevision extends SpiceBean {
             $document->save();
         }
 
-        return parent::save($check_notify, $fts_index_bean);
+        return $saved;
 	}
+
+    /**
+     * generate pdf file from docx
+     * @return void
+     * @throws \Exception
+     */
+    private function generatePdf(): void
+    {
+        $file = base64_encode(file_get_contents(StreamFactory::getPathPrefix('upload') . $this->file_md5));
+        $pdf = base64_decode(TXControlHandler::getInstance()->parse($file, 'PDF', $this));
+        $this->file_pdf_md5 = md5($pdf);
+
+        file_put_contents(StreamFactory::getPathPrefix('upload') . $this->file_pdf_md5, $pdf);
+
+        $this->db->updateQuery($this->_tablename, ['id' => $this->id], ['file_pdf_md5' => $this->file_pdf_md5]);
+
+        $this->file_pdf_md5 = $this->file_pdf_md5;
+    }
 
 	function get_summary_text()
 	{

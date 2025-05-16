@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {
     trigger,
     state,
@@ -75,6 +75,10 @@ export class SystemCollabsableTab {
     @Input() public tabhelptext: string = '';
 
     @Input() public tabHelpTextVerticalPositionBottom = false;
+    /**
+     * emits the expanded flag on change
+     */
+    @Output() public expanded$ = new EventEmitter<boolean>();
 
     constructor(public language: language) {
     }
@@ -84,6 +88,7 @@ export class SystemCollabsableTab {
      */
     public togglePanel() {
         this.expanded = !this.expanded;
+        this.expanded$.emit(this.expanded);
     }
 
     /**

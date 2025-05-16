@@ -6,6 +6,7 @@ namespace SpiceCRM\modules\SpiceACL;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\modules\Users\User;
 
 class SpiceACLUsers{
     function manageUsersHash(array $users){
@@ -93,6 +94,19 @@ class SpiceACLUsers{
     }
 
     /**
+     * generates a where clause for the reportees of the current user
+     *
+     * @param $table_name
+     * @param $bean
+     * @return string
+     */
+    static function generateReporteesWhereClause($table_name = '', $bean){
+        $reporteeIDs = AuthenticationController::getInstance()->getCurrentUser()->getReporteesList();
+
+        return count($reporteeIDs) > 0 ? "$table_name.assigned_user_id IN ('" . implode("','", $reporteeIDs) ."')" : false;
+    }
+
+    /**
      * generates a where clause that matches the creator
      *
      * @param $table_name
@@ -123,11 +137,13 @@ class SpiceACLUsers{
         // if there is no field assigned_orgunit_id defined just leave it.
         if(!isset($bean->field_defs['assigned_orgunit_id'])) return false;
 
+        /** @var User $current_user */
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         $absences = BeanFactory::getBean('UserAbsences');
         $substituteOrgunits = $absences->getSubstituteOrgUnitIDs();
-        $orgunitIDs = $current_user->orgunit_id ?  array_merge([$current_user->orgunit_id], $substituteOrgunits) : $substituteOrgunits;
+        $userOrgUnits = $current_user->getOrgUnits(true);
+        $orgunitIDs = $current_user->orgunit_id ?  array_merge([$current_user->orgunit_id], $userOrgUnits, $substituteOrgunits) : $substituteOrgunits;
         if(count($orgunitIDs) == 0) return false;
 
         $orgunitIDs = "'". join("','", $orgunitIDs) . "'";
@@ -146,7 +162,7 @@ class SpiceACLUsers{
      */
     static function checkCurrentUserIsOwner($bean){
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $db = DBManagerFactory::getInstance();
+
 
         // check the assigned user first
         if($bean->assigned_user_id == $current_user->id) return true;
@@ -160,7 +176,31 @@ class SpiceACLUsers{
         if(empty($bean->spiceacl_users_hash)) return false;
 
         // check the user hash
-        return $db->fetchByAssoc($db->query("SELECT user_id FROM spiceaclusers_hash WHERE hash_id = '$bean->spiceacl_users_hash' AND user_id='$current_user->id' AND deleted = 0")) ? true : false;
+        $db = DBManagerFactory::getInstance();
+        return $db->fetchOne("SELECT user_id FROM spiceaclusers_hash WHERE hash_id = '{$bean->spiceacl_users_hash}' AND user_id='{$current_user->id}' AND deleted = 0") ? true : false;
+    }
+
+    /**
+     * cheks if the passed in bean matches the user requirements and is assiogned to a reportee
+     *
+     * @param $bean the bean to be checked
+     * @return bool true if access is granted and the current user is consideren manager of an owner
+     */
+    static function checkCurrentUserIsManager($bean){
+        /** @var User $current_user */
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+
+        // check absence substitutes
+        $reporteeeIDs = $current_user->getReporteesList();
+        if(array_search($bean->assigned_user_id, $reporteeeIDs) !== false) return true;
+
+        // check if we have  user hash
+        if(empty($bean->spiceacl_users_hash)) return false;
+
+        // check the user hash
+        $db = DBManagerFactory::getInstance();
+        $usersIn = implode("','", $reporteeeIDs);
+        return $db->fetchOne("SELECT user_id FROM spiceaclusers_hash WHERE hash_id = '{$bean->spiceacl_users_hash}' AND user_id in ('{$usersIn}') AND deleted = 0") ? true : false;
     }
 
     /**
@@ -198,7 +238,11 @@ class SpiceACLUsers{
         // check absence substitutes
         $absences = BeanFactory::getBean('UserAbsences');
         $substituteOrgUnits = $absences->getSubstituteOrgUnitIDs();
-        if(array_search($bean->assigned_orgunit_id, $substituteOrgUnits) !== false) return true;
+
+        // check orgunits allocated to the User
+        $userOrgUnits = $current_user->getOrgUnits(true);
+
+        if(array_search($bean->assigned_orgunit_id, array_merge($userOrgUnits, $substituteOrgUnits)) !== false) return true;
 
         return false;
     }

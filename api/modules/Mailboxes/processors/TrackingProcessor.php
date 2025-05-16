@@ -6,11 +6,12 @@ namespace SpiceCRM\modules\Mailboxes\processors;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Mailboxes\processors\Processor;
 
 class TrackingProcessor extends Processor {
-    private $method = 'blowfish';
-    private $key = '2fs5uhnjcnpxcpg9';
+    private $method = 'DES-EDE3-CBC';
+    private $key ;
     private $pattern = '/img src="([^"]+)"/';
     private $httpPattern = '/img src="http:\/\/([^"]+)"/';
 
@@ -31,7 +32,8 @@ class TrackingProcessor extends Processor {
      * @param $encrypted
      * @return false|string
      */
-    private function decryptBlowfishHash($encrypted) {
+    private function decryptEncryptionKeyHash($encrypted) {
+        $this->key = SpiceConfig::getInstance()->get('emailtracking.encryptionkey') ?? SpiceConfig::getInstance()->config['unique_key'];
         return openssl_decrypt($encrypted, $this->method, $this->key);
     }
 
@@ -40,7 +42,7 @@ class TrackingProcessor extends Processor {
      */
     private function decodeTrackingPixel($string) {
         $encrypted =  base64_decode($string);
-        $decrypted = $this->decryptBlowfishHash($encrypted);
+        $decrypted = $this->decryptEncryptionKeyHash($encrypted);
 
         if($decrypted) {
             $data = explode(':', $decrypted);

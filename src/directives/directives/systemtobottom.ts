@@ -39,7 +39,9 @@ export class SystemToBottomDirective implements DoCheck {
     /**
      * set the scrollable class
      */
-    @HostBinding('class.slds-scrollable--y') public elementClass = true;
+    @HostBinding('class.slds-scrollable--y')
+    @Input()
+    public elementClass = true;
 
     /**
      * triggering when the element is resized

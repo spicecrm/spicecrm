@@ -59,7 +59,7 @@ export class SystemFileIcon implements OnInit {
      */
     public determineIcon() {
         let icon = this.helper.determineFileIcon(this.filemimetype);
-        if (icon == 'unknown') {
+        if (icon == 'unknown' && this.filename) {
             let nameparts = this.filename.split('.');
             let type = nameparts.splice(-1, 1)[0];
             switch (type.toLowerCase()) {

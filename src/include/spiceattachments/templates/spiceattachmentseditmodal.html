@@ -15,16 +15,21 @@
                 <input type="text" class="slds-input" [(ngModel)]="inputData.display_name">
             </div>
         </div>
-        <div class="slds-form-element slds-p-horizontal--xx-small">
-            <label class="slds-form-element__label"><system-label label="LBL_CATEGORIES"></system-label></label>
-            <system-checkbox-group [(ngModel)]="inputData.category_ids">
-                <div *ngFor="let category of categories" [system-title]="category.label" class="slds-large-size--1-of-3 slds-medium-size--1-of-1 slds-truncate">
-                    <system-checkbox-group-checkbox [value]="category.id">
-                        <system-label [label]="category.label" class="slds-m-left--xx-small"></system-label>
-                    </system-checkbox-group-checkbox>
-                </div>
-            </system-checkbox-group>
-        </div>
+        @if(categories.length > 0) {
+            <div class="slds-form-element slds-p-horizontal--xx-small">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_CATEGORIES"></system-label>
+                </label>
+                <system-checkbox-group [(ngModel)]="inputData.category_ids">
+                    <div *ngFor="let category of categories" [system-title]="category.label"
+                         class="slds-large-size--1-of-3 slds-medium-size--1-of-1 slds-truncate">
+                        <system-checkbox-group-checkbox [value]="category.id">
+                            <system-label [label]="category.label" class="slds-m-left--xx-small"></system-label>
+                        </system-checkbox-group-checkbox>
+                    </div>
+                </system-checkbox-group>
+            </div>
+        }
         <div class="slds-form-element slds-p-horizontal--xx-small">
             <label class="slds-form-element__label"><system-label label="LBL_TEXT"></system-label></label>
             <div class="slds-form-element__control">

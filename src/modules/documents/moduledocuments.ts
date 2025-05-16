@@ -15,9 +15,8 @@ import {FormsModule} from "@angular/forms";
 import {fieldDocumentRevisionStatus} from "./fields/fielddocumentrevisionstatus";
 import {DocumentCreateRevisionButton} from "./components/documentcreaterevisionbutton";
 import {DocumentCreateRevisionModal} from "./components/documentcreaterevisionmodal";
-
-
-
+import {DocumentRevisionDisplay} from "./components/documentrevisiondisplay";
+import {DocumentNewFromTemplateButton} from "./components/documentnewfromtemplatebutton";
 
 @NgModule({
     imports: [
@@ -32,7 +31,9 @@ import {DocumentCreateRevisionModal} from "./components/documentcreaterevisionmo
     declarations: [
         fieldDocumentRevisionStatus,
         DocumentCreateRevisionButton,
-        DocumentCreateRevisionModal
+        DocumentCreateRevisionModal,
+        DocumentRevisionDisplay,
+        DocumentNewFromTemplateButton
     ]
 })
 export class ModuleDocuments {}

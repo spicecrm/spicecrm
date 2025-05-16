@@ -36,6 +36,7 @@ use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
+use SpiceCRM\modules\SystemTenants\SystemTenant;
 
 class SpiceFTSBeanHandler
 {
@@ -67,18 +68,19 @@ class SpiceFTSBeanHandler
     /**
      * returns the aggregates defined for the bean
      */
-    function getAggregates()
+    function getAggregates(): array
     {
         $aggregates = [];
         foreach ($this->indexProperties as $indexProperty) {
             $details = SpiceFTSUtils::getDetailsForField($indexProperty['path']);
-            if (isset($indexProperty['aggregate']) && (!empty($details['field']) || !empty($details['module']))) {
+            if (!empty($indexProperty['aggregate']) && (!empty($details['field']) || !empty($details['module']))) {
                 $aggregates[] = [
                     'fieldname' => $indexProperty['fieldname'],
                     'indexfieldname' => $indexProperty['indexfieldname'],
                     'fielddetails' => $details,
                     'type' => $indexProperty['aggregate'],
-                    'collapsed' => $indexProperty['aggregatecollapsed'] == 1 ? true : false,
+                    'label' => $indexProperty['name'],
+                    'collapsed' => $indexProperty['aggregatecollapsed'] == 1,
                     'priority' => $indexProperty['aggregatepriority'],
                     'system' => $indexProperty['aggregatesystem']
                 ];
@@ -239,6 +241,10 @@ class SpiceFTSBeanHandler
         // add the geo location if set
         if ($this->indexSettings['geosearch'] && $this->indexSettings['geolat'] && $this->indexSettings['geolng'] && !empty($this->seed->{$this->indexSettings['geolat']}) && !empty($this->seed->{$this->indexSettings['geolng']})) {
             $indexArray['_location'] = ['lat' => $this->seed->{$this->indexSettings['geolat']}, 'lon' => $this->seed->{$this->indexSettings['geolng']}];
+        }
+
+        if (SystemTenant::isInTenantSystem()) {
+            $indexArray['_systemtenant_id'] = SystemTenant::$currentTenantID;
         }
 
         return $indexArray;

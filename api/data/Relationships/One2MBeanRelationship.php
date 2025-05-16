@@ -7,6 +7,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\data\Link2;
 use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryField;
@@ -14,6 +15,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 
 /**
@@ -37,17 +39,23 @@ class One2MBeanRelationship extends One2MRelationship
      * @return void
      */
     public function activate(SpiceDictionaryRelationship $relationship){
-        $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
-        $rhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
-        $lhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
-        $rhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->rhs_sysdictionaryitem_id);
-        $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
-        $rhsField = SpiceDictionaryField::getField($rhsDictionaryitem, $rhsDictionaryDefinition);
 
         // clear current definitions
         $db = DBManagerFactory::getInstance();
         $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}'");
         $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
+
+        // try to find both sides definitions and ids
+        try {
+            $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
+            $rhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
+            $lhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
+            $rhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->rhs_sysdictionaryitem_id);
+            $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
+            $rhsField = SpiceDictionaryField::getField($rhsDictionaryitem, $rhsDictionaryDefinition);
+        } catch(Exception $e){
+            return false;
+        }
 
         // build the Defs
         $defs = [
@@ -62,6 +70,11 @@ class One2MBeanRelationship extends One2MRelationship
             'rhs_key' => $rhsField->fieldname,
             'deleted' => 0
         ];
+
+        if($this->relationship_role_column && $this->relationship_role_column_value){
+            $defs['relationship_role_column'] = $this->relationship_role_column;
+            $defs['relationship_role_column_value'] = $this->relationship_role_column_value;
+        }
 
         // make sure we delete any current relationship with the same name (might be the case if we have the same from legacy)
         $db->query("DELETE FROM relationships WHERE relationship_name='{$defs['relationship_name']}'");
@@ -130,6 +143,26 @@ class One2MBeanRelationship extends One2MRelationship
                 'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
             ];
 
+            $db->insertQuery('sysdictionaryfields', [
+                'id' => SpiceUtils::createGuid(),
+                'sysdictionaryname' => $rhsDictionaryDefinition->name,
+                'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
+                'sysdictionarytableaudited' => $rhsDictionaryDefinition->getDefinition()->audited,
+                'fieldname' => "{$relationship->relationship->rhs_linkname}_linked",
+                'fieldtype' => 'linked',
+                'fielddefinition' => json_encode([
+                    'name' => "{$relationship->relationship->rhs_linkname}_linked",
+                    'type' => 'linked',
+                    'rname' => 'name',
+                    'id_name' => $rhsField->fieldname,
+                    'link' => $relationship->relationship->rhs_linkname,
+                    'source' => 'non-db',
+                    'module' => $lhsDictionaryDefinition->getModuleName(),
+                    'vname' => $relationship->relationship->rhs_linklabel
+                ]),
+                'sysdictionaryrelationship_id' => $relationship->id,
+                'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
+            ]);
 
             // json encode the field definition
             $rhsLink['fielddefinition'] = json_encode($rhsLink['fielddefinition']);
@@ -159,6 +192,9 @@ class One2MBeanRelationship extends One2MRelationship
                 ]);
             }
         }
+
+        // completed the activation
+        return true;
     }
 
     /**
@@ -388,7 +424,7 @@ class One2MBeanRelationship extends One2MRelationship
             $rhsTable = $this->def['rhs_table'];
             $rhsTableKey = "{$rhsTable}.{$this->def['rhs_key']}";
             $deleted = !empty($params['deleted']) ? 1 : 0;
-            $where = "WHERE $rhsTableKey = '{$link->getFocus()->$lhsKey}' AND {$rhsTable}.deleted=$deleted";
+            $where = "$rhsTableKey = '{$link->getFocus()->$lhsKey}' AND {$rhsTable}.deleted=$deleted";
 
             //Check for role column
             if(!empty($this->def["relationship_role_column"]) && !empty($this->def["relationship_role_column_value"]))
@@ -405,11 +441,19 @@ class One2MBeanRelationship extends One2MRelationship
                     $where .= " AND $add_where";
             }
 
+            // add teh acl relevant query
+            //SpiceACL::getInstance()->addACLAccessToListArray($ret_array, $this);
+            $retArray = [];
+            SpiceACL::getInstance()->addACLAccessToListArray($retArray, BeanFactory::getBean($this->def['rhs_module']));
+            if($retArray['where']) {
+                $where = "({$where}) AND {$retArray['where']}";
+            }
+
             $from = $this->def['rhs_table'];
 
             if (empty($params['return_as_array'])) {
                 //Limit is not compatible with return_as_array
-                $query = "SELECT id FROM $from $where";
+                $query = "SELECT id FROM $from WHERE $where";
                 // add the sort param from the relationship
                 if($params['sort']['sortfield']){
                     $query .= " ORDER BY {$rhsTable}.{$params['sort']['sortfield']} {$params['sort']['sortdirection']}";
@@ -426,7 +470,7 @@ class One2MBeanRelationship extends One2MRelationship
                 return [
                     'select' => "SELECT {$this->def['rhs_table']}.id",
                     'from' => "FROM {$this->def['rhs_table']}",
-                    'where' => $where,
+                    'where' =>  $where ? "WHERE {$where}" : ''
                 ];
             }
         }

@@ -93,6 +93,7 @@ class SpiceDictionaryIndexes
         } else {
             // load the indexes
             $this->dictionaryIndexes = $this->getDictionaryIndexes(null, []);
+            $this->writeCache();
         }
 
         // check if we have a cached value
@@ -102,6 +103,7 @@ class SpiceDictionaryIndexes
         } else {
             // load the indexitems
             $this->dictionaryIndexItems = $this->getDictionaryIndexItems();
+            $this->writeCache();
         }
 
     }
@@ -146,7 +148,6 @@ class SpiceDictionaryIndexes
     public function getIndexes(){
         return array_values($this->dictionaryIndexes);
     }
-
 
     /**
      * returns all loaded index items (optionally filtered by an indexid

@@ -190,13 +190,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'type' => 'text',
             'comment' => 'The campaign description'
         ],
-        'prospectlists' => [
-            'name' => 'prospectlists',
-            'vname' => 'LBL_PROSPECTLISTS',
-            'type' => 'link',
-            'relationship' => 'prospect_list_campaigns',
-            'source' => 'non-db',
-        ],
+//        'prospectlists' => [
+//            'name' => 'prospectlists',
+//            'vname' => 'LBL_PROSPECTLISTS',
+//            'type' => 'link',
+//            'relationship' => 'prospect_list_campaigns',
+//            'source' => 'non-db',
+//        ],
 // CR1000465 cleanup Email
 //        'emailmarketing' => array(
 //            'name' => 'emailmarketing',
@@ -226,22 +226,22 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'comment' => 'Frequency of the campaign',
             'options' => 'newsletter_frequency_dom',
         ],
-        'leads' => [
-            'name' => 'leads',
-            'type' => 'link',
-            'relationship' => 'campaign_leads',
-            'source' => 'non-db',
-            'vname' => 'LBL_LEADS',
-            'link_class' => 'ProspectLink',
-            'link_file' => 'modules/Campaigns/ProspectLink.php'
-        ],
-        'opportunities' => [
-            'name' => 'opportunities',
-            'type' => 'link',
-            'relationship' => 'campaign_opportunities',
-            'source' => 'non-db',
-            'vname' => 'LBL_OPPORTUNITIES',
-        ],
+//        'leads' => [
+//            'name' => 'leads',
+//            'type' => 'link',
+//            'relationship' => 'campaign_leads',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_LEADS',
+//            'link_class' => 'ProspectLink',
+//            'link_file' => 'modules/Campaigns/ProspectLink.php'
+//        ],
+//        'opportunities' => [
+//            'name' => 'opportunities',
+//            'type' => 'link',
+//            'relationship' => 'campaign_opportunities',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_OPPORTUNITIES',
+//        ],
         'contacts' => [
             'name' => 'contacts',
             'type' => 'link',
@@ -398,13 +398,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'source' => 'non-db',
             'duplicate_merge' => false,
         ],
-        'campaigntasks' => [
-            'name' => 'campaigntasks',
-            'type' => 'link',
-            'relationship' => 'campaign_campaigntasks',
-            'source' => 'non-db',
-            'module' => 'CampaignTasks'
-        ]
+//        'campaigntasks' => [
+//            'name' => 'campaigntasks',
+//            'type' => 'link',
+//            'relationship' => 'campaign_campaigntasks',
+//            'source' => 'non-db',
+//            'module' => 'CampaignTasks'
+//        ]
     ],
     'indices' => [
 //        array(
@@ -420,15 +420,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
     ],
 
     'relationships' => [
-        'campaigns_mailboxes_rel' => [
-            'lhs_module' => 'Mailboxes',
-            'lhs_table' => 'mailboxes',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Campaigns',
-            'rhs_table' => 'campaigns',
-            'rhs_key' => 'mailbox_id',
-            'relationship_type' => 'one-to-many',
-        ],
+//        'campaigns_mailboxes_rel' => [
+//            'lhs_module' => 'Mailboxes',
+//            'lhs_table' => 'mailboxes',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Campaigns',
+//            'rhs_table' => 'campaigns',
+//            'rhs_key' => 'mailbox_id',
+//            'relationship_type' => 'one-to-many',
+//        ],
 
         'campaign_accounts' => ['lhs_module' => 'Campaigns', 'lhs_table' => 'campaigns', 'lhs_key' => 'id',
             'rhs_module' => 'Accounts', 'rhs_table' => 'accounts', 'rhs_key' => 'campaign_id',
@@ -442,17 +442,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'rhs_module' => 'Consumers', 'rhs_table' => 'consumers', 'rhs_key' => 'campaign_id',
             'relationship_type' => 'one-to-many'],
 
-        'campaign_leads' => ['lhs_module' => 'Campaigns', 'lhs_table' => 'campaigns', 'lhs_key' => 'id',
-            'rhs_module' => 'Leads', 'rhs_table' => 'leads', 'rhs_key' => 'campaign_id',
-            'relationship_type' => 'one-to-many'],
+//        'campaign_leads' => ['lhs_module' => 'Campaigns', 'lhs_table' => 'campaigns', 'lhs_key' => 'id',
+//            'rhs_module' => 'Leads', 'rhs_table' => 'leads', 'rhs_key' => 'campaign_id',
+//            'relationship_type' => 'one-to-many'],
 
         'campaign_prospects' => ['lhs_module' => 'Campaigns', 'lhs_table' => 'campaigns', 'lhs_key' => 'id',
             'rhs_module' => 'Prospects', 'rhs_table' => 'prospects', 'rhs_key' => 'campaign_id',
             'relationship_type' => 'one-to-many'],
 
-        'campaign_opportunities' => ['lhs_module' => 'Campaigns', 'lhs_table' => 'campaigns', 'lhs_key' => 'id',
-            'rhs_module' => 'Opportunities', 'rhs_table' => 'opportunities', 'rhs_key' => 'campaign_id',
-            'relationship_type' => 'one-to-many'],
+//        'campaign_opportunities' => ['lhs_module' => 'Campaigns', 'lhs_table' => 'campaigns', 'lhs_key' => 'id',
+//            'rhs_module' => 'Opportunities', 'rhs_table' => 'opportunities', 'rhs_key' => 'campaign_id',
+//            'relationship_type' => 'one-to-many'],
 
 // CR1000465 cleanup Email
 //        'campaign_email_marketing' => array('lhs_module' => 'Campaigns', 'lhs_table' => 'campaigns', 'lhs_key' => 'id',
@@ -478,5 +478,5 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'relationship_type' => 'one-to-many'],
     ]
 ];
-VardefManager::createVardef('Campaigns', 'Campaign', ['default', 'assignable', 'activities']);
+//VardefManager::createVardef('Campaigns', 'Campaign', ['default', 'assignable', 'activities']);
 

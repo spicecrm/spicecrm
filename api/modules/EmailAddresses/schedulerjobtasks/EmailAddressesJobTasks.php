@@ -3,6 +3,7 @@
 namespace SpiceCRM\modules\EmailAddresses\schedulerjobtasks;
 
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\extensions\include\Mailgun\Mailgun;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 
 class EmailAddressesJobTasks
@@ -22,6 +23,13 @@ class EmailAddressesJobTasks
                 continue;
             }
         }
+
+        return true;
+    }
+
+    public function mailgunValidateAllEmailAddresses(){
+        $mailgun = new Mailgun();
+        $mailgun->validateAllEmailAddresses();
 
         return true;
     }

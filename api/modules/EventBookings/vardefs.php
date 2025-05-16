@@ -140,7 +140,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventBooking'] = [
     ]
 ];
 
-VardefManager::createVardef('EventBookings', 'EventBooking', ['default', 'assignable']);
+//VardefManager::createVardef('EventBookings', 'EventBooking', ['default', 'assignable']);
 
 
 SpiceDictionaryHandler::getInstance()->dictionary['EventBooking']['fields']['name'] = [

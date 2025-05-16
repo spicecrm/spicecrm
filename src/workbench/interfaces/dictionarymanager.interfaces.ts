@@ -21,6 +21,7 @@ export interface DictionaryDefinition {
     sysdictionary_type: DictionaryType;
     sysdictionary_contenttype?: string;
     description?: string;
+    audited: number;
     version?: string;
     package?: string;
 }
@@ -52,6 +53,7 @@ export interface DictionaryItem {
     required?: number;
     default_value?: string;
     duplicate_merge?: number;
+    is_sensitive?: number;
     description?: string;
     version?: string;
     package?: string;

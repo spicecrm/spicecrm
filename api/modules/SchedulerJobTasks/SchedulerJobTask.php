@@ -5,6 +5,7 @@ namespace SpiceCRM\modules\SchedulerJobTasks;
 
 use Exception;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\templates\basic\Basic;
@@ -16,7 +17,7 @@ use SpiceCRM\includes\utils\SpiceUtils;
  * Class JobTask
  * @package SpiceCRM\modules\JobTasks
  */
-class SchedulerJobTask extends Basic
+class SchedulerJobTask extends SpiceBean
 {
     /**
      * holds the job status queued constant
@@ -140,7 +141,7 @@ class SchedulerJobTask extends Basic
     /**
      * create a new job log entry
      */
-    private function writeLog()
+    public function writeLog()
     {
         $db = DBManagerFactory::getInstance();
         $guid = SpiceUtils::createGuid();

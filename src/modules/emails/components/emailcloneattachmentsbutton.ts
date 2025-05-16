@@ -5,6 +5,7 @@ import {toast} from "../../../services/toast.service";
 import {EmailCloneAttachmentsModal} from "./emailcloneattachmentsmodal";
 import {metadata} from "../../../services/metadata.service";
 import {activitiytimeline} from "../../../services/activitiytimeline.service";
+import {modelattachments} from "../../../services/modelattachments.service";
 
 @Component({
     selector: 'email-clone-attachments-button',
@@ -23,6 +24,7 @@ export class EmailCloneAttachmentsButton {
         public injector: Injector,
         public metadata: metadata,
         @Optional() private activityTimeline: activitiytimeline,
+        @Optional() private modelattachments: modelattachments,
         @SkipSelf() private parentModel: model
     ) {
     }
@@ -32,7 +34,7 @@ export class EmailCloneAttachmentsButton {
      * check ACLs & if we've got a parent on the Email
      */
     get disabled() {
-        return !this.metadata.checkModuleAcl('Emails', 'create') && !this.activityTimeline.parent || !this.parentModel;
+        return !this.modelattachments || !this.metadata.checkModuleAcl('Emails', 'create') && !this.activityTimeline.parent || !this.parentModel;
     }
 
     /**

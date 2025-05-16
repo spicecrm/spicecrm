@@ -1,0 +1,16 @@
+<li class="slds-split-view__list-item" role="presentation" (click)="selectItem()">
+    <a href="javascript:void(0)" [attr.aria-current]="isSelected() ? 'page' : ''" role="option" class="slds-split-view__list-item-action slds-has-flexi-truncate" tabindex="0">
+        <div class="slds-grid slds-wrap">
+            <span class="slds-truncate slds-text-body_regular slds-text-color_default">
+                <ng-container *ngIf="!fieldset">{{model.data.summary_text}}</ng-container>
+                <object-record-fieldset-horizontal-list [fieldset]="fieldset"></object-record-fieldset-horizontal-list>
+            </span>
+            <div class="slds-col--bump-left">
+                <object-action-menu buttonsize="x-small" [actionset]="actionset"/>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <object-record-fieldset-horizontal-list [fieldset]="subfieldset"></object-record-fieldset-horizontal-list>
+        </div>
+    </a>
+</li>

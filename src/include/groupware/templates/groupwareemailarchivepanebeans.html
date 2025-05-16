@@ -1,4 +1,28 @@
-<div *ngIf="beans.length > 0" class="slds-p-around--x-small slds-p-right--large" system-to-bottom>
-    <groupware-pane-bean *ngFor="let bean of beans" [bean]="bean" [system-model-provider]="{module: bean.module, id: bean.id, data: bean.data}"></groupware-pane-bean>
-</div>
-<groupware-pane-no-beans-found *ngIf="beans.length == 0"></groupware-pane-no-beans-found>
+@if (isCreating) {
+    <div class="slds-height_full slds-size--1-of-1 slds-scrollable--y">
+        <groupware-create-bean [module]="selectedModule" (action$)="handleCreateAction($event)"/>
+    </div>
+} @else if (beans.length > 0) {
+    <div class="slds-p-around--x-small slds-p-right--large" system-to-bottom>
+        @for (bean of beans; track bean.id) {
+            <groupware-pane-bean [bean]="bean" [system-model-provider]="{module: bean.module, id: bean.id, data: bean.data}" [goDetailsEnabled]="true"></groupware-pane-bean>
+        }
+    </div>
+} @else{
+    <groupware-pane-no-beans-found  [system-overlay-loading-spinner]="isLoading">
+        <button class="slds-button slds-button--icon slds-button--icon-large" (click)="create()" [disabled]="availableModules.length == 0" system-title="LBL_ADD">
+            <system-button-icon icon="new"/>
+        </button>
+    </groupware-pane-no-beans-found>
+}
+
+
+@if (!isLoading && groupware.relatedBeans.length > 0) {
+    <div class="slds-grid slds-grid--align-center spice-sticky-bottom">
+        <button class="slds-button slds-button--icon slds-button--icon-large" (click)="create()" [disabled]="availableModules.length == 0" system-title="LBL_ADD">
+            <system-button-icon icon="new"/>
+        </button>
+    </div>
+}
+
+

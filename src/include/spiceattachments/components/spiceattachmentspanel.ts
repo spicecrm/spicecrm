@@ -53,8 +53,6 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      */
     public uploadfilesExist: boolean = false;
 
-    public totalFileSize: string;
-
     public maxUpload: string;
 
     public maxUploadBytes: number;
@@ -143,11 +141,13 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      * initializes the model attachments service and loads the attachments
      */
     public loadFiles() {
-        this.modelattachments.getAttachments(this.componentconfig.systemCateogryId).subscribe(loaded => {
-            this.attachmentsLoaded.emit(true);
-            this.loadInputFiles();
-            this.countSize();
-        });
+        this.modelattachments.getAttachments(this.componentconfig.systemCateogryId).subscribe({
+            next: () => {
+                this.attachmentsLoaded.emit(true);
+                this.loadInputFiles();
+                this.countSize();
+            }
+        })
     }
 
     public countSize() {
@@ -155,14 +155,14 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
         this.modelattachments.files.forEach((f) => {
             sum += parseInt(f.filesize);
         });
-        this.totalFileSize = this.modelattachments.humanFileSize(sum);
+        this.modelattachments.totalFileSize = this.modelattachments.humanFileSize(sum);
         if (sum > this.maxUploadBytes) {
             let headerText = `LBL_ERROR`;
-            let text = this.language.getLabelFormatted('LBL_EXCEEDS_MAX_ATTACHMENTS', [this.totalFileSize, this.maxUpload]);
+            let text = this.language.getLabelFormatted('LBL_EXCEEDS_MAX_ATTACHMENTS', [this.modelattachments.totalFileSize, this.maxUpload]);
             this.modal.info(text, headerText);
         }
-        this.model.setField('attachments_size', sum);
-        this.model.setField('attachments_count',  this.modelattachments.files.length);
+        this.model.setField('attachments_size', sum, false, false);
+        this.model.setField('attachments_count', this.modelattachments.files.length, false, false);
     }
 
     /**
@@ -320,10 +320,10 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      */
     private broadcastUpload() {
         this._modelattachments.broadcast.broadcastMessage('attachments.uploaded', {
-            module: this._modelattachments.module,
-            id: this._modelattachments.id,
-            uploadedFiles: this._modelattachments.files,
-            uniqueID: this._modelattachments.httpRequestsRefID,
+            module: this.modelattachments.module,
+            id: this.modelattachments.id,
+            uploadedFiles: this.modelattachments.files,
+            uniqueID: this.modelattachments.httpRequestsRefID,
             reload: true
         })
     }

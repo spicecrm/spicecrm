@@ -3,14 +3,14 @@
  */
 import {
     Component,
-    EventEmitter,
     Input,
     OnInit
 } from '@angular/core';
-import {metadata} from '../../../services/metadata.service';
-import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {modelutilities} from '../../../services/modelutilities.service';
+import {ACLField, ACLType} from "../interfaces/aclinterfaces";
+import {toast} from "../../../services/toast.service";
+import {configurationService} from "../../../services/configuration.service";
 
 /**
  * renders a modal with a selection of fields for the mldule to be added in the ACL Componentes
@@ -22,95 +22,57 @@ import {modelutilities} from '../../../services/modelutilities.service';
 export class ACLTypesManagerTypesAddFields implements OnInit {
 
     /**
-     * the module
-     */
-    @Input() public module: string = '';
-
-    /**
      * reference to self for the modal
      */
     public self: any = {};
 
     /**
-     * an array with already used fields
+     * the current acl type
      */
-    public currentfields: any[] = [];
+    @Input() public aclType: ACLType;
 
     /**
-     * all selected fields
+     * the acl field to be added
      */
-    public selectedfields: any[] = [];
+    public aclField: ACLField;
 
     /**
-     * the fields to be presented as selection options
+     * sets the allowed change scope
      */
-    public fields: any[] = [];
+    public changescope: 'all' | 'custom' | 'none' = 'none';
 
-    /**
-     * event emitter provided to be subscribed by the component opening the modal
-     */
-    public addfields: EventEmitter<any> = new EventEmitter<any>();
-
-    /**
-     * parameter to set to true if no filter for nondb or orhter shoudlk be added.
-     *
-     * Since the same dialog is also used for the screen control this is then set accordingly
-     */
-    public showAll: boolean = false;
-
-
-    /**
-     * Flag: if true, the select all checkbox is checked!
-     */
-    public selectAllChecked: boolean = false;
-
-    /**
-     * the searchterm
-     */
-    public searchterm: string;
-
-
-    constructor(public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities) {
-
-    }
-
-    get moduleFields() {
-        return this.fields.filter(field => this.searchterm ? field.toLowerCase().indexOf(this.searchterm.toLowerCase()) > -1 : true);
+    constructor(public backend: backend, public modelutilities: modelutilities, public configurationService: configurationService, public toast: toast) {
+        // set teh change scope
+        this.changescope = this.configurationService.getCapabilityConfig('core').edit_mode;
     }
 
     public ngOnInit() {
-        let fields = this.metadata.getModuleFields(this.module);
+        this.aclField = {
+            id: this.modelutilities.generateGuid(),
+            sysmodule_id: this.aclType.acltype.id,
+            scope: 'c'
+        }
 
-        this.selectedfields = [];
+    }
 
-        for (let field in fields) {
-            if (this.showAll || this.allowField(fields[field])) {
-                this.fields.push(field);
+    get canAdd(){
+        return this.aclField.name && this.aclType.aclfields.map(f => f.name).indexOf(this.aclField.name) == -1;
+    }
+
+    /**
+     * handler when the add buton is pushed
+     */
+    public add() {
+        this.backend.postRequest('module/SpiceACLObjects/modules/' + this.aclType.acltype.id + '/fields/' + this.aclField.id, {}, this.aclField).subscribe({
+            next: (fielddata) => {
+                this.aclType.aclfields.push(this.aclField);
+                this.aclType.aclfields.sort((a, b) => a.name.localeCompare(b.name));
+                this.close();
+            },
+            error: (e) => {
+                this.toast.sendToast('Error adding action', 'error')
             }
-        }
-        for (let currentField of this.currentfields) {
-            this.selectedfields.push(currentField.name);
-        }
-
-        this.fields.sort();
-    }
-
-    /**
-     * checks if the field can be used ... not available for non-db fields
-     *
-     * @param field the fieldname
-     */
-    public allowField(field) {
-        return field.source != 'non-db' && field.type != 'link' && field.type != 'relate';
-    }
-
-    /**
-     * returns the translated name of the field
-     *
-     * @param field the field name
-     */
-    public getFieldDisplayName(field) {
-        return this.language.getFieldDisplayName(this.module, field);
+        });
     }
 
     /**
@@ -118,65 +80,5 @@ export class ACLTypesManagerTypesAddFields implements OnInit {
      */
     public close() {
         this.self.destroy();
-    }
-
-    /**
-     * handler when the add buton is pushed
-     */
-    public add() {
-        this.addfields.emit(this.selectedfields);
-        this.close();
-    }
-
-
-
-    public getFieldDisplay(fieldname) {
-        for (let currentField of this.currentfields) {
-            if (currentField.name == fieldname && currentField.hide) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public getFieldValue(fieldname) {
-
-        for (let field of this.selectedfields) {
-            if (field == fieldname) {
-                return true;
-            }
-        }
-        return false;
-    }
-    public setFieldValue(fieldname, event) {
-        // stop propagation
-        event.preventDefault();
-
-        let found = false;
-        for (let key in this.selectedfields) {
-            if (this.selectedfields[key] == fieldname) {
-                this.selectedfields.splice(+key, 1);
-                found = true;
-            }
-        }
-        if(!found) {
-            this.selectedfields.push(fieldname);
-        }
-    }
-
-
-    public toggleSelectAll(event) {
-        // stop propagation
-        event.preventDefault();
-
-        if(!this.selectAllChecked) {
-            for (let field of this.fields) {
-                this.selectedfields.push(field);
-            }
-            this.selectAllChecked = true;
-        } else {
-            this.selectAllChecked = false;
-            this.selectedfields = [];
-        }
     }
 }

@@ -67,8 +67,8 @@ class SpiceCacheFile extends SpiceCacheAbstract
         $this->_cacheDirectory = self::getCacheDirectory();
 
         // if the cache directory is not here create it
-        if($this->_cacheDirectory == 'cache' && !is_dir($this->_cacheDirectory)){
-            mkdir($this->_cacheDirectory);
+        if(str_starts_with($this->_cacheDirectory, 'cache') && !is_dir($this->_cacheDirectory)){
+            mkdir($this->_cacheDirectory, 0777, true);
         }
     }
 
@@ -86,7 +86,7 @@ class SpiceCacheFile extends SpiceCacheAbstract
         }
 
         if (!empty(SystemTenant::$currentTenantID)) {
-            $dir .= DIRECTORY_SEPARATOR . SystemTenant::$currentTenantID;
+            $dir .= DIRECTORY_SEPARATOR . 'tenant-' . SystemTenant::$currentTenantID;
         }
 
         return $dir;

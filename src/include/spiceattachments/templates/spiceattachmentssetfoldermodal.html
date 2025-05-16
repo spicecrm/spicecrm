@@ -1,0 +1,10 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_MOVE_TO_FOLDER"/></system-modal-header>
+    <system-modal-content margin="none">
+        <system-tree [sourceList]="folders" [config]="{expandall: true}" [selectedItem]="currentFolderID" (selectedItemChange)="handleChange($event)"></system-tree>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"/></button>
+        <button class="slds-button slds-button--brand" [disabled]="attachmentFolerID == folderID" (click)="save()"><system-label label="LBL_SAVE"/></button>
+    </system-modal-footer>
+</system-modal>

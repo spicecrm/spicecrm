@@ -16,12 +16,12 @@ class PersonsController
      * @throws NotFoundException
      */
     public function convertToVCARD(Request $req, Response $res, array $args): Response {
-        $bean = BeanFactory::getBean($args['module'], $args['id']);
+        $bean = BeanFactory::getBean($args['beanName'], $args['beanId']);
         if (!$bean) {
             throw new NotFoundException('Bean not found');
         }
         $content = $bean->getVCardContent();
-        return $res->withHeader('Content-Type', 'text/x-vcard', 'charset=utf-8')
-            ->write($content);
+        $res->getBody()->write($content);
+        return $res->withHeader('Content-Type', 'text/x-vcard', 'charset=utf-8');
     }
 }

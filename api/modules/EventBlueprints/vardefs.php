@@ -136,4 +136,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventBlueprint'] = [
     ]
 ];
 
-VardefManager::createVardef('EventBlueprints', 'EventBlueprint', ['default', 'assignable']);
+//VardefManager::createVardef('EventBlueprints', 'EventBlueprint', ['default', 'assignable']);

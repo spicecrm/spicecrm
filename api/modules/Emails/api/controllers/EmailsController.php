@@ -167,7 +167,7 @@ class EmailsController
      * @return array
      * @throws Exception
      */
-    private function saveEmailWithBeans(array $postBody, string $source): array {
+    public function saveEmailWithBeans(array $postBody, string $source): array {
         if (!isset($postBody['email'])) {
             throw new Exception('Email missing');
         }
@@ -429,7 +429,7 @@ class EmailsController
      * @return Email
      * @throws Exception
      */
-    private function externalDataToEmail($data, $emailbean, $beans, $source) {
+    public function externalDataToEmail($data, $emailbean, $beans, $source) {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         try {
             $email = Email::findByMessageId($data['message_id']);
@@ -598,9 +598,8 @@ class EmailsController
             $email->body = str_replace("\n", "", $email->body);
         }
 
-        // clone the attachments
-        $email->id = SpiceUtils::createGuid();
-
+        //save test email for easier testing of marketing actions
+        $email->save();
         $email->sendEmail();
 
         return $res->withJson(['success' => true]);

@@ -50,16 +50,49 @@
                 <system-input-fieldset class="slds-grow" [(ngModel)]="newWebHook.fieldset_id"></system-input-fieldset>
             </div>
         </div>
-        <div class="slds-grid">
-            <div class="slds-form-element__control slds-size--4-of-4 slds-p-right--xxx-small">
-                <label class="slds-form-element__label">
-                    <system-label label="LBL_DATA"></system-label>
-                </label>
-                <textarea [(ngModel)]="newWebHook.custom_headers"
-                        class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small ng-untouched ng-pristine ng-valid" placeholder="username:password"
+        <div class="slds-form-element__control slds-p-right--xxx-small">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_HEADER"></system-label>
+            </label>
+            <table class="slds-table slds-table_bordered slds-box--border">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th style="width: 50%" class="" scope="col">
+                            <div class="slds-truncate">Name</div>
+                        </th>
+                        <th style="width: 50%" class="" scope="col">
+                            <div class="slds-truncate">Value</div>
+                        </th>
+                        <th style="width: 3em" class="" scope="col">
 
-                        style="min-height: 80px; max-height: 300px; height: 80px;"></textarea>
-            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (customHeader of customHeaders; track customHeader.name; let i = $index) {
+                        <tr class="slds-hint-parent">
+                            <td data-label="name">
+                                <system-input-text [(ngModel)]="customHeader.name"></system-input-text>
+                            </td>
+                            <td data-label="value">
+                                <system-input-text [(ngModel)]="customHeader.value"></system-input-text>
+                            </td>
+                            <td style="text-align: right" data-label="value">
+                                <button class="slds-button slds-button--icon" (click)="deleteCustomHeader(i)">
+                                    <system-button-icon icon="delete"/>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                <tr class="slds-hint-parent">
+                    <td style="text-align: center" colspan="3">
+                        <button class="slds-button slds-button--icon" (click)="addCustomHeader()">
+                            <system-button-icon icon="add"/>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </system-modal-content>
     <system-modal-footer>

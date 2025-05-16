@@ -51,27 +51,5 @@ class Project extends SpiceBean {
         return $bean;
     }
 
-
-
-
-    /**
-     *
-     */
-    function get_summary_text()
-    {
-        return $this->name;
-    }
-
-
-
-    function bean_implements($interface){
-        switch($interface){
-            case 'ACL':return true;
-        }
-        return false;
-    }
-
-
-
 }
 

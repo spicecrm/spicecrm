@@ -46,11 +46,11 @@ export class ObjectPageHeader implements OnInit {
 
     public ngOnInit() {
         // get the Componentconfig if not set yet
-        let componentconfig = this.componentconfig && !_.isEmpty(this.componentconfig) ? this.componentconfig : this.metadata.getComponentConfig('ObjectPageHeader', this.model.module);
+        this.componentconfig = this.componentconfig && !_.isEmpty(this.componentconfig) ? this.componentconfig : this.metadata.getComponentConfig('ObjectPageHeader', this.model.module);
 
         // set the actionset & fiedset
-        this.actionSet = componentconfig.actionset;
-        this.fieldset = componentconfig.fieldset;
+        this.actionSet = this.componentconfig.actionset;
+        this.fieldset = this.componentconfig.fieldset;
     }
 
     get moduleName() {
@@ -58,11 +58,11 @@ export class ObjectPageHeader implements OnInit {
     }
 
     /**
-     * checks if the field "is_inactive" exists on the Bean
+     * checks if the field "is_inactive" exists on the Bean & it's not hidden
      * if true the ObjectSetInactiveIcon is displayed
      */
     get hasInactiveFieldProperty(): boolean {
-        return this.metadata.hasField(this.model._module, 'is_inactive');
+        return this.metadata.hasField(this.model._module, 'is_inactive') && !this.model.getFieldStati('is_inactive').hidden;
     }
 
     /**
@@ -90,4 +90,8 @@ export class ObjectPageHeader implements OnInit {
         }
     }
 
+
+    get image() {
+        return this.model.getField(this.componentconfig.imagefield);
+    }
 }

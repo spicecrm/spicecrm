@@ -17,6 +17,7 @@ import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {navigation} from '../../../services/navigation.service';
+import {ACLAction, ACLModule} from "../interfaces/aclinterfaces";
 
 
 @Component({
@@ -33,7 +34,7 @@ export class ACLTypesManagerTypes {
     /**
      * the list of acl types
      */
-    public acltypes: any[] = [];
+    public acltypes: ACLModule[] = [];
 
     /**
      * the active type id
@@ -82,5 +83,7 @@ export class ACLTypesManagerTypes {
         this.activeTypeId = acltype.id;
         this.typeselected.emit(acltype);
     }
+
+
 
 }

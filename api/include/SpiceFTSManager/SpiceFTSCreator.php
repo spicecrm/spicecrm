@@ -73,12 +73,9 @@ class SpiceFTSCreator {
     }
 
     public function getFtsModules(){
-        $ftsmodules = [];
-        $modules = DBManagerFactory::getInstance()->query("SELECT module FROM sysfts");
-        while($module = DBManagerFactory::getInstance()->fetchByAssoc($modules)){
-            $ftsmodules[] = $module['module'];
-        }
-        return $ftsmodules;
+        return array_column(
+            SpiceFTSHandler::getInstance()->modules, 'module'
+        );
     }
 
     public function createFtsFieldsForModule($module){

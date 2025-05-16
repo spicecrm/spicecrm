@@ -44,6 +44,11 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'description' => 'content of the custom element',
             ],
+            'stylesheet' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'description' => 'stylesheet of the custom element',
+            ]
         ]
     ],
     [
