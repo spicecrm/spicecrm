@@ -8,6 +8,7 @@ import {modal} from "../../../services/modal.service";
 import {view} from "../../../services/view.service";
 import {language} from "../../../services/language.service";
 import {SalesDocsRejectItemsContainer} from "./salesdocsrejectitemscontainer";
+import {toast} from "../../../services/toast.service";
 
 /**
  * renders a modal to set the rejection reason on the items
@@ -29,7 +30,13 @@ export class SalesdocsRejectModal {
      */
     @ViewChild(SalesDocsRejectItemsContainer) itemContainer!: SalesDocsRejectItemsContainer;
 
-    constructor(public language: language, public backend: backend, public model: model, public modal: modal, public view: view) {
+    constructor(
+        public language: language,
+        public backend: backend,
+        public model: model,
+        public modal: modal,
+        public view: view,
+        public toast: toast) {
         this.view.isEditable = false;
     }
 
@@ -44,7 +51,7 @@ export class SalesdocsRejectModal {
     /**
      * determines if any of the model sint he subview is dorty so a rejection reasons has been set and can be saved
      */
-    get canSave(){
+    get canSave() {
         return this.itemContainer && this.itemContainer.hasDirtyModels;
     }
 
@@ -52,11 +59,21 @@ export class SalesdocsRejectModal {
      * closes the moal without further action
      */
     public save() {
-
-        this.backend.postRequest('module/SalesDocs/'+this.model.id+'/reject',{}, {items: this.itemContainer.getDirtyItems()}).subscribe(res => {
-            this.close();
+        let awaitModal = this.modal.await('LBL_SAVING')
+        this.backend.postRequest('module/SalesDocs/' + this.model.id + '/reject', {}, {items: this.itemContainer.getDirtyItems()}).subscribe({
+            next: (res) => {
+                awaitModal.emit(true)
+                if(res.success) {
+                    this.model.setData(res.data);
+                    this.close();
+                } else {
+                    this.toast.sendToast('LBL_ERROR_SAVING', "error");
+                }
+            }, error: () => {
+                this.toast.sendToast('LBL_ERROR_SAVING', "error");
+                awaitModal.emit(true)
+            }
         })
-        this.close();
     }
 
 }

@@ -9,6 +9,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
@@ -196,7 +197,7 @@ class CampaignTasksController
         $campaignLog = BeanFactory::getBean('CampaignLog');
         $list = $campaignLog->get_list(
             "planned_activity_date DESC",
-            "campaigntask_id = '{$args['id']}' AND IFNULL(planned_activity_date, '$now') <= '$now' AND activity_type NOT IN ('completed','converted', 'maxattempts')",
+            "campaigntask_id = '{$args['id']}' AND target_id<>'' AND target_id IS NOT NULL AND target_type <>'' AND target_type IS NOT NULL AND IFNULL(planned_activity_date, '$now') <= '$now' AND activity_type NOT IN ('completed','converted', 'maxattempts')",
             $getParams['offset'] ?: 0,
             $getParams['limit'] ?: 10,
             $getParams['limit'] ?: -1);
@@ -208,21 +209,22 @@ class CampaignTasksController
         $items = [];
 
         foreach ($list['list'] as $item) {
-            $seed = BeanFactory::getBean($item->target_type, $item->target_id);
-            $items[] = [
-                'campaignlog_id' => $item->id,
-                'campaignlog_activity_type' => $item->activity_type,
-                'campaignlog_activity_date' => $item->activity_date,
-                'campaignlog_related_id' => $item->related_id,
-                'campaignlog_planned_activity_date' => $item->planned_activity_date,
-                'campaignlog_planned_activity_user_id' => $item->planned_activity_user_id,
-                'campaignlog_locked_until' => $item->locked_until,
-                'campaignlog_target_type' => $item->target_type,
-                'campaignlog_hits' => $item->hits,
-                'campaignlog_locked_by_id' => $item->locked_by_id,
-                // tbd
-                'data' => $KRESTModuleHandler->mapBeanToArray($item->target_type, $seed)
-            ];
+            if($seed = BeanFactory::getBean($item->target_type, $item->target_id)){
+                $items[] = [
+                    'campaignlog_id' => $item->id,
+                    'campaignlog_activity_type' => $item->activity_type,
+                    'campaignlog_activity_date' => $item->activity_date,
+                    'campaignlog_related_id' => $item->related_id,
+                    'campaignlog_planned_activity_date' => $item->planned_activity_date,
+                    'campaignlog_planned_activity_user_id' => $this->getPlannedActivityUser($item->planned_activity_date, $item->planned_activity_user_id),
+                    'campaignlog_locked_until' => $item->locked_until,
+                    'campaignlog_target_type' => $item->target_type,
+                    'campaignlog_hits' => $item->hits,
+                    'campaignlog_locked_by_id' => $item->locked_by_id,
+                    // tbd
+                    'data' => $KRESTModuleHandler->mapBeanToArray($item->target_type, $seed)
+                ];
+            }
         }
 
         // get the stats
@@ -230,7 +232,19 @@ class CampaignTasksController
 
         return $res->withJson(['items' => $items, 'row_count' => $list['row_count'], 'stats' => $stats]);
     }
-
+    public function getPlannedActivityUser($plannedActivityDate, $userId){
+        if(!empty($userId)){
+            $reserved = SpiceConfig::getInstance()->get('telesales.reserved_for');
+            $newDate = date('Y-m-d H:i:s', strtotime($plannedActivityDate . +  $reserved. ' hours'));
+            $date = date('Y-m-d H:i:s');
+            if($newDate<$date){
+                return $userId = null;
+            }
+            else {
+                return $userId;
+            }
+        }
+    }
     /**
      * returns the stats for the campaigntask
      *
@@ -366,7 +380,11 @@ class CampaignTasksController
         $emailTemplate->body_html = $params['html'];
         $bean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
 
-        $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
+        $campaignTask = BeanFactory::getBean($args['module'], $args['id']);
+
+        if(!$campaignTask){
+            throw new NotFoundException("record for {$args['module']} with ID {$args['id']} not found");
+        }
 
         # set the current user to the one assigned to the task. fallback set the admin user
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
@@ -515,5 +533,23 @@ class CampaignTasksController
         $campaignTask->deactivate();
 
         return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
+     */
+    public function deleteCampaignTask(Request $req, Response $res, array $args): Response
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $query = "UPDATE campaigntasks ct LEFT JOIN campaign_log cl ON ct.id=cl.campaigntask_id
+        SET cl.deleted = 1, ct.deleted = 1
+        WHERE ct.id = '{$args['campaignTaskId']}'";
+        $db->query($query);
+        return $res->withJson(true);
     }
 }

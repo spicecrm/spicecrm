@@ -304,6 +304,7 @@ export class notification {
                 return `${this.language.getLabel('LBL_CHANGED')} ${n.bean_name} ${this.language.getLabel('LBL_BY')} ${n.created_by_name}`;
             case 'delete':
                 return `${this.language.getLabel('LBL_DELETED')} ${n.bean_name} ${this.language.getLabel('LBL_BY')} ${n.created_by_name}`;
+            case 'generic':
         }
     }
 

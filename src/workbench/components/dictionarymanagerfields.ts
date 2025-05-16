@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Injector
+    Component, Injector, OnDestroy, OnInit
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
@@ -15,30 +15,45 @@ import {language} from '../../services/language.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryDefinition, DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 import {DomainField} from "../interfaces/domainmanager.interfaces";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'dictionary-manager-fields',
     templateUrl: '../templates/dictionarymanagerfields.html',
 })
-export class DictionaryManagerFields {
+export class DictionaryManagerFields implements OnInit, OnDestroy {
 
     /**
      * the curretn dictionaryitem
      */
     public dictionaryitem: DictionaryItem;
+    public dictionaryitems: DictionaryItem[];
 
     public filterterm: string = '';
 
     public filterdbonly: boolean = false;
 
+    private subscription: Subscription = new Subscription();
+
     constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
 
+    }
+
+    public ngOnInit() {
+        this.dictionaryitems = this.buildDictionaryitems();
+        this.subscription = this.dictionarymanager.currentDictionaryFields$.subscribe(
+            () => this.dictionaryitems = this.buildDictionaryitems()
+        );
+    }
+
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 
     /**
      * gets all non deleted entries sorted by name
      */
-    get dictionaryitems(): DictionaryItem[] {
+    public buildDictionaryitems(): DictionaryItem[] {
 
         // return an empty array when no DictionaryDefinition is set
         if (!this.dictionarymanager.currentDictionaryDefinition) return [];
@@ -54,14 +69,14 @@ export class DictionaryManagerFields {
             s.cached = false;
             s.database = false;
 
+
             // get the additonbal domain fields
-            s.addFields = this.getDomainFields(s.sysdomaindefinition_id, false);
-            s.addFields.forEach(a => {
-                // a.name = this.translateDomainField(a.name, s);
+            s.addFields = this.getDomainFields(s.sysdomaindefinition_id, false).map(a => {
                 a.defined = true;
                 a.cached = false;
                 a.database = false;
-            })
+                return a;
+            });
         });
 
         // get the cached fields

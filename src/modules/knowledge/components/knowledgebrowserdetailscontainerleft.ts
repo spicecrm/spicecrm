@@ -1,86 +1,81 @@
 /**
  * @module ModuleKnowledge
  */
-import {Component, HostBinding, Input, SimpleChanges, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, HostBinding, Input, SimpleChanges, ViewContainerRef} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 import {KnowledgeService} from "../services/knowledge.service";
-import {DomSanitizer} from "@angular/platform-browser";
+import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 import {configurationService} from "../../../services/configuration.service";
 import {backend} from "../../../services/backend.service";
-import {lastValueFrom} from "rxjs";
+import {firstValueFrom} from "rxjs";
+import {modelattachments} from "../../../services/modelattachments.service";
+import {helper} from "../../../services/helper.service";
 
 @Component({
     selector: "knowledge-browser-details-container-left",
-    templateUrl: "../templates/knowledgebrowserdetailscontainerleft.html"
+    templateUrl: "../templates/knowledgebrowserdetailscontainerleft.html",
+    providers: [modelattachments]
 })
 export class KnowledgeBrowserDetailsContainerLeft {
 
-    @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) public headerContainer: ViewContainerRef;
     @Input("breadcrumbs") public breadcrumbs: any[] = [];
-    @Input("html") public html: any = '';
+    @Input() public id: string;
     @HostBinding('style') public height: string = '100%';
     private templates: any[] = [];
+    /**
+     * blob url for pdf preview
+     */
+    public blobUrl: SafeUrl;
+    /**
+     * is loading flag
+     */
+    public isLoading: boolean = false;
 
     constructor(public language: language,
                 public model: model,
                 public modal: modal,
                 public sanitizer: DomSanitizer,
                 public configuration: configurationService,
+                private modelattachments: modelattachments,
                 public backend: backend,
+                private helper: helper,
                 public viewContainerRef: ViewContainerRef,
                 public knowledgeService: KnowledgeService) {
     }
 
-    get iframeContainerStyle() {
-        if (this.headerContainer) {
-            let rect = this.headerContainer.element.nativeElement.getBoundingClientRect();
-            return {height: `calc(100vh - ${rect.bottom}px)`, width: "100%"};
-        }
-        return {};
-    }
-
-    get hasContent() {
-        return this.model.getField('description') && this.model.getField('description').length > 0;
-    }
-
     public ngOnChanges(changes: SimpleChanges) {
-        if (changes.html && this.html) {
-            this.setHtmlValue();
+        if (changes.id && !!this.id) {
+            this.loadPdfContent();
         }
     }
 
-    public setHtmlValue() {
-    let regexp = /<code>[\s\S]*?<\/code>/g;
-    let match = regexp.exec(this.html);
-    while (match != null) {
-        this.html = this.html
-            .replace(match, this.encodeHtml(match))
-            .replace('&lt;code&gt;', '<code>')
-            .replace('&lt;/code&gt;', '</code>');
-        match = regexp.exec(this.html);
-    }
-    this.html = this.sanitizer.bypassSecurityTrustHtml(this.html);
-}
-
-    public encodeHtml(value) {
-        return String(value)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;');
+    /**
+     * load the pdf content into a blob url
+     * @private
+     */
+    private loadPdfContent() {
+        this.isLoading = true;
+        this.modelattachments.module = this.model.module;
+        this.modelattachments.id = this.model.id;
+        this.modelattachments.getAttachmentDataByField('file_pdf').subscribe({
+            next: fileData => {
+                fileData.file;
+                const blob = this.helper.b64toBlob(fileData.file, 'application/pdf');
+                this.blobUrl = this.helper.dataToBlobUrl(blob);
+                this.isLoading = false;
+            },
+            error: () => this.isLoading = false
+        });
     }
 
     public navigateTo(id) {
         this.knowledgeService.selectedDoc = id;
     }
 
-    public trackByFn(index, item) {
-        return item.id;
-    }
-
     /**
+     * @deprecated will be replaced with the new document editor print
      * open pdf output modal with the document templates
      */
     public async print() {
@@ -91,7 +86,7 @@ export class KnowledgeBrowserDetailsContainerLeft {
 
             const loadingModal = this.modal.await('LBL_LOADING');
 
-            outputTemplates = await lastValueFrom(this.backend.getRequest('module/OutputTemplates/formodule/' + this.model.module, {})).catch(() => {
+            outputTemplates = await firstValueFrom(this.backend.getRequest('module/OutputTemplates/formodule/' + this.model.module, {})).catch(() => {
                 loadingModal.next(false);
                 loadingModal.complete();
             });

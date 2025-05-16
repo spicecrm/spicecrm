@@ -28,6 +28,8 @@ export class HooksManagerHooksEditModal implements OnInit {
 
     public classMethod: string = '';
 
+
+
     constructor(
         public backend: backend,
         public language: language,
@@ -73,7 +75,7 @@ export class HooksManagerHooksEditModal implements OnInit {
     }
 
     public canSave() {
-        if (!this.newLogicHook.module || !this.newLogicHook.event || !this.newLogicHook.package || !this.newLogicHook.version || !this.classMethod) {
+        if (!this.newLogicHook.module || !this.newLogicHook.event || (this.newLogicHook.type == 'global' && !this.newLogicHook.package) || (this.newLogicHook.type == 'global' && !this.newLogicHook.version) || !this.classMethod) {
             return false;
         }
         return true;
@@ -112,4 +114,5 @@ export class HooksManagerHooksEditModal implements OnInit {
             this.self.destroy();
         }
     }
+
 }

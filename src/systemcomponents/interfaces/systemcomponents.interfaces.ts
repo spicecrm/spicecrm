@@ -44,7 +44,7 @@ export interface SystemTreeConfigI {
     collapsible?: boolean;
 }
 
-export  type GoogleChartTypeOneDimensional = 'Area' | 'SteppedArea' | 'Bar' | 'Column' | 'Line' | 'Pie' | 'Donut';
+export  type GoogleChartTypeOneDimensional = 'Area' | 'SteppedArea' | 'Bar' | 'Column' | 'Line' | 'Pie' | 'Donut' | 'Gauge';
 
 export type GoogleChartTypeMultiDimensional = 'Area' | 'SteppedArea' | 'Bar' | 'Column' | 'Line'; // 'Bubble' | 'Sankey' need different structure
 
@@ -70,6 +70,19 @@ export interface GoogleChartOptionsI {
     is3D?: boolean;
     isStacked?: boolean;
     animation?: any;
+    // for the Gauge
+    greenFrom?:number;
+    greenTo?:number;
+    greenColor?:string;
+    yellowFrom?:number;
+    yellowTo?:number;
+    yellowColor?:string;
+    redFrom?:number;
+    redTo?:number;
+    redColor?:string;
+    minorTicks?: number;
+    max?: number;
+    min?: number;
 }
 
 export interface GoogleChartOptionLegendI {

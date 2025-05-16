@@ -1,0 +1,9 @@
+<div class="slds-size--1-of-1" system-to-bottom>
+    @if(mimeType){
+        <system-object-preview objectContainerHeight="calc(100% - 10px)" [data]="fileData" [type]="mimeType"/>
+    } @else {
+        <div class="slds-box slds-box--border slds-size--1-of-1" style="height: calc(100% - 10px)" [system-overlay-loading-spinner]="loading">
+            loading
+        </div>
+    }
+</div>

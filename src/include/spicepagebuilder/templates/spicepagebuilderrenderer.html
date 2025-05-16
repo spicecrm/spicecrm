@@ -1,4 +1,9 @@
-<div class="slds-grid slds-grid--align-center slds-scrollable--y slds-height_full slds-p-around--large" style="background-color: #ca1b21ea">
-    <spice-page-builder-element-body [body]="body" style="box-shadow: 0 0 8px #666;"></spice-page-builder-element-body>
+<div class="slds-scrollable slds-height_full slds-is-relative slds-p-around--large" style="background-color: #ca1b21ea">
+    <div [style.width]="bodyComponent.style?.width" class="spice-sticky-left slds-p-bottom--xx-small" style="margin: -20px auto 0 auto; padding-left: 0">
+        <button (click)="bodyComponent.edit()" class="slds-button slds-button--icon spice-button-icon-white">
+            <system-button-icon icon="edit"/>
+        </button>
+    </div>
+    <spice-page-builder-element-body #bodyComponent [body]="body" class="slds-height_full spice-display-block" style="box-shadow: 0 0 8px #666; margin: 0 auto"></spice-page-builder-element-body>
 </div>
 

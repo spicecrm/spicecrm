@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\includes\Logger;
 
+use CURLFile;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -43,12 +44,34 @@ class APILogEntryHandler
         $this->startingTime = microtime(true);
 
         $this->logEntry = new \stdClass();
-        $this->logEntry->url = $curlOptions[CURLOPT_URL];
+
+        $url = parse_url($curlOptions[CURLOPT_URL]);
+        parse_str($url['query'], $queryParams);
+        $credentialsString = !$url['user'] && !$url['pass'] ? '' : ((!$url['user'] ? '' : '*****:') . (!$url['pass'] ? '' : '*****') . '@');
+        $this->logEntry->get_params = json_encode($queryParams);
+        $this->logEntry->url = "{$url['scheme']}://$credentialsString{$url['host']}{$url['path']}";
+
         $this->logEntry->method = $this->extractRestMethod($curlOptions);
         $this->logEntry->route = $route; // it is just an arbitrary string for the outgoing requests
         $this->logEntry->ip = $_SERVER['SERVER_ADDR'];
         $this->logEntry->request_headers = self::headerArrayToJson($curlOptions[CURLOPT_HTTPHEADER]);
-        $this->logEntry->request_body = is_array($curlOptions[CURLOPT_POSTFIELDS]) ? json_encode($curlOptions[CURLOPT_POSTFIELDS]) : $curlOptions[CURLOPT_POSTFIELDS];
+
+        // get the post body and add specific handling for instances fo CURLFile reading the file content
+        $postFields = $curlOptions[CURLOPT_POSTFIELDS];
+        if(is_array($postFields)) {
+            $mappedFields = [];
+            foreach ($curlOptions[CURLOPT_POSTFIELDS] as $name => $postField) {
+                if ($postField instanceof CURLFile) {
+                    $mappedFields[$name] = file_get_contents($postField->name);
+                } else {
+                    $mappedFields[$name] = $postField;
+                }
+            }
+            $this->logEntry->request_body = json_encode($mappedFields);
+        } else {
+            $this->logEntry->request_body = $curlOptions[CURLOPT_POSTFIELDS];
+        }
+
         $this->logEntry->date_entered = gmdate('Y-m-d H:i:s');
         $this->logEntry->date_timestamp   = self::getTimestamp();
 

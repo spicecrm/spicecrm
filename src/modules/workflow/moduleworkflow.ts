@@ -63,6 +63,7 @@ import {WorkflowManagerTaskTypesConditionalDecision} from "./components/workflow
 import {
     WorkflowManagerConditionalDecisionTaskConditionsModal
 } from "./components/workflowmanagerconditionaldecisiontaskconditionsmodal";
+import {WorkflowManagerTaskTypesNotification} from "./components/workflowmanagertasktypesnotification";
 
 @NgModule({
     imports: [
@@ -117,7 +118,8 @@ import {
         WorkflowMonitor,
         WorkflowChart,
         WorkflowManagerTaskTypesConditionalDecision,
-        WorkflowManagerConditionalDecisionTaskConditionsModal
+        WorkflowManagerConditionalDecisionTaskConditionsModal,
+        WorkflowManagerTaskTypesNotification
     ]
 })
 export class ModuleWorkflow {

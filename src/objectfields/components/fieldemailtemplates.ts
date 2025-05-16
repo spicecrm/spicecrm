@@ -68,11 +68,8 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
     public ngOnInit() {
 
         let emailTemplates = this.configuration.getData('EmailTemplates');
-        if ( emailTemplates && !this.fieldconfig?.ignoreCache ) {
-            this.availableTemplates = emailTemplates.filter(et => et.type == 'email' && (et.for_bean == '*' || et.for_bean == this.model.getFieldValue('parent_type')));
-            this.availableTemplates.sort((a, b) =>  a.name.localeCompare(b.name));
-            this.isLoaded = true;
-        } else {
+        if ( emailTemplates && !this.fieldconfig?.ignoreCache ) this.filterTemplates( emailTemplates );
+        else {
             let params = {
                 start: 0,
                 limit: 500,
@@ -82,14 +79,27 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
                 (data: any) => {
                     // set the templates
                     this.configuration.setData('EmailTemplates', data.list);
-
-                    // set the templates internally
-                    this.availableTemplates = data.list.filter(et => et.type == 'email' && (et.for_bean == '*' || et.for_bean == this.model.getFieldValue('parent_type')));
-                    this.availableTemplates.sort((a, b) =>  a.name.localeCompare(b.name));
-                    this.isLoaded = true;
+                    this.filterTemplates( data.list );
                 }
             );
         }
+    }
+
+    /**
+     * Filter out the appropriate templates.
+     * @param emailTemplates
+     */
+    public filterTemplates( emailTemplates: any[] )
+    {
+        let allowedEditorTypes = [];
+        if ( this.fieldconfig?.editorTypes ) this.fieldconfig.editorTypes.split(",").every( t => allowedEditorTypes.push( t.trim() ));
+        this.availableTemplates = emailTemplates.filter(
+            et => et.type == 'email'
+                && (et.for_bean == '*' || et.for_bean == this.model.getFieldValue('parent_type'))
+                && ( allowedEditorTypes.length == 0 || !et.editor_type || allowedEditorTypes.includes( et.editor_type ))
+        );
+        this.availableTemplates.sort((a, b) =>  a.name.localeCompare(b.name));
+        this.isLoaded = true;
     }
 
     /**
@@ -101,11 +111,18 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
         if (this.value != '') {
             this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
                 this.backend.getRequest('module/EmailTemplates/' + this.value + '/parse/' + this.model.getFieldValue('parent_type') + '/' + this.model.getFieldValue('parent_id')).subscribe((data: any) => {
-                    // nur überschreiben wenn nicht bereits ein subject angegeben wurde.
+                    // overwrite if no subject or if action confirmed
                     if (!this.model.getField(this.subjectField)) {
                         this.model.setField(this.subjectField, data.subject);
                     }
-
+                    else {
+                        this.modal.confirm('LBL_OVERWRITE_SUBJECT', 'LBL_OVERWRITE_SUBJECT')
+                            .subscribe(answer => {
+                                if (answer) {
+                                    this.model.setField(this.subjectField, data.subject);
+                                }
+                            });
+                    }
                     // create a new document to manage the current html string (body)
                     let virtualDocument = document.implementation.createHTMLDocument("Virtual Document");
                     virtualDocument.documentElement.innerHTML = this.model.getFieldValue(this.bodyField);

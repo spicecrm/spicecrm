@@ -1,0 +1,9 @@
+@if (module) {
+    @if(status == 'q'){
+        <div  class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+            <system-illustration illustration="gonefishing"><system-label label="MSG_IMPORT_SCHEDULED"/></system-illustration>
+        </div>
+    } @else {
+        <spice-imports-view-log [importid]="model.id" [module]="module"/>
+    }
+}

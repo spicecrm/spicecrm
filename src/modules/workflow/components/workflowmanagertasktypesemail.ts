@@ -8,6 +8,7 @@ import {configurationService} from "../../../services/configuration.service";
 import {backend} from "../../../services/backend.service";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {WorkflowManagerService} from "../services/workflowmanager.service";
+import {Router} from "@angular/router";
 
 /**
  * @ignore
@@ -39,11 +40,23 @@ export class WorkflowManagerTaskTypesEmail implements OnInit {
 
     constructor(private metadata: metadata,
                 public model: model,
+                public router: Router,
                 private backend: backend,
                 private userpreferences: userpreferences,
                 public workflowManagerService: WorkflowManagerService,
                 private configuration: configurationService) {
         this.contentOption = this.model.data.emailcontclass && this.model.data.emailcontclass.length > 0 ? 'method' : 'email_template';
+    }
+
+    get distributionList() {
+        return !this.model.data.type_config.distribution_list_id ? null : `${this.model.data.type_config.distribution_list_id}::${this.model.data.type_config.distribution_list_name}`;
+    }
+
+    set distributionList(value: string) {
+        [
+            this.model.data.type_config.distribution_list_id,
+            this.model.data.type_config.distribution_list_name
+        ] = value.split('::');
     }
 
     /**
@@ -106,5 +119,12 @@ export class WorkflowManagerTaskTypesEmail implements OnInit {
      */
     public setEmailTemplate(value: { id, name }) {
         this.model.data.type_config.emailtemplate_id = value.id;
+    }
+
+    /**
+     * navigate to the chosen template
+     */
+    public navigate(): void {
+        this.router.navigate([`/module/EmailTemplates/${this.model.data.type_config.emailtemplate_id}`]);
     }
 }

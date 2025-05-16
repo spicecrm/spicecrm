@@ -75,7 +75,7 @@ $routes = [
         'class'       => SpiceImportsController::class,
         'function'    => 'saveFromImport',
         'description' => 'saves data from an imports',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => false],
+        'options'     => ['validate' => false],
         /*
         'parameters'  => [
             'objectimport' => [
@@ -102,6 +102,18 @@ $routes = [
                 'required'    => true,
                 'description' => 'GUID of the import',
             ],
+            'start' => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC,
+                'required'    => false,
+                'description' => 'the record to start from',
+            ],
+            'limit' => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC,
+                'required'    => false,
+                'description' => 'the number of records to be returned',
+            ]
         ],
     ],
     [

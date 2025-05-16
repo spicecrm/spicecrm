@@ -49,6 +49,9 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainFields;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomains;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidations;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationships;
@@ -461,6 +464,9 @@ class SpiceUIConfLoader
             $this->loadTableRecords($table, $response[$table], $packages);
         }
 
+        SpiceDictionaryDomainValidations::getInstance()->reloadItems();
+        SpiceDictionaryDomainFields::getInstance()->reloadItems();
+        SpiceDictionaryDomains::getInstance()->reloadItems();
         SpiceDictionaryDefinitions::getInstance()->reloadItems();
         SpiceDictionaryItems::getInstance()->reloadItems();
         SpiceDictionaryIndexes::getInstance()->reloadItems();
@@ -483,10 +489,11 @@ class SpiceUIConfLoader
                 }
             }
 
+            SpiceDictionary::getInstance()->loadDictionary();
+
             $this->repairNewRelationships($response['sysdictionarydefinitions']);
         }
 
-        SpiceDictionary::getInstance()->loadDictionary();
         RelationshipFactory::getInstance()->loadRelationships(true);
 
         foreach ($dictionaryTables as $table) {
@@ -505,7 +512,7 @@ class SpiceUIConfLoader
 
             $dic = json_decode(base64_decode($dic), true);
 
-            SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($dic['id']);
+            SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($dic['id'], $dic['package']);
             try {
                 SpiceDictionaryRelationships::repairDictionaryVardefRelationships($dic['id']);
             } catch (\Throwable $exception) {

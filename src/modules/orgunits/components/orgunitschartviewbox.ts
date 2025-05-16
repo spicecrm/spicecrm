@@ -48,6 +48,49 @@ export class OrgunitsChartViewBox implements OnInit,AfterViewInit{
     }
 
     /**
+     * indicates if this is a staff unit
+     */
+    get isStaff(){
+        return this.model.getField('is_staff_unit');
+    }
+
+    /**
+     * sets custom color styles
+     */
+    public colorStyle(withBorder: boolean = false){
+        let styles: any = {};
+
+        if(this.model.getField('color_bg')){
+            styles['background-color'] = this.model.getField('color_bg');
+        }
+
+        if(this.model.getField('color_tx')){
+            styles.color = this.model.getField('color_tx');
+        }
+
+        if(withBorder &&  this.model.getField('color_bd')){
+            styles['border-color'] = this.model.getField('color_bd');
+        }
+
+        return styles;
+    }
+
+    get remarkStyle(){
+        let styles: any = {};
+        if(this.model.getField('color_rm')){
+            styles.color = this.model.getField('color_rm');
+        }
+        return styles;
+    }
+
+    /**
+     * check if the unit has staff units and the reduce the bottom margin
+     */
+    get hasStaff(){
+        return this.oview.orgunits.filter(o => o.parent_id == this.model.id && (o.is_staff_unit != false && o.is_staff_unit != 0)).length > 0;
+    }
+
+    /**
      * after view init communicate the native element
      */
     public ngAfterViewInit() {

@@ -40,16 +40,6 @@ export class KpiTile implements OnInit {
     public kpiColor: any;
 
     /**
-     * color of the trend
-     */
-    public arrowIcon: 'arrowup' | 'arrowdown' | 'sort';
-
-    /**
-     * color of the trend
-     */
-    public iconColor: 'slds-icon-text-success' | 'slds-icon-text-error' | 'slds-icon-text-default';
-
-    /**
      * deviation in percentage
      */
     public percentage: string = '';
@@ -59,12 +49,15 @@ export class KpiTile implements OnInit {
      */
     public now = moment();
 
+    /**
+     * added kpi target values
+     */
+    public addValues: any[] = [];
+
     constructor(
         public model: model,
         public modal: modal,
-        private backend: backend,
-        private toast: toast,
-        private language: language,
+        public backend: backend,
         public injector: Injector
     ) {
     }
@@ -75,8 +68,15 @@ export class KpiTile implements OnInit {
         this.model.id = this.kpiTarget.id;
         this.model.setData(this.kpiTarget, true);
 
+        // get the add values
+        this.getAddValues();
+
         // load the targetvalues
         this.loadKPITargets()
+    }
+
+    get targetAchievement(){
+        return this.kpiTargetValue?.kpi_value ?  Math.round(this.kpiTargetValue.kpi_value / parseFloat(this.kpiTarget.target) * 100) : 0
     }
 
     /**
@@ -88,10 +88,23 @@ export class KpiTile implements OnInit {
             next: (data) => {
                 this.kpiTargetValue = data.kpiTargetValue;
                 this.kpiTrendData = data.kpiTrendData;
+
+                this.addValues.forEach(a => {
+                    switch(a.addKey) {
+                        case 'kpi_target_achievement':
+                            a.kpiValueAdd = this.targetAchievement;
+                            break;
+                        default:
+                            a.kpiValueAdd = data.kpiTargetValue ? data.kpiTargetValue[a.addKey] : 0;
+                            break;
+                    }
+                });
+
                 this.getKPIColor();
                 this.loading = false;
             }, error: () => {
-                this.toast.sendToast(this.language.getLabel('LBL_ERR_LOADING_KPITARGETS'), 'error');
+                // this.toast.sendToast(this.language.getLabel('LBL_ERR_LOADING_KPITARGETS'), 'error');
+                this.kpiTargetValue = undefined;
                 this.loading = false;
             }
         });
@@ -113,6 +126,13 @@ export class KpiTile implements OnInit {
         } else {
             this.kpiColor = 'slds-icon-text-default';
         }
+    }
+
+    /**
+     * returns the display precision
+     */
+    get precision(){
+        return  this.kpiTarget?.kpi?.display_precision ? parseInt(this.kpiTarget.kpi.display_precision, 10) : 0;
     }
 
     get slope(){
@@ -143,6 +163,58 @@ export class KpiTile implements OnInit {
 
     public openHistoryModal(){
         this.modal.openModal('KPIHistoryModal', true, this.injector)
+    }
+
+    /**
+     * check if the current item is the last one
+     */
+    public isLast(index: number): boolean {
+        return index === this.addValues.length - 1;
+    }
+
+    /**
+     * creates an array with values from KPITargetValue
+     */
+    public getAddValues() {
+
+        this.addValues = [];
+
+        // check if we have a target
+        if(this.kpiTarget.target){
+            this.addValues.push({
+                addKey: 'kpi_target_achievement',
+                kpiValueAdd: undefined,
+                valueLabel: 'LBL_KPI_TARGET_ACHIEVEMENT',
+                valueMetric: '%'
+            });
+        }
+
+        // iterate over the range of possible kpi_value_label_? (from 1 to 5)
+        for (let i = 1; i <= 5; i++) {
+            const labelKey = `kpi_value_label_${i}`;
+            const addKey = `kpi_value_add_${i}`;
+            const metricKey = `kpi_value_metric_${i}`;
+            const precisionKey = `kpi_value_precision_${i}`;
+
+            // check if the kpi_value_label_? exists in kpiTarget.kpi
+            if (this.kpiTarget.kpi?.[labelKey]) {
+                this.addValues.push({
+                    addKey: addKey,
+                    kpiValueAdd: this.kpiTargetValue[addKey],
+                    valueLabel: this.kpiTarget.kpi[labelKey],
+                    valueMetric: this.kpiTarget.kpi[metricKey],
+                    valuePrecision: this.kpiTarget.kpi[precisionKey] ?? 0,
+                });
+            }
+        }
+    }
+
+    public addValueClasses(index){
+        let classes = 'slds-size--1-of-' +this.addValues.length;
+
+        if(index > 0) classes += ' slds-border--left'
+
+        return classes;
     }
 
 }

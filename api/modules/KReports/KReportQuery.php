@@ -1314,6 +1314,10 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 $todayDate = date('Y-m-d', time());
                 $thisWhereString .= ' >= \'' . $todayDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' <= \'' . $todayDate . ' 23:59:59\'';
                 break;
+            case 'yesterday':
+                $yesterdayDate = date('Y-m-d', time() - 86400);
+                $thisWhereString .= ' >= \'' . $yesterdayDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' <= \'' . $yesterdayDate . ' 23:59:59\'';
+                break;
             case 'past':
                 $thisWhereString .= ' <= \'' . date('Y-m-d H:i:s', time()) . '\'';
                 break;
@@ -1856,19 +1860,20 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                         }
                     }
                 }
-            } else {
-                if ($this->isGrouped && (\SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'mssql' || \SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'oci8') ) {
-                    if ($this->orderByFieldID)
-                        $this->orderbyString .= 'ORDER BY MIN(sugarRecordId) ASC';
-                    else
-                        $this->orderbyString .= 'ORDER BY MIN(' . $this->rootGuid . '.id) ASC';
-                } else {
-                    if ($this->orderByFieldID)
-                        $this->orderbyString .= 'ORDER BY sugarRecordId ASC';
-                    else
-                        $this->orderbyString .= 'ORDER BY ' . $this->rootGuid . '.id ASC';
-                }
             }
+//            else {
+//                if ($this->isGrouped && (\SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'mssql' || \SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'oci8') ) {
+//                    if ($this->orderByFieldID)
+//                        $this->orderbyString .= 'ORDER BY MIN(sugarRecordId) ASC';
+//                    else
+//                        $this->orderbyString .= 'ORDER BY MIN(' . $this->rootGuid . '.id) ASC';
+//                } else {
+//                    if ($this->orderByFieldID)
+//                        $this->orderbyString .= 'ORDER BY sugarRecordId ASC';
+//                    else
+//                        $this->orderbyString .= 'ORDER BY ' . $this->rootGuid . '.id ASC';
+//                }
+//            }
             //else
             //    $this->orderbyString .= 'ORDER BY sugarRecordId';
         }

@@ -34,6 +34,8 @@ export class fieldTerritory extends fieldGeneric implements OnInit, OnDestroy {
 
     public t: any[] = [];
 
+    public fieldconfig: any;
+
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public elementRef: ElementRef, public renderer: Renderer2, public modal: modal, public territories: territories, public injector: Injector) {
         super(model, view, language, metadata, router);
     }
@@ -46,10 +48,19 @@ export class fieldTerritory extends fieldGeneric implements OnInit, OnDestroy {
 
         // if we have a new model determine a default territory
         if (this.model.isNew) {
-            let searchterritories = this.territories.searchTerritories(this.model.module, '', 2, [], 'create');
+            let searchterritories = this.territories.searchTerritories(this.model.module, '', undefined, [], 'create');
             if (searchterritories.length == 1) {
                 this.value = searchterritories[0].id;
                 this.model.setField(this.fieldname + '_name', searchterritories[0].name);
+            } else if(searchterritories.length > 1 && this.fieldconfig.prompt) {
+                this.modal.prompt('input', undefined, 'LBL_SELECT_TERRITORY', 'shade', searchterritories[0].id, searchterritories.map(t => { return {value: t.id, display: t.name}})).subscribe({
+                    next: (val) => {
+                        if(val) {
+                            this.value = val;
+                            this.model.setField(this.fieldname + '_name', searchterritories.find(t => t.id == val).name);
+                        }
+                    }
+                })
             }
         }
     }

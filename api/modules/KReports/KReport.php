@@ -11,6 +11,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguagesRESTHandler;
+use Throwable;
 
 require_once('modules/KReports/utils.php');
 
@@ -477,8 +478,11 @@ class KReport extends SpiceBean
                             $fieldValue = $returnArray [$fieldID . '_val'];
                         break;
                     case 'multienum' :
+
+                        $returnArray[$fieldID . '_val'] = $fieldValue;
+
                         // do not format if we have a function (Count ... etc ... )
-                        if ($this->fieldNameMap [$fieldID] ['sqlFunction'] == '') {
+                        if (str_contains($fieldValue, '^')) {
                             $fieldArray = preg_split('/\^,\^/', $fieldValue);
                             //bugfix 2010-09-22 if only one value is selected
                             if (is_array($fieldArray) && count($fieldArray) > 1) {
@@ -498,6 +502,7 @@ class KReport extends SpiceBean
                                 $fieldValue = $app_list_strings [$this->kQueryArray->queryArray [(isset($fieldArray ['unionid']) ? $fieldArray ['unionid'] : 'root')] ['kQuery']->fieldNameMap [$fieldID] ['fields_name_map_entry'] ['options']] [trim($fieldValue, '^')];
                             }
                         }
+
                         break;
                 }
             }
@@ -1187,8 +1192,12 @@ $db = DBManagerFactory::getInstance();
 
         if (is_array($this->formulaArray)) {
             foreach ($this->formulaArray as $sequence => $formula) {
-                //2013-03-06 suppress error messages
-                @eval($formula . ';');
+                try {
+                    //2013-03-06 suppress error messages
+                    @eval($formula . ';');
+                } catch (Throwable $e) {
+                    // error in process
+                }
             }
         }
     }

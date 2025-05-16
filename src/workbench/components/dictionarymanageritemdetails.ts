@@ -36,6 +36,11 @@ export class DictionaryManagerItemDetails implements OnInit{
      */
     private backup: string;
 
+    /**
+     * the list of the domains
+     */
+    public domains: any[] = [];
+
     constructor(public dictionarymanager: dictionarymanager,
                 private modal: modal,
                 private backend: backend,
@@ -52,9 +57,22 @@ export class DictionaryManagerItemDetails implements OnInit{
         // create a backup
         this.backup = JSON.stringify(this.dictionaryitem);
 
+        for (let domain of this.dictionarymanager.domaindefinitions) {
+            if(domain.name) {
+                this.domains.push({
+                    id: domain.id,
+                    name: domain.name
+                });
+            }
+        }
+
+        // sort the domain name alphabetically
+        this.domains.sort((a, b) => a.name.localeCompare(b.name) > 0 ? 1 : -1);
+
         // set default values
         this.setItemDefaultValues();
     }
+
 
     /**
      * Will set some default values on specific dictionaryitem properties

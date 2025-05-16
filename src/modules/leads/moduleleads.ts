@@ -25,6 +25,8 @@ import {LeadSelectTypeModal} from './components/leadselecttypemodal';
 import {LeadConvertConsumerModal} from './components/leadconvertconsumermodal';
 
 import {fieldLeadClassification} from './fields/fieldleadclassification';
+import {LeadScanBusinessCardModal} from "./components/leadscanbusinesscardmodal";
+import {LeadScanBusinessCardButton} from "./components/leadscanbusinesscardbutton";
 
 @NgModule({
     imports: [
@@ -49,6 +51,8 @@ import {fieldLeadClassification} from './fields/fieldleadclassification';
         LeadOpenLeadsDashlet,
         LeadConvertOpportunityModal,
         LeadConvertConsumerModal,
+        LeadScanBusinessCardModal,
+        LeadScanBusinessCardButton,
         fieldLeadClassification
     ],
 })

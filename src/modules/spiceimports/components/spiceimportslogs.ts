@@ -14,7 +14,6 @@ import {spiceimportsservice} from '../services/spiceimports.service';
     templateUrl: '../templates/spiceimportslogs.html',
 })
 export class Spiceimportslogs {
-    @ViewChild('logscontainer', {read: ViewContainerRef, static: true}) logscontainer: ViewContainerRef;
 
     itemHeader: Array<any> = undefined;
     activeLogId: string = undefined;
@@ -60,14 +59,6 @@ export class Spiceimportslogs {
                 this.itemHeader = data.fileHeader;
             return true;
         });
-    }
-
-    mainStyle() {
-        let rect = this.logscontainer.element.nativeElement.getBoundingClientRect();
-        return {
-            'height': 'calc(100vh - ' + (rect.top) + 'px)',
-            'overflow': 'auto'
-        }
     }
 
     toggleOpen(id) {

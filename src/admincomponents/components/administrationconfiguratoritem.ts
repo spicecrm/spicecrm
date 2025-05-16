@@ -9,7 +9,7 @@ import {language} from '../../services/language.service';
 import {helper} from '../../services/helper.service';
 import {administrationconfigurator} from '../services/administrationconfigurator.service';
 import {modal} from "../../services/modal.service";
-import {values} from "underscore";
+import {SystemRichTextSourceModal} from "../../systemcomponents/components/systemrichtextsourcemodal";
 
 @Component({
     selector: '[administration-configurator-item]',
@@ -128,5 +128,23 @@ export class AdministrationConfiguratorItem {
                 modalRef.instance.entry = this.entry;
             }
         })
+    }
+
+    /**
+     * open source code edit modal
+     * @param entry
+     * @param fieldName
+     * @param language
+     */
+    public openSourceCodeEditModal(entry, fieldName: string, language: string) {
+        this.modal.openStaticModal(SystemRichTextSourceModal, true, this.injector)
+            .subscribe(componentRef => {
+                componentRef.instance.sourceCode = entry.data[fieldName];
+                componentRef.instance.codeLanguage = language;
+                componentRef.instance.showPreview = false;
+                componentRef.instance.sourceCode$.subscribe(sourceCode => {
+                    entry.data[fieldName] = sourceCode;
+                });
+            });
     }
 }

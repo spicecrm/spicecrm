@@ -51,6 +51,7 @@ import {SystemGooglePlacesAutocomplete} from "./components/systemgoogleplacesaut
 import {SystemGooglePlacesSearch} from "./components/systemgoogleplacessearch";
 import {SystemIcon} from "./components/systemicon";
 import {SystemFileIcon} from "./components/systemfileicon";
+import {SystemIllustration} from "./components/systemillustration";
 import {SystemIllustrationNoAccess} from "./components/systemillustrationnoaccess";
 import {SystemIllustrationNoData} from "./components/systemillustrationnodata";
 import {SystemIllustrationNoRecords} from "./components/systemillustrationnorecords";
@@ -195,6 +196,7 @@ import {SystemChartDataRow} from "./components/systemchartdatarow";
 import {SystemSelectOption} from "./components/systemselectoption";
 import {SystemChartMultiDimensional} from "./components/systemchartmultidimensional";
 import {SystemChartDataColumn} from "./components/systemchartdatacolumn";
+import {SystemChartGauge} from "./components/systemchartgauge";
 import {SystemRichTextEditorMentionDropdown} from "./components/systemrichtexteditormentiondropdown";
 import {SystemProgressIndicator} from "./components/systemprogressindicator";
 import {SystemProgressIndicatorItem} from "./components/systemprogressindicatoritem";
@@ -205,6 +207,8 @@ import {SystemDropdownMobileModal} from "./components/systemdropdownmobilemodal"
 import {CdkPortalOutlet} from "@angular/cdk/portal";
 import {SystemInputPackage} from "./components/systeminputpackage";
 import {SystemInputVersion} from "./components/systeminputversion";
+import {SystemSourceEditor} from "./components/systemsourceeditor";
+
 
 @NgModule({
     imports: [
@@ -256,6 +260,7 @@ import {SystemInputVersion} from "./components/systeminputversion";
         SystemIcon,
         SystemFileIcon,
         SystemIframeModal,
+        SystemIllustration,
         SystemIllustrationNoAccess,
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
@@ -389,6 +394,7 @@ import {SystemInputVersion} from "./components/systeminputversion";
         SystemChartDataRow,
         SystemChartDataColumn,
         SystemChartMultiDimensional,
+        SystemChartGauge,
         SystemSelectOption,
         SystemRichTextEditorMentionDropdown,
         SystemProgressIndicator,
@@ -397,7 +403,8 @@ import {SystemInputVersion} from "./components/systeminputversion";
         SystemInputDictionary,
         SystemInputRoles,
         SystemSelectModuleModal,
-        SystemDropdownMobileModal
+        SystemDropdownMobileModal,
+        SystemSourceEditor
     ],
     exports: [
         PaginationControlsComponent,
@@ -566,7 +573,10 @@ import {SystemInputVersion} from "./components/systeminputversion";
         SystemSelectModuleModal,
         SystemDropdownMobileModal,
         SystemInputPackage,
-        SystemInputVersion
+        SystemInputVersion,
+        SystemIllustration,
+        SystemChartGauge,
+        SystemSourceEditor
     ]
 })
 export class SystemComponents {}

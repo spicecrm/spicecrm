@@ -47,6 +47,10 @@ export class ObjectModalModuleLookupHeader {
      */
     public searchTimeOut: any = undefined;
 
+    /**
+     * an input if the show selected button is clicked so there are no filter options displayed
+     */
+    @Input() showSelected: boolean = false;
 
     /**
      * a guid to kill the autocomplete

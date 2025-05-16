@@ -1,0 +1,17 @@
+<div class="slds-box slds-box--border slds-m-bottom--x-small">
+    <div class="slds-p-around--x-small slds-text-align--center slds-theme--shade slds-truncate">
+        <field-container field="name" [fieldconfig]="{link: true}" fielddisplayclass="slds-p-verical--small"/>
+    </div>
+    @if (processes.length == 0) {
+        <div class="slds-p-around--medium slds-align--absolute-center">
+            <system-illustration-no-records/>
+        </div>
+    } @else {
+        @for (process of processes; track process.id) {
+            <process-management-process-process [process]="process"/>
+        }
+    }
+    <div class="slds-p-around--x-small slds-text-align--center slds-border--top">
+        <process-management-add-process-button [processGroup]="processGroup" (added)="getProcesses()"/>
+    </div>
+</div>

@@ -35,6 +35,7 @@ import {ACLUserProfiles} from "./components/acluserprofiles";
 
 import {fieldACLAdditionalUsers} from "./components/fieldacladditionalusers";
 import { ACLUsersFilterPipe } from './pipes/aclusersfilter.pipe';
+import {ACLObjectsManagerObjectFieldsAdd} from "./components/aclobjectsmanagerobjectfieldsadd";
 
 @NgModule({
     imports: [
@@ -61,6 +62,7 @@ import { ACLUsersFilterPipe } from './pipes/aclusersfilter.pipe';
         ACLObjectsManagerObjectDetails,
         ACLObjectsManagerObjectFieldvalues,
         ACLObjectsManagerObjectFields,
+        ACLObjectsManagerObjectFieldsAdd,
         ACLProfilesManager,
         ACLProfilesManagerProfiles,
         ACLProfilesManagerProfile,

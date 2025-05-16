@@ -2,7 +2,7 @@
     <system-modal-header (close)="close()"><system-label label="LBL_SCAN_RECEIPT"/></system-modal-header>
     <system-modal-content margin="none" system-modal-content-grow >
         <div class="slds-height_full" #modalcontent>
-            <system-input-media *ngIf="height > 0" [(ngModel)]="receipt" [showToolBars]="false" [componentHeight]="height"></system-input-media>
+            <system-input-media *ngIf="height > 0" [(ngModel)]="receipt" maxSize="1000" system-input-media-imagequality="0.9" [componentHeight]="height"></system-input-media>
         </div>
     </system-modal-content>
     <system-modal-footer>

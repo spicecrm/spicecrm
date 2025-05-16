@@ -27,6 +27,9 @@ export class SalesDocsItemHeader {
         // set to short labels
         this.view.labels = "short";
 
+        // align the labels according to the type
+        this.view.alignLabels = true;
+
         // determine the list fieldset
         let config = this.metadata.getComponentConfig('SalesDocsItemsContainer', 'SalesDocItems');
         if (config.fieldset) {

@@ -13,13 +13,13 @@ import {ColumnI, PanelElementI} from "../interfaces/spicepagebuilder.interfaces"
 @Component({
     selector: 'spice-page-builder-element-column',
     templateUrl: '../templates/spicepagebuilderelementcolumn.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
     /**
      * containers to be rendered
      */
-    @Input() public readonly column: ColumnI;
+    @Input() public column: ColumnI;
     /**
      * holds the drag entered value
      */
@@ -65,21 +65,27 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
         return item.data.tagName != 'section';
     }
 
+    get displayStyle(){
+        this.generateStyle();
+        return this.style;
+    }
+
     /**
      * generate body style object
      */
     public generateStyle() {
-        this.style = {
-            'background-color': this.column.attributes['background-color'],
-            'border': this.column.attributes.border,
-            'border-top': this.column.attributes['border-top'],
-            'border-right': this.column.attributes['border-right'],
-            'border-bottom': this.column.attributes['border-bottom'],
-            'border-left': this.column.attributes['border-left'],
-            'border-radius': this.column.attributes['border-radius'],
-            'vertical-align': this.column.attributes['vertical-align'],
-            'padding': this.column.attributes.padding,
-        };
+        this.style = {};
+        if(this.column.attributes['background-color']) this.style['background-color'] = this.column.attributes['background-color'];
+        if(this.column.attributes['inner-background-color']) this.style['background-color'] = this.column.attributes['inner-background-color'];
+        if(this.column.attributes['border']) this.style['border'] = this.column.attributes['border'];
+        if(this.column.attributes['border-top']) this.style['border-top'] = this.column.attributes['border-top'];
+        if(this.column.attributes['border-right']) this.style['border-right'] = this.column.attributes['border-right'];
+        if(this.column.attributes['border-bottom']) this.style['border-bottom'] = this.column.attributes['border-bottom'];
+        if(this.column.attributes['border-left']) this.style['border-left'] = this.column.attributes['border-left'];
+        // border radius is not supported on the table element
+        // if(this.column.attributes['border-radius']) this.style['border-radius'] = this.column.attributes['border-radius'];
+        if(this.column.attributes['vertical-align']) this.style['vertical-align'] = this.column.attributes['vertical-align'];
+        if(this.column.attributes['padding']) this.style['padding'] = this.column.attributes['padding'];
     }
 
     /**
@@ -100,6 +106,8 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
                 event.previousContainer.data.children = event.previousContainer.data.children.filter(item => item != event.item.data);
             }
 
+            this.spicePageBuilderService.isMouseIn = undefined;
+
             switch (event.item.data.tagName) {
                 case 'image':
                     this.spicePageBuilderService.openMediaFilePicker().subscribe(src => {
@@ -111,8 +119,29 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
                                 event.currentIndex, 0, image
                             );
                             this.cdRef.detectChanges();
+                            this.spicePageBuilderService.emitData();
                         }
                     });
+                    break;
+                case 'social':
+
+                    const social: PanelElementI = JSON.parse(JSON.stringify(event.item.data));
+
+                    if (event.item.data.children.length > 1) {
+                        this.column.children.splice(
+                            event.currentIndex, 0, social
+                        );
+                        this.cdRef.detectChanges();
+                        this.spicePageBuilderService.emitData();
+                    } else {
+                        this.spicePageBuilderService.openEditModal(social).subscribe(socialRes => {
+                            this.column.children.splice(
+                                event.currentIndex, 0, socialRes
+                            );
+                            this.cdRef.detectChanges();
+                            this.spicePageBuilderService.emitData();
+                        });
+                    }
                     break;
                 default:
                     const element: PanelElementI = JSON.parse(JSON.stringify(event.item.data));
@@ -121,12 +150,12 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
                     this.column.children.splice(
                         event.currentIndex, 0, element
                     );
+                    this.spicePageBuilderService.emitData();
             }
         } else {
             moveItemInArray(this.column.children, event.previousIndex, event.currentIndex);
+            this.spicePageBuilderService.emitData();
         }
-
-        this.spicePageBuilderService.emitData();
 
         this.dragEntered = false;
     }

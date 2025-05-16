@@ -100,6 +100,9 @@ class PackageController {
 
     public function loadPackage(Request $req, Response $res, array $args): Response {
         $this->checkAdmin();
+        // set a max time limit longer here
+        set_time_limit(300);
+        // load the package
         $confloader = new SpiceUIConfLoader($this->getRepoUrl($args['repository']));
         $result = ['response' => $confloader->loadPackage($args['package'], '*')];
         SpiceModules::getInstance()->loadModules(true);

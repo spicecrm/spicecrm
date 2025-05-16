@@ -1,0 +1,14 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid" [fieldname]="fieldname">
+    <div class="slds-p-horizontal--small slds-text-align--center" style="border-radius: 10px;" [ngClass]="badgeClass">{{getValue()}}</div>
+</field-generic-display>
+<div *ngIf="isEditMode()" class="slds-form-element">
+    <div class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="getFieldClass()">
+        <system-select system-select-id-only [(ngModel)]="value">
+            @for (o of options; track o.value) {
+                <system-select-option [value]="o.value" [display]="o.display" [inactive]="o.status == 'i'"/>
+            }
+        </system-select>
+        <field-messages [fieldname]="fieldname"></field-messages>
+    </div>
+</div>

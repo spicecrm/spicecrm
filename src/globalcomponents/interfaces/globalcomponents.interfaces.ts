@@ -12,6 +12,7 @@ export interface Auth2ServiceConfigI {
     userinfo_endpoint: string;
     login_url: string;
     client_secret?: string;
+    with_login_hint?: boolean;
 }
 /**
  * reflects authentication_services vardefs

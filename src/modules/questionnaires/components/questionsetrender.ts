@@ -11,7 +11,7 @@ import { language } from '../../../services/language.service';
  */
 declare var _: any;
 
-@Component( {
+@Component({
     selector: 'questionset-render',
     templateUrl: '../templates/questionsetrender.html',
     styles: [

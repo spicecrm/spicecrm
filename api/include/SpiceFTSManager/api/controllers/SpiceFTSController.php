@@ -4,8 +4,10 @@
 namespace SpiceCRM\includes\SpiceFTSManager\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\modules\SystemTenants\SystemTenant;
 
 class SpiceFTSController
 {
@@ -19,6 +21,10 @@ class SpiceFTSController
      */
     public function getStatus(Request $req, Response $res, array $args): Response
     {
+        if (SystemTenant::isInTenantSystem()) {
+            throw new ForbiddenException("The fts apis are only accessible for the master system");
+        }
+
         return $res->withJson(['version' => SpiceFTSHandler::getInstance()->getStatus(), 'stats' => SpiceFTSHandler::getInstance()->getStats(), 'settings' => SpiceFTSHandler::getInstance()->getSettings()]);
     }
 
@@ -31,6 +37,9 @@ class SpiceFTSController
      */
     public function getStats(Request $req, Response $res, array $args): Response
     {
+        if (SystemTenant::isInTenantSystem()) {
+            throw new ForbiddenException("The fts apis are only accessible for the master system");
+        }
 
         return $res->withJson(SpiceFTSHandler::getInstance()->getStats());
     }
@@ -45,6 +54,9 @@ class SpiceFTSController
      */
     public function unblock(Request $req, Response $res, array $args): Response
     {
+        if (SystemTenant::isInTenantSystem()) {
+            throw new ForbiddenException("The fts apis are only accessible for the master system");
+        }
 
         return $res->withJson(SpiceFTSHandler::getInstance()->unblock());
     }
@@ -58,6 +70,10 @@ class SpiceFTSController
      */
     public function getFTSModuleFields(Request $req, Response $res, array $args): Response
     {
+        if (SystemTenant::isInTenantSystem()) {
+            throw new ForbiddenException("The fts apis are only accessible for the master system");
+        }
+
         return $res->withJson(SpiceFTSHandler::getInstance()->getFTSModuleFields($args['module']));
     }
 

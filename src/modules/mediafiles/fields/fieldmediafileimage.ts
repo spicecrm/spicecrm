@@ -18,7 +18,7 @@ import { fieldGeneric } from '../../../objectfields/components/fieldgeneric';
 import { mediafiles } from '../../../services/mediafiles.service';
 import { backend } from '../../../services/backend.service';
 
-@Component( {
+@Component({
     selector: 'field-media-file-image',
     templateUrl: '../templates/fieldmediafileimage.html',
     providers: [ mediafiles ],

@@ -17,6 +17,8 @@ export class TeleSalesCockpitLogCallButton {
 
     public parent: any = undefined;
 
+    public actionconfig: any = {};
+
     constructor(public language: language,
                 public telecockpitservice: telecockpitservice,
                 public model: model,
@@ -49,7 +51,13 @@ export class TeleSalesCockpitLogCallButton {
             }
         });
     }
+    get displayLabel() {
+        // see if we have a label configured
+        if (this.actionconfig.label) return this.actionconfig.label;
 
+        // else standard labels
+        return 'LBL_LOG_CALL';
+    }
     public updateItem() {
         let item = this.telecockpitservice.selectedListItem;
         item.hits++;

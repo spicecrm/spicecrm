@@ -21,7 +21,7 @@ export class SystemTenantActivateButton {
     }
 
     get disabled() {
-        return this.model.getField('initialized') == 1
+        return this.model.data.systemtenant_status == 'provisioned' || this.model.data.systemtenant_status == 'rejected';
     }
 
     public execute() {

@@ -8,6 +8,7 @@ import {Subject} from 'rxjs';
 import {backend} from "../../../services/backend.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {toast} from "../../../services/toast.service";
+import {modal} from "../../../services/modal.service";
 
 /**
  * a helper service for the workflow handler
@@ -26,6 +27,7 @@ export class workflow {
 
     constructor(public backend: backend,
                 private toast: toast,
+                private modal: modal,
                 public broadcast: broadcast) {
     }
 
@@ -171,6 +173,7 @@ export class workflow {
 
         this.processing = definitionId;
 
+        let awaitModal = this.modal.await('LBL_PROCESSING');
         this.backend.postRequest(`module/WorkflowDefinitions/${definitionId}/processWorkflow/${this.id}`).subscribe({
             next: res => {
                 this.processing = undefined;
@@ -181,10 +184,12 @@ export class workflow {
                 } else {
                     this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                 }
+                awaitModal.emit(true);
             },
             error: () => {
                 this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                 this.processing = undefined;
+                awaitModal.emit(true);
             }
         });
     }

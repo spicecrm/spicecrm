@@ -25,6 +25,7 @@ import {KnowledgeManagerAddModal} from "./components/knowledgemanageraddmodal";
 import {KnowledgeManager} from "./components/knowledgemanager";
 import {KnowledgeContainer} from "./components/knowledgecontainer";
 import {KnowledgeReleaseAllButton} from "./components/knowledgereleaseallbutton";
+import {DirectivesModule} from "../../directives/directives";
 
 @NgModule({
     imports: [
@@ -33,7 +34,8 @@ import {KnowledgeReleaseAllButton} from "./components/knowledgereleaseallbutton"
         ObjectFields,
         GlobalComponents,
         ObjectComponents,
-        SystemComponents
+        SystemComponents,
+        DirectivesModule
     ],
     declarations: [
         KnowledgeContainer,

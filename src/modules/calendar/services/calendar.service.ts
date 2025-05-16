@@ -10,10 +10,11 @@ import {userpreferences} from "../../../services/userpreferences.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {modal} from "../../../services/modal.service";
 import {language} from "../../../services/language.service";
-import {map, take} from "rxjs/operators";
+import {take} from "rxjs/operators";
 import {CdkDragEnd} from "@angular/cdk/drag-drop";
 import {configurationService} from "../../../services/configuration.service";
 import {metadata} from "../../../services/metadata.service";
+import {MomentService} from "../../../services/moment.service";
 
 
 /**
@@ -31,6 +32,10 @@ declare var _: any;
  */
 @Injectable()
 export class calendar implements OnDestroy {
+    /**
+     * reference id will be sent with each backend request to enable canceling the pending requests
+     */
+    public httpRequestsRefID: string = window._.uniqueId('calendar_http_ref_');
     /**
      * emits when a user calendar is refactored
      */
@@ -199,6 +204,7 @@ export class calendar implements OnDestroy {
                 public metadata: metadata,
                 public cdRef: ChangeDetectorRef,
                 @Optional() @Inject('calendarConfigOverride') private calendarConfigOverride: {isDashlet?: boolean, sheetType?: 'Day' | 'Three_Days' | 'Week' | 'Month' | 'Schedule', sheetHourHeight?: number},
+                private momentService: MomentService,
                 public userPreferences: userpreferences) {
         this.loadOverrideConfig();
         this.loadCalendarModules();
@@ -237,7 +243,7 @@ export class calendar implements OnDestroy {
      * @param value: moment
      */
     set calendarDate(value) {
-        this._calendarDate = new moment(value).locale(this.language.currentlanguage.substring(0, 2));
+        this._calendarDate = new moment(value);
         this.session.setSessionData('calendarDate', this._calendarDate);
     }
 
@@ -373,7 +379,9 @@ export class calendar implements OnDestroy {
         const calendar = this.availableCalendars.find(c => c.id == calendarId);
         const userCalendar = this.usersCalendars.find(c => c.id == userId);
 
+
         if (forceReload || this.doReload(start, end, calendarId)) {
+            this.backend.cancelPendingRequests([this.httpRequestsRefID + '_load_events']);
             this.isLoading = true;
             this.cdRef.detectChanges();
             let responseSubject = new Subject<any[]>();
@@ -382,15 +390,14 @@ export class calendar implements OnDestroy {
             this.currentEnd[calendarId] = end;
             this.currentStart[calendarId] = start;
 
-            this.backend.getRequest(`module/Calendar/${calendarId}/user/${userId}`, params)
+            this.backend.getRequest(`module/Calendar/${calendarId}/user/${userId}`, params, this.httpRequestsRefID + '_load_events')
                 .subscribe({
                     next: events => {
                         this.calendarData[calendarId] = [];
 
                         for (let event of events) {
 
-                            if ((userId == this.owner && !!event.data.external_id && !!this.calendarData.google && this.calendarData.google.some(e => e.id == event.data.external_id)) ||
-                                (calendarId == 'owner' && this.userModules.some(calendar => calendar.name == event.module && !calendar.visible))) {
+                            if ((calendarId == 'owner' && this.userModules.some(calendar => calendar.name == event.module && !calendar.visible))) {
                                 continue;
                             }
 
@@ -460,6 +467,19 @@ export class calendar implements OnDestroy {
     }
 
     /**
+     * check if the groupware event is synced to crm
+     * @param externalId
+     * @private
+     */
+    private isGroupwareEventSynced(externalId: string) {
+        if (!this.calendarData.owner) return false;
+        if (!this.availableCalendars.some(c => c.id == 'owner' && c.visible)){
+            return false;
+        }
+        return this.calendarData.owner.some(e => e.data.external_id == externalId);
+    }
+
+    /**
      * load events for the active groupware service
      * @param startDate
      * @param endDate
@@ -484,6 +504,7 @@ export class calendar implements OnDestroy {
     public loadGoogleEvents(startDate, endDate) {
 
         if (this.doReload(startDate, endDate, "google")) {
+            this.backend.cancelPendingRequests([this.httpRequestsRefID + '_load_google_events']);
             this.isLoading = true;
             this.cdRef.detectChanges();
             let responseSubject = new Subject<any[]>();
@@ -493,11 +514,10 @@ export class calendar implements OnDestroy {
             this.currentEnd.google = endDate;
             this.currentStart.google = startDate;
 
-            this.backend.getRequest("channels/groupware/gsuite/calendar/events", params)
+            this.backend.getRequest("channels/groupware/gsuite/calendar/events", params, this.httpRequestsRefID + '_load_google_events')
                 .subscribe(res => {
                     if (res.events && res.events.length > 0) {
                         for (let event of res.events) {
-                            if (!!this.calendarData['owner'] && this.calendarData['owner'].some(e => e.data.external_id == event.id)) continue;
 
                             event.start = moment(moment(event.start.dateTime ?? event.start.date)
                                 .format(!event.start.dateTime && !!event.start.date ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:00'));
@@ -513,14 +533,16 @@ export class calendar implements OnDestroy {
                     }
                     this.isLoading = false;
                     this.cdRef.detectChanges();
-                    responseSubject.next(this.calendarData.google);
+                    responseSubject.next(
+                        this.calendarData.google.filter(e => !this.isGroupwareEventSynced(e.id))
+                    );
                     responseSubject.complete();
                 });
             return responseSubject.asObservable();
         } else {
             let filteredEntries = [];
             for (let event of this.calendarData.google) {
-                if (event.start < endDate && event.end > startDate) {
+                if (event.start < endDate && event.end > startDate && !this.isGroupwareEventSynced(event.id)) {
                     filteredEntries.push(event);
                 }
             }
@@ -537,21 +559,21 @@ export class calendar implements OnDestroy {
     public loadMicrosoftEvents(startDate, endDate) {
 
         if (this.doReload(startDate, endDate, "microsoft")) {
+            this.backend.cancelPendingRequests([this.httpRequestsRefID + '_load_microsoft_events']);
             this.isLoading = true;
             this.cdRef.detectChanges();
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
-            let params = {startdate: startDate.format(format), enddate: endDate.format(format), searchTerm: this.searchTerm};
+            let params = {startdate: moment(startDate).startOf('day').format(format), enddate: moment(endDate).endOf('day').format(format), searchTerm: this.searchTerm};
             this.calendarData.microsoft = [];
             this.currentEnd.microsoft = endDate;
             this.currentStart.microsoft = startDate;
 
-            this.backend.getRequest(`channels/groupware/microsoft/calendar/events/${this.owner}`, params)
+            this.backend.getRequest(`channels/groupware/microsoft/calendar/events/${this.owner}`, params, this.httpRequestsRefID + '_load_microsoft_events')
                 .subscribe({
                     next: res => {
                         if (res.events && res.events.length > 0) {
                             for (let event of res.events) {
-                                if (!!this.calendarData['owner'] && this.calendarData['owner'].some(e => e.data.external_id == event.id)) continue;
 
                                 event.start = moment(moment.utc(event.start.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:00'));
                                 event.end = moment(moment.utc(event.end.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:00'));
@@ -565,7 +587,9 @@ export class calendar implements OnDestroy {
                         }
                         this.isLoading = false;
                         this.cdRef.detectChanges();
-                        responseSubject.next(this.calendarData.microsoft);
+                        responseSubject.next(
+                            this.calendarData.microsoft.filter(e => !this.isGroupwareEventSynced(e.id))
+                        );
                         responseSubject.complete();
                     },
                     error: err => {
@@ -580,7 +604,7 @@ export class calendar implements OnDestroy {
         } else {
             let filteredEntries = [];
             for (let event of this.calendarData.microsoft) {
-                if (event.start < endDate && event.end > startDate) {
+                if (event.start < endDate && event.end > startDate && !this.isGroupwareEventSynced(event.id)) {
                     filteredEntries.push(event);
                 }
             }
@@ -699,7 +723,7 @@ export class calendar implements OnDestroy {
         this.usersCalendars = calendars;
 
         if (save) {
-            this.userPreferences.setPreference("users", this.usersCalendars, true, "Calendar");
+            this.userPreferences.setPreference("Users", this.usersCalendars, true, "Calendar");
         }
     }
 
@@ -1002,6 +1026,17 @@ export class calendar implements OnDestroy {
      * load calendar preferences from the user preferences and save changes in calendar
      */
     public getCalendarPreferences() {
+
+        const groupwareDisabled = this.metadata.getComponentConfig('Calendar').groupwareDisabled;
+
+        if (!groupwareDisabled && (this.session.authData.googleToken || (this.configuration.checkCapability('google_oauth') && this.configuration.getCapabilityConfig('google_oauth').serviceaccess))) {
+            this.activeGroupware = 'google';
+        }
+
+        if (!groupwareDisabled && this.configuration.getCapabilityConfig('msgraphconfig').isActive) {
+            this.activeGroupware = 'microsoft';
+        }
+
         if (this.isMobileView || this.isDashlet) return;
 
         this.userPreferences.loadPreferences("Calendar")
@@ -1015,16 +1050,6 @@ export class calendar implements OnDestroy {
                 }
                 this.userPreferencesLoaded = true;
             });
-
-        const groupwareDisabled = this.metadata.getComponentConfig('Calendar').groupwareDisabled;
-
-        if (!groupwareDisabled && (this.session.authData.googleToken || (this.configuration.checkCapability('google_oauth') && this.configuration.getCapabilityConfig('google_oauth').serviceaccess))) {
-            this.activeGroupware = 'google';
-        }
-
-        if (!groupwareDisabled && this.configuration.getCapabilityConfig('msgraphconfig').isActive) {
-            this.activeGroupware = 'microsoft';
-        }
     }
 
     /**
@@ -1043,28 +1068,13 @@ export class calendar implements OnDestroy {
         this._calendarDate = moment(date ? date : this._calendarDate);
     }
 
-
-    /*
-     * will return the full translation for a week day according to current language
-     * @param dayIndex: number
-     * @return weekdayLong: string
-     */
-    public weekdayLong(dayIndex) {
-        let lang = this.language.currentlanguage.substring(0, 2);
-        moment.locale(lang);
-        return moment.weekdays(dayIndex);
-    }
-
-
     /*
      * will return the short translation for a week day according to current language
      * @param dayIndex: number
      * @return weekdayLong: string
      */
     public weekdayShort(dayIndex) {
-        let lang = this.language.currentlanguage.substring(0, 2);
-        moment.locale(lang);
-        return moment.weekdaysShort(dayIndex);
+        return this.momentService.weekdaysShort()[dayIndex];
     }
 
     /*
@@ -1073,8 +1083,6 @@ export class calendar implements OnDestroy {
      * @return weekdayLong: string
      */
     public monthShort(monthIndex) {
-        let lang = this.language.currentlanguage.substring(0, 2);
-        moment.locale(lang);
         return moment.monthsShort('-MMM-', monthIndex);
     }
 }

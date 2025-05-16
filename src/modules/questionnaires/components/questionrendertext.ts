@@ -6,7 +6,7 @@ import { questionnaireParticipationService } from '../services/questionnairepart
 import { QuestionRenderBasic } from './questionrenderbasic';
 import { userpreferences} from '../../../services/userpreferences.service';
 
-@Component( {
+@Component({
     selector: 'question-render-text',
     templateUrl: '../templates/questionrendertext.html',
     styles: [

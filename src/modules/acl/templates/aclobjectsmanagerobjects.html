@@ -1,20 +1,25 @@
 <div style="height: 100%;">
     <div #header class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
         <div class="slds-form-element__control slds-size--1-of-3 slds-p-right--xx-small">
-            <div class="slds-select_container">
+            <!--div class="slds-select_container">
                 <select class="slds-select" [(ngModel)]="activeTypeId" (change)="selectType($event)" [disabled]="acltypes.length == 0">
                     <ng-container *ngFor="let acltype of acltypes">
                         <option [value]="acltype.id">{{acltype.module}}</option>
                     </ng-container>
                 </select>
-            </div>
+            </div-->
+            @if(aclobjectsmanager.aclModules.length > 0) {
+                <system-input-module [(ngModel)]="module" [filterModules]="aclobjectsmanager.aclModules"/>
+            } @else {
+                <system-input-text disabled/>
+            }
         </div>
-        <input [disabled]="!activeTypeId" class="slds-input" type="text" [(ngModel)]="searchterm" (keyup)="keyUp($event)"/>
+        <input [disabled]="!aclobjectsmanager.activeTypeId" class="slds-input" type="text" [(ngModel)]="searchterm" (keyup)="keyUp($event)"/>
         <div class="slds-p-left--xx-small">
-            <button class="slds-button slds-button--icon-border" [disabled]="!activeTypeId" (click)="addObject()"><system-button-icon icon="new"></system-button-icon></button>
+            <button class="slds-button slds-button--icon-border" [disabled]="!aclobjectsmanager.activeTypeId" (click)="addObject()"><system-button-icon icon="new"></system-button-icon></button>
         </div>
         <div class="slds-p-left--xx-small">
-            <button class="slds-button slds-button--icon-border" [disabled]="!activeTypeId || aclobjects.length > 0" (click)="addDefaultObjects()"><system-button-icon icon="insert_template"></system-button-icon></button>
+            <button class="slds-button slds-button--icon-border" [disabled]="!aclobjectsmanager.activeTypeId || aclobjectsmanager.aclobjects.length > 0" (click)="addDefaultObjects()"><system-button-icon icon="insert_template"></system-button-icon></button>
         </div>
     </div>
     <div class="slds-scrollable" [ngStyle]="contentStyle">
@@ -38,7 +43,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let aclobject of aclobjects" (click)="selectObject(aclobject)" [ngClass]="{'slds-theme--shade': aclobject.id == activeObjectId}">
+                <tr *ngFor="let aclobject of aclobjectsmanager.aclobjects" (click)="selectObject(aclobject)" [ngClass]="{'slds-theme--shade': aclobject.id == aclobjectsmanager.activeObjectId}">
                     <td>
                         <div class="slds-truncate">{{aclobject.name}}</div>
                     </td>
@@ -50,8 +55,8 @@
                     </td>
                     <td style="width: 3rem;">
                         <div class="slds-grid">
-                            <system-utility-icon *ngIf="aclobject.status == 'r'" icon="light_bulb" size="x-small" colorclass="slds-icon-text-success" (click)="deactivateObject(aclobject.id)"></system-utility-icon>
-                            <system-utility-icon *ngIf="aclobject.status != 'r'" icon="light_bulb" size="x-small" colorclass="slds-icon-text-light" (click)="activateObject(aclobject.id)"></system-utility-icon>
+                            <system-utility-icon *ngIf="aclobject.status == 'r'" icon="light_bulb" size="x-small" colorclass="slds-icon-text-success" (click)="aclobjectsmanager.deactivateObject(aclobject.id)"></system-utility-icon>
+                            <system-utility-icon *ngIf="aclobject.status != 'r'" icon="light_bulb" size="x-small" colorclass="slds-icon-text-light" (click)="aclobjectsmanager.activateObject(aclobject.id)"></system-utility-icon>
                             <system-utility-icon [ngClass]="{'slds-hidden': !aclobject.description}" icon="info_alt" size="x-small"></system-utility-icon>
                             <system-utility-icon *ngIf="aclobject.customSQL" icon="database" size="x-small"></system-utility-icon>
                         </div>

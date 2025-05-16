@@ -38,8 +38,6 @@ export class DictionaryManagerRelationshipAddEmailAddress {
      */
     public relationship: Relationship;
 
-    public relatedId: string;
-
     constructor(public dictionarymanager: dictionarymanager, public backend: backend, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
         this.relationship = {
             id: this.modelutilities.generateGuid(),
@@ -71,11 +69,6 @@ export class DictionaryManagerRelationshipAddEmailAddress {
         this.setDefaults();
     }
 
-    get relatedIds(): DictionaryDefinition[] {
-        return this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'module').sort((a, b) => a.name.localeCompare(b.name));
-    }
-
-
     /**
      * set various default values
      * @private
@@ -83,12 +76,18 @@ export class DictionaryManagerRelationshipAddEmailAddress {
     public setDefaults() {
         this.relationship.relationship_type = this.type.name;
 
-        // build default name and relationship name
-        let cDefinition = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition);
-        this.relationship.lhs_sysdictionarydefinition_id = cDefinition.id
-        this.relationship.name = 'email_addresses';
-        this.relationship.relationship_name = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.lhs_sysdictionarydefinition_id).tablename.toLowerCase() + '_email_addresses';
+        this.relationship.rhs_sysdictionarydefinition_id = this.dictionarymanager.dictionarydefinitions.find(d => d.name == 'EmailAddress').id;
+        this.relationship.rhs_sysdictionaryitem_id = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.rhs_sysdictionarydefinition_id).find(i => i.name == 'id').id;
 
+        this.relationship.relationship_name = '{tablename}_email_addresses';
+
+        // build default name and relationship name
+        let cDefinition = this.dictionarymanager.getCurrentDefinition();
+        this.relationship.name = (cDefinition.tablename || cDefinition.name.toLowerCase().replace(/\s/, '_'))?.toLowerCase() + '_email_addresses';
+
+        this.relationship.relationship_name = `${cDefinition.sysdictionary_type == 'template' ? '{tablename}' : cDefinition.tablename}_email_addresses`;
+
+        this.relationship.lhs_sysdictionarydefinition_id = cDefinition.id;
         // set the defaults
         let iditem = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.lhs_sysdictionarydefinition_id).find(i => i.name == 'id');
         if (iditem) this.relationship.lhs_sysdictionaryitem_id = iditem.id;

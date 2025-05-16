@@ -4,11 +4,14 @@ namespace SpiceCRM\includes\SpiceAttachments\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\TimeDate;
 
 class SpiceAttachmentsController
 {
@@ -113,6 +116,29 @@ class SpiceAttachmentsController
         return $res->withJson(SpiceAttachments::saveAttachmentHashFiles($args['beanName'], $args['beanId'], array_merge($postBody, $postParams)));
     }
 
+    /**
+     * adds a folder
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     */
+    public function saveFolder(Request $req, Response $res, array $args): Response
+    {
+        // try to load the seed and check if we have access.
+        // It might happen that seed does not yet exists when attachments are managed on new beans
+        // so no explicit check if the bean exists
+        $seed = BeanFactory::getBean($args['beanName'], $args['beanId']); //set encode to false to avoid things like ' being translated to &#039;
+        if ($seed && !$seed->ACLAccess('edit')) {
+            throw (new ForbiddenException("not allowed to edit this record"))->setErrorCode('noModuleView');
+        }
+
+        $postBody = $req->getParsedBody();
+        return $res->withJson(SpiceAttachments::saveFolder($args['beanName'], $args['beanId'], $postBody));
+    }
+
 
     /**
      * deletes an attachment
@@ -156,7 +182,13 @@ class SpiceAttachmentsController
             throw (new ForbiddenException("not allowed to view this record"))->setErrorCode('noModuleView');
         }
 
-        return $res->withJson(SpiceAttachments::getAttachment($args['attachmentId'], false));
+        $attachment = SpiceAttachments::getAttachment($args['attachmentId'], false);
+
+        if ($attachment['file_mime_type'] == 'message/rfc822') {
+            $attachment = SpiceAttachments::convertEmlFile4display($attachment);
+        }
+
+        return $res->withJson($attachment);
     }
 
     /**
@@ -203,11 +235,88 @@ class SpiceAttachmentsController
             'filesize' => filesize($prefix . $seed->{$args['fieldprefix'] . '_md5'}),
             'file_mime_type' => $seed->{$args['fieldprefix'] . '_mime_type'},
             'file' => $file,
-            'filemd5' => $seed->{$args['fieldprefix'] . '_md5'}
+            'filemd5' => $seed->{$args['fieldprefix'] . '_md5'},
         ];
+
+        $modifiedTimestamp = filemtime($prefix . $seed->{$args['fieldprefix'] . '_md5'});
+        $dateModified = !$modifiedTimestamp ? '' : TimeDate::getInstance()->fromTimestamp($modifiedTimestamp)->format(TimeDate::DB_DATETIME_FORMAT);
+
+        $attachment['date_modified'] = $dateModified;
 
         return $res->withJson($attachment);
     }
+
+    /**
+     * update/create attachment file content
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function saveAttachmentContentByField(Request $req, Response $res, array $args): Response
+    {
+        $postBody = $req->getParsedBody();
+
+        $seed = BeanFactory::getBean($args['beanName'], $args['beanId']);
+
+        if ($seed && !$seed->ACLAccess('edit')) {
+            throw (new ForbiddenException("not allowed to edit this record"))->setErrorCode('noModuleEdit');
+        }
+
+        # if file does not exist set the name and mime type
+        if (!$seed->{$args['fieldprefix'] . '_md5'}) {
+            $seed->{$args['fieldprefix'] . '_mime_type'} = $postBody['file_mime_type'];
+            $seed->{$args['fieldprefix'] . '_name'} = $postBody['file_name'];
+        }
+
+        $seed->{$args['fieldprefix'] . '_md5'} = md5(base64_decode($postBody['file']));
+
+        $seed->save();
+
+        $postBody['filemd5'] = $seed->{$args['fieldprefix'] . '_md5'};
+
+        $response = SpiceAttachments::saveAttachmentFile($postBody);
+
+        return $res->withJson($response);
+    }
+
+    /**
+     * update attachment file content by id
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function updateAttachmentContentById(Request $req, Response $res, array $args): Response
+    {
+        $postBody = $req->getParsedBody();
+
+        $seed = BeanFactory::getBean($args['beanName'], $args['beanId']);
+
+        if ($seed && !$seed->ACLAccess('edit')) {
+            throw (new ForbiddenException("not allowed to edit this record"))->setErrorCode('noModuleEdit');
+        }
+
+        $attachment = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM spiceattachments WHERE id = '{$args['attachmentId']}'");
+
+        if (!$attachment) {
+            throw new NotFoundException('attachment not found');
+        }
+
+        $md5 = md5(base64_decode($postBody['file']));
+
+        $response = SpiceAttachments::saveAttachmentFile([
+            'filemd5' => $md5,
+            'file' => $postBody['file'],
+        ]);
+
+        DBManagerFactory::getInstance()->updateQuery('spiceattachments', ['id' => $args['attachmentId']], ['filemd5' => $md5]);
+
+        return $res->withJson($response);
+    }
+
 
     /**
      * clones the attachments from one bean to another one
@@ -226,7 +335,7 @@ class SpiceAttachmentsController
         }
         $params = $req->getParsedBody();
 
-        $clonedAttachments = SpiceAttachments::cloneAttachmentsForBean($args['beanName'], $args['beanId'], $args['fromBeanName'], $args['fromBeanId'], true, $params['categoryId'], $params['selectedFiles']);
+        $clonedAttachments = SpiceAttachments::cloneAttachmentsForBean($args['beanName'], $args['beanId'], $args['fromBeanName'], $args['fromBeanId'], true, $params['categoryId'], $params['selectedFiles'], $params['excludedFileIDs']);
         return $res->withJson($clonedAttachments);
     }
 

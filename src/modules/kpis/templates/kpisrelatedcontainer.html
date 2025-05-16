@@ -1,0 +1,31 @@
+<div class="slds-theme--shade slds-box slds-box--border slds-m-bottom--xx-small">
+    <div class="slds-m-around--x-small slds-grid slds-grid--vertical-align-center slds-gutters_direct-x-small">
+        <system-label class="slds-m-right--x-small" label="LBL_FILTER"/>
+        <system-input-text class="slds-m-right--x-small" [(ngModel)]="searchTerm"/>
+        <button *ngIf="canRecalculate" [disabled]="loading" class="slds-col--bump-left slds-button slds-button--neutral slds-button__icon--left" (click)="reCalculate()">
+            <system-button-icon icon="calculated_insights"/><system-label class="slds-m-left--x-small" label="LBL_RECALCULATE"/>
+        </button>
+        <button [disabled]="loading" class="slds-col--bump-left slds-button slds-button--neutral slds-button__icon--left" (click)="reload()">
+            <system-button-icon icon="sync"/><system-label class="slds-m-left--x-small" label="LBL_RELOAD"/>
+        </button>
+    </div>
+</div>
+<div system-to-bottom>
+    @if (filteredTargets.length > 0) {
+        <div class="slds-grid slds-wrap slds-gutters_direct-xx-small">
+            @for (kpiTarget of filteredTargets; track kpiTarget.id) {
+                <div class="slds-col" [ngClass]="getTileWidthClass">
+                    <system-dynamic-component [component]="model.getField('display_component') ?? 'KpiTile'"  [componentattributes]="{kpiTarget: kpiTarget}"></system-dynamic-component>
+                </div>
+            }
+        </div>
+    } @else {
+        <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+            @if (loading) {
+                <system-spinner/>
+            } @else {
+                <system-illustration-no-records/>
+            }
+        </div>
+    }
+</div>

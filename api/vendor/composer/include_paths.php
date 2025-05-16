@@ -6,6 +6,6 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    $vendorDir . '/pear/pear_exception',
     $vendorDir . '/pear/ole',
+    $vendorDir . '/pear/pear_exception',
 );

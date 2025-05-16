@@ -2,22 +2,14 @@
  * @module ModuleACL
  */
 import {
-    AfterViewInit,
-    ComponentFactoryResolver,
     Component,
-    ElementRef,
-    NgModule,
-    ViewChild,
-    ViewContainerRef,
-    Output,
-    EventEmitter,
     Input
 } from '@angular/core';
 import {modal} from '../../../services/modal.service';
-import {language} from '../../../services/language.service';
+import {configurationService} from '../../../services/configuration.service';
 import {backend} from '../../../services/backend.service';
-import {modelutilities} from '../../../services/modelutilities.service';
-import {navigation} from '../../../services/navigation.service';
+import {ACLAction, ACLField, ACLType} from "../interfaces/aclinterfaces";
+import {toast} from "../../../services/toast.service";
 
 
 @Component({
@@ -26,51 +18,47 @@ import {navigation} from '../../../services/navigation.service';
 })
 export class ACLTypesManagerTypesFields {
 
-    @Input() public authtypefields: any[] = [];
-    @Input() public authtypemodule: string = '';
+    @Input() public aclType: ACLType;
 
-    @Output() public addfields: EventEmitter<any> = new EventEmitter<any>();
-    @Output() public deletefield: EventEmitter<string> = new EventEmitter<string>();
+    /**
+     * sets the allowed change scope
+     */
+    public changescope: 'all' | 'custom' | 'none' = 'none';
 
-    constructor(public backend: backend, public modal: modal, public language: language, public modelutilities: modelutilities) {
-
+    constructor(public backend: backend, public modal: modal, public configurationService: configurationService, public toast: toast) {
+        // set teh change scope
+        this.changescope = this.configurationService.getCapabilityConfig('core').edit_mode;
     }
 
     public addField() {
-
-        // we want to hide every selected field (We can't add fields two times)
-        for (let afield of this.authtypefields) {
-            afield.hide = true;
-        }
         this.modal.openModal('ACLTypesManagerTypesAddFields').subscribe(modalRef => {
-            modalRef.instance.module = this.authtypemodule;
-            modalRef.instance.currentfields = this.authtypefields;
-            modalRef.instance.addfields.subscribe(fields => {
-
-                if (fields) {
-                    let newFields = [];
-                    for (let sfield of fields) {
-                        let already_selected = false;
-                        for (let key in this.authtypefields) {
-                            if(this.authtypefields[key].name == sfield) {
-                                already_selected = true;
-                            }
-                        }
-                        if(!already_selected) {
-                            newFields.push(sfield);
-                        }
-                    }
-                    this.addfields.emit(newFields);
-                }
-
-            });
+            modalRef.instance.aclType = this.aclType;
         });
     }
 
-    public deleteField(id) {
-        this.modal.confirm( this.language.getLabel('MSG_DELETE_ACL_FIELD', '', 'long'), this.language.getLabel('MSG_DELETE_ACL_FIELD', '', 'default') ).subscribe( ( answer ) => {
+    /**
+     * check if we can delete
+     * @param aclAction
+     */
+    public canDelete(aclField: ACLField){
+        if(this.changescope == "none") return false;
+
+        if(aclField.scope == 'g' && this.changescope != 'all') return false;
+
+        return true;
+    }
+
+    public deleteField(aclField: ACLField) {
+        this.modal.confirm( 'MSG_DELETE_ACL_FIELD', 'MSG_DELETE_ACL_FIELD').subscribe( ( answer ) => {
             if(answer) {
-                this.deletefield.emit(id);
+                this.backend.deleteRequest(`module/SpiceACLObjects/modules/${this.aclType.acltype.id}/fields/${aclField.scope}/${aclField.id}`).subscribe({
+                    next: (fielddata) => {
+                        this.aclType.aclfields.splice(this.aclType.aclfields.findIndex(f => f.id == aclField.id), 1);
+                    },
+                    error: (e) => {
+                        this.toast.sendToast('Error removing field', 'error')
+                    }
+                });
             }
         });
     }

@@ -44,6 +44,26 @@ class SpiceDictionaryDefinition
     }
 
     /**
+     * returns all items for a defintion including items from templates
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function getItems(){
+        $retItems = array();
+        $items = SpiceDictionaryItems::getInstance()->getItems($this->id);
+        foreach ($items as $item){
+            if($item['sysdictionary_ref_id']){
+                $refItems = SpiceDictionaryItems::getInstance()->getItems($item['sysdictionary_ref_id']);
+                $retItems = array_merge($retItems,$refItems);
+            } else {
+                $retItems[] = $item;
+            }
+        }
+        return $retItems;
+    }
+
+    /**
      * repairs the dictionary Definition
      * @param bool $relationships
      * @param bool $execute
@@ -82,6 +102,9 @@ class SpiceDictionaryDefinition
 
         // merge the remaining fields
         foreach ($vardefDetails['fields'] as $fieldName => $definition) {
+
+            if(!$definition['name'] || !$definition['type']) continue;
+
             // write to the cached fields
             $sysDictionaryField = [
                 'id' => SpiceUtils::createGuid(),
@@ -89,7 +112,7 @@ class SpiceDictionaryDefinition
                 'sysdictionarytablename' => $this->tablename,
                 'sysdictionarytableaudited' => $this->definition->audited,
                 'sysdictionarydefinition_id' => $this->id,
-                'fieldname' => $definition['name'],
+                'fieldname' => $definition['name'] ?: $fieldName,
                 'fieldtype' => $definition['type'],
                 'fielddefinition' => json_encode($definition)
             ];
@@ -289,6 +312,8 @@ class SpiceDictionaryDefinition
 
                 foreach ($definitions as $i => $definition) {
                     if ($resDef->name != $definition->name) continue;
+                    # delete the global cached dictionary field to prevent duplicate
+                    DBManagerFactory::getInstance()->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryitem_id = '{$definitions[$i]->sysdictionaryitem_id}' AND sysdictionarydefinition_id ='{$item['sysdictionarydefinition_id']}' AND fieldname = '$resDef->name'");
                     $definitions[$i] = $resDef;
                     $exists = true;
                 }

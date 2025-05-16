@@ -287,6 +287,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'vname' => 'LBL_METHOD',
             'type' => 'varchar'
         ],
+        /*
         'outputtemplates' => [
             'name' => 'outputtemplates',
             'type' => 'link',
@@ -295,6 +296,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'vname' => 'LBL_OUTPUT_TEMPLATES',
             'module' => 'OutputTemplates'
         ],
+        */
         'is_inactive' => [
             'name' => 'is_inactive',
             'vname' => 'LBL_IS_INACTIVE',
@@ -342,23 +344,23 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
 ];
 //BEGIN PHP7.1 compatibility: avoid PHP Fatal error:  Uncaught Error: Cannot use string offset as an array
 //END
-SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate']['relationships']['emailtemplates_emails'] = [
-    'lhs_module' => 'EmailTemplates',
-    'lhs_table' => 'email_templates',
-    'lhs_key' => 'id',
-    'rhs_module' => 'Emails',
-    'rhs_table' => 'emails',
-    'rhs_key' => 'emailtemplate_id',
-    'relationship_type' => 'one-to-many'
-];
+//SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate']['relationships']['emailtemplates_emails'] = [
+//    'lhs_module' => 'EmailTemplates',
+//    'lhs_table' => 'email_templates',
+//    'lhs_key' => 'id',
+//    'rhs_module' => 'Emails',
+//    'rhs_table' => 'emails',
+//    'rhs_key' => 'emailtemplate_id',
+//    'relationship_type' => 'one-to-many'
+//];
 
-SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate']['fields']['emails'] = [
-    'name' => 'emails',
-    'type' => 'link',
-    'relationship' => 'emailtemplates_emails',
-    'source' => 'non-db',
-    'side' => 'right',
-    'vname' => 'LBL_EMAILTEMPLATES_EMAILS_LINK'
-];
+//SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate']['fields']['emails'] = [
+//    'name' => 'emails',
+//    'type' => 'link',
+//    'relationship' => 'emailtemplates_emails',
+//    'source' => 'non-db',
+//    'side' => 'right',
+//    'vname' => 'LBL_EMAILTEMPLATES_EMAILS_LINK'
+//];
 
-VardefManager::createVardef('EmailTemplates', 'EmailTemplate', ['default', 'assignable']);
+//VardefManager::createVardef('EmailTemplates', 'EmailTemplate', ['default', 'assignable']);

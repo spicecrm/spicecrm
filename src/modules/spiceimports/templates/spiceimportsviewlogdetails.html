@@ -1,0 +1,26 @@
+<div class="slds-m-around--xx-small slds-box--border">
+    <table class="slds-table slds-table_striped slds-no-row-hover">
+        <thead>
+        <tr class="slds-line-height_reset">
+            <th class="" scope="col">
+                <div class="slds-truncate"><system-label label="LBL_HEADER"/></div>
+            </th>
+            <th class="" scope="col">
+                <div class="slds-truncate"><system-label label="LBL_VALUE"/></div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+            @for (h of header;track h) {
+                <tr class="slds-hint-parent">
+                    <td data-label="Message">
+                        <div class="slds-truncate">{{h}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{logFields[$index]}}</div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

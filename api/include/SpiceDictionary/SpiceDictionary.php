@@ -78,10 +78,10 @@ class SpiceDictionary
         $cached = SpiceCache::get(self::cachename);
         if ($cached) {
             $this->dictionary = $cached;
-            return;
+            SpiceDictionaryHandler::getInstance()->dictionary = $cached;
+        } else {
+            $this->loadDictionary();
         }
-
-        $this->loadDictionary();
     }
 
     /**
@@ -94,18 +94,30 @@ class SpiceDictionary
         if($db->tableExists(self::table)) {
             $dictionarys = $db->query("SELECT * FROM " . self::table);
             while ($dictionary = $db->fetchByAssoc($dictionarys)) {
-                $this->dictionary[$dictionary['sysdictionaryname']]['id'] = $dictionary['sysdictionaryid'];
-                $this->dictionary[$dictionary['sysdictionaryname']]['dictionaryname'] = $dictionary['sysdictionaryname'];
-                $this->dictionary[$dictionary['sysdictionaryname']]['name'] = $dictionary['sysdictionaryname'];
-                $this->dictionary[$dictionary['sysdictionaryname']]['table'] = $dictionary['sysdictionarytablename'];
-                $this->dictionary[$dictionary['sysdictionaryname']]['audited'] = $dictionary['sysdictionarytableaudited'];
-                $this->dictionary[$dictionary['sysdictionaryname']]['contenttype'] = $dictionary['sysdictionarytablecontenttype'];
-                $this->dictionary[$dictionary['sysdictionaryname']]['fields'][$dictionary['fieldname']] = json_decode(html_entity_decode($dictionary['fielddefinition'], ENT_QUOTES), true);
+                if(!isset($this->dictionary[$dictionary['sysdictionaryname']])) {
+                    $this->dictionary[$dictionary['sysdictionaryname']]['id'] = $dictionary['sysdictionaryid'];
+                    $this->dictionary[$dictionary['sysdictionaryname']]['dictionaryname'] = $dictionary['sysdictionaryname'];
+                    $this->dictionary[$dictionary['sysdictionaryname']]['name'] = $dictionary['sysdictionaryname'];
+                    $this->dictionary[$dictionary['sysdictionaryname']]['table'] = $dictionary['sysdictionarytablename'];
+                    $this->dictionary[$dictionary['sysdictionaryname']]['audited'] = $dictionary['sysdictionarytableaudited'];
+                    $this->dictionary[$dictionary['sysdictionaryname']]['contenttype'] = $dictionary['sysdictionarytablecontenttype'];
+                    $this->dictionary[$dictionary['sysdictionaryname']]['fields'] = [];
+                }
+
+                // enrich the field data
+                $fieldData = json_decode(html_entity_decode($dictionary['fielddefinition'], ENT_QUOTES), true);
+                $fieldData['id'] = $dictionary['id'];
+                if($dictionary['sysdictionaryitem_id']) $fieldData['sysdictionaryitem_id'] = $dictionary['sysdictionaryitem_id'];
+                if($dictionary['sysdictionaryrelationship_id']) $fieldData['sysdictionaryrelationship_id'] = $dictionary['sysdictionaryrelationship_id'];
+
+                // set the field data
+                $this->dictionary[$dictionary['sysdictionaryname']]['fields'][$dictionary['fieldname']] = $fieldData;
             }
 
             if (empty($this->dictionary)) {
                 $this->reloadSystemDump();
             } else {
+                SpiceDictionaryHandler::getInstance()->dictionary = $this->dictionary;
                 $this->writeCache();
             }
 

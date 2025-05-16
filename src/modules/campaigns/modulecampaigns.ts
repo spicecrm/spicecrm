@@ -27,6 +27,9 @@ import {CampaignTaskTargetsManager} from "./components/campaigntasktargetsmanage
 import {CampaignTaskTargetsManagerButton} from "./components/campaigntasktargetsmanagerbutton";
 import {CampaignTaskTargetsManagerDetails} from "./components/campaigntasktargetsmanagerdetail";
 import {CampaignDeactivateButton} from "./components/campaigndeactivatebutton";
+import {CampaignDeleteButton} from "./components/campaigndeletebutton";
+import {fieldLogActivityStatus} from "./fields/fieldlogactivitystatus";
+import {CampaignLogTrackingActionsModal} from "./components/campaignlogtrackingactionsmodal";
 
 @NgModule({
     imports: [
@@ -53,7 +56,10 @@ import {CampaignDeactivateButton} from "./components/campaigndeactivatebutton";
         CampaignTaskTargetsManager,
         CampaignTaskTargetsManagerDetails,
         CampaignTaskTargetsManagerButton,
-        CampaignDeactivateButton
+        CampaignDeactivateButton,
+        CampaignDeleteButton,
+        fieldLogActivityStatus,
+        CampaignLogTrackingActionsModal
     ]
 })
 export class ModuleCampaigns {}

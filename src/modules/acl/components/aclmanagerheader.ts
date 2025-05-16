@@ -12,6 +12,10 @@ export class ACLManagerHeader {
 
     @Input() displaylabel: string = '';
 
+    @Input() displayicon: string;
+
+    @Input() displaymodule: string = 'SpiceACLObjects';
+
     constructor(public language: language) {
 
     }

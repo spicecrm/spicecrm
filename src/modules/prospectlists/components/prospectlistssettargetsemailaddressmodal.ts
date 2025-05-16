@@ -18,7 +18,15 @@ export class ProspectListsSetTargetsEmailAddressModal implements ModalComponentI
     /**
      * items passed from the parent component
      */
-    public items: { id: string, summary_text: string;}[] = [];
+    public items: { id: string, summary_text: string, email_addresses: {beans: any};}[] = [];
+    /**
+     * filtered items by show/hide all action needed
+     */
+    public filteredItems: { id: string, summary_text: string, allow_multiple_emails_per_target?: boolean, email_addresses: {beans: any};}[] = [];
+    /**
+     * list of completed items ids
+     */
+    public _completedItemsIds: string[] = [];
     /**
      * modal response to pass data to parent
      */
@@ -28,10 +36,25 @@ export class ProspectListsSetTargetsEmailAddressModal implements ModalComponentI
      */
     public emailAddressFieldName: string;
 
+    public showAll: boolean = false;
+    /**
+     * reference to the parent model
+     */
+    public parent: model;
+
     constructor(public model: model, private view: view) {
         this.view.isEditable = true;
         this.view.displayLabels = false;
         this.view.setEditMode();
+    }
+
+    set completedItemsIds(val) {
+        this._completedItemsIds = val;
+        this.setFilteredItems();
+    }
+
+    get completedItemsIds() {
+        return this._completedItemsIds;
     }
 
     public close() {
@@ -42,6 +65,22 @@ export class ProspectListsSetTargetsEmailAddressModal implements ModalComponentI
     public confirm() {
         this.response.next(this.items);
         this.close();
+    }
+    public setShowAll(val) {
+        this.showAll = val;
+        this.setFilteredItems();
+    }
+
+    /**
+     * set filtered items by the flag showAll
+     * @private
+     */
+    private setFilteredItems() {
+        if (this.showAll) {
+            this.filteredItems = this.items;
+        } else {
+            this.filteredItems = this.items.filter((e) => !this.completedItemsIds.includes(e.id));
+        }
     }
 
     public ngOnDestroy() {

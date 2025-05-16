@@ -1,0 +1,30 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_DICTIONARY_ITEM_DETAILS"></system-label></system-modal-header>
+    <system-modal-content>
+        <div class="slds-p-around--x-small">
+            <div class="slds-grid slds-m-vertical--xxx-small slds-gutters_direct-xx-small">
+                <div class="slds-col slds-size--1-of-2 slds-form-element">
+                    <label class="slds-form-element__label">
+                        <system-label label="LBL_PACKAGE"></system-label>
+                    </label>
+                    <div class="slds-form-element__control">
+                        <system-input-package [(ngModel)]="dictionaryitem.package"/>
+                    </div>
+                </div>
+                <div class="slds-col slds-size--1-of-2 slds-form-element">
+                    <label class="slds-form-element__label">
+                        <system-label label="LBL_VERSION"></system-label>
+                    </label>
+                    <div class="slds-form-element__control">
+                        <system-input-version [(ngModel)]="dictionaryitem.version"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"/></button>
+        <button [disabled]="!canSave" class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"/></button>
+    </system-modal-footer>
+</system-modal>
+

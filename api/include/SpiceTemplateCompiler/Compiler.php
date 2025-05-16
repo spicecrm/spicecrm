@@ -107,7 +107,7 @@ class Compiler
      */
     public $idsOfParentTemplates = [];
 
-    public function compile($txt, $bean = null, $lang = null, array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null, $bodyContentOnly = false)
+    public function compile($txt, $bean = null, $lang = null, array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null, $bodyContentOnly = false, $headItems = [])
     {
         $this->additionalValues = $additionalValues;
         $this->lang = empty( $lang ) ? AuthenticationController::getInstance()->getCurrentUser()?->getPreference('language') : $lang;
@@ -118,6 +118,20 @@ class Compiler
 
         #$html = preg_replace("/\n|\r|\t/", "", html_entity_decode($txt, ENT_QUOTES));
         $dom->loadHTML('<?xml encoding="utf-8"?>' . html_entity_decode($txt, ENT_QUOTES));
+
+        preg_match_all('/<img[^>]+src="([^"]*)"/i', $txt, $matches);
+
+        # escaping the ampersands and ensuring the proper img URL encoding
+        $fixedImgSources = [];
+        foreach ($matches[1] as $src) {
+            $fixedSrc = str_replace('&', '&amp;', $src);
+            $fixedImgSources[] = $fixedSrc;
+        }
+
+        $tags = $dom->getElementsByTagName('img');
+        foreach ($tags as $index => $tag) {
+            $tag->setAttribute('src', $fixedImgSources[$index]);
+        }
 
         // handle the beans array
         $beans = ['bean' => $bean];
@@ -134,6 +148,10 @@ class Compiler
             $additionalStyleId = !$additionalStyleId ? [] : [$additionalStyleId];
         }
 
+        // add additonal Head Items
+        foreach ($headItems as $headItem) $this->addHeadItem($headItem);
+
+        // add addtional style items
         foreach ($additionalStyleId as $id) $this->addStyleTag($id);
 
         if ($bodyContentOnly) {
@@ -172,6 +190,35 @@ class Compiler
         $styleElement->appendChild($typeAttr);
 
         $head->appendChild($styleElement);
+    }
+
+    /**
+     * add attributes to the header
+     *
+     * headitem needs to have type and optional content
+     * and an array of attributes
+     *
+     * @return void
+     * @throws \Exception
+     */
+    private function addHeadItem($headItem): void
+    {
+
+        $head = $this->root->getElementsByTagName('head')[0];
+
+        if (!$head) {
+            $head = $this->doc->createElement('head');
+            $this->doc->appendChild($head);
+        }
+
+        $headElement = $this->doc->createElement($headItem['type'], html_entity_decode($headItem['content'], ENT_QUOTES));
+        foreach ($headItem['attrs'] as $attrName => $attrValue) {
+            $addAttr = $this->doc->createAttribute($attrName);
+            $addAttr->value = $attrValue;
+            $headElement->appendChild($addAttr);
+        }
+
+        $head->appendChild($headElement);
     }
 
     /**
@@ -271,31 +318,43 @@ class Compiler
                     else if($node->getAttribute('data-spicefor')){
                         $spicefor = $node->getAttribute('data-spicefor');
 
-                        // CR1000360
-                        // split looking for pipes
-                        $attributeParts = preg_split("/(\|)/", $spicefor);
-                        $countParts = count($attributeParts);
-                        $params = [];
+                        // check if we have a curly brackets statement
+                        $matches = [];
+                        $matched = preg_match("/{(.*?)}/", $spicefor,  $matches);
+                        if($matched) {
+                            $linkedBeans = $this->handleSubstitution($matches[1], $beans);
+                            $forArray = explode(" as ", $spicefor);
+                        } else {
+                            // CR1000360
+                            // split looking for pipes
+                            $attributeParts = preg_split("/(\|)/", $spicefor);
+                            $countParts = count($attributeParts);
+                            $params = [];
 
-                        // scenario 1: we have 1 parts only. This means NO additional parameters
-                        // $attributeParts[0] = bean.linkname as linkedbean (the full haystack returned when no match)
-                        if($countParts == 1){
-                            $forArray = explode(" as ", $attributeParts[0]);
+                            // scenario 1: we have 1 parts only. This means NO additional parameters
+                            // $attributeParts[0] = bean.linkname as linkedbean (the full haystack returned when no match)
+                            if ($countParts == 1) {
+                                $forArray = explode(" as ", $attributeParts[0]);
+                            }
+
+                            // scenario 2: we have 3 parts. This means additional parameters
+                            // CR1000360 check on params (like filter)
+                            // $attributeParts[0] = bean.linkname
+                            // $attributeParts[1] = some_urlencode_sring (the string between the pipes)
+                            // $attributeParts[2] = as linkedbean
+                            if ($countParts == 3) {
+                                // string " as linkedbean" to "linkedbean"
+                                $attributeParts[2] = substr($attributeParts[2], 4, strlen($attributeParts[2]));
+                                $forArray = [$attributeParts[0], $attributeParts[2]];
+                                $params = $this->parsePipeToArray($attributeParts[1]);
+                            }
+
+                            if (str_starts_with($forArray[0], 'value.') && $this->additionalValues[explode('.', $forArray[0])[1]]) {
+                                $linkedBeans = $this->additionalValues[explode('.', $forArray[0])[1]];
+                            } else {
+                                $linkedBeans = $this->getLinkedBeans($forArray[0], NULL, $beans, $params); // CR1000360 added $params
+                            }
                         }
-
-                        // scenario 2: we have 3 parts. This means additional parameters
-                        // CR1000360 check on params (like filter)
-                        // $attributeParts[0] = bean.linkname
-                        // $attributeParts[1] = some_urlencode_sring (the string between the pipes)
-                        // $attributeParts[2] = as linkedbean
-                        if($countParts == 3){
-                            // string " as linkedbean" to "linkedbean"
-                            $attributeParts[2] = substr($attributeParts[2], 4, strlen($attributeParts[2]));
-                            $forArray = [$attributeParts[0], $attributeParts[2]];
-                            $params = $this->parsePipeToArray($attributeParts[1]);
-                        }
-
-                        $linkedBeans = $this->getLinkedBeans($forArray[0], NULL, $beans, $params); // CR1000360 added $params
                         foreach ($linkedBeans as $index => $linkedBean) {
                             // set the params for teh first or last entry
                             $params = [];
@@ -312,6 +371,7 @@ class Compiler
                                     $forArray[1] => $linkedBean,
                                     'spicefor' => new SpiceFor([
                                         'index' => $index,
+                                        'index_one_based' => $index + 1,
                                         'first' => ( $index === 0 ),
                                         'last' => ( $index === count( $linkedBeans ) - 1 ),
                                         'inner' => ( $index > 0 and $index < count( $linkedBeans ) - 1 ),
@@ -376,8 +436,6 @@ class Compiler
                         $elements[] = $this->createNewElement($node, $beans);
                     }
                     break;
-                default:
-                    die(get_class($node));
             }
         }
         return $elements;

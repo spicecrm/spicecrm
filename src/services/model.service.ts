@@ -116,6 +116,12 @@ export class model implements OnDestroy {
     public data$: BehaviorSubject<any>;
 
     /**
+     * a behavioural subject to indicate that the model is loaded
+     * in opposite to the data$ this only emits when the model is loaded from the backend
+     */
+    public loaded$: BehaviorSubject<any>;
+
+    /**
      * holds observable of a field and its value
      */
     public field$: BehaviorSubject<{ field: string, value: any }> = new BehaviorSubject({field: null, value: null});
@@ -305,7 +311,11 @@ export class model implements OnDestroy {
         private sanitizer: DomSanitizer
     ) {
 
+        // create the data subject
         this.data$ = new BehaviorSubject(this.data);
+
+        // create the loaded subject
+        this.loaded$ = new BehaviorSubject(false);
 
         this.subscriptions.add(
             this.broadcast.message$.subscribe(data => {
@@ -529,6 +539,7 @@ export class model implements OnDestroy {
                 this.evaluateValidationRules(null, 'initialize');
                 this.emitFieldsChanges(res);
                 this.data$.next(res);
+                this.loaded$.next(true);
                 this.broadcast.broadcastMessage("model.loaded", {id: this.id, module: this.module, data: this.data});
                 responseSubject.next(res);
                 responseSubject.complete();
@@ -1037,12 +1048,12 @@ export class model implements OnDestroy {
 
     /**
      * sets a single field on the model
-     *
      * @param field
      * @param value
      * @param silent
+     * @param setDirty
      */
-    public setField(field, value, silent: boolean = false) {
+    public setField(field, value, silent: boolean = false, setDirty: boolean = true) {
         if (!field) return false;
 
         const previousValue = this.data[field];
@@ -1056,6 +1067,11 @@ export class model implements OnDestroy {
 
         if (!silent) {
             this.data$.next(this.data);
+        }
+
+        // also update the backupData if we do not consider this as something that should mark the model as dirty
+        if(!setDirty && !_.isEmpty(this.backupData)){
+            this.backupData[field] = value;
         }
 
         // run the duplicate check
@@ -1150,7 +1166,13 @@ export class model implements OnDestroy {
         let d = {};
         for (let property in this.data) {
             // if (property && (!this.backupData || _.isObject(this.data[property]) || _.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
-            if (property && (!this.backupData || !_.isEqual(this.data[property], this.backupData[property]))) {
+            if (property && (
+                !this.backupData ||
+                !_.isEqual(
+                    this.data[property] === null ? '' : this.data[property],
+                    this.backupData[property] === null ? '' : this.backupData[property]
+                )
+            )) {
                 d[property] = this.data[property];
             }
         }
@@ -1189,6 +1211,7 @@ export class model implements OnDestroy {
                     this.data = res;
                     this.isNew = false;
                     this.data$.next(res);
+                    this.loaded$.next(true);
                     this.broadcast.broadcastMessage("model.save", {
                         id: this.id,
                         reference: this.reference,
@@ -1714,6 +1737,8 @@ export class model implements OnDestroy {
                 return moment({hour: this.userpreferences.toUse.calendar_day_start_hour});
             case "calendarEndHour":
                 return moment({hour: this.userpreferences.toUse.calendar_day_end_hour});
+            case "currentUserId":
+                return this.session.authData.userId;
         }
         return "";
     }

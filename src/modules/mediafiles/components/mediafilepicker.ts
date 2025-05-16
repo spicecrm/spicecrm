@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, ElementRef, EventEmitter, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Output, ViewChild} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 
 import {language} from '../../../services/language.service';
@@ -24,6 +24,9 @@ import {ObjectModalModuleLookup} from "../../../objectcomponents/components/obje
 })
 export class MediaFilePicker extends ObjectModalModuleLookup {
 
+
+    @ViewChild('tilescontainer', {static: false}) public tilescontainer;
+
     /**
      * set the module fixed to MediaFiles
      */
@@ -38,16 +41,34 @@ export class MediaFilePicker extends ObjectModalModuleLookup {
         super(language, modellist, metadata, modelutilities, model, layout);
     }
 
+
+    get stencilCount(){
+        if(this.tilescontainer) {
+            let bbox = this.tilescontainer.nativeElement.getBoundingClientRect();
+            let count = Math.floor((bbox.width - 10) / 320);
+            return count > 0 ? count * 3 : 9;
+        }
+
+        return 9;
+    }
+
     /**
      * gets the padding for the tiles container
      */
     get containerStyle() {
-        let bbox = this.elementRef.nativeElement.getBoundingClientRect();
-        let count = Math.floor((bbox.width - 10) / 320);
-        let padding = Math.floor(((bbox.width - 10) - count * 320) / 2);
+        if(this.tilescontainer) {
+            let bbox = this.tilescontainer.nativeElement.getBoundingClientRect();
+            let count = Math.floor((bbox.width - 10) / 320);
+            let padding = Math.floor(((bbox.width - 10) - count * 320) / 2);
+            return {
+                'padding-left': padding + 'px',
+                'padding-right': padding + 'px'
+            };
+        }
+
         return {
-            'padding-left': padding + 'px',
-            'padding-right': padding + 'px'
+            'padding-left': '0px',
+            'padding-right': '0px'
         };
     }
 

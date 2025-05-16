@@ -87,11 +87,13 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
             this.recalculate();
         });
 
+        /*
         this.subscriptions.add(
             this.salesdocrecord.taxchange.subscribe(() => {
                 this.redetermineTax();
             })
         );
+        */
 
     }
 
@@ -102,20 +104,22 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
 
         // link the two views
         if(this.parentview) {
-            this.view.isEditable = this.parentview.isEditable;
-            this.parentview.mode$.subscribe(mode => {
-                // check if we are in the same mode already
-                if (this.view.getMode() == mode) return;
+            this.view.isEditable = this.parentview.isEditable && !this.item.rejection_reason;
+            if(this.view.isEditable) {
+                this.parentview.mode$.subscribe(mode => {
+                    // check if we are in the same mode already
+                    if (this.view.getMode() == mode) return;
 
-                // process the mode change
-                if (mode == 'edit') {
-                    this.view.setEditMode();
-                    this.view.displayLinks = false;
-                } else {
-                    this.view.setViewMode();
-                    this.view.displayLinks = true;
-                }
-            });
+                    // process the mode change
+                    if (mode == 'edit') {
+                        this.view.setEditMode();
+                        this.view.displayLinks = false;
+                    } else {
+                        this.view.setViewMode();
+                        this.view.displayLinks = true;
+                    }
+                });
+            }
         }
 
         this.view.mode$.subscribe(mode => {

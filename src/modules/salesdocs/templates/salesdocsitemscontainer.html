@@ -4,8 +4,8 @@
             <tr salesdocs-item-header></tr>
         </thead>
         <tbody *ngIf="itemcount > 0">
-            <ng-container *ngFor="let item of items|salesdocsitemsdeletedpipe">
-                <tr salesdocs-item-container [item]="item" [salesdoc]="model" (recalculated)="recalculate()"></tr>
+            @for(item of items|salesdocsitemsdeletedpipe; track item.id) {
+                <tr salesdocs-item-container [ngClass]="{'slds-text-linethrough': item.rejection_reason}" [item]="item" [salesdoc]="model" (recalculated)="recalculate()"></tr>
                 <tr *ngIf="item.expanded">
                     <td colspan="2" class="slds-cell-shrink">
                     <td [attr.colspan]="fieldsetItems.length">
@@ -13,7 +13,7 @@
                     </td>
                     <td></td>
                 </tr>
-            </ng-container>
+            }
         </tbody>
         <tbody *ngIf="itemcount == 0">
             <td [attr.colspan]="3 + fieldsetItems.length">

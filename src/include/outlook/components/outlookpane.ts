@@ -3,7 +3,6 @@
  */
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
-import {OutlookConfiguration} from '../services/outlookconfiguration.service';
 import {GroupwareService} from "../../groupware/services/groupware.service";
 import {session} from "../../../services/session.service";
 import {broadcast} from "../../../services/broadcast.service";
@@ -12,7 +11,7 @@ import {metadata} from "../../../services/metadata.service";
 import {OutlookGroupware} from "../services/outlookgroupware.service";
 import {OutlookLoginPane} from "./outlookloginpane";
 import {SystemDynamicRouteInterceptor} from "../../../systemcomponents/components/systemdynamicrouteinterceptor";
-import {loginCheck} from "../../../services/login.service";
+import {loginCheck, loginService} from "../../../services/login.service";
 
 declare var Office: any;
 
@@ -26,20 +25,19 @@ declare var Office: any;
     templateUrl: '../templates/outlookpane.html',
     providers: [
         {provide: GroupwareService, useClass: OutlookGroupware},
-        OutlookConfiguration,
         model],
     host: {class: 'slds-height_full'}
 })
 export class OutlookPane implements OnInit {
 
     constructor(
-        public configuration: OutlookConfiguration,
         public groupware: GroupwareService,
         public router: Router,
         public session: session,
         public model: model,
         public metadata: metadata,
-        public broadcast: broadcast
+        public broadcast: broadcast,
+        private loginService: loginService
     ) {
         this.adjustRoutes();
         // ToDo: implement pinned pane that relaod when item is changed
@@ -47,6 +45,11 @@ export class OutlookPane implements OnInit {
             this.itemChanged();
         });
 
+        this.broadcast.message$.subscribe((message: any) => {
+            if (message.messagetype === 'loader.completed' && message.messagedata === 'loadRepository') {
+                this.itemChanged();
+            }
+        });
     }
 
     /**
@@ -94,6 +97,7 @@ export class OutlookPane implements OnInit {
 
         const config = this.metadata.getComponentConfig('OutlookPane');
         const mainRoute = !config.mainRoute ? '/groupware/details' : config.mainRoute;
+        this.loginService.redirectUrl = config.mainRoute;
 
         if (this.router.routerState.snapshot.url == mainRoute) {
             this.broadcast.broadcastMessage('groupware.itemchanged');

@@ -20,7 +20,6 @@ import {ModuleGroupware} from "../groupware/groupware";
 
 import {OutlookPane} from './components/outlookpane';
 import {OutlookPaneFooter} from './components/outlookpanefooter';
-import {OutlookSettingsPane} from './components/outlooksettingspane';
 import {OutlookLoginPane} from "./components/outlookloginpane";
 import {OutlookCalendarItemEditPane} from "./components/outlookcalendaritemeditpane";
 import {OutlookCalendarItemReadPane} from "./components/outlookcalendaritemreadpane";
@@ -44,7 +43,6 @@ import {OutlookCalendarItemEditContainer} from "./components/outlookcalendaritem
     declarations: [
         OutlookPane,
         OutlookPaneFooter,
-        OutlookSettingsPane,
         OutlookLoginPane,
         OutlookCalendarItemEditPane,
         OutlookCalendarItemReadPane,

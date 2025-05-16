@@ -1,0 +1,9 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display  [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig" [fieldid]="fieldid" [fieldname]="fieldname">
+    <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+        <div>{{getValue()}}</div>
+        <button class="slds-button slds-button--icon" (click)="showDetails()">
+            <system-button-icon icon="summarydetail"/>
+        </button>
+    </div>
+</field-generic-display>

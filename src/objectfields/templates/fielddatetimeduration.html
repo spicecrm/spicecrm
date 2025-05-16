@@ -2,7 +2,7 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
     <system-display-datetime [date]="value"></system-display-datetime><span *ngIf="dateEnd">&nbsp;-&nbsp;<system-display-datetime [date]="dateEnd" [displayDate]="false"></system-display-datetime></span>
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="css_classes">
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="css_classes">
     <div class="slds-grid">
         <system-input-date [(ngModel)]="value"></system-input-date>
         <system-input-time class="slds-p-left--x-small" [(ngModel)]="value"></system-input-time>

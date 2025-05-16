@@ -350,11 +350,29 @@ export class dashboardlayout {
                                     height: Math.round(position.height / this.elementHeight)
                                 },
                                 is_new: true,
+                                refresh_interval: dashlet.refresh_interval ?? null,
                             };
                             this.dashboardElements = [...this.dashboardElements, element];
                         }
                     });
             });
+    }
+
+    public addDashletInterval() {
+        const currentDashlet = this.dashboardElements.find(element => element.id === this.editing);
+        if (!currentDashlet) return;
+
+        const currentInterval =  currentDashlet.refresh_interval ?? this.model.getField('refresh_interval');
+
+        this.modal.input('LBL_DASHLET_REFRESH_SECONDS', 'LBL_DASHLET_REFRESH', null, currentInterval
+        ).subscribe(newInterval => {
+            if (newInterval !== false) {
+                const parsedInterval = parseInt(newInterval, 10);
+                if (!isNaN(parsedInterval)) {
+                    currentDashlet.refresh_interval = parsedInterval;
+                }
+            }
+        });
     }
 
     public deleteDashlet(id) {

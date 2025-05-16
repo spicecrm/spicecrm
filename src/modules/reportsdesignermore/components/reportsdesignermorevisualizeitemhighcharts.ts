@@ -171,8 +171,16 @@ export class ReportsDesignerMoreVisualizeItemHighCharts implements OnInit {
                 name: this.language.getLabel('LBL_FUNNEL_CHART')
             }, {
                 dimensions: ['111','10N'],
+                value: 'funnel3d',
+                name: this.language.getLabel('LBL_FUNNEL3D_CHART')
+            }, {
+                dimensions: ['111','10N'],
                 value: 'pyramid',
                 name: this.language.getLabel('LBL_PYRAMID_CHART')
+            }, {
+                dimensions: ['111','10N'],
+                value: 'pyramid3d',
+                name: this.language.getLabel('LBL_PYRAMID3D_CHART')
             }
         ];
 

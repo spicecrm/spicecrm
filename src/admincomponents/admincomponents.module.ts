@@ -2,7 +2,7 @@
  * @module AdminComponentsModule
  */
 import {CommonModule} from '@angular/common';
-import {FormsModule}   from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgModule} from '@angular/core';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
@@ -89,6 +89,8 @@ import {AdministrationGDPRRetentionManager} from "./components/administrationgdp
 import {AdministrationAssetManager} from "./components/administrationassetmanager";
 import {AdministrationMigrateLegacyDoms} from "./components/administrationmigratelegacydoms";
 import {WorkbenchModule} from "../workbench/workbench.module";
+import {AdministrationBackupManager} from "./components/administrationbackupmanager";
+import {AdministrationBackupManagerPreviewModal} from "./components/administrationbackupmanagerpreviewmodal";
 
 
 
@@ -101,7 +103,8 @@ import {WorkbenchModule} from "../workbench/workbench.module";
         DragDropModule,
         ObjectComponents,
         ObjectFields,
-        WorkbenchModule
+        WorkbenchModule,
+        ReactiveFormsModule
     ],
     declarations: [
         AdministrationAPIInspector,
@@ -171,6 +174,8 @@ import {WorkbenchModule} from "../workbench/workbench.module";
         AdministrationLoginManagement,
         AdministrationAssetManager,
         AdministrationLoginMethods,
+        AdministrationBackupManager,
+        AdministrationBackupManagerPreviewModal
 
     ]
 

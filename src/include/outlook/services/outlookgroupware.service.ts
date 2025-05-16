@@ -1,12 +1,13 @@
 /**
  * @module Outlook
  */
-import {Injectable} from "@angular/core";
+import {inject, Injectable} from "@angular/core";
 import {GroupwareService} from "../../../include/groupware/services/groupware.service";
 import {Observable, of, Subject} from "rxjs";
 import {OutlookAttachmentI} from "../interfaces/outlook.interfaces";
 import {GroupwareEmail} from "../../../include/groupware/interfaces/groupwareemail.interface";
 import {map} from "rxjs/operators";
+import {toast} from "../../../services/toast.service";
 
 declare var Office: any;
 declare var _: any;
@@ -21,11 +22,11 @@ export class OutlookGroupware extends GroupwareService {
      * attachment list.
      */
     public attachments: OutlookAttachmentI = {
-        attachmentToken: '',
-        ewsUrl: '',
         attachments: [],
     };
     public iframeUrl: string = '';
+
+    private toast: toast = inject(toast);
 
     /**
      * Loads the email data from Outlook and assembles it into a GroupwareEmail object.
@@ -88,46 +89,50 @@ export class OutlookGroupware extends GroupwareService {
                     bean: this.model.utils.spiceModel2backend('Emails', this.model.data)
                 };
 
-                this.backend.postRequest('channels/groupware/outlook/email', {}, data).subscribe(
-                    (res) => {
+                this.backend.postRequest('channels/groupware/outlook/email', {}, data).subscribe({
+                    next: (res) => {
+
+                        this.emailId = res.email_id;
+
                         if (this.archiveattachments.length > 0) {
                             let attachmentData = {
-                                attachmentToken: this.attachments.attachmentToken,
-                                ewsUrl: this.attachments.ewsUrl,
                                 outlookAttachments: this.archiveattachments,
                                 emailId: res.email_id,
                             };
 
-                            this.backend.postRequest('channels/groupware/outlook/attachments', {}, attachmentData).subscribe(
-                                success => {
+                            this.backend.postRequest('channels/groupware/outlook/attachments', {}, attachmentData).subscribe({
+                                next: () => {
                                     loading.next(true);
                                     loading.complete();
+                                    this.toast.sendToast('LBL_ARCHIVED', 'success');
                                     retSubject.next(true);
                                     retSubject.complete();
                                 },
-                                error => {
+                                error: () => {
                                     loading.next(true);
                                     loading.complete();
+                                    this.toast.sendToast('LBL_ARCHIVED', 'success');
                                     retSubject.error('error archiving attachments');
                                     retSubject.complete();
                                 }
-                            );
+                            });
 
-                            this.emailId = res.email_id;
                         } else {
                             loading.next(true);
                             loading.complete();
+                            this.toast.sendToast('LBL_ARCHIVED', 'success');
 
                             retSubject.next(true);
                             retSubject.complete();
                         }
                     },
-                    error => {
+                    error: () => {
                         loading.next(true);
                         loading.complete();
+                        this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                         retSubject.error('error archiving email');
                         retSubject.complete();
-                    }
+                    }}
                 );
             },
             (err) => {
@@ -136,6 +141,7 @@ export class OutlookGroupware extends GroupwareService {
                 retSubject.complete();
                 loading.next(true);
                 loading.complete();
+                this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
             }
         );
 
@@ -147,52 +153,14 @@ export class OutlookGroupware extends GroupwareService {
      * as well as the EWS server URL and a temporary attachment token used to download the attachments in the backend.
      */
     public getAttachments(): Observable<any> {
-        let responseSubject = new Subject<any>();
 
-        this.attachments.ewsUrl = Office.context.mailbox.ewsUrl;
-
-        if (this.attachments.attachmentToken == '') {
-            this.getAttachmentToken().subscribe(
-                (res: any) => {
-                    this.attachments.attachmentToken = res;
-
-                    for (let i = 0; i < Office.context.mailbox.item.attachments.length; i++) {
-                        this.attachments.attachments[i] = _.clone(Office.context.mailbox.item.attachments[i]);
-                        this.attachments.attachments[i].selected = false;
-                    }
-
-                    responseSubject.next(this.attachments);
-                    responseSubject.complete();
-                },
-                (err) => {
-                    responseSubject.error(err);
-                }
-            );
-        } else {
-            responseSubject.error('No attachment token found.');
+        for (let i = 0; i < Office.context.mailbox.item.attachments.length; i++) {
+            this.attachments.attachments[i] = _.clone(Office.context.mailbox.item.attachments[i]);
+            this.attachments.attachments[i].selected = false;
+            this.attachments.attachments[i].emailExtId = Office.context.mailbox.item.itemId;
         }
 
-        return responseSubject.asObservable();
-    }
-
-    /**
-     * Load the attachment token.
-     */
-    public getAttachmentToken(): Observable<any> {
-        let responseSubject = new Subject<any>();
-
-        if (this.attachments.attachmentToken == '') {
-            Office.context.mailbox.getCallbackTokenAsync(res => {
-                if (res.status === Office.AsyncResultStatus.Succeeded) {
-                    responseSubject.next(res.value);
-                    responseSubject.complete();
-                } else {
-                    responseSubject.error("Could not get callback token: " + res.error.message);
-                }
-            });
-        }
-
-        return responseSubject.asObservable();
+        return of(this.attachments);
     }
 
     /**

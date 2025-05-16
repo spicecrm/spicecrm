@@ -304,7 +304,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
 
     public setStylesheetField() {
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
-        if (!_.isEmpty(fieldDefs.stylesheet_id_field)) {
+        if (fieldDefs && !_.isEmpty(fieldDefs.stylesheet_id_field)) {
             this.stylesheetField = fieldDefs.stylesheet_id_field;
         }
     }
@@ -372,7 +372,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         styleContent += styleTag?.innerHTML ?? '';
         styleTag?.remove();
 
-        this.model.setField(this.fieldname, element.innerHTML, true);
+        this.model.setField(this.fieldname, element.innerHTML, true, false);
         this._styleTag = styleContent;
 
         if (!this.fieldconfig.iframe_as_blob_url) {

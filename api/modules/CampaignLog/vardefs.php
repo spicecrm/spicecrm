@@ -201,20 +201,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
     		'len' => '255',
    	 		'source'=>'non-db',
         ],
-      	'campaigntask_name' => [
-    		'name' => 'campaigntask_name',
-    		'rname' => 'name',
-    		'id_name' => 'campaigntask_id',
-    		'vname' => 'LBL_CAMPAIGNTASK',
-    		'type' => 'relate',
-    		'table' => 'campaigntasks',
-    		'isnull' => 'true',
-    		'module' => 'CampaignTasks',
-    		'dbType' => 'varchar',
-    		'link'=>'campaigntasks',
-    		'len' => '255',
-   	 		'source'=>'non-db',
-        ],
+//      	'campaigntask_name' => [
+//    		'name' => 'campaigntask_name',
+//    		'rname' => 'name',
+//    		'id_name' => 'campaigntask_id',
+//    		'vname' => 'LBL_CAMPAIGNTASK',
+//    		'type' => 'relate',
+//    		'table' => 'campaigntasks',
+//    		'isnull' => 'true',
+//    		'module' => 'CampaignTasks',
+//    		'dbType' => 'varchar',
+//    		'link'=>'campaigntasks',
+//    		'len' => '255',
+//   	 		'source'=>'non-db',
+//        ],
 		'campaign_name' => [
 			'name' => 'campaign_name',
 			'type' => 'varchar',
@@ -240,13 +240,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
             'source'=>'non-db',
             'vname'=> 'LBL_CAMPAIGNS',
         ],
-		'campaigntask'=> [
-  			'name' => 'campaigntask',
-    		'type' => 'link',
-    		'relationship' => 'campaigntask_campaignlog',
-    		'source'=>'non-db',
-		    'vname'=> 'LBL_CAMPAIGNTASKS',
-        ],
+//		'campaigntask'=> [
+//  			'name' => 'campaigntask',
+//    		'type' => 'link',
+//    		'relationship' => 'campaigntask_campaignlog',
+//    		'source'=>'non-db',
+//		    'vname'=> 'LBL_CAMPAIGNTASKS',
+//        ],
   		'related_name'=> [
   			'source'=>'function',
 		  	'function_name'=>'get_related_name',
@@ -480,7 +480,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
     ]
 ];
 
-VardefManager::createVardef('CampaignLog', 'CampaignLog', []); // 'assignable' migrated
+//VardefManager::createVardef('CampaignLog', 'CampaignLog', []); // 'assignable' migrated
 
 if (file_exists('extensions/modules/ServiceFeedbacks')) {
     SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog']['fields']['servicefeedbacks'] = [

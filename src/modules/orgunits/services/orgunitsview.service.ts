@@ -123,7 +123,8 @@ export class orgunitsViewService {
     }
 
     public buildConnectorsForNode(nodeid){
-        let ne = this.orgchartElements.find(oe => oe.id == nodeid).nativeElement;
+        let ne = this.orgchartElements.find(oe => oe.id == nodeid)?.nativeElement;
+        if(!ne) return;
         // build the viewport rect
         let viewPortRect = {
             top: this.viewport.getBoundingClientRect().top,
@@ -133,8 +134,9 @@ export class orgunitsViewService {
         }
 
         // get all linked OrgUnits & OrgCharts
-        let children = this.orgunits.filter(s => s.parent_id == nodeid).map(c => c.id).concat(this.orgcharts.filter(s => s.orgunit_id == nodeid).map(c => c.id));
-        if (children.length > 0) {
+        let children = this.orgunits.filter(s => s.parent_id == nodeid && (s.is_staff_unit == false || s.is_staff_unit == 0)).map(c => c.id).concat(this.orgcharts.filter(s => s.orgunit_id == nodeid).map(c => c.id));
+        let staffChildren = this.orgunits.filter(s => s.parent_id == nodeid && (s.is_staff_unit != false || s.is_staff_unit != 0)).map(c => c.id);
+        if (staffChildren.length > 0 || children.length > 0) {
             let mBox = ne.getBoundingClientRect();
             let mBoxX = mBox.left + (mBox.width / 2) - viewPortRect.left;
             let mBoxY = mBox.bottom - viewPortRect.top;
@@ -144,7 +146,8 @@ export class orgunitsViewService {
             let minCY = null;
             let minCX = null;
             for (let child of children) {
-                let ce = this.orgchartElements.find(oe => oe.id == child).nativeElement;
+                let ce = this.orgchartElements.find(oe => oe.id == child)?.nativeElement;
+                if(!ce) continue;
                 let cBox = ce.getBoundingClientRect();
                 let cBoxX = cBox.left + (cBox.width / 2) - viewPortRect.left;
                 let cBoxY = cBox.top - viewPortRect.top;
@@ -156,12 +159,41 @@ export class orgunitsViewService {
                 childCoordinates.push({cBoxX, cBoxY})
             }
 
-            let midY = mBoxY + (minCY - mBoxY) / 2;
-            this.connectors.push(`M ${mBoxX},${mBoxY} L ${mBoxX},${midY}`);
-            this.connectors.push(`M ${minCX},${midY} L ${maxCX},${midY}`);
-            for (let cc of childCoordinates) {
-                this.connectors.push(`M ${cc.cBoxX},${midY} L ${cc.cBoxX},${cc.cBoxY}`);
+            let staffCoordinates = [];
+            let sBoxY = mBoxY;
+            let maxSY = null;
+            for (let staffChild of staffChildren) {
+                let ce = this.orgchartElements.find(oe => oe.id == staffChild)?.nativeElement;
+                if(!ce) continue;
+                let cBox = ce.getBoundingClientRect();
+                let cBoxX = cBox.left + (cBox.width / 2) - viewPortRect.left;
+                let cBoxY = cBox.top + (cBox.height / 2) - viewPortRect.top;
+
+                // get he max y if we do not have any cheildren
+                if (!maxSY || cBoxX > cBoxY) maxSY = cBoxY;
+
+                // see if we neeed to push the bottom
+                let cBoxBottom = cBox.bottom - viewPortRect.top;
+                if (cBoxBottom > sBoxY) sBoxY = cBoxBottom;
+
+                staffCoordinates.push({cBoxX, cBoxY})
             }
+
+            if(children.length > 0) {
+                let midY = sBoxY + (minCY - sBoxY) / 2;
+                this.connectors.push(`M ${mBoxX},${mBoxY} L ${mBoxX},${midY}`);
+                this.connectors.push(`M ${minCX},${midY} L ${maxCX},${midY}`);
+                for (let cc of childCoordinates) {
+                    this.connectors.push(`M ${cc.cBoxX},${midY} L ${cc.cBoxX},${cc.cBoxY}`);
+                }
+            } else {
+                this.connectors.push(`M ${mBoxX},${mBoxY} L ${mBoxX},${maxSY}`);
+            }
+
+            for (let sc of staffCoordinates) {
+                this.connectors.push(`M ${mBoxX},${sc.cBoxY} L ${sc.cBoxX},${sc.cBoxY}`);
+            }
+
             for (let child of children) {
                 this.buildConnectorsForNode(child);
             }

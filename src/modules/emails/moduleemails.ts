@@ -24,6 +24,7 @@ import {EmailReplyModal} from "./components/emailreplymodal";
 import {EmailForwardButton} from "./components/emailforwardbutton";
 import {EmailForwardModal} from "./components/emailforwardmodal";
 import {EmailSendButton} from "./components/emailsendbutton";
+import {EmailSaveDraftButton} from "./components/emailsavedraftbutton";
 import {EmailSchedulesButton} from "./components/emailschedulesbutton";
 import {EmailSchedulesCancelButton} from "./components/emailschedulescancelbutton";
 import {EmailSchedulesModal} from "./components/emailschedulesmodal";
@@ -43,6 +44,7 @@ import {EmailCloneAttachmentsModal} from "./components/emailcloneattachmentsmoda
 import {ModuleSpiceAttachments} from "../../include/spiceattachments/spiceattachments";
 import {fieldZipCompress} from "./fields/fieldzipcompress";
 import {fieldReadReceipt} from "./fields/fieldreadreceipt";
+import {EmailForwardToTargetListButton} from "./components/emailforwardtotargetlistbutton";
 
 @NgModule({
     imports: [
@@ -64,8 +66,10 @@ import {fieldReadReceipt} from "./fields/fieldreadreceipt";
         EmailsPopoverBody,
         fieldEmailStatus,
         EmailReplyButton,
+        EmailForwardToTargetListButton,
         EmailReplyModal,
         EmailSendButton,
+        EmailSaveDraftButton,
         EmailForwardButton,
         EmailForwardModal,
         EmailSchedulesButton,

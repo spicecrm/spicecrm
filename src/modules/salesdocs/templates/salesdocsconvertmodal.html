@@ -7,7 +7,7 @@
             </thead>
             <tbody>
                 <ng-container *ngFor="let item of targetData.SalesDocItems">
-                    <tr salesdocs-convert-modal-item [data]="item"></tr>
+                    <tr salesdocs-convert-modal-item [quantitiyfixed]="getReadOnly(item)" [data]="item"></tr>
                 </ng-container>
             </tbody>
         </table>

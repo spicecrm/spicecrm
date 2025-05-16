@@ -32,16 +32,20 @@ export class SpicePageBuilderElement implements OnInit {
      */
     @Input() public isEditMode: boolean = false;
     /**
+     * to set the editor modal to grow or nnot
+     */
+    public growEditorModal: boolean = true;
+    /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[] = [
-        {name: 'width', type: 'text'},
-        {name: 'background-color', type: 'color'}
+    public readonly attributesList: AttributeObjectI[][] = [
+        [{name: 'width', type: 'text'},
+        {name: 'background-color', type: 'color'}]
     ];
     /**
      * hold the style object for the element
      */
-    public style = {};
+    public style: any = {};
 
     constructor(public domSanitizer: DomSanitizer,
                 public modal: modal,
@@ -76,6 +80,14 @@ export class SpicePageBuilderElement implements OnInit {
     }
 
     /**
+     * returns a style Object
+     * @param pickList
+     */
+    public returnStyle(pickList?: string[]) {
+        return JSON.parse(JSON.stringify(!pickList ? this.element.attributes : _.pick(this.element.attributes, pickList)));
+    }
+
+    /**
      * set the hovered element level
      * @param value
      */
@@ -88,7 +100,7 @@ export class SpicePageBuilderElement implements OnInit {
      */
     public edit() {
 
-        this.spicePageBuilderService.openEditModal(this.element).subscribe({
+        this.spicePageBuilderService.openEditModal(this.element, this.growEditorModal).subscribe({
             next: res => {
                 if (!!res) {
                     this.handleEditResponse(res);

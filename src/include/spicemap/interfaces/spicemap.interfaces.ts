@@ -118,6 +118,8 @@ export interface RecordComponentConfigI {
     unitSystem?: 'METRIC'|'IMPERIAL';
     /** show/hide list header */
     showListHeader?: boolean;
+    /** show aggregate panel */
+    showAggregate?: boolean;
 }
 
 /**

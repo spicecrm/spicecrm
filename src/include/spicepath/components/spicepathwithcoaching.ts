@@ -55,6 +55,11 @@ export class SpicePathWithCoaching {
     public coachingVisible: boolean = false;
 
     /**
+     * to be set if coashing should be hidden
+     */
+    public coachingHidden: boolean = false;
+
+    /**
      * holds the current active stage if the user clicks on another stage
      */
     public activeStage: string;
@@ -64,7 +69,10 @@ export class SpicePathWithCoaching {
      */
     public beanStagesChecksResults: any[];
 
-    public componentconfig: {coachingVisible?: boolean, kanban?: string} = {};
+    /**
+     * the componentconfig
+     */
+    public componentconfig: {coachingVisible?: boolean,coachingHidden?: boolean, kanban?: string} = {};
 
     public stages: any[] = [];
 
@@ -80,6 +88,9 @@ export class SpicePathWithCoaching {
      */
     public ngOnInit() {
 
+        if (this.componentconfig && this.componentconfig.coachingHidden) {
+            this.coachingHidden = this.componentconfig.coachingHidden;
+        }
         if (this.componentconfig && this.componentconfig.coachingVisible) {
             this.coachingVisible = this.componentconfig.coachingVisible;
         }

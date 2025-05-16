@@ -25,6 +25,7 @@ import {fieldModelAttachment} from "./fields/fieldmodelattachment";
 import {fieldModelAttachmentPreview} from "./fields/fieldmodelattachmentpreview";
 import {SpiceAttachmentsContainer} from "./components/spiceattachmentscontainer";
 import {SpiceAttachmentAddFromRecordModal} from "./components/spiceattachmentaddfromrecordmodal";
+import {SpiceAttachmentsSetFolderModal} from "./components/spiceattachmentssetfoldermodal";
 
 @NgModule({
     imports: [
@@ -54,7 +55,8 @@ import {SpiceAttachmentAddFromRecordModal} from "./components/spiceattachmentadd
         fieldModelAttachment,
         fieldModelAttachmentPreview,
         SpiceAttachmentsContainer,
-        SpiceAttachmentAddFromRecordModal
+        SpiceAttachmentAddFromRecordModal,
+        SpiceAttachmentsSetFolderModal
     ]
 })
 export class ModuleSpiceAttachments {

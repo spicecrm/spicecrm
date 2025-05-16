@@ -1,0 +1,51 @@
+<system-modal>
+    <system-modal-header-empty (close)="close()"></system-modal-header-empty>
+    <system-modal-content>
+        <div class="slds-welcome-mat">
+            <div class="slds-welcome-mat__content slds-grid">
+                <div class="slds-welcome-mat__info slds-size_1-of-2" tabindex="0" role="region">
+                    <div class="slds-welcome-mat__info-content">
+                        <h2 class="slds-welcome-mat__info-title">
+                            <system-label label="MSG_WELCOME"/>
+                        </h2>
+                        <div class="slds-welcome-mat__info-description slds-text-longform">
+                            <p>
+                                <system-label label="MSG_WELCOME" length="long"/>
+                            </p>
+                        </div>
+                        <div class="slds-welcome-mat__info-progress">
+                            <p>
+                                <strong>0/5 units completed</strong>
+                            </p>
+                        </div>
+                        <system-progress-bar progress="20"></system-progress-bar>
+                    </div>
+                </div>
+                <ul class="slds-welcome-mat__tiles slds-size_1-of-2">
+                    <li class="slds-welcome-mat__tile slds-welcome-mat__tile_complete">
+                        <a href="#" class="slds-box slds-box_link slds-media">
+                            <div class="slds-media__figure slds-media__figure_fixed-width slds-align_absolute-center">
+                                <div class="slds-welcome-mat__tile-figure">
+                                    <div class="slds-welcome-mat__tile-icon-container">
+                                        <system-utility-icon size="default" icon="animal_and_nature"/>
+                                        <span class="slds-icon_container slds-icon_container_circle slds-icon-action-check" title="Completed">
+                                            <system-utility-icon icon="check" size="x-small"/>
+                                            <span class="slds-assistive-text">Completed</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-media__body">
+                                <div class="slds-welcome-mat__tile-body">
+                                    <h3 class="slds-welcome-mat__tile-title">Welcome to Salesforce!</h3>
+                                    <p class="slds-welcome-mat__tile-description">Lorem ipsum dolor sit amet, lorem
+                                        ipsum dolor sit amet.</p>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </system-modal-content>
+</system-modal>

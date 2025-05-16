@@ -119,7 +119,7 @@ export class ObjectRecordAdministrationTab implements OnInit {
      * simple getter to return if the current module manages multiple users
      */
     get multipleusers() {
-        return this.metadata.getModuleDefs(this.model.module).acl_multipleusers == 1 ? true : false;
+        return this.metadata.getModuleDefs(this.model.module)?.acl_multipleusers == 1 ? true : false;
     }
 
     get hidden() {

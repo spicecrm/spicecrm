@@ -75,6 +75,8 @@ export class EmailToObjectEmailText implements OnDestroy, OnInit {
                     this.target_module_fields.push(field);
                 }
             }
+
+            this.target_module_fields.sort((a, b) => this.language.getFieldDisplayName(this.target_module_name, a).toLowerCase() > this.language.getFieldDisplayName(this.target_module_name, b).toLowerCase() ? 1 : -1);
         }
     }
 

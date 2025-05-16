@@ -1,0 +1,70 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_SKILL_MANAGER"/></system-modal-header>
+    <system-modal-content system-modal-content-grow margin="none">
+        <table class="slds-table slds-table_bordered slds-table_edit slds-table_fixed-layout slds-table--header-fixed slds-tree slds-table_tree">
+            <thead>
+            <tr class="slds-line-height_reset" [system-view-provider]="{displayLabels: false}">
+                <th style="width: 50%">
+                    <div class="slds-truncate slds-p-around--x-small">
+                        <system-label label="LBL_SKILL"/>
+                    </div>
+                </th>
+                <th style="width: 50%" class="slds-text-align--center">
+                    <div class="slds-truncate slds-p-around--x-small">
+                        <system-label label="LBL_REQUIRED"/>
+                    </div>
+                </th>
+                @if(hcmProfileScopes.length > 0) {
+                    <th style="width: 50%" class="slds-text-align--center">
+                        <div class="slds-truncate slds-p-around--x-small">
+                            <system-label label="LBL_SCOPE"/>
+                        </div>
+                    </th>
+                }
+            </tr>
+            </thead>
+            <tbody>
+                @for (treeNode of treeNodes; track treeNode.id) {
+                    <tr [attr.aria-level]="treeNode.level" [attr.aria-posinset]="treeNode.level" aria-selected="false"
+                        class="slds-hint-parent"
+                        tabindex="0">
+                        <td class="slds-tree__item">
+                            <div class="slds-truncate slds-p-around--xx-small">
+                                <system-label [label]="treeNode.node_name"/>
+                            </div>
+                        </td>
+                        <td class="slds-text-align--center" role="gridcell">
+                            @if (treeNode.selectable) {
+                                <div class="slds-select_container">
+                                    <select class="slds-select" [(ngModel)]="treeNode.required">
+                                        <option value=""></option>
+                                        <option value="required"><system-label label="LBL_REQUIRED"/></option>
+                                        <option value="optional"><system-label label="LBL_OPTIONAL"/></option>
+                                    </select>
+                                </div>
+                            }
+                        </td>
+                        @if(hcmProfileScopes.length > 0) {
+                            <td class="slds-text-align--center" role="gridcell">
+                                @if (treeNode.selectable && treeNode.required) {
+                                    <div class="slds-select_container">
+                                        <select class="slds-select" [(ngModel)]="treeNode.hcmjobprofilescope_id">
+                                            <option value=""></option>
+                                            @for(hcmProfileScope of hcmProfileScopes; track hcmProfileScope.id){
+                                                <option [value]="hcmProfileScope.id">{{hcmProfileScope.name}}</option>
+                                            }
+                                        </select>
+                                    </div>
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"/></button>
+        <button class="slds-button slds-button--brand" [disabled]="nodesToSave.length == 0" (click)="save()"><system-label label="LBL_SAVE"/></button>
+    </system-modal-footer>
+</system-modal>

@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\modules\SpiceImports\api\controllers;
 
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\data\BeanFactory;
@@ -83,15 +84,16 @@ class SpiceImportsController{
      */
 
     public function saveFromImport(Request $req, Response $res, array $args): Response {
-        if (!SpiceACL::getInstance()->checkAccess('SpiceImports', 'edit', true)) {
-            throw (new ForbiddenException("Forbidden for details in module SpiceImports."))
-                ->setErrorCode('noModuleDetails');
+        $importData = $req->getParsedBody();
+
+        if (!SpiceACL::getInstance()->checkAccess($importData['module'], 'import')) {
+            throw (new ForbiddenException("import for module not allowed"));
         }
 
-        $bean = BeanFactory::getBean('SpiceImports');
-        return $res->withJson( $bean->saveFromImport(
-            $args['objectimport'] ? json_decode( $args['objectimport'] ) : ( $req->getParsedBody()['objectimport'] ?: [] )
-        ));
+        $seed = BeanFactory::getBean('SpiceImports');
+        $seed->saveFromImport($importData);
+        $handler = new SpiceBeanHandler();
+        return $res->withJson($handler->mapBean($seed));
     }
 
     /**
@@ -104,21 +106,24 @@ class SpiceImportsController{
      */
 
     public function getImportLog(Request $req, Response $res, array $args): Response {
-        if (!SpiceACL::getInstance()->checkAccess('SpiceImports', 'detail', true)) {
-            throw (new ForbiddenException("Forbidden for details in module SpiceImports."))
-                ->setErrorCode('noModuleDetails');
+        $seed = BeanFactory::getBean('SpiceImports', $args['importId']);
+        if(!$seed){
+            throw (new ForbiddenException("No Access to this SpiceImport"));
         }
 
-        $id = $args['importId'];
-        $db = DBManagerFactory::getInstance();
-        $logs = [];
+        // gets the query params
+        $params = $req->getQueryParams();
 
-        $spiceImportLogIds = $db->query("SELECT * FROM spiceimportlogs WHERE import_id = '$id'");
-        while ($log = $db->fetchByAssoc($spiceImportLogIds)) {
-            $logs[] = $log;
-        }
+        // gets the records
+        $logs = $seed->db->fetchLimit("SELECT * FROM spiceimportlogs WHERE import_id = '{$seed->id}' ORDER BY rowpointer", $params['start'] ?: 0, $params['limit'] ?: 50);
 
-        return $res->withJson($logs);
+        // get the total count
+        $totalcount = $seed->db->fetchOne("SELECT COUNT(id) as totalcount FROM spiceimportlogs WHERE import_id = '{$seed->id}'")['totalcount'];
+
+        // get the importData for the header
+        $importData = json_decode(html_entity_decode($seed->data));
+
+        return $res->withJson(['header' => $importData->fileHeader, 'totalcount' => (int) $totalcount, 'logs' => $logs ?: []]);
     }
 
     /**

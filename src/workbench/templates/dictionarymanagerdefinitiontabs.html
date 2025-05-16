@@ -34,6 +34,6 @@
         </div>
     </div>
     <div class="slds-tabs_default__content slds-p-around--none" *ngIf="!isTemplate" [ngClass]="{'slds-hide': scope != 'fields'}" role="tabpanel">
-        <dictionary-manager-fields></dictionary-manager-fields>
+        <dictionary-manager-fields *ngIf="scope == 'fields'"></dictionary-manager-fields>
     </div>
 </div>

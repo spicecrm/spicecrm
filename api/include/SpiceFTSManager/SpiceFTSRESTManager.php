@@ -32,13 +32,12 @@ use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\SystemTenants\SystemTenant;
 
 class SpiceFTSRESTManager
 {
@@ -58,6 +57,13 @@ class SpiceFTSRESTManager
             # header("Access-Control-Allow-Origin: *");
     }
 
+    public function __construct()
+    {
+        if (SystemTenant::isInTenantSystem()) {
+            throw new ForbiddenException("The fts apis are only accessible for the master system");
+        }
+    }
+
     /**
      * initializes all modules
      *
@@ -66,15 +72,12 @@ class SpiceFTSRESTManager
      */
     function initialize()
     {
-        $db = DBManagerFactory::getInstance();
-
         $this->checkAdmin();
 
         // delete all indices
         SpiceFTSHandler::getInstance()->elasticHandler->deleteAllIndexes();
 
-        $modules = $db->query("SELECT module FROM sysfts");
-        while($module = $db->fetchByAssoc($modules)){
+        foreach(SpiceFTSHandler::getInstance()->modules as $module){
             // check if we can create a bean for the module
             $seed = BeanFactory::getBean($module['module']);
             if(!$seed) continue;
@@ -137,16 +140,11 @@ class SpiceFTSRESTManager
      */
     function getModules()
     {
-        $db = DBManagerFactory::getInstance();
-
         $this->checkAdmin();
 
-        $retArray = [];
-        $modules = $db->query("SELECT module FROM sysfts");
-        while($module = $db->fetchByAssoc($modules)){
-            $retArray[] = $module['module'];
-        }
-        return $retArray;
+        return array_column(
+            SpiceFTSHandler::getInstance()->modules, 'module'
+        );
     }
 
     /**
@@ -188,8 +186,6 @@ class SpiceFTSRESTManager
      */
     function getFTSFields($module)
     {
-        $db = DBManagerFactory::getInstance();
-
         $this->checkAdmin();
 
         $seed = BeanFactory::getBean($module);
@@ -198,7 +194,7 @@ class SpiceFTSRESTManager
         // $mapping = json_decode($this->elasticHandler->getMapping($module));
 
         $ftsFields = [];
-        $record = $db->fetchByAssoc($db->query("SELECT * FROM sysfts WHERE module = '$module'"));
+        $record = SpiceFTSHandler::getInstance()->modules[$module];
         if ($record && $ftsFields = json_decode(html_entity_decode($record['ftsfields']), true)) {
             foreach ($ftsFields as &$ftsField) {
                 $ftsField['indexfieldname'] = SpiceFTSUtils::getFieldIndexName($seed, $ftsField['path']);
@@ -235,7 +231,7 @@ class SpiceFTSRESTManager
         // $mapping = json_decode($this->elasticHandler->getMapping($module));
 
         $ftsFields = [];
-        $record = $db->fetchByAssoc($db->query("SELECT * FROM sysfts WHERE module = '$module'"));
+        $record = SpiceFTSHandler::getInstance()->modules[$module];
         if ($record && $ftsFields = json_decode(html_entity_decode($record['settings']), true)) {
             $ftsFields = json_decode(html_entity_decode($record['settings']), true);
         }
@@ -258,11 +254,9 @@ class SpiceFTSRESTManager
      */
     function setFTSFields($module, $items)
     {
-        $db = DBManagerFactory::getInstance();
-
         $this->checkAdmin();
 
-        $record = $db->fetchByAssoc($db->query("SELECT * FROM sysfts WHERE module = '$module'"));
+        $record = SpiceFTSHandler::getInstance()->modules[$module];
 
         if ($record) {
 

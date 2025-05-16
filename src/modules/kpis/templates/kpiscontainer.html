@@ -1,39 +1,46 @@
 @if (groupedTargets.length > 0) {
     @for (kpiGroup of groupedTargets; track kpiGroup.name) {
-        <article class="slds-card">
-            <div class="slds-card__header slds-grid">
-                <div class="slds-media__body slds-truncate">
-                    <h2 class="slds-card__header-title">
-                        {{ kpiGroup.name }}
-                    </h2>
-                </div>
-            </div>
-            <div class="slds-card__body slds-card__body_inner">
-                @if (kpiGroup.targets.length > 0) {
-                    <div class="slds-grid slds-wrap">
-                        @for (kpiTarget of kpiGroup.targets; track kpiTarget.id) {
-                            <div class="slds-col slds-m-right--small slds-m-bottom--x-small slds-box slds-box--border"
-                                 [ngClass]="getTileWidthClass">
-                                <kpi-tile [kpiTarget]="kpiTarget"></kpi-tile>
-                            </div>
-                        }
-                    </div>
-                } @else {
-                    <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
-                        @if (loading) {
-                            <system-spinner/>
+        <div class="slds-box--border slds-p-around--x-small" [ngClass]="{'slds-m-top--x-small': $index > 0}">
+            <div class="slds-p-around--x-small slds-media__body slds-truncate">
+                <h2 class="slds-card__header-title">
+                    <span>
+                        @if(kpiGroup.display_label){
+                            <system-label [label]="kpiGroup.display_label"/>
                         } @else {
-                            <system-illustration-no-records>
-                                @if (parentId) {
-                                    <system-label label="LBL_NO_KPIS_SET"/>
-                                } @else {
-                                    <system-label label="LBL_NO_USER_SELECTED"/>
-                                }
-                            </system-illustration-no-records>
+                            {{ kpiGroup.name }}
                         }
+                    </span>
+                </h2>
+            </div>
+            <div class="slds-p-horizontal--x-small slds-grid slds-wrap slds-gutters_direct-xx-small slds-p-bottom--x-small">
+                @for (kpiTarget of kpiGroup.targets; track kpiTarget.id) {
+                    <div class="slds-col" [ngClass]="getTileWidthClass">
+                        <system-dynamic-component [component]="kpiTarget.kpi.display_component ?? 'KpiTile'" [componentattributes]="{kpiTarget: kpiTarget}"></system-dynamic-component>
                     </div>
                 }
             </div>
-        </article>
+        </div>
     }
+} @else if (otherTargets.length > 0){
+    <div class="slds-grid slds-wrap slds-gutters_direct-xx-small">
+        @for (kpiTarget of otherTargets; track kpiTarget.id) {
+            <div class="slds-col" [ngClass]="getTileWidthClass">
+                <system-dynamic-component [component]="kpiTarget.kpi.display_component ?? 'KpiTile'"  [componentattributes]="{kpiTarget: kpiTarget}"></system-dynamic-component>
+            </div>
+        }
+    </div>
+} @else {
+    <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+        @if (loading) {
+            <system-spinner/>
+        } @else {
+            <system-illustration-no-records>
+                @if (parentId) {
+                    <system-label label="LBL_NO_KPIS_SET"/>
+                } @else {
+                    <system-label label="LBL_NO_USER_SELECTED"/>
+                }
+            </system-illustration-no-records>
+        }
+    </div>
 }

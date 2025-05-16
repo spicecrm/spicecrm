@@ -7,7 +7,8 @@
                         <system-label class="slds-p-horizontal--x-small slds-p-vertical--xx-small" [label]="pivotNameField"></system-label>
                     </th>
                     <th style="width: 10%;" [ngStyle]="getMultiHeaderStyle(i)" class="slds-text-align--center slds-border--left slds-truncate" *ngFor="let column of row" [colSpan]="column.span">
-                        {{column.value}}
+                        <system-dynamic-component *ngIf="column.field.type == 'category'" component="ReporterFieldCategoryTree" [componentattributes]="{record: column.record, field: column.field}"></system-dynamic-component>
+                        <span *ngIf="column.field.type != 'category'">{{column.value}}</span>
                     </th>
                     <th *ngIf="first && presParams.pluginData.advancedOptions.showTotal" scope="col" class="slds-truncate slds-text-align--center" style="width: 2%" [rowSpan]="presParams.pluginData.columnData.length">Σ</th>
                 </tr>

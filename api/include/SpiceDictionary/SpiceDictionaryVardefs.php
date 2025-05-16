@@ -85,25 +85,27 @@ class SpiceDictionaryVardefs  {
 
 
     /**
+     * @deprecated
      * checks if the System is set for database managed vardefs
      * @return false
      */
     public static function isDbManaged(){
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']){
-            return true;
-        }
-        return false;
+//        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']){
+//            return true;
+//        }
+        return true;
     }
 
     /**
+     * @deprecated
      * checks if the System is set for database managed domains
      * @return false
      */
     public static function isDomainManaged(){
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['domains']) && SpiceConfig::getInstance()->config['systemvardefs']['domains']){
-            return true;
-        }
-        return false;
+//        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['domains']) && SpiceConfig::getInstance()->config['systemvardefs']['domains']){
+//            return true;
+//        }
+        return true;
     }
 
 
@@ -376,6 +378,7 @@ class SpiceDictionaryVardefs  {
         // override in/add to $vardefs (only fields defined in dictionary itself)
         if(isset($vardefs[$object])){
             if(!is_array($dbDict['fields'])) $dbDict['fields'] = [];
+            if(!is_array($vardefs[$object]['fields'])) $vardefs[$object]['fields'] = [];
             $vardefs[$object]['fields'] = array_merge($vardefs[$object]['fields'], $dbDict['fields']);
 
             if(!is_array($dbDict['indices'])) $dbDict['indices'] = [];
@@ -944,7 +947,7 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
         if($res = $db->query($q)) {
             while ($row = $db->fetchByAssoc($res)) {
                 $relationships[$row['relationship_name']] = $row;
-                if($row['relationship_type'] == 'many-to-many' || in_array($row['relationship_type'], ['many-to-many', 'email-address'])) {
+                if(in_array($row['relationship_type'], ['many-to-many', 'email-address', 'many-to-many-prospectlists', 'many-to-many-bean'])) {
                     if(isset(SpiceDictionaryHandler::getInstance()->dictionary[$relationships[$row['relationship_name']]['join_table']]) && !empty(SpiceDictionaryHandler::getInstance()->dictionary[$relationships[$row['relationship_name']]['join_table']]['fields'])){
                         $relationships[$row['relationship_name']]['fields'] = SpiceDictionaryHandler::getInstance()->dictionary[$relationships[$row['relationship_name']]['join_table']]['fields'];
                     }
@@ -2214,15 +2217,15 @@ WHERE relfields.deleted = 0 AND relfields.status = 'a' AND relfields.sysdictiona
     public static function repairAuditTable(array $dict, bool $execute = false){
         $tableName = self::getAuditTableName($dict['table']);
 
-        if (file_exists('metadata/audit_templateMetaData.php')) {
-            require('metadata/audit_templateMetaData.php');
-        }
-
-        // Bug: 52583 Need ability to customize template for audit tables
-        $custom = 'custom/metadata/audit_templateMetaData_' . $tableName . '.php';
-        if (file_exists($custom)) {
-            require($custom);
-        }
+//        if (file_exists('metadata/audit_templateMetaData.php')) {
+//            require('metadata/audit_templateMetaData.php');
+//        }
+//
+//        // Bug: 52583 Need ability to customize template for audit tables
+//        $custom = 'custom/metadata/audit_templateMetaData_' . $tableName . '.php';
+//        if (file_exists($custom)) {
+//            require($custom);
+//        }
 
         $fieldDefs = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
         $indices   = SpiceDictionaryHandler::getInstance()->dictionary['audit']['indices'];

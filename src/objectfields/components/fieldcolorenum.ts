@@ -10,7 +10,7 @@ import {fieldGeneric} from './fieldgeneric';
 import {Router}   from '@angular/router';
 
 @Component({
-    selector: 'field-enum',
+    selector: 'field-color-enum',
     templateUrl: '../templates/fieldcolorenum.html'
 })
 export class fieldColorEnum  extends fieldGeneric {
@@ -29,6 +29,11 @@ export class fieldColorEnum  extends fieldGeneric {
         this.getOptions();
     }
 
+    /**
+     * Handles the option labels (long or short) to use
+     * as well as the color to render
+     * in the display view
+     */
     public getOptions() {
         this.longOptions = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
         let options = this.longOptions;
@@ -62,6 +67,9 @@ export class fieldColorEnum  extends fieldGeneric {
         this.options = retArray;
     }
 
+    /**
+     * stores the color to set for the bullet point
+     */
     get getColor() {
         let colordef = '';
         if (typeof this.colors != 'undefined') {
@@ -74,6 +82,14 @@ export class fieldColorEnum  extends fieldGeneric {
             this.acolor['background-color'] = colordef;
         }
         return this.acolor;
+    }
+
+    /**
+     * stores the hideOptionLabel value
+     * for the display of the single value in the template
+     */
+    get hideOptionLabel(){
+        return (this.fieldconfig.hideOptionLabel ? true : false);
     }
 
     public getValue(): string {

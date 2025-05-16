@@ -1,4 +1,20 @@
-<ng-container *ngIf="type" [ngSwitch]="fileType">
-    <system-object-preview *ngSwitchCase="'notImage'" [data]="blobFile" [type]="type"></system-object-preview>
-    <system-image-preview *ngSwitchCase="'image'" [data]="imgData"></system-image-preview>
-</ng-container>
+<div [system-overlay-loading-spinner]="isLoading" class="slds-height_full">
+    @if (type) {
+        @if (isEditorActive && model.checkAccess('edit') && file.file_mime_type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+            <div class="slds-grid slds-grid--align-end slds-p-vertical--xx-small slds-p-right--x-small">
+                <button (click)="editDocX()" class="slds-button slds-button--icon-border-filled">
+                    <system-button-icon icon="edit_form" size="medium"/>
+                </button>
+            </div>
+        }
+
+        @switch (fileType) {
+            @case ('notImage') {
+                <system-object-preview [data]="blobFile" [type]="type"/>
+            }
+            @case ('image') {
+                <system-image-preview [data]="imgData"/>
+            }
+        }
+    }
+</div>

@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\DataStreams;
 
 use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\DataStreams\wrappers\MediaStream;
 use SpiceCRM\includes\DataStreams\wrappers\UploadStream;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceSingleton;
@@ -18,6 +19,11 @@ class StreamFactory extends SpiceSingleton
         'upload' => [
             'name' => 'upload',
             'class_namespace' => UploadStream::class,
+            'config' => null
+        ],
+        'media' => [
+            'name' => 'media',
+            'class_namespace' => MediaStream::class,
             'config' => null
         ]
     ];
