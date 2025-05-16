@@ -545,9 +545,10 @@ class ElasticHandler
 
         $data_string = !empty($body) ? json_encode($body) : '';
 
-        $ch = curl_init( $this->buildUrl($url, $params));
+        $ch = curl_init();
 
         $curlOptions = $this->buildOptions($method, $data_string);
+        $curlOptions[CURLOPT_URL] = $this->buildUrl($url, $params);
         curl_setopt_array($ch, $curlOptions);
 
         $logEntryHandler = new APILogEntryHandler();

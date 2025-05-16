@@ -38,6 +38,7 @@ import {CalendarDayDashlet} from "./components/calendardaydashlet";
 import {CalendarThreeDaysDashlet} from "./components/calendarthreedaysdashlet";
 import {CalendarSheetMicrosoftEvent} from "./components/calendarsheetmicrosoftevent";
 import {CalendarMicrosoftEventPopover} from "./components/calendarmicrosofteventpopover";
+import {CalendarEditButton} from "./components/calendareditbutton";
 
 
 @NgModule({
@@ -74,7 +75,8 @@ import {CalendarMicrosoftEventPopover} from "./components/calendarmicrosoftevent
         CalendarDayDashlet,
         CalendarThreeDaysDashlet,
         CalendarSheetMicrosoftEvent,
-        CalendarMicrosoftEventPopover
+        CalendarMicrosoftEventPopover,
+        CalendarEditButton
     ],
     providers: [userpreferences]
 })

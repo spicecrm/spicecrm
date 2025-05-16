@@ -89,6 +89,16 @@ export class modelattachments implements OnDestroy {
     public folderTreeItems: any[] = [];
 
     /**
+     * total file size of the attachments
+     */
+    public totalFileSize: string;
+
+    /**
+     * emits the action when the attachment is deleted
+     */
+    public attachmentDeleted$: Subject<boolean> = new Subject<boolean>();
+
+    /**
      * a colection of subscriptions
      */
     public subscriptions: Subscription = new Subscription();
@@ -221,7 +231,7 @@ export class modelattachments implements OnDestroy {
                 for (let attId in response) {
                     if (!this._files.find(a => a.id == attId)) {
                         response[attId].date = new moment(response[attId].date);
-                        this.files.push(response[attId]);
+                        this._files.push(response[attId]);
                     }
                 }
 
@@ -274,20 +284,20 @@ export class modelattachments implements OnDestroy {
         }, this.httpRequestsRefID).subscribe({
             next: response => {
                 for (let attId in response) {
-                    if (!this.files.find(a => a.id == attId)) {
+                    if (!this._files.find(a => a.id == attId)) {
                         response[attId].date = new moment(response[attId].date);
                         this._files.push(response[attId]);
                     }
                 }
 
                 // set the count
-                this.count = this.files.length;
+                this.count = this._files.length;
 
                 // broadcast the count
                 this.broadcastAttachmentCount();
 
                 // close the subject
-                retSubject.next(this.files);
+                retSubject.next(this._files);
                 retSubject.complete();
             },
             error: error => {
@@ -641,7 +651,7 @@ export class modelattachments implements OnDestroy {
     public deleteAttachment(id) {
         this.backend.deleteRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`, null, this.httpRequestsRefID)
             .subscribe({
-                next: (res) => {
+                next: () => {
                     let index = this._files.findIndex(f => f.id == id);
                     this._files.splice(index, 1);
 
@@ -654,6 +664,8 @@ export class modelattachments implements OnDestroy {
                     // broadcast the count
                     this.count--;
                     this.broadcastAttachmentCount();
+
+                    this.attachmentDeleted$.next(true);
                 },
                 error: (error) => {
                     this.toast.sendToast('Cannot delete attachment.', 'error', error.error.error.message, false);
