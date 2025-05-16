@@ -10,7 +10,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\utils\SpiceUtils;
 
-class OrgUnitRelationship extends One2MRelationship
+class OrgUnitRelationship extends One2MBeanRelationship
 {
     var $type = "orgunit";
 
