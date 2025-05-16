@@ -77,6 +77,10 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
      */
     public subFieldset: string;
     /**
+     * Represents the action set identifier
+     */
+    public actionset: string = '';
+    /**
      * subscription to be unsubscribed on destroy
      */
     public subscriptions: Subscription = new Subscription();
@@ -146,7 +150,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
      */
     public ngOnInit() {
         this.setModelDataFromEvent();
-        this.loadFieldset();
+        this.loadComponentConfig();
         this.setEventColor();
     }
 
@@ -237,7 +241,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     /**
      * load event fieldsets
      */
-    public loadFieldset() {
+    public loadComponentConfig() {
         let config = this.metadata.getComponentConfig('CalendarSheetEvent', this.model.module);
         if (config && config.header_fieldset) {
             this.headerFieldset = config.header_fieldset;
@@ -245,6 +249,8 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         if (config && config.sub_fieldset) {
             this.subFieldset = config.sub_fieldset;
         }
+
+        this.actionset = config.actionset;
     }
 
     /**
