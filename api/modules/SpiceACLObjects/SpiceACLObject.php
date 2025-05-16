@@ -21,8 +21,12 @@ use SpiceCRM\modules\UserAbsences\UserAbsence;
  */
 class SpiceACLObject extends SpiceBean
 {
-    private $aclobjects = [];
-
+    private array $aclobjects = [];
+    /**
+     * auth objects
+     * @var array
+     */
+    private array $authObjects = [];
     /*
     public function __construct($id = '')
     {
