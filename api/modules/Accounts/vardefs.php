@@ -372,19 +372,19 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'duplicate_merge' => false,
             'comment' => 'The first campaign name for Account (Meta-data only)',
         ],
-/*        'prospect_lists' => [
-            'name' => 'prospect_lists',
-            'type' => 'link',
-            'relationship' => 'prospect_list_accounts',
-            'module' => 'ProspectLists',
-            'source' => 'non-db',
-            'vname' => 'LBL_PROSPECT_LIST',
-            'rel_fields' => [
-                'quantity' => [
-                    'map' => 'prospectlists_accounts_quantity'
-                ]
-            ]
-        ],*/
+        /*        'prospect_lists' => [
+                    'name' => 'prospect_lists',
+                    'type' => 'link',
+                    'relationship' => 'prospect_list_accounts',
+                    'module' => 'ProspectLists',
+                    'source' => 'non-db',
+                    'vname' => 'LBL_PROSPECT_LIST',
+                    'rel_fields' => [
+                        'quantity' => [
+                            'map' => 'prospectlists_accounts_quantity'
+                        ]
+                    ]
+                ],*/
         'proposals' => [
             'name' => 'proposals',
             'vname' => 'LBL_PROPOSALS',
@@ -904,30 +904,31 @@ if (file_exists("extensions/modules/ProductVariants")) {
 SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['name']['importable'] = 'required';
 
 // CR1000336
-if (file_exists('extensions/modules/SystemDeploymentReleases')) {
+// migrated
+//if (file_exists('extensions/modules/SystemDeploymentReleases')) {
 
-    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['systemdeploymentreleases'] = [
-        'name' => 'systemdeploymentreleases',
-        'type' => 'link',
-        'relationship' => 'account_systemdeploymentreleases',
-        'module' => 'SystemDeploymentReleases',
-        'bean_name' => 'SystemDeploymentRelease',
-        'source' => 'non-db',
-        'vname' => 'LBL_SYSTEMDEPLOYMENTRELEASES',
-        'side' => 'left'
-    ];
-    SpiceDictionaryHandler::getInstance()->dictionary['Account']['relationships']['account_systemdeploymentreleases'] = [
-        'lhs_module' => 'Accounts',
-        'lhs_table' => 'accounts',
-        'lhs_key' => 'id',
-        'rhs_module' => 'SystemDeploymentReleases',
-        'rhs_table' => 'systemdeploymentreleases',
-        'rhs_key' => 'parent_id',
-        'relationship_type' => 'one-to-many',
-        'relationship_role_column' => 'parent_type',
-        'relationship_role_column_value' => 'Accounts'
-    ];
-}
+//    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['systemdeploymentreleases'] = [
+//        'name' => 'systemdeploymentreleases',
+//        'type' => 'link',
+//        'relationship' => 'account_systemdeploymentreleases',
+//        'module' => 'SystemDeploymentReleases',
+//        'bean_name' => 'SystemDeploymentRelease',
+//        'source' => 'non-db',
+//        'vname' => 'LBL_SYSTEMDEPLOYMENTRELEASES',
+//        'side' => 'left'
+//    ];
+//    SpiceDictionaryHandler::getInstance()->dictionary['Account']['relationships']['account_systemdeploymentreleases'] = [
+//        'lhs_module' => 'Accounts',
+//        'lhs_table' => 'accounts',
+//        'lhs_key' => 'id',
+//        'rhs_module' => 'SystemDeploymentReleases',
+//        'rhs_table' => 'systemdeploymentreleases',
+//        'rhs_key' => 'parent_id',
+//        'relationship_type' => 'one-to-many',
+//        'relationship_role_column' => 'parent_type',
+//        'relationship_role_column_value' => 'Accounts'
+//    ];
+//}
 
 if (file_exists('extensions/modules/Potentials')) {
 
