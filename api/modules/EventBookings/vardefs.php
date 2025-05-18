@@ -47,50 +47,50 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventBooking'] = [
             'relationship' => 'eventcapacities_eventbookings',
             'source' => 'non-db',
         ],
-        'parent_id' => [
-            'name' => 'parent_id',
-            'vname' => 'LBL_PARTICIPANT_ID',
-            'type' => 'id',
-            'reportable' => false,
-            'comment' => 'ID of parent record'
-        ],
-        'parent_type' => [
-            'name'     => 'parent_type',
-            'vname'    => 'LBL_PARTICIPANT_TYPE',
-            'type'     => 'parent_type',
-            'dbtype'   => 'varchar',
-            'len'      => 50,
-            'comment'  => 'The module name of participant record',
-        ],
-        'parent_name' => [
-            'name'        => 'parent_name',
-            'vname'       => 'LBL_RELATED_TO',
-            'type'        => 'parent',
-            'type_name'   => 'parent_type',
-            'id_name'     => 'parent_id',
-            'source'      => 'non-db',
-            'required' => true,
-            'comment'  => 'The summary of the participant record',
-        ],
+//        'parent_id' => [
+//            'name' => 'parent_id',
+//            'vname' => 'LBL_PARTICIPANT_ID',
+//            'type' => 'id',
+//            'reportable' => false,
+//            'comment' => 'ID of parent record'
+//        ],
+//        'parent_type' => [
+//            'name'     => 'parent_type',
+//            'vname'    => 'LBL_PARTICIPANT_TYPE',
+//            'type'     => 'parent_type',
+//            'dbtype'   => 'varchar',
+//            'len'      => 50,
+//            'comment'  => 'The module name of participant record',
+//        ],
+//        'parent_name' => [
+//            'name'        => 'parent_name',
+//            'vname'       => 'LBL_RELATED_TO',
+//            'type'        => 'parent',
+//            'type_name'   => 'parent_type',
+//            'id_name'     => 'parent_id',
+//            'source'      => 'non-db',
+//            'required' => true,
+//            'comment'  => 'The summary of the participant record',
+//        ],
         'participated' => [
             'name' => 'participated',
             'vname' => 'LBL_PARTICIPATED',
             'type' => 'bool'
         ],
-        'contact' => [
-            'name' => 'contact',
-            'vname' => 'LBL_CONTACT',
-            'type' => 'link',
-            'relationship' => 'contact_eventbookings',
-            'source' => 'non-db',
-        ],
-        'consumer' => [
-            'name' => 'consumer',
-            'vname' => 'LBL_CONSUMER',
-            'type' => 'link',
-            'relationship' => 'consumer_eventbookings',
-            'source' => 'non-db',
-        ],
+//        'contact' => [
+//            'name' => 'contact',
+//            'vname' => 'LBL_CONTACT',
+//            'type' => 'link',
+//            'relationship' => 'contact_eventbookings',
+//            'source' => 'non-db',
+//        ],
+//        'consumer' => [
+//            'name' => 'consumer',
+//            'vname' => 'LBL_CONSUMER',
+//            'type' => 'link',
+//            'relationship' => 'consumer_eventbookings',
+//            'source' => 'non-db',
+//        ],
         'channel' => [
             'name' => 'channel',
             'vname' => 'LBL_CHANNEL',
@@ -109,28 +109,28 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventBooking'] = [
             'rhs_key' => 'event_capacity_id',
             'relationship_type' => 'one-to-many'
         ],
-        'contact_eventbookings' => [
-            'lhs_module' => 'Contacts',
-            'lhs_table' => 'contacts',
-            'lhs_key' => 'id',
-            'rhs_module' => 'EventBookings',
-            'rhs_table' => 'eventbookings',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column'=>'parent_type',
-            'relationship_role_column_value' => 'Contacts'
-        ],
-        'consumer_eventbookings' => [
-            'lhs_module' => 'Consumers',
-            'lhs_table' => 'consumers',
-            'lhs_key' => 'id',
-            'rhs_module' => 'EventBookings',
-            'rhs_table' => 'eventbookings',
-            'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column'=>'parent_type',
-            'relationship_role_column_value' => 'Consumers'
-        ]
+//        'contact_eventbookings' => [
+//            'lhs_module' => 'Contacts',
+//            'lhs_table' => 'contacts',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'EventBookings',
+//            'rhs_table' => 'eventbookings',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column'=>'parent_type',
+//            'relationship_role_column_value' => 'Contacts'
+//        ],
+//        'consumer_eventbookings' => [
+//            'lhs_module' => 'Consumers',
+//            'lhs_table' => 'consumers',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'EventBookings',
+//            'rhs_table' => 'eventbookings',
+//            'rhs_key' => 'parent_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column'=>'parent_type',
+//            'relationship_role_column_value' => 'Consumers'
+//        ]
     ],
     'indices' => [
         ['name' => 'idx__eventbookings__regparticipant', 'type' => 'index', 'fields' => ['parent_id', 'parent_type', 'deleted','participated']],

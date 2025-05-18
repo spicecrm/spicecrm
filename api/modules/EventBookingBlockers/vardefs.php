@@ -24,38 +24,38 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventBookingBlocker'] = [
             'required' => false,
             'comment' => 'common calendar booking blocked from'
         ],
-        'participant_id' => [
-            'name' => 'participant_id',
-            'vname' => 'LBL_PARTICIPANT_ID',
-            'type' => 'id',
-            'reportable' => false,
-            'comment' => 'ID of parent record'
-        ],
-        'participant_type' => [
-            'name'     => 'participant_type',
-            'vname'    => 'LBL_PARTICIPANT_TYPE',
-            'type'     => 'parent_type',
-            'dbtype'   => 'varchar',
-            'len'      => 50,
-            'comment'  => 'The module name of participant record',
-        ],
-        'participant_name' => [
-            'name'        => 'participant_name',
-            'vname'       => 'LBL_RELATED_TO',
-            'type'        => 'parent',
-            'type_name'   => 'participant_type',
-            'id_name'     => 'participant_id',
-            'source'      => 'non-db',
-            'required' => true,
-            'comment'  => 'The summary of the participant record',
-        ],
-        'consumer' => [
-            'name' => 'consumer',
-            'vname' => 'LBL_CONSUMER',
-            'type' => 'link',
-            'relationship' => 'consumer_eventbookingblockers',
-            'source' => 'non-db',
-        ],
+//        'participant_id' => [
+//            'name' => 'participant_id',
+//            'vname' => 'LBL_PARTICIPANT_ID',
+//            'type' => 'id',
+//            'reportable' => false,
+//            'comment' => 'ID of parent record'
+//        ],
+//        'participant_type' => [
+//            'name'     => 'participant_type',
+//            'vname'    => 'LBL_PARTICIPANT_TYPE',
+//            'type'     => 'parent_type',
+//            'dbtype'   => 'varchar',
+//            'len'      => 50,
+//            'comment'  => 'The module name of participant record',
+//        ],
+//        'participant_name' => [
+//            'name'        => 'participant_name',
+//            'vname'       => 'LBL_RELATED_TO',
+//            'type'        => 'parent',
+//            'type_name'   => 'participant_type',
+//            'id_name'     => 'participant_id',
+//            'source'      => 'non-db',
+//            'required' => true,
+//            'comment'  => 'The summary of the participant record',
+//        ],
+//        'consumer' => [
+//            'name' => 'consumer',
+//            'vname' => 'LBL_CONSUMER',
+//            'type' => 'link',
+//            'relationship' => 'consumer_eventbookingblockers',
+//            'source' => 'non-db',
+//        ],
         /*
         'eventcapacitytype_id' => [
             'name' => 'eventcapacitytype_id',
@@ -95,17 +95,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventBookingBlocker'] = [
         ]
     ],
     'relationships' => [
-        'consumer_eventbookingblockers' => [
-            'lhs_module' => 'Consumers',
-            'lhs_table' => 'consumers',
-            'lhs_key' => 'id',
-            'rhs_module' => 'EventBookingBlockers',
-            'rhs_table' => 'eventbookingblockers',
-            'rhs_key' => 'participant_id',
-            'relationship_type' => 'one-to-many',
-            'relationship_role_column'=>'participant_type',
-            'relationship_role_column_value' => 'Consumers'
-        ],
+//        'consumer_eventbookingblockers' => [
+//            'lhs_module' => 'Consumers',
+//            'lhs_table' => 'consumers',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'EventBookingBlockers',
+//            'rhs_table' => 'eventbookingblockers',
+//            'rhs_key' => 'participant_id',
+//            'relationship_type' => 'one-to-many',
+//            'relationship_role_column'=>'participant_type',
+//            'relationship_role_column_value' => 'Consumers'
+//        ],
         /*
         'eventcapacitytype_eventbookingblockers' => [
             'lhs_module' => 'EventCapacityTypes',
@@ -119,7 +119,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventBookingBlocker'] = [
         */
     ],
     'indices' => [
-        ['name' => 'idx__event_b_blockers__participant', 'type' => 'index', 'fields' => ['participant_id', 'participant_type', 'deleted']],
+//        ['name' => 'idx__event_b_blockers__participant', 'type' => 'index', 'fields' => ['participant_id', 'participant_type', 'deleted']],
         ['name' => 'idx__event_b_blockers__subtype', 'type' => 'index', 'fields' => ['subtype', 'deleted']],
         ['name' => 'idx__event_b_blockers__blocked_until', 'type' => 'index', 'fields' => ['booking_blocked_until', 'deleted']],
     ]

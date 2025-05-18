@@ -11,76 +11,76 @@ SpiceDictionaryHandler::getInstance()->dictionary['Event'] = [
     'unified_search' =>  false,
 
     'fields' => [
-        'date_start' => [
-            'name' => 'date_start',
-            'vname' => 'LBL_DATE_START',
-            'type' => 'datetimecombo',
-            'dbType' => 'datetime',
-            'required' => true,
-            'enable_range_search' => true,
-            'options' => 'date_range_search_dom',
-            'validation' => [
-                'type' => 'isbefore',
-                'compareto' => 'date_end',
-                'blank' => false
-            ]
-        ],
-        'date_end' => [
-            'name' => 'date_end',
-            'vname' => 'LBL_DATE_END',
-            'type' => 'datetimecombo',
-            'dbType' => 'datetime',
-            'enable_range_search' => true,
-            'options' => 'date_range_search_dom',
-        ],
-        'status' => [
-            'name' => 'status',
-            'vname' => 'LBL_STATUS',
-            'type' => 'enum',
-            'options' => 'event_status_dom',
-            'required' => true
-        ],
-        'category' => [
-            'name' => 'category',
-            'vname' => 'LBL_CATEGORY',
-            'type' => 'enum',
-            'options' => 'event_category_dom',
-            'required' => true
-        ],
-        'capacity_participants' => [
-            'name' => 'capacity_participants',
-            'vname' => 'LBL_CAPACITY_PARTICIPANTS',
-            'type' => 'int'
-        ],
-        'capacity_meeting_room' => [
-            'name' => 'capacity_meeting_room',
-            'vname' => 'LBL_CAPACITY_MEETING_ROOM',
-            'type' => 'varchar'
-        ],
-        'capacity_accommodation' => [
-            'name' => 'capacity_accommodation',
-            'vname' => 'LBL_CAPACITY_ACCOMMODATION',
-            'type' => 'varchar'
-        ],
-        'url' => [
-            'name' => 'url',
-            'vname' => 'LBL_URL',
-            'type' => 'varchar',
-            'len' => 400,
-        ],
-        'location_type' => [
-            'name' => 'location_type',
-            'vname' => 'LBL_LOCATION_TYPE',
-            'type' => 'parent_type',
-            'dbType' => 'varchar',
-            'len' => 100,
-        ],
-        'location_id' => [
-            'name' => 'location_id',
-            'vname' => 'LBL_LOCATION_ID',
-            'type' => 'id',
-            'reportable' => false,
-        ],
+//        'date_start' => [
+//            'name' => 'date_start',
+//            'vname' => 'LBL_DATE_START',
+//            'type' => 'datetimecombo',
+//            'dbType' => 'datetime',
+//            'required' => true,
+//            'enable_range_search' => true,
+//            'options' => 'date_range_search_dom',
+//            'validation' => [
+//                'type' => 'isbefore',
+//                'compareto' => 'date_end',
+//                'blank' => false
+//            ]
+//        ],
+//        'date_end' => [
+//            'name' => 'date_end',
+//            'vname' => 'LBL_DATE_END',
+//            'type' => 'datetimecombo',
+//            'dbType' => 'datetime',
+//            'enable_range_search' => true,
+//            'options' => 'date_range_search_dom',
+//        ],
+//        'status' => [
+//            'name' => 'status',
+//            'vname' => 'LBL_STATUS',
+//            'type' => 'enum',
+//            'options' => 'event_status_dom',
+//            'required' => true
+//        ],
+//        'category' => [
+//            'name' => 'category',
+//            'vname' => 'LBL_CATEGORY',
+//            'type' => 'enum',
+//            'options' => 'event_category_dom',
+//            'required' => true
+//        ],
+//        'capacity_participants' => [
+//            'name' => 'capacity_participants',
+//            'vname' => 'LBL_CAPACITY_PARTICIPANTS',
+//            'type' => 'int'
+//        ],
+//        'capacity_meeting_room' => [
+//            'name' => 'capacity_meeting_room',
+//            'vname' => 'LBL_CAPACITY_MEETING_ROOM',
+//            'type' => 'varchar'
+//        ],
+//        'capacity_accommodation' => [
+//            'name' => 'capacity_accommodation',
+//            'vname' => 'LBL_CAPACITY_ACCOMMODATION',
+//            'type' => 'varchar'
+//        ],
+//        'url' => [
+//            'name' => 'url',
+//            'vname' => 'LBL_URL',
+//            'type' => 'varchar',
+//            'len' => 400,
+//        ],
+//        'location_type' => [
+//            'name' => 'location_type',
+//            'vname' => 'LBL_LOCATION_TYPE',
+//            'type' => 'parent_type',
+//            'dbType' => 'varchar',
+//            'len' => 100,
+//        ],
+//        'location_id' => [
+//            'name' => 'location_id',
+//            'vname' => 'LBL_LOCATION_ID',
+//            'type' => 'id',
+//            'reportable' => false,
+//        ],
         'location_name' => [
             'name' => 'location_name',
             'type_name' => 'location_type',
@@ -234,12 +234,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['Event'] = [
             'source' => 'non-db',
             'vname' => 'LBL_CAMPAIGNS',
         ],
-        'booking_url' => [
-            'name' => 'booking_url',
-            'vname' => 'LBL_BOOKING_URL',
-            'type' => 'varchar',
-            'source' => 'non-db',
-        ],
+//        'booking_url' => [
+//            'name' => 'booking_url',
+//            'vname' => 'LBL_BOOKING_URL',
+//            'type' => 'varchar',
+//            'source' => 'non-db',
+//        ],
     ],
     'relationships' => [
         'events_campaigns' => [
