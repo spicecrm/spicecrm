@@ -2207,9 +2207,13 @@ class SpiceBean
 
             $handler = new $handlerClass();
 
-            if($handler->$method($domain, $curVals, $this)) {
+            if($handler->$method($item, $domain, $curVals, $this)) {
                 foreach ($fields as $field) {
                     $this->$field = $curVals[$field];
+                    // set the value also to the fetched row
+                    if($method == 'onRetrieve') {
+                        $this->fetched_row[$field] = $curVals[$field];
+                    }
                 }
             }
         }
