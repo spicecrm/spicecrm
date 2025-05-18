@@ -11,37 +11,37 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
     'unified_search' => false,
 
     'fields' => [
-        'email_and_name1' => [
-            'name' => 'email_and_name1',
-            'rname' => 'email_and_name1',
-            'vname' => 'LBL_NAME',
-            'type' => 'varchar',
-            'source' => 'non-db',
-            'len' => '510',
-            'importable' => 'false',
-        ],
-        // changed to enum on consumer evel
-        'gdpr_marketing_agreement' => [
-            'name' => 'gdpr_marketing_agreement',
-            'vname' => 'LBL_GDPR_MARKETING_AGREEMENT',
-            'type' => 'enum',
-            'options' => 'gdpr_marketing_agreement_dom',
-            'audited' => true
-        ],
-        'gdpr_marketing_source' => [
-            'name' => 'gdpr_marketing_source',
-            'vname' => 'LBL_GDPR_MARKETING_SOURCE',
-            'type' => 'varchar',
-            'len' => '100',
-            'audited' => true
-        ],
-        'gdpr_data_source' => [
-            'name' => 'gdpr_data_source',
-            'vname' => 'LBL_GDPR_DATA_SOURCE',
-            'type' => 'varchar',
-            'len' => '100',
-            'audited' => true
-        ],
+//        'email_and_name1' => [
+//            'name' => 'email_and_name1',
+//            'rname' => 'email_and_name1',
+//            'vname' => 'LBL_NAME',
+//            'type' => 'varchar',
+//            'source' => 'non-db',
+//            'len' => '510',
+//            'importable' => 'false',
+//        ],
+//        // changed to enum on consumer evel
+//        'gdpr_marketing_agreement' => [
+//            'name' => 'gdpr_marketing_agreement',
+//            'vname' => 'LBL_GDPR_MARKETING_AGREEMENT',
+//            'type' => 'enum',
+//            'options' => 'gdpr_marketing_agreement_dom',
+//            'audited' => true
+//        ],
+//        'gdpr_marketing_source' => [
+//            'name' => 'gdpr_marketing_source',
+//            'vname' => 'LBL_GDPR_MARKETING_SOURCE',
+//            'type' => 'varchar',
+//            'len' => '100',
+//            'audited' => true
+//        ],
+//        'gdpr_data_source' => [
+//            'name' => 'gdpr_data_source',
+//            'vname' => 'LBL_GDPR_DATA_SOURCE',
+//            'type' => 'varchar',
+//            'len' => '100',
+//            'audited' => true
+//        ],
 //        'activity_accept_status' => [
 //            'name' => 'activity_accept_status',
 //            'type' => 'enum',
@@ -50,12 +50,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
 //            'options' => 'dom_meeting_accept_status',
 //            'comment' => 'non db field retirved from the relationship to the meeting call etc'
 //        ],
-        'birthdate' => [
-            'name' => 'birthdate',
-            'vname' => 'LBL_BIRTHDATE',
-            'type' => 'date',
-            'comment' => 'The birthdate of the consumer'
-        ],
+//        'birthdate' => [
+//            'name' => 'birthdate',
+//            'vname' => 'LBL_BIRTHDATE',
+//            'type' => 'date',
+//            'comment' => 'The birthdate of the consumer'
+//        ],
 //        'calls_participant' => [
 //            'name' => 'calls',
 //            'type' => 'link',
@@ -197,18 +197,18 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'source' => 'non-db',
             'vname' => 'LBL_CONTACTS_ONLINE_PROFILES',
         ],
-        'ext_id' => [
-            'name' => 'ext_id',
-            'vname' => 'LBL_EXT_ID',
-            'type' => 'varchar',
-            'len' => 50
-        ],
-        'portal_user_id' => [
-            'name' => 'portal_user_id',
-            'vname' => 'LBL_PORTAL_USER_ID',
-            'type' => 'varchar',
-            'len' => 36
-        ],
+//        'ext_id' => [
+//            'name' => 'ext_id',
+//            'vname' => 'LBL_EXT_ID',
+//            'type' => 'varchar',
+//            'len' => 50
+//        ],
+//        'portal_user_id' => [
+//            'name' => 'portal_user_id',
+//            'vname' => 'LBL_PORTAL_USER_ID',
+//            'type' => 'varchar',
+//            'len' => 36
+//        ],
 //        'events_consumer_role' => [
 //            'name' => 'events_consumer_role',
 //            'vname' => 'LBL_ROLE',
@@ -231,20 +231,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
 //            ]
 //        ],
 
-        'eventbookings' => [
-            'name'         => 'eventbookings',
-            'type'         => 'link',
-            'module'       => 'EventBookings',
-            'relationship' => 'consumer_eventbookings',
-            'source'       => 'non-db',
-        ],
-        'eventbookingblockers' => [
-            'name'         => 'eventbookingblockers',
-            'type'         => 'link',
-            'module'       => 'EventBookingBlockers',
-            'relationship' => 'consumer_eventbookingblockers',
-            'source'       => 'non-db',
-        ],
+//        'eventbookings' => [
+//            'name'         => 'eventbookings',
+//            'type'         => 'link',
+//            'module'       => 'EventBookings',
+//            'relationship' => 'consumer_eventbookings',
+//            'source'       => 'non-db',
+//        ],
+//        'eventbookingblockers' => [
+//            'name'         => 'eventbookingblockers',
+//            'type'         => 'link',
+//            'module'       => 'EventBookingBlockers',
+//            'relationship' => 'consumer_eventbookingblockers',
+//            'source'       => 'non-db',
+//        ],
         'prospectlists_consumer_quantity' => [
             'name' => 'prospectlists_consumer_quantity',
             'vname' => 'LBL_QUANTITY',
@@ -293,13 +293,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'bean_name' => 'Letter',
             'vname' => 'LBL_LETTERS',
         ],
-        'eventregistrations' => [
-            'name' => 'eventregistrations',
-            'vname' => 'LBL_EVENTREGISTRATIONS',
-            'type' => 'link',
-            'relationship' => 'consumer_eventregistrations',
-            'source' => 'non-db',
-        ],
+//        'eventregistrations' => [
+//            'name' => 'eventregistrations',
+//            'vname' => 'LBL_EVENTREGISTRATIONS',
+//            'type' => 'link',
+//            'relationship' => 'consumer_eventregistrations',
+//            'source' => 'non-db',
+//        ],
 //        'emails' => [
 //            'name' => 'emails',
 //            'vname' => 'LBL_EMAILS',
@@ -414,7 +414,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
 //        ],
     ],
     //This enables optimistic locking for Saves From EditView
-    'optimistic_locking' => true,
+//    'optimistic_locking' => true,
 
     'indices' => [
         [
@@ -440,16 +440,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
 //        'vname'        => 'LBL_SALESVOUCHERS',
 //    ];
 //}
-if (file_exists("modules/ServiceTickets")) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Consumer']['fields']['servicetickets'] = [
-        'name' => 'servicetickets',
-        'type' => 'link',
-        'relationship' => 'servicetickets_consumers',
-        'source' => 'non-db',
-        'vname' => 'LBL_SERVICETICKETS',
-        'module' => 'ServiceTickets',
-        'default' => false
-    ];
-}
+//if (file_exists("modules/ServiceTickets")) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['Consumer']['fields']['servicetickets'] = [
+//        'name' => 'servicetickets',
+//        'type' => 'link',
+//        'relationship' => 'servicetickets_consumers',
+//        'source' => 'non-db',
+//        'vname' => 'LBL_SERVICETICKETS',
+//        'module' => 'ServiceTickets',
+//        'default' => false
+//    ];
+//}
 
 //VardefManager::createVardef('Consumers', 'Consumer', ['default', 'assignable', 'activities', 'person']);
