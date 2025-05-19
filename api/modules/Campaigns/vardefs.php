@@ -242,33 +242,33 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
 //            'source' => 'non-db',
 //            'vname' => 'LBL_OPPORTUNITIES',
 //        ],
-        'contacts' => [
-            'name' => 'contacts',
-            'type' => 'link',
-            'relationship' => 'campaign_contacts',
-            'source' => 'non-db',
-            'vname' => 'LBL_CONTACTS',
-            'link_class' => 'ProspectLink',
-            'link_file' => 'modules/Campaigns/ProspectLink.php'
-        ],
-        'consumers' => [
-            'name' => 'consumers',
-            'type' => 'link',
-            'relationship' => 'campaign_consumers',
-            'source' => 'non-db',
-            'vname' => 'LBL_CONSUMERS',
-            'link_class' => 'ProspectLink',
-            'link_file' => 'modules/Campaigns/ProspectLink.php'
-        ],
-        'accounts' => [
-            'name' => 'accounts',
-            'type' => 'link',
-            'relationship' => 'campaign_accounts',
-            'source' => 'non-db',
-            'vname' => 'LBL_ACCOUNTS',
-            'link_class' => 'ProspectLink',
-            'link_file' => 'modules/Campaigns/ProspectLink.php'
-        ],
+//        'contacts' => [
+//            'name' => 'contacts',
+//            'type' => 'link',
+//            'relationship' => 'campaign_contacts',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CONTACTS',
+//            'link_class' => 'ProspectLink',
+//            'link_file' => 'modules/Campaigns/ProspectLink.php'
+//        ],
+//        'consumers' => [
+//            'name' => 'consumers',
+//            'type' => 'link',
+//            'relationship' => 'campaign_consumers',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CONSUMERS',
+//            'link_class' => 'ProspectLink',
+//            'link_file' => 'modules/Campaigns/ProspectLink.php'
+//        ],
+//        'accounts' => [
+//            'name' => 'accounts',
+//            'type' => 'link',
+//            'relationship' => 'campaign_accounts',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_ACCOUNTS',
+//            'link_class' => 'ProspectLink',
+//            'link_file' => 'modules/Campaigns/ProspectLink.php'
+//        ],
 
         // non db fields for campaign log
         'activity_type' => [
@@ -430,13 +430,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
 //            'relationship_type' => 'one-to-many',
 //        ],
 
-        'campaign_accounts' => ['lhs_module' => 'Campaigns', 'lhs_table' => 'campaigns', 'lhs_key' => 'id',
-            'rhs_module' => 'Accounts', 'rhs_table' => 'accounts', 'rhs_key' => 'campaign_id',
-            'relationship_type' => 'one-to-many'],
-
-        'campaign_contacts' => ['lhs_module' => 'Campaigns', 'lhs_table' => 'campaigns', 'lhs_key' => 'id',
-            'rhs_module' => 'Contacts', 'rhs_table' => 'contacts', 'rhs_key' => 'campaign_id',
-            'relationship_type' => 'one-to-many'],
+//        'campaign_accounts' => ['lhs_module' => 'Campaigns', 'lhs_table' => 'campaigns', 'lhs_key' => 'id',
+//            'rhs_module' => 'Accounts', 'rhs_table' => 'accounts', 'rhs_key' => 'campaign_id',
+//            'relationship_type' => 'one-to-many'],
+//
+//        'campaign_contacts' => ['lhs_module' => 'Campaigns', 'lhs_table' => 'campaigns', 'lhs_key' => 'id',
+//            'rhs_module' => 'Contacts', 'rhs_table' => 'contacts', 'rhs_key' => 'campaign_id',
+//            'relationship_type' => 'one-to-many'],
 
         'campaign_consumers' => ['lhs_module' => 'Campaigns', 'lhs_table' => 'campaigns', 'lhs_key' => 'id',
             'rhs_module' => 'Consumers', 'rhs_table' => 'consumers', 'rhs_key' => 'campaign_id',
