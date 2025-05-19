@@ -89,24 +89,24 @@ SpiceDictionaryHandler::getInstance()->dictionary['UOMUnit'] = [
             'relationship_type' => 'one-to-many',
         ],
         */
-        'uomunit_serviceorderitems' => [
-            'lhs_module' => 'UOMUnits',
-            'lhs_table' => 'uomunits',
-            'lhs_key' => 'id',
-            'rhs_module' => 'ServiceOrderItems',
-            'rhs_table' => 'serviceorderitems',
-            'rhs_key' => 'uom_id',
-            'relationship_type' => 'one-to-many',
-        ],
-        'uomunit_serviceorderefforts' => [
-            'lhs_module' => 'UOMUnits',
-            'lhs_table' => 'uomunits',
-            'lhs_key' => 'id',
-            'rhs_module' => 'ServiceOrderEfforts',
-            'rhs_table' => 'serviceorderefforts',
-            'rhs_key' => 'uom_id',
-            'relationship_type' => 'one-to-many',
-        ],
+//        'uomunit_serviceorderitems' => [
+//            'lhs_module' => 'UOMUnits',
+//            'lhs_table' => 'uomunits',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'ServiceOrderItems',
+//            'rhs_table' => 'serviceorderitems',
+//            'rhs_key' => 'uom_id',
+//            'relationship_type' => 'one-to-many',
+//        ],
+//        'uomunit_serviceorderefforts' => [
+//            'lhs_module' => 'UOMUnits',
+//            'lhs_table' => 'uomunits',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'ServiceOrderEfforts',
+//            'rhs_table' => 'serviceorderefforts',
+//            'rhs_key' => 'uom_id',
+//            'relationship_type' => 'one-to-many',
+//        ],
     ],
     /*
 	'indices' => [
