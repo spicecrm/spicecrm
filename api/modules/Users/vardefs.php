@@ -1012,13 +1012,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'vname' => 'LBL_BLOCKED_UNTIL',
             'type' => 'datetime'
         ],
-        'eventregistrations' => [
-            'name' => 'eventregistrations',
-            'vname' => 'LBL_EVENTREGISTRATIONS',
-            'type' => 'link',
-            'relationship' => 'user_eventregistrations',
-            'source' => 'non-db',
-        ],
+//        'eventregistrations' => [
+//            'name' => 'eventregistrations',
+//            'vname' => 'LBL_EVENTREGISTRATIONS',
+//            'type' => 'link',
+//            'relationship' => 'user_eventregistrations',
+//            'source' => 'non-db',
+//        ],
         /*
         'orgunit_id' => [
             'vname' => 'LBL_ORGUNIT_ID',
