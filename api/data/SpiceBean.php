@@ -457,12 +457,12 @@ class SpiceBean
             $this->{$attributeName} = $attributeValue;
         }
 
-        if ($this->disableValidation == false && SpiceConfig::getInstance()->get('systemvardefs.disable_bean_validation') == false) {
+        if ($this->disableValidation == false && SpiceConfig::getInstance()->get('systemvardefs.enable_bean_validation') == true) {
             $dictionaryField = $this->getDictionaryField($attributeName);
             if ($dictionaryField) {
                 $this->validateField($attributeName, $attributeValue, $dictionaryField);
             } else {
-                 if (SpiceConfig::getInstance()->get('systemvardefs.disable_strict_property_check') == false) {
+                 if (SpiceConfig::getInstance()->get('systemvardefs.enable_strict_property_check') == true) {
                      throw new ValidationException('No field definition found for ' . $attributeName);
                  }
             }
