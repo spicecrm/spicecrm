@@ -130,8 +130,7 @@ abstract class TransportHandler
 
         // Check if downloadlink_attachments is enabled
         $downloadLink = "";
-        $downloadAttachmentsEnabled = $email->getFieldValue('downloadlink_attachments');
-        if ($downloadAttachmentsEnabled == 1) {
+        if ($email->downloadlink_attachments) {
             $downloadLink = $this->parseDownloadLink($email);
         }
 
