@@ -128,18 +128,11 @@ abstract class TransportHandler
             $style = '<style>'.$email->getStylesheet($this->mailbox->stylesheet).'</style>';
         }
 
-        $landingPageUrl = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_landingpage_url');
         // Check if downloadlink_attachments is enabled
+        $downloadLink = "";
         $downloadAttachmentsEnabled = $email->getFieldValue('downloadlink_attachments');
-
         if ($downloadAttachmentsEnabled == 1) {
-
-            if ($landingPageUrl && $email->id) {
-
-                $originalLink = "{$landingPageUrl}?id={$email->id}";
-
-                $downloadLink = "<div><a href=\"$originalLink\">Download Attachments</a></div>";
-            }
+            $downloadLink = $this->parseDownloadLink($email);
         }
 
         if(strpos($email->body, '<html') === false) {
@@ -187,6 +180,40 @@ abstract class TransportHandler
 
         return (array) $this->dispatch( $message );
     }
+
+    /**
+     * Will parse the link for the download click in the e-mail body
+     * @param $email
+     * @return string
+     */
+    private function parseDownloadLink($email)
+    {
+        $landingPageUrl = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_landingpage_url');
+        if(substr($landingPageUrl, -1) == '/'){
+            $landingPageUrl = substr($landingPageUrl, 0,strlen($landingPageUrl)-1);
+        }
+        $landingPageId = substr($landingPageUrl, (strrpos($landingPageUrl, '/') + 1), strlen($landingPageUrl));
+        $landingPage = BeanFactory::getBean('LandingPages', $landingPageId);
+        $templateId = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_textsnippet_id');
+
+        if ($landingPage && $email->id) {
+
+            $originalLink = "{$landingPageUrl}/{$email->id}";
+            if($landingPage){
+                $snippet = BeanFactory::getBean('TextSnippets', $templateId);
+                if($snippet){
+                    $downloadLink = $snippet->parse($landingPage, ['originalLink' => $originalLink]);
+                }
+            }
+            // fallback
+            if(empty($downloadLink)){
+                $downloadLink = "<div><a href=\"$originalLink\">Download Attachments</a></div>";
+            }
+        }
+
+        return $downloadLink;
+    }
+
 
     /**
      * parse template body only
