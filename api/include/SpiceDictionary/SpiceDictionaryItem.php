@@ -41,9 +41,9 @@ class SpiceDictionaryItem
      *
      * @return array
      */
-    public function getDomainFieldNames()
+    public function getDomainFieldNames($indexOnly = false)
     {
-        return (new SpiceDictionaryDomain($this->sysdomaindefinition_id))->getFields($this);
+        return (new SpiceDictionaryDomain($this->sysdomaindefinition_id))->getFields($this, $indexOnly);
     }
 
 
