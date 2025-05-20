@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceDictionary\domainhandlers;
 
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 
 abstract class SpiceDictionaryDomainHandler
 {
@@ -14,7 +15,7 @@ abstract class SpiceDictionaryDomainHandler
      * @param SpiceBean $bean
      * @return bool
      */
-    public function onRetrieve(SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
+    public function onRetrieve(SpiceDictionaryItem $item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
     {
         return true;
     }
@@ -26,7 +27,7 @@ abstract class SpiceDictionaryDomainHandler
      * @param SpiceBean $bean
      * @return bool
      */
-    public function beforeSave(SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
+    public function beforeSave($item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
     {
         return true;
     }
@@ -38,7 +39,7 @@ abstract class SpiceDictionaryDomainHandler
      * @param SpiceBean $bean
      * @return bool
      */
-    public function afterSave(SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
+    public function afterSave($item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
     {
         return true;
     }
