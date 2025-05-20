@@ -46,6 +46,7 @@ import {fieldBoolLabelAligned} from './components/fieldboollabelaligned';
 import {fieldParent} from './components/fieldparent';
 import {fieldModuleFilter} from './components/fieldmodulefilter';
 import {fieldRelate} from './components/fieldrelate';
+import {fieldRelatePrimary} from './components/fieldrelateprimary';
 import {fieldRelateList} from './components/fieldrelatelist';
 import {fieldModifiedBy} from './components/fieldmodifiedby';
 import {fieldLookup} from './components/fieldlookup';
@@ -203,6 +204,7 @@ declare var _: any;
         fieldParent,
         fieldModuleFilter,
         fieldRelate,
+        fieldRelatePrimary,
         fieldRelateList,
         fieldModifiedBy,
         fieldLinked,
