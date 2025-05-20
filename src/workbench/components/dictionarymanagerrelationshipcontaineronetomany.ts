@@ -109,7 +109,9 @@ export class DictionaryManagerRelationshipContainerOneToMany implements OnInit {
      * @private
      */
     public loadRelationshipFields() {
-        this.relationshiprelatefields = this.dictionarymanager.dictionaryrelationshiprelatefields.filter(rf => rf.relationship_id == this.relationship.id);
+        if(this.dictionarymanager.dictionaryrelationshiprelatefields){
+            this.relationshiprelatefields = this.dictionarymanager.dictionaryrelationshiprelatefields.filter(rf => rf.relationship_id == this.relationship.id);
+        }
     }
 
 }
