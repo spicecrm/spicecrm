@@ -91,7 +91,7 @@ class SpiceDictionaryDomain
 
             $handler = new $handlerClass();
 
-            $fieldDefinitions = $handler->onRepair($fieldDefinitions);
+            $fieldDefinitions = $handler->onRepair($sysdictionaryItem, $this, $fieldDefinitions);
         }
 
         return array_values($fieldDefinitions);
