@@ -50,6 +50,12 @@ class Email extends SpiceBean
     public $attachments = [];
 
     /**
+     * holds wether or not the attachments shall be sent as download link
+     * @var bool
+     */
+    public $downloadlink_attachments = false;
+
+    /**
      * Openness Statuses
      */
     const OPENNESS_OPEN = 'open';
@@ -2018,7 +2024,7 @@ class Email extends SpiceBean
      */
     public function validateEmailForDownload( $doIncrement = false ): bool|string
     {
-        $downloadAttachmentsEnabled = (int) $this->getFieldValue('downloadlink_attachments');
+        $downloadAttachmentsEnabled = (int) $this->downloadlink_attachments;
         if ( !$downloadAttachmentsEnabled ) return 'notAccessible';
 
         $downloadCounterMax = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_counter_max');
