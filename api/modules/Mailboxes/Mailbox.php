@@ -53,9 +53,9 @@ class Mailbox extends SpiceBean {
     public string $imap_pop3_protocol_type;
 
     /**
-     * @var string TODO check if that should go into the dictionary
+     * @var string|null TODO check if that should go into the dictionary
      */
-    public string $imap_pop3_username;
+    public ?string $imap_pop3_username = null;
 
     /**
      * @var string TODO check if that should go into the dictionary
