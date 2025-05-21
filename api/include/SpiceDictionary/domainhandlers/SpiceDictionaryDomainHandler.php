@@ -15,7 +15,7 @@ abstract class SpiceDictionaryDomainHandler
      * @param SpiceBean $bean
      * @return bool
      */
-    public function onRetrieve(SpiceDictionaryItem $item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
+    public function onRetrieve(array $item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
     {
         return true;
     }
@@ -27,7 +27,7 @@ abstract class SpiceDictionaryDomainHandler
      * @param SpiceBean $bean
      * @return bool
      */
-    public function beforeSave(SpiceDictionaryItem $item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
+    public function beforeSave(array $item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
     {
         return true;
     }
@@ -39,7 +39,7 @@ abstract class SpiceDictionaryDomainHandler
      * @param SpiceBean $bean
      * @return bool
      */
-    public function afterSave(SpiceDictionaryItem $item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
+    public function afterSave(array $item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
     {
         return true;
     }
