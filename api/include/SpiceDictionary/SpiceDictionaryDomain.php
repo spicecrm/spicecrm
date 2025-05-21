@@ -84,6 +84,8 @@ class SpiceDictionaryDomain
             }
         }
 
+        $fieldDefinitions = array_values($fieldDefinitions);
+
         # call handler class method on repair to manipulate the field definitions dynamically
         $handlerClass = $this->getHandlerClass();
 
@@ -94,7 +96,7 @@ class SpiceDictionaryDomain
             $fieldDefinitions = $handler->onRepair($sysdictionaryItem, $this, $fieldDefinitions);
         }
 
-        return array_values($fieldDefinitions);
+        return $fieldDefinitions;
     }
 
     /**
