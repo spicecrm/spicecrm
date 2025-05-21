@@ -25,15 +25,15 @@ class SpiceCronJobs
     {
         if (SystemStartupMode::maintenanceModeEnabled() || SystemStartupMode::recoveryModeEnabled()) return;
 
+        $admin = BeanFactory::getBean('Users', '1');
+        AuthenticationController::getInstance()->setCurrentUser($admin);
+
         self::cleanZombieJobs();
 
         $this->killMaxTimeExceededJobs();
 
         $pid = getmypid();
         LoggerManager::getLogger()->debug("---> CRON: PROCESS_ID: '$pid': Run Jobs <---");
-
-        $admin = BeanFactory::getBean('Users', '1');
-        AuthenticationController::getInstance()->setCurrentUser($admin);
 
         if (empty($jobId)) {
             $jobs = $this->loadJobs();
