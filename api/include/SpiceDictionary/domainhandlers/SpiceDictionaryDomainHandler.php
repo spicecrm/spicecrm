@@ -27,7 +27,7 @@ abstract class SpiceDictionaryDomainHandler
      * @param SpiceBean $bean
      * @return bool
      */
-    public function beforeSave($item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
+    public function beforeSave(SpiceDictionaryItem $item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
     {
         return true;
     }
@@ -39,8 +39,18 @@ abstract class SpiceDictionaryDomainHandler
      * @param SpiceBean $bean
      * @return bool
      */
-    public function afterSave($item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
+    public function afterSave(SpiceDictionaryItem $item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
     {
         return true;
+    }
+
+    /**
+     * Manipulate the domain field definitions dynamically before repair
+     * @param array $definitions The set of definitions to process and repair.
+     * @return array The repaired definitions.
+     */
+    public function onRepair(array $definitions): array
+    {
+        return $definitions;
     }
 }
