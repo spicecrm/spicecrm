@@ -174,6 +174,7 @@ class SpiceCronJobs
      */
     public static function processExistsOnOS( $processId ): bool
     {
+        if ( empty( $processId )) return false;
         if ( SpiceUtils::isWindows() ) {
             $result = exec("tasklist /fi \"pid eq $processId\" /nh /fo:csv");
             if ( $result === false ) return true; # exec() failed, so we don't know if the process is dead.
