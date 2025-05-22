@@ -274,13 +274,13 @@ export class modelattachments implements OnDestroy {
      *
      * @param parentModel
      * @param categoryId
-     * @param excludedFilenames
+     * @param excludedFileIds
      */
-    public cloneAttachments(parentModel: model, categoryId?: string, excludedFilenames?: string[]): Observable<any> {
+    public cloneAttachments(parentModel: model, categoryId?: string, excludedFileIds?: string[]): Observable<any> {
         let retSubject = new Subject();
         this.backend.postRequest(`common/spiceattachments/module/${this.module}/${this.id}/clone/${parentModel.module}/${parentModel.id}`, {}, {
             categoryId,
-            excludedFilenames
+            excludedFileIds
         }, this.httpRequestsRefID).subscribe({
             next: response => {
                 for (let attId in response) {
