@@ -2109,8 +2109,13 @@ class SpiceBean
             $id = $this->id;
         }
 
-        $fields = array_filter($this->field_defs, fn($e) => (RESTManager::getInstance()->excludeImageFields || $e['type'] != 'image') && $e['source'] !== 'non-db');
-        $fields = join(',', array_map(fn($e) => $e['name'], $fields));
+        if ($this->field_defs) {
+            $fields = array_filter($this->field_defs, fn($e) => (RESTManager::getInstance()->excludeImageFields || $e['type'] != 'image') && $e['source'] !== 'non-db');
+            $fields = join(',', array_map(fn($e) => $e['name'], $fields));
+        } else {
+            return null;
+        }
+
         $query = "SELECT $fields FROM $this->_tablename WHERE id = " . $this->db->quoted($id);
 
         # exclude deleted if the deleted flag check is true
