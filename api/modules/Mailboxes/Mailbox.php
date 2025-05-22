@@ -108,9 +108,9 @@ class Mailbox extends SpiceBean {
     public bool $smtp_verify_peer_name;
 
     /**
-     * @var string TODO check if that should go into the dictionary
+     * @var string|null TODO check if that should go into the dictionary
      */
-    public string $reply_to;
+    public ?string $reply_to = null;
 
     /**
      * @var string TODO check if that should go into the dictionary
