@@ -56,6 +56,8 @@ export class ServiceTicketsPortalUserNewButton extends ObjectActionNewButton {
                     selectedProject().subscribe(id => {
 
                         if (!id) return;
+                        this.model.module = this.parentmodel.module;
+                        this.model.initialize();
                         this.model.setFields({
                             project_id: id,
                             project_name: projects.find(project => project.id == id).name
