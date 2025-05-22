@@ -83,7 +83,20 @@ class SpiceDictionaryDomain
                 $fieldDefinitions[$definition->name] = $definition;
             }
         }
-        return array_values($fieldDefinitions);
+
+        $fieldDefinitions = array_values($fieldDefinitions);
+
+        # call handler class method on repair to manipulate the field definitions dynamically
+        $handlerClass = $this->getHandlerClass();
+
+        if ($handlerClass && class_exists($handlerClass) && is_subclass_of($handlerClass, 'SpiceCRM\includes\SpiceDictionary\domainhandlers\SpiceDictionaryDomainHandler')) {
+
+            $handler = new $handlerClass();
+
+            $fieldDefinitions = $handler->onRepair($sysdictionaryItem, $this, $fieldDefinitions);
+        }
+
+        return $fieldDefinitions;
     }
 
     /**
