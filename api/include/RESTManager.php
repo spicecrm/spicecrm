@@ -94,6 +94,12 @@ class RESTManager
      * @var object|null
      */
     private ?object $authParams = null;
+    /**
+     * if true, SpiceBean will exclude the image field from retrieve for the whole request
+     * To be set in the controller before processing when needed
+     * @var bool
+     */
+    public bool $excludeImageFields = false;
 
     private function __construct()
     {
