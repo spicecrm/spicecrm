@@ -178,5 +178,42 @@ class EmailTemplate extends SpiceBean {
         return $style;
     }
 
+    /**
+     * Creates an ics attachment in the email template
+     *
+     * @param $emailTemplate
+     * @param $retArray
+     * @param $bean
+     * @return array
+     */
+    public function attachIcsToEmail($emailTemplate, $retArray, $bean)
+    {
+        if (!property_exists($bean, 'date_start') || !property_exists($bean, 'date_end')) {
+            return $retArray;
+        }
+
+        $content = "BEGIN:VCALENDAR\r\n";
+        $content .= "VERSION:2.0\r\n";
+        $content .= "PRODID:-//SpiceCrm\r\n";
+        $content .= "BEGIN:VEVENT\r\n";
+        $content .= "UID:" . SpiceUtils::createGuid() . "\r\n";
+        $content .= "DTSTAMP:" . gmdate('Ymd\THis\Z') . "\r\n";
+        $content .= "DTSTART:" . date('Ymd\THis\Z', strtotime($bean->date_start)) . "\r\n";
+        $content .= "DTEND:" . date('Ymd\THis\Z', strtotime($bean->date_end)) . "\r\n";
+        $content .= "SUMMARY:" . $bean->name . "\r\n";
+        $content .= "DESCRIPTION:" . str_replace("\n", "\\n", $bean->description) . "\r\n";
+        $content .= "END:VEVENT\r\n";
+        $content .= "END:VCALENDAR\r\n";
+
+        $retArray['attachments'][] = [
+            'file' => base64_encode($content),
+            'file_mime_type' => 'text/calendar',
+            'filename' => 'event_' . $bean->name . '.ics',
+            'filesize' => strlen($content),
+        ];
+
+        return $retArray;
+    }
+
 }
 
