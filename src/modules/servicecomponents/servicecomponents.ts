@@ -76,6 +76,7 @@ import {ServiceDocSignatureContent} from "./components/servicedocsignatureconten
 import {ServiceDocSignatureModal} from "./components/servicedocsignaturemodal";
 import {ServiceTreeAddData} from "./components/servicetreeadddata";
 import {ServiceReturnToQueueModal} from "./components/servicereturntoqueuemodal";
+import {ServiceTicketsPortalUserNewButton} from "./actions/serviceticketsportalusernewbutton";
 
 @NgModule({
     imports: [
@@ -146,7 +147,8 @@ import {ServiceReturnToQueueModal} from "./components/servicereturntoqueuemodal"
         ServiceDocSignatureButton,
         ServiceDocSignatureContent,
         ServiceDocSignatureModal,
-        ServiceTreeAddData
+        ServiceTreeAddData,
+        ServiceTicketsPortalUserNewButton
 
     ]
 })

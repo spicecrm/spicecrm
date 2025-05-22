@@ -3,8 +3,8 @@
 namespace SpiceCRM\modules\ServiceTickets\ACLObjectFieldHandlers;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
+use SpiceCRM\modules\Projects\Project;
 use SpiceCRM\modules\SpiceACLObjects\interfaces\SpiceACLObjectFieldHandlerI;
 
 class ServiceTicketsACLFieldProjectIDHandler implements SpiceACLObjectFieldHandlerI
@@ -66,23 +66,6 @@ class ServiceTicketsACLFieldProjectIDHandler implements SpiceACLObjectFieldHandl
     {
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
 
-        if ($currentUser->parent_type != 'Contacts') {
-            return [];
-        }
-
-        $db = DBManagerFactory::getInstance();
-        $query = $db->query("SELECT p.id FROM projects p 
-                             INNER JOIN projects_contacts pc ON pc.project_id = p.id 
-                             INNER JOIN contacts c ON c.id = pc.contact_id AND c.deleted = 0 AND c.id = '$currentUser->parent_id'
-                             WHERE pc.deleted = 0 AND p.deleted = 0 
-         ");
-
-        $ids = [];
-
-        while ($row = $db->fetchByAssoc($query)) {
-            $ids[] = $row['id'];
-        }
-
-        return $ids;
+        return Project::getProjectIdsForUserContact($currentUser);
     }
 }
