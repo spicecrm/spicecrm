@@ -44,9 +44,5 @@ class Project extends SpiceBean {
             $this->estimated_end_date = SpiceUtils::getMaxDate($wbsElements, 'date_end');
         }
     }
-
-        return $bean;
-    }
-
 }
 
