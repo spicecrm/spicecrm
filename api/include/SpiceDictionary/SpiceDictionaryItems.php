@@ -96,6 +96,17 @@ class SpiceDictionaryItems
     public function getItems($sysdictionaryDefinitionId = null, $statusFilter = ['a'], $templatesOnly = false){
         $db = DBManagerFactory::getInstance();
 
+        # if the items already loaded get filtered items for dictionary definition
+        if ($sysdictionaryDefinitionId && $this->dictionaryItems) {
+            $retArray = [];
+            foreach ($this->dictionaryItems as $item) {
+                if($item['sysdictionarydefinition_id'] != $sysdictionaryDefinitionId) continue;
+                $retArray[$item['id']] = $item;
+            }
+
+            return $retArray;
+        }
+
         // build a where filter clause
         $whereArray = [];
         // adda filter for the id
