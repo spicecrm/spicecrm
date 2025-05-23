@@ -25,15 +25,15 @@ class SpiceCronJobs
     {
         if (SystemStartupMode::maintenanceModeEnabled() || SystemStartupMode::recoveryModeEnabled()) return;
 
+        $admin = BeanFactory::getBean('Users', '1');
+        AuthenticationController::getInstance()->setCurrentUser($admin);
+
         self::cleanZombieJobs();
 
         $this->killMaxTimeExceededJobs();
 
         $pid = getmypid();
         LoggerManager::getLogger()->debug("---> CRON: PROCESS_ID: '$pid': Run Jobs <---");
-
-        $admin = BeanFactory::getBean('Users', '1');
-        AuthenticationController::getInstance()->setCurrentUser($admin);
 
         if (empty($jobId)) {
             $jobs = $this->loadJobs();
@@ -174,6 +174,7 @@ class SpiceCronJobs
      */
     public static function processExistsOnOS( $processId ): bool
     {
+        if ( empty( $processId )) return false;
         if ( SpiceUtils::isWindows() ) {
             $result = exec("tasklist /fi \"pid eq $processId\" /nh /fo:csv");
             if ( $result === false ) return true; # exec() failed, so we don't know if the process is dead.

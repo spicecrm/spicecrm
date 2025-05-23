@@ -873,10 +873,10 @@ class AdminController
     private function getCollation(string $charset): string {
         switch ($charset) {
             case 'utf8mb4':
-                return 'utf8mb4_general_ci';
+                return 'utf8mb4_unicode_ci';
             case 'utf8':
             default:
-                return 'utf8_general_ci';
+                return 'utf8_unicode_ci';
         }
     }
 }
