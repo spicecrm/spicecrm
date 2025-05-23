@@ -18,7 +18,8 @@ declare var libphonenumber: any;
 @Component({
     selector: 'telephony-call-model-update',
     templateUrl: '../templates/telephonycallmodelupdate.html',
-    providers: [ view]
+    providers: [view],
+    standalone: false
 })
 export class TelephonyCallModelUpdate implements OnInit {
 

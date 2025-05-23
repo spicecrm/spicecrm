@@ -23,7 +23,8 @@ import moment from "moment";
 
 @Component({
     selector: 'workflow-panel-task',
-    templateUrl: '../templates/workflowpaneltask.html'
+    templateUrl: '../templates/workflowpaneltask.html',
+    standalone: false
 })
 export class WorkflowPanelTask implements OnChanges, AfterViewInit, OnInit {
     /**

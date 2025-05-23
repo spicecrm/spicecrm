@@ -12,7 +12,8 @@ import {metadata} from '../../services/metadata.service';
 @Component({
     selector: 'object-model-popover',
     templateUrl: '../templates/objectmodelpopover.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ObjectModelPopover implements OnInit {
 

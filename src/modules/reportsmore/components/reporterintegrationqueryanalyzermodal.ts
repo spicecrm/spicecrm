@@ -16,7 +16,8 @@ import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
 @Component({
     selector: 'reporter-integration-queryanalyzer-modal',
     templateUrl: '../templates/reporterintegrationqueryanalyzermodal.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterIntegrationQueryanalyzerModal implements OnInit {
 

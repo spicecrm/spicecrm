@@ -9,7 +9,8 @@ import {model} from "../../../services/model.service";
 @Component({
     selector: 'reports-designer-integrate-item-target-list',
     templateUrl: '../templates/reportsdesignerintegrateitemtargetlist.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ReportsDesignerIntegrateItemTargetList {
 

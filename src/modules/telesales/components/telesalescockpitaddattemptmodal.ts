@@ -21,7 +21,8 @@ declare var moment: any;
 @Component({
     selector: 'tele-sales-cockpit-add-attempt-modal',
     templateUrl: '../templates/telesalescockpitaddattemptmodal.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class TeleSalesCockpitAddAttemptModal implements OnInit {
 

@@ -23,7 +23,8 @@ import {dictionarymanager} from "../services/dictionarymanager.service";
 @Component({
     selector: 'domain-manager-definitions',
     templateUrl: '../templates/domainmanagerdefinitions.html',
-    providers: [dictionarymanager]
+    providers: [dictionarymanager],
+    standalone: false
 })
 export class DomainManagerDefinitions {
 

@@ -14,6 +14,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 @Component({
     selector: 'aclterritorries-typesmanager-types',
     templateUrl: '../templates/aclterritorriestypesmanagertypes.html',
+    standalone: false
 })
 export class AclterritorriesTypesmanagerTypes {
 

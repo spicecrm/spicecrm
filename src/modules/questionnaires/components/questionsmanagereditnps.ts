@@ -9,7 +9,8 @@ import { QuestionsManagerEditBasic } from './questionsmanagereditbasic';
 
 @Component({
     selector: 'questions-manager-edit-nps',
-    templateUrl: '../templates/questionsmanagereditnps.html'
+    templateUrl: '../templates/questionsmanagereditnps.html',
+    standalone: false
 })
 export class QuestionsManagerEditNPS extends QuestionsManagerEditBasic implements OnInit {
 

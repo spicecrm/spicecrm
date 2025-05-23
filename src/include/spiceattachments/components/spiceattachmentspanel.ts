@@ -34,7 +34,8 @@ import {backend} from "../../../services/backend.service";
 @Component({
     selector: 'spice-attachments-panel',
     templateUrl: '../templates/spiceattachmentspanel.html',
-    providers: [modelattachments, navigationtab]
+    providers: [modelattachments, navigationtab],
+    standalone: false
 })
 export class SpiceAttachmentsPanel implements AfterViewInit {
 

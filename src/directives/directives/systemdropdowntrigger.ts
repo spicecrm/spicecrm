@@ -31,7 +31,8 @@ import {take} from "rxjs/operators";
  * </div>
  */
 @Directive({
-    selector: '[system-dropdown-trigger]'
+    selector: '[system-dropdown-trigger]',
+    standalone: false
 })
 export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
 

@@ -14,7 +14,8 @@ declare var moment: any;
 
 @Component({
     selector: 'product-brwoser-tree',
-    templateUrl: '../templates/productbrowsertree.html'
+    templateUrl: '../templates/productbrowsertree.html',
+    standalone: false
 })
 export class ProductBrowserTree implements OnInit {
 

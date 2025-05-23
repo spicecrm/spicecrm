@@ -14,7 +14,8 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'selecttree-add-dialog',
-    templateUrl: '../templates/selecttreeadddialog.html'
+    templateUrl: '../templates/selecttreeadddialog.html',
+    standalone: false
 })
 export class SelectTreeAddDialog{
 

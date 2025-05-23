@@ -14,6 +14,7 @@ import {modal} from '../../../services/modal.service';
 @Component({
     selector: 'spice-price-manager-button',
     templateUrl: '../templates/spicepricemanagerbutton.html',
+    standalone: false
 })
 export class SpicePriceManagerButton{
 

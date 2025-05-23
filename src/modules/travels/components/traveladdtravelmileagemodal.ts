@@ -12,7 +12,8 @@ import {language} from "../../../services/language.service";
 @Component({
     selector: 'travel-add-travel-mileage-modal',
     templateUrl: '../templates/traveladdtravelmileagemodal.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 
 /**

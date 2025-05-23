@@ -12,6 +12,7 @@ import {modal} from '../../services/modal.service';
 @Component({
     selector: 'object-list-header-actions-select-all-button',
     templateUrl: '../templates/objectlistheaderactionsselectallbutton.html',
+    standalone: false
 })
 export class ObjectListHeaderActionsSelectAllButton {
 

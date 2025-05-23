@@ -16,7 +16,8 @@ import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
 declare var moment: any;
 
 @Component({
-    templateUrl: '../templates/salesplanningreporterintegrationexportbutton.html'
+    templateUrl: '../templates/salesplanningreporterintegrationexportbutton.html',
+    standalone: false
 })
 export class SalesPlanningReporterIntegrationExportButton {
 

@@ -28,7 +28,8 @@ declare var _: any;
 @Component({
     selector: 'calendar-other-calendars-monitor',
     templateUrl: '../templates/calendarothercalendarsmonitor.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class CalendarOtherCalendarsMonitor {
     /**

@@ -9,7 +9,8 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: '[salesdocs-convert-modal-item]',
     templateUrl: "../templates/salesdocsconvertmodalitem.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class SalesDocsConvertModalItem implements OnInit {
 

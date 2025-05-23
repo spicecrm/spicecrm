@@ -18,7 +18,8 @@ import {ObjectModalModuleLookup} from "../../objectcomponents/components/objectm
             useExisting: forwardRef(() => SystemInputRelate),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputRelate implements ControlValueAccessor {
 

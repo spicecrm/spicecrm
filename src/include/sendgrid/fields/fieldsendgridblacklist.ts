@@ -12,7 +12,7 @@ import {modal} from "../../../services/modal.service";
 @Component({
     selector: 'field-sendgrid-blacklist',
     templateUrl: '../templates/fieldsendgridblacklist.html',
-
+    standalone: false
 })
 export class fieldSendgridBlacklist extends fieldToggle {
 

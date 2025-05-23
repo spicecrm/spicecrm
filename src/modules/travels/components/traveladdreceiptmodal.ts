@@ -19,7 +19,8 @@ import {navigationtab} from "../../../services/navigationtab.service";
 
 @Component({
     selector: 'travel-add-receipt-modal',
-    templateUrl: '../templates/traveladdreceiptmodal.html'
+    templateUrl: '../templates/traveladdreceiptmodal.html',
+    standalone: false
 })
 export class TravelAddReceiptModal implements AfterViewInit{
 

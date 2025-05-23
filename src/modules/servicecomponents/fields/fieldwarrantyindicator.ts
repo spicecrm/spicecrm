@@ -16,6 +16,7 @@ declare var moment: any;
  */
 @Component({
     templateUrl: '../templates/fieldwarrantyindicator.html',
+    standalone: false
 })
 export class fieldWarrantyIndicator extends fieldGeneric {
 

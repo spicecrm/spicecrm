@@ -12,7 +12,8 @@ import { userpreferences} from '../../../services/userpreferences.service';
     styles: [
         '.questionset-render .sequenced { font-family: monospace; }',
         '.questionset-render table.sequenced { margin: 0 0 0 auto; }'
-    ]
+    ],
+    standalone: false
 } )
 export class QuestionRenderText extends QuestionRenderBasic implements OnInit {
 

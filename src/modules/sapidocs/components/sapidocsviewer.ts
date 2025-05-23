@@ -16,7 +16,8 @@ declare var html_beautify: any;
  */
 @Component({
     selector: 'sap-idcos-viewer',
-    templateUrl: '../templates/sapidocsviewer.html'
+    templateUrl: '../templates/sapidocsviewer.html',
+    standalone: false
 })
 export class SAPIDOCsViewer implements AfterViewInit {
 

@@ -13,7 +13,8 @@ import { QuestionRenderBasic } from './questionrenderbasic';
         'div.question-render-question:last-child { margin-bottom: 0; }',
         '.question-hover:hover { background-color: #f3f2f2; }',
         '.slds-table td, .slds-table th { white-space: initial; }'
-    ]
+    ],
+    standalone: false
 })
 export class QuestionRenderBinary extends QuestionRenderBasic implements OnInit {
 

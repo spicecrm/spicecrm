@@ -20,7 +20,8 @@ import {procurementdocrecord} from "../services/procurementdocrecord";
     styles: [
         '::ng-deep table.singleselect tr:hover td { cursor: pointer; }',
         '::ng-deep field-generic-display > div { padding-left: 0 !important; padding-right: 0 !important; }'
-    ]
+    ],
+    standalone: false
 })
 export class ProcurementDocsItemsAddProduct extends ObjectModalModuleLookup {
 

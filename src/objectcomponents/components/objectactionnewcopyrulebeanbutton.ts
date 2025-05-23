@@ -14,7 +14,8 @@ import {relatedmodels} from "../../services/relatedmodels.service";
  */
 @Directive({
     selector: "object-action-new-copy-rule-bean-button-model-helper",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ObjectActionNewCopyRuleBeanButtonModelHelper {
     constructor(public model: model) {
@@ -29,6 +30,7 @@ export class ObjectActionNewCopyRuleBeanButtonModelHelper {
 @Component({
     selector: "object-action-new-copy-rule-bean-button",
     templateUrl: "../templates/objectactionnewcopyrulebeanbutton.html",
+    standalone: false
 })
 export class ObjectActionNewCopyRuleBeanButton implements OnInit {
 

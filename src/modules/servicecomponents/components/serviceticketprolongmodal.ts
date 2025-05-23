@@ -16,7 +16,8 @@ declare var moment: any;
 
 @Component({
     templateUrl: '../templates/serviceticketprolongmodal.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ServiceTicketProlongModal {
     public self: any = {};

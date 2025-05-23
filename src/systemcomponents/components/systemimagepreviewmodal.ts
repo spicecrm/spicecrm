@@ -7,7 +7,8 @@ import {helper} from "../../services/helper.service";
 
 @Component({
     selector: 'system-image-preview-modal',
-    templateUrl: '../templates/systemimagepreviewmodal.html'
+    templateUrl: '../templates/systemimagepreviewmodal.html',
+    standalone: false
 })
 export class SystemImagePreviewModal {
 

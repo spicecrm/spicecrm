@@ -20,7 +20,8 @@ declare var moment: any;
  */
 @Component({
     selector: 'field-date-time-span',
-    templateUrl: '../templates/fielddatetimespan.html'
+    templateUrl: '../templates/fielddatetimespan.html',
+    standalone: false
 })
 export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
 

@@ -14,7 +14,8 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-salesdoc-taxcategories',
-    templateUrl: '../templates/fieldsalesdoctaxcategories.html'
+    templateUrl: '../templates/fieldsalesdoctaxcategories.html',
+    standalone: false
 })
 export class fieldSalesdocTaxCategories extends fieldGeneric {
 

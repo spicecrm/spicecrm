@@ -15,7 +15,8 @@ import {language} from '../../../services/language.service';
 
 @Component({
     templateUrl: '../templates/salesdocsitemsaddtext.html',
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 export class SalesDocsItemsAddText {
 

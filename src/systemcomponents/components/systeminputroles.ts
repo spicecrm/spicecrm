@@ -19,7 +19,8 @@ import {configurationService} from "../../services/configuration.service"
             useExisting: forwardRef(() => SystemInputRoles),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputRoles implements ControlValueAccessor {
 

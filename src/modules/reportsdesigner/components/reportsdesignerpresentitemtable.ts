@@ -9,7 +9,8 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-present-item-table',
-    templateUrl: '../templates/reportsdesignerpresentitemtable.html'
+    templateUrl: '../templates/reportsdesignerpresentitemtable.html',
+    standalone: false
 })
 export class ReportsDesignerPresentItemTable {
     /**

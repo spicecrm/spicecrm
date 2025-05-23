@@ -9,7 +9,8 @@ import moment from "moment";
 @Component({
     selector: 'kpi-tile',
     templateUrl: '../templates/kpitile.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 
 export class KpiTile implements OnInit {

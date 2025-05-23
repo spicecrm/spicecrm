@@ -12,6 +12,7 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'procurement-docs-flow-modal',
     templateUrl: "../templates/procurementdocsflowmodal.html",
+    standalone: false
 })
 export class ProcurementDocsFlowModal implements OnInit {
 

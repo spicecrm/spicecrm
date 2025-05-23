@@ -28,7 +28,8 @@ declare var _: any;
 @Component({
     selector: 'reporter-detail-visualization-google-maps',
     templateUrl: '../templates/reporterdetailvisualizationgooglemaps.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnDestroy {
 

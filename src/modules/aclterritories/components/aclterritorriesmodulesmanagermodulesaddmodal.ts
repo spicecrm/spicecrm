@@ -9,6 +9,7 @@ import {language} from "../../../services/language.service";
 @Component({
     selector: 'aclterritorries-modules-manager-modules-add-modal',
     templateUrl: '../templates/aclterritorriesmodulesmanagermodulesaddmodal.html',
+    standalone: false
 })
 export class ACLTerritorriesModulesmanagerModulesAddModal implements OnInit{
 

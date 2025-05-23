@@ -14,7 +14,8 @@ declare var moment;
 @Component({
     selector: 'tele-sales-cockpit-list-item',
     templateUrl: '../templates/telesalescockpitlistitem.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class TeleSalesCockpitListItem implements OnInit {
 

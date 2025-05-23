@@ -7,6 +7,7 @@ import {language} from "../../services/language.service";
 @Component({
     selector: 'system-card',
     templateUrl: '../templates/systemcard.html',
+    standalone: false
 })
 export class SystemCard {
 

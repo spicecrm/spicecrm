@@ -13,7 +13,8 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 
 @Component({
     selector: 'field-territory',
-    templateUrl: '../templates/fieldterritory.html'
+    templateUrl: '../templates/fieldterritory.html',
+    standalone: false
 })
 export class fieldTerritory extends fieldGeneric implements OnInit, OnDestroy {
 

@@ -10,7 +10,8 @@ import {KnowledgeBrowserDetailsContainerRight} from "./knowledgebrowserdetailsco
 
 @Component({
     selector: "knowledge-browser-details",
-    templateUrl: "../templates/knowledgebrowserdetails.html"
+    templateUrl: "../templates/knowledgebrowserdetails.html",
+    standalone: false
 })
 export class KnowledgeBrowserDetails implements OnChanges {
 

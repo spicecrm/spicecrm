@@ -10,6 +10,7 @@ import {navigationtab} from '../../../services/navigationtab.service';
 @Component({
     selector: 'aclterritorries-types-manager',
     templateUrl: '../templates/aclterritorriestypesmanager.html',
+    standalone: false
 })
 export class ACLTerritorriesTypesmanager {
 

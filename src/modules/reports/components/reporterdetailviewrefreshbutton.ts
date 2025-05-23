@@ -9,7 +9,8 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'reporter-detail-view-refresh-button',
-    templateUrl: '../templates/reporterdetailviewrefreshbutton.html'
+    templateUrl: '../templates/reporterdetailviewrefreshbutton.html',
+    standalone: false
 })
 export class ReporterDetailViewRefreshButton implements OnDestroy {
 

@@ -23,7 +23,8 @@ import {ObjectActionMenuItemI} from "../interfaces/objectcomponents.interfaces";
 @Component({
     selector: 'object-action-menu',
     templateUrl: '../templates/objectactionmenu.html',
-    providers: [helper]
+    providers: [helper],
+    standalone: false
 })
 export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
 

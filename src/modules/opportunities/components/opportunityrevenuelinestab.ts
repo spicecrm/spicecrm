@@ -14,7 +14,8 @@ declare var moment: any;
  * renders a table with lines for the revenue recognition at different times
  */
 @Component({
-    templateUrl: "../templates/opportunityrevenuelinestab.html"
+    templateUrl: "../templates/opportunityrevenuelinestab.html",
+    standalone: false
 })
 export class OpportunityRevenueLinesTab implements OnInit {
 

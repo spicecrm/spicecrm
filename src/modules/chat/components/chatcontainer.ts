@@ -12,7 +12,8 @@ import {backend} from "../../../services/backend.service";
 declare var socketIo: any;
 
 @Component({
-    templateUrl: '../templates/chatcontainer.html'
+    templateUrl: '../templates/chatcontainer.html',
+    standalone: false
 })
 export class ChatContainer implements OnDestroy {
 

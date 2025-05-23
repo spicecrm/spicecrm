@@ -12,7 +12,8 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-questionnaire-evaluation',
-    templateUrl: '../templates/fieldquestionnaireevaluation.html'
+    templateUrl: '../templates/fieldquestionnaireevaluation.html',
+    standalone: false
 })
 export class fieldQuestionnaireEvaluation extends fieldGeneric {
 

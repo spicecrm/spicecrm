@@ -11,7 +11,8 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: 'outlook-calendaritem-edit-container',
     templateUrl: '../templates/outlookcalendaritemeditcontainer.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class OutlookCalendarItemEditContainer implements OnInit {
 

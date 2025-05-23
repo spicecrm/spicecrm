@@ -28,7 +28,8 @@ import {GlobalNavigationMenuItemActionContainer} from "./globalnavigationmenuite
     selector: 'global-navigation-tabbed-module-menu',
     templateUrl: '../templates/globalnavigationtabbedmenumodulemenu.html',
     providers: [model, view],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class GlobalNavigationTabbedMenuModuleMenu implements OnChanges {
 

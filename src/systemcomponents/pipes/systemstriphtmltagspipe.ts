@@ -5,7 +5,8 @@ import {Pipe} from '@angular/core';
 
 @Pipe({
     name: 'systemstriphtmltagspipe',
-    pure: false
+    pure: false,
+    standalone: false
 })
 export class SystemStripHtmlTagsPipe {
 

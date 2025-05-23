@@ -27,7 +27,8 @@ import * as domain from "node:domain";
 @Component({
     selector: 'global-navigation-compact',
     templateUrl: '../templates/globalnavigationcompact.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class GlobalNavigationCompact implements AfterViewInit, OnDestroy {
 

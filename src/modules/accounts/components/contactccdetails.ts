@@ -16,7 +16,8 @@ declare var _;
 @Component({
     selector: 'contact-cc-details',
     templateUrl: '../templates/contactccdetails.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ContactCCDetails implements OnInit, OnDestroy {
     public activatedTabs: any[] = [];

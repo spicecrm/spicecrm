@@ -18,7 +18,8 @@ declare var _;
         'td { padding: 0.5rem 0.75rem }',
         'table.with-text-for-score th.th1 { border-bottom: none; }',
         'th.th2 { border-top: none; }'
-    ]
+    ],
+    standalone: false
 })
 export class QuestionRenderNPS extends QuestionRenderBasic implements OnInit {
 

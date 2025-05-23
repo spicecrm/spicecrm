@@ -16,7 +16,8 @@ declare var moment: any;
  * handles the spicenotes on the object allowing users to add quick notes (public or global visible)
  */
 @Component({
-    templateUrl: '../templates/spicenotes.html'
+    templateUrl: '../templates/spicenotes.html',
+    standalone: false
 })
 export class SpiceNotes implements OnInit {
 

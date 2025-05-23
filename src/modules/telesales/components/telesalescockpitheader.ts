@@ -9,7 +9,8 @@ import {telecockpitservice} from '../services/telecockpit.service';
 
 @Component({
     selector: 'tele-sales-cockpit-header',
-    templateUrl: '../templates/telesalescockpitheader.html'
+    templateUrl: '../templates/telesalescockpitheader.html',
+    standalone: false
 })
 
 export class TeleSalesCockpitHeader implements OnInit {

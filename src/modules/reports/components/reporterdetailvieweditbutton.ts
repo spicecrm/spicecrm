@@ -8,7 +8,8 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: 'reporter-detail-view-edit-button',
-    templateUrl: '../templates/reporterdetailvieweditbutton.html'
+    templateUrl: '../templates/reporterdetailvieweditbutton.html',
+    standalone: false
 })
 export class ReporterDetailViewEditButton {
 

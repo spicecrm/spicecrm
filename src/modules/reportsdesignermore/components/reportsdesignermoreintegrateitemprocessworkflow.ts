@@ -4,7 +4,8 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'reports-designer-more-integrate-item-process-workflow',
-    templateUrl: '../templates/reportsdesignermoreintegrateitemprocessworkflow.html'
+    templateUrl: '../templates/reportsdesignermoreintegrateitemprocessworkflow.html',
+    standalone: false
 })
 
 export class ReportsDesignerMoreIntegrateItemProcessWorkflow implements OnInit {

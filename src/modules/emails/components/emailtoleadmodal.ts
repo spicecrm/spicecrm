@@ -11,7 +11,8 @@ import {language} from "../../../services/language.service";
 
 @Component({
     templateUrl: "../templates/emailtoleadmodal.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class EmailToLeadModal implements OnInit, AfterViewInit {
 

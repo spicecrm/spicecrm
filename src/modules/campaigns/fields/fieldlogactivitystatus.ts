@@ -16,7 +16,8 @@ import {modal} from "../../../services/modal.service";
  */
 @Component({
     selector: 'field-log-activity_status',
-    templateUrl: '../templates/fieldlogactivitystatus.html'
+    templateUrl: '../templates/fieldlogactivitystatus.html',
+    standalone: false
 })
 export class fieldLogActivityStatus extends fieldEnum  {
 

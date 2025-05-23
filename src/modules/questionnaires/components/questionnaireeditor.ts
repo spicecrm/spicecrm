@@ -10,7 +10,8 @@ import { modelutilities } from '../../../services/modelutilities.service';
 
 @Component({
     selector: 'questionnaire-editor',
-    templateUrl: "../templates/questionnaireeditor.html"
+    templateUrl: "../templates/questionnaireeditor.html",
+    standalone: false
 })
 export class QuestionnaireEditor implements OnInit {
 

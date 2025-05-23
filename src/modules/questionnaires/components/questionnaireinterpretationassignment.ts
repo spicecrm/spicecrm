@@ -17,7 +17,8 @@ import { configurationService } from '../../../services/configuration.service';
         "ul.interpretations > li { float: left; width: 50%; }",
         "ul.interpretations > li:nth-child(odd) { clear: left; }",
         "ul.interpretations > li > div { margin-right: 1rem; }"
-    ]
+    ],
+    standalone: false
 })
 export class QuestionnaireInterpretationAssignment implements OnInit {
 

@@ -15,7 +15,8 @@ import {projectwbsHierarchy} from "../services/projectwbshierarchy.service";
     providers: [model, view],
     host: {
         "[attr.aria-level]": "nodedata.level"
-    }
+    },
+    standalone: false
 })
 export class ProjectWBSHierarchyNode implements OnInit {
     /**

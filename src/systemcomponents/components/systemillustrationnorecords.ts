@@ -6,6 +6,7 @@ import {Component} from '@angular/core';
 
 @Component({
     selector: 'system-illustration-no-records',
-    templateUrl: '../templates/systemillustrationnorecords.html'
+    templateUrl: '../templates/systemillustrationnorecords.html',
+    standalone: false
 })
 export class SystemIllustrationNoRecords {}

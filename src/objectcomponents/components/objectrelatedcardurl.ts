@@ -8,7 +8,8 @@ import {userpreferences} from "../../services/userpreferences.service";
 
 @Component({
     selector: "[object-related-card-url]",
-    templateUrl: "../templates/objectrelatedcardurl.html"
+    templateUrl: "../templates/objectrelatedcardurl.html",
+    standalone: false
 })
 export class ObjectRelatedCardUrl {
 

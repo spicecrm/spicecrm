@@ -12,6 +12,7 @@ import {modal} from '../../../services/modal.service';
  */
 @Component({
     templateUrl: '../templates/deploymentcrdbentries.html',
+    standalone: false
 })
 export class DeploymentCRDBEntries implements OnInit {
 

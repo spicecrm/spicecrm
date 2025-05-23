@@ -14,6 +14,7 @@ import { take } from 'rxjs/operators';
 @Component({
     selector: 'spice-attachments-stats',
     templateUrl: '../templates/spiceattachmentstats.html',
+    standalone: false
 })
 export class SpiceAttachmentStats {
 

@@ -10,7 +10,8 @@ import {model} from "../../../services/model.service";
 
 @Component({
     templateUrl: '../templates/productgroupmanager.html',
-    providers: [productfinder, model]
+    providers: [productfinder, model],
+    standalone: false
 })
 
 export class ProductGroupManager {

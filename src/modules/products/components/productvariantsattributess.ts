@@ -13,7 +13,8 @@ import {ProductVariantsAttributeVC} from './productvariantsattributevc';
  */
 @Component({
     selector: 'product-variants-attribute-s',
-    templateUrl: '../templates/productvariantsattributess.html'
+    templateUrl: '../templates/productvariantsattributess.html',
+    standalone: false
 })
 export class ProductVariantsAttributeSS extends ProductVariantsAttributeVC {
 

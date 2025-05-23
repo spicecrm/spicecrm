@@ -6,8 +6,9 @@ import { toast } from '../../../services/toast.service';
 
 @Component({
     selector: 'event-booking-table-item',
-    templateUrl : '../templates/eventbookingtableitem.html',
-    providers: [model, view]
+    templateUrl: '../templates/eventbookingtableitem.html',
+    providers: [model, view],
+    standalone: false
 })
 
 export class EventBookingTableItem implements OnInit{

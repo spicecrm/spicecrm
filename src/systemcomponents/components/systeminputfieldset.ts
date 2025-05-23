@@ -18,7 +18,8 @@ import {metadata} from "../../services/metadata.service";
             useExisting: forwardRef(() => SystemInputFieldset),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputFieldset implements ControlValueAccessor {
 

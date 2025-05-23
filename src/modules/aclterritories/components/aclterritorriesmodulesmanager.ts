@@ -9,6 +9,7 @@ import {navigation} from '../../../services/navigation.service';
 @Component({
     selector: 'aclterritorries-modules-manager',
     templateUrl: '../templates/aclterritorriesmodulesmanager.html',
+    standalone: false
 })
 export class ACLTerritorriesModulessmanager {
 

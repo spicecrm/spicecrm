@@ -11,7 +11,8 @@ declare var _: any;
 @Component({
     selector: 'procurement-docs-convert-modal',
     templateUrl: "../templates/procurementdocsconvertmodal.html",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ProcurementDocsConvertModal {
 

@@ -9,6 +9,7 @@ import {WorkflowManagerService} from "../services/workflowmanager.service";
 @Component({
     selector: 'workflow-manager-task-types-email-handle',
     templateUrl: '../templates/workflowmanagertasktypesemailhandle.html',
+    standalone: false
 })
 /**
  * handle managing the workflow task email handle type

@@ -10,7 +10,8 @@ import {modal} from '../../services/modal.service';
 
 @Component({
     selector: 'object-merge-button',
-    templateUrl: '../templates/objectmergebutton.html'
+    templateUrl: '../templates/objectmergebutton.html',
+    standalone: false
 })
 export class ObjectMergeButton {
 

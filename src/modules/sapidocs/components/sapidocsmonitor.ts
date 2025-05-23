@@ -11,7 +11,8 @@ import {navigationtab} from "../../../services/navigationtab.service";
 @Component({
     selector: 'sapidocs-monitor',
     templateUrl: '../templates/sapidocsmonitor.html',
-    providers: [modellist, model]
+    providers: [modellist, model],
+    standalone: false
 })
 export class SAPIDOCsMonitor {
 

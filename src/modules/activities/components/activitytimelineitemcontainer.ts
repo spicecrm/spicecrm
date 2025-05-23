@@ -7,7 +7,8 @@ import {metadata} from '../../../services/metadata.service';
 
 @Component({
     selector: 'activitytimeline-item-container',
-    templateUrl: '../templates/activitytimelineitemcontainer.html'
+    templateUrl: '../templates/activitytimelineitemcontainer.html',
+    standalone: false
 })
 export class ActivityTimelineItemContainer implements OnInit {
 

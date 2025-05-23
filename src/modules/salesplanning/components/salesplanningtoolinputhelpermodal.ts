@@ -6,7 +6,8 @@ import {language} from '../../../services/language.service';
 import {Observable, Subject} from "rxjs";
 
 @Component({
-    templateUrl: '../templates/salesplanningtoolinputhelpermodal.html'
+    templateUrl: '../templates/salesplanningtoolinputhelpermodal.html',
+    standalone: false
 })
 
 export class SalesPlanningToolInputHelperModal {

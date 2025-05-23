@@ -19,7 +19,8 @@ declare var moment: any;
     selector: 'calendar-sheet-microsoft-event',
     templateUrl: '../templates/calendarsheetmicrosoftevent.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class CalendarSheetMicrosoftEvent {
     /**

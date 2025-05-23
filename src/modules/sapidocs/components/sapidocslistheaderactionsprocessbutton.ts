@@ -19,6 +19,7 @@ import {modal} from '../../../services/modal.service';
  */
 @Component({
     templateUrl: '../templates/sapidocslistheaderactionsprocessbutton.html',
+    standalone: false
 })
 export class SAPIDOCsListHeaderActionsProcessButton {
 

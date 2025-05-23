@@ -17,6 +17,7 @@ import {fieldLinked} from "./fieldlinked";
 @Component({
     selector: 'field-generic',
     templateUrl: '../templates/fieldmodifiedby.html',
+    standalone: false
 })
 export class fieldModifiedBy extends fieldLinked {
 

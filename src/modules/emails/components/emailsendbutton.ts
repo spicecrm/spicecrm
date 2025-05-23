@@ -16,7 +16,8 @@ import {configurationService} from "../../../services/configuration.service";
  */
 @Component({
     selector: "email-send-button",
-    templateUrl: "../templates/emailsendbutton.html"
+    templateUrl: "../templates/emailsendbutton.html",
+    standalone: false
 })
 export class EmailSendButton {
     // public object_module_name: string;

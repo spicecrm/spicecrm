@@ -14,6 +14,7 @@ import {modal} from "../../../services/modal.service";
 @Component({
     selector: 'telephony-call-panel-herold',
     templateUrl: '../templates/telephonycallpanelherold.html',
+    standalone: false
 })
 export class TelephonyCallPanelHerold {
     /**

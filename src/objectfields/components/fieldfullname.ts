@@ -12,7 +12,8 @@ import {userpreferences} from "../../services/userpreferences.service";
 
 @Component({
     selector: 'field-full-name',
-    templateUrl: '../templates/fieldfullname.html'
+    templateUrl: '../templates/fieldfullname.html',
+    standalone: false
 })
 export class fieldFullName extends fieldGeneric {
     public isValid: boolean = true;

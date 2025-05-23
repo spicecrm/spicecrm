@@ -12,7 +12,8 @@ import {CdkDragDrop, CdkDrag, CdkDropList, moveItemInArray} from "@angular/cdk/d
  * renders a modal with the list of tabs and allows closing them, navigating to as well as providing some additonal informations
  */
 @Component({
-    templateUrl: '../templates/globalnavigationtabbedbrowsermodal.html'
+    templateUrl: '../templates/globalnavigationtabbedbrowsermodal.html',
+    standalone: false
 })
 export class GlobalNavigationTabbedBrowserModal {
     /**

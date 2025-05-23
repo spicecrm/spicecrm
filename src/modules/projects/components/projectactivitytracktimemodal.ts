@@ -11,7 +11,8 @@ import {session} from "../../../services/session.service";
 @Component({
     selector: 'project-activity-track-time-modal',
     templateUrl: '../templates/projectactivitytracktimemodal.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 
 /**

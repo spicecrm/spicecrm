@@ -5,6 +5,7 @@ import {Component, OnInit,EventEmitter} from '@angular/core';
 
 @Component({
     templateUrl: "../templates/systemlabeleditorglobalcustommodal.html",
+    standalone: false
 })
 export class SystemLabelEditorGlobalCustomModal {
 

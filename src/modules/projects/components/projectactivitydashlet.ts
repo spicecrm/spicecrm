@@ -18,7 +18,8 @@ declare var moment: any;
 @Component({
     selector: "project-activity-dashlet",
     templateUrl: "../templates/projectactivitydashlet.html",
-    providers: [modellist]
+    providers: [modellist],
+    standalone: false
 })
 export class ProjectActivityDashlet implements OnInit {
     // public recent_project_activities: any = [];

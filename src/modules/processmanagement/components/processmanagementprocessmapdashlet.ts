@@ -15,9 +15,10 @@ import {processmanagement} from "../services/processmanagement.service";
 
 
 @Component({
-    selector:'process-management-process-map-dashlet',
+    selector: 'process-management-process-map-dashlet',
     templateUrl: '../templates/processmanagementprocessmapdashlet.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ProcessManagementProcessMapDashlet implements OnInit {
 

@@ -21,7 +21,8 @@ import {WorkflowManagerService} from "../services/workflowmanager.service";
 @Component({
     selector: 'workflow-manager-detail-task',
     templateUrl: '../templates/workflowmanagerdetailtask.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class WorkflowManagerDetailTask implements OnChanges, AfterViewInit {
     /**

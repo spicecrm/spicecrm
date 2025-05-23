@@ -15,7 +15,7 @@ declare var moment: any;
 @Component({
     selector: '[workflow-panel-tasks-comments]',
     templateUrl: '../templates/workflowpaneltaskscomments.html',
-
+    standalone: false
 })
 export class WorkflowPanelTasksComments {
 

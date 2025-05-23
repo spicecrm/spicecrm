@@ -11,7 +11,8 @@ declare var moment: any;
 @Component({
     selector: 'telephony-call-panel-save-button',
     templateUrl: '../templates/telephonycallpanelsavebutton.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class TelephonyCallPanelSaveButton {
 

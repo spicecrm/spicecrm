@@ -14,7 +14,8 @@ import {view} from '../../services/view.service';
  */
 @Component({
     templateUrl: '../templates/objectgdprmodal.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ObjectGDPRModal implements OnInit {
 

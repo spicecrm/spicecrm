@@ -11,7 +11,8 @@ import {ObjectRelatedlistList} from './objectrelatedlistlist';
 
 @Component({
     selector: 'object-relatedlist-sequenced',
-    templateUrl: '../templates/objectrelatedlistsequenced.html'
+    templateUrl: '../templates/objectrelatedlistsequenced.html',
+    standalone: false
 })
 export class ObjectRelatedlistSequenced {
     @Input() public componentconfig: any = {};

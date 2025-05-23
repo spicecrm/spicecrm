@@ -13,6 +13,7 @@ import {modal} from "../../../services/modal.service";
 @Component({
     templateUrl: '../templates/spicebcardreaderbutton.html',
     providers: [modelattachments, model],
+    standalone: false
 })
 
 export class SpiceBCardReaderButton {

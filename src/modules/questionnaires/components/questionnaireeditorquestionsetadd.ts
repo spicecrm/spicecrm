@@ -9,7 +9,8 @@ import { metadata } from '../../../services/metadata.service';
 @Component({
     selector: 'questionnaire-editor-questionset-add',
     templateUrl: "../templates/questionnaireeditorquestionsetadd.html",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class QuestionnaireEditorQuestionsetAdd {
 

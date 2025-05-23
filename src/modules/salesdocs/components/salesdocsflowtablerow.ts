@@ -12,7 +12,8 @@ import {navigationtab} from "../../../services/navigationtab.service";
 @Component({
     selector: '[salesdocs-flow-table-row]',
     templateUrl: "../templates/salesdocsflowtablerow.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class SalesDocsFlowTableRow implements OnInit {
     /**

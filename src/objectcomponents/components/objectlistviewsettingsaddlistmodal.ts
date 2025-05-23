@@ -9,7 +9,8 @@ import {metadata} from "../../services/metadata.service";
 
 @Component({
     selector: 'object-listview-settings-addlistmodal',
-    templateUrl: '../templates/objectlistviewsettingsaddlistmodal.html'
+    templateUrl: '../templates/objectlistviewsettingsaddlistmodal.html',
+    standalone: false
 })
 export class ObjectListViewSettingsAddlistModal implements OnInit {
 

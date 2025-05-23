@@ -23,7 +23,8 @@ declare var moment: any;
  */
 @Component({
     selector: 'reporter-integration-csvexport-button',
-    templateUrl: '../templates/reporterintegrationcsvexportbutton.html'
+    templateUrl: '../templates/reporterintegrationcsvexportbutton.html',
+    standalone: false
 })
 export class ReporterIntegrationCSVexportButton {
 

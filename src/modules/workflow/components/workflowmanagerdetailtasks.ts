@@ -17,6 +17,7 @@ import {WorkflowDiagramService} from "../services/workflowdiagram.service";
 @Component({
     selector: 'workflow-manager-detail-tasks',
     templateUrl: '../templates/workflowmanagerdetailtasks.html',
+    standalone: false
 })
 export class WorkflowManagerDetailTasks {
 

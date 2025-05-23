@@ -21,7 +21,8 @@ declare var moment: any;
     },
     styles: [
         ':host  span {cursor:pointer;}'
-    ]
+    ],
+    standalone: false
 })
 export class ProductGroupsContentCodeAssignments {
 

@@ -9,7 +9,8 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: "[serviceorder-equipment-item]",
     templateUrl: "../templates/serviceorderequipmentitem.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ServiceOrderEquipmentItem implements OnInit  {
 

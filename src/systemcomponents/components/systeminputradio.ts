@@ -17,7 +17,8 @@ import {modelutilities} from "../../services/modelutilities.service";
             useExisting: forwardRef(() => SystemInputRadio),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputRadio implements ControlValueAccessor {
 

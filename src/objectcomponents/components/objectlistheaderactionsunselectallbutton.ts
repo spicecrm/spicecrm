@@ -12,6 +12,7 @@ import {modal} from '../../services/modal.service';
 @Component({
     selector: 'object-list-header-actions-unselect-all-button',
     templateUrl: '../templates/objectlistheaderactionsunselectallbutton.html',
+    standalone: false
 })
 export class ObjectListHeaderActionsUnselectAllButton {
 

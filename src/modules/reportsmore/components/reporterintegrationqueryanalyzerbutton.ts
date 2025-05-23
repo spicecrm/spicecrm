@@ -10,7 +10,8 @@ import {language} from '../../../services/language.service';
  */
 @Component({
     selector: 'reporter-integration-queryanalyzer-button',
-    templateUrl: '../templates/reporterintegrationqueryanalyzerbutton.html'
+    templateUrl: '../templates/reporterintegrationqueryanalyzerbutton.html',
+    standalone: false
 })
 export class ReporterIntegrationQueryanalyzerButton {
 

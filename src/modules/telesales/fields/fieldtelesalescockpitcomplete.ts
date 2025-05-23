@@ -13,7 +13,8 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: 'field-tele-sales-cockpit-complete',
     templateUrl: '../templates/fieldtelesalescockpitcomplete.html',
-    providers: [telecockpitservice]
+    providers: [telecockpitservice],
+    standalone: false
 })
 export class FieldTeleSalesCockpitComplete {
 

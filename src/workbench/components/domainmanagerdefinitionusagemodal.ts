@@ -12,7 +12,8 @@ import {dictionarymanager} from "../services/dictionarymanager.service";
 
 @Component({
     selector: 'domain-manager-definitio-nusage-modal',
-    templateUrl: '../templates/domainmanagerdefinitionusagemodal.html'
+    templateUrl: '../templates/domainmanagerdefinitionusagemodal.html',
+    standalone: false
 })
 export class DomainManagerDefinitionUsageModal implements OnInit{
     /**

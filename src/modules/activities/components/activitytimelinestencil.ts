@@ -5,7 +5,8 @@ import {Component} from '@angular/core';
 
 @Component({
     selector: 'activitytimeline-stencil',
-    templateUrl: '../templates/activitytimelinestencil.html'
+    templateUrl: '../templates/activitytimelinestencil.html',
+    standalone: false
 })
 export class ActivityTimelineStencil {
 

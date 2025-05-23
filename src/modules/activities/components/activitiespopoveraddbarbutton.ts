@@ -20,7 +20,8 @@ import {relatedmodels} from '../../../services/relatedmodels.service';
 @Component({
     selector: 'activities-popover-addbar-button',
     templateUrl: '../templates/activitiespopoveraddbarbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ActivitiesPopoverAddBarButton {
 

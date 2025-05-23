@@ -18,7 +18,8 @@ declare var _: any;
 
 @Component({
     selector: 'field-procurement-doc-types',
-    templateUrl: '../templates/fieldprocurementdoctypes.html'
+    templateUrl: '../templates/fieldprocurementdoctypes.html',
+    standalone: false
 })
 export class fieldProcurementDocTypes extends fieldGeneric {
 

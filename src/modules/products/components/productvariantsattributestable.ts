@@ -7,7 +7,8 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'product-variants-attributes-table',
-    templateUrl: '../templates/productvariantsattributestable.html'
+    templateUrl: '../templates/productvariantsattributestable.html',
+    standalone: false
 })
 export class ProductVariantsAttributesTable implements OnChanges {
 

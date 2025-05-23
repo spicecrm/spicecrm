@@ -12,7 +12,8 @@ import {modellist} from "../../../services/modellist.service";
 @Component({
     selector: "salesdocs-equipment-panel",
     templateUrl: "../templates/salesdocsequipmentpanel.html",
-    providers: [modellist]
+    providers: [modellist],
+    standalone: false
 })
 export class SalesDocsEquipmentPanel implements OnInit {
 

@@ -10,7 +10,8 @@ import {ReportsDesignerService} from "../../../modules/reportsdesigner/services/
 @Component({
     selector: 'reports-designer-more-present-item-pivot',
     templateUrl: '../templates/reportsdesignermorepresentitempivot.html',
-    styles: ['.reports-designer-table-adjust-drag-placeholder .cdk-drag-placeholder {width: max-content; display: block;}']
+    styles: ['.reports-designer-table-adjust-drag-placeholder .cdk-drag-placeholder {width: max-content; display: block;}'],
+    standalone: false
 })
 export class ReportsDesignerMorePresentItemPivot {
 

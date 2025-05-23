@@ -11,7 +11,8 @@ import {modal} from '../../../services/modal.service';
 @Component({
     selector: '[questions-manager-edit-option-single-multi]',
     templateUrl: '../templates/questionsmanagereditoptionsinglemulti.html',
-    providers: [model,view]
+    providers: [model, view],
+    standalone: false
 })
 export class QuestionsManagerEditOptionSingleMulti implements OnInit {
 

@@ -8,7 +8,8 @@ import {modelutilities} from "../../../services/modelutilities.service";
 
 @Component({
     selector: "serviceorder-effort-panel",
-    templateUrl: "../templates/serviceordereffortpanel.html"
+    templateUrl: "../templates/serviceordereffortpanel.html",
+    standalone: false
 })
 export class ServiceOrderEffortPanel implements OnInit {
 

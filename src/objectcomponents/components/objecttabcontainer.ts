@@ -17,7 +17,8 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'object-tab-container',
-    templateUrl: '../templates/objecttabcontainer.html'
+    templateUrl: '../templates/objecttabcontainer.html',
+    standalone: false
 })
 export class ObjectTabContainer implements OnInit, OnDestroy, AfterViewInit {
     @ViewChildren('maintabs', {read: ViewContainerRef}) public maintabs: QueryList<any>;

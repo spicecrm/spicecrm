@@ -13,7 +13,8 @@ import { toast } from '../../services/toast.service';
  */
 @Component({
     selector: 'administration-configeditor',
-    templateUrl: '../templates/administrationconfigeditor.html'
+    templateUrl: '../templates/administrationconfigeditor.html',
+    standalone: false
 })
 export class AdministrationConfigEditor implements OnInit {
 

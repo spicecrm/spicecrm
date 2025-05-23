@@ -14,7 +14,8 @@ import {backend} from "../../../services/backend.service";
 @Component({
     selector: 'orgunits-chart-view-box-add',
     templateUrl: '../templates/orgunitschartviewboxadd.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class OrgunitsChartViewBoxAdd {
 

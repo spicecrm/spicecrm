@@ -20,7 +20,8 @@ import {lastValueFrom} from "rxjs";
  */
 @Component({
     templateUrl: '../templates/bonuscardbulkextendbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class BonusCardBulkExtendButton {
 

@@ -8,7 +8,8 @@ import {model} from '../../../services/model.service';
 
 @Component({
     selector: 'travel-receipt-tax',
-    templateUrl: '../templates/travelreceipttax.html'
+    templateUrl: '../templates/travelreceipttax.html',
+    standalone: false
 })
 export class TravelReceiptTax {
 

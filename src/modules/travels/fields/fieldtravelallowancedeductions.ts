@@ -17,6 +17,7 @@ declare var _: any;
  */
 @Component({
     templateUrl: '../templates/fieldtravelallowancedeductions.html',
+    standalone: false
 })
 export class fieldTravelAllowanceDeductions extends fieldGeneric {
 

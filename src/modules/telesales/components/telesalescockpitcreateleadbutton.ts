@@ -8,7 +8,8 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: 'tele_sales_cockpit_create_lead_button',
     templateUrl: '../templates/telesalescockpitcreateleadbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class TeleSalesCockpitCreateLeadButton {
 

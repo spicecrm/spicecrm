@@ -14,6 +14,7 @@ import {modal} from '../../../services/modal.service';
 @Component({
     selector: 'prospectlists-to-dialogmail-button',
     templateUrl: '../templates/prospectliststodialogmailbutton.html',
+    standalone: false
 })
 export class ProspectListsToDialogMailButton {
 

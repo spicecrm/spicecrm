@@ -18,7 +18,8 @@ import {navigation} from "../../../services/navigation.service";
 
 
 @Component({
-    templateUrl: '../templates/fielddocumentrevisionstatus.html'
+    templateUrl: '../templates/fielddocumentrevisionstatus.html',
+    standalone: false
 })
 
 export class fieldDocumentRevisionStatus extends fieldGeneric {

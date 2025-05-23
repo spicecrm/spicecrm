@@ -11,7 +11,8 @@ import {ServiceSelectQueueModal} from "./serviceselectqueuemodal";
 
 @Component({
     selector: 'service-select-queue-button',
-    templateUrl: '../templates/serviceselectqueuebutton.html'
+    templateUrl: '../templates/serviceselectqueuebutton.html',
+    standalone: false
 })
 export class ServiceSelectQueueButton {
     /**

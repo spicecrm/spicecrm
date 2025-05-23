@@ -8,6 +8,7 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     templateUrl: '../templates/salesplanningtoolcontentnotemodal.html',
+    standalone: false
 })
 
 export class SalesPlanningToolContentNoteModal {

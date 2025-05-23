@@ -9,7 +9,8 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'campaigntask-add-button',
-    templateUrl: '../templates/campaigntaskaddbutton.html'
+    templateUrl: '../templates/campaigntaskaddbutton.html',
+    standalone: false
 })
 export class CampaignTaskAddButton {
 

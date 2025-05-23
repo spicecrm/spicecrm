@@ -33,15 +33,16 @@ declare var _: any;
     animations: [
         trigger('animatepopover', [
             transition(':enter', [
-                style({opacity: 0}),
-                animate('.25s', style({opacity: 1}))
+                style({ opacity: 0 }),
+                animate('.25s', style({ opacity: 1 }))
             ]),
             transition(':leave', [
-                style({opacity: '1'}),
-                animate('.25s', style({opacity: 0}))
+                style({ opacity: '1' }),
+                animate('.25s', style({ opacity: 0 }))
             ])
         ])
-    ]
+    ],
+    standalone: false
 })
 export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilterExpression implements OnDestroy, AfterViewInit {
     @ViewChild('popover', {read: ViewContainerRef, static: true}) public popover: ViewContainerRef;

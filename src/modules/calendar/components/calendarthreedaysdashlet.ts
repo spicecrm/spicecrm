@@ -11,11 +11,12 @@ import {calendar} from '../services/calendar.service';
 @Component({
     selector: 'calendar-three-days-dashlet',
     templateUrl: '../templates/calendarthreedaysdashlet.html',
-    providers: [calendar, {provide: 'calendarConfigOverride', useFactory: () => ({
-            isDashlet: true,
-            sheetType: 'Three_Days',
-            sheetHourHeight: 50
-    })}]
+    providers: [calendar, { provide: 'calendarConfigOverride', useFactory: () => ({
+                isDashlet: true,
+                sheetType: 'Three_Days',
+                sheetHourHeight: 50
+            }) }],
+    standalone: false
 })
 
 export class CalendarThreeDaysDashlet implements OnInit {

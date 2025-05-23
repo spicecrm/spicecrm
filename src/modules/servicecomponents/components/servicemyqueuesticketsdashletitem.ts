@@ -16,7 +16,8 @@ declare var moment: any;
 @Component({
     selector: 'service-myqueues-tickets-dashlet-item',
     templateUrl: '../templates/servicemyqueuesticketsdashletitem.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ServiceMyQueuesTicketsDashletItem implements OnInit {
 

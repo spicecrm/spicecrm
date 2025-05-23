@@ -25,7 +25,8 @@ import {socket} from "../../../services/socket.service";
 
 
 @Component({
-    templateUrl: '../templates/alcateltoolbarindicator.html'
+    templateUrl: '../templates/alcateltoolbarindicator.html',
+    standalone: false
 })
 export class AlcatelToolbarIndicator implements OnDestroy {
 

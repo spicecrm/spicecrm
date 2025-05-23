@@ -9,7 +9,8 @@ import { QuestionsManagerEditBasic } from './questionsmanagereditbasic';
 
 @Component({
     selector: 'questions-manager-edit-text',
-    templateUrl: '../templates/questionsmanageredittext.html'
+    templateUrl: '../templates/questionsmanageredittext.html',
+    standalone: false
 })
 export class QuestionsManagerEditText extends QuestionsManagerEditBasic implements OnInit {
 

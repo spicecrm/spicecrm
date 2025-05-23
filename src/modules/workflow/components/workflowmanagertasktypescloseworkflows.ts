@@ -13,6 +13,7 @@ import {WorkflowTaskTypeCloseWorkflowsI} from "../interfaces/workflow.interfaces
 @Component({
     selector: 'workflow-manager-task-types-close-workflows',
     templateUrl: '../templates/workflowmanagertasktypescloseworkflows.html',
+    standalone: false
 })
 export class WorkflowManagerTaskTypesCloseWorkflows {
 

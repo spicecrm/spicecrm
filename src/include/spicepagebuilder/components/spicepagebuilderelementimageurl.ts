@@ -13,7 +13,8 @@ import {SpicePageBuilderElementImage} from "./spicepagebuilderelementimage";
  */
 @Component({
     selector: 'spice-page-builder-element-image-url',
-    templateUrl: '../templates/spicepagebuilderelementimageurl.html'
+    templateUrl: '../templates/spicepagebuilderelementimageurl.html',
+    standalone: false
 })
 export class SpicePageBuilderElementImageUrl extends SpicePageBuilderElementImage implements OnInit {
     /**

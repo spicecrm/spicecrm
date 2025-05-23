@@ -15,7 +15,8 @@ declare var moment: any;
 @Component({
     selector: 'tele-sales-cockpit-add-meeting-button',
     templateUrl: '../templates/telesalescockpitaddmeetingbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class TeleSalesCockpitAddMeetingButton {
 

@@ -5,7 +5,8 @@ import {DictionaryItem, Relationship, RelationshipType} from "../interfaces/dict
 
 @Component({
     selector: 'dictionary-manager-relationship-add-user',
-    templateUrl: '../templates/dictionarymanagerrelationshipadduser.html'
+    templateUrl: '../templates/dictionarymanagerrelationshipadduser.html',
+    standalone: false
 })
 
 export class DictionaryManagerRelationshipAddUser {

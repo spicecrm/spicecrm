@@ -19,7 +19,8 @@ import {modelutilities} from '../../../services/modelutilities.service';
 @Component({
     selector: 'aclterritorries-manager-territory',
     templateUrl: '../templates/aclterritorriesmanagerterritory.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ACLTerritorriesManagerTerritory implements OnChanges {
 

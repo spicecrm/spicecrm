@@ -11,6 +11,7 @@ import { modal } from "../../../services/modal.service";
 @Component({
     selector: 'questionnaire-preview-button',
     templateUrl: '../templates/questionnairepreviewbutton.html',
+    standalone: false
 })
 export class QuestionnairePreviewButton {
 

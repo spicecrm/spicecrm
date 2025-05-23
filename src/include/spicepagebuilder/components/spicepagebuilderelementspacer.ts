@@ -14,7 +14,8 @@ import {SpicePageBuilderElement} from "./spicepagebuilderelement";
 @Component({
     selector: 'spice-page-builder-element-spacer',
     templateUrl: '../templates/spicepagebuilderelementspacer.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderElementSpacer extends SpicePageBuilderElement {
     /**

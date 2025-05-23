@@ -16,7 +16,8 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'fieldsetmanager-add-dialog',
-    templateUrl: '../templates/fieldsetmanageradddialog.html'
+    templateUrl: '../templates/fieldsetmanageradddialog.html',
+    standalone: false
 })
 export class FieldsetManagerAddDialog implements OnInit {
     @Output() public closedialog: EventEmitter<boolean> = new EventEmitter<boolean>();

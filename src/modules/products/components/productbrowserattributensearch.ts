@@ -14,7 +14,8 @@ declare var moment: any;
 
 @Component({
     selector: 'product-browser-attribute-n-search',
-    templateUrl: '../templates/productbrowserattributensearch.html'
+    templateUrl: '../templates/productbrowserattributensearch.html',
+    standalone: false
 })
 export class ProductBrowserAttributeNSearch {
 

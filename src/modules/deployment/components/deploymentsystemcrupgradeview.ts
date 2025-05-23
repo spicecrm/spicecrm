@@ -27,7 +27,7 @@ import {skip} from "rxjs/operators";
     selector: 'deployment-system-cr-upgrade-view',
     templateUrl: '../templates/deploymentsystemcrupgradeview.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-
+    standalone: false
 })
 export class DeploymentSystemCRUpgradeView implements OnDestroy, OnInit {
     /**

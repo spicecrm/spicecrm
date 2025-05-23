@@ -13,6 +13,7 @@ declare var gantt: any;
 @Component({
     selector: "projectwbs-gantt",
     templateUrl: "../templates/projectwbsgantt.html",
+    standalone: false
 })
 export class ProjectWBSGantt implements  AfterViewInit, OnDestroy {
     public self: any;

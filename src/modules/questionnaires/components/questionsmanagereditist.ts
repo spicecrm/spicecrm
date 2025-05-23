@@ -10,7 +10,8 @@ import { metadata } from '../../../services/metadata.service';
 
 @Component({
     selector: 'questions-manager-edit-ist',
-    templateUrl: '../templates/questionsmanagereditist.html'
+    templateUrl: '../templates/questionsmanagereditist.html',
+    standalone: false
 })
 export class QuestionsManagerEditIst extends QuestionsManagerEditBasicWithOptions implements OnInit {
 

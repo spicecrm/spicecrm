@@ -17,7 +17,8 @@ declare var _;
 @Component({
     selector: 'telephony-call-panel-search-button',
     templateUrl: '../templates/telephonycallsearchbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class TelephonyCallSearchButton {
 

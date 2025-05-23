@@ -12,6 +12,7 @@ import {model} from '../../../services/model.service';
  */
 @Component({
     templateUrl: '../templates/deploymentcrdbsql.html',
+    standalone: false
 })
 export class DeploymentCRDBSQL implements OnInit {
 

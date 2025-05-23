@@ -13,7 +13,8 @@ import {toast} from '../../services/toast.service';
  */
 @Component({
     selector: 'administration-configeditor-enum',
-    templateUrl: '../templates/administrationconfigeditorenum.html'
+    templateUrl: '../templates/administrationconfigeditorenum.html',
+    standalone: false
 })
 export class AdministrationConfigEditorEnum {
 

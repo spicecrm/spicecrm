@@ -18,6 +18,7 @@ declare var _: any;
 @Component({
     selector: "spice-path-track",
     templateUrl: "../templates/spicepathtrack.html",
+    standalone: false
 })
 export class SpicePathTrack implements OnInit{
 

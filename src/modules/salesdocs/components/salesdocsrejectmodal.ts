@@ -15,7 +15,8 @@ import {toast} from "../../../services/toast.service";
  */
 @Component({
     templateUrl: "../templates/salesdocsrejectmodal.html",
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class SalesdocsRejectModal {
 

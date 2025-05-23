@@ -13,7 +13,8 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'componensetmanager-edit-dialog',
-    templateUrl: '../templates/componentsetmanagereditdialog.html'
+    templateUrl: '../templates/componentsetmanagereditdialog.html',
+    standalone: false
 })
 export class ComponentsetManagerEditDialog implements OnInit{
     @Output() closedialog: EventEmitter<any> = new EventEmitter<any>();

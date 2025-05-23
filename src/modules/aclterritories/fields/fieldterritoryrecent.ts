@@ -10,7 +10,8 @@ import {territories} from '../../../services/territories.service';
 
 @Component({
     selector: 'field-territory-recent',
-    templateUrl: '../templates/fieldterritoryrecent.html'
+    templateUrl: '../templates/fieldterritoryrecent.html',
+    standalone: false
 })
 export class fieldTerritoryRecent {
     /**

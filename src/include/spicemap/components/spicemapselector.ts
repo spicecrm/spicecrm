@@ -19,7 +19,8 @@ declare var google: any;
 
 @Component({
     selector: 'spice-map-selector',
-    templateUrl: '../templates/spicemapselector.html'
+    templateUrl: '../templates/spicemapselector.html',
+    standalone: false
 })
 export class SpiceMapSelector implements AfterViewInit {
     /**

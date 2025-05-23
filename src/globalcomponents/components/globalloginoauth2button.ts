@@ -17,7 +17,8 @@ import {asapScheduler} from "rxjs";
 @Component({
     selector: "global-login-oauth2-button",
     templateUrl: "../templates/globalloginoauth2button.html",
-    providers: [OAuth2Service]
+    providers: [OAuth2Service],
+    standalone: false
 })
 export class GlobalLoginOAuth2Button {
     /**

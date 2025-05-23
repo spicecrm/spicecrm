@@ -7,7 +7,8 @@ declare var js_beautify: any;
 
 @Component({
     selector: 'administration-api-inspector-method-test',
-    templateUrl: '../templates/administrationapiinspectormethodtest.html'
+    templateUrl: '../templates/administrationapiinspectormethodtest.html',
+    standalone: false
 })
 
 export class AdministrationApiInspectorMethodTest implements AfterViewInit {

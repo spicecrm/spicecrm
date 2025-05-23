@@ -10,7 +10,8 @@ import { view } from '../../../services/view.service';
 @Component({
     selector: '[questions-manager-edit-binary-option]',
     templateUrl: '../templates/questionsmanagereditbinaryoption.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class QuestionsManagerEditBinaryOption implements OnInit, OnChanges {
 

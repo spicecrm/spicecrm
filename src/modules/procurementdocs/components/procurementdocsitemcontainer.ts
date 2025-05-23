@@ -15,7 +15,8 @@ import {Subscription} from "rxjs";
 @Component({
     selector: '[procurement-docs-item-container]',
     templateUrl: '../templates/procurementdocsitemcontainer.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ProcurementDocsItemContainer implements OnInit, OnDestroy {
 

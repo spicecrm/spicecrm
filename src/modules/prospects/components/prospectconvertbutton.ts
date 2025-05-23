@@ -17,7 +17,8 @@ import {ProspectConvertModal} from "./prospectconvertmodal";
  */
 @Component({
     selector: 'prospect-convert-button',
-    templateUrl: '../templates/prospectconvertbutton.html'
+    templateUrl: '../templates/prospectconvertbutton.html',
+    standalone: false
 })
 export class ProspectConvertButton {
 

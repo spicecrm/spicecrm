@@ -17,7 +17,8 @@ declare var moment: any;
  */
 @Component({
     selector: 'output-templates-preview-selector',
-    templateUrl: "../templates/outputtemplatespreviewselector.html"
+    templateUrl: "../templates/outputtemplatespreviewselector.html",
+    standalone: false
 })
 export class OutputTemplatesPreviewSelector implements OnDestroy {
 

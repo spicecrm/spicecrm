@@ -7,7 +7,8 @@ import {sapIdocsManager} from "../../../modules/sapidocs/services/sapidocsmanage
 import {sapIDOCFieldI, sapIDOCSegmentI} from "../../../modules/sapidocs/interfaces/moudesapidocs.interfaces";
 
 @Component({
-    templateUrl: '../templates/sapidocsmanagerfieldaddmodal.html'
+    templateUrl: '../templates/sapidocsmanagerfieldaddmodal.html',
+    standalone: false
 })
 export class SAPIDOCsManagerFieldAddModal implements OnInit {
 

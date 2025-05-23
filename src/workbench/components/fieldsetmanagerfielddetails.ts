@@ -9,7 +9,8 @@ import {view} from '../../services/view.service';
 @Component({
     selector: 'fieldsetmanager-field-details',
     templateUrl: '../templates/fieldsetmanagerfielddetails.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class FieldsetManagerFieldDetails implements OnChanges {
 

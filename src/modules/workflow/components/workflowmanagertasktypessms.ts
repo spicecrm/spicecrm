@@ -21,6 +21,7 @@ declare var _;
 @Component({
     selector: 'workflow-manager-task-types-sms',
     templateUrl: '../templates/workflowmanagertasktypessms.html',
+    standalone: false
 })
 export class WorkflowManagerTaskTypesSms {
     /**

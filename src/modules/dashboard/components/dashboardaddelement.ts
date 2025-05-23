@@ -8,7 +8,8 @@ import {metadata} from '../../../services/metadata.service';
 
 @Component({
     selector: 'dashboard-add-element',
-    templateUrl: '../templates/dashboardaddelement.html'
+    templateUrl: '../templates/dashboardaddelement.html',
+    standalone: false
 })
 export class DashboardAddElement {
 

@@ -8,7 +8,8 @@ import {GroupwareService} from '../../../include/groupware/services/groupware.se
 
 @Component({
     selector: 'outlook-calendar-item-edit-pane',
-    templateUrl: '../templates/outlookcalendaritemeditpane.html'
+    templateUrl: '../templates/outlookcalendaritemeditpane.html',
+    standalone: false
 })
 export class OutlookCalendarItemEditPane implements AfterViewInit {
 

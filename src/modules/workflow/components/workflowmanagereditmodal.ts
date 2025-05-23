@@ -14,7 +14,8 @@ import {Subject} from "rxjs";
 @Component({
     selector: 'workflow-manager-edit-modal',
     templateUrl: '../templates/workflowmanagereditmodal.html',
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 
 export class WorkflowManagerEditModal implements OnInit {

@@ -10,7 +10,8 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: "pipl-container",
-    templateUrl: "../templates/piplcontainer.html"
+    templateUrl: "../templates/piplcontainer.html",
+    standalone: false
 })
 export class PiplContainer {
 

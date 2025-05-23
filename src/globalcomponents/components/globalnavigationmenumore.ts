@@ -26,7 +26,8 @@ interface menuItem {
     templateUrl: '../templates/globalnavigationmenumore.html',
     host: {
         '[class.slds-context-bar__item]': 'true'
-    }
+    },
+    standalone: false
 })
 export class GlobalNavigationMenuMore implements AfterViewInit{
     constructor(public language: language,public router: Router,public elementRef: ElementRef,public broadcast: broadcast) {}

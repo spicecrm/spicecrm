@@ -14,9 +14,10 @@ import {modellist} from '../../services/modellist.service';
 @Component({
     selector: 'object-listview-aggregates-panel',
     templateUrl: '../templates/objectlistviewaggregatespanel.html',
-    host:{
-        class : 'slds-is-fixed'
-    }
+    host: {
+        class: 'slds-is-fixed'
+    },
+    standalone: false
 })
 export class ObjectListViewAggregatesPanel {
 

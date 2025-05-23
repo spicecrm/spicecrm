@@ -14,7 +14,8 @@ import {language} from "../../../services/language.service";
 @Component({
     selector: 'procurement-docs-reject-modal',
     templateUrl: "../templates/procurementdocsrejectmodal.html",
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ProcurementDocsRejectModal {
 

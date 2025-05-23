@@ -15,6 +15,7 @@ import {modal} from "../../services/modal.service";
 @Component({
     selector: 'module-builder-filters',
     templateUrl: '../templates/modulefilterbuilderfilters.html',
+    standalone: false
 })
 export class ModuleFilterBuilderFilters {
 

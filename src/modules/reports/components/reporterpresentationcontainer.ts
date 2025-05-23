@@ -10,7 +10,8 @@ import {Subject} from "rxjs";
 @Component({
     selector: 'reporter-presentation-container',
     templateUrl: '../templates/reporterpresentationcontainer.html',
-    providers: [reporterconfig]
+    providers: [reporterconfig],
+    standalone: false
 })
 export class ReporterPresentationContainer {
 

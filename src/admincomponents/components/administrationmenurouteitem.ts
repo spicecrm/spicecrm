@@ -12,7 +12,8 @@ import {Router} from '@angular/router';
 
 
 @Component({
-    template: ''
+    template: '',
+    standalone: false
 })
 export class AdministrationMenuRouteItem implements OnInit {
 

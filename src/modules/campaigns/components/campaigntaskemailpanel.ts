@@ -13,7 +13,8 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'campaign-task-email-panel',
-    templateUrl: '../templates/campaigntaskemailpanel.html'
+    templateUrl: '../templates/campaigntaskemailpanel.html',
+    standalone: false
 })
 export class CampaignTaskEmailPanel implements OnInit, OnDestroy {
     /**

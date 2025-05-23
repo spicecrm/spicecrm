@@ -9,7 +9,8 @@ import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'global-header-top',
-    templateUrl: '../templates/globalheadertop.html'
+    templateUrl: '../templates/globalheadertop.html',
+    standalone: false
 })
 export class GlobalHeaderTop {
 

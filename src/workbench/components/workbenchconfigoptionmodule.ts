@@ -16,7 +16,8 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: 'workbench-config-option-componentset',
-    templateUrl: '../templates/workbenchconfigoptionmodule.html'
+    templateUrl: '../templates/workbenchconfigoptionmodule.html',
+    standalone: false
 })
 export class WorkbenchConfigOptionModule implements AfterViewInit {
 

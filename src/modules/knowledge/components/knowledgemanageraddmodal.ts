@@ -11,7 +11,8 @@ import {Observable, Subject} from "rxjs";
 @Component({
     selector: 'knowledge-manager-add-modal',
     templateUrl: "../templates/knowledgemanageraddmodal.html",
-    providers: [model, KnowledgeService]
+    providers: [model, KnowledgeService],
+    standalone: false
 })
 export class KnowledgeManagerAddModal implements AfterViewInit {
 

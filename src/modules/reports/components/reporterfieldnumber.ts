@@ -8,7 +8,8 @@ import {userpreferences} from '../../../services/userpreferences.service';
  * display formatted report record value
  */
 @Component({
-    templateUrl: '../templates/reporterfieldnumber.html'
+    templateUrl: '../templates/reporterfieldnumber.html',
+    standalone: false
 })
 export class ReporterFieldNumber {
     /**

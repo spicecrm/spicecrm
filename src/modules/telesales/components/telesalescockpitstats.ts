@@ -12,6 +12,7 @@ import {TeleSalesCockpitListItem} from "./telesalescockpitlistitem";
 @Component({
     selector: 'tele-sales-cockpit-stats',
     templateUrl: '../templates/telesalescockpitstats.html',
+    standalone: false
 })
 export class TeleSalesCockpitStats {
 

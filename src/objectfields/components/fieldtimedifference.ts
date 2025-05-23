@@ -14,7 +14,8 @@ import {Router} from '@angular/router';
  */
 @Component({
     selector: 'field-time-difference',
-    templateUrl: '../templates/fieldtimedifference.html'
+    templateUrl: '../templates/fieldtimedifference.html',
+    standalone: false
 })
 export class fieldTimeDifference extends fieldGeneric {
 

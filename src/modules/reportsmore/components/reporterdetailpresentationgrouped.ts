@@ -16,7 +16,8 @@ import {ReporterDetailPresentationStandard} from "../../../modules/reports/compo
 @Component({
     selector: 'reporter-detail-presentation-grouped',
     templateUrl: '../templates/reporterdetailpresentationgrouped.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterDetailPresentationGrouped extends ReporterDetailPresentationStandard {
 

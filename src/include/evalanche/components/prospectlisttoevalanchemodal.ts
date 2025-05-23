@@ -13,7 +13,8 @@ import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'prospectlists-to-evalanche-modal',
-    templateUrl: '../templates/prospectlisttoevalanchemodal.html'
+    templateUrl: '../templates/prospectlisttoevalanchemodal.html',
+    standalone: false
 })
 export class ProspectListsToEvalancheModal{
 

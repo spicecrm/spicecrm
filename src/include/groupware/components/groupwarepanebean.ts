@@ -15,7 +15,8 @@ import {Router} from "@angular/router";
 @Component({
     selector: 'groupware-pane-bean',
     templateUrl: '../templates/groupwarepanebean.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class GroupwarePaneBean implements OnInit {
 

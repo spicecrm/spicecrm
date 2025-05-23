@@ -16,7 +16,8 @@ import {modal} from "../../../services/modal.service";
 import {toast} from "../../../services/toast.service";
 
 @Component({
-    templateUrl: '../templates/fieldsapaddress.html'
+    templateUrl: '../templates/fieldsapaddress.html',
+    standalone: false
 })
 export class fieldSAPAddress extends fieldAddress {
 

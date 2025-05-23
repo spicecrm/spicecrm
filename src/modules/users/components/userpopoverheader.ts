@@ -8,7 +8,8 @@ import {language} from "../../../services/language.service";
 
 @Component({
     templateUrl: "../templates/userpopoverheader.html",
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 
 export class UserPopoverHeader {

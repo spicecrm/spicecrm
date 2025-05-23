@@ -15,6 +15,7 @@ import {backend} from "../../../services/backend.service";
 @Component({
     selector: 'prospectlists-to-evalanche-button',
     templateUrl: '../templates/prospectlisttoevalanchebutton.html',
+    standalone: false
 })
 export class ProspectListsToEvalancheButton {
     public evalanche: any[] = [];

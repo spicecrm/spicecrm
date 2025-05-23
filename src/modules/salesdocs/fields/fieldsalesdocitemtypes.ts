@@ -13,7 +13,8 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-salesdoc-item-types',
-    templateUrl: '../templates/fieldsalesdocitemtypes.html'
+    templateUrl: '../templates/fieldsalesdocitemtypes.html',
+    standalone: false
 })
 export class fieldSalesdocItemTypes extends fieldGeneric {
 

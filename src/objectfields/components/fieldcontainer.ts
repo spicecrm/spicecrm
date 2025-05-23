@@ -9,7 +9,8 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: 'field-container',
-    templateUrl: '../templates/fieldcontainer.html'
+    templateUrl: '../templates/fieldcontainer.html',
+    standalone: false
 })
 export class fieldContainer implements AfterViewInit {
     @ViewChild('fieldcontainer', {read: ViewContainerRef, static: true}) public fieldcontainer: ViewContainerRef;

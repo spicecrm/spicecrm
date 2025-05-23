@@ -11,7 +11,8 @@ import {DomSanitizer} from "@angular/platform-browser";
 @Component({
     selector: "system-iframe-modal",
     templateUrl: "../templates/systemiframemodal.html",
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SystemIframeModal implements OnInit{
 

@@ -34,7 +34,8 @@ const ANIMATIONS: any = [
 @Component({
     templateUrl: '../templates/salesplanningtool.html',
     providers: [SalesPlanningService],
-    animations: ANIMATIONS
+    animations: ANIMATIONS,
+    standalone: false
 })
 
 export class SalesPlanningTool {

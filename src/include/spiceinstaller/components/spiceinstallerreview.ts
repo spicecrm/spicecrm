@@ -13,6 +13,7 @@ import { spiceinstaller, stepObject } from "../services/spiceinstaller.service";
 @Component({
     selector: 'spice-installer-review',
     templateUrl: '../templates/spiceinstallerreview.html',
+    standalone: false
 })
 export class SpiceInstallerReview implements AfterViewInit {
 

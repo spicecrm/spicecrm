@@ -10,7 +10,8 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'newsletter-issue-send-mail-button',
-    templateUrl: '../templates/newsletterissuesendmailbutton.html'
+    templateUrl: '../templates/newsletterissuesendmailbutton.html',
+    standalone: false
 })
 export class NewsletterIssueSendMailButton {
 

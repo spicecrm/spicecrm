@@ -24,7 +24,8 @@ declare var moment: any;
  */
 @Component({
     templateUrl: '../templates/projectsettlement.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ProjectSettlement implements OnInit {
 

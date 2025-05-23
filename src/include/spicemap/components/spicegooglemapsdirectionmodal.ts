@@ -12,7 +12,8 @@ import {model} from "../../../services/model.service";
 @Component({
     selector: 'spice-google-maps-direction-modal',
     templateUrl: '../templates/spicegooglemapsdirectionmodal.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 
 export class SpiceGoogleMapsDirectionModal implements OnInit {

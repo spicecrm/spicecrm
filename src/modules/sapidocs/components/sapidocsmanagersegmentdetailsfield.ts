@@ -10,7 +10,8 @@ import {sapIDOCFieldI} from "../../../modules/sapidocs/interfaces/moudesapidocs.
 
 @Component({
     selector: 'sapidocs-manager-segment-details-field',
-    templateUrl: '../templates/sapidocsmanagersegmentdetailsfield.html'
+    templateUrl: '../templates/sapidocsmanagersegmentdetailsfield.html',
+    standalone: false
 })
 export class SAPIDOCsManagerSegmentDetailsField implements OnDestroy {
 

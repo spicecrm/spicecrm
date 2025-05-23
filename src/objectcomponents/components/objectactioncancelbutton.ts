@@ -16,7 +16,8 @@ import {view} from "../../services/view.service";
 @Component({
     selector: 'object-action-cancel-button',
     templateUrl: '../templates/objectactioncancelbutton.html',
-    providers: [helper]
+    providers: [helper],
+    standalone: false
 })
 export class ObjectActionCancelButton {
 

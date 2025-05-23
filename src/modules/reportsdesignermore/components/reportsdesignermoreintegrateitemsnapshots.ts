@@ -9,7 +9,8 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'reports-designer-more-integrate-item-snapshots',
-    templateUrl: '../templates/reportsdesignermoreintegrateitemsnapshots.html'
+    templateUrl: '../templates/reportsdesignermoreintegrateitemsnapshots.html',
+    standalone: false
 })
 export class ReportsDesignerMoreIntegrateItemSnapshots {
 
