@@ -46,10 +46,10 @@ class Tracker extends SpiceBean
     public bool $in_save = false;
 
     // php 9 compatibility preparation
-    var $modified_user_id;
-    public string $modified_by_name;
-    var $date_entered;
-    var $created_by;
+    var int $modified_user_id;
+    public ?string $modified_by_name = null;
+    var mixed $date_entered;
+    var string $created_by;
     var $created_by_name;
 
     /*
