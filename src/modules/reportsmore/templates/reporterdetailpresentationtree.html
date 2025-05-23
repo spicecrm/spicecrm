@@ -31,7 +31,7 @@
                         </ng-container>
                         <ng-template #lastgrouped>
                             <system-button-icon icon="file" class="slds-p-horizontal--x-small"></system-button-icon>
-                            <reporter-field-container [field]="fields[this.groupFields.length - 1]" [record]="record"></reporter-field-container>
+                            <reporter-field-container [field]="fields[groupFields.length - 1]" [record]="record"></reporter-field-container>
                         </ng-template>
                     </td>
                     <td *ngFor="let treeDisplayField of treeDisplayFields" role="gridcell">

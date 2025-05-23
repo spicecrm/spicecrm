@@ -12,9 +12,9 @@
                 </div>
                 <div class="slds-no-flex">
                     <div class="slds-button-group" role="group">
-                        <button (click)="download(package)" *ngIf="package.rpstatus == this.parentView.statusConst.STATUS_RELEASED" class="slds-button slds-button_icon slds-button_icon-border-filled"><system-button-icon icon="download"></system-button-icon></button>
-                        <button (click)="uninstall(package.id)" *ngIf="package.rpstatus == this.parentView.statusConst.STATUS_DEPLOYED" class="slds-button slds-button_icon slds-button_icon-border-filled"><system-button-icon icon="delete"></system-button-icon></button>
-                        <button (click)="install(package.id)" *ngIf="package.rpstatus == this.parentView.statusConst.STATUS_FETCHED" class="slds-button slds-button_icon slds-button_icon-border-filled"><system-button-icon icon="play"></system-button-icon></button>
+                        <button (click)="download(package)" *ngIf="package.rpstatus == parentView.statusConst.STATUS_RELEASED" class="slds-button slds-button_icon slds-button_icon-border-filled"><system-button-icon icon="download"></system-button-icon></button>
+                        <button (click)="uninstall(package.id)" *ngIf="package.rpstatus == parentView.statusConst.STATUS_DEPLOYED" class="slds-button slds-button_icon slds-button_icon-border-filled"><system-button-icon icon="delete"></system-button-icon></button>
+                        <button (click)="install(package.id)" *ngIf="package.rpstatus == parentView.statusConst.STATUS_FETCHED" class="slds-button slds-button_icon slds-button_icon-border-filled"><system-button-icon icon="play"></system-button-icon></button>
                     </div>
                 </div>
             </header>

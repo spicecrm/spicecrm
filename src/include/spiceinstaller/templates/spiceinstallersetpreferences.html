@@ -11,7 +11,7 @@
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="spiceinstaller.configObject.language">
-                        <option *ngFor="let language of this.languages" [ngValue]="language.language_code">{{language.language_name}}</option>
+                        <option *ngFor="let language of languages" [ngValue]="language.language_code">{{language.language_name}}</option>
                     </select>
                 </div>
             </div>
@@ -131,7 +131,7 @@
             <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Export Delimiter</label>
             <div class="slds-form-element">
                 <div class="slds-select_container">
-                    <select class="slds-select" [(ngModel)]="this.spiceinstaller.configObject.preferences.export_delimiter">
+                    <select class="slds-select" [(ngModel)]="spiceinstaller.configObject.preferences.export_delimiter">
                         <option *ngFor="let item of exportDelimiterList" [value]="item">
                             {{ item }}
                         </option>
@@ -144,7 +144,7 @@
             <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Export Charset</label>
             <div class="slds-form-element">
                 <div class="slds-select_container">
-                    <select class="slds-select" [(ngModel)]="this.spiceinstaller.configObject.preferences.export_charset">
+                    <select class="slds-select" [(ngModel)]="spiceinstaller.configObject.preferences.export_charset">
                         <option *ngFor="let item of charsetList" [value]="item">
                             {{ item}}
                         </option>
@@ -156,7 +156,7 @@
     </div>
 
     <div class="slds-m-top--medium slds-text-align_right">
-        <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.prev })">back</button>
+        <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="spiceinstaller.jumpSubject.next({ from: selfStep, to: selfStep.prev })">back</button>
         <button class="slds-button slds-button--brand" (click)="setPreferences()">next</button>
     </div>
 
