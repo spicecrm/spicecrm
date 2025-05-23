@@ -293,7 +293,7 @@ class SpiceLogger implements LoggerTemplate
         ];
 
         try {
-            $instance->queryOnly("INSERT INTO syslogs (" . implode(",", array_keys($log)) . ") VALUES (" . implode("','", $log) . "')", true);
+            $instance->queryOnly("INSERT INTO syslogs (" . implode(",", array_keys($log)) . ") VALUES ('" . implode("','", $log) . "')", true);
         } catch (\Exception $exception){
             // do nothing
         }

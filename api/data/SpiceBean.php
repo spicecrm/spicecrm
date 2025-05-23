@@ -5,6 +5,7 @@ namespace SpiceCRM\data;
 
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ValidationException;
+use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
@@ -396,7 +397,7 @@ class SpiceBean
     /**
      * @var string TODO check if that should go into the dictionary
      */
-    public string $modified_by_name;
+    public ?string $modified_by_name = null;
 
     /**
      * @var array TODO check if that should go into the dictionary
@@ -2108,12 +2109,17 @@ class SpiceBean
             $id = $this->id;
         }
 
-        $query = "SELECT $this->_tablename.*" . " FROM $this->_tablename ";
-        $query .= " WHERE $this->_tablename.id = " . $this->db->quoted($id);
+        if ($this->field_defs) {
+            $fields = array_filter($this->field_defs, fn($e) => (RESTManager::getInstance()->excludeImageFields || $e['type'] != 'image') && $e['source'] !== 'non-db');
+            $fields = join(',', array_map(fn($e) => $e['name'], $fields));
+        } else {
+            return null;
+        }
 
-        // don't retrieve Bean with deleted flag true
-        if ($deleted) $query .= " AND $this->_tablename.deleted=0";
-        // LoggerManager::getLogger()->debug("Retrieve $this->_objectname : " . $query);
+        $query = "SELECT $fields FROM $this->_tablename WHERE id = " . $this->db->quoted($id);
+
+        # exclude deleted if the deleted flag check is true
+        if ($deleted) $query .= " AND deleted = 0";
 
         $result = $this->db->query($query, true, "Retrieving record by id $this->_tablename:$id found ");
         if (empty($result)) {
