@@ -51,6 +51,8 @@ class BeanFactory
      */
     private static function initSystemModules(): void
     {
+        if (self::$systemModules['Users']['beanclass']) return;
+
         foreach (self::$systemModules as $moduleName => $beanInfo) {
             if(!SpiceDictionary::getInstance()->getDefs($beanInfo['beanname'])){
                 unset(self::$systemModules[$moduleClass]);
