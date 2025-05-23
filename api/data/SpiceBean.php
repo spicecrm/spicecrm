@@ -397,7 +397,7 @@ class SpiceBean
     /**
      * @var string TODO check if that should go into the dictionary
      */
-    public string $modified_by_name;
+    public ?string $modified_by_name = null;
 
     /**
      * @var array TODO check if that should go into the dictionary
