@@ -554,7 +554,7 @@ class CampaignTask extends SpiceBean
         return true;
     }
 
-    public function getEmailAddress(string $listId, ?SpiceBean $person, $emailAddrBeanRelId = null): ?EmailAddress
+    public function getEmailAddress(string $listId, bool | SpiceBean $person, $emailAddrBeanRelId = null): ?EmailAddress
     {
         if (!$person) return null;
 
