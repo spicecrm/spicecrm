@@ -81,6 +81,9 @@ export class SpicePathWithCoaching {
         if (this.componentconfig && this.componentconfig.coachingVisible) {
             this.coachingVisible = this.componentconfig.coachingVisible;
         }
+        if (this.componentconfig && this.componentconfig.coachingHidden) {
+            this.coachingHidden = this.componentconfig.coachingHidden;
+        }
     }
 
     /**

@@ -46,10 +46,11 @@ class SpiceCRMAuthenticate implements AuthenticatorI
      * @param string $userId
      * @return AuthResponse
      * @throws UnauthorizedException
+     * @throws Exception
      */
     public function generateAuthResponse(string $userId): AuthResponse
     {
-        $username =  BeanFactory::getBean('Users', $userId, ['relationships' => false])->user_name;
+        $username = DBManagerFactory::getInstance()->getOne("SELECT user_name FROM users WHERE id = '$userId' AND deleted = 0");
         return new AuthResponse($username);
     }
 
