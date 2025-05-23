@@ -51,7 +51,7 @@
         </thead>
         <tbody>
             @for (dictionarydefinition of dictionarydefinitions; track dictionarydefinition.id) {
-                <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected':dictionarymanager.currentDictionaryDefinition == dictionarydefinition.id}" (dblclick)="this.isExpanded = false" (click)="setCurrentDictionaryDefinition(dictionarydefinition.id)">
+                <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected':dictionarymanager.currentDictionaryDefinition == dictionarydefinition.id}" (dblclick)="isExpanded = false" (click)="setCurrentDictionaryDefinition(dictionarydefinition.id)">
                     <td>
                         <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionarydefinition.scope == 'g' ? 'world' : 'people'"/>
                         <dictionary-manager-item-status [ngModel]="dictionarydefinition.status" (ngModelChange)="setStatus(dictionarydefinition, $event)"/>

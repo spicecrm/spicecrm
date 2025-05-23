@@ -99,7 +99,7 @@
                 </thead>
                 <tbody>
                     <ng-container *ngFor="let field of fields">
-                        <tr *ngIf="!this.filterundefined || !field.sysdomainfield_id">
+                        <tr *ngIf="!filterundefined || !field.sysdomainfield_id">
                             <td><system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.selected"></system-checkbox></td>
                             <td><div class="slds-truncate">{{field.fieldname}}</div></td>
                             <td><system-checkbox disabled [ngModel]="!!field.sysdomainfield_id"></system-checkbox></td>
