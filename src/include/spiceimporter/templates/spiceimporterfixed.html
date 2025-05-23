@@ -3,12 +3,12 @@
         <div class="slds-text-body--regular slds-box slds-m-vertical--small slds-text-color--weak">
             {{ spiceImport.stepLongText }}
         </div>
-        <div *ngIf="modelFields && this.spiceImport.importAction == 'new'" class="slds-grid slds-grid--vertical">
+        <div *ngIf="modelFields && spiceImport.importAction == 'new'" class="slds-grid slds-grid--vertical">
             <div class="slds-form-element__legend slds-form-element__label">
                 <system-label label="MSG_REQUIRED_MAPPED_FIXED"></system-label>
             </div>
             <div class="slds-tile__detail slds-text-body--small slds-p-horizontal--small">
-                @for(field of this.requiredModelFields; track field.name) {
+                @for(field of requiredModelFields; track field.name) {
                     <div class="slds-grid">
                         <span class="slds-truncate">
                             <system-label-fieldname [module]="model.module" [field]="field.name"/> ({{ field.name }})
