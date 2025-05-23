@@ -13,7 +13,8 @@ declare var moment: any;
 
 @Component({
     selector: 'reporter-filter-item-date',
-    templateUrl: '../templates/reporterfilteritemdate.html'
+    templateUrl: '../templates/reporterfilteritemdate.html',
+    standalone: false
 })
 export class ReporterFilterItemDate implements OnInit {
 

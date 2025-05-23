@@ -16,7 +16,8 @@ import {language} from '../../services/language.service';
     host: {
         '[class.slds-context-bar__item]': '1',
         '[class.slds-is-active]': 'activeItem'
-    }
+    },
+    standalone: false
 })
 export class GlobalNavigationTabbedMoreTab {
 

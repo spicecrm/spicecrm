@@ -19,6 +19,7 @@ declare var moment: any;
 @Component({
     selector: 'activity-timeline-aggregates',
     templateUrl: '../templates/activitytimelineaggregates.html',
+    standalone: false
 })
 export class ActivityTimelineAggregates {
 

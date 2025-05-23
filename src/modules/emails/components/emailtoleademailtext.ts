@@ -16,7 +16,8 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: "email-to-lead-emailtext",
-    templateUrl: "../templates/emailtoleademailtext.html"
+    templateUrl: "../templates/emailtoleademailtext.html",
+    standalone: false
 })
 export class EmailToLeadEmailText implements OnDestroy {
 

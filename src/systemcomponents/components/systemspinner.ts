@@ -8,7 +8,8 @@ import {Component, EventEmitter, HostBinding, Input, OnInit, Output, TemplateRef
  */
 @Component({
     selector: 'system-spinner',
-    templateUrl: '../templates/systemspinner.html'
+    templateUrl: '../templates/systemspinner.html',
+    standalone: false
 })
 export class SystemSpinner implements OnInit {
 

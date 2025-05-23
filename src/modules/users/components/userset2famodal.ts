@@ -9,7 +9,8 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'user-set-2fa-modal',
-    templateUrl: "../templates/userset2famodal.html"
+    templateUrl: "../templates/userset2famodal.html",
+    standalone: false
 })
 export class UserSet2FAModal  {
 

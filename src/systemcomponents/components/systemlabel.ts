@@ -21,7 +21,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 @Component({
     selector: 'system-label',
     templateUrl: '../templates/systemlabel.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SystemLabel implements OnChanges, AfterViewInit, OnDestroy {
 

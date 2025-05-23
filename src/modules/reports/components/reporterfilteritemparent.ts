@@ -10,7 +10,8 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'reporter-filter-item-parent',
-    templateUrl: '../templates/reporterfilteritemparent.html'
+    templateUrl: '../templates/reporterfilteritemparent.html',
+    standalone: false
 })
 export class ReporterFilterItemParent implements OnInit, OnDestroy {
 

@@ -10,7 +10,8 @@ import {
  */
 @Component({
     selector: "system-dueling-picklist-item",
-    template: ""
+    template: "",
+    standalone: false
 })
 export class SystemDuelingPicklistItem  {
 

@@ -14,6 +14,7 @@ import {modelurls} from "../../../services/modelurls.service";
 @Component({
     selector: 'spice-url-item',
     templateUrl: '../templates/spiceurlitem.html',
+    standalone: false
 })
 export class SpiceUrlItem {
 

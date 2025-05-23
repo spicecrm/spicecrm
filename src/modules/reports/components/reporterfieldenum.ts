@@ -11,7 +11,8 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'reporter-field-enum',
     templateUrl: '../templates/reporterfieldenum.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterFieldEnum implements OnInit {
     /**

@@ -20,7 +20,8 @@ import {toast} from "../../services/toast.service";
  */
 @Component({
     selector: 'object-status-network-button-item',
-    templateUrl: '../templates/objectstatusnetworkbuttonitem.html'
+    templateUrl: '../templates/objectstatusnetworkbuttonitem.html',
+    standalone: false
 })
 export class ObjectStatusNetworkButtonItem implements AfterViewInit, OnChanges {
 

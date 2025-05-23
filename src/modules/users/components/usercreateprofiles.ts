@@ -37,7 +37,8 @@ declare var moment: any;
             useExisting: forwardRef(() => UserCreateProfiles),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class UserCreateProfiles implements OnInit, ControlValueAccessor {
 

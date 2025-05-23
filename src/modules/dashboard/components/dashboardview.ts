@@ -16,7 +16,8 @@ import {toast} from "../../../services/toast.service";
 @Component({
     selector: 'dashboard-view',
     templateUrl: '../templates/dashboardview.html',
-    providers: [model, modellist, dashboardlayout, view]
+    providers: [model, modellist, dashboardlayout, view],
+    standalone: false
 })
 export class DashboardView implements OnInit {
 

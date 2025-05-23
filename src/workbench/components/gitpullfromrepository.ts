@@ -6,7 +6,8 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'git-pull-from-repository',
-    templateUrl: '../templates/gitpullfromrepository.html'
+    templateUrl: '../templates/gitpullfromrepository.html',
+    standalone: false
 })
 export class GitPullFromRepository {
 

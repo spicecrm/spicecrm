@@ -8,7 +8,8 @@ import { language } from '../../services/language.service';
 @Component({
     selector: '[field-lookup-search-add]',
     templateUrl: '../templates/fieldlookupsearchadd.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class fieldLookupSearchAdd implements OnInit {
 

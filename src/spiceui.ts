@@ -53,7 +53,8 @@ const bootstrap = (document.querySelector('meta[name="bootstrap"]') as HTMLMetaE
  */
 @Component({
     selector: "spicecrm",
-    template: "<global-header></global-header><div [ngStyle]='outletstyle'><router-outlet></router-outlet><system-navigation-manager></system-navigation-manager></div><global-footer></global-footer>"
+    template: "<global-header></global-header><div [ngStyle]='outletstyle'><router-outlet></router-outlet><system-navigation-manager></system-navigation-manager></div><global-footer></global-footer>",
+    standalone: false
 })
 export class SpiceUI {
     /**

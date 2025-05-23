@@ -9,6 +9,7 @@ import {language} from '../../services/language.service';
 @Component({
     selector: 'field-wysiwyg-editor',
     templateUrl: '../templates/fieldwysiwygeditor.html',
+    standalone: false
 })
 export class fieldWYSIWYGEditor implements AfterViewInit{
     @ViewChild('editor', {read: ViewContainerRef, static: true}) editor: ViewContainerRef;

@@ -25,7 +25,8 @@ declare var moment: any;
     selector: 'calendar-sheet-event',
     templateUrl: '../templates/calendarsheetevent.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class CalendarSheetEvent implements OnInit, OnDestroy {
     /**

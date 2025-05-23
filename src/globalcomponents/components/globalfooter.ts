@@ -13,7 +13,8 @@ declare var _;
 
 @Component({
     selector: 'global-footer',
-    templateUrl: '../templates/globalfooter.html'
+    templateUrl: '../templates/globalfooter.html',
+    standalone: false
 })
 export class GlobalFooter implements OnInit, AfterViewInit {
 

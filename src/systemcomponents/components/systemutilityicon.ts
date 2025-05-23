@@ -17,7 +17,8 @@ import {
 @Component({
     selector: 'system-utility-icon',
     templateUrl: '../templates/systemutilityicon.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SystemUtilityIcon implements OnChanges{
     /**

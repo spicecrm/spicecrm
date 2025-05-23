@@ -14,6 +14,7 @@ import {DictionaryItem, DictionaryManagerMessage} from "../interfaces/dictionary
 @Component({
     selector: 'dictionary-manager-add-item-modal',
     templateUrl: '../templates/dictionarymanageradditemmodal.html',
+    standalone: false
 })
 export class DictionaryManagerAddItemModal implements OnInit{
 

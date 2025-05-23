@@ -11,7 +11,8 @@ import {language} from "../../services/language.service";
 
 @Component({
     selector: 'package-loader-reload-loaded-modal',
-    templateUrl: '../templates/packageloaderreloadloadedmodal.html'
+    templateUrl: '../templates/packageloaderreloadloadedmodal.html',
+    standalone: false
 })
 
 export class PackageLoaderReloadLoadedModal implements ModalComponentI {

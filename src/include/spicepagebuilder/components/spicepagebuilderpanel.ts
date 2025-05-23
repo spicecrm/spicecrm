@@ -12,7 +12,8 @@ import {ColumnI, CustomElement, SectionI} from "../interfaces/spicepagebuilder.i
 @Component({
     selector: ' spice-page-builder-panel',
     templateUrl: '../templates/spicepagebuilderpanel.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderPanel {
     /**

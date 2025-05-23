@@ -10,7 +10,8 @@ import {metadata} from "../../services/metadata.service";
 @Component({
     selector: "system-button-icon",
     templateUrl: "../templates/systembuttonicon.html",
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SystemButtonIcon implements OnChanges {
 

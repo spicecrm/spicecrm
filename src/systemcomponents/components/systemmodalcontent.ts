@@ -9,7 +9,8 @@ import {Component, Input} from '@angular/core';
     host: {
         '[class]': 'this.contentclass'
     },
-    styles: [':host {position:relative}']
+    styles: [':host {position:relative}'],
+    standalone: false
 })
 export class SystemModalContent {
     /**

@@ -34,7 +34,8 @@ declare var _: any;
     templateUrl: '../templates/globallogin.html',
     host: {
         '(window:resize)': 'handleResize()'
-    }
+    },
+    standalone: false
 })
 export class GlobalLogin implements OnDestroy {
 

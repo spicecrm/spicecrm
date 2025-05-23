@@ -15,7 +15,8 @@ import {modal} from "../../../services/modal.service";
 @Component({
     selector: 'spice-map-geo-data-field',
     templateUrl: '../templates/spicemapgeodatafield.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 
 export class SpiceMapGeoDataField implements OnInit {

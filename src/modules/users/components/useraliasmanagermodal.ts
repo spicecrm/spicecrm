@@ -9,7 +9,8 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 @Component({
     selector: 'user-alias-manager-modal',
     templateUrl: '../templates/useraliasmanagermodal.html',
-    providers: [relatedmodels]
+    providers: [relatedmodels],
+    standalone: false
 })
 
 export class UserAliasManagerModal implements ModalComponentI {

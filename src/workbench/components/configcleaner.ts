@@ -12,6 +12,7 @@ import {language} from '../../services/language.service';
 @Component({
     selector: 'config-cleaner',
     templateUrl: '../templates/configcleaner.html',
+    standalone: false
 })
 export class ConfigCleaner
 {

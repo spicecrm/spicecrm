@@ -13,7 +13,8 @@ declare var _;
  */
 @Component({
     selector: 'system-prompt',
-    templateUrl: '../templates/systemprompt.html'
+    templateUrl: '../templates/systemprompt.html',
+    standalone: false
 })
 export class SystemPrompt implements OnInit, AfterViewInit {
 

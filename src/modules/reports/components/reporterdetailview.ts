@@ -47,7 +47,8 @@ const REPORTERDETAILVIEWANIMATIONS = [
     templateUrl: '../templates/reporterdetailview.html',
     providers: [view, model, reporterconfig],
     animations: REPORTERDETAILVIEWANIMATIONS,
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterDetailView implements OnInit, OnDestroy {
     /**

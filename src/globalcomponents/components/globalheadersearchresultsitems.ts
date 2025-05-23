@@ -13,7 +13,8 @@ import {fts} from '../../services/fts.service';
 
 @Component({
     selector: 'global-header-search-results-items',
-    templateUrl: '../templates/globalheadersearchresultsitems.html'
+    templateUrl: '../templates/globalheadersearchresultsitems.html',
+    standalone: false
 })
 export class GlobalHeaderSearchResultsItems {
     @Input()public searchTerm: string = '';

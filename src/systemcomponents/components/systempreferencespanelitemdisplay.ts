@@ -11,14 +11,15 @@ import {view} from "../../services/view.service";
     selector: "system-preferences-panel-item-display",
     templateUrl: "../templates/systempreferencespanelitemdisplay.html",
     styles: [
-            `.slds-button--icon {
+        `.slds-button--icon {
             color: #eeeeee
         }
 
         .slds-button--icon:hover {
             color: #5B5B5B
         }`
-    ]
+    ],
+    standalone: false
 })
 export class SystemPreferencesPanelItemDisplay {
 

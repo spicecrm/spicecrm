@@ -15,7 +15,8 @@ import {OUTPUT_INITIALIZER_FNS} from "@angular/compiler-cli/src/ngtsc/annotation
 
 @Component({
     selector: 'currency-manager-is-systemcurrency',
-    templateUrl: '../templates/currencymanagerissystemcurrency.html'
+    templateUrl: '../templates/currencymanagerissystemcurrency.html',
+    standalone: false
 })
 
 export class CurrencyManagerIsSystemCurrency {

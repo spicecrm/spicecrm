@@ -11,7 +11,8 @@ import {calendar} from "../services/calendar.service";
 @Component({
     'selector': 'calendar-add-modules-modal',
     templateUrl: '../templates/calendaraddmodulesmodal.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class CalendarAddModulesModal {
     /**

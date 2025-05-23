@@ -6,7 +6,8 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
     selector: 'system-wrapped-text',
-    templateUrl: '../templates/systemwrappedtext.html'
+    templateUrl: '../templates/systemwrappedtext.html',
+    standalone: false
 })
 export class SystemWrappedText {
 

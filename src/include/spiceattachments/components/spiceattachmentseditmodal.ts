@@ -14,7 +14,8 @@ import {model} from "../../../services/model.service";
 @Component({
     selector: 'spice-attachments-edit-modal',
     templateUrl: '../templates/spiceattachmentseditmodal.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpiceAttachmentsEditModal implements OnInit {
     /**

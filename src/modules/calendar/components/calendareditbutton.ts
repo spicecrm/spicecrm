@@ -4,7 +4,8 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'calendar-edit-button',
-    templateUrl: '../templates/calendareditbutton.html'
+    templateUrl: '../templates/calendareditbutton.html',
+    standalone: false
 })
 
 export class CalendarEditButton extends ObjectActionEditButton {

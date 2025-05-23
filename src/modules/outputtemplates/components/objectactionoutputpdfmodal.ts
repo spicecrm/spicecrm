@@ -14,6 +14,7 @@ import {Observable} from "rxjs";
 @Component({
     selector: 'object-action-output-pdf-modal',
     templateUrl: '../templates/objectactionoutputpdfmodal.html',
+    standalone: false
 })
 export class ObjectActionOutputPdfModal {
 

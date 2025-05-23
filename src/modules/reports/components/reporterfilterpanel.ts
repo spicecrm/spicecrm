@@ -30,7 +30,8 @@ const REPORTERFILTERPANELANIMATIONS = [
 @Component({
     selector: 'reporter-filter-panel',
     templateUrl: '../templates/reporterfilterpanel.html',
-    animations: REPORTERFILTERPANELANIMATIONS
+    animations: REPORTERFILTERPANELANIMATIONS,
+    standalone: false
 })
 export class ReporterFilterPanel {
     @ViewChild('popover', {read: ViewContainerRef, static: true}) public popover: ViewContainerRef;

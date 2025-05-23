@@ -12,7 +12,8 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-backend-method',
-    templateUrl: '../templates/fieldbackendmethod.html'
+    templateUrl: '../templates/fieldbackendmethod.html',
+    standalone: false
 })
 export class fieldBackendMethod extends fieldGeneric {
 

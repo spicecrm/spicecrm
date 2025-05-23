@@ -6,7 +6,8 @@ import {Component, Input} from '@angular/core';
     host: {
         '[class.slds-hide]': 'hidden',
         '[style]': 'expanded ? "width: 100%" : null'
-    }
+    },
+    standalone: false
 })
 
 export class SystemSplitContainerRight {

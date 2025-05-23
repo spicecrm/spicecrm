@@ -9,7 +9,8 @@ import {fieldEmailAddresses} from "./fieldemailaddresses";
 
 @Component({
     selector: 'field-email-emailaddress',
-    templateUrl: '../templates/fieldemailemailaddress.html'
+    templateUrl: '../templates/fieldemailemailaddress.html',
+    standalone: false
 })
 export class fieldEmailEmailAddress implements OnChanges
 {

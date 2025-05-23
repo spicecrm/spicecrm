@@ -13,7 +13,8 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
 @Component({
     selector: 'dashboard-select-panel-add-button',
     templateUrl: '../templates/dashboardselectpaneladdbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class DashboardSelectPanelAddButton {
     /**

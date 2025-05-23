@@ -7,7 +7,8 @@ import {
 
 @Component({
     selector: 'reporter-field-Color',
-    templateUrl: '../templates/reporterfieldcolor.html'
+    templateUrl: '../templates/reporterfieldcolor.html',
+    standalone: false
 })
 export class ReporterFieldColor {
 

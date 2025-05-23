@@ -13,7 +13,8 @@ import {metadata} from "../../services/metadata.service";
  */
 @Component({
     selector: 'object-subscription-button',
-    templateUrl: '../templates/objectsubscriptionbutton.html'
+    templateUrl: '../templates/objectsubscriptionbutton.html',
+    standalone: false
 })
 export class ObjectSubscriptionButton {
 

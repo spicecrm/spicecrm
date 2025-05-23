@@ -22,7 +22,8 @@ import {modelutilities} from '../../../services/modelutilities.service';
 
 @Component({
     templateUrl: '../templates/aclprofilesmanageraddobjectmodal.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ACLProfilesManagerAddObjectModal {
 

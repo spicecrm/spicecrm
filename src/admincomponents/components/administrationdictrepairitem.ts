@@ -10,7 +10,8 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'administration-dict-repair-item',
-    templateUrl: '../templates/administrationdictrepairitem.html'
+    templateUrl: '../templates/administrationdictrepairitem.html',
+    standalone: false
 })
 export class AdministrationDictRepairItem {
 

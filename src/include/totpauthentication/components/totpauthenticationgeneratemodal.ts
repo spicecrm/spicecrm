@@ -12,7 +12,8 @@ import {Subject} from "rxjs";
 
 @Component({
     selector: "totp-authentication-generate-modal",
-    templateUrl: "../templates/totpauthenticationgeneratemodal.html"
+    templateUrl: "../templates/totpauthenticationgeneratemodal.html",
+    standalone: false
 })
 export class TOTPAuthenticationGenerateModal implements OnInit {
 

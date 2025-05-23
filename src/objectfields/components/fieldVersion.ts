@@ -12,7 +12,8 @@ import _ from "underscore";
 @Component({
     selector: 'field-version',
     templateUrl: '../templates/fieldversion.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 
 /**

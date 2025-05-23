@@ -6,7 +6,8 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'system-illustration',
-    templateUrl: '../templates/systemillustration.html'
+    templateUrl: '../templates/systemillustration.html',
+    standalone: false
 })
 export class SystemIllustration {
 

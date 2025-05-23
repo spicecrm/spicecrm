@@ -22,7 +22,8 @@ import {Subscription} from "rxjs";
     templateUrl: '../templates/globalnavigationtabbedsubtabs.html',
     host: {
         '(window:resize)': 'handleResize()'
-    }
+    },
+    standalone: false
 })
 export class GlobalNavigationTabbedSubtabs implements OnDestroy {
 

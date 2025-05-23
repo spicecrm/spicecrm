@@ -14,7 +14,8 @@ import {duplicatedmodels} from "../../services/duplicatedmodels.service";
 @Component({
     selector: 'object-relatedlist-duplicates',
     templateUrl: '../templates/objectrelatedduplicates.html',
-    providers: [relatedmodels, duplicatedmodels]
+    providers: [relatedmodels, duplicatedmodels],
+    standalone: false
 })
 export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
     /**

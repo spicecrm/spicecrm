@@ -6,7 +6,8 @@ import {administrationapiinspectorService} from "../services/administrationapiin
  */
 @Component({
     selector: 'administration-api-inspector-method-parameters',
-    templateUrl: '../templates/administrationapiinspectormethodparameters.html'
+    templateUrl: '../templates/administrationapiinspectormethodparameters.html',
+    standalone: false
 })
 export class AdministrationApiInspectorMethodParameters implements OnChanges {
 

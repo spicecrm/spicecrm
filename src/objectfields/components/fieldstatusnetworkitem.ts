@@ -21,7 +21,8 @@ import {metadata} from '../../services/metadata.service';
  */
 @Component({
     selector: 'field-statusnetwork-item',
-    templateUrl: '../templates/fieldstatusnetworkitem.html'
+    templateUrl: '../templates/fieldstatusnetworkitem.html',
+    standalone: false
 })
 export class fieldStatusNetworkItem implements AfterViewInit, OnChanges {
 

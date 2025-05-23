@@ -15,7 +15,8 @@ import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomp
 @Component({
     selector: 'spice-page-builder-element-rss',
     templateUrl: '../templates/spicepagebuilderelementrss.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderElementRSS extends SpicePageBuilderElement {
     /**

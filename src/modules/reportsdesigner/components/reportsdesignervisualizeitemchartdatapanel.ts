@@ -9,7 +9,8 @@ import {CdkDragDrop} from "@angular/cdk/drag-drop";
 
 @Component({
     selector: 'reports-designer-visualize-item-chart-data-panel',
-    templateUrl: '../templates/reportsdesignervisualizeitemchartdatapanel.html'
+    templateUrl: '../templates/reportsdesignervisualizeitemchartdatapanel.html',
+    standalone: false
 })
 export class ReportsDesignerVisualizeItemChartDataPanel implements OnChanges {
 

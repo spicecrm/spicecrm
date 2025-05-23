@@ -13,6 +13,7 @@ import {domainmanager} from '../services/domainmanager.service';
 @Component({
     selector: 'domain-manager-field-details',
     templateUrl: '../templates/domainmanagerfielddetails.html',
+    standalone: false
 })
 export class DomainManagerFieldDetails implements OnInit{
 

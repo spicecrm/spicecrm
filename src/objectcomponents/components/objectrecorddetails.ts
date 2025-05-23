@@ -16,7 +16,8 @@ import {Subscription} from "rxjs";
 @Component({
     selector: 'object-record-details',
     templateUrl: '../templates/objectrecorddetails.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ObjectRecordDetails implements OnInit, OnDestroy {
 

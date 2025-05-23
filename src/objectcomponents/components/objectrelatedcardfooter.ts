@@ -15,7 +15,8 @@ import {Router} from '@angular/router';
  */
 @Component({
     selector: 'object-related-card-footer',
-    templateUrl: '../templates/objectrelatedcardfooter.html'
+    templateUrl: '../templates/objectrelatedcardfooter.html',
+    standalone: false
 })
 export class ObjectRelatedCardFooter implements OnInit {
 

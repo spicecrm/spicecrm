@@ -12,7 +12,8 @@ import {userpreferences} from "../../services/userpreferences.service";
  */
 @Component({
     selector: 'global-header-tools',
-    templateUrl: '../templates/globalheadertools.html'
+    templateUrl: '../templates/globalheadertools.html',
+    standalone: false
 })
 export class GlobalHeaderTools implements OnInit {
 

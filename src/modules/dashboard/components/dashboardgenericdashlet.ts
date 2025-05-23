@@ -14,7 +14,8 @@ import {layout} from "../../../services/layout.service";
 @Component({
     selector: "dashboard-generic-dashlet",
     templateUrl: "../templates/dashboardgenericdashlet.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class DashboardGenericDashlet implements OnInit, OnDestroy {
     /**

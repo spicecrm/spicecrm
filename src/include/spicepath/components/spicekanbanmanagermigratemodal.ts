@@ -9,7 +9,8 @@ import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'spice-kanban-manager-migrate-modal',
-    templateUrl: '../templates/spicekanbanmanagermigratemodal.html'
+    templateUrl: '../templates/spicekanbanmanagermigratemodal.html',
+    standalone: false
 })
 
 export class SpiceKanbanManagerMigrateModal {

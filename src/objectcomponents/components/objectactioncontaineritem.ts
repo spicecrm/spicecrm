@@ -24,7 +24,8 @@ import {ObjectActionPdfExportRelatedButton} from "./objectactionpdfexportrelated
  */
 @Component({
     selector: "object-action-container-item",
-    templateUrl: "../templates/objectactioncontaineritem.html"
+    templateUrl: "../templates/objectactioncontaineritem.html",
+    standalone: false
 })
 export class ObjectActionContainerItem implements AfterViewInit {
     /**

@@ -21,6 +21,7 @@ import {configurationService} from "../../services/configuration.service";
 @Component({
     selector: 'role-menu-manager',
     templateUrl: '../templates/rolemenumanager.html',
+    standalone: false
 })
 export class RoleMenuManager implements OnInit {
 

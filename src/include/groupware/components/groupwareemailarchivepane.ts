@@ -13,7 +13,8 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: 'groupware-email-archive-pane',
     templateUrl: '../templates/groupwareemailarchivepane.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class GroupwareEmailArchivePane implements OnInit {
     /**

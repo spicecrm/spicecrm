@@ -22,7 +22,8 @@ import {toast} from "../../../services/toast.service";
     selector: 'spice-page-builder',
     templateUrl: '../templates/spicepagebuilder.html',
     providers: [SpicePageBuilderService],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilder implements AfterViewInit {
 

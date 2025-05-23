@@ -14,7 +14,8 @@ import {configurationService} from "../../../services/configuration.service";
  */
 @Component({
     selector: 'user-ceate-from-bean-button',
-    templateUrl: "../templates/usercreatefrombeanbutton.html"
+    templateUrl: "../templates/usercreatefrombeanbutton.html",
+    standalone: false
 })
 
 export class UserCreateFromBeanButton {

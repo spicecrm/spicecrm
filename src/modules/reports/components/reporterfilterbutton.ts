@@ -8,7 +8,8 @@ import  {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-filter-button',
-    templateUrl: '../templates/reporterfilterbutton.html'
+    templateUrl: '../templates/reporterfilterbutton.html',
+    standalone: false
 })
 export class ReporterFilterButton implements OnChanges, OnDestroy{
 

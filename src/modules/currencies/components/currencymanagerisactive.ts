@@ -14,7 +14,8 @@ import {sysCurrency} from "../interfaces/currencies.interfaces";
 
 @Component({
     selector: 'currency-manager-is-active',
-    templateUrl: '../templates/currencymanagerisactive.html'
+    templateUrl: '../templates/currencymanagerisactive.html',
+    standalone: false
 })
 
 export class CurrencyManagerIsActive  {

@@ -13,6 +13,7 @@ import {modal} from "../../../services/modal.service";
 @Component({
     selector: 'acl-types-manager',
     templateUrl: '../templates/acltypesmanager.html',
+    standalone: false
 })
 export class ACLTypesManager {
 

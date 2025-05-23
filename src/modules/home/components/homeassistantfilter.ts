@@ -8,7 +8,8 @@ import {assistant} from '../../../services/assistant.service';
 
 @Component({
     selector: 'home-assistant-filter',
-    templateUrl: '../templates/homeassistantfilter.html'
+    templateUrl: '../templates/homeassistantfilter.html',
+    standalone: false
 })
 export class HomeAssistantFilter {
 

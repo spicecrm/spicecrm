@@ -9,7 +9,8 @@ import {modelattachments} from "../../../services/modelattachments.service";
 
 @Component({
     selector: 'email-clone-attachments-button',
-    templateUrl: '../templates/emailcloneattachmentsbutton.html'
+    templateUrl: '../templates/emailcloneattachmentsbutton.html',
+    standalone: false
 })
 
 /**

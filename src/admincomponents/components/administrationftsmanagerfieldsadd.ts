@@ -10,7 +10,8 @@ import {ftsconfiguration} from '../services/ftsconfiguration.service';
 
 @Component({
     selector: 'administration-ftsmanager-fields-add',
-    templateUrl: '../templates/administrationftsmanagerfieldsadd.html'
+    templateUrl: '../templates/administrationftsmanagerfieldsadd.html',
+    standalone: false
 })
 export class AdministrationFTSManagerFieldsAdd {
 

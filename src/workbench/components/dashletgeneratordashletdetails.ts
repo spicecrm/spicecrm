@@ -16,7 +16,8 @@ declare var _;
 @Component({
     selector: 'dashlet_generator_dashlet-details',
     templateUrl: '../templates/dashletgeneratordashletdetails.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class DashletGeneratorDashletDetails implements OnChanges {
 

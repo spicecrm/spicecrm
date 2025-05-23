@@ -11,7 +11,8 @@ import {metadata} from "../../../services/metadata.service";
  * this renders a button as part of an actionset that renders a reply button to create an email forward modal
  */
 @Component({
-    templateUrl: "../templates/emailforwardbutton.html"
+    templateUrl: "../templates/emailforwardbutton.html",
+    standalone: false
 })
 export class EmailForwardButton {
     /**

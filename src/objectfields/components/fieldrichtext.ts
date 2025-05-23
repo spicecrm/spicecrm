@@ -21,6 +21,7 @@ declare var _;
 @Component({
     selector: 'field-richtext',
     templateUrl: '../templates/fieldrichtext.html',
+    standalone: false
 })
 export class fieldRichText extends fieldGeneric implements OnInit {
     /**

@@ -12,6 +12,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 @Component({
     selector: 'system-filter-builder-expression-values',
     templateUrl: '../templates/systemfilterbuilderfilterexpressionvalues.html',
+    standalone: false
 })
 export class SystemFilterBuilderFilterExpressionValues implements OnChanges {
 

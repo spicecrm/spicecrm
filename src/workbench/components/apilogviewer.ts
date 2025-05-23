@@ -15,7 +15,8 @@ declare var moment: any;
  * the api log viwer rendered as part of the admin setion in the system
  */
 @Component({
-    templateUrl: '../templates/apilogviewer.html'
+    templateUrl: '../templates/apilogviewer.html',
+    standalone: false
 })
 export class APIlogViewer {
 

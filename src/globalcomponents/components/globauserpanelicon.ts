@@ -12,6 +12,7 @@ import {modal} from "../../services/modal.service";
 @Component({
     selector: "global-user-panel-icon",
     templateUrl: "../templates/globaluserpanelicon.html",
+    standalone: false
 })
 export class GlobaUserPanelIcon {
 

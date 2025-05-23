@@ -18,7 +18,8 @@ import {ListTypeI} from "../../../services/interfaces.service";
 @Component({
     selector: 'spice-google-maps-list',
     templateUrl: '../templates/spicegooglemapslist.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
 

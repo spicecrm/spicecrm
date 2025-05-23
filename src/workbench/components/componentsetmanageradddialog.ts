@@ -12,7 +12,8 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'componensetmanager-add-dialog',
-    templateUrl: '../templates/componentsetmanageradddialog.html'
+    templateUrl: '../templates/componentsetmanageradddialog.html',
+    standalone: false
 })
 export class ComponentsetManagerAddDialog {
     @Input() public module: string = '';

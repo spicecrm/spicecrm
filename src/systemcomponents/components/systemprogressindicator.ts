@@ -32,10 +32,11 @@ import {SystemProgressIndicatorItem} from "./systemprogressindicatoritem";
     templateUrl: "../templates/systemprogressindicator.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => SystemProgressIndicator),
-        multi: true
-    }]
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SystemProgressIndicator),
+            multi: true
+        }],
+    standalone: false
 })
 export class SystemProgressIndicator implements ControlValueAccessor, AfterContentInit {
     /**

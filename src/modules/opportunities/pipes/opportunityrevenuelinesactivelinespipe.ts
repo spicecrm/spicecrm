@@ -5,7 +5,8 @@ import {Pipe} from '@angular/core';
 
 @Pipe({
     name: 'opportunityrevenuelinesactivelinespipe',
-    pure: false
+    pure: false,
+    standalone: false
 })
 export class OpportunityRevenueLinesActiveLinesPipe {
     public transform(values) {

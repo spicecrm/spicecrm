@@ -41,7 +41,8 @@ import {Subscription} from "rxjs";
                 animate('0.3s ease-out')
             ])
         ])
-    ]
+    ],
+    standalone: false
 })
 
 export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDestroy {

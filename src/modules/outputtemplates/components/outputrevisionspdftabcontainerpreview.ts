@@ -12,7 +12,8 @@ import {
  */
 @Component({
     selector: 'outputrevisions-pdf-tab-container-preview',
-    templateUrl: '../templates/outputrevisionspdftabcontainerpreview.html'
+    templateUrl: '../templates/outputrevisionspdftabcontainerpreview.html',
+    standalone: false
 })
 export class OutputRevisionsPDFTabContainerPreview {
 

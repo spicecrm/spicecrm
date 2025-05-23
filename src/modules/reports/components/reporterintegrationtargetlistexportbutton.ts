@@ -11,7 +11,8 @@ import {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-integration-targetlistexport-button',
-    templateUrl: '../templates/reporterintegrationtargetlistexportbutton.html'
+    templateUrl: '../templates/reporterintegrationtargetlistexportbutton.html',
+    standalone: false
 })
 export class ReporterIntegrationTargetlistexportButton {
 

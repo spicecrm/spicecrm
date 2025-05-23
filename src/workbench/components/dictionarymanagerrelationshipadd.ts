@@ -14,6 +14,7 @@ import {language} from "../../services/language.service";
 @Component({
     selector: 'dictionary-manager-relationship-add',
     templateUrl: '../templates/dictionarymanagerrelationshipadd.html',
+    standalone: false
 })
 export class DictionaryManagerRelationshipAdd implements OnInit{
 

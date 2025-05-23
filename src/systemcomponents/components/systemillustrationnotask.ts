@@ -6,7 +6,8 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'system-illustration-no-task',
-    templateUrl: '../templates/systemillustrationnotask.html'
+    templateUrl: '../templates/systemillustrationnotask.html',
+    standalone: false
 })
 export class SystemIllustrationNoTask {
 

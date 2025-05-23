@@ -15,7 +15,8 @@ import {toast} from "../../services/toast.service";
  */
 @Component({
     selector: 'object-page-header-tags',
-    templateUrl: '../templates/objectpageheadertags.html'
+    templateUrl: '../templates/objectpageheadertags.html',
+    standalone: false
 })
 export class ObjectPageHeaderTags {
 

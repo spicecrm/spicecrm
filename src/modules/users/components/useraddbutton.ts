@@ -14,7 +14,8 @@ import {configurationService} from "../../../services/configuration.service";
  */
 @Component({
     selector: 'user-add-button',
-    templateUrl: "../templates/useraddbutton.html"
+    templateUrl: "../templates/useraddbutton.html",
+    standalone: false
 })
 
 export class UserAddButton {

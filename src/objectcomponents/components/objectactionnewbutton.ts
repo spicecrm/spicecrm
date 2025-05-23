@@ -10,7 +10,8 @@ import {navigation} from "../../services/navigation.service";
 @Component({
     selector: "object-action-new-button",
     templateUrl: "../templates/objectactionnewbutton.html",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ObjectActionNewButton implements OnInit {
 

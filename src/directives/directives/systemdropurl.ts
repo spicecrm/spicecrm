@@ -10,6 +10,8 @@ import {toast} from "../../services/toast.service";
  */
 @Directive({
     selector: '[system-drop-url]' // spiceDropFileArea
+    ,
+    standalone: false
 })
 export class SystemDropUrl {
 

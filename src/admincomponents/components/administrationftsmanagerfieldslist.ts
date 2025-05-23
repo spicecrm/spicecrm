@@ -14,7 +14,8 @@ import {CdkDragDrop, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop"
 
 @Component({
     selector: 'administration-ftsmanager-fields-list',
-    templateUrl: '../templates/administrationftsmanagerfieldslist.html'
+    templateUrl: '../templates/administrationftsmanagerfieldslist.html',
+    standalone: false
 })
 export class AdministrationFTSManagerFieldsList {
 

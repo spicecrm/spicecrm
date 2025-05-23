@@ -14,6 +14,7 @@ import {configurationService} from "../../../services/configuration.service";
 @Component({
     selector: 'holiday-calendar-list-get-holidays-button',
     templateUrl: '../templates/holidaycalendarlistgetholidaysbutton.html',
+    standalone: false
 })
 export class HolidayCalendarListGetHolidaysButton {
 

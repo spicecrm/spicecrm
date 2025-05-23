@@ -15,7 +15,8 @@ declare var _: any;
 
 @Component({
     selector: 'administration-password-config',
-    templateUrl: '../templates/administrationpasswordconfig.html'
+    templateUrl: '../templates/administrationpasswordconfig.html',
+    standalone: false
 })
 export class AdministrationPasswordConfig implements OnInit {
 

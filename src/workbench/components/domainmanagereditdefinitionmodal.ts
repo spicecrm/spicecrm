@@ -10,7 +10,8 @@ import {domainmanager} from "../services/domainmanager.service";
 
 
 @Component({
-    templateUrl: '../templates/domainmanagereditdefinitionmodal.html'
+    templateUrl: '../templates/domainmanagereditdefinitionmodal.html',
+    standalone: false
 })
 export class DomainManagerEditDefinitionModal{
     /**

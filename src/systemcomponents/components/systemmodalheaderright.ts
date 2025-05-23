@@ -8,6 +8,7 @@ import {Component} from '@angular/core';
  */
 @Component({
     selector: 'system-modal-header-right',
-    templateUrl: '../templates/systemmodalheaderright.html'
+    templateUrl: '../templates/systemmodalheaderright.html',
+    standalone: false
 })
 export class SystemModalHeaderRight {}

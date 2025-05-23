@@ -18,6 +18,7 @@ import {footer} from "../../services/footer.service";
  */
 @Directive({
     selector: '[system-to-bottom]',
+    standalone: false
 })
 export class SystemToBottomDirective implements DoCheck {
 
