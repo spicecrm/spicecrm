@@ -101,6 +101,7 @@ class SpiceDictionaryItems
             $retArray = [];
             foreach ($this->dictionaryItems as $item) {
                 if($item['sysdictionarydefinition_id'] != $sysdictionaryDefinitionId) continue;
+                if($templatesOnly && empty($item['sysdictionary_ref_id'])) continue;
                 $retArray[$item['id']] = $item;
             }
 
