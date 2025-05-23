@@ -554,8 +554,10 @@ class CampaignTask extends SpiceBean
         return true;
     }
 
-    public function getEmailAddress(string $listId, SpiceBean $person, $emailAddrBeanRelId = null): ?EmailAddress
+    public function getEmailAddress(string $listId, bool | SpiceBean $person, $emailAddrBeanRelId = null): ?EmailAddress
     {
+        if (!$person) return null;
+
         $db = DBManagerFactory::getInstance();
 //        $emailAddrBeanRelId = $db->getOne("SELECT email_addr_bean_rel_id from prospect_lists_prospects WHERE prospect_list_id = '$listId' AND related_id ='$person->id' AND deleted = 0");
 
