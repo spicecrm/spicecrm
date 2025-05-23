@@ -98,11 +98,7 @@ class EmailTrackingActionsController
         // unsubscribe from all newsletters if subscribed
         $this->unsubscribeFromNewsletters($seed);
 
-        $redirectUrl = SpiceConfig::getInstance()->get('emailtracking.unsubscribe_redirect_url');
-
-        if ($seed->_module == 'Emails') {
-            $redirectUrl = $seed->getMailbox()->unsubscribe_redirect_url ?: $redirectUrl;
-        }
+        $redirectUrl = $this->getEmailTrackingRedirectUrl('unsubscribe_redirect_url', $seed);
 
         if (!empty($redirectUrl)) {
             return $res->withHeader('Location', $redirectUrl)->withStatus(302);
@@ -120,6 +116,32 @@ class EmailTrackingActionsController
 
         $res->getBody()->write($lpContent['content']);
         return $res->withHeader('Content-Type', 'text/html');
+    }
+
+    public function getEmailTrackingRedirectUrl($key, $seed)
+    {
+        $redirectUrl = SpiceConfig::getInstance()->get('emailtracking.' . $key);
+
+        switch ($seed->_module) {
+            case 'NewsletterLogs':
+                $bean = BeanFactory::getBean('Newsletters', $seed->newsletter_id);
+                break;
+            case 'CampaignLog':
+                $bean = BeanFactory::getBean('CampaignTasks', $seed->campaigntask_id);
+                break;
+            case 'Emails':
+                $bean = $seed;
+                break;
+        }
+
+        $mailbox = BeanFactory::getBean('Mailboxes', $bean->mailbox_id);
+        $redirectUrl = $mailbox->$key ?: $redirectUrl;
+
+        if(str_contains($redirectUrl, '{refid}')){
+            return str_replace('{refid}', EmailTracking::encodeTrackingID("ParentType:$seed->_module:ParentId:$seed->id"), $redirectUrl);
+        }
+
+        return $redirectUrl;
     }
 
     /**
@@ -209,29 +231,33 @@ class EmailTrackingActionsController
 
     public function setEmailOptinStatus($bean, string $status): bool
     {
-        if ($bean->_module === 'Emails') {
-            $recipient = BeanFactory::getBean($bean->parent_type, $bean->parent_id);
-            $emailAddresses = $recipient->get_linked_beans('email_addresses');
-            foreach ($emailAddresses as $address) {
-                foreach ($bean->to() as $emailAddress) {
-                    if ($address->email_address == $emailAddress['email']) {
-                        if (EmailAddress::setOptInStatus($recipient, $address, $status)) {
-                            return true;
-                        } else {
-                            throw new BadRequestException('could not set the opt-in status for this address');
+        switch ($bean->_module) {
+            case 'Emails':
+                $recipient = BeanFactory::getBean($bean->parent_type, $bean->parent_id);
+                $emailAddresses = $recipient->get_linked_beans('email_addresses');
+                foreach ($emailAddresses as $address) {
+                    foreach ($bean->to() as $emailAddress) {
+                        if ($address->email_address == $emailAddress['email']) {
+                            if (EmailAddress::setOptInStatus($recipient, $address, $status)) {
+                                return true;
+                            } else {
+                                throw new BadRequestException('could not set the opt-in status for this address');
+                            }
                         }
                     }
                 }
-            }
-        } elseif ($bean->_module === 'CampaignLog' || $bean->_module === 'NewsletterLogs') {
-            $recipient = BeanFactory::getBean($bean->target_type, $bean->target_id);
-            $recipient->load_relationship('email_addresses');
-            $emailAddress = $this->getEmailAddress($recipient, $bean->email_addr_bean_rel_id);
-            if (EmailAddress::setOptInStatus($recipient, $emailAddress, $status)) {
-                return true;
-            } else {
-                throw new BadRequestException('could not set the opt-in status for this address');
-            }
+                break;
+            case 'CampaignLog':
+            case 'NewsletterLogs':
+                $recipient = BeanFactory::getBean($bean->target_type, $bean->target_id);
+                $recipient->load_relationship('email_addresses');
+                $emailAddress = $this->getEmailAddress($recipient, $bean->email_addr_bean_rel_id);
+                if (EmailAddress::setOptInStatus($recipient, $emailAddress, $status)) {
+                    return true;
+                } else {
+                    throw new BadRequestException('could not set the opt-in status for this address');
+                }
+                break;
         }
         return true;
     }
@@ -240,10 +266,14 @@ class EmailTrackingActionsController
     {
 
         $newsletter = BeanFactory::getBean('Newsletters');
-        if ($seed->_module === 'Emails') {
-            $recipient = BeanFactory::getBean($seed->parent_type, $seed->parent_id);
-        } elseif ($seed->_module === 'CampaignLog' || $seed->_module === 'NewsletterLogs') {
-            $recipient = BeanFactory::getBean($seed->target_type, $seed->target_id);
+        switch ($seed->_module) {
+            case 'Emails':
+                $recipient = BeanFactory::getBean($seed->parent_type, $seed->parent_id);
+                break;
+            case 'CampaignLog':
+            case 'NewsletterLogs':
+                $recipient = BeanFactory::getBean($seed->target_type, $seed->target_id);
+                break;
         }
         $newsletter->unsubscribeTargetFromAllNewsletters($recipient->id);
     }
@@ -382,32 +412,12 @@ class EmailTrackingActionsController
         }
 
         // get the email seed
-        /** @var Email | CampaignLog $seed */
+        /** @var Email | CampaignLog | NewsletterLog $seed */
         $seed = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
 
         $this->setEmailToOptedIn($seed);
 
-        $redirectUrl = SpiceConfig::getInstance()->get('emailtracking.double_optin_redirect_url');
-
-        [$parentType, $parentId] = $seed->getTrackingParentData();
-
-        if($seed->_module == 'NewsletterLogs'){
-            $newsletter = BeanFactory::getBean('Newsletters', $seed->newsletter_id);
-            $mailbox = BeanFactory::getBean('Mailboxes', $newsletter->mailbox_id);
-            $redirectUrl = $mailbox->double_optin_redirect_url ?: $redirectUrl;
-        }
-        else if($seed->_module == 'CampaignLog'){
-            $campaignTask = BeanFactory::getBean('CampaignTasks', $seed->campaigntask_id);
-            $mailbox = BeanFactory::getBean('Mailboxes', $campaignTask->mailbox_id);
-            $redirectUrl = $mailbox->double_optin_redirect_url ?: $redirectUrl;
-        }
-        else if ($seed->_module == 'Emails') {
-            $redirectUrl = $seed->getMailbox()->double_optin_redirect_url ?: $redirectUrl;
-        }
-
-        if ($redirectUrl) {
-            return str_replace('{refid}', EmailTracking::encodeTrackingID("ParentType:$parentType:ParentId:$parentId"), $redirectUrl);
-        }
+        $redirectUrl = $this->getEmailTrackingRedirectUrl('double_optin_redirect_url', $seed);
 
         if (!empty($redirectUrl)) {
             return $res->withHeader('Location', $redirectUrl)->withStatus(302);
