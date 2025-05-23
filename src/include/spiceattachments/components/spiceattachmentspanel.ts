@@ -145,23 +145,18 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
             next: () => {
                 this.attachmentsLoaded.emit(true);
                 this.loadInputFiles();
-                this.countSize();
+                this.processAttachmentsSize();
             }
         })
     }
 
-    public countSize() {
-        let sum = 0;
-        this.modelattachments.files.forEach((f) => {
-            sum += parseInt(f.filesize);
-        });
-        this.modelattachments.totalFileSize = this.modelattachments.humanFileSize(sum);
-        if (sum > this.maxUploadBytes) {
+    public processAttachmentsSize() {
+        if (this.modelattachments.totalFileSize > this.maxUploadBytes) {
             let headerText = `LBL_ERROR`;
-            let text = this.language.getLabelFormatted('LBL_EXCEEDS_MAX_ATTACHMENTS', [this.modelattachments.totalFileSize, this.maxUpload]);
+            let text = this.language.getLabelFormatted('LBL_EXCEEDS_MAX_ATTACHMENTS', [this.modelattachments.totalHumanFileSize, this.maxUpload]);
             this.modal.info(text, headerText);
         }
-        this.model.setField('attachments_size', sum, false, false);
+        this.model.setField('attachments_size', this.modelattachments.totalFileSize, false, false);
         this.model.setField('attachments_count', this.modelattachments.files.length, false, false);
     }
 
@@ -283,7 +278,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     public doupload(files) {
         this.modelattachments.uploadAttachmentsBase64(files, this.componentconfig.systemCateogryId).subscribe({
             next: () => {
-                this.countSize();
+                this.processAttachmentsSize();
                 this.broadcastUpload();
             }
         });
@@ -299,7 +294,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
             // wait for modal to finish upload
             modalRef.instance.responseSubject.subscribe({
                 next: () => {
-                    this.countSize();
+                    this.processAttachmentsSize();
                     this.broadcastUpload();
                 }
             })
