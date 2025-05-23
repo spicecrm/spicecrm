@@ -5,7 +5,8 @@ import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { AdministrationLoginRestrictionIpAddresses } from './administrationloginrestrictionipaddresses';
 
 @Component({
-    templateUrl: '../templates/administrationloginmanagement.html'
+    templateUrl: '../templates/administrationloginmanagement.html',
+    standalone: false
 })
 export class AdministrationLoginManagement implements OnInit {
 

@@ -10,7 +10,8 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: 'home-assistant-tile',
     templateUrl: '../templates/homeassistanttile.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class HomeAssistantTile implements OnInit {
     @Input() item: any = {};

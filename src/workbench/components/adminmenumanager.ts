@@ -14,6 +14,7 @@ import {configurationService} from "../../services/configuration.service";
 @Component({
     selector: 'admin-menu-manager',
     templateUrl: '../templates/adminmenumanager.html',
+    standalone: false
 })
 export class AdminMenuManager implements OnInit { 
     public adminGroups: AdminGroupI[] = [];

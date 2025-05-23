@@ -15,7 +15,8 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'groupware-detail-pane-bean',
     templateUrl: '../templates/groupwaredetailpanebean.html',
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 export class GroupwareDetailPaneBean implements OnInit {
 

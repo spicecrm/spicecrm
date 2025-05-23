@@ -10,7 +10,8 @@ import {calendar} from "../services/calendar.service";
 @Component({
     selector: 'calendar-color-picker',
     templateUrl: '../templates/calendarcolorpicker.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class CalendarColorPicker {
 

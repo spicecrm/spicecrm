@@ -20,6 +20,7 @@ import {
 @Component({
     selector: 'dictionary-manager-relationship-container-manytomany-prospectlists',
     templateUrl: '../templates/dictionarymanagerrelationshipcontainermanytomanyprospectlists.html',
+    standalone: false
 })
 export class DictionaryManagerRelationshipContainerManyToManyProspectlists implements OnInit, OnChanges {
 

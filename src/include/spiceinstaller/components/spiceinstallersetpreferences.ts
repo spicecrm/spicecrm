@@ -15,7 +15,8 @@ declare var moment: any;
 
 @Component({
     selector: 'spice-installer-set-preferences',
-    templateUrl: '../templates/spiceinstallersetpreferences.html'
+    templateUrl: '../templates/spiceinstallersetpreferences.html',
+    standalone: false
 })
 export class SpiceInstallerSetPreferences {
 

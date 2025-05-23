@@ -11,7 +11,8 @@ import {Router} from '@angular/router';
 @Component({
     selector: 'dashboard-mailboxes-dashlet',
     templateUrl: '../templates/mailboxesdashlet.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class MailboxesDashlet implements OnInit, OnDestroy {
     public isLoading: boolean = false;

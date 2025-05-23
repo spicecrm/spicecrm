@@ -11,7 +11,8 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     templateUrl: '../templates/spicetexts.html',
-    providers: [relatedmodels]
+    providers: [relatedmodels],
+    standalone: false
 })
 export class SpiceTexts implements OnInit {
 

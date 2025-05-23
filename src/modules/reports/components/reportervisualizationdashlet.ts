@@ -15,7 +15,8 @@ import {reporterconfig} from '../services/reporterconfig';
 @Component({
     selector: 'reporter-visualization-dashlet',
     templateUrl: '../templates/reportervisualizationdashlet.html',
-    providers: [model, reporterconfig]
+    providers: [model, reporterconfig],
+    standalone: false
 })
 export class ReporterVisualizationDashlet implements OnInit, AfterViewInit {
 

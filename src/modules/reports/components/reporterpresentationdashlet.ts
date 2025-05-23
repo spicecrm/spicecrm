@@ -25,7 +25,8 @@ import {Subject} from "rxjs";
     providers: [model, reporterconfig],
     styles: [
         ':host {width:100%; height: 100%;}'
-    ]
+    ],
+    standalone: false
 })
 export class ReporterPresentationDashlet implements AfterViewInit, OnInit {
     /**

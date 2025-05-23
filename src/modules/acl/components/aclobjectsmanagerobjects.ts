@@ -16,6 +16,7 @@ import {aclobjectsmanager} from "../services/aclobjectsmanager.service";
 @Component({
     selector: 'aclobjects-manager-objects',
     templateUrl: '../templates/aclobjectsmanagerobjects.html',
+    standalone: false
 })
 export class ACLObjectsManagerObjects {
 

@@ -27,7 +27,7 @@ import {skip} from "rxjs/operators";
     selector: 'object-list',
     templateUrl: '../templates/objectlist.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-
+    standalone: false
 })
 export class ObjectList implements OnDestroy, OnInit {
     /**

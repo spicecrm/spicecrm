@@ -18,7 +18,8 @@ declare var html_beautify: any;
 @Component({
     selector: 'spice-page-builder-element-code',
     templateUrl: '../templates/spicepagebuilderelementcode.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderElementCode extends SpicePageBuilderElement implements OnInit {
     /**

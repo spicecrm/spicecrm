@@ -5,7 +5,8 @@ import {Subject} from "rxjs";
 
 @Component({
     selector: 'system-dropdown-mobile-modal',
-    templateUrl: '../templates/systemdropdownmobilemodal.html'
+    templateUrl: '../templates/systemdropdownmobilemodal.html',
+    standalone: false
 })
 
 export class SystemDropdownMobileModal implements ModalComponentI, OnDestroy {

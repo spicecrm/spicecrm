@@ -14,7 +14,8 @@ import {relatedmodels} from "../../services/relatedmodels.service";
 @Component({
     selector: 'object-related-duplicates-card-footer',
     templateUrl: '../templates/objectrelatedduplicatescardfooter.html',
-    providers: []
+    providers: [],
+    standalone: false
 })
 export class ObjectRelatedDuplicatesCardFooter implements OnInit {
 

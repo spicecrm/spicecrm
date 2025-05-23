@@ -16,7 +16,8 @@ declare var moment: any;
 
 @Component({
     selector: 'administration-systrashcan-manager',
-    templateUrl: '../templates/administrationsystrashcanmanager.html'
+    templateUrl: '../templates/administrationsystrashcanmanager.html',
+    standalone: false
 })
 export class AdministrationSysTrashcanManager implements OnInit {
     /**

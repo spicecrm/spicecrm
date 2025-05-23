@@ -17,7 +17,8 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: "object-file-action-menu",
-    templateUrl: "../templates/objectfileactionmenu.html"
+    templateUrl: "../templates/objectfileactionmenu.html",
+    standalone: false
 })
 export class ObjectFileActionMenu {
 

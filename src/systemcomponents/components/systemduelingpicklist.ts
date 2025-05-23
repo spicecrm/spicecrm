@@ -31,10 +31,11 @@ import {SystemDuelingPicklistItem} from "./systemduelingpicklistitem";
     selector: "system-dueling-picklist",
     templateUrl: "../templates/systemduelingpicklist.html",
     providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => SystemDuelingPicklist),
-        multi: true
-    }]
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SystemDuelingPicklist),
+            multi: true
+        }],
+    standalone: false
 })
 export class SystemDuelingPicklist implements ControlValueAccessor, AfterContentInit {
     @ContentChildren(SystemDuelingPicklistItem) public selectItemlist: QueryList<SystemDuelingPicklistItem>;

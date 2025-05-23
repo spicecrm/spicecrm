@@ -12,8 +12,8 @@ declare var _: any;
 
 @Component({
     selector: 'object-recordview-detail-split',
-    templateUrl: '../templates/objectrecordviewdetailsplit.html'
-
+    templateUrl: '../templates/objectrecordviewdetailsplit.html',
+    standalone: false
 })
 export class ObjectRecordViewDetailsplit implements OnInit {
 

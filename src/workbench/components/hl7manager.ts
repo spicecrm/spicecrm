@@ -18,7 +18,8 @@ import {view} from "../../services/view.service";
 
 @Component({
     templateUrl: '../templates/hl7manager.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class HL7Manager {
 

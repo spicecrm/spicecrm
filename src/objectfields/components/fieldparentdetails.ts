@@ -10,7 +10,8 @@ import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 
 @Component({
-    templateUrl: '../templates/fieldparentdetails.html'
+    templateUrl: '../templates/fieldparentdetails.html',
+    standalone: false
 })
 export class fieldParentDetails extends fieldGeneric implements OnInit {
     public parentDefs: any = {};

@@ -6,7 +6,8 @@ import {Component, Input, } from '@angular/core';
 
 @Component({
     selector: 'object-record-details-tab-row-field',
-    templateUrl: '../templates/objectrecorddetailstabrowfield.html'
+    templateUrl: '../templates/objectrecorddetailstabrowfield.html',
+    standalone: false
 })
 export class ObjectRecordDetailsTabRowField {
 

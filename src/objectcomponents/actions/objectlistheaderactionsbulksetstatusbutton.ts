@@ -8,7 +8,8 @@ import {backend} from "../../services/backend.service";
 
 @Component({
     selector: 'object-list-header-actions-bulk-set-status-button',
-    templateUrl: '../templates/objectlistheaderactionsbulksetstatusbutton.html'
+    templateUrl: '../templates/objectlistheaderactionsbulksetstatusbutton.html',
+    standalone: false
 })
 
 export class ObjectListHeaderActionsBulkSetStatusButton implements ActionSetItemI, OnInit {

@@ -22,6 +22,7 @@ declare var _: any;
 @Component({
     templateUrl: '../templates/fieldmailboxes.html',
     selector: 'field-mailboxes',
+    standalone: false
 })
 export class fieldMailboxes extends fieldGeneric implements OnInit {
     /**

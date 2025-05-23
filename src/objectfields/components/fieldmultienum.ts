@@ -11,7 +11,8 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-multienum',
-    templateUrl: '../templates/fieldmultienum.html'
+    templateUrl: '../templates/fieldmultienum.html',
+    standalone: false
 })
 export class fieldMultienum extends fieldGeneric implements OnInit {
     public options: any[] = [];

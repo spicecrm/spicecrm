@@ -10,7 +10,8 @@ import {Router} from '@angular/router';
 @Component({
     selector: 'spice-installer',
     templateUrl: '../templates/spiceinstaller.html',
-    providers: [spiceinstaller]
+    providers: [spiceinstaller],
+    standalone: false
 })
 
 export class SpiceInstaller {

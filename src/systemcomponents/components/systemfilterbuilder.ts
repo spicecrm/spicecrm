@@ -20,7 +20,8 @@ declare var _: any;
             useExisting: forwardRef(() => SystemFilterBuilder),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemFilterBuilder implements ControlValueAccessor {
 

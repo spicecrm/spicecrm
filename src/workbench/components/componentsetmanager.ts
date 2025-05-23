@@ -22,7 +22,8 @@ import {WorkbenchService} from "../services/workbench.service";
 @Component({
     selector: 'componentset-manager',
     templateUrl: '../templates/componentsetmanager.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ComponentsetManager {
 

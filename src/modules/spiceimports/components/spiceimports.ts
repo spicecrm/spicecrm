@@ -11,7 +11,8 @@ import {spiceimportsservice} from '../services/spiceimports.service';
     templateUrl: '../templates/spiceimports.html',
     providers: [
         spiceimportsservice
-    ]
+    ],
+    standalone: false
 })
 
 export class SpiceImports implements OnInit {

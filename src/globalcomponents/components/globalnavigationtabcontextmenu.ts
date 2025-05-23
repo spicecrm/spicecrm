@@ -11,6 +11,7 @@ import {take} from "rxjs/operators";
 @Component({
     selector: 'global-navigation-tab-context-menu',
     templateUrl: '../templates/globalnavigationtabcontextmenu.html',
+    standalone: false
 })
 
 export class GlobalNavigationTabContextMenu {

@@ -21,7 +21,8 @@ declare var _: any;
 @Component({
     selector: 'system-number-spinner',
     templateUrl: '../templates/systemnumberspinner.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SystemNumberSpinner implements OnChanges {
 

@@ -12,7 +12,8 @@ import {SystemChartService} from "../services/systemchart.service";
 @Component({
     selector: 'system-chart-multi-dimensional',
     templateUrl: '../templates/systemchartmultidimensional.html',
-    providers: [SystemChartService]
+    providers: [SystemChartService],
+    standalone: false
 })
 
 export class SystemChartMultiDimensional extends SystemChartOneDimensional implements OnDestroy, GoogleChartOptionsI {

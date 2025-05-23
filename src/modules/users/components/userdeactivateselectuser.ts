@@ -17,7 +17,8 @@ declare var moment: any;
  */
 @Component({
     selector: 'user-deactivate-select-user',
-    templateUrl: "../templates/userdeactivateselectuser.html"
+    templateUrl: "../templates/userdeactivateselectuser.html",
+    standalone: false
 })
 export class UserDeactivateSelectUser implements OnDestroy {
 

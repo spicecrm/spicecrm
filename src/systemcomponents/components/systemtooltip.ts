@@ -5,7 +5,8 @@ import {Component, Input} from '@angular/core';
 
 @Component({
     selector: 'system-tooltip',
-    templateUrl: '../templates/systemtooltip.html'
+    templateUrl: '../templates/systemtooltip.html',
+    standalone: false
 })
 export class SystemTooltip {
     @Input() public tooltiptext: string = '';

@@ -13,6 +13,7 @@ import {stepObject} from "../services/spiceinstaller.service";
 @Component({
     selector: 'spice-installer-set-backend',
     templateUrl: '../templates/spiceinstallersetbackend.html',
+    standalone: false
 })
 
 export class SpiceInstallerSetBackEnd implements OnInit {

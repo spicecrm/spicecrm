@@ -9,6 +9,7 @@ import {spiceimportsservice} from '../services/spiceimports.service';
 @Component({
     selector: 'spice-imports-list-item',
     templateUrl: '../templates/spiceimportslistitem.html',
+    standalone: false
 })
 export class SpiceImportsListItem {
 

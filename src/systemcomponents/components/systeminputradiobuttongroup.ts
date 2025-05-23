@@ -29,7 +29,8 @@ declare var _;
             useExisting: forwardRef(() => SystemInputRadioButtonGroup),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputRadioButtonGroup implements ControlValueAccessor, AfterViewInit {
 

@@ -12,7 +12,8 @@ import {session} from "../../../services/session.service";
 @Component({
     selector: 'object-action-output-bean-modal-email-content',
     templateUrl: '../templates/objectactionoutputbeanmodalemailcontent.html',
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 export class ObjectActionOutputBeanModalEmailContent implements OnChanges {
 

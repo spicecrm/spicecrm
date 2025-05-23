@@ -19,6 +19,7 @@ import {DictionaryManagerItemStatus} from "./dictionarymanageritemstatus";
 @Component({
     selector: 'dictionary-manager-items',
     templateUrl: '../templates/dictionarymanageritems.html',
+    standalone: false
 })
 export class DictionaryManagerItems {
 

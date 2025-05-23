@@ -9,7 +9,8 @@ import { spiceinstaller, stepObject } from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-fts',
-    templateUrl: '../templates/spiceinstallerfts.html'
+    templateUrl: '../templates/spiceinstallerfts.html',
+    standalone: false
 })
 export class SpiceInstallerFTS {
 

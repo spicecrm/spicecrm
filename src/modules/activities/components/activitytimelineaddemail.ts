@@ -17,7 +17,8 @@ import {ActivityTimelineAddItem} from "./activitytimelineadditem";
 @Component({
     selector: 'activitytimeline-add-email',
     templateUrl: '../templates/activitytimelineaddemail.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements OnInit {
     /**

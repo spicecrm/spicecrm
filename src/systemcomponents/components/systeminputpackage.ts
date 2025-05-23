@@ -18,7 +18,8 @@ import {configurationService} from "../../services/configuration.service";
             useExisting: forwardRef(() => SystemInputPackage),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputPackage implements ControlValueAccessor, OnInit {
 

@@ -19,7 +19,8 @@ declare var _: any;
  */
 @Component({
     selector: 'acl-user-profiles',
-    templateUrl: "../templates/acluserprofiles.html"
+    templateUrl: "../templates/acluserprofiles.html",
+    standalone: false
 })
 export class ACLUserProfiles {
 

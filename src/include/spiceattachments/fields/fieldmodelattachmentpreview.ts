@@ -23,7 +23,8 @@ import {Observable, Subject} from "rxjs";
 @Component({
     selector: 'field-model-attachment-preview',
     templateUrl: '../templates/fieldmodelattachmentpreview.html',
-    providers: [modelattachments]
+    providers: [modelattachments],
+    standalone: false
 })
 export class fieldModelAttachmentPreview extends fieldGeneric implements OnInit{
 

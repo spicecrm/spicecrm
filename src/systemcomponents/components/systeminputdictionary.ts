@@ -7,10 +7,11 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
     selector: 'system-input-dictionary',
     templateUrl: '../templates/systeminputdictionary.html',
     providers: [{
-        multi: true,
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => SystemInputDictionary)
-    }]
+            multi: true,
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SystemInputDictionary)
+        }],
+    standalone: false
 })
 
 export class SystemInputDictionary implements ControlValueAccessor {

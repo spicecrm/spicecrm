@@ -16,7 +16,8 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'administration-configurator-item-role',
-    templateUrl: '../templates/administrationconfiguratoritemrole.html'
+    templateUrl: '../templates/administrationconfiguratoritemrole.html',
+    standalone: false
 })
 export class AdministrationConfiguratorItemRole implements OnInit{
 

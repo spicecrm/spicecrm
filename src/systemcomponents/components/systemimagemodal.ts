@@ -8,7 +8,8 @@ import { SystemInputMedia } from './systeminputmedia';
 
 @Component({
     selector: 'system-image-modal',
-    templateUrl: '../templates/systemimagemodal.html'
+    templateUrl: '../templates/systemimagemodal.html',
+    standalone: false
 })
 export class SystemImageModal {
 

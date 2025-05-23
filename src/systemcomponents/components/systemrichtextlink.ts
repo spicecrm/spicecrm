@@ -6,9 +6,10 @@ import {Subject} from "rxjs";
 import {backend} from "../../services/backend.service";
 
 @Component({
-    selector:'system-richtext-link',
+    selector: 'system-richtext-link',
     templateUrl: '../templates/systemrichtextlink.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class SystemRichTextLink implements OnInit {
 

@@ -16,7 +16,7 @@ import {relateFilter} from "../../services/interfaces.service";
 @Component({
     selector: 'field-linked',
     templateUrl: '../templates/fieldlinked.html',
-
+    standalone: false
 })
 export class fieldLinked extends fieldGeneric implements OnInit, OnDestroy {
     public relateIdField: string = '';

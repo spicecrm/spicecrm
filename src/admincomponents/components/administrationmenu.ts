@@ -12,7 +12,8 @@ import {administration} from "../services/administration.service";
 
 @Component({
     selector: 'administration-menu',
-    templateUrl: '../templates/administrationmenu.html'
+    templateUrl: '../templates/administrationmenu.html',
+    standalone: false
 })
 export class AdministrationMenu implements AfterViewInit{
 

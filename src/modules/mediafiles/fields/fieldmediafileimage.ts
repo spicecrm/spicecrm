@@ -21,7 +21,8 @@ import { backend } from '../../../services/backend.service';
 @Component({
     selector: 'field-media-file-image',
     templateUrl: '../templates/fieldmediafileimage.html',
-    providers: [ mediafiles ],
+    providers: [mediafiles],
+    standalone: false
 })
 export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
 

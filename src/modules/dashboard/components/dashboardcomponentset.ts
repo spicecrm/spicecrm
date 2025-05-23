@@ -7,6 +7,7 @@ import {metadata} from '../../../services/metadata.service';
 @Component({
     selector: 'dashboard-componentset',
     templateUrl: "../templates/dashboardcomponentset.html",
+    standalone: false
 })
 export class DashboardComponentset implements AfterViewInit, OnDestroy {
     @ViewChild('componentcontainer', {read: ViewContainerRef, static: true}) public componentcontainer: ViewContainerRef;

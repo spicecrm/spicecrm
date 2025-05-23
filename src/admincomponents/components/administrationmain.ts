@@ -18,7 +18,8 @@ import {WorkbenchService} from "../../workbench/services/workbench.service";
 
 @Component({
     templateUrl: '../templates/administrationmain.html',
-    providers: [administration, WorkbenchService]
+    providers: [administration, WorkbenchService],
+    standalone: false
 })
 export class AdministrationMain implements AfterViewInit {
 

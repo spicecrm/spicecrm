@@ -18,7 +18,8 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
             useExisting: forwardRef(() => SystemInputPassword),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputPassword implements ControlValueAccessor {
 

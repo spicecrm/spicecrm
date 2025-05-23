@@ -5,7 +5,8 @@ import {Component} from '@angular/core';
     templateUrl: '../templates/systemrichtexteditormentiondropdown.html',
     host: {
         class: 'ck-reset_all-excluded'
-    }
+    },
+    standalone: false
 })
 
 export class SystemRichTextEditorMentionDropdown {

@@ -23,7 +23,8 @@ declare var moment: any;
 
 @Component({
     selector: 'crm-log-viewer-list',
-    templateUrl: '../templates/crmlogviewerlist.html'
+    templateUrl: '../templates/crmlogviewerlist.html',
+    standalone: false
 })
 export class CRMLogViewerList implements OnInit {
 

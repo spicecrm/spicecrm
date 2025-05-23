@@ -16,7 +16,8 @@ declare var _: any;
  */
 @Component({
     selector: 'groupware-email-archive-pane-search',
-    templateUrl: '../templates/groupwareemailarchivepanesearch.html'
+    templateUrl: '../templates/groupwareemailarchivepanesearch.html',
+    standalone: false
 })
 export class GroupwareEmailArchivePaneSearch {
     /**

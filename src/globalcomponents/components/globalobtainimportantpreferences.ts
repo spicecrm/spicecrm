@@ -21,6 +21,7 @@ declare var moment: any;
 @Component({
     selector: 'global-obtain-important-preferences',
     templateUrl: '../templates/globalobtainimportantpreferences.html',
+    standalone: false
 })
 export class GlobalObtainImportantPreferences implements OnInit {
 

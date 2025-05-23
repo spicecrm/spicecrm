@@ -19,7 +19,7 @@ import {modelutilities} from "../../../services/modelutilities.service";
     selector: 'object-action-output-bean-modal',
     templateUrl: '../templates/documentcreaterevisionmodal.html',
     providers: [view],
-
+    standalone: false
 })
 export class DocumentCreateRevisionModal extends ObjectActionOutputBeanModal {
 

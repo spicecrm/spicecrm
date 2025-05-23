@@ -11,7 +11,8 @@ import { session } from '../../../services/session.service';
 
 @Component({
     selector: "totp-authenticatio-generate-button",
-    templateUrl: "../templates/totpauthenticationgeneratebutton.html"
+    templateUrl: "../templates/totpauthenticationgeneratebutton.html",
+    standalone: false
 })
 export class TOTPAuthenticationGenerateButton {
 

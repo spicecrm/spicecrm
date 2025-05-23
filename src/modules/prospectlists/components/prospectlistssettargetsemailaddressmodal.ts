@@ -7,7 +7,8 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: 'prospect-lists-set-targets-email-address-modal',
     templateUrl: '../templates/prospectlistssettargetsemailaddressmodal.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 
 export class ProspectListsSetTargetsEmailAddressModal implements ModalComponentI, OnDestroy {

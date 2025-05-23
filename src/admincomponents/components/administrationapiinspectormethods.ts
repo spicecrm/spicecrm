@@ -4,7 +4,8 @@ import {administrationapiinspectorService} from "../services/administrationapiin
 
 @Component({
     selector: 'administration-api-inspector-methods',
-    templateUrl: '../templates/administrationapiinspectormethods.html'
+    templateUrl: '../templates/administrationapiinspectormethods.html',
+    standalone: false
 })
 
 export class AdministrationApiInspectorMethods {

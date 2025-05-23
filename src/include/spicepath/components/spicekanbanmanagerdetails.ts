@@ -12,7 +12,8 @@ import {SpiceBeanGuideStageI, SpiceTextsI} from "../interfaces/kanbanmanager.int
  */
 @Component({
     selector: 'spice-kanban-manager-details',
-    templateUrl: '../templates/spicekanbanmanagerdetails.html'
+    templateUrl: '../templates/spicekanbanmanagerdetails.html',
+    standalone: false
 })
 
 export class SpiceKanbanManagerDetails implements OnInit {

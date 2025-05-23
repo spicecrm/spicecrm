@@ -21,6 +21,7 @@ import {DictionaryManagerUsageModal} from "./dictionarymanagereusagemodal";
 @Component({
     selector: 'dictionary-manager-definitions',
     templateUrl: '../templates/dictionarymanagerdefinitions.html',
+    standalone: false
 })
 export class DictionaryManagerDefinitions {
 

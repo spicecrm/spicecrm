@@ -11,7 +11,8 @@ import {view} from '../../../services/view.service';
 @Component({
     selector: 'accounts-contacts-manager-list',
     templateUrl: '../templates/accountscontactsmanagerlist.html',
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 export class AccountsContactsManagerList {
 

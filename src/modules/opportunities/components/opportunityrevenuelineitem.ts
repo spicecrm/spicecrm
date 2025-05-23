@@ -13,7 +13,8 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: '[opportunity-revenue-line-item]',
     templateUrl: "../templates/opportunityrevenuelineitem.html",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class OpportunityRevenueLineItem implements OnChanges {
 

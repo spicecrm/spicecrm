@@ -14,7 +14,8 @@ import {view} from "../../services/view.service";
 @Component({
     selector: "object-select-bean-list-modal",
     templateUrl: "../templates/objectselectbeanlistmodal.html",
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ObjectSelectBeanListModal implements OnInit {
     /**

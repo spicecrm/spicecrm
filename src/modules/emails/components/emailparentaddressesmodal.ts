@@ -13,7 +13,8 @@ import {backend} from "../../../services/backend.service";
  */
 @Component({
     selector: 'email-parent-addresses-modal',
-    templateUrl: '../templates/emailparentaddressesmodal.html'
+    templateUrl: '../templates/emailparentaddressesmodal.html',
+    standalone: false
 })
 export class EmailParentAddressesModal implements OnInit {
 

@@ -23,7 +23,8 @@ import {userpreferences} from "../../../services/userpreferences.service";
 @Component({
     selector: 'spice-calculator-modal',
     templateUrl: '../templates/spicecalculatormodal.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpiceCalculatorModal {
     public readonly decimalSeparator: string;

@@ -19,7 +19,8 @@ declare var moment: any;
             useExisting: forwardRef(() => SystemFilterBuilderFilterExpressionValue),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemFilterBuilderFilterExpressionValue implements ControlValueAccessor {
 

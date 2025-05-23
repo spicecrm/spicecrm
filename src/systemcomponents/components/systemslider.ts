@@ -15,7 +15,8 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
             useExisting: forwardRef(() => SystemSlider),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemSlider implements ControlValueAccessor {
 

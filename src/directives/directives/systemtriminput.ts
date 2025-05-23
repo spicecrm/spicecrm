@@ -9,6 +9,7 @@ import { Directive, HostListener, Input } from '@angular/core';
  */
 @Directive({
     selector: 'input[system-trim-input], textarea[system-trim-input]',
+    standalone: false
 })
 export class SystemTrimInputDirective {
 

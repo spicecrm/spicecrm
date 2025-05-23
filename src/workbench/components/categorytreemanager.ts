@@ -18,6 +18,7 @@ declare var moment: any;
 @Component({
     selector: 'categgory-tree-manager',
     templateUrl: '../templates/categorytreemanager.html',
+    standalone: false
 })
 export class CategoryTreeManager {
 

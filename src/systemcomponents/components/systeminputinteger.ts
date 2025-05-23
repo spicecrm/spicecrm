@@ -13,12 +13,13 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
     selector: 'system-input-integer',
     templateUrl: '../templates/systeminputinteger.html',
     providers: [
-    {
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => SystemInputInteger),
-        multi: true
-    }
-]
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SystemInputInteger),
+            multi: true
+        }
+    ],
+    standalone: false
 })
 export class SystemInputInteger implements ControlValueAccessor {
 

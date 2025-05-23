@@ -5,7 +5,8 @@ import {language} from "../../services/language.service";
 
 @Component({
     selector: 'workbench-config-option-kanban',
-    templateUrl: '../templates/workbenchconfigoptionkanban.html'
+    templateUrl: '../templates/workbenchconfigoptionkanban.html',
+    standalone: false
 })
 
 export class WorkbenchConfigOptionKanban implements OnInit {

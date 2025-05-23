@@ -13,7 +13,8 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'action-activity-close-button',
-    templateUrl: '../templates/actionactivityclosebutton.html'
+    templateUrl: '../templates/actionactivityclosebutton.html',
+    standalone: false
 })
 export class ActionActivityCloseButton implements OnInit, OnDestroy {
 

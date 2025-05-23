@@ -17,7 +17,7 @@ import {modal} from "../../services/modal.service";
 @Component({
     selector: 'hooks-manager-hooks-edit-modal',
     templateUrl: '../templates/hooksmanagerhookseditmodal.html',
-
+    standalone: false
 })
 export class HooksManagerHooksEditModal implements OnInit {
 

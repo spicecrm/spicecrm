@@ -20,7 +20,8 @@ declare var moment;
  */
 @Component({
     selector: 'field-activity-date',
-    templateUrl: '../templates/fieldactivitydate.html'
+    templateUrl: '../templates/fieldactivitydate.html',
+    standalone: false
 })
 export class fieldActivityDate extends fieldGeneric {
     /**

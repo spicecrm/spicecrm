@@ -16,7 +16,7 @@ declare var _;
 @Component({
     selector: 'prospectlists-create-targetlist-from-module-button',
     templateUrl: '../templates/prospectlistscreatetargetlistfrommodulebutton.html',
-
+    standalone: false
 })
 export class ProspectListsCreateTargetListFromModuleButton implements OnInit {
 

@@ -13,6 +13,7 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
     providers: [mailboxesEmails],
     selector: 'mailbox-manager',
     templateUrl: '../templates/mailboxmanager.html',
+    standalone: false
 })
 export class MailboxManager {
     constructor(

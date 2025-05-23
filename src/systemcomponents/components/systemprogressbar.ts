@@ -13,7 +13,8 @@ import { userpreferences } from '../../services/userpreferences.service';
     templateUrl: "../templates/systemprogressbar.html",
     host: {
         style: 'display:block'
-    }
+    },
+    standalone: false
 })
 export class SystemProgressBar {
 

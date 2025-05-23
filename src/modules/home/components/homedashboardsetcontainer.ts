@@ -29,7 +29,8 @@ declare var _;
  */
 @Component({
     selector: 'home-dashboardset-container',
-    templateUrl: '../templates/homedashboardsetcontainer.html'
+    templateUrl: '../templates/homedashboardsetcontainer.html',
+    standalone: false
 })
 export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
 

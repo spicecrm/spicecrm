@@ -17,7 +17,8 @@ import {fts} from "../../services/fts.service";
             useExisting: forwardRef(() => SystemInputSearchTerm),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputSearchTerm implements ControlValueAccessor {
     /**

@@ -17,10 +17,11 @@ declare var moment: any;
 @Component({
     selector: 'calendar-schedule-dashlet',
     templateUrl: '../templates/calendarscheduledashlet.html',
-    providers: [calendar, {provide: 'calendarConfigOverride', useFactory: () => ({
-            isDashlet: true,
-            sheetType: 'Schedule'
-        })}]
+    providers: [calendar, { provide: 'calendarConfigOverride', useFactory: () => ({
+                isDashlet: true,
+                sheetType: 'Schedule'
+            }) }],
+    standalone: false
 })
 
 export class CalendarScheduleDashlet implements OnInit {

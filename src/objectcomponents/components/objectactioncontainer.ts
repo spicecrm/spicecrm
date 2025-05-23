@@ -21,7 +21,8 @@ import {ObjectActionContainerItem} from "./objectactioncontaineritem";
  */
 @Component({
     selector: "object-action-container",
-    templateUrl: "../templates/objectactioncontainer.html"
+    templateUrl: "../templates/objectactioncontainer.html",
+    standalone: false
 })
 export class ObjectActionContainer implements OnChanges, AfterViewInit {
     /**

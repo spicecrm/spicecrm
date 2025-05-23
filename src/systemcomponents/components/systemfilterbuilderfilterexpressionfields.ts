@@ -10,12 +10,13 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
     selector: 'system-filter-builder-expression-fields',
     templateUrl: '../templates/systemfilterbuilderfilterexpressionfields.html',
     providers: [
-    {
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => SystemFilterBuilderFilterExpressionFields),
-        multi: true
-    }
-]
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SystemFilterBuilderFilterExpressionFields),
+            multi: true
+        }
+    ],
+    standalone: false
 })
 export class SystemFilterBuilderFilterExpressionFields implements OnChanges, ControlValueAccessor {
 
