@@ -16,6 +16,7 @@ import {view} from "../../services/view.service";
 @Component({
     selector: "mailboxes-gmail-traffic-manager",
     templateUrl: "../templates/mailboxesgmailtrafficmanager.html",
+    standalone: false
 })
 export class MailboxesGmailTrafficManager {
 

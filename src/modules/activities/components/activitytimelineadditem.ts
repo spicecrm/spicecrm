@@ -24,7 +24,8 @@ declare var _: any;
 @Component({
     selector: 'activitytimeline-add-item',
     templateUrl: '../templates/activitytimelineadditem.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ActivityTimelineAddItem implements OnInit, OnDestroy {
 

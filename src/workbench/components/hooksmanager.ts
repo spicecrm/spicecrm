@@ -10,6 +10,7 @@ import {metadata} from "../../services/metadata.service";
 @Component({
     selector: 'hooks-manager',
     templateUrl: '../templates/hooksmanager.html',
+    standalone: false
 })
 export class HooksManager {
     public hook: any;

@@ -6,7 +6,8 @@ import {SystemTreeItemI} from "../interfaces/systemcomponents.interfaces";
 
 @Component({
     selector: "system-tree-item",
-    templateUrl: "../templates/systemtreeitem.html"
+    templateUrl: "../templates/systemtreeitem.html",
+    standalone: false
 })
 
 export class SystemTreeItem {

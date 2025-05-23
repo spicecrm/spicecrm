@@ -13,7 +13,8 @@ declare var moment: any;
 
 @Component({
     templateUrl: '../templates/serviceticketnewbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ServiceTicketNewButton {
 

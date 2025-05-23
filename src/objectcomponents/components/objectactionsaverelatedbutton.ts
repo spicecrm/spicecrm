@@ -10,7 +10,8 @@ import {relatedmodels} from "../../services/relatedmodels.service";
 
 @Component({
     selector: 'object-action-save-related-button',
-    templateUrl: '../templates/objectactionsaverelatedbutton.html'
+    templateUrl: '../templates/objectactionsaverelatedbutton.html',
+    standalone: false
 })
 export class ObjectActionSaveRelatedButton {
 

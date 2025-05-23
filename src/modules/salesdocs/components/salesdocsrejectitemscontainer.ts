@@ -21,7 +21,8 @@ import {broadcast} from "../../../services/broadcast.service";
 @Component({
     selector: 'salesdocs-reject-items-container',
     templateUrl: '../templates/salesdocsrejectitemscontainer.html',
-    providers:[salesdocrecord]
+    providers: [salesdocrecord],
+    standalone: false
 })
 export class SalesDocsRejectItemsContainer extends SalesDocsItemsContainer {
     /**

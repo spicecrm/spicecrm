@@ -14,6 +14,7 @@ import {modal} from '../../../services/modal.service';
 @Component({
     selector: 'prospectlists-to-cleverreach-button',
     templateUrl: '../templates/prospectliststocleverreachbutton.html',
+    standalone: false
 })
 export class ProspectListsToCleverReachButton {
 

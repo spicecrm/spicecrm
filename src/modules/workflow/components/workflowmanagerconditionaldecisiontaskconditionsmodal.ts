@@ -7,7 +7,8 @@ import {ModalComponentI} from "../../../objectcomponents/interfaces/objectcompon
  */
 @Component({
     selector: 'workflow-manager-conditional-decision-task-conditions-modal',
-    templateUrl: '../templates/workflowmanagerconditionaldecisiontaskconditionsmodal.html'
+    templateUrl: '../templates/workflowmanagerconditionaldecisiontaskconditionsmodal.html',
+    standalone: false
 })
 
 export class WorkflowManagerConditionalDecisionTaskConditionsModal implements ModalComponentI {

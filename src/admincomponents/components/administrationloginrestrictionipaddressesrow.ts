@@ -14,7 +14,8 @@ declare var _: any;
 
 @Component({
     selector: '[administration-login-restriction-ip-addresses-row]',
-    templateUrl: '../templates/administrationloginrestrictionipaddressesrow.html'
+    templateUrl: '../templates/administrationloginrestrictionipaddressesrow.html',
+    standalone: false
 })
 export class AdministrationLoginRestrictionIpAddressesRow {
 

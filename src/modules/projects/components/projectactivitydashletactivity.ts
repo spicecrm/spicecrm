@@ -19,7 +19,8 @@ declare var moment: any;
 @Component({
     selector: "project-activity-dashlet-activity",
     templateUrl: "../templates/projectactivitydashletactivity.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
 

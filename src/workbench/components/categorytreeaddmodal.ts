@@ -13,6 +13,7 @@ import {broadcast} from "../../services/broadcast.service";
 @Component({
     selector: 'category-tree-add-modal',
     templateUrl: '../templates/categorytreeaddmodal.html',
+    standalone: false
 })
 
 export class CategoryTreeAddModal implements OnInit {

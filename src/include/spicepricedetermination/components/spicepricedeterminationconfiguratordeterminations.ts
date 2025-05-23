@@ -16,7 +16,8 @@ declare var moment: any;
 
 @Component({
     selector: 'spice-price-determination-configurator-determinations',
-    templateUrl: '../templates/spicepricedeterminationconfiguratordeterminations.html'
+    templateUrl: '../templates/spicepricedeterminationconfiguratordeterminations.html',
+    standalone: false
 })
 export class SpicePriceDeterminationConfiguratorDeterminations {
 

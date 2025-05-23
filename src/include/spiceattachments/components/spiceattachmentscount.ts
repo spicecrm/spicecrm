@@ -20,7 +20,8 @@ declare var moment: any;
     selector: 'spice-attachments-count',
     templateUrl: '../templates/spiceattachmentscount.html',
     providers: [modelattachments],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpiceAttachmentsCount implements OnDestroy {
 

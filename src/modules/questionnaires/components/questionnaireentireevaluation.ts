@@ -14,7 +14,8 @@ declare var moment: any;
 
 @Component({
     selector: 'questionnaire-entire-evaluation',
-    templateUrl: '../templates/questionnaireentireevaluation.html'
+    templateUrl: '../templates/questionnaireentireevaluation.html',
+    standalone: false
 })
 export class QuestionnaireEntireEvaluation implements OnInit {
 

@@ -20,6 +20,7 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: 'salesdocs-items-calculate',
     templateUrl: '../templates/salesdocsitemcalculate.html',
+    standalone: false
 })
 export class SalesDocsItemCalculate implements OnInit{
 

@@ -12,7 +12,8 @@ import {fieldGeneric} from "./fieldgeneric";
 
 @Component({
     selector: 'field-json',
-    templateUrl: '../templates/fieldjson.html'
+    templateUrl: '../templates/fieldjson.html',
+    standalone: false
 })
 export class fieldJson extends fieldGeneric {
 

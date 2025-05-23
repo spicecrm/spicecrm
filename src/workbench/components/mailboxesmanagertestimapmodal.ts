@@ -13,6 +13,7 @@ import {view} from "../../services/view.service";
 
 @Component({
     templateUrl: "../templates/mailboxesmanagertestimapmodal.html",
+    standalone: false
 })
 export class MailboxesmanagerTestIMAPModal {
 

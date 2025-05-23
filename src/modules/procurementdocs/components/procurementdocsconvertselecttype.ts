@@ -15,6 +15,7 @@ import {toast} from "../../../services/toast.service";
 @Component({
     selector: 'procurement-docs-convert-select-type',
     templateUrl: "../templates/procurementdocsconvertselecttype.html",
+    standalone: false
 })
 export class ProcurementDocsConvertSelectType {
 

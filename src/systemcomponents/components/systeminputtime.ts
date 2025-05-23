@@ -28,7 +28,8 @@ declare var moment: any;
             useExisting: forwardRef(() => SystemInputTime),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputTime implements OnDestroy, ControlValueAccessor {
     // for the value accessor

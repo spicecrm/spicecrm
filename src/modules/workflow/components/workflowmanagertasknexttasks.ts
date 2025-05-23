@@ -9,7 +9,8 @@ import {NextTaskI} from "../interfaces/workflow.interfaces";
 
 @Component({
     selector: 'workflow-manager-task-next-tasks',
-    templateUrl: '../templates/workflowmanagertasknexttasks.html'
+    templateUrl: '../templates/workflowmanagertasknexttasks.html',
+    standalone: false
 })
 
 export class WorkflowManagerTaskNextTasks implements OnInit {

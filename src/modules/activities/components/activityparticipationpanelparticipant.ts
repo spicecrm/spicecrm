@@ -12,7 +12,8 @@ import {metadata} from '../../../services/metadata.service';
 @Component({
     selector: '[activity-participation-panel-participant]',
     templateUrl: '../templates/activityparticipationpanelparticipant.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ActivityParticipationPanelParticipant implements OnInit {
 

@@ -10,7 +10,8 @@ import {configurationService} from '../../../services/configuration.service';
 
 @Pipe({
     name: 'spicekanbanstagepipe',
-    pure: false
+    pure: false,
+    standalone: false
 })
 export class SpiceKanbanStagePipe {
     constructor(public configuration: configurationService, public modellist: modellist) {

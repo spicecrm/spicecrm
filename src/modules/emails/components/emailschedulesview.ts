@@ -13,6 +13,7 @@ import {backend} from "../../../services/backend.service";
     selector: "email-schedules-view",
     templateUrl: "../templates/emailschedulesview.html",
     providers: [view],
+    standalone: false
 })
 
 export class EmailSchedulesView {

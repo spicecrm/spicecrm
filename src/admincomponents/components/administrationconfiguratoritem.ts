@@ -13,7 +13,8 @@ import {SystemRichTextSourceModal} from "../../systemcomponents/components/syste
 
 @Component({
     selector: '[administration-configurator-item]',
-    templateUrl: '../../admincomponents/templates/administrationconfiguratoritem.html'
+    templateUrl: '../../admincomponents/templates/administrationconfiguratoritem.html',
+    standalone: false
 })
 export class AdministrationConfiguratorItem {
 

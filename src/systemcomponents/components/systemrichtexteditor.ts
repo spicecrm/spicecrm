@@ -50,7 +50,8 @@ declare var ClassicEditor;
             useExisting: forwardRef(() => SystemRichTextEditor),
             multi: true
         }, systemrichtextservice
-    ]
+    ],
+    standalone: false
 })
 export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAccessor {
 

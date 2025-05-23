@@ -12,7 +12,8 @@ import {language} from "../../../services/language.service";
 @Component({
     selector: 'scrum-tree-detail',
     templateUrl: '../templates/scrumtreedetail.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ScrumTreeDetail implements OnChanges {
 

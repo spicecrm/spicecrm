@@ -18,7 +18,8 @@ import {aclobjectsmanager} from "../services/aclobjectsmanager.service";
 @Component({
     selector: 'aclobjects-manager-object',
     templateUrl: '../templates/aclobjectsmanagerobject.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ACLObjectsManagerObject implements OnChanges {
 

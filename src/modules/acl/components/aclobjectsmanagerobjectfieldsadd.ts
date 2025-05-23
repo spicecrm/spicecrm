@@ -14,7 +14,8 @@ import {view} from "../../../services/view.service";
  */
 @Component({
     selector: 'aclobjects-manager-object-fields-add',
-    templateUrl: '../templates/aclobjectsmanagerobjectfieldsadd.html'
+    templateUrl: '../templates/aclobjectsmanagerobjectfieldsadd.html',
+    standalone: false
 })
 export class ACLObjectsManagerObjectFieldsAdd {
 

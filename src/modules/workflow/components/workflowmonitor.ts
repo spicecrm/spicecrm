@@ -7,7 +7,8 @@ import {WorkflowChart} from "./workflowchart";
 @Component({
     selector: 'workflow-monitor',
     templateUrl: '../templates/workflowmonitor.html',
-    providers: [WorkflowMonitorService]
+    providers: [WorkflowMonitorService],
+    standalone: false
 })
 
 export class WorkflowMonitor implements AfterViewInit {

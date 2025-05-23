@@ -5,7 +5,8 @@ import {  Pipe, PipeTransform} from '@angular/core';
 
 @Pipe({
     name: 'fieldterritorysecondarypipe',
-    pure: false
+    pure: false,
+    standalone: false
 })
 export class fieldTerritorySecondaryPipe implements PipeTransform {
 

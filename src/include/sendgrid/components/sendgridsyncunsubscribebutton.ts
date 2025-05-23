@@ -9,6 +9,7 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'sendgrid-sync-unsubscribe-button',
     templateUrl: '../templates/sendgridsyncunsubscribebutton.html',
+    standalone: false
 })
 
 export class SendgridSyncUnsubscribeButton {

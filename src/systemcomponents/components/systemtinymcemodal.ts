@@ -10,7 +10,8 @@ import {language} from '../../services/language.service';
 declare var window: any;
 
 @Component({
-    templateUrl: '../templates/systemtinymcemodal.html'
+    templateUrl: '../templates/systemtinymcemodal.html',
+    standalone: false
 })
 export class SystemTinyMCEModal implements OnInit {
 

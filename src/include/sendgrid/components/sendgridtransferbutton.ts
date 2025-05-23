@@ -9,6 +9,7 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'sendgrid-transfer-button',
     templateUrl: '../templates/sendgridtransferbutton.html',
+    standalone: false
 })
 
 export class SendgridTransferButton {

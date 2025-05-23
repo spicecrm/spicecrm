@@ -9,7 +9,8 @@ import {language} from "../../../services/language.service";
 @Component({
     selector: "potentials-manager-new-button",
     templateUrl: "../templates/potentialsmanagernewbutton.html",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class PotentialsManagerNewButton {
 

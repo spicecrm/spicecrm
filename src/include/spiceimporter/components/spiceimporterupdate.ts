@@ -8,6 +8,7 @@ import {SpiceImporterService} from '../services/spiceimporter.service';
 @Component({
     selector: 'spice-importer-update',
     templateUrl: '../templates/spiceimporterupdate.html',
+    standalone: false
 })
 
 export class SpiceImporterUpdate {

@@ -13,7 +13,8 @@ import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'prospectlists-to-cleverreach-modal',
-    templateUrl: '../templates/prospectliststocleverreachmodal.html'
+    templateUrl: '../templates/prospectliststocleverreachmodal.html',
+    standalone: false
 })
 export class ProspectListsToCleverReachModal implements OnInit {
 

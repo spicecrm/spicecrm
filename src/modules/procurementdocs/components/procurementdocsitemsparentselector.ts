@@ -10,7 +10,8 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'procurement-docs-items-parent-selector',
-    templateUrl: '../templates/procurementdocsitemsparentselector.html'
+    templateUrl: '../templates/procurementdocsitemsparentselector.html',
+    standalone: false
 })
 export class ProcurementDocsItemsParentSelector {
 

@@ -9,7 +9,8 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
  */
 @Component({
     selector: 'workflow-manager-task-types-conditional-decision',
-    templateUrl: '../templates/workflowmanagertasktypesconditionaldecision.html'
+    templateUrl: '../templates/workflowmanagertasktypesconditionaldecision.html',
+    standalone: false
 })
 
 export class WorkflowManagerTaskTypesConditionalDecision implements OnInit {

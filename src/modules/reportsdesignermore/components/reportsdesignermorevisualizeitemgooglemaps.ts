@@ -9,7 +9,8 @@ import {ReportsDesignerService} from "../../../modules/reportsdesigner/services/
 
 @Component({
     selector: 'reports-designer-more-visualize-item-google-maps',
-    templateUrl: '../templates/reportsdesignermorevisualizeitemgooglemaps.html'
+    templateUrl: '../templates/reportsdesignermorevisualizeitemgooglemaps.html',
+    standalone: false
 })
 export class ReportsDesignerMoreVisualizeItemGoogleMaps implements OnInit {
 

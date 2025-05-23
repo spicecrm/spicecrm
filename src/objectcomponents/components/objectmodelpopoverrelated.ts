@@ -14,7 +14,8 @@ import {ObjectRelatedlistList} from "./objectrelatedlistlist";
 @Component({
     selector: 'object-model-popover-related',
     templateUrl: '../templates/objectmodelpopoverrelated.html',
-    providers: [relatedmodels]
+    providers: [relatedmodels],
+    standalone: false
 })
 export class ObjectModelPopoverRelated extends ObjectRelatedlistList {
 

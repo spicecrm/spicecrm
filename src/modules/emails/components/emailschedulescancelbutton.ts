@@ -12,6 +12,7 @@ import {backend} from '../../../services/backend.service';
 @Component({
     selector: "email-schedules-cancel-button",
     templateUrl: "../templates/emailschedulescancelbutton.html",
+    standalone: false
 })
 export class EmailSchedulesCancelButton {
 

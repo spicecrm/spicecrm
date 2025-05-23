@@ -5,7 +5,8 @@ import {Pipe, PipeTransform} from '@angular/core';
 
 @Pipe({
     name: 'potentialsopportunityallocationsccfilter',
-    pure: false
+    pure: false,
+    standalone: false
 })
 export class PotentialsOpportunityAllocationsCCFilterPipe implements PipeTransform {
 

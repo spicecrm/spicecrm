@@ -13,6 +13,7 @@ import {debounceTime, Subject} from "rxjs";
 @Component({
     selector: 'administration-general-setting',
     templateUrl: '../templates/administrationgeneralsettings.html',
+    standalone: false
 })
 
 export class AdministrationGeneralSettings implements OnInit {

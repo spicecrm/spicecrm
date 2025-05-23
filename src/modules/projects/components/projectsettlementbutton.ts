@@ -13,7 +13,8 @@ import {Router} from "@angular/router";
  */
 @Component({
     selector: 'project-settlement-button',
-    templateUrl: '../templates/projectsettlementbutton.html'
+    templateUrl: '../templates/projectsettlementbutton.html',
+    standalone: false
 })
 export class ProjectSettlementButton implements OnInit {
 

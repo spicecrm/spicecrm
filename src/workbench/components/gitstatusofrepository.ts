@@ -6,7 +6,8 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'git-status-of-repository',
-    templateUrl: '../templates/gitstatusofrepository.html'
+    templateUrl: '../templates/gitstatusofrepository.html',
+    standalone: false
 })
 export class GitStatusOfRepository implements OnInit {
     ngOnInit(): void {

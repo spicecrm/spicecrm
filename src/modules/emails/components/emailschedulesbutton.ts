@@ -13,6 +13,7 @@ import {toast} from "../../../services/toast.service";
 @Component({
     selector: "email-schedules-button",
     templateUrl: "../templates/emailschedulesbutton.html",
+    standalone: false
 })
 export class EmailSchedulesButton implements OnInit {
 

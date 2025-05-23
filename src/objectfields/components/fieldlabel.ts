@@ -11,7 +11,8 @@ import {userpreferences} from "../../services/userpreferences.service";
 
 @Component({
     selector: 'field-label',
-    templateUrl: '../templates/fieldlabel.html'
+    templateUrl: '../templates/fieldlabel.html',
+    standalone: false
 })
 export class fieldLabel  implements OnInit{
     @Input() public fieldname: string = '';

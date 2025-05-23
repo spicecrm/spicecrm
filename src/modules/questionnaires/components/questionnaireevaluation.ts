@@ -9,6 +9,7 @@ import {backend} from '../../../services/backend.service';
 @Component({
     selector: 'questionnaire-evaluation',
     templateUrl: '../templates/questionnaireevaluation.html',
+    standalone: false
 })
 export class QuestionnaireEvaluation implements OnInit {
 

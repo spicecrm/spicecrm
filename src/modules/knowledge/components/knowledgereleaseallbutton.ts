@@ -11,7 +11,8 @@ import {KnowledgeService} from "../services/knowledge.service";
 
 @Component({
     selector: 'knowledge-browser',
-    templateUrl: "../templates/knowledgereleaseallbutton.html"
+    templateUrl: "../templates/knowledgereleaseallbutton.html",
+    standalone: false
 })
 export class KnowledgeReleaseAllButton {
 

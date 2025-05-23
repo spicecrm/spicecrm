@@ -19,6 +19,7 @@ import {view} from "../../services/view.service";
     providers: [view],
     selector: "mailboxes-manager-list",
     templateUrl: "../templates/mailboxesmanagerlist.html",
+    standalone: false
 })
 
 export class MailboxesManagerList {

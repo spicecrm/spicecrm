@@ -19,7 +19,8 @@ declare var moment: any;
 
 @Component({
     selector: 'reporter-integration-pdfexport-button',
-    templateUrl: '../templates/reporterintegrationpdfexportbutton.html'
+    templateUrl: '../templates/reporterintegrationpdfexportbutton.html',
+    standalone: false
 })
 export class ReporterIntegrationPDFexportButton {
 

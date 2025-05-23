@@ -9,7 +9,8 @@ import {navigationtab} from "../../../services/navigationtab.service";
 @Component({
     selector: 'campaigntask-add-modal',
     templateUrl: '../templates/campaigntaskaddmodal.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class CampaignTaskAddModal {
 

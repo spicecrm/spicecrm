@@ -13,6 +13,7 @@ import {session} from "../../../services/session.service";
 @Component({
     selector: 'activitytimeline-textmessages',
     templateUrl: '../templates/activitytimelinetextmessages.html',
+    standalone: false
 })
 export class ActivityTimelineTextMessages {
 

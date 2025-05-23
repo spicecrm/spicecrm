@@ -17,6 +17,7 @@ import { modal } from '../../services/modal.service';
     selector: 'field-modulefilter',
     templateUrl: '../templates/fieldmodulefilter.html',
     providers: [popup],
+    standalone: false
 })
 export class fieldModuleFilter extends fieldGeneric implements OnInit {
     public clickListener: any;

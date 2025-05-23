@@ -9,7 +9,8 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'object-record-messages-badge',
-    templateUrl: '../templates/objectrecordmessagesbadge.html'
+    templateUrl: '../templates/objectrecordmessagesbadge.html',
+    standalone: false
 })
 export class ObjectRecordMessagesBadge {
 

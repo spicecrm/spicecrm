@@ -7,7 +7,8 @@ import {sapIdocsManager} from "../../../modules/sapidocs/services/sapidocsmanage
 
 @Component({
     selector: 'sapidocs-manager-segments-tree',
-    templateUrl: '../templates/sapidocsmanagersegmentstree.html'
+    templateUrl: '../templates/sapidocsmanagersegmentstree.html',
+    standalone: false
 })
 export class SAPIDOCsManagerSegmentsTree {
 

@@ -19,7 +19,8 @@ import {session} from "../../../services/session.service";
 @Component({
     selector: 'global-docked-composer-chat',
     templateUrl: '../templates/globaldockedcomposerchat.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class GlobalDockedComposerChat {
 

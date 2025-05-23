@@ -13,7 +13,8 @@ import {toast} from "../../../services/toast.service";
 import {FormGroup, FormControl} from '@angular/forms';
 
 @Component({
-    templateUrl: '../templates/createmailingmodal.html'
+    templateUrl: '../templates/createmailingmodal.html',
+    standalone: false
 })
 export class CreateMailingModal implements OnInit {
 

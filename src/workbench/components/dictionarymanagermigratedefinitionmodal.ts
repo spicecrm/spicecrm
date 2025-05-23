@@ -18,6 +18,7 @@ import {toast} from "../../services/toast.service";
 @Component({
     selector: 'dictionary-manager-migratedefinition-modal',
     templateUrl: '../templates/dictionarymanagermigratedefinitionmodal.html',
+    standalone: false
 })
 export class DictionaryManagerMigrateDefinitionModal implements OnInit {
 

@@ -14,7 +14,8 @@ import {modalwindow} from "../../../services/modalwindow.service";
  */
 @Component({
     selector: 'action-activity-close-create-button',
-    templateUrl: '../templates/actionactivityclosecreatebutton.html'
+    templateUrl: '../templates/actionactivityclosecreatebutton.html',
+    standalone: false
 })
 export class ActionActivityCloseCreateButton implements OnInit {
 

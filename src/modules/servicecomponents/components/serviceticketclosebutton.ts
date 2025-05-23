@@ -11,8 +11,8 @@ import {language} from '../../../services/language.service';
 declare var moment: any;
 
 @Component({
-
-    templateUrl: '../templates/serviceticketclosebutton.html'
+    templateUrl: '../templates/serviceticketclosebutton.html',
+    standalone: false
 })
 export class ServiceTicketCloseButton {
 

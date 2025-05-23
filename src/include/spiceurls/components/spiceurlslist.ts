@@ -10,7 +10,8 @@ import {language} from "../../../services/language.service";
     selector: 'spice-urls-list',
     templateUrl: '../templates/spiceurlslist.html',
     providers: [modelurls],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpiceUrlsList {
 

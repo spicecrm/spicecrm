@@ -2,7 +2,8 @@ import {Component, Input} from '@angular/core';
 
 @Component({
     selector: 'system-chart-data-row',
-    template: ''
+    template: '',
+    standalone: false
 })
 
 export class SystemChartDataRow {

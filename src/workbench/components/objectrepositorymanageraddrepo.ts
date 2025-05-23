@@ -15,7 +15,8 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'objectrepositorymanager-add-repo',
-    templateUrl: '../templates/objectrepositorymanageraddrepo.html'
+    templateUrl: '../templates/objectrepositorymanageraddrepo.html',
+    standalone: false
 })
 export class ObjectRepositoryManagerAddRepo implements OnInit {
     @Output() closedialog: EventEmitter<boolean> = new EventEmitter<boolean>();

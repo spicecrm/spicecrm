@@ -10,7 +10,7 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'sendgrid-delete-from-unsubscribelist-button',
     templateUrl: '../templates/sendgriddeletecontactfromunsubscribelistbutton.html',
-    // providers:[relatedmodels]
+    standalone: false
 })
 
 export class SendgridDeleteContactFromUnsubscribeListButton {

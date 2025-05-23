@@ -15,7 +15,8 @@ import {configurationService} from "../../../services/configuration.service";
 @Component({
     selector: 'field-service-enhanced-categories',
     templateUrl: '../templates/fieldserviceenhancedcategories.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class fieldServiceEnhancedCategories extends fieldCategories {
 

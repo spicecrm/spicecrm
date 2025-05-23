@@ -9,7 +9,8 @@ declare var _;
 @Component({
     selector: 'question-render-radio-button',
     templateUrl: '../templates/questionrenderradiobutton.html',
-    styles: [':host {line-height:0;display:inline-block;}']
+    styles: [':host {line-height:0;display:inline-block;}'],
+    standalone: false
 })
 export class QuestionRenderRadioButton implements OnInit {
 

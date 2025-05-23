@@ -10,7 +10,8 @@ import {Observable, Subject} from "rxjs";
 
 @Component({
     selector: "duns-number-modal",
-    templateUrl: "../templates/dunsnumbermodal.html"
+    templateUrl: "../templates/dunsnumbermodal.html",
+    standalone: false
 })
 export class DunsNumberModal {
 

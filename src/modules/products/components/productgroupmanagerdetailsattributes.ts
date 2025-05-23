@@ -14,7 +14,8 @@ import {productfinder} from "../services/productfinder.service";
 @Component({
     selector: 'product-group-manager-details-attributes',
     templateUrl: '../templates/productgroupmanagerdetailsattributes.html',
-    providers: [relatedmodels]
+    providers: [relatedmodels],
+    standalone: false
 })
 export class ProductGroupManagerDetailsAttributes implements OnInit, OnDestroy {
 

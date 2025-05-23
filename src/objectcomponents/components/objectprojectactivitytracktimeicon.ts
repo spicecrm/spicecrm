@@ -11,7 +11,8 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: 'object-project-activity-track-time-icon',
-    templateUrl: '../templates/objectprojectactivitytracktimeicon.html'
+    templateUrl: '../templates/objectprojectactivitytracktimeicon.html',
+    standalone: false
 })
 
 export class ObjectProjectActivityTrackTimeIcon {

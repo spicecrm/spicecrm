@@ -11,7 +11,8 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-probability',
-    templateUrl: '../templates/fieldprobability.html'
+    templateUrl: '../templates/fieldprobability.html',
+    standalone: false
 })
 export class fieldProbability extends fieldGeneric {
 

@@ -17,6 +17,7 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 @Component({
     templateUrl: '../templates/esigndocumentparticipantsmodel.html',
     providers: [view],
+    standalone: false
 })
 export class ESignDocumentParticipantsModel extends fieldGeneric implements OnInit, OnDestroy {
 

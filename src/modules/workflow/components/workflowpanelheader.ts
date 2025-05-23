@@ -9,7 +9,8 @@ import {backend} from '../../../services/backend.service';
 @Component({
     selector: 'workflow-panel-header',
     templateUrl: '../templates/workflowpanelheader.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class WorkflowPanelHeader implements OnInit, OnDestroy {
 

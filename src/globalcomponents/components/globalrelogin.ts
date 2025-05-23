@@ -22,6 +22,7 @@ import {language} from "../../services/language.service";
 @Component({
     selector: 'global-re-login',
     templateUrl: '../templates/globalrelogin.html',
+    standalone: false
 })
 export class GlobalReLogin {
     /**

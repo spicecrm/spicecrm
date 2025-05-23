@@ -30,10 +30,11 @@ declare var _;
     templateUrl: "../templates/systemselect.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => SystemSelect),
-        multi: true
-    }]
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SystemSelect),
+            multi: true
+        }],
+    standalone: false
 })
 export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnDestroy {
     /**

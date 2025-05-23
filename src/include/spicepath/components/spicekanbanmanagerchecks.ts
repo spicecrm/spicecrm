@@ -8,7 +8,8 @@ import {modelutilities} from "../../../services/modelutilities.service";
 
 @Component({
     selector: 'spice-kanban-manager-checks',
-    templateUrl: '../templates/spicekanbanmanagerchecks.html'
+    templateUrl: '../templates/spicekanbanmanagerchecks.html',
+    standalone: false
 })
 
 export class SpiceKanbanManagerChecks {

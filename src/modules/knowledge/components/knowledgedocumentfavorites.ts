@@ -10,7 +10,8 @@ import {Location} from "@angular/common";
 
 @Component({
     selector: "Knowledge-document-favorites",
-    templateUrl: "../templates/knowledgedocumentfavorites.html"
+    templateUrl: "../templates/knowledgedocumentfavorites.html",
+    standalone: false
 })
 export class KnowledgeDocumentFavorites {
     constructor(

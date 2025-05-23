@@ -30,7 +30,8 @@ declare var _: any;
     selector: 'workflowtimeline-item',
     templateUrl: '../templates/workflowtimelineitem.html',
     providers: [model, view],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class WorkflowTimelineItem implements OnInit, OnDestroy, AfterViewInit {
 

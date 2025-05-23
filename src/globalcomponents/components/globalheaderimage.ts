@@ -9,7 +9,7 @@ import {Subscription} from 'rxjs';
 @Component({
     selector: 'global-header-image',
     templateUrl: '../templates/globalheaderimage.html',
-    // changeDetection: ChangeDetectionStrategy.OnPush
+    standalone: false
 })
 export class GlobalHeaderImage {
 

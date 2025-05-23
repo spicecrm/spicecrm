@@ -13,7 +13,8 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'workflow-manager-detail-task-assignmentpanel',
-    templateUrl: '../templates/workflowmanagerdetailtaskassignmentpanel.html'
+    templateUrl: '../templates/workflowmanagerdetailtaskassignmentpanel.html',
+    standalone: false
 })
 export class WorkflowManagerDetailTaskAssignmentpanel {
 

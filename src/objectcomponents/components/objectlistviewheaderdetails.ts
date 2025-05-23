@@ -11,7 +11,8 @@ import {layout} from "../../services/layout.service";
  */
 @Component({
     selector: 'object-listview-header-details',
-    templateUrl: '../templates/objectlistviewheaderdetails.html'
+    templateUrl: '../templates/objectlistviewheaderdetails.html',
+    standalone: false
 })
 export class ObjectListViewHeaderDetails {
     constructor(public modellist: modellist, public language: language, public layout: layout) {

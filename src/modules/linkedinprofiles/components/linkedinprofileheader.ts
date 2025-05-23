@@ -7,7 +7,8 @@ import {navigationtab} from "../../../services/navigationtab.service";
 
 @Component({
     selector: "linkedinprofiles-header",
-    templateUrl: "../templates/inkedinprofilesheader.html"
+    templateUrl: "../templates/inkedinprofilesheader.html",
+    standalone: false
 })
 
 export class LinkedInProfilesHeader  {

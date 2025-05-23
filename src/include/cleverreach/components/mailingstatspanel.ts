@@ -13,6 +13,7 @@ import {backend} from "../../../services/backend.service";
  */
 @Component({
     templateUrl: '../templates/mailingstatspanel.html',
+    standalone: false
 })
 export class MailingStatsPanel implements OnInit {
     public mailingStats: any = {};

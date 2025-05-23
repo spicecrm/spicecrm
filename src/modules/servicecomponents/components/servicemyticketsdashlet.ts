@@ -10,7 +10,8 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'service-my-tickets-dashlet',
-    templateUrl: '../templates/servicemyticketsdashlet.html'
+    templateUrl: '../templates/servicemyticketsdashlet.html',
+    standalone: false
 })
 export class ServiceMyTicketsDashlet implements OnInit{
 

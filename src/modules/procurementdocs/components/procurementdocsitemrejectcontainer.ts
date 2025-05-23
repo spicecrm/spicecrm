@@ -10,7 +10,8 @@ import {metadata} from '../../../services/metadata.service';
 @Component({
     selector: 'procurement-docs-item-reject-container',
     templateUrl: '../templates/procurementdocsitemrejectcontainer.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ProcurementDocsItemRejectContainer implements OnInit {
 

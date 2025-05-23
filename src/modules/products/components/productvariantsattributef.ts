@@ -25,7 +25,8 @@ declare var moment: any;
 
 @Component({
     selector: 'product-variants-attribute-f',
-    templateUrl: '../templates/productvariantsattributef.html'
+    templateUrl: '../templates/productvariantsattributef.html',
+    standalone: false
 })
 export class ProductVariantsAttributeF extends ProductVariantsAttributeVC {
 

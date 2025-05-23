@@ -37,10 +37,11 @@ declare var _;
     templateUrl: '../templates/systeminputfilecontent.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => SystemInputFileContent),
-        multi: true
-    }]
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SystemInputFileContent),
+            multi: true
+        }],
+    standalone: false
 })
 export class SystemInputFileContent implements ControlValueAccessor {
     /**

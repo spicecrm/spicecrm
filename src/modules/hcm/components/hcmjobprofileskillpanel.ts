@@ -13,8 +13,9 @@ declare var _: any;
 
 @Component({
     selector: 'hcm-jobprofile-skill-panel',
-    templateUrl : '../templates/hcmjobprofileskillpanel.html',
-    providers: [relatedmodels]
+    templateUrl: '../templates/hcmjobprofileskillpanel.html',
+    providers: [relatedmodels],
+    standalone: false
 })
 export class HCMJobProfileSkillPanel extends ObjectRelatedList {
 

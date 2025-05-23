@@ -12,7 +12,8 @@ import {metadata} from "../../../services/metadata.service";
  */
 @Component({
     selector: "email-reply-button",
-    templateUrl: "../templates/emailreplybutton.html"
+    templateUrl: "../templates/emailreplybutton.html",
+    standalone: false
 })
 export class EmailReplyButton {
     /**

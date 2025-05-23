@@ -16,7 +16,8 @@ import {GSuiteGroupware} from "../services/gsuitegroupware.service";
  */
 @Component({
     selector: 'gsuite-pane-footer',
-    templateUrl: '../templates/gsuitepanefooter.html'
+    templateUrl: '../templates/gsuitepanefooter.html',
+    standalone: false
 })
 export class GSuitePaneFooter implements AfterViewInit, OnDestroy {
 

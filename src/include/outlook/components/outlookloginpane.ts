@@ -14,6 +14,7 @@ declare var Office;
 @Component({
     selector: 'outlook-login-pane',
     templateUrl: '../templates/outlookloginpane.html',
+    standalone: false
 })
 export class OutlookLoginPane extends GlobalLogin {
     /**

@@ -12,7 +12,8 @@ import {
 import {footer} from "../../services/footer.service";
 
 @Directive({
-    selector: '[system-to-bottom-noscroll]', // tobottomnoscroll
+    selector: '[system-to-bottom-noscroll]',
+    standalone: false
 })
 export class SystemToBottomNoScrollDirective implements DoCheck {
 

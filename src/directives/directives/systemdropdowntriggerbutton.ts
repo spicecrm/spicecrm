@@ -8,7 +8,8 @@ import {SystemDropdownTriggerDirective} from "./systemdropdowntrigger";
  *
  */
 @Directive({
-    selector: '[system-dropdown-trigger-button]'
+    selector: '[system-dropdown-trigger-button]',
+    standalone: false
 })
 export class SystemDropdownTriggerButtonDirective {
 

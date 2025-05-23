@@ -11,7 +11,8 @@ import {language} from '../../services/language.service';
 @Component({
     selector: 'object-record-checklist-item',
     templateUrl: '../templates/objectrecordchecklistitem.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ObjectRecordChecklistItem {
 

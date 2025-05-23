@@ -11,7 +11,8 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: "object-action-auditlog-modal",
-    templateUrl: "../templates/objectactionauditlogmodal.html"
+    templateUrl: "../templates/objectactionauditlogmodal.html",
+    standalone: false
 })
 export class ObjectActionAuditlogModal implements OnInit {
 

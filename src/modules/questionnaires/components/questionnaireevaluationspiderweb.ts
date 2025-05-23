@@ -11,6 +11,7 @@ declare var Highcharts: any;
 @Component({
     selector: 'questionnaire-evaluation-spiderweb',
     templateUrl: '../templates/questionnaireevaluationspiderweb.html',
+    standalone: false
 })
 export class QuestionnaireEvaluationSpiderweb implements AfterViewInit, OnInit {
 

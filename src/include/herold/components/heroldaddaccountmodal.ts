@@ -12,7 +12,8 @@ declare var moment: any;
 @Component({
     selector: 'herold-add-account-modal',
     templateUrl: '../templates/heroldaddaccountmodal.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class HeroldAddAccountModal implements OnInit{
 

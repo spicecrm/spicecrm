@@ -17,6 +17,7 @@ import {DeploymentSystemPackagesModal} from "./deploymentsystempackagesmodal";
     selector: 'deployment-system-landscape-view',
     templateUrl: '../templates/deploymentsystemlandscapeview.html',
     providers: [model, DeploymentSystemLandscapeService],
+    standalone: false
 })
 export class DeploymentSystemLandscapeView implements OnInit {
     /**

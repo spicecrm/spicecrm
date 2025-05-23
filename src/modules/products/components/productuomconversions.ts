@@ -17,6 +17,7 @@ declare var _;
 @Component({
     selector: 'product-uom-conversions',
     templateUrl: '../templates/productuomconversions.html',
+    standalone: false
 })
 
 export class ProductUOMConversions implements OnInit {

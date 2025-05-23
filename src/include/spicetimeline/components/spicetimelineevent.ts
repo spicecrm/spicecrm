@@ -8,7 +8,8 @@ import {model} from "../../../services/model.service";
 @Component({
     selector: 'spice-timeline-event',
     templateUrl: '../templates/spicetimelineevent.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class SpiceTimelineEvent implements OnChanges, OnInit {
     /**

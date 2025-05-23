@@ -15,7 +15,7 @@ import {model} from '../../services/model.service';
 @Component({
     selector: 'object-page-header-details',
     templateUrl: '../templates/objectpageheaderdetails.html',
-
+    standalone: false
 })
 export class ObjectPageHeaderDetails implements OnInit {
     /**

@@ -10,6 +10,7 @@ import {broadcast} from '../../../services/broadcast.service';
 @Component({
     selector: 'tasks-assistant-tile-close',
     templateUrl: '../templates/tasksassitanttileclose.html',
+    standalone: false
 })
 export class TasksAssitantTileClose {
 

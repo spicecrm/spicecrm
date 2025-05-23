@@ -16,6 +16,7 @@ import {DomainDefinition} from "../interfaces/domainmanager.interfaces";
 @Component({
     selector: 'domain-manager-add-definition-modal',
     templateUrl: '../templates/domainmanageradddefinitionmodal.html',
+    standalone: false
 })
 export class DomainManagerAddDefinitionModal {
 

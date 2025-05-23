@@ -15,7 +15,8 @@ import {modelattachments} from '../../../services/modelattachments.service';
  */
 @Component({
     templateUrl: '../templates/emailpreviewmodal.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class EmailPreviewModal implements OnInit {
 

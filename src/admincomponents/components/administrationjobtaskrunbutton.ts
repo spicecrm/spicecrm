@@ -15,7 +15,8 @@ import {broadcast} from "../../services/broadcast.service";
  */
 @Component({
     selector: 'administration-job-task-run-button',
-    templateUrl: '../templates/administrationjobtaskrunbutton.html'
+    templateUrl: '../templates/administrationjobtaskrunbutton.html',
+    standalone: false
 })
 export class AdministrationJobTaskRunButton {
 

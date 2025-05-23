@@ -7,6 +7,7 @@ import { Clipboard } from '@angular/cdk/clipboard';
 @Component({
     selector: 'event-booking-url-button',
     templateUrl: '../templates/eventbookingurlbutton.html',
+    standalone: false
 })
 export class EventBookingUrlButton implements OnInit {
 

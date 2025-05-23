@@ -22,7 +22,8 @@ declare var _: any;
         '.questionset-render-textbefore-fadeout { display: none; background: linear-gradient(to bottom, rgba(243,242,242,0) 0%, rgba(243,242,242,1) 100%); height: 5rem; position: absolute; bottom: 0; left: 0; right: 0; padding: 0 1rem 1rem 1rem; border-radius: 0.25rem; }',
         '.collapsed div.questionset-render-textbefore-fadeout { display: block; }'
     ],
-    providers: [helper]
+    providers: [helper],
+    standalone: false
 } )
 export class QuestionsetRender implements OnInit {
 

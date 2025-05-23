@@ -10,7 +10,7 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'sendgrid-remove-targetlist-from-contact-button',
     templateUrl: '../templates/sendgridremovetargetlistfromcontactbutton.html',
-
+    standalone: false
 })
 
 export class SendgridRemoveTargetListFromContactButton {

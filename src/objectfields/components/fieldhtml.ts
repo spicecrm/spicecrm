@@ -20,6 +20,7 @@ declare var _;
 @Component({
     selector: 'field-html',
     templateUrl: '../templates/fieldhtml.html',
+    standalone: false
 })
 export class fieldHtml extends fieldGeneric implements OnInit {
     /**

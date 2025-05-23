@@ -26,7 +26,8 @@ declare var Croppie: any;
  */
 @Component({
     selector: "system-upload-image",
-    templateUrl: "../templates/systemuploadimage.html"
+    templateUrl: "../templates/systemuploadimage.html",
+    standalone: false
 })
 export class SystemUploadImage implements OnInit, OnDestroy {
     /**

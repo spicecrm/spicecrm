@@ -14,7 +14,8 @@ import {modal} from '../../services/modal.service';
 
 @Component({
     selector: 'field-linked-parent',
-    templateUrl: '../templates/fieldlinkedparent.html'
+    templateUrl: '../templates/fieldlinkedparent.html',
+    standalone: false
 })
 export class fieldLinkedParent extends fieldGeneric implements OnInit {
     public clickListener: any;

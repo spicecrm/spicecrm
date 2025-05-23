@@ -13,7 +13,8 @@ import {navigationtab} from "../../services/navigationtab.service";
 
 @Component({
     selector: 'global-navigation-menu-item-action-new',
-    templateUrl: '../templates/globalnavigationmenuitemactionnew.html'
+    templateUrl: '../templates/globalnavigationmenuitemactionnew.html',
+    standalone: false
 })
 export class GlobalNavigationMenuItemActionNew implements OnInit {
 

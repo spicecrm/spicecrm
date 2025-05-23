@@ -6,7 +6,8 @@ import { questionnaireParticipationService } from '../services/questionnairepart
 
 @Component({
     selector: 'question-render-header',
-    templateUrl: '../templates/questionrenderheader.html'
+    templateUrl: '../templates/questionrenderheader.html',
+    standalone: false
 })
 export class QuestionRenderHeader implements OnInit {
 

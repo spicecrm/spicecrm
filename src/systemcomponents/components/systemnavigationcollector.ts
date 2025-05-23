@@ -8,7 +8,8 @@ import {metadata} from '../../services/metadata.service';
 import {navigation} from '../../services/navigation.service';
 
 @Component({
-    template: '<span></span>'
+    template: '<span></span>',
+    standalone: false
 })
 export class SystemNavigationCollector {
 

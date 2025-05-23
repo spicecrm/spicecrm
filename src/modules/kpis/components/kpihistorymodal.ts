@@ -2,7 +2,8 @@ import {Component} from '@angular/core';
 
 @Component({
     selector: 'kpi-history-modal',
-    templateUrl: '../templates/kpihistorymodal.html'
+    templateUrl: '../templates/kpihistorymodal.html',
+    standalone: false
 })
 
 export class KPIHistoryModal {

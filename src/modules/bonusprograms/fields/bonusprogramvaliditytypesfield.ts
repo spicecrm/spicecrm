@@ -14,7 +14,8 @@ import {metadata} from "../../../services/metadata.service";
  * a field to render a dropdown
  */
 @Component({
-    templateUrl: '../templates/bonusprogramvaliditytypesfield.html'
+    templateUrl: '../templates/bonusprogramvaliditytypesfield.html',
+    standalone: false
 })
 export class BonusProgramValidityTypesField extends fieldGeneric {
     /**

@@ -8,7 +8,8 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'campaign-export-button',
-    templateUrl: '../templates/campaignexportbutton.html'
+    templateUrl: '../templates/campaignexportbutton.html',
+    standalone: false
 })
 export class CampaignExportButton {
 

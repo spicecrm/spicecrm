@@ -9,6 +9,7 @@ import {modellist} from '../../services/modellist.service';
 @Component({
     selector: 'object-list-header-actions-select-range-modal',
     templateUrl: '../templates/objectlistheaderactionsselectrangemodal.html',
+    standalone: false
 })
 export class ObjectListHeaderActionsSelectRangeModal implements OnInit {
 

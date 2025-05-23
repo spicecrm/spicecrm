@@ -7,7 +7,8 @@ import { toast } from '../../services/toast.service';
 import {AdminConfig2FAI} from "../interfaces/admincomponents.interfaces";
 @Component({
     selector: 'administration-login-methods',
-    templateUrl: '../templates/administrationloginmethods.html'
+    templateUrl: '../templates/administrationloginmethods.html',
+    standalone: false
 })
 export class AdministrationLoginMethods implements OnInit {
 

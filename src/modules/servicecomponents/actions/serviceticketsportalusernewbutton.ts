@@ -9,7 +9,8 @@ import {of} from "rxjs";
 @Component({
     selector: 'service-tickets-portal-user-new-button',
     templateUrl: '../templates/serviceticketsportalusernewbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ServiceTicketsPortalUserNewButton extends ObjectActionNewButton {
     /**

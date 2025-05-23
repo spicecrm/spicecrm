@@ -13,7 +13,8 @@ declare var _: any;
 
 @Component({
     templateUrl: "../templates/salesdocsconvertmodal.html",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class SalesDocsConvertModal {
 

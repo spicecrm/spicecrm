@@ -9,7 +9,8 @@ import {modelutilities} from "../../../services/modelutilities.service";
 
 @Component({
     selector: "serviceorder-item-panel",
-    templateUrl: "../templates/serviceorderitempanel.html"
+    templateUrl: "../templates/serviceorderitempanel.html",
+    standalone: false
 })
 export class ServiceOrderItemPanel implements OnInit {
 

@@ -5,7 +5,8 @@ import {Pipe} from '@angular/core';
 
 @Pipe({
     name: 'salesdocsitemsdeletedpipe',
-    pure: false
+    pure: false,
+    standalone: false
 })
 export class SalesDocsItemsDeletedPipe {
     public transform(values) {

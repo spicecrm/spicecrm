@@ -8,7 +8,8 @@ import {model} from "../../../services/model.service";
 @Component({
     selector: "projectwbs-hierarchy-addnode",
     templateUrl: "../templates/projectwbshierarchyaddnode.html",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ProjectWBSHierarchyAddNode  {
 

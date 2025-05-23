@@ -11,7 +11,8 @@ import {layout} from "../../../services/layout.service";
 
 @Component({
     selector: 'kpis-dashlet',
-    templateUrl: '../templates/kpisdashlet.html'
+    templateUrl: '../templates/kpisdashlet.html',
+    standalone: false
 })
 
 export class KPIsDashlet implements OnInit {

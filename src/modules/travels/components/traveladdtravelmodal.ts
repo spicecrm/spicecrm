@@ -10,7 +10,8 @@ import {Subject} from "rxjs";
 @Component({
     selector: 'travel-add-travel-modal',
     templateUrl: '../templates/traveladdtravelmodal.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 
 /**

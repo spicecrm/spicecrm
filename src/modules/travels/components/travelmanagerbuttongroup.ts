@@ -8,7 +8,8 @@ import {toast} from "../../../services/toast.service";
 @Component({
     selector: 'travel-manager-button-group',
     templateUrl: '../templates/travelmanagerbuttongroup.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 
 export class TravelManagerButtonGroup {

@@ -12,7 +12,8 @@ import {language} from '../../../services/language.service';
  * renders a tab panel with open and closed tickets summary
  */
 @Component({
-    templateUrl: '../templates/serviceticketrelatedtickets.html'
+    templateUrl: '../templates/serviceticketrelatedtickets.html',
+    standalone: false
 })
 export class ServiceTicketRelatedTickets {
 

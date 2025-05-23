@@ -15,6 +15,7 @@ import {toast} from "../../../services/toast.service";
 @Component({
     selector: 'acltypes-manager-types-add-action',
     templateUrl: '../templates/acltypesmanagertypesaddaction.html',
+    standalone: false
 })
 export class ACLTypesManagerTypesAddAction implements OnInit{
 

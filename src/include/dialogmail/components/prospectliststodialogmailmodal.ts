@@ -13,7 +13,8 @@ import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'prospectlists-to-dialogmail-modal',
-    templateUrl: '../templates/prospectliststodialogmailmodal.html'
+    templateUrl: '../templates/prospectliststodialogmailmodal.html',
+    standalone: false
 })
 export class ProspectListsToDialogMailModal {
 

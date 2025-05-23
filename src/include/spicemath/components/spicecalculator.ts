@@ -45,9 +45,9 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
     ],
     animations: [
         trigger('slideInOutCalculatorRight', [
-            state('openRight', style({width: '67%', 'margin-right': '12px'})),
-            state('closedRight', style({width: '100%', 'margin-right': '12px'})),
-            state('closedRightCompletely', style({width: '100%', 'margin-right': '12px'})),
+            state('openRight', style({ width: '67%', 'margin-right': '12px' })),
+            state('closedRight', style({ width: '100%', 'margin-right': '12px' })),
+            state('closedRightCompletely', style({ width: '100%', 'margin-right': '12px' })),
             transition('openRight <=> closedRight', [
                 animate('400ms'),
             ]),
@@ -56,9 +56,9 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
             ])
         ]),
         trigger('slideInOutCalculatorTop', [
-            state('closedTop', style({width: '100%', height: '95%'})),
-            state('ClosedCompletely', style({height: '100%'})),
-            state('openTop', style({width: '100%', height: '66%'})),
+            state('closedTop', style({ width: '100%', height: '95%' })),
+            state('ClosedCompletely', style({ height: '100%' })),
+            state('openTop', style({ width: '100%', height: '66%' })),
             transition('openTop <=> closedTop', [
                 animate('400ms')
             ]),
@@ -67,11 +67,11 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
             ])
         ]),
         trigger('slideInOutHistory', [
-            state('openRight', style({width: '30%', 'padding-left': '4px'})),
-            state('closedRight', style({width: '0%', 'padding-left': '0'})),
-            state('closedRightCompletely', style({width: '100%', 'padding-right': 0})),
-            state('closedTop', style({height: 0})),
-            state('openTop', style({height: '30%'})),
+            state('openRight', style({ width: '30%', 'padding-left': '4px' })),
+            state('closedRight', style({ width: '0%', 'padding-left': '0' })),
+            state('closedRightCompletely', style({ width: '100%', 'padding-right': 0 })),
+            state('closedTop', style({ height: 0 })),
+            state('openTop', style({ height: '30%' })),
             transition('openTop <=> closedTop', [
                 animate('400ms')
             ]),
@@ -80,13 +80,14 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
             ])
         ]),
         trigger('slideInOutHistoryPanelTop', [
-            state('closedTop', style({height: '0', padding: 0})),
-            state('openTop', style({height: '100%', padding: '4px'})),
+            state('closedTop', style({ height: '0', padding: 0 })),
+            state('openTop', style({ height: '100%', padding: '4px' })),
             transition('openTop <=> closedTop', [
                 animate('400ms')
             ])
         ])
-    ]
+    ],
+    standalone: false
 })
 
 export class SpiceCalculator implements ControlValueAccessor, AfterViewInit {

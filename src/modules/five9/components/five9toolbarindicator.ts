@@ -27,7 +27,8 @@ declare var moment: any;
  * renders an indicator on the global toolbar that links to the five9 VOIP System
  */
 @Component({
-    templateUrl: '../templates/five9toolbarindicator.html'
+    templateUrl: '../templates/five9toolbarindicator.html',
+    standalone: false
 })
 export class Five9ToolbarIndicator implements OnDestroy {
 

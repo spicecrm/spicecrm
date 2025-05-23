@@ -16,7 +16,8 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'kpis-related-container',
     templateUrl: '../templates/kpisrelatedcontainer.html',
-    providers: [relatedmodels]
+    providers: [relatedmodels],
+    standalone: false
 })
 
 export class KPIsRelatedContainer {

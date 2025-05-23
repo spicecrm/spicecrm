@@ -21,7 +21,8 @@ import {firstValueFrom} from "rxjs";
 @Component({
     selector: 'prospect-convert-modal',
     templateUrl: '../templates/prospectconvertmodal.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ProspectConvertModal implements OnInit {
 

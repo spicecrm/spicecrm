@@ -16,7 +16,8 @@ import {NgModel} from "@angular/forms";
  */
 @Component({
     templateUrl: '../templates/objectactiondeactivatebeansmodal.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ObjectActionDeactivateBeansModal implements OnInit {
 

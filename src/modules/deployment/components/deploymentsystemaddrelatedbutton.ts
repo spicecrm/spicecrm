@@ -15,7 +15,8 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'deployment-system-add-related-button',
     templateUrl: '../templates/deploymentsystemaddrelatedbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class DeploymentSystemAddRelatedButton {
 

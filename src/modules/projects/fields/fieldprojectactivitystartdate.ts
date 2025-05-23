@@ -21,7 +21,7 @@ declare var _: any;
 @Component({
     selector: 'field-project-activity-startdate',
     templateUrl: '../templates/fieldprojectactivitystartdate.html',
-
+    standalone: false
 })
 export class fieldProjectActivityStartdate extends fieldGeneric {
 

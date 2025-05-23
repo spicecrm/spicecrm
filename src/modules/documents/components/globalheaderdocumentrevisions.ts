@@ -14,7 +14,8 @@ import {model} from "../../../services/model.service";
 @Component({
     selector: 'global-header-document-revisions',
     templateUrl: '../templates/globalheaderdocumentrevisions.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class GlobalHeaderDocumentRevisions implements OnInit {
 

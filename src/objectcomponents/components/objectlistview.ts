@@ -18,7 +18,8 @@ import {Subscription} from "rxjs";
 @Component({
     selector: 'object-listview',
     templateUrl: '../templates/objectlistview.html',
-    providers: [modellist, model]
+    providers: [modellist, model],
+    standalone: false
 })
 export class ObjectListView implements AfterViewInit, OnDestroy {
 

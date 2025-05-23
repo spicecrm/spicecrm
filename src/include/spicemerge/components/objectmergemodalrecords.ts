@@ -13,6 +13,7 @@ import {modellist} from '../../../services/modellist.service';
 @Component({
     selector: 'object-merge-modal-records',
     templateUrl: '../templates/objectmergemodalrecords.html',
+    standalone: false
 })
 export class ObjectMergeModalRecords {
 

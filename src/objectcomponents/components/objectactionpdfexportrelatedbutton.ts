@@ -12,7 +12,8 @@ import {view} from "../../services/view.service";
 @Component({
     selector: "object-action-pdfexportrelated-button",
     templateUrl: "../templates/objectactionpdfexportrelatedbutton.html",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ObjectActionPdfExportRelatedButton implements OnInit {
 

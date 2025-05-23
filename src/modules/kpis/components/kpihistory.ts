@@ -5,7 +5,8 @@ import moment from "moment";
 
 @Component({
     selector: 'kpi-history',
-    templateUrl: '../templates/kpihistory.html'
+    templateUrl: '../templates/kpihistory.html',
+    standalone: false
 })
 
 export class KPIHistory implements OnInit {

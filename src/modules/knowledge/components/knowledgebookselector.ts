@@ -14,7 +14,8 @@ import {configurationService} from "../../../services/configuration.service";
 @Component({
     selector: "knowledge-book-selector",
     templateUrl: "../templates/knowledgebookselector.html",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class KnowledgeBookSelector {
 

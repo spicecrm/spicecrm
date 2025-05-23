@@ -16,6 +16,7 @@ import {DeploymentSystemPackagesModal} from "./deploymentsystempackagesmodal";
 @Component({
     selector: 'deployment-fetch-packages-button',
     templateUrl: '../templates/deploymentfetchpackagesbutton.html',
+    standalone: false
 })
 export class DeploymentFetchPackagesButton {
 

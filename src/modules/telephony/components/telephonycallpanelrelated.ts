@@ -13,7 +13,8 @@ declare var libphonenumber: any;
 @Component({
     selector: 'telephony-call-panel-related',
     templateUrl: '../templates/telephonycallpanelrelated.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class TelephonyCallPanelRelated implements OnInit {
 

@@ -9,6 +9,7 @@ import {model} from "../../../services/model.service";
 @Component({
     selector: 'tele-sales-cockpit-main',
     templateUrl: '../templates/telesalescockpitmain.html',
+    standalone: false
 })
 export class TeleSalesCockpitMain implements OnChanges {
 

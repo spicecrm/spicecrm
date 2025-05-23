@@ -17,7 +17,8 @@ declare var _;
 @Component({
     selector: 'object-merge-modal-data',
     templateUrl: '../templates/objectmergemodaldata.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ObjectMergeModalData {
 

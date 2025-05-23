@@ -14,7 +14,8 @@ import {language} from '../../../services/language.service';
  */
 @Component({
     selector: 'aclterritorries-manager-territory-value',
-    templateUrl: '../templates/aclterritorriesmanagerterritoryvalue.html'
+    templateUrl: '../templates/aclterritorriesmanagerterritoryvalue.html',
+    standalone: false
 })
 export class ACLTerritorriesManagerTerritoryValue {
 

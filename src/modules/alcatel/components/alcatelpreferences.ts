@@ -15,7 +15,8 @@ import {telephony} from "../../../services/telephony.service";
 declare var _: any;
 
 @Component({
-    templateUrl: '../templates/alcatelpreferences.html'
+    templateUrl: '../templates/alcatelpreferences.html',
+    standalone: false
 })
 export class AlcatelPreferences {
 

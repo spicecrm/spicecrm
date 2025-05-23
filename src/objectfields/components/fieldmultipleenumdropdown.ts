@@ -11,7 +11,8 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-multiple-enum-dropdown',
-    templateUrl: '../templates/fieldmultipleenumdropdown.html'
+    templateUrl: '../templates/fieldmultipleenumdropdown.html',
+    standalone: false
 })
 export class fieldMultipleEnumDropdown extends fieldGeneric implements OnInit, OnDestroy {
     public valueArray = [];

@@ -8,7 +8,8 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-condition-group-expansion',
-    templateUrl: '../templates/reportsdesignerconditiongroupexpansion.html'
+    templateUrl: '../templates/reportsdesignerconditiongroupexpansion.html',
+    standalone: false
 })
 export class ReportsDesignerConditionGroupExpansion implements OnInit {
 

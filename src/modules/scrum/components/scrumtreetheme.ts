@@ -18,7 +18,8 @@ import {backend} from "../../../services/backend.service";
     host: {
         '(click)': "selectTheme()",
         "[attr.aria-expanded]": "expanded"
-    }
+    },
+    standalone: false
 })
 export class ScrumTreeTheme implements OnDestroy {
 

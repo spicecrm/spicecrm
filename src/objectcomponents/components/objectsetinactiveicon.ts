@@ -14,7 +14,8 @@ import {configurationService} from "../../services/configuration.service";
  */
 @Component({
     selector: 'object-set-inactive-icon',
-    templateUrl: '../templates/objectsetinactiveicon.html'
+    templateUrl: '../templates/objectsetinactiveicon.html',
+    standalone: false
 })
 
 export class ObjectSetInactiveIcon {

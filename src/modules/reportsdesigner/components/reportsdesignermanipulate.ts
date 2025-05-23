@@ -11,7 +11,8 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: 'reports-designer-manipulate',
-    templateUrl: '../templates/reportsdesignermanipulate.html'
+    templateUrl: '../templates/reportsdesignermanipulate.html',
+    standalone: false
 })
 export class ReportsDesignerManipulate {
 

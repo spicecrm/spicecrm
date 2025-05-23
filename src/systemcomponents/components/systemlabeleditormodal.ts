@@ -14,6 +14,7 @@ import {configurationService} from "../../services/configuration.service";
 @Component({
     selector: "system-label-editor-modal",
     templateUrl: "../templates/systemlabeleditormodal.html",
+    standalone: false
 })
 export class SystemLabelEditorModal implements OnInit {
     /**

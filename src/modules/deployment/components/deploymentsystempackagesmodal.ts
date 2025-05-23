@@ -13,6 +13,7 @@ import {toast} from "../../../services/toast.service";
 @Component({
     selector: 'deployment-system-packages-modal',
     templateUrl: '../templates/deploymentsystempackagesmodal.html',
+    standalone: false
 })
 export class DeploymentSystemPackagesModal {
     /**

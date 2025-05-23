@@ -24,7 +24,8 @@ declare var _: any;
 @Component({
     selector: 'sales-planning-tool-content',
     templateUrl: '../templates/salesplanningtoolcontent.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 
 export class SalesPlanningToolContent implements OnChanges, OnDestroy {

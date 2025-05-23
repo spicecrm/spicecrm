@@ -18,6 +18,7 @@ import {ACLTerritoryTypeI} from "../../../modules/aclterritories/interfaces/modu
 @Component({
     selector: 'aclterritorries-manager-territories',
     templateUrl: '../templates/aclterritorriesmanagerterritories.html',
+    standalone: false
 })
 export class ACLTerritorriesManagerTerritories {
 

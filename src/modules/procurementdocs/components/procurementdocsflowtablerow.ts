@@ -11,7 +11,8 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: '[procurement-docs-flow-table-row]',
     templateUrl: "../templates/procurementdocsflowtablerow.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ProcurementDocsFlowTableRow implements OnInit {
     /**

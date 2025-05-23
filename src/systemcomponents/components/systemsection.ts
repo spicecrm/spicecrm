@@ -9,7 +9,8 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: "system-section",
-    templateUrl: "../templates/systemsection.html"
+    templateUrl: "../templates/systemsection.html",
+    standalone: false
 })
 export class SystemSection {
 

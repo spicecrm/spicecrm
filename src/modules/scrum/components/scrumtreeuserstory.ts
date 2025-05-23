@@ -13,9 +13,10 @@ import {scrum} from '../services/scrum.service';
     selector: '[scrum-tree-userstory]',
     templateUrl: '../templates/scrumtreeuserstory.html',
     providers: [model],
-    host:{
+    host: {
         '(click)': "selectUserStory($event)",
-    }
+    },
+    standalone: false
 })
 export class ScrumTreeUserStory implements OnInit, OnDestroy {
     @Input() public userstory: any = {};

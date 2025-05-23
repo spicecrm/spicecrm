@@ -9,6 +9,7 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: 'questionset-type-parameters-text',
     templateUrl: '../templates/questionsettypeparameterstext.html',
+    standalone: false
 })
 export class QuestionsetTypeParametersText implements OnInit {
 

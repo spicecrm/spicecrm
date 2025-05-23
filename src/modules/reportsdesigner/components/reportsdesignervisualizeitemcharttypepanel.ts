@@ -7,7 +7,8 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-visualize-item-chart-type-panel',
-    templateUrl: '../templates/reportsdesignervisualizeitemcharttypepanel.html'
+    templateUrl: '../templates/reportsdesignervisualizeitemcharttypepanel.html',
+    standalone: false
 })
 export class ReportsDesignerVisualizeItemChartTypePanel {
 

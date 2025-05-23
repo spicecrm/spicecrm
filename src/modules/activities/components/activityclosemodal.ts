@@ -24,7 +24,8 @@ import {ActionActivityCloseButton} from "./actionactivityclosebutton";
  */
 @Component({
     templateUrl: '../templates/activityclosemodal.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ActivityCloseModal implements OnInit {
     /**

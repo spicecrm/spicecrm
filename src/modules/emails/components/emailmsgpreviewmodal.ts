@@ -12,7 +12,8 @@ declare var MSGReader: any;
  * a modal that renders and provides a preview for an object
  */
 @Component({
-    templateUrl: '../templates/emailmsgpreviewmodal.html'
+    templateUrl: '../templates/emailmsgpreviewmodal.html',
+    standalone: false
 })
 export class EmailMSGPreviewModal {
 

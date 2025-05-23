@@ -12,7 +12,8 @@ import { language } from '../../services/language.service';
 @Component({
     selector: 'object-address',
     templateUrl: '../templates/objectaddress.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ObjectAddress implements OnInit{
 

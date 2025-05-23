@@ -14,7 +14,8 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: 'document-new-from-template-button',
     templateUrl: '../templates/documentnewfromtemplatebutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class DocumentNewFromTemplateButton {
 

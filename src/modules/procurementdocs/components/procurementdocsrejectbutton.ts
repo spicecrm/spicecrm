@@ -10,6 +10,7 @@ import {language} from "../../../services/language.service";
 @Component({
     selector: 'procurement-docs-reject-button',
     templateUrl: "../templates/procurementdocsrejectbutton.html",
+    standalone: false
 })
 export class ProcurementDocsRejectButton {
 

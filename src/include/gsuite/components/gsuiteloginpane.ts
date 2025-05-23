@@ -19,7 +19,8 @@ declare var gapi;
  */
 @Component({
     selector: 'gsuite-login-pane',
-    templateUrl: '../templates/gsuiteloginpane.html'
+    templateUrl: '../templates/gsuiteloginpane.html',
+    standalone: false
 })
 export class GSuiteLoginPane {
 

@@ -14,7 +14,8 @@ import {backend} from "../../../services/backend.service";
  */
 @Component({
     selector: 'reports-designer-details',
-    templateUrl: '../templates/reportsdesignerdetails.html'
+    templateUrl: '../templates/reportsdesignerdetails.html',
+    standalone: false
 })
 export class ReportsDesignerDetails implements OnInit {
 

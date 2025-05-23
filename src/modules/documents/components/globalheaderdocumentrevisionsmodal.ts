@@ -11,7 +11,8 @@ import {toast} from "../../../services/toast.service";
 @Component({
     selector: 'global-header-document-revisions-modal',
     templateUrl: '../templates/globalheaderdocumentrevisionsmodal.html',
-    providers: [model, modelattachments]
+    providers: [model, modelattachments],
+    standalone: false
 })
 export class GlobalHeaderDocumentRevisionsModal implements OnInit {
 

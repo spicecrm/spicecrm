@@ -15,7 +15,8 @@ import {footer} from '../../../services/footer.service';
 @Component({
     selector: '[spice-timestream-label]',
     templateUrl: '../templates/spicetimestreamlabel.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class SpiceTimestreamLabel implements OnInit {
 

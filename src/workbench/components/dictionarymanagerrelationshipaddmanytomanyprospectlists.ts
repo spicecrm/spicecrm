@@ -24,6 +24,7 @@ import {
 @Component({
     selector: 'dictionary-manager-relationship-add-many-to-many-prospectlists',
     templateUrl: '../templates/dictionarymanagerrelationshipaddmanytomanyprospectlists.html',
+    standalone: false
 })
 export class DictionaryManagerRelationshipAddManyToManyProspectlists implements OnInit {
 

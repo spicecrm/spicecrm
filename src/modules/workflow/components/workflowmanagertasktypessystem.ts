@@ -11,6 +11,7 @@ import {WorkflowManagerService} from "../services/workflowmanager.service";
 @Component({
     selector: 'workflow-manager-task-types-system',
     templateUrl: '../templates/workflowmanagertasktypessystem.html',
+    standalone: false
 })
 /**
  * handle managing the workflow task system type

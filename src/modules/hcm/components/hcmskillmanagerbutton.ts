@@ -7,7 +7,8 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     selector: 'hcm-skill-manager-button',
-    templateUrl : '../templates/hcmskillmanagerbutton.html'
+    templateUrl: '../templates/hcmskillmanagerbutton.html',
+    standalone: false
 })
 
 export class HCMSkillManagerButton {

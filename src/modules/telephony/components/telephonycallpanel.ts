@@ -19,6 +19,7 @@ declare var libphonenumber: any;
 @Component({
     selector: 'telephony-call-panel',
     templateUrl: '../templates/telephonycallpanel.html',
+    standalone: false
 })
 export class TelephonyCallPanel implements OnInit, OnDestroy {
 

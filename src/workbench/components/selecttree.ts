@@ -16,6 +16,7 @@ import {SelectTreeAddDialog} from "./selecttreeadddialog";
 
 @Component({
     templateUrl: '../templates/selecttree.html',
+    standalone: false
 })
 export class SelectTreeComponent {
     currentSelectTree: string = '';
