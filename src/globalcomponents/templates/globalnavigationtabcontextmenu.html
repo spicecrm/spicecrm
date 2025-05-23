@@ -11,17 +11,17 @@
             </a>
         </li>
         <li *ngIf="buttonCloseOtherTabsDisabled" class="slds-dropdown__item" role="presentation">
-            <a href="javascript:void(0);" role="menuitem" (click)="closeTabs('other', this.object.id)">
+            <a href="javascript:void(0);" role="menuitem" (click)="closeTabs('other', object.id)">
                 <span class="slds-truncate" system-title="LBL_CLOSE_OTHER_TABS"><system-label label="LBL_CLOSE_OTHER_TABS"/></span>
             </a>
         </li>
         <li *ngIf="buttonCloseTabsToLeftDisabled" class="slds-dropdown__item" role="presentation">
-            <a href="javascript:void(0);" role="menuitem" (click)="closeTabs('left', this.object.id)">
+            <a href="javascript:void(0);" role="menuitem" (click)="closeTabs('left', object.id)">
                 <span class="slds-truncate" system-title="LBL_CLOSE_TABS_TO_THE_LEFT"><system-label label="LBL_CLOSE_TABS_TO_THE_LEFT"/></span>
             </a>
         </li>
         <li *ngIf="buttonCloseTabsToRightDisabled" class="slds-dropdown__item" role="presentation">
-            <a href="javascript:void(0);" role="menuitem" (click)="closeTabs('right', this.object.id)">
+            <a href="javascript:void(0);" role="menuitem" (click)="closeTabs('right', object.id)">
                 <span class="slds-truncate" system-title="LBL_CLOSE_TABS_TO_THE_RIGHT"><system-label label="LBL_CLOSE_TABS_TO_THE_RIGHT"/></span>
             </a>
         </li>
