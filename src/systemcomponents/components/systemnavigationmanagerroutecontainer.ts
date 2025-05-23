@@ -28,7 +28,8 @@ declare var _: any;
 @Component({
     selector: 'system-navigation-manager-route-container',
     templateUrl: '../templates/systemnavigationmanagerroutecontainer.html',
-    providers: [navigationtab]
+    providers: [navigationtab],
+    standalone: false
 })
 export class SystemNavigationManagerRouteContainer implements OnInit, OnDestroy {
 

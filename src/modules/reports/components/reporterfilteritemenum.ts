@@ -9,7 +9,8 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'reporter-filter-item-enum',
-    templateUrl: '../templates/reporterfilteritemenum.html'
+    templateUrl: '../templates/reporterfilteritemenum.html',
+    standalone: false
 })
 export class ReporterFilterItemEnum implements OnInit, OnDestroy {
 

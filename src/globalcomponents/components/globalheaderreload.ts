@@ -11,7 +11,8 @@ import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'global-header-reload',
-    templateUrl: '../templates/globalheaderreload.html'
+    templateUrl: '../templates/globalheaderreload.html',
+    standalone: false
 })
 export class GlobalHeaderReload {
 

@@ -22,7 +22,7 @@ import {HooksManager} from "./hooksmanager";
     selector: 'web-hooks-manager-edit-modal',
     templateUrl: '../templates/webhooksmanagereditmodal.html',
     providers: [WebHooksManager, HooksManager],
-
+    standalone: false
 })
 export class WebHooksManagerEditModal implements OnInit {
 

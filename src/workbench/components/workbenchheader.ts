@@ -12,6 +12,7 @@ import {language} from '../../services/language.service';
 @Component({
     selector: 'workbench-header',
     templateUrl: '../templates/workbenchheader.html',
+    standalone: false
 })
 export class WorkbenchHeader {
 

@@ -12,7 +12,8 @@ import {Router} from "@angular/router";
 
 @Component({
     selector: "object-related-card-file",
-    templateUrl: "../templates/objectrelatedcardfile.html"
+    templateUrl: "../templates/objectrelatedcardfile.html",
+    standalone: false
 })
 export class ObjectRelatedCardFile {
 

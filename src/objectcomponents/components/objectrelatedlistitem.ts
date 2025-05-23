@@ -15,7 +15,8 @@ import {modal} from '../../services/modal.service';
 @Component({
     selector: "[object-related-list-item]",
     templateUrl: "../templates/objectrelatedlistitem.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ObjectRelatedListItem implements OnInit {
     @Input() public listfields: any[] = [];

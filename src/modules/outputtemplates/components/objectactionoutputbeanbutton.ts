@@ -10,7 +10,8 @@ import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     selector: 'object-action-output-bean-button',
-    templateUrl: '../templates/objectactionoutputbeanbutton.html'
+    templateUrl: '../templates/objectactionoutputbeanbutton.html',
+    standalone: false
 })
 export class ObjectActionOutputBeanButton {
 

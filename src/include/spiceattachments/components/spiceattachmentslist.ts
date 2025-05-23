@@ -18,7 +18,8 @@ declare var moment: any;
     selector: 'spice-attachments-list',
     templateUrl: '../templates/spiceattachmentslist.html',
     providers: [modelattachments],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpiceAttachmentsList {
 

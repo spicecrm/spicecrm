@@ -9,7 +9,8 @@ import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'select-tree-search',
-    templateUrl: '../templates/fieldselecttreesearch.html'
+    templateUrl: '../templates/fieldselecttreesearch.html',
+    standalone: false
 })
 export class fieldSelectTreeSearch
 {

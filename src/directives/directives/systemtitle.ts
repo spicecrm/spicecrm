@@ -9,7 +9,8 @@ import {language} from "../../services/language.service";
  * translate the input label by the language service and set the title attribute for the element ref
  */
 @Directive({
-    selector: '[system-title]'
+    selector: '[system-title]',
+    standalone: false
 })
 export class SystemTitleDirective implements OnDestroy {
 

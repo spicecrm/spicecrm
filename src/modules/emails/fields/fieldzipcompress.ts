@@ -20,6 +20,7 @@ import {modelattachments} from "../../../services/modelattachments.service";
     selector: 'field-zip-compress',
     templateUrl: '../templates/fieldzipcompress.html',
     providers: [modelattachments],
+    standalone: false
 })
 export class fieldZipCompress extends fieldGeneric {
 

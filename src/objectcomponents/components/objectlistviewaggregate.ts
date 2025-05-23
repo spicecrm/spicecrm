@@ -17,7 +17,8 @@ declare var _: any;
  */
 @Component({
     selector: 'object-listview-aggregate',
-    templateUrl: '../templates/objectlistviewaggregate.html'
+    templateUrl: '../templates/objectlistviewaggregate.html',
+    standalone: false
 })
 export class ObjectListViewAggregate {
     /**

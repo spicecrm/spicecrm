@@ -11,7 +11,8 @@ import {metadata} from "../../../services/metadata.service";
 declare var _: any;
 
 @Component({
-    templateUrl: '../templates/accountterritorydetails.html'
+    templateUrl: '../templates/accountterritorydetails.html',
+    standalone: false
 })
 export class AccountTerritoryDetails implements OnInit {
     public companyCodes: any[] = [];

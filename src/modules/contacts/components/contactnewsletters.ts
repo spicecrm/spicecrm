@@ -9,7 +9,8 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: "contact-newsletters",
-    templateUrl: "../templates/contactnewsletters.html"
+    templateUrl: "../templates/contactnewsletters.html",
+    standalone: false
 })
 export class ContactNewsletters {
 

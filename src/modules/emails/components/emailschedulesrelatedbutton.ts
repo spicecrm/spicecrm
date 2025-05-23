@@ -14,6 +14,7 @@ import {Observable, Subject} from "rxjs";
 @Component({
     selector: "email-schedules-related-button",
     templateUrl: "../templates/emailschedulesrelatedbutton.html",
+    standalone: false
 })
 export class EmailSchedulesRelatedButton {
     public linkedBeans: any = [];

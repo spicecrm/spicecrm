@@ -15,7 +15,8 @@ import {Router} from '@angular/router';
  */
 @Component({
     selector: 'field-countries',
-    templateUrl: '../templates/fieldcountries.html'
+    templateUrl: '../templates/fieldcountries.html',
+    standalone: false
 })
 export class fieldCountries extends fieldGeneric {
 

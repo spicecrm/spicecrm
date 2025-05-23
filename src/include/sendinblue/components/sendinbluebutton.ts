@@ -10,6 +10,7 @@ import {toast} from "../../../services/toast.service";
 @Component({
     selector: 'sendinblue-button',
     templateUrl: '../templates/sendinbluebutton.html',
+    standalone: false
 })
 export class SendinBlueButton {
 

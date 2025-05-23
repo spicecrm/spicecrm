@@ -11,7 +11,8 @@ import {modelutilities} from '../../services/modelutilities.service';
 
 @Component({
     selector: 'administration-asset-manager',
-    templateUrl: '../templates/administrationassetmanager.html'
+    templateUrl: '../templates/administrationassetmanager.html',
+    standalone: false
 })
 
 export class AdministrationAssetManager implements OnInit{

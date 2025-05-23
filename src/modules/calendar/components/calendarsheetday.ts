@@ -33,7 +33,8 @@ declare var moment: any;
 @Component({
     selector: 'calendar-sheet-day',
     templateUrl: '../templates/calendarsheetday.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 
 export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {

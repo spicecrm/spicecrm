@@ -15,7 +15,8 @@ declare var moment: any;
 @Component({
     selector: 'global-countdown',
     templateUrl: '../templates/globalcountdown.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class GlobalCountdown implements OnInit{
 

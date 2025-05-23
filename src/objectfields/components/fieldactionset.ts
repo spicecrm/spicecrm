@@ -13,7 +13,8 @@ import {Router} from '@angular/router';
  * renders a field for the selection of an actionset
  */
 @Component({
-    templateUrl: '../templates/fieldactionset.html'
+    templateUrl: '../templates/fieldactionset.html',
+    standalone: false
 })
 export class fieldActionset extends fieldGeneric {
 

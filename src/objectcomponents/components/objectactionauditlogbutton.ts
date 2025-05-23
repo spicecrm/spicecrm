@@ -12,7 +12,8 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'object-action-auditlog-button',
-    templateUrl: '../templates/objectactionauditlogbutton.html'
+    templateUrl: '../templates/objectactionauditlogbutton.html',
+    standalone: false
 })
 export class ObjectActionAuditlogButton implements OnInit {
 

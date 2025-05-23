@@ -11,7 +11,8 @@ import {Router} from "@angular/router";
 
 @Component({
     selector: 'field-notification-indicator',
-    templateUrl: '../templates/fieldnotificationindicator.html'
+    templateUrl: '../templates/fieldnotificationindicator.html',
+    standalone: false
 })
 export class fieldNotificationIndicator extends fieldGeneric {
 

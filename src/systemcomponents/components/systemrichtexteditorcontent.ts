@@ -6,7 +6,8 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewEncapsulation
 @Component({
     selector: "system-richtext-editor-content",
     template: "<ng-content></ng-content>",
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SystemRichTextEditorContent {
 

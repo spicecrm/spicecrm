@@ -17,7 +17,8 @@ import {Subscription} from "rxjs";
 @Directive({
     selector: '[system-model-provider]',
     providers: [model],
-    exportAs: 'system-model-provider'
+    exportAs: 'system-model-provider',
+    standalone: false
 })
 export class SystemModelProviderDirective implements OnDestroy {
     /**

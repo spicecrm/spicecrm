@@ -7,7 +7,8 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'reports-designer-integrate-item',
-    templateUrl: '../templates/reportsdesignerintegrateitem.html'
+    templateUrl: '../templates/reportsdesignerintegrateitem.html',
+    standalone: false
 })
 export class ReportsDesignerIntegrateItem implements AfterViewInit {
 

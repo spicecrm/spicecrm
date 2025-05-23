@@ -10,7 +10,8 @@ import {toast} from "../../services/toast.service";
 
 @Component({
     selector: 'object-status-network-open-modal-button',
-    templateUrl: '../templates/objectstatusnetworkopenmodalbutton.html'
+    templateUrl: '../templates/objectstatusnetworkopenmodalbutton.html',
+    standalone: false
 })
 
 /**

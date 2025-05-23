@@ -9,7 +9,8 @@ import {Observable, Subject} from "rxjs";
 
 @Component({
     selector: "user-roles-add-modal",
-    templateUrl: "../templates/userrolesaddmodal.html"
+    templateUrl: "../templates/userrolesaddmodal.html",
+    standalone: false
 })
 export class UserRolesAddModal {
 

@@ -18,7 +18,8 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
             useExisting: forwardRef(() => SystemInputCountry),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputCountry implements OnInit, ControlValueAccessor {
     /**

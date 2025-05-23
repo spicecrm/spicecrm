@@ -13,6 +13,7 @@ import {modal} from '../../services/modal.service';
 @Component({
     selector: 'dashlet-generator-dashlets',
     templateUrl: '../templates/dashletgeneratordashlets.html',
+    standalone: false
 })
 export class DashletGeneratorDashlets {
 

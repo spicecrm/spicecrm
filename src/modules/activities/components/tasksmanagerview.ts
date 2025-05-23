@@ -12,8 +12,8 @@ import {ListTypeI} from "../../../services/interfaces.service";
  * a separate view on tasks that presents a tasklist and a split view with the tasks for quick task handling for the user
  */
 @Component({
-
     templateUrl: '../templates/tasksmanagerview.html',
+    standalone: false
 })
 export class TasksManagerView implements OnDestroy {
 

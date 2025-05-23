@@ -13,7 +13,8 @@ import {layout} from '../../../services/layout.service';
  */
 @Component({
     selector: 'spice-importer-import-button',
-    templateUrl: '../templates/spiceimporterimportbutton.html'
+    templateUrl: '../templates/spiceimporterimportbutton.html',
+    standalone: false
 })
 export class SpiceImporterImportButton {
 

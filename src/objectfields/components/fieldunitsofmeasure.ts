@@ -15,7 +15,8 @@ import {Router} from '@angular/router';
  */
 @Component({
     selector: 'field-units-of-measure',
-    templateUrl: '../templates/fieldunitsofmeasure.html'
+    templateUrl: '../templates/fieldunitsofmeasure.html',
+    standalone: false
 })
 export class fieldUnitsOfMeasure extends fieldGeneric {
 

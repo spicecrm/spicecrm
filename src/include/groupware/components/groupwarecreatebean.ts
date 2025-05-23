@@ -8,7 +8,8 @@ import {modal} from "../../../services/modal.service";
 @Component({
     selector: 'groupware-create-bean',
     templateUrl: '../templates/groupwarecreatebean.html',
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 
 export class GroupwareCreateBean implements OnInit {

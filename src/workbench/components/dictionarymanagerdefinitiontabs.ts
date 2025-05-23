@@ -18,6 +18,7 @@ import {dictionarymanager} from '../services/dictionarymanager.service';
 @Component({
     selector: 'dictionary-manager-definition-tabs',
     templateUrl: '../templates/dictionarymanagerdefinitiontabs.html',
+    standalone: false
 })
 export class DictionaryManagerDefinitionTabs {
 

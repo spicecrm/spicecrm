@@ -14,6 +14,7 @@ import {broadcast} from "../../../services/broadcast.service";
 @Component({
     selector: "spice-path-model",
     templateUrl: "../templates/spicepathmodel.html",
+    standalone: false
 })
 export class SpicePathModel {
 

@@ -8,7 +8,8 @@ import {session} from "../../../services/session.service";
 
 @Component({
     selector: 'reporter-filter-item-user-multiple',
-    templateUrl: '../templates/reporterfilteritemusermultiple.html'
+    templateUrl: '../templates/reporterfilteritemusermultiple.html',
+    standalone: false
 })
 export class ReporterFilterItemUserMultiple implements OnInit {
     /**

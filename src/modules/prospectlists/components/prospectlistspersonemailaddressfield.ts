@@ -8,7 +8,8 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'prospect-lists-person-email-address-field',
-    templateUrl: '../templates/prospectlistspersonemailaddressfield.html'
+    templateUrl: '../templates/prospectlistspersonemailaddressfield.html',
+    standalone: false
 })
 
 export class ProspectListsPersonEmailAddressField extends fieldGeneric {

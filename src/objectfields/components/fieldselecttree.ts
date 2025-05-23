@@ -17,7 +17,8 @@ import {configurationService} from "../../services/configuration.service";
  */
 @Component({
     selector: 'select-tree',
-    templateUrl: '../templates/fieldselecttree.html'
+    templateUrl: '../templates/fieldselecttree.html',
+    standalone: false
 })
 export class fieldSelectTree extends fieldGeneric {
     public fields = [];

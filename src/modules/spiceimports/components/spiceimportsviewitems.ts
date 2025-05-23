@@ -10,6 +10,7 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: 'spice-imports-view-items',
     templateUrl: '../templates/spiceimportsviewitems.html',
+    standalone: false
 })
 export class SpiceImportsViewItems {
     public readonly disableForMobileView = true;

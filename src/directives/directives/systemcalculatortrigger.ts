@@ -24,7 +24,8 @@ import {userpreferences} from "../../services/userpreferences.service";
  * <button system-calculator-trigger>open</button>
  */
 @Directive({
-    selector: '[system-calculator-trigger]'
+    selector: '[system-calculator-trigger]',
+    standalone: false
 })
 export class SystemCalculatorTriggerDirective {
 

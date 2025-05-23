@@ -16,7 +16,8 @@ declare var _: any;
 
 @Component({
     selector: 'administration-login-restriction-ip-addresses',
-    templateUrl: '../templates/administrationloginrestrictionipaddresses.html'
+    templateUrl: '../templates/administrationloginrestrictionipaddresses.html',
+    standalone: false
 })
 export class AdministrationLoginRestrictionIpAddresses implements OnInit {
 

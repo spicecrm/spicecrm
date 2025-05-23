@@ -20,7 +20,8 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: 'reporter-integration-export-button',
     templateUrl: '../templates/reporterintegrationexportbutton.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterIntegrationExportButton implements OnChanges, AfterViewInit {
     /**

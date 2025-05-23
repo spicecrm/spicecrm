@@ -20,7 +20,8 @@ import {AttributeObjectI, BodyI} from "../interfaces/spicepagebuilder.interfaces
 @Component({
     selector: 'spice-page-builder-element-body',
     templateUrl: '../templates/spicepagebuilderelementbody.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
     /**

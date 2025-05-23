@@ -9,7 +9,8 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'administration-job-failed-list',
-    templateUrl: '../templates/administrationjobfailedlist.html'
+    templateUrl: '../templates/administrationjobfailedlist.html',
+    standalone: false
 })
 export class AdministrationJobFailedList implements OnInit {
     /**

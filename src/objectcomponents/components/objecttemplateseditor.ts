@@ -23,7 +23,8 @@ import {modal} from "../../services/modal.service";
     selector: 'object-templates-editor',
     templateUrl: "../templates/objecttemplateseditor.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ObjectTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
     /**

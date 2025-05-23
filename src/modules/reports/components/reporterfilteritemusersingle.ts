@@ -8,7 +8,8 @@ import {session} from "../../../services/session.service";
 
 @Component({
     selector: 'reporter-filter-item-user-single',
-    templateUrl: '../templates/reporterfilteritemusersingle.html'
+    templateUrl: '../templates/reporterfilteritemusersingle.html',
+    standalone: false
 })
 export class ReporterFilterItemUserSingle implements OnInit {
     /**

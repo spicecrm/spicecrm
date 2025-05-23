@@ -31,7 +31,8 @@ const ANIMATIONS = [
 @Component({
     selector: 'global-navigation-tabbed',
     templateUrl: '../templates/globalnavigationtabbed.html',
-    animations: ANIMATIONS
+    animations: ANIMATIONS,
+    standalone: false
 })
 export class GlobalNavigationTabbed implements OnDestroy {
     /**

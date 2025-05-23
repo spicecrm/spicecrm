@@ -7,6 +7,7 @@ import { modal } from '../../services/modal.service';
 @Component({
     selector: 'system-modal-wrapper',
     templateUrl: '../templates/systemmodalwrapper.html',
+    standalone: false
 })
 export class SystemModalWrapper implements OnDestroy {
 

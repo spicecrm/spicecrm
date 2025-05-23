@@ -13,6 +13,7 @@ import {userpreferences} from "../../../services/userpreferences.service";
 @Component({
     selector: 'home',
     templateUrl: '../templates/home.html',
+    standalone: false
 })
 export class Home {
     public hasDashboardSet: boolean = false;

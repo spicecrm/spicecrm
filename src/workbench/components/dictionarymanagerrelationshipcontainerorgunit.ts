@@ -4,7 +4,8 @@ import {dictionarymanager} from "../services/dictionarymanager.service";
 
 @Component({
     selector: 'dictionary-manager-relationship-container-orgunit',
-    templateUrl: '../templates/dictionarymanagerrelationshipcontainerorgunit.html'
+    templateUrl: '../templates/dictionarymanagerrelationshipcontainerorgunit.html',
+    standalone: false
 })
 
 export class DictionaryManagerRelationshipContainerOrgunit {

@@ -20,7 +20,8 @@ import {fielderrorgrouping} from '../../services/fielderrorgrouping.service';
 @Component({
     selector: 'object-vertical-tab-container-item',
     templateUrl: '../templates/objectverticaltabcontaineritem.html',
-    providers: [fielderrorgrouping]
+    providers: [fielderrorgrouping],
+    standalone: false
 })
 export class ObjectVerticalTabContainerItem implements OnInit, AfterViewInit {
     @ViewChild('container', {read: ViewContainerRef, static: true}) public container: ViewContainerRef;

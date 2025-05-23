@@ -15,7 +15,8 @@ import {emailsService} from "../services/emails.service";
 @Component({
     selector: "email-forward-to-targetlist-button",
     templateUrl: "../templates/emailforwardtotargetlistbutton.html",
-    providers: [model, emailsService]
+    providers: [model, emailsService],
+    standalone: false
 })
 export class EmailForwardToTargetListButton {
 

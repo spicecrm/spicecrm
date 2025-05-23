@@ -18,7 +18,8 @@ import {userpreferences} from "../../services/userpreferences.service";
     templateUrl: '../templates/globalapplauncher.html',
     host: {
         class: 'slds-context-bar__primary slds-context-bar__item--divider-right'
-    }
+    },
+    standalone: false
 })
 export class GlobalAppLauncher {
 

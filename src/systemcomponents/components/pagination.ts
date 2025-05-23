@@ -5,7 +5,8 @@ import {Component, EventEmitter, Input, OnChanges, Output, Pipe} from '@angular/
 
 @Component({
     selector: 'pagination-controls',
-    templateUrl: '../templates/pagination.html'
+    templateUrl: '../templates/pagination.html',
+    standalone: false
 })
 export class PaginationControlsComponent implements OnChanges {
 
@@ -57,7 +58,8 @@ export class PaginationControlsComponent implements OnChanges {
 // tslint:disable-next-line:max-classes-per-file
 @Pipe({
     name: 'paginate',
-    pure: false
+    pure: false,
+    standalone: false
 })
 export class PaginationPipe {
 

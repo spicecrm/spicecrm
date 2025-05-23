@@ -8,7 +8,8 @@ import { language } from '../../services/language.service';
 @Component({
     selector: 'object-record-checklist',
     templateUrl: '../templates/objectrecordchecklist.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ObjectRecordChecklist {
 

@@ -19,7 +19,8 @@ import {Subscription} from "rxjs";
     templateUrl: '../templates/globalnavigationtabbedmenu.html',
     host: {
         '(window:resize)': 'handleResize()'
-    }
+    },
+    standalone: false
 })
 export class GlobalNavigationTabbedMenu implements OnDestroy {
 

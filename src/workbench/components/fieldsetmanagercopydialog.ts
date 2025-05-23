@@ -14,7 +14,8 @@ import {Subject} from "rxjs";
 
 @Component({
     selector: 'fieldsetmanager-copy-dialog',
-    templateUrl: '../templates/fieldsetmanagercopydialog.html'
+    templateUrl: '../templates/fieldsetmanagercopydialog.html',
+    standalone: false
 })
 export class FieldsetManagerCopyDialog implements OnInit{
 

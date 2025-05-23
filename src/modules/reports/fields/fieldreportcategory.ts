@@ -14,6 +14,7 @@ import {configurationService} from "../../../services/configuration.service";
 @Component({
     selector: 'field-report-category',
     templateUrl: '../templates/fieldreportcategory.html',
+    standalone: false
 })
 export class FieldReportCategory extends fieldGeneric {
 

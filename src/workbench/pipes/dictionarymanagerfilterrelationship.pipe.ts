@@ -2,7 +2,8 @@ import {Pipe, PipeTransform} from '@angular/core';
 import {RelationshipPolymorph} from "../interfaces/dictionarymanager.interfaces";
 
 @Pipe({
-    name: 'dictionaryFilterRelationship'
+    name: 'dictionaryFilterRelationship',
+    standalone: false
 })
 
 export class DictionaryFilterRelationshipPipe implements PipeTransform {

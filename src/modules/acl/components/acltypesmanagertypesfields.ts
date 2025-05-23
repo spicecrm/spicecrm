@@ -15,6 +15,7 @@ import {toast} from "../../../services/toast.service";
 @Component({
     selector: 'acltypes-manager-types-fields',
     templateUrl: '../templates/acltypesmanagertypesfields.html',
+    standalone: false
 })
 export class ACLTypesManagerTypesFields {
 

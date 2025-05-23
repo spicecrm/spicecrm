@@ -18,6 +18,7 @@ import {Relationship} from "../interfaces/dictionarymanager.interfaces";
 @Component({
     selector: 'dictionary-manager-relationship-add-parent',
     templateUrl: '../templates/dictionarymanagerrelationshipaddparent.html',
+    standalone: false
 })
 export class DictionaryManagerRelationshipAddParent implements OnInit {
 

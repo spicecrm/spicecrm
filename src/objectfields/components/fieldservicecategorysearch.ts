@@ -9,7 +9,8 @@ import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'field-service-category-search',
-    templateUrl: '../templates/fieldservicecategorysearch.html'
+    templateUrl: '../templates/fieldservicecategorysearch.html',
+    standalone: false
 })
 export class fieldServiceCategorySearch
 {

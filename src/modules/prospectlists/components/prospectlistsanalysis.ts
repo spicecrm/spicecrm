@@ -8,7 +8,8 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'prospect-lists-analysis',
-    templateUrl: '../templates/prospectlistsanalysis.html'
+    templateUrl: '../templates/prospectlistsanalysis.html',
+    standalone: false
 })
 
 export class ProspectListsAnalysis implements OnInit{

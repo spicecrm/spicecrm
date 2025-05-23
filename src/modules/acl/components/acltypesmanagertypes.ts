@@ -23,6 +23,7 @@ import {ACLAction, ACLModule} from "../interfaces/aclinterfaces";
 @Component({
     selector: 'acltypes-manager-types',
     templateUrl: '../templates/acltypesmanagertypes.html',
+    standalone: false
 })
 export class ACLTypesManagerTypes {
 

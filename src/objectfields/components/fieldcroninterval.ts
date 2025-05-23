@@ -15,7 +15,8 @@ import {userpreferences} from "../../services/userpreferences.service";
  */
 @Component({
     selector: 'field-cron-interval',
-    templateUrl: '../templates/fieldcroninterval.html'
+    templateUrl: '../templates/fieldcroninterval.html',
+    standalone: false
 })
 export class fieldCronInterval extends fieldGeneric {
 

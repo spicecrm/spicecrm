@@ -17,7 +17,8 @@ import {relatedmodels} from '../../../services/relatedmodels.service';
 @Component({
     selector: 'lead-new-button',
     templateUrl: '../templates/leadnewbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class LeadNewButton {
 

@@ -23,7 +23,8 @@ declare var moment: any;
 
 @Component({
     selector: "system-input-tags",
-    templateUrl: "../templates/systeminputtags.html"
+    templateUrl: "../templates/systeminputtags.html",
+    standalone: false
 })
 export class SystemInputTags {
 

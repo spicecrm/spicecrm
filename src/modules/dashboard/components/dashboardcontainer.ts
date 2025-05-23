@@ -11,7 +11,8 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: 'dashboard-container',
     templateUrl: '../templates/dashboardcontainer.html',
-    providers: [model, view, dashboardlayout]
+    providers: [model, view, dashboardlayout],
+    standalone: false
 })
 export class DashboardContainer implements OnChanges {
 

@@ -6,7 +6,8 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: 'workbench-config-option-label',
-    templateUrl: '../templates/workbenchconfigoptionlabel.html'
+    templateUrl: '../templates/workbenchconfigoptionlabel.html',
+    standalone: false
 })
 export class WorkbenchConfigOptionLabel {
 

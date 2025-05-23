@@ -12,7 +12,8 @@ import {toast} from "../../../services/toast.service";
  * renders a dialog to manage the settings for the Google API
  */
 @Component({
-    templateUrl: '../templates/googleapisettings.html'
+    templateUrl: '../templates/googleapisettings.html',
+    standalone: false
 })
 export class GoogleAPISettings implements OnInit {
 

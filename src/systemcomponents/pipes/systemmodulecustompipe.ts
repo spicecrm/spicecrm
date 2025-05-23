@@ -5,7 +5,8 @@ import {Pipe} from '@angular/core';
 
 @Pipe({
     name: 'systemmodulecustompipe',
-    pure: false
+    pure: false,
+    standalone: false
 })
 export class SystemModuleCustomPipe {
     public transform(values, module) {

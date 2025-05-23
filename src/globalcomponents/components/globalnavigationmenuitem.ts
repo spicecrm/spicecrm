@@ -29,7 +29,8 @@ interface menuItem {
         '[class.slds-context-bar__item]': 'true',
         '[class.slds-is-active]': 'isActive()'
     },
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestroy {
 

@@ -17,8 +17,9 @@ import {view} from "../../services/view.service";
  */
 @Directive({
     selector: '[system-view-provider]',
-    providers:[view],
-    exportAs: 'system-view-provider'
+    providers: [view],
+    exportAs: 'system-view-provider',
+    standalone: false
 })
 export class SystemViewProviderDirective implements AfterViewInit, OnDestroy {
 

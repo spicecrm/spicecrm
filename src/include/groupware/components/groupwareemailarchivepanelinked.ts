@@ -13,7 +13,8 @@ import {language} from '../../../services/language.service';
  */
 @Component({
     selector: 'groupware-email-archive-pane-linked',
-    templateUrl: '../templates/groupwareemailarchivepanelinked.html'
+    templateUrl: '../templates/groupwareemailarchivepanelinked.html',
+    standalone: false
 })
 export class GroupwareEmailArchivePaneLinked {
 

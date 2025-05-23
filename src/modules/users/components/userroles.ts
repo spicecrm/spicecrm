@@ -19,7 +19,8 @@ declare var _: any;
  */
 @Component({
     selector: "user-roles",
-    templateUrl: "../templates/userroles.html"
+    templateUrl: "../templates/userroles.html",
+    standalone: false
 })
 export class UserRoles {
 

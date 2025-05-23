@@ -11,7 +11,8 @@ import {timeline} from "../../services/timeline.service";
  */
 @Component({
     selector: 'object-timeline-filter',
-    templateUrl: '../templates/objecttimelinefilter.html'
+    templateUrl: '../templates/objecttimelinefilter.html',
+    standalone: false
 })
 export class ObjectTimelineFilter {
 

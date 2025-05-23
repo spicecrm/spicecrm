@@ -26,7 +26,8 @@ import {ObjectListItem} from "./objectlistitem";
 @Component({
     selector: '[object-list-header]',
     templateUrl: '../templates/objectlistheader.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ObjectListHeader implements OnDestroy {
 

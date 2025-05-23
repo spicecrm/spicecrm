@@ -10,6 +10,7 @@ import {helper} from '../../services/helper.service';
 
 @Component({
     templateUrl: '../templates/objectactionsetmenucontainerdelete.html',
+    standalone: false
 })
 export class ObjectActionsetMenuContainerDelete {
 

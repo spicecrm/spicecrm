@@ -32,7 +32,8 @@ declare var _: any;
 @Component({
     selector: 'spice-kanban',
     templateUrl: '../templates/spicekanban.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class SpiceKanban implements OnInit, OnDestroy {
     /**

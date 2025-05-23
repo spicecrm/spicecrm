@@ -3,7 +3,8 @@ import {SystemChartDataRow} from "./systemchartdatarow";
 
 @Component({
     selector: 'system-chart-data-column',
-    template: ''
+    template: '',
+    standalone: false
 })
 
 export class SystemChartDataColumn {

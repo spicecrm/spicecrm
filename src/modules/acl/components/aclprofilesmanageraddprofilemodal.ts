@@ -14,7 +14,8 @@ import {view} from "../../../services/view.service";
 
 @Component({
     templateUrl: '../templates/aclprofilesmanageraddprofilemodal.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ACLProfilesManagerAddProfileModal {
 

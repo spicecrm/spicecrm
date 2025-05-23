@@ -21,7 +21,8 @@ declare var moment: any;
 @Component({
     selector: "usercreatefrombeanmodal",
     templateUrl: "../templates/usercreatefrombeanmodal.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class UserCreateFromBeanModal implements OnInit {
     @ViewChild("addcontainer", {read: ViewContainerRef, static: true}) public addcontainer: ViewContainerRef;

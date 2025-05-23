@@ -12,7 +12,8 @@ import {modellist} from "../../services/modellist.service";
 
 @Component({
     selector: 'administration-job-cockpit',
-    templateUrl: '../templates/administrationjobcockpit.html'
+    templateUrl: '../templates/administrationjobcockpit.html',
+    standalone: false
 })
 export class AdministrationJobCockpit {
 

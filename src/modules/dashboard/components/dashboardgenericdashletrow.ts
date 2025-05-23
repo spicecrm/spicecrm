@@ -11,7 +11,8 @@ import {language} from "../../../services/language.service";
 @Component({
     selector: '[dashboard-generic-dashlet-row]',
     templateUrl: '../templates/dashboardgenericdashletrow.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class DashboardGenericDashletRow implements OnInit {
     public fieldsetfields: Array<any> = [];

@@ -11,7 +11,8 @@ import {Router} from "@angular/router";
 
 @Component({
     selector: 'field-barcode',
-    templateUrl: '../templates/fieldbarcode.html'
+    templateUrl: '../templates/fieldbarcode.html',
+    standalone: false
 })
 export class fieldBarcode extends fieldGeneric {
 

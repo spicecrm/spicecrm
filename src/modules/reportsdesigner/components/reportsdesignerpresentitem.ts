@@ -7,7 +7,8 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'reports-designer-present-item',
-    templateUrl: '../templates/reportsdesignerpresentitem.html'
+    templateUrl: '../templates/reportsdesignerpresentitem.html',
+    standalone: false
 })
 export class ReportsDesignerPresentItem implements AfterViewInit {
 

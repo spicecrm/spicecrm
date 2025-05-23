@@ -16,7 +16,8 @@ declare var _: any;
  */
 @Component({
     selector: 'administration-login-restriction',
-    templateUrl: '../templates/administrationloginrestriction.html'
+    templateUrl: '../templates/administrationloginrestriction.html',
+    standalone: false
 })
 export class AdministrationLoginRestriction implements OnInit {
 

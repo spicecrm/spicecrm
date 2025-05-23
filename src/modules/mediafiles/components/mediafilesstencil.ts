@@ -10,7 +10,8 @@ import {
  */
 @Component({
     selector: 'media-files-stencil',
-    templateUrl: '../templates/mediafilesstencil.html'
+    templateUrl: '../templates/mediafilesstencil.html',
+    standalone: false
 })
 export class MediaFilesStencil {
 

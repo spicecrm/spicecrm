@@ -28,7 +28,8 @@ declare var moment: any;
     selector: 'spice-attachment-add-from-record-modal',
     templateUrl: '../templates/spiceattachmentaddfromrecordmodal.html',
     providers: [modelattachments],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpiceAttachmentAddFromRecordModal {
 

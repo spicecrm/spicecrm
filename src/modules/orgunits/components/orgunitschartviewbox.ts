@@ -12,7 +12,8 @@ import {model} from "../../../services/model.service";
 @Component({
     selector: 'orgunits-chart-view-box',
     templateUrl: '../templates/orgunitschartviewbox.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class OrgunitsChartViewBox implements OnInit,AfterViewInit{
 

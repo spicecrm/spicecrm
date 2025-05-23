@@ -15,8 +15,9 @@ import {fieldGeneric} from './fieldgeneric';
     selector: 'field-icon-popover',
     templateUrl: '../templates/fieldiconpopover.html',
     host: {
-        // '(document:click)': 'this.onClick($event)'
-    }
+    // '(document:click)': 'this.onClick($event)'
+    },
+    standalone: false
 })
 export class fieldIconPopover extends fieldGeneric implements OnInit {
     public clickListener: any;

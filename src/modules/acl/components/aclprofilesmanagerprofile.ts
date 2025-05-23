@@ -12,6 +12,7 @@ import {metadata} from "../../../services/metadata.service";
     selector: 'aclprofiles-manager-profile',
     templateUrl: '../templates/aclprofilesmanagerprofile.html',
     providers: [view],
+    standalone: false
 })
 export class ACLProfilesManagerProfile implements OnChanges {
 

@@ -17,7 +17,8 @@ declare var moment: any;
 
 @Component({
     selector: '[spice-timestream-item]',
-    templateUrl: '../templates/spicetimestreamitem.html'
+    templateUrl: '../templates/spicetimestreamitem.html',
+    standalone: false
 })
 export class SpiceTimestreamItem implements OnInit {
 

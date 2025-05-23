@@ -17,7 +17,8 @@ import {view} from "../../services/view.service";
 @Component({
     selector: 'object-edit-modal-dialog-duplicates-panel',
     templateUrl: '../templates/objecteditmodaldialogduplicatespanel.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ObjectEditModalDialogDuplicatesPanel implements OnInit {
 

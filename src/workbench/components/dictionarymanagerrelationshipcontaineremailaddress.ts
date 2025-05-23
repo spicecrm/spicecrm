@@ -18,6 +18,7 @@ import {DictionaryDefinition, Relationship, RelationshipRelateField} from "../in
 @Component({
     selector: 'dictionary-manager-relationship-container-emailaddress',
     templateUrl: '../templates/dictionarymanagerrelationshipcontaineremailaddress.html',
+    standalone: false
 })
 export class DictionaryManagerRelationshipContainerEmailAddress implements OnInit {
 

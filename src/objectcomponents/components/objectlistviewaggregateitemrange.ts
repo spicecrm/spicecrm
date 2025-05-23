@@ -15,7 +15,8 @@ import {view} from '../../services/view.service';
  */
 @Component({
     selector: 'object-listview-aggregate-item-range',
-    templateUrl: '../templates/objectlistviewaggregateitemrange.html'
+    templateUrl: '../templates/objectlistviewaggregateitemrange.html',
+    standalone: false
 })
 export class ObjectListViewAggregateItemRange  {
 

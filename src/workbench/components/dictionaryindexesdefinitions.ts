@@ -20,6 +20,7 @@ import {DictionaryDefinition, DictionaryIndex} from "../interfaces/dictionaryman
 @Component({
     selector: 'dictionary-indexes-definitions',
     templateUrl: '../templates/dictionaryindexesdefinitions.html',
+    standalone: false
 })
 export class DictionaryIndexesDefinitions {
 

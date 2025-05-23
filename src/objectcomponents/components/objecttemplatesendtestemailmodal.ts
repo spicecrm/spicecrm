@@ -15,6 +15,7 @@ import {session} from "../../services/session.service";
     selector: "object-template-send-test-email-modal",
     templateUrl: "../templates/objecttemplatesendtestemailmodal.html",
     providers: [view],
+    standalone: false
 })
 export class ObjectTemplateSendTestEmailModal {
 

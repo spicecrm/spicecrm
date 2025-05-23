@@ -12,7 +12,8 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'object-action-edit-button',
-    templateUrl: '../templates/objectactioneditbutton.html'
+    templateUrl: '../templates/objectactioneditbutton.html',
+    standalone: false
 })
 export class ObjectActionEditButton {
 

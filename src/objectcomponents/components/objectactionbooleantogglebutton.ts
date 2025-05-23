@@ -11,7 +11,8 @@ import {toast} from "../../services/toast.service";
  */
 @Component({
     selector: 'object-action-boolean-toggle-button',
-    templateUrl: '../templates/objectactionbooleantogglebutton.html'
+    templateUrl: '../templates/objectactionbooleantogglebutton.html',
+    standalone: false
 })
 export class ObjectActionBooleanToggleButton {
 

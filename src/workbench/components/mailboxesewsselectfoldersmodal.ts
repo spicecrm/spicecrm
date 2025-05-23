@@ -9,6 +9,7 @@ import {view} from "../../services/view.service";
 @Component({
     selector: "mailbox-folders-modal",
     templateUrl: "../templates/mailboxesewsselectfoldersmodal.html",
+    standalone: false
 })
 export class MailboxesEWSSelectFoldersModal {
     public self; // needed for selfdestruction... will be set on creation...

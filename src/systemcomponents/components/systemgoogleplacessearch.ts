@@ -28,7 +28,8 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
     ],
     host: {
         focus: 'focus()'
-    }
+    },
+    standalone: false
 })
 export class SystemGooglePlacesSearch implements ControlValueAccessor {
 
