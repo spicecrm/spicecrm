@@ -95,7 +95,8 @@ class LogViewer {
             $response['entries'][] = $row;
         }
 
-        $response['totalCount'] = $db->getOne('SELECT COUNT(*) FROM syslogs l LEFT JOIN users u ON l.created_by = u.id '.$whereClause ) * 1;
+        $response['count'] = (int)$db->getOne('SELECT COUNT(*) FROM syslogs l LEFT JOIN users u ON l.created_by = u.id '.$whereClause );
+        $response['totalCount'] = (int)$db->getOne('SELECT COUNT(*) FROM syslogs');
 
         return $response;
     }
