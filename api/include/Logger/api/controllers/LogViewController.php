@@ -153,6 +153,7 @@ class LogViewController{
         $entries = $viewer->getEntries($req->getQueryParams());
         return $res->withJson([
             'count' => count($entries),
+            'totalCount' => $viewer->getTotalCount(),
             'entries' => $entries
         ]);
     }
