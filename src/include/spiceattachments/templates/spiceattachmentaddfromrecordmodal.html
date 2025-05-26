@@ -1,28 +1,74 @@
 <system-modal>
-    <system-modal-header (close)="close()"><system-label label="LBL_ADD_FROM_RECORD"></system-label></system-modal-header>
+    <system-modal-header (close)="close()">
+        <system-label [label]="label"></system-label>
+    </system-modal-header>
     <system-modal-content margin="xx-small">
         <ng-container *ngIf=" modelattachments.files.length == 0 else showAttachments">
             <div class="slds-align--absolute-center slds-p-around--small">
-                <system-illustration-no-records><system-label label="LBL_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
+                <system-illustration-no-records>
+                    <system-label label="LBL_NO_RECORDS_FOUND"></system-label>
+                </system-illustration-no-records>
             </div>
         </ng-container>
         <ng-template #showAttachments>
-            <div class="slds-grid slds-grid_vertical-align-center slds-p-around--xx-small">
-                <system-checkbox [(ngModel)]="selectAll"
-                                 [indeterminate]="selectedFilesCount > 0 && !selectAll">
-                    <system-label label="LBL_SELECT_ALL"></system-label>
-                </system-checkbox>
+            @if(!showSelected) {
+                <div class="slds-grid slds-grid_vertical-align-center slds-p-around--xx-small">
+                    <system-checkbox [(ngModel)]="selectAll"
+                                     [indeterminate]="selectedFilesInFolder > 0 && !selectAll">
+                        <system-label label="LBL_SELECT_ALL_FILES"></system-label>
+                    </system-checkbox>
+                </div>
+            }
+            <div *ngFor="let file of visibleFiles" [ngClass]="{'slds-theme_shade': (file.selected && file.file_mime_type != 'folder')}"
+                 class="slds-grid slds-grid_vertical-align-center slds-p-around--xx-small"
+                 (click)="toggleSelectFile(file)">
+                @if (file.file_mime_type != 'folder') {
+                    <system-checkbox [ngModel]="file.selected" [disabled]="false" (click)="toggleSelectFile(file)"/>
+                }
+                <spice-attachment-file [modelattachments]="modelattachments" [file]="file" [editmode]="false"
+                                       [disabled]="true" class="slds-media"
+                                       (click)="openFolder(file)">
+                </spice-attachment-file>
             </div>
-            <div *ngFor="let file of modelattachments.files" (click)="toggleSelectFile(file)" [ngClass]="{'slds-theme_shade': file.selected}" class="slds-grid slds-grid_vertical-align-center slds-p-around--xx-small">
-                <div><system-checkbox [ngModel]="file.selected" (click)="toggleSelectFile(file)" [disabled]="false"></system-checkbox></div>
-            <spice-attachment-file [modelattachments]="modelattachments" [file]="file" [editmode]="false" [disabled]="true" class="slds-media" style="pointer-events: none"></spice-attachment-file>
-        </div>
         </ng-template>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
-        <button class="slds-col--bump-left slds-button slds-button--brand" (click)="save()">
-            <system-label label="LBL_SAVE"></system-label>
-        </button>
+        <div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
+            @if(!showSelected) {
+                <nav role="navigation" aria-label="Breadcrumbs">
+                    <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+                        <li class="slds-breadcrumb__item slds-p-right--x-small">
+                            <a href="javascript:void(0);" (click)="resetFolderId()">
+                                <system-icon divClass="slds-p-right--xx-small" [module]="parent.module" size="xx-small"/>
+                            </a>
+                        </li>
+                        @for (folderBreadCrumb of modelattachments.folderBreadCrumbs; track folderBreadCrumb.id) {
+                            <li class="slds-breadcrumb__item slds-p-horizontal--x-small">
+                                <a href="javascript:void(0);"
+                                   (click)="modelattachments.folderId = folderBreadCrumb.id">{{ folderBreadCrumb.name }}</a>
+                            </li>
+                        }
+                    </ol>
+                </nav>
+            }
+            <div class="slds-grid slds-grid--align-spread slds-col--bump-left">
+                <div class="slds-grid slds-grid_vertical-align-center slds-p-right--medium">
+                    <button class="slds-button slds-button--icon-border slds-button--icon"
+                            [disabled]="selectedFiles.length == 0 && !showSelected"
+                            (click)="toggleShowSelected()">
+                        <system-button-icon [icon]="showSelected ? 'chevrondown' : 'chevronup'"/>
+                    </button>
+                    <div class="slds-p-horizontal--x-small">{{ selectedFiles.length }}
+                        <system-label label="LBL_SELECTED"/>
+                    </div>
+                </div>
+                <button class="slds-button slds-button--neutral" (click)="close()">
+                    <system-label label="LBL_CANCEL"></system-label>
+                </button>
+                <button class="slds-col--bump-left slds-button slds-button--brand" (click)="save()">
+                    <system-label label="LBL_SAVE"></system-label>
+                </button>
+            </div>
+        </div>
     </system-modal-footer>
 </system-modal>
