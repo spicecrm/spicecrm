@@ -15,7 +15,8 @@ import {backend} from "../../../services/backend.service";
 @Component({
     selector: 'spice-kanban-manager',
     templateUrl: '../templates/spicekanbanmanager.html',
-    providers: [KanbanManagerService, ChangeHistoryService]
+    providers: [KanbanManagerService, ChangeHistoryService],
+    standalone: false
 })
 
 

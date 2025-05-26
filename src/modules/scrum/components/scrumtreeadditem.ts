@@ -11,6 +11,7 @@ import {model} from '../../../services/model.service';
     selector: 'scrum-tree-additem',
     templateUrl: '../templates/scrumtreeadditem.html',
     providers: [model],
+    standalone: false
 })
 export class ScrumTreeAddItem {
 

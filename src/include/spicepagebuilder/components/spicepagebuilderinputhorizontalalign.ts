@@ -17,7 +17,8 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
             provide: NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => SpicePageBuilderInputHorizontalAlign)
         }
-    ]
+    ],
+    standalone: false
 })
 export class SpicePageBuilderInputHorizontalAlign implements ControlValueAccessor {
     /**

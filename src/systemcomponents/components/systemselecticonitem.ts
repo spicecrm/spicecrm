@@ -12,7 +12,8 @@ import {
  */
 @Component({
     selector: "system-select-icon-item",
-    template: ""
+    template: "",
+    standalone: false
 })
 export class SystemSelectIconItem  {
 

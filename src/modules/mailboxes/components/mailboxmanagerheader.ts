@@ -12,6 +12,7 @@ import {configurationService} from "../../../services/configuration.service";
 @Component({
     selector: 'mailbox-manager-header',
     templateUrl: '../templates/mailboxmanagerheader.html',
+    standalone: false
 })
 export class MailboxManagerHeader implements OnInit {
 

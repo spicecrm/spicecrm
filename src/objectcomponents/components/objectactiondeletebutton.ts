@@ -15,7 +15,8 @@ import {navigationtab} from '../../services/navigationtab.service';
  */
 @Component({
     selector: 'object-action-delete-button',
-    templateUrl: '../templates/objectactiondeletebutton.html'
+    templateUrl: '../templates/objectactiondeletebutton.html',
+    standalone: false
 })
 export class ObjectActionDeleteButton {
 

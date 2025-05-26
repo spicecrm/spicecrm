@@ -28,7 +28,8 @@ import {view} from "../../services/view.service";
     selector: 'object-list-split-item',
     templateUrl: '../templates/objectlistsplititem.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ObjectListSplitItem implements OnInit, OnDestroy {
 

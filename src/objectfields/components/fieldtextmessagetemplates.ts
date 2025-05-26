@@ -15,7 +15,8 @@ import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'field-textmessage-templates',
-    templateUrl: '../templates/fieldtextmessagetemplates.html'
+    templateUrl: '../templates/fieldtextmessagetemplates.html',
+    standalone: false
 })
 
 /**

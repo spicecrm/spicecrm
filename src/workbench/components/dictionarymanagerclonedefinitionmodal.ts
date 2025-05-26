@@ -13,6 +13,7 @@ import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 @Component({
     selector: 'dictionary-manager-clone-definition-modal',
     templateUrl: '../templates/dictionarymanagerclonedefinitionmodal.html',
+    standalone: false
 })
 export class DictionaryManagerCloneDefinitionModal{
 

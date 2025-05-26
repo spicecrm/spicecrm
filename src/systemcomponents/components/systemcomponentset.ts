@@ -9,7 +9,8 @@ import {metadata} from '../../services/metadata.service';
  */
 @Component({
     selector: 'system-componentset',
-    templateUrl: '../templates/systemcomponentset.html'
+    templateUrl: '../templates/systemcomponentset.html',
+    standalone: false
 })
 export class SystemComponentSet implements OnChanges {
     /**

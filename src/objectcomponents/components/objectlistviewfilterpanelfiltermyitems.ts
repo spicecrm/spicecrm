@@ -16,12 +16,12 @@ import {ObjectListFilterI} from "../interfaces/objectcomponents.interfaces";
     animations: [
         trigger('animatepopover', [
             transition(':enter', [
-                style({opacity: 0}),
-                animate('.25s', style({opacity: 1}))
+                style({ opacity: 0 }),
+                animate('.25s', style({ opacity: 1 }))
             ]),
             transition(':leave', [
-                style({opacity: '1'}),
-                animate('.25s', style({opacity: 0}))
+                style({ opacity: '1' }),
+                animate('.25s', style({ opacity: 0 }))
             ])
         ])
     ],
@@ -31,7 +31,8 @@ import {ObjectListFilterI} from "../interfaces/objectcomponents.interfaces";
             useExisting: forwardRef(() => ObjectListViewFilterPanelFilterMyItems),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class ObjectListViewFilterPanelFilterMyItems implements ControlValueAccessor {
 

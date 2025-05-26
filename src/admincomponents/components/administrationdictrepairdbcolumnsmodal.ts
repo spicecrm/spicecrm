@@ -14,7 +14,8 @@ import {helper} from "../../services/helper.service";
 
 @Component({
     selector: 'administration-dict-repair-db-columns-modal',
-    templateUrl: '../templates/administrationdictrepairdbcolumnsmodal.html'
+    templateUrl: '../templates/administrationdictrepairdbcolumnsmodal.html',
+    standalone: false
 })
 export class AdministrationDictRepairDbColumnsModal {
 

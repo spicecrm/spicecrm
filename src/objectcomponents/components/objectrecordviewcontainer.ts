@@ -16,7 +16,8 @@ import {Subscription} from "rxjs";
 @Component({
     selector: 'object-recordview-container',
     templateUrl: '../templates/objectrecordviewcontainer.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ObjectRecordViewContainer implements OnDestroy, AfterViewInit {
     @ViewChild('container', {read: ViewContainerRef, static: true}) public container: ViewContainerRef;

@@ -9,7 +9,8 @@ import {metadata} from '../../services/metadata.service';
 @Component({
     selector: 'field-linked-details',
     templateUrl: '../templates/fieldlinkeddetails.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class fieldLinkedDetails implements OnInit, OnChanges {
 

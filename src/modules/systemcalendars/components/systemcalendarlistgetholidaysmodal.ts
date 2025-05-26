@@ -14,6 +14,7 @@ import {toast} from "../../../services/toast.service";
 @Component({
     selector: 'system-calendar-list-get-holidays-modal',
     templateUrl: '../templates/systemcalendarlistgetholidaysmodal.html',
+    standalone: false
 })
 export class SystemCalendarListGetHolidaysModal {
 

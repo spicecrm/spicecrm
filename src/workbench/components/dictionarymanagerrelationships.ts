@@ -19,6 +19,7 @@ import {Relationship} from "../interfaces/dictionarymanager.interfaces";
 @Component({
     selector: 'dictionary-manager-relationships',
     templateUrl: '../templates/dictionarymanagerrelationships.html',
+    standalone: false
 })
 export class DictionaryManagerRelationships {
 

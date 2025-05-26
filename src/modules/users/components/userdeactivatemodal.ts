@@ -9,7 +9,8 @@ import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 
 @Component({
-    templateUrl: "../templates/userdeactivatemodal.html"
+    templateUrl: "../templates/userdeactivatemodal.html",
+    standalone: false
 })
 
 export class UserDeactivateModal {

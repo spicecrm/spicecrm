@@ -15,7 +15,8 @@ import {helper} from '../../../services/helper.service';
  */
 @Component({
     selector: "user-reset-password-modal",
-    templateUrl: "../templates/userresetpasswordmodal.html"
+    templateUrl: "../templates/userresetpasswordmodal.html",
+    standalone: false
 })
 export class UserResetPasswordModal implements OnInit {
 

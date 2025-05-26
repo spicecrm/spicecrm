@@ -12,7 +12,8 @@ import {SystemLoadingModal} from "../../../systemcomponents/components/systemloa
 @Component({
     selector: 'lead-convert-consumer-modal',
     templateUrl: '../templates/leadconvertconsumermodal.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class LeadConvertConsumerModal implements OnInit {
 

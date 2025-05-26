@@ -9,7 +9,8 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'field-toggle',
-    templateUrl: '../templates/fieldtoggle.html'
+    templateUrl: '../templates/fieldtoggle.html',
+    standalone: false
 })
 
 /**

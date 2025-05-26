@@ -13,7 +13,8 @@ declare var moment: any;
 @Component({
     selector: 'reporter-field-date',
     templateUrl: '../templates/reporterfielddate.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterFieldDate {
     /**

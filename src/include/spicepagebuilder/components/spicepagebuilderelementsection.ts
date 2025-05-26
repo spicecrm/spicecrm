@@ -19,7 +19,8 @@ import {AttributeObjectI, SectionI} from "../interfaces/spicepagebuilder.interfa
 @Component({
     selector: 'spice-page-builder-element-section',
     templateUrl: '../templates/spicepagebuilderelementsection.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderElementSection implements OnInit {
     /**

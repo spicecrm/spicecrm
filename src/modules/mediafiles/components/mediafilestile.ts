@@ -20,7 +20,8 @@ import {mediafiles} from '../../../services/mediafiles.service';
     selector: 'media-files-tile',
     templateUrl: '../templates/mediafilestile.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [mediafiles, model, view]
+    providers: [mediafiles, model, view],
+    standalone: false
 })
 export class MediaFilesTile implements OnInit {
 

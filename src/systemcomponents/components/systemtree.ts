@@ -20,7 +20,8 @@ declare var _: any;
 @Component({
     selector: "system-tree",
     templateUrl: "../templates/systemtree.html",
-    styles: ['.cdk-drag-animating {transition: none}']
+    styles: ['.cdk-drag-animating {transition: none}'],
+    standalone: false
 })
 
 export class SystemTree implements OnChanges {

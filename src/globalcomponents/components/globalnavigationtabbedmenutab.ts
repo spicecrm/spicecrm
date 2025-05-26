@@ -16,7 +16,8 @@ import {GlobalNavigationTabContextMenu} from "./globalnavigationtabcontextmenu";
         '[class.slds-context-bar__item]': '1',
         '[class.slds-context-bar__item_tab]': '1',
         '[class.slds-is-active]': 'isActive'
-    }
+    },
+    standalone: false
 })
 export class GlobalNavigationTabbedMenuTab {
     /**

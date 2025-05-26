@@ -15,7 +15,8 @@ declare var _: any;
 
 @Component({
     selector: 'sendinblue-modal',
-    templateUrl: '../templates/sendinbluemodal.html'
+    templateUrl: '../templates/sendinbluemodal.html',
+    standalone: false
 })
 export class SendinBlueModal {
 

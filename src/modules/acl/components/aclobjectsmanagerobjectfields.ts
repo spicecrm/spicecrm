@@ -14,7 +14,8 @@ import {view} from "../../../services/view.service";
  */
 @Component({
     selector: 'aclobjects-manager-object-fields',
-    templateUrl: '../templates/aclobjectsmanagerobjectfields.html'
+    templateUrl: '../templates/aclobjectsmanagerobjectfields.html',
+    standalone: false
 })
 export class ACLObjectsManagerObjectFields {
 

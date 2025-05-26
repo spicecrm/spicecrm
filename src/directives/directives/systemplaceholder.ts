@@ -9,7 +9,8 @@ import {language} from "../../services/language.service";
  * translate the input label by the language service and set the placeholder attribute for the element ref
  */
 @Directive({
-    selector: '[system-placeholder]'
+    selector: '[system-placeholder]',
+    standalone: false
 })
 export class SystemPlaceholderDirective implements OnDestroy {
 

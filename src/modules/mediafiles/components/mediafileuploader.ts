@@ -15,7 +15,8 @@ import {SystemInputMedia} from '../../../systemcomponents/components/systeminput
 @Component({
     selector: 'media-file-uploader',
     templateUrl: '../templates/mediafileuploader.html',
-    providers: [mediafiles, model, view]
+    providers: [mediafiles, model, view],
+    standalone: false
 })
 export class MediaFileUploader {
 

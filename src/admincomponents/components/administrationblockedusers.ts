@@ -15,7 +15,8 @@ declare var _: any;
 
 @Component({
     selector: 'administration-blocked-users',
-    templateUrl: '../templates/administrationblockedusers.html'
+    templateUrl: '../templates/administrationblockedusers.html',
+    standalone: false
 })
 export class AdministrationBlockedUsers implements OnInit {
 

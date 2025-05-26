@@ -14,7 +14,8 @@ import {ftsconfiguration} from '../services/ftsconfiguration.service';
 @Component({
     selector: '[administration-ftsstatus]',
     templateUrl: '../templates/administrationftsstatus.html',
-    providers: [ftsconfiguration]
+    providers: [ftsconfiguration],
+    standalone: false
 })
 export class AdministrationFTSStatus {
 

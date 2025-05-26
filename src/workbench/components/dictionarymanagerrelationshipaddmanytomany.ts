@@ -24,6 +24,7 @@ import {
 @Component({
     selector: 'dictionary-manager-relationship-add-many-to-many',
     templateUrl: '../templates/dictionarymanagerrelationshipaddmanytomany.html',
+    standalone: false
 })
 export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
 

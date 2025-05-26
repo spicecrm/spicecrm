@@ -6,7 +6,8 @@ import {model} from "../../../services/model.service";
 @Component({
     selector: 'prospect-lists-action-select-button',
     template: '<span><system-label label="LBL_SELECT"></system-label></span>',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ProspectListsActionSelectButton extends ObjectActionSelectButton {
     /**

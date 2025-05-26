@@ -14,6 +14,7 @@ import {fieldGeneric} from './fieldgeneric';
     selector: 'field-module-lookup',
     templateUrl: '../templates/fieldmodulelookup.html',
     providers: [popup],
+    standalone: false
 })
 export class FieldModuleLookupComponent extends fieldGeneric implements OnInit {
     public relateIdField: string = '';

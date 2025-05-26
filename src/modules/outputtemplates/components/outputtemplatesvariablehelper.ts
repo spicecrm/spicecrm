@@ -9,7 +9,8 @@ import { backend } from '../../../services/backend.service';
 import { model } from '../../../services/model.service';
 
 @Component({
-    templateUrl: '../templates/outputtemplatesvariablehelper.html'
+    templateUrl: '../templates/outputtemplatesvariablehelper.html',
+    standalone: false
 })
 export class OutputTemplatesVariableHelper implements OnInit {
 

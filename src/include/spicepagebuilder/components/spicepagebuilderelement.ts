@@ -16,7 +16,8 @@ declare var _;
 @Component({
     selector: 'spice-page-builder-element',
     templateUrl: '../templates/spicepagebuilderelement.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderElement implements OnInit {
     /**

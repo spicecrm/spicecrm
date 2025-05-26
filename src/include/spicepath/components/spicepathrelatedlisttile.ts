@@ -16,7 +16,8 @@ import {metadata} from '../../../services/metadata.service';
 @Component({
     selector: 'spice-path-related-list-tile',
     templateUrl: '../templates/spicepathrelatedlisttile.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class SpicePathRelatedListTile implements OnInit {
 

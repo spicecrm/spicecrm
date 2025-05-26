@@ -32,7 +32,8 @@ declare var moment: any;
     selector: 'calendar',
     templateUrl: '../templates/calendar.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [calendar, model]
+    providers: [calendar, model],
+    standalone: false
 })
 
 export class Calendar implements AfterViewInit, OnDestroy {

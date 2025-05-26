@@ -18,7 +18,8 @@ import {Router} from '@angular/router';
     providers: [model, view],
     host: {
         "(click)": "navigateTo()"
-    }
+    },
+    standalone: false
 })
 export class GlobalHeaderSearchResultsItem implements OnInit {
     /**

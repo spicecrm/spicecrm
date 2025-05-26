@@ -10,7 +10,8 @@ import {helper} from "../../services/helper.service";
  */
 @Component({
     selector: "system-file-icon",
-    templateUrl: "../templates/systemfileicon.html"
+    templateUrl: "../templates/systemfileicon.html",
+    standalone: false
 })
 export class SystemFileIcon implements OnInit {
     /**

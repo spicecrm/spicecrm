@@ -16,7 +16,8 @@ import {Router} from "@angular/router";
 @Component({
     selector: 'agreements-add-revision-modal',
     templateUrl: '../templates/agreementsaddrevisionmodal.html',
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 /**
  * creates a new AgreementRevision from Agreement

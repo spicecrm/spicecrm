@@ -17,7 +17,8 @@ import {backend} from "../../services/backend.service";
  */
 @Component({
     selector: 'global-login-change-password',
-    templateUrl: '../templates/globalloginchangepassword.html'
+    templateUrl: '../templates/globalloginchangepassword.html',
+    standalone: false
 })
 export class GlobalLoginChangePassword {
 

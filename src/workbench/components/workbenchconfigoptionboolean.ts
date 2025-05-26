@@ -7,7 +7,8 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: 'workbench-config-option-boolean',
-    templateUrl: '../templates/workbenchconfigoptionboolean.html'
+    templateUrl: '../templates/workbenchconfigoptionboolean.html',
+    standalone: false
 })
 export class WorkbenchConfigOptionBoolean {
 

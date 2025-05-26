@@ -15,7 +15,8 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: 'componentsetmanager-componentset-details',
-    templateUrl: '../templates/componentsetmanagercomponentsetdetails.html'
+    templateUrl: '../templates/componentsetmanagercomponentsetdetails.html',
+    standalone: false
 })
 export class ComponentsetManagerComponentsetDetails implements OnChanges {
 

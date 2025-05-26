@@ -38,7 +38,8 @@ declare var moment: any;
             useExisting: forwardRef(() => SystemInputDate),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputDate implements OnInit, ControlValueAccessor {
 

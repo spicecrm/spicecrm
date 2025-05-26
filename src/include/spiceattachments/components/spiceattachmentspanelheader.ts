@@ -12,8 +12,8 @@ import {modelattachments} from '../../../services/modelattachments.service';
 @Component({
     selector: 'spice-attachments-panel-header',
     templateUrl: '../templates/spiceattachmentspanelheader.html',
-    providers:[modelattachments]
-
+    providers: [modelattachments],
+    standalone: false
 })
 export class SpiceAttachmentsPanelHeader implements OnInit, OnDestroy {
 

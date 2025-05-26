@@ -14,6 +14,7 @@ import {Subject} from 'rxjs';
     providers: [model, view],
     selector: "google-calendar-manager",
     templateUrl: "../templates/googlecalendarmanager.html",
+    standalone: false
 })
 export class GoogleCalendarManager {
     public beans: any[] = [];

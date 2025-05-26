@@ -12,7 +12,8 @@ import {Observable, Subject} from "rxjs";
  */
 @Component({
     selector: 'lead-convert-modal',
-    templateUrl: '../templates/leadconvertmodal.html'
+    templateUrl: '../templates/leadconvertmodal.html',
+    standalone: false
 })
 export class LeadConvertModal implements OnInit {
 

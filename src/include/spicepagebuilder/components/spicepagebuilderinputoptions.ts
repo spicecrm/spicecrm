@@ -17,7 +17,8 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
             provide: NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => SpicePageBuilderInputOptions)
         }
-    ]
+    ],
+    standalone: false
 })
 export class SpicePageBuilderInputOptions implements ControlValueAccessor {
     /**

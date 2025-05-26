@@ -14,7 +14,8 @@ import {ObjectStatusNetworkButtonItem} from "./objectstatusnetworkbuttonitem";
  */
 @Component({
     selector: 'object-status-network-button',
-    templateUrl: '../templates/objectstatusnetworkbutton.html'
+    templateUrl: '../templates/objectstatusnetworkbutton.html',
+    standalone: false
 })
 export class ObjectStatusNetworkButton implements OnInit {
 

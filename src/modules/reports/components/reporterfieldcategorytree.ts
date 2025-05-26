@@ -6,7 +6,8 @@ import {backend} from "../../../services/backend.service";
 @Component({
     selector: 'reporter-field-category-tree',
     templateUrl: '../templates/reporterfieldcategorytree.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterFieldCategoryTree {
 

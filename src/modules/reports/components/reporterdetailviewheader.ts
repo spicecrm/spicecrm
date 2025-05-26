@@ -9,7 +9,8 @@ import {ObjectPageHeader} from "../../../objectcomponents/components/objectpageh
 
 @Component({
     selector: 'reporter-detail-view-header',
-    templateUrl: '../templates/reporterdetailviewheader.html'
+    templateUrl: '../templates/reporterdetailviewheader.html',
+    standalone: false
 })
 export class ReporterDetailViewHeader extends ObjectPageHeader {
 

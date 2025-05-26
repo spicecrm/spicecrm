@@ -16,7 +16,8 @@ declare var moment: any;
 @Component({
     selector: 'reporter-field-date-time',
     templateUrl: '../templates/reporterfielddatetime.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterFieldDateTime {
     /**

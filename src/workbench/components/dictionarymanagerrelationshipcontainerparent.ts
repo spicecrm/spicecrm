@@ -18,6 +18,7 @@ import {Relationship, RelationshipRelateField} from "../interfaces/dictionaryman
 @Component({
     selector: 'dictionary-manager-relationship-container-parent',
     templateUrl: '../templates/dictionarymanagerrelationshipcontainerparent.html',
+    standalone: false
 })
 export class DictionaryManagerRelationshipContainerParent implements OnInit {
 

@@ -15,6 +15,7 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 @Component({
     selector: 'account-vatid-field',
     templateUrl: '../templates/accountvatidfield.html',
+    standalone: false
 })
 
 export class AccountVATIDField extends fieldGeneric implements OnInit {

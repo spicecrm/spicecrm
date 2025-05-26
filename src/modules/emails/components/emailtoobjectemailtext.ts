@@ -17,7 +17,8 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: "email-to-object-emailtext",
-    templateUrl: "../templates/emailtoobjectemailtext.html"
+    templateUrl: "../templates/emailtoobjectemailtext.html",
+    standalone: false
 })
 export class EmailToObjectEmailText implements OnDestroy, OnInit {
 

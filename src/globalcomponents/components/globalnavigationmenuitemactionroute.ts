@@ -10,7 +10,8 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 
 @Component({
-    templateUrl: '../templates/globalnavigationmenuitemactionroute.html'
+    templateUrl: '../templates/globalnavigationmenuitemactionroute.html',
+    standalone: false
 })
 export class GlobalNavigationMenuItemActionRoute {
 

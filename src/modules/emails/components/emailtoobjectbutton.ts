@@ -18,7 +18,8 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 @Component({
     selector: "email-to-object-button",
     templateUrl: "../templates/emailtoobjectbutton.html",
-    providers: [relatedmodels]
+    providers: [relatedmodels],
+    standalone: false
 })
 export class EmailToObjectButton implements OnDestroy {
     public object_module_name: string;

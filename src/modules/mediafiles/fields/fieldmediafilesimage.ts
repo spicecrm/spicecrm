@@ -16,7 +16,8 @@ import {SystemInputMedia} from "../../../systemcomponents/components/systeminput
 @Component({
     selector: 'field-mediafiles-image',
     templateUrl: '../templates/fieldmediafilesimage.html',
-    providers: [mediafiles]
+    providers: [mediafiles],
+    standalone: false
 })
 export class fieldMediaFilesImage extends fieldGeneric {
 

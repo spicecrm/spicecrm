@@ -13,7 +13,8 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: "global-login-oauth2",
-    templateUrl: "../templates/globalloginoauth2.html"
+    templateUrl: "../templates/globalloginoauth2.html",
+    standalone: false
 })
 export class GlobalLoginOAuth2 implements OnDestroy {
 

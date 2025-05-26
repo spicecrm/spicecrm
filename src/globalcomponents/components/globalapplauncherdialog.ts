@@ -13,7 +13,8 @@ import {userpreferences} from "../../services/userpreferences.service";
  */
 @Component({
     selector: 'global-app-launcher-dialog',
-    templateUrl: '../templates/globalapplauncherdialog.html'
+    templateUrl: '../templates/globalapplauncherdialog.html',
+    standalone: false
 })
 export class GlobalAppLauncherDialog {
 

@@ -26,7 +26,8 @@ declare var _;
         ':host  .mce-btn button{font-size: 12px; color: #54698d;}',
         ':host  .mce-tinymce{border-radius: 4px}',
         ':host  .mce-widget{font-family: \'Titillium Web\', sans-serif;}'
-    ]
+    ],
+    standalone: false
 })
 export class fieldHtmlEditor implements AfterViewInit, OnDestroy, OnChanges, OnInit {
 

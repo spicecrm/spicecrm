@@ -11,7 +11,8 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'field-generic',
-    templateUrl: '../templates/fieldgeneric.html'
+    templateUrl: '../templates/fieldgeneric.html',
+    standalone: false
 })
 export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
     /**

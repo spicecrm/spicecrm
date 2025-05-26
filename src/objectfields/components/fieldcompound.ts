@@ -10,7 +10,8 @@ import {ObjectRecordFieldset} from '../../objectcomponents/components/objectreco
  */
 @Component({
     selector: 'field-compound',
-    templateUrl: '../templates/fieldcompound.html'
+    templateUrl: '../templates/fieldcompound.html',
+    standalone: false
 })
 export class fieldCompound extends fieldGeneric implements OnInit {
 

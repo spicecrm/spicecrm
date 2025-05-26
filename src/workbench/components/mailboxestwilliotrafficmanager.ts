@@ -13,6 +13,7 @@ import {view} from "../../services/view.service";
 @Component({
     selector: "mailboxes-twillio-traffic-manager",
     templateUrl: "../templates/mailboxestwilliotrafficmanager.html",
+    standalone: false
 })
 export class MailboxesTwillioTrafficManager {
 

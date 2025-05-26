@@ -10,7 +10,8 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'account-nace-loadser',
-    templateUrl: '../templates/accountnaceloader.html'
+    templateUrl: '../templates/accountnaceloader.html',
+    standalone: false
 })
 export class AccountNACELoader  implements OnInit{
 

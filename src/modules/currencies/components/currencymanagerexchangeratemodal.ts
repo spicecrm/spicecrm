@@ -11,7 +11,8 @@ import {sysCurrency, sysCurrencyExchangeRate} from "../interfaces/currencies.int
 @Component({
     selector: 'currency-manager-exchangerate-modal',
     templateUrl: '../templates/currencymanagerexchangeratemodal.html',
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 
 export class CurrencyManagerExchangerateModal implements OnInit {

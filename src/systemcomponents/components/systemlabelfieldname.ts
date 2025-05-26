@@ -21,7 +21,8 @@ import {footer} from "../../services/footer.service";
 @Component({
     selector: 'system-label-fieldname',
     templateUrl: '../templates/systemlabelfieldname.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SystemLabelFieldname implements OnChanges, AfterViewInit, OnDestroy {
 

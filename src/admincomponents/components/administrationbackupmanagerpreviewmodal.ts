@@ -2,7 +2,8 @@ import {Component, ComponentRef, EventEmitter, OnDestroy} from '@angular/core';
 
 @Component({
     selector: 'administration-backup-manager-preview-modal',
-    templateUrl: '../templates/administrationbackupmanagerpreviewmodal.html'
+    templateUrl: '../templates/administrationbackupmanagerpreviewmodal.html',
+    standalone: false
 })
 
 export class AdministrationBackupManagerPreviewModal implements OnDestroy {

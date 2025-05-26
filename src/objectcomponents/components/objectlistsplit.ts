@@ -25,7 +25,8 @@ import {skip} from "rxjs/operators";
  */
 @Component({
     selector: 'object-list-split',
-    templateUrl: '../templates/objectlistsplit.html'
+    templateUrl: '../templates/objectlistsplit.html',
+    standalone: false
 })
 export class ObjectListSplit implements OnDestroy, OnInit {
     /**

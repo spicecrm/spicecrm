@@ -34,7 +34,8 @@ declare var moment: any;
 @Component({
     selector: 'calendar-sheet-month',
     templateUrl: '../templates/calendarsheetmonth.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     /**

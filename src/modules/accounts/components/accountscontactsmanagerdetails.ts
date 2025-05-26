@@ -24,7 +24,8 @@ declare var _;
 @Component({
     selector: 'accounts-contacts-manager-details',
     templateUrl: '../templates/accountscontactsmanagerdetails.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class AccountsContactsManagerDetails implements AfterViewInit, OnChanges {
 

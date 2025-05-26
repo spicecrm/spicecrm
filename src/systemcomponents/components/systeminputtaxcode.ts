@@ -16,7 +16,8 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
             useExisting: forwardRef(() => SystemInputTaxCode),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputTaxCode implements OnInit, ControlValueAccessor {
 

@@ -9,7 +9,8 @@ import {userpreferences} from '../../../services/userpreferences.service';
  */
 @Component({
     templateUrl: '../templates/reporterfieldpercentage.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterFieldPercentage {
     /**

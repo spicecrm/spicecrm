@@ -26,7 +26,7 @@
                         </div>
                     </div>
                 </ng-container>
-                <button *ngIf="this.metadata.checkModuleAcl('Emails', 'create')" [disabled]="!selected_template || loading_output || selected_format === 'html'" class="slds-button slds-button--icon slds-button--icon-border slds-m-left--small" [ngClass]="{'slds-is-selected' : expanded}" (click)="openEmailArea()"><system-button-icon icon="email"></system-button-icon></button>
+                <button *ngIf="metadata.checkModuleAcl('Emails', 'create')" [disabled]="!selected_template || loading_output || selected_format === 'html'" class="slds-button slds-button--icon slds-button--icon-border slds-m-left--small" [ngClass]="{'slds-is-selected' : expanded}" (click)="openEmailArea()"><system-button-icon icon="email"></system-button-icon></button>
             </div>
             <div class="slds-grid" style="height: 70vh;">
                 <div class="slds-p-around--small" style="height: 100%; width: 200%" [@slideInOut]="expanded? 'open': 'closed'">

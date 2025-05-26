@@ -20,6 +20,7 @@ import {modelattachments} from "../../../services/modelattachments.service";
     selector: 'field-read-receipt',
     templateUrl: '../templates/fieldreadreceipt.html',
     providers: [modelattachments],
+    standalone: false
 })
 export class fieldReadReceipt extends fieldGeneric {
 

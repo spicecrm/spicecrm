@@ -14,7 +14,8 @@ import {outputModalService} from "../services/outputmodal.service";
 
 @Component({
     selector: 'object-action-mark-sent-bean-button',
-    templateUrl: '../templates/objectactionmarksentbeanbutton.html'
+    templateUrl: '../templates/objectactionmarksentbeanbutton.html',
+    standalone: false
 })
 export class ObjectActionMarkSentBeanButton extends ObjectActionOutputBeanButton {
 

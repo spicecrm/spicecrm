@@ -9,7 +9,8 @@ import {toast} from "../../services/toast.service";
 
 @Component({
     selector: 'global-login-2fa-method-select-modal',
-    templateUrl: '../templates/globallogin2famethodselectmodal.html'
+    templateUrl: '../templates/globallogin2famethodselectmodal.html',
+    standalone: false
 })
 
 export class GlobalLogin2FAMethodSelectModal {

@@ -20,7 +20,8 @@ declare var gapi: any;
  */
 @Component({
     selector: "global-login-google",
-    templateUrl: "../templates/globallogingoogle.html"
+    templateUrl: "../templates/globallogingoogle.html",
+    standalone: false
 })
 export class GlobalLoginGoogle {
 

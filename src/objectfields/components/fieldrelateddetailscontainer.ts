@@ -8,7 +8,8 @@ import {view} from '../../services/view.service';
 @Component({
     selector: 'field-related-details-container',
     templateUrl: '../templates/fieldrelateddetailscontainer.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class fieldRelatedDetailsContainer implements OnChanges {
 

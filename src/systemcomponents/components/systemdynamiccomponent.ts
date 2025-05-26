@@ -18,7 +18,8 @@ import {metadata} from '../../services/metadata.service';
  */
 @Component({
     selector: 'system-dynamic-component',
-    templateUrl: '../templates/systemdynamiccomponent.html'
+    templateUrl: '../templates/systemdynamiccomponent.html',
+    standalone: false
 })
 export class SystemDynamicComponent implements AfterViewInit, OnChanges {
 

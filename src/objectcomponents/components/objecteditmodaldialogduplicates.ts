@@ -15,7 +15,8 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'object-edit-modal-dialog-duplicates',
-    templateUrl: '../templates/objecteditmodaldialogduplicates.html'
+    templateUrl: '../templates/objecteditmodaldialogduplicates.html',
+    standalone: false
 })
 export class ObjectEditModalDialogDuplicates implements OnInit {
 

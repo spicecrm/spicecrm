@@ -8,7 +8,8 @@ declare var _;
 
 @Component({
     selector: 'field-grouped-enum',
-    templateUrl: '../templates/fieldgroupedenum.html'
+    templateUrl: '../templates/fieldgroupedenum.html',
+    standalone: false
 })
 export class fieldGroupedEnum extends fieldGeneric implements OnInit {
     /**

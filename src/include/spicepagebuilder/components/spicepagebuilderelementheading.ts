@@ -11,7 +11,8 @@ import {modal} from "../../../services/modal.service";
 @Component({
     selector: 'spice-page-builder-element-heading',
     templateUrl: '../templates/spicepagebuilderelementheading.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 
 export class SpicePageBuilderElementHeading extends SpicePageBuilderElementText {

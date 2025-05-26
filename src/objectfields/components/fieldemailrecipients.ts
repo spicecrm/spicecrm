@@ -18,7 +18,8 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
  */
 @Component({
     selector: 'field-email-recipients',
-    templateUrl: '../templates/fieldemailrecipients.html'
+    templateUrl: '../templates/fieldemailrecipients.html',
+    standalone: false
 })
 export class fieldEmailRecipients extends fieldGeneric implements OnInit {
     /**

@@ -18,7 +18,8 @@ import {configurationService} from "../../../services/configuration.service";
 @Component({
     selector: 'spice-attachments-container',
     templateUrl: '../templates/spiceattachmentscontainer.html',
-    providers: [modelattachments, model]
+    providers: [modelattachments, model],
+    standalone: false
 })
 
 export class SpiceAttachmentsContainer implements OnDestroy {

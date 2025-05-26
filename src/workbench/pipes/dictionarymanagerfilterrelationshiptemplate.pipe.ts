@@ -2,7 +2,8 @@ import {Pipe, PipeTransform} from '@angular/core';
 import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 
 @Pipe({
-    name: 'dictionaryFilterRelationshipTemplate'
+    name: 'dictionaryFilterRelationshipTemplate',
+    standalone: false
 })
 
 export class DictionaryFilterRelationshipTemplatePipe implements PipeTransform {

@@ -16,6 +16,7 @@ declare var _: any;
  */
 @Component({
     templateUrl: '../templates/apilogviewermodal.html',
+    standalone: false
 })
 export class APIlogViewerModal {
 

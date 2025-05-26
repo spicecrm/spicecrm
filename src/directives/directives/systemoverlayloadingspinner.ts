@@ -21,7 +21,8 @@ import {SystemSpinner} from "../../systemcomponents/components/systemspinner";
     selector: '[system-overlay-loading-spinner]',
     host: {
         class: 'slds-is-relative'
-    }
+    },
+    standalone: false
 })
 export class SystemOverlayLoadingSpinnerDirective {
     /**

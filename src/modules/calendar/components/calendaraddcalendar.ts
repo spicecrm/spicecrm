@@ -7,6 +7,7 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     templateUrl: '../templates/calendaraddcalendar.html',
+    standalone: false
 })
 export class CalendarAddCalendar {
 

@@ -15,7 +15,8 @@ import {CdkDragDrop} from "@angular/cdk/drag-drop";
 @Component({
     selector: 'field-email-recipients-input',
     templateUrl: '../templates/fieldemailrecipientsinput.html',
-    styles: ['input, input:focus { border: none; outline: none;}']
+    styles: ['input, input:focus { border: none; outline: none;}'],
+    standalone: false
 })
 export class fieldEmailRecipientsInput {
     /**

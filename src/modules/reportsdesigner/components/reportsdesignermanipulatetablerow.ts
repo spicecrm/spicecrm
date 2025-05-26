@@ -11,7 +11,8 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: '[reports-designer-manipulate-table-row]',
-    templateUrl: '../templates/reportsdesignermanipulatetablerow.html'
+    templateUrl: '../templates/reportsdesignermanipulatetablerow.html',
+    standalone: false
 })
 export class ReportsDesignerManipulateTableRow {
 

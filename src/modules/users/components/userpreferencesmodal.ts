@@ -29,7 +29,8 @@ declare var _: any;
 @Component({
     selector: 'user-preferences-modal',
     templateUrl: '../templates/userpreferencesmodal.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class UserPreferencesModal implements OnDestroy {
     public self: any;

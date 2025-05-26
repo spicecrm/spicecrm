@@ -12,7 +12,8 @@ import {language} from "../../../services/language.service";
 @Component({
     selector: 'calendar-google-event-popover',
     templateUrl: '../templates/calendargoogleeventpopover.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class CalendarGoogleEventPopover implements AfterViewInit {
     /**

@@ -14,7 +14,8 @@ import {fieldFloat} from "./fieldfloat";
 
 @Component({
     selector: 'field-quantity',
-    templateUrl: '../templates/fieldquantity.html'
+    templateUrl: '../templates/fieldquantity.html',
+    standalone: false
 })
 export class fieldQuantity extends fieldFloat implements OnInit {
 

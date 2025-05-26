@@ -11,7 +11,7 @@ import {activitiytimeline, activityTimeLineModules} from '../../../services/acti
 @Component({
     selector: 'activitytimeline-container',
     templateUrl: '../templates/activitytimelinecontainer.html',
-
+    standalone: false
 })
 export class ActivityTimelineContainer implements OnInit {
 

@@ -11,7 +11,8 @@ import {NavigationStart, Router} from '@angular/router';
 
 @Component({
     selector: 'global-header-favorite',
-    templateUrl: '../templates/globalheaderfavorite.html'
+    templateUrl: '../templates/globalheaderfavorite.html',
+    standalone: false
 })
 export class GlobalHeaderFavorite {
 

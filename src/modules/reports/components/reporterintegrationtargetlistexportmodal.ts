@@ -13,7 +13,8 @@ import {toast} from "../../../services/toast.service";
 @Component({
     selector: 'reporter-integration-targetlistexport-modal',
     templateUrl: '../templates/reporterintegrationtargetlistexportmodal.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ReporterIntegrationTargetlistexportModal{
 

@@ -27,7 +27,8 @@ import {Subscription} from "rxjs";
 @Component({
     selector: 'reporter-detail-presentation-standard',
     templateUrl: '../templates/reporterdetailpresentationstandard.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit, OnDestroy {
     /**

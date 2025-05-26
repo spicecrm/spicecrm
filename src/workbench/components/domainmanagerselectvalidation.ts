@@ -12,7 +12,8 @@ import {DomainValidation} from "../interfaces/domainmanager.interfaces";
  */
 @Component({
     selector: 'domain-manager-select-validation',
-    templateUrl: '../templates/domainmanagerselectvalidation.html'
+    templateUrl: '../templates/domainmanagerselectvalidation.html',
+    standalone: false
 })
 export class DomainManagerSelectValidation {
 

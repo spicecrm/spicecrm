@@ -14,7 +14,8 @@ import {metadata} from "../../services/metadata.service";
  */
 @Component({
     selector: 'object-list-header-actionmenu',
-    templateUrl: '../templates/objectlistheaderactionmenu.html'
+    templateUrl: '../templates/objectlistheaderactionmenu.html',
+    standalone: false
 })
 export class ObjectListHeaderActionMenu extends ObjectActionContainer {
 

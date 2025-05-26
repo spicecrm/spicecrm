@@ -11,7 +11,8 @@ import {BodyI} from "../interfaces/spicepagebuilder.interfaces";
 @Component({
     selector: 'spice-page-builder-renderer',
     templateUrl: '../templates/spicepagebuilderrenderer.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderRenderer implements OnInit {
     /**

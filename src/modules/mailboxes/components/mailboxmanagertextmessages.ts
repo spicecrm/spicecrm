@@ -11,6 +11,7 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
 @Component({
     selector: 'mailbox-manager-textmessages',
     templateUrl: '../templates/mailboxmanagertextmessages.html',
+    standalone: false
 })
 export class MailboxManagerTextMessages {
 

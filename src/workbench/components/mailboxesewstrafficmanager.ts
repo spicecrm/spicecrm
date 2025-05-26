@@ -15,6 +15,7 @@ import {Observable, Subject} from "rxjs";
 @Component({
     selector: "mailboxes-mailgun-ews-manager",
     templateUrl: "../templates/mailboxesewstrafficmanager.html",
+    standalone: false
 })
 export class MailboxesEWSTrafficManager {
 

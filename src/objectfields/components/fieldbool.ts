@@ -9,7 +9,8 @@ import {fieldGeneric} from './fieldgeneric';
  */
 @Component({
     selector: 'field-bool',
-    templateUrl: '../templates/fieldbool.html'
+    templateUrl: '../templates/fieldbool.html',
+    standalone: false
 })
 export class fieldBool extends fieldGeneric {
 
