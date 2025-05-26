@@ -8,7 +8,8 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
  */
 @Component({
     templateUrl: '../templates/apilogviewerreplayitem.html',
-    selector: "[apilogviewer-replay-item]"
+    selector: "[apilogviewer-replay-item]",
+    standalone: false
 })
 export class APIlogViewerReplayItem {
 

@@ -17,7 +17,8 @@ declare var _: any;
  * a modal to dsiplay an API Log entry record
  */
 @Component({
-    templateUrl: '../templates/apilogviewerreplaymodal.html'
+    templateUrl: '../templates/apilogviewerreplaymodal.html',
+    standalone: false
 })
 export class APIlogViewerReplayModal {
 
