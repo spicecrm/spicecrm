@@ -10,7 +10,8 @@ import {TelephonyCallPanelRelated} from "./telephonycallpanelrelated";
 @Component({
     selector: 'telephony-call-panel-related-compact',
     templateUrl: '../templates/telephonycallpanelrelatedcompact.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class TelephonyCallPanelRelatedCompact extends TelephonyCallPanelRelated {
 

@@ -10,7 +10,8 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Component({
     selector: 'reports-designer-more-present-item-grouped',
-    templateUrl: '../templates/reportsdesignermorepresentitemgrouped.html'
+    templateUrl: '../templates/reportsdesignermorepresentitemgrouped.html',
+    standalone: false
 })
 export class ReportsDesignerMorePresentItemGrouped extends ReportsDesignerPresentItemStandard {
 

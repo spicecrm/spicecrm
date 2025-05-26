@@ -28,7 +28,8 @@ declare var moment;
  */
 @Component({
     templateUrl: '../templates/eventbookingaddmodal.html',
-    providers: [view, modalwindow]
+    providers: [view, modalwindow],
+    standalone: false
 })
 export class EventBookingAddModal implements OnInit {
 

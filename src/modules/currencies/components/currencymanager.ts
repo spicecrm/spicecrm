@@ -14,7 +14,8 @@ import {sysCurrency} from "../interfaces/currencies.interfaces";
 
 @Component({
     selector: 'currency-manager',
-    templateUrl: '../templates/currencymanager.html'
+    templateUrl: '../templates/currencymanager.html',
+    standalone: false
 })
 
 export class CurrencyManager implements OnInit {

@@ -20,7 +20,8 @@ import {modal} from '../../services/modal.service';
 @Component({
     selector: 'object-select-button',
     templateUrl: '../templates/objectselectbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ObjectSelectButton implements OnInit {
 

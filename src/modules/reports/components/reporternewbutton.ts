@@ -8,7 +8,8 @@ import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 
 @Component({
-    templateUrl: '../templates/reporternewbutton.html'
+    templateUrl: '../templates/reporternewbutton.html',
+    standalone: false
 })
 
 export class ReporterNewButton {

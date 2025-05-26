@@ -14,7 +14,8 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-procurement-doc-taxcategories',
-    templateUrl: '../templates/fieldprocurementdoctaxcategories.html'
+    templateUrl: '../templates/fieldprocurementdoctaxcategories.html',
+    standalone: false
 })
 export class fieldProcurementDocTaxCategories extends fieldGeneric {
 

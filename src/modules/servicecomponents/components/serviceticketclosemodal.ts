@@ -18,7 +18,8 @@ import {field} from "../../../objectfields/components/field";
 @Component({
     selector: 'service-ticket-close-modal',
     templateUrl: '../templates/serviceticketclosemodal.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ServiceTicketCloseModal {
 

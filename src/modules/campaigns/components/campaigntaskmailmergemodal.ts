@@ -14,7 +14,8 @@ declare var moment: any;
 
 @Component({
     selector: 'campaigntask-mailerge-modal',
-    templateUrl: '../templates/campaigntaskmailmergemodal.html'
+    templateUrl: '../templates/campaigntaskmailmergemodal.html',
+    standalone: false
 })
 export class CampaignTaskMailMergeModal implements OnInit {
 

@@ -11,7 +11,8 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'administration-dict-repair-modal',
-    templateUrl: '../templates/administrationdictrepairmodal.html'
+    templateUrl: '../templates/administrationdictrepairmodal.html',
+    standalone: false
 })
 export class AdministrationDictRepairModal {
 

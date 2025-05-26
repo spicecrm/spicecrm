@@ -16,7 +16,8 @@ import {userpreferences} from '../../../services/userpreferences.service';
 @Component({
     selector: 'salesdocs-item-details-container',
     templateUrl: '../templates/salesdocsitemdetailscontainer.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class SalesDocsItemDetailsContainer implements OnInit {
 

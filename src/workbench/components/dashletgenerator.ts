@@ -7,6 +7,7 @@ import {
 
 @Component({
     templateUrl: '../templates/dashletgenerator.html',
+    standalone: false
 })
 export class DashletGenerator {
     public dashlet: any;

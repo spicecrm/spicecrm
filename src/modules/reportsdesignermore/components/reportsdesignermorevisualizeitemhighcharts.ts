@@ -8,7 +8,8 @@ import {ReportsDesignerService} from "../../reportsdesigner/services/reportsdesi
 
 @Component({
     selector: 'reports-designer-more-visualize-item-high-charts',
-    templateUrl: '../templates/reportsdesignermorevisualizeitemhighcharts.html'
+    templateUrl: '../templates/reportsdesignermorevisualizeitemhighcharts.html',
+    standalone: false
 })
 export class ReportsDesignerMoreVisualizeItemHighCharts implements OnInit {
 

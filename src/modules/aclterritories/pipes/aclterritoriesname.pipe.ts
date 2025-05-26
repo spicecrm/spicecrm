@@ -8,7 +8,8 @@ import {Pipe, PipeTransform} from '@angular/core';
  */
 @Pipe({
     name: 'aclterritoriesnamepipe',
-    pure: false
+    pure: false,
+    standalone: false
 })
 export class ACLTerritoriesNamePipe implements PipeTransform {
     public transform(values, filterterm) {

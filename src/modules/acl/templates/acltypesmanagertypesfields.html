@@ -1,6 +1,6 @@
 <div class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
     <h2 class="slds-text-heading--small"><system-label label="LBL_FIELDS"></system-label></h2>
-    <button class="slds-col--bump-left slds-button slds-button--brand" [disabled]="changescope == 'none' || !this.aclType.acltype?.id" (click)="addField()"><system-label label="LBL_ADD"></system-label></button>
+    <button class="slds-col--bump-left slds-button slds-button--brand" [disabled]="changescope == 'none' || !aclType.acltype?.id" (click)="addField()"><system-label label="LBL_ADD"></system-label></button>
 </div>
 <table class="slds-table slds-table_bordered slds-table_cell-buffer">
     <thead>

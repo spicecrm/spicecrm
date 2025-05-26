@@ -16,7 +16,8 @@ declare var moment: any;
 @Component({
     selector: 'campaignlog-tracking-actions-modal',
     templateUrl: '../templates/campaignlogtrackingactionsmodal.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class CampaignLogTrackingActionsModal implements OnInit{
 

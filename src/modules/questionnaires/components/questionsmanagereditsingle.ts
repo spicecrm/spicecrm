@@ -11,6 +11,7 @@ import { metadata } from '../../../services/metadata.service';
 @Component({
     selector: 'questions-manager-edit-single',
     templateUrl: '../templates/questionsmanagereditsingle.html',
+    standalone: false
 })
 export class QuestionsManagerEditSingle extends QuestionsManagerEditBasicWithOptions implements OnInit {
 

@@ -12,7 +12,8 @@ import {backend} from '../../../services/backend.service';
  * an export component for the reporter that allows wroiting the plannign nodes form the report
  */
 @Component({
-    templateUrl: '../templates/salesplanningreporterintegrationexportmodal.html'
+    templateUrl: '../templates/salesplanningreporterintegrationexportmodal.html',
+    standalone: false
 })
 export class SalesPlanningReporterIntegrationExportModal implements OnInit {
 

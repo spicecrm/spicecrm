@@ -18,7 +18,8 @@ import {firstValueFrom} from "rxjs";
 @Component({
     selector: 'spice-attachment-file',
     templateUrl: '../templates/spiceattachmentfile.html',
-    providers: [SpiceAttachmentsPanel]
+    providers: [SpiceAttachmentsPanel],
+    standalone: false
 })
 export class SpiceAttachmentFile {
 

@@ -12,7 +12,8 @@ import {view} from '../../../services/view.service';
  */
 @Component({
     selector: 'product-variants-attribute-vc',
-    templateUrl: '../templates/productvariantsattributevc.html'
+    templateUrl: '../templates/productvariantsattributevc.html',
+    standalone: false
 })
 export class ProductVariantsAttributeVC implements OnInit {
 

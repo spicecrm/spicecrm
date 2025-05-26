@@ -6,7 +6,8 @@ import {
 } from '@angular/core';
 
 @Pipe({
-    name: 'packageloaderpipe'
+    name: 'packageloaderpipe',
+    standalone: false
 })
 export class PackageLoaderPipe {
     public transform(packagelist, term, scope?) {

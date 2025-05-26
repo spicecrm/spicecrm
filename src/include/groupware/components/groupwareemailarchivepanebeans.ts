@@ -14,7 +14,8 @@ import {metadata} from "../../../services/metadata.service";
  */
 @Component({
     selector: 'groupware-email-archive-pane-beans',
-    templateUrl: '../templates/groupwareemailarchivepanebeans.html'
+    templateUrl: '../templates/groupwareemailarchivepanebeans.html',
+    standalone: false
 })
 export class GroupwareEmailArchivePaneBeans {
     /**

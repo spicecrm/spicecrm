@@ -11,7 +11,8 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-rating',
-    templateUrl: '../templates/fieldrating.html'
+    templateUrl: '../templates/fieldrating.html',
+    standalone: false
 })
 export class fieldRating extends fieldGeneric {
 

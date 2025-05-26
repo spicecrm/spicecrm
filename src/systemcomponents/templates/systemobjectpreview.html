@@ -38,5 +38,5 @@
             </div>
         }
     }
-    <a *ngIf="downloadTrigger$ && downloadReady" #downloadlink [href]="this.blobUrl" [download]="name" style="display:none"></a>
+    <a *ngIf="downloadTrigger$ && downloadReady" #downloadlink [href]="blobUrl" [download]="name" style="display:none"></a>
 }

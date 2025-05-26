@@ -13,6 +13,7 @@ import {session} from '../../services/session.service';
 @Component({
     selector: 'system-navigation-manager',
     templateUrl: '../templates/systemnavigationmanager.html',
+    standalone: false
 })
 export class SystemNavigationManager {
 

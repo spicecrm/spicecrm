@@ -15,7 +15,8 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: 'lead-select-type-modal',
     templateUrl: '../templates/leadselecttypemodal.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class LeadSelectTypeModal {
 

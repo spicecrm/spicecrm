@@ -9,6 +9,7 @@ import {backend} from '../../../services/backend.service';
 @Component({
     selector: 'aclterritorries-typesmanager-type-elements',
     templateUrl: '../templates/aclterritorriestypesmanagertypeelements.html',
+    standalone: false
 })
 export class ACLTerritorriesTypesmanagerTypeElements implements OnChanges {
 

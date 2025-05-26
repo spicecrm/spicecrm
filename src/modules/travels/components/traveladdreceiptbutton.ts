@@ -10,7 +10,8 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'travel-add-receipt-button',
-    templateUrl: '../templates/traveladdreceiptbutton.html'
+    templateUrl: '../templates/traveladdreceiptbutton.html',
+    standalone: false
 })
 export class TravelAddReceiptButton {
 

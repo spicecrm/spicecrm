@@ -17,7 +17,8 @@ declare var moment: any;
 
 @Component({
     selector: 'procurement-docs-items-container',
-    templateUrl: '../templates/procurementdocsitemscontainer.html'
+    templateUrl: '../templates/procurementdocsitemscontainer.html',
+    standalone: false
 })
 export class ProcurementDocsItemsContainer implements OnInit, OnDestroy {
 

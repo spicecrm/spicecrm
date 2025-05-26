@@ -21,6 +21,7 @@ import {DictionaryIndex, DictionaryItem} from "../interfaces/dictionarymanager.i
 @Component({
     selector: 'dictionary-manager-indexes',
     templateUrl: '../templates/dictionarymanagerindexes.html',
+    standalone: false
 })
 export class DictionaryManagerIndexes {
 

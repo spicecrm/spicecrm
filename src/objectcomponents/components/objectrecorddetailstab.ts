@@ -14,7 +14,8 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'object-record-details-tab',
-    templateUrl: '../templates/objectrecorddetailstab.html'
+    templateUrl: '../templates/objectrecorddetailstab.html',
+    standalone: false
 })
 export class ObjectRecordDetailsTab implements OnInit {
 

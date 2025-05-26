@@ -9,6 +9,7 @@ import {WorkflowManagerService} from "../services/workflowmanager.service";
 @Component({
     selector: 'workflow-manager-task-types-decision',
     templateUrl: '../templates/workflowmanagertasktypesdecision.html',
+    standalone: false
 })
 /**
  * handle managing the workflow task decision type

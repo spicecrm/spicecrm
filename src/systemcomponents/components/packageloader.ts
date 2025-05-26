@@ -20,6 +20,7 @@ declare var _;
 @Component({
     selector: 'package-loader',
     templateUrl: '../templates/packageloader.html',
+    standalone: false
 })
 export class PackageLoader {
 

@@ -11,7 +11,8 @@ import {telecockpitservice} from '../services/telecockpit.service';
 @Component({
     selector: 'tele_sales_cockpit_log_call_button',
     templateUrl: '../templates/telesalescockpitlogcallbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class TeleSalesCockpitLogCallButton {
 

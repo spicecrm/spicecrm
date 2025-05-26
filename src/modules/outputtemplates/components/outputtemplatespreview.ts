@@ -19,7 +19,8 @@ declare var moment: any;
 @Component({
     selector: 'output-templates-preview',
     templateUrl: "../templates/outputtemplatespreview.html",
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class OutputTemplatesPreview {
 

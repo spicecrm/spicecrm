@@ -10,7 +10,8 @@ import {modal} from '../../../services/modal.service';
  */
 @Component({
     selector: 'campaigntask-mailmerge-button',
-    templateUrl: '../templates/campaigntaskmailmergebutton.html'
+    templateUrl: '../templates/campaigntaskmailmergebutton.html',
+    standalone: false
 })
 export class CampaignTaskMailergeButton {
 

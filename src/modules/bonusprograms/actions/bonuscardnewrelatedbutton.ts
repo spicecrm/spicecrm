@@ -15,7 +15,8 @@ import {modelutilities} from "../../../services/modelutilities.service";
 @Component({
     selector: "bonus-cards-new-related-button",
     templateUrl: "../templates/bonuscardnewrelatedbutton.html",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class BonusCardNewRelatedButton extends BonusCardNewButton {
 

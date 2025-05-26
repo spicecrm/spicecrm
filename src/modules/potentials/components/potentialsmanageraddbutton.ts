@@ -11,7 +11,8 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 @Component({
     selector: 'potentials-manager-add-button',
     templateUrl: "../templates/potentialsmanageraddbutton.html",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class PotentialsManagerAddButton {
 

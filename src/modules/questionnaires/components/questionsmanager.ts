@@ -12,7 +12,8 @@ import { toast } from '../../../services/toast.service';
 
 @Component({
     selector: 'questions-manager',
-    templateUrl: '../templates/questionsmanager.html'
+    templateUrl: '../templates/questionsmanager.html',
+    standalone: false
 })
 export class QuestionsManager implements OnInit {
 

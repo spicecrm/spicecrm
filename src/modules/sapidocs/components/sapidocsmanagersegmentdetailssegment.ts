@@ -10,7 +10,8 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'sapidocs-manager-segment-details-segment',
-    templateUrl: '../templates/sapidocsmanagersegmentdetailssegment.html'
+    templateUrl: '../templates/sapidocsmanagersegmentdetailssegment.html',
+    standalone: false
 })
 export class SAPIDOCsManagerSegmentDetailsSegment implements OnInit, OnDestroy {
 

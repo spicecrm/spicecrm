@@ -24,7 +24,8 @@ declare var moment: any;
 @Component({
     selector: 'system-display-datetime',
     templateUrl: '../templates/systemdisplaydatetime.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestroy {
 

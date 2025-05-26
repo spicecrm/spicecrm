@@ -17,7 +17,8 @@ import {configurationService} from "../../services/configuration.service";
 declare var moment: any;
 
 @Component({
-    templateUrl: '../templates/configtransfer.html'
+    templateUrl: '../templates/configtransfer.html',
+    standalone: false
 })
 export class ConfigTransfer {
 

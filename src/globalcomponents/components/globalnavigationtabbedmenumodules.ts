@@ -23,7 +23,8 @@ import {navigation} from '../../services/navigation.service';
         '[class.slds-is-active]': 'isActive',
         '(mouseenter)': 'openMenu()',
         '(mouseleave)': 'closeMenu()'
-    }
+    },
+    standalone: false
 })
 export class GlobalNavigationTabbedMenuModules {
 

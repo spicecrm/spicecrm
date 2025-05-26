@@ -24,8 +24,8 @@ import { metadata } from '../../services/metadata.service';
     templateUrl: '../templates/objectrelatedcardheader.html',
     animations: [
         trigger('animateicon', [
-            state('open', style({ transform: 'scale(1, 1)'})),
-            state('closed', style({ transform: 'scale(1, -1)'})),
+            state('open', style({ transform: 'scale(1, 1)' })),
+            state('closed', style({ transform: 'scale(1, -1)' })),
             transition('open => closed', [
                 animate('.5s'),
             ]),
@@ -34,6 +34,7 @@ import { metadata } from '../../services/metadata.service';
             ])
         ])
     ],
+    standalone: false
 })
 export class ObjectRelatedCardHeader implements OnInit {
 

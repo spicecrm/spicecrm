@@ -10,7 +10,8 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'campaign-send-test-mail-button',
-    templateUrl: '../templates/campaignsendtestmailbutton.html'
+    templateUrl: '../templates/campaignsendtestmailbutton.html',
+    standalone: false
 })
 export class CampaignSendTestMailButton {
 

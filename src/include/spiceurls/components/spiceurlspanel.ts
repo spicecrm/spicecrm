@@ -17,7 +17,8 @@ import {modelurls} from "../../../services/modelurls.service";
 @Component({
     selector: 'spice-urls-panel',
     templateUrl: '../templates/spiceurlspanel.html',
-    providers: [modelurls]
+    providers: [modelurls],
+    standalone: false
 })
 export class SpiceUrlsPanel implements AfterViewInit {
 

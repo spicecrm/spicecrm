@@ -9,7 +9,8 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'systemtenant-welcome-modal',
-    templateUrl: '../templates/systemtenantwelcomemodal.html'
+    templateUrl: '../templates/systemtenantwelcomemodal.html',
+    standalone: false
 })
 export class SystemTenantWelcomeModal {
 

@@ -19,7 +19,8 @@ import {navigationtab} from "../../../services/navigationtab.service";
 @Component({
     selector: 'salesdocs-add-basic',
     templateUrl: '../templates/salesdocsaddbasics.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class SalesDocsAddBasics {
 

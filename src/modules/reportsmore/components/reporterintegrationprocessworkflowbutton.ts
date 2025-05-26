@@ -11,7 +11,8 @@ import {broadcast} from "../../../services/broadcast.service";
             <a href="javascript:void(0);" role="menuitem" tabindex="0">
                 <span class="slds-truncate"><system-label label="LBL_PROCESS_WORKFLOW"></system-label></span>
             </a>
-        </li>`
+        </li>`,
+    standalone: false
 })
 
 export class ReporterIntegrationProcessWorkflowButton {

@@ -10,7 +10,8 @@ import {configurationService} from '../../../services/configuration.service';
 @Component({
     selector: 'procurement-docs-item-details-container',
     templateUrl: '../templates/procurementdocsitemdetailscontainer.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ProcurementDocsItemDetailsContainer implements OnInit {
 

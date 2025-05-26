@@ -8,8 +8,8 @@ import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 
 @Component({
-    templateUrl: '../templates/serviceticketview.html'
-
+    templateUrl: '../templates/serviceticketview.html',
+    standalone: false
 })
 export class ServiceTicketView implements OnInit {
 

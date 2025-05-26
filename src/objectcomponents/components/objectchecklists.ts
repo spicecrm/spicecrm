@@ -18,16 +18,17 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
     templateUrl: '../templates/objectchecklists.html',
     animations: [
         trigger('tabAnimation', [
-            state('true', style({height: '*', opacity: 1})),
-            state('false', style({height: '0px', opacity: 0})),
+            state('true', style({ height: '*', opacity: 1 })),
+            state('false', style({ height: '0px', opacity: 0 })),
             transition('true => false', [
-                style({overflow: 'hidden'}), animate('.5s')
+                style({ overflow: 'hidden' }), animate('.5s')
             ]),
             transition('false => true', [
-                animate('.5s'), style({overflow: 'inherit'})
+                animate('.5s'), style({ overflow: 'inherit' })
             ])
         ])
-    ]
+    ],
+    standalone: false
 })
 export class ObjectChecklists implements OnInit, OnDestroy {
     /**

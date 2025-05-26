@@ -11,7 +11,8 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'object-edit-modal-dialog-container',
-    templateUrl: '../templates/objecteditmodaldialogcontainer.html'
+    templateUrl: '../templates/objecteditmodaldialogcontainer.html',
+    standalone: false
 })
 export class ObjectEditModalDialogContainer implements OnInit {
     /**

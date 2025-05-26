@@ -26,7 +26,8 @@ declare var moment: any;
 @Component({
     selector: '[project-settlement-line]',
     templateUrl: '../templates/projectsettlementline.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ProjectSettlementLine implements OnInit, OnDestroy {
 

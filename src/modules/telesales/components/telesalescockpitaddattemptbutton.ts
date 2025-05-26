@@ -8,7 +8,8 @@ import {telecockpitservice} from "../services/telecockpit.service";
 
 @Component({
     selector: 'tele_sales_cockpit_add_attempt_button',
-    templateUrl: '../templates/telesalescockpitaddattemptbutton.html'
+    templateUrl: '../templates/telesalescockpitaddattemptbutton.html',
+    standalone: false
 })
 
 export class TeleSalesCockpitAddAttemptButton {

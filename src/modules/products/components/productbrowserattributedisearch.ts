@@ -13,7 +13,8 @@ declare var moment: any;
 
 @Component({
     selector: 'product-browser-attribute-di-search',
-    templateUrl: '../templates/productbrowserattributedisearch.html'
+    templateUrl: '../templates/productbrowserattributedisearch.html',
+    standalone: false
 })
 export class ProductBrowserAttributeDISearch extends ProductBrowserAttributeVCSearch {
 

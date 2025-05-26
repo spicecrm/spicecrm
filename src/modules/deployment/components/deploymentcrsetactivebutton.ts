@@ -13,7 +13,8 @@ import {Subscription} from "rxjs";
  * renders a button in an actionset that can activate a CR in the system
  */
 @Component({
-    templateUrl: '../templates/deploymentcrsetactivebutton.html'
+    templateUrl: '../templates/deploymentcrsetactivebutton.html',
+    standalone: false
 })
 export class DeploymentCRSetActiveButton {
     /**

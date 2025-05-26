@@ -10,7 +10,8 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 @Component({
     selector: 'system-calendar-list-days',
     templateUrl: '../templates/systemcalendarlistdays.html',
-    providers: [relatedmodels, model]
+    providers: [relatedmodels, model],
+    standalone: false
 })
 export class SystemCalendarListDays implements OnChanges {
 

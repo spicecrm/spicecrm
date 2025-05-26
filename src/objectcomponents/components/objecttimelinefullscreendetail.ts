@@ -14,7 +14,8 @@ import {timeline} from "../../services/timeline.service";
 @Component({
     selector: 'object-timeline-full-screen-detail',
     templateUrl: '../templates/objecttimelinefullscreendetail.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ObjecttimelineFullScreenDetail implements OnChanges {
     @ViewChild('detailContainer', {read: ViewContainerRef, static: true}) public detailContainer: ViewContainerRef;

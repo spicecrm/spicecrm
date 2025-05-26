@@ -15,7 +15,8 @@ import {dockedComposer} from '../../../services/dockedcomposer.service';
 import {telephony} from '../../../services/telephony.service';
 
 @Component({
-    templateUrl: '../templates/asterisktoolbarindicator.html'
+    templateUrl: '../templates/asterisktoolbarindicator.html',
+    standalone: false
 })
 export class AsteriskToolbarIndicator implements OnDestroy {
 

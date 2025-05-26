@@ -12,7 +12,8 @@ import {territories} from '../../../services/territories.service';
  */
 @Component({
     selector: 'field-territory-search-modal',
-    templateUrl: '../templates/fieldterritorysearchmodal.html'
+    templateUrl: '../templates/fieldterritorysearchmodal.html',
+    standalone: false
 })
 export class fieldTerritorySearchModal implements OnInit {
 

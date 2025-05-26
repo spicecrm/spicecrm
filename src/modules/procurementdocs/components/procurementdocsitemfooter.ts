@@ -10,7 +10,8 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: '[procurement-docs-item-footer]',
     templateUrl: '../templates/procurementdocsitemfooter.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ProcurementDocsItemFooter {
 

@@ -14,7 +14,8 @@ import {SpicePageBuilderElement} from "./spicepagebuilderelement";
 @Component({
     selector: 'spice-page-builder-element-text',
     templateUrl: '../templates/spicepagebuilderelementtext.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderElementText extends SpicePageBuilderElement implements OnInit {
     /**

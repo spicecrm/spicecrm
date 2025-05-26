@@ -7,7 +7,8 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: "knowledge-browser-details-container-right",
-    templateUrl: "../templates/knowledgebrowserdetailscontainerright.html"
+    templateUrl: "../templates/knowledgebrowserdetailscontainerright.html",
+    standalone: false
 })
 export class KnowledgeBrowserDetailsContainerRight implements OnDestroy {
     public componentconfig: any = {};

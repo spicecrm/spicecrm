@@ -15,7 +15,8 @@ declare var moment: any;
 @Component({
     selector: "project-activity-confirmation",
     templateUrl: "../templates/projectactivityconfirmation.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ProjectActivityConfirmation {
 

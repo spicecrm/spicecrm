@@ -15,7 +15,8 @@ import {configurationService} from '../../../services/configuration.service';
 @Component({
     selector: 'procurement-docs-add-basic',
     templateUrl: '../templates/procurementdocsaddbasics.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ProcurementDocsAddBasics {
 

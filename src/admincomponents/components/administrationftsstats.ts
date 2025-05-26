@@ -7,7 +7,8 @@ import {language} from '../../services/language.service';
 import {backend} from '../../services/backend.service';
 
 @Component({
-    templateUrl: '../templates/administrationftsstats.html'
+    templateUrl: '../templates/administrationftsstats.html',
+    standalone: false
 })
 export class AdministrationFTSStats {
 

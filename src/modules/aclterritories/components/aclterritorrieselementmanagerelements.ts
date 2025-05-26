@@ -15,6 +15,7 @@ import {navigationtab} from '../../../services/navigationtab.service';
 @Component({
     selector: 'aclterritorries-elementmanager-elements',
     templateUrl: '../templates/aclterritorrieselementmanagerelements.html',
+    standalone: false
 })
 export class ACLTerritorriesElementmanagerElements {
 

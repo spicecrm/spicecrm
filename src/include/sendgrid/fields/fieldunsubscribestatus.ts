@@ -10,7 +10,7 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'field-unsubscribe-status',
     templateUrl: '../templates/fieldunsubscribestatus.html',
-
+    standalone: false
 })
 
 export class fieldUnsubscribeStatus implements OnInit {

@@ -15,7 +15,8 @@ import {ActivityTimelineAddItem} from "../../../modules/activities/components/ac
 
 @Component({
     templateUrl: '../templates/serviceactivitiytimelineaddservicenote.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ServiceActivitiyTimelineAddServiceNote extends ActivityTimelineAddItem {
 

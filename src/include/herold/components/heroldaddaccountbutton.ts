@@ -10,6 +10,7 @@ import {toast} from "../../../services/toast.service";
 @Component({
     selector: 'herold-add-account-button',
     templateUrl: '../templates/heroldaddaccountbutton.html',
+    standalone: false
 })
 export class HeroldAddAccountButton {
 

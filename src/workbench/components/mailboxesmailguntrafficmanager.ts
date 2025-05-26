@@ -13,6 +13,7 @@ import {view} from "../../services/view.service";
 @Component({
     selector: "mailboxes-mailgun-traffic-manager",
     templateUrl: "../templates/mailboxesmailguntrafficmanager.html",
+    standalone: false
 })
 export class MailboxesMailgunTrafficManager {
 

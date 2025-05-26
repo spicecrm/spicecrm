@@ -13,7 +13,8 @@ import {view} from "../../services/view.service";
 @Component({
     selector: 'global-project-activity-track-time-icon',
     templateUrl: '../templates/globalprojectactivitytracktimeicon.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 
 export class GlobalProjectActivityTrackTimeIcon {

@@ -11,7 +11,8 @@ import { metadata } from '../../../services/metadata.service';
 declare var _: any;
 @Component({
     selector: 'questions-manager-edit-rating',
-    templateUrl: '../templates/questionsmanagereditrating.html'
+    templateUrl: '../templates/questionsmanagereditrating.html',
+    standalone: false
 })
 export class QuestionsManagerEditRating extends QuestionsManagerEditBasicWithOptions implements OnInit {
 

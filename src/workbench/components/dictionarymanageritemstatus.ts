@@ -16,7 +16,8 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
             useExisting: forwardRef(() => DictionaryManagerItemStatus),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class DictionaryManagerItemStatus implements ControlValueAccessor {
 

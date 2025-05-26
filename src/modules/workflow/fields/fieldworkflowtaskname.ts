@@ -16,7 +16,8 @@ import {Subscription} from 'rxjs';
  */
 @Component({
     selector: 'field-wokflowtask-name',
-    templateUrl: '../templates/fieldworkflowtaskname.html'
+    templateUrl: '../templates/fieldworkflowtaskname.html',
+    standalone: false
 })
 export class fieldWorkflowTaskName extends fieldGeneric implements OnInit {
 

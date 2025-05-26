@@ -11,6 +11,7 @@ import {model} from '../../services/model.service';
 @Component({
     selector: 'object-actionset-menu-container-edit',
     templateUrl: '../templates/objectactionsetmenucontaineredit.html',
+    standalone: false
 })
 export class ObjectActionsetMenuContainerEdit {
 

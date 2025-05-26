@@ -17,6 +17,7 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
     providers: [model, view],
     selector: "mailbox-manager-email",
     templateUrl: "../templates/mailboxmanageremail.html",
+    standalone: false
 })
 export class MailboxManagerEmail implements OnInit {
 

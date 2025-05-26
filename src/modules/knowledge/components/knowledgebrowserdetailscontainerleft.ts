@@ -16,7 +16,8 @@ import {helper} from "../../../services/helper.service";
 @Component({
     selector: "knowledge-browser-details-container-left",
     templateUrl: "../templates/knowledgebrowserdetailscontainerleft.html",
-    providers: [modelattachments]
+    providers: [modelattachments],
+    standalone: false
 })
 export class KnowledgeBrowserDetailsContainerLeft {
 

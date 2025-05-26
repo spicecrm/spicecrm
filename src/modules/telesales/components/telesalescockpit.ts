@@ -16,7 +16,8 @@ import {Subscription} from "rxjs";
         telecockpitservice,
         view,
         model
-    ]
+    ],
+    standalone: false
 })
 
 export class TeleSalesCockpit implements OnDestroy {

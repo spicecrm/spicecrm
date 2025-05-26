@@ -19,7 +19,8 @@ declare var moment: any;
 @Component({
     selector: 'object-optimisitclocking-modal-change',
     templateUrl: '../templates/objectoptimisticlockingmodalchange.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ObjectOptimisticLockingModalChange {
 

@@ -13,7 +13,8 @@ const ngValueAccessor = {
 @Component({
     selector: 'system-input-base64',
     templateUrl: '../templates/systeminputbase64.html',
-    providers: [ngValueAccessor]
+    providers: [ngValueAccessor],
+    standalone: false
 })
 
 export class SystemInputBase64 {

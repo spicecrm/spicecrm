@@ -13,7 +13,8 @@ import { take } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
 @Component({
-    templateUrl: '../templates/questionnaireresults.html'
+    templateUrl: '../templates/questionnaireresults.html',
+    standalone: false
 })
 export class QuestionnaireResults implements OnInit {
 

@@ -9,7 +9,8 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'global-header-workbench',
-    templateUrl: '../templates/globalheaderworkbench.html'
+    templateUrl: '../templates/globalheaderworkbench.html',
+    standalone: false
 })
 export class GlobalHeaderWorkbench {
 

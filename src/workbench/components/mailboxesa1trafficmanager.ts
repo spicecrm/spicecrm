@@ -13,6 +13,7 @@ import {view} from "../../services/view.service";
 @Component({
     selector: "mailboxes-a1-traffic-manager",
     templateUrl: "../templates/mailboxesa1trafficmanager.html",
+    standalone: false
 })
 export class MailboxesA1TrafficManager implements OnInit {
 

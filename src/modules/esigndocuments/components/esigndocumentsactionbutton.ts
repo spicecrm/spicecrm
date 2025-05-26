@@ -11,7 +11,8 @@ import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     templateUrl: '../templates/esigndocumentsactionbutton.html',
-    providers: [relatedmodels]
+    providers: [relatedmodels],
+    standalone: false
 })
 export class ESignDocumentsActionButton {
 

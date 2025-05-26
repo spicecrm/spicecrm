@@ -11,7 +11,8 @@ import {view} from '../../services/view.service';
  */
 @Component({
     selector: 'object-list-header-sort',
-    templateUrl: '../templates/objectlistheadersort.html'
+    templateUrl: '../templates/objectlistheadersort.html',
+    standalone: false
 })
 export class ObjectListHeaderSort {
     /**

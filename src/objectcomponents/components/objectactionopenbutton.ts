@@ -16,7 +16,8 @@ import {navigationtab} from "../../services/navigationtab.service";
 @Component({
     selector: 'object-action-open-button',
     templateUrl: '../templates/objectactionopenbutton.html',
-    providers: [helper]
+    providers: [helper],
+    standalone: false
 })
 export class ObjectActionOpenButton {
 

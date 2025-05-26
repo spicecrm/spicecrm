@@ -10,8 +10,8 @@ import {model} from "../../../services/model.service";
 @Component({
     selector: 'product-group-manager-details-attributes-add-button',
     templateUrl: '../templates/productgroupmanagerdetailsattributesaddbutton.html',
-    providers: [model]
-
+    providers: [model],
+    standalone: false
 })
 export class ProductGroupManagerDetailsAttributesAddButton {
     @Output() public changes: EventEmitter<any> = new EventEmitter<any>();

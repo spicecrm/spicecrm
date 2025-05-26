@@ -13,7 +13,8 @@ import {ActionSetItemI} from "../../../objectcomponents/interfaces/objectcompone
 
 @Component({
     templateUrl: '../templates/eventwithcampaignactivatebutton.html',
-    selector: 'event-with-campaign-activate-button'
+    selector: 'event-with-campaign-activate-button',
+    standalone: false
 })
 export class EventWithCampaignActivateButton implements ActionSetItemI {
 

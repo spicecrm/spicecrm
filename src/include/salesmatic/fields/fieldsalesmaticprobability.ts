@@ -15,7 +15,7 @@ import reset = _default.reset;
 @Component({
     selector: 'field-salesmatic-probability',
     templateUrl: '../templates/fieldsalesmaticprobability.html',
-
+    standalone: false
 })
 export class fieldSalesmaticProbability extends fieldGeneric implements OnInit{
 

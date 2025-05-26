@@ -12,7 +12,8 @@ import {productfinder} from "../services/productfinder.service";
 @Component({
     selector: 'product-group-manager-details-attributes-item',
     templateUrl: '../templates/productgroupmanagerdetailsattributesitem.html',
-    providers: [model, relatedmodels]
+    providers: [model, relatedmodels],
+    standalone: false
 })
 export class ProductGroupManagerDetailsAttributesItem implements OnInit, AfterViewInit {
     public detailsItems: any[] = [];

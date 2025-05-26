@@ -9,7 +9,8 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'object-list-types',
-    templateUrl: '../templates/objectlisttypes.html'
+    templateUrl: '../templates/objectlisttypes.html',
+    standalone: false
 })
 export class ObjectListTypes {
     /**

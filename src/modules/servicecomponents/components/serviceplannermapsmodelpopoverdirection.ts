@@ -21,7 +21,8 @@ declare var moment: any;
  */
 @Component({
     selector: 'service-planner-maps-model-popover-direction',
-    templateUrl: '../templates/serviceplannermapsmodelpopoverdirection.html'
+    templateUrl: '../templates/serviceplannermapsmodelpopoverdirection.html',
+    standalone: false
 })
 export class ServicePlannerMapsModelPopoverDirection {
     /**

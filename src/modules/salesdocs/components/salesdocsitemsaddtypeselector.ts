@@ -14,7 +14,8 @@ import {model} from '../../../services/model.service';
 import {toast} from "../../../services/toast.service";
 
 @Component({
-    templateUrl: '../templates/salesdocsitemsaddtypeselector.html'
+    templateUrl: '../templates/salesdocsitemsaddtypeselector.html',
+    standalone: false
 })
 export class SalesDocsItemsAddTypeSelector implements OnInit {
 

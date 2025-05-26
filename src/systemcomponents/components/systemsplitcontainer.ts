@@ -8,7 +8,8 @@ import {SystemSplitContainerRight} from "./systemsplitcontainerright";
     host: {
         class: 'slds-size--1-of-1 slds-height_full slds-grid',
         style: 'padding-right: 13px;'
-    }
+    },
+    standalone: false
 })
 
 export class SystemSplitContainer {

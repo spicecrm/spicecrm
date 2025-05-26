@@ -8,6 +8,7 @@ import {navigation} from '../../../services/navigation.service';
 @Component({
     selector: 'aclterritorries-element-manager',
     templateUrl: '../templates/aclterritorrieselementmanager.html',
+    standalone: false
 })
 export class ACLTerritorriesElementmanager {
 

@@ -40,7 +40,7 @@
                     </li>
                 </ol>
                 <div class="slds-progress-bar slds-progress-bar_x-small">
-                    <span class="slds-progress-bar__value" [style.width.%]="this.currentConvertStep / (2) * 100"></span>
+                    <span class="slds-progress-bar__value" [style.width.%]="currentConvertStep / (2) * 100"></span>
                 </div>
             </div>
             <button *ngIf="currentConvertStep == 1" class="slds-button slds-button--neutral" [disabled]="model.isLoading" (click)="nextStep()"><system-label label="LBL_NEXT"></system-label></button>

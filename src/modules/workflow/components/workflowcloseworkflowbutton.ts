@@ -16,7 +16,7 @@ declare var moment: any;
 
 @Component({
     templateUrl: '../templates/workflowcloseworkflowbutton.html',
-
+    standalone: false
 })
 export class WorkflowCloseWorkflowButton {
 

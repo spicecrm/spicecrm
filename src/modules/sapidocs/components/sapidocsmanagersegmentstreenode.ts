@@ -13,7 +13,8 @@ import {sapIDOCSegmentI, sapIDOCSegmentRelationI} from "../../../modules/sapidoc
     host: {
         '[attr.aria-expanded]': 'expanded',
         '[attr.aria-level]': 'level + 1'
-    }
+    },
+    standalone: false
 })
 
 export class SAPIDOCsManagerSegmentsTreeNode implements OnInit {

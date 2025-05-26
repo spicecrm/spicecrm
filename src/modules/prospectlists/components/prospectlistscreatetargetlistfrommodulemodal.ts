@@ -16,8 +16,8 @@ import {Router} from "@angular/router";
 @Component({
     selector: 'object-create-targetlist-from-module-modal',
     templateUrl: '../templates/prospectlistscreatetargetlistfrommodulemodal.html',
-    providers: [model]
-
+    providers: [model],
+    standalone: false
 })
 export class ProspectListsCreateTargetListFromModuleModal {
 

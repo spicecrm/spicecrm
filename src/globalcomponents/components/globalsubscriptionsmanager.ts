@@ -10,7 +10,8 @@ import {subscription} from "../../services/subscription.service";
  */
 @Component({
     selector: 'global-subscriptions-manager',
-    templateUrl: '../templates/globalsubscriptionsmanager.html'
+    templateUrl: '../templates/globalsubscriptionsmanager.html',
+    standalone: false
 })
 export class GlobalSubscriptionsManager {
 

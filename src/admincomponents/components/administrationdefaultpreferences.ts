@@ -15,7 +15,8 @@ import {configurationService} from "../../services/configuration.service";
 @Component({
     selector: 'administration-default-preferences',
     templateUrl: '../templates/administrationdefaultpreferences.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class AdministrationDefaultPreferences implements OnInit {
     /**

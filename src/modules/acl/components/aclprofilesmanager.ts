@@ -13,6 +13,7 @@ import {backend} from '../../../services/backend.service';
 @Component({
     selector: 'acl-profiles-manager',
     templateUrl: '../templates/aclprofilesmanager.html',
+    standalone: false
 })
 export class ACLProfilesManager {
 

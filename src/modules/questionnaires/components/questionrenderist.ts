@@ -6,7 +6,8 @@ import { questionnaireParticipationService } from '../services/questionnairepart
 import { QuestionRenderBasic } from './questionrenderbasic';
 
 @Pipe({
-    name: 'questiontypeisttextspipe'
+    name: 'questiontypeisttextspipe',
+    standalone: false
 })
 export class QuestionTypeISTTextPipe {
 
@@ -51,7 +52,8 @@ export class QuestionTypeISTTextPipe {
 
 }
 @Pipe({
-    name: 'questiontypeistoptionspipe'
+    name: 'questiontypeistoptionspipe',
+    standalone: false
 })
 export class QuestionTypeISTOptionsPipe {
     public transform( values ) {
@@ -66,7 +68,8 @@ export class QuestionTypeISTOptionsPipe {
     styles: [
         'div.question-render-question:last-child { margin-bottom: 0; }',
         'div.question-render-question { border-radius:0; }'
-    ]
+    ],
+    standalone: false
 } )
 export class QuestionRenderIST extends QuestionRenderBasic implements OnInit {
 

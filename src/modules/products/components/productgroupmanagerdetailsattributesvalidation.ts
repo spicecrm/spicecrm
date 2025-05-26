@@ -11,7 +11,8 @@ import {model} from "../../../services/model.service";
 @Component({
     selector: 'product-group-manager-details-attributes-validation',
     templateUrl: '../templates/productgroupmanagerdetailsattributesvalidation.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ProductGroupManagerDetailsAttributesValidation implements OnInit, OnDestroy {
     @ViewChild('buttoncontainer', {read: ViewContainerRef, static: true}) public buttonContainer: ViewContainerRef;

@@ -10,7 +10,8 @@ import {modellist} from "../../../services/modellist.service";
 @Component({
     selector: 'event-registration-modal-list',
     templateUrl: '../templates/eventregistrationmodallist.html',
-    providers: [modellist]
+    providers: [modellist],
+    standalone: false
 })
 export class EventRegistrationModalList {
 

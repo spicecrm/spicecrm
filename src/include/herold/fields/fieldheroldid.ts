@@ -17,7 +17,8 @@ import {modal} from "../../../services/modal.service";
  * renders a field to upload files in a model itself
  */
 @Component({
-    templateUrl: '../templates/fieldheroldid.html'
+    templateUrl: '../templates/fieldheroldid.html',
+    standalone: false
 })
 export class fieldHeroldId extends fieldGeneric {
 

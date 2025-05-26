@@ -15,7 +15,8 @@ import {procurementdocrecord} from "../services/procurementdocrecord";
 @Component({
     selector: 'procurement-docs-record-view',
     templateUrl: '../templates/procurementdocsrecordview.html',
-    providers: [procurementdocrecord]
+    providers: [procurementdocrecord],
+    standalone: false
 })
 export class ProcurementDocsRecordView {
 

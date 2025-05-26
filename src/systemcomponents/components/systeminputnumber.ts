@@ -15,7 +15,8 @@ import {modal} from "../../services/modal.service";
             useExisting: forwardRef(() => SystemInputNumber),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputNumber implements ControlValueAccessor {
 

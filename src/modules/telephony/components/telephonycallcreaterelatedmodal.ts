@@ -13,7 +13,8 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'telephony-call-panel-create-related-modal',
     templateUrl: '../templates/telephonycallcreaterelatedmodal.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class TelephonyCallCreateRelatedModal {
 

@@ -9,7 +9,8 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: '[workflow-manager-detail-tasksystemactions-line]',
-    templateUrl: '../templates/workflowmanagerdetailtasksystemactionsline.html'
+    templateUrl: '../templates/workflowmanagerdetailtasksystemactionsline.html',
+    standalone: false
 })
 export class WorkflowManagerDetailTaskSystemactionsLine {
 

@@ -8,7 +8,8 @@ import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'questionset-type-parameters',
-    templateUrl: '../templates/questionsettypeparameters.html'
+    templateUrl: '../templates/questionsettypeparameters.html',
+    standalone: false
 })
 export class QuestionsetTypeParameters implements OnInit {
 

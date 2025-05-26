@@ -24,7 +24,8 @@ declare var moment: any;
     styles: [
         'table { border-bottom: none; }',
         'table tr:last-child td { border-bottom: none; }'
-    ]
+    ],
+    standalone: false
 })
 export class ObjectOptimisticLockingModal implements OnInit {
 

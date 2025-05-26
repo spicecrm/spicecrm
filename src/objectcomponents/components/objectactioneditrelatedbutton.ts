@@ -10,7 +10,8 @@ import {Subscription} from "rxjs";
 @Component({
     selector: 'object-action-edit-related-button',
     templateUrl: '../templates/objectactioneditrelatedbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ObjectActionEditRelatedButton implements OnInit, OnDestroy {
 

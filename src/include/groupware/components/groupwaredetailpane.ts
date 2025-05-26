@@ -16,7 +16,8 @@ import {modal} from "../../../services/modal.service";
  */
 @Component({
     selector: 'groupware-detail-pane',
-    templateUrl: '../templates/groupwaredetailpane.html'
+    templateUrl: '../templates/groupwaredetailpane.html',
+    standalone: false
 })
 export class GroupwareDetailPane implements OnInit, OnDestroy {
 

@@ -6,7 +6,8 @@ import {fieldEnum} from './fieldenum';
 
 @Component({
     selector: 'field-enum-alternate',
-    templateUrl: '../templates/fieldenumalternate.html'
+    templateUrl: '../templates/fieldenumalternate.html',
+    standalone: false
 })
 
 export class fieldEnumAlternate extends fieldEnum {

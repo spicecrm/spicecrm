@@ -10,7 +10,8 @@ declare var _;
 
 @Component({
     selector: 'reports-designer-filter',
-    templateUrl: '../templates/reportsdesignerfilter.html'
+    templateUrl: '../templates/reportsdesignerfilter.html',
+    standalone: false
 })
 export class ReportsDesignerFilter implements OnChanges, OnDestroy {
 

@@ -16,7 +16,8 @@ declare var moment: any;
  */
 @Component({
     templateUrl: '../templates/serviceordernewbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ServiceOrderNewButton {
 

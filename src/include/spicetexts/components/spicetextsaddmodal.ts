@@ -13,7 +13,8 @@ declare var _;
 
 @Component({
     templateUrl: '../templates/spicetextsaddmodal.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 
 export class SpiceTextsAddModal implements OnInit {

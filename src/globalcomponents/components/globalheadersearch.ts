@@ -16,7 +16,8 @@ import {userpreferences} from "../../services/userpreferences.service";
 @Component({
     selector: 'global-header-search',
     templateUrl: '../templates/globalheadersearch.html',
-    providers: [fts]
+    providers: [fts],
+    standalone: false
 })
 export class GlobalHeaderSearch {
 

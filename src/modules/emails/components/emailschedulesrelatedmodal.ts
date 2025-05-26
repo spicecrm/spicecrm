@@ -15,7 +15,8 @@ import {modelattachments} from "../../../services/modelattachments.service";
 @Component({
     selector: "email-schedules-related-modal",
     templateUrl: "../templates/emailschedulesrelatedmodal.html",
-    providers: [model, view, modelattachments, emailsService]
+    providers: [model, view, modelattachments, emailsService],
+    standalone: false
 })
 export class EmailSchedulesRelatedModal {
     /**

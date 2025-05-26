@@ -15,7 +15,8 @@ import {Router} from "@angular/router";
 @Component({
     selector: 'projectwbs-quote-button',
     templateUrl: '../templates/projectwbsquotebutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ProjectWBSQuoteButton {
 

@@ -7,7 +7,8 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: 'workbench-config-option-method',
-    templateUrl: '../templates/workbenchconfigoptionmethod.html'
+    templateUrl: '../templates/workbenchconfigoptionmethod.html',
+    standalone: false
 })
 export class WorkbenchConfigOptionMethod {
 

@@ -12,6 +12,7 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: 'aclterritorries-manager',
     templateUrl: '../templates/aclterritorriesmanager.html',
+    standalone: false
 })
 export class ACLTerritorriesManager {
 

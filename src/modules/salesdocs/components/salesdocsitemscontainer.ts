@@ -23,7 +23,8 @@ declare var moment: any;
 
 @Component({
     selector: 'salesdocs-items-container',
-    templateUrl: '../templates/salesdocsitemscontainer.html'
+    templateUrl: '../templates/salesdocsitemscontainer.html',
+    standalone: false
 })
 export class SalesDocsItemsContainer implements OnInit, OnDestroy {
 

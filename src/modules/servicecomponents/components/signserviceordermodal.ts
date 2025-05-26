@@ -10,6 +10,7 @@ import {language} from "../../../services/language.service";
     selector: 'sign-serviceorder-modal',
     templateUrl: '../templates/signserviceordermodal.html',
     providers: [model, view],
+    standalone: false
 })
 export class SignServiceOrderModalComponent {
     // needed for selfdestruction... will be set on creation...

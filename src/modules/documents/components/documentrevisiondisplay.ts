@@ -9,8 +9,8 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'document-revision-display',
-    templateUrl: '../templates/documentrevisiondisplay.html'
-
+    templateUrl: '../templates/documentrevisiondisplay.html',
+    standalone: false
 })
 export class DocumentRevisionDisplay implements OnInit{
 

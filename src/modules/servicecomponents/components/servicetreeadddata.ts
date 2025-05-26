@@ -11,7 +11,8 @@ import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'service-tree-add-data',
-    templateUrl: '../templates/servicetreeadddata.html'
+    templateUrl: '../templates/servicetreeadddata.html',
+    standalone: false
 })
 
 export class ServiceTreeAddData implements OnInit {

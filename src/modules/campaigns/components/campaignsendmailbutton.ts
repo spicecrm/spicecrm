@@ -11,7 +11,8 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'campaign-send-mail-button',
-    templateUrl: '../templates/campaignsendmailbutton.html'
+    templateUrl: '../templates/campaignsendmailbutton.html',
+    standalone: false
 })
 export class CampaignSendMailButton {
 

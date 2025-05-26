@@ -15,7 +15,8 @@ import {fieldCurrency} from "../../../objectfields/components/fieldcurrency";
 
 @Component({
     selector: 'field-salesdoc-item-amount',
-    templateUrl: '../templates/fieldsalesdocitemamount.html'
+    templateUrl: '../templates/fieldsalesdocitemamount.html',
+    standalone: false
 })
 export class fieldSalesdocItemAmount extends fieldCurrency {
 

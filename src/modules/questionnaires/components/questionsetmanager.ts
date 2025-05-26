@@ -9,7 +9,8 @@ import { modal } from '../../../services/modal.service';
 @Component({
     selector: 'questionset-manager',
     templateUrl: "../templates/questionsetmanager.html",
-    providers: [ model ]
+    providers: [model],
+    standalone: false
 })
 export class QuestionsetManager implements OnInit {
 

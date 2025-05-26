@@ -7,7 +7,8 @@ import {scrum} from '../services/scrum.service';
 
 @Component({
     selector: 'scrum-tree',
-    templateUrl: '../templates/scrumtree.html'
+    templateUrl: '../templates/scrumtree.html',
+    standalone: false
 })
 export class ScrumTree {
 

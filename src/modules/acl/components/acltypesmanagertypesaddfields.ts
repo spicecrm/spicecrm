@@ -18,6 +18,7 @@ import {configurationService} from "../../../services/configuration.service";
 @Component({
     selector: 'acltypes-manager-types-add-fields',
     templateUrl: '../templates/acltypesmanagertypesaddfields.html',
+    standalone: false
 })
 export class ACLTypesManagerTypesAddFields implements OnInit {
 

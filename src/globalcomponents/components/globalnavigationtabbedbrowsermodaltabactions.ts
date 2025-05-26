@@ -12,7 +12,8 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'global-navigation-tabbed-browser-modal-tab-actions',
-    templateUrl: '../templates/globalnavigationtabbedbrowsermodaltabactions.html'
+    templateUrl: '../templates/globalnavigationtabbedbrowsermodaltabactions.html',
+    standalone: false
 })
 export class GlobalNavigationTabbedBrowserModalTabActions {
 

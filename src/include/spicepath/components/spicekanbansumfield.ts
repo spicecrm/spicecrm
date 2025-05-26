@@ -12,7 +12,8 @@ declare var _: any;
  */
 @Component({
     selector: 'spice-kanban-sumfield',
-    templateUrl: '../templates/spicekanbansumfield.html'
+    templateUrl: '../templates/spicekanbansumfield.html',
+    standalone: false
 })
 export class SpiceKanbanSumField {
 

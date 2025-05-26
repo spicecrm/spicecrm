@@ -12,7 +12,8 @@ declare var _: any;
 
 @Component({
     selector: 'hcm-skill-matrix',
-    templateUrl : '../templates/hcmskillmatrix.html'
+    templateUrl: '../templates/hcmskillmatrix.html',
+    standalone: false
 })
 
 export class HCMSkillMatrix implements OnInit, OnDestroy{

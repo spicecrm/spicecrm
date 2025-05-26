@@ -12,6 +12,7 @@ import {spiceimportsservice} from '../services/spiceimports.service';
 @Component({
     selector: 'spice-imports-logs',
     templateUrl: '../templates/spiceimportslogs.html',
+    standalone: false
 })
 export class Spiceimportslogs {
 

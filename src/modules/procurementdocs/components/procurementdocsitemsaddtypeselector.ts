@@ -9,7 +9,8 @@ import {model} from '../../../services/model.service';
 
 @Component({
     selector: 'procurement-docs-items-add-type-selector',
-    templateUrl: '../templates/procurementdocsitemsaddtypeselector.html'
+    templateUrl: '../templates/procurementdocsitemsaddtypeselector.html',
+    standalone: false
 })
 export class ProcurementDocsItemsAddTypeSelector implements OnInit {
 

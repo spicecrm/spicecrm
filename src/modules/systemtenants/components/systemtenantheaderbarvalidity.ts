@@ -11,7 +11,8 @@ declare var moment: any;
  */
 @Component({
     selector: 'systemtenant-header-bar-validity',
-    templateUrl: '../templates/systemtenantheaderbarvalidity.html'
+    templateUrl: '../templates/systemtenantheaderbarvalidity.html',
+    standalone: false
 })
 export class SystemTenantHeaderBarValidity implements OnInit {
 

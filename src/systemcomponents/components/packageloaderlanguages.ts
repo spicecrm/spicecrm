@@ -8,6 +8,7 @@ import {
 @Component({
     selector: 'package-loader-languages',
     templateUrl: '../templates/packageloaderlanguages.html',
+    standalone: false
 })
 export class PackageLoaderLanguages {
 

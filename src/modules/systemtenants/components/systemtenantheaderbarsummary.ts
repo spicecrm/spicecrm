@@ -12,7 +12,8 @@ declare var moment: any;
  */
 @Component({
     selector: 'systemtenant-header-bar-summary',
-    templateUrl: '../templates/systemtenantheaderbarsummary.html'
+    templateUrl: '../templates/systemtenantheaderbarsummary.html',
+    standalone: false
 })
 export class SystemTenantHeaderBarSummary implements OnInit {
 

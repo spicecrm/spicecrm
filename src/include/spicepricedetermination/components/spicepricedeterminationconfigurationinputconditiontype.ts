@@ -19,7 +19,8 @@ import {language} from "../../../services/language.service";
             useExisting: forwardRef(() => SpicePriceDeterminationConfiguratorInputConditiontype),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SpicePriceDeterminationConfiguratorInputConditiontype implements ControlValueAccessor, OnInit {
 

@@ -21,7 +21,8 @@ import {modal} from "../../services/modal.service";
             useExisting: forwardRef(() => SystemInputLabel),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
 

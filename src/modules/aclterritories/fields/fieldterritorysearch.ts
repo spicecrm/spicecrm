@@ -11,7 +11,8 @@ import {territories} from '../../../services/territories.service';
 
 @Component({
     selector: 'field-territory-search',
-    templateUrl: '../templates/fieldterritorysearch.html'
+    templateUrl: '../templates/fieldterritorysearch.html',
+    standalone: false
 })
 export class fieldTerritorySearch {
     public searchTerm: string = '';

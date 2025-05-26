@@ -9,7 +9,8 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'product-group-manager-details',
     templateUrl: '../templates/Productgroupmanagerdetails.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ProductGroupManagerDetails implements OnChanges, OnDestroy {
     @ViewChild("detailscontainer", {read: ViewContainerRef, static: true}) public detailsContainer: ViewContainerRef;

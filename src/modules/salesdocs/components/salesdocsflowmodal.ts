@@ -14,6 +14,7 @@ import {Subscription} from "rxjs";
 @Component({
     selector: 'salesdocs-flow-modal',
     templateUrl: "../templates/salesdocsflowmodal.html",
+    standalone: false
 })
 export class SalesDocsFlowModal implements OnInit, OnDestroy {
 

@@ -11,7 +11,8 @@ import {Subscription} from "rxjs";
 
 @Component({
     templateUrl: '../templates/serviceticketaccountdetail.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ServiceTicketAccountDetail implements OnDestroy, OnInit {
 

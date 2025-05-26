@@ -16,7 +16,8 @@ import {configurationService} from '../../services/configuration.service';
 
 @Component({
     selector: 'fieldsetmanager-edit-dialog',
-    templateUrl: '../templates/fieldsetmanagereditdialog.html'
+    templateUrl: '../templates/fieldsetmanagereditdialog.html',
+    standalone: false
 })
 export class FieldsetManagerEditDialog implements OnInit{
 

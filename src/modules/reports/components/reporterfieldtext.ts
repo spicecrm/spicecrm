@@ -10,7 +10,8 @@ import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 @Component({
     selector: 'reporter-field-text',
     templateUrl: '../templates/reporterfieldtext.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterFieldText {
     /**

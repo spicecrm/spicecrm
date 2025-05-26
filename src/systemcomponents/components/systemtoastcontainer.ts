@@ -7,7 +7,8 @@ import {layout} from '../../services/layout.service';
 
 @Component({
     selector: 'system-toast-container',
-    templateUrl: '../templates/systemtoastcontainer.html'
+    templateUrl: '../templates/systemtoastcontainer.html',
+    standalone: false
 })
 export class SystemToastContainer {
 

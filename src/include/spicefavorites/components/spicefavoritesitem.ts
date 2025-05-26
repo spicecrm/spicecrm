@@ -14,7 +14,8 @@ import {metadata} from '../../../services/metadata.service';
 @Component({
     selector: 'spice-favorites-item',
     templateUrl: '../templates/spicefavoritesitem.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class SpiceFavoritesItem implements OnInit {
 

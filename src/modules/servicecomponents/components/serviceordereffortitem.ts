@@ -7,7 +7,8 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: "[serviceorder-effort-item]",
     templateUrl: "../templates/serviceordereffortitem.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ServiceOrderEffortItem implements OnInit  {
 

@@ -14,6 +14,7 @@ import {backend} from "../../../services/backend.service";
  */
 @Component({
     templateUrl: '../templates/mailchimpcampaignstatspanel.html',
+    standalone: false
 })
 export class MailChimpCampaignStatsPanel implements OnInit {
     public res: any = {};

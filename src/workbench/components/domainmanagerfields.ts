@@ -19,6 +19,7 @@ import {domainmanager} from '../services/domainmanager.service';
 @Component({
     selector: 'domain-manager-fields',
     templateUrl: '../templates/domainmanagerfields.html',
+    standalone: false
 })
 export class DomainManagerFields {
     constructor(public domainmanager: domainmanager, public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities, public broadcast: broadcast, public toast: toast, public modal: modal, public injector: Injector) {

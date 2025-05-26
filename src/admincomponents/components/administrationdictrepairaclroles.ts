@@ -9,7 +9,8 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'administration-dict-repair-acl-roles',
-    templateUrl: '../templates/administrationdictrepairaclroles.html'
+    templateUrl: '../templates/administrationdictrepairaclroles.html',
+    standalone: false
 })
 
 export class AdministrationDictRepairACLRoles {

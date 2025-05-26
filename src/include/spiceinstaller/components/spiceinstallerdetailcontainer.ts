@@ -14,7 +14,8 @@ import {view} from '../../../services/view.service';
 @Component({
     selector: 'spice-installer-detail-container',
     templateUrl: '../templates/spiceinstallerdetailcontainer.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class SpiceInstallerDetailContainer {
 

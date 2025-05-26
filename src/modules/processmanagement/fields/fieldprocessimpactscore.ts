@@ -12,7 +12,8 @@ import {fieldEnum} from "../../../objectfields/components/fieldenum";
 
 @Component({
     selector: 'field-process-impact-score',
-    templateUrl: '../templates/fieldprocessimpactscore.html'
+    templateUrl: '../templates/fieldprocessimpactscore.html',
+    standalone: false
 })
 export class fieldProcessImpactScore extends fieldEnum {
 

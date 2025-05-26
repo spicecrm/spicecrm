@@ -22,7 +22,8 @@ import {
  */
 @Component({
     selector: 'dictionary-manager-index-add',
-    templateUrl: '../templates/dictionarymanagerindexadd.html'
+    templateUrl: '../templates/dictionarymanagerindexadd.html',
+    standalone: false
 })
 export class DictionaryManagerIndexAdd implements OnInit{
 

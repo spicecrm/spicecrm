@@ -17,7 +17,8 @@ declare var _: any;
 
 @Component({
     selector: 'field-questionnaire',
-    templateUrl: '../templates/fieldquestionnaire.html'
+    templateUrl: '../templates/fieldquestionnaire.html',
+    standalone: false
 })
 export class fieldQuestionnaire extends fieldGeneric implements AfterViewInit, OnInit, OnDestroy {
 

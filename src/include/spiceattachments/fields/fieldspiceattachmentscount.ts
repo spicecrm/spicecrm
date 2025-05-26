@@ -16,7 +16,8 @@ import {Router} from "@angular/router";
  */
 @Component({
     selector: 'field-spice-attachments-count',
-    templateUrl: '../templates/fieldspiceattachmentscount.html'
+    templateUrl: '../templates/fieldspiceattachmentscount.html',
+    standalone: false
 })
 export class fieldSpiceAttachmentsCount extends fieldGeneric {
 

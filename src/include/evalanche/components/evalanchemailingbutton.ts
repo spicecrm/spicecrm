@@ -15,6 +15,7 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     templateUrl: '../templates/evalanchemailingbutton.html',
+    standalone: false
 })
 export class EvalancheMailingButton {
 

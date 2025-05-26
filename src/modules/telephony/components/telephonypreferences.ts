@@ -7,7 +7,8 @@ import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
 
 @Component({
-    templateUrl: '../templates/telephonypreferences.html'
+    templateUrl: '../templates/telephonypreferences.html',
+    standalone: false
 })
 export class TelephonyPreferences {
 

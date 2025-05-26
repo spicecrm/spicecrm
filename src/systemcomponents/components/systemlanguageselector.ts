@@ -10,7 +10,8 @@ declare var _: any;
 
 @Component({
     selector: "system-language-selector",
-    templateUrl: "../templates/systemlanguageselector.html"
+    templateUrl: "../templates/systemlanguageselector.html",
+    standalone: false
 })
 export class SystemLanguageSelector implements OnInit{
 

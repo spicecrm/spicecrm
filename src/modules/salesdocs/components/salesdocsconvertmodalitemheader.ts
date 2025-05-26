@@ -7,7 +7,8 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: '[salesdocs-convert-modal-item-header]',
-    templateUrl: "../templates/salesdocsconvertmodalitemheader.html"
+    templateUrl: "../templates/salesdocsconvertmodalitemheader.html",
+    standalone: false
 })
 export class SalesDocsConvertModalItemHeader {
 

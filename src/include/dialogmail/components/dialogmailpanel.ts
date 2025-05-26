@@ -8,7 +8,8 @@ import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
 
 @Component({
-    templateUrl: "../templates/dialogmailpanel.html"
+    templateUrl: "../templates/dialogmailpanel.html",
+    standalone: false
 })
 export class DialogMailPanel {
 

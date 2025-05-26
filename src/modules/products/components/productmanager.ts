@@ -18,7 +18,8 @@ declare var moment: any;
  */
 @Component({
     templateUrl: '../templates/productmanager.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ProductManager {
 

@@ -12,6 +12,7 @@ import {backend} from "../../../services/backend.service";
 @Component({
     selector: 'reports-designer-more-integrate-item-pdf-export',
     templateUrl: '../templates/reportsdesignermoreintegrateitempdfexport.html',
+    standalone: false
 })
 export class ReportsDesignerMoreIntegrateItemPdfExport {
     public templates: any = [];

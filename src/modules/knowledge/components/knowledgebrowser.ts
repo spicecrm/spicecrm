@@ -12,7 +12,8 @@ import {navigationtab} from "../../../services/navigationtab.service";
 @Component({
     selector: 'knowledge-browser',
     templateUrl: "../templates/knowledgebrowser.html",
-    providers: [KnowledgeService, model]
+    providers: [KnowledgeService, model],
+    standalone: false
 })
 export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
 

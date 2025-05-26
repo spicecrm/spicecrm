@@ -7,7 +7,8 @@ import {modal} from "../../../services/modal.service";
 
 
 @Component({
-    templateUrl: "../templates/serviceorderconfirmbutton.html"
+    templateUrl: "../templates/serviceorderconfirmbutton.html",
+    standalone: false
 })
 export class ServiceOrderConfirmButton {
     constructor(

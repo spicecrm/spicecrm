@@ -20,7 +20,8 @@ declare var moment: any;
 
 @Component({
     templateUrl: "../templates/useraddmodal.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class UserAddModal implements OnInit {
     @ViewChild("addcontainer", {read: ViewContainerRef, static: true}) public addcontainer: ViewContainerRef;

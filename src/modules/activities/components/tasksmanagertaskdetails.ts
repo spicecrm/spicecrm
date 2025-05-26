@@ -29,7 +29,8 @@ import {broadcast} from '../../../services/broadcast.service';
     host: {
         class: 'slds-theme--shade'
     },
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class TasksManagerTaskDetails implements OnChanges, OnDestroy {
 

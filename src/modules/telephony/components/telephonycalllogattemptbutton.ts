@@ -11,7 +11,8 @@ import {model} from "../../../services/model.service";
 @Component({
     selector: 'telephony-call-panel-log-attempt-button',
     templateUrl: '../templates/telephonycalllogattemptbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class TelephonyCallLogAttemptButton {
 

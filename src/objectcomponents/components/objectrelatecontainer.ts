@@ -8,7 +8,8 @@ import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 
 @Component({
-    templateUrl: '../templates/objectrelatecontainer.html'
+    templateUrl: '../templates/objectrelatecontainer.html',
+    standalone: false
 })
 export class ObjectRelateContainer implements OnInit {
 

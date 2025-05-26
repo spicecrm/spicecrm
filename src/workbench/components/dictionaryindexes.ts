@@ -18,7 +18,8 @@ import {configurationService} from "../../services/configuration.service";
 @Component({
     selector: 'dictionary-indexes',
     templateUrl: '../templates/dictionaryindexes.html',
-    providers: [dictionarymanager]
+    providers: [dictionarymanager],
+    standalone: false
 })
 export class DictionaryIndexes {
 

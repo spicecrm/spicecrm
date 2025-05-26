@@ -7,7 +7,8 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: '[procurement-docs-convert-modal-item-header]',
-    templateUrl: "../templates/procurementdocsconvertmodalitemheader.html"
+    templateUrl: "../templates/procurementdocsconvertmodalitemheader.html",
+    standalone: false
 })
 export class ProcurementDocsConvertModalItemHeader {
 

@@ -18,6 +18,7 @@ import {DictionaryDefinition, Relationship, RelationshipRelateField} from "../in
 @Component({
     selector: 'dictionary-manager-relationship-container-onetomany',
     templateUrl: '../templates/dictionarymanagerrelationshipcontaineronetomany.html',
+    standalone: false
 })
 export class DictionaryManagerRelationshipContainerOneToMany implements OnInit {
 

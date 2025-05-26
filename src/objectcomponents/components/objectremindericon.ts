@@ -16,7 +16,8 @@ declare var moment: any;
 
 @Component({
     selector: 'object-reminder-icon',
-    templateUrl: '../templates/objectremindericon.html'
+    templateUrl: '../templates/objectremindericon.html',
+    standalone: false
 })
 export class ObjectReminderIcon implements OnDestroy{
 

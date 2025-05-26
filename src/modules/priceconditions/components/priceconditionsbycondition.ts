@@ -15,8 +15,9 @@ import {priceconditonsconfiguration} from '../services/priceconditonsconfigurati
 declare var _: any;
 
 @Component({
-    selector:'price-conditions-by-condition',
+    selector: 'price-conditions-by-condition',
     templateUrl: '../templates/priceconditionsbycondition.html',
+    standalone: false
 })
 export class PriceConditionsByCondition implements OnInit {
 

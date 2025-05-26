@@ -12,7 +12,8 @@ import {DeploymentPackageI} from "../interfaces/deployment.interfaces";
  */
 @Component({
     selector: 'deployment-system-packages-cockpit-view',
-    templateUrl: '../templates/deploymentsystempackagescockpitview.html'
+    templateUrl: '../templates/deploymentsystempackagescockpitview.html',
+    standalone: false
 })
 export class DeploymentSystemPackagesCockpitView implements OnInit {
     /**

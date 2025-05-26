@@ -10,8 +10,8 @@ import {ServiceOrderItemPanel} from "./serviceorderitempanel";
 
 
 @Component({
-
-    templateUrl: "../templates/serviceorderitemconfirmationpanel.html"
+    templateUrl: "../templates/serviceorderitemconfirmationpanel.html",
+    standalone: false
 })
 export class ServiceOrderItemConfirmationPanel extends ServiceOrderItemPanel implements OnInit {
 

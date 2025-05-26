@@ -17,7 +17,8 @@ import {field} from "../../../objectfields/components/field";
 @Component({
     selector: 'service-ticket-assign-to-modal',
     templateUrl: '../templates/serviceticketassigntomodal.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ServiceTicketAssignToModal implements OnInit {
 

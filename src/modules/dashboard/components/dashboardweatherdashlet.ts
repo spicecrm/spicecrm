@@ -17,6 +17,7 @@ declare var moment: any;
 @Component({
     selector: 'dashboard-weather-dashlet',
     templateUrl: '../templates/dashboardweatherdashlet.html',
+    standalone: false
 })
 export class DashboardWeatherDashlet implements OnInit {
 

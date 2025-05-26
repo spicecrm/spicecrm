@@ -17,7 +17,8 @@ import {salesdocrecord} from "../services/salesdocrecord";
 @Component({
     selector: 'salesdocs-record-view',
     templateUrl: '../templates/salesdocsrecordview.html',
-    providers: [salesdocrecord]
+    providers: [salesdocrecord],
+    standalone: false
 })
 export class SalesDocsRecordView {
 

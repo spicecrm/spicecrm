@@ -16,6 +16,7 @@ declare var moment: any;
 @Component({
     selector: 'spice-price-manager-modal',
     templateUrl: '../templates/spicepricemanagermodal.html',
+    standalone: false
 })
 export class SpicePriceManagerModal implements OnInit{
 

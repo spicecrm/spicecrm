@@ -10,6 +10,7 @@ import {SpiceImporterService} from '../services/spiceimporter.service';
 @Component({
     selector: 'spice-importer-check',
     templateUrl: '../templates/spiceimportercheck.html',
+    standalone: false
 })
 
 export class SpiceImporterCheck {

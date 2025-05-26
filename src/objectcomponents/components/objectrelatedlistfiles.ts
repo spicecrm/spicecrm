@@ -39,8 +39,8 @@ import {AgreementsAddRevisionModal} from "../../modules/agreements/components/ag
     providers: [modelattachments],
     animations: [
         trigger('animateicon', [
-            state('open', style({transform: 'scale(1, 1)'})),
-            state('closed', style({transform: 'scale(1, -1)'})),
+            state('open', style({ transform: 'scale(1, 1)' })),
+            state('closed', style({ transform: 'scale(1, -1)' })),
             transition('open => closed', [
                 animate('.5s'),
             ]),
@@ -50,16 +50,17 @@ import {AgreementsAddRevisionModal} from "../../modules/agreements/components/ag
         ]),
         trigger('displaycard', [
             transition(':enter', [
-                style({opacity: 0, height: '0px', overflow: 'hidden'}),
-                animate('.5s', style({height: '*', opacity: 1})),
-                style({overflow: 'unset'})
+                style({ opacity: 0, height: '0px', overflow: 'hidden' }),
+                animate('.5s', style({ height: '*', opacity: 1 })),
+                style({ overflow: 'unset' })
             ]),
             transition(':leave', [
-                style({overflow: 'hidden'}),
-                animate('.5s', style({height: '0px', opacity: 0}))
+                style({ overflow: 'hidden' }),
+                animate('.5s', style({ height: '0px', opacity: 0 }))
             ])
         ])
-    ]
+    ],
+    standalone: false
 })
 export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChanges {
 

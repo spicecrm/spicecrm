@@ -14,7 +14,8 @@ import {toast} from "../../../services/toast.service";
 @Component({
     selector: 'reporter-detail-presentation-pivot',
     templateUrl: '../templates/reporterdetailpresentationpivot.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, OnDestroy {
     /**

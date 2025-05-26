@@ -12,7 +12,8 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: '[salesdocs-equipment-item]',
     templateUrl: "../templates/salesdocsequipmentitem.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class SalesDocsEquipmentItem implements OnInit  {
 

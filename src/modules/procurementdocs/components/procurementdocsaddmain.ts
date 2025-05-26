@@ -12,7 +12,8 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: 'procurement-docs-add-main',
     templateUrl: '../templates/procurementdocsaddmain.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ProcurementDocsAddMain {
 

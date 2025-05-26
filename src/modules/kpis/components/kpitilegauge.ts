@@ -7,7 +7,8 @@ import {KpiTile} from "./kpitile";
 @Component({
     selector: 'kpi-tile-gauge',
     templateUrl: '../templates/kpitilegauge.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 
 export class KpiTileGauge extends KpiTile implements OnInit {

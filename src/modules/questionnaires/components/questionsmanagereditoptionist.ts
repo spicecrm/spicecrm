@@ -11,7 +11,8 @@ import {modal} from '../../../services/modal.service';
 @Component({
     selector: '[questions-manager-edit-option-ist]',
     templateUrl: '../templates/questionsmanagereditoptionist.html',
-    providers: [model,view]
+    providers: [model, view],
+    standalone: false
 })
 export class QuestionsManagerEditOptionIst implements OnInit {
 

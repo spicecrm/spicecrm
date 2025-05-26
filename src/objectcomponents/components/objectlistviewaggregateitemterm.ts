@@ -14,7 +14,8 @@ import {view} from '../../services/view.service';
 @Component({
     selector: 'object-listview-aggregate-item-term',
     templateUrl: '../templates/objectlistviewaggregateitemterm.html',
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 export class ObjectListViewAggregateItemTerm implements OnInit {
 

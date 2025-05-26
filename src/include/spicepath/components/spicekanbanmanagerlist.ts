@@ -20,7 +20,8 @@ import {
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'spice-kanban-manager-list',
-    templateUrl: '../templates/spicekanbanmanagerlist.html'
+    templateUrl: '../templates/spicekanbanmanagerlist.html',
+    standalone: false
 })
 
 export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{

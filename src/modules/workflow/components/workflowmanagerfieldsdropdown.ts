@@ -7,7 +7,8 @@ import {WorkflowManagerService} from "../services/workflowmanager.service";
 
 @Component({
     selector: 'workflow-manager-fieldsdropdown',
-    templateUrl: '../templates/workflowmanagerfieldsdropdown.html'
+    templateUrl: '../templates/workflowmanagerfieldsdropdown.html',
+    standalone: false
 })
 export class WorkflowManagerFieldsdropdown {
 

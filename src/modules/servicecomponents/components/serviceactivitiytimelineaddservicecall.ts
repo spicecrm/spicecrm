@@ -14,7 +14,8 @@ import {activitiytimeline} from '../../../services/activitiytimeline.service';
 @Component({
     selector: 'service-activitiytimeline-add-servicecall',
     templateUrl: '../templates/serviceactivitytimelineaddservicecall.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ServiceActivitiyTimelineAddServiceCall implements OnInit {
 

@@ -21,7 +21,8 @@ import {metadata} from "../../services/metadata.service";
 @Component({
     selector: 'system-label-modulename',
     templateUrl: '../templates/systemlabelmodulename.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SystemLabelModulename implements OnChanges, AfterViewInit, OnDestroy {
 

@@ -12,7 +12,8 @@ import {navigationtab} from "../../../services/navigationtab.service";
 
 @Component({
     selector: "dashboard-container-element",
-    templateUrl: "../templates/dashboardcontainerelement.html"
+    templateUrl: "../templates/dashboardcontainerelement.html",
+    standalone: false
 })
 export class DashboardContainerElement implements AfterViewInit, OnDestroy {
     @ViewChild("containerelement", {read: ViewContainerRef, static: false}) public containerelement: ViewContainerRef;

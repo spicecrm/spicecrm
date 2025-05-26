@@ -19,7 +19,8 @@ import {fielderrorgrouping} from '../../services/fielderrorgrouping.service';
  */
 @Component({
     selector: 'object-tab-container-item-header',
-    templateUrl: '../templates/objecttabcontaineritemheader.html'
+    templateUrl: '../templates/objecttabcontaineritemheader.html',
+    standalone: false
 })
 export class ObjectTabContainerItemHeader{
 

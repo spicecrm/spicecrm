@@ -12,6 +12,7 @@ import {ActivityTimelineAggregates} from './activitytimelineaggregates';
 @Component({
     selector: 'activity-timeline-summary-aggregates',
     templateUrl: '../templates/activitytimelinesummaryaggregates.html',
+    standalone: false
 })
 export class ActivityTimelineSummaryAggregates extends ActivityTimelineAggregates {
 }

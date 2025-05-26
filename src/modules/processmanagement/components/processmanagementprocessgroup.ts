@@ -13,9 +13,10 @@ import {processmanagement} from "../services/processmanagement.service";
 import {view} from "../../../services/view.service";
 
 @Component({
-    selector:'process-management-process-group',
+    selector: 'process-management-process-group',
     templateUrl: '../templates/processmanagementprocessgroup.html',
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 export class ProcessManagementProcessGroup implements OnInit{
 

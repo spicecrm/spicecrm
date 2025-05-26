@@ -16,7 +16,8 @@ import {configurationService} from "../../services/configuration.service";
  */
 @Component({
     selector: 'field-category',
-    templateUrl: '../templates/fieldcategory.html'
+    templateUrl: '../templates/fieldcategory.html',
+    standalone: false
 })
 export class fieldCategory extends fieldGeneric implements OnInit, OnDestroy {
 

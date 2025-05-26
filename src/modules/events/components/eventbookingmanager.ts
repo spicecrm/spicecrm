@@ -12,8 +12,9 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'event-booking-manager',
-    templateUrl : '../templates/eventbookingmanager.html',
-    providers: [relatedmodels, view, model]
+    templateUrl: '../templates/eventbookingmanager.html',
+    providers: [relatedmodels, view, model],
+    standalone: false
 })
 
 export class EventBookingManager implements OnInit {

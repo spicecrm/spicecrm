@@ -10,9 +10,10 @@ import {view} from '../../services/view.service';
     selector: '[object-popover-header]',
     templateUrl: '../templates/objectpopoverheader.html',
     providers: [view],
-    host:{
-        'class' : 'slds-popover__header'
-    }
+    host: {
+        'class': 'slds-popover__header'
+    },
+    standalone: false
 })
 export class ObjectPopoverHeader implements OnInit{
 

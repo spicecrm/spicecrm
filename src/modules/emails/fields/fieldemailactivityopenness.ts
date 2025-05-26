@@ -17,6 +17,7 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 @Component({
     selector: 'field-email-activity-openness',
     templateUrl: '../templates/fieldemailactivityopenness.html',
+    standalone: false
 })
 export class fieldEmailActivityOpenness extends fieldGeneric {
 

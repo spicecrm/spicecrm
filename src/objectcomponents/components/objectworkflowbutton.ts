@@ -15,7 +15,8 @@ import {broadcast} from "../../services/broadcast.service";
  */
 @Component({
     selector: 'object-workflow-button',
-    templateUrl: '../templates/objectworkflowbutton.html'
+    templateUrl: '../templates/objectworkflowbutton.html',
+    standalone: false
 })
 export class ObjectWorkflowButton implements OnDestroy {
     /**

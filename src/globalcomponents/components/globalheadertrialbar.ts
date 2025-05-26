@@ -7,7 +7,8 @@ import {layout} from '../../services/layout.service';
 
 @Component({
     selector: 'global-header-trial-bar',
-    templateUrl: '../templates/globalheadertrialbar.html'
+    templateUrl: '../templates/globalheadertrialbar.html',
+    standalone: false
 })
 export class GlobalHeaderTrialBar {
 

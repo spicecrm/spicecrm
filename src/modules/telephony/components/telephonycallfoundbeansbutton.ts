@@ -13,7 +13,8 @@ import {TelephonyCallFoundBeansModal} from "./telephonycallfoundbeansmodal";
 @Component({
     selector: 'telephony-call-found-beans-button',
     templateUrl: '../templates/telephonycallfoundbeansbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class TelephonyCallFoundBeansButton extends TelephonyCallSearchButton {
     /**

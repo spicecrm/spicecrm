@@ -10,6 +10,7 @@ import { spiceinstaller, stepObject } from "../services/spiceinstaller.service";
 @Component({
     selector: 'spice-installer-systemcheck',
     templateUrl: '../templates/spiceinstallersystemcheck.html',
+    standalone: false
 })
 export class SpiceInstallerSystemCheck {
 

@@ -9,7 +9,8 @@ import {metadata} from '../../services/metadata.service';
 @Component({
     selector: 'field-model-footer-popover',
     templateUrl: '../templates/fieldmodelfooterpopover.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class fieldModelFooterPopover implements OnInit {
     public popovermodule: string = '';

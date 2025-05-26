@@ -12,7 +12,8 @@ import {language} from "../../../services/language.service";
 @Component({
     selector: 'travel-add-manual-travel-receipt-modal',
     templateUrl: '../templates/traveladdmanualtravelreceiptmodal.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 
 /**

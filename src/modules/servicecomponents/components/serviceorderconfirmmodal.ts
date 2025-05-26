@@ -9,7 +9,8 @@ import {language} from "../../../services/language.service";
 
 @Component({
     templateUrl: "../templates/serviceorderconfirmmodal.html",
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ServiceOrderConfirmModal implements OnInit {
 

@@ -11,7 +11,8 @@ import {sapIDOCSegmentI} from "../../../modules/sapidocs/interfaces/moudesapidoc
 
 @Component({
     selector: 'sapidocs-manager-segment-details',
-    templateUrl: '../templates/sapidocsmanagersegmentdetails.html'
+    templateUrl: '../templates/sapidocsmanagersegmentdetails.html',
+    standalone: false
 })
 export class SAPIDOCsManagerSegmentDetails implements OnInit, OnDestroy {
 

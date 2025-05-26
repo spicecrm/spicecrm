@@ -21,6 +21,7 @@ declare var _;
 @Component({
     selector: 'workflow-manager-task-types-email',
     templateUrl: '../templates/workflowmanagertasktypesemail.html',
+    standalone: false
 })
 
 export class WorkflowManagerTaskTypesEmail implements OnInit {
