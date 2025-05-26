@@ -8,7 +8,8 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: "workbench-config-option-module-filter",
-    templateUrl: "../templates/workbenchconfigoptionmodulefilter.html"
+    templateUrl: "../templates/workbenchconfigoptionmodulefilter.html",
+    standalone: false
 })
 export class WorkbenchConfigOptionModulefilter {
 

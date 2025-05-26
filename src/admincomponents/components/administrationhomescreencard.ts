@@ -9,7 +9,8 @@ import {administration} from "../services/administration.service";
 
 @Component({
     selector: 'administration-card',
-    templateUrl: '../templates/administrationhomescreencard.html'
+    templateUrl: '../templates/administrationhomescreencard.html',
+    standalone: false
 })
 
 export class AdministrationHomeScreenCard {

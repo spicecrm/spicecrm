@@ -15,7 +15,8 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: "lead-convert-item-duplicate",
     templateUrl: "../templates/leadconvertitemduplicate.html",
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class LeadConvertItemDuplicate {
 

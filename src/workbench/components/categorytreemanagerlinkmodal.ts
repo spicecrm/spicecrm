@@ -8,7 +8,8 @@ import {metadata} from "../../services/metadata.service";
 @Component({
     selector: 'category-tree-manager-link-modal',
     templateUrl: '../templates/categorytreemanagerlinkmodal.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 
 export class CategoryTreeManagerLinkModal  implements OnInit {

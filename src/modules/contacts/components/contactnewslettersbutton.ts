@@ -8,7 +8,8 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: "contact-newsletters-button",
-    templateUrl: "../templates/contactnewslettersbutton.html"
+    templateUrl: "../templates/contactnewslettersbutton.html",
+    standalone: false
 })
 export class ContactNewslettersButton implements OnInit {
 

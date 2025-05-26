@@ -5,6 +5,7 @@ import {Component, ViewChild, ElementRef} from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {modal} from '../../services/modal.service';
 import {toast} from '../../services/toast.service';
+import { userpreferences } from '../../services/userpreferences.service';
 
 /**
  * @ignore
@@ -15,7 +16,8 @@ declare var moment: any;
  * the api log viwer rendered as part of the admin setion in the system
  */
 @Component({
-    templateUrl: '../templates/apilogviewer.html'
+    templateUrl: '../templates/apilogviewer.html',
+    standalone: false
 })
 export class APIlogViewer {
 
@@ -33,10 +35,18 @@ export class APIlogViewer {
     public limit = '250';
 
     /**
-     * the data loaded fromt he backend
+     * the data loaded from the backend
      * @private
      */
     public entries: any[] = [];
+
+    /**
+     * data is loaded from the backend
+     * @private
+     */
+    public isLoaded = false;
+
+    public totalCount: number;
 
     /**
      * an object holding the filter settings
@@ -135,7 +145,7 @@ export class APIlogViewer {
         }
     }
 
-    constructor(public backend: backend, public modal: modal, public toast: toast) {
+    constructor(public backend: backend, public modal: modal, public toast: toast, public userpreferences: userpreferences ) {
         this.getAPILogTables();
     }
 
@@ -194,7 +204,9 @@ export class APIlogViewer {
             this.backend.getRequest('admin/apilog', queryParams).subscribe({
                 next: (response) => {
                     this.entries = response.entries;
+                    this.totalCount = response.totalCount;
                     this.isLoading = false;
+                    this.isLoaded = true;
                 },
                 error: (error) => {
                     this.toast.sendToast('Error loading log data!', 'error');
@@ -221,16 +233,16 @@ export class APIlogViewer {
         this.modal.prompt('confirm', 'Truncate the API log and delete all entries?', 'Truncate API Log').subscribe(
             res => {
                 if (res) {
-                    this.backend.deleteRequest('admin/apilog').subscribe(
-                        () => {
+                    this.backend.deleteRequest('admin/apilog').subscribe({
+                        next: () => {
                             this.isLoading = false;
                             this.loadData();
                         },
-                        () => {
+                        error: () => {
                             this.toast.sendToast('Error truncating log', 'error');
                             this.isLoading = false;
                         }
-                    );
+                    });
                     this.isLoading = true;
                 }
             }

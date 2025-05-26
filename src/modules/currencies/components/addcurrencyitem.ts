@@ -12,7 +12,8 @@ import {fieldFloat} from "../../../objectfields/components/fieldfloat";
 
 @Component({
     selector: 'add-currency-item',
-    templateUrl: '../templates/addcurrencyitem.html'
+    templateUrl: '../templates/addcurrencyitem.html',
+    standalone: false
 })
 
 export class AddCurrencyItem {

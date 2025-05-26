@@ -13,7 +13,8 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: 'dictionary-manager-usage-modal',
-    templateUrl: '../templates/dictionarymanagerusagemodal.html'
+    templateUrl: '../templates/dictionarymanagerusagemodal.html',
+    standalone: false
 })
 export class DictionaryManagerUsageModal implements OnInit {
 

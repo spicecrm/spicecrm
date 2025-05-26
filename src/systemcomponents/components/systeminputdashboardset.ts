@@ -22,7 +22,8 @@ import {metadata} from "../../services/metadata.service";
             useExisting: forwardRef(() => SystemInputDashboardset),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputDashboardset implements OnDestroy, ControlValueAccessor {
 

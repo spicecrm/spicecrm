@@ -12,7 +12,8 @@ import _default from "chart.js/dist/plugins/plugin.tooltip";
 
 @Component({
     selector: 'field-color',
-    templateUrl: '../templates/fieldcolor.html'
+    templateUrl: '../templates/fieldcolor.html',
+    standalone: false
 })
 export class fieldColor  extends fieldGeneric {
 

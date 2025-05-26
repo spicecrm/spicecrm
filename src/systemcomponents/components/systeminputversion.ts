@@ -17,7 +17,8 @@ import {EnumDisplayOptionArray, language} from "../../services/language.service"
             useExisting: forwardRef(() => SystemInputVersion),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputVersion implements ControlValueAccessor, OnInit {
 

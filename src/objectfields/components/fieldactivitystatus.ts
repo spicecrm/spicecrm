@@ -15,7 +15,8 @@ declare var moment: any;
 
 @Component({
     selector: 'field-activity-status',
-    templateUrl: '../templates/fieldactivitystatus.html'
+    templateUrl: '../templates/fieldactivitystatus.html',
+    standalone: false
 })
 
 export class fieldActivityStatus extends fieldEnum implements OnInit, OnDestroy {

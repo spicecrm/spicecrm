@@ -29,7 +29,8 @@ declare var _: any;
     host: {
         '[class]': "'slds-item'"
     },
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpiceKanbanTile implements OnInit, OnDestroy {
     /**

@@ -11,6 +11,7 @@ import {language} from '../../services/language.service';
 @Component({
     selector: 'system-filter-builder-expression',
     templateUrl: '../templates/systemfilterbuilderfilterexpression.html',
+    standalone: false
 })
 export class SystemFilterBuilderFilterExpression implements OnInit {
 

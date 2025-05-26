@@ -6,7 +6,8 @@ import {session} from "../../../services/session.service";
 
 @Component({
     selector: 'user-alias-manager-button',
-    templateUrl: '../templates/useraliasmanagerbutton.html'
+    templateUrl: '../templates/useraliasmanagerbutton.html',
+    standalone: false
 })
 
 export class UserAliasManagerButton implements ActionSetItemI, OnInit {

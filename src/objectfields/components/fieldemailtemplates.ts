@@ -15,7 +15,8 @@ import {SystemLoadingModal} from "../../systemcomponents/components/systemloadin
 
 @Component({
     selector: 'field-email-templates',
-    templateUrl: '../templates/fieldemailtemplates.html'
+    templateUrl: '../templates/fieldemailtemplates.html',
+    standalone: false
 })
 export class fieldEmailTemplates extends fieldGeneric implements OnInit {
 

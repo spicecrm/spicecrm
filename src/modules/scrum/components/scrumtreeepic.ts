@@ -13,10 +13,11 @@ import {language} from "../../../services/language.service";
     selector: '[scrum-tree-epic]',
     templateUrl: '../templates/scrumtreeepic.html',
     providers: [model, relatedmodels],
-    host:{
+    host: {
         '(click)': "selectEpic($event)",
         "[attr.aria-expanded]": "expanded"
-    }
+    },
+    standalone: false
 })
 export class ScrumTreeEpic implements OnInit, OnDestroy {
 

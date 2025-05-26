@@ -15,7 +15,8 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     templateUrl: '../templates/objecteditmodalwreference.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ObjectEditModalWReference {
     @ViewChild('modalContent', {read: ViewContainerRef, static: true}) modalContent: ViewContainerRef;

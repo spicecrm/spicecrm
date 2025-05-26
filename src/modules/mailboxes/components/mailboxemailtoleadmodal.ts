@@ -10,6 +10,7 @@ import {view} from "../../../services/view.service";
 @Component({
     providers: [model, view],
     templateUrl: "../templates/mailboxemailtoleadmodal.html",
+    standalone: false
 })
 export class MailboxEmailToLeadModal implements OnInit, AfterViewInit {
 

@@ -14,7 +14,8 @@ declare var moment: any;
  * renders a tabbed view for body, header and footer of a template
  */
 @Component({
-    templateUrl: "../templates/outputtemplateseditor.html"
+    templateUrl: "../templates/outputtemplateseditor.html",
+    standalone: false
 })
 export class OutputTemplatesEditor {
 

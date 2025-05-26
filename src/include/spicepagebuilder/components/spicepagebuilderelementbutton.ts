@@ -16,7 +16,8 @@ import {model} from "../../../services/model.service";
     selector: 'spice-page-builder-element-button',
     templateUrl: '../templates/spicepagebuilderelementbutton.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
     /**

@@ -16,7 +16,8 @@ import {navigationtab} from '../../../services/navigationtab.service';
  */
 @Component({
     selector: 'lead-convert-button',
-    templateUrl: '../templates/leadconvertbutton.html'
+    templateUrl: '../templates/leadconvertbutton.html',
+    standalone: false
 })
 export class LeadConvertButton {
 

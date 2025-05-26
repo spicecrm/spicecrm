@@ -12,7 +12,8 @@ import {userpreferences} from '../../services/userpreferences.service';
 
 @Component({
     selector: 'field-float',
-    templateUrl: '../templates/fieldfloat.html'
+    templateUrl: '../templates/fieldfloat.html',
+    standalone: false
 })
 export class fieldFloat extends fieldGeneric implements OnInit {
 

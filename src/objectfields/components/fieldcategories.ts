@@ -27,7 +27,8 @@ import {subscription} from "../../services/subscription.service";
  */
 @Component({
     selector: 'field-categories',
-    templateUrl: '../templates/fieldcategories.html'
+    templateUrl: '../templates/fieldcategories.html',
+    standalone: false
 })
 export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
 

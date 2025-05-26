@@ -9,6 +9,7 @@ import { language } from '../../services/language.service';
 @Component({
     selector: 'objectrepositoryexport',
     templateUrl: '../templates/objectrepositoryexport.html',
+    standalone: false
 })
 export class ObjectRepositoryExport {
 

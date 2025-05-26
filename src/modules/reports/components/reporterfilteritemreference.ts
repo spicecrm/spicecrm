@@ -8,7 +8,8 @@ import {reporterconfig} from "../services/reporterconfig";
 
 @Component({
     selector: 'reporter-filter-item-reference',
-    templateUrl: '../templates/reporterfilteritemreference.html'
+    templateUrl: '../templates/reporterfilteritemreference.html',
+    standalone: false
 })
 export class ReporterFilterItemReference implements OnInit {
     /**

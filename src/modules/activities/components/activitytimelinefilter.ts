@@ -13,7 +13,8 @@ import {activitiytimeline, activityTimelineOwnerfilter} from '../../../services/
  */
 @Component({
     selector: 'activity-timeline-filter',
-    templateUrl: '../templates/activitytimelinefilter.html'
+    templateUrl: '../templates/activitytimelinefilter.html',
+    standalone: false
 })
 export class ActivityTimelineFilter {
 

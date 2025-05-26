@@ -24,6 +24,7 @@ import {toast} from "../../../services/toast.service";
     providers: [model, view],
     selector: "mailbox-manager-email-details",
     templateUrl: "../templates/mailboxmanageremaildetails.html",
+    standalone: false
 })
 export class MailboxmanagerEmailDetails implements OnDestroy {
 

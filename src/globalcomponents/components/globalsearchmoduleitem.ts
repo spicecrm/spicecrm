@@ -11,7 +11,8 @@ import {model} from '../../services/model.service';
 @Component({
     selector: '[global-search-module-item]',
     templateUrl: '../templates/globalsearchmoduleitem.html',
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 export class GlobalSearchModuleItem implements OnInit {
     @Input()public module: string = '';

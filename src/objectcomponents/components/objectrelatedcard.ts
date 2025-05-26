@@ -28,16 +28,17 @@ import {ObjectRelatedCardFooter} from "./objectrelatedcardfooter";
     animations: [
         trigger('displaycard', [
             transition(':enter', [
-                style({opacity: 0, height: '0px', overflow: 'hidden'}),
-                animate('.5s', style({height: '*', opacity: 1})),
-                style({overflow: 'unset'})
+                style({ opacity: 0, height: '0px', overflow: 'hidden' }),
+                animate('.5s', style({ height: '*', opacity: 1 })),
+                style({ overflow: 'unset' })
             ]),
             transition(':leave', [
-                style({overflow: 'hidden'}),
-                animate('.5s', style({height: '0px', opacity: 0}))
+                style({ overflow: 'hidden' }),
+                animate('.5s', style({ height: '0px', opacity: 0 }))
             ])
         ])
-    ]
+    ],
+    standalone: false
 })
 export class ObjectRelatedCard {
 

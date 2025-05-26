@@ -6,6 +6,7 @@ import {Component, ViewChild, ViewContainerRef, EventEmitter, AfterViewInit} fro
 @Component({
     selector: "system-component-container",
     templateUrl: "../templates/systemcomponentcontainer.html",
+    standalone: false
 })
 export class SystemComponentContainer implements AfterViewInit {
 

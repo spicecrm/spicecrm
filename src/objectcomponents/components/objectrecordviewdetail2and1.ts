@@ -11,8 +11,8 @@ declare var _: any;
 
 @Component({
     selector: 'object-recordview-detail-2and1',
-    templateUrl: '../templates/objectrecordviewdetail2and1.html'
-
+    templateUrl: '../templates/objectrecordviewdetail2and1.html',
+    standalone: false
 })
 export class ObjectRecordViewDetail2and1 implements OnInit {
     public initialized: boolean = false;

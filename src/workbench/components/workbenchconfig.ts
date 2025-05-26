@@ -15,7 +15,8 @@ import {backend} from "../../services/backend.service";
 
 @Component({
     templateUrl: '../templates/workbenchconfig.html',
-    selector: 'workbench-config'
+    selector: 'workbench-config',
+    standalone: false
 })
 
 export class WorkbenchConfig implements OnChanges {

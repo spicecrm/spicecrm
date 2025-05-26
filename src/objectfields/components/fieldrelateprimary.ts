@@ -19,7 +19,8 @@ import {fieldRelate} from "./fieldrelate";
 @Component({
     selector: 'field-relate-primary',
     templateUrl: '../templates/fieldrelate.html',
-    providers: [popup]
+    providers: [popup],
+    standalone: false
 })
 export class fieldRelatePrimary extends fieldRelate implements OnInit, OnDestroy {
 

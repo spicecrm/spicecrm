@@ -21,6 +21,7 @@ import {modal} from '../../services/modal.service';
  */
 @Component({
     templateUrl: '../templates/objectlistheaderactionsexportcsvselectfields.html',
+    standalone: false
 })
 export class ObjectListHeaderActionsExportCSVSelectFields {
 

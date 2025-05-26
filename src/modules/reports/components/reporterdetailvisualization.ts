@@ -24,7 +24,8 @@ import {toast} from "../../../services/toast.service";
 @Component({
     selector: 'reporter-detail-visualization',
     templateUrl: '../templates/reporterdetailvisualization.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
     /**

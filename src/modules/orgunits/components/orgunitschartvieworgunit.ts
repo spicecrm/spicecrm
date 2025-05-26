@@ -11,6 +11,7 @@ import {orgunitsViewService} from "../services/orgunitsview.service";
 @Component({
     selector: 'orgunits-chart-view-orgunit',
     templateUrl: '../templates/orgunitschartvieworgunit.html',
+    standalone: false
 })
 export class OrgunitsChartOrgViewOrgunit{
 

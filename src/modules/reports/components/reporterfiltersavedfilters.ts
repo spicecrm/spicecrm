@@ -11,7 +11,8 @@ import {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-filter-saved-filters',
-    templateUrl: '../templates/reporterfiltersavedfilters.html'
+    templateUrl: '../templates/reporterfiltersavedfilters.html',
+    standalone: false
 })
 export class ReporterFilterSavedFilters implements OnInit {
 

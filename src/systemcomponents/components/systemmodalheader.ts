@@ -11,7 +11,8 @@ import { DomSanitizer } from '@angular/platform-browser';
  */
 @Component({
     selector: 'system-modal-header',
-    templateUrl: '../templates/systemmodalheader.html'
+    templateUrl: '../templates/systemmodalheader.html',
+    standalone: false
 })
 export class SystemModalHeader {
     /**

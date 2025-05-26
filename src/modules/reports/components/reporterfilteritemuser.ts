@@ -5,7 +5,8 @@ import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
     selector: 'reporter-filter-item-user',
-    templateUrl: '../templates/reporterfilteritemuser.html'
+    templateUrl: '../templates/reporterfilteritemuser.html',
+    standalone: false
 })
 export class ReporterFilterItemUser implements OnInit {
     /**

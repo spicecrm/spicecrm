@@ -13,7 +13,7 @@ import {ColumnI, PanelElementI} from "../interfaces/spicepagebuilder.interfaces"
 @Component({
     selector: 'spice-page-builder-element-column',
     templateUrl: '../templates/spicepagebuilderelementcolumn.html',
-    // changeDetection: ChangeDetectionStrategy.OnPush
+    standalone: false
 })
 export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
     /**

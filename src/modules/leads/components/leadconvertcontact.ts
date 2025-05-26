@@ -15,7 +15,8 @@ import {view} from '../../../services/view.service';
 @Component({
     selector: 'lead-convert-contact',
     templateUrl: '../templates/leadconvertcontact.html',
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 export class LeadConvertContact implements AfterViewInit, OnInit {
     /**

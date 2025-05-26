@@ -7,7 +7,8 @@ import { spiceinstaller, stepObject } from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-oci8',
-    templateUrl: '../templates/spiceinstalleroci8.html'
+    templateUrl: '../templates/spiceinstalleroci8.html',
+    standalone: false
 })
 export class SpiceinstallerOCI8 {
 

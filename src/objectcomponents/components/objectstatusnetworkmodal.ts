@@ -10,7 +10,8 @@ import {Subject} from "rxjs";
 @Component({
     selector: 'object-status-network-modal',
     templateUrl: '../templates/objectstatusnetworkmodal.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 
 /**

@@ -10,7 +10,8 @@ import {model} from '../../services/model.service';
 
 @Component({
     selector: 'object-listview-header-list-selector',
-    templateUrl: '../templates/objectlistviewheaderlistselector.html'
+    templateUrl: '../templates/objectlistviewheaderlistselector.html',
+    standalone: false
 })
 export class ObjectListViewHeaderListSelector implements OnInit {
 

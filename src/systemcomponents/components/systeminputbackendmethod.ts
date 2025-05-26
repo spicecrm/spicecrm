@@ -19,7 +19,8 @@ import {backend} from "../../services/backend.service";
             useExisting: forwardRef(() => SystemInputBackendMethod),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputBackendMethod implements ControlValueAccessor {
 

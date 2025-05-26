@@ -18,7 +18,8 @@ import {StylesheetObjI} from "../interfaces/spicepagebuilder.interfaces";
 @Component({
     selector: 'field-page-builder',
     templateUrl: '../templates/fieldpagebuilder.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class fieldPageBuilder extends fieldGeneric implements OnInit, AfterViewInit {
     /**

@@ -14,7 +14,8 @@ import {footer} from "../../../services/footer.service";
  */
 @Component({
     selector: 'groupware-detail-pane-footer',
-    templateUrl: '../templates/groupwaredetailpanefooter.html'
+    templateUrl: '../templates/groupwaredetailpanefooter.html',
+    standalone: false
 })
 export class GroupwareDetailPanefooter implements AfterViewInit, OnDestroy {
 

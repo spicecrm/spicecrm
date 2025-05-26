@@ -9,7 +9,8 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: 'object-action-save-button',
-    templateUrl: '../templates/objectactionsavebutton.html'
+    templateUrl: '../templates/objectactionsavebutton.html',
+    standalone: false
 })
 export class ObjectActionSaveButton {
 

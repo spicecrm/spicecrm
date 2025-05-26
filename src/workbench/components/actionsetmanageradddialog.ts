@@ -16,7 +16,8 @@ import {configurationService} from '../../services/configuration.service';
 
 @Component({
     selector: 'actionsetmanager-add-dialog',
-    templateUrl: '../templates/actionsetmanageradddialog.html'
+    templateUrl: '../templates/actionsetmanageradddialog.html',
+    standalone: false
 })
 export class ActionsetManagerAddDialog implements OnInit  {
 

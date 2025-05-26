@@ -16,7 +16,8 @@ import {model} from "../../services/model.service";
 @Component({
     selector: 'field-icon-condition',
     templateUrl: '../templates/fieldiconcondition.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class fieldIconCondition extends fieldGeneric {
     /**

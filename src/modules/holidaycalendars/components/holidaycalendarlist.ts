@@ -10,7 +10,8 @@ import {modellist} from "../../../services/modellist.service";
 @Component({
     selector: 'holiday-calendar-list',
     templateUrl: '../templates/holidaycalendarlist.html',
-    providers: [modellist, model]
+    providers: [modellist, model],
+    standalone: false
 })
 export class HolidayCalendarList implements OnInit {
 

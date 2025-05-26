@@ -31,7 +31,8 @@ declare var _: any;
     selector: 'activitytimeline-item',
     templateUrl: '../templates/activitytimelineitem.html',
     providers: [model, modelattachments, view],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
 

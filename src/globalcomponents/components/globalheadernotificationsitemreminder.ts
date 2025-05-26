@@ -10,7 +10,8 @@ import {notification} from "../../services/notification.service";
  */
 @Component({
     selector: 'global-header-notifications-item-reminder',
-    templateUrl: '../templates/globalheadernotificationsitemreminder.html'
+    templateUrl: '../templates/globalheadernotificationsitemreminder.html',
+    standalone: false
 })
 export class GlobalHeaderNotificationsItemReminder {
     /**

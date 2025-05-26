@@ -43,7 +43,8 @@ import { backend } from '../../services/backend.service';
             useExisting: forwardRef(() => SystemHtmlEditor),
             multi: true
         }, systemrichtextservice
-    ]
+    ],
+    standalone: false
 })
 export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor {
 

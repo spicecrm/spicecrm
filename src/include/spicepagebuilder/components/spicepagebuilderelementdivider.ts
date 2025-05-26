@@ -14,7 +14,8 @@ import {SpicePageBuilderElement} from "./spicepagebuilderelement";
 @Component({
     selector: 'spice-page-builder-element-divider',
     templateUrl: '../templates/spicepagebuilderelementdivider.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderElementDivider extends SpicePageBuilderElement {
     /**

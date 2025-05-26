@@ -28,7 +28,8 @@ declare var _: any;
 @Component({
     selector: 'user-preferences',
     templateUrl: '../templates/userpreferences.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class UserPreferences implements OnDestroy {
     /**

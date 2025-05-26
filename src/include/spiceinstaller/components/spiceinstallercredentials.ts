@@ -8,7 +8,8 @@ import { spiceinstaller, stepObject } from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-credentials',
-    templateUrl: '../templates/spiceinstallercredentials.html'
+    templateUrl: '../templates/spiceinstallercredentials.html',
+    standalone: false
 })
 
 export class SpiceInstallerCredentials {

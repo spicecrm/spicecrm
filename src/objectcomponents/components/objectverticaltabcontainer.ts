@@ -20,7 +20,7 @@ import {layout} from "../../services/layout.service";
     selector: 'object-vertical-tab-container',
     templateUrl: '../templates/objectverticaltabcontainer.html',
     styles: [
-            `.slds-is-active {
+        `.slds-is-active {
             font-weight: 600;
             color: #3e3e3c;
             border-right: 1px solid #dddbda;
@@ -31,7 +31,8 @@ import {layout} from "../../services/layout.service";
             text-decoration: none !important
         }`,
         '.slds-badge { font-weight: bold; background-color: #c00; color: #fff; padding: .125rem .4rem; }'
-    ]
+    ],
+    standalone: false
 })
 export class ObjectVerticalTabContainer implements OnInit {
 

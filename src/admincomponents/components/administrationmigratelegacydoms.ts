@@ -9,7 +9,8 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'administration-migrate-legacy-doms',
-    templateUrl: '../templates/administrationmigratelegacydoms.html'
+    templateUrl: '../templates/administrationmigratelegacydoms.html',
+    standalone: false
 })
 
 export class AdministrationMigrateLegacyDoms {

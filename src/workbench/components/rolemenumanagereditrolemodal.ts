@@ -18,6 +18,7 @@ import {configurationService} from "../../services/configuration.service";
 @Component({
     selector: 'role-menu-manager-edit-role-modal',
     templateUrl: '../templates/rolemenumanagereditrolemodal.html',
+    standalone: false
 })
 export class RoleMenuManagerEditRoleModal {
 

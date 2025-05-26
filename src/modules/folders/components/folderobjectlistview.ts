@@ -2,7 +2,8 @@ import { Component } from "@angular/core";
 
 @Component({
     selector: 'folder-object-listview',
-    templateUrl : '../templates/folderobjectlistview.html'
+    templateUrl: '../templates/folderobjectlistview.html',
+    standalone: false
 })
 
 export class FolderObjectListView {

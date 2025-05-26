@@ -20,7 +20,8 @@ import {ObjectModalModuleLookup} from "../../../objectcomponents/components/obje
 @Component({
     selector: 'media-file-picker',
     templateUrl: '../templates/mediafilepicker.html',
-    providers: [view, modellist, model]
+    providers: [view, modellist, model],
+    standalone: false
 })
 export class MediaFilePicker extends ObjectModalModuleLookup {
 

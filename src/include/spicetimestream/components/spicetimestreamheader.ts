@@ -15,7 +15,8 @@ declare var moment: any;
 
 @Component({
     selector: '[spice-timestream-header]',
-    templateUrl: '../templates/spicetimestreamheader.html'
+    templateUrl: '../templates/spicetimestreamheader.html',
+    standalone: false
 })
 export class SpiceTimestreamHeader {
 

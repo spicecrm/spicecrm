@@ -11,7 +11,8 @@ declare var _: any;
 
 @Component({
     selector: "system-role-selector",
-    templateUrl: "../templates/systemroleselector.html"
+    templateUrl: "../templates/systemroleselector.html",
+    standalone: false
 })
 export class SystemRoleSelector implements OnInit {
 

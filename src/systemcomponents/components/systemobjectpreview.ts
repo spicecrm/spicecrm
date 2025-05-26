@@ -12,7 +12,8 @@ import { Subscription } from 'rxjs';
  */
 @Component({
     selector: 'system-object-preview',
-    templateUrl: '../templates/systemobjectpreview.html'
+    templateUrl: '../templates/systemobjectpreview.html',
+    standalone: false
 })
 export class SystemObjectPreview {
 

@@ -13,7 +13,8 @@ import {configurationService} from "../../../services/configuration.service";
 @Component({
     selector: 'user-management-panel',
     templateUrl: "../templates/usermanagementpanel.html",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 
 export class UserManagementPanel implements OnInit{

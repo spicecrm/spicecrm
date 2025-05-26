@@ -15,7 +15,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let item of filteredItems" [system-model-provider]="{module: model.module, data: item, id: item.id, parent: this.parent}"  class="slds-hint-parent" >
+            <tr *ngFor="let item of filteredItems" [system-model-provider]="{module: model.module, data: item, id: item.id, parent: parent}"  class="slds-hint-parent" >
                 <td>
                     <div class="slds-truncate">{{item.summary_text}}</div>
                 </td>

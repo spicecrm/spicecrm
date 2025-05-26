@@ -11,7 +11,8 @@ import {configurationService} from "../../../services/configuration.service";
  */
 @Component({
     selector: 'reporter-filter-item-category',
-    templateUrl: '../templates/reporterfilteritemcategory.html'
+    templateUrl: '../templates/reporterfilteritemcategory.html',
+    standalone: false
 })
 export class ReporterFilterItemCategory implements OnInit, OnChanges {
 

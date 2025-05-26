@@ -16,7 +16,8 @@ declare var _: any;
 @Component({
     selector: 'activity-participation-panel',
     templateUrl: '../templates/activityparticipationpanel.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ActivityParticipationPanel{
 

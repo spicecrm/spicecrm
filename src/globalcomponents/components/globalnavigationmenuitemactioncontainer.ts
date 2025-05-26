@@ -20,7 +20,8 @@ import {model} from "../../services/model.service";
  */
 @Component({
     selector: "global-navigation-menu-item-action-container",
-    templateUrl: "../templates/globalnavigationmenuitemactioncontainer.html"
+    templateUrl: "../templates/globalnavigationmenuitemactioncontainer.html",
+    standalone: false
 })
 export class GlobalNavigationMenuItemActionContainer implements AfterViewInit {
 

@@ -18,7 +18,8 @@ import {configurationService} from "../../services/configuration.service";
 @Component({
     selector: 'dictionary-manager',
     templateUrl: '../templates/dictionarymanager.html',
-    providers: [dictionarymanager]
+    providers: [dictionarymanager],
+    standalone: false
 })
 export class DictionaryManager {
 

@@ -20,7 +20,8 @@ declare var moment: any;
 @Component({
     selector: 'spice-timestream',
     templateUrl: '../templates/spicetimestream.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpiceTimestream implements OnInit, OnDestroy {
 

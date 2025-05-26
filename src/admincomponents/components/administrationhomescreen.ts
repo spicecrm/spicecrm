@@ -8,7 +8,8 @@ import {language} from '../../services/language.service';
 import {administration} from "../services/administration.service";
 
 @Component({
-    templateUrl: '../templates/administrationhomescreen.html'
+    templateUrl: '../templates/administrationhomescreen.html',
+    standalone: false
 })
 
 export class AdministrationHomeScreen {

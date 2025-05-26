@@ -22,7 +22,8 @@ import {Observable, Subject} from "rxjs";
 @Component({
     selector: 'object-list-header-actions-export-targetlist-modal',
     templateUrl: '../templates/objectlistheaderactionsexporttargetlistmodal.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ObjectListHeaderActionsExportTargetlistModal {
 

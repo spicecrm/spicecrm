@@ -22,7 +22,8 @@ declare var google: any;
 @Component({
     selector: 'reporter-detail-visualization-googlecharts',
     templateUrl: '../templates/reporterdetailvisualizationgooglecharts.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterDetailVisualizationGooglecharts implements AfterViewInit, OnDestroy {
     /**

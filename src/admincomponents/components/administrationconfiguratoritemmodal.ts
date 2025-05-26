@@ -13,7 +13,8 @@ declare var moment: any;
 
 @Component({
     selector: 'administration-configurator-item-modal',
-    templateUrl: '../../admincomponents/templates/administrationconfiguratoritemmodal.html'
+    templateUrl: '../../admincomponents/templates/administrationconfiguratoritemmodal.html',
+    standalone: false
 })
 export class AdministrationConfiguratorItemModal {
 

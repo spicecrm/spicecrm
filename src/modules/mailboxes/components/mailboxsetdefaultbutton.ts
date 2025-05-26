@@ -9,6 +9,7 @@ import {modellist} from "../../../services/modellist.service";
 @Component({
     selector: "mailbox-set-default-button",
     templateUrl: "../templates/mailboxsetdefaultbutton.html",
+    standalone: false
 })
 
 export class MailboxSetDefaultButton {

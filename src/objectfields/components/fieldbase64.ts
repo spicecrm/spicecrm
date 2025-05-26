@@ -12,7 +12,8 @@ import {footer} from '../../services/footer.service';
 
 @Component({
     selector: 'field-base64',
-    templateUrl: '../templates/fieldbase64.html'
+    templateUrl: '../templates/fieldbase64.html',
+    standalone: false
 })
 export class fieldBase64 extends fieldGeneric {
 

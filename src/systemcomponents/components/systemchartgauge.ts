@@ -18,7 +18,8 @@ import {SystemChartDataRow} from "./systemchartdatarow";
 @Component({
     selector: 'system-chart-gauge',
     templateUrl: '../templates/systemchartgauge.html',
-    providers: [SystemChartService]
+    providers: [SystemChartService],
+    standalone: false
 })
 export class SystemChartGauge implements AfterViewInit, AfterContentInit {
     /**
