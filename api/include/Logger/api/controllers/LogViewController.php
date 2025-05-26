@@ -211,7 +211,6 @@ class LogViewController{
         $entry = $viewer->getFullEntry( $args['id'] );
 
         $url = $entry['url'];
-
         $user = AuthenticationController::getInstance()->getCurrentUser();
 
         $curl = curl_init();
@@ -226,20 +225,16 @@ class LogViewController{
                 'Authorization: Basic ' . base64_encode($user->user_name . ':' . base64_decode( $bodyParams['password'] ))
             ],
         ];
-
         curl_setopt_array($curl, $curlOptions);
-
         $response = curl_exec($curl);
-
-        if (isset($response->error)) {
-            $this->log(Mailbox::LOG_DEBUG, $this->mailbox->name . ': ' .
-                $response->error->code . ': ' . $response->error->message);
-            throw new Exception($response->error->code . ': ' . $response->error->message);
-        }
-
         curl_close($curl);
 
-        return $res->withJson(['url'=>$url,'success' => !isset( $response['error'] ), 'res'=>$response, 'id'=>$args['id'],'url'=>$url]);
+        return $res->withJson([
+            'response' => $response,
+            'curlError' => curl_error( $curl ),
+            'httpStatusCode' => ( $dummy = curl_getinfo( $curl, CURLINFO_HTTP_CODE )),
+            'success' => ( $dummy < 300 and $dummy >= 200 )
+        ]);
     }
 
 }

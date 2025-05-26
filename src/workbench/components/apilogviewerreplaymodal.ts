@@ -1,13 +1,14 @@
 /**
  * @module WorkbenchModule
  */
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { language } from '../../services/language.service';
 import { backend } from '../../services/backend.service';
 import { toast } from '../../services/toast.service';
 import { libloader } from '../../services/libloader.service';
 import { modal } from '../../services/modal.service';
 import { helper } from '../../services/helper.service';
+import { take } from 'rxjs/operators';
 
 declare var html_beautify: any;
 declare var _: any;
@@ -31,9 +32,8 @@ export class APIlogViewerReplayModal {
 
     /**
      * the entry
-     * @private
      */
-    @Input() public entry: any;
+    // @Input() public entry: any;
 
     public record: any = {};
 
@@ -49,7 +49,7 @@ export class APIlogViewerReplayModal {
      *
      * @private
      */
-    public isLoading = true;
+    public isLoading = false;
 
     /**
      * the currently selected logtable
@@ -80,7 +80,8 @@ export class APIlogViewerReplayModal {
 
     public ngOnInit()
     {
-        this.loadFullData();
+        // this.loadFullData();
+        this.doRecord();
     }
 
     /**
@@ -88,6 +89,7 @@ export class APIlogViewerReplayModal {
      *
      * @private
      */
+    /*
     public loadFullData()
     {
         this.isLoading = true;
@@ -95,11 +97,7 @@ export class APIlogViewerReplayModal {
             next: (response) => {
                 this.record = response;
                 // try to parse the headers so we know how to handle post and response params
-                this.setRequestHeaders();
-                this.replayData = ( this.record.request_body ? JSON.parse( this.record.request_body ) : null );
-                this.contentType = this.determineContentType( this._requestheaders );
-                this.hasBodyData = this.record.request_body && this.record.request_body != "{}";
-                this.canEdit = ( this.contentType === 'application/json' ) && this.hasBodyData;
+                this.doRecord();
                 this.isLoading = false;
             },
             error: (error) => {
@@ -108,6 +106,16 @@ export class APIlogViewerReplayModal {
                 this.close();
             }
         });
+    }
+     */
+
+    public doRecord()
+    {
+        this.setRequestHeaders();
+        this.replayData = ( this.record.request_body ? JSON.parse( this.record.request_body ) : null );
+        this.contentType = this.determineContentType( this._requestheaders );
+        this.hasBodyData = this.record.request_body && this.record.request_body != "{}";
+        this.canEdit = ( this.contentType === 'application/json' ) && this.hasBodyData;
     }
 
     /**
@@ -217,40 +225,46 @@ export class APIlogViewerReplayModal {
 
     public doReplay(): void
     {
-        this.modal.prompt('confirm', this.language.getLabel('LBL_CONFIRM_API_REPLAY', '', 'long'), this.language.getLabel('LBL_CONFIRM_API_REPLAY')).subscribe({
-           next: confirmation => {
-               if ( !confirmation ) return;
-               console.log(this.record);
-               if ( this.record.needsAuthorization ) this.modal.prompt('input_password', this.language.getLabel('LBL_API_REPLAY_PW_PROMPT', '', 'long'), this.language.getLabel('LBL_API_REPLAY_PW_PROMPT')).subscribe({
-                   next: ( val: string|boolean ) => {
-                       if ( val !== false ) { // @ts-ignore
-                           this.sendReplay( val );
-                       }
-                   }
-               })
-               else this.sendReplay( null );
-           }
-        });
+        this.modal.prompt('confirm', this.language.getLabel('LBL_CONFIRM_API_REPLAY', '', 'long'), this.language.getLabel('LBL_CONFIRM_API_REPLAY'))
+            .pipe(take(1))
+            .subscribe({
+               next: confirmation => {
+                   if ( !confirmation ) return;
+                   console.log(this.record);
+                   if ( this.record.needsAuthorization ) this.modal.prompt('input_password', this.language.getLabel('LBL_API_REPLAY_PW_PROMPT', '', 'long'), this.language.getLabel('LBL_API_REPLAY_PW_PROMPT'))
+                       .pipe(take(1))
+                       .subscribe({
+                           next: ( val: string|boolean ) => {
+                               if ( val !== false ) { // @ts-ignore
+                                   this.sendReplay( val );
+                               }
+                           }
+                       })
+                   else this.sendReplay( null );
+               }
+            });
     }
 
     public sendReplay( password: string|null ): void
     {
-        if ( password ) password = this.helper.encodeBase64(password);
-        this.backend.postRequest('admin/apilog/replay/'+this.entry.id, null, { headers: null, getParams: null, bodyParams: this.replayData ? JSON.stringify( this.replayData ) : undefined, password: password ? password : undefined }).subscribe({
-            next: (response) => {
-                this.isLoading = false;
-                if ( response.success ) {
-                    this.toast.sendToast( 'REPLAY SUCCESSFUL', 'success' );
-                    this.self.destroy();
-                } else {
-                    this.toast.sendToast('ERROR REPLAYING', 'error');
+        if ( password ) password = this.helper.encodeBase64( password );
+        this.backend.postRequest('admin/apilog/replay/'+this.record.id, null, { headers: null, getParams: null, bodyParams: this.replayData ? JSON.stringify( this.replayData ) : undefined, password: password ? password : undefined })
+            .pipe(take(1))
+            .subscribe({
+                next: (response) => {
+                    this.isLoading = false;
+                    if ( response.success ) {
+                        this.toast.sendToast( 'REPLAY SUCCESSFUL', 'success' );
+                        this.self.destroy();
+                    } else {
+                        this.toast.sendToast('ERROR REPLAYING', 'error');
+                    }
+                },
+                error: (error) => {
+                    this.isLoading = false;
+                    this.toast.sendToast('REPLAY ERROR', 'error');
                 }
-            },
-            error: (error) => {
-                this.isLoading = false;
-                this.toast.sendToast('REPLAY ERROR', 'error');
-            }
-        })
+            });
     }
 
     public cancelReplay(): void

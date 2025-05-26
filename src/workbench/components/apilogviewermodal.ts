@@ -32,6 +32,8 @@ export class APIlogViewerModal {
      */
     @Input() public entry: any;
 
+    @Output() public replay: EventEmitter<any>;
+
     public record: any = {};
 
     /**
@@ -338,5 +340,16 @@ export class APIlogViewerModal {
         } catch (e) {
             return this.record[param];
         }
+    }
+
+    public canReplay(): boolean
+    {
+        return this.record.direction === 'I';
+    }
+
+    public openReplay()
+    {
+        this.close();
+        this.replay.emit( this.record );
     }
 }
