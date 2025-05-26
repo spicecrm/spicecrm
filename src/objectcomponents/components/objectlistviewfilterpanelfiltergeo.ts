@@ -14,7 +14,8 @@ declare var _: any;
 
 @Component({
     selector: 'object-listview-filter-panel-filter-geo',
-    templateUrl: '../templates/objectlistviewfilterpanelfiltergeo.html'
+    templateUrl: '../templates/objectlistviewfilterpanelfiltergeo.html',
+    standalone: false
 })
 export class ObjectListViewFilterPanelFilterGeo {
 

@@ -11,7 +11,8 @@ import {territories} from '../../services/territories.service';
 
 @Component({
     selector: 'object-record-administration-tab',
-    templateUrl: '../templates/objectrecordadministrationtab.html'
+    templateUrl: '../templates/objectrecordadministrationtab.html',
+    standalone: false
 })
 export class ObjectRecordAdministrationTab implements OnInit {
 

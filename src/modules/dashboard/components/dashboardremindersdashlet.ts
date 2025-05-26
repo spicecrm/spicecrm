@@ -14,7 +14,8 @@ declare var moment: any;
 
 @Component({
     selector: 'dashboard-reminders-dashlet',
-    templateUrl: '../templates/dashboardremindersdashlet.html'
+    templateUrl: '../templates/dashboardremindersdashlet.html',
+    standalone: false
 })
 export class DashboardRemindersDashlet {
 

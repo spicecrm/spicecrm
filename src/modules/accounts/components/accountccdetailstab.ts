@@ -15,7 +15,8 @@ declare var _: any;
 @Component({
     selector: 'account-cc-details-tab',
     templateUrl: '../templates/accountccdetailstab.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 
 export class AccountCCDetailsTab {

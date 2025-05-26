@@ -15,7 +15,8 @@ import {modelattachments} from "../../../services/modelattachments.service";
 @Component({
     selector: 'spice-attachments-set-folder-modal',
     templateUrl: '../templates/spiceattachmentssetfoldermodal.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpiceAttachmentsSetFolderModal implements OnInit{
     /**

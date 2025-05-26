@@ -10,6 +10,7 @@ import {modal} from '../../services/modal.service';
 @Component({
     selector: 'object-list-header-actions-select-range-button',
     templateUrl: '../templates/objectlistheaderactionsselectrangebutton.html',
+    standalone: false
 })
 export class ObjectListHeaderActionsSelectRangeButton {
 

@@ -12,7 +12,8 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'object-action-remove-button',
-    templateUrl: '../templates/objectactionremovebutton.html'
+    templateUrl: '../templates/objectactionremovebutton.html',
+    standalone: false
 })
 export class ObjectActionRemoveButton implements AfterViewInit, OnDestroy {
 

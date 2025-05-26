@@ -40,17 +40,6 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class Tracker extends SpiceBean
 {
-    /**
-     * @var bool inidcator if we are in the save
-     */
-    public bool $in_save = false;
-
-    // php 9 compatibility preparation
-    var int $modified_user_id;
-    public ?string $modified_by_name = null;
-    var mixed $date_entered;
-    var string $created_by;
-    var $created_by_name;
 
     /*
      * Return the most recently viewed items for this user.

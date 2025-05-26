@@ -10,7 +10,8 @@ import {language} from "../../services/language.service";
 @Component({
     selector: 'object-model-popover-related-item',
     templateUrl: '../templates/objectmodelpopoverrelateditem.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ObjectModelPopoverRelatedItem {
 

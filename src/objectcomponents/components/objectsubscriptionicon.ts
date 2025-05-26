@@ -12,7 +12,8 @@ import {metadata} from "../../services/metadata.service";
  */
 @Component({
     selector: 'object-subscription-icon',
-    templateUrl: '../templates/objectsubscriptionicon.html'
+    templateUrl: '../templates/objectsubscriptionicon.html',
+    standalone: false
 })
 export class ObjectSubscriptionIcon {
 

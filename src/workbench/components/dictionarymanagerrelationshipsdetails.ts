@@ -13,7 +13,8 @@ import {view} from "../../services/view.service";
 @Component({
     selector: 'dictionary-manager-relationships-details',
     templateUrl: '../templates/dictionarymanagerrelationshipsdetails.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class DictionaryManagerRelationshipsDetails {
 

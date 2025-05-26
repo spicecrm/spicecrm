@@ -11,10 +11,11 @@ import {view} from '../../services/view.service';
 @Component({
     selector: '[object-popover-body-item]',
     templateUrl: '../templates/objectpopoverbodyitem.html',
-    providers:[model, view],
-    host:{
-        'class' : 'slds-popover__body-list'
-    }
+    providers: [model, view],
+    host: {
+        'class': 'slds-popover__body-list'
+    },
+    standalone: false
 })
 export class ObjectPopoverBodyItem implements OnInit{
 

@@ -10,7 +10,8 @@ import {model} from '../../services/model.service';
  */
 @Pipe({
     name: 'objectfieldfilter',
-    pure: false
+    pure: false,
+    standalone: false
 })
 export class ObjectFieldFilterPipe implements PipeTransform {
 

@@ -22,7 +22,8 @@ declare var moment: any;
  */
 @Component({
     templateUrl: '../templates/activitytimelinesummary.html',
-    providers: [activitiytimeline, model]
+    providers: [activitiytimeline, model],
+    standalone: false
 })
 export class ActivityTimelineSummary implements OnInit, OnDestroy {
     /**

@@ -15,7 +15,8 @@ declare var moment: any;
 @Component({
     selector: 'calendar-sheet-drop-target',
     templateUrl: '../templates/calendarsheetdroptarget.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class CalendarSheetDropTarget {
 

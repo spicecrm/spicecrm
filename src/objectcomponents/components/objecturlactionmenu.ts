@@ -13,7 +13,8 @@ import {model} from "../../services/model.service";
  */
 @Component({
     selector: "object-url-action-menu",
-    templateUrl: "../templates/objecturlactionmenu.html"
+    templateUrl: "../templates/objecturlactionmenu.html",
+    standalone: false
 })
 export class ObjectUrlActionMenu {
 

@@ -16,7 +16,8 @@ import {modellist} from "../../../services/modellist.service";
     selector: 'spice-google-maps-record-container',
     templateUrl: '../templates/spicegooglemapsrecordcontainer.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [modellist]
+    providers: [modellist],
+    standalone: false
 })
 export class SpiceGoogleMapsRecordContainer implements OnInit, OnDestroy {
     /**

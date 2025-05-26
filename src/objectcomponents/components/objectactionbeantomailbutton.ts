@@ -11,7 +11,8 @@ import {modal} from "../../services/modal.service";
  */
 @Component({
     selector: 'object-action-beantomail-button',
-    templateUrl: '../templates/objectactionbeantomailbutton.html'
+    templateUrl: '../templates/objectactionbeantomailbutton.html',
+    standalone: false
 })
 export class ObjectActionBeanToMailButton {
 

@@ -16,7 +16,8 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: 'spice-imports-view',
     templateUrl: '../templates/spiceimportsview.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class SpiceImportsView implements OnInit, OnDestroy {
 

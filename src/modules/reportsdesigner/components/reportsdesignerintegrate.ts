@@ -9,7 +9,8 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: 'reports-designer-integrate',
-    templateUrl: '../templates/reportsdesignerintegrate.html'
+    templateUrl: '../templates/reportsdesignerintegrate.html',
+    standalone: false
 })
 export class ReportsDesignerIntegrate {
 

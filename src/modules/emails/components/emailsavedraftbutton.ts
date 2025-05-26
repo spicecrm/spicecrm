@@ -12,7 +12,8 @@ import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     selector: "email-save-draft-button",
-    templateUrl: "../templates/emailsavedraftbutton.html"
+    templateUrl: "../templates/emailsavedraftbutton.html",
+    standalone: false
 })
 export class EmailSaveDraftButton {
     public actionconfig;

@@ -13,6 +13,7 @@ import {view} from '../../services/view.service';
     selector: '[object-row-item]',
     templateUrl: '../templates/objectrowitem.html',
     providers: [model, view],
+    standalone: false
 })
 /**
  *  a component which represents a row in a table with dynamic model data and fields/tds to display

@@ -9,7 +9,8 @@ import {language} from '../../../services/language.service';
  * renders a modal window to manage the favorites
  */
 @Component({
-    templateUrl: '../templates/spicefavoriteseditmodal.html'
+    templateUrl: '../templates/spicefavoriteseditmodal.html',
+    standalone: false
 })
 export class SpiceFavoritesEditModal {
 

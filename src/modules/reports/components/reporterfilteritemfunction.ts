@@ -8,7 +8,8 @@ import {reporterconfig} from "../services/reporterconfig";
 
 @Component({
     selector: 'reporter-filter-item-function',
-    templateUrl: '../templates/reporterfilteritemfunction.html'
+    templateUrl: '../templates/reporterfilteritemfunction.html',
+    standalone: false
 })
 export class ReporterFilterItemFunction {
     /**

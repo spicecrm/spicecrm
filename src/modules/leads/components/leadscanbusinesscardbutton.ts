@@ -11,7 +11,8 @@ import {LeadScanBusinessCardModal} from "./leadscanbusinesscardmodal";
 
 @Component({
     selector: 'lead-scan-business-card-button',
-    templateUrl: '../templates/leadscanbusinesscardbutton.html'
+    templateUrl: '../templates/leadscanbusinesscardbutton.html',
+    standalone: false
 })
 export class LeadScanBusinessCardButton {
 

@@ -23,7 +23,8 @@ declare var moment: any;
  */
 @Component({
     selector: 'opportunity-revenue-lines',
-    templateUrl: "../templates/opportunityrevenuelines.html"
+    templateUrl: "../templates/opportunityrevenuelines.html",
+    standalone: false
 })
 export class OpportunityRevenueLines implements OnInit {
 

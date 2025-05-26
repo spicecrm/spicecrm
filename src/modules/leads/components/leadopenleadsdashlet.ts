@@ -10,7 +10,8 @@ import {backend} from '../../../services/backend.service';
 @Component({
     selector: 'lead-openleads-dashlet',
     templateUrl: '../templates/leadopenleadsdashlet.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class LeadOpenLeadsDashlet implements OnInit {
     public myLeads: any[] = [];

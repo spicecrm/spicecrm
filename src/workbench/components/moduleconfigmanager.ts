@@ -16,7 +16,8 @@ import {view} from "../../services/view.service";
 @Component({
     selector: 'moduleconfig-manager',
     templateUrl: '../templates/moduleconfigmanager.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ModuleConfigManager {
 

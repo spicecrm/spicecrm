@@ -10,7 +10,8 @@ import {view} from "../../services/view.service";
 
 @Component({
     selector: 'object-action-save-send-button',
-    templateUrl: '../templates/objectactionsavesendbutton.html'
+    templateUrl: '../templates/objectactionsavesendbutton.html',
+    standalone: false
 })
 /**
  * this button is meant for activity stream add item with an activity type were there is something to send

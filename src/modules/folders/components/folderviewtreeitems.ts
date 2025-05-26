@@ -7,7 +7,8 @@ import { modal } from '../../../services/modal.service';
 
 @Component({
     selector: "folder-view-tree-item",
-    templateUrl: "../templates/folderviewitems.html"
+    templateUrl: "../templates/folderviewitems.html",
+    standalone: false
 })
 
 export class FolderViewTreeItems {

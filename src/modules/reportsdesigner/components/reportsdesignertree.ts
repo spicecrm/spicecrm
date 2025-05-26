@@ -11,7 +11,8 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'reports-designer-tree',
-    templateUrl: '../templates/reportsdesignertree.html'
+    templateUrl: '../templates/reportsdesignertree.html',
+    standalone: false
 })
 export class ReportsDesignerTree {
 

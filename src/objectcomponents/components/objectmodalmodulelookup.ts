@@ -30,7 +30,8 @@ import {indexOf} from "underscore";
 @Component({
     selector: 'object-modal-module-lookup',
     templateUrl: '../templates/objectmodalmodulelookup.html',
-    providers: [view, modellist, model]
+    providers: [view, modellist, model],
+    standalone: false
 })
 export class ObjectModalModuleLookup implements OnInit, OnDestroy {
 

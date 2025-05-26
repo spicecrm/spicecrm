@@ -25,20 +25,21 @@ declare var moment: any
     templateUrl: '../templates/outputrevisionspdftabcontainer.html',
     animations: [
         trigger('slideInOut', [
-            state('open', style({width: '50%'})),
-            state('closed', style({width: '100%'})),
+            state('open', style({ width: '50%' })),
+            state('closed', style({ width: '100%' })),
             transition('open <=> closed', [
                 animate('200ms'),
             ])
         ]),
         trigger('slideInOut2', [
-            state('open', style({width: '50%'})),
-            state('closed', style({width: '0%'})),
+            state('open', style({ width: '50%' })),
+            state('closed', style({ width: '0%' })),
             transition('open <=> closed', [
                 animate('200ms'),
             ])
         ]),
-    ]
+    ],
+    standalone: false
 })
 export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
 

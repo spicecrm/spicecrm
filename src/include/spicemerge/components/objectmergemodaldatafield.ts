@@ -8,7 +8,8 @@ import {modellist} from '../../../services/modellist.service';
 @Component({
     selector: 'object-merge-modal-data-field',
     templateUrl: '../templates/objectmergemodaldatafield.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ObjectMergeModalDataField implements OnInit {
 

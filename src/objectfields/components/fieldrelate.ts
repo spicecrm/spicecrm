@@ -18,7 +18,8 @@ import {modelutilities} from "../../services/modelutilities.service";
 @Component({
     selector: 'field-relate',
     templateUrl: '../templates/fieldrelate.html',
-    providers: [popup]
+    providers: [popup],
+    standalone: false
 })
 export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
     public relateIdField: string = '';

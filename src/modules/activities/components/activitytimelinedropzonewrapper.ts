@@ -14,7 +14,8 @@ import {session} from "../../../services/session.service";
 @Component({
     selector: 'activity-timeline-drop-zone-wrapper',
     templateUrl: '../templates/activitytimelinedropzonewrapper.html',
-    viewProviders: [model]
+    viewProviders: [model],
+    standalone: false
 })
 export class ActivityTimelineDropZoneWrapper {
 

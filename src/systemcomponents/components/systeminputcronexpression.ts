@@ -10,10 +10,11 @@ declare var moment: any;
     selector: 'system-input-cron-expression',
     templateUrl: '../templates/systeminputcronexpression.html',
     providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => SystemInputCronExpression),
-        multi: true
-    }]
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SystemInputCronExpression),
+            multi: true
+        }],
+    standalone: false
 })
 
 export class SystemInputCronExpression implements OnInit, ControlValueAccessor {

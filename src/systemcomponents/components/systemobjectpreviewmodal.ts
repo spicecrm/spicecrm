@@ -10,7 +10,8 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'system-object-preview-modal',
-    templateUrl: '../templates/systemobjectpreviewmodal.html'
+    templateUrl: '../templates/systemobjectpreviewmodal.html',
+    standalone: false
 })
 export class SystemObjectPreviewModal {
 

@@ -4,7 +4,8 @@ import {Subject} from "rxjs";
 
 @Component({
     selector: 'system-select-module-modal',
-    templateUrl: '../templates/systemselectmodulemodal.html'
+    templateUrl: '../templates/systemselectmodulemodal.html',
+    standalone: false
 })
 
 export class SystemSelectModuleModal implements ModalComponentI, OnDestroy {

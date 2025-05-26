@@ -19,6 +19,7 @@ import {Subscription} from "rxjs";
 @Component({
     selector: 'web-hooks-manager',
     templateUrl: '../templates/webhooksmanager.html',
+    standalone: false
 })
 export class WebHooksManager {
 

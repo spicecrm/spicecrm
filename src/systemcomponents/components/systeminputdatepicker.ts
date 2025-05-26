@@ -27,7 +27,8 @@ declare var moment: any;
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
         class: 'slds-datepicker'
-    }
+    },
+    standalone: false
 })
 export class SystemInputDatePicker implements OnInit, OnChanges {
 

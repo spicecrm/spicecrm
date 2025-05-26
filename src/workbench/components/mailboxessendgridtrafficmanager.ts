@@ -10,6 +10,7 @@ import {view} from "../../services/view.service";
 @Component({
     selector: "mailboxes-sendgrid-traffic-manager",
     templateUrl: "../templates/mailboxessendgridtrafficmanager.html",
+    standalone: false
 })
 export class MailboxesSendgridTrafficManager {
 

@@ -20,6 +20,7 @@ import {Subscription} from "rxjs";
 @Component({
     selector: 'dictionary-manager-fields',
     templateUrl: '../templates/dictionarymanagerfields.html',
+    standalone: false
 })
 export class DictionaryManagerFields implements OnInit, OnDestroy {
 

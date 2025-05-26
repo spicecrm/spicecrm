@@ -11,7 +11,8 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: "system-view-container",
-    templateUrl: "../templates/systemviewcontainer.html"
+    templateUrl: "../templates/systemviewcontainer.html",
+    standalone: false
 })
 export class SystemViewContainer {
     /**

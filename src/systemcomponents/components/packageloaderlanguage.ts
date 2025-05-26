@@ -18,6 +18,7 @@ declare var _;
 @Component({
     selector: 'package-loader-language',
     templateUrl: '../templates/packageloaderlanguage.html',
+    standalone: false
 })
 export class PackageLoaderLanguage {
 

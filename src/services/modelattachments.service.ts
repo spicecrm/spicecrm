@@ -91,7 +91,12 @@ export class modelattachments implements OnDestroy {
     /**
      * total file size of the attachments
      */
-    public totalFileSize: string;
+    public totalFileSize: number = 0;
+
+    /**
+     * total human-readable file size
+     */
+    public totalHumanFileSize: string = '0 B';
 
     /**
      * emits the action when the attachment is deleted
@@ -126,6 +131,7 @@ export class modelattachments implements OnDestroy {
 
     set files(f) {
         this._files = f;
+        this.calculateTotalFileSize();
     }
 
     get folderId() {
@@ -235,6 +241,8 @@ export class modelattachments implements OnDestroy {
                     }
                 }
 
+                this.calculateTotalFileSize();
+
                 // set the count
                 this.count = this._files.length;
 
@@ -290,6 +298,8 @@ export class modelattachments implements OnDestroy {
                     }
                 }
 
+                this.calculateTotalFileSize();
+
                 // set the count
                 this.count = this._files.length;
 
@@ -313,7 +323,20 @@ export class modelattachments implements OnDestroy {
     }
 
     /**
-     * returns the human readable file size fort the display
+     * calculate the file size of the available files
+     * @private
+     */
+    private calculateTotalFileSize() {
+        let sum = 0;
+        this._files.forEach((f) => {
+            sum += parseInt(f.filesize);
+        });
+        this.totalFileSize = sum;
+        this.totalHumanFileSize = this.humanFileSize(sum)
+    }
+
+    /**
+     * returns the human-readable file size for the display
      *
      * @param filesize
      */
@@ -655,6 +678,8 @@ export class modelattachments implements OnDestroy {
                     let index = this._files.findIndex(f => f.id == id);
                     this._files.splice(index, 1);
 
+                    this.calculateTotalFileSize();
+
                     // rebuild the tree
                     this.buildTree();
 
@@ -837,6 +862,7 @@ export class modelattachments implements OnDestroy {
             case 'attachments.uploaded':
                 if (message.messagedata.reload && message.messagedata.module == this.module && message.messagedata.id == this.id) {
                     this._files = message.messagedata.uploadedFiles;
+                    this.calculateTotalFileSize();
                 }
                 break;
         }

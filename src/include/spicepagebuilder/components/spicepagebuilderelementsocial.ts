@@ -6,7 +6,8 @@ import {firstValueFrom} from "rxjs";
 @Component({
     selector: 'spice-page-builder-element-social',
     templateUrl: '../templates/spicepagebuilderelementsocial.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 
 export class SpicePageBuilderElementSocial extends SpicePageBuilderElement implements OnInit {

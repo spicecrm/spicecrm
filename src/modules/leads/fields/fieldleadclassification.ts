@@ -10,7 +10,8 @@ import {Router} from '@angular/router';
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 
 @Component({
-    templateUrl: '../templates/fieldleadclassification.html'
+    templateUrl: '../templates/fieldleadclassification.html',
+    standalone: false
 })
 export class fieldLeadClassification extends fieldGeneric {
 

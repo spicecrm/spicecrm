@@ -10,7 +10,8 @@ import {modellist} from "../../../services/modellist.service";
 @Component({
     selector: 'system-calendar-list',
     templateUrl: '../templates/systemcalendarlist.html',
-    providers: [modellist, model]
+    providers: [modellist, model],
+    standalone: false
 })
 export class SystemCalendarList implements OnInit {
 

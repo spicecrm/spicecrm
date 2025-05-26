@@ -9,7 +9,8 @@ import {HttpClient} from "@angular/common/http";
 
 @Component({
     selector: 'global-login-forgot-password',
-    templateUrl: '../templates/globalloginforgotpassword.html'
+    templateUrl: '../templates/globalloginforgotpassword.html',
+    standalone: false
 })
 export class GlobalLoginForgotPassword {
     /**

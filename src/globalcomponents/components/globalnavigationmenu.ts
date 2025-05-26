@@ -13,7 +13,8 @@ import {navigation} from '../../services/navigation.service';
     templateUrl: '../templates/globalnavigationmenu.html',
     host: {
         '(window:resize)': 'handleResize()'
-    }
+    },
+    standalone: false
 })
 export class GlobalNavigationMenu implements AfterViewInit {
     /**

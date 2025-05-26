@@ -24,6 +24,7 @@ import {backend} from "../../services/backend.service";
 @Component({
     selector: 'dictionary-manager-relationship-add-one-to-many-polymorph',
     templateUrl: '../templates/dictionarymanagerrelationshipaddonetomanypolymorph.html',
+    standalone: false
 })
 export class DictionaryManagerRelationshipAddOneToManyPolymorph {
 

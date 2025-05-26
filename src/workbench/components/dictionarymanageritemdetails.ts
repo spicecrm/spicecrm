@@ -17,6 +17,7 @@ import {backend} from "../../services/backend.service";
 @Component({
     selector: 'dictionary-manager-item-details',
     templateUrl: '../templates/dictionarymanageritemdetails.html',
+    standalone: false
 })
 export class DictionaryManagerItemDetails implements OnInit{
 

@@ -7,7 +7,8 @@ import {Observable, Subject} from "rxjs";
 
 
 @Component({
-    templateUrl: '../templates/administrationftsmanagerindexmodal.html'
+    templateUrl: '../templates/administrationftsmanagerindexmodal.html',
+    standalone: false
 })
 export class AdministrationFtsManagerIndexModal {
 

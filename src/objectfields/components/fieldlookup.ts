@@ -13,7 +13,8 @@ import {modal} from '../../services/modal.service';
 
 @Component({
     selector: 'field-lookup',
-    templateUrl: '../templates/fieldlookup.html'
+    templateUrl: '../templates/fieldlookup.html',
+    standalone: false
 })
 export class fieldLookup extends fieldGeneric implements OnInit {
 

@@ -11,7 +11,8 @@ import {model} from "../../../services/model.service";
  */
 @Component({
     selector: 'orgunits-chart-view-box-add-options',
-    templateUrl: '../templates/orgunitschartviewboxaddoptions.html'
+    templateUrl: '../templates/orgunitschartviewboxaddoptions.html',
+    standalone: false
 })
 export class OrgunitsChartViewBoxAddOptions {
 

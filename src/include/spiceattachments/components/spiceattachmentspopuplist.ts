@@ -23,6 +23,7 @@ declare var moment: any;
     selector: 'spice-attachments-popup-list',
     templateUrl: '../templates/spiceattachmentspopuplist.html',
     providers: [modelattachments],
+    standalone: false
 })
 export class SpiceAttachmentsPopupList implements OnInit{
 

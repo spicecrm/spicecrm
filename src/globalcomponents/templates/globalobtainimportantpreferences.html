@@ -48,7 +48,7 @@
                     </span>
                     <div class="slds-form-element">
                         <div class="slds-select_container">
-                            <select class="slds-select" name="timezone" [(ngModel)]="selectedTimezone" (change)="this.timeshiftAction = 'takeSelected'">
+                            <select class="slds-select" name="timezone" [(ngModel)]="selectedTimezone" (change)="timeshiftAction = 'takeSelected'">
                                 <option *ngFor="let key of timezoneKeys" value="{{key}}" >{{timezones[key]}}</option>
                             </select>
                         </div>

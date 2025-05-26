@@ -19,16 +19,17 @@ import {layout} from "../../services/layout.service";
     animations: [
         trigger('animatepanel', [
             transition(':enter', [
-                style({right: '-320px', overflow: 'hidden'}),
-                animate('.5s', style({right: '0px'})),
-                style({overflow: 'unset'})
+                style({ right: '-320px', overflow: 'hidden' }),
+                animate('.5s', style({ right: '0px' })),
+                style({ overflow: 'unset' })
             ]),
             transition(':leave', [
-                style({overflow: 'hidden'}),
-                animate('.5s', style({right: '-320px'}))
+                style({ overflow: 'hidden' }),
+                animate('.5s', style({ right: '-320px' }))
             ])
         ])
-    ]
+    ],
+    standalone: false
 })
 export class ObjectListViewHeader {
     /**

@@ -28,7 +28,8 @@ declare var moment: any;
             useExisting: forwardRef(() => SystemInputDelayed),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputDelayed implements ControlValueAccessor {
 

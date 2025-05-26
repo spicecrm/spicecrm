@@ -16,7 +16,8 @@ declare var moment: any;
 @Component({
     selector: 'email-clone-attachments-modal',
     templateUrl: '../templates/emailcloneattachmentsmodal.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 
 /**

@@ -25,7 +25,8 @@ declare var _: any;
  */
 @Component({
     selector: 'global-header',
-    templateUrl: '../templates/globalheader.html'
+    templateUrl: '../templates/globalheader.html',
+    standalone: false
 })
 export class GlobalHeader implements OnDestroy, AfterViewInit {
 

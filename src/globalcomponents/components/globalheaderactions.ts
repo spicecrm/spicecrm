@@ -8,7 +8,8 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'global-header-actions',
-    templateUrl: '../templates/globalheaderactions.html'
+    templateUrl: '../templates/globalheaderactions.html',
+    standalone: false
 })
 export class GlobalHeaderActions  {
 

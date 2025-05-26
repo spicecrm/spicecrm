@@ -17,6 +17,7 @@ import {interval, Subscription} from "rxjs";
 @Component({
     selector: 'global-re-connect',
     templateUrl: '../templates/globalreconnect.html',
+    standalone: false
 })
 export class GlobalReConnect implements OnInit, OnDestroy {
 

@@ -7,7 +7,8 @@ import {administrationapiinspectorService} from "../services/administrationapiin
 @Component({
     selector: 'administration-api-inspector-details',
     templateUrl: '../templates/administrationapiinspectordetails.html',
-    providers:[administrationapiinspectorService]
+    providers: [administrationapiinspectorService],
+    standalone: false
 })
 
 export class AdministrationAPIInspectorDetails {

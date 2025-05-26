@@ -20,7 +20,8 @@ declare var moment;
 @Component({
     selector: 'activity-timeline',
     templateUrl: '../templates/activitytimeline.html',
-    providers: [activitiytimeline]
+    providers: [activitiytimeline],
+    standalone: false
 })
 export class ActivityTimeline implements OnInit, OnDestroy {
 

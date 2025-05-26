@@ -22,7 +22,8 @@ declare var _;
  */
 @Component({
     selector: 'object-table',
-    templateUrl: '../templates/objecttable.html'
+    templateUrl: '../templates/objecttable.html',
+    standalone: false
 })
 export class ObjectTable implements OnInit {
     @Input() public fields = [];

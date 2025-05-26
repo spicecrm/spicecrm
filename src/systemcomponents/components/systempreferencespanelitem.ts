@@ -12,7 +12,8 @@ declare var _: any;
 
 @Component({
     selector: "system-preferences-panel-item",
-    templateUrl: "../templates/systempreferencespanelitem.html"
+    templateUrl: "../templates/systempreferencespanelitem.html",
+    standalone: false
 })
 export class SystemPreferencesPanelItem {
 

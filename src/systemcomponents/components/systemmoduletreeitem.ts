@@ -16,7 +16,8 @@ declare var _: any;
 
 @Component({
     selector: "system-module-tree-item",
-    templateUrl: "../templates/systemmoduletreeitem.html"
+    templateUrl: "../templates/systemmoduletreeitem.html",
+    standalone: false
 })
 
 export class SystemModuleTreeItem {

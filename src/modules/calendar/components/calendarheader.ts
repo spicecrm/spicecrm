@@ -16,7 +16,8 @@ declare var moment: any;
 @Component({
     selector: 'calendar-header',
     templateUrl: '../templates/calendarheader.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 
 export class CalendarHeader implements OnDestroy {

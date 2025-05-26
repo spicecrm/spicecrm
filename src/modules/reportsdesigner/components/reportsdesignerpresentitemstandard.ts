@@ -9,7 +9,8 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Component({
     selector: 'reports-designer-present-item-standard',
-    templateUrl: '../templates/reportsdesignerpresentitemstandard.html'
+    templateUrl: '../templates/reportsdesignerpresentitemstandard.html',
+    standalone: false
 })
 export class ReportsDesignerPresentItemStandard implements OnInit {
 

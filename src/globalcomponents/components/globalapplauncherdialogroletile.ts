@@ -9,7 +9,8 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'global-app-launcher-dialog-role-tile',
-    templateUrl: '../templates/globalapplauncherdialogroletile.html'
+    templateUrl: '../templates/globalapplauncherdialogroletile.html',
+    standalone: false
 })
 export class GlobalAppLauncherDialogRoleTile implements OnInit {
 

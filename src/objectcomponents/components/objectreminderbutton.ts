@@ -19,7 +19,8 @@ declare var moment: any;
  */
 @Component({
     selector: 'object-reminder-button',
-    templateUrl: '../templates/objectreminderbutton.html'
+    templateUrl: '../templates/objectreminderbutton.html',
+    standalone: false
 })
 export class ObjectReminderButton implements OnDestroy{
 

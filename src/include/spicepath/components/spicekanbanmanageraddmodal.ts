@@ -12,7 +12,8 @@ import {modelutilities} from "../../../services/modelutilities.service";
 
 @Component({
     selector: 'spice-kanban-manager-add-modal',
-    templateUrl: '../templates/spicekanbanmanageraddmodal.html'
+    templateUrl: '../templates/spicekanbanmanageraddmodal.html',
+    standalone: false
 })
 
 export class SpiceKanbanManagerAddModal implements OnInit{

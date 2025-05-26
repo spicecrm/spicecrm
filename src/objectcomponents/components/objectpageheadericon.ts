@@ -10,7 +10,8 @@ import {backend} from "../../services/backend.service";
 
 @Component({
     selector: 'object-page-header-icon',
-    templateUrl: '../templates/objectpageheadericon.html'
+    templateUrl: '../templates/objectpageheadericon.html',
+    standalone: false
 })
 export class ObjectPageHeaderIcon{
 

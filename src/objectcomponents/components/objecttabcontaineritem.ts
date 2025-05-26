@@ -19,7 +19,8 @@ import {fielderrorgrouping} from '../../services/fielderrorgrouping.service';
 @Component({
     selector: 'object-tab-container-item',
     templateUrl: '../templates/objecttabcontaineritem.html',
-    providers: [fielderrorgrouping]
+    providers: [fielderrorgrouping],
+    standalone: false
 })
 export class ObjectTabContainerItem implements AfterViewInit, OnDestroy {
     /**

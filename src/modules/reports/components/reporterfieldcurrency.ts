@@ -11,7 +11,8 @@ import {userpreferences} from '../../../services/userpreferences.service';
 @Component({
     selector: 'reporter-field-currency',
     templateUrl: '../templates/reporterfieldcurrency.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterFieldCurrency {
     /**

@@ -17,7 +17,8 @@ declare var _;
 
 @Component({
     selector: 'administration-job-schedule-button',
-    templateUrl: '../templates/administrationjobschedulebutton.html'
+    templateUrl: '../templates/administrationjobschedulebutton.html',
+    standalone: false
 })
 export class AdministrationJobScheduleButton {
 

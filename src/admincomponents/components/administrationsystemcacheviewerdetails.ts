@@ -10,7 +10,8 @@ import {helper} from '../../services/helper.service';
 
 @Component({
     selector: 'administration-system-cacheviewer-details',
-    templateUrl: '../templates/administrationsystemcacheviewerdetails.html'
+    templateUrl: '../templates/administrationsystemcacheviewerdetails.html',
+    standalone: false
 })
 export class AdministrationSystemCacheViewerDetails {
 

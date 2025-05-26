@@ -4,7 +4,7 @@
             <label class="slds-form-element__label">
                 <system-label label="LBL_METHOD"></system-label>
             </label>
-            <field-generic-display [ngSwitch]="!this.system2FAConfig?.require_on ? model.data?.user_2fa_method : this.system2FAConfig?.method" [editable]="!this.system2FAConfig?.require_on">
+            <field-generic-display [ngSwitch]="!system2FAConfig?.require_on ? model.data?.user_2fa_method : system2FAConfig?.method" [editable]="!system2FAConfig?.require_on">
                 <span *ngSwitchCase="'one_time_password'">
                     <system-label label="LBL_TOTP_AUTHENTICATION"></system-label>
                 </span>
@@ -17,7 +17,7 @@
                 <span *ngSwitchDefault>
                     <system-label label="LBL_NONE"></system-label>
                 </span>
-                <span *ngIf="!!this.system2FAConfig.require_on" class="slds-m-left--xx-small">
+                <span *ngIf="!!system2FAConfig.require_on" class="slds-m-left--xx-small">
                     ( <system-label label="LBL_SET_BY_SYSTEM_ADMINISTRATOR"></system-label> )
                 </span>
             </field-generic-display>

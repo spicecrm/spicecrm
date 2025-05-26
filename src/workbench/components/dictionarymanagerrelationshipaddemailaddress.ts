@@ -19,6 +19,7 @@ import {backend} from "../../services/backend.service";
 @Component({
     selector: 'dictionary-manager-relationship-add-emailaddress',
     templateUrl: '../templates/dictionarymanagerrelationshipaddemailaddress.html',
+    standalone: false
 })
 export class DictionaryManagerRelationshipAddEmailAddress {
 

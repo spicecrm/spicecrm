@@ -11,7 +11,8 @@ import {language} from "../../../services/language.service";
  */
 @Component({
     templateUrl: '../templates/calendarmorepopover.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class CalendarMorePopover implements AfterViewInit {
     /**

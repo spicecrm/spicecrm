@@ -10,7 +10,8 @@ import {language} from '../../services/language.service';
 @Component({
     selector: 'object-action-duplicate-button',
     templateUrl: '../templates/objectactionduplicatebutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ObjectActionDuplicateButton {
 

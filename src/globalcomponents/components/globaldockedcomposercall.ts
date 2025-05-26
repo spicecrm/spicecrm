@@ -16,7 +16,8 @@ import {telephonyCallI} from "../../services/interfaces.service";
 
 @Component({
     selector: 'global-docked-composer-call',
-    templateUrl: '../templates/globaldockedcomposercall.html'
+    templateUrl: '../templates/globaldockedcomposercall.html',
+    standalone: false
 })
 export class GlobalDockedComposerCall {
 

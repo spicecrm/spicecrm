@@ -23,6 +23,7 @@ import { Clipboard } from '@angular/cdk/clipboard';
     selector: 'hl7-manager-type',
     templateUrl: '../templates/hl7managertype.html',
     providers: [model, view],
+    standalone: false
 })
 export class Hl7ManagerType {
 

@@ -31,7 +31,8 @@ declare var _;
             useExisting: forwardRef(() => SystemCheckbox),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemCheckbox implements ControlValueAccessor, OnChanges, AfterViewInit {
 

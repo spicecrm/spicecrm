@@ -18,6 +18,7 @@ import {Observable, Subject} from "rxjs";
 @Component({
     selector: 'dictionary-manager-delete-modal',
     templateUrl: '../templates/dictionarymanagerdeletemodal.html',
+    standalone: false
 })
 export class DictionaryManagerDeleteModal {
 

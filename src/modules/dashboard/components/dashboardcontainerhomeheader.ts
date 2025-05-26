@@ -14,6 +14,7 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
 @Component({
     selector: 'dashboard-container-homeheader',
     templateUrl: '../templates/dashboardcontainerhomeheader.html',
+    standalone: false
 })
 export class DashboardContainerHomeHeader  {
 

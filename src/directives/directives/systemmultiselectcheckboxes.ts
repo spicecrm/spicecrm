@@ -7,7 +7,8 @@ import { Directive, ElementRef, HostListener } from '@angular/core';
  * A directive that can be added to an any HTML element that holds checkboxes in it. Then the user can check/uncheck multiple checkboxes simply by click/shift+click.
   */
 @Directive({
-    selector: '[system-multi-select-checkboxes]'
+    selector: '[system-multi-select-checkboxes]',
+    standalone: false
 })
 export class SystemMultiSelectCheckboxesDirective {
 

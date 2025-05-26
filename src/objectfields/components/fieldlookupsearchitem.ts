@@ -10,7 +10,8 @@ import {language} from '../../services/language.service';
 @Component({
     selector: '[field-lookup-search-item]',
     templateUrl: '../templates/fieldlookupsearchitem.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class fieldLookupSearchItem {
     @Input() public item: any = {};

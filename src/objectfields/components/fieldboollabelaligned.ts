@@ -8,7 +8,8 @@ import {fieldGeneric} from './fieldgeneric';
  * renders a boolean field (Checkbox) with the label next to the checkbox rather than on top.
  */
 @Component({
-    templateUrl: '../templates/fieldboollabelaligned.html'
+    templateUrl: '../templates/fieldboollabelaligned.html',
+    standalone: false
 })
 export class fieldBoolLabelAligned extends fieldGeneric {
 

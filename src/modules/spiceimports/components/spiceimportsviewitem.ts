@@ -10,7 +10,8 @@ import {model} from "../../../services/model.service";
 @Component({
     selector: 'spice-imports-view-item',
     templateUrl: '../templates/spiceimportsviewitem.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class SpiceImportsViewItem implements OnInit{
 

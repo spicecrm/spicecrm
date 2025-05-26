@@ -10,7 +10,8 @@ import {ftsconfiguration} from '../services/ftsconfiguration.service';
 import {fts} from "../../services/fts.service";
 
 @Component({
-    templateUrl: '../templates/administrationftsmanagermoduleadd.html'
+    templateUrl: '../templates/administrationftsmanagermoduleadd.html',
+    standalone: false
 })
 export class AdministrationFTSManagerModuleAdd implements OnInit {
 

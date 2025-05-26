@@ -16,7 +16,8 @@ declare var _;
 
 @Component({
     selector: 'global-search-module-only',
-    templateUrl: '../templates/globalsearchmoduleonly.html'
+    templateUrl: '../templates/globalsearchmoduleonly.html',
+    standalone: false
 })
 export class GlobalSearchModuleOnly implements OnChanges {
     @ViewChild('tablecontent', {read: ViewContainerRef, static: true})public tablecontent: ViewContainerRef;

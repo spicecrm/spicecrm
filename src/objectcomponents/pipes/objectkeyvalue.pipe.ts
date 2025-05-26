@@ -7,7 +7,8 @@ import {Pipe, PipeTransform} from "@angular/core";
  * transforms an object with an attribute and a value into an aray with objects with attributes key and value
  */
 @Pipe({
-    name: 'objectkeyvalues'
+    name: 'objectkeyvalues',
+    standalone: false
 })
 export class ObjectKeyValuesPipe implements PipeTransform {
     public transform(value): any {

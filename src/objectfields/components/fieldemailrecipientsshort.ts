@@ -12,7 +12,8 @@ import {Router} from '@angular/router';
 
 @Component({
     templateUrl: '../templates/fieldemailrecipientsshort.html',
-    styles: ['input, input:focus { border: none; outline: none;}']
+    styles: ['input, input:focus { border: none; outline: none;}'],
+    standalone: false
 })
 export class fieldEmailRecipientsShort extends fieldGeneric {
 

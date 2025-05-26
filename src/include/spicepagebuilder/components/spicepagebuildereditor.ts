@@ -21,7 +21,8 @@ import {
 @Component({
     selector: 'spice-page-builder-editor',
     templateUrl: '../templates/spicepagebuildereditor.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderEditor {
     /**

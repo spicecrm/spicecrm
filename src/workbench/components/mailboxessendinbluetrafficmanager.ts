@@ -10,6 +10,7 @@ import {view} from "../../services/view.service";
 @Component({
     selector: "mailboxes-sendinblue-traffic-manager",
     templateUrl: "../templates/mailboxessendinbluetrafficmanager.html",
+    standalone: false
 })
 export class MailboxesSendinblueTrafficManager {
 

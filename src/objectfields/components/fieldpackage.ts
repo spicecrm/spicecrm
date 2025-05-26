@@ -12,7 +12,8 @@ import _ from "underscore";
 @Component({
     selector: 'field-package',
     templateUrl: '../templates/fieldpackage.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 
 /**

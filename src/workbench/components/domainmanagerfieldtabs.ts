@@ -18,7 +18,8 @@ import {domainmanager} from '../services/domainmanager.service';
  */
 @Component({
     selector: 'domain-manager-field-tabs',
-    templateUrl: '../templates/domainmanagerfieldtabs.html'
+    templateUrl: '../templates/domainmanagerfieldtabs.html',
+    standalone: false
 })
 export class DomainManagerFieldTabs {
 
