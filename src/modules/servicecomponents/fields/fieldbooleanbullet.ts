@@ -14,6 +14,7 @@ import {view} from '../../../services/view.service';
  */
 @Component({
     templateUrl: '../templates/fieldbooleanbullet.html',
+    standalone: false
 })
 export class fieldBooleanBullet extends fieldGeneric {
     // default class

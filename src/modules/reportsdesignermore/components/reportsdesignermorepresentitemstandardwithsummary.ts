@@ -9,7 +9,8 @@ import {ReportsDesignerService} from "../../../modules/reportsdesigner/services/
 
 @Component({
     selector: 'reports-designer-more-present-item-standard-with-summary',
-    templateUrl: '../../reportsdesigner/templates/reportsdesignermorepresentitemstandardwithsummary.html'
+    templateUrl: '../../reportsdesigner/templates/reportsdesignermorepresentitemstandardwithsummary.html',
+    standalone: false
 })
 export class ReportsDesignerMorePresentItemStandardWithSummary extends ReportsDesignerPresentItemStandard {
 

@@ -11,7 +11,8 @@ import {session} from "../../../services/session.service";
 @Component({
     selector: 'service-docs-signature-content',
     templateUrl: '../templates/servicedocsignaturecontent.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ServiceDocSignatureContent {
 

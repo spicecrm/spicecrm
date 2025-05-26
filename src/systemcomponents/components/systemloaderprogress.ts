@@ -12,7 +12,8 @@ import {loader} from '../../services/loader.service';
  */
 @Component({
     selector: 'system-loader-progress',
-    templateUrl: '../templates/systemloaderprogress.html'
+    templateUrl: '../templates/systemloaderprogress.html',
+    standalone: false
 })
 export class SystemLoaderProgress {
     constructor(public loader: loader) {

@@ -5,7 +5,8 @@ import {Component, Injector} from '@angular/core';
 import {modal} from "../../../services/modal.service";
 
 @Component({
-    templateUrl: '../templates/sapidocsviewerbutton.html'
+    templateUrl: '../templates/sapidocsviewerbutton.html',
+    standalone: false
 })
 export class SAPIDOCsViewerButton {
 

@@ -8,7 +8,8 @@ import {WorkflowManagerService} from "../services/workflowmanager.service";
 @Component({
     selector: 'workflow-manager-task-types-standard',
     templateUrl: '../templates/workflowmanagertasktypesstandard.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 
 export class WorkflowManagerTaskTypesStandard {

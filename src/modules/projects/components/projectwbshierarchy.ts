@@ -13,7 +13,8 @@ import {projectwbsHierarchy} from "../services/projectwbshierarchy.service";
 @Component({
     selector: "projectwbs-hierarchy",
     templateUrl: "../templates/projectwbshierarchy.html",
-    providers: [projectwbsHierarchy, relatedmodels]
+    providers: [projectwbsHierarchy, relatedmodels],
+    standalone: false
 })
 export class ProjectWBSHierarchy implements OnInit {
 

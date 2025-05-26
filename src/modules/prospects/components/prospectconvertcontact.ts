@@ -16,7 +16,8 @@ import {telecockpitservice} from "../../telesales/services/telecockpit.service";
 @Component({
     selector: 'prospect-convert-contact',
     templateUrl: '../templates/prospectconvertcontact.html',
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 export class ProspectConvertContact implements AfterViewInit, OnInit {
     /**

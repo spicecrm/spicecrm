@@ -5,7 +5,7 @@
             <div class="slds-grid slds-grid--vertical-align-center slds-media__body slds-truncate">
                 <h2>
                     <a href="javascript:void(0);" class="slds-text-link--reset">
-                        <span class="slds-text-heading--small"><system-label label="LBL_DUPLICATES"></system-label><span *ngIf="!this.relatedmodels.isloading"> ({{duplicatedModels.foundDuplicates.length}}/{{duplicatedModels.acceptedDuplicates.length}})</span></span>
+                        <span class="slds-text-heading--small"><system-label label="LBL_DUPLICATES"></system-label><span *ngIf="!relatedmodels.isloading"> ({{duplicatedModels.foundDuplicates.length}}/{{duplicatedModels.acceptedDuplicates.length}})</span></span>
                     </a>
                 </h2>
                 <system-utility-icon class="slds-m-horizontal--xx-small" *ngIf="duplicatedModels.foundDuplicates.length > 0 || duplicatedModels.acceptedDuplicates.length > 0" icon="up" [ngStyle]="arrowIconStyle" style="transition: .5s;" size="x-small" (click)="showDuplicates($event)"></system-utility-icon>

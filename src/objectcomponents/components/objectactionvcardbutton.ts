@@ -9,7 +9,8 @@ import {backend} from "../../services/backend.service";
 
 @Component({
     selector: 'object-action-output-bean-button',
-    templateUrl: '../templates/objectactionvcardbutton.html'
+    templateUrl: '../templates/objectactionvcardbutton.html',
+    standalone: false
 })
 export class ObjectActionVCardButton {
 

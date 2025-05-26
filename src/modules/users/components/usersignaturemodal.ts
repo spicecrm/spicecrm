@@ -28,7 +28,8 @@ declare var _: any;
  */
 @Component({
     selector: 'user-signature-modal',
-    templateUrl: '../templates/usersignaturemodal.html'
+    templateUrl: '../templates/usersignaturemodal.html',
+    standalone: false
 })
 export class UserSignatureModal{
     /**

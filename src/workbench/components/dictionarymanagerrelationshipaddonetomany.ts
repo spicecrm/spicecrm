@@ -19,6 +19,7 @@ import {backend} from "../../services/backend.service";
 @Component({
     selector: 'dictionary-manager-relationship-add-one-to-many',
     templateUrl: '../templates/dictionarymanagerrelationshipaddonetomany.html',
+    standalone: false
 })
 export class DictionaryManagerRelationshipAddOneToMany {
 

@@ -11,7 +11,8 @@ import {Subject, Observable} from 'rxjs';
 @Component({
     selector: 'system-confirm-dialog',
     templateUrl: '../templates/systemconfirmdialog.html',
-    styles: [':host { position: relative; z-index: 9100; }']
+    styles: [':host { position: relative; z-index: 9100; }'],
+    standalone: false
 })
 export class SystemConfirmDialog  {
 

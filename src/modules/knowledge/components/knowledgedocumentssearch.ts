@@ -11,7 +11,8 @@ import {navigation} from "../../../services/navigation.service";
 
 @Component({
     selector: "knowledge-documents-search",
-    templateUrl: "../templates/knowledgedocumentssearch.html"
+    templateUrl: "../templates/knowledgedocumentssearch.html",
+    standalone: false
 })
 export class KnowledgeDocumentsSearch {
 

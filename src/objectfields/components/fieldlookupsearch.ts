@@ -26,7 +26,8 @@ import {Subscription} from "rxjs";
 @Component({
     selector: 'field-lookup-search',
     templateUrl: '../templates/fieldlookupsearch.html',
-    providers: [modellist]
+    providers: [modellist],
+    standalone: false
 })
 export class fieldLookupSearch implements OnInit, OnChanges, OnDestroy {
     /**

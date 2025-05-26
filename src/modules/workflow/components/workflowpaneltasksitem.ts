@@ -14,8 +14,8 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: '[workflow-panel-tasks-item]',
     templateUrl: '../templates/workflowpaneltasksitem.html',
-    providers:[view]
-
+    providers: [view],
+    standalone: false
 })
 export class WorkflowPanelTasksItem implements OnInit{
 

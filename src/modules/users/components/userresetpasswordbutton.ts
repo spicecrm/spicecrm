@@ -8,7 +8,8 @@ import {session} from "../../../services/session.service";
 import {language} from "../../../services/language.service";
 
 @Component({
-    templateUrl: "../templates/userresetpasswordbutton.html"
+    templateUrl: "../templates/userresetpasswordbutton.html",
+    standalone: false
 })
 
 /**

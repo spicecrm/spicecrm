@@ -8,7 +8,8 @@ declare var _: any;
 
 @Component({
     selector: 'questionset-render-basic',
-    template: ''
+    template: '',
+    standalone: false
 })
 export class QuestionRenderBasic implements OnInit {
 

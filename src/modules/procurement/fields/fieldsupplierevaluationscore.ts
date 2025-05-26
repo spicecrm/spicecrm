@@ -14,7 +14,8 @@ import {fieldSlider} from "../../../objectfields/components/fieldslider";
 
 @Component({
     selector: 'field-supplier-evaluation-score',
-    templateUrl: '../templates/fieldsupplierevaluationscore.html'
+    templateUrl: '../templates/fieldsupplierevaluationscore.html',
+    standalone: false
 })
 export class fieldSupplierEvaluationScore extends fieldSlider {
 

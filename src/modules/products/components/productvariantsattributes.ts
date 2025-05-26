@@ -12,7 +12,8 @@ import {backend} from "../../../services/backend.service";
  */
 @Component({
     selector: 'product-variants-attributes',
-    templateUrl: '../templates/productvariantsattributes.html'
+    templateUrl: '../templates/productvariantsattributes.html',
+    standalone: false
 })
 export class ProductVariantsAttributes implements OnDestroy {
     /***

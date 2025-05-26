@@ -11,6 +11,7 @@ import {procurementdocrecord} from "../services/procurementdocrecord";
 @Component({
     selector: 'procurement-docs-items-add-productvariant',
     templateUrl: '../templates/procurementdocsitemsaddproductvariant.html',
+    standalone: false
 })
 export class ProcurementDocsItemsAddProductVariant implements AfterViewInit {
 

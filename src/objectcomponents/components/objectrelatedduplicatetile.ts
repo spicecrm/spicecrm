@@ -15,7 +15,8 @@ import {modal} from "../../services/modal.service";
 @Component({
     selector: 'object-related-duplicate-tile',
     templateUrl: '../templates/objectrelatedduplicatetile.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ObjectRelatedDuplicateTile implements OnInit {
 

@@ -12,7 +12,8 @@ import {model} from '../../../services/model.service';
 @Component({
     selector: 'service-add-ticket-button',
     templateUrl: '../templates/serviceaddticketbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ServiceAddTicketButton {
 

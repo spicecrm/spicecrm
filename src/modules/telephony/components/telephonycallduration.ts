@@ -9,7 +9,8 @@ declare var moment: any;
 @Component({
     selector: 'telephony-call-duration',
     templateUrl: '../templates/telephonycallduration.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class TelephonyCallDuration implements OnDestroy {
 

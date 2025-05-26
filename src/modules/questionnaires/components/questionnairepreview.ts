@@ -9,6 +9,7 @@ import {questionnaireParticipationService} from '../services/questionnairepartic
 @Component({
     selector: 'questionnaire-preview',
     templateUrl: '../templates/questionnairepreview.html',
+    standalone: false
 })
 export class QuestionnairePreview {
 

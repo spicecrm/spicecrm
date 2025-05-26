@@ -11,7 +11,7 @@ declare var _: any;
 
 @Component({
     templateUrl: "../templates/salesvoucherredeembutton.html",
-
+    standalone: false
 })
 export class SalesVoucherRedeemButton {
 

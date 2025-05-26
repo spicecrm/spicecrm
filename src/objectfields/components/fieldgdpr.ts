@@ -16,7 +16,8 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: 'field-gdpr',
-    templateUrl: '../templates/fieldgdpr.html'
+    templateUrl: '../templates/fieldgdpr.html',
+    standalone: false
 })
 export class fieldGDPR extends fieldGeneric implements OnInit {
 

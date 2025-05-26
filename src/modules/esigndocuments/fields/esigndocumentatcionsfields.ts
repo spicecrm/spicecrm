@@ -16,6 +16,7 @@ import {modelattachments} from "../../../services/modelattachments.service";
 @Component({
     templateUrl: '../templates/esigndocumentatcionsfields.html',
     providers: [modelattachments],
+    standalone: false
 })
 export class ESignDocumentAtcionsFields extends fieldGeneric {
 

@@ -12,7 +12,8 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'object-vertical-tab-container-item-header',
-    templateUrl: '../templates/objectverticaltabcontaineritemheader.html'
+    templateUrl: '../templates/objectverticaltabcontaineritemheader.html',
+    standalone: false
 })
 export class ObjectVerticalTabContainerItemHeader {
 

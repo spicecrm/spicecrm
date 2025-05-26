@@ -13,7 +13,8 @@ import {metadata} from '../../../services/metadata.service';
 @Component({
     selector: 'salesdocs-item-reject-container',
     templateUrl: '../templates/salesdocsitemrejectcontainer.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class SalesDocsItemRejectContainer implements OnInit {
 

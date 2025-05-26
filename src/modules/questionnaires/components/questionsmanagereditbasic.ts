@@ -13,7 +13,8 @@ declare var _;
 
 @Component({
     selector: 'questions-manager-edit-basic',
-    template: ''
+    template: '',
+    standalone: false
 })
 export class QuestionsManagerEditBasic implements OnInit {
 

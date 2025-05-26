@@ -20,8 +20,8 @@ declare var _;
 
 @Component({
     selector: 'product-group-manager-tree',
-    templateUrl: '../templates/productgroupmanagertree.html'
-
+    templateUrl: '../templates/productgroupmanagertree.html',
+    standalone: false
 })
 
 export class ProductGroupManagerTree implements OnDestroy {

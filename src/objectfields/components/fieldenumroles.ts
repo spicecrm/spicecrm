@@ -12,6 +12,7 @@ import {fieldEnum} from "./fieldenum";
 @Component({
     selector: 'field-enum-roles',
     templateUrl: '../templates/fieldenumroles.html',
+    standalone: false
 })
 
 export class fieldEnumRoles extends fieldEnum {

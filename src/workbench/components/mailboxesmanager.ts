@@ -20,6 +20,7 @@ import {configurationService} from "../../services/configuration.service";
     providers: [model, view, modellist],
     selector: "mailboxes-manager",
     templateUrl: "../templates/mailboxesmanager.html",
+    standalone: false
 })
 export class MailboxesManager {
 

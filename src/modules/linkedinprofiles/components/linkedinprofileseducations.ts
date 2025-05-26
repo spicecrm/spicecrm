@@ -8,7 +8,8 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 @Component({
     selector: "linkedinprofiles-educations",
     templateUrl: "../templates/linkedinprofileseducations.html",
-    providers: [relatedmodels]
+    providers: [relatedmodels],
+    standalone: false
 })
 
 export class LinkedInProfilesEducations implements OnInit {

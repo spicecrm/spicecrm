@@ -25,7 +25,8 @@ import {telephonyCallI} from "../../../services/interfaces.service";
 declare var moment: any;
 
 @Component({
-    templateUrl: '../templates/starfacetoolbarindicator.html'
+    templateUrl: '../templates/starfacetoolbarindicator.html',
+    standalone: false
 })
 export class StarfaceToolbarIndicator implements OnDestroy {
 

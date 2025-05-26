@@ -9,7 +9,8 @@ import {fielderrorgrouping} from '../../services/fielderrorgrouping.service';
 
 @Component({
     selector: 'field-messages',
-    templateUrl: '../templates/fieldmessages.html'
+    templateUrl: '../templates/fieldmessages.html',
+    standalone: false
 })
 export class FieldMessagesComponent implements OnInit, OnChanges {
     /**

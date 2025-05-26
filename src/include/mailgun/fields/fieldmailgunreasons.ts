@@ -18,7 +18,8 @@ import {modal} from "../../../services/modal.service";
  */
 @Component({
     selector: 'field-mailgun-reasons',
-    templateUrl: '../templates/fieldmailgunreasons.html'
+    templateUrl: '../templates/fieldmailgunreasons.html',
+    standalone: false
 })
 export class fieldMailgunReasons extends fieldGeneric {
 

@@ -16,7 +16,8 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: 'domain-manager-field-validation',
-    templateUrl: '../templates/domainmanagerfieldvalidation.html'
+    templateUrl: '../templates/domainmanagerfieldvalidation.html',
+    standalone: false
 })
 export class DomainManagerFieldValidation implements OnInit {
 

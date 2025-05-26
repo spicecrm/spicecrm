@@ -14,6 +14,7 @@ import {configurationService} from "../../../services/configuration.service";
  */
 @Component({
     templateUrl: "../templates/salesdocsconvertselecttype.html",
+    standalone: false
 })
 export class SalesDocsConvertSelectType {
 

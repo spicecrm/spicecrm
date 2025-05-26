@@ -12,11 +12,12 @@ import {language} from "../../../services/language.service";
     templateUrl: "../templates/emailtoleadbutton.html",
     host: {
         "class": "slds-button slds-button--neutral",
-        "(click)" : "createLead()"
+        "(click)": "createLead()"
     },
     styles: [
         ":host {cursor:pointer;}"
-    ]
+    ],
+    standalone: false
 })
 export class EmailToLeadButton {
 

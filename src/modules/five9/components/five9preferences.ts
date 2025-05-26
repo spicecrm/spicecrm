@@ -15,7 +15,8 @@ import {telephony} from "../../../services/telephony.service";
 declare var _: any;
 
 @Component({
-    templateUrl: '../templates/five9preferences.html'
+    templateUrl: '../templates/five9preferences.html',
+    standalone: false
 })
 export class Five9Preferences {
 

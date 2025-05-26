@@ -14,6 +14,7 @@ import {configurationService} from "../../services/configuration.service";
 @Component({
     selector: 'admin-menu-manager-edit-group-modal',
     templateUrl: '../templates/adminmenumanagereditgroupmodal.html',
+    standalone: false
 })
 export class AdminMenuManagerEditGroupModal {
 

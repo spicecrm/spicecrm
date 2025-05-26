@@ -36,7 +36,8 @@ declare var _: any;
 @Component({
     selector: 'spice-google-maps-record',
     templateUrl: '../templates/spicegooglemapsrecord.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit, AfterViewInit {
     /**

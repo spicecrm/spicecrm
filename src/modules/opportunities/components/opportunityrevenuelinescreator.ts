@@ -12,7 +12,8 @@ declare var moment: any;
  * renders a modal dialog to create a n initial set of revenue reoognition lines
  */
 @Component({
-    templateUrl: "../templates/opportunityrevenuelinescreator.html"
+    templateUrl: "../templates/opportunityrevenuelinescreator.html",
+    standalone: false
 })
 export class OpportunityRevenueLinesCreator {
 

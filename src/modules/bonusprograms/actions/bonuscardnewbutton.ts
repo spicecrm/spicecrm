@@ -17,7 +17,8 @@ declare var moment;
 @Component({
     selector: "bonus-cards-new-button",
     templateUrl: "../templates/bonuscardnewbutton.html",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class BonusCardNewButton implements OnInit {
 

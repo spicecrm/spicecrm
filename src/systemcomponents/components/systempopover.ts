@@ -7,7 +7,8 @@ import {view} from '../../services/view.service';
 import {metadata} from '../../services/metadata.service';
 
 @Component({
-    templateUrl: '../templates/systempopover.html'
+    templateUrl: '../templates/systempopover.html',
+    standalone: false
 })
 export class SystemPopover implements OnInit {
     public popoverside: string = 'right';

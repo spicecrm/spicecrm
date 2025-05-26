@@ -22,7 +22,8 @@ import { view } from "../../../services/view.service";
 @Component({
     selector: 'spice-calculator-dashlet',
     templateUrl: '../templates/spicecalculatordashlet.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpiceCalculatorDashlet implements AfterViewInit{
 

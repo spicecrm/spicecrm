@@ -11,7 +11,8 @@ declare var _;
 @Component({
     selector: 'sales-docs-new-related-button',
     templateUrl: "../../../objectcomponents/templates/objectactionnewbutton.html",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class SalesDocsNewRelatedButton extends ObjectActionNewrelatedButton {
     /**

@@ -9,7 +9,8 @@ import {backend} from '../../../services/backend.service';
 
 @Component({
     selector: 'systemtenant-activate-modal',
-    templateUrl: '../templates/systemtenantactivatemodal.html'
+    templateUrl: '../templates/systemtenantactivatemodal.html',
+    standalone: false
 })
 export class SystemTenantActivateModal {
 

@@ -7,7 +7,8 @@ import {EnumDisplayOptionArray} from "../../services/language.service";
 
 @Component({
     selector: 'field-title',
-    templateUrl: '../templates/fieldtitle.html'
+    templateUrl: '../templates/fieldtitle.html',
+    standalone: false
 })
 export class fieldTitle extends fieldGeneric implements OnInit {
     public isValid: boolean = true;

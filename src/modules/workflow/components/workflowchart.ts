@@ -18,7 +18,8 @@ import {WorkflowMonitorService} from "../services/workflowmonitor.service";
  */
 @Component({
     selector: 'workflow-chart',
-    templateUrl: '../templates/workflowchart.html'
+    templateUrl: '../templates/workflowchart.html',
+    standalone: false
 })
 
 export class WorkflowChart implements OnInit, OnChanges {

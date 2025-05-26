@@ -11,13 +11,14 @@ import {trigger, transition, animate, style, state} from '@angular/animations';
     providers: [view],
     animations: [
         trigger('slideInOut', [
-            state('open', style({height: '80px'})),
-            state('closed', style({height: '0px'})),
+            state('open', style({ height: '80px' })),
+            state('closed', style({ height: '0px' })),
             transition('open <=> closed', [
                 animate('200ms')
             ])
         ])
-    ]
+    ],
+    standalone: false
 })
 export class ServiceOrderEffortItemDetails implements OnInit  {
 

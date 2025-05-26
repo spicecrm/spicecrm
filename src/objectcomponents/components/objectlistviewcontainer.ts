@@ -11,7 +11,8 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'object-listview-container',
-    templateUrl: '../templates/objectlistviewcontainer.html'
+    templateUrl: '../templates/objectlistviewcontainer.html',
+    standalone: false
 })
 export class ObjectListViewContainer implements AfterViewInit, OnDestroy {
     @ViewChild('container', {read: ViewContainerRef, static: true}) public container: ViewContainerRef;

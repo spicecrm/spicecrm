@@ -16,7 +16,8 @@ declare var _: any;
 @Component({
     selector: 'object-page-header',
     templateUrl: '../templates/objectpageheader.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ObjectPageHeader implements OnInit {
 

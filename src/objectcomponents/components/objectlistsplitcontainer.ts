@@ -28,7 +28,8 @@ import {outlookNameValuePairI} from "../../include/outlook/interfaces/outlook.in
 @Component({
     selector: 'object-list-split-container',
     templateUrl: '../templates/objectlistsplitcontainer.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ObjectListSplitContainer implements OnInit, OnDestroy {
 

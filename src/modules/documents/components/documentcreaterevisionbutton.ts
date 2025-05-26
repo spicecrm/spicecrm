@@ -12,7 +12,8 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     selector: 'document-create-revision-button',
-    templateUrl: '../templates/documentcreaterevisionbutton.html'
+    templateUrl: '../templates/documentcreaterevisionbutton.html',
+    standalone: false
 })
 export class DocumentCreateRevisionButton implements OnDestroy{
 

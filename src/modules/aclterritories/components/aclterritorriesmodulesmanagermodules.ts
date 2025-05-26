@@ -10,6 +10,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 @Component({
     selector: 'aclterritorries-modulesmanager-modules',
     templateUrl: '../templates/aclterritorriesmodulesmanagermodules.html',
+    standalone: false
 })
 export class ACLTerritorriesModulesmanagerModules {
 

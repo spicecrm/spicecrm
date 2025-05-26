@@ -19,7 +19,7 @@
 <div *ngIf="isEditMode()" class="slds-form-element">
     <div *ngFor="let group of groups; trackBy: trackByFn" class="slds-m-bottom--medium">
         <div class="slds-p-vertical--xx-small slds-text-title_bold">
-            <system-checkbox [ngModel]="this.localValue.valueGroups[group.value]" (ngModelChange)="setGroupValue($event, group)">
+            <system-checkbox [ngModel]="localValue.valueGroups[group.value]" (ngModelChange)="setGroupValue($event, group)">
                 {{group.display}}
             </system-checkbox>
         </div>

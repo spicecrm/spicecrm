@@ -8,10 +8,11 @@ import { modal } from '../../../services/modal.service';
 @Component({
     selector: 'media-file-image',
     templateUrl: '../templates/mediafileimage.html',
-    providers: [ mediafiles ],
+    providers: [mediafiles],
     styles: [
         'img:hover { cursor: pointer; }'
-    ]
+    ],
+    standalone: false
 })
 export class MediaFileImage implements OnChanges {
 

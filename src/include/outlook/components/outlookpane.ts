@@ -24,9 +24,11 @@ declare var Office: any;
     selector: 'outlook-pane',
     templateUrl: '../templates/outlookpane.html',
     providers: [
-        {provide: GroupwareService, useClass: OutlookGroupware},
-        model],
-    host: {class: 'slds-height_full'}
+        { provide: GroupwareService, useClass: OutlookGroupware },
+        model
+    ],
+    host: { class: 'slds-height_full' },
+    standalone: false
 })
 export class OutlookPane implements OnInit {
 

@@ -13,6 +13,7 @@ import {language} from "../../../services/language.service";
 @Component({
     selector: 'workflow-manager-task-edit-modal',
     templateUrl: '../templates/workflowmanagertaskeditmodal.html',
+    standalone: false
 })
 
 export class WorkflowManagerTaskEditModal {

@@ -12,7 +12,8 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: '[salesdocs-item-footer]',
     templateUrl: '../templates/salesdocsitemfooter.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class SalesDocsItemFooter {
 

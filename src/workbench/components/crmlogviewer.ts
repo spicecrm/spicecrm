@@ -16,7 +16,8 @@ declare var moment: any;
 declare var moment: any;
 
 @Component({
-    templateUrl: '../templates/crmlogviewer.html'
+    templateUrl: '../templates/crmlogviewer.html',
+    standalone: false
 })
 export class CRMLogViewer {
 

@@ -12,7 +12,8 @@ import {BehaviorSubject} from "rxjs";
  */
 @Component({
     templateUrl: '../templates/reporterdetailselectfieldsmodal.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterDetailSelectFieldsModal implements OnInit {
 

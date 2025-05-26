@@ -14,7 +14,7 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: 'workflow-task-status-icon',
     templateUrl: '../templates/workflowtaskstatusicon.html',
-
+    standalone: false
 })
 export class WorkflowTaskStatusIcon {
 

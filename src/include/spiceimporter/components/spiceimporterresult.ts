@@ -12,7 +12,8 @@ import {SpiceImporterService} from '../services/spiceimporter.service';
     templateUrl: '../templates/spiceimporterresult.html',
     styles: [
         ':host {height: 100%;}'
-    ]
+    ],
+    standalone: false
 })
 export class SpiceImporterResult {
     @ViewChild('fileupload', {read: ViewContainerRef, static: true}) public fileupload: ViewContainerRef;

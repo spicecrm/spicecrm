@@ -13,6 +13,7 @@ import {configurationService} from "../../services/configuration.service";
 @Component({
     selector: 'language-label-modal',
     templateUrl: '../templates/languagelabelmodal.html',
+    standalone: false
 })
 export class LanguageLabelModal {
     @Input() public label: any = {};

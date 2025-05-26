@@ -10,7 +10,8 @@ import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     selector: 'service-docs-signature-button',
-    templateUrl: '../templates/servicedocsignaturebutton.html'
+    templateUrl: '../templates/servicedocsignaturebutton.html',
+    standalone: false
 })
 export class ServiceDocSignatureButton {
 

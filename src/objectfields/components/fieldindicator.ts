@@ -17,6 +17,7 @@ import { fieldGeneric } from './fieldgeneric';
 @Component({
     selector: 'field-indicator',
     templateUrl: '../templates/fieldindicator.html',
+    standalone: false
 })
 export class fieldIndicator extends fieldGeneric {
 

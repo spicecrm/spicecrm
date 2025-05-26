@@ -12,9 +12,10 @@ import {configurationService} from '../../../services/configuration.service';
 import {processmanagement} from "../services/processmanagement.service";
 
 @Component({
-    selector:'process-management-add-process-button',
+    selector: 'process-management-add-process-button',
     templateUrl: '../templates/processmanagementaddprocessbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ProcessManagementAddProcessButton {
 

@@ -13,7 +13,8 @@ import {modal} from "../../../services/modal.service";
 @Component({
     selector: 'service-select-queue-modal',
     templateUrl: '../templates/serviceselectqueuemodal.html',
-    providers: [model, modellist]
+    providers: [model, modellist],
+    standalone: false
 })
 export class ServiceSelectQueueModal {
     /**

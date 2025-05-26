@@ -16,6 +16,7 @@ declare var _;
 @Component({
     selector: 'workflow-manager-task-types-end',
     templateUrl: '../templates/workflowmanagertasktypesend.html',
+    standalone: false
 })
 export class WorkflowManagerTaskTypesEnd {
 

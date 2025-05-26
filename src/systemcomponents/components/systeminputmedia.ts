@@ -52,7 +52,8 @@ interface mediaMetaData {
             useExisting: forwardRef(() => SystemInputMedia),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputMedia implements OnDestroy {
 

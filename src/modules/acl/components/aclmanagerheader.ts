@@ -7,6 +7,7 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: 'acl-manager-header',
     templateUrl: '../templates/aclmanagerheader.html',
+    standalone: false
 })
 export class ACLManagerHeader {
 

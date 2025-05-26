@@ -17,7 +17,8 @@ import {language} from "../../../services/language.service";
 @Component({
     selector: 'event-registration-modal',
     templateUrl: '../templates/eventregistrationmodal.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class EventRegistrationModal {
 

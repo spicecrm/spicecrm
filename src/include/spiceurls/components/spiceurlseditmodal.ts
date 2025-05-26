@@ -13,7 +13,8 @@ import {model} from "../../../services/model.service";
  */
 @Component({
     selector: 'spice-urls-edit-modal',
-    templateUrl: '../templates/spiceurlseditmodal.html'
+    templateUrl: '../templates/spiceurlseditmodal.html',
+    standalone: false
 })
 export class SpiceUrlsEditModal {
     /**

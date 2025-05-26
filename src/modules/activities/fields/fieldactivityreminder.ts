@@ -20,7 +20,8 @@ declare var moment;
  */
 @Component({
     selector: 'field-activity-reminder',
-    templateUrl: '../templates/fieldactivityreminder.html'
+    templateUrl: '../templates/fieldactivityreminder.html',
+    standalone: false
 })
 export class fieldActivityReminder extends fieldGeneric {
 

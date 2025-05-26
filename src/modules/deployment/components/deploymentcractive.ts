@@ -12,7 +12,8 @@ import {session} from "../../../services/session.service";
  * renders a componentn in the global toolbar on top to display if a cr is active
  */
 @Component({
-    templateUrl: "../templates/deploymentcractive.html"
+    templateUrl: "../templates/deploymentcractive.html",
+    standalone: false
 })
 export class DeploymentCRActive implements OnDestroy {
 

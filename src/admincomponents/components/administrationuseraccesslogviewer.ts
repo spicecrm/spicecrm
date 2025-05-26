@@ -12,7 +12,8 @@ import {toast} from '../../services/toast.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: '../templates/administrationuseraccesslogviewer.html'
+    templateUrl: '../templates/administrationuseraccesslogviewer.html',
+    standalone: false
 })
 export class AdministrationUserAccessLogViewer {
 

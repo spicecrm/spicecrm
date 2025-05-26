@@ -27,7 +27,8 @@ declare var _;
 @Component({
     selector: 'workflow-manager',
     templateUrl: '../templates/workflowmanager.html',
-    providers: [WorkflowManagerService, model, view, WorkflowDiagramService]
+    providers: [WorkflowManagerService, model, view, WorkflowDiagramService],
+    standalone: false
 })
 export class WorkflowManager implements OnInit, AfterViewInit {
     /**

@@ -14,6 +14,7 @@ import {modal} from '../../../services/modal.service';
 
 @Component({
     templateUrl: '../templates/createmailingbutton.html',
+    standalone: false
 })
 export class CreateMailingButton {
 

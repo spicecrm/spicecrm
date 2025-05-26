@@ -11,7 +11,8 @@ import {KnowledgeService} from "../services/knowledge.service";
 @Component({
     selector: "knowledge-manager-details",
     templateUrl: "../templates/knowledgemanagerdetails.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class KnowledgeManagerDetails implements OnDestroy {
 

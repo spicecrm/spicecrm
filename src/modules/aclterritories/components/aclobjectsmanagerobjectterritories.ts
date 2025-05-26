@@ -10,7 +10,8 @@ import {modal} from '../../../services/modal.service';
 
 @Component({
     selector: 'aclobjects-manager-object-territories',
-    templateUrl: '../templates/aclobjectsmanagerobjectterritories.html'
+    templateUrl: '../templates/aclobjectsmanagerobjectterritories.html',
+    standalone: false
 })
 export class ACLObjectsManagerObjectTerritories {
 

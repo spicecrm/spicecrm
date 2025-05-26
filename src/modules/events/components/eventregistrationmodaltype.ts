@@ -9,7 +9,8 @@ import {model} from "../../../services/model.service";
 @Component({
     selector: 'event-registration-modal-type',
     templateUrl: '../templates/eventregistrationmodaltype.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class EventRegistrationModalType {
 

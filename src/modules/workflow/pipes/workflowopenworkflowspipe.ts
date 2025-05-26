@@ -8,7 +8,8 @@ import {Pipe} from '@angular/core';
  */
 @Pipe({
     name: 'workflowpenworkflowspipe',
-    pure: false
+    pure: false,
+    standalone: false
 })
 export class WorkflowOpenWorkflowsPipe {
 

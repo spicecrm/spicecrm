@@ -16,7 +16,8 @@ import {loginService} from "../../../services/login.service";
  */
 @Component({
     selector: 'outlook-pane-footer',
-    templateUrl: '../templates/outlookpanefooter.html'
+    templateUrl: '../templates/outlookpanefooter.html',
+    standalone: false
 })
 export class OutlookPaneFooter implements AfterViewInit, OnDestroy {
     /**

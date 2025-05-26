@@ -14,7 +14,8 @@ import {model} from "../../../services/model.service";
  */
 @Component({
     selector: 'spice-importer-select',
-    templateUrl: '../templates/spiceimporterselect.html'
+    templateUrl: '../templates/spiceimporterselect.html',
+    standalone: false
 })
 
 export class SpiceImporterSelect {

@@ -16,6 +16,7 @@ declare var _: any;
 @Component({
     selector: 'price-conditions-by-determination',
     templateUrl: '../templates/priceconditionsbydetermination.html',
+    standalone: false
 })
 export class PriceConditionsByDetermination implements OnInit {
 

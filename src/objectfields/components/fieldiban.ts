@@ -26,6 +26,7 @@ import {Router} from '@angular/router';
 @Component({
     selector: 'field-iban',
     templateUrl: '../templates/fieldiban.html',
+    standalone: false
 })
 
 export class fieldIban extends fieldGeneric {

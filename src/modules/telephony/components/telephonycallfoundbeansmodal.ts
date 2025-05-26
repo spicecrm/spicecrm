@@ -13,7 +13,8 @@ import {Subject} from "rxjs";
  */
 @Component({
     selector: 'telephony-call-found-beans-modal',
-    templateUrl: '../templates/telephonycallfoundbeansmodal.html'
+    templateUrl: '../templates/telephonycallfoundbeansmodal.html',
+    standalone: false
 })
 export class TelephonyCallFoundBeansModal {
     /**

@@ -10,7 +10,8 @@ import {backend} from '../../../services/backend.service';
  */
 @Component({
     selector: 'reporter-integration-parent-container',
-    templateUrl: '../templates/reporterintegrationparentcontainer.html'
+    templateUrl: '../templates/reporterintegrationparentcontainer.html',
+    standalone: false
 })
 export class ReporterIntegrationParentContainer implements OnInit{
 

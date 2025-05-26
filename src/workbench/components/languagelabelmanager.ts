@@ -16,6 +16,7 @@ import { session } from '../../services/session.service';
 @Component({
     selector: 'language-label-manager',
     templateUrl: '../templates/languagelabelmanager.html',
+    standalone: false
 })
 export class LanguageLabelManagerComponent {
     public search_term: string = '';
@@ -257,7 +258,8 @@ export class LanguageLabelManagerComponent {
 
 
 @Pipe({
-    name: 'sort'
+    name: 'sort',
+    standalone: false
 })
 export class SortPipe implements PipeTransform {
     public transform(ary: any, fn: Function = (a, b) => a > b ? 1 : -1): any {

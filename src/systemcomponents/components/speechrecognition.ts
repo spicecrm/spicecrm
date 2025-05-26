@@ -9,7 +9,8 @@ import {toast} from '../../services/toast.service';
 declare var window: any;
 
 @Component({
-    templateUrl: '../templates/speechrecognition.html'
+    templateUrl: '../templates/speechrecognition.html',
+    standalone: false
 })
 export class SpeechRecognition implements OnInit {
 

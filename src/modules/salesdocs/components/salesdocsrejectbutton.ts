@@ -10,6 +10,7 @@ import {ObjectActionNewButton} from "../../../objectcomponents/components/object
 
 @Component({
     templateUrl: "../templates/salesdocsrejectbutton.html",
+    standalone: false
 })
 export class SalesdocsRejectButton {
 

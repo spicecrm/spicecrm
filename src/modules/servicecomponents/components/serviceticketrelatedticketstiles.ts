@@ -16,7 +16,8 @@ import {Subscription} from "rxjs";
 @Component({
     selector: 'service-ticket-related-tickets-tiles',
     templateUrl: '../templates/serviceticketrelatedticketstiles.html',
-    providers: [relatedmodels]
+    providers: [relatedmodels],
+    standalone: false
 })
 export class ServiceTicketRelatedTicketsTiles implements OnInit {
 

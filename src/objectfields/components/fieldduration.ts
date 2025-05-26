@@ -20,7 +20,7 @@ declare var moment: any;
 @Component({
     selector: 'field-duration',
     templateUrl: '../templates/fieldduration.html',
-
+    standalone: false
 })
 export class fieldDuration extends fieldGeneric {
     public isValid: boolean = true;

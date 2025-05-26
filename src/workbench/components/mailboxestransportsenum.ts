@@ -12,6 +12,7 @@ import {fieldGeneric} from "../../objectfields/components/fieldgeneric";
 
 @Component({
     templateUrl: "../templates/mailboxestransportsenum.html",
+    standalone: false
 })
 export class MailboxesTransportsEnum extends fieldGeneric {
 

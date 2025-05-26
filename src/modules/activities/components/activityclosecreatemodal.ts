@@ -15,7 +15,8 @@ import {metadata} from '../../../services/metadata.service';
  */
 @Component({
     templateUrl: '../templates/activityclosecreatemodal.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ActivityCloseCreateModal implements OnInit {
 

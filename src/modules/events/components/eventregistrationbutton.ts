@@ -11,7 +11,8 @@ import {ActionSetItemI} from "../../../objectcomponents/interfaces/objectcompone
 
 @Component({
     selector: 'event-registration-button',
-    templateUrl: '../templates/eventregistrationbutton.html'
+    templateUrl: '../templates/eventregistrationbutton.html',
+    standalone: false
 })
 export class EventRegistrationButton implements ActionSetItemI {
 

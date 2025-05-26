@@ -9,7 +9,8 @@ import {aclobjectsmanager} from "../services/aclobjectsmanager.service";
 @Component({
     selector: 'aclobjects-manager',
     templateUrl: "../templates/aclobjectsmanager.html",
-    providers: [aclobjectsmanager, model]
+    providers: [aclobjectsmanager, model],
+    standalone: false
 })
 export class ACLObjectsManager implements OnInit {
 

@@ -13,6 +13,7 @@ declare var _;
 @Component({
     selector: 'workflow-manager-task-types-modal',
     templateUrl: '../templates/workflowmanagertasktypesmodal.html',
+    standalone: false
 })
 
 export class WorkflowManagerTaskTypesModal {

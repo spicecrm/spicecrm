@@ -13,7 +13,8 @@ import {configurationService} from '../../../services/configuration.service';
 import {model} from '../../../services/model.service';
 
 @Component({
-    templateUrl: '../templates/serviceorderaddtypeselector.html'
+    templateUrl: '../templates/serviceorderaddtypeselector.html',
+    standalone: false
 })
 export class ServiceOrderAddTypeSelector {
 

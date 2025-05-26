@@ -18,7 +18,8 @@ declare var _: any;
 @Component({
     selector: "object-related-list",
     templateUrl: "../templates/objectrelatedlist.html",
-    providers: [relatedmodels]
+    providers: [relatedmodels],
+    standalone: false
 })
 export class ObjectRelatedList implements OnInit {
 

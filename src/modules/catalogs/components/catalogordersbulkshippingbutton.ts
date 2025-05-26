@@ -17,6 +17,7 @@ import {modellist} from "../../../services/modellist.service";
 
 @Component({
     templateUrl: '../templates/catalogordersbulkshippingbutton.html',
+    standalone: false
 })
 export class CatalogOrdersBulkShippingButton {
 

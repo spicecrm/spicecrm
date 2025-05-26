@@ -12,7 +12,8 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'field-generic-display',
-    templateUrl: '../templates/fieldgenericdisplay.html'
+    templateUrl: '../templates/fieldgenericdisplay.html',
+    standalone: false
 })
 export class fieldGenericDisplay {
     // @Input() public value: string = '';

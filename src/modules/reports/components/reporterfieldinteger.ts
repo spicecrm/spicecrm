@@ -9,6 +9,7 @@ import {userpreferences} from '../../../services/userpreferences.service';
  */
 @Component({
     templateUrl: '../templates/reporterfieldinteger.html',
+    standalone: false
 })
 export class ReporterFieldInteger  {
     /**

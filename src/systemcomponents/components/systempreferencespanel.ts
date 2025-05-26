@@ -18,7 +18,8 @@ declare var moment: any;
  */
 @Component({
     selector: 'system-preferences-panel',
-    templateUrl: '../templates/systempreferencespanel.html'
+    templateUrl: '../templates/systempreferencespanel.html',
+    standalone: false
 })
 export class SystemPreferencesPanel implements OnChanges, OnInit {
 

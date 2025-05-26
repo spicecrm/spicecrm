@@ -17,6 +17,7 @@ import {currency} from '../../services/currency.service';
 @Component({
     selector: 'system-display-currency-symbol',
     templateUrl: '../templates/systemdisplaycurrencysymbol.html',
+    standalone: false
 })
 export class SystemDisplayCurrencySymbol implements OnChanges{
 

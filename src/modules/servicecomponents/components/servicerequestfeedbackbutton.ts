@@ -12,7 +12,8 @@ import {modal} from "../../../services/modal.service";
  * Button for ServiceTickets that opens up a modal with an email form.
  */
 @Component({
-    templateUrl: "../templates/servicerequestfeedbackbutton.html"
+    templateUrl: "../templates/servicerequestfeedbackbutton.html",
+    standalone: false
 })
 export class ServiceRequestFeedbackButton {
 

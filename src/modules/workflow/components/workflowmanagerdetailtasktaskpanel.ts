@@ -10,7 +10,8 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'workflow-manager-detail-task-taskpanel',
-    templateUrl: '../templates/workflowmanagerdetailtasktaskpanel.html'
+    templateUrl: '../templates/workflowmanagerdetailtasktaskpanel.html',
+    standalone: false
 })
 export class WorkflowManagerDetailTaskTaskpanel {
 

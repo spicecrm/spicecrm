@@ -11,6 +11,7 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'livechat-container',
     templateUrl: '../templates/livechatcontainer.html',
+    standalone: false
 })
 export class LiveChatContainer {
 

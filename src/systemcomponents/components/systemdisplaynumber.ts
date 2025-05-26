@@ -21,7 +21,8 @@ import {currency} from '../../services/currency.service';
 @Component({
     selector: 'system-display-number',
     templateUrl: '../templates/systemdisplaynumber.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SystemDisplayNumber implements OnChanges {
 

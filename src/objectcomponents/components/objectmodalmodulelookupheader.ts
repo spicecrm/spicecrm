@@ -29,6 +29,7 @@ import {configurationService} from "../../services/configuration.service";
 @Component({
     selector: 'object-modal-module-lookup-header',
     templateUrl: '../templates/objectmodalmodulelookupheader.html',
+    standalone: false
 })
 export class ObjectModalModuleLookupHeader {
 

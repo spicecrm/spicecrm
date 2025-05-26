@@ -22,7 +22,8 @@ import {navigationtab} from "../../services/navigationtab.service";
  */
 @Component({
     templateUrl: '../templates/objecteditmodal.html',
-    providers: [view, modalwindow]
+    providers: [view, modalwindow],
+    standalone: false
 })
 export class ObjectEditModal implements OnInit {
     /**

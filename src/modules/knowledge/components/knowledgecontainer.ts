@@ -16,8 +16,8 @@ import {Location} from "@angular/common";
  */
 @Component({
     selector: 'knowledge-container',
-    templateUrl: "../templates/knowledgecontainer.html"
-
+    templateUrl: "../templates/knowledgecontainer.html",
+    standalone: false
 })
 export class KnowledgeContainer implements AfterViewInit, OnDestroy {
 

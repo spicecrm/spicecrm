@@ -15,7 +15,8 @@ declare var moment: any;
 @Component({
     selector: 'product-browser',
     templateUrl: '../templates/productbrowser.html',
-    providers: [productfinder, model]
+    providers: [productfinder, model],
+    standalone: false
 })
 export class ProductBrowser {
 

@@ -12,7 +12,8 @@ import {configurationService} from '../../../services/configuration.service';
 
 
 @Component({
-    templateUrl: '../templates/fieldcatalogs.html'
+    templateUrl: '../templates/fieldcatalogs.html',
+    standalone: false
 })
 export class fieldCatalogs extends fieldGeneric {
     @Input() public fieldname: string = '';

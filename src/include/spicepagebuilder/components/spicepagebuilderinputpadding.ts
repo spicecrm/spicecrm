@@ -19,7 +19,8 @@ import {EditorAttributeI} from "../interfaces/spicepagebuilder.interfaces";
             provide: NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => SpicePageBuilderInputPadding)
         }
-    ]
+    ],
+    standalone: false
 })
 export class SpicePageBuilderInputPadding implements ControlValueAccessor {
     /**

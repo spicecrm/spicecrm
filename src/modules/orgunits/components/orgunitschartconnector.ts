@@ -16,6 +16,7 @@ import {orgunitsViewService} from "../services/orgunitsview.service";
 @Component({
     selector: 'orgunits-chart-connector',
     templateUrl: '../templates/orgunitschartconnector.html',
+    standalone: false
 })
 export class OrgunitsChartConnector  {
 

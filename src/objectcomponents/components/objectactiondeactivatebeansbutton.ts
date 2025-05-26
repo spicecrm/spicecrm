@@ -14,7 +14,8 @@ import {modellist} from "../../services/modellist.service";
  */
 @Component({
     selector: 'object-action-deactivate-beans-button',
-    templateUrl: '../templates/objectactiondeactivatebeansbutton.html'
+    templateUrl: '../templates/objectactiondeactivatebeansbutton.html',
+    standalone: false
 })
 export class ObjectActionDeactivateBeansButton {
 

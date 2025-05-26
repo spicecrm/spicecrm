@@ -22,7 +22,8 @@ declare var moment: any;
 
 @Component({
     selector: 'spice-timestream-embedded',
-    templateUrl: '../templates/spicetimestreamembedded.html'
+    templateUrl: '../templates/spicetimestreamembedded.html',
+    standalone: false
 })
 export class SpiceTimestreamEmbedded implements OnDestroy {
 

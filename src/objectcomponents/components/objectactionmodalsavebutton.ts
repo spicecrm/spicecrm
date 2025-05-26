@@ -15,7 +15,8 @@ import {modal} from "../../services/modal.service";
 @Component({
     selector: 'object-action-modal-save-button',
     templateUrl: '../templates/objectactionmodalsavebutton.html',
-    providers: [helper]
+    providers: [helper],
+    standalone: false
 })
 export class ObjectActionModalSaveButton {
 

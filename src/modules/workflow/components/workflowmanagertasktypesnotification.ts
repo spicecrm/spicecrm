@@ -5,7 +5,8 @@ import {EnumDisplayOptionArray, language} from "../../../services/language.servi
 
 @Component({
     selector: 'workflow-manager-task-types-notification',
-    templateUrl: '../templates/workflowmanagertasktypesnotification.html'
+    templateUrl: '../templates/workflowmanagertasktypesnotification.html',
+    standalone: false
 })
 export class WorkflowManagerTaskTypesNotification {
 

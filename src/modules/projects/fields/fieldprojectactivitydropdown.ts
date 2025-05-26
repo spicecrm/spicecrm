@@ -13,6 +13,7 @@ import {backend} from "../../../services/backend.service";
 @Component({
     selector: 'field-project-activity-dropdown',
     templateUrl: '../templates/fieldprojectactivitydropdown.html',
+    standalone: false
 })
 
 export class fieldProjectActivityDropdown extends fieldGeneric implements OnInit {

@@ -13,7 +13,8 @@ import {Router} from "@angular/router";
  */
 @Component({
     selector: '[administration-gdpr-retention-manager]',
-    templateUrl: '../templates/administrationgdprretentionmanager.html'
+    templateUrl: '../templates/administrationgdprretentionmanager.html',
+    standalone: false
 })
 
 export class AdministrationGDPRRetentionManager implements OnInit {

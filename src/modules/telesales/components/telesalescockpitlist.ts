@@ -12,7 +12,8 @@ import {TeleSalesCockpitListItem} from "./telesalescockpitlistitem";
 @Component({
     selector: 'tele-sales-cockpit-list',
     templateUrl: '../templates/telesalescockpitlist.html',
-    providers: [view, model, modellist]
+    providers: [view, model, modellist],
+    standalone: false
 })
 export class TeleSalesCockpitList {
 

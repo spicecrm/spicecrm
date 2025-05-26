@@ -6,7 +6,8 @@ import {Pipe, PipeTransform} from '@angular/core';
 // pipe to filter the item itself and others that have a parent item already set
 @Pipe({
     name: 'procurementdocsitemsparentpipe',
-    pure: false
+    pure: false,
+    standalone: false
 })
 export class ProcurementDocsItemsParentPipe implements PipeTransform {
     public transform(items, item) {

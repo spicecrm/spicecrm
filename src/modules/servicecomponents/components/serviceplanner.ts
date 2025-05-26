@@ -27,7 +27,8 @@ declare var moment: any;
     selector: 'service-planner',
     templateUrl: '../templates/serviceplanner.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [ServicePlannerService, modellist, model, view]
+    providers: [ServicePlannerService, modellist, model, view],
+    standalone: false
 })
 
 export class ServicePlanner implements OnInit, OnDestroy {

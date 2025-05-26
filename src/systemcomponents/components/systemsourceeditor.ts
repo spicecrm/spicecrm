@@ -10,13 +10,14 @@ import {modal} from "../../services/modal.service";
     selector: 'system-source-editor',
     templateUrl: '../templates/systemsourceeditor.html',
     providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => SystemSourceEditor),
-        multi: true
-    }],
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SystemSourceEditor),
+            multi: true
+        }],
     host: {
         class: 'spice-display-block'
-    }
+    },
+    standalone: false
 })
 
 export class SystemSourceEditor implements OnInit, OnDestroy, ControlValueAccessor {

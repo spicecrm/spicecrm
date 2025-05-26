@@ -13,8 +13,8 @@ import {toast} from '../../../services/toast.service';
 
 @Component({
     selector: 'workflow-panel-task-standard',
-    templateUrl: '../templates/workflowpaneltaskstandard.html'
-
+    templateUrl: '../templates/workflowpaneltaskstandard.html',
+    standalone: false
 })
 export class WorkflowPanelTaskStandard {
     /**

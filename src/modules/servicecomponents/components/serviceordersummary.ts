@@ -10,7 +10,8 @@ import {language} from "../../../services/language.service";
 @Component({
     selector: 'serviceorder-summary',
     templateUrl: '../templates/serviceordersummary.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ServiceOrderSummaryComponent
 {

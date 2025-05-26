@@ -12,6 +12,7 @@ import { modal } from '../../../services/modal.service';
 @Component({
     selector: 'questionset-preview-button',
     templateUrl: '../templates/questionsetpreviewbutton.html',
+    standalone: false
 })
 export class QuestionsetPreviewButton {
 

@@ -19,7 +19,8 @@ declare var _;
  */
 @Component({
     selector: 'dashboard-container-header',
-    templateUrl: '../templates/dashboardcontainerheader.html'
+    templateUrl: '../templates/dashboardcontainerheader.html',
+    standalone: false
 })
 export class DashboardContainerHeader {
 

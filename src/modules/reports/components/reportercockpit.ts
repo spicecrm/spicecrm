@@ -16,7 +16,8 @@ import {skip} from "rxjs/operators";
  */
 @Component({
     selector: 'reporter-cockpit',
-    templateUrl: '../templates/reportercockpit.html'
+    templateUrl: '../templates/reportercockpit.html',
+    standalone: false
 })
 export class ReporterCockpit implements OnInit, OnDestroy {
 

@@ -24,7 +24,8 @@ declare var moment: any;
 @Component({
     selector: 'tele-sales-cockpit-lock-entry-button',
     templateUrl: '../templates/telesalescockpitlockentrybutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class TeleSalesCockpitLockEntryButton implements OnDestroy{
 

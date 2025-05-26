@@ -15,7 +15,8 @@ declare var moment: any;
 
 @Component({
     selector: 'administration-quotamanager',
-    templateUrl: '../templates/administrationquotamanager.html'
+    templateUrl: '../templates/administrationquotamanager.html',
+    standalone: false
 })
 export class AdministrationQuotaManager implements OnInit {
 

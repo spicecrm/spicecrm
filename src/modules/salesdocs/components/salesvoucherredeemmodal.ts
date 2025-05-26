@@ -10,7 +10,8 @@ declare var _: any;
 
 @Component({
     templateUrl: "../templates/salesvoucherredeemmodal.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class SalesVoucherRedeemModal {
 

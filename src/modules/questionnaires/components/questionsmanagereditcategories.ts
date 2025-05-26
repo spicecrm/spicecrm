@@ -11,7 +11,8 @@ declare var _;
 
 @Component({
     selector: 'questions-manager-edit-categories',
-    templateUrl: '../templates/questionsmanagereditcategories.html'
+    templateUrl: '../templates/questionsmanagereditcategories.html',
+    standalone: false
 })
 export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
 

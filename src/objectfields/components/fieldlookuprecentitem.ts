@@ -11,7 +11,8 @@ import {Router} from "@angular/router";
 @Component({
     selector: 'field-lookup-recent-item',
     templateUrl: '../templates/fieldlookuprecentitem.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class fieldLookupRecentItem implements OnInit {
 

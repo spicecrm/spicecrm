@@ -15,7 +15,8 @@ import {telephony} from "../../../services/telephony.service";
 declare var _: any;
 
 @Component({
-    templateUrl: '../templates/starfacepreferences.html'
+    templateUrl: '../templates/starfacepreferences.html',
+    standalone: false
 })
 export class StarfacePreferences {
 

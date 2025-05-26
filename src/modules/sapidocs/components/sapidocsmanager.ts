@@ -11,7 +11,8 @@ import {sapIDOCSegmentI} from "../interfaces/moudesapidocs.interfaces";
 @Component({
     selector: 'sapidocs-manager',
     templateUrl: '../templates/sapidocsmanager.html',
-    providers: [sapIdocsManager]
+    providers: [sapIdocsManager],
+    standalone: false
 })
 export class SAPIDOCsManager {
 

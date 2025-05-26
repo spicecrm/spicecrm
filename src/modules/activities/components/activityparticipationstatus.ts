@@ -21,7 +21,8 @@ import {view} from '../../../services/view.service';
             useExisting: forwardRef(() => ActivityParticipationStatus),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class ActivityParticipationStatus implements ControlValueAccessor {
 

@@ -12,7 +12,8 @@ import {toast} from "../../../services/toast.service";
  */
 @Component({
     selector: 'potentials-opportunity-allocation-lines',
-    templateUrl: "../templates/potentialsopportunityallocationlines.html"
+    templateUrl: "../templates/potentialsopportunityallocationlines.html",
+    standalone: false
 })
 export class PotentialsOpportunityAllocationLines implements OnChanges {
 

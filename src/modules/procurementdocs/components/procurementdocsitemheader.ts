@@ -9,7 +9,8 @@ import {metadata} from '../../../services/metadata.service';
 @Component({
     selector: '[procurement-docs-item-header]',
     templateUrl: '../templates/procurementdocsitemheader.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ProcurementDocsItemHeader {
 

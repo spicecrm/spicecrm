@@ -10,6 +10,7 @@ import {modal} from "../../../services/modal.service";
 @Component({
     selector: 'reports-designer-more-integrate-item-publish',
     templateUrl: '../templates/reportsdesignermoreintegrateitempublish.html',
+    standalone: false
 })
 export class ReportsDesignerMoreIntegrateItemPublish {
 

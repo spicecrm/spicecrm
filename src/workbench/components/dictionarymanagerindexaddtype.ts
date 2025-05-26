@@ -17,6 +17,7 @@ import {DictionaryIndex, DictionaryIndexItem, DictionaryItem} from "../interface
 @Component({
     selector: 'dictionary-manager-index-add-type',
     templateUrl: '../templates/dictionarymanagerindexaddtype.html',
+    standalone: false
 })
 export class DictionaryManagerIndexAddType {
 

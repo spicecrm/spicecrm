@@ -14,7 +14,8 @@ import {toast} from '../../services/toast.service';
 
 @Component({
     selector: 'field-relate-list',
-    templateUrl: '../templates/fieldrelatelist.html'
+    templateUrl: '../templates/fieldrelatelist.html',
+    standalone: false
 })
 export class fieldRelateList extends fieldGeneric implements OnInit {
     public relatedList: any[] = [];

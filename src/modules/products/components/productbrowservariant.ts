@@ -17,7 +17,8 @@ declare var moment: any;
 @Component({
     selector: 'product-brwoser-variant',
     templateUrl: '../templates/productbrowservariant.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ProductBrowserVariant implements OnInit {
 

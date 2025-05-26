@@ -23,7 +23,8 @@ declare var moment: any;
  */
 @Component({
     selector: 'telephony-toolbar-indicator',
-    templateUrl: '../templates/telephonytoolbarindicator.html'
+    templateUrl: '../templates/telephonytoolbarindicator.html',
+    standalone: false
 })
 export class TelephonyToolbarIndicator {
 

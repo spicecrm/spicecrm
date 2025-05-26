@@ -5,7 +5,8 @@ import { language } from '../../../services/language.service';
 
 @Component({
     selector: 'questionnaire-fill-out-button',
-    templateUrl: '../templates/questionnairefilloutbutton.html'
+    templateUrl: '../templates/questionnairefilloutbutton.html',
+    standalone: false
 })
 export class QuestionnaireFillOutButton {
 

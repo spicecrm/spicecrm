@@ -17,7 +17,8 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
 @Component({
     selector: 'dashboard-select-panel',
     templateUrl: '../templates/dashboardselectpanel.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class DashboardSelectPanel {
 

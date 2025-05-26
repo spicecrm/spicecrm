@@ -12,7 +12,8 @@ declare var _: any;
 
 @Component({
     templateUrl: "../../../objectcomponents/templates/objectactionnewbutton.html",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ProcurementDocsNewButton extends ObjectActionNewButton implements OnInit {
 

@@ -13,7 +13,8 @@ declare var _: any;
 @Component({
     selector: 'global-search',
     templateUrl: '../templates/globalsearch.html',
-    providers: [fts]
+    providers: [fts],
+    standalone: false
 })
 export class GlobalSearch implements OnDestroy, OnInit {
 

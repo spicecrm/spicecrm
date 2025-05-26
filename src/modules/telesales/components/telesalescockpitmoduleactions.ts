@@ -8,6 +8,7 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: 'tele-sales-cockpit-module-actions',
     templateUrl: '../templates/telesalescockpitmoduleactions.html',
+    standalone: false
 })
 export class TeleSalesCockpitModuleActions implements OnChanges {
 

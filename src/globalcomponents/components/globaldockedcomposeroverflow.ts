@@ -13,7 +13,8 @@ import {telephony} from '../../services/telephony.service';
 
 @Component({
     selector: 'global-docked-composer-overflow',
-    templateUrl: '../templates/globaldockedcomposeroverflow.html'
+    templateUrl: '../templates/globaldockedcomposeroverflow.html',
+    standalone: false
 })
 export class GlobalDockedComposerOverflow implements OnDestroy {
    public showHiddenComposers: boolean = false;

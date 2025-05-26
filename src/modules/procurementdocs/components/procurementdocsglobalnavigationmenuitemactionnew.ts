@@ -14,7 +14,8 @@ declare var _: any;
 
 @Component({
     selector: 'global-navigation-menu-item-action-new',
-    templateUrl: '../../../globalcomponents/templates/globalnavigationmenuitemactionnew.html'
+    templateUrl: '../../../globalcomponents/templates/globalnavigationmenuitemactionnew.html',
+    standalone: false
 })
 export class ProcurementDocsGlobalNavigationMenuItemActionNew extends GlobalNavigationMenuItemActionNew implements OnInit {
 

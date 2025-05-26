@@ -6,7 +6,8 @@ import {session} from "../../../services/session.service";
 
 @Component({
     selector: 'user-security-passkey-button',
-    templateUrl: '../templates/usersecuritypasskeybutton.html'
+    templateUrl: '../templates/usersecuritypasskeybutton.html',
+    standalone: false
 })
 
 export class UserSecurityPasskeyButton {

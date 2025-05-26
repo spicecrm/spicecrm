@@ -18,7 +18,8 @@ declare var SignaturePad: any;
  */
 @Component({
     selector: 'field-signature',
-    templateUrl: '../templates/fieldsignature.html'
+    templateUrl: '../templates/fieldsignature.html',
+    standalone: false
 })
 export class FieldSignatureComponent extends fieldGeneric implements AfterViewInit {
     @ViewChild('canvas', {static: true}) public canvas: ElementRef;

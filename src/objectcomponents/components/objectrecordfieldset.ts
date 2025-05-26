@@ -17,7 +17,8 @@ import {view} from '../../services/view.service';
  */
 @Component({
     selector: 'object-record-fieldset',
-    templateUrl: '../templates/objectrecordfieldset.html'
+    templateUrl: '../templates/objectrecordfieldset.html',
+    standalone: false
 })
 export class ObjectRecordFieldset implements OnInit {
 

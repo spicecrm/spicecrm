@@ -13,7 +13,8 @@ declare var moment;
 @Component({
     selector: 'object-timeline-full-screen',
     templateUrl: '../templates/objecttimelinefullscreen.html',
-    providers: [timeline, model]
+    providers: [timeline, model],
+    standalone: false
 })
 export class ObjectTimelineFullScreen implements OnInit, AfterViewInit {
 

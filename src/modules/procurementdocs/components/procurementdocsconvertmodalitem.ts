@@ -9,7 +9,8 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: '[procurement-docs-convert-modal-item]',
     templateUrl: "../templates/procurementdocsconvertmodalitem.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ProcurementDocsConvertModalItem implements OnInit {
 

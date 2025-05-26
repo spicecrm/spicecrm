@@ -9,7 +9,8 @@ declare let JsBarcode: any;
 
 @Component({
     selector: "field-barcode-renderer",
-    templateUrl: "../templates/fieldbarcoderenderer.html"
+    templateUrl: "../templates/fieldbarcoderenderer.html",
+    standalone: false
 })
 export class fieldBarcodeRenderer implements OnChanges {
 

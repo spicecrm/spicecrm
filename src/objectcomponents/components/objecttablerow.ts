@@ -20,7 +20,8 @@ declare var _;
     providers: [view],
     host: {
         'class': 'slds-hint-parent',
-    }
+    },
+    standalone: false
 })
 export class ObjectTableRow
 {

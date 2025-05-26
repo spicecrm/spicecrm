@@ -22,7 +22,8 @@ import {
  * </div>
  */
 @Directive({
-    selector: '[system-dropdown-trigger-simple]'
+    selector: '[system-dropdown-trigger-simple]',
+    standalone: false
 })
 export class SystemDropdownTriggerSimpleDirective implements OnDestroy {
 

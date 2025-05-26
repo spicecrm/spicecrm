@@ -16,7 +16,8 @@ declare var _: any;
 @Component({
     selector: 'questionset-type-parameters-nps',
     templateUrl: '../templates/questionsettypeparametersnps.html',
-    providers: [helper]
+    providers: [helper],
+    standalone: false
 })
 export class QuestionsetTypeParametersNPS implements OnInit {
 

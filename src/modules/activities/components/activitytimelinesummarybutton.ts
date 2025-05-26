@@ -15,6 +15,7 @@ import {Router} from "@angular/router";
 @Component({
     selector: 'activitytimeline-summary-button',
     templateUrl: '../templates/activitytimelinesummarybutton.html',
+    standalone: false
 })
 export class ActivityTimelineSummaryButton {
 

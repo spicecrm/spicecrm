@@ -9,7 +9,8 @@ import {modal} from "../../../services/modal.service";
  */
 @Component({
     selector: 'salesdocs-flow-button',
-    templateUrl: "../templates/salesdocsflowbutton.html"
+    templateUrl: "../templates/salesdocsflowbutton.html",
+    standalone: false
 })
 export class SalesDocsFlowButton {
 

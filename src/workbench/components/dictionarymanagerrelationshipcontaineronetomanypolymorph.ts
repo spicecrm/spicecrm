@@ -19,6 +19,7 @@ import {DictionaryDefinition, Relationship, RelationshipPolymorph} from "../inte
 @Component({
     selector: 'dictionary-manager-relationship-container-onetomanypolymorph',
     templateUrl: '../templates/dictionarymanagerrelationshipcontaineronetomanypolymorph.html',
+    standalone: false
 })
 export class DictionaryManagerRelationshipContainerOneToManyPolymorph implements OnInit {
 

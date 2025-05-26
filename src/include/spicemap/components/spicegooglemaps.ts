@@ -41,7 +41,8 @@ declare var MarkerClusterer: any;
 @Component({
     selector: 'spice-google-maps',
     templateUrl: '../templates/spicegooglemaps.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 
 export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {

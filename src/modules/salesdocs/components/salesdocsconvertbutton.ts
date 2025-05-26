@@ -11,7 +11,8 @@ import {Subscription} from "rxjs";
 declare var _: any;
 
 @Component({
-    templateUrl: "../templates/salesdocsconvertbutton.html"
+    templateUrl: "../templates/salesdocsconvertbutton.html",
+    standalone: false
 })
 export class SalesDocsConvertButton implements OnDestroy {
 

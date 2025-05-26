@@ -5,7 +5,8 @@ import {Subscription} from "rxjs";
 
 @Component({
     selector: 'campaign-deactivate-button',
-    templateUrl: '../templates/campaigndeactivatebutton.html'
+    templateUrl: '../templates/campaigndeactivatebutton.html',
+    standalone: false
 })
 
 export class CampaignDeactivateButton implements ActionSetItemI, OnDestroy {

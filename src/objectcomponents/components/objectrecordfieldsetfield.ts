@@ -8,7 +8,8 @@ import {
 
 @Component({
     selector: 'object-record-fieldset-field',
-    templateUrl: '../templates/objectrecordfieldsetfield.html'
+    templateUrl: '../templates/objectrecordfieldsetfield.html',
+    standalone: false
 })
 export class ObjectRecordFieldsetField {
 

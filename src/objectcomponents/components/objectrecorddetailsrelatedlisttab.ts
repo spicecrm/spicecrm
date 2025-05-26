@@ -14,7 +14,8 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'object-record-details-related-list-tab',
-    templateUrl: '../templates/objectrecorddetailsrelatedlisttab.html'
+    templateUrl: '../templates/objectrecorddetailsrelatedlisttab.html',
+    standalone: false
 })
 export class ObjectRecordDetailsRelatedListTab {
 
