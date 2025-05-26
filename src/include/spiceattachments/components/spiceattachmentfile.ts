@@ -61,7 +61,12 @@ export class SpiceAttachmentFile {
     }
 
     get humanFileSize() {
-        return this.modelattachments.humanFileSize(this.file.filesize);
+        if (this.file.file_mime_type === 'folder') {
+            const folderSize = this.modelattachments.calcFolderSize(this.file.id);
+            return this.modelattachments.humanFileSize(folderSize);
+        }
+
+        return this.modelattachments.humanFileSize(parseInt(this.file.filesize));
     }
 
     get filedate() {
