@@ -6,14 +6,14 @@ import {
     Component,
     ChangeDetectorRef,
     ComponentRef,
-    Renderer2, Injector, Input, ElementRef, Output, SkipSelf
+    Injector,
+    SkipSelf
 } from '@angular/core';
 import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {modelattachments} from "../../../services/modelattachments.service";
 import {modal} from "../../../services/modal.service";
 import {toast} from "../../../services/toast.service";
-import {metadata} from "../../../services/metadata.service";
 import {Observable, Subject} from "rxjs";
 import {backend} from "../../../services/backend.service";
 import {broadcast} from "../../../services/broadcast.service";
@@ -35,13 +35,19 @@ export class SpiceAttachmentAddFromRecordModal {
     public self: ComponentRef<SpiceAttachmentAddFromRecordModal>;
 
     public parent: model;
-
-    public selectedFilesCount: number = 0;
-
     /**
      * holds all files
      */
     public files: any = [];
+
+    /**
+     * when true, displays the selected files
+     */
+    public showSelected: boolean = false;
+
+    public filesToPreview: string[] = [];
+
+    public visibleFiles: any[] = [];
 
 
     constructor(
@@ -55,14 +61,13 @@ export class SpiceAttachmentAddFromRecordModal {
         public modal: modal,
         public cdRef: ChangeDetectorRef,
         public broadcast: broadcast,
+        public injector: Injector
     ) {
     }
 
     public ngAfterViewInit() {
         this.setModelData();
-
         this.loadFiles();
-
     }
 
     /**
@@ -72,11 +77,8 @@ export class SpiceAttachmentAddFromRecordModal {
 
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
 
-            // retrieve selected files from frontend
-            const selected = this.modelattachments.files.filter(file => file.selected);
-
             // clone attachments from Email to parent bean
-            this.cloneAttachmentsFromBean(this.parent, selected).subscribe(res => {
+            this.cloneAttachmentsFromBean(this.parent, this.selectedFiles).subscribe(res => {
                 this.attachmentsPanelComponent.loadFiles();
                 loadingRef.instance.self.destroy();
                 this.close();
@@ -86,10 +88,8 @@ export class SpiceAttachmentAddFromRecordModal {
                 } else {
                     this.toast.sendToast('LBL_ERROR', 'error');
                 }
-
             });
         });
-
     }
 
     public cloneAttachmentsFromBean(parentModel: model, selectedFiles, categoryId?: string): Observable<any> {
@@ -128,24 +128,42 @@ export class SpiceAttachmentAddFromRecordModal {
      * @param val
      */
     set selectAll(val) {
-        this.modelattachments.files.forEach(f=> f.selected = val);
-        this.selectedFilesCount = val ? this.modelattachments.files.filter(file=>file.selected).length : 0;
+        this.modelattachments._files.forEach(f => {
+            if (f.file_mime_type != 'folder' && f.folder_id === (this.modelattachments._folderId ?? '')) {
+                f.selected = val;
+            }
+        });
     }
 
     /**
-     * @return true if all attachments are selected
+     * true if all files are selected in the given folder
      */
     get selectAll() {
-        return this.modelattachments.files.length == this.selectedFilesCount;
+        return this.modelattachments._files.filter(f => f.file_mime_type != 'folder' && f.folder_id === (this.modelattachments._folderId ?? '')).length == this.selectedFilesInFolder;
+    }
+
+    get selectedFiles() {
+        return this.modelattachments._files.filter(f => f.file_mime_type != 'folder' && f.selected)
+    }
+
+    get label(): string {
+        return this.showSelected ? 'LBL_SELECTED_FILES' : 'LBL_ADD_FROM_RECORD';
+    }
+
+    get selectedFilesInFolder(): number {
+        return this.modelattachments._files.filter(f => f.selected && f.folder_id === (this.modelattachments._folderId ?? '')).length
     }
 
     /**
      * initializes the model attachments service and loads the attachments
      */
     public loadFiles() {
-        this.modelattachments.getAttachments().subscribe(res => {
-            this.cdRef.detectChanges();
-            this.files = res;
+        this.modelattachments.getAttachments().subscribe({
+            next: (res) => {
+                this.cdRef.detectChanges();
+                this.files = res;
+                this.visibleFiles = this.modelattachments.files;
+            }
         });
     }
 
@@ -154,19 +172,32 @@ export class SpiceAttachmentAddFromRecordModal {
         this.modelattachments.id = this.parent.data.parent_id;
     }
 
+    public toggleShowSelected(): void {
+        this.showSelected = !this.showSelected
+        if (this.showSelected) {
+            this.filesToPreview = [...this.selectedFiles];
+        }
+
+        this.visibleFiles = this.showSelected ? this.filesToPreview : this.modelattachments.files;
+    }
+
+    public openFolder(file) {
+        if(file.file_mime_type != 'folder') return;
+
+        this.modelattachments.folderId = file.id;
+        this.visibleFiles = this.modelattachments.files;
+    }
+
+    public resetFolderId() {
+        this.modelattachments.folderId = null;
+        this.visibleFiles = this.modelattachments.files
+    }
+
     public close() {
         this.self.destroy();
     }
 
     public toggleSelectFile(file: {selected: boolean}) {
-
         file.selected = !file.selected;
-
-        if (file.selected) {
-            this.selectedFilesCount++;
-        } else {
-            this.selectedFilesCount--;
-        }
     }
-
 }
