@@ -2,7 +2,7 @@
  * @module ModuleEmails
  */
 
-import {Component, EventEmitter, OnDestroy, Output} from "@angular/core";
+import {Component, EventEmitter, Optional, Output} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {modal} from "../../../services/modal.service";
@@ -13,7 +13,6 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
  * this renders a button as part of an actionset that allows conversion of an email to an object. The component there allows an action config with the following parameters:
  *
  * - module: the module name of the object that ahosul be created
- * - checklink: the link in the module pointing towards the component. If this is set the component will check if there are object already linked with that module on that link. And if so disable the button
  */
 @Component({
     selector: "email-to-object-button",
@@ -21,15 +20,11 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
     providers: [relatedmodels],
     standalone: false
 })
-export class EmailToObjectButton implements OnDestroy {
+export class EmailToObjectButton {
     public object_module_name: string;
     public actionconfig; // can be set inside actionsets...
     public relation_subscription; // can be set inside actionsets...
     @Output() public actionemitter = new EventEmitter();
-    /**
-     * subscription to the model data
-     */
-    public subscription: any;
 
     constructor(
         public language: language,
@@ -42,12 +37,12 @@ export class EmailToObjectButton implements OnDestroy {
     }
 
     /**
-     * a getter that returns the disabled status. This getter checks if it is allowed for the user to create such a record and if checklink is set in the actionconfig if a record already exists
+     * if already related return true
      */
     get disabled() {
         // check ACL if we can crate such an object at all
         if (!this.metadata.checkModuleAcl(this.actionconfig.module, 'create')) return true;
-        if (this.actionconfig.checklink) {
+        if (this.actionconfig.relation_link_name) {
             if (this.relatedmodels.isloading) return true;
 
             if (this.relatedmodels.count > 0) {
@@ -60,29 +55,17 @@ export class EmailToObjectButton implements OnDestroy {
 
     public ngOnInit() {
         this.object_module_name = this.actionconfig.module;
-
-        if (this.actionconfig.checklink) {
-            this.subscribeToModel();
-        }
+        this.getRelatedData();
     }
 
-    public subscribeToModel() {
-        this.subscription = this.model.data$.subscribe(
-            next => {
-                this.getRelatedData();
-            }
-        );
-    }
-
-    public ngOnDestroy() {
-        this.subscription?.unsubscribe();
-    }
-
+    /**
+     * load related data
+     */
     public getRelatedData() {
         this.relatedmodels.module = this.model.module;
         this.relatedmodels.id = this.model.id;
         this.relatedmodels.relatedModule = this.actionconfig.module;
-        this.relatedmodels.linkName = this.actionconfig.checklink;
+        this.relatedmodels.linkName = this.actionconfig.relation_link_name;
         this.relatedmodels.getData();
     }
 
