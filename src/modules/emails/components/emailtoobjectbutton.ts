@@ -2,12 +2,13 @@
  * @module ModuleEmails
  */
 
-import {Component, EventEmitter, Optional, Output} from "@angular/core";
+import {Component, EventEmitter, inject, OnDestroy, Optional, Output} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {modal} from "../../../services/modal.service";
 import {metadata} from "../../../services/metadata.service";
 import {relatedmodels} from "../../../services/relatedmodels.service";
+import {mailboxesEmails} from "../../mailboxes/services/mailboxesemail.service";
 
 /**
  * this renders a button as part of an actionset that allows conversion of an email to an object. The component there allows an action config with the following parameters:
@@ -20,11 +21,18 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
     providers: [relatedmodels],
     standalone: false
 })
-export class EmailToObjectButton {
+export class EmailToObjectButton implements OnDestroy {
     public object_module_name: string;
     public actionconfig; // can be set inside actionsets...
     public relation_subscription; // can be set inside actionsets...
     @Output() public actionemitter = new EventEmitter();
+    /**
+     * subscription to the model data
+     */
+    public subscription: any;
+
+    @Optional()
+    private mailboxesEmails: mailboxesEmails = inject(mailboxesEmails);
 
     constructor(
         public language: language,
@@ -55,15 +63,37 @@ export class EmailToObjectButton {
 
     public ngOnInit() {
         this.object_module_name = this.actionconfig.module;
-        this.getRelatedData();
+
+        if (!!this.model.id) {
+            this.getRelatedData(this.model.module, this.model.id);
+        }
+
+        if (this.actionconfig.relation_link_name && this.mailboxesEmails) {
+            this.subscribeToModel();
+        }
+    }
+
+    public subscribeToModel() {
+        this.subscription = this.mailboxesEmails.activeMessage$.subscribe(
+            data => {
+                const module = this.mailboxesEmails.activeMailBox.type == 'sms' ? 'TextMessages' : 'Emails';
+                this.getRelatedData(module, data.id);
+            }
+        );
+    }
+
+    public ngOnDestroy() {
+        this.subscription?.unsubscribe();
     }
 
     /**
      * load related data
+     * @param module
+     * @param id
      */
-    public getRelatedData() {
-        this.relatedmodels.module = this.model.module;
-        this.relatedmodels.id = this.model.id;
+    public getRelatedData(module: string, id: string) {
+        this.relatedmodels.module = module;
+        this.relatedmodels.id = id;
         this.relatedmodels.relatedModule = this.actionconfig.module;
         this.relatedmodels.linkName = this.actionconfig.relation_link_name;
         this.relatedmodels.getData();
