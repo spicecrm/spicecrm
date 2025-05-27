@@ -1,0 +1,94 @@
+<system-modal size="large">
+    <system-modal-header (close)="close()">{{language.getLabel('LBL_REPLAY_API_REQUEST')}}
+        <span class="slds-text-heading_small slds-p-top_x-small" style="display:block">
+                <span class="slds-p-horizontal--x-small slds-theme--info slds-text-color--inverse" style="opacity:0.66">{{record.route}}</span>
+        </span>
+    </system-modal-header>
+    <system-modal-content system-modal-content-grow margin="none">
+        <system-spinner *ngIf="isLoading" class="slds-m-top--medium" style="display:block"></system-spinner>
+        <div *ngIf="!isLoading" class="slds-tabs_default">
+            <ul class="slds-tabs_default__nav" role="tablist">
+                <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active' : activeTab == 'requestHeaders'}" (click)="activeTab = 'requestHeaders'">
+                    <a class="slds-tabs_default__link"><system-label label="LBL_REQUEST_HEADERS"></system-label></a>
+                </li>
+                <li *ngIf="hasBodyData" class="slds-tabs_default__item" [ngClass]="{'slds-is-active' : activeTab == 'body'}" (click)="activeTab = 'body'">
+                    <a class="slds-tabs_default__link"><system-label label="Body Parameters"></system-label></a>
+                </li>
+            </ul>
+            <div class="slds-tabs_default__content slds-show" [ngClass]="{'slds-hide' : activeTab != 'requestHeaders'}">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--fixed-layout" >
+                    <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="slds-size--1-of-4" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                        </th>
+                        <th class="slds-size--3-of-4" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_VALUE"></system-label></div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @for ( requestHeader of requestHeaders; track $index ) {
+                            <tr class="slds-hint-parent">
+                                <td>
+                                    <div class="slds-truncate">{{requestHeader.name}}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate">{{requestHeader.value}}</div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if ( hasBodyData ) {
+                <div class="slds-tabs_default__content slds-show" [ngClass]="{'slds-hide' : activeTab != 'body'}">
+                @switch ( contentType ) {
+                    @case('application/x-www-form-urlencoded') {
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--fixed-layout" >
+                            <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="slds-size--1-of-4" scope="col">
+                                    <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                                </th>
+                                <th class="slds-size--3-of-4" scope="col">
+                                    <div class="slds-truncate"><system-label label="LBL_VALUE"></system-label></div>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                @for ( rline of formattedRequest(); track $index ) {
+                                    <tr class="slds-hint-parent">
+                                        <td>
+                                            <div class="slds-truncate">{{rline.name}}</div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate">{{rline.value}}</div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    @default {
+                        <div class="slds-m-horizontal--small slds-m-vertical--x-small">
+                            <table class="slds-table" style="padding:0.75rem">
+                                @for ( property of replayData | keyvalue; let isLast = $last; track $index ) {
+                                    <tr apilogviewer-replay-item [isLast]="isLast" [key]="property.key" [objekt]="replayData" [editMode]="editMode"></tr>
+                                }
+                            </table>
+                        </div>
+                    }
+                }
+                </div>
+            }
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid_align-spread">
+            <span class="slds-col--bump-right"><button *ngIf="activeTab==='body' && canEdit && editMode === false" class="slds-button slds-button--brand" (click)="editMode=true"><system-label label="LBL_EDIT_DATA"></system-label></button></span>
+            <button class="slds-button slds-button--neutral" (click)="cancelReplay()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button class="slds-button slds-button--brand" (click)="doReplay()"><system-label label="LBL_START_START"></system-label> …</button>
+        </div>
+    </system-modal-footer>
+</system-modal>

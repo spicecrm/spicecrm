@@ -40,11 +40,15 @@ export class CRMLogViewer {
      * The number of entries got from the backend.
      * @private
      */
-    public countEntries: number;
+    public countEntries: number|false = false;    /**
+
+     /**
+     * The number of total entries in the DB.
+     */
+    public countEntriesTotal: number;
 
     /**
      * Set the filter field "end" to now.
-     * @private
      */
     public setNow() {
         this.filter.end = new moment();
@@ -126,17 +130,17 @@ export class CRMLogViewer {
      * @private
      */
     public truncate() {
-        this.modal.prompt('confirm', 'Truncate the API log and delete all entries?', 'Empty the API Log?').subscribe(
+        this.modal.prompt('confirm', 'Truncate the CRM log and delete all entries?', 'Empty the CRM Log?').subscribe(
             res => {
                 if (res) {
-                    this.backend.deleteRequest('admin/crmlog').subscribe(
-                        () => {
+                    this.backend.deleteRequest('admin/crmlog').subscribe({
+                        next: () => {
                             this.load$.emit();
                         },
-                        () => {
-                            this.toast.sendToast('Error truncating log', 'error');
+                        error: () => {
+                            this.toast.sendToast( 'Error truncating log', 'error' );
                         }
-                    );
+                    });
                 }
             }
         );
