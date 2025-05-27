@@ -57,6 +57,10 @@ export class fieldActivityReminder extends fieldGeneric {
         super(model, view, language, metadata, router);
     }
 
+    public ngOnInit() {
+        this.setReminderFromPreferences();
+    }
+
     /**
      * returns the display value
      * catch bad value (= not in reminder time options)
@@ -84,6 +88,10 @@ export class fieldActivityReminder extends fieldGeneric {
      */
     set value(val) {
         this.model.setField(this.fieldname, val);
+    }
+
+    public setReminderFromPreferences() {
+        this.model.setField(this.fieldname, this.userpreferences.toUse.reminder_time);
     }
 
 }

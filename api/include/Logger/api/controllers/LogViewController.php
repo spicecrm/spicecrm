@@ -1,13 +1,18 @@
 <?php
 namespace SpiceCRM\includes\Logger\api\controllers;
 
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\Logger\LogViewer;
 use SpiceCRM\includes\Logger\APIlogViewer;
+use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\modules\Mailboxes\Handlers\DispatchResponse;
+use SpiceCRM\modules\Mailboxes\Mailbox;
 
 
 class LogViewController{
@@ -153,6 +158,7 @@ class LogViewController{
         $entries = $viewer->getEntries($req->getQueryParams());
         return $res->withJson([
             'count' => count($entries),
+            'totalCount' => $viewer->getTotalCount(),
             'entries' => $entries
         ]);
     }
@@ -168,7 +174,17 @@ class LogViewController{
         $viewer = new APIlogViewer();
         $params = $req->getQueryParams();
         $entry = $viewer->getFullEntry( $args['id'], $params['logtable'] );
-        return $res->withJson($entry);
+
+        $entry['needsAuthorization'] = false;
+        $routes = RESTManager::getInstance()->app->getRouteCollector()->getRoutes();
+        foreach ( $routes as $route ) {
+            if ( $route->getMethods()[0] === $entry['method'] and $route->getPattern() === $entry['route'] ) {
+                $routeDefinition = RESTManager::getInstance()->getRoute( $route->getIdentifier(), strtolower( $entry['method'] ));
+                $entry['needsAuthorization'] = !$routeDefinition['options']['noAuth'];
+                break;
+            }
+        }
+       return $res->withJson($entry);
     }
 
     /**
@@ -182,6 +198,43 @@ class LogViewController{
         $db = DBManagerFactory::getInstance();
         $db->query("truncate table sysapilog");
         return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * Replay an API Log Entry
+     */
+    public function APIlogReplay( Request $req, Response $res, $args ): Response {
+
+        $bodyParams = $req->getParsedBody();
+
+        $viewer = new APIlogViewer();
+        $entry = $viewer->getFullEntry( $args['id'] );
+
+        $url = $entry['url'];
+        $user = AuthenticationController::getInstance()->getCurrentUser();
+
+        $curl = curl_init();
+        $curlOptions = [
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_URL            => $url,
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => $bodyParams['bodyParams'],
+            CURLOPT_HTTPHEADER     => [
+                'Content-Type: application/json',
+                'Authorization: Basic ' . base64_encode($user->user_name . ':' . base64_decode( $bodyParams['password'] ))
+            ],
+        ];
+        curl_setopt_array($curl, $curlOptions);
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        return $res->withJson([
+            'response' => $response,
+            'curlError' => curl_error( $curl ),
+            'httpStatusCode' => ( $dummy = curl_getinfo( $curl, CURLINFO_HTTP_CODE )),
+            'success' => ( $dummy < 300 and $dummy >= 200 )
+        ]);
     }
 
 }
