@@ -1,9 +1,17 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
-    <ng-container *ngFor="let addr of emailAddresses | keyvalue; trackBy: trackByFn">
-        <span *ngIf="addr.value.relid == value" [title]="addr.value.email_address">
-            {{addr.value.email_address}}
+    <ng-container *ngFor="let addr of emailAddresses | keyvalue; trackBy: trackByFn" >
+        <div class="slds-grid slds-grid--vertical-align-center slds-size--1-of-1" *ngIf="addr.value.relid == value" [title]="addr.value.email_address">
+            <div class="slds-grid slds-grid--vertical-align-center" >
+                <system-input-radio *ngIf="!fieldconfig.singleMode" value="1"  [ngModel]="addr.value.primary_address" [disabled]="true" system-title="LBL_PRIMARY" class="slds-truncate"/>
+            </div>
+        <span >
+            {{addr.value.email_address }}
         </span>
+            <div class="slds-p-left--xx-small">
+                <field-email-emailaddress-status [disabled]="true" [status]="addr.value.opt_in_status" class="slds-p-right--xx-small"></field-email-emailaddress-status>
+            </div>
+        </div>
     </ng-container>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="css_classes">
