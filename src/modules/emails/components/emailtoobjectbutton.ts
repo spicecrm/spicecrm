@@ -76,8 +76,14 @@ export class EmailToObjectButton implements OnDestroy {
     public subscribeToModel() {
         this.subscription = this.mailboxesEmails.activeMessage$.subscribe(
             data => {
-                const module = this.mailboxesEmails.activeMailBox.type == 'sms' ? 'TextMessages' : 'Emails';
-                this.getRelatedData(module, data.id);
+                if (!data) {
+                    this.relatedmodels.resetData();
+                    this.relatedmodels.count = 0;
+                } else {
+                    const module = this.mailboxesEmails.activeMailBox.type == 'sms' ? 'TextMessages' : 'Emails';
+                    this.getRelatedData(module, data.id);
+                }
+
             }
         );
     }
