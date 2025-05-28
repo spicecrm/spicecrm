@@ -9,6 +9,7 @@ use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceSocket\SpiceSocket;
 use SpiceCRM\includes\WebHook\WebHook;
+use SpiceCRM\modules\Emails\EmailTransactionHandler;
 
 class TransactionMiddleware
 {
@@ -24,9 +25,12 @@ class TransactionMiddleware
             SpiceSocket::getInstance()->startTransaction();
         }
 
+        EmailTransactionHandler::getInstance()->startTransaction();
+
         try {
             $response = $handler->handle($request);
             $this->commitTransaction();
+            EmailTransactionHandler::getInstance()->commitTransaction();
             $this->commitFts();
             WebHook::getInstance()->commitTransaction();
             if (class_exists(SpiceSocket::class)) {
