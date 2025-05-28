@@ -1,38 +1,40 @@
 /**
  * @module WorkbenchModule
  */
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {language} from '../../services/language.service';
-import {backend} from '../../services/backend.service';
-import {toast} from '../../services/toast.service';
-import {libloader} from '../../services/libloader.service';
+import { Component } from '@angular/core';
+import { language } from '../../services/language.service';
+import { backend } from '../../services/backend.service';
+import { toast } from '../../services/toast.service';
+import { libloader } from '../../services/libloader.service';
+import { modal } from '../../services/modal.service';
+import { helper } from '../../services/helper.service';
+import { take } from 'rxjs/operators';
 
 declare var html_beautify: any;
-declare var js_beautify: any;
 declare var _: any;
 
 /**
  * a modal to dsiplay an API Log entry record
  */
 @Component({
-    templateUrl: '../templates/apilogviewermodal.html',
+    templateUrl: '../templates/apilogviewerreplaymodal.html',
     standalone: false
 })
-export class APIlogViewerModal {
+export class APIlogViewerReplayModal {
 
+    public replayData: any;
     /**
      * reference to itself for closing the modal
      * @private
      */
     public self;
 
+    public editMode = false;
+
     /**
      * the entry
-     * @private
      */
-    @Input() public entry: any;
-
-    @Output() public replay: EventEmitter<any>;
+    // @Input() public entry: any;
 
     public record: any = {};
 
@@ -44,18 +46,11 @@ export class APIlogViewerModal {
     public _requestheaders: any = {};
 
     /**
-     * the response headers
-     *
-     * @private
-     */
-    public _responseheaders: any = {};
-
-    /**
      * indicates we are loading
      *
      * @private
      */
-    public isLoading = true;
+    public isLoading = false;
 
     /**
      * the currently selected logtable
@@ -70,16 +65,24 @@ export class APIlogViewerModal {
     /**
      * the active tab in the tabbed view
      */
-    public activeTab: 'record' | 'headers' | 'post' | 'response' = 'record';
+    public activeTab: 'requestHeaders' | 'body' | 'get' = 'requestHeaders';
 
-    constructor(public language: language, public backend: backend, public toast: toast, public libloader: libloader) {
+    public contentType = '';
+
+    public hasBodyData: boolean;
+
+    public canEdit = false;
+
+    constructor(public language: language, public backend: backend, public toast: toast, public libloader: libloader, public modal: modal, public helper: helper ) {
         this.libloader.loadLib('jsbeautify').subscribe(loaded => {
             this.beautifyenabled = true;
         });
     }
 
-    public ngOnInit() {
-        this.loadFullData();
+    public ngOnInit()
+    {
+        // this.loadFullData();
+        this.doRecord();
     }
 
     /**
@@ -87,16 +90,16 @@ export class APIlogViewerModal {
      *
      * @private
      */
-    public loadFullData() {
+    /*
+    public loadFullData()
+    {
         this.isLoading = true;
         this.backend.getRequest(`admin/apilog/${this.entry.id}`, {logtable: this.logtable}).subscribe({
             next: (response) => {
-                this.isLoading = false;
                 this.record = response;
-
                 // try to parse the headers so we know how to handle post and response params
-                this.setRequestHeaders();
-                this.setResponseHeaders();
+                this.doRecord();
+                this.isLoading = false;
             },
             error: (error) => {
                 this.toast.sendToast('Error loading entry of log file!', 'error', 'Entry ' + this.entry.id + ' of REST log couldn´t be fetched.', false);
@@ -104,6 +107,16 @@ export class APIlogViewerModal {
                 this.close();
             }
         });
+    }
+     */
+
+    public doRecord()
+    {
+        this.setRequestHeaders();
+        this.replayData = ( this.record.request_body ? JSON.parse( this.record.request_body ) : null );
+        this.contentType = this.determineContentType( this._requestheaders );
+        this.hasBodyData = this.record.request_body && this.record.request_body != "{}";
+        this.canEdit = ( this.contentType === 'application/json' ) && this.hasBodyData;
     }
 
     /**
@@ -124,23 +137,6 @@ export class APIlogViewerModal {
     }
 
     /**
-     * try to set the response header
-     *
-     * @private
-     */
-    public setResponseHeaders() {
-        try {
-            let headers = JSON.parse(this.record.response_headers);
-            if (headers) {
-                this._responseheaders = headers;
-            }
-
-        } catch (e) {
-            this._responseheaders = {};
-        }
-    }
-
-    /**
      * returns the parsed request headers as table
      */
     get requestHeaders() {
@@ -148,28 +144,6 @@ export class APIlogViewerModal {
             try {
                 let retArray = [];
                 let headers = JSON.parse(this.record.request_headers);
-                for (let entry in headers) {
-                    retArray.push({
-                        name: entry,
-                        value: headers[entry]
-                    });
-                }
-                return retArray;
-            } catch (e) {
-                return [];
-            }
-        }
-        return [];
-    }
-
-    /**
-     * returns the parsed response headers as table
-     */
-    get responseHeaders() {
-        if (this.record.response_headers) {
-            try {
-                let retArray = [];
-                let headers = JSON.parse(this.record.response_headers);
                 for (let entry in headers) {
                     retArray.push({
                         name: entry,
@@ -228,20 +202,6 @@ export class APIlogViewerModal {
         return [];
     }
 
-    /**
-     * retruns if we have a non empty request
-     */
-    get hasRequest() {
-        return this.record.request_body && this.record.request_body != "{}";
-    }
-
-    /**
-     * retruns if we have a non empty response
-     */
-    get hasResponse() {
-        return this.record.response_body && this.record.response_body != "{}";
-    }
-
     // Close the modal.
     public close() {
         this.self.destroy();
@@ -260,12 +220,62 @@ export class APIlogViewerModal {
         return ct;
     }
 
-    public formattedResponse() {
-        return this.getFormattedBody(this.determineContentType(this._responseheaders), this.record.response_body);
-    }
-
     public formattedRequest() {
         return this.getFormattedBody(this.determineContentType(this._requestheaders), this.record.request_body);
+    }
+
+    public doReplay(): void
+    {
+        this.modal.prompt('confirm', this.language.getLabel('LBL_CONFIRM_API_REPLAY', '', 'long'), this.language.getLabel('LBL_CONFIRM_API_REPLAY'))
+            .pipe(take(1))
+            .subscribe({
+               next: confirmation => {
+                   if ( !confirmation ) return;
+                   console.log(this.record);
+                   if ( this.record.needsAuthorization ) this.modal.prompt('input_password', this.language.getLabel('LBL_API_REPLAY_PW_PROMPT', '', 'long'), this.language.getLabel('LBL_API_REPLAY_PW_PROMPT'))
+                       .pipe(take(1))
+                       .subscribe({
+                           next: ( val: string|boolean ) => {
+                               if ( val !== false ) { // @ts-ignore
+                                   this.sendReplay( val );
+                               }
+                           }
+                       })
+                   else this.sendReplay( null );
+               }
+            });
+    }
+
+    public sendReplay( password: string|null ): void
+    {
+        if ( password ) password = this.helper.encodeBase64( password );
+        this.backend.postRequest('admin/apilog/replay/'+this.record.id, null, { headers: null, getParams: null, bodyParams: this.replayData ? JSON.stringify( this.replayData ) : undefined, password: password ? password : undefined })
+            .pipe(take(1))
+            .subscribe({
+                next: (response) => {
+                    this.isLoading = false;
+                    if ( response.success ) {
+                        this.toast.sendToast( 'REPLAY SUCCESSFUL', 'success' );
+                        this.self.destroy();
+                    } else {
+                        this.toast.sendToast('ERROR REPLAYING', 'error');
+                    }
+                },
+                error: (error) => {
+                    this.isLoading = false;
+                    this.toast.sendToast('REPLAY ERROR', 'error');
+                }
+            });
+    }
+
+    public cancelReplay(): void
+    {
+        this.self.destroy();
+    }
+
+    public getType( value ): string
+    {
+        return typeof value;
     }
 
     public getFormattedBody(contentType, content) {
@@ -342,14 +352,4 @@ export class APIlogViewerModal {
         }
     }
 
-    public canReplay(): boolean
-    {
-        return this.record.direction === 'I';
-    }
-
-    public openReplay()
-    {
-        this.close();
-        this.replay.emit( this.record );
-    }
 }

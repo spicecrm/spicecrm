@@ -290,7 +290,7 @@ class CampaignTasksController
         $status = 'targeted';
         switch ($campaignTask->campaigntask_type) {
             case 'Telesales':
-                $status = 'tobecalled';
+                $status = 'initial';
                 break;
             case 'Mail':
                 $status = 'sent';
