@@ -144,6 +144,8 @@ import {CRMLogViewerListModal} from './components/crmlogviewerlistmodal';
 
 import {APIlogViewer} from './components/apilogviewer';
 import {APIlogViewerModal} from './components/apilogviewermodal';
+import {APIlogViewerReplayModal} from './components/apilogviewerreplaymodal';
+import {APIlogViewerReplayItem} from './components/apilogviewerreplayitem';
 
 import {ModuleFilterBuilder} from "./components/modulefilterbuilder";
 import {ModuleFilterBuilderFilters} from "./components/modulefilterbuilderfilters";
@@ -333,6 +335,8 @@ import {DictionaryManagerUsageModal} from "./components/dictionarymanagereusagem
         APIlogConfig,
         APIlogViewer,
         APIlogViewerModal,
+        APIlogViewerReplayModal,
+        APIlogViewerReplayItem,
         APIlogConfig,
         ModuleFilterBuilder,
         ModuleFilterBuilderFilters,

@@ -867,4 +867,30 @@ export class modelattachments implements OnDestroy {
                 break;
         }
     }
+
+    /**
+     * calculates the folder size
+     * @param fileId
+     */
+    public calcFolderSize(fileId: string): number {
+        let folderFiles = this._files.filter(f => f.folder_id === fileId);
+        let sum = 0;
+
+        const calcNestedFolderSize = (nestedFileId: string): void => {
+            let folderFiles = this._files.filter(f => f.folder_id === nestedFileId);
+            folderFiles.forEach(f => {
+                sum += parseInt(f.filesize);
+            });
+        };
+
+        folderFiles.forEach(f => {
+            if (f.file_mime_type === 'folder') {
+                calcNestedFolderSize(f.id);
+            } else {
+                sum += parseInt(f.filesize);
+            }
+        });
+
+        return sum;
+    }
 }
