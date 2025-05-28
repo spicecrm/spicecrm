@@ -137,4 +137,10 @@ class APIlogViewer {
         return $entry;
     }
 
+    function getTotalCount(): int
+    {
+        $db = DBManagerFactory::getInstance();
+        return (int)$db->getOne('SELECT COUNT(*) FROM sysapilog');
+    }
+
 }
