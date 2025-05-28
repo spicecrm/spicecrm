@@ -242,15 +242,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Event'] = [
 //        ],
     ],
     'relationships' => [
-        'events_campaigns' => [
-            'lhs_module' => 'Events',
-            'lhs_table' => 'events',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Campaigns',
-            'rhs_table' => 'campaigns',
-            'rhs_key' => 'event_id',
-            'relationship_type' => 'one-to-many',
-        ],
+//        'events_campaigns' => [
+//            'lhs_module' => 'Events',
+//            'lhs_table' => 'events',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Campaigns',
+//            'rhs_table' => 'campaigns',
+//            'rhs_key' => 'event_id',
+//            'relationship_type' => 'one-to-many',
+//        ],
         'event_campaign_log' => [
             'lhs_module' => 'Events',
             'lhs_table' => 'events',
