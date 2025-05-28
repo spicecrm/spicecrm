@@ -91,13 +91,35 @@ export class fieldGDPR extends fieldGeneric implements OnInit {
         const fieldDef = this.metadata.getModuleFields(this.model.module)?.gdpr_marketing_agreement;
         let color = '#cc0000';
 
-        // if agreement was granted
-        if (
-            (fieldDef?.type == 'enum' && this.model.data.gdpr_marketing_agreement == 'g') ||
-            (fieldDef?.type?.startsWith('bool') && this.model.data.gdpr_marketing_agreement == 1) ||
-            this.gdprData?.related?.some(r => r.gdpr_marketing_agreement == '1')
-        ) {
-            color = '#009900';
+        if (fieldDef?.type === 'enum') {
+            const val = this.model.data.gdpr_marketing_agreement;
+
+            if (val === 'g') {
+                color = '#009900';
+            }
+            else if (val === 'r') {
+                color = '#cc0000';
+            }
+            else {
+                if (this.gdprData?.related?.some(r => r.gdpr_marketing_agreement == '1')) {
+                    color = '#009900';
+                }
+            }
+        }
+        else if (fieldDef?.type?.startsWith('bool')) {
+            if (this.model.data.gdpr_marketing_agreement === 1) {
+                color = '#009900';
+            }
+            else {
+                if (this.gdprData?.related?.some(r => r.gdpr_marketing_agreement == '1')) {
+                    color = '#009900';
+                }
+            }
+        }
+        else {
+            if (this.gdprData?.related?.some(r => r.gdpr_marketing_agreement == '1')) {
+                color = '#009900';
+            }
         }
 
         this.marketingStyle = {
