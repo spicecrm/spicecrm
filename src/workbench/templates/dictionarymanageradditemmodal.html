@@ -42,11 +42,25 @@
                 </div>
             </div>
             <div class="slds-grid slds-p-vertical--xx-small">
-                <div class="slds-size--1-of-3 slds-form-element__control">
-                    <system-checkbox [(ngModel)]="dictionaryitem.required" [asinteger]="true"><system-label label="LBL_REQUIRED"/></system-checkbox>
+                <div class="slds-size--1-of-4 slds-form-element__control">
+                    <system-checkbox [(ngModel)]="dictionaryitem.required" [asinteger]="true">
+                        <system-label label="LBL_REQUIRED"/>
+                    </system-checkbox>
                 </div>
-                <div class="slds-size--1-of-3 slds-form-element__control">
-                    <system-checkbox [(ngModel)]="dictionaryitem.non_db" [asinteger]="true"><system-label label="LBL_NON_DB"/></system-checkbox>
+                <div class="slds-size--1-of-4 slds-form-element__control">
+                    <system-checkbox [(ngModel)]="dictionaryitem.non_db" [asinteger]="true">
+                        <system-label label="LBL_NON_DB"/>
+                    </system-checkbox>
+                </div>
+                <div class="slds-size--1-of-4 slds-form-element__control">
+                    <system-checkbox [(ngModel)]="dictionaryitem.duplicate_merge" [asinteger]="true">
+                        <system-label label="LBL_DUPLICATE_MERGE"/>
+                    </system-checkbox>
+                </div>
+                <div class="slds-size--1-of-4 slds-form-element__control">
+                    <system-checkbox [(ngModel)]="dictionaryitem.is_sensitive" [asinteger]="true">
+                        <system-label label="LBL_SENSITIVE"/>
+                    </system-checkbox>
                 </div>
             </div>
             </div>

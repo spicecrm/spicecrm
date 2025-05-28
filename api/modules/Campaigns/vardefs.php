@@ -60,18 +60,18 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
 //            'default' => '0',
 //            'comment' => 'The number of accesses made to the tracker URL; no longer used as of 4.2 (see campaign_trkrs)'
 //        ),
-        'name' => [
-            'name' => 'name',
-            'vname' => 'LBL_NAME',
-            'dbType' => 'varchar',
-            'type' => 'name',
-            'len' => '50',
-            'comment' => 'The name of the campaign',
-            'importable' => 'required',
-            'required' => true,
-            'unified_search' => true,
-            'full_text_search' => ['boost' => 3],
-        ],
+//        'name' => [
+//            'name' => 'name',
+//            'vname' => 'LBL_NAME',
+//            'dbType' => 'varchar',
+//            'type' => 'name',
+//            'len' => '50',
+//            'comment' => 'The name of the campaign',
+//            'importable' => 'required',
+//            'required' => true,
+//            'unified_search' => true,
+//            'full_text_search' => ['boost' => 3],
+//        ],
         'refer_url' => [
             'name' => 'refer_url',
             'vname' => 'LBL_REFER_URL',
@@ -80,7 +80,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'default' => 'http://',
             'comment' => 'The URL referenced in the tracker URL; no longer used as of 4.2 (see campaign_trkrs)'
         ],
-        'description' => ['name' => 'description', 'type' => 'none', 'comment' => 'inhertied but not used', 'source' => 'non-db'],
+//        'description' => ['name' => 'description', 'type' => 'none', 'comment' => 'inhertied but not used', 'source' => 'non-db'],
         'tracker_text' => [
             'name' => 'tracker_text',
             'vname' => 'LBL_TRACKER_TEXT',
@@ -89,38 +89,38 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'comment' => 'The text that appears in the tracker URL; no longer used as of 4.2 (see campaign_trkrs)'
         ],
 
-        'start_date' => [
-            'name' => 'start_date',
-            'vname' => 'LBL_DATE_START',
-            'type' => 'date',
-            'audited' => true,
-            'comment' => 'Starting date of the campaign',
-            'validation' => ['type' => 'isbefore', 'compareto' => 'end_date'],
-            'enable_range_search' => true,
-            'options' => 'date_range_search_dom',
-        ],
-        'end_date' => [
-            'name' => 'end_date',
-            'vname' => 'LBL_DATE_END',
-            'type' => 'date',
-            'audited' => true,
-            'comment' => 'Ending date of the campaign',
-            'importable' => 'required',
-            'required' => true,
-            'enable_range_search' => true,
-            'options' => 'date_range_search_dom',
-        ],
-        'status' => [
-            'name' => 'status',
-            'vname' => 'LBL_STATUS',
-            'type' => 'enum',
-            'options' => 'campaign_status_dom',
-            'len' => 100,
-            'audited' => true,
-            'comment' => 'Status of the campaign',
-            'importable' => 'required',
-            'required' => true,
-        ],
+//        'start_date' => [
+//            'name' => 'start_date',
+//            'vname' => 'LBL_DATE_START',
+//            'type' => 'date',
+//            'audited' => true,
+//            'comment' => 'Starting date of the campaign',
+//            'validation' => ['type' => 'isbefore', 'compareto' => 'end_date'],
+//            'enable_range_search' => true,
+//            'options' => 'date_range_search_dom',
+//        ],
+//        'end_date' => [
+//            'name' => 'end_date',
+//            'vname' => 'LBL_DATE_END',
+//            'type' => 'date',
+//            'audited' => true,
+//            'comment' => 'Ending date of the campaign',
+//            'importable' => 'required',
+//            'required' => true,
+//            'enable_range_search' => true,
+//            'options' => 'date_range_search_dom',
+//        ],
+//        'status' => [
+//            'name' => 'status',
+//            'vname' => 'LBL_STATUS',
+//            'type' => 'enum',
+//            'options' => 'campaign_status_dom',
+//            'len' => 100,
+//            'audited' => true,
+//            'comment' => 'Status of the campaign',
+//            'importable' => 'required',
+//            'required' => true,
+//        ],
         'impressions' => [
             'name' => 'impressions',
             'vname' => 'LBL_CAMPAIGN_IMPRESSIONS',
@@ -129,23 +129,23 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'reportable' => true,
             'comment' => 'Expected Click throughs manually entered by Campaign Manager'
         ],
-        'currency_id' =>
-            [
-                'name' => 'currency_id',
-                'vname' => 'LBL_CURRENCY',
-                'type' => 'id',
-                'required' => false,
-                'do_report' => false,
-                'reportable' => false,
-                'comment' => 'Currency in use for the campaign'
-            ],
-        'budget' => [
-            'name' => 'budget',
-            'vname' => 'LBL_BUDGET',
-            'type' => 'currency',
-            'dbType' => 'double',
-            'comment' => 'Budgeted amount for the campaign'
-        ],
+//        'currency_id' =>
+//            [
+//                'name' => 'currency_id',
+//                'vname' => 'LBL_CURRENCY',
+//                'type' => 'id',
+//                'required' => false,
+//                'do_report' => false,
+//                'reportable' => false,
+//                'comment' => 'Currency in use for the campaign'
+//            ],
+//        'budget' => [
+//            'name' => 'budget',
+//            'vname' => 'LBL_BUDGET',
+//            'type' => 'currency',
+//            'dbType' => 'double',
+//            'comment' => 'Budgeted amount for the campaign'
+//        ],
         'expected_cost' => [
             'name' => 'expected_cost',
             'vname' => 'LBL_EXPECTED_COST',
@@ -167,17 +167,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'dbType' => 'double',
             'comment' => 'Expected revenue stemming from the campaign'
         ],
-        'campaign_type' => [
-            'name' => 'campaign_type',
-            'vname' => 'LBL_TYPE',
-            'type' => 'enum',
-            'options' => 'campaign_type_dom',
-            'len' => 100,
-            'audited' => true,
-            'comment' => 'The type of campaign',
-            'importable' => 'required',
-            'required' => false,
-        ],
+//        'campaign_type' => [
+//            'name' => 'campaign_type',
+//            'vname' => 'LBL_TYPE',
+//            'type' => 'enum',
+//            'options' => 'campaign_type_dom',
+//            'len' => 100,
+//            'audited' => true,
+//            'comment' => 'The type of campaign',
+//            'importable' => 'required',
+//            'required' => false,
+//        ],
         'objective' => [
             'name' => 'objective',
             'vname' => 'LBL_OBJECTIVE',
@@ -210,22 +210,22 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
 //            'relationship' => 'campaign_emailman',
 //            'source' => 'non-db',
 //        ),
-        'log_entries' => [
-            'name' => 'log_entries',
-            'type' => 'link',
-            'relationship' => 'campaign_campaignlog',
-            'source' => 'non-db',
-            'vname' => 'LBL_LOG_ENTRIES',
-        ],
-        'frequency' => [
-            'name' => 'frequency',
-            'vname' => 'LBL_FREQUENCY',
-            'type' => 'enum',
-            //'options' => 'campaign_status_dom',
-            'len' => 100,
-            'comment' => 'Frequency of the campaign',
-            'options' => 'newsletter_frequency_dom',
-        ],
+//        'log_entries' => [
+//            'name' => 'log_entries',
+//            'type' => 'link',
+//            'relationship' => 'campaign_campaignlog',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_LOG_ENTRIES',
+//        ],
+//        'frequency' => [
+//            'name' => 'frequency',
+//            'vname' => 'LBL_FREQUENCY',
+//            'type' => 'enum',
+//            //'options' => 'campaign_status_dom',
+//            'len' => 100,
+//            'comment' => 'Frequency of the campaign',
+//            'options' => 'newsletter_frequency_dom',
+//        ],
 //        'leads' => [
 //            'name' => 'leads',
 //            'type' => 'link',
@@ -303,35 +303,35 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'dbType' => 'varchar',
             'len' => 36
         ],
-        'email_template_name' =>
-            [
-                'name' => 'email_template_name',
-                'rname' => 'name',
-                'id_name' => 'email_template_id',
-                'vname' => 'LBL_EMAILTEMPLATE',
-                'type' => 'relate',
-                'table' => 'email_templates',
-                'isnull' => 'true',
-                'module' => 'EmailTemplates',
-                'dbType' => 'varchar',
-                'link' => 'emailtemplates',
-                'len' => '255',
-                'source' => 'non-db',
-            ],
-        'emailtemplates' => [
-            'name' => 'emailtemplates',
-            'type' => 'link',
-            'relationship' => 'campaign_email_template',
-            'source' => 'non-db',
-            'module' => 'EmailTemaplates'
-        ],
-        'email_template_id' => [
-            'name' => 'email_template_id',
-            'vname' => 'LBL_MAILRELAIS',
-            'dbType' => 'id',
-            'type' => 'char',
-            'len' => 36
-        ],
+//        'email_template_name' =>
+//            [
+//                'name' => 'email_template_name',
+//                'rname' => 'name',
+//                'id_name' => 'email_template_id',
+//                'vname' => 'LBL_EMAILTEMPLATE',
+//                'type' => 'relate',
+//                'table' => 'email_templates',
+//                'isnull' => 'true',
+//                'module' => 'EmailTemplates',
+//                'dbType' => 'varchar',
+//                'link' => 'emailtemplates',
+//                'len' => '255',
+//                'source' => 'non-db',
+//            ],
+//        'emailtemplates' => [
+//            'name' => 'emailtemplates',
+//            'type' => 'link',
+//            'relationship' => 'campaign_email_template',
+//            'source' => 'non-db',
+//            'module' => 'EmailTemaplates'
+//        ],
+//        'email_template_id' => [
+//            'name' => 'email_template_id',
+//            'vname' => 'LBL_MAILRELAIS',
+//            'dbType' => 'id',
+//            'type' => 'char',
+//            'len' => 36
+//        ],
 
         /* migrated
         'mailbox_id' => [
@@ -366,38 +366,38 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'duplicate_merge' => false,
         ],
         */
-        'event_id' => [
-            'name' => 'event_id',
-            'vname' => 'LBL_EVENT_ID',
-            'type' => 'id',
-        ],
-
-        'event_name' => [
-            'name' => 'event_name',
-            'rname' => 'name',
-            'id_name' => 'event_id',
-            'vname' => 'LBL_EVENT',
-            'join_name' => 'events_join',
-            'type' => 'relate',
-            'link' => 'event',
-            'table' => 'events',
-            'isnull' => 'true',
-            'module' => 'Events',
-            'dbType' => 'varchar',
-            'len' => '255',
-            'source' => 'non-db',
-            'unified_search' => true,
-        ],
-
-        'event' => [
-            'name' => 'event',
-            'vname' => 'LBL_EVENT',
-            'type' => 'link',
-            'relationship' => 'events_campaigns',
-            'link_type' => 'one',
-            'source' => 'non-db',
-            'duplicate_merge' => false,
-        ],
+//        'event_id' => [
+//            'name' => 'event_id',
+//            'vname' => 'LBL_EVENT_ID',
+//            'type' => 'id',
+//        ],
+//
+//        'event_name' => [
+//            'name' => 'event_name',
+//            'rname' => 'name',
+//            'id_name' => 'event_id',
+//            'vname' => 'LBL_EVENT',
+//            'join_name' => 'events_join',
+//            'type' => 'relate',
+//            'link' => 'event',
+//            'table' => 'events',
+//            'isnull' => 'true',
+//            'module' => 'Events',
+//            'dbType' => 'varchar',
+//            'len' => '255',
+//            'source' => 'non-db',
+//            'unified_search' => true,
+//        ],
+//
+//        'event' => [
+//            'name' => 'event',
+//            'vname' => 'LBL_EVENT',
+//            'type' => 'link',
+//            'relationship' => 'events_campaigns',
+//            'link_type' => 'one',
+//            'source' => 'non-db',
+//            'duplicate_merge' => false,
+//        ],
 //        'campaigntasks' => [
 //            'name' => 'campaigntasks',
 //            'type' => 'link',
@@ -462,20 +462,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
 //            'rhs_module' => 'EmailMan', 'rhs_table' => 'emailman', 'rhs_key' => 'campaign_id',
 //            'relationship_type' => 'one-to-many'),
 
-        'campaign_campaignlog' => ['lhs_module' => 'Campaigns', 'lhs_table' => 'campaigns', 'lhs_key' => 'id',
-            'rhs_module' => 'CampaignLog', 'rhs_table' => 'campaign_log', 'rhs_key' => 'campaign_id',
-            'relationship_type' => 'one-to-many'],
-
-        'campaign_assigned_user' => ['lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
-            'rhs_module' => 'Campaigns', 'rhs_table' => 'campaigns', 'rhs_key' => 'assigned_user_id',
-            'relationship_type' => 'one-to-many'],
-
-        'campaign_modified_user' => ['lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
-            'rhs_module' => 'Campaigns', 'rhs_table' => 'campaigns', 'rhs_key' => 'modified_user_id',
-            'relationship_type' => 'one-to-many'],
-        'campaign_email_template' => ['lhs_module' => 'EmailTemplates', 'lhs_table' => 'email_templates', 'lhs_key' => 'id',
-            'rhs_module' => 'Campaigns', 'rhs_table' => 'campaigns', 'rhs_key' => 'email_template_id',
-            'relationship_type' => 'one-to-many'],
+//        'campaign_campaignlog' => ['lhs_module' => 'Campaigns', 'lhs_table' => 'campaigns', 'lhs_key' => 'id',
+//            'rhs_module' => 'CampaignLog', 'rhs_table' => 'campaign_log', 'rhs_key' => 'campaign_id',
+//            'relationship_type' => 'one-to-many'],
+//
+//        'campaign_assigned_user' => ['lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
+//            'rhs_module' => 'Campaigns', 'rhs_table' => 'campaigns', 'rhs_key' => 'assigned_user_id',
+//            'relationship_type' => 'one-to-many'],
+//
+//        'campaign_modified_user' => ['lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
+//            'rhs_module' => 'Campaigns', 'rhs_table' => 'campaigns', 'rhs_key' => 'modified_user_id',
+//            'relationship_type' => 'one-to-many'],
+//        'campaign_email_template' => ['lhs_module' => 'EmailTemplates', 'lhs_table' => 'email_templates', 'lhs_key' => 'id',
+//            'rhs_module' => 'Campaigns', 'rhs_table' => 'campaigns', 'rhs_key' => 'email_template_id',
+//            'relationship_type' => 'one-to-many'],
     ]
 ];
 //VardefManager::createVardef('Campaigns', 'Campaign', ['default', 'assignable', 'activities']);

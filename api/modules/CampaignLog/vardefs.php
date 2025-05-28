@@ -247,16 +247,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
 //    		'source'=>'non-db',
 //		    'vname'=> 'LBL_CAMPAIGNTASKS',
 //        ],
-  		'related_name'=> [
-  			'source'=>'function',
-		  	'function_name'=>'get_related_name',
-		  	'function_class'=>'CampaignLog',
-  			'function_params'=> ['related_id', 'related_type'],
-  			'function_params_source'=>'this',  //valid values are 'parent' or 'this' default is parent.
-  			'type'=>'function',
-  			'name'=>'related_name',
-  		    'reportable'=>false,
-        ],
+//  		'related_name'=> [
+//  			'source'=>'function',
+//		  	'function_name'=>'get_related_name',
+//		  	'function_class'=>'CampaignLog',
+//  			'function_params'=> ['related_id', 'related_type'],
+//  			'function_params_source'=>'this',  //valid values are 'parent' or 'this' default is parent.
+//  			'type'=>'function',
+//  			'name'=>'related_name',
+//  		    'reportable'=>false,
+//        ],
 //		'date_modified' => [
 //	    	'name' => 'date_modified',
 //    		'vname' => 'LBL_DATE_MODIFIED',
