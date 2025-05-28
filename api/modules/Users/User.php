@@ -45,6 +45,7 @@ use SpiceCRM\includes\SugarObjects\templates\person\Person;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\SystemTenants\hooks\TenantUserHooks;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 
@@ -646,30 +647,21 @@ class User extends Person
 
         $itemail = $this->email1;
 
+        /** @var Email $emailObj */
         $emailObj = BeanFactory::getBean('Emails');
         $emailObj->name = DBUtils::fromHtml($emailTempl->subject);
         $emailObj->body = DBUtils::fromHtml($emailTempl->body_html);
         $emailObj->addEmailAddress('to', $itemail);
-        $emailObj->to_be_sent = true;
 
         try {
-            $response = $emailObj->save();
+            $response = $emailObj->sendEmail();
         } catch (Exception $e) {
             $result['message'] = $e->getMessage();
             return $result;
         }
 
-        if ($response['result'] == true) {
+        if ($response['result']) {
             $result['status'] = true;
-            $emailObj->to_be_sent = false;
-            $emailObj->type = 'archived';
-            $emailObj->team_id = 1;
-            $emailObj->parent_type = 'User';
-            $emailObj->modified_user_id = '1';
-            $emailObj->created_by = '1';
-            $emailObj->date_sent = TimeDate::getInstance()->nowDb();
-            $emailObj->save();
-
             if (!isset($additionalData['link']) || $additionalData['link'] == false) {
                 $this->setNewPassword($additionalData['password'], '1');
             }
