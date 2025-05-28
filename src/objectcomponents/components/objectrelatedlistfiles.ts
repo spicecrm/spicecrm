@@ -441,7 +441,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
      * @param files
      */
     public fileDrop(files) {
-        if(this.componentconfig.disableupload && this.componentconfig.disableupload === true){
+        if(this.componentconfig.disableupload && this.componentconfig.disableupload === true && !this.canUpload){
             this.toast.sendToast(this.language.getLabel('LBL_UPLOAD_IS_DISABLED'), 'error');
             return false;
         }
