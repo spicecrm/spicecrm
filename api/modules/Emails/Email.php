@@ -78,6 +78,16 @@ class Email extends SpiceBean
      * @var false|\SpiceCRM\data\SpiceBean
      */
     public $emailAddress;
+    /**
+     * if true, send the email immediately or wait for the transaction commit if started
+     * @var bool
+     */
+    public bool $to_be_sent = false;
+    /**
+     * if true, send the email immediately and ignore transaction
+     * @var bool
+     */
+    public bool $to_be_sent_now = false;
 
     /**
      * sole constructor
@@ -147,7 +157,7 @@ class Email extends SpiceBean
         } else {
 
             if ( empty( $this->mailbox_id )) {
-                if ( $this->to_be_sent ) {
+                if ( $this->to_be_sent || $this->to_be_sent_now ) {
                     $mailbox = Mailbox::getDefaultMailbox();
                     $this->mailbox_id = $mailbox->id;
                 }
@@ -163,7 +173,7 @@ class Email extends SpiceBean
                 $this->cloneRelatedBeansFromReference();
             }
 
-            if ($this->to_be_sent) {
+            if ($this->to_be_sent || $this->to_be_sent_now) {
                 $this->type = self::TYPE_OUTBOUND;
                 $this->status = self::STATUS_CREATED;
             }
@@ -204,42 +214,48 @@ class Email extends SpiceBean
         }
 
         // send the email only if the send flag is set
-        if ($this->to_be_sent) {
-            try {
-                $this->loadAttachments();
+        if ($this->to_be_sent || $this->to_be_sent_now) {
+            if (EmailTransactionHandler::getInstance()->transactionStarted && !$this->to_be_sent_now) {
+                EmailTransactionHandler::getInstance()->push($this->id);
+            } else {
+                try {
+                    $this->loadAttachments();
 
 //                START ZIP ARCHIVE
-                if (!!$this->zip_compress) {
-                    $zipAttachment = $this->createZipFromAttachments();
+                    if (!!$this->zip_compress) {
+                        $zipAttachment = $this->createZipFromAttachments();
 
-                    //empty the attachments array and push the created zip attachment to it
-                    $this->attachments = [];
-                    $this->attachments[0] = $zipAttachment;
+                        //empty the attachments array and push the created zip attachment to it
+                        $this->attachments = [];
+                        $this->attachments[0] = $zipAttachment;
+                    }
+                    $result = $this->sendEmail();
+                    $this->to_be_sent = false;
+                    $this->to_be_sent_now = false;
                 }
-                $result = $this->sendEmail();
-                $this->to_be_sent = false;
-            }
-            catch ( MessageInterceptedException $e ) {
-                throw $e;
-            }
-            catch (Exception $e) {
-                $result = [
-                    'result' => false,
-                    'message' => 'Mail not sent: ' . $e->getMessage(),
-                ];
+                catch ( MessageInterceptedException $e ) {
+                    throw $e;
+                }
+                catch (Exception $e) {
+                    $result = [
+                        'result' => false,
+                        'message' => 'Mail not sent: ' . $e->getMessage(),
+                    ];
+                }
+
+                if ($result['result'] == true) {
+                    $this->status = 'sent';
+
+                } else {
+                    $this->status = $result['errors'] ? 'send_error' : 'created';
+                }
+
+                $this->new_with_id = false;
+                parent::save($check_notify, $fts_index_bean);
+
+                return $result;
             }
 
-            if ($result['result'] == true) {
-                $this->status = 'sent';
-
-            } else {
-                $this->status = $result['errors'] ? 'send_error' : 'created';
-            }
-
-            $this->new_with_id = false;
-            parent::save($check_notify, $fts_index_bean);
-
-            return $result;
         }
     }
 
@@ -1188,7 +1204,7 @@ class Email extends SpiceBean
         // todo add recipient_addresses
         // that would require saving the test email
         $testEmail->from_addr = $mailbox->imap_pop3_username ?? $mailbox->ews_username;
-        if ($mailbox->imap_pop3_display_name != '') {
+        if (isset($mailbox->imap_pop3_display_name)) {
             $testEmail->from_addr = $mailbox->imap_pop3_display_name . ' <' . $testEmail->from_addr . '>';
         }
 
@@ -1900,6 +1916,7 @@ class Email extends SpiceBean
         $this->status = self::STATUS_UNREAD;
         $this->openness = self::OPENNESS_OPEN;
         $this->to_be_sent = false;
+        $this->to_be_sent_now = false;
 
         // todo deal with attachments lol
         foreach ($message->getAttachments() as $attachment) {
