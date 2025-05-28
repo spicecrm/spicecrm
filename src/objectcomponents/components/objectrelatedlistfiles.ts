@@ -412,8 +412,9 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         // extract files that are in the upload process
         let fileTypesToBeUploaded: string[] = [];
         fileNames.forEach(fileName => {
-            const extension = fileName.split('.')[1] || 'no-extension';
-            fileTypesToBeUploaded.push(extension);
+            const lastDotIndex = fileName.lastIndexOf('.');
+            const fileExtension = lastDotIndex === -1 ? fileName : fileName.substring(lastDotIndex);
+            fileTypesToBeUploaded.push(fileExtension);
         });
 
         // reset allowUpload if previously set to false
@@ -421,7 +422,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
 
         // check each file type based on file types that we allow/not allow
         fileTypesToBeUploaded.forEach(file => {
-            const isFileIncluded = String(fileTypes).includes(file);
+            const isFileIncluded = this.fileTypes.includes(file);
 
             if (
                 (action === 'exclude' && isFileIncluded) ||
