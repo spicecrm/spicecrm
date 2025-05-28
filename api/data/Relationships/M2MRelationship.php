@@ -221,6 +221,7 @@ class M2MRelationship extends Relationship
             unset($joinTableRoleFieldDef->sysdictionaryitem_id, $joinTableRoleFieldDef->dbtype);
             $joinTableRoleFieldDef->name = $field['map_to_fieldname'];
             $joinTableRoleFieldDef->source = 'non-db';
+            $joinTableRoleFieldDef->required = 0;
 
             $leftSideNonDbRoleField = [
                 'id' => SpiceUtils::createGuid(),
