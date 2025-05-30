@@ -1074,7 +1074,7 @@ class MysqliManager extends DBManager
                 return $tmp[0];
             case 'time':
                 $tmp = explode(' ', $string);
-                return $tmp[1];
+                return $tmp[1] ?? $tmp[0];
         }
         return $string;
     }
