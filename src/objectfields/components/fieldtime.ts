@@ -1,23 +1,17 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
-import {Router}   from '@angular/router';
-import {model} from '../../services/model.service';
-import {view} from '../../services/view.service';
-import {language} from '../../services/language.service';
-import {metadata} from '../../services/metadata.service';
+import {Component, inject, OnInit} from '@angular/core';
 import {userpreferences} from '../../services/userpreferences.service';
-
 import {fieldGeneric} from './fieldgeneric';
 
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -25,25 +19,43 @@ declare var moment: any;
     templateUrl: '../templates/fieldtime.html',
     standalone: false
 })
-export class fieldTime extends fieldGeneric {
+export class fieldTime extends fieldGeneric implements OnInit {
 
-    constructor(
-        public model: model,
-        public view: view,
-        public language: language,
-        public metadata: metadata,
-        public router: Router,
-        public userpreferences: userpreferences
-    ) {
-        super(model, view, language, metadata, router);
+    /**
+     * injected instance of the user perference service
+     */
+    public userPreferences: userpreferences = inject(userpreferences);
+    /**
+     * holds the utc value of the original value
+     */
+    public valueUtc;
 
+    ngOnInit() {
+        super.ngOnInit();
+
+        this.setValueUtc(this.value);
+
+        this.subscriptions.add(
+            this.model.observeFieldChanges(this.fieldname).subscribe(value => {
+                this.setValueUtc(value);
+            })
+        );
     }
 
     /**
-     * returns the time in the users timeformat
+     * set utc value to prevent changing the hour on timezone change
+     * @param value
+     * @private
      */
-    get displayTime(){
-        return this.value.format(this.userpreferences.getTimeFormat());
+    private setValueUtc(value) {
+        this.valueUtc = !value ? null : moment.utc(value);
+    }
+
+    /**
+     * returns the time in the users time format
+     */
+    get displayTime() {
+        return this.valueUtc?.format(this.userPreferences.getTimeFormat());
     }
 
 }
