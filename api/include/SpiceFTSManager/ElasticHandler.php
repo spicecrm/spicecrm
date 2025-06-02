@@ -555,7 +555,7 @@ class ElasticHandler
         switch (SpiceConfig::getInstance()->config['fts']['loglevel']) {
             case '1':
             case '2':
-                $logEntryHandler->generateOutgoingLogEntry($curlOptions, "/elasticsearch/$url");
+                $logEntryHandler->generateOutgoingLogEntry($curlOptions, "elasticsearch");
                 break;
         }
 
