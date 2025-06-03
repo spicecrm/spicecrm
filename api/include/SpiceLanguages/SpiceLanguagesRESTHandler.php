@@ -255,7 +255,18 @@ class SpiceLanguagesRESTHandler
                 ];
 
                 foreach($translationValues as $key => $value){
-                    $newLabel["translation_{$value}"] = $translationOutput[$key];
+                    switch($value){
+                        case 'short':
+                            $newLabel["translation_{$value}"] = substr($translationOutput[$key], 0, 100);
+                            break;
+                        case 'default':
+                            $newLabel["translation_{$value}"] = substr($translationOutput[$key], 0, 255);
+                            break;
+                        case 'long':
+                            $newLabel["translation_{$value}"] = $translationOutput[$key];
+                            break;
+                    }
+
                 }
 
                 $table = $scope == 'global' ? 'syslanguagetranslations' : 'syslanguagecustomtranslations';
