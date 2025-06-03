@@ -247,7 +247,7 @@ class SpiceLanguagesRESTHandler
 
             $translationOutput =  $this->translateLabels($translationInput, substr('en', 0, 2), substr($language, 0, 2));
 
-            if($translationOutput){
+            if($translationOutput && is_array($translationOutput) && count($translationOutput) == count($translationInput)){
                 $newLabel = [
                     'id' => SpiceUtils::createGuid(),
                     'scope' => $scope,
