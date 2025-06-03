@@ -234,15 +234,14 @@ class SpiceLanguagesRESTHandler
             if(empty($labelDetails["{$scope}_translations"][0]['translation_default'])) continue;
 
             $translationValues = ['default'];
-
             $translationInput = [$labelDetails["{$scope}_translations"][0]['translation_default']];
             if(!empty($labelDetails["{$scope}_translations"][0]['translation_short'])){
                 $translationInput[] = $labelDetails["{$scope}_translations"][0]['translation_short'];
-                $translationValues = ['short'];
+                $translationValues[] = 'short';
             }
             if(!empty($labelDetails["{$scope}_translations"][0]['translation_long'])){
                 $translationInput[] = $labelDetails["{$scope}_translations"][0]['translation_long'];
-                $translationValues = ['long'];
+                $translationValues[] = 'long';
             }
 
             $translationOutput =  $this->translateLabels($translationInput, substr('en', 0, 2), substr($language, 0, 2));
