@@ -260,7 +260,7 @@ class SpiceLanguagesRESTHandler
                             $newLabel["translation_{$value}"] = substr($translationOutput[$key], 0, 100);
                             break;
                         case 'default':
-                            $newLabel["translation_{$value}"] = substr($translationOutput[$key], 0, 255);
+                            $newLabel["translation_{$value}"] = substr($translationOutput[$key], 0, 250);
                             break;
                         case 'long':
                             $newLabel["translation_{$value}"] = $translationOutput[$key];
