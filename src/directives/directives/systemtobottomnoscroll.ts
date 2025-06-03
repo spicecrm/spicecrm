@@ -17,7 +17,7 @@ import {footer} from "../../services/footer.service";
 })
 export class SystemToBottomNoScrollDirective implements DoCheck {
 
-    @Input('system-to-bottom-noscroll') public toBottomNoScroll: boolean = true;
+    @Input('system-to-bottom-noscroll') public toBottomNoScroll: string|boolean = true;
 
     /**
      * a margin in pixels fromt he bottom
