@@ -230,6 +230,9 @@ class SpiceLanguagesRESTHandler
         foreach($untranslatedLabels as $label){
             $labelDetails = $this->retrieveLabelDataByName($label['name'], 'en_US');
 
+            // cannot have an empty default translation
+            if(empty($labelDetails["{$scope}_translations"][0]['translation_default'])) continue;
+
             $translationValues = ['default'];
 
             $translationInput = [$labelDetails["{$scope}_translations"][0]['translation_default']];
