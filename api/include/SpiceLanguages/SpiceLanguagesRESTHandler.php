@@ -8,6 +8,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceLanguagesRESTHandler
 {
@@ -210,10 +211,55 @@ class SpiceLanguagesRESTHandler
         $query = "SELECT sl.id, sl.name FROM $tableLabels sl";
         $query .= " WHERE NOT EXISTS (SELECT id FROM $tableTranslations slt";
         $query .= " WHERE slt.syslanguagelabel_id = sl.id AND slt.syslanguage = '$language') ORDER BY sl.name;";
-        $query = $db->query($query);
+        return $db->fetchAll($query);
+    }
 
-        while ($row = $this->db->fetchByAssoc($query)) {
-            $untranslatedLabels[] = $row;
+    public function translateUntranslatedLabels($language, $scope, $limit = 10)
+    {
+        $db = DBManagerFactory::getInstance();
+        $language = $db->quote($language);
+        $untranslatedLabels = [];
+        $tableTranslations = $scope == 'global' ? 'syslanguagetranslations' : 'syslanguagecustomtranslations';
+        $tableLabels = $scope == 'global' ? 'syslanguagelabels' : 'syslanguagecustomlabels';
+        $query = "SELECT sl.id, sl.name FROM $tableLabels sl";
+        $query .= " WHERE NOT EXISTS (SELECT id FROM $tableTranslations slt";
+        $query .= " WHERE slt.syslanguagelabel_id = sl.id AND slt.syslanguage = '$language') ORDER BY sl.name";
+
+        $untranslatedLabels = $db->fetchLimit($query, 0, $limit);
+
+        foreach($untranslatedLabels as $label){
+            $labelDetails = $this->retrieveLabelDataByName($label['name'], 'en_US');
+
+            $translationValues = ['default'];
+
+            $translationInput = [$labelDetails["{$scope}_translations"][0]['translation_default']];
+            if(!empty($labelDetails["{$scope}_translations"][0]['translation_short'])){
+                $translationInput[] = $labelDetails["{$scope}_translations"][0]['translation_short'];
+                $translationValues = ['short'];
+            }
+            if(!empty($labelDetails["{$scope}_translations"][0]['translation_long'])){
+                $translationInput[] = $labelDetails["{$scope}_translations"][0]['translation_long'];
+                $translationValues = ['long'];
+            }
+
+            $translationOutput =  $this->translateLabels($translationInput, substr('en', 0, 2), substr($language, 0, 2));
+
+            if($translationOutput){
+                $newLabel = [
+                    'id' => SpiceUtils::createGuid(),
+                    'scope' => $scope,
+                    'syslanguagelabel_id' => $label['id'],
+                    'syslanguage' => $language
+                ];
+
+                foreach($translationValues as $key => $value){
+                    $newLabel["translation_{$value}"] = $translationOutput[$key];
+                }
+
+                $table = $scope == 'global' ? 'syslanguagetranslations' : 'syslanguagecustomtranslations';
+
+                SystemDeploymentCR::writeDBEntry($table, $newLabel['id'], $newLabel, $newLabel['translation_default']);
+            }
         }
 
         return $untranslatedLabels;
