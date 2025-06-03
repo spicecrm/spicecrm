@@ -460,7 +460,7 @@ class CampaignTask extends SpiceBean
 
             $email = $this->sendEmail($bean, $emailAddress->email_address, true, true);
             $testCount++;
-            if ($email->status == 'sent') $sentCount++;
+            if ( $email->status === 'sent' or $email->status === 'intercepted' ) $sentCount++;
         }
 
         # reset the current user for the system after parsing
@@ -533,8 +533,8 @@ class CampaignTask extends SpiceBean
 
                 $email = $this->sendEmail($seed, $emailAddress->email_address,true, false, ['CampaignLog' => $campaignLog]);
 
-                if ($email->status == 'sent') {
-                    $campaignLog->activity_type = 'sent';
+                if ( $email->status === 'sent' or $email->status === 'intercepted' ) {
+                    $campaignLog->activity_type = $email->status;
                 }
 
                 if ($this->save_emails == 1) {
@@ -684,13 +684,13 @@ class CampaignTask extends SpiceBean
             try {
                 $email->loadAttachments();
                 $result = $email->sendEmail();
+                $email->status = $result['result'] ? 'sent' : 'send_error';
             } catch ( MessageInterceptedException $e ) {
-                throw $e;
+                $email->status = 'intercepted';
             } catch (\Throwable $e) {
-                $result = ['result' => false];
+                $email->status = 'send_error';
             }
 
-            $email->status = $result['result'] ? 'sent' : 'send_error';
         }
 
         return $email;
