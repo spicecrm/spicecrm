@@ -1138,6 +1138,7 @@ export class model implements OnDestroy {
             this.data = this.backupData;
             this.data$.next(this.data);
             this.backupData = null;
+            this.emitFieldsChanges(this.data);
             this.evaluateValidationRules(null, "change");
             this.resetMessages();
         }
@@ -1211,6 +1212,7 @@ export class model implements OnDestroy {
                     this.data = res;
                     this.isNew = false;
                     this.data$.next(res);
+                    this.emitFieldsChanges(res);
                     this.loaded$.next(true);
                     this.broadcast.broadcastMessage("model.save", {
                         id: this.id,
@@ -1444,6 +1446,7 @@ export class model implements OnDestroy {
         // emit the data changes
         if (silent !== true) {
             this.data$.next(this.data);
+            this.emitFieldsChanges(this.data);
         }
 
         // initialize the field stati
