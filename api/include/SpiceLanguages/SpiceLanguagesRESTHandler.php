@@ -261,7 +261,7 @@ class SpiceLanguagesRESTHandler
 
                 $table = $scope == 'global' ? 'syslanguagetranslations' : 'syslanguagecustomtranslations';
 
-                SystemDeploymentCR::writeDBEntry($table, $newLabel['id'], $newLabel, $newLabel['translation_default']);
+                SystemDeploymentCR::writeDBEntry($table, $newLabel['id'], $newLabel, $translationInput[0]);
             }
         }
 
