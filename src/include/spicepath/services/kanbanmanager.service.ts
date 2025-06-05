@@ -362,5 +362,5 @@ export class KanbanManagerService {
                 not_in_kanban: 0
             }
         });
-    }3
+    }
 }
