@@ -208,7 +208,7 @@ class EmailTemplate extends SpiceBean {
         $retArray['attachments'][] = [
             'file' => base64_encode($content),
             'file_mime_type' => 'text/calendar',
-            'filename' => 'event_' . $bean->name . '.ics',
+            'filename' => $bean->name . '.ics',
             'filesize' => strlen($content),
         ];
 
