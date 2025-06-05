@@ -13,6 +13,7 @@ export interface SpiceBeanGuideStageI {
     not_in_kanban: number;
     spicebeanguide_status: string;
     scope?: string;
+    deleted?: 0 | 1;
 }
 
 export interface SpiceBeanGuideActiveStageI extends SpiceBeanGuideStageI {
