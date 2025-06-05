@@ -238,6 +238,7 @@ import {ObjectActionPdfExportRelatedButton} from "./components/objectactionpdfex
 import {ObjectTemplateSendTestEmailModal} from "./components/objecttemplatesendtestemailmodal";
 import {ObjectListHeaderActionsBulkSetStatusButton} from "./actions/objectlistheaderactionsbulksetstatusbutton";
 import {ObjectActionDownloadIcsButton} from "./components/objectactiondownloadicsbutton";
+import {ObjectRouteRedirect} from "./components/objectrouteredirect";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -450,7 +451,8 @@ import {ObjectActionDownloadIcsButton} from "./components/objectactiondownloadic
         ObjectActionDownloadEmailButton,
         ObjectTemplateSendTestEmailModal,
         ObjectListHeaderActionsBulkSetStatusButton,
-        ObjectActionDownloadIcsButton
+        ObjectActionDownloadIcsButton,
+        ObjectRouteRedirect
     ],
     exports: [
         ObjectListViewHeader,
