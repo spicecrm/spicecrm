@@ -14,6 +14,8 @@ import _ from "underscore";
 import {ChangeHistoryService} from "../../../workbench/services/changehistory.service";
 import {modal} from "../../../services/modal.service";
 import {configurationService} from "../../../services/configuration.service";
+import {metadata} from "../../../services/metadata.service";
+import {modelutilities} from "../../../services/modelutilities.service";
 
 
 @Injectable()
@@ -46,13 +48,23 @@ export class KanbanManagerService {
      * workbench edit mode
      */
     public editMode: 'all' | 'custom' | 'none';
+    /**
+     * emit on refresh selected kanban stages
+     */
+    public newAddedStages$ = new Subject<SpiceBeanGuideStageI[]>();
+    /**
+     * emit on save
+     */
+    public save$ = new Subject<void>();
 
     public constructor(
         public backend: backend,
         public toast: toast,
         public modal: modal,
         public changeService: ChangeHistoryService,
-        private configurationService: configurationService
+        private configurationService: configurationService,
+        private metadata: metadata,
+        private modelUtilities: modelutilities
     ) {
         this.editMode = this.configurationService.getCapabilityConfig('core').edit_mode;
         this.loadItems();
@@ -239,6 +251,15 @@ export class KanbanManagerService {
             if (changes.global.length > 0 ) {
                 requests.push(this.backend.postRequest(`configuration/configurator/spicebeanguidestages`, null, {config: changes.global}));
             }
+
+            const deleted = this.changeService.getDeletedChanges('stages');
+
+            if (deleted.length > 0) {
+                deleted.forEach(d => {
+                    const table = d.scope == 'custom' ? 'spicebeancustomguidestages' : 'spicebeanguidestages';
+                    requests.push(this.backend.deleteRequest(`configuration/configurator/${table}/${d.id}`));
+                });
+            }
         }
 
         if (this.changeService.hasChanges('checks')) {
@@ -260,15 +281,17 @@ export class KanbanManagerService {
         forkJoin(requests).subscribe(() => {
             this.toast.sendToast('LBL_DATA_SAVED', 'success');
             if (this.changeService.hasChanges('stages')) {
-                this.changeService.applyChanges(this.stages, 'stages');
+                this.changeService.applyChangesForDbArray(this.stages, 'stages');
             }
             if (this.changeService.hasChanges('checks')) {
-                this.changeService.applyChanges(this.checks, 'checks');
+                this.changeService.applyChangesForDbArray(this.checks, 'checks');
                 this.setCurrentChecks();
             }
             if (this.changeService.hasChanges('spiceTexts')) {
-                this.changeService.applyChanges(this.spiceTexts, 'spiceTexts');
+                this.changeService.applyChangesForDbArray(this.spiceTexts, 'spiceTexts');
             }
+
+            this.save$.next();
 
             this.configurationService.reloadTaskData('spicebeanguides');
         });
@@ -283,22 +306,9 @@ export class KanbanManagerService {
         const changes = this.changeService.getAllChanges(key);
 
         return {
-            custom: changes.filter(c => c.scope == 'custom').map(c => window._.omit(c, ['scope'])),
-            global: changes.filter(c => c.scope == 'global').map(c => window._.omit(c, ['scope']))
+            custom: changes.filter(c => c.scope == 'custom').map(c => window._.omit(c, ['scope', 'deleted'])),
+            global: changes.filter(c => c.scope == 'global').map(c => window._.omit(c, ['scope', 'deleted']))
         };
-    }
-
-    /**
-     * saving the new sequence of beanguidestages
-     */
-    public saveSequence() {
-
-        this.stages.forEach((entry, index) => {
-            entry.stage_sequence = index;
-        });
-
-        this.backend.postRequest(`configuration/configurator/spicebeanguidestages`, null, {config: this.stages});
-
     }
 
     /**
@@ -307,4 +317,50 @@ export class KanbanManagerService {
     public toggleMinimized() {
         this.minimized = !this.minimized;
     }
+
+    /**
+     * refresh kanban stages add new ones
+     */
+    public refreshSelectedKanbanStages() {
+
+        let newStages = this.generateKanbanStages(this.selectedBeanGuide)
+            .filter(s => !this.currentStages.some(currentStage => currentStage.stage == s.stage && currentStage.deleted != 1));
+
+        if (newStages.length == 0) {
+            this.toast.sendToast('LBL_COMPLETED', "success");
+            return;
+        }
+
+        let sequence = Math.max(...this.currentStages.map(s => s.stage_sequence));
+
+        newStages = newStages.map(stage => {
+            stage.stage_sequence = sequence + 1;
+            stage.not_in_kanban = 1;
+            stage.scope = this.selectedBeanGuide.scope;
+            return stage;
+        });
+
+        this.currentStages = this.currentStages.concat(newStages);
+        this.newAddedStages$.next(newStages);
+        this.toast.sendToast('LBL_COMPLETED', "success");
+    }
+
+    /**
+     * generate the current kanban stages for the selected bean guide from the domain field validations
+     * @return SpiceBeanGuideStageI[]
+     */
+    public generateKanbanStages(guide: SpiceBeanGuidesI): SpiceBeanGuideStageI[] {
+        const optionsKey = this.metadata.getFieldOptions(guide.module, guide.status_field);
+        const fieldValidation = this.domainFieldValidations.find(val => val.name == optionsKey);
+        return this.domainFieldValidationsValues.filter(val => val.sysdomainfieldvalidation_id == fieldValidation.id).map(res => {
+            return {
+                id: this.modelUtilities.generateGuid(),
+                spicebeanguide_id: guide.id,
+                stage: res.enumvalue,
+                stage_sequence: res.sequence,
+                stage_label: res.label,
+                not_in_kanban: 0
+            }
+        });
+    }3
 }
