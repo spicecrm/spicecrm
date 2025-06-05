@@ -677,7 +677,7 @@ class CampaignTask extends SpiceBean
             if (isset($addBeans['CampaignLog'])) {
                 $email->registerTrackingParentData('CampaignLog', $addBeans['CampaignLog']->id);
             }
-            $email->save();
+            $email->save(false, false);
 
         } else {
 
@@ -732,7 +732,7 @@ class CampaignTask extends SpiceBean
                 $textMessage->parent_type = $seed->_module;
                 $textMessage->parent_id = $seed->id;
                 $textMessage->to_be_sent = true;
-                $textMessage->save();
+                $textMessage->save(false, false);
             } else {
                 $textMessage->send();
             }
