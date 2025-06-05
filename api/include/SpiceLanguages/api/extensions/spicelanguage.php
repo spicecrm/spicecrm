@@ -20,14 +20,14 @@ $routes = [
         'class' => SpiceLanguageController::class,
         'function' => 'LanguageSaveLabel',
         'description' => 'saves the labels',
-        'options' => ['noAuth' => false, 'adminOnly' => false, 'excludeBodyValidation' => true],
+        'options' => ['adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
         'parameters' => [
             ValidationMiddleware::ANONYMOUS_ARRAY => [
                 'in' => 'body',
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_COMPLEX,
                 'required' => true
-            ],
+            ]
         ]
     ],
     [
@@ -37,20 +37,20 @@ $routes = [
         'class' => SpiceLanguageController::class,
         'function' => 'LanguageDeleteLabel',
         'description' => 'deletes a label name',
-        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'id' => [
                 'in' => 'path',
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_GUID,
-                'required' => true,
+                'required' => true
             ],
             'environment' => [
                 'in' => 'path',
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_STRING,
-                'required' => true,
-            ],
+                'required' => true
+            ]
         ]
     ],
     [
@@ -66,9 +66,8 @@ $routes = [
                 'in' => 'path',
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_STRING,
-                'required' => true,
-            ],
-
+                'required' => true
+            ]
         ]
     ],
     [
@@ -86,8 +85,8 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'example' => true,
                 'required' => false
-            ],
-        ],
+            ]
+        ]
     ],
     [
         'method' => 'get',
@@ -102,8 +101,8 @@ $routes = [
                 'in' => 'path',
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_STRING,
-                'required' => true,
-            ],
+                'required' => true
+            ]
         ]
     ],
     [
@@ -119,8 +118,8 @@ $routes = [
                 'in' => 'path',
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_STRING,
-                'required' => true,
-            ],
+                'required' => true
+            ]
         ]
     ],
     [
@@ -130,14 +129,14 @@ $routes = [
         'class' => SpiceLanguageController::class,
         'function' => 'LanguageSetDefault',
         'description' => 'sets a default language',
-        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'language' => [
                 'in' => 'path',
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_STRING,
-                'required' => true,
-            ],
+                'required' => true
+            ]
         ]
     ],
     [
@@ -147,7 +146,7 @@ $routes = [
         'class' => SpiceLanguageController::class,
         'function' => 'LanguageTransferToDB',
         'description' => 'transfers value from a file to a database',
-        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'confirmed' => [
                 'in' => 'body',
@@ -155,8 +154,8 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_BOOL,
                 'example' => true,
                 'required' => false
-            ],
-        ],
+            ]
+        ]
     ],
     [
         'method' => 'get',
@@ -165,7 +164,31 @@ $routes = [
         'class' => SpiceLanguageController::class,
         'function' => 'LanguageGetRawLabels',
         'description' => 'et the untranslated labels',
-        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'options' => ['adminOnly' => true, 'validate' => true],
+        'parameters' => [
+            'language' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'en_us',
+                'required' => true
+            ],
+            'scope' => [
+                'in' => 'path',
+                'description' => 'the scope to be assessed',
+                'type' => ValidationMiddleware::TYPE_ENUM,
+                'options' => ['custom', 'global'],
+                'required' => true
+            ]
+        ]
+    ],[
+        'method' => 'put',
+        'oldroute' => '/syslanguage/{language}/{scope}/labels/untranslated',
+        'route' => '/configuration/syslanguage/{language}/{scope}/labels/untranslated',
+        'class' => SpiceLanguageController::class,
+        'function' => 'LanguageTranslateRawLabels',
+        'description' => 'translate untranslated labels',
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'language' => [
                 'in' => 'path',
@@ -177,10 +200,16 @@ $routes = [
             'scope' => [
                 'in' => 'path',
                 'description' => '',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'example' => 'custom',
+                'type' => ValidationMiddleware::TYPE_ENUM,
+                'options' => ['custom', 'global'],
                 'required' => true
             ],
+            'limit' => [
+                'in' => 'query',
+                'description' => 'an optional number to limit the number of records to be translated',
+                'type' => ValidationMiddleware::TYPE_NUMERIC,
+                'required' => false
+            ]
         ]
     ],
     [
@@ -197,7 +226,7 @@ $routes = [
         'class' => SpiceLanguageController::class,
         'function' => 'LanguageTranslateLabel',
         'description' => 'translates a label using the google Translate API',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'fromlanguage' => [
                 'in' => 'path',
@@ -213,7 +242,7 @@ $routes = [
                 'in' => 'body',
                 'description' => 'the language to translate to',
                 'type' => ValidationMiddleware::TYPE_ARRAY
-            ],
+            ]
         ]
     ],
 ];

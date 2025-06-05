@@ -139,6 +139,7 @@ import {fieldEnumRoles} from "./components/fieldenumroles";
 import {fieldVersion} from "./components/fieldVersion";
 import {fieldPackage} from "./components/fieldpackage";
 import {fieldActivityStatus} from "./components/fieldactivitystatus";
+import {SystemDateTimeFormatPipe} from "../systemcomponents/pipes/systemdatetimeformat";
 
 
 
@@ -157,6 +158,7 @@ declare var _: any;
         SystemComponents,
         DirectivesModule,
         DragDropModule,
+        SystemDateTimeFormatPipe,
     ],
     declarations: [
         fieldSet,

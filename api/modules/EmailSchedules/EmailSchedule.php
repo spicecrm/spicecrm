@@ -75,7 +75,7 @@ class EmailSchedule extends SpiceBean
         if($saveEmail){
             $email->parent_type = $seed->_module;
             $email->parent_id = $seed->id;
-            $email->to_be_sent = true;
+            $email->to_be_sent_now = true;
             $email->save();
         } else {
             $email->sendEmail();
