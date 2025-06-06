@@ -609,7 +609,7 @@ class SpiceACLObject extends SpiceBean
                     if (self::isFieldHandlerClass($fieldvalue['value1'])) {
                         /** @var SpiceACLObjectFieldHandlerI $classInstance */
                         $classInstance = new $fieldvalue['value1']();
-                        $condition = $classInstance->getFTSCondition();
+                        $condition = $classInstance->getFTSCondition($fieldvalue['name']);
                         if ($condition) {
                             $filters[$condition->key][] = $condition->value;
                         }
@@ -737,7 +737,7 @@ class SpiceACLObject extends SpiceBean
                     if (self::isFieldHandlerClass($fieldvalue['value1'])) {
                         /** @var SpiceACLObjectFieldHandlerI $classInstance */
                         $classInstance = new $fieldvalue['value1']();
-                        $condition = $classInstance->getDBCondition($table_name);
+                        $condition = $classInstance->getDBCondition($table_name, $fieldvalue['name']);
                         $whereClauses[] = $condition;
                     }
                     break;
