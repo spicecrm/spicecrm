@@ -12,7 +12,7 @@ import {EditorAttributeI} from "../interfaces/spicepagebuilder.interfaces";
 @Component({
     selector: 'spice-page-builder-input-borders',
     templateUrl: '../templates/spicepagebuilderinputborders.html',
-
+    standalone: false
 })
 export class SpicePageBuilderInputBorders implements OnInit{
     /**

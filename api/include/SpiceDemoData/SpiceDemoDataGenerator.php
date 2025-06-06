@@ -130,6 +130,8 @@ class SpiceDemoDataGenerator
      */
     public function generateLeads(){
         $db = DBManagerFactory::getInstance();
+        $leadTypes = ['b2b', 'b2c'];
+        $randomType = rand(0,1);
 
         $leads = $this->makeCall('leads');
         foreach($leads as $lead){
@@ -142,6 +144,9 @@ class SpiceDemoDataGenerator
             if(!empty($seed->id)){
                 $seed->new_with_id = true;
             }
+
+            // set type
+            $seed->lead_type = $leadTypes[$randomType];
 
             // populate some default values
             $this->popuplateDefaults($seed);

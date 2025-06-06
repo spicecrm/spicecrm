@@ -9,7 +9,8 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-present',
-    templateUrl: '../templates/reportsdesignerpresent.html'
+    templateUrl: '../templates/reportsdesignerpresent.html',
+    standalone: false
 })
 export class ReportsDesignerPresent {
 

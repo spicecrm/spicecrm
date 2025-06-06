@@ -12,7 +12,8 @@ import  {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-filter-item-text',
-    templateUrl: '../templates/reporterfilteritemtext.html'
+    templateUrl: '../templates/reporterfilteritemtext.html',
+    standalone: false
 })
 export class ReporterFilterItemText {
 

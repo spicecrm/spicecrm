@@ -14,7 +14,8 @@ import {model} from '../../services/model.service';
  */
 @Component({
     selector: 'object-listview-aggregates-button',
-    templateUrl: '../templates/objectlistviewaggregatesbutton.html'
+    templateUrl: '../templates/objectlistviewaggregatesbutton.html',
+    standalone: false
 })
 export class ObjectListViewAggregatesButton {
 

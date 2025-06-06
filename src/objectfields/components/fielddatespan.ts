@@ -20,7 +20,8 @@ declare var moment: any;
 
 @Component({
     selector: 'field-date-span',
-    templateUrl: '../templates/fielddatespan.html'
+    templateUrl: '../templates/fielddatespan.html',
+    standalone: false
 })
 export class fieldDateSpan extends fieldGeneric implements OnInit {
 
@@ -97,6 +98,8 @@ export class fieldDateSpan extends fieldGeneric implements OnInit {
 
             // add the end date
             fields[this.fieldend] = newEndDate;
+        } else if (!this.model.getField(this.fieldend)) {
+            fields[this.fieldend] = new moment(date);
         }
 
         // set the fields on the model

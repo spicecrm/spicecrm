@@ -14,7 +14,8 @@ import {result} from "underscore";
  */
 @Component({
     selector: 'administration-dict-repair',
-    templateUrl: '../templates/administrationdictrepair.html'
+    templateUrl: '../templates/administrationdictrepair.html',
+    standalone: false
 })
 export class AdministrationDictRepair {
 

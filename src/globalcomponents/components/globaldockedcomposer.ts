@@ -20,7 +20,8 @@ declare var _: any;
 @Component({
     selector: 'global-docked-composer',
     templateUrl: '../templates/globaldockedcomposer.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class GlobalDockedComposer implements OnInit {
 

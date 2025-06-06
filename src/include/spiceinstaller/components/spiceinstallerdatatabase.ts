@@ -9,7 +9,8 @@ import { spiceinstaller, stepObject } from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-database',
-    templateUrl: '../templates/spiceinstallerdatabase.html'
+    templateUrl: '../templates/spiceinstallerdatabase.html',
+    standalone: false
 })
 export class SpiceInstallerDatabase {
 

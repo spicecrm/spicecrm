@@ -10,7 +10,8 @@ import {view} from "../../../services/view.service";
 
 @Component({
     selector: 'dashboard-container-body',
-    templateUrl: '../templates/dashboardcontainerbody.html'
+    templateUrl: '../templates/dashboardcontainerbody.html',
+    standalone: false
 })
 export class DashboardContainerBody implements OnDestroy {
     @ViewChild('bodycontainer', {read: ViewContainerRef, static: true}) public bodycontainer: ViewContainerRef;

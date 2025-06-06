@@ -144,6 +144,8 @@ import {CRMLogViewerListModal} from './components/crmlogviewerlistmodal';
 
 import {APIlogViewer} from './components/apilogviewer';
 import {APIlogViewerModal} from './components/apilogviewermodal';
+import {APIlogViewerReplayModal} from './components/apilogviewerreplaymodal';
+import {APIlogViewerReplayItem} from './components/apilogviewerreplayitem';
 
 import {ModuleFilterBuilder} from "./components/modulefilterbuilder";
 import {ModuleFilterBuilderFilters} from "./components/modulefilterbuilderfilters";
@@ -188,6 +190,7 @@ import {HL7ManagerRule} from './components/hl7managerrule';
 import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkanban";
 import {DomainManagerDefinitionUsageModal} from "./components/domainmanagerdefinitionusagemodal";
 import {DictionaryManagerUsageModal} from "./components/dictionarymanagereusagemodal";
+import {DictionaryManagerFilterItemsPipe} from "./pipes/dictionarymanagerfilteritems.pipe";
 
 
 @NgModule({
@@ -199,7 +202,8 @@ import {DictionaryManagerUsageModal} from "./components/dictionarymanagereusagem
         ObjectFields,
         ObjectComponents,
         GlobalComponents,
-        DragDropModule
+        DragDropModule,
+        DictionaryManagerFilterItemsPipe
     ],
     declarations: [
         CategoryTreeManager,
@@ -333,6 +337,8 @@ import {DictionaryManagerUsageModal} from "./components/dictionarymanagereusagem
         APIlogConfig,
         APIlogViewer,
         APIlogViewerModal,
+        APIlogViewerReplayModal,
+        APIlogViewerReplayItem,
         APIlogConfig,
         ModuleFilterBuilder,
         ModuleFilterBuilderFilters,

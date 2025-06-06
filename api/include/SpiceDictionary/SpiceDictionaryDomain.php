@@ -32,12 +32,16 @@ class SpiceDictionaryDomain
         $this->domainDefinition = (object) $domainDefinition;
     }
 
-    public function getFields(SpiceDictionaryItem $sysdictionaryItem = null, bool $activeOnly = true){
+    public function getFields(?SpiceDictionaryItem $sysdictionaryItem = null, $indexOnly = false){
         $fieldNames = [];
         $fieldObjects = SpiceDictionaryDomainFields::getInstance()->getDomainFields($this->id);
         foreach($fieldObjects as $fieldObject){
             $fieldObject = (object) $fieldObject;
             $fieldObject->name = str_replace("{sysdictionaryitems.name}", $sysdictionaryItem->name, $fieldObject->name);
+
+            // if we need only the index fields check that they are not non-db and not excluded from the index
+            if($indexOnly && ($fieldObject->exclude_from_index == 1 || $fieldObject->dbtype == 'non-db')) continue;
+
             $fieldNames[] = $fieldObject->name;
         }
         return $fieldNames;
@@ -79,7 +83,20 @@ class SpiceDictionaryDomain
                 $fieldDefinitions[$definition->name] = $definition;
             }
         }
-        return array_values($fieldDefinitions);
+
+        $fieldDefinitions = array_values($fieldDefinitions);
+
+        # call handler class method on repair to manipulate the field definitions dynamically
+        $handlerClass = $this->getHandlerClass();
+
+        if ($handlerClass && class_exists($handlerClass) && is_subclass_of($handlerClass, 'SpiceCRM\includes\SpiceDictionary\domainhandlers\SpiceDictionaryDomainHandler')) {
+
+            $handler = new $handlerClass();
+
+            $fieldDefinitions = $handler->onRepair($sysdictionaryItem, $this, $fieldDefinitions);
+        }
+
+        return $fieldDefinitions;
     }
 
     /**

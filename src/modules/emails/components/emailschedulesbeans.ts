@@ -11,7 +11,8 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: "email-schedules-beans",
-    templateUrl: "../templates/emailschedulesbeans.html"
+    templateUrl: "../templates/emailschedulesbeans.html",
+    standalone: false
 })
 
 export class EmailSchedulesBeans implements OnDestroy {

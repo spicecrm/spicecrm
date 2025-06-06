@@ -20,7 +20,8 @@ import {view} from "../../services/view.service";
 @Component({
     selector: 'object-list-header-actions-assign-modal',
     templateUrl: '../templates/objectlistheaderactionsassignmodal.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ObjectListHeaderActionsAssignModal implements OnInit {
 

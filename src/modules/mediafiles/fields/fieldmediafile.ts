@@ -22,7 +22,8 @@ import { modal } from '../../../services/modal.service';
 @Component({
     selector: 'field-media-file',
     templateUrl: '../templates/fieldmediafile.html',
-    providers: [ mediafiles ],
+    providers: [mediafiles],
+    standalone: false
 })
 export class fieldMediaFile extends fieldGeneric implements OnInit, AfterViewInit {
 

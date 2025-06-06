@@ -12,7 +12,8 @@ import {language} from "../../../services/language.service";
 @Component({
     selector: 'calendar-microsoft-event-popover',
     templateUrl: '../templates/calendarmicrosofteventpopover.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class CalendarMicrosoftEventPopover implements AfterViewInit {
     /**

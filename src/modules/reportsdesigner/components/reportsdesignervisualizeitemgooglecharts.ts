@@ -8,7 +8,8 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-visualize-item-google-charts',
-    templateUrl: '../templates/reportsdesignervisualizeitemgooglecharts.html'
+    templateUrl: '../templates/reportsdesignervisualizeitemgooglecharts.html',
+    standalone: false
 })
 export class ReportsDesignerVisualizeItemGoogleCharts implements OnInit {
 

@@ -13,7 +13,8 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-vat',
-    templateUrl: '../templates/fieldvat.html'
+    templateUrl: '../templates/fieldvat.html',
+    standalone: false
 })
 
 export class fieldVat extends fieldGeneric {

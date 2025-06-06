@@ -8,7 +8,8 @@ import {modal} from "../../../services/modal.service";
 @Component({
     selector: 'system-text-configurator-modal',
     templateUrl: '../templates/systemtextconfiguratormodal.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 
 export class SystemTextConfiguratorModal implements OnInit {

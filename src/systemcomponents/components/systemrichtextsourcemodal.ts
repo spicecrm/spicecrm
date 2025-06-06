@@ -19,6 +19,7 @@ import {SystemSourceEditor} from "./systemsourceeditor";
 @Component({
     selector: "system-richtext-sourcemodal",
     templateUrl: "../templates/systemrichtextsourcemodal.html",
+    standalone: false
 })
 export class SystemRichTextSourceModal {
     /**

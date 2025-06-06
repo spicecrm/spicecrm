@@ -18,6 +18,7 @@ import {DictionaryDefinition, Relationship, RelationshipRelateField} from "../in
 @Component({
     selector: 'dictionary-manager-relationship-container-onetomany',
     templateUrl: '../templates/dictionarymanagerrelationshipcontaineronetomany.html',
+    standalone: false
 })
 export class DictionaryManagerRelationshipContainerOneToMany implements OnInit {
 
@@ -109,7 +110,9 @@ export class DictionaryManagerRelationshipContainerOneToMany implements OnInit {
      * @private
      */
     public loadRelationshipFields() {
-        this.relationshiprelatefields = this.dictionarymanager.dictionaryrelationshiprelatefields.filter(rf => rf.relationship_id == this.relationship.id);
+        if(this.dictionarymanager.dictionaryrelationshiprelatefields){
+            this.relationshiprelatefields = this.dictionarymanager.dictionaryrelationshiprelatefields.filter(rf => rf.relationship_id == this.relationship.id);
+        }
     }
 
 }

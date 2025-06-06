@@ -18,7 +18,8 @@ import {language} from '../../services/language.service';
     templateUrl: '../templates/globalloginresetpassword.html',
     host: {
         '(window:keyup)': 'this.keypressed($event)'
-    }
+    },
+    standalone: false
 })
 export class GlobalLoginResetPassword {
     /**

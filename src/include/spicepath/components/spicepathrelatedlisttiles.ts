@@ -8,6 +8,7 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     templateUrl: "../templates/spicepathrelatedlisttiles.html",
-    providers: [relatedmodels]
+    providers: [relatedmodels],
+    standalone: false
 })
 export class SpicePathRelatedListTiles extends ObjectRelatedList {}

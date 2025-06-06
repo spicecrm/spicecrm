@@ -16,7 +16,8 @@ import {SystemLoadingModal} from "../../../systemcomponents/components/systemloa
 @Component({
     selector: 'object-merge-modal',
     templateUrl: '../templates/objectmergemodal.html',
-    providers: [model, modellist, objectmerge]
+    providers: [model, modellist, objectmerge],
+    standalone: false
 })
 export class ObjectMergeModal implements OnInit {
 

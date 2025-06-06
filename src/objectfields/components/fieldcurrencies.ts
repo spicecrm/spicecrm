@@ -15,7 +15,8 @@ import {Router} from '@angular/router';
  */
 @Component({
     selector: 'field-currencies',
-    templateUrl: '../templates/fieldcurrencies.html'
+    templateUrl: '../templates/fieldcurrencies.html',
+    standalone: false
 })
 export class fieldCurrencies extends fieldGeneric {
 

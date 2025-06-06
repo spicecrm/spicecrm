@@ -11,7 +11,8 @@ import {environment} from "../../../environments/environment";
  */
 @Component({
     selector: 'global-copyright',
-    templateUrl: '../templates/globalcopyright.html'
+    templateUrl: '../templates/globalcopyright.html',
+    standalone: false
 })
 export class GlobalCopyright {
     /**

@@ -15,7 +15,8 @@ declare const window: any;
 
 @Component({
     selector: 'field-text',
-    templateUrl: '../templates/fieldtext.html'
+    templateUrl: '../templates/fieldtext.html',
+    standalone: false
 })
 export class fieldText extends fieldGeneric implements OnInit {
 

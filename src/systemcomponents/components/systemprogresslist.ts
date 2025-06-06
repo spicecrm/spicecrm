@@ -8,7 +8,8 @@ import {Component, Input} from "@angular/core";
  */
 @Component({
     selector: "system-progress-list",
-    templateUrl: "../templates/systemprogresslist.html"
+    templateUrl: "../templates/systemprogresslist.html",
+    standalone: false
 })
 export class SystemProgressList {
 

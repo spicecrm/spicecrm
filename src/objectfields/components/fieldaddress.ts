@@ -22,7 +22,8 @@ declare var _;
  */
 @Component({
     selector: 'field-address',
-    templateUrl: '../templates/fieldaddress.html'
+    templateUrl: '../templates/fieldaddress.html',
+    standalone: false
 })
 export class fieldAddress extends fieldGeneric {
 

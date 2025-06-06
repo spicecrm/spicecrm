@@ -14,11 +14,16 @@ import {language} from '../../services/language.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 import {DictionaryManagerItemStatus} from "./dictionarymanageritemstatus";
+import {DictionaryManagerFilterItemsPipe} from "../pipes/dictionarymanagerfilteritems.pipe";
+import {DictionaryManagerItemDetails} from "./dictionarymanageritemdetails";
+import {moveItemInArray} from "@angular/cdk/drag-drop";
 
 
 @Component({
     selector: 'dictionary-manager-items',
     templateUrl: '../templates/dictionarymanageritems.html',
+    standalone: false,
+    providers: [DictionaryManagerFilterItemsPipe]
 })
 export class DictionaryManagerItems {
 
@@ -27,11 +32,6 @@ export class DictionaryManagerItems {
      * the current dictionaryitem
      */
     public dictionaryitem: DictionaryItem;
-
-    /**
-     * boolean if the details panel is expanded
-     */
-    public detailsExpanded: boolean = false;
 
     /**
      * a term to filter by
@@ -44,7 +44,8 @@ export class DictionaryManagerItems {
                 public language: language,
                 public modal: modal,
                 public injector: Injector,
-                public modelutilities: modelutilities) {
+                public modelutilities: modelutilities,
+                private filterPipe: DictionaryManagerFilterItemsPipe) {
 
     }
 
@@ -56,22 +57,17 @@ export class DictionaryManagerItems {
      * gets all non deleted entries sorted by name
      */
     get dictionaryitems() {
-        // return an empty array when no DictionaryDefinition is set
-        if (!this.dictionarymanager.currentDictionaryDefinition) return [];
-
-        return this.dictionarymanager.dictionaryitems.filter(d => (d.id == this.dictionarymanager.currentDictionaryItem || !this.filterterm || d.name.toLowerCase().indexOf(this.filterterm.toLowerCase()) >= 0) && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+        return this.filterPipe.transform(
+            this.dictionarymanager.dictionaryitems,
+            this.dictionarymanager.currentDictionaryDefinition,
+            this.dictionarymanager.currentDictionaryItem,
+            this.filterterm
+        );
     }
 
     public getTemplateItems(refId){
         if(!refId) return [];
         return this.dictionarymanager.dictionaryitems.filter(d => d.sysdictionarydefinition_id == refId).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
-    }
-
-    get itemsliststyle() {
-        let height = this.detailsExpanded ? 458 : 79;
-        return {
-            height: `calc(100% - ${height}px`
-        }
     }
 
     /**
@@ -119,16 +115,20 @@ export class DictionaryManagerItems {
      * @param event
      * @param id
      */
-    public deleteDictionaryItem(id: string) {
+    public deleteDictionaryItem(item: DictionaryItem) {
         this.dictionarymanager.promptDelete('MSG_DELETE_DICTIONARYITEM').subscribe({
             next: (value) => {
                 let params: any = {};
                 if (value === 'drop') params.drop = 1;
                 let deleteModal = this.modal.await('LBL_DELETING');
-                this.backend.deleteRequest(`dictionary/item/${id}`, params).subscribe({
+                this.backend.deleteRequest(`dictionary/item/${item.id}`, params).subscribe({
                     next: () => {
-                        let di = this.dictionarymanager.dictionaryitems.findIndex(f => f.id == id);
-                        this.dictionarymanager.dictionaryitems.splice(di, 1);
+                        const itemIndex = this.dictionarymanager.dictionaryitems.findIndex(f => f.id == item.id);
+                        this.dictionarymanager.dictionaryitems.splice(itemIndex, 1);
+
+                        // trigger the change detection
+                        this.dictionarymanager.dictionaryitems = this.dictionarymanager.dictionaryitems.slice();
+
                         deleteModal.emit(true);
                     },
                     error: () => {
@@ -148,18 +148,15 @@ export class DictionaryManagerItems {
         let values = this.dictionaryitems;
         let prevIndex = this.getSanitizedItemIndex(event.previousIndex);
         let curIndex = this.getSanitizedItemIndex(event.currentIndex);
-        let previousItem = values.splice(prevIndex, 1);
-        values.splice(curIndex, 0, previousItem[0]);
+        moveItemInArray(values, curIndex, prevIndex);
 
         let savingModal = this.modal.await('LBL_SAVING');
         this.backend.postRequest('dictionary/items/sequence', {}, {items: values.map(v => v.id)}).subscribe({
             next: () => {
                 // reindex the array resetting the sequence
-                let i = 0;
-                for (let item of values) {
-                    item.sequence = i;
-                    i++;
-                }
+                values.forEach((v, i) => v.sequence = i);
+                this.dictionarymanager.dictionaryitems = this.dictionarymanager.dictionaryitems.slice();
+
                 savingModal.emit(true);
             },
             error: () => {
@@ -197,13 +194,6 @@ export class DictionaryManagerItems {
     }
 
     /**
-     * returns if there are any items thar are in status 'd'
-     */
-    get hasDraftItems() {
-        return this.dictionaryitems.filter(d => d.status == 'd').length > 0;
-    }
-
-    /**
      * activate All
      */
     public activateAll(e: MouseEvent) {
@@ -211,7 +201,14 @@ export class DictionaryManagerItems {
         e.preventDefault();
         this.modal.confirm('MSG_ACTIVATE_ALL', 'MSG_ACTIVATE_ALL').subscribe({
             next: (res) => {
-                if (res) this.dictionaryitems.filter(d => d.status == 'd').forEach(d => d.status = 'a');
+                const draftItems = this.filterPipe.transform(
+                    this.dictionarymanager.dictionaryitems,
+                    this.dictionarymanager.currentDictionaryDefinition,
+                    this.dictionarymanager.currentDictionaryItem,
+                    this.filterterm,
+                    true
+                );
+                if (res) draftItems.forEach(d => d.status = 'a');
             }
         })
     }
@@ -259,5 +256,28 @@ export class DictionaryManagerItems {
         }
     }
 
+    /**
+     * customize dictionary item
+     * @param item
+     */
+    public customizeItem(item: DictionaryItem) {
+
+        if (this.dictionarymanager.changescope == 'none' || !!item.sysdictionary_ref_id) return;
+
+        this.dictionarymanager.currentDictionaryItem = undefined;
+
+        const customItem = {...item}
+        customItem.id = this.modelutilities.generateGuid();
+        customItem.scope = 'c';
+        customItem.status = 'd';
+        customItem.sequence = this.dictionarymanager.dictionaryitems.filter(d => d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).length;
+
+        this.modal.openStaticModal(DictionaryManagerItemDetails, true, this.injector).subscribe({
+            next: (modalRef) => {
+                modalRef.instance.dictionaryitem = customItem;
+                modalRef.instance.isCustomizing = true;
+            }
+        });
+    }
 
 }

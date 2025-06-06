@@ -6,7 +6,8 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'system-button-group',
-    templateUrl: '../templates/systembuttongroup.html'
+    templateUrl: '../templates/systembuttongroup.html',
+    standalone: false
 })
 export class SystemButtonGroup{
     @Input() public items: any[] = [];

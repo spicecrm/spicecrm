@@ -15,7 +15,8 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
  */
 @Component({
     templateUrl: '../templates/fieldacladditionalusers.html',
-    styles: ['input, input:focus { border: none; outline: none;}']
+    styles: ['input, input:focus { border: none; outline: none;}'],
+    standalone: false
 })
 export class fieldACLAdditionalUsers extends fieldGeneric {
 

@@ -12,6 +12,7 @@ import {view} from "../../services/view.service";
 @Component({
     selector: "mailboxes-processors",
     templateUrl: "../templates/mailboxesprocessors.html",
+    standalone: false
 })
 export class MailboxesProcessors {
     public processors: any[] = [];

@@ -14,7 +14,8 @@ import {SpicePageBuilderElement} from "./spicepagebuilderelement";
 @Component({
     selector: 'spice-page-builder-element-image',
     templateUrl: '../templates/spicepagebuilderelementimage.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
     /**

@@ -11,7 +11,8 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'administration-ftsmanager-fields',
-    templateUrl: '../templates/administrationftsmanagerfields.html'
+    templateUrl: '../templates/administrationftsmanagerfields.html',
+    standalone: false
 })
 export class AdministrationFTSManagerFields {
 

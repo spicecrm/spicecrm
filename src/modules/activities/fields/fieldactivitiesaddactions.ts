@@ -14,6 +14,7 @@ import {metadata} from '../../../services/metadata.service';
  */
 @Component({
     templateUrl: '../templates/fieldactivitiesaddactions.html',
+    standalone: false
 })
 export class fieldActivitiesAddActions {
 

@@ -13,12 +13,13 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
     selector: 'system-input-enum',
     templateUrl: '../templates/systeminputenum.html',
     providers: [
-    {
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => SystemInputEnum),
-        multi: true
-    }
-]
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SystemInputEnum),
+            multi: true
+        }
+    ],
+    standalone: false
 })
 export class SystemInputEnum implements OnInit, ControlValueAccessor {
 

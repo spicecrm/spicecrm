@@ -12,7 +12,8 @@ import {Subscription} from "rxjs";
 @Component({
     selector: 'object-action-select-button',
     templateUrl: '../templates/objectactionselectbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ObjectActionSelectButton implements OnInit, OnDestroy {
 

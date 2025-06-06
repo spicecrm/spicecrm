@@ -9,5 +9,6 @@ import {Component} from '@angular/core';
 @Component({
     selector: 'system-modal-header-tagline',
     templateUrl: '../templates/systemmodalheadertagline.html',
+    standalone: false
 })
 export class SystemModalHeaderTagline {}

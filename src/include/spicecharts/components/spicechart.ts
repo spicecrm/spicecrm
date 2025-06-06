@@ -17,6 +17,7 @@ declare var Chart: any;
 @Component({
     selector: 'spice-chart',
     templateUrl: '../templates/spicechart.html',
+    standalone: false
 })
 
 export class SpiceChart implements  AfterViewInit {

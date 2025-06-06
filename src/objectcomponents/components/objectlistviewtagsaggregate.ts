@@ -16,7 +16,8 @@ import {metadata} from "../../services/metadata.service";
  */
 @Component({
     selector: 'object-listview-tags-aggregate',
-    templateUrl: '../templates/objectlistviewtagsaggregate.html'
+    templateUrl: '../templates/objectlistviewtagsaggregate.html',
+    standalone: false
 })
 export class ObjectListViewTagsAggregate extends ObjectListViewAggregate {
 

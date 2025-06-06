@@ -35,7 +35,8 @@ declare var _;
     host: {
         '(click)': 'this.updateevent()',
         '(keyup)': 'this.updateevent()'
-    }
+    },
+    standalone: false
 })
 export class SystemTinyMCE implements AfterViewInit, OnDestroy {
     @Input() elementid: String = 'mytinymce';

@@ -12,6 +12,7 @@ import {modal} from "../../services/modal.service";
 @Component({
     selector: 'object-action-download-ics-button',
     template: '<span><system-label label="LBL_DOWNLOAD"></system-label></span>',
+    standalone: false
 })
 export class ObjectActionDownloadIcsButton {
 

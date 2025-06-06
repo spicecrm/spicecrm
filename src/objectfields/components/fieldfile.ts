@@ -21,7 +21,8 @@ import {Subject, Observable} from 'rxjs';
  */
 @Component({
     selector: 'field-file',
-    templateUrl: '../templates/fieldfile.html'
+    templateUrl: '../templates/fieldfile.html',
+    standalone: false
 })
 export class fieldFile extends fieldGeneric {
 

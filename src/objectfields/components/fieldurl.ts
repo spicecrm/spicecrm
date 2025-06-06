@@ -11,7 +11,8 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-url',
-    templateUrl: '../templates/fieldurl.html'
+    templateUrl: '../templates/fieldurl.html',
+    standalone: false
 })
 export class fieldUrl extends fieldGeneric {
 

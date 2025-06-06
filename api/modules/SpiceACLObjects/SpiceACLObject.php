@@ -12,6 +12,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\modules\SpiceACL\SpiceACLUsers;
+use SpiceCRM\modules\SpiceACLObjects\interfaces\SpiceACLObjectFieldHandlerI;
 use SpiceCRM\modules\UserAbsences\UserAbsence;
 
 /**
@@ -20,8 +21,12 @@ use SpiceCRM\modules\UserAbsences\UserAbsence;
  */
 class SpiceACLObject extends SpiceBean
 {
-    private $aclobjects = [];
-
+    private array $aclobjects = [];
+    /**
+     * auth objects
+     * @var array
+     */
+    private array $authObjects = [];
     /*
     public function __construct($id = '')
     {
@@ -121,6 +126,7 @@ class SpiceACLObject extends SpiceBean
         foreach ($fieldValues as $fieldValue) {
             // check that the id matches
             if ($fieldValue->spiceaclobject_id == $this->id) {
+                $fieldValue->value1 = $fieldValue->operator == 'SYSHANDLER' ? addslashes($fieldValue->value1) : $fieldValue->value1;
                 $this->db->query("INSERT INTO spiceaclobjectvalues (id, spiceaclobject_id, spiceaclmodulefield_id, operator, value1, value2) VALUES('".SpiceUtils::createGuid()."', '$fieldValue->spiceaclobject_id', '$fieldValue->spiceaclmodulefield_id', '$fieldValue->operator', '$fieldValue->value1', '$fieldValue->value2')");
             }
         }
@@ -598,6 +604,16 @@ class SpiceACLObject extends SpiceBean
                         ]
                     ];
                     break;
+                case 'SYSHANDLER':
+                    if (self::isFieldHandlerClass($fieldvalue['value1'])) {
+                        /** @var SpiceACLObjectFieldHandlerI $classInstance */
+                        $classInstance = new $fieldvalue['value1']();
+                        $condition = $classInstance->getFTSCondition($fieldvalue['name']);
+                        if ($condition) {
+                            $filters[$condition->key][] = $condition->value;
+                        }
+                    }
+                    break;
             }
         }
 
@@ -716,6 +732,14 @@ class SpiceACLObject extends SpiceBean
                         $valArray[$valIndex] = trim($valValue);
                     $whereClauses[] = "$table_name.{$fieldvalue['name']} NOT IN ('" . implode("','", $valArray) . "')";
                     break;
+                case 'SYSHANDLER':
+                    if (self::isFieldHandlerClass($fieldvalue['value1'])) {
+                        /** @var SpiceACLObjectFieldHandlerI $classInstance */
+                        $classInstance = new $fieldvalue['value1']();
+                        $condition = $classInstance->getDBCondition($table_name, $fieldvalue['name']);
+                        $whereClauses[] = $condition;
+                    }
+                    break;
             }
         }
 
@@ -734,6 +758,16 @@ class SpiceACLObject extends SpiceBean
         }
 
         return implode(' AND ', $whereClauses) ?: '1=1';
+    }
+
+    /**
+     * check if the class is a field handler class that implements the SpiceACLObjectFieldHandlerI interface
+     * @param string $class
+     * @return bool
+     */
+    private static function isFieldHandlerClass(string $class): bool
+    {
+        return class_exists($class) && in_array('SpiceCRM\modules\SpiceACLObjects\interfaces\SpiceACLObjectFieldHandlerI', class_implements($class));
     }
 
     /*
@@ -838,6 +872,15 @@ class SpiceACLObject extends SpiceBean
                 case 'ignore': //BWC
                 case '':
                     $authObjectAccess = true;
+                    break;
+                case 'SYSHANDLER':
+                    if (self::isFieldHandlerClass($fieldvalues['value1'])) {
+                        /** @var SpiceACLObjectFieldHandlerI $classInstance */
+                        $classInstance = new $fieldvalues['value1']();
+                        if ($classInstance->checkFieldAccess($bean->{$fieldname})) {
+                            $authObjectAccess = true;
+                        }
+                    }
                     break;
             }
 

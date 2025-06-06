@@ -696,8 +696,8 @@ class SpiceACL
      */
     public function getACLObjectValues($aclObjectId){
         if(!isset($this->aclObjectValues[$aclObjectId])){
-            $standardValues = DBManagerFactory::getInstance()->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues, spiceaclmodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclmodulefields.id AND spiceaclobject_id='{$aclObjectId}'");
-            $customValues = DBManagerFactory::getInstance()->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclcustommodulefields.name FROM spiceaclobjectvalues, spiceaclcustommodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclcustommodulefields.id AND spiceaclobject_id='$aclObjectId}'");
+            $standardValues = DBManagerFactory::getInstance()->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues, spiceaclmodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclmodulefields.id AND spiceaclobject_id='$aclObjectId'");
+            $customValues = DBManagerFactory::getInstance()->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclcustommodulefields.name FROM spiceaclobjectvalues, spiceaclcustommodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclcustommodulefields.id AND spiceaclobject_id='$aclObjectId'");
             $this->aclObjectValues[$aclObjectId] = array_merge($standardValues ?: [], $customValues ?: []);
         }
         return $this->aclObjectValues[$aclObjectId];

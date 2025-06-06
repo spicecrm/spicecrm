@@ -7,6 +7,7 @@ use DirectoryIterator;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class SpiceUIConfHandler
@@ -146,11 +147,34 @@ class SpiceUIConfHandler
         $db = DBManagerFactory::getInstance();
         $rows = [];
 
-        $where = empty($packages) ? "where package != 'system' OR package is null" : "where package in ('" . implode("','", explode(',', $packages)) . "')";
+        if (self::checkTableHasPackageField($tablename)) {
+            $where = empty($packages) ? "where package != 'system' OR package is null" : "where package in ('" . implode("','", explode(',', $packages)) . "')";
+        } else {
+            $where = '';
+        }
 
         $result = $db->query(sprintf("SELECT * FROM %s $where", $db->quote($tablename)), false, '', true);
         while ($row = $db->fetchByAssoc($result)) $rows[] = $row;
         return $rows;
+    }
+
+    /**
+     * check table has package field
+     * @param string $tableName
+     * @return bool
+     * @throws \Exception
+     */
+    private static function checkTableHasPackageField(string $tableName): bool
+    {
+        $dic = SpiceDictionary::getInstance()->getDefsByTableName($tableName);
+
+        foreach ($dic['fields'] as $field) {
+            if ($field['name'] != 'package') continue;
+            return true;
+        }
+
+        return false;
+
     }
 
     /**

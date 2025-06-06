@@ -20,7 +20,8 @@ import {FieldsetManagerCopyDialog} from "./fieldsetmanagercopydialog";
 @Component({
     selector: 'fieldset-manager',
     templateUrl: '../templates/fieldsetmanager.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class FieldsetManager {
 

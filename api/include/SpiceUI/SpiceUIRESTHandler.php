@@ -1076,6 +1076,11 @@ class SpiceUIRESTHandler
         }
     }
 
+    /**
+     * @deprecated
+     * @return array
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
+     */
     public function getSelectTrees()
     {
         $return = [];
@@ -1088,6 +1093,12 @@ class SpiceUIRESTHandler
         return $return;
     }
 
+    /**
+     * @deprecated
+     * @param $id
+     * @return array
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
+     */
     public function getSelectTreeList($id)
     {
         $return = [];
@@ -1101,6 +1112,12 @@ class SpiceUIRESTHandler
         return $return;
     }
 
+    /**
+     * @deprecated
+     * @param $id
+     * @return array
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
+     */
     public function getSelectTree($id)
     {
         $return = [];
@@ -1116,6 +1133,12 @@ class SpiceUIRESTHandler
         return $return;
     }
 
+    /**
+     * @deprecated
+     * @param $cat
+     * @return array
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
+     */
     private function getSelectTreeChilds(&$cat)
     {
         $sql = "SELECT * FROM sysselecttree_fields 
@@ -1129,6 +1152,13 @@ class SpiceUIRESTHandler
         return $cat;
     }
 
+    /**
+     * @deprecated
+     * @param $selecttree
+     * @return bool
+     * @throws ForbiddenException
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
+     */
     public function setSelectTree($selecttree)
     {
         $this->checkAdmin();
@@ -1175,6 +1205,12 @@ class SpiceUIRESTHandler
         }
     }
 
+    /**
+     * @deprecated
+     * @param $tree
+     * @return bool
+     * @throws ForbiddenException
+     */
     public function setTree($tree)
     {
         $this->checkAdmin();

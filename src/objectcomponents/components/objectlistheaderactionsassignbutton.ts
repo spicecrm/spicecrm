@@ -20,6 +20,7 @@ import {modal} from '../../services/modal.service';
 @Component({
     selector: 'object-list-header-actions-assign-button',
     templateUrl: '../templates/objectlistheaderactionsassignbutton.html',
+    standalone: false
 })
 export class ObjectListHeaderActionsAssignButton {
 

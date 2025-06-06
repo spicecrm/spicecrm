@@ -27,7 +27,8 @@ import {ObjectList} from "../../../objectcomponents/components/objectlist";
 @Component({
     selector: 'media-files-list',
     templateUrl: '../templates/mediafileslist.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class MediaFilesList extends ObjectList implements OnDestroy {
 

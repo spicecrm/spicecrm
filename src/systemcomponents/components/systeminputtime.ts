@@ -5,7 +5,7 @@
 // from https://github.com/kolkov/angular-editor
 import {
     Component, ElementRef, EventEmitter,
-    forwardRef, Input,
+    forwardRef, input, Input,
     OnDestroy, Output,
     Renderer2
 } from '@angular/core';
@@ -28,9 +28,15 @@ declare var moment: any;
             useExisting: forwardRef(() => SystemInputTime),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputTime implements OnDestroy, ControlValueAccessor {
+    /**
+     * if true ignore timezone
+     */
+    public useUtc = input(false);
+
     // for the value accessor
     public onChange: (value: string) => void;
     public onTouched: () => void;
@@ -248,7 +254,7 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
     public writeValue(value: any): void {
         // this._time = value ? value : '';
         if (value && value.isValid && value.isValid()) {
-            this._time.moment = new moment(value);
+            this._time.moment = this.useUtc() ? moment.utc(value) : new moment(value);
             this._time.offset = this.calculateOffset(this._time.moment);
             this._time.display = this._time.moment.format(this.userpreferences.getTimeFormat());
         } else {

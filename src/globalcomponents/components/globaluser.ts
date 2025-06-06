@@ -18,6 +18,7 @@ import {configurationService} from "../../services/configuration.service";
 @Component({
     selector: 'global-user',
     templateUrl: '../templates/globaluser.html',
+    standalone: false
 })
 export class GlobalUser {
 

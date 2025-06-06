@@ -12,7 +12,8 @@ import {
  */
 @Component({
     selector: "system-progress-indicator-item",
-    template: ""
+    template: "",
+    standalone: false
 })
 export class SystemProgressIndicatorItem  {
 

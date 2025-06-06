@@ -30,7 +30,8 @@ import {layout} from "../../services/layout.service";
         ':host  field-container global-button-icon {display:none;}',
         ':host:hover  field-container global-button-icon {display:inline;}',
     ],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ObjectListItem implements OnInit, OnDestroy {
 

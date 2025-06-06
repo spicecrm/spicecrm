@@ -18,6 +18,7 @@ import {toast} from "../../../services/toast.service";
     selector: "email-schedules-modal",
     templateUrl: "../templates/emailschedulesmodal.html",
     providers: [model, view],
+    standalone: false
 })
 export class EmailSchedulesModal {
 

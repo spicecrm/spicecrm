@@ -39,8 +39,8 @@ import {AgreementsAddRevisionModal} from "../../modules/agreements/components/ag
     providers: [modelattachments],
     animations: [
         trigger('animateicon', [
-            state('open', style({transform: 'scale(1, 1)'})),
-            state('closed', style({transform: 'scale(1, -1)'})),
+            state('open', style({ transform: 'scale(1, 1)' })),
+            state('closed', style({ transform: 'scale(1, -1)' })),
             transition('open => closed', [
                 animate('.5s'),
             ]),
@@ -50,16 +50,17 @@ import {AgreementsAddRevisionModal} from "../../modules/agreements/components/ag
         ]),
         trigger('displaycard', [
             transition(':enter', [
-                style({opacity: 0, height: '0px', overflow: 'hidden'}),
-                animate('.5s', style({height: '*', opacity: 1})),
-                style({overflow: 'unset'})
+                style({ opacity: 0, height: '0px', overflow: 'hidden' }),
+                animate('.5s', style({ height: '*', opacity: 1 })),
+                style({ overflow: 'unset' })
             ]),
             transition(':leave', [
-                style({overflow: 'hidden'}),
-                animate('.5s', style({height: '0px', opacity: 0}))
+                style({ overflow: 'hidden' }),
+                animate('.5s', style({ height: '0px', opacity: 0 }))
             ])
         ])
-    ]
+    ],
+    standalone: false
 })
 export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChanges {
 
@@ -411,8 +412,9 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         // extract files that are in the upload process
         let fileTypesToBeUploaded: string[] = [];
         fileNames.forEach(fileName => {
-            const extension = fileName.split('.')[1] || 'no-extension';
-            fileTypesToBeUploaded.push(extension);
+            const lastDotIndex = fileName.lastIndexOf('.');
+            const fileExtension = lastDotIndex === -1 ? fileName : fileName.substring(lastDotIndex);
+            fileTypesToBeUploaded.push(fileExtension);
         });
 
         // reset allowUpload if previously set to false
@@ -420,7 +422,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
 
         // check each file type based on file types that we allow/not allow
         fileTypesToBeUploaded.forEach(file => {
-            const isFileIncluded = String(fileTypes).includes(file);
+            const isFileIncluded = this.fileTypes.includes(file);
 
             if (
                 (action === 'exclude' && isFileIncluded) ||
@@ -439,7 +441,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
      * @param files
      */
     public fileDrop(files) {
-        if(this.componentconfig.disableupload && this.componentconfig.disableupload === true){
+        if(this.componentconfig.disableupload && this.componentconfig.disableupload === true && !this.canUpload){
             this.toast.sendToast(this.language.getLabel('LBL_UPLOAD_IS_DISABLED'), 'error');
             return false;
         }

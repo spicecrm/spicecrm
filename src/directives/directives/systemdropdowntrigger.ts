@@ -31,7 +31,8 @@ import {take} from "rxjs/operators";
  * </div>
  */
 @Directive({
-    selector: '[system-dropdown-trigger]'
+    selector: '[system-dropdown-trigger]',
+    standalone: false
 })
 export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
 
@@ -52,6 +53,11 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
      * @private
      */
     @Input() private autoClose: boolean = false;
+    /**
+     * A boolean flag that determines whether the trigger element's width
+     * should match the width of its associated dropdown trigger component.
+     */
+    @Input() public fitTriggerWidth: boolean = false;
     /*
     * @input dropdowntrigger: boolean = false
     */
@@ -254,8 +260,10 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
             }
         }
 
-        // set the max width of the dropdown to match the trigger element width.
-        this.renderer.setStyle(this.dropdownElement, 'max-width', this.elementRef.nativeElement.getBoundingClientRect().width + 'px');
+        if (this.fitTriggerWidth) {
+            // set the max width of the dropdown to match the trigger element width.
+            this.renderer.setStyle(this.dropdownElement, 'max-width', this.elementRef.nativeElement.getBoundingClientRect().width + 'px');
+        }
 
         // from right to left direction
         if (triggerRect.right - this.dropdownElement.clientWidth > 10 || triggerRect.right > window.innerWidth * 0.30) {

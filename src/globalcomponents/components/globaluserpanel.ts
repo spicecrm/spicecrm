@@ -23,7 +23,8 @@ import {UserSecuritySettingsModal} from "../../modules/users/components/usersecu
 @Component({
     selector: "global-user-panel",
     templateUrl: "../templates/globaluserpanel.html",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class GlobaUserPanel {
 

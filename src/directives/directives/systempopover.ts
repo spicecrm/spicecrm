@@ -11,6 +11,7 @@ import {footer} from "../../services/footer.service";
  */
 @Directive({
     selector: '[system-pop-over]',
+    standalone: false
 })
 export class SystemPopOverDirective implements OnDestroy {
     /**

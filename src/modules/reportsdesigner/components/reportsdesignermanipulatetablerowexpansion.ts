@@ -11,7 +11,8 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: '[reports-designer-manipulate-table-row-expansion]',
-    templateUrl: '../templates/reportsdesignermanipulatetablerowexpansion.html'
+    templateUrl: '../templates/reportsdesignermanipulatetablerowexpansion.html',
+    standalone: false
 })
 export class ReportsDesignerManipulateTableRowExpansion {
 

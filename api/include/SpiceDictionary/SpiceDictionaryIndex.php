@@ -57,7 +57,7 @@ class SpiceDictionaryIndex
         $itemsObjects = SpiceDictionaryIndexes::getInstance()->getIndexItems($this->id);
         foreach ( $itemsObjects as $itemsObject ) {
             $itemsObject = (object)$itemsObject;
-            $itemsObject->fieldnames = (new SpiceDictionaryItem($itemsObject->sysdictionaryitem_id))->getDomainFieldNames();
+            $itemsObject->fieldnames = (new SpiceDictionaryItem($itemsObject->sysdictionaryitem_id))->getDomainFieldNames(true);
             $indexItems[] = $itemsObject;
         }
         return $indexItems;

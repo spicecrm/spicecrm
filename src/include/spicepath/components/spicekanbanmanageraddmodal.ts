@@ -12,7 +12,8 @@ import {modelutilities} from "../../../services/modelutilities.service";
 
 @Component({
     selector: 'spice-kanban-manager-add-modal',
-    templateUrl: '../templates/spicekanbanmanageraddmodal.html'
+    templateUrl: '../templates/spicekanbanmanageraddmodal.html',
+    standalone: false
 })
 
 export class SpiceKanbanManagerAddModal implements OnInit{
@@ -110,21 +111,9 @@ export class SpiceKanbanManagerAddModal implements OnInit{
         if(!this.isEditing) {
             this.selectedBeanGuide.scope = this.scope;
 
-            const optionsKey = this.metadata.getFieldOptions(this.selectedBeanGuide.module, this.selectedBeanGuide.status_field);
-            const fieldValidation = this.kanbanManagerService.domainFieldValidations.find(val => val.name == optionsKey);
-            const fieldValidationValue = this.kanbanManagerService.domainFieldValidationsValues.filter(val => val.sysdomainfieldvalidation_id == fieldValidation.id).map(res => {
-                return {
-                    id: this.modelUtilities.generateGuid(),
-                    spicebeanguide_id: this.selectedBeanGuide.id,
-                    stage: res.enumvalue,
-                    stage_sequence: res.sequence,
-                    stage_label: res.label,
-                }
-            });
-
             let table = this.scope == 'global' ? 'spicebeanguidestages' : 'spicebeancustomguidestages';
 
-            this.backend.postRequest(`configuration/configurator/${table}`, null, {config: fieldValidationValue}).subscribe({
+            this.backend.postRequest(`configuration/configurator/${table}`, null, {config: this.kanbanManagerService.generateKanbanStages(this.selectedBeanGuide)}).subscribe({
                 next: () => {
                     spinner.emit(true);
                     this.toast.sendToast('LBL_SPICEBEANGUIDESTAGES_SAVED', "success");

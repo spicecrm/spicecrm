@@ -9,6 +9,7 @@ import {session} from "../../services/session.service";
 
 @Component({
     templateUrl: "../templates/mailboxesmanagertestmodal.html",
+    standalone: false
 })
 export class MailboxesmanagerTestModal implements OnInit {
 

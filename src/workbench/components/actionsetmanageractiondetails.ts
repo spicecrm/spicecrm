@@ -16,7 +16,8 @@ import {view} from '../../services/view.service';
 @Component({
     selector: 'actionsetmanager-action-details',
     templateUrl: '../templates/actionsetmanageractiondetails.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ActionsetManagerActionDetails implements OnChanges {
 

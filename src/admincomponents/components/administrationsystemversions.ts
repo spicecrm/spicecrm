@@ -10,7 +10,8 @@ import {backend} from '../../services/backend.service';
 import {helper} from '../../services/helper.service';
 
 @Component({
-    templateUrl: '../templates/administrationsystemversions.html'
+    templateUrl: '../templates/administrationsystemversions.html',
+    standalone: false
 })
 export class AdministrationSystemVersions {
 

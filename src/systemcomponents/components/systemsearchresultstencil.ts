@@ -8,7 +8,8 @@ import {Component} from '@angular/core';
  */
 @Component({
     selector: 'system-searchresult-stencil',
-    templateUrl: '../templates/systemsearchresultstencil.html'
+    templateUrl: '../templates/systemsearchresultstencil.html',
+    standalone: false
 })
 export class SystemSearchresultStencil {
 }

@@ -1,0 +1,34 @@
+<td class="slds-align-top slds-p-left--none slds-p-right--medium">
+    <div class="slds-text-align--right slds-align-middle slds-p-top--xxx-small">{{key}}</div>
+</td>
+<td style="width:100%" class="slds-p-around--none">
+    <span *ngIf="valueType === 'string' || valueType === 'number' || valueType === 'null' || valueType === 'boolean'" class="slds-grid" [ngClass]="{'slds-m-bottom--small':!isLast}">
+        <span slds="slds-grow" style="width:100%">
+            <system-input-text *ngIf="valueType === 'string' || valueType === 'null'" [disabled]="!editMode || valueType==='null'" [ngModel]="objekt[key] === null ? 'null':objekt[key]" (ngModelChange)="objekt[key]=$event" class="slds-grow" [ngStyle]="{'font-style':objekt[key]===null?'italic':'normal'}" style="display:block"></system-input-text>
+            <system-input-number *ngIf="valueType === 'number'" [disabled]="!editMode" [(ngModel)]="objekt[key]" [asNumber]="true" [system-input-number-leftalign]="true" class="slds-grow" style="display:block"></system-input-number>
+            <system-checkbox [disabled]="!editMode" *ngIf="valueType === 'boolean'" [(ngModel)]="objekt[key]" style="display:block"></system-checkbox>
+        </span>
+        <span class="slds-m-left--x-small" [ngStyle]="{'display':!editMode?'none':'block'}"><select class="slds-select" [(ngModel)]="valueType" (change)="changeType($event.currentTarget.value)">
+            @if ( valueType === 'boolean' || originalBoolean ) {
+                <option [value]="'boolean'">01</option>
+            }
+            @else {
+                <option [value]="'string'">Abc</option>
+                <option [value]="'number'">123</option>
+            }
+            <option [value]="'null'">NULL</option>
+        </select></span>
+    </span>
+    <table *ngIf="valueType === 'object' || valueType === 'array'" class="slds-table slds-box slds-table slds-table--bordered" style="padding:0.75rem" [ngClass]="{'slds-m-bottom--small':!isLast}">
+        <ng-container *ngIf="valueType === 'object'">
+            @for ( property of objekt[key] | keyvalue; let isLast = $last; track $index ) {
+                <tr apilogviewer-replay-item [key]="property.key" [objekt]="objekt[key]" [editMode]="editMode" [isLast]="isLast"></tr>
+            }
+        </ng-container>
+        <ng-container *ngIf="valueType === 'array'">
+            @for ( item of objekt[key]; let rowIndex = $index; let isLast = $last; track $index ) {
+                <tr apilogviewer-replay-item [key]="rowIndex" [objekt]="objekt[key]" [editMode]="editMode" [isLast]="isLast"></tr>
+            }
+        </ng-container>
+    </table>
+</td>

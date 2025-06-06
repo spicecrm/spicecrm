@@ -17,7 +17,8 @@ import {accountHierarchy} from "../services/accounthierarchy.service";
     providers: [model, view],
     host: {
         "[attr.aria-level]": "nodedata.level"
-    }
+    },
+    standalone: false
 })
 export class AccountHierarchyNode implements OnInit {
     /**

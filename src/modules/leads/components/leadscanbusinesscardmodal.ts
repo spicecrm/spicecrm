@@ -20,7 +20,8 @@ import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     selector: 'lead-scan-business-card-modal',
-    templateUrl: '../templates/leadscanbusinesscardmodal.html'
+    templateUrl: '../templates/leadscanbusinesscardmodal.html',
+    standalone: false
 })
 export class LeadScanBusinessCardModal implements AfterViewInit{
 

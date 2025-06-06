@@ -8,7 +8,8 @@ import {spiceimportsservice} from '../services/spiceimports.service';
 
 @Component({
     selector: 'spice-imports-list',
-    templateUrl: '../templates/spiceimportslist.html'
+    templateUrl: '../templates/spiceimportslist.html',
+    standalone: false
 })
 export class SpiceImportsList {
 

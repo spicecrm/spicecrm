@@ -252,7 +252,6 @@ class SpiceCRM2FAUtils
 
         /** @var TextMessage $sms */
         $sms = BeanFactory::newBean('TextMessages');
-        $sms->to_be_sent = true;
         $sms->mailbox_id = $mailboxId;
         $sms->description = "Your CRM login code is $code";
         $sms->msisdn = $phoneNumber;
@@ -300,7 +299,6 @@ class SpiceCRM2FAUtils
 
         /** @var Email $email */
         $email = BeanFactory::newBean('Emails');
-        $email->to_be_sent = true;
         $email->mailbox_id = $mailboxId;
         $email->name = 'Verification Code';
         $email->body = "Your CRM login code is $code";

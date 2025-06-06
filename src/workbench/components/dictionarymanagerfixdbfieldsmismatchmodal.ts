@@ -7,7 +7,8 @@ import {Subject} from "rxjs";
 
 @Component({
     selector: 'dictionary-manager-fix-db-fields-mismatch-modal',
-    templateUrl: '../templates/dictionarymanagerfixdbfieldsmismatchmodal.html'
+    templateUrl: '../templates/dictionarymanagerfixdbfieldsmismatchmodal.html',
+    standalone: false
 })
 
 export class DictionaryManagerFixDBFieldsMismatchModal implements ModalComponentI, OnDestroy {

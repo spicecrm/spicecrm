@@ -19,7 +19,8 @@ import {AttributeObjectI, SectionI} from "../interfaces/spicepagebuilder.interfa
 @Component({
     selector: 'spice-page-builder-element-section',
     templateUrl: '../templates/spicepagebuilderelementsection.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderElementSection implements OnInit {
     /**
@@ -44,7 +45,8 @@ export class SpicePageBuilderElementSection implements OnInit {
     public readonly mainAttributesList: AttributeObjectI[][] = [
         [
             {name: 'background-color', type: 'color', class: 'slds-size--1-of-2'},
-            {name: 'direction', type: 'direction', class: 'slds-size--1-of-2'},
+            {name: 'direction', type: 'direction', class: 'slds-size--1-of-4'},
+            {name: 'is-group', type: 'bool', class: 'slds-size--1-of-4'},
         ], [
             {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
         ]
@@ -72,7 +74,8 @@ export class SpicePageBuilderElementSection implements OnInit {
     public readonly columnAttributesList: AttributeObjectI[][] = [
         [
             {name: 'width', type: 'width', class: 'slds-size--1-of-2'},
-            {name: 'background-color', type: 'color', class: 'slds-size--1-of-2'}
+            {name: 'background-color', type: 'color', class: 'slds-size--1-of-4'},
+            {name: 'inner-background-color', type: 'color', class: 'slds-size--1-of-4'}
         ], [
             {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
         ], [
@@ -80,7 +83,8 @@ export class SpicePageBuilderElementSection implements OnInit {
         ],[
             {name: 'inner-border', type: 'borders', class: 'slds-size--1-of-1'}
         ], [
-            {name: 'css-class', type: 'text', class: 'slds-size--1-of-1'}
+            {name: 'vertical-align', type: 'valign', class: 'slds-size--1-of-2'},
+            {name: 'css-class', type: 'text', class: 'slds-size--1-of-2'}
         ]
     ];
 

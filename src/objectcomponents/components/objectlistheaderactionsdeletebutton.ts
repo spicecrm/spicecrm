@@ -17,6 +17,7 @@ import {toast} from '../../services/toast.service';
 @Component({
     selector: 'object-list-header-actions-delete-button',
     templateUrl: '../templates/objectlistheaderactionsdeletebutton.html',
+    standalone: false
 })
 export class ObjectListHeaderActionsDeleteButton {
 

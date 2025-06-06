@@ -11,8 +11,8 @@ import {language} from "../../../services/language.service";
  */
 @Component({
     selector: 'calendar-more-button',
-    templateUrl: '../templates/calendarmorebutton.html'
-
+    templateUrl: '../templates/calendarmorebutton.html',
+    standalone: false
 })
 
 export class CalendarMoreButton implements OnDestroy {

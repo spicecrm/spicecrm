@@ -12,7 +12,8 @@ import {
 @Component({
     selector: 'user-2fa-configuration',
     templateUrl: '../templates/user-2fa-configuration.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 
 export class User2FAConfiguration implements OnInit {

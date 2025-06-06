@@ -10,7 +10,8 @@ import {ObjectActionSaveButton} from "../../../objectcomponents/components/objec
 
 @Component({
     selector: 'activity-timeline-save-button',
-    templateUrl: '../templates/activitytimelinesavebutton.html'
+    templateUrl: '../templates/activitytimelinesavebutton.html',
+    standalone: false
 })
 export class ActivityTimelineSaveButton {
 

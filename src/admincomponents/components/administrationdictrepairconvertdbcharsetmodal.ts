@@ -9,7 +9,8 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'administration-dict-repair-convert-db-charset-modal',
-    templateUrl: '../templates/administrationdictrepairconvertdbcharsetmodal.html'
+    templateUrl: '../templates/administrationdictrepairconvertdbcharsetmodal.html',
+    standalone: false
 })
 export class AdministrationDictRepairConvertDBCharsetModal implements OnInit {
     /**

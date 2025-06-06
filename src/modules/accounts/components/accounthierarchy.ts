@@ -11,7 +11,8 @@ import {accountHierarchy} from "../services/accounthierarchy.service";
 @Component({
     selector: "account-hierarchy",
     templateUrl: "../templates/accounthierarchy.html",
-    providers: [accountHierarchy]
+    providers: [accountHierarchy],
+    standalone: false
 })
 export class AccountHierarchy implements OnInit {
     public componentconfig: any = {};

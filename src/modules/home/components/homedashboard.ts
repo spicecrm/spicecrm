@@ -13,6 +13,7 @@ import {language} from "../../../services/language.service";
 @Component({
     selector: 'home-dashboard',
     templateUrl: '../templates/homedashboard.html',
+    standalone: false
 })
 export class HomeDashboard implements AfterViewInit, OnDestroy {
 

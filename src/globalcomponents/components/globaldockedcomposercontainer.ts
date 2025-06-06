@@ -16,7 +16,8 @@ import {telephony} from '../../services/telephony.service';
     host: {
         '[class.slds-docked_container]': 'isVisible',
         'style': 'z-index: 9999'
-    }
+    },
+    standalone: false
 })
 export class GlobalDockedComposerContainer {
 

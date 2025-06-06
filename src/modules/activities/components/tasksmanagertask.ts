@@ -27,7 +27,8 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: 'tasks-manager-task',
     templateUrl: '../templates/tasksmanagertask.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class TasksManagerTask implements OnInit {
 

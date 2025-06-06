@@ -6,6 +6,7 @@ use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 
 class Email1Handler extends SpiceDictionaryDomainHandler
@@ -18,7 +19,7 @@ class Email1Handler extends SpiceDictionaryDomainHandler
      * @return bool
      * @throws \Exception
      */
-    public function onRetrieve(SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
+    public function onRetrieve($item,SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
     {
         $emailAddress = DBManagerFactory::getInstance()->getOne("SELECT email_address FROM email_addresses ea, email_addr_bean_rel ear WHERE ear.bean_id='{$bean->id}' AND ear.bean_module='{$bean->_module}'  AND ear.primary_address=1 AND ear.deleted != 1 AND ear.email_address_id = ea.id AND ea.deleted != 1");
 
@@ -38,7 +39,7 @@ class Email1Handler extends SpiceDictionaryDomainHandler
      * @return bool
      * @throws \Exception
      */
-    public function afterSave(SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
+    public function afterSave($item,SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
     {
         if (empty(trim($fields['email1']))) {
             return false;

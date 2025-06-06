@@ -6,7 +6,8 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: '[reports-designer-manipulate-union-table-row]',
-    templateUrl: '../templates/reportsdesignermanipulateuniontablerow.html'
+    templateUrl: '../templates/reportsdesignermanipulateuniontablerow.html',
+    standalone: false
 })
 export class ReportsDesignerManipulateUnionTableRow {
 

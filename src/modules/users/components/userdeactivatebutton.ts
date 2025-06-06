@@ -10,7 +10,8 @@ import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 
 @Component({
-    templateUrl: "../templates/userdeactivatebutton.html"
+    templateUrl: "../templates/userdeactivatebutton.html",
+    standalone: false
 })
 
 /**

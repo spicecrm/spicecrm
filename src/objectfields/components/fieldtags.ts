@@ -11,7 +11,8 @@ import {Router}   from '@angular/router';
 
 @Component({
     selector: 'field-tags',
-    templateUrl: '../templates/fieldtags.html'
+    templateUrl: '../templates/fieldtags.html',
+    standalone: false
 })
 export class fieldTags extends fieldGeneric {
 

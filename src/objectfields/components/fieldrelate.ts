@@ -18,7 +18,8 @@ import {modelutilities} from "../../services/modelutilities.service";
 @Component({
     selector: 'field-relate',
     templateUrl: '../templates/fieldrelate.html',
-    providers: [popup]
+    providers: [popup],
+    standalone: false
 })
 export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
     public relateIdField: string = '';
@@ -115,7 +116,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldconfig.relatefilterfield);
         if (fieldDefs) {
             this.relateFilter = {
-                module: fieldDefs.module,
+                module: this.relateType,
                 relationship: this.fieldconfig.relatefilterrelationship,
                 id: this.model.getField(fieldDefs.id_name),
                 display: this.model.getField(this.fieldconfig.relatefilterfield),

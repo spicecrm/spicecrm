@@ -13,6 +13,7 @@ import {tap} from "rxjs/operators";
 @Component({
     selector: 'object-action-related-outputpdf-modal',
     templateUrl: '../templates/objectactionrelatedoutpudpdfmodal.html',
+    standalone: false
 })
 
 export class ObjectActionRelatedOutputPdfModal {

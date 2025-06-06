@@ -8,7 +8,8 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'account-territory-details-add-button',
     templateUrl: '../templates/accountterritorydetailsaddbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 
 export class AccountTerritoryDetailsAddButton implements ActionSetItemI, OnInit {

@@ -12,7 +12,8 @@ import {fieldGeneric} from "./fieldgeneric";
 
 @Component({
     selector: 'field-email-to',
-    templateUrl: '../templates/fieldemailto.html'
+    templateUrl: '../templates/fieldemailto.html',
+    standalone: false
 })
 export class fieldEmailTo extends fieldGeneric{
     loadingOptions: boolean = false;

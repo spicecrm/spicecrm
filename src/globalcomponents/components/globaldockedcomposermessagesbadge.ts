@@ -9,7 +9,8 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'global-docked-composer-messages-badge',
-    templateUrl: '../templates/globaldockedcomposermessagesbadge.html'
+    templateUrl: '../templates/globaldockedcomposermessagesbadge.html',
+    standalone: false
 })
 export class GlobalDockedComposerMessagesBadge {
 

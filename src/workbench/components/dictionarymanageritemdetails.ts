@@ -17,8 +17,9 @@ import {backend} from "../../services/backend.service";
 @Component({
     selector: 'dictionary-manager-item-details',
     templateUrl: '../templates/dictionarymanageritemdetails.html',
+    standalone: false
 })
-export class DictionaryManagerItemDetails implements OnInit{
+export class DictionaryManagerItemDetails implements OnInit {
 
     /**
      * reference to the modal itself
@@ -40,6 +41,10 @@ export class DictionaryManagerItemDetails implements OnInit{
      * the list of the domains
      */
     public domains: any[] = [];
+    /**
+     * if set to true from the parent, push the custom item to the items array and remove the global item after saving
+     */
+    public isCustomizing: boolean = false;
 
     constructor(public dictionarymanager: dictionarymanager,
                 private modal: modal,
@@ -99,11 +104,14 @@ export class DictionaryManagerItemDetails implements OnInit{
         delete toSave.database;
         delete toSave.defined;
 
-        this.backend.postRequest(`dictionary/item/${this.dictionaryitem.id}`, {}, toSave).subscribe({
+        this.backend.postRequest(`dictionary/item/${toSave.id}`, {}, toSave).subscribe({
             next: () => {
                 saveModal.emit(true);
                 saveModal.complete();
-                this.close();
+
+                if (this.isCustomizing) {
+                    this.dictionarymanager.dictionaryitems = [...this.dictionarymanager.dictionaryitems, this.dictionaryitem];
+                }
             },
             error: () => {
                 saveModal.emit(true);

@@ -25,7 +25,8 @@ import {SystemChartDataRow} from "./systemchartdatarow";
 @Component({
     selector: 'system-chart-one-dimensional',
     templateUrl: '../templates/systemchartonedimensional.html',
-    providers: [SystemChartService]
+    providers: [SystemChartService],
+    standalone: false
 })
 export class SystemChartOneDimensional implements OnChanges, OnDestroy, GoogleChartOptionsI {
     /**

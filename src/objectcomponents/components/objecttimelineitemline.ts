@@ -22,7 +22,7 @@ import {timeline} from "../../services/timeline.service";
 @Component({
     selector: 'object-timeline-item-line',
     templateUrl: '../templates/objecttimelineitemline.html',
-
+    standalone: false
 })
 export class ObjectTimelineItemLine {
 

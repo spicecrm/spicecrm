@@ -436,8 +436,6 @@ class Compiler
                         $elements[] = $this->createNewElement($node, $beans);
                     }
                     break;
-                default:
-                    die(get_class($node));
             }
         }
         return $elements;

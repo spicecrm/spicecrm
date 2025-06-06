@@ -11,7 +11,8 @@ import {duplicatedmodels} from "../../services/duplicatedmodels.service";
 @Component({
     selector: 'object-action-check-duplicate-button',
     templateUrl: '../templates/objectactioncheckduplicatebutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 
 export class ObjectActionCheckDuplicateButton implements OnInit {

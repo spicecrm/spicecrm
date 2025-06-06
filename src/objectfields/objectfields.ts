@@ -46,6 +46,7 @@ import {fieldBoolLabelAligned} from './components/fieldboollabelaligned';
 import {fieldParent} from './components/fieldparent';
 import {fieldModuleFilter} from './components/fieldmodulefilter';
 import {fieldRelate} from './components/fieldrelate';
+import {fieldRelatePrimary} from './components/fieldrelateprimary';
 import {fieldRelateList} from './components/fieldrelatelist';
 import {fieldModifiedBy} from './components/fieldmodifiedby';
 import {fieldLookup} from './components/fieldlookup';
@@ -138,6 +139,7 @@ import {fieldEnumRoles} from "./components/fieldenumroles";
 import {fieldVersion} from "./components/fieldVersion";
 import {fieldPackage} from "./components/fieldpackage";
 import {fieldActivityStatus} from "./components/fieldactivitystatus";
+import {SystemDateTimeFormatPipe} from "../systemcomponents/pipes/systemdatetimeformat";
 
 
 
@@ -156,6 +158,7 @@ declare var _: any;
         SystemComponents,
         DirectivesModule,
         DragDropModule,
+        SystemDateTimeFormatPipe,
     ],
     declarations: [
         fieldSet,
@@ -203,6 +206,7 @@ declare var _: any;
         fieldParent,
         fieldModuleFilter,
         fieldRelate,
+        fieldRelatePrimary,
         fieldRelateList,
         fieldModifiedBy,
         fieldLinked,

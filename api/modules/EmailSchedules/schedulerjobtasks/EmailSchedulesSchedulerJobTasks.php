@@ -10,6 +10,9 @@ class EmailSchedulesSchedulerJobTasks
      * sendEmailScheduleEmails
      */
     public function sendEmailScheduleEmails(): bool {
+
+        set_time_limit(900);
+
         $emailSchedule = BeanFactory::getBean('EmailSchedules');
         return $emailSchedule->sendQueuedEmails();
     }

@@ -16,6 +16,7 @@ import {view} from "../../services/view.service";
 @Component({
     selector: "mailboxes-imap-smtp-traffic-manager",
     templateUrl: "../templates/mailboxesimapsmtptrafficmanager.html",
+    standalone: false
 })
 export class MailboxesImapSmtpTrafficManager {
 

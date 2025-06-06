@@ -14,7 +14,8 @@ import {relateFilter} from "../../../services/interfaces.service";
 import {navigation} from "../../../services/navigation.service";
 
 @Component({
-    templateUrl: '../templates/fieldactivityparticipationpanel.html'
+    templateUrl: '../templates/fieldactivityparticipationpanel.html',
+    standalone: false
 })
 export class fieldActivityParticipationPanel extends fieldGeneric implements OnInit, OnDestroy  {
 

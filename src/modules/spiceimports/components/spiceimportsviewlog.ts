@@ -9,6 +9,7 @@ import {importLog} from "../interfaces/spiceimports.interfaces";
 @Component({
     selector: 'spice-imports-view-log',
     templateUrl: '../templates/spiceimportsviewlog.html',
+    standalone: false
 })
 export class SpiceImportsViewLog implements OnChanges{
 

@@ -23,7 +23,8 @@ declare var moment: any;
 
 @Component({
     selector: 'crm-log-viewer-list',
-    templateUrl: '../templates/crmlogviewerlist.html'
+    templateUrl: '../templates/crmlogviewerlist.html',
+    standalone: false
 })
 export class CRMLogViewerList implements OnInit {
 
@@ -31,7 +32,8 @@ export class CRMLogViewerList implements OnInit {
     @Input() public period = { type: '', begin: { year: '', month: '', day: '', hour: '' }, end: { year: '', month: '', day: '', hour: '' }, duration: '' };
     @Input('load') public load$: EventEmitter<null>;
     @Input() public valuesNotClickable = false;
-    @Output() public countEntries$ = new BehaviorSubject<number>(0);
+    @Output() public countEntries$ = new BehaviorSubject<number|false>(false);
+    @Output() public countEntriesTotal$ = new BehaviorSubject<number>(0);
     @Input() public limit: number;
 
     @Output('valueClicked') public valueClicked$ = new EventEmitter();
@@ -95,7 +97,8 @@ export class CRMLogViewerList implements OnInit {
         this.backend.getRequest( 'admin/crmlog/entries', queryParams ).subscribe(
             response => {
                 this.entries = response.entries;
-                this.countEntries$.next( response.totalCount );
+                this.countEntries$.next( response.count );
+                this.countEntriesTotal$.next( response.totalCount );
                 this.isLoading = false;
                 this.isInitialLoaded = true;
             },

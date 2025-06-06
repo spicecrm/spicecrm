@@ -9,7 +9,8 @@ import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
 
 @Component({
-    templateUrl: '../templates/administrationsystemcacheviewer.html'
+    templateUrl: '../templates/administrationsystemcacheviewer.html',
+    standalone: false
 })
 export class AdministrationSystemCacheViewer {
 

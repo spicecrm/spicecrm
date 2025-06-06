@@ -44,7 +44,13 @@ class APILogEntryHandler
         $this->startingTime = microtime(true);
 
         $this->logEntry = new \stdClass();
-        $this->logEntry->url = preg_replace('/:\/\/(.*?:.*?)@/', '******', $curlOptions[CURLOPT_URL]);
+
+        $url = parse_url($curlOptions[CURLOPT_URL]);
+        parse_str($url['query'], $queryParams);
+        $credentialsString = !$url['user'] && !$url['pass'] ? '' : ((!$url['user'] ? '' : '*****:') . (!$url['pass'] ? '' : '*****') . '@');
+        $this->logEntry->get_params = json_encode($queryParams);
+        $this->logEntry->url = "{$url['scheme']}://$credentialsString{$url['host']}{$url['path']}";
+
         $this->logEntry->method = $this->extractRestMethod($curlOptions);
         $this->logEntry->route = $route; // it is just an arbitrary string for the outgoing requests
         $this->logEntry->ip = $_SERVER['SERVER_ADDR'];

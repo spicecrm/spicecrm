@@ -255,13 +255,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Task'] = ['table' => 'tasks',
 //            'source'       => 'non-db',
 //            'vname'        => 'LBL_NOTES',
 //        ],
-        'contact_parent' => [
-            'name'         => 'contact_parent',
-            'type'         => 'link',
-            'relationship' => 'contact_tasks_parent',
-            'source'       => 'non-db',
-            'reportable'   => false
-        ],
+//        'contact_parent' => [
+//            'name'         => 'contact_parent',
+//            'type'         => 'link',
+//            'relationship' => 'contact_tasks_parent',
+//            'source'       => 'non-db',
+//            'reportable'   => false
+//        ],
 //        'users' => [
 //            'name'         => 'users',
 //            'type'         => 'link',

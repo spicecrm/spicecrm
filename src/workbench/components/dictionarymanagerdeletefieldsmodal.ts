@@ -14,6 +14,7 @@ import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 @Component({
     selector: 'dictionary-manager-deletefields-modal',
     templateUrl: '../templates/dictionarymanagerdeletefieldsmodal.html',
+    standalone: false
 })
 export class DictionaryManagerDeleteFieldsModal {
 

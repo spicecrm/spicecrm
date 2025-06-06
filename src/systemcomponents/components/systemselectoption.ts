@@ -2,7 +2,8 @@ import {Component, Input} from '@angular/core';
 
 @Component({
     selector: 'system-select-option',
-    template: ''
+    template: '',
+    standalone: false
 })
 
 export class SystemSelectOption {

@@ -14,7 +14,8 @@ declare var moment: any;
 @Component({
     selector: 'contact-cc-details-tab',
     templateUrl: '../templates/contactccdetailstab.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ContactCCDetailsTab implements OnChanges, OnInit, AfterViewInit {
     @ViewChild('ccdetailscontainer', {

@@ -27,7 +27,8 @@ declare var _;
             useExisting: forwardRef(() => SystemMultipleSelect),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemMultipleSelect implements OnChanges, AfterViewInit, OnDestroy, ControlValueAccessor {
     /**

@@ -21,14 +21,15 @@ import {animate, style, transition, trigger} from "@angular/animations";
     animations: [
         trigger('browsertabbutton', [
             transition(':enter', [
-                style({opacity: 0}),
-                animate('.5s', style({opacity: 1}))
+                style({ opacity: 0 }),
+                animate('.5s', style({ opacity: 1 }))
             ]),
             transition(':leave', [
-                animate('.5s', style({opacity: 0}))
+                animate('.5s', style({ opacity: 0 }))
             ])
         ])
-    ]
+    ],
+    standalone: false
 })
 export class GlobalNavigationTabbedBrowser {
 

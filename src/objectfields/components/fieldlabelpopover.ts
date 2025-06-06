@@ -9,7 +9,8 @@ import {model} from '../../services/model.service';
  * renders a popover with some field specific data when rightclicked on a label
  */
 @Component({
-    templateUrl: '../templates/fieldlabelpopover.html'
+    templateUrl: '../templates/fieldlabelpopover.html',
+    standalone: false
 })
 export class fieldLabelPopover implements OnInit, OnDestroy {
 

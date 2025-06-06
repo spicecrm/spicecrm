@@ -10,6 +10,7 @@ import {language} from '../../services/language.service';
 @Component({
     selector: 'package-loader-packages',
     templateUrl: '../templates/packageloaderpackages.html',
+    standalone: false
 })
 export class PackageLoaderPackages {
 

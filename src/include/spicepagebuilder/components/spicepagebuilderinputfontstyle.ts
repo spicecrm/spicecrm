@@ -17,7 +17,8 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
             provide: NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => SpicePageBuilderInputFontStyle)
         }
-    ]
+    ],
+    standalone: false
 })
 export class SpicePageBuilderInputFontStyle implements ControlValueAccessor {
     /**

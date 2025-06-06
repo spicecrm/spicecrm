@@ -20,7 +20,8 @@ import {backend} from "../../../services/backend.service";
 @Component({
     selector: "email-to-object-modal",
     templateUrl: "../templates/emailtoobjectmodal.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class EmailToObjectModal implements OnInit, AfterViewInit {
 
