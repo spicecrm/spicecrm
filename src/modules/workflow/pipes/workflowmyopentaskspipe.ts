@@ -9,7 +9,8 @@ import {session} from '../../../services/session.service';
  */
 @Pipe({
     name: 'workflowmyopentaskspipe',
-    pure: false
+    pure: false,
+    standalone: false
 })
 export class WorkflowMyOpenTasksPipe {
 

@@ -12,7 +12,8 @@ declare var _: any;
 
 @Component({
     selector: 'procurement-docs-convert-button',
-    templateUrl: "../templates/procurementdocsconvertbutton.html"
+    templateUrl: "../templates/procurementdocsconvertbutton.html",
+    standalone: false
 })
 export class ProcurementDocsConvertButton implements OnDestroy {
 

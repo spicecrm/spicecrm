@@ -7,7 +7,7 @@ export class ChangeHistoryService {
     /**
      * holds the changes in object keys array values
      */
-    private changes: {[key: string]: {changedObjects: Map<string, any>, newObjects: Map<string, any>}} = {};
+    private changes: {[key: string]: {changedObjects: Map<string, any>, newObjects: Map<string, any>, deletedObjects: Map<string, any>}} = {};
     /**
      * array of references to trackable arrays
      * @private
@@ -36,7 +36,7 @@ export class ChangeHistoryService {
     /**
      * emit on history undo redo
      */
-    public onHistoryChange: Subject<void> = new Subject<void>();
+    public onHistoryChange = new Subject<{event: 'undo' | 'redo'; trackableObj: any, record: ChangeHistoryRecordI}>();
 
     constructor(private cdRef: ChangeDetectorRef) {
     }
@@ -122,11 +122,19 @@ export class ChangeHistoryService {
     }
 
     /**
+     * get all deleted changes
+     * @param scope
+     */
+    public getDeletedChanges(scope: string): any[] {
+        return Array.from(this.changes[scope]?.deletedObjects.values() ?? []);
+    }
+
+    /**
      * apply changes to the passed db array
      * @param dbArray
      * @param scope
      */
-    public applyChanges(dbArray: any[], scope: string) {
+    public applyChangesForDbArray(dbArray: any[], scope: string) {
 
         if (!this.changes[scope]) return;
 
@@ -146,9 +154,16 @@ export class ChangeHistoryService {
             });
         });
 
-        this.changes[scope].newObjects.forEach(newObj =>
-            dbArray.push(newObj)
-        );
+        this.changes[scope].newObjects.forEach(newObj => {
+            dbArray.push(newObj);
+            this.dbObjects.set(newObj.id, newObj);
+            this.trackableObjects.delete(newObj.id);
+        });
+
+        this.changes[scope].deletedObjects.forEach(delObj => {
+            dbArray.splice(dbArray.findIndex(dbObj => dbObj.id == delObj.id), 1);
+            this.dbObjects.delete(delObj.id);
+        });
 
         this.initializeScope(scope);
     }
@@ -159,7 +174,7 @@ export class ChangeHistoryService {
      * @private
      */
     private initializeScope(scope: string) {
-        this.changes[scope] = {changedObjects: new Map<string, any>(), newObjects: new Map<string, any>()};
+        this.changes[scope] = {changedObjects: new Map<string, any>(), newObjects: new Map<string, any>(), deletedObjects: new Map<string, any>()};
     }
 
     /**
@@ -171,7 +186,7 @@ export class ChangeHistoryService {
      * @param newValue
      * @private
      */
-    public registerOrUpdateNewObject(obj: any, scope: string, prop: symbol | string, previousValue: any, newValue: any) {
+    private registerOrUpdateNewObject(obj: any, scope: string, prop: symbol | string, previousValue: any, newValue: any) {
 
         if (!this.changes[scope]) this.initializeScope(scope);
 
@@ -252,6 +267,16 @@ export class ChangeHistoryService {
                 }
 
                 break;
+            case 'delete':
+
+                if (this.changes[lastChange.scope].deletedObjects.has(lastChange.id)) {
+                    this.changes[lastChange.scope].deletedObjects.delete(lastChange.id);
+                    lastChange.obj.deleted = 0;
+                } else {
+                    this.changes[lastChange.scope].newObjects.set(lastChange.id, lastChange.obj);
+                }
+
+                break;
         }
 
         lastChange.obj[lastChange.key] = lastChange.previousValue;
@@ -263,7 +288,7 @@ export class ChangeHistoryService {
         if (this.history[this.historyCurrentIndex]?.groupId && this.history[this.historyCurrentIndex].groupId == lastChange.groupId) {
             this.undo();
         } else {
-            this.onHistoryChange.next();
+            this.onHistoryChange.next({event: 'undo', trackableObj: this.trackableObjects.get(lastChange.id), record: lastChange});
         }
     }
 
@@ -298,6 +323,11 @@ export class ChangeHistoryService {
                 }
 
                 break;
+            case 'delete':
+
+                this.changes[nextChange.scope].deletedObjects.set(nextChange.id, {...nextChange.obj});
+
+                break;
         }
 
         if (this.historyCurrentIndex +1 < this.history.length) {
@@ -307,7 +337,7 @@ export class ChangeHistoryService {
         if (this.history[this.historyCurrentIndex +1]?.groupId && this.history[this.historyCurrentIndex +1].groupId == nextChange.groupId) {
             this.redo();
         } else {
-            this.onHistoryChange.next();
+            this.onHistoryChange.next({event: 'redo', trackableObj: this.trackableObjects.get(nextChange.id), record: nextChange});
         }
     }
 
@@ -336,14 +366,25 @@ export class ChangeHistoryService {
             return;
         }
 
-        if (this.changes[scope].changedObjects.has(currentObject.id)) {
-            this.changes[scope].changedObjects.set(currentObject.id, {...currentObject});
+        let action: ChangeHistoryActionI = 'update';
+
+        if (prop == 'deleted') {
+
+            if (newValue == 1) {
+                this.changes[scope].deletedObjects.set(currentObject.id, {...currentObject});
+            } else {
+                this.changes[scope].deletedObjects.delete(currentObject.id);
+            }
+
+            action = 'delete';
+
         } else {
             this.changes[scope].changedObjects.set(currentObject.id, {...currentObject});
-            this.cdRef.detectChanges();
         }
 
-        this.addNewHistoryRecord(currentObject, 'update', scope, prop, previousValue, newValue);
+        this.cdRef.detectChanges();
+
+        this.addNewHistoryRecord(currentObject, action, scope, prop, previousValue, newValue);
     }
 
     /**
@@ -364,11 +405,11 @@ export class ChangeHistoryService {
 
         if (!scope) {
             return Object.keys(this.changes).some(scope =>
-                this.changes[scope]?.changedObjects.size > 0 || this.changes[scope]?.newObjects.size > 0
+                this.changes[scope]?.changedObjects.size > 0 || this.changes[scope]?.newObjects.size > 0 || this.changes[scope]?.deletedObjects.size > 0
             );
         }
 
-        return this.changes[scope]?.changedObjects.size > 0 || this.changes[scope]?.newObjects.size > 0;
+        return this.changes[scope]?.changedObjects.size > 0 || this.changes[scope]?.newObjects.size > 0 || this.changes[scope]?.deletedObjects.size > 0;
     }
 
     /**

@@ -12,7 +12,8 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: "sign-serviceorder-modal-button",
-    templateUrl: "../templates/signserviceordermodalbutton.html"
+    templateUrl: "../templates/signserviceordermodalbutton.html",
+    standalone: false
 })
 export class SignServiceOrderModalButtonComponent {
     constructor(

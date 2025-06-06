@@ -13,6 +13,7 @@ import {modal} from "../../services/modal.service";
 @Component({
     selector: 'language-translations-manager',
     templateUrl: '../templates/languagetranslationsmanager.html',
+    standalone: false
 })
 export class LanguageTranslationsManager {
 

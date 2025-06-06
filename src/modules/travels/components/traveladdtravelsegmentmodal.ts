@@ -12,7 +12,8 @@ import moment from "moment";
 @Component({
     selector: 'travel-add-travel-segment-modal',
     templateUrl: '../templates/traveladdtravelsegmentmodal.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 
 /**

@@ -13,7 +13,8 @@ import {Router} from '@angular/router';
     templateUrl: '../templates/reportercockpittile.html',
     host: {
         class: 'slds-tile slds-media slds-p-vertical--small slds-card__tile slds-p-horizontal--small slds-size--1-of-3 slds-hint-parent'
-    }
+    },
+    standalone: false
 })
 export class ReporterCockpitTile {
 

@@ -7,7 +7,8 @@ import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'newsletter-issue-send-test-email-button',
-    templateUrl: '../templates/newsletterissuesendtestemailbutton.html'
+    templateUrl: '../templates/newsletterissuesendtestemailbutton.html',
+    standalone: false
 })
 
 export class NewsletterIssueSendTestEmailButton {

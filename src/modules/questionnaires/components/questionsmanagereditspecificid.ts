@@ -11,7 +11,8 @@ import {toast} from '../../../services/toast.service';
     selector: 'questions-manager-specific-id',
     templateUrl: '../templates/questionsmanagerspecificid.html',
     providers: [model],
-    styles: [ 'span.slds-badge:hover { cursor: pointer; }' ]
+    styles: ['span.slds-badge:hover { cursor: pointer; }'],
+    standalone: false
 })
 export class QuestionsManagerSpecificID {
 

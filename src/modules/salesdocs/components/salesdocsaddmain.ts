@@ -13,7 +13,8 @@ import {view} from "../../../services/view.service";
  */
 @Component({
     templateUrl: '../templates/salesdocsaddmain.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class SalesDocsAddMain {
 

@@ -11,7 +11,8 @@ import {ObjectRelatedList} from './objectrelatedlist';
 @Component({
     selector: "object-relatedlist-list",
     templateUrl: "../templates/objectrelatedlistlist.html",
-    providers: [relatedmodels]
+    providers: [relatedmodels],
+    standalone: false
 })
 export class ObjectRelatedlistList extends ObjectRelatedList {
 

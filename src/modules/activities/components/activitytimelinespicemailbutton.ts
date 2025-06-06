@@ -15,6 +15,7 @@ import {Clipboard} from '@angular/cdk/clipboard';
 @Component({
     selector: 'activitytimeline-spice-mail-button',
     templateUrl: '../templates/activitytimelinespicemailbutton.html',
+    standalone: false
 })
 export class ActivityTimelineSpiceMailButton implements OnInit {
 

@@ -18,7 +18,8 @@ import {view} from "../../services/view.service";
 @Component({
     selector: 'actionset-manager',
     templateUrl: '../templates/actionsetmanager.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ActionsetManager {
 

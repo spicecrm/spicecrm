@@ -11,6 +11,7 @@ declare var Highcharts: any;
 @Component({
     selector: 'questionnaire-evaluation-default',
     templateUrl: '../templates/questionnaireevaluationdefault.html',
+    standalone: false
 })
 export class QuestionnaireEvaluationDefault implements AfterViewInit, OnInit {
 

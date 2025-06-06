@@ -10,7 +10,8 @@ import {session} from "../../services/session.service";
  */
 @Component({
     selector: 'global-header-label-inline-edit',
-    templateUrl: '../templates/globalheaderlabelinlineedit.html'
+    templateUrl: '../templates/globalheaderlabelinlineedit.html',
+    standalone: false
 })
 export class GlobalHeaderLabelInlineEdit {
 

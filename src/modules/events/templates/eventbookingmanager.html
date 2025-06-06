@@ -15,12 +15,12 @@
                 </button>
             </div>
         </div>
-        <ng-container *ngFor="let capacityType of this.eventData.capacityTypes; let tabindex = index">
+        <ng-container *ngFor="let capacityType of eventData.capacityTypes; let tabindex = index">
             <div *ngIf="checkRenderTab(tabindex)" class="slds-tabs--default__content" role="tabpanel" [ngClass]="{'slds-show': tabindex == activeTab, 'slds-hide': tabindex != activeTab, 'slds-p-bottom--none': componentconfig?.noBottomPadding }">
                 <event-booking-table *ngIf="isLoaded" [fieldset]="componentconfig.fieldset" [allowOverflow]="allowOverflow" [tableData]="activeCapacityType.getField('tableData')"></event-booking-table>
             </div>
         </ng-container>
-        <div *ngIf="isLoaded && this.eventData.capacityTypes.length == 0" class="slds-align--absolute-center" style="height: calc(100% - 35px)">
+        <div *ngIf="isLoaded && eventData.capacityTypes.length == 0" class="slds-align--absolute-center" style="height: calc(100% - 35px)">
             <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
         </div>
     </div>

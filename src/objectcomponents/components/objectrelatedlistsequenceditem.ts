@@ -11,7 +11,8 @@ import {metadata} from "../../services/metadata.service";
 @Component({
     selector: '[object-related-list-sequenced-item]',
     templateUrl: '../templates/objectrelatedlistsequenceditem.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ObjectRelatedListSequencedItem implements OnInit {
     @Input() public listfields: any[] = [];

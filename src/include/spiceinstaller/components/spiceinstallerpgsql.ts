@@ -7,7 +7,8 @@ import { spiceinstaller, stepObject } from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-pgsql',
-    templateUrl: '../templates/spiceinstallerpgsql.html'
+    templateUrl: '../templates/spiceinstallerpgsql.html',
+    standalone: false
 })
 export class SpiceinstallerPostgreSQL {
 

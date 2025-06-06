@@ -24,7 +24,8 @@ import {navigationtab} from "../../../services/navigationtab.service";
 @Component({
     selector: 'field-model-attachment',
     templateUrl: '../templates/fieldmodelattachment.html',
-    providers: [modelattachments]
+    providers: [modelattachments],
+    standalone: false
 })
 export class fieldModelAttachment extends fieldGeneric {
 

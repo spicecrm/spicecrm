@@ -9,7 +9,8 @@ import {Component} from "@angular/core";
 import {GroupwareService} from "../../../include/groupware/services/groupware.service";
 
 @Component({
-    templateUrl: '../templates/outlookcalendaritemreadpane.html'
+    templateUrl: '../templates/outlookcalendaritemreadpane.html',
+    standalone: false
 })
 export class OutlookCalendarItemReadPane {
 

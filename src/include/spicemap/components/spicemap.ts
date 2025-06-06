@@ -23,7 +23,8 @@ declare var google: any;
 
 @Component({
     selector: 'spice-map',
-    templateUrl: '../templates/spicemap.html'
+    templateUrl: '../templates/spicemap.html',
+    standalone: false
 })
 export class SpiceMap implements AfterViewInit {
     @ViewChild('mapelement', {read: ViewContainerRef, static: true}) public mapelement: ViewContainerRef;

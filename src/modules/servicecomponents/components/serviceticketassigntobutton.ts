@@ -10,8 +10,8 @@ import {language} from '../../../services/language.service';
 declare var moment: any;
 
 @Component({
-
-    templateUrl: '../templates/serviceticketassigntobutton.html'
+    templateUrl: '../templates/serviceticketassigntobutton.html',
+    standalone: false
 })
 export class ServiceTicketAssignToButton {
 

@@ -20,7 +20,8 @@ declare var _;
 @Component({
     selector: 'document-editor',
     templateUrl: '../templates/documenteditor.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class DocumentEditor implements AfterViewInit, OnDestroy, OnChanges {
     /**

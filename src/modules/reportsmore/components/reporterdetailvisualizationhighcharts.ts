@@ -23,7 +23,8 @@ declare var _: any;
 @Component({
     selector: 'reporter-detail-visualization-highcharts',
     templateUrl: '../templates/reporterdetailvisualizationhighcharts.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterDetailVisualizationHighcharts implements AfterViewInit {
     /**

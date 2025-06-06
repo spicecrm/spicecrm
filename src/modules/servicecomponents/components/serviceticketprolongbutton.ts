@@ -9,8 +9,8 @@ import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
 
 @Component({
-
-    templateUrl: '../templates/serviceticketprolongbutton.html'
+    templateUrl: '../templates/serviceticketprolongbutton.html',
+    standalone: false
 })
 export class ServiceTicketProlongButton implements OnInit {
 

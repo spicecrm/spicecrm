@@ -10,7 +10,8 @@ import {modellist} from "../../../services/modellist.service";
 @Component({
     selector: 'service-calendars',
     templateUrl: '../templates/servicecalendars.html',
-    providers: [modellist, model]
+    providers: [modellist, model],
+    standalone: false
 })
 export class ServiceCalendars implements OnInit {
 

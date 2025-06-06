@@ -9,7 +9,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
-use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SchedulerJobs\SchedulerJob;
 use SpiceCRM\modules\SchedulerJobTasks\SchedulerJobTask;
 
@@ -24,13 +24,15 @@ class SpiceCronJobs
     {
         if (SystemStartupMode::maintenanceModeEnabled() || SystemStartupMode::recoveryModeEnabled()) return;
 
+        $admin = BeanFactory::getBean('Users', '1');
+        AuthenticationController::getInstance()->setCurrentUser($admin);
+
+        self::cleanZombieJobs();
+
         $this->killMaxTimeExceededJobs();
 
         $pid = getmypid();
         LoggerManager::getLogger()->debug("---> CRON: PROCESS_ID: '$pid': Run Jobs <---");
-
-        $admin = BeanFactory::getBean('Users', '1');
-        AuthenticationController::getInstance()->setCurrentUser($admin);
 
         if (empty($jobId)) {
             $jobs = $this->loadJobs();
@@ -117,4 +119,71 @@ class SpiceCronJobs
             $job->afterRun($lastTask);
         }
     }
+
+    /**
+     * Check all supposedly running scheduler jobs and their tasks whether they are really running or not. If not, clean them.
+     */
+    public static function cleanZombieJobs(): void
+    {
+        # Get all Scheduler Jobs with status 'Running':
+        $supposedRunningJobs = BeanFactory::newBean('SchedulerJobs')->get_full_list('', "schedulerjobs.job_status = 'Running'") ?? [];
+
+        # Determine all Scheduler Jobs that are running according to the database but are actually no longer running ( = Zombie Jobs ):
+        $zombieJobs = [];
+        foreach ( $supposedRunningJobs as $supposedRunningJob )
+            if ( !self::processExistsOnOS( $supposedRunningJob->process_id ))
+                $zombieJobs[$supposedRunningJob->id] = true;
+
+        # For every supposedly running Job: Reset it and check also its tasks.
+        foreach ( $supposedRunningJobs as $supposedRunningJob ) {
+            if ( isset( $zombieJobs[$supposedRunningJob->id] ))
+            {
+                $atLeastOneTaskRunning = false;
+                foreach ( $supposedRunningJob->get_linked_beans('schedulerjobtasks') as $taskOfSuppostedRunningJob ) {
+                    if ( $taskOfSuppostedRunningJob->jobtask_status !== 'inactive' ) {
+                        if ( $taskOfSuppostedRunningJob->jobtask_status === 'running' ) {
+                            $parentJobs = $taskOfSuppostedRunningJob->get_linked_beans('schedulerjobs',);
+                            # Check if the task has at least one parent job that is legitimately described as "Running", so don´t touch the task:
+                            foreach ( $parentJobs as $parentJob ) if ( $parentJob->job_status === 'Running' and !isset( $zombieJobs[$parentJob->id] )) continue 2;
+                            # Otherwise set the job task from "Running" to "Active" and set the resolution of the last run:
+                            $taskOfSuppostedRunningJob->jobtask_status = SchedulerJobTask::JOB_TASK_STATUS_ACTIVE;
+                            $taskOfSuppostedRunningJob->last_run_resolution = SchedulerJobTask::JOB_TASK_RESOLUTION_FAILURE;
+                            $taskOfSuppostedRunningJob->save();
+                            $taskOfSuppostedRunningJob->run_by_job_id = $supposedRunningJob->id;
+                            $taskOfSuppostedRunningJob->last_run_message = 'Abruptly aborted. Became a zombie task.';
+                            $taskOfSuppostedRunningJob->writeLog();
+                            $atLeastOneTaskRunning = true;
+                        }
+                    }
+                }
+                # Set the job status from "Running" to "Active", set the resolution of the last run and remove the process_id:
+                $supposedRunningJob->job_status = 'Active';
+                if ( $atLeastOneTaskRunning ) {
+                    $supposedRunningJob->last_run_resolution = SchedulerJobTask::JOB_TASK_RESOLUTION_FAILURE;
+                    $supposedRunningJob->last_run_message = 'Abruptly aborted. Became a zombie job.';
+                }
+                $supposedRunningJob->process_id = '';
+                $supposedRunningJob->save();
+            }
+        }
+    }
+
+    /**
+     * Check if a process exists on the operating system.
+     */
+    public static function processExistsOnOS( $processId ): bool
+    {
+        if ( empty( $processId )) return false;
+        if ( SpiceUtils::isWindows() ) {
+            $result = exec("tasklist /fi \"pid eq $processId\" /nh /fo:csv");
+            if ( $result === false ) return true; # exec() failed, so we don't know if the process is dead.
+            $result = explode('","', $result );
+            return count( $result ) > 1;
+        } else {
+            $result = exec("ps -p $processId -o comm=");
+            if ( $result === false ) return true; # exec() failed, so we don't know if the process is dead.
+            return !empty( $result );
+        }
+    }
+
 }

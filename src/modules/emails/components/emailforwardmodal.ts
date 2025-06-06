@@ -22,7 +22,8 @@ declare var moment: any;
  */
 @Component({
     templateUrl: '../templates/emailreplymodal.html',
-    providers: [view, model, modelattachments, emailsService]
+    providers: [view, model, modelattachments, emailsService],
+    standalone: false
 })
 export class EmailForwardModal extends EmailReplyModal {
 

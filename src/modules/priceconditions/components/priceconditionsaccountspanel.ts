@@ -15,24 +15,24 @@ import {priceconditonsconfiguration} from '../services/priceconditonsconfigurati
 declare var _: any;
 
 @Component({
-    selector:'price-conditions-accounts-panel',
+    selector: 'price-conditions-accounts-panel',
     templateUrl: '../templates/priceconditionsaccountspanel.html',
     providers: [priceconditonsconfiguration],
     animations: [
         trigger('conditionscard', [
             transition(':enter', [
-                style({opacity: 0, height: '0px', overflow: 'hidden'}),
-                animate('.5s', style({height: '*', opacity: 1})),
-                style({overflow: 'unset'})
+                style({ opacity: 0, height: '0px', overflow: 'hidden' }),
+                animate('.5s', style({ height: '*', opacity: 1 })),
+                style({ overflow: 'unset' })
             ]),
             transition(':leave', [
-                style({overflow: 'hidden'}),
-                animate('.5s', style({height: '0px', opacity: 0}))
+                style({ overflow: 'hidden' }),
+                animate('.5s', style({ height: '0px', opacity: 0 }))
             ])
         ]),
         trigger('animateicon', [
-            state('open', style({transform: 'scale(1, 1)'})),
-            state('closed', style({transform: 'scale(1, -1)'})),
+            state('open', style({ transform: 'scale(1, 1)' })),
+            state('closed', style({ transform: 'scale(1, -1)' })),
             transition('open => closed', [
                 animate('.5s'),
             ]),
@@ -40,7 +40,8 @@ declare var _: any;
                 animate('.5s'),
             ])
         ])
-    ]
+    ],
+    standalone: false
 })
 export class PriceConditionsAccountsPanel implements OnInit {
 

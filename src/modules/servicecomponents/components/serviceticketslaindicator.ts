@@ -19,7 +19,8 @@ declare var moment: any;
  * displays the SLA Status as an indicator
  */
 @Component({
-    templateUrl: '../templates/serviceticketslaindicator.html'
+    templateUrl: '../templates/serviceticketslaindicator.html',
+    standalone: false
 })
 export class ServiceTicketSLAIndicator extends fieldGeneric {
 

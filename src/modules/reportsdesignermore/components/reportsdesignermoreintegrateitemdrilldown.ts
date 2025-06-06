@@ -10,7 +10,8 @@ import {ReportsDesignerService} from "../../../modules/reportsdesigner/services/
 @Component({
     selector: 'reports-designer-more-integrate-item-drilldown',
     templateUrl: '../templates/reportsdesignermoreintegrateitemdrilldown.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ReportsDesignerMoreIntegrateItemDrilldown {
 

@@ -14,7 +14,8 @@ import {modelutilities} from "../../../services/modelutilities.service";
 
 @Component({
     selector: 'spice-price-determination-configurator-conditiontypes',
-    templateUrl: '../templates/spicepricedeterminationconfiguratorconditiontypes.html'
+    templateUrl: '../templates/spicepricedeterminationconfiguratorconditiontypes.html',
+    standalone: false
 })
 export class SpicePriceDeterminationConfiguratorConditiontypes {
 

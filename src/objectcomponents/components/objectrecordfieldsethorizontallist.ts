@@ -11,7 +11,8 @@ import {model} from '../../services/model.service';
  */
 @Component({
     selector: 'object-record-fieldset-horizontal-list',
-    templateUrl: '../templates/objectrecordfieldsethorizontallist.html'
+    templateUrl: '../templates/objectrecordfieldsethorizontallist.html',
+    standalone: false
 })
 export class ObjectRecordFieldsetHorizontalList implements OnInit {
 

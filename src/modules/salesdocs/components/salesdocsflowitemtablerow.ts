@@ -11,7 +11,8 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: '[salesdocs-flow-item-table-row]',
     templateUrl: "../templates/salesdocsflowitemtablerow.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class SalesDocsFlowItemTableRow implements OnInit {
     /**

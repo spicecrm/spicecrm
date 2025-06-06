@@ -8,7 +8,8 @@ import {ServiceOrderItemPanel} from "./serviceorderitempanel";
 @Component({
     selector: "[serviceorder-item-item]",
     templateUrl: "../templates/serviceorderitemitem.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ServiceOrderItemItem implements OnInit  {
 

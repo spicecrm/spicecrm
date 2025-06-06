@@ -6,7 +6,8 @@ import { questionnaireParticipationService } from '../services/questionnairepart
 
 @Component({
     selector: 'questionset-render-basic',
-    template: ''
+    template: '',
+    standalone: false
 })
 export class QuestionsetRenderBasic implements OnInit {
 

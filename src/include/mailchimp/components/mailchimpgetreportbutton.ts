@@ -16,6 +16,7 @@ import {toast} from "../../../services/toast.service";
 @Component({
     selector: 'mailchimp-get-report-button',
     templateUrl: '../templates/mailchimpgetreportbutton.html',
+    standalone: false
 })
 export class MailChimpGetReportButton {
 

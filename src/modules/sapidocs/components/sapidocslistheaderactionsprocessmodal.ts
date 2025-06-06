@@ -21,6 +21,7 @@ import {backend} from '../../../services/backend.service';
  */
 @Component({
     templateUrl: '../templates/sapidocslistheaderactionsprocessmodal.html',
+    standalone: false
 })
 export class SAPIDOCsListHeaderActionsProcessModal implements OnInit {
 

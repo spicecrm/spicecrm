@@ -10,7 +10,8 @@ import { metadata } from '../../../services/metadata.service';
 
 @Component({
     selector: 'questions-manager-edit-multi',
-    templateUrl: '../templates/questionsmanagereditmulti.html'
+    templateUrl: '../templates/questionsmanagereditmulti.html',
+    standalone: false
 })
 export class QuestionsManagerEditMulti extends QuestionsManagerEditBasicWithOptions implements OnInit {
 

@@ -6,7 +6,8 @@ import {language} from '../../services/language.service';
 
 @Component({
     selector: 'system-illustration-no-access',
-    templateUrl: '../templates/systemillustrationnoaccess.html'
+    templateUrl: '../templates/systemillustrationnoaccess.html',
+    standalone: false
 })
 export class SystemIllustrationNoAccess {
 

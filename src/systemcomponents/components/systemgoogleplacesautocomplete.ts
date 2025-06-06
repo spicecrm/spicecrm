@@ -8,7 +8,8 @@ import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: "system-googleplaces-autocomplete",
-    templateUrl: "../templates/systemgoogleplacesautocomplete.html"
+    templateUrl: "../templates/systemgoogleplacesautocomplete.html",
+    standalone: false
 })
 export class SystemGooglePlacesAutocomplete implements OnDestroy {
     @Output() public address: EventEmitter<any> = new EventEmitter<any>();

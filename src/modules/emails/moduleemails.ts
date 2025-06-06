@@ -24,6 +24,7 @@ import {EmailReplyModal} from "./components/emailreplymodal";
 import {EmailForwardButton} from "./components/emailforwardbutton";
 import {EmailForwardModal} from "./components/emailforwardmodal";
 import {EmailSendButton} from "./components/emailsendbutton";
+import {EmailSaveDraftButton} from "./components/emailsavedraftbutton";
 import {EmailSchedulesButton} from "./components/emailschedulesbutton";
 import {EmailSchedulesCancelButton} from "./components/emailschedulescancelbutton";
 import {EmailSchedulesModal} from "./components/emailschedulesmodal";
@@ -68,6 +69,7 @@ import {EmailForwardToTargetListButton} from "./components/emailforwardtotargetl
         EmailForwardToTargetListButton,
         EmailReplyModal,
         EmailSendButton,
+        EmailSaveDraftButton,
         EmailForwardButton,
         EmailForwardModal,
         EmailSchedulesButton,

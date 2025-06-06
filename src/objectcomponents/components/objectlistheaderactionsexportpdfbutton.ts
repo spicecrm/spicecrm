@@ -15,6 +15,7 @@ import {Subscription} from "rxjs";
 @Component({
     selector: 'object-list-header-actions-export-pdf-button',
     templateUrl: '../templates/objectlistheaderactionsexportpdfbutton.html',
+    standalone: false
 })
 export class ObjectListHeaderActionsExportPdfButton {
 

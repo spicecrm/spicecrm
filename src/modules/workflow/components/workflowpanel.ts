@@ -13,7 +13,8 @@ import {navigationtab} from "../../../services/navigationtab.service";
 @Component({
     selector: 'workflow-panel',
     templateUrl: '../templates/workflowpanel.html',
-    providers: [workflow]
+    providers: [workflow],
+    standalone: false
 })
 export class WorkflowPanel implements OnInit, OnDestroy {
 

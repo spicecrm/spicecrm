@@ -12,7 +12,8 @@ import {navigationtab} from "../../services/navigationtab.service";
 @Component({
     selector: "object-action-newrelated-button",
     templateUrl: "../templates/objectactionnewbutton.html",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ObjectActionNewrelatedButton implements OnInit {
 

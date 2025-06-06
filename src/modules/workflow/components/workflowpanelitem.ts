@@ -9,6 +9,7 @@ import {backend} from '../../../services/backend.service';
 @Component({
     selector: 'workflow-panel-item',
     templateUrl: '../templates/workflowpanelitem.html',
+    standalone: false
 })
 export class WorkflowPanelItem {
 

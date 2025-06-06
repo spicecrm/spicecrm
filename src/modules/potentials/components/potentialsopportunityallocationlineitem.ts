@@ -13,7 +13,8 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: '[potentials-opportunity-allocation-line-item]',
     templateUrl: "../templates/potentialsopportunityallocationlineitem.html",
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class PotentialsOpportunityAllocationLineItem implements OnChanges {
 

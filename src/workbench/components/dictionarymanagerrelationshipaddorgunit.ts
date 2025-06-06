@@ -5,7 +5,8 @@ import {DictionaryItem, Relationship, RelationshipType} from "../interfaces/dict
 
 @Component({
     selector: 'dictionary-manager-relationship-add-orgunit',
-    templateUrl: '../templates/dictionarymanagerrelationshipaddorgunit.html'
+    templateUrl: '../templates/dictionarymanagerrelationshipaddorgunit.html',
+    standalone: false
 })
 
 export class DictionaryManagerRelationshipAddOrgUnit {

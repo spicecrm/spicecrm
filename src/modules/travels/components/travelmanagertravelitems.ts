@@ -13,7 +13,8 @@ import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     selector: 'travel-manager-travel-items',
-    templateUrl: '../templates/travelmanagertravelitems.html'
+    templateUrl: '../templates/travelmanagertravelitems.html',
+    standalone: false
 })
 
 export class TravelManagerTravelItems implements OnInit {

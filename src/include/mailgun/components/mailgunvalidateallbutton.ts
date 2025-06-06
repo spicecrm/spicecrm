@@ -7,7 +7,8 @@ import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'mailgun-validate-all-button',
-    templateUrl: '../templates/mailgunvalidateallbutton.html'
+    templateUrl: '../templates/mailgunvalidateallbutton.html',
+    standalone: false
 })
 
 export class MailgunValidateAllButton {

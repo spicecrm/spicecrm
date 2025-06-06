@@ -10,7 +10,8 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 @Component({
     selector: 'service-calendar-time',
     templateUrl: '../templates/servicecalendartime.html',
-    providers: [relatedmodels]
+    providers: [relatedmodels],
+    standalone: false
 })
 export class ServiceCalendarTime implements OnChanges {
 

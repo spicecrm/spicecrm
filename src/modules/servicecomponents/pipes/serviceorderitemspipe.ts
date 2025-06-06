@@ -5,7 +5,8 @@ import {Pipe} from '@angular/core';
 
 @Pipe({
     name: 'serviceorderitempipe',
-    pure: false
+    pure: false,
+    standalone: false
 })
 export class ServiceOrderItemPipe {
     public transform(values) {

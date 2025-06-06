@@ -7,6 +7,7 @@ use SpiceCRM\includes\AddressReferences\AddressReferences;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ValidationException;
+use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
@@ -99,6 +100,18 @@ class SpiceBean
      * @var string
      */
     public $id;
+
+    /**
+     * @var add a default name field
+     */
+    public $name;
+
+    /**
+     * add a default relid field as this is used by the relationships
+     *
+     * @var
+     */
+    public $relid;
 
     /**
      * the module this has been created for, set by the BeanFactory
@@ -383,7 +396,7 @@ class SpiceBean
     /**
      * @var string TODO check if that should go into the dictionary
      */
-    public string $modified_by_name;
+    public ?string $modified_by_name = null;
 
     /**
      * @var array TODO check if that should go into the dictionary
@@ -444,13 +457,14 @@ class SpiceBean
             $this->{$attributeName} = $attributeValue;
         }
 
-        if ($this->disableValidation == false) {
+        if ($this->disableValidation == false && SpiceConfig::getInstance()->get('systemvardefs.enable_bean_validation') == true) {
             $dictionaryField = $this->getDictionaryField($attributeName);
             if ($dictionaryField) {
                 $this->validateField($attributeName, $attributeValue, $dictionaryField);
             } else {
-                // Accept it for now that some fields have no dictionary definitions.
-                // throw new ValidationException('No field definition found for ' . $attributeName);
+                 if (SpiceConfig::getInstance()->get('systemvardefs.enable_strict_property_check') == true) {
+                     throw new ValidationException('No field definition found for ' . $attributeName);
+                 }
             }
         }
 
@@ -1040,7 +1054,7 @@ class SpiceBean
      *
      * Internal function, do not override.
      */
-    function get_linked_beans($field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "")
+    function get_linked_beans($field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "", $relationships = false)
     {
         if($searchterm){
             $searchterm = strtolower($searchterm);
@@ -1070,10 +1084,11 @@ class SpiceBean
                     'offset' => $begin_index,
                     'limit' => ($end_index - $begin_index),
                     'sort' => $sort_array,
-                    'searchterm' => $searchterm
+                    'searchterm' => $searchterm,
+                    'relationships' => $relationships
                 ]));
             } else {
-                return array_values($this->$field_name->getBeans(['sort' => $sort_array]));
+                return array_values($this->$field_name->getBeans(['sort' => $sort_array, 'relationships' => $relationships]));
             }
         }
         return [];
@@ -1398,8 +1413,6 @@ class SpiceBean
             $this->date_modified = TimeDate::getInstance()->nowDb();
         }
 
-        if (!empty($this->modified_by_name))
-            $this->old_modified_by_name = $this->modified_by_name;
         if ($this->update_modified_by) {
             $this->modified_user_id = 1;
 
@@ -2095,12 +2108,17 @@ class SpiceBean
             $id = $this->id;
         }
 
-        $query = "SELECT $this->_tablename.*" . " FROM $this->_tablename ";
-        $query .= " WHERE $this->_tablename.id = " . $this->db->quoted($id);
+        if ($this->field_defs) {
+            $fields = array_filter($this->field_defs, fn($e) => (RESTManager::getInstance()->excludeImageFields || $e['type'] != 'image') && $e['source'] !== 'non-db');
+            $fields = join(',', array_map(fn($e) => $e['name'], $fields));
+        } else {
+            return null;
+        }
 
-        // don't retrieve Bean with deleted flag true
-        if ($deleted) $query .= " AND $this->_tablename.deleted=0";
-        // LoggerManager::getLogger()->debug("Retrieve $this->_objectname : " . $query);
+        $query = "SELECT $fields FROM $this->_tablename WHERE id = " . $this->db->quoted($id);
+
+        # exclude deleted if the deleted flag check is true
+        if ($deleted) $query .= " AND deleted = 0";
 
         $result = $this->db->query($query, true, "Retrieving record by id $this->_tablename:$id found ");
         if (empty($result)) {
@@ -2194,9 +2212,13 @@ class SpiceBean
 
             $handler = new $handlerClass();
 
-            if($handler->$method($domain, $curVals, $this)) {
+            if($handler->$method($item, $domain, $curVals, $this)) {
                 foreach ($fields as $field) {
                     $this->$field = $curVals[$field];
+                    // set the value also to the fetched row
+                    if($method == 'onRetrieve') {
+                        $this->fetched_row[$field] = $curVals[$field];
+                    }
                 }
             }
         }
@@ -2392,6 +2414,14 @@ class SpiceBean
             if (0 == strcmp($field['type'], 'parent') && !empty($this->{$field['id_name']}) && !empty($this->{$field['type_name']})) {
                 $mod = BeanFactory::getBean($this->{$field['type_name']}, $this->{$field['id_name']}, ['relationships' => false]);
                 $this->{$field['name']} = $mod->name;
+            }
+
+            // fill in linked as well
+            if (0 == strcmp($field['type'], 'linked') && !empty($this->{$field['id_name']}) && $field['link']) {
+                $mod = BeanFactory::getBean($field['module'], $this->{$field['id_name']}, ['relationships' => false]);
+                if($mod){
+                    $this->{$field['name']} = $mod;
+                }
             }
 
         }

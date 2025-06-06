@@ -6,7 +6,8 @@ import {metadata} from "../../services/metadata.service";
 
 @Component({
     selector: "system-button-custom-icon",
-    templateUrl: "../templates/systembuttoncustomicon.html"
+    templateUrl: "../templates/systembuttoncustomicon.html",
+    standalone: false
 })
 export class SystemButtonCustomIcon {
     @Input() public icon: string;

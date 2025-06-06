@@ -12,7 +12,8 @@ import {fieldStatusNetworkItem} from "./fieldstatusnetworkitem";
 
 @Component({
     selector: 'field-statusnetwork',
-    templateUrl: '../templates/fieldstatusnetwork.html'
+    templateUrl: '../templates/fieldstatusnetwork.html',
+    standalone: false
 })
 export class fieldStatusNetwork extends fieldEnum {
 

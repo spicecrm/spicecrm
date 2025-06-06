@@ -19,7 +19,8 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: "lead-convert-account",
     templateUrl: "../templates/leadconvertaccount.html",
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 export class LeadConvertAccount implements AfterViewInit, OnInit {
     /**

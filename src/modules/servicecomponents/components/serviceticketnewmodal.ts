@@ -12,7 +12,8 @@ import {backend} from '../../../services/backend.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: '../templates/serviceticketnewmodal.html'
+    templateUrl: '../templates/serviceticketnewmodal.html',
+    standalone: false
 })
 export class ServiceTicketNewModal implements OnInit{
 

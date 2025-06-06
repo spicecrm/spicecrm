@@ -16,7 +16,8 @@ import {AuthServiceI, Config2FAI} from "../../../globalcomponents/interfaces/glo
 
 @Component({
     selector: 'user-security-settings-modal',
-    templateUrl: '../templates/usersecuritysettingsmodal.html'
+    templateUrl: '../templates/usersecuritysettingsmodal.html',
+    standalone: false
 })
 
 export class UserSecuritySettingsModal implements ModalComponentI {

@@ -19,6 +19,7 @@ import {salesdocrecord} from "../services/salesdocrecord";
 
 @Component({
     templateUrl: '../templates/salesdocsitemsaddproductvariant.html',
+    standalone: false
 })
 export class SalesDocsItemsAddProductVariant implements AfterViewInit {
 

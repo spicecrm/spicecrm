@@ -12,7 +12,8 @@ import { take } from 'rxjs/operators';
 
 @Component({
     selector: "contact-portal-details",
-    templateUrl: "../templates/contactportaldetails.html"
+    templateUrl: "../templates/contactportaldetails.html",
+    standalone: false
 })
 export class ContactPortalDetails implements OnInit {
 

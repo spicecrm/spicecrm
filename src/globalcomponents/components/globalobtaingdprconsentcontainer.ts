@@ -10,6 +10,7 @@ import { loginService } from '../../services/login.service';
 @Component({
     selector: 'global-obtain-gdpr-consent-container',
     templateUrl: '../templates/globalobtaingdprconsentcontainer.html',
+    standalone: false
 })
 export class GlobalObtainGDPRConsentContainer implements AfterViewInit {
 

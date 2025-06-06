@@ -19,7 +19,8 @@ declare var moment: any;
  */
 @Component({
     selector: 'spice-note',
-    templateUrl: '../templates/spicenote.html'
+    templateUrl: '../templates/spicenote.html',
+    standalone: false
 })
 export class SpiceNote {
 

@@ -6,7 +6,8 @@ import {metadata} from "../../services/metadata.service";
 
 @Component({
     selector: "system-icon-help-text",
-    templateUrl: "../templates/systemiconhelptext.html"
+    templateUrl: "../templates/systemiconhelptext.html",
+    standalone: false
 })
 export class SystemIconHelpText {
     @Input() public icon: string = 'info';

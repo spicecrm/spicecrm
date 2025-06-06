@@ -14,6 +14,7 @@ declare var _: any;
 @Component({
     selector: 'spice-importer-map',
     templateUrl: '../templates/spiceimportermap.html',
+    standalone: false
 })
 export class SpiceImporterMap {
 

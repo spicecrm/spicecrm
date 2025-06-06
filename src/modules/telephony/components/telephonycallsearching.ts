@@ -16,7 +16,8 @@ import {telephonyCallI} from "../../../services/interfaces.service";
 declare var _: any;
 
 @Component({
-    templateUrl: '../templates/telephonycallsearching.html'
+    templateUrl: '../templates/telephonycallsearching.html',
+    standalone: false
 })
 export class TelephonyCallSearching {
 

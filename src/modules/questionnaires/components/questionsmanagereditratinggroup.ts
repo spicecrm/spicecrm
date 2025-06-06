@@ -10,7 +10,8 @@ import { QuestionsManagerEditBasic } from './questionsmanagereditbasic';
 declare var _: any;
 @Component({
     selector: 'questions-manager-edit-rating-group',
-    templateUrl: '../templates/questionsmanagereditratinggroup.html'
+    templateUrl: '../templates/questionsmanagereditratinggroup.html',
+    standalone: false
 })
 export class QuestionsManagerEditRatingGroup extends QuestionsManagerEditBasic implements OnInit {
 

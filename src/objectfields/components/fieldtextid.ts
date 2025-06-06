@@ -14,7 +14,8 @@ declare var _;
 
 @Component({
     selector: 'field-textid',
-    templateUrl: '../templates/fieldtextid.html'
+    templateUrl: '../templates/fieldtextid.html',
+    standalone: false
 })
 export class fieldTextID extends fieldGeneric {
 

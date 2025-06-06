@@ -163,6 +163,8 @@ class AuthenticationController
      */
     public function authenticate($authParams = null)
     {
+        RESTManager::getInstance()->excludeImageFields = true;
+
         if(!$authParams) {
             $authParams = RESTManager::getInstance()->getAuthParams();
         }
@@ -182,6 +184,8 @@ class AuthenticationController
         } catch (UnauthorizedException $e) {
             $this->handleFailedAuthentication($e, $authParams->authData);
         }
+
+        RESTManager::getInstance()->excludeImageFields = false;
     }
 
     /**

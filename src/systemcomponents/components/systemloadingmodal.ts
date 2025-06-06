@@ -5,7 +5,8 @@ import {Component, ComponentRef} from '@angular/core';
 import {language} from '../../services/language.service';
 
 @Component({
-    templateUrl: '../templates/systemloadingmodal.html'
+    templateUrl: '../templates/systemloadingmodal.html',
+    standalone: false
 })
 export class SystemLoadingModal {
 

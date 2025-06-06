@@ -14,7 +14,8 @@ declare var _: any;
 
 @Component({
     selector: "folder-view-tree",
-    templateUrl: "../templates/folderviewtree.html"
+    templateUrl: "../templates/folderviewtree.html",
+    standalone: false
 })
 
 export class FolderViewTree implements OnInit {

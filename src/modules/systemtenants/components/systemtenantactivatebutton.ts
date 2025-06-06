@@ -11,7 +11,8 @@ import {backend} from '../../../services/backend.service';
  * a button in an actionset to activate a tenant
  */
 @Component({
-    templateUrl: '../templates/systemtenantactivatebutton.html'
+    templateUrl: '../templates/systemtenantactivatebutton.html',
+    standalone: false
 })
 export class SystemTenantActivateButton {
 

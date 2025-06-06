@@ -13,7 +13,8 @@ import {GlobalHeaderSearchResultsItem} from "../../../globalcomponents/component
  */
 @Component({
     selector: 'telephony-call-panel-search-modal',
-    templateUrl: '../templates/telephonycallsearchmodal.html'
+    templateUrl: '../templates/telephonycallsearchmodal.html',
+    standalone: false
 })
 export class TelephonyCallSearchModal implements OnInit {
     @ViewChildren(GlobalHeaderSearchResultsItem) private resultsItemComponents: QueryList<GlobalHeaderSearchResultsItem>;

@@ -13,7 +13,8 @@ import {modal} from "../../../services/modal.service";
 @Component({
     selector: '[workflow-manager-detail-tasks-line]',
     templateUrl: '../templates/workflowmanagerdetailtasksline.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class WorkflowManagerDetailTasksLine {
     /**

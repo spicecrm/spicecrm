@@ -12,7 +12,8 @@ import {session} from '../../services/session.service';
  */
 @Component({
     selector: 'field-lookup-recent',
-    templateUrl: '../templates/fieldlookuprecent.html'
+    templateUrl: '../templates/fieldlookuprecent.html',
+    standalone: false
 })
 export class fieldLookupRecent implements OnInit, OnChanges , OnDestroy {
 

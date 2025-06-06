@@ -24,8 +24,15 @@ class SpiceNotificationsJobTasks
     public function sendSummaryEmailNotifications(?string $params = null): bool
     {
         $db = DBManagerFactory::getInstance();
-        $dateFrom = date("Y-m-d 23:59:59");
-        $dateTo = date("Y-m-d 00:00:00");
+        $daysSince = 1;
+        if ($params) {
+            $daysSince = json_decode($params)->days_since;
+        }
+        $dateTo = TimeDate::getInstance()->getNow();
+        $dateFrom = TimeDate::getInstance()->getNow()->sub(new \DateInterval("P{$daysSince}D"));
+
+        $dateTo = TimeDate::getInstance()->asDb($dateTo);
+        $dateFrom = TimeDate::getInstance()->asDb($dateFrom);
 
         $query = $db->query("select * from spicenotifications s WHERE notification_date >= '$dateFrom' AND notification_date < '$dateTo' ORDER BY user_id, notification_date desc");
 

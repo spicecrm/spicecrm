@@ -19,6 +19,7 @@ import {language} from '../../../services/language.service';
 
 @Component({
     templateUrl: '../templates/emailspopoverbody.html',
+    standalone: false
 })
 export class EmailsPopoverBody {
 

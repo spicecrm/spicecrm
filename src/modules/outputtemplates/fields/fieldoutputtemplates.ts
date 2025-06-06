@@ -16,7 +16,8 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 
 @Component({
     selector: 'field-output-templates',
-    templateUrl: '../templates/fieldoutputtemplates.html'
+    templateUrl: '../templates/fieldoutputtemplates.html',
+    standalone: false
 })
 export class fieldOutputTemplates extends fieldGeneric implements OnInit {
 

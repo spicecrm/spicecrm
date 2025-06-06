@@ -18,7 +18,8 @@ declare var _: any;
  */
 @Component({
     selector: 'object-listview-filter-button',
-    templateUrl: '../templates/objectlistviewfilterbutton.html'
+    templateUrl: '../templates/objectlistviewfilterbutton.html',
+    standalone: false
 })
 export class ObjectListViewFilterButton {
 

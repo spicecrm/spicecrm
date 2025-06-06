@@ -6,6 +6,7 @@ use SpiceCRM\extensions\modules\NewsletterLogs\NewsletterLog;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\CampaignLog\CampaignLog;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
@@ -215,17 +216,27 @@ class EmailTracking
         /** @var Email | CampaignLog | NewsletterLog $bean */
         $bean = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
         if(!$bean){
-            throw new Exception('Bean module ' .  $data['ParentType'] .', id ' . $data['ParentId']. ' not found');
+            throw new NotFoundException('Bean module ' .  $data['ParentType'] .', id ' . $data['ParentId']. ' not found');
         }
-        $target = BeanFactory::getBean($bean->target_type, $bean->target_id);
 
-        if ($bean->_module === 'Emails') {
-            $target = BeanFactory::getBean($bean->parent_type, $bean->parent_id);
+        switch ($bean->_module){
+            case 'Emails':
+                $target = BeanFactory::getBean($bean->parent_type, $bean->parent_id);
+                $emailAddress = self::getEmailAddress($bean->email_addr_bean_rel_id, $target);
+                break;
+            case 'EmailAddressesBeanRels':
+                $target = BeanFactory::getBean($bean->bean_module, $bean->bean_id);
+                $emailAddress = self::getEmailAddress($bean->id, $target);
+                break;
+            default:
+                $target = BeanFactory::getBean($bean->target_type, $bean->target_id);
+                $emailAddress = self::getEmailAddress($bean->email_addr_bean_rel_id, $target);
         }
+
         if(!$target){
-            throw new Exception('Target not found');
+            throw new NotFoundException('Target not found');
         }
-        $emailAddress = self::getEmailAddress($bean->email_addr_bean_rel_id, $target);
+
         $targetData = [
             'parentType' => $target->_module,
             'parentId' => $target->id,
@@ -248,16 +259,18 @@ class EmailTracking
         /** @var Email | CampaignLog | NewsletterLog $bean */
         $bean = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
         if(!$bean){
-            throw new Exception('Bean module ' .  $data['ParentType'] .', id ' . $data['ParentId']. ' not found');
+            throw new NotFoundException('Bean module ' .  $data['ParentType'] .', id ' . $data['ParentId']. ' not found');
         }
-        $target = BeanFactory::getBean($bean->target_type, $bean->target_id);
-
-        if ($bean->_module === 'Emails') {
-            $target = BeanFactory::getBean($bean->parent_type, $bean->parent_id);
+        switch ($bean->_module){
+            case 'Emails':
+                $target = BeanFactory::getBean($bean->parent_type, $bean->parent_id);
+                break;
+            default:
+                $target = BeanFactory::getBean($bean->target_type, $bean->target_id);
         }
 
         if(!$target){
-            throw new Exception('Target not found');
+            throw new NotFoundException('Target not found');
         }
 
         if(isset($preferences['optInStatus'])){

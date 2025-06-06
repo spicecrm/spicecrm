@@ -12,6 +12,7 @@ import {modal} from '../../../services/modal.service';
 @Component({
     selector: 'mailchimp-create-campaign-button',
     templateUrl: '../templates/mailchimpcreatecampaignbutton.html',
+    standalone: false
 })
 
 export class MailChimpCreateCampaignButton {

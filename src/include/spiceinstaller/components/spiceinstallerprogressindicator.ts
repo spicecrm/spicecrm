@@ -9,6 +9,7 @@ import { spiceinstaller, stepObject } from "../services/spiceinstaller.service";
 @Component({
     selector: 'spice-installer-progress-indicator',
     templateUrl: '../templates/spiceinstallerprogressindicator.html',
+    standalone: false
 })
 
 export class SpiceInstallerProgressIndicator {

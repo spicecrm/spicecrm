@@ -30,7 +30,8 @@ import {navigationtab} from "../../services/navigationtab.service";
     host: {
         '[class.slds-text-link_faux]': '!disableLink'
     },
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class SystemModelPopOverDirective implements OnChanges, OnDestroy {
     /**

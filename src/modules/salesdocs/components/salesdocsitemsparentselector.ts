@@ -10,7 +10,8 @@ import {language} from '../../../services/language.service';
 
 @Component({
     selector: 'salesdocs-items-parent-selector',
-    templateUrl: '../templates/salesdocsitemsparentselector.html'
+    templateUrl: '../templates/salesdocsitemsparentselector.html',
+    standalone: false
 })
 export class SalesDocsItemsParentSelector {
 

@@ -19,7 +19,8 @@ import {domainmanager} from '../services/domainmanager.service';
 @Component({
     selector: 'domain-manager',
     templateUrl: '../templates/domainmanager.html',
-    providers: [metadata, domainmanager]
+    providers: [metadata, domainmanager],
+    standalone: false
 })
 export class DomainManager {
 

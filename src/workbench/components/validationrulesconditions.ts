@@ -13,6 +13,7 @@ import {language} from '../../services/language.service';
 @Component({
     selector: 'validationrules-conditions',
     templateUrl: '../templates/validationrulesconditions.html',
+    standalone: false
 })
 export class ValidationRulesConditions implements OnInit {
     @Input() public data; // validation rule data

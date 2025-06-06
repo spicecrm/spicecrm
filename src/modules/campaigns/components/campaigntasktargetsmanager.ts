@@ -22,7 +22,8 @@ import {userpreferences} from "../../../services/userpreferences.service";
 @Component({
     selector: 'campaigntask-target-manager',
     templateUrl: '../templates/campaigntasktargetsmanager.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class CampaignTaskTargetsManager implements OnInit, OnDestroy {
 

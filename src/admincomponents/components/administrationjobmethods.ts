@@ -9,7 +9,8 @@ import {backend} from "../../services/backend.service";
 @Component({
     selector: 'administration-job-methods',
     templateUrl: '../templates/administrationjobmethods.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class AdministrationJobMethods implements OnInit {
     /**

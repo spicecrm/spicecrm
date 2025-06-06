@@ -11,7 +11,8 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: '[product-group-manager-details-attributes-validation-item]',
     templateUrl: '../templates/productgroupmanagerdetailsattributesvalidationitem.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ProductGroupManagerDetailsAttributesValidationItem {
     @Input() public item: any;

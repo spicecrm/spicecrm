@@ -11,7 +11,8 @@ import {ActivityTimeline} from "./activitytimeline";
 
 @Component({
     templateUrl: '../templates/activitytimelinetabbed.html',
-    providers: [activitiytimeline, modelattachments]
+    providers: [activitiytimeline, modelattachments],
+    standalone: false
 })
 export class ActivityTimelineTabbed extends ActivityTimeline implements OnInit, OnDestroy {
 

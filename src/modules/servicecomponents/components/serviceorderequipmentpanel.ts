@@ -11,7 +11,8 @@ import {modellist} from "../../../services/modellist.service";
 @Component({
     selector: "serviceorder-equipment-panel",
     templateUrl: "../templates/serviceorderequipmentpanel.html",
-    providers: [relatedmodels, modellist]
+    providers: [relatedmodels, modellist],
+    standalone: false
 })
 export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
 

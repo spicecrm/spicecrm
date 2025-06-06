@@ -12,7 +12,8 @@ declare var moment: any;
 
 @Component({
     selector: 'campaign-export-modal',
-    templateUrl: '../templates/campaignexportmodal.html'
+    templateUrl: '../templates/campaignexportmodal.html',
+    standalone: false
 })
 export class CampaignExportModal {
 

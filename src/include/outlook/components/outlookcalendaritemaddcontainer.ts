@@ -21,7 +21,8 @@ declare var _: any;
 @Component({
     selector: 'outlook-calendaritem-add-container',
     templateUrl: '../templates/outlookcalendaritemaddcontainer.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class OutlookCalendarItemAddContainer implements OnDestroy {
 

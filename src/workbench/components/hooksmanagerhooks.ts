@@ -17,6 +17,7 @@ import {HooksManager} from "./hooksmanager";
 @Component({
     selector: 'hooks-manager-hooks',
     templateUrl: '../templates/hooksmanagerhooks.html',
+    standalone: false
 })
 export class HooksManagerHooks {
 

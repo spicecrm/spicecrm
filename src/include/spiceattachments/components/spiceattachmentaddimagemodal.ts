@@ -22,6 +22,7 @@ interface imageData {
 @Component({
     selector: 'spice-attachment-add-image-modal',
     templateUrl: '../templates/spiceattachmentaddimagemodal.html',
+    standalone: false
 })
 export class SpiceAttachmentAddImageModal {
 

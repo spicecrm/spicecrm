@@ -10,7 +10,8 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'tele_sales_cockpit_complete_button',
-    templateUrl: '../templates/telesalescockpitccompletebutton.html'
+    templateUrl: '../templates/telesalescockpitccompletebutton.html',
+    standalone: false
 })
 export class TeleSalesCockpitCompleteButton {
 

@@ -17,8 +17,9 @@ declare var moment: any;
 
 @Component({
     selector: 'event-booking-table',
-    templateUrl : '../templates/eventbookingtable.html',
-    providers : [relatedmodels, model]
+    templateUrl: '../templates/eventbookingtable.html',
+    providers: [relatedmodels, model],
+    standalone: false
 })
 
 export class EventBookingTable implements OnInit {

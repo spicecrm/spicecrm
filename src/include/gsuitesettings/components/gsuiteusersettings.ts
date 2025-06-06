@@ -15,6 +15,7 @@ declare var _: any;
 
 @Component({
     templateUrl: '../templates/gsuiteusersettings.html',
+    standalone: false
 })
 export class GSuiteUserSettings implements OnInit {
 

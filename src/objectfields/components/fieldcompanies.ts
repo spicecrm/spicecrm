@@ -19,7 +19,8 @@ import {fieldGeneric} from './fieldgeneric';
  */
 @Component({
     selector: 'field-companies',
-    templateUrl: '../templates/fieldcompanies.html'
+    templateUrl: '../templates/fieldcompanies.html',
+    standalone: false
 })
 export class fieldCompanies extends fieldGeneric implements OnInit {
 

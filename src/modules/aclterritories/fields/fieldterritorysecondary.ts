@@ -17,7 +17,8 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 @Component({
     selector: 'field-territory-secondary',
     templateUrl: '../templates/fieldterritorysecondary.html',
-    styles: ['input, input:focus { border: none; outline: none;}']
+    styles: ['input, input:focus { border: none; outline: none;}'],
+    standalone: false
 })
 export class fieldTerritorySecondary extends fieldGeneric {
 

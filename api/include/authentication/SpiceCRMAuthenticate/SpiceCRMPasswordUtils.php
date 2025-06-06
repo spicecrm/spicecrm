@@ -213,7 +213,6 @@ class SpiceCRMPasswordUtils
         $db->query(sprintf("delete from users_password_tokens where id != '%s' and user_id = '%s'", $db->quote($token), $user_id));
 
         $emailTempl = $this->getProperEmailTemplate($user_id, 'sendTokenForNewPassword');
-        $emailTempl->disable_row_level_security = true;
 
         //replace instance variables in email templates
         $memmy = $emailTempl->parse(null, ['token' => $token]);
@@ -227,23 +226,9 @@ class SpiceCRMPasswordUtils
         $emailObj->name = DBUtils::fromHtml($emailTempl->subject);
         $emailObj->body = DBUtils::fromHtml($emailTempl->body_html);
         $emailObj->addEmailAddress('to', $email);
-        $emailObj->to_be_sent = true;
-        $result = $emailObj->save();
+        $result = $emailObj->sendEmail();
 
-        if ($result['result'] == true) {
-            $emailObj->to_be_sent = false;
-            $emailObj->team_id = 1;
-            $emailObj->to_addrs = '';
-            $emailObj->type = 'archived';
-            $emailObj->deleted = '0';
-            $emailObj->parent_type = 'User';
-            $emailObj->mailbox_id = SpiceConfig::getInstance()->config['passwordsetting']['mailbox'];
-            $emailObj->date_sent = TimeDate::getInstance()->nowDb();
-            $emailObj->modified_user_id = '1';
-            $emailObj->created_by = '1';
-            $emailObj->status = 'sent';
-            $emailObj->save();
-        } else {
+        if (!$result['result']) {
             throw new Exception("Unable to send email");
         }
 

@@ -13,6 +13,7 @@ import {Subscription} from "rxjs";
 @Component({
     templateUrl: '../templates/campaigntaskactivatebutton.html',
     selector: "campaign-activate-button",
+    standalone: false
 })
 export class CampaignTaskActivateButton implements OnDestroy {
 

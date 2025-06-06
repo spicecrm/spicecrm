@@ -22,11 +22,12 @@ import {toast} from "../../../services/toast.service";
     selector: 'spice-page-builder',
     templateUrl: '../templates/spicepagebuilder.html',
     providers: [SpicePageBuilderService],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilder implements AfterViewInit {
 
-    @Output() public pageBuilderChange$: EventEmitter<TagElementI>;
+    @Output() public pageBuilderChange$: EventEmitter<{obj: TagElementI, html: string}>;
     /**
      * reference of this component to allow destroying
      * @public

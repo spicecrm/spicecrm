@@ -9,6 +9,7 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'sendgrid-delete-list-button',
     templateUrl: '../templates/sendgriddeletelistbutton.html',
+    standalone: false
 })
 
 export class SendgridDeleteListButton {

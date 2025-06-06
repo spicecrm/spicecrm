@@ -20,6 +20,7 @@ import {modal} from '../../services/modal.service';
 @Component({
     selector: 'object-list-header-actions-export-targetlist-button',
     templateUrl: '../templates/objectlistheaderactionsexporttargetlistbutton.html',
+    standalone: false
 })
 export class ObjectListHeaderActionsExportTargetlistButton {
 

@@ -17,7 +17,8 @@ import {Subscription} from "rxjs";
 @Component({
     selector: 'process-management-process-process',
     templateUrl: '../templates/processmanagementprocessprocess.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ProcessManagementProcessProcess implements OnInit, OnDestroy {
 

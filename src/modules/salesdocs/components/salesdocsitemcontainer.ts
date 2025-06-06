@@ -20,7 +20,8 @@ import {Subscription} from "rxjs";
 @Component({
     selector: '[salesdocs-item-container]',
     templateUrl: '../templates/salesdocsitemcontainer.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class SalesDocsItemContainer implements OnInit, OnDestroy {
 

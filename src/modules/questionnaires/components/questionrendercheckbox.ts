@@ -8,7 +8,8 @@ declare var _;
 
 @Component({
     selector: 'question-render-checkbox',
-    templateUrl: '../templates/questionrendercheckbox.html'
+    templateUrl: '../templates/questionrendercheckbox.html',
+    standalone: false
 })
 export class QuestionRenderCheckbox implements OnInit {
 

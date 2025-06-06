@@ -7,7 +7,8 @@ import {sapIdocsManager} from "../../../modules/sapidocs/services/sapidocsmanage
 import {sapIDOCSegmentI} from "../../../modules/sapidocs/interfaces/moudesapidocs.interfaces";
 
 @Component({
-    templateUrl: '../templates/sapidocsmanagersegmentaddmodal.html'
+    templateUrl: '../templates/sapidocsmanagersegmentaddmodal.html',
+    standalone: false
 })
 export class SAPIDOCsManagerSegmentAddModal implements OnInit {
 

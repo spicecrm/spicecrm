@@ -9,7 +9,8 @@ import {GlobalLoginChangePassword} from "../../../globalcomponents/components/gl
 
 @Component({
     selector: "user-change-password-button",
-    templateUrl: "../templates/userchangepasswordbutton.html"
+    templateUrl: "../templates/userchangepasswordbutton.html",
+    standalone: false
 })
 export class UserChangePasswordButton {
 

@@ -15,7 +15,8 @@ import {view} from "../../services/view.service";
 @Component({
     selector: "object-relatedlist-cards",
     templateUrl: "../templates/objectrelatedlistcards.html",
-    providers: [relatedmodels, view]
+    providers: [relatedmodels, view],
+    standalone: false
 })
 export class ObjectRelatedlistCards extends ObjectRelatedList {
 

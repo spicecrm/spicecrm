@@ -15,7 +15,8 @@ import {Subscription} from "rxjs";
 @Component({
     selector: "Knowledge-document-related-list",
     templateUrl: "../templates/knowledgedocumentrelatedlist.html",
-    providers: [relatedmodels]
+    providers: [relatedmodels],
+    standalone: false
 })
 export class KnowledgeDocumentRelatedList implements OnInit, OnDestroy {
     public componentconfig: any = {};

@@ -20,7 +20,8 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: 'lead-convert',
     templateUrl: '../templates/leadconvert.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class LeadConvert {
 

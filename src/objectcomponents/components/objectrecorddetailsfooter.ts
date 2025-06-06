@@ -19,7 +19,8 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'object-record-details-footer',
-    templateUrl: '../templates/objectrecorddetailsfooter.html'
+    templateUrl: '../templates/objectrecorddetailsfooter.html',
+    standalone: false
 })
 export class ObjectRecordDetailsFooter implements OnInit{
 

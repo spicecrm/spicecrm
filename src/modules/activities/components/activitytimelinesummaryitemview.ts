@@ -14,7 +14,8 @@ import {activitiytimeline} from '../../../services/activitiytimeline.service';
 @Component({
     selector: 'activity-timeline-summary-item-view',
     templateUrl: '../templates/activitytimelinesummaryitemview.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ActivityTimelineSummaryItemView implements OnChanges{
     @ViewChild('detailContainer', {read: ViewContainerRef, static: true}) public detailContainer: ViewContainerRef;

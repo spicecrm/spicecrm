@@ -10,7 +10,8 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: "contact-portal-button",
-    templateUrl: "../templates/contactportalbutton.html"
+    templateUrl: "../templates/contactportalbutton.html",
+    standalone: false
 })
 export class ContactPortalButton implements OnInit {
 

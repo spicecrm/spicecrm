@@ -15,6 +15,7 @@ import { backend } from '../../services/backend.service';
 @Component({
     selector: 'global-obtain-gdpr-consent',
     templateUrl: '../templates/globalobtaingdprconsent.html',
+    standalone: false
 })
 export class GlobalObtainGDPRConsent {
 

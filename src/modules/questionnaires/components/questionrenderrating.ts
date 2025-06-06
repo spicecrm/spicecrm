@@ -15,7 +15,8 @@ import { QuestionRenderBasic } from './questionrenderbasic';
         'div.question-render-question { border-radius:0; }',
         'td.question-hover:hover { background-color: #f3f2f2; }',
         'td { padding: 0.5rem 0.75rem; }'
-    ]
+    ],
+    standalone: false
 })
 export class QuestionRenderRating extends QuestionRenderBasic implements OnInit {
 

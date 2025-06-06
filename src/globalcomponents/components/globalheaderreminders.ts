@@ -14,7 +14,8 @@ declare var moment: any;
  */
 @Component({
     selector: 'global-header-reminders',
-    templateUrl: '../templates/globalheaderreminders.html'
+    templateUrl: '../templates/globalheaderreminders.html',
+    standalone: false
 })
 export class GlobalHeaderReminders {
     /**

@@ -16,6 +16,7 @@ import {toast} from "../../../services/toast.service";
 @Component({
     selector: 'get-stats-button',
     templateUrl: '../templates/getstatsbutton.html',
+    standalone: false
 })
 export class GetStatsButton {
 

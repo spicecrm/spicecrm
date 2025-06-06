@@ -14,7 +14,8 @@ declare var moment;
 
 @Component({
     selector: 'object-timeline-stencil',
-    templateUrl: '../templates/objecttimelinestencil.html'
+    templateUrl: '../templates/objecttimelinestencil.html',
+    standalone: false
 })
 export class ObjectTimelineStencil {
 

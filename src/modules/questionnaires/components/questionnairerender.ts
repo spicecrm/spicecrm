@@ -13,7 +13,8 @@ import { BehaviorSubject, Subscription } from 'rxjs';
         '::ng-deep .questionnaire-some-words p:first-child { margin-top: 0; }',
         '::ng-deep .questionnaire-some-words p:last-child { margin-bottom: 0; }'
     ],
-    providers: [questionnaireParticipationService]
+    providers: [questionnaireParticipationService],
+    standalone: false
 })
 export class QuestionnaireRender implements OnInit, OnDestroy, OnChanges {
 

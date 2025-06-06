@@ -10,6 +10,7 @@ import {modelattachments} from "../../../services/modelattachments.service";
 import {navigationtab} from "../../../services/navigationtab.service";
 import {Router} from "@angular/router";
 import {SpiceAttachmentsPanel} from "./spiceattachmentspanel";
+import {firstValueFrom} from "rxjs";
 
 /**
  * displays a quicknote that is read in teh stream
@@ -17,7 +18,8 @@ import {SpiceAttachmentsPanel} from "./spiceattachmentspanel";
 @Component({
     selector: 'spice-attachment-file',
     templateUrl: '../templates/spiceattachmentfile.html',
-    providers: [SpiceAttachmentsPanel]
+    providers: [SpiceAttachmentsPanel],
+    standalone: false
 })
 export class SpiceAttachmentFile {
 
@@ -59,7 +61,12 @@ export class SpiceAttachmentFile {
     }
 
     get humanFileSize() {
-        return this.modelattachments.humanFileSize(this.file.filesize);
+        if (this.file.file_mime_type === 'folder') {
+            const folderSize = this.modelattachments.calcFolderSize(this.file.id);
+            return this.modelattachments.humanFileSize(folderSize);
+        }
+
+        return this.modelattachments.humanFileSize(parseInt(this.file.filesize));
     }
 
     get filedate() {
@@ -226,10 +233,11 @@ export class SpiceAttachmentFile {
     /**
      * action to delete the file
      */
-    public deleteFile() {
+    public async deleteFile() {
         if (this.editmode) {
             this.modelattachments.deleteAttachment(this.file.id);
-            this.attachmentsPanelComponent.loadFiles();
+            let finishedDeleting = await firstValueFrom(this.modelattachments.attachmentDeleted$)
+            if (finishedDeleting) this.attachmentsPanelComponent.loadFiles()
         }
     }
 }

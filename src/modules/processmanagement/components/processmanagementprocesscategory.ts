@@ -13,9 +13,10 @@ import {processmanagement} from "../services/processmanagement.service";
 import {view} from "../../../services/view.service";
 
 @Component({
-    selector:'process-management-process-category',
+    selector: 'process-management-process-category',
     templateUrl: '../templates/processmanagementprocesscategory.html',
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 export class ProcessManagementProcessCategory implements OnInit{
 

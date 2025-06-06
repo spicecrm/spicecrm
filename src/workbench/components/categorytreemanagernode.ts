@@ -22,6 +22,7 @@ declare var moment: any;
 @Component({
     selector: 'categgory-tree-manager-node',
     templateUrl: '../templates/categorytreemanagernode.html',
+    standalone: false
 })
 export class CategoryTreeManagerNode implements OnInit {
 

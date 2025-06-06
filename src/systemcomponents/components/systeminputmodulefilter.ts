@@ -23,7 +23,8 @@ import {metadata} from "../../services/metadata.service";
             useExisting: forwardRef(() => SystemInputModuleFilter),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputModuleFilter implements ControlValueAccessor {
     @Input() public disabled;

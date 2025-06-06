@@ -14,7 +14,8 @@ declare var _;
 @Component({
     selector: 'spice-texts-add-button',
     templateUrl: '../templates/spicetextsaddbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 
 export class SpiceTextsAddButton {

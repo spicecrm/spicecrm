@@ -210,4 +210,18 @@ class SpiceLanguageController
 
     }
 
+    public function LanguageTranslateRawLabels(Request $req, Response $res, array $args): Response
+    {
+        $handler = new SpiceLanguagesRESTHandler();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        if (!$current_user->is_admin) {
+            throw (new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
+        }
+
+        $params = $req->getQueryParams();
+
+        return $res->withJson($handler->translateUntranslatedLabels($args['language'], $args['scope'], $params['limit'] ?: 10));
+
+    }
+
 }

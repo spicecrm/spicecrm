@@ -14,7 +14,8 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'travel-manager',
     templateUrl: '../templates/travelmanager.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 
 export class TravelManager implements OnInit {

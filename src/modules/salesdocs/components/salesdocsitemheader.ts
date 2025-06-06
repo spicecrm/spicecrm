@@ -11,7 +11,8 @@ import {metadata} from '../../../services/metadata.service';
 @Component({
     selector: '[salesdocs-item-header]',
     templateUrl: '../templates/salesdocsitemheader.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class SalesDocsItemHeader {
 

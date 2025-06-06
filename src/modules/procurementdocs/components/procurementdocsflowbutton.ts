@@ -9,7 +9,8 @@ import {modal} from "../../../services/modal.service";
  */
 @Component({
     selector: 'procurement-docs-flow-button',
-    templateUrl: "../templates/procurementdocsflowbutton.html"
+    templateUrl: "../templates/procurementdocsflowbutton.html",
+    standalone: false
 })
 export class ProcurementDocsFlowButton {
 

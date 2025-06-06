@@ -8,7 +8,8 @@ import {
 
 @Component({
     templateUrl: '../templates/workbenchconfiglabel.html',
-    selector: 'workbench-config-label'
+    selector: 'workbench-config-label',
+    standalone: false
 })
 
 export class WorkbenchConfigLabel {

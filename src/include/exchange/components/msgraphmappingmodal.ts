@@ -5,6 +5,7 @@ import {Component, ComponentRef} from '@angular/core';
 
 @Component({
     templateUrl: '../templates/msgraphmappingmodal.html',
+    standalone: false
 })
 export class MSGraphMappingModal {
 

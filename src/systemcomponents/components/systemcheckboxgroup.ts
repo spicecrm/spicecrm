@@ -23,7 +23,8 @@ declare var _;
             useExisting: forwardRef(() => SystemCheckboxGroup),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemCheckboxGroup implements ControlValueAccessor, AfterViewInit {
     /**

@@ -16,7 +16,8 @@ import {configurationService} from "../../services/configuration.service";
 declare var _: any;
 @Component({
     selector: 'field-google-places-search',
-    templateUrl: '../templates/fieldgoogleplacessearch.html'
+    templateUrl: '../templates/fieldgoogleplacessearch.html',
+    standalone: false
 })
 export class fieldGooglePlacesSearch extends fieldGeneric {
 

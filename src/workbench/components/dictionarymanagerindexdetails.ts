@@ -19,6 +19,7 @@ import {DictionaryDefinition, DictionaryIndex, DictionaryItem} from "../interfac
 @Component({
     selector: 'dictionary-manager-index-details',
     templateUrl: '../templates/dictionarymanagerindexdetails.html',
+    standalone: false
 })
 export class DictionaryManagerIndexDetails implements OnChanges {
 

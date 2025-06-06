@@ -33,10 +33,11 @@ import {SystemSelectIconItem} from "./systemselecticonitem";
     templateUrl: "../templates/systemselecticon.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => SystemSelectIcon),
-        multi: true
-    }]
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SystemSelectIcon),
+            multi: true
+        }],
+    standalone: false
 })
 export class SystemSelectIcon implements ControlValueAccessor, AfterContentInit {
     @ContentChildren(SystemSelectIconItem) public selectItemlist: QueryList<SystemSelectIconItem>;

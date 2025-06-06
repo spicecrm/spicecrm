@@ -18,6 +18,7 @@ import {toast} from "../../../services/toast.service";
 @Component({
     selector: 'deployment-system-validation-field',
     templateUrl: '../templates/deploymentsystemvalidationfield.html',
+    standalone: false
 })
 export class DeploymentSystemValidationField extends fieldGeneric {
 

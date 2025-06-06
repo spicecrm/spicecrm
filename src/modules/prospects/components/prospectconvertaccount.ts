@@ -19,7 +19,8 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: "prospect-convert-account",
     templateUrl: "../templates/prospectconvertaccount.html",
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 export class ProspectConvertAccount implements AfterViewInit, OnInit {
     /**

@@ -16,6 +16,7 @@ import {DictionaryManagerFixDBFieldsMismatchModal} from "./dictionarymanagerfixd
 @Component({
     selector: 'dictionary-manager-repair-all',
     templateUrl: '../templates/dictionarymanagerrepairall.html',
+    standalone: false
 })
 export class DictionaryManagerRepairAll {
 

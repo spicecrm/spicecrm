@@ -20,7 +20,8 @@ import {SystemLoadingModal} from "../../../systemcomponents/components/systemloa
 @Component({
     selector: 'lead-convert-opportunity-modal',
     templateUrl: '../templates/leadconvertopportunitymodal.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class LeadConvertOpportunityModal implements OnInit {
 

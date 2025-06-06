@@ -160,7 +160,7 @@ class SpiceImport extends SpiceBean
         $this->module = $this->objectimport->module;
         $this->csv_enclosure = $this->objectimport->enclosure;
         $this->csv_delimiter = $this->objectimport->separator;
-        $this->import_actions = $this->objectimport->importAction;
+        $this->import_action = $this->objectimport->importAction;
         $this->name = $this->objectimport->module . "_" . gmdate('Y-m-d H:i:s');
         $this->assigned_user_id = $current_user->id;
 

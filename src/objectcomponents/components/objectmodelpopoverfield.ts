@@ -7,7 +7,8 @@ import {view} from '../../services/view.service';
 
 @Component({
     templateUrl: '../templates/objectmodelpopoverfield.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ObjectModelPopoverField {
     public componentconfig: any = {};

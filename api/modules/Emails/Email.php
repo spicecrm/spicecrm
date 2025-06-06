@@ -49,6 +49,12 @@ class Email extends SpiceBean
     public $attachments = [];
 
     /**
+     * holds wether or not the attachments shall be sent as download link
+     * @var bool
+     */
+    public $downloadlink_attachments = false;
+
+    /**
      * Openness Statuses
      */
     const OPENNESS_OPEN = 'open';
@@ -58,6 +64,8 @@ class Email extends SpiceBean
     const STATUS_UNREAD = 'unread';
     const STATUS_READ = 'read';
     const STATUS_CREATED = 'created';
+
+    const STATUS_DRAFT = 'draft';
 
     const TYPE_INBOUND = 'inbound';
     const TYPE_OUTBOUND = 'out';
@@ -75,6 +83,16 @@ class Email extends SpiceBean
      * @var false|\SpiceCRM\includes\SpiceBeans\SpiceBean
      */
     public $emailAddress;
+    /**
+     * if true, send the email immediately or wait for the transaction commit if started
+     * @var bool
+     */
+    public bool $to_be_sent = false;
+    /**
+     * if true, send the email immediately and ignore transaction
+     * @var bool
+     */
+    public bool $to_be_sent_now = false;
 
     /**
      * sole constructor
@@ -124,10 +142,18 @@ class Email extends SpiceBean
         return ['date_activity' => $retvalue];
     }
 
+    public function save($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
+    {
+        if($this->status == self::STATUS_DRAFT){
+            return $this->saveDraft($check_notify, $fts_index_bean,  $ignoreInvalidEmailAddresses);
+        }
+        return $this->saveEmail($check_notify, $fts_index_bean,  $ignoreInvalidEmailAddresses);
+    }
+
     /**
      * Overrides save handler
      */
-    public function save($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
+    public function saveEmail($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
     {
         $timedate = TimeDate::getInstance();
 
@@ -136,7 +162,7 @@ class Email extends SpiceBean
         } else {
 
             if ( empty( $this->mailbox_id )) {
-                if ( $this->to_be_sent ) {
+                if ( $this->to_be_sent || $this->to_be_sent_now ) {
                     $mailbox = Mailbox::getDefaultMailbox();
                     $this->mailbox_id = $mailbox->id;
                 }
@@ -146,38 +172,18 @@ class Email extends SpiceBean
                     $mailbox->initTransportHandler();
             }
 
-            if (empty($this->id)) {
-                $this->id = SpiceUtils::createGuid();
-                $this->new_with_id = true;
-            }
+            $this->generateGUID();
 
             if (!empty($this->reference_id) && $this->new_with_id) {
                 $this->cloneRelatedBeansFromReference();
             }
 
-            if ($this->to_be_sent) {
+            if ($this->to_be_sent || $this->to_be_sent_now) {
                 $this->type = self::TYPE_OUTBOUND;
                 $this->status = self::STATUS_CREATED;
             }
 
-            $this->from_addr_name = $this->cleanEmails($this->from_addr_name);
-            if (empty($this->from_addr) && !empty($mailbox)) {
-                $this->from_addr = $mailbox->getEmailAddress();
-            } elseif (empty($this->from_addr) && !empty($this->from_addr_name)) {
-                $this->from_addr = $this->from_addr_name;
-            } elseif (empty($this->from_addr)) {
-                $this->from_addr = $mailbox->imap_pop3_username;
-            }
-            if (!empty($this->to_addrs)) {
-                $this->to_addrs = $this->cleanEmails($this->to_addrs);
-            }
-            if (!empty($this->to_addrs_names) && empty($this->to_addrs)) {
-                $this->to_addrs = $this->cleanEmails($this->to_addrs_names);
-            }
-            $this->to_addrs_names = $this->extractAddresses($this->to_addrs_names);
-            $this->cc_addrs_names = $this->cleanEmails($this->cc_addrs_names);
-            $this->bcc_addrs_names = $this->cleanEmails($this->bcc_addrs_names);
-            $this->reply_to_addr = $this->cleanEmails($this->reply_to_addr);
+            $this->setEmailAddresses();
             $this->description = SugarCleaner::cleanHtml($this->description);
             $this->description_html = SugarCleaner::cleanHtml($this->description_html, true);
             $this->raw_source = SugarCleaner::cleanHtml($this->raw_source, true);
@@ -213,45 +219,94 @@ class Email extends SpiceBean
         }
 
         // send the email only if the send flag is set
-        if ($this->to_be_sent) {
-            try {
-                $this->loadAttachments();
+        if ($this->to_be_sent || $this->to_be_sent_now) {
+            if (EmailTransactionHandler::getInstance()->transactionStarted && !$this->to_be_sent_now) {
+                EmailTransactionHandler::getInstance()->push($this->id);
+            } else {
+                try {
+                    $this->loadAttachments();
 
 //                START ZIP ARCHIVE
-                if (!!$this->zip_compress) {
-                    $zipAttachment = $this->createZipFromAttachments();
+                    if (!!$this->zip_compress) {
+                        $zipAttachment = $this->createZipFromAttachments();
 
-                    //empty the attachments array and push the created zip attachment to it
-                    $this->attachments = [];
-                    $this->attachments[0] = $zipAttachment;
+                        //empty the attachments array and push the created zip attachment to it
+                        $this->attachments = [];
+                        $this->attachments[0] = $zipAttachment;
+                    }
+                    $result = $this->sendEmail();
+                    $this->to_be_sent = false;
+                    $this->to_be_sent_now = false;
                 }
-                $result = $this->sendEmail();
-                $this->to_be_sent = false;
-            }
-            catch ( MessageInterceptedException $e ) {
-                throw $e;
-            }
-            catch (Exception $e) {
-                $result = [
-                    'result' => false,
-                    'message' => 'Mail not sent: ' . $e->getMessage(),
-                ];
+                catch ( MessageInterceptedException $e ) {
+                    throw $e;
+                }
+                catch (Exception $e) {
+                    $result = [
+                        'result' => false,
+                        'message' => 'Mail not sent: ' . $e->getMessage(),
+                    ];
+                }
+
+                if ($result['result'] == true) {
+                    $this->status = 'sent';
+
+                } else {
+                    $this->status = $result['errors'] ? 'send_error' : 'created';
+                }
+
+                $this->new_with_id = false;
+                parent::save($check_notify, $fts_index_bean);
+
+                return $result;
             }
 
-            if ($result['result'] == true) {
-                $this->status = 'sent';
-
-            } else {
-                $this->status = $result['errors'] ? 'send_error' : 'created';
-            }
-
-            $this->new_with_id = false;
-            parent::save($check_notify, $fts_index_bean);
-
-            return $result;
         }
     }
 
+    public function saveDraft($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
+    {
+        $timedate = TimeDate::getInstance();
+        $mailbox = null;
+        if (!empty($this->mailbox_id)) {
+                $mailbox = $this->getMailbox();
+            }
+
+        $this->generateGUID();
+
+        if (!empty($this->reference_id) && $this->new_with_id) {
+            $this->cloneRelatedBeansFromReference();
+        }
+
+        $this->setEmailAddresses();
+        $this->description = SugarCleaner::cleanHtml($this->description);
+        $this->description_html = SugarCleaner::cleanHtml($this->description_html, true);
+        // disable cache! timedate->now() return null at this time
+        $timedate->allow_cache = false;
+
+        // check assigned user
+        if(empty($this->assigned_user_id)){
+            $this->assigned_user_id = AuthenticationController::getInstance()->getCurrentUser()->id;
+        }
+
+        // save without indexing
+        parent::save($check_notify, false);
+
+        if (!is_array($this->recipient_addresses) || empty($this->recipient_addresses)) {
+            $this->fillInEmailAddressesFromLegacyFields();
+
+        }
+        $this->handleFromAddress();
+        $this->saveRecipientAddresses($ignoreInvalidEmailAddresses);
+
+        // process the indexing after the addresseshave been saved so relationships are updated
+        if ($fts_index_bean) {
+            SpiceFTSHandler::getInstance()->indexBean($this);
+        }
+
+        $this->new_with_id = false;
+        return parent::save($check_notify, $fts_index_bean);
+    }
     /**
      * Creates a ZIP archive containing all attachments
      * @return object The new ZIP attachment
@@ -290,6 +345,34 @@ class Email extends SpiceBean
         unlink($path);
 
         return $newZipAttachment;
+    }
+
+    private function setEmailAddresses(): void
+    {
+        $this->from_addr_name = $this->cleanEmails($this->from_addr_name);
+        if (empty($this->from_addr) && !empty($mailbox)) {
+            $this->from_addr = $mailbox->getEmailAddress();
+        } elseif (empty($this->from_addr) && !empty($this->from_addr_name)) {
+            $this->from_addr = $this->from_addr_name;
+        }
+        if (!empty($this->to_addrs)) {
+            $this->to_addrs = $this->cleanEmails($this->to_addrs);
+        }
+        if (!empty($this->to_addrs_names) && empty($this->to_addrs)) {
+            $this->to_addrs = $this->cleanEmails($this->to_addrs_names);
+        }
+        $this->to_addrs_names = $this->extractAddresses($this->to_addrs_names);
+        $this->cc_addrs_names = $this->cleanEmails($this->cc_addrs_names);
+        $this->bcc_addrs_names = $this->cleanEmails($this->bcc_addrs_names);
+        $this->reply_to_addr = $this->cleanEmails($this->reply_to_addr);
+    }
+
+    private function generateGUID(): void
+    {
+        if (empty($this->id)) {
+            $this->id = SpiceUtils::createGuid();
+            $this->new_with_id = true;
+        }
     }
 
     /**
@@ -672,7 +755,7 @@ class Email extends SpiceBean
         $this->correctCharsetTag();
 
         // get the email addresses
-       $ret->retrieveEmailAddresses();
+        $ret->retrieveEmailAddresses();
 
         $ret->date_start = '';
         $ret->time_start = '';
@@ -1126,7 +1209,7 @@ class Email extends SpiceBean
         // todo add recipient_addresses
         // that would require saving the test email
         $testEmail->from_addr = $mailbox->imap_pop3_username ?? $mailbox->ews_username;
-        if ($mailbox->imap_pop3_display_name != '') {
+        if (isset($mailbox->imap_pop3_display_name)) {
             $testEmail->from_addr = $mailbox->imap_pop3_display_name . ' <' . $testEmail->from_addr . '>';
         }
 
@@ -1838,6 +1921,7 @@ class Email extends SpiceBean
         $this->status = self::STATUS_UNREAD;
         $this->openness = self::OPENNESS_OPEN;
         $this->to_be_sent = false;
+        $this->to_be_sent_now = false;
 
         // todo deal with attachments lol
         foreach ($message->getAttachments() as $attachment) {
@@ -1954,9 +2038,9 @@ class Email extends SpiceBean
      * @throws Exception
      * @return boolean|string
      */
-    public function validateEmailForDownload( $doIncrement = false ): boolean|string
+    public function validateEmailForDownload( $doIncrement = false ): bool|string
     {
-        $downloadAttachmentsEnabled = (int) $this->getFieldValue('downloadlink_attachments');
+        $downloadAttachmentsEnabled = (int) $this->downloadlink_attachments;
         if ( !$downloadAttachmentsEnabled ) return 'notAccessible';
 
         $downloadCounterMax = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_counter_max');

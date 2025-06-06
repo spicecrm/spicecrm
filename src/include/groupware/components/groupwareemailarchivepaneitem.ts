@@ -11,7 +11,8 @@ import {metadata} from "../../../services/metadata.service";
  */
 @Component({
     selector: 'groupware-email-archive-pane-item',
-    templateUrl: '../templates/groupwareemailarchivepaneitem.html'
+    templateUrl: '../templates/groupwareemailarchivepaneitem.html',
+    standalone: false
 })
 export class GroupwareEmailArchivePaneItem {
 

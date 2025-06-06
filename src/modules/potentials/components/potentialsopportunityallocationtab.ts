@@ -12,7 +12,8 @@ import {backend} from "../../../services/backend.service";
  */
 @Component({
     selector: 'potentials-opportunity-allocation-tab',
-    templateUrl: "../templates/potentialsopportunityallocationtab.html"
+    templateUrl: "../templates/potentialsopportunityallocationtab.html",
+    standalone: false
 })
 export class PotentialsOpportunityAllocationTab {
 

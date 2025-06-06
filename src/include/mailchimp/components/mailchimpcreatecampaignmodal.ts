@@ -14,7 +14,8 @@ import {FormGroup, FormControl} from '@angular/forms';
 
 @Component({
     selector: 'mailchimp-create-campaign-modal',
-    templateUrl: '../templates/mailchimpcreatecampaignmodal.html'
+    templateUrl: '../templates/mailchimpcreatecampaignmodal.html',
+    standalone: false
 })
 export class MailChimpCreateCampaignModal {
 

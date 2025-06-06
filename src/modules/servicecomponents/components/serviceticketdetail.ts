@@ -14,8 +14,8 @@ declare var _: any;
  * renders a summary panel on the service ticket
  */
 @Component({
-    templateUrl: '../templates/serviceticketdetail.html'
-
+    templateUrl: '../templates/serviceticketdetail.html',
+    standalone: false
 })
 export class ServiceTicketDetail implements OnInit{
 

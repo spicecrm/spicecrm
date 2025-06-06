@@ -3,6 +3,7 @@
 namespace SpiceCRM\includes\SpiceDictionary;
 
 use Exception;
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
@@ -272,8 +273,8 @@ class SpiceDictionaryRelationships
      * @return void
      * @throws Exception
      */
-    public function add(array $relationship, $relationshipPolymorphs = []){
-        $db = DBManagerFactory::getInstance();
+    public function add(array $relationship, $relationshipPolymorphs = [])
+    {
         //get the table and do an upsert
         $table = $relationship['scope'] == 'c' ? 'syscustomdictionaryrelationships' : 'sysdictionaryrelationships';
 
@@ -282,13 +283,13 @@ class SpiceDictionaryRelationships
 
         unset($relationship['scope']);
 
-        $db->upsertQuery($table, ['id' => $relationship['id']], $relationship, true);
+        SystemDeploymentCR::writeDBEntry($table, $relationship['id'], $relationship, $relationship['name']);
 
         // handle the polymorph entries
         foreach($relationshipPolymorphs as $relationshipPolymorph){
             $table = $relationshipPolymorph['scope'] == 'c' ? 'syscustomdictionaryrelationshippolymorphs' : 'sysdictionaryrelationshippolymorphs';
             unset($relationshipPolymorph['scope']);
-            $db->upsertQuery($table, ['id' => $relationshipPolymorph['id']], $relationshipPolymorph, true);
+            SystemDeploymentCR::writeDBEntry($table, $relationshipPolymorph['id'], $relationshipPolymorph, $relationshipPolymorph['relationship_name']);;
         }
     }
 

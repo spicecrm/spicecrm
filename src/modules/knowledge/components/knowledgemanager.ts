@@ -14,7 +14,8 @@ import {navigationtab} from "../../../services/navigationtab.service";
 @Component({
     selector: 'knowledge-manager',
     templateUrl: "../templates/knowledgemanager.html",
-    providers: [model, KnowledgeService]
+    providers: [model, KnowledgeService],
+    standalone: false
 })
 export class KnowledgeManager implements AfterViewInit {
 

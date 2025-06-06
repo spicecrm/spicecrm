@@ -16,7 +16,8 @@ import {modal} from '../../services/modal.service';
 
 @Component({
     selector: 'field-parent',
-    templateUrl: '../templates/fieldparent.html'
+    templateUrl: '../templates/fieldparent.html',
+    standalone: false
 })
 export class fieldParent extends fieldGeneric implements OnInit {
     public clickListener: any;
@@ -80,7 +81,7 @@ export class fieldParent extends fieldGeneric implements OnInit {
         this.determineParentTypes();
         // initialize the parenttype
         if (this.view.isEditMode() && (!this.model.getField(this.parentTypeField) || this.model.getField(this.parentTypeField) == '')) {
-            this.model.setField(this.parentTypeField, this.parentTypes[0]);
+            this.model.setField(this.parentTypeField, this.parentTypes[0], false, false);
         }
 
     }

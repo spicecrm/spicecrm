@@ -20,7 +20,8 @@ import {Subscription} from "rxjs";
             useExisting: forwardRef(() => SystemInputModuleField),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputModuleField implements ControlValueAccessor, OnInit, OnDestroy {
 

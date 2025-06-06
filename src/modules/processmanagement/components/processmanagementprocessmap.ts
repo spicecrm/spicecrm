@@ -15,9 +15,10 @@ import {processmanagement} from "../services/processmanagement.service";
 declare var _: any;
 
 @Component({
-    selector:'process-management-process-map',
+    selector: 'process-management-process-map',
     templateUrl: '../templates/processmanagementprocessmap.html',
-    providers: [processmanagement]
+    providers: [processmanagement],
+    standalone: false
 })
 export class ProcessManagementProcessMap implements OnInit {
 

@@ -16,7 +16,8 @@ import {modellist} from '../../services/modellist.service';
  */
 @Component({
     selector: 'object-listview-aggregate-item',
-    templateUrl: '../templates/objectlistviewaggregateitem.html'
+    templateUrl: '../templates/objectlistviewaggregateitem.html',
+    standalone: false
 })
 export class ObjectListViewAggregateItem {
 

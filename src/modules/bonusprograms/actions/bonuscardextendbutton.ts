@@ -21,7 +21,8 @@ declare var moment;
  */
 @Component({
     templateUrl: '../templates/bonuscardextendbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class BonusCardExtendButton {
 

@@ -89,6 +89,21 @@ export class modelattachments implements OnDestroy {
     public folderTreeItems: any[] = [];
 
     /**
+     * total file size of the attachments
+     */
+    public totalFileSize: number = 0;
+
+    /**
+     * total human-readable file size
+     */
+    public totalHumanFileSize: string = '0 B';
+
+    /**
+     * emits the action when the attachment is deleted
+     */
+    public attachmentDeleted$: Subject<boolean> = new Subject<boolean>();
+
+    /**
      * a colection of subscriptions
      */
     public subscriptions: Subscription = new Subscription();
@@ -116,6 +131,7 @@ export class modelattachments implements OnDestroy {
 
     set files(f) {
         this._files = f;
+        this.calculateTotalFileSize();
     }
 
     get folderId() {
@@ -221,9 +237,11 @@ export class modelattachments implements OnDestroy {
                 for (let attId in response) {
                     if (!this._files.find(a => a.id == attId)) {
                         response[attId].date = new moment(response[attId].date);
-                        this.files.push(response[attId]);
+                        this._files.push(response[attId]);
                     }
                 }
+
+                this.calculateTotalFileSize();
 
                 // set the count
                 this.count = this._files.length;
@@ -264,30 +282,32 @@ export class modelattachments implements OnDestroy {
      *
      * @param parentModel
      * @param categoryId
-     * @param excludedFilenames
+     * @param excludedFileIds
      */
-    public cloneAttachments(parentModel: model, categoryId?: string, excludedFilenames?: string[]): Observable<any> {
+    public cloneAttachments(parentModel: model, categoryId?: string, excludedFileIds?: string[]): Observable<any> {
         let retSubject = new Subject();
         this.backend.postRequest(`common/spiceattachments/module/${this.module}/${this.id}/clone/${parentModel.module}/${parentModel.id}`, {}, {
             categoryId,
-            excludedFilenames
+            excludedFileIds
         }, this.httpRequestsRefID).subscribe({
             next: response => {
                 for (let attId in response) {
-                    if (!this.files.find(a => a.id == attId)) {
+                    if (!this._files.find(a => a.id == attId)) {
                         response[attId].date = new moment(response[attId].date);
                         this._files.push(response[attId]);
                     }
                 }
 
+                this.calculateTotalFileSize();
+
                 // set the count
-                this.count = this.files.length;
+                this.count = this._files.length;
 
                 // broadcast the count
                 this.broadcastAttachmentCount();
 
                 // close the subject
-                retSubject.next(this.files);
+                retSubject.next(this._files);
                 retSubject.complete();
             },
             error: error => {
@@ -303,7 +323,20 @@ export class modelattachments implements OnDestroy {
     }
 
     /**
-     * returns the human readable file size fort the display
+     * calculate the file size of the available files
+     * @private
+     */
+    private calculateTotalFileSize() {
+        let sum = 0;
+        this._files.forEach((f) => {
+            sum += parseInt(f.filesize);
+        });
+        this.totalFileSize = sum;
+        this.totalHumanFileSize = this.humanFileSize(sum)
+    }
+
+    /**
+     * returns the human-readable file size for the display
      *
      * @param filesize
      */
@@ -641,9 +674,11 @@ export class modelattachments implements OnDestroy {
     public deleteAttachment(id) {
         this.backend.deleteRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`, null, this.httpRequestsRefID)
             .subscribe({
-                next: (res) => {
+                next: () => {
                     let index = this._files.findIndex(f => f.id == id);
                     this._files.splice(index, 1);
+
+                    this.calculateTotalFileSize();
 
                     // rebuild the tree
                     this.buildTree();
@@ -654,6 +689,8 @@ export class modelattachments implements OnDestroy {
                     // broadcast the count
                     this.count--;
                     this.broadcastAttachmentCount();
+
+                    this.attachmentDeleted$.next(true);
                 },
                 error: (error) => {
                     this.toast.sendToast('Cannot delete attachment.', 'error', error.error.error.message, false);
@@ -825,8 +862,35 @@ export class modelattachments implements OnDestroy {
             case 'attachments.uploaded':
                 if (message.messagedata.reload && message.messagedata.module == this.module && message.messagedata.id == this.id) {
                     this._files = message.messagedata.uploadedFiles;
+                    this.calculateTotalFileSize();
                 }
                 break;
         }
+    }
+
+    /**
+     * calculates the folder size
+     * @param fileId
+     */
+    public calcFolderSize(fileId: string): number {
+        let folderFiles = this._files.filter(f => f.folder_id === fileId);
+        let sum = 0;
+
+        const calcNestedFolderSize = (nestedFileId: string): void => {
+            let folderFiles = this._files.filter(f => f.folder_id === nestedFileId);
+            folderFiles.forEach(f => {
+                sum += parseInt(f.filesize);
+            });
+        };
+
+        folderFiles.forEach(f => {
+            if (f.file_mime_type === 'folder') {
+                calcNestedFolderSize(f.id);
+            } else {
+                sum += parseInt(f.filesize);
+            }
+        });
+
+        return sum;
     }
 }

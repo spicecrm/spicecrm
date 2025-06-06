@@ -20,7 +20,8 @@ import { dictionary } from '../services/dictionary.service';
 
 @Component({
     selector: '[administration-dictionarymanager-item-field]',
-    templateUrl: '../templates/administrationdictionarymanageritemfield.html'
+    templateUrl: '../templates/administrationdictionarymanageritemfield.html',
+    standalone: false
 })
 export class AdministrationDictionaryManagerItemField implements AfterViewInit, OnInit {
     @Input() field: string = "";
@@ -72,7 +73,8 @@ export class AdministrationDictionaryManagerItemField implements AfterViewInit, 
 @Component({
     selector: 'administration-dictionarymanager',
     templateUrl: '../templates/administrationdictionarymanager.html',
-    providers: [dictionary]
+    providers: [dictionary],
+    standalone: false
 })
 export class AdministrationDictionaryManager implements AfterViewInit {
 
@@ -100,7 +102,8 @@ export class AdministrationDictionaryManager implements AfterViewInit {
 
 @Component({
     selector: '[administration-dictionarymanager-item]',
-    templateUrl: '../templates/administrationdictionarymanageritem.html'
+    templateUrl: '../templates/administrationdictionarymanageritem.html',
+    standalone: false
 })
 export class AdministrationDictionaryManagerItem implements AfterViewInit, OnInit {
     @Input() item: any = {};

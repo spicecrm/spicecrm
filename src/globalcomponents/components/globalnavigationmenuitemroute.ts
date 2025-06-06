@@ -19,7 +19,8 @@ interface menuItem {
  */
 @Component({
     selector: 'global-navigation-menu-item-route',
-    templateUrl: '../templates/globalnavigationmenuitemroute.html'
+    templateUrl: '../templates/globalnavigationmenuitemroute.html',
+    standalone: false
 })
 export class GlobalNavigationMenuItemRoute {
     clickListener: any;

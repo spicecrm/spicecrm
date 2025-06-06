@@ -14,6 +14,7 @@ import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     templateUrl: '../templates/servicecategorymanager.html',
+    standalone: false
 })
 export class ServiceCategoryManagerComponent {
     public category_tree = [];

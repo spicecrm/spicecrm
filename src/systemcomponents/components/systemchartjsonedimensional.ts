@@ -23,7 +23,8 @@ import {SystemChartJSService} from "../services/systemchartjs.service";
 @Component({
     selector: 'system-chart-js-one-dimensional',
     templateUrl: '../templates/systemchartjsonedimensional.html',
-    providers: [SystemChartJSService]
+    providers: [SystemChartJSService],
+    standalone: false
 })
 export class SystemChartJSOneDimensional implements OnChanges, OnDestroy {
     /**

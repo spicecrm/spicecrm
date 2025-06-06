@@ -18,7 +18,8 @@ declare var moment: any;
 @Component({
     selector: 'spice-account-determination-manager',
     templateUrl: '../templates/spiceaccountdeterminationmanager.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class SpiceAccountDeterminationManager implements OnInit{
 

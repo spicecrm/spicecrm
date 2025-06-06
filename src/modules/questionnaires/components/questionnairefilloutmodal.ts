@@ -14,7 +14,8 @@ import { backend } from '../../../services/backend.service';
 @Component({
     selector: 'questionnaire-fill-out-modal',
     templateUrl: '../templates/questionnairefilloutmodal.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class QuestionnaireFillOutModal implements OnInit {
 

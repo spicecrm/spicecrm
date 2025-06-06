@@ -11,7 +11,8 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: "object-timeline-audit-detail",
-    templateUrl: "../templates/objecttimelineauditdetail.html"
+    templateUrl: "../templates/objecttimelineauditdetail.html",
+    standalone: false
 })
 export class ObjectTimelineAuditDetail {
 

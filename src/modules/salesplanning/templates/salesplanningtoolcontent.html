@@ -12,7 +12,7 @@
             </button>
         </div>
         <div class="slds-col_bump-left slds-m-right--xx-small">
-            <system-checkbox [(ngModel)]="markDone" [disabled]="isClosing || isLoading || !nodeInfo?.leaf || !this.canEdit || !isEditMode" class="slds-m-right--x-small"><system-label label="LBL_CLOSE"></system-label></system-checkbox>
+            <system-checkbox [(ngModel)]="markDone" [disabled]="isClosing || isLoading || !nodeInfo?.leaf || !canEdit || !isEditMode" class="slds-m-right--x-small"><system-label label="LBL_CLOSE"></system-label></system-checkbox>
             <div class="slds-button-group">
                 <button *ngIf="isEditMode" [disabled]="isLoading" class="slds-button-group-item slds-button slds-button--neutral" (click)="cancel()">
                     <system-label label="LBL_CANCEL"></system-label>
@@ -25,7 +25,7 @@
                     <system-spinner *ngIf="isSaving" size="14" inverse="true" class="slds-m-right--xx-small" style="display: inline-block"></system-spinner>
                     <system-label label="LBL_SAVE"></system-label>
                 </button>
-                <button *ngIf="!isEditMode" [disabled]="isLoading || !nodeInfo?.leaf || !data || !this.canEdit" class="slds-button-group-item slds-button slds-button--neutral" (click)="setEditMode()">
+                <button *ngIf="!isEditMode" [disabled]="isLoading || !nodeInfo?.leaf || !data || !canEdit" class="slds-button-group-item slds-button slds-button--neutral" (click)="setEditMode()">
                     <system-label label="LBL_EDIT"></system-label>
                 </button>
             </div>

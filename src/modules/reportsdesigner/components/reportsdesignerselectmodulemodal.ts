@@ -14,6 +14,7 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: 'reports-designer-select-module-modal',
     templateUrl: '../templates/reportsdesignerselectmodulemodal.html',
+    standalone: false
 })
 export class ReportsDesignerSelectModuleModal implements OnInit {
 

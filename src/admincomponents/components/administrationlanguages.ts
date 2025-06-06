@@ -11,6 +11,7 @@ import {toast} from "../../services/toast.service";
 @Component({
     selector: 'administration-languages',
     templateUrl: '../templates/administrationlanguages.html',
+    standalone: false
 })
 
 export class AdministrationLanguages implements OnInit {

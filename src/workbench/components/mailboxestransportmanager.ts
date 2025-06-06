@@ -11,6 +11,7 @@ import {configurationService} from "../../services/configuration.service";
 @Component({
     selector: "mailboxes-transport-manager",
     templateUrl: "../templates/mailboxestransportmanager.html",
+    standalone: false
 })
 
 export class MailboxesTransportManager {

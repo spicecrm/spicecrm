@@ -757,7 +757,6 @@ class SysModuleFilters
             case 'notempty':
                 return ['exists' => ["field" => $condition->field]];
             case 'equals':
-                $this->checkMinNGramLength($condition->filtervalue);
                 $seed = BeanFactory::getBean($this->filtermodule);
                 $isMultiEnum = $seed->field_defs[$condition->field]['type'] == 'multienum';
                 if ($isMultiEnum) {

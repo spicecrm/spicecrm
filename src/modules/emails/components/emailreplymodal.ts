@@ -18,7 +18,8 @@ declare var moment: any;
 @Component({
     selector: 'email-reply-modal',
     templateUrl: '../templates/emailreplymodal.html',
-    providers: [view, model, emailsService, modelattachments]
+    providers: [view, model, emailsService, modelattachments],
+    standalone: false
 })
 export class EmailReplyModal implements OnInit {
 

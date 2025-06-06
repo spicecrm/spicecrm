@@ -12,7 +12,8 @@ import {model} from "../../../services/model.service";
 @Component({
     selector: 'reports-designer-manipulate-union',
     templateUrl: '../templates/reportsdesignermanipulateunion.html',
-    styles: ['.cdk-drop-list-dragging {background-color: #ddd !important}']
+    styles: ['.cdk-drop-list-dragging {background-color: #ddd !important}'],
+    standalone: false
 })
 export class ReportsDesignerManipulateUnion {
 

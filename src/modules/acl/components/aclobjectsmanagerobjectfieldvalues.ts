@@ -14,6 +14,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 @Component({
     selector: 'aclobjects-manager-object-fieldvalues',
     templateUrl: '../templates/aclobjectsmanagerobjectfieldvalues.html',
+    standalone: false
 })
 export class ACLObjectsManagerObjectFieldvalues {
 

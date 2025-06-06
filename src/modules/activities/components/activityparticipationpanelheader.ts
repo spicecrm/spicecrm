@@ -17,7 +17,8 @@ declare var _: any;
 @Component({
     selector: '[activity-participation-panel-header]',
     templateUrl: '../templates/activityparticipationpanelheader.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ActivityParticipationPanelHeader implements OnInit {
 

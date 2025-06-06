@@ -29,6 +29,7 @@ import {configurationService} from "../../../services/configuration.service";
     host: {
         'class': 'slds-height_full'
     },
+    standalone: false
 })
 
 export class DocumentFileEditor implements OnInit, OnChanges {

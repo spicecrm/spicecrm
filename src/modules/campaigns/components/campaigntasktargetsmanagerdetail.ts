@@ -9,7 +9,8 @@ import {model} from '../../../services/model.service';
  */
 @Component({
     selector: 'campaigntask-target-manager-details',
-    templateUrl: '../templates/campaigntasktargetsmanagerdetails.html'
+    templateUrl: '../templates/campaigntasktargetsmanagerdetails.html',
+    standalone: false
 })
 export class CampaignTaskTargetsManagerDetails {
     /**

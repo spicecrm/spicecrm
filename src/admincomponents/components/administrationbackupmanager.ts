@@ -6,7 +6,8 @@ import {AdministrationBackupManagerPreviewModal} from "./administrationbackupman
 
 @Component({
     selector: 'administration-backup-manager',
-    templateUrl: '../templates/administrationbackupmanager.html'
+    templateUrl: '../templates/administrationbackupmanager.html',
+    standalone: false
 })
 
 export class AdministrationBackupManager implements OnInit {

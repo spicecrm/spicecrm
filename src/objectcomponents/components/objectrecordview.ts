@@ -18,7 +18,8 @@ import {Subscription} from "rxjs";
 @Component({
     selector: 'object-recordview',
     templateUrl: '../templates/objectrecordview.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class ObjectRecordView implements OnInit, OnDestroy {
     /**

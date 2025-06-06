@@ -9,7 +9,8 @@ import {view} from "../../services/view.service";
 @Component({
     selector: 'object-page-header-detail-row',
     templateUrl: '../templates/objectpageheaderdetailrow.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ObjectPageHeaderDetailRow implements OnInit {
 

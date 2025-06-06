@@ -12,7 +12,8 @@ import {configurationService} from "../../../services/configuration.service";
  */
 @Component({
     selector: 'groupware-email-archive-pane-attachments',
-    templateUrl: '../templates/groupwareemailarchivepaneattachments.html'
+    templateUrl: '../templates/groupwareemailarchivepaneattachments.html',
+    standalone: false
 })
 export class GroupwareEmailArchivePaneAttachments {
 

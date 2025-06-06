@@ -25,7 +25,8 @@ import {orgunitsViewService} from "../services/orgunitsview.service";
 @Component({
     selector: 'orgunits-chart-view',
     templateUrl: '../templates/orgunitschartview.html',
-    providers: [orgunitsViewService]
+    providers: [orgunitsViewService],
+    standalone: false
 })
 export class OrgunitsChartView implements AfterViewInit {
 

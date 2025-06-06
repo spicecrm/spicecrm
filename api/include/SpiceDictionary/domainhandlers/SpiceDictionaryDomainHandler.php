@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceDictionary\domainhandlers;
 
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 
 abstract class SpiceDictionaryDomainHandler
 {
@@ -14,7 +15,7 @@ abstract class SpiceDictionaryDomainHandler
      * @param SpiceBean $bean
      * @return bool
      */
-    public function onRetrieve(SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
+    public function onRetrieve(array $item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
     {
         return true;
     }
@@ -26,7 +27,7 @@ abstract class SpiceDictionaryDomainHandler
      * @param SpiceBean $bean
      * @return bool
      */
-    public function beforeSave(SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
+    public function beforeSave(array $item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
     {
         return true;
     }
@@ -38,8 +39,20 @@ abstract class SpiceDictionaryDomainHandler
      * @param SpiceBean $bean
      * @return bool
      */
-    public function afterSave(SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
+    public function afterSave(array $item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
     {
         return true;
+    }
+
+    /**
+     * Manipulate the domain field definitions dynamically before repair
+     * @param SpiceDictionaryItem $item
+     * @param SpiceDictionaryDomain $domain
+     * @param array $definitions The set of definitions to process and repair.
+     * @return array The repaired definitions.
+     */
+    public function onRepair(SpiceDictionaryItem $item, SpiceDictionaryDomain $domain, array $definitions): array
+    {
+        return $definitions;
     }
 }

@@ -12,7 +12,8 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 
 @Component({
     selector: 'field-servicequeue',
-    templateUrl: '../templates/fieldservicequeue.html'
+    templateUrl: '../templates/fieldservicequeue.html',
+    standalone: false
 })
 export class fieldServiceQueue extends fieldGeneric {
 

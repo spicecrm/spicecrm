@@ -13,8 +13,8 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
     templateUrl: '../templates/fieldcategoriestree.html',
     animations: [
         trigger('treeanimation', [
-            state('true', style({'margin-left': '-34%', 'margin-right': '34%'})),
-            state('false', style({'margin-left': '0px', 'margin-right': '0px'})),
+            state('true', style({ 'margin-left': '-34%', 'margin-right': '34%' })),
+            state('false', style({ 'margin-left': '0px', 'margin-right': '0px' })),
             transition('true => false', [
                 animate('.2s')
             ]),
@@ -22,7 +22,8 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
                 animate('.2s'),
             ])
         ])
-    ]
+    ],
+    standalone: false
 })
 export class fieldCategoriesTree{
 

@@ -16,7 +16,8 @@ declare var _;
 @Component({
     selector: 'global-search-module',
     templateUrl: '../templates/globalsearchmodule.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class GlobalSearchModule implements OnInit {
     @Input()public module: string = '';

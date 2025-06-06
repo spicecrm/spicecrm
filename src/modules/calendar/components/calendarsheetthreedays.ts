@@ -15,7 +15,8 @@ declare var moment: any;
 @Component({
     selector: 'calendar-sheet-three-days',
     templateUrl: '../templates/calendarsheetthreedays.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class CalendarSheetThreeDays extends CalendarSheetWeek implements OnInit {
     /**

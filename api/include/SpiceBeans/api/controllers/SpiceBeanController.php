@@ -23,6 +23,7 @@ class SpiceBeanController
     {
         $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
         $searchParams = $req->getQueryParams();
+        RESTManager::getInstance()->excludeImageFields = true;
         return $res->withJson($moduleHandler->get_bean_list($args['beanName'], $searchParams));
     }
 

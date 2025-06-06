@@ -6,7 +6,8 @@ import {metadata} from "../../services/metadata.service";
 
 @Component({
     selector: "system-icon",
-    templateUrl: "../templates/systemicon.html"
+    templateUrl: "../templates/systemicon.html",
+    standalone: false
 })
 export class SystemIcon {
     @Input() public module: string = "";

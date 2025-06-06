@@ -21,6 +21,7 @@ declare var moment: any;
 @Component({
     selector: 'campaigntask-target-manager-button',
     templateUrl: '../templates/campaigntasktargetsmanagerbutton.html',
+    standalone: false
 })
 export class CampaignTaskTargetsManagerButton {
     constructor(public model: model,

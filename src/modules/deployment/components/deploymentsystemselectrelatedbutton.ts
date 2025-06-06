@@ -17,7 +17,8 @@ import {take} from "rxjs/operators";
 @Component({
     selector: 'deployment-system-select-related-button',
     templateUrl: '../templates/deploymentsystemselectrelatedbutton.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class DeploymentSystemSelectRelatedButton {
 

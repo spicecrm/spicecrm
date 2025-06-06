@@ -20,7 +20,8 @@ declare var _: any;
     templateUrl: '../templates/objectlistviewfilterpanel.html',
     host: {
         class: 'slds-is-fixed'
-    }
+    },
+    standalone: false
 })
 export class ObjectListViewFilterPanel implements OnDestroy {
 

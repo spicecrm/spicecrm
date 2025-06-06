@@ -13,7 +13,8 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: "field-duns-number",
-    templateUrl: "../templates/fielddunsnumber.html"
+    templateUrl: "../templates/fielddunsnumber.html",
+    standalone: false
 })
 export class FieldDunsNumber extends fieldGeneric {
 

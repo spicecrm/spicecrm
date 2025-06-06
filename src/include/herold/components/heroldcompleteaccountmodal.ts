@@ -11,6 +11,7 @@ import {configurationService} from "../../../services/configuration.service";
 @Component({
     selector: 'herold-complete-account-modal',
     templateUrl: '../templates/heroldcompleteaccountmodal.html',
+    standalone: false
 })
 export class HeroldCompleteAccountModal implements OnInit{
 

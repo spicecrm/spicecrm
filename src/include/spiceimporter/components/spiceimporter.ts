@@ -23,7 +23,8 @@ declare var _: any;
 @Component({
     selector: 'spice-importer',
     templateUrl: '../templates/spiceimporter.html',
-    providers: [model, SpiceImporterService]
+    providers: [model, SpiceImporterService],
+    standalone: false
 })
 export class SpiceImporter implements OnInit {
     @ViewChild('contentcontainer', {read: ViewContainerRef, static: true}) public contentcontainer: ViewContainerRef;

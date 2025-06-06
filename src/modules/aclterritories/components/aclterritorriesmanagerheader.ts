@@ -7,6 +7,7 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: 'aclterritorries-manager-header',
     templateUrl: '../templates/aclterritorriesmanagerheader.html',
+    standalone: false
 })
 export class ACLTerritorriesManagerHeader {
 

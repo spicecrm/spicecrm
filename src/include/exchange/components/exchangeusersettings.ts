@@ -22,6 +22,7 @@ declare var moment: any;
 
 @Component({
     templateUrl: '../templates/exchangeusersettings.html',
+    standalone: false
 })
 export class ExchangeUserSettings implements OnInit {
 

@@ -8,7 +8,8 @@ import {Subscription} from "rxjs";
 @Component({
     selector: 'workflow-manager-task-types-generate-bean',
     templateUrl: '../templates/workflowmanagertasktypesgeneratebean.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 
 export class WorkflowManagerTaskTypesGenerateBean implements OnInit, OnDestroy {

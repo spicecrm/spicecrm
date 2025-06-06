@@ -9,7 +9,8 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'sales-planning-tool-tree',
-    templateUrl: '../templates/salesplanningtooltree.html'
+    templateUrl: '../templates/salesplanningtooltree.html',
+    standalone: false
 })
 
 export class SalesPlanningToolTree implements OnInit {

@@ -13,7 +13,8 @@ import {sapIDOCSegmentI, sapIDOCTypeI} from "../interfaces/moudesapidocs.interfa
     host: {
         '[attr.aria-expanded]': 'expanded',
         '[attr.aria-level]': 'level + 1'
-    }
+    },
+    standalone: false
 })
 
 export class SAPIDOCsManagerSegmentsTreeIdocType implements OnInit {

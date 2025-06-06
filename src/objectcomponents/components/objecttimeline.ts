@@ -29,7 +29,8 @@ declare var moment;
 @Component({
     selector: 'object-timeline',
     templateUrl: '../templates/objecttimeline.html',
-    providers: [view, timeline]
+    providers: [view, timeline],
+    standalone: false
 })
 export class ObjectTimeline implements OnInit, AfterViewInit {
 

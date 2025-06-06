@@ -294,7 +294,7 @@
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <system-dynamic-component component="fieldActivityReminder"
-                        [system-model-provider]="{ module:'Calls', id: '', data: { 'reminder_time': this.preferences.reminder_time }}" (data$)="reminderTimeChanged($event)"
+                        [system-model-provider]="{ module:'Calls', id: '', data: { 'reminder_time': preferences.reminder_time }}" (data$)="reminderTimeChanged($event)"
                         [componentattributes]="{ fieldname: 'reminder_time', fieldconfig: { hidelabel: true, showEmptyOption: isPersonalContext }}">
                     </system-dynamic-component>
                 </system-preferences-panel-item-edit>

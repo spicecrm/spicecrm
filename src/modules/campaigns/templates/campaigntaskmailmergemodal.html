@@ -4,7 +4,7 @@
         <div class="slds-p-around--small">
             <div class="slds-grid slds-grid--vertical-align-center slds-p-bottom--small">
                 <system-label class="slds-p-horizontal--x-small" label="LBL_LIMIT"></system-label>
-                <p class="slds-text-body--regular slds-truncate slds-p-horizontal--x-small" >{{this.pdfLimitConf}}</p>
+                <p class="slds-text-body--regular slds-truncate slds-p-horizontal--x-small" >{{pdfLimitConf}}</p>
             </div>
             <div class="slds-grid slds-grid--vertical-align-center">
                 <system-label class="slds-p-horizontal--x-small" label="LBL_START"></system-label>
@@ -34,7 +34,7 @@
     <system-modal-footer>
         <div class="slds-grid slds-grid_vertical-align-center">
             <system-label class="slds-p-horizontal--x-small" label="LBL_EXCLUDED_INACTIVE"></system-label>
-            <p class="slds-text-body--regular slds-truncate slds-p-horizontal--x-small" >{{this.inactiveCount}}</p>
+            <p class="slds-text-body--regular slds-truncate slds-p-horizontal--x-small" >{{inactiveCount}}</p>
             <div class="slds-col slds-col_bump-right">
                 <button [disabled]="!pdf || loading" class="slds-button slds-button--neutral" (click)="download()"><system-label label="LBL_DOWNLOAD"></system-label></button>
                 <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>

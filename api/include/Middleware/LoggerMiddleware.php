@@ -78,8 +78,10 @@ class LoggerMiddleware
         // will be converted to the complete url when be used in text context, therefore it is cast to a string...
         // due to size constraints the query params (everything after the question mark) will be cut
         // and mask the authorization Part
-        $this->logEntry->url = preg_replace('/:\/\/(.*?:.*?)@/', '://*****:*****@', explode('?', (string) $request->getUri())[0]);
-
+        $url = parse_url($request->getUri());
+        $credentialsString = !$url['user'] && !$url['pass'] ? '' : ((!$url['user'] ? '' : '*****:') . (!$url['pass'] ? '' : '*****') . '@');
+        $this->logEntry->url = "{$url['scheme']}://$credentialsString{$url['host']}{$url['path']}";
+        $this->logEntry->get_params = json_encode($request->getQueryParams());
         $this->logEntry->ip             = $request->getServerParams()['REMOTE_ADDR'];
         $this->logEntry->request_params     = json_encode($_GET);
 

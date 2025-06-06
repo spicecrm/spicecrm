@@ -13,7 +13,8 @@ import {GlobalNavigationTabbedMoreTab} from "./globalnavigationtabbedmoretab";
  */
 @Component({
     selector: 'global-navigation-tabbed-sub-tab-more-tab',
-    templateUrl: '../templates/globalnavigationtabbedsubtabmoretab.html'
+    templateUrl: '../templates/globalnavigationtabbedsubtabmoretab.html',
+    standalone: false
 })
 export class GlobalNavigationTabbedSubTabMoreTab extends GlobalNavigationTabbedMoreTab {
 

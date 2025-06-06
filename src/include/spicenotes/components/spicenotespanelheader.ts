@@ -9,8 +9,8 @@ import {broadcast} from '../../../services/broadcast.service';
 import {language} from '../../../services/language.service';
 
 @Component({
-    templateUrl: '../templates/spicenotespanelheader.html'
-
+    templateUrl: '../templates/spicenotespanelheader.html',
+    standalone: false
 })
 export class SpiceNotesPanelHeader implements OnDestroy {
 

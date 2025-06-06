@@ -10,7 +10,8 @@ import {navigation, objectTab} from '../../services/navigation.service';
 
 @Component({
     selector: 'global-navigation-tabbed-subtab-item',
-    templateUrl: '../templates/globalnavigationtabbedsubtabitem.html'
+    templateUrl: '../templates/globalnavigationtabbedsubtabitem.html',
+    standalone: false
 })
 export class GlobalNavigationTabbedSubtabItem {
     /**

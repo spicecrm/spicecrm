@@ -14,7 +14,8 @@ declare var _: any;
 
 @Component({
     selector: 'hcm-skill-manager',
-    templateUrl : '../templates/hcmskillmanager.html'
+    templateUrl: '../templates/hcmskillmanager.html',
+    standalone: false
 })
 
 export class HCMSkillManager implements OnInit, OnDestroy{

@@ -21,7 +21,8 @@ declare var _;
  */
 @Component({
     selector: 'field-email-addresses',
-    templateUrl: '../templates/fieldemailaddresses.html'
+    templateUrl: '../templates/fieldemailaddresses.html',
+    standalone: false
 })
 export class fieldEmailAddresses extends fieldGeneric implements OnInit {
     /**

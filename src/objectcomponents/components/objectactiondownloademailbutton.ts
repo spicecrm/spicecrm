@@ -11,7 +11,8 @@ import {helper} from "../../services/helper.service";
  */
 @Component({
     selector: 'object-action-download-email-button',
-    templateUrl: '../templates/objectactiondownloademailbutton.html'
+    templateUrl: '../templates/objectactiondownloademailbutton.html',
+    standalone: false
 })
 export class ObjectActionDownloadEmailButton {
 

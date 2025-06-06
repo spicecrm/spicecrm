@@ -8,7 +8,8 @@ import {Router} from "@angular/router";
 
 @Component({
     selector: 'campaign-delete-button',
-    templateUrl: '../templates/campaigndeletebutton.html'
+    templateUrl: '../templates/campaigndeletebutton.html',
+    standalone: false
 })
 
 export class CampaignDeleteButton {

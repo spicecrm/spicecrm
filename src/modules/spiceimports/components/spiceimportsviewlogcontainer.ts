@@ -8,6 +8,7 @@ import {model} from '../../../services/model.service';
 @Component({
     selector: 'spice-imports-view-log-container',
     templateUrl: '../templates/spiceimportsviewlogcontainer.html',
+    standalone: false
 })
 export class SpiceImportsViewLogContainer{
 

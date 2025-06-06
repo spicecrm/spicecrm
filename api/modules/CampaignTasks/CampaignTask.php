@@ -460,7 +460,7 @@ class CampaignTask extends SpiceBean
 
             $email = $this->sendEmail($bean, $emailAddress->email_address, true, true);
             $testCount++;
-            if ($email->status == 'sent') $sentCount++;
+            if ( $email->status === 'sent' or $email->status === 'intercepted' ) $sentCount++;
         }
 
         # reset the current user for the system after parsing
@@ -533,8 +533,8 @@ class CampaignTask extends SpiceBean
 
                 $email = $this->sendEmail($seed, $emailAddress->email_address,true, false, ['CampaignLog' => $campaignLog]);
 
-                if ($email->status == 'sent') {
-                    $campaignLog->activity_type = 'sent';
+                if ( $email->status === 'sent' or $email->status === 'intercepted' ) {
+                    $campaignLog->activity_type = $email->status;
                 }
 
                 if ($this->save_emails == 1) {
@@ -554,8 +554,10 @@ class CampaignTask extends SpiceBean
         return true;
     }
 
-    public function getEmailAddress(string $listId, SpiceBean $person, $emailAddrBeanRelId = null): ?EmailAddress
+    public function getEmailAddress(string $listId, bool | SpiceBean $person, $emailAddrBeanRelId = null): ?EmailAddress
     {
+        if (!$person) return null;
+
         $db = DBManagerFactory::getInstance();
 //        $emailAddrBeanRelId = $db->getOne("SELECT email_addr_bean_rel_id from prospect_lists_prospects WHERE prospect_list_id = '$listId' AND related_id ='$person->id' AND deleted = 0");
 
@@ -670,24 +672,25 @@ class CampaignTask extends SpiceBean
         if($saveEmail){
             $email->parent_type = $seed->_module;
             $email->parent_id = $seed->id;
-            $email->to_be_sent = true;
+            $email->to_be_sent_now = true;
+
             if (isset($addBeans['CampaignLog'])) {
                 $email->registerTrackingParentData('CampaignLog', $addBeans['CampaignLog']->id);
             }
-            $email->save();
+            $email->save(false, false);
 
         } else {
 
             try {
                 $email->loadAttachments();
                 $result = $email->sendEmail();
+                $email->status = $result['result'] ? 'sent' : 'send_error';
             } catch ( MessageInterceptedException $e ) {
-                throw $e;
+                $email->status = 'intercepted';
             } catch (\Throwable $e) {
-                $result = ['result' => false];
+                $email->status = 'send_error';
             }
 
-            $email->status = $result['result'] ? 'sent' : 'send_error';
         }
 
         return $email;
@@ -729,7 +732,7 @@ class CampaignTask extends SpiceBean
                 $textMessage->parent_type = $seed->_module;
                 $textMessage->parent_id = $seed->id;
                 $textMessage->to_be_sent = true;
-                $textMessage->save();
+                $textMessage->save(false, false);
             } else {
                 $textMessage->send();
             }

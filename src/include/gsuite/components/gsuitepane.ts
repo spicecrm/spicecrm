@@ -23,10 +23,11 @@ import {loginCheck} from "../../../services/login.service";
     selector: 'gsuite-pane',
     templateUrl: '../templates/gsuitepane.html',
     providers: [
-        {provide: GroupwareService, useClass: GSuiteGroupware},
+        { provide: GroupwareService, useClass: GSuiteGroupware },
         GSuiteBrokerService,
         model
-    ]
+    ],
+    standalone: false
 })
 export class GSuitePane implements OnInit {
 

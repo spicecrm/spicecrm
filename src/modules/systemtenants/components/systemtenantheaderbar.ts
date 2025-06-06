@@ -10,7 +10,8 @@ import {loader} from "../../../services/loader.service";
 
 @Component({
     selector: 'systemtenant-header-bar',
-    templateUrl: '../templates/systemtenantheaderbar.html'
+    templateUrl: '../templates/systemtenantheaderbar.html',
+    standalone: false
 })
 export class SystemTenantHeaderBar {
 

@@ -9,7 +9,8 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'reports-designer-more-integrate-item-filters',
-    templateUrl: '../templates/reportsdesignermoreintegrateitemfilters.html'
+    templateUrl: '../templates/reportsdesignermoreintegrateitemfilters.html',
+    standalone: false
 })
 export class ReportsDesignerMoreIntegrateItemFilters {
 

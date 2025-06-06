@@ -17,7 +17,8 @@ import {view} from "../../services/view.service";
 * add a pipe to filter by the object
  */
 @Pipe({
-    name: 'objectrepositorymanagerfilter'
+    name: 'objectrepositorymanagerfilter',
+    standalone: false
 })
 export class ObjectRepositoryManagerFilter {
     public transform(values, filter) {
@@ -39,7 +40,8 @@ export class ObjectRepositoryManagerFilter {
 @Component({
     selector: 'objectrepository-manager',
     templateUrl: '../templates/objectrepositorymanager.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ObjectRepositoryManager {
     public treelist: any[] = [];

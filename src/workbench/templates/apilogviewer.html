@@ -1,5 +1,7 @@
 <workbench-header titlelabel="LBL_API_LOG_VIEWER" icon="custom:custom62">
-    ({{entries.length}} <system-label label="LBL_RECORDS"></system-label>)
+    @if ( isLoaded ) {
+        {{userpreferences.formatMoney(entries.length,0)}} <system-label label="LBL_RECORDS"></system-label>.&nbsp;<system-label label="LBL_TOTAL_ENTRIES_IN_DB"></system-label>: {{userpreferences.formatMoney(totalCount,0)}}
+    }
     <workbench-header-controls>
         <div class="slds-grid slds-grid--vertical-align-center">
             <div *ngIf="logtables.length > 0" class="slds-form-element slds-m-right--small">
@@ -12,6 +14,7 @@
                     </div>
                 </div>
             </div>
+            <button class="slds-button slds-button--neutral" (click)="truncate()"><system-label label="LBL_TRUNCATE"></system-label></button><!-- [disabled]="0 && isLoading" -->
             <button class="slds-button slds-button--brand" (click)="buttonLoad()" [disabled]="isLoading"><system-label label="LBL_LOAD"></system-label></button>
         </div>
     </workbench-header-controls>
@@ -119,7 +122,7 @@
         </div>
     </div>
     <div system-to-bottom class="slds-border--top">
-        <table class="slds-table slds-table--bordered slds-table--fixed-layout slds-table--col-bordered slds-no-row-hover slds-table_header-fixed">
+        <table class="slds-table slds-table--bordered slds-table--fixed-layout slds-table--col-bordered slds-table_header-fixed">
             <thead>
             <tr>
                 <th style="width: 8rem;"><system-label class="slds-th__action" label="LBL_DATE"></system-label></th>
@@ -133,10 +136,11 @@
                 <th class="slds-resizable"><system-label class="slds-th__action" label="LBL_ROUTE_ARGUMENTS"></system-label></th>
                 <th class="slds-resizable"><system-label class="slds-th__action" label="LBL_URL_PARAMETERS"></system-label></th>
                 <th style="width:2.5rem"></th>
+                <!--th style="width:2.5rem"></th-->
             </tr>
             </thead>
             <tbody #tbody>
-            <tr *ngFor="let entry of entries" [ngClass]="{'slds-theme--error' : entry.http_status_code < 200 || entry.http_status_code >= 300 }">
+            <tr *ngFor="let entry of entries" [ngClass]="{'slds-theme--error' : entry.http_status_code >= 400 }">
                 <td><system-display-datetime [date]="entry.date_entered"></system-display-datetime></td>
                 <td><div class="slds-truncate">{{entry.user_name}}</div></td>
                 <td><div class="slds-truncate">{{entry.transaction_id}}</div></td>
@@ -152,6 +156,11 @@
                         <system-button-icon [icon]="'expand'" [size]="'medium'"></system-button-icon>
                     </button>
                 </td>
+                <!--td>
+                    <button *ngIf="entry.direction==='I'" class="slds-button slds-button--icon-border slds-button_icon-small" (click)="showReplayModal(entry)">
+                        <system-button-icon [icon]="'play'" [size]="'medium'"></system-button-icon>
+                    </button>
+                </td-->
             </tr>
             </tbody>
         </table>

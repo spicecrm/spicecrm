@@ -16,7 +16,8 @@ declare var _;
 
 @Component({
     selector: 'reports-designer-more-integrate-item-schedule',
-    templateUrl: '../templates/reportsdesignermoreintegrateitemschedule.html'
+    templateUrl: '../templates/reportsdesignermoreintegrateitemschedule.html',
+    standalone: false
 })
 export class ReportsDesignerMoreIntegrateItemSchedule {
 

@@ -15,7 +15,8 @@ declare var _;
 
 @Component({
     selector: 'questions-manager-edit-basic-with-options',
-    template: ''
+    template: '',
+    standalone: false
 })
 export class QuestionsManagerEditBasicWithOptions extends QuestionsManagerEditBasic implements OnInit {
 

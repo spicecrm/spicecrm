@@ -49,6 +49,16 @@
                             @case ('options'){
                                 <spice-page-builder-input-options [(ngModel)]="element.attributes[styleAttribute.name]" [options]="styleAttribute.options" [label]="styleAttribute.name"/>
                             }
+                            @case ('bool'){
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label">
+                                        <system-label [label]="styleAttribute.name"/>
+                                    </label>
+                                    <div class="slds-p-vertical--xx-small">
+                                        <system-checkbox [(ngModel)]="element.attributes[styleAttribute.name]"/>
+                                    </div>
+                                </div>
+                            }
                             @default {
                                 <spice-page-builder-input-text [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name"/>
                             }

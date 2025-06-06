@@ -8,7 +8,8 @@ import {DocumentFileEditor} from "./documentfileeditor";
     selector: 'document-file-editor-standalone',
     templateUrl: '../templates/documentfileeditorstandalone.html',
     providers: [model],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 
 export class DocumentFileEditorStandalone implements AfterViewInit, OnDestroy {

@@ -12,7 +12,8 @@ import {backend} from '../../../services/backend.service';
 import {toast} from "../../../services/toast.service";
 
 @Component({
-    templateUrl: '../templates/evalanchemailingmodal.html'
+    templateUrl: '../templates/evalanchemailingmodal.html',
+    standalone: false
 })
 export class EvalancheMailingModal {
 

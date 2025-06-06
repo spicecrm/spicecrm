@@ -90,7 +90,7 @@ class SpiceDictionaryDomainValidations
 //                    'minvalue' => $domainvalue['minvalue'],
 //                    'maxval' => $domainvalue['maxval'],
                     'label' => $domainvalue['label'],
-                    'sequence' => $domainvalue['sequence'],
+                    'sequence' => (int)$domainvalue['sequence'],
                     'status' => $domainvalue['status'],
                 ];
             }
@@ -104,7 +104,7 @@ class SpiceDictionaryDomainValidations
 //                'minvalue' => $domainvalue['minvalue'],
 //                'maxvalue' => $domainvalue['maxvalue'],
                     'label' => $domainvalue['label'],
-                    'sequence' => $domainvalue['sequence'],
+                    'sequence' => (int)$domainvalue['sequence'],
                     'status' => $domainvalue['status'],
                 ];
             }

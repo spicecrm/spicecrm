@@ -11,7 +11,8 @@ import {layout} from "../../../services/layout.service";
 
 @Component({
     selector: 'kpis-container',
-    templateUrl: '../templates/kpiscontainer.html'
+    templateUrl: '../templates/kpiscontainer.html',
+    standalone: false
 })
 
 export class KPIsContainer implements OnChanges {
