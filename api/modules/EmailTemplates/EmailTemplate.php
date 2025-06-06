@@ -201,7 +201,11 @@ class EmailTemplate extends SpiceBean {
         $content .= "DTSTART:" . date('Ymd\THis\Z', strtotime($bean->date_start)) . "\r\n";
         $content .= "DTEND:" . date('Ymd\THis\Z', strtotime($bean->date_end)) . "\r\n";
         $content .= "SUMMARY:" . $bean->name . "\r\n";
-        $content .= "DESCRIPTION:" . str_replace("\n", "\\n", $bean->description) . "\r\n";
+
+        $cleanDescription = $this->htmlToPlainText($bean->description);
+        $cleanDescription = str_replace("\n", "\\n", $cleanDescription);
+
+        $content .= "DESCRIPTION:" . $cleanDescription . "\r\n";
         $content .= "END:VEVENT\r\n";
         $content .= "END:VCALENDAR\r\n";
 
@@ -213,6 +217,23 @@ class EmailTemplate extends SpiceBean {
         ];
 
         return $retArray;
+    }
+
+    private function htmlToPlainText($html) {
+        $html = str_replace(['<br>', '<br/>', '<br />'], "\n", $html);
+        $html = str_replace('</p>', "\n\n", $html);
+        $html = str_replace(['<p>', '</div>'], '', $html);
+        $html = str_replace('<div>', "\n", $html);
+        $html = str_replace('&nbsp;', ' ', $html);
+
+        $text = strip_tags($html);
+
+        $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+        $text = preg_replace('/\n\s*\n\s*\n/', "\n\n", $text);
+        $text = preg_replace('/[ \t]+/', ' ', $text);
+        $text = trim($text);
+
+        return $text;
     }
 
 }
