@@ -61,7 +61,10 @@ export class ObjectStatusNetworkButton implements OnInit {
      */
     get primaryItem() {
         for (let statusnetworkitem of this.statusNetwork) {
-            if (statusnetworkitem.status_from == this.model.getField(this.statusField) && (!statusnetworkitem.required_model_state || this.model.checkModelState(statusnetworkitem.required_model_state))) {
+
+            const aclCheck = (!statusnetworkitem.required_model_acl_action || this.model.checkAccess(statusnetworkitem.required_model_acl_action));
+
+            if (aclCheck && statusnetworkitem.status_from == this.model.getField(this.statusField) && (!statusnetworkitem.required_model_state || this.model.checkModelState(statusnetworkitem.required_model_state))) {
                 return statusnetworkitem;
             }
         }
@@ -76,7 +79,10 @@ export class ObjectStatusNetworkButton implements OnInit {
         let retArray = [];
         let firstHit = false;
         for (let statusnetworkitem of this.statusNetwork) {
-            if (statusnetworkitem.status_from == this.model.getField(this.statusField) && (!statusnetworkitem.required_model_state || this.model.checkModelState(statusnetworkitem.required_model_state))) {
+
+            const aclCheck = (!statusnetworkitem.required_model_acl_action || this.model.checkAccess(statusnetworkitem.required_model_acl_action));
+
+            if (aclCheck && statusnetworkitem.status_from == this.model.getField(this.statusField) && (!statusnetworkitem.required_model_state || this.model.checkModelState(statusnetworkitem.required_model_state))) {
 
                 if (this.onlyDropdown || firstHit) {
                     retArray.push(statusnetworkitem);
