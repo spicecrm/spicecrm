@@ -1,9 +1,8 @@
 <?php
 namespace SpiceCRM\includes\SysCurrencies\schedulerjobtasks;
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
-use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysCurrencies\SysCurrencies;
 use SpiceCRM\includes\TimeDate;

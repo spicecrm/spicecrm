@@ -1,9 +1,8 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
 
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
+use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\Administration\api\controllers\DictionaryController;
 
 $routes = [

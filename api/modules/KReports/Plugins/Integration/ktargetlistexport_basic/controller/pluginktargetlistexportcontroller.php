@@ -12,7 +12,7 @@
 ******************************************************************************* */
 
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 
 class pluginktargetlistexportcontroller {
 
