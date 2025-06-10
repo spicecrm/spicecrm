@@ -262,10 +262,12 @@ class AuthenticateController
      */
     public function validateTOTPCode( Request $req, Response $res, array $args): Response
     {
-        $this->checkCanManage2FA();
-
         $db = DBManagerFactory::getInstance();
         $forUser = $this->get2FAUserObject($req);
+
+        AuthenticationController::getInstance()->setCurrentUser($forUser);
+
+        $this->checkCanManage2FA();
 
         $record = $db->fetchOne("SELECT * FROM users_totp WHERE user_id = '{$forUser->id}' AND auth_status = 'C' AND deleted = 0");
 
