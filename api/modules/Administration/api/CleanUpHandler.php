@@ -1,7 +1,7 @@
 <?php
 namespace SpiceCRM\modules\Administration\api;
 
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\FileUtils;
 

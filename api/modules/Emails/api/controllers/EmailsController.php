@@ -2,23 +2,23 @@
 
 namespace SpiceCRM\modules\Emails\api\controllers;
 
-use SpiceCRM\data\BeanFactory;
 use Exception;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachmentHandler;
 use SpiceCRM\extensions\modules\Mailboxes\Handlers\OutlookAttachmentHandler;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\DataStreams\StreamFactory;
-use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachmentHandler;
-use SpiceCRM\includes\UploadFile;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\UploadFile;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\Emails\Email;
 
 class EmailsController
 {
