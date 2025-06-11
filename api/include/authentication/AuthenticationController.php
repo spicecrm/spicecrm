@@ -3,8 +3,6 @@
 
 namespace SpiceCRM\includes\authentication;
 
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\GoogleAuthenticate\GoogleAuthenticate;
 use SpiceCRM\includes\authentication\interfaces\AccessUtilsI;
 use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
@@ -15,7 +13,6 @@ use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRM2FAUtils;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAccessUtils;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
@@ -23,6 +20,9 @@ use SpiceCRM\includes\ErrorHandlers\ServiceUnavailableException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;

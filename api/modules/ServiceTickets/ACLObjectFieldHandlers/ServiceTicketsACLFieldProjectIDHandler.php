@@ -13,23 +13,24 @@ class ServiceTicketsACLFieldProjectIDHandler implements SpiceACLObjectFieldHandl
      * Generates a database condition string based on the provided table and field names.
      *
      * @param string $tableName The name of the database table.
+     * @param string $fieldName The name of the database field.
      * @return string Returns a formatted string representing the database condition.
      * @throws DatabaseException
      */
-    public function getDBCondition(string $tableName): string
+    public function getDBCondition(string $tableName, string $fieldName): string
     {
         $projectIds = join(',', array_map(fn($id) => "'$id'", $this->getProjectIds()));;
 
-        return empty($projectIds) ? '1 = 0' : "$tableName.project_id IN ($projectIds)";
+        return empty($projectIds) ? '1 = 0' : "$tableName.$fieldName IN ($projectIds)";
     }
 
     /**
      * Retrieves the full-text search condition based on the provided field name.
-     *
+     * @param string $fieldName The name of the field for which to generate the full-text search condition.
      * @return object|null The full-text search condition generated for the specified field.
      * @throws DatabaseException
      */
-    public function getFTSCondition(): ?object
+    public function getFTSCondition(string $fieldName): ?object
     {
         $projectIds = $this->getProjectIds();
 
@@ -37,7 +38,7 @@ class ServiceTicketsACLFieldProjectIDHandler implements SpiceACLObjectFieldHandl
             'key' => 'must',
             'value' => [
                 'terms' => [
-                    "project_id.raw" => $projectIds
+                    "$fieldName.raw" => $projectIds
                 ]
             ]];
     }

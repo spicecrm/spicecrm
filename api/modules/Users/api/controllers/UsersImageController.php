@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\modules\Users\api\controllers;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use Slim\Psr7\Request as Request;

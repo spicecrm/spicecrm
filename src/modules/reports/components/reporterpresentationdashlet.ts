@@ -125,6 +125,10 @@ export class ReporterPresentationDashlet implements AfterViewInit, OnInit {
         this.model.goDetail();
     }
 
+    public reloadReport(){
+        this.reporterconfig.refresh();
+    }
+
     /**
      * renders the presentation
      */

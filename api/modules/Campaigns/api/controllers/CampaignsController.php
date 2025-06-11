@@ -3,11 +3,11 @@
 
 namespace SpiceCRM\modules\Campaigns\api\controllers;
 
-use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceSlim\SpiceResponse;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceSlim\SpiceResponse;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 require_once 'modules/Campaigns/utils.php';

@@ -35,7 +35,7 @@
 ********************************************************************************/
 namespace SpiceCRM\includes\SugarObjects\templates\basic;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 
 class Basic extends SpiceBean
 {

@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\Mailboxes\schedulerjobtasks;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 
 class MailboxesSchedulerJobTasks
 {

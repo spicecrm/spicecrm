@@ -190,6 +190,7 @@ import {HL7ManagerRule} from './components/hl7managerrule';
 import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkanban";
 import {DomainManagerDefinitionUsageModal} from "./components/domainmanagerdefinitionusagemodal";
 import {DictionaryManagerUsageModal} from "./components/dictionarymanagereusagemodal";
+import {DictionaryManagerFilterItemsPipe} from "./pipes/dictionarymanagerfilteritems.pipe";
 
 
 @NgModule({
@@ -201,7 +202,8 @@ import {DictionaryManagerUsageModal} from "./components/dictionarymanagereusagem
         ObjectFields,
         ObjectComponents,
         GlobalComponents,
-        DragDropModule
+        DragDropModule,
+        DictionaryManagerFilterItemsPipe
     ],
     declarations: [
         CategoryTreeManager,

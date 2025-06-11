@@ -1,10 +1,10 @@
 <?php
 namespace SpiceCRM\includes\SpiceNotifications;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSubscriptions\SpiceSubscriptionsLoader;
 
 class SpiceNotificationsLoader

@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\UserQuotas;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use DateTime;
 
 class UserQuota extends SpiceBean

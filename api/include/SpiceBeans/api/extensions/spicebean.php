@@ -1,10 +1,10 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
 
-use SpiceCRM\includes\RESTManager;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\data\api\controllers\SpiceBeanController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
+use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SpiceBeans\api\controllers\SpiceBeanController;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 $RESTManager = RESTManager::getInstance();
 

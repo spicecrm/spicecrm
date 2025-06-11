@@ -18,6 +18,11 @@ export class ReportsDesignerPresentItemTable {
      */
     @Input() public showFunction: boolean = false;
 
+    /**
+     * show/hide width field
+     */
+    @Input() public showWidth: boolean = true;
+
     constructor(public language: language, public model: model, public reportsDesignerService: ReportsDesignerService) {
     }
 

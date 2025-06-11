@@ -13,4 +13,4 @@ export interface ChangeHistoryRecordI {
     newValue?: any;
 }
 
-export type ChangeHistoryActionI = 'new' | 'update' | 'firstUpdate' | 'afterSaveFirstUpdate' | 'updateNew';
+export type ChangeHistoryActionI = 'new' | 'update' | 'delete';
