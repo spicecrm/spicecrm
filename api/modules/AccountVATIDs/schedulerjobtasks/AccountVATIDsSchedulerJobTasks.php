@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\AccountVATIDs\schedulerjobtasks;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\modules\AccountVATIDs\AccountVATID;
 
 class AccountVATIDsSchedulerJobTasks

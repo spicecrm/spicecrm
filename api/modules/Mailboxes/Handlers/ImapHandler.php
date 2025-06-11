@@ -7,8 +7,15 @@ use Exception;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
+use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
+use SpiceCRM\modules\Mailboxes\Mailbox;
 use Swift_Attachment;
 use Swift_Mailer;
 use Swift_Message;
@@ -16,13 +23,6 @@ use Swift_Mime_ContentEncoder_PlainContentEncoder;
 use Swift_RfcComplianceException;
 use Swift_SmtpTransport;
 use Swift_TransportException;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\modules\Emails\Email;
-use SpiceCRM\modules\Mailboxes\Mailbox;
 
 /**
  * Class ImapHandler

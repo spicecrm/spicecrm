@@ -35,7 +35,7 @@
 ********************************************************************************/
 namespace SpiceCRM\modules\Trackers;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class Tracker extends SpiceBean

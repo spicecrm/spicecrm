@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\KReports;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 class KReportPluginManager

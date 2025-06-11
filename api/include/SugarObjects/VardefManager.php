@@ -37,11 +37,12 @@
 namespace SpiceCRM\includes\SugarObjects;
 
 use FilesystemIterator;
-use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\utils\FileUtils;
 use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -309,10 +310,10 @@ class VardefManager{
         //Some modules have multiple beans, we need to see if this object has a module_dir that is different from its module_name
         /*
         if(!$found){
-            $temp = \SpiceCRM\data\BeanFactory::newBean($module);
+            $temp = \SpiceCRM\includes\SpiceBeans\BeanFactory::newBean($module);
             if ($temp)
             {
-                $object_name = \SpiceCRM\data\BeanFactory::getObjectName($temp->_module);
+                $object_name = \SpiceCRM\includes\SpiceBeans\BeanFactory::getObjectName($temp->_module);
                 if ($temp && $temp->_module != $temp->module_name && !empty($object_name))
                 {
                     self::refreshVardefs($temp->_module, $object_name, $additional_search_paths, $cacheCustom);

@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\includes\SpiceDictionary\validators\logical;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\ErrorHandlers\ValidationException;
 
 class MailboxValidator extends LogicalValidator

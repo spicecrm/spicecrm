@@ -6,8 +6,8 @@ namespace SpiceCRM\includes\authentication\TOTPAuthentication;
 use Com\Tecnick\Barcode\Barcode;
 use Exception;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 /**
  * Class TOTPAuthentication
