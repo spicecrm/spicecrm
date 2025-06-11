@@ -2,11 +2,9 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
-use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryItem
 {

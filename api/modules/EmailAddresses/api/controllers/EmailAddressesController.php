@@ -1,7 +1,7 @@
 <?php
 namespace SpiceCRM\modules\EmailAddresses\api\controllers;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\extensions\include\Mailgun\Mailgun;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;

@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\Mailboxes\processors;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 
 class LeadProcessor extends Processor
 {

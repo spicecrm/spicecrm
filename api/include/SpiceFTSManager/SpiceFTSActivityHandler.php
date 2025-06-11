@@ -29,14 +29,14 @@
 
 namespace SpiceCRM\includes\SpiceFTSManager;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\ArrayUtils;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 class SpiceFTSActivityHandler

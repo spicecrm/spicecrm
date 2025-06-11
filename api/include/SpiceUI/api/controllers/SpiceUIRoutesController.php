@@ -2,8 +2,8 @@
 
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 class SpiceUIRoutesController
 {

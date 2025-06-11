@@ -1,7 +1,7 @@
 <?php
 namespace SpiceCRM\modules\Dashboards;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 
 class Dashboard extends SpiceBean
 {

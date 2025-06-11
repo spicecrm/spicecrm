@@ -3,13 +3,12 @@
 
 namespace SpiceCRM\modules\SpiceImports\api\controllers;
 
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\modules\SpiceACL\SpiceACL;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\modules\SpiceImports\SpiceImport;
 
 class SpiceImportsController{

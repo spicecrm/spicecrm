@@ -1,8 +1,9 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
-use SpiceCRM\includes\RESTManager;
-use SpiceCRM\includes\SugarObjects\api\controllers\PersonsController;
+
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
+use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SpiceBeans\api\controllers\PersonsController;
 
 /**
  * get a Rest Manager Instance

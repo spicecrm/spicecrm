@@ -1,7 +1,7 @@
 <?php
 /***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
 /////////////// KEEP A WHILE FFOR ARCHIVE AND DEV PURPOSES ////////////////////
-//use SpiceCRM\data\BeanFactory;
+//use SpiceCRM\includes\SpiceBeans\BeanFactory;
 //use SpiceCRM\includes\RESTManager;
 //use SpiceCRM\modules\KReports\KReport;
 //use SpiceCRM\modules\KReports\KReportPluginManager;
