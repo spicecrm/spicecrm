@@ -73,6 +73,7 @@ abstract class TransportHandler
 
     public function sendMail(Email|TextMessage $email, $noSecurityCheck = false )
     {
+        try{
         $timedate = TimeDate::getInstance();
 
         if ($this->mailbox->active == false) {
@@ -176,8 +177,14 @@ abstract class TransportHandler
 
         // set the date sent
         $email->date_sent = $timedate->nowDb();
-
-        return (array) $this->dispatch( $message );
+        $result = $this->dispatch( $message );
+        }
+        catch (Exception $exception) {
+            $result = new DispatchResponse(false, [
+                'errors' => $exception->getMessage(),
+            ]);
+        }
+        return (array) $result;
     }
 
     /**
