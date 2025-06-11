@@ -2,10 +2,10 @@
 
 namespace SpiceCRM\modules\EmailTrackingActions;
 
-use SpiceCRM\data\BeanFactory;
 use SpiceCRM\extensions\modules\NewsletterLogs\NewsletterLog;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\CampaignLog\CampaignLog;

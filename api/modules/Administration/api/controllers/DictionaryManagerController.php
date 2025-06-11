@@ -1,8 +1,8 @@
 <?php
 namespace SpiceCRM\modules\Administration\api\controllers;
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 

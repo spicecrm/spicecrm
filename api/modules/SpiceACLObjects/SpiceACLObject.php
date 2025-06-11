@@ -3,16 +3,15 @@
 
 namespace SpiceCRM\modules\SpiceACLObjects;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
 use SpiceCRM\extensions\modules\SpiceACLTerritories\SpiceACLTerritory;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\modules\SpiceACL\SpiceACLUsers;
-use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACLObjects\interfaces\SpiceACLObjectFieldHandlerI;
 use SpiceCRM\modules\UserAbsences\UserAbsence;
 
@@ -31,7 +30,7 @@ class SpiceACLObject extends SpiceBean
     /*
     public function __construct($id = '')
     {
-        $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
+        $db = \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance();
 
         if ($id != '') {
             $this->id = $id;
@@ -609,7 +608,7 @@ class SpiceACLObject extends SpiceBean
                     if (self::isFieldHandlerClass($fieldvalue['value1'])) {
                         /** @var SpiceACLObjectFieldHandlerI $classInstance */
                         $classInstance = new $fieldvalue['value1']();
-                        $condition = $classInstance->getFTSCondition();
+                        $condition = $classInstance->getFTSCondition($fieldvalue['name']);
                         if ($condition) {
                             $filters[$condition->key][] = $condition->value;
                         }
@@ -737,7 +736,7 @@ class SpiceACLObject extends SpiceBean
                     if (self::isFieldHandlerClass($fieldvalue['value1'])) {
                         /** @var SpiceACLObjectFieldHandlerI $classInstance */
                         $classInstance = new $fieldvalue['value1']();
-                        $condition = $classInstance->getDBCondition($table_name);
+                        $condition = $classInstance->getDBCondition($table_name, $fieldvalue['name']);
                         $whereClauses[] = $condition;
                     }
                     break;

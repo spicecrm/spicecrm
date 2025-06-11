@@ -7,7 +7,7 @@ namespace SpiceCRM\includes\SpiceNotifications\api\controllers;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotificationsLoader;
 
 class SpiceNotificationsController

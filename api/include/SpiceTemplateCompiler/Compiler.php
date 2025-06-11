@@ -8,12 +8,12 @@ use DateTime;
 use DateTimeZone;
 use DOMDocument;
 use DOMXPath;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SystemTemplateFunctions;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
@@ -1010,7 +1010,7 @@ class Compiler
                         }
                         break;
                     case 'currency':
-                        // $currency = \SpiceCRM\data\BeanFactory::getBean('Currencies');
+                        // $currency = \SpiceCRM\includes\SpiceBeans\BeanFactory::getBean('Currencies');
                         $value = $raw ? $obj->{$part} : SpiceUtils::currencyFormatNumber($obj->{$part}, ['symbol_space' => true]);
                         break;
                     case 'html':

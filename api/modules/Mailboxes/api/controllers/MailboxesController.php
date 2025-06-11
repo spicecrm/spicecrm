@@ -3,14 +3,12 @@
 
 namespace SpiceCRM\modules\Mailboxes\api\controllers;
 
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\modules\Emails\Email;
 use Exception;
-use SpiceCRM\modules\Mailboxes\processors\MailboxProcessor;
-use SpiceCRM\data\BeanFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\modules\Emails\Email;
 
 class MailboxesController
 {

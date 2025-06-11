@@ -2,8 +2,8 @@
 
 namespace SpiceCRM\includes\SpiceNumberRanges;
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\TimeDate;
 
 /**

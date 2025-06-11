@@ -4,7 +4,7 @@
 namespace SpiceCRM\includes\SpiceLanguages;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSingleton;
 
 /**

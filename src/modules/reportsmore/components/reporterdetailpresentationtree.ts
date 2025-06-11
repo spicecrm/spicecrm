@@ -90,6 +90,9 @@ export class ReporterDetailPresentationTree extends ReporterDetailPresentationSt
                 if (!treeStopReached && column.dataIndex == this.presParams.pluginData.stopTreeAt) {
                     treeStopReached = true;
                 }
+
+                this.fieldsDisplayClasses[column.fieldid] = this.generateFieldDisplayClass(column);
+
             }
 
             // get the root records
