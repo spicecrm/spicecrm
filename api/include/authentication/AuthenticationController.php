@@ -341,8 +341,6 @@ class AuthenticationController
 
         $this->checkUserStatus($userObj);
 
-        $this->checkPasswordExpire($userObj);
-
         // retrieve impersonation user
         if (!empty($authData->impersonationUser)) {
             $impersonatingUser = $this->getUserByUsername($authData->impersonationUser);
@@ -357,6 +355,7 @@ class AuthenticationController
 
         if ($authType == 'credentials') {
             SpiceCRM2FAUtils::handle2FAFlow($userObj, $authData);
+            $this->checkPasswordExpire($userObj);
         }
 
         if (!empty($authResponse->tenantId)) {
