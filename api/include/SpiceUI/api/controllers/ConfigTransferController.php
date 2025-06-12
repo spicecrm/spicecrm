@@ -374,7 +374,7 @@ class ConfigTransferController
                 if (!$unknownTables or (isset($params['ignoreUnknownTables']) and $params['ignoreUnknownTables'] === true)) {
                     $affectedTables[$tablename] = true;
 
-                    $tableDef = SpiceDictionary::getInstance()->getDefsByTableName('syscustomdictionaryitems');
+                    $tableDef = SpiceDictionary::getInstance()->getDefsByTableName( $tablename );
 
                     # delete all records except system package
                     if (!isset($tableDef['fields']['package'])) {
