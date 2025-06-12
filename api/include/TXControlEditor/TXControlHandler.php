@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\includes\TXControlEditor;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\SpiceSingleton;

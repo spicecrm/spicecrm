@@ -3,13 +3,11 @@
 
 namespace SpiceCRM\modules\SpiceACLObjects;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\modules\SpiceACLObjects\SpiceACLObject;
 use stdClass;
 
 class SpiceACLObjectsRESTHandler

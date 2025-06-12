@@ -3,7 +3,7 @@
 namespace SpiceCRM\includes\SpiceDictionary\validators\logical;
 
 use SpiceCRM\includes\ErrorHandlers\ValidationException;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
 
 class ModuleEnumValidator extends LogicalValidator
 {

@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\includes\SpiceDictionary\domainhandlers;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 

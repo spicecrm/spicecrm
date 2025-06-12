@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\ScrumEpics;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 
 class ScrumEpic extends SpiceBean {
 

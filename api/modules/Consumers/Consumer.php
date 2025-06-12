@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\Consumers;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
 
 class Consumer extends Person {

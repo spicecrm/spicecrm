@@ -2,11 +2,11 @@
 
 namespace SpiceCRM\includes\WebHook;
 
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 
 class WebHook
