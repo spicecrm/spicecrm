@@ -3,10 +3,9 @@
 namespace SpiceCRM\includes\SysCategoryTrees\api\controllers;
 
 use Psr\Http\Message\RequestInterface as Request;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\includes\SpiceUI\SpiceUIRESTHandler;
 use SpiceCRM\includes\TimeDate;
 
 class SysCategoryTreesController

@@ -3,9 +3,8 @@
 
 namespace SpiceCRM\modules\Products;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 
 class Product extends SpiceBean {
 

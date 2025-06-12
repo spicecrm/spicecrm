@@ -4,7 +4,7 @@
 namespace SpiceCRM\modules\Calendar\api\handlers;
 
 use Exception;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSActivityHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;

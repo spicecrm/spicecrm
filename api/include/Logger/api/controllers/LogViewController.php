@@ -2,15 +2,15 @@
 namespace SpiceCRM\includes\Logger\api\controllers;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
-use SpiceCRM\includes\Logger\LogViewer;
-use SpiceCRM\includes\Logger\APIlogViewer;
 use SpiceCRM\includes\RESTManager;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\Logger\APIlogViewer;
+use SpiceCRM\includes\Logger\LogViewer;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Mailboxes\Handlers\DispatchResponse;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 

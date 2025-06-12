@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\ScrumThemes;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 
 class ScrumTheme extends SpiceBean {
 

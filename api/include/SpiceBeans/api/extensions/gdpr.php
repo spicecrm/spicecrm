@@ -3,7 +3,7 @@
 
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 use SpiceCRM\includes\RESTManager;
-use SpiceCRM\includes\SugarObjects\api\controllers\GdprController;
+use SpiceCRM\includes\SpiceBeans\api\controllers\GdprController;
 
 $routes = [
     [

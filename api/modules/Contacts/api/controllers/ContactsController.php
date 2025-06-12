@@ -2,7 +2,7 @@
 namespace SpiceCRM\modules\Contacts\api\controllers;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\extensions\includes\MicrosoftGraph\ModuleHandlers\MSGraphBeanHandler;
 use SpiceCRM\extensions\includes\MicrosoftGraph\services\MSGraphContact;
 use SpiceCRM\extensions\includes\SpiceCRMExchange\ModuleHandlers\SpiceCRMExchangeContacts;
