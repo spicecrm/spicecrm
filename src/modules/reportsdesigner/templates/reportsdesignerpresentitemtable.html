@@ -22,7 +22,7 @@
                 <system-label label="LBL_SORT"></system-label>
             </div>
         </th>
-        <th scope="col" class="slds-resizable">
+        <th *ngIf="showWidth" scope="col" class="slds-resizable">
             <div class="slds-truncate" [title]="language.getLabel('LBL_WIDTH')">
                 <system-label label="LBL_WIDTH"></system-label>
             </div>
@@ -92,7 +92,7 @@
                         </div>
                     </div>
                 </td>
-                <td>
+                <td *ngIf="showWidth">
                     <div class="slds-form-element">
                         <div class="slds-form-element__control">
                             <input type="text" [(ngModel)]="listField.width" class="slds-input">

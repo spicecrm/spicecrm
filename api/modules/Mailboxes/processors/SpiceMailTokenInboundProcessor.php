@@ -3,9 +3,9 @@
 
 namespace SpiceCRM\modules\Mailboxes\processors;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;

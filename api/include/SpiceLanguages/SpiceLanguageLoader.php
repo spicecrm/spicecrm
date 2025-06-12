@@ -36,10 +36,10 @@
 
 namespace SpiceCRM\includes\SpiceLanguages;
 use SpiceCRM\includes\ErrorHandlers\Exception;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceUI\SpiceUILoader;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceLanguageLoader{
 

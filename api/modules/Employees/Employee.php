@@ -2,7 +2,7 @@
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 namespace SpiceCRM\modules\Employees;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
 
 class Employee extends Person {

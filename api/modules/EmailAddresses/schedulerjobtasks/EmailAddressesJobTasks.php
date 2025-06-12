@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\modules\EmailAddresses\schedulerjobtasks;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\extensions\include\Mailgun\Mailgun;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 

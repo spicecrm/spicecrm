@@ -779,3 +779,9 @@ input[type="submit"] {
 .spice-sticky-right {
     right: 0;
 }
+
+.spice-select-disabled {
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

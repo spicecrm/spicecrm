@@ -35,7 +35,7 @@
 ********************************************************************************/
 namespace SpiceCRM\modules\Contacts;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
 use SpiceCRM\includes\authentication\AuthenticationController;
 

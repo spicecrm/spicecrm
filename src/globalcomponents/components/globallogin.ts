@@ -369,11 +369,10 @@ export class GlobalLogin implements OnDestroy {
             case 12:
                 this.modal.openStaticModal(TOTPAuthenticationGenerateModal, true, this.injector).subscribe(ref => {
                     ref.instance.credentials = {username: this.username, password: this.password};
-                    this.code2fa = ref.instance.code;
-                    this.twoFactorAuthCodeRequired = true;
-                    ref.instance.onValidationSuccess.subscribe(() =>
-                        this.login()
-                    );
+                    ref.instance.onValidationSuccess.subscribe(() => {
+                        this.code2fa = ref.instance.code;
+                        this.login();
+                    });
                 });
                 break;
             default:
