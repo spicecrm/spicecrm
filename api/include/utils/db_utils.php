@@ -34,7 +34,7 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 
 $toHTML = [

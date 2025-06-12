@@ -37,8 +37,11 @@
 namespace SpiceCRM\modules\Users;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
@@ -50,9 +53,6 @@ use SpiceCRM\modules\SystemTenants\hooks\TenantUserHooks;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 
 // workaround for spiceinstaller
-use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\includes\ErrorHandlers\BadRequestException;
-use SpiceCRM\includes\authentication\AuthenticationController;
 
 // User is used to store customer information.
 class User extends Person

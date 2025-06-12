@@ -1,12 +1,13 @@
 <?php
 namespace SpiceCRM\includes\Soap;
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
-use SpiceCRM\includes\database\DBManagerFactory;
+
+use soap_server;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
-use soap_server;
 
 
 class SpiceSoap {

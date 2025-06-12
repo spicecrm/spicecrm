@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\includes\SpiceUI\Loaders;
 
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 class SpiceUIWordsLoader
 {

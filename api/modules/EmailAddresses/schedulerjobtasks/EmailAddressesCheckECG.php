@@ -2,8 +2,8 @@
 
 namespace SpiceCRM\modules\EmailAddresses\schedulerjobtasks;
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class EmailAddressesCheckECG

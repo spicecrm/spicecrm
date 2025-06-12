@@ -1,11 +1,10 @@
 <?php
 namespace SpiceCRM\includes\Logger;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\authentication\AuthenticationController;
 
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
