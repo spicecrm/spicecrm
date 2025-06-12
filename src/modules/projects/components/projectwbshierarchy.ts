@@ -70,7 +70,7 @@ export class ProjectWBSHierarchy implements OnInit {
      * @private
      */
     public loadHierarchy() {
-        this.projectwbsHierarchy.project_id = this.model.id;
+        this.projectwbsHierarchy.project_id.set(this.model.id);
         this.projectwbsHierarchy.loadHierarchy()
     }
 
