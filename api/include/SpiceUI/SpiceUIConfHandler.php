@@ -150,7 +150,7 @@ class SpiceUIConfHandler
         if (self::checkTableHasPackageField($tablename)) {
             $where = empty($packages) ? "where package != 'system' OR package is null" : "where package in ('" . implode("','", explode(',', $packages)) . "')";
         } else {
-            $where = '';
+            if ( empty( $packages )) $where = ''; else return [];
         }
 
         $result = $db->query(sprintf("SELECT * FROM %s $where", $db->quote($tablename)), false, '', true);
