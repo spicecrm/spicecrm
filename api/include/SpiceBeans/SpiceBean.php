@@ -2108,14 +2108,7 @@ class SpiceBean
             $id = $this->id;
         }
 
-        if ($this->field_defs) {
-            $fields = array_filter($this->field_defs, fn($e) => (RESTManager::getInstance()->excludeImageFields || $e['type'] != 'image') && $e['source'] !== 'non-db');
-            $fields = join(',', array_map(fn($e) => $e['name'], $fields));
-        } else {
-            return null;
-        }
-
-        $query = "SELECT $fields FROM $this->_tablename WHERE id = " . $this->db->quoted($id);
+        $query = "SELECT * FROM $this->_tablename WHERE id = " . $this->db->quoted($id);
 
         # exclude deleted if the deleted flag check is true
         if ($deleted) $query .= " AND deleted = 0";
@@ -2349,7 +2342,12 @@ class SpiceBean
     function populateFromRow($row)
     {
         $nullvalue = '';
-        foreach ($this->field_defs as $field => $field_value) {
+        foreach ($this->field_defs as $field => $fieldDef) {
+
+            if (RESTManager::getInstance()->excludeImageFields && $fieldDef['type'] === 'image' && $fieldDef['source'] !== 'non-db') {
+                unset($row[$field]);
+            }
+
             if ($field == 'user_preferences' && $this->_module == 'Users')
                 continue;
             if (isset($row[$field])) {
