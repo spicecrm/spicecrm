@@ -54,9 +54,12 @@ export class SystemModelProviderDirective implements OnDestroy {
      * @param provided_model
      */
     @Input('system-model-provider')
-    set provided_model(provided_model: {parent?: model, module: string, id?: string, data: any, clone?: boolean }) {
+    set provided_model(provided_model: {parent?: model, module: string, id?: string, data: any, clone?: boolean, startEdit?: boolean, setDirty?: boolean}) {
 
         if (!provided_model.module) return;
+
+        // set to true per default and if it's not provided
+        provided_model.setDirty = provided_model.setDirty ?? true;
 
         this.model.module = provided_model.module;
         this.model.id = provided_model.id;
@@ -74,14 +77,25 @@ export class SystemModelProviderDirective implements OnDestroy {
             // set the data
             this.model.setData(provided_model.clone === true ?  {...provided_model.data} : provided_model.data);
 
+            if (provided_model.startEdit) {
+                this.model.startEdit();
+            }
+
             // set to loading done
             this.model.isLoading = false;
 
         } else if (this.model.id) {
             // if no data was found BUT an ID, load it from backend... isLoading will be set inside getData()
-            this.model.getData();
+            this.model.getData().subscribe(() => {
+                if (provided_model.startEdit) {
+                    this.model.startEdit();
+                }
+            })
         } else {
             this.model.initialize(provided_model.parent);
+            if (provided_model.startEdit) {
+                this.model.startEdit();
+            }
             this.model.isLoading = false;
         }
     }
