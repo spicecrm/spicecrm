@@ -43,7 +43,7 @@ class SpiceUIConfHandler
         'sysgsuiteuserconfig'
     ];
 
-    static public $dataFormat = 2;
+    static public $dataFormat = 3;
     static public $allTablenamesOfDB = null;
     static public $blacklistedTables = [];
     static public $selectableTables = [];
