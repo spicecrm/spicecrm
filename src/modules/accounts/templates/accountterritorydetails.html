@@ -8,8 +8,8 @@
                     </a>
                 </li>
                 <li class="slds-grid slds-grid--align-end slds-grow slds-m-right--xxx-small slds-m-top--xxx-small">
-                    @if (getCCDetails() > 0 && !model.isEditing && canDelete) {
-                        <button class="slds-button slds-button--neutral">
+                    @if (getCCDetails().length > 0 && !model.isEditing && canDelete) {
+                        <button class="slds-button slds-button--neutral" (click)="deleteACCDetail()">
                             <system-label label="LBL_DELETE"/>
                         </button>
                     }
@@ -27,7 +27,7 @@
             </ng-container>
         </div>
         <system-spinner *ngIf="isLoading"></system-spinner>
-        <div *ngIf="getCCDetails().length == 0" class="slds-align_absolute-center slds-p-around--small">
+        <div *ngIf="!model.isLoading && getCCDetails().length == 0" class="slds-align_absolute-center slds-p-around--small">
             <div>
                 <system-label label="LBL_NO_ENTRIES"></system-label>
                 @if (metadata.checkModuleAcl('AccountCCDetails', 'create')) {
