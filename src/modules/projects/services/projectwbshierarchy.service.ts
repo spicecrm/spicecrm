@@ -1,7 +1,7 @@
 /**
  * @module ModuleProjects
  */
-import {Injectable} from "@angular/core";
+import {Injectable, signal, WritableSignal} from "@angular/core";
 import {backend} from "../../../services/backend.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {Observable, of, Subject} from "rxjs";
@@ -12,7 +12,7 @@ export class projectwbsHierarchy {
     /**
      * the id of the project
      */
-    public project_id: string = "";
+    public project_id: WritableSignal<string> = signal(undefined);
 
     /**
      * the plain list of members
@@ -20,7 +20,7 @@ export class projectwbsHierarchy {
     public members: any[] = [];
 
     /**
-     * the list with the embedded project wbs elements structured by hirarchy
+     * the list with the embedded project wbs elements structured by hierarchy
      */
     public membersList: any[] = [];
 
@@ -37,7 +37,7 @@ export class projectwbsHierarchy {
      * @param project_id
      * @param expanded
      */
-    public loadHierarchy(project_id = this.project_id, expanded = false): Observable<any> {
+    public loadHierarchy(project_id = this.project_id(), expanded = false): Observable<any> {
 
         // if we are in a loading process already dont load twice
         if(this.isloading) return of(false);

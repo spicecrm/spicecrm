@@ -3,7 +3,7 @@
 namespace SpiceCRM\includes\authentication\PasskeyAuthenticate;
 
 use lbuchs\WebAuthn\WebAuthnException;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
 use SpiceCRM\includes\authentication\interfaces\AuthResponse;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;

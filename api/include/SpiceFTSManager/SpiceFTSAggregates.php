@@ -3,7 +3,7 @@
 namespace SpiceCRM\includes\SpiceFTSManager;
 
 use DateTime;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
 
 /**
  * Class SpiceFTSAggregates

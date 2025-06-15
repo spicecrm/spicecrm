@@ -2,10 +2,10 @@
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\DataStreams\StreamFactory;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\Soap\SpiceSoap;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 /**
  * generate wssdl with <url>/apoi/soap?wsdl?style=rpc|document&use=encoded|literal

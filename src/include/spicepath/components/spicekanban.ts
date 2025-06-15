@@ -514,7 +514,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * @param item
      */
     public allowDrag(item) {
-        return this.draganddropenabled && item.acl.edit && (!this.statusNetworkManaged || this.statusNetworkItems.some(e => item[this.statusField] == e.status_from));
+        return this.draganddropenabled && item.acl.edit && (!this.statusNetworkManaged || this.statusNetworkItems.some(e => item[this.statusField] == e.status_from && (!e.required_model_acl_action || item.acl[e.required_model_acl_action])));
     }
 
     /**
@@ -533,7 +533,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     public dropEnterAllowed(stage: any) {
         return (item: CdkDrag) => {
-            return !this.statusNetworkManaged || this.statusNetworkItems.filter(e => e.status_to == stage.stage).some(e => e.status_from == item.data[this.statusField])
+            return !this.statusNetworkManaged || this.statusNetworkItems.filter(e => e.status_to == stage.stage).some(e => e.status_from == item.data[this.statusField] && (!e.required_model_acl_action || item.data.acl[e.required_model_acl_action]))
         }
     }
 }

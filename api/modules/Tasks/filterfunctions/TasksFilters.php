@@ -3,9 +3,8 @@
 
 namespace SpiceCRM\modules\Tasks\filterfunctions;
 
-use SpiceCRM\includes\database\DBManagerFactory;
-
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 class TasksFilters{
     function OpenAssignedTasks(){

@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\includes\SysCategoryTrees;
 
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 /**
  * class with loader functions to laod the treelinks initially when the UX initializes

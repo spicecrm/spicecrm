@@ -36,8 +36,8 @@
 
 namespace SpiceCRM\includes\SugarObjects;
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 /**
  * Language files management

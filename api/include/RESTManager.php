@@ -1,31 +1,31 @@
 <?php
 /*********************************************************************************
-* This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
-* and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
-* You can contact us at info@spicecrm.io
-*
-* SpiceCRM is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version
-*
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-*
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-*
-* SpiceCRM is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-********************************************************************************/
+ * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
+ * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+ * You can contact us at info@spicecrm.io
+ *
+ * SpiceCRM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ *
+ * SpiceCRM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ********************************************************************************/
 
 namespace SpiceCRM\includes;
 
@@ -35,27 +35,27 @@ namespace SpiceCRM\includes;
 
 use Slim\App;
 use Slim\Exception\HttpNotFoundException;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\Middleware\AdminOnlyAccessMiddleware;
 use SpiceCRM\includes\Middleware\ApiOnlyAccessMiddleware;
 use SpiceCRM\includes\Middleware\ErrorMiddleware;
 use SpiceCRM\includes\Middleware\ExceptionMiddleware;
+use SpiceCRM\includes\Middleware\ipClientsMiddleware;
 use SpiceCRM\includes\Middleware\LoggerMiddleware;
 use SpiceCRM\includes\Middleware\ModuleRouteMiddleware;
 use SpiceCRM\includes\Middleware\TenantMiddleware;
 use SpiceCRM\includes\Middleware\TransactionMiddleware;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainLoader;
 use SpiceCRM\includes\SpiceSwagger\SpiceSwaggerGenerator;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\utils\RESTRateLimiter;
-use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\UserAliases\UserAlias;
 use SpiceCRM\modules\Users\User;
-use SpiceCRM\includes\Middleware\ipClientsMiddleware;
 
 class RESTManager
 {
@@ -188,8 +188,8 @@ class RESTManager
             $route['custom']    = $this->isCustomExtension;
             $this->routes[$route['method'].':'.$route['route']] = $route;
             // check on aliases
-            if(isset($route['aliases']) && !empty($route['aliases'])){
-                foreach($route['aliases'] as $alias){
+            if (isset($route['aliases']) && !empty($route['aliases'])) {
+                foreach ($route['aliases'] as $alias) {
                     $routeAlias = $route;
                     $routeAlias['route'] = $alias;
                     unset($routeAlias['aliases']);
@@ -507,8 +507,8 @@ class RESTManager
     private function initExtensions() {
         // check if we have extension in the local path
         $checkRootPaths = ['include', 'modules',
-                            'extensions/include', 'extensions/modules',
-                            'custom/modules', 'custom/include'];
+            'extensions/include', 'extensions/modules',
+            'custom/modules', 'custom/include'];
         foreach ($checkRootPaths as $checkRootPath) {
             $KRestDirHandle = opendir("./$checkRootPath");
             if ($KRestDirHandle) {
@@ -520,9 +520,7 @@ class RESTManager
             }
         }
 
-        $this->initExtensionsInFolder('.');
-        $this->initExtensionsInFolder('./data');
-        $this->initExtensionsInFolder('./custom');
+        $this->sortRoutes();
     }
 
     private function initExtensionsInFolder(string $folderPath) {
@@ -641,5 +639,26 @@ class RESTManager
         }
 
         return false;
+    }
+
+    private function sortRoutes(): void
+    {
+        uksort($this->routes, function($a, $b) {
+            return $this->countRouteParameters($a) - $this->countRouteParameters($b);
+        });
+    }
+
+    /**
+     * Returns the number of nonspecific parameters in a route.
+     * For example '/module/{beanName}/export/{beanId}' return 2.
+     *
+     * @param string $routeString
+     * @return int
+     */
+    private function countRouteParameters(string $routeString): int
+    {
+        preg_match_all('/\{[^}]+\}/', $routeString, $matches);
+
+        return count($matches[0]);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 $vardefs = [
     'fields' => [

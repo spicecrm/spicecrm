@@ -1,11 +1,10 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
 
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
-use SpiceCRM\modules\Administration\api\controllers\DictionaryController;
+use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\Administration\api\controllers\AdminController;
+use SpiceCRM\modules\Administration\api\controllers\DictionaryController;
 use SpiceCRM\modules\Administration\api\controllers\DictionaryManagerController;
 
 

@@ -8,7 +8,7 @@
                     </ul>
                 </th>
                 <th *ngFor="let treeDisplayField of treeDisplayFields" scope="col">
-                    <a  href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid"  [ngClass]="fieldsDisplayClasses[treeDisplayField]">
+                    <a  href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid"  [ngClass]="fieldsDisplayClasses[treeDisplayField.fieldid]">
                         <div class="slds-truncate slds-p-around--x-small" system-title="treeDisplayField.text">
                             <system-label [label]="treeDisplayField.text"></system-label>
                         </div>
@@ -27,16 +27,16 @@
                             <div class="slds-truncate" >
                                 {{record.text}}
                             </div>
-                            <system-spinner *ngIf="record.isLoading" size="16" class="slds-align-middle slds-m-left--x-small"></system-spinner>
+                            <system-spinner *ngIf="record.isLoading" [size]="16" class="slds-align-middle slds-m-left--x-small"/>
                         </ng-container>
                         <ng-template #lastgrouped>
-                            <system-button-icon icon="file" class="slds-p-horizontal--x-small"></system-button-icon>
-                            <reporter-field-container [field]="fields[groupFields.length - 1]" [record]="record"></reporter-field-container>
+                            <system-button-icon icon="file" class="slds-p-horizontal--x-small"/>
+                            <reporter-field-container class="slds-grid slds-truncate" [field]="fields[groupFields.length - 1]" [record]="record" [ngClass]="fieldsDisplayClasses[fields[groupFields.length - 1].fieldid]"/>
                         </ng-template>
                     </td>
                     <td *ngFor="let treeDisplayField of treeDisplayFields" role="gridcell">
                         <div class="slds-truncate" >
-                            <reporter-field-container [field]="treeDisplayField" [record]="record"></reporter-field-container>
+                            <reporter-field-container class="slds-grid slds-truncate" [field]="treeDisplayField" [record]="record" [ngClass]="fieldsDisplayClasses[treeDisplayField.fieldid]"/>
                         </div>
                     </td>
                 </tr>
@@ -44,6 +44,6 @@
         </tbody>
     </table>
     <div *ngIf="!isLoading && reportRecords.length == 0" class="slds-p-around--medium slds-align--absolute-center"  system-to-bottom-noscroll>
-        <h2 class="slds-text-heading--small"><system-label label="LBL_NO_ENTRIES"></system-label></h2>
+        <h2 class="slds-text-heading--small"><system-label label="LBL_NO_ENTRIES"/></h2>
     </div>
 </div>
