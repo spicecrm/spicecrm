@@ -3,7 +3,7 @@
 namespace SpiceCRM\modules\TextSnippets\api\controllers;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;

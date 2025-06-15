@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\Agreements;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 
 class Agreement extends SpiceBean {
     

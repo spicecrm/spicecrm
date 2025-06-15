@@ -2,8 +2,8 @@
 namespace SpiceCRM\includes\google;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class GoogleAPIRestHandler

@@ -3,8 +3,7 @@
 namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-
-use SpiceCRM\data\Relationships\RelationshipFactory;
+use SpiceCRM\includes\SpiceDictionary\relationships\RelationshipFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;

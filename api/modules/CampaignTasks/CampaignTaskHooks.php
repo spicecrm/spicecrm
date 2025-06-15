@@ -2,8 +2,8 @@
 
 namespace SpiceCRM\modules\CampaignTasks;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 
 
 class CampaignTaskHooks

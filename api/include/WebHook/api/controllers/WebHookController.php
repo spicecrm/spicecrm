@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\includes\WebHook\api\controllers;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\WebHook\WebHook;

@@ -5,26 +5,26 @@ namespace SpiceCRM\modules\CampaignTasks;
 
 use SpiceCRM\extensions\modules\TextMessages\TextMessage;
 use SpiceCRM\extensions\modules\TextMessageTemplates\TextMessageTemplate;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
+use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
+use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\EmailTemplates\EmailTemplate;
-use SpiceCRM\modules\OutputTemplates\OutputTemplate;
-use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
-use SpiceCRM\modules\Users\User;
-use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\modules\Mailboxes\Mailbox;
+use SpiceCRM\modules\OutputTemplates\OutputTemplate;
+use SpiceCRM\modules\Users\User;
 
 class CampaignTask extends SpiceBean
 {
@@ -460,7 +460,7 @@ class CampaignTask extends SpiceBean
 
             $email = $this->sendEmail($bean, $emailAddress->email_address, true, true);
             $testCount++;
-            if ($email->status == 'sent') $sentCount++;
+            if ( $email->status === 'sent' or $email->status === 'intercepted' ) $sentCount++;
         }
 
         # reset the current user for the system after parsing
@@ -533,8 +533,8 @@ class CampaignTask extends SpiceBean
 
                 $email = $this->sendEmail($seed, $emailAddress->email_address,true, false, ['CampaignLog' => $campaignLog]);
 
-                if ($email->status == 'sent') {
-                    $campaignLog->activity_type = 'sent';
+                if ( $email->status === 'sent' or $email->status === 'intercepted' ) {
+                    $campaignLog->activity_type = $email->status;
                 }
 
                 if ($this->save_emails == 1) {
@@ -677,20 +677,20 @@ class CampaignTask extends SpiceBean
             if (isset($addBeans['CampaignLog'])) {
                 $email->registerTrackingParentData('CampaignLog', $addBeans['CampaignLog']->id);
             }
-            $email->save();
+            $email->save(false, false);
 
         } else {
 
             try {
                 $email->loadAttachments();
                 $result = $email->sendEmail();
+                $email->status = $result['result'] ? 'sent' : 'send_error';
             } catch ( MessageInterceptedException $e ) {
-                throw $e;
+                $email->status = 'intercepted';
             } catch (\Throwable $e) {
-                $result = ['result' => false];
+                $email->status = 'send_error';
             }
 
-            $email->status = $result['result'] ? 'sent' : 'send_error';
         }
 
         return $email;
@@ -732,7 +732,7 @@ class CampaignTask extends SpiceBean
                 $textMessage->parent_type = $seed->_module;
                 $textMessage->parent_id = $seed->id;
                 $textMessage->to_be_sent = true;
-                $textMessage->save();
+                $textMessage->save(false, false);
             } else {
                 $textMessage->send();
             }

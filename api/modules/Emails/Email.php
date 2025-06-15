@@ -3,23 +3,23 @@
 
 namespace SpiceCRM\modules\Emails;
 
+use DateTime;
 use DOMDocument;
 use DOMNodeList;
 use DOMXPath;
 use Exception;
-use DateTime;
 use Hfig\MAPI;
 use Hfig\MAPI\Mime\Swiftmailer;
 use Hfig\MAPI\OLE\Pear;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTask;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
-use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
 use SpiceCRM\includes\SugarCleaner;
@@ -30,9 +30,8 @@ use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
-use SpiceCRM\modules\Mailboxes\Mailbox;
 use SpiceCRM\modules\EmailTrackingLinks\EmailTrackingLink;
-use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTask;
+use SpiceCRM\modules\Mailboxes\Mailbox;
 use ZipArchive;
 
 class Email extends SpiceBean
@@ -81,7 +80,7 @@ class Email extends SpiceBean
      */
     private ?string $runtime_tracking_parent_id = null;
     /**
-     * @var false|\SpiceCRM\data\SpiceBean
+     * @var false|\SpiceCRM\includes\SpiceBeans\SpiceBean
      */
     public $emailAddress;
     /**

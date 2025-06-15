@@ -1,13 +1,13 @@
 <?php
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
-namespace SpiceCRM\data\Relationships;
+namespace SpiceCRM\includes\SpiceDictionary\relationships;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\SysTrashCan\SysTrashCan;
 use SpiceCRM\includes\TimeDate;
@@ -75,7 +75,7 @@ abstract class Relationship
 
     /**
      * @abstract
-     * @param $link Link2 loads the rows for this relationship that match the given link
+     * @param $link SpiceDictionaryLink loads the rows for this relationship that match the given link
      * @return void
      */
     public abstract function load($link, $params = []);
@@ -83,7 +83,7 @@ abstract class Relationship
     /**
      * Gets the query to load a link.
      * This is currently public, but should prob be made protected later.
-     * See Link2->getQuery
+     * See SpiceDictionaryLink->getQuery
      * @abstract
      * @param  $link Link Object to get query for.
      * @return string|array query used to load this relationship
@@ -104,7 +104,7 @@ abstract class Relationship
 
     /**
      * @abstract
-     * @param Link2 $link
+     * @param SpiceDictionaryLink $link
      * @return string|array the query to join against the related modules table for the given link.
      */
     public abstract function getJoin($link);
@@ -124,7 +124,7 @@ abstract class Relationship
     public abstract function getRelationshipTable();
 
     /**
-     * @param  $link Link2 removes all the beans associated with this link from the relationship
+     * @param  $link SpiceDictionaryLink removes all the beans associated with this link from the relationship
      * @return boolean     true if all beans were successfully removed or there
      *                     were not related beans, false otherwise
      */
