@@ -77,7 +77,19 @@ export class SpicePageBuilderElement implements OnInit {
      * @param pickList
      */
     public generateStyle(pickList?: string[]) {
+        this.prepareAttributeList();
         this.style = JSON.parse(JSON.stringify(!pickList ? this.element.attributes : _.pick(this.element.attributes, pickList)));
+    }
+
+    /**
+     * removes the attribute from the style object if null values found
+     */
+    public prepareAttributeList() {
+        for (const [key, value] of Object.entries(this.element.attributes)) {
+            if (String(value).includes('null')) {
+                delete this.element.attributes[key];
+            }
+        }
     }
 
     /**
