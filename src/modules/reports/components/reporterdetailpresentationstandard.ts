@@ -51,7 +51,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     /**
      * check for changes in the override alignment
      */
-    private overrideAlignChanged: boolean = false;
+    public overrideAlignChanged: boolean = false;
     /**
      * save the report fields data
      */
@@ -312,7 +312,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
             }
         }
 
-        if(!this.overrideAlignChanged) {
+        if(!this.overrideAlignChanged || !field.align) {
             switch (field.type) {
                 case 'currency':
                 case 'currencyint':
