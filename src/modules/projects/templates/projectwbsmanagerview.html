@@ -1,0 +1,15 @@
+<div class="slds-grid slds-height_full">
+    <ng-container *ngIf="modellist.isLoading || modellist.listData.totalcount > 0; else noitems">
+        <div class="slds-p-around--x-small slds-size--1-of-5 slds-scrollable--y">
+            @for (wbsElement of modellist.listData.list; track $index) {
+                <project-wbs-element [element]="wbsElement" [index]="$index"/>
+            }
+        </div>
+        <project-activity-elements class="slds-size--4-of-5"/>
+    </ng-container>
+    <ng-template #noitems>
+        <div class="slds-height_full slds-align--absolute-center">
+            <system-illustration-no-task></system-illustration-no-task>
+        </div>
+    </ng-template>
+</div>

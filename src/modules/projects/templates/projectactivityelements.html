@@ -1,0 +1,57 @@
+<div class="slds-height_full slds-border--left">
+    @if (!projectwbshierarchy.project_id()) {
+        <div class="slds-height_full slds-align--absolute-center">
+            <system-label label="LBL_MAKE_SELECTION"/>
+        </div>
+    } @else if (relatedmodels.items.length == 0 && !relatedmodels.isloading) {
+        <div class="slds-height_full slds-align--absolute-center">
+            <system-label label="LBL_NO_ENTRIES"/>
+        </div>
+    } @else if (relatedmodels.isloading) {
+        <div class="slds-height_full slds-align--absolute-center">
+            <system-spinner size="25"/>
+        </div>
+    } @else {
+        <div class="slds-grid slds-grid--vertical slds-height_full">
+            <div class="slds-grow slds-scrollable--y">
+                <div>
+                    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_header-fixed" style="border-top: 0">
+                        <thead>
+                        <tr class="slds-text-title_caps">
+                            <th scope="col" class="slds-cell-shrink">
+                                <system-utility-icon (click)="selectAll()" style="cursor: pointer" icon="multi_select_checkbox" size="xx-small" title="LBL_SELECT_ALL"/>
+                            </th>
+                            @for(field of listFields; track $index) {
+                                <th scope="col">
+                                    <field-label [fieldname]="field.field" [fieldconfig]="field.fieldconfig"></field-label>
+                                </th>
+                            }
+                            <th scope="col" class="slds-cell-shrink"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            @for(item of relatedmodels.items; track item.id) {
+                                <tr [system-model-provider]="{module: 'ProjectActivities', id: item.id, data: item, startEdit: true}">
+                                    <td><system-checkbox [ngModel]="selectedItems.has(item.id)" (ngModelChange)="toggleSelected(item)"/></td>
+                                    @for(field of listFields; track $index) {
+                                        <td>
+                                            <field-container [field]="field.field" [fieldname]="field.field" [fieldconfig]="field.fieldconfig" fielddisplayclass="slds-truncate"/>
+                                        </td>
+                                    }
+                                    <td>
+                                        <button class="slds-button slds-button--icon-border" title="LBL_EDIT" (click)="goDetail(item.id)">
+                                            <system-button-icon icon='expand' size='small'/>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="slds-p-around_small slds-border--top slds-grid slds-grid--align-end">
+                <project-settlement-save-button [activityModels]="selectedItems" [disabled]="disableSave" (saved$)="handleSave()"/>
+            </div>
+        </div>
+    }
+</div>
