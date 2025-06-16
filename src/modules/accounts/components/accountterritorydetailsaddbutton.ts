@@ -4,6 +4,7 @@ import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
 import {configurationService} from "../../../services/configuration.service";
 import {metadata} from "../../../services/metadata.service";
+import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'account-territory-details-add-button',
@@ -29,6 +30,7 @@ export class AccountTerritoryDetailsAddButton implements ActionSetItemI, OnInit 
 
     constructor(private modal: modal,
                 private model: model,
+                public backend: backend,
                 @SkipSelf() private parentModel: model,
                 private configuration: configurationService,
                 private metadata: metadata) {
@@ -53,9 +55,13 @@ export class AccountTerritoryDetailsAddButton implements ActionSetItemI, OnInit 
      */
     public ngOnInit() {
         const relatedCCDetails = window._.toArray(this.parentModel.data.accountccdetails?.beans);
-        this.availableCCodes = this.configuration.getData('companycodes')?.filter(
-            cc => !relatedCCDetails.some(d => cc.id == d.companycode_id)
-        );
+        this.backend.getRequest(`module/Accounts/${this.parentModel.id}/AccountCCDetails/allmaintained`).subscribe({
+            next: (res) => {
+                this.availableCCodes = this.configuration.getData('companycodes')?.filter(
+                    cc => !relatedCCDetails.some(d => cc.id == d.companycode_id) && res.indexOf(cc.id) < 0
+                )
+            }
+        })
 
         if (!this.actionconfig?.componentset) {
             this.actionconfig = this.metadata.getComponentConfig('AccountTerritoryDetailsAddButton', 'AccountCCDetails');
