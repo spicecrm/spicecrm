@@ -54,12 +54,9 @@ export class SystemModelProviderDirective implements OnDestroy {
      * @param provided_model
      */
     @Input('system-model-provider')
-    set provided_model(provided_model: {parent?: model, module: string, id?: string, data: any, clone?: boolean, startEdit?: boolean, setDirty?: boolean}) {
+    set provided_model(provided_model: {parent?: model, module: string, id?: string, data: any, clone?: boolean, startEdit?: boolean}) {
 
         if (!provided_model.module) return;
-
-        // set to true per default and if it's not provided
-        provided_model.setDirty = provided_model.setDirty ?? true;
 
         this.model.module = provided_model.module;
         this.model.id = provided_model.id;
