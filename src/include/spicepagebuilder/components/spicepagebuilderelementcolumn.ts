@@ -1,11 +1,22 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectorRef,
+    Component, inject,
+    Injector, input,
+    Input, InputSignal,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {CdkDrag, CdkDragDrop, CdkDragEnter, CdkDragExit, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
 import {modal} from "../../../services/modal.service";
-import {ColumnI, PanelElementI} from "../interfaces/spicepagebuilder.interfaces";
+import {AttributeObjectI, ColumnI, PanelElementI} from "../interfaces/spicepagebuilder.interfaces";
+import {SpicePageBuilderMediaArticleService} from "../services/spicepagebuildermediaarticle.service";
+import {SpicePageBuilderElementSection} from "./spicepagebuilderelementsection";
+import {configurationService} from "../../../services/configuration.service";
 
 /**
  * Parse and renders renderer container
@@ -16,6 +27,10 @@ import {ColumnI, PanelElementI} from "../interfaces/spicepagebuilder.interfaces"
     standalone: false
 })
 export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
+    /**
+     * hold the edit mode boolean
+     */
+    public isEditMode: InputSignal<boolean> = input(false);
     /**
      * containers to be rendered
      */
@@ -32,9 +47,35 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
      * hold the style object for the element
      */
     public style = {};
+    /**
+     * list of the editable attributes
+     */
+    public readonly columnAttributesList: AttributeObjectI[][] = [
+        [
+            {name: 'width', type: 'width', class: 'slds-size--1-of-2'},
+            {name: 'background-color', type: 'color', class: 'slds-size--1-of-4'},
+            {name: 'inner-background-color', type: 'color', class: 'slds-size--1-of-4'}
+        ], [
+            {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'border', type: 'borders', class: 'slds-size--1-of-1'}
+        ],[
+            {name: 'inner-border', type: 'borders', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'vertical-align', type: 'valign', class: 'slds-size--1-of-2'},
+            {name: 'css-class', type: 'text', class: 'slds-size--1-of-2'}
+        ]
+    ];
+    /**
+     * reference to the parent section component
+     */
+    public sectionComponent = inject(SpicePageBuilderElementSection);
 
     constructor(public spicePageBuilderService: SpicePageBuilderService,
                 public modal: modal,
+                private injector: Injector,
+                public articleService: SpicePageBuilderMediaArticleService,
+                private configurationService: configurationService,
                 public cdRef: ChangeDetectorRef) {
     }
 
@@ -42,12 +83,32 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
      * call to generate body style from attributes
      */
     public ngOnInit() {
+        this.handleMediaArticleAttribute();
         this.generateStyle();
     }
 
     public ngAfterViewInit(): void {
-        this.spicePageBuilderService.addDropListToGroup(this.dropList);
+        if (!this.isEditMode()) {
+            this.spicePageBuilderService.addDropListToGroup(this.dropList);
+        }
     }
+
+    /**
+     * load the media article data if in edit mode, otherwise set the id
+     *
+     * @private
+     */
+    private handleMediaArticleAttribute() {
+
+        if (!this.column.attributes['media-article']) return;
+
+        if (this.isEditMode()) {
+            this.articleService.loadMediaArticle(this.column.attributes['media-article']).subscribe(
+                () => this.cdRef.detectChanges()
+            );
+        }
+    }
+
 
     /**
      * A function that defines how to track changes for items in the iterable (ngForOf).
@@ -110,18 +171,7 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
 
             switch (event.item.data.tagName) {
                 case 'image':
-                    this.spicePageBuilderService.openMediaFilePicker().subscribe(src => {
-                        if (!!src) {
-                            const image: PanelElementI = JSON.parse(JSON.stringify(event.item.data));
-                            image.attributes.src = src;
-                            delete image.icon;
-                            this.column.children.splice(
-                                event.currentIndex, 0, image
-                            );
-                            this.cdRef.detectChanges();
-                            this.spicePageBuilderService.emitData();
-                        }
-                    });
+                    this.handleImageDrop(event);
                     break;
                 case 'social':
 
@@ -134,7 +184,7 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
                         this.cdRef.detectChanges();
                         this.spicePageBuilderService.emitData();
                     } else {
-                        this.spicePageBuilderService.openEditModal(social).subscribe(socialRes => {
+                        this.spicePageBuilderService.openEditModal(social, true, this.injector).subscribe(socialRes => {
                             this.column.children.splice(
                                 event.currentIndex, 0, socialRes
                             );
@@ -161,6 +211,49 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
     }
 
     /**
+     * handle an article image drop
+     * @private
+     * @param event
+     */
+    private handleImageDrop(event: CdkDragDrop<any>) {
+
+        this.spicePageBuilderService.openMediaFilePicker(event.item.data.attributes.isArticleImage).subscribe(srcOrSize => {
+
+            if (!srcOrSize) return;
+
+            const image: PanelElementI = JSON.parse(JSON.stringify(event.item.data));
+            delete image.icon;
+
+            const pushFn = () => {
+                this.column.children.splice(
+                    event.currentIndex, 0, image
+                );
+                this.cdRef.detectChanges();
+                this.spicePageBuilderService.emitData();
+            };
+
+            if (event.item.data.attributes.isArticleImage) {
+
+                image.attributes['media-article-part'] = `media_article_image_size.${srcOrSize}`;
+
+                this.spicePageBuilderService.handleMediaArticleAttribute(image, 'media-article-part');
+
+                this.articleService.getElementMediaArticle(this).subscribe({
+                    next: article => {
+
+                        const mediaFileConfig: { public_url: string } = this.configurationService.getCapabilityConfig('mediafiles');
+                        const mediaFile = article.mediafiles.find(f => f.media_article_image_size == srcOrSize);
+                        image.attributes['src'] = !mediaFile ? null : mediaFileConfig.public_url + mediaFile.id;
+                        pushFn();
+                    }
+                });
+            } else {
+                pushFn();
+            }
+        });
+    }
+
+    /**
      * emit drag exited to parent
      * @param event
      */
@@ -183,5 +276,15 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
     public onContentDelete(element) {
         this.column.children = this.column.children.filter(item => item != element);
         this.spicePageBuilderService.emitData();
+    }
+
+    /**
+     * handle article change and load the media article data
+     * @param id
+     */
+    public handleArticleChange(id: string) {
+        this.articleService.loadMediaArticle(id).subscribe(
+            () => this.cdRef.detectChanges()
+        );
     }
 }

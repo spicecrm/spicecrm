@@ -1,12 +1,11 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, Input} from '@angular/core';
+import {ChangeDetectorRef, Component, Injector, Input} from '@angular/core';
 import {DomSanitizer} from "@angular/platform-browser";
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {modal} from "../../../services/modal.service";
-import {AttributeObjectI, DividerI} from "../interfaces/spicepagebuilder.interfaces";
-import {SpicePageBuilderElement} from "./spicepagebuilderelement";
+import {AttributeObjectI} from "../interfaces/spicepagebuilder.interfaces";
 
 /**
  * Parse and renders renderer container
@@ -24,7 +23,7 @@ export class SpicePageBuilderElementAttributes  {
     /**
      * list of the editable attributes
      */
-    @Input()public readonly attributesList: Array<Array<AttributeObjectI>> = [];
+    @Input()public attributesList: Array<Array<AttributeObjectI>> = [];
 
     constructor(public domSanitizer: DomSanitizer,
                 public modal: modal,

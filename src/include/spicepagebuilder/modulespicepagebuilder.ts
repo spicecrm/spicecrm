@@ -53,6 +53,9 @@ import {SpicePageBuilderElementAttributes} from "./components/spicepagebuilderel
 import {SpicePageBuilderElementImageUrl} from "./components/spicepagebuilderelementimageurl";
 import {SpicePageBuilderElementSocial} from "./components/spicepagebuilderelementsocial";
 import {SpicePageBuilderInputOptions} from "./components/spicepagebuilderinputoptions";
+import {SpicePageBuilderInputArticle} from "./components/spicepagebuilderinputarticle";
+import {SpicePageBuilderInputArticlePart} from "./components/spicepagebuilderinputarticlepart";
+import {SystemTranslatePipe} from "../../systemcomponents/pipes/systemtranslate.pipe";
 
 @NgModule({
     declarations: [
@@ -91,7 +94,9 @@ import {SpicePageBuilderInputOptions} from "./components/spicepagebuilderinputop
         fieldPageBuilder,
         SpicePageBuilderElementImageUrl,
         SpicePageBuilderElementSocial,
-        SpicePageBuilderInputOptions
+        SpicePageBuilderInputOptions,
+        SpicePageBuilderInputArticle,
+        SpicePageBuilderInputArticlePart,
     ],
     exports: [
         SpicePageBuilder
@@ -103,7 +108,8 @@ import {SpicePageBuilderInputOptions} from "./components/spicepagebuilderinputop
         FormsModule,
         DirectivesModule,
         DragDropModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        SystemTranslatePipe
     ]
 })
 export class ModuleSpicePageBuilder {
