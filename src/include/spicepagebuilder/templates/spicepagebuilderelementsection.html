@@ -35,6 +35,9 @@
 } @else {
     <div class="slds-height_full">
         <div class="slds-size--1-of-1 slds-p-horizontal--xx-small slds-p-vertical--x-small">
+            <div class="slds-size--1-of-2">
+                <spice-page-builder-input-article [(ngModel)]="section.attributes['media-article']" (ngModelChange)="handleArticleChange($event)" (refill$)="articleService.reloadAndRefill(section.attributes['media-article'], section)"/>
+            </div>
             <spice-page-builder-element-attributes [attributesList]="mainAttributesList" [element]="section"/>
         </div>
         @for ( column of section.children; track column; let index = $index) {
@@ -44,9 +47,7 @@
                     <button *ngIf="index > 0" class="slds-button slds-button--icon" (click)="deleteColumn(index)"><system-button-icon icon="delete"/></button>
                 </div>
             </h3>
-            <div class="slds-size--1-of-1 slds-grid slds-wrap">
-                <spice-page-builder-element-attributes class="slds-size--1-of-1" [attributesList]="columnAttributesList" [element]="column"/>
-            </div>
+            <spice-page-builder-element-column [column]="column" [isEditMode]="isEditMode"/>
         }
         <div class="slds-size--1-of-1 slds-p-around--small slds-align--absolute-center">
             <button class="slds-button slds-button--brand" (click)="addColumn()"><system-label label="LBL_ADD_COLUMN"/></button>

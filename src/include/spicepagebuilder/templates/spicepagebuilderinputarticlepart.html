@@ -1,0 +1,24 @@
+<div class="slds-grid">
+    <div class="slds-form-element slds-size--1-of-1">
+        <label class="slds-form-element__label">
+            <system-label label="LBL_MEDIA_ARTICLE_PART"></system-label>
+        </label>
+        <div class="slds-form-element__control">
+            <system-select [(ngModel)]="value" [idOnly]="true" [disabled]="disabled()" (ngModelChange)="emitValue()">
+
+                @switch(type()) {
+                    @case ('media_article_image_size') {
+                        @for (option of options(); track option.value) {
+                            <system-select-option [value]="option.value" [display]="option.display"/>
+                        }
+                    }
+                    @case ('article') {
+                        <system-select-option value="text_default" [display]="'LBL_TEXT_DEFAULT' | systemtranslate"/>
+                        <system-select-option value="text_short" [display]="'LBL_TEXT_SHORT' | systemtranslate"/>
+                        <system-select-option value="text_long" [display]="'LBL_TEXT_LONG' | systemtranslate"/>
+                    }
+                }
+            </system-select>
+        </div>
+    </div>
+</div>
