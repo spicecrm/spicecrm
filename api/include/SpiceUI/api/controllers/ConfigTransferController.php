@@ -108,6 +108,7 @@ class ConfigTransferController
             'data' => [
                 'rows' => $outputRows,
                 'tables' => $allTablesToExport,
+                'restrictedToPackages' => empty( $postBody['packages'] ) ? null : $postBody['packages']
             ],
         ];
 
@@ -367,6 +368,10 @@ class ConfigTransferController
 
         SpiceUIConfHandler::writeBackupFile($backup);
 
+        # Is the import data restricted to records of specific packages? Build an array of the package names:
+        $restrictedToPackages = explode(',', $filecontent->data->restrictedToPackages );
+        if ( $restrictedToPackages === false ) $restrictedToPackages = [];
+
         $numberLinesInserted = 0;
         foreach ($filecontent->data->rows as $tablename => $rows) {
             if (in_array($tablename, $allTablenamesOfDB)) {
@@ -374,13 +379,21 @@ class ConfigTransferController
                 if (!$unknownTables or (isset($params['ignoreUnknownTables']) and $params['ignoreUnknownTables'] === true)) {
                     $affectedTables[$tablename] = true;
 
-                    $tableDef = SpiceDictionary::getInstance()->getDefsByTableName( $tablename );
+                    $tableHasPackageField = isset( SpiceDictionary::getInstance()->getDefsByTableName( $tablename )['fields']['package'] );
 
-                    # delete all records except system package
-                    if (!isset($tableDef['fields']['package'])) {
-                        $db->deleteAll($tablename);
+                    if ( !$tableHasPackageField ) {
+                        if ( empty( $restrictedToPackages )) {
+                            $db->deleteAll($tablename);
+                        }
+                        # else: delete nothing -> do nothing here
                     } else {
-                        $db->query("DELETE FROM $tablename WHERE package != 'system' OR package is null");
+                        if ( empty( $restrictedToPackages )) {
+                            # Delete all except records with package == 'system'
+                            $db->query("DELETE FROM $tablename WHERE package != 'system' OR package is null");
+                        } else {
+                            # Delete all records of package listed in $restrictedToPackages (if explicitly listed, then also for the package "system"):
+                            $db->query("DELETE FROM $tablename WHERE package in ('" . implode("','", $restrictedToPackages ) . "')"); #
+                        }
                     }
 
                     foreach ($rows as $k2 => $v2) {

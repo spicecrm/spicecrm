@@ -1182,10 +1182,10 @@ export class model implements OnDestroy {
 
     /**
      * saves the changes on the model
-     *
      * @param notify if set to true a toast is sent once the save is completed (defaults to false)
+     * @param silent set to true if the action shouldn't be broadcast
      */
-    public save(notify: boolean = false): Observable<boolean> {
+    public save(notify: boolean = false, silent: boolean = false): Observable<boolean> {
         let responseSubject = new Subject<boolean>();
 
         // set to saving
@@ -1214,14 +1214,16 @@ export class model implements OnDestroy {
                     this.data$.next(res);
                     this.emitFieldsChanges(res);
                     this.loaded$.next(true);
-                    this.broadcast.broadcastMessage("model.save", {
-                        id: this.id,
-                        reference: this.reference,
-                        module: this.module,
-                        data: this.data,
-                        changed: this.getDirtyFields(),
-                        backupdata: this.backupData
-                    });
+                    if (!silent) {
+                        this.broadcast.broadcastMessage("model.save", {
+                            id: this.id,
+                            reference: this.reference,
+                            module: this.module,
+                            data: this.data,
+                            changed: this.getDirtyFields(),
+                            backupdata: this.backupData
+                        });
+                    }
 
                     // saving is done
                     this.isSaving = false;
