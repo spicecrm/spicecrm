@@ -7,6 +7,7 @@ export interface TagElementI {
     tagName: string;
     attributes: any;
     children: any[];
+    id?: string;
 }
 /**
  * body element that will be rendered in the view
@@ -39,6 +40,7 @@ export interface SectionI extends TagElementI {
         'background-size'?: string;
         'background-url'?: string;
         'is-group'?:boolean;
+        'media-article'?: string
     };
 }
 /**
@@ -77,6 +79,8 @@ export interface ContentElementI {
     label?: string,
     tagName: string;
     attributes: any;
+    'media-article-part'?: string;
+    id?: string;
 }
 /**
  * divider element to be rendered in the view
@@ -184,7 +188,8 @@ export interface ImageI extends ContentElementI {
         rel?: string,
         srcset?: string,
         target?: string,
-        width?: string
+        width?: string,
+        isArticleImage?: boolean
     };
 }
 
@@ -350,4 +355,16 @@ export interface JSONNodeI {
     href?: string;
     trackingLink?: string;
     trackByMethod?: string;
+}
+
+export interface MediaArticleI {
+    id: string;
+    name: string;
+    mediafiles: [
+        {
+            id: string,
+            name: string,
+            media_article_image_size: string
+        }
+    ]
 }

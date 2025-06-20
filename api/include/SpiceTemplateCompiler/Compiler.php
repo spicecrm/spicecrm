@@ -16,6 +16,7 @@ use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SystemTemplateFunctions;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -432,6 +433,10 @@ class Compiler
                         $node = $this->parseRSSFeed($node);
 
                         $elements[] = $this->createNewElement($node, $beans);
+                    } else if ($node->getAttribute('data-media-article')) {
+
+                        $node = $this->parseMediaArticle($node);
+                        $elements[] = $this->createNewElement($node, $beans);
                     } else {
                         $elements[] = $this->createNewElement($node, $beans);
                     }
@@ -439,6 +444,60 @@ class Compiler
             }
         }
         return $elements;
+    }
+
+    /**
+     * read the media article content and fill in the part elements with its content
+     * @param \DOMElement $node
+     * @return \DOMElement
+     */
+    private function parseMediaArticle(\DOMElement $node)
+    {
+        $article = BeanFactory::getBean('MediaArticles', $node->getAttribute('data-media-article'));
+
+        if (!$article) return $node;
+
+        $publicUrl = SpiceConfig::getInstance()->config['mediafiles']['public_url'] ?? 'https://cdn.spicecrm.io/';
+
+        $finder = new DomXPath($node->ownerDocument);
+
+        $mediaFiles = null;
+
+        $articleParts = $finder->query("//*[@data-media-article-part]", $node);
+
+        foreach ($articleParts as $articlePart) {
+
+            [$scope, $value] = explode('.', $articlePart->getAttribute('data-media-article-part'));;
+
+            switch ($scope) {
+                case 'article':
+                    foreach ($articlePart->childNodes as $childNode) {
+                        if (get_class($childNode) != 'DOMElement') continue;
+                        $childNode->nodeValue = $article->$value;
+                    }
+                    break;
+                case 'media_article_image_size':
+
+                    # load the media files when needed
+                    if (!$mediaFiles) {
+                        $mediaFiles = $article->get_linked_beans('mediafiles');
+                    }
+
+                    foreach ($mediaFiles as $mediaFile) {
+                        if ($mediaFile->media_article_image_size != $value) continue;
+
+                        foreach ($articlePart->getElementsByTagName('img') as $childNode) {
+                            $childNode->setAttribute('src', "$publicUrl$mediaFile->id");
+                        }
+
+                        break;
+                    }
+                    break;
+
+            }
+        }
+
+        return $node;
     }
 
     /**

@@ -97,13 +97,10 @@ export class emailsService {
      */
     public textIsHtml(text) {
         if(!text) return false;
-        const regexToCheck = [/<\/body>/gi, /<\/html>/gi, /<\/div>/gi, /<\/p>/gi];
-        regexToCheck.forEach(regex => {
-            if(text.search(regex) > -1){
-                return true;
-            }
-        });
-        return false;
+
+        const doc = new DOMParser().parseFromString(text, 'text/html');
+
+        return Array.from(doc.body.childNodes).some(node => node.nodeType === 1);
     }
 
     /**

@@ -5,7 +5,7 @@ import {
     AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-    Component, HostBinding,
+    Component, HostBinding, Injector,
     Input,
     OnInit,
     ViewChild
@@ -13,6 +13,7 @@ import {
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
 import {AttributeObjectI, BodyI} from "../interfaces/spicepagebuilder.interfaces";
+import {SpicePageBuilderMediaArticleService} from "../services/spicepagebuildermediaarticle.service";
 
 /**
  * Parse and renders renderer body
@@ -21,6 +22,7 @@ import {AttributeObjectI, BodyI} from "../interfaces/spicepagebuilder.interfaces
     selector: 'spice-page-builder-element-body',
     templateUrl: '../templates/spicepagebuilderelementbody.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [SpicePageBuilderMediaArticleService],
     standalone: false
 })
 export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
@@ -52,6 +54,7 @@ export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
         {name: 'background-color', type: 'color'}
     ];
     constructor(public spicePageBuilderService: SpicePageBuilderService,
+                private injector: Injector,
                 private cdRef: ChangeDetectorRef) {
     }
 
@@ -133,7 +136,7 @@ export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
      */
     public edit() {
 
-        this.spicePageBuilderService.openEditModal(this.body).subscribe({
+        this.spicePageBuilderService.openEditModal(this.body, true, this.injector).subscribe({
             next: res => {
                 if (!!res) this.handleEditResponse(res);
             }

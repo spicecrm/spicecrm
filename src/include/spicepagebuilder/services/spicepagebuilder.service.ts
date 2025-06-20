@@ -5,12 +5,12 @@ import {modal} from "../../../services/modal.service";
 import {
     ColumnI,
     ContentElementI,
-    CustomElement,
+    CustomElement, ImageI,
     JSONNodeI,
     PanelElementI,
     SectionI,
     StylesheetObjI,
-    TagElementI
+    TagElementI, TextI
 } from "../interfaces/spicepagebuilder.interfaces";
 import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
 import {backend} from "../../../services/backend.service";
@@ -18,7 +18,8 @@ import {toast} from "../../../services/toast.service";
 import {helper} from "../../../services/helper.service";
 import {configurationService} from "../../../services/configuration.service";
 import * as mjml2html from 'mjml-browser';
-import {skip} from "rxjs/operators";
+import {language} from "../../../services/language.service";
+import {SpicePageBuilderMediaArticleService} from "./spicepagebuildermediaarticle.service";
 
 /** @ignore */
 declare var _;
@@ -96,26 +97,12 @@ export class SpicePageBuilderService {
                 },
                 children: []
             },
-            // todo complete the feature of custom attributes after the bug fix in mjml api
-            // https://github.com/mjmlio/mjml/issues/2697
             {
                 tagName: 'head',
                 children: [
                     {
                         tagName: 'html-attributes',
-                        children: [
-                            {
-                                tagName: 'selector',
-                                attributes: {path: '.spice-trackable-link a'},
-                                children: [
-                                    {
-                                        tagName: 'html-attribute',
-                                        attributes: {name: 'data-trackinglink'},
-                                        content: ''
-                                    }
-                                ]
-                            }
-                        ]
+                        children: []
                     },
                 ]
             }
@@ -177,14 +164,26 @@ export class SpicePageBuilderService {
         },
         {
             tagName: 'image',
-            label: 'LBL_MEDIA_FILES',
+            label: 'LBL_MEDIA_FILE_IMAGE',
             icon: 'image',
             attributes: {
                 align: 'center',
                 padding: '0px',
                 target: '_blank'
             }
-        },{
+        },
+        {
+            tagName: 'image',
+            label: 'LBL_MEDIA_ARTICLE_IMAGE',
+            icon: 'toggle_panel_top',
+            attributes: {
+                align: 'center',
+                padding: '0px',
+                target: '_blank',
+                isArticleImage: true
+            }
+        },
+        {
             tagName: 'image-url',
             label: 'LBL_IMAGE_URL',
             content: 'Paste an Image URL...',
@@ -386,7 +385,7 @@ export class SpicePageBuilderService {
     constructor(public modal: modal,
                 private toast: toast,
                 private helper: helper,
-                private injector: Injector,
+                private language: language,
                 private configurationService: configurationService,
                 private cdRef: ChangeDetectorRef,
                 private backend: backend) {
@@ -417,33 +416,47 @@ export class SpicePageBuilderService {
      * open media file picker modal and return the src of the image
      * @return src: string
      */
-    public openMediaFilePicker(): Observable<string> {
+    public openMediaFilePicker(isArticleImage?: boolean): Observable<string> {
 
         const response: Subject<string> = new Subject();
 
-        this.modal.openModal('MediaFilePicker').subscribe(componentRef => {
-            componentRef.instance.answer.subscribe(image => {
+        if (isArticleImage) {
+            const options = this.language.getDisplayOptions('media_article_image_sizes', true);
+            this.modal.prompt('input', '', 'LBL_MAKE_SELECTION', null, null, options, 'radio')
+                .subscribe(answer => {
+                    if (!answer) {
+                        response.next(undefined);
+                        response.complete();
+                    }
 
-                if (!image) {
-                    response.next(undefined);
+                    response.next(answer);
                     response.complete();
-                }
+                });
+        } else {
+            this.modal.openModal('MediaFilePicker').subscribe(componentRef => {
+                componentRef.instance.answer.subscribe(image => {
 
-                const mediaFileConfig: {public_url: string} = this.configurationService.getCapabilityConfig('mediafiles');
+                    if (!image) {
+                        response.next(undefined);
+                        response.complete();
+                    }
 
-                if (image.upload) {
-                    this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
-                        uploadComponentRef.instance.answer.subscribe(uploadimage => {
-                            response.next(!uploadimage ? undefined : mediaFileConfig.public_url + uploadimage);
-                            response.complete();
+                    const mediaFileConfig: {public_url: string} = this.configurationService.getCapabilityConfig('mediafiles');
+
+                    if (image.upload) {
+                        this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
+                            uploadComponentRef.instance.answer.subscribe(uploadimage => {
+                                response.next(!uploadimage ? undefined : mediaFileConfig.public_url + uploadimage);
+                                response.complete();
+                            });
                         });
-                    });
-                } else {
-                    response.next(!image.id ? undefined : mediaFileConfig.public_url + image.id);
-                    response.complete();
-                }
+                    } else {
+                        response.next(!image.id ? undefined : mediaFileConfig.public_url + image.id);
+                        response.complete();
+                    }
+                });
             });
-        });
+        }
 
         return response.asObservable();
     }
@@ -555,13 +568,13 @@ export class SpicePageBuilderService {
     /**
      * set the current editing element
      */
-    public openEditModal(element: ContentElementI | SectionI, grow: boolean = true) {
+    public openEditModal(element: ContentElementI | SectionI, grow: boolean = true, injector: Injector) {
 
         this.isMouseIn = undefined;
         this.cdRef.detectChanges();
         const subject = new Subject();
 
-        this.modal.openModal('SpicePageBuilderEditor', true, this.injector).subscribe(modalRef => {
+        this.modal.openModal('SpicePageBuilderEditor', true, injector).subscribe(modalRef => {
             modalRef.instance.element = JSON.parse(JSON.stringify(element));
             modalRef.instance.grow = grow;
             modalRef.instance.response.subscribe(res => {
@@ -592,6 +605,7 @@ export class SpicePageBuilderService {
             delete node.attributes['is-group'];
             delete node.attributes['border_border_values'];
             delete node.attributes['inner-border_border_values'];
+            delete node.attributes['isArticleImage'];
         }
 
         switch (node.tagName) {
@@ -667,9 +681,15 @@ export class SpicePageBuilderService {
             JSON.parse(JSON.stringify(this.page))
         );
 
-        const htmlRes = mjml2html(xml, {validationLevel: 'skip'});
+        let htmlRes: {html?: string, errors?: string[]};
 
-        if (htmlRes.errors.length > 0) {
+        try {
+            htmlRes = mjml2html(xml, {validationLevel: 'skip'});
+        } catch (e) {
+            htmlRes = {errors: [e]};
+        }
+
+        if (!htmlRes || htmlRes.errors.length > 0) {
             this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
             console.error('mjml', htmlRes.errors);
             return undefined;
@@ -785,5 +805,102 @@ export class SpicePageBuilderService {
         });
 
         return ` ${res.trim()}`;
+    }
+
+    /**
+     * handle media article data attributes for compiler
+     * @param element
+     * @param attribute
+     */
+    public handleMediaArticleAttribute(element: ContentElementI | SectionI | ColumnI, attribute: "media-article-part" | "media-article") {
+
+        if (!!element.attributes[attribute]) {
+            this.appendElementCustomAttribute(element, attribute, element.attributes[attribute]);
+        } else {
+            this.removeElementCustomAttribute(element, attribute);
+        }
+    }
+
+    /**
+     * append custom attribute to element
+     * @param element
+     * @param attribute
+     * @param value
+     */
+    public appendElementCustomAttribute(element: TagElementI | ContentElementI, attribute: string, value: string) {
+
+        let elementCustomAttributes = this.getElementCustomAttributes(element);
+
+        if (!element.id || !elementCustomAttributes) {
+            elementCustomAttributes = this.setElementIdAttribute(element);
+        }
+
+        elementCustomAttributes.children.push(
+            {
+                tagName: 'html-attribute',
+                attributes: {name: `data-${attribute}`},
+                content: value
+            });
+    }
+
+    /**
+     * get element custom attributes
+     * @param element
+     * @private
+     */
+    private getElementCustomAttributes(element: TagElementI | ContentElementI) {
+        const head = this._page.children.find(c => c.tagName == 'head');
+        const customAttributes = head.children.find(c => c.tagName == 'html-attributes');
+        return customAttributes.children.find(c => c.attributes.path == `.element-id-${element.id}`);
+    }
+
+    /**
+     * remove element custom attribute
+     * @param element
+     * @param attribute
+     */
+    public removeElementCustomAttribute(element: TagElementI | ContentElementI, attribute: string) {
+
+        const elementCustomAttributes = this.getElementCustomAttributes(element);
+
+        if (!elementCustomAttributes) return;
+
+        elementCustomAttributes.children = elementCustomAttributes.children
+            .filter(c => c.attributes.name !== `data-${attribute}`);
+
+        if (elementCustomAttributes.children.length == 0) {
+            const head = this._page.children.find(c => c.tagName == 'head');
+            const customAttributes = head.children.find(c => c.tagName == 'html-attributes');
+            customAttributes.children = customAttributes.children.filter(c => c != elementCustomAttributes);
+        }
+    }
+
+    /**
+     * set element id attribute
+     * @param element
+     * @private
+     */
+    public setElementIdAttribute(element: TagElementI | ContentElementI) {
+
+        element.id = this.helper.generateGuid();
+
+        if (!element.attributes['css-class']) {
+            element.attributes['css-class'] = `element-id-${element.id}`;
+        } else {
+            element.attributes['css-class'] += ` element-id-${element.id}`;
+        }
+
+        const head = this._page.children.find(c => c.tagName == 'head');
+        const attributes = head.children.find(c => c.tagName == 'html-attributes');
+
+        const elementCustomAttributes = {
+            tagName: 'selector',
+            attributes: {path: `.element-id-${element.id}`},
+            children: []
+        };
+
+        attributes.children.push(elementCustomAttributes);
+
+        return elementCustomAttributes;
     }
 }
