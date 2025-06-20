@@ -1,0 +1,44 @@
+<div class="slds-form-element">
+    <label class="slds-form-element__label">
+        <system-label label="LBL_MEDIAARTICLE"></system-label>
+    </label>
+    <div class="slds-form-element__control">
+        @if (!id()) {
+            <div class="slds-combobox-group slds-p-vertical--xx-small">
+                <div class="slds-combobox_container slds-combobox-addon_end">
+                    <div class="slds-combobox"  role="combobox">
+                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                            <input type="text" class="slds-input" aria-autocomplete="list" (focus)="openSelectModal()" autoComplete="off" role="textbox" system-placeholder="LBL_SEARCH"/>
+                            <button (click)="openSelectModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right">
+                                <system-button-icon icon="search"/>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        } @else {
+            <div class="slds-form-element__control">
+                <div class="slds-pill_container">
+                  <span class="slds-pill slds-size--1-of-1">
+                    <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
+                      <system-icon module="MediaArticles" size="small"/>
+                    </span>
+                      <span class="slds-pill__label">{{ articleService.loadedArticles.get(id())?.name }}</span>
+                    <span class="slds-pill__remove" style="width: 2rem">
+                        @if (articleService.isLoading()) {
+                            <system-spinner [size]="14"></system-spinner>
+                        } @else {
+                            <button (click)="refill$.emit()" system-title="LBL_RELOAD" class="slds-button slds-button--icon">
+                              <system-button-icon icon="refresh"></system-button-icon>
+                            </button>
+                        }
+                        <button (click)="clear()" system-title="LBL_REMOVE" class="slds-button slds-button--icon">
+                          <system-button-icon icon="close"></system-button-icon>
+                        </button>
+                    </span>
+                  </span>
+                </div>
+            </div>
+        }
+    </div>
+</div>
