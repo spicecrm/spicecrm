@@ -9,8 +9,8 @@ import {projectwbsHierarchy} from "../services/projectwbshierarchy.service";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 import {view} from "../../../services/view.service";
 import {modal} from "../../../services/modal.service";
-import {SystemModelProviderDirective} from "../../../directives/directives/systemmodelprovider";
 import {asapScheduler, Subscription} from "rxjs";
+import {projectActivityListItem} from "./projectactivitylistitem";
 
 @Component({
     selector: 'project-activity-elements',
@@ -20,7 +20,7 @@ import {asapScheduler, Subscription} from "rxjs";
 })
 export class ProjectActivityElements implements OnInit, OnDestroy {
 
-    @ViewChildren(SystemModelProviderDirective) public projectActivityModels: QueryList<SystemModelProviderDirective>;
+    @ViewChildren(projectActivityListItem) public projectActivityModels: QueryList<projectActivityListItem>;
 
     /**
      * holds the selected items to be passed away when saving
@@ -38,12 +38,12 @@ export class ProjectActivityElements implements OnInit, OnDestroy {
     public moduleFilter: string = '';
 
     /**
-     * total duration of selected items
+     * total activity duration of selected items
      */
     public totalActivityDuration: string = '';
 
     /**
-     * total duration of corrected items
+     * total corrected duration of selected items
      */
     public totalCorrectedDuration: string = '';
 
@@ -86,6 +86,9 @@ export class ProjectActivityElements implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * calculate the activity/corrected duration
+     */
     public getTotalActivityDuration() {
         let activitySum: number = 0;
         let correctedSum: number = 0;
@@ -117,6 +120,10 @@ export class ProjectActivityElements implements OnInit, OnDestroy {
         })
     }
 
+    /**
+     * observe the changes on the corrected duration field and
+     * updates the corrected duration
+     */
     public observeCorrectedDurationField() {
         // reset the subscription on each load
         this.subscription.unsubscribe();
@@ -131,6 +138,9 @@ export class ProjectActivityElements implements OnInit, OnDestroy {
         })
     }
 
+    /**
+     * select all present items
+     */
     public selectAll(): void {
         this.selectedItems = new Map(
             this.projectActivityModels.map(m => ([m.model.id, m.model]))
@@ -157,6 +167,10 @@ export class ProjectActivityElements implements OnInit, OnDestroy {
         return this.selectedItems.size == 0;
     }
 
+    /**
+     * toggle the selected state of the model
+     * @param item
+     */
     public toggleSelected(item) {
 
         if (this.selectedItems.has(item.id)) {
@@ -169,6 +183,10 @@ export class ProjectActivityElements implements OnInit, OnDestroy {
         this.getTotalActivityDuration();
     }
 
+    /**
+     * edit the model in the edit componentset
+     * @param itemId
+     */
     public goDetail(itemId: string) {
         let foundModel = this.projectActivityModels.find(activity => activity.model.id === itemId);
         foundModel.model.edit(true).subscribe({

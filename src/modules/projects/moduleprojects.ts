@@ -11,7 +11,7 @@ import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
-
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { projectwbsHierarchy } from "./services/projectwbshierarchy.service";
 
 import {ProjectWBSHierarchy} from "./components/projectwbshierarchy";
@@ -37,6 +37,7 @@ import {ProjectWBSManagerView} from "./components/projectwbsmanagerview";
 import {ProjectActivityElements} from "./components/projectactivityelements";
 import {ProjectWBSElement} from "./components/projectwbselement";
 import {ProjectSettlementSaveButton} from "./components/projectsettlementsavebutton";
+import {projectActivityListItem} from "./components/projectactivitylistitem";
 
 @NgModule({
     imports: [
@@ -47,6 +48,7 @@ import {ProjectSettlementSaveButton} from "./components/projectsettlementsavebut
         ObjectComponents,
         SystemComponents,
         DirectivesModule,
+        ScrollingModule
     ],
     declarations: [
         ProjectWBSHierarchy,
@@ -70,7 +72,8 @@ import {ProjectSettlementSaveButton} from "./components/projectsettlementsavebut
         ProjectActivityElements,
         ProjectWBSElement,
         ProjectActivityElements,
-        ProjectSettlementSaveButton
+        ProjectSettlementSaveButton,
+        projectActivityListItem
 
     ], exports: [
         ProjectActivityTrackTimeModal
