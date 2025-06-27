@@ -620,4 +620,30 @@ export class dictionarymanager {
     ngOnDestroy(): void {
     }
 
+    /**
+     * generate and download json of the definition fields
+     */
+    public jsonExport() {
+
+        const isLoading = this.modal.await('LBL_PROCESSING');
+
+        this.backend.getDownloadPostRequestFile(`dictionary/definition/${this.currentDictionaryDefinition}/export/json`).subscribe({
+            next: res => {
+                isLoading.next(true);
+                isLoading.complete();
+                const a: HTMLAnchorElement = document.createElement("a");
+                document.body.appendChild(a);
+                a.href = res;
+                a.type = 'application/json'
+                a.download = `${this.getCurrentDefinition().name}.json`;
+                a.click();
+                a.remove();
+            },
+            error: () => {
+                isLoading.next(true);
+                isLoading.complete();
+                this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+            },
+        });
+    }
 }
