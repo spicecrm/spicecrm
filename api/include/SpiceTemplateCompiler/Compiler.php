@@ -332,14 +332,15 @@ class Compiler
                             $params = [];
 
                             // scenario 1: we have 1 parts only. This means NO additional parameters
-                            // $attributeParts[0] = bean.linkname as linkedbean (the full haystack returned when no match)
+                            // $attributeParts[0] = bean.linkname as linkedbean (the full haystack returned when no match) or
+                            // $attributeParts[0] = func.functionname as function (a template function to be called)
                             if ($countParts == 1) {
                                 $forArray = explode(" as ", $attributeParts[0]);
                             }
 
                             // scenario 2: we have 3 parts. This means additional parameters
                             // CR1000360 check on params (like filter)
-                            // $attributeParts[0] = bean.linkname
+                            // $attributeParts[0] = bean.linkname | func.functionname
                             // $attributeParts[1] = some_urlencode_sring (the string between the pipes)
                             // $attributeParts[2] = as linkedbean
                             if ($countParts == 3) {
@@ -351,7 +352,11 @@ class Compiler
 
                             if (str_starts_with($forArray[0], 'value.') && $this->additionalValues[explode('.', $forArray[0])[1]]) {
                                 $linkedBeans = $this->additionalValues[explode('.', $forArray[0])[1]];
-                            } else {
+                            } elseif (str_starts_with($forArray[0], 'func.')) {
+                                $tplFunctionName = explode('.', $forArray[0])[1];
+                                $linkedBeans = $this->doFunction($tplFunctionName, '', $beans) ;
+                            }
+                            else {
                                 $linkedBeans = $this->getLinkedBeans($forArray[0], NULL, $beans, $params); // CR1000360 added $params
                             }
                         }
