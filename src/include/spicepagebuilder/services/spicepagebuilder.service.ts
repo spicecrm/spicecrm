@@ -211,7 +211,6 @@ export class SpicePageBuilderService {
             icon: 'steps',
             attributes: {
                 'height': '50px',
-                'vertical-align': 'middle'
             }
         },
         {
