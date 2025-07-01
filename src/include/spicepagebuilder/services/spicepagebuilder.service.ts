@@ -515,7 +515,7 @@ export class SpicePageBuilderService {
             const body = {
                 ...element,
                 content: JSON.stringify(element.content),
-                stylesheet: this.stylesheet.content
+                stylesheet: this.stylesheet?.content
             };
 
             this.backend.postRequest('common/PageBuilder/customElements', null, body).subscribe({
