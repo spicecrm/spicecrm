@@ -25,6 +25,20 @@ export class fieldParentDetails extends fieldGeneric implements OnInit {
     }
 
     /**
+     * module getter.
+     */
+    get module() {
+        return this.fieldconfig.module;
+    }
+
+    /**
+     * Parent module getter.
+     */
+    get parentModule() {
+        return this.parentDefs?.type_name ? this.model.getField(this.parentDefs.type_name) : 'parent_type';
+    }
+
+    /**
      * Initializes parent object definitions.
      * @private
      */
