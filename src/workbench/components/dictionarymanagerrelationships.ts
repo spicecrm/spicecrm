@@ -123,6 +123,9 @@ export class DictionaryManagerRelationships {
                             this.dictionarymanager.currentDictionaryRelationship == null;
                             this.currentRelationship = null;
                         }
+                    },
+                    error: () => {
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                     }
                 })
             }
@@ -167,6 +170,7 @@ export class DictionaryManagerRelationships {
                         loadingModal.emit(true);
                     },
                     error: () => {
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                         loadingModal.emit(true);
                     }
                 })
@@ -180,6 +184,7 @@ export class DictionaryManagerRelationships {
                         loadingModal.emit(true);
                     },
                     error: () => {
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                         loadingModal.emit(true);
                     }
                 })
