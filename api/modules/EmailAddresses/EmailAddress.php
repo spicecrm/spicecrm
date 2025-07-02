@@ -122,7 +122,7 @@ class EmailAddress extends SpiceBean
     public function save($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
     {
         $this->email_address = $this->splitEmailAddress($this->email_address)['email'];
-        $this->email_address_caps = strtoupper($this->splitEmailAddress($this->email_address_caps)['email']);
+        $this->email_address_caps = strtoupper($this->email_address);
 
         if (!$this->isValidEmailAddress($this->email_address)) {
             if (!$ignoreInvalidEmailAddresses) {
