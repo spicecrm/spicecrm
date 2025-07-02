@@ -111,7 +111,7 @@ export class EmailReplyModal implements OnInit {
         this.emailsService.composeReplyContent(this.parent, 'fwd').subscribe({
             next: (emailTexts) => {
                 this.model.setFields({
-                    recipient_addresses: [],
+                    recipient_addresses: recipient_addresses,
                     reference_id: this.parent.id,
                     name: emailTexts.name,
                     body: emailTexts.body
