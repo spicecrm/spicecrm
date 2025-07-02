@@ -1099,10 +1099,13 @@ export class model implements OnDestroy {
             if (!fieldData.hasOwnProperty(fieldName)) continue;
             let fieldValue = fieldData[fieldName];
             if (_.isString(fieldValue)) fieldValue = fieldValue.trim();
-            if (this.data[fieldName] != fieldValue) {
+
+            const previousValue = this.data[fieldName];
+            this.data[fieldName] = fieldValue;
+
+            if (previousValue != fieldValue) {
                 this.field$.next({field: fieldName, value: fieldValue});
             }
-            this.data[fieldName] = fieldValue;
             changedFields.push(fieldName);
         }
 
