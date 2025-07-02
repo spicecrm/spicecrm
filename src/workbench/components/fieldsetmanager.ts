@@ -607,7 +607,7 @@ export class FieldsetManager {
 
         this.modal.confirmDeleteRecord().subscribe({
             next: (confirmed) => {
-                if(confirmed) {
+                if (confirmed) {
                     this.backend.deleteRequest(`configuration/spiceui/core/${tableName}/${this.currentFieldSet}`).subscribe({
                         next: () => {
                             let fieldSetIndex = this.moduleFieldsets[this.fieldSetType].findIndex(item => item.id === this.currentFieldSet);
@@ -622,6 +622,8 @@ export class FieldsetManager {
                             awaitModal.emit(true);
                         }
                     })
+                } else {
+                    awaitModal.emit(true);
                 }
             }
         })

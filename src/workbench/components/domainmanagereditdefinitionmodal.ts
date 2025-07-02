@@ -49,6 +49,7 @@ export class DomainManagerEditDefinitionModal{
                     this.close();
                 },
                 error: () => {
+                    this.domainmanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                     this.close();
                 }
             })

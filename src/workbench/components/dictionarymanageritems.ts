@@ -132,6 +132,7 @@ export class DictionaryManagerItems {
                         deleteModal.emit(true);
                     },
                     error: () => {
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                         deleteModal.emit(true);
                     }
                 })
@@ -160,6 +161,7 @@ export class DictionaryManagerItems {
                 savingModal.emit(true);
             },
             error: () => {
+                this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                 savingModal.emit(true);
             }
         })
@@ -232,7 +234,7 @@ export class DictionaryManagerItems {
                         loadingModal.emit(true);
                     },
                     error: () => {
-                        this.modal.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                         statusComponent.status = item.status;
                         loadingModal.emit(true);
                     }
@@ -247,6 +249,7 @@ export class DictionaryManagerItems {
                         loadingModal.emit(true);
                     },
                     error: () => {
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                         loadingModal.emit(true);
                     }
                 })

@@ -622,4 +622,122 @@ class SpiceDictionaryDefinition
 
         return $sql;
     }
+
+    /**
+     * export fields as object
+     * @return object
+     * @throws \Exception
+     */
+    public function exportFields(): object
+    {
+        $fields = (object) [];
+
+        $defs = SpiceDictionary::getInstance()->getDefs($this->name);
+        $enumOptions = SpiceUtils::returnAppListStringsLanguage();
+
+        foreach ($defs['fields'] as $field) {
+            if (in_array($field['type'], ['linked', 'link'])) continue;
+            $fields->{$field['name']} = $this->generateExportFieldProperties($field, $enumOptions);
+        }
+
+        return $fields;
+    }
+
+    /**
+     * generate export field properties
+     * @param array $fieldDef
+     * @param array $enumOptions
+     * @return object
+     */
+    private function generateExportFieldProperties(array $fieldDef, array $enumOptions): object
+    {
+        $properties = (object)[
+            'name' => $fieldDef['name'],
+        ];
+
+        if ($fieldDef['required'] == 1) {
+            $properties->required = true;
+        }
+
+        if ($fieldDef['default']) {
+            $properties->default = $fieldDef['default'];
+        }
+
+        if ($fieldDef['required']) {
+            $properties->required = true;
+        }
+
+        $this->setExportFieldLength($fieldDef, $properties);
+
+        switch ($fieldDef['type']) {
+            case 'id':
+                $properties->type = 'string';
+                $properties->format = 'uuid';
+                $properties->example = '2DC68DAA-E480-40B0-BBFD-836EA36ECB92';
+                break;
+            case 'enum':
+                $properties->type = 'string';
+                if ($enumOptions[$fieldDef['options']]) {
+                    $properties->enum = array_keys($enumOptions[$fieldDef['options']]);;
+                    $properties->example = $properties->enum[1];
+                    $properties->description = "options description: " . join(', ', array_map(fn($k, $v) => "'$k' = '$v'", array_keys($enumOptions[$fieldDef['options']]), array_values($enumOptions[$fieldDef['options']])));
+                }
+           break;
+            case 'datetime':
+                $properties->type = 'string';
+                $properties->example = '2025-02-28 23:10:60';
+                $properties->description = 'Format YYYY-MM-DD HH:mm:ss';
+                break;
+            case 'date':
+                $properties->type = 'date';
+                $properties->example = '2025-02-28';
+                $properties->description = 'Format YYYY-MM-DD';
+                break;
+            case 'bool':
+                $properties->type = 'boolean';
+                $properties->example = true;
+                break;
+            case 'int':
+            case 'double':
+                $properties->type = 'number';
+                $properties->example = 20;
+                break;
+            default:
+                $properties->type = 'string';
+        }
+
+        return $properties;
+    }
+
+    /**
+     * get export field length
+     * @param array $fieldDef
+     * @param object $properties
+     */
+    private function setExportFieldLength(array $fieldDef, object $properties): void
+    {
+        if ($fieldDef['len']) {
+            $properties->maxLength = (int) $fieldDef['len'];
+        } else {
+            switch ($fieldDef['dbType'] ?? $fieldDef['dbtype']) {
+                case 'varchar':
+                case 'char':
+                    $properties->maxLength = 255;
+                    break;
+                case 'text':
+                    $properties->maxLength = 65535;
+                    break;
+                case 'tinyint':
+                    $properties->maxLength = 3;
+                    break;
+                case 'int':
+                case 'date':
+                    $properties->maxLength = 10;
+                    break;
+                case 'datetime':
+                    $properties->maxLength = 19;
+                    break;
+            }
+        }
+    }
 }

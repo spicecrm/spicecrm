@@ -29,21 +29,11 @@
                         </thead>
                         <tbody>
                             @for(item of relatedmodels.items; track item.id) {
-                                <tr [system-model-provider]="{module: 'ProjectActivities', id: item.id, data: item, startEdit: true}">
-                                    <td>
-                                        <system-checkbox [ngModel]="selectedItems.has(item.id)" (ngModelChange)="toggleSelected(item)"/>
-                                    </td>
-                                    @for(field of listFields; track $index) {
-                                        <td>
-                                            <field-container [field]="field.field" [fieldname]="field.field" [fieldconfig]="field.fieldconfig" fielddisplayclass="slds-truncate"/>
-                                        </td>
-                                    }
-                                    <td>
-                                        <button class="slds-button slds-button--icon-border" title="LBL_EDIT" (click)="goDetail(item.id)">
-                                            <system-button-icon icon='expand' size='small'/>
-                                        </button>
-                                    </td>
-                                </tr>
+                                <tr project-activity-list-item [isSelected]="selectedItems.has(item.id)"
+                                    [activity]="item"
+                                    [listFields]="listFields"
+                                    (toggleSelect)="toggleSelected(item)"
+                                    (goDetail)="goDetail(item.id)"></tr>
                             }
                         </tbody>
                         <tbody system-table-stencils [select]="true" [tools]="true" [columns]="listFields.length" [rows]="25" *ngIf="relatedmodels.isloading"></tbody>
