@@ -109,7 +109,8 @@ export class telecockpitservice implements OnDestroy {
         let fields = JSON.stringify(["name", "start_date", "end_date", "status", "campaigntask_type", "campaign_name", "campaign_id"]);
         let conf = this.metadata.getComponentConfig('TeleSalesCockpit');
         let modulefilter = conf && conf.modulefilter ? conf.modulefilter : {};
-        let params = {fields, modulefilter};
+        let limit = 'all';
+        let params = {fields, modulefilter, limit};
         this.backend.getRequest("module/CampaignTasks", params).subscribe(response => {
             this.campaigntasks = response.list.sort((a, b) => a.name > b.name ? 1 : -1);
             if (response.list.length > 0) {

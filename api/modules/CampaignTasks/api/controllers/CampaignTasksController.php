@@ -194,7 +194,7 @@ class CampaignTasksController
         $now = $timedate->nowDb();
         $campaignLog = BeanFactory::getBean('CampaignLog');
         $list = $campaignLog->get_list(
-            "planned_activity_date DESC",
+            "planned_activity_date DESC, priority",
             "campaigntask_id = '{$args['id']}' AND target_id<>'' AND target_id IS NOT NULL AND target_type <>'' AND target_type IS NOT NULL AND IFNULL(planned_activity_date, '$now') <= '$now' AND activity_type NOT IN ('completed','converted', 'maxattempts')",
             $getParams['offset'] ?: 0,
             $getParams['limit'] ?: 10,
