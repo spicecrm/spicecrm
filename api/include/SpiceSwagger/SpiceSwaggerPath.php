@@ -2,6 +2,7 @@
 namespace SpiceCRM\includes\SpiceSwagger;
 
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\Middleware\ValidationMiddleware;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainLoader;
 
 class SpiceSwaggerPath
@@ -125,16 +126,19 @@ class SpiceSwaggerPath
                # parse the response properties
                 if ($response['content']) {
 
-                    $properties = [];
-
                     foreach ($response['content'] as $content) {
-                        foreach ($content['schema']['properties'] as $name => $property) {
-                            $currentParameter = new SpiceSwaggerParameter($name, $property, $this->beanSchemas);
-                            $properties[$name] = $currentParameter->generateSwaggerSchemaParameter()['properties'][$name];
+                        if ($content['schema']['type'] == ValidationMiddleware::TYPE_BEAN) {
+                            $currentParameter = new SpiceSwaggerParameter('bean', ['type' => ValidationMiddleware::TYPE_BEAN], $this->beanSchemas);
+                            $response['content']['application/json']['schema'] = $currentParameter->generateSwaggerSchemaParameter()['properties']['bean'];
+                        } else {
+                            $properties = [];
+                            foreach ($content['schema']['properties'] as $name => $property) {
+                                $currentParameter = new SpiceSwaggerParameter($name, $property, $this->beanSchemas);
+                                $properties[$name] = $currentParameter->generateSwaggerSchemaParameter()['properties'][$name];
+                            }
+                            $response['content']['application/json']['schema']['properties'] = $properties;
                         }
                     }
-
-                    $response['content']['application/json']['schema']['properties'] = $properties;
                 }
 
                 $responses[(string)$httpCode] = $response;
