@@ -32,13 +32,9 @@ export class GlobalHeaderModuleShortcut implements OnInit {
         return this.language.getModuleName(this?.componentconfig?.module ?? '');
     }
 
-    get moduleIcon() {
-        return this?.moduledefs?.icon ?? '';
-    }
-
     get hasAccess() {
         if(!this.componentconfig) return false;
-        return true;
+        return this.metadata.checkModuleAcl(this.module,'list');
     }
 
     public ngOnInit() {
