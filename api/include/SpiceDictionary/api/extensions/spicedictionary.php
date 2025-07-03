@@ -895,6 +895,21 @@ $routes = [
             ]
         ]
     ],
+    [
+        'method' => 'post',
+        'route' => '/dictionary/definition/{id}/export/json',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'exportDictionaryDefinitionJson',
+        'description' => 'Export a dictionary definition as JSON',
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'id of the dictionary definition',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ],
 ];
 
 /**

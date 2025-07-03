@@ -1,12 +1,13 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Injector, Input, OnInit} from '@angular/core';
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {modal} from "../../../services/modal.service";
 import {AttributeObjectI, TextI} from "../interfaces/spicepagebuilder.interfaces";
 import {SpicePageBuilderElement} from "./spicepagebuilderelement";
+import {SpicePageBuilderElementColumn} from "./spicepagebuilderelementcolumn";
 
 /**
  * Parse and renders renderer container
@@ -72,7 +73,6 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
         if (!this.element.attributes["editor-type"]) {
             this.element.attributes["editor-type"] = 'richText';
         }
-        this.sanitizeContent();
     }
 
     get editorStyle() {
@@ -93,15 +93,7 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
      */
     public handleEditResponse(res) {
         this.element.content = res.content;
-        this.sanitizeContent();
         super.handleEditResponse(res);
-    }
-
-    /**
-     * sanitize the html content
-     */
-    public sanitizeContent() {
-        this.sanitizedContent = this.domSanitizer.bypassSecurityTrustHtml(this.element.content);
     }
 
     /**
@@ -116,5 +108,28 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
         if (this.element.attributes.align) {
             this.style['text-align'] = this.element.attributes.align;
         }
+    }
+
+    /**
+     * handle media attribute change
+     */
+    public handleMediaAttributeChange(path: string) {
+
+        if (!path) {
+            this.element.content = null;
+            this.cdRef.detectChanges();
+            return;
+        }
+
+        this.articleService.getElementMediaArticle(this.columnComponent).subscribe(article => {
+
+            if (!article) return;
+
+            const fieldName = path.split('.')[1];
+
+            this.element.content = article[fieldName];
+
+            this.cdRef.detectChanges();
+        });
     }
 }

@@ -190,7 +190,7 @@ export class DictionaryManagerAddItemModal implements OnInit{
             let saveModal = this.modal.await('LBL_SAVING');
             this.backend.postRequest(`dictionary/item/${this.dictionaryitem.id}`, {}, this.dictionaryitem).subscribe({
                 next: (res) => {
-                    this.dictionarymanager.dictionaryitems.push(this.dictionaryitem);
+                    this.dictionarymanager.dictionaryitems = [...this.dictionarymanager.dictionaryitems, this.dictionaryitem];
                     saveModal.emit(true);
                     this.close();
                 },

@@ -694,4 +694,20 @@ class SpiceDictionaryController
 
         return $res->withJson(['success' => true]);
     }
+
+    /**
+     * export dictionary definition as json
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function exportDictionaryDefinitionJson(Request $req, Response $res, array $args): Response
+    {
+        $definition = new SpiceDictionaryDefinition($args['id']);
+        $res->getBody()->write(json_encode($definition->exportFields()));
+        return $res->withHeader('Content-Type', 'application/json');
+    }
+
 }
