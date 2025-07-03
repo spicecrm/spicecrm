@@ -1,0 +1,18 @@
+<td class="slds-align-top slds-p-left--none slds-p-right--medium">
+    <div class="slds-text-align--right slds-align-middle slds-p-top--xxx-small">&lt;{{item.name}}&gt;</div>
+</td>
+<td style="width:100%" class="slds-p-around--none">
+    @if ( !item.isTextNode ) {
+        <table class="slds-table slds-box slds-table slds-table--bordered" style="padding:0.75rem;border-radius:0" [ngClass]="{'slds-m-bottom--small':!isLast}">
+            @for ( child of item.childs; let isLast = $last; track $index ) {
+                <tr apilog-replay-item-xml [item]="child" [editMode]="editMode" [isLast]="isLast"></tr>
+            }
+        </table>
+    } @else {
+        <span class="slds-grid" [ngClass]="{'slds-m-bottom--small':!isLast}">
+            <span slds="slds-grow" style="width:100%">
+                <system-input-text [disabled]="!editMode" [(ngModel)]="item.node.nodeValue" class="slds-grow" style="display:block"></system-input-text>
+            </span>
+        </span>
+    }
+</td>
