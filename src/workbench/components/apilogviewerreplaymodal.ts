@@ -23,6 +23,7 @@ declare var _: any;
 export class APIlogViewerReplayModal {
 
     public replayData: any;
+
     /**
      * reference to itself for closing the modal
      * @private
@@ -58,7 +59,7 @@ export class APIlogViewerReplayModal {
     public logtable: string = 'sysapilog';
 
     /**
-     * set to true if we foudn the proper beautify lib and loaded it
+     * set to true if we found the proper beautify lib and loaded it
      */
     public beautifyenabled: boolean = false;
 
@@ -72,6 +73,12 @@ export class APIlogViewerReplayModal {
     public hasBodyData: boolean;
 
     public canEdit = false;
+
+    public dataImmutable = false;
+
+    public contentTypeShort: 'xml'|'json'|'form';
+
+    public xmlNodes: any;
 
     constructor(public language: language, public backend: backend, public toast: toast, public libloader: libloader, public modal: modal, public helper: helper ) {
         this.libloader.loadLib('jsbeautify').subscribe(loaded => {
@@ -113,10 +120,27 @@ export class APIlogViewerReplayModal {
     public doRecord()
     {
         this.setRequestHeaders();
-        this.replayData = ( this.record.request_body ? JSON.parse( this.record.request_body ) : null );
         this.contentType = this.determineContentType( this._requestheaders );
+        switch( this.contentType )
+        {
+            case 'application/json':
+            case 'application/x-ndjson':
+                this.replayData = ( this.record.request_body ? JSON.parse( this.record.request_body ) : null );
+                this.contentTypeShort = 'json';
+                break;
+            case 'text/xml':
+            case 'application/xml':
+                this.replayData = ( new DOMParser() ).parseFromString( this.record.request_body, "application/xml");
+                this.xmlNodes = this.getNodes( this.replayData );
+                this.contentTypeShort = 'xml';
+                break;
+            case 'application/x-www-form-urlencoded':
+                this.replayData = {}; // still to do!
+                this.contentTypeShort = 'form';
+                this.dataImmutable = true;
+        }
         this.hasBodyData = this.record.request_body && this.record.request_body != "{}";
-        this.canEdit = ( this.contentType === 'application/json' ) && this.hasBodyData;
+        this.canEdit = ( this.contentType === 'application/json' || this.contentType === 'application/xml') && this.hasBodyData;
     }
 
     /**
@@ -231,7 +255,6 @@ export class APIlogViewerReplayModal {
             .subscribe({
                next: confirmation => {
                    if ( !confirmation ) return;
-                   console.log(this.record);
                    if ( this.record.needsAuthorization ) this.modal.prompt('input_password', this.language.getLabel('LBL_API_REPLAY_PW_PROMPT', '', 'long'), this.language.getLabel('LBL_API_REPLAY_PW_PROMPT'))
                        .pipe(take(1))
                        .subscribe({
@@ -248,8 +271,23 @@ export class APIlogViewerReplayModal {
 
     public sendReplay( password: string|null ): void
     {
+        let body = undefined;
         if ( password ) password = this.helper.encodeBase64( password );
-        this.backend.postRequest('admin/apilog/replay/'+this.record.id, null, { headers: null, getParams: null, bodyParams: this.replayData ? JSON.stringify( this.replayData ) : undefined, password: password ? password : undefined })
+        if ( this.editMode ) {
+            if ( this.replayData ) {
+                switch( this.contentType ) {
+                    case 'application/xml':
+                        body = ( new XMLSerializer() ).serializeToString( this.replayData );
+                        break;
+                    case 'application/json':
+                        body = JSON.stringify( this.replayData );
+                        break;
+                }
+            }
+        } else {
+            body = this.record.request_body;
+        }
+        this.backend.postRequest('admin/apilog/replay/'+this.record.id, null, { headers: null, getParams: null, bodyParams: body, password: password ? password : undefined })
             .pipe(take(1))
             .subscribe({
                 next: (response) => {
@@ -350,6 +388,27 @@ export class APIlogViewerReplayModal {
         } catch (e) {
             return this.record[param];
         }
+    }
+
+    public getNodes( doc)
+    {
+
+        let nodes = [];
+        let node = doc.firstChild;
+
+        if ( !node ) node = doc.appendChild( document.createTextNode('') );
+
+        while ( node )
+        {
+            if ( node.nodeType === Node.TEXT_NODE ) {
+                nodes.push({ name: doc.nodeName, isTextNode: true, node: node });
+                break;
+            } else if ( node.nodeType == Node.ELEMENT_NODE ) {
+                nodes.push({ isElementNode: true, name: node.nodeName, childs: this.getNodes( node )} );
+            }
+            node = node.nextSibling;
+        }
+        return nodes;
     }
 
 }
