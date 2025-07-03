@@ -66,7 +66,7 @@ export class fieldAddress extends fieldGeneric {
     /**
      * a fallback address format in case none is specified
      */
-    public addressFormat = '{street} {street_number}, {postalcode} {city}, {statename}, {countryname}';
+    public addressFormat = '{street} {street_number} {street_number_suffix}, {postalcode} {city}, {statename}, {countryname}';
 
     public ngOnInit() {
         super.ngOnInit();
@@ -347,7 +347,7 @@ export class fieldAddress extends fieldGeneric {
     /**
      * a getter for the street
      */
-    get street_suffix() {
+    get street_number_suffix() {
         return this.model.getField(this.addresskey + 'address_street_number_suffix');
     }
 
@@ -356,7 +356,7 @@ export class fieldAddress extends fieldGeneric {
      *
      * @param value
      */
-    set street_suffix(value) {
+    set street_number_suffix(value) {
         this.model.setField(this.addresskey + 'address_street_number_suffix', value);
     }
 

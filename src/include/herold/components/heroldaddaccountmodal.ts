@@ -152,6 +152,7 @@ export class HeroldAddAccountModal implements OnInit{
             this.model.addRelatedRecords('email_addresses', [{
                 id: this.model.utils.generateGuid(),
                 email_address:company.mainEmail,
+                email_address_caps: company.mainEmail.toUpperCase(),
                 invalid_email: 0,
                 primary_address: 1
             }])

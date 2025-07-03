@@ -91,6 +91,7 @@ export class ReporterDetailPresentationTree extends ReporterDetailPresentationSt
                     treeStopReached = true;
                 }
 
+                this.overrideAlignChanged = true;
                 this.fieldsDisplayClasses[column.fieldid] = this.generateFieldDisplayClass(column);
 
             }

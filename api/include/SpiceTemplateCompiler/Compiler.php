@@ -16,6 +16,7 @@ use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SystemTemplateFunctions;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -332,14 +333,15 @@ class Compiler
                             $params = [];
 
                             // scenario 1: we have 1 parts only. This means NO additional parameters
-                            // $attributeParts[0] = bean.linkname as linkedbean (the full haystack returned when no match)
+                            // $attributeParts[0] = bean.linkname as linkedbean (the full haystack returned when no match) or
+                            // $attributeParts[0] = func.functionname as function (a template function to be called)
                             if ($countParts == 1) {
                                 $forArray = explode(" as ", $attributeParts[0]);
                             }
 
                             // scenario 2: we have 3 parts. This means additional parameters
                             // CR1000360 check on params (like filter)
-                            // $attributeParts[0] = bean.linkname
+                            // $attributeParts[0] = bean.linkname | func.functionname
                             // $attributeParts[1] = some_urlencode_sring (the string between the pipes)
                             // $attributeParts[2] = as linkedbean
                             if ($countParts == 3) {
@@ -351,7 +353,11 @@ class Compiler
 
                             if (str_starts_with($forArray[0], 'value.') && $this->additionalValues[explode('.', $forArray[0])[1]]) {
                                 $linkedBeans = $this->additionalValues[explode('.', $forArray[0])[1]];
-                            } else {
+                            } elseif (str_starts_with($forArray[0], 'func.')) {
+                                $tplFunctionName = explode('.', $forArray[0])[1];
+                                $linkedBeans = $this->doFunction($tplFunctionName, '', $beans) ;
+                            }
+                            else {
                                 $linkedBeans = $this->getLinkedBeans($forArray[0], NULL, $beans, $params); // CR1000360 added $params
                             }
                         }
@@ -432,6 +438,10 @@ class Compiler
                         $node = $this->parseRSSFeed($node);
 
                         $elements[] = $this->createNewElement($node, $beans);
+                    } else if ($node->getAttribute('data-media-article')) {
+
+                        $node = $this->parseMediaArticle($node);
+                        $elements[] = $this->createNewElement($node, $beans);
                     } else {
                         $elements[] = $this->createNewElement($node, $beans);
                     }
@@ -439,6 +449,60 @@ class Compiler
             }
         }
         return $elements;
+    }
+
+    /**
+     * read the media article content and fill in the part elements with its content
+     * @param \DOMElement $node
+     * @return \DOMElement
+     */
+    private function parseMediaArticle(\DOMElement $node)
+    {
+        $article = BeanFactory::getBean('MediaArticles', $node->getAttribute('data-media-article'));
+
+        if (!$article) return $node;
+
+        $publicUrl = SpiceConfig::getInstance()->config['mediafiles']['public_url'] ?? 'https://cdn.spicecrm.io/';
+
+        $finder = new DomXPath($node->ownerDocument);
+
+        $mediaFiles = null;
+
+        $articleParts = $finder->query("//*[@data-media-article-part]", $node);
+
+        foreach ($articleParts as $articlePart) {
+
+            [$scope, $value] = explode('.', $articlePart->getAttribute('data-media-article-part'));;
+
+            switch ($scope) {
+                case 'article':
+                    foreach ($articlePart->childNodes as $childNode) {
+                        if (get_class($childNode) != 'DOMElement') continue;
+                        $childNode->nodeValue = $article->$value;
+                    }
+                    break;
+                case 'media_article_image_size':
+
+                    # load the media files when needed
+                    if (!$mediaFiles) {
+                        $mediaFiles = $article->get_linked_beans('mediafiles');
+                    }
+
+                    foreach ($mediaFiles as $mediaFile) {
+                        if ($mediaFile->media_article_image_size != $value) continue;
+
+                        foreach ($articlePart->getElementsByTagName('img') as $childNode) {
+                            $childNode->setAttribute('src', "$publicUrl$mediaFile->id");
+                        }
+
+                        break;
+                    }
+                    break;
+
+            }
+        }
+
+        return $node;
     }
 
     /**

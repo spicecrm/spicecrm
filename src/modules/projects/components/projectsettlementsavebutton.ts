@@ -50,7 +50,7 @@ export class ProjectSettlementSaveButton implements OnInit {
 
         this.activityModels().forEach(item => {
             if (item.isDirty()) {
-                item.save()
+                item.save(false, true)
             }
         });
 
