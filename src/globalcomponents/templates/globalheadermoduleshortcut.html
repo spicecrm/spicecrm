@@ -1,1 +1,1 @@
-<div [title]="moduleNameTranslated"><system-icon [module]="module" size="small" style="cursor: pointer;" (click)="goTo()"></system-icon></div>
+<div [title]="moduleNameTranslated" *ngIf="hasAccess"><system-icon [module]="module" size="small" style="cursor: pointer;" (click)="goTo()"></system-icon></div>
