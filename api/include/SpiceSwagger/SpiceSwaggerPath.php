@@ -127,16 +127,23 @@ class SpiceSwaggerPath
                 if ($response['content']) {
 
                     foreach ($response['content'] as $content) {
-                        if ($content['schema']['type'] == ValidationMiddleware::TYPE_BEAN) {
-                            $currentParameter = new SpiceSwaggerParameter('bean', ['type' => ValidationMiddleware::TYPE_BEAN], $this->beanSchemas);
-                            $response['content']['application/json']['schema'] = $currentParameter->generateSwaggerSchemaParameter()['properties']['bean'];
-                        } else {
-                            $properties = [];
-                            foreach ($content['schema']['properties'] as $name => $property) {
-                                $currentParameter = new SpiceSwaggerParameter($name, $property, $this->beanSchemas);
-                                $properties[$name] = $currentParameter->generateSwaggerSchemaParameter()['properties'][$name];
-                            }
-                            $response['content']['application/json']['schema']['properties'] = $properties;
+
+                        switch ($content['schema']['type']) {
+                            case ValidationMiddleware::TYPE_BOOL:
+                                $currentParameter = new SpiceSwaggerParameter('bool', ['type' => ValidationMiddleware::TYPE_BOOL], $this->beanSchemas);
+                                $response['content']['application/json']['schema'] = $currentParameter->generateSwaggerSchemaParameter()['properties']['bool'];
+                                break;
+                            case ValidationMiddleware::TYPE_BEAN:
+                                $currentParameter = new SpiceSwaggerParameter('bean', ['type' => ValidationMiddleware::TYPE_BEAN], $this->beanSchemas);
+                                $response['content']['application/json']['schema'] = $currentParameter->generateSwaggerSchemaParameter()['properties']['bean'];
+                                break;
+                            default:
+                                $properties = [];
+                                foreach ($content['schema']['properties'] as $name => $property) {
+                                    $currentParameter = new SpiceSwaggerParameter($name, $property, $this->beanSchemas);
+                                    $properties[$name] = $currentParameter->generateSwaggerSchemaParameter()['properties'][$name];
+                                }
+                                $response['content']['application/json']['schema']['properties'] = $properties;
                         }
                     }
                 }
