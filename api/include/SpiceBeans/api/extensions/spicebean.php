@@ -493,6 +493,19 @@ $routes = [
                 'description' => 'GUID of the bean',
             ],
         ],
+        'responses' => [
+            '200' => [
+                'description' => 'OK',
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => ValidationMiddleware::TYPE_BOOL
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
     ],
     [
         'method' => 'get',
