@@ -146,6 +146,7 @@ import {APIlogViewer} from './components/apilogviewer';
 import {APIlogViewerModal} from './components/apilogviewermodal';
 import {APIlogViewerReplayModal} from './components/apilogviewerreplaymodal';
 import {APIlogViewerReplayItem} from './components/apilogviewerreplayitem';
+import {APIlogReplayItemXML} from './components/apilogreplayitemxml';
 
 import {ModuleFilterBuilder} from "./components/modulefilterbuilder";
 import {ModuleFilterBuilderFilters} from "./components/modulefilterbuilderfilters";
@@ -339,6 +340,7 @@ import {DictionaryManagerFilterItemsPipe} from "./pipes/dictionarymanagerfilteri
         APIlogViewerModal,
         APIlogViewerReplayModal,
         APIlogViewerReplayItem,
+        APIlogReplayItemXML,
         APIlogConfig,
         ModuleFilterBuilder,
         ModuleFilterBuilderFilters,
