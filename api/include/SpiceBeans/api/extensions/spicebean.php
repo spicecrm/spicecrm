@@ -22,6 +22,36 @@ $routes = [
         'function' => 'getBeanList',
         'description' => 'Get bean list',
         'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'responses' => [
+            '200' => [
+                'description' => 'OK',
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'list' => [
+                                    'type' => ValidationMiddleware::TYPE_ARRAY,
+                                    'subtype' => ValidationMiddleware::TYPE_BEAN
+                                ],
+                                'aggregations' => [
+                                    'type' => ValidationMiddleware::TYPE_OBJECT,
+                                ],
+                                'buckets' => [
+                                    'type' => ValidationMiddleware::TYPE_OBJECT,
+                                ],
+                                'source' => [
+                                    'type' => ValidationMiddleware::TYPE_STRING,
+                                ],
+                                'totalcount' => [
+                                    'type' => ValidationMiddleware::TYPE_NUMERIC,
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ],
         'parameters' => [
             'beanName' => [
                 'in' => 'path',
