@@ -112,6 +112,7 @@ import {CdkDrag, CdkDragHandle, CdkDropList, CdkDropListGroup} from "@angular/cd
 import {GlobalLogin2FAMethodSelectModal} from "./components/globallogin2famethodselectmodal";
 import {GlobalLoginPasskeyModal} from "./components/globalloginpasskeymodal";
 import {GlobalProjectActivityTrackTimeIcon} from "./components/globalprojectactivitytracktimeicon";
+import {GlobalHeaderModuleShortcut} from "./components/globalheadermoduleshortcut";
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
@@ -223,7 +224,8 @@ import {GlobalProjectActivityTrackTimeIcon} from "./components/globalprojectacti
         GlobalHeaderDocumentRevisionsModal,
         GlobalLogin2FAMethodSelectModal,
         GlobalLoginPasskeyModal,
-        GlobalProjectActivityTrackTimeIcon
+        GlobalProjectActivityTrackTimeIcon,
+        GlobalHeaderModuleShortcut,
     ],
     exports: [
         GlobalCopyright,
