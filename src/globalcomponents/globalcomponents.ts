@@ -225,7 +225,7 @@ import {GlobalHeaderModuleShortcut} from "./components/globalheadermoduleshortcu
         GlobalLogin2FAMethodSelectModal,
         GlobalLoginPasskeyModal,
         GlobalProjectActivityTrackTimeIcon,
-        GlobalHeaderModuleShortcut,
+        GlobalHeaderModuleShortcut
     ],
     exports: [
         GlobalCopyright,
