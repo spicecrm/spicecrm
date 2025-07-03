@@ -423,6 +423,18 @@ $routes = [
                 'description' => '',
             ],
         ],
+        'responses' => [
+            '200' => [
+                'description' => 'OK',
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => ValidationMiddleware::TYPE_BEAN
+                        ]
+                    ]
+                ]
+            ]
+        ]
     ],
     [
         'method' => 'post',
