@@ -463,8 +463,8 @@ export class administrationapiinspectorService {
         };
     }
 
-    public exportSwagger(route: string, includeSubroutes: boolean) {
-            const payload = { selectedRoute: route, includeSubroutes: includeSubroutes };
+    public exportSwagger(route: string, includeSubroutes: boolean, modules?: string[]) {
+            const payload = { selectedRoute: route, includeSubroutes: includeSubroutes, modules };
 
         return this.backend.getLinkToDownload('common/swagger', 'POST', null, payload);
     }
