@@ -72,6 +72,8 @@ export class APIlogViewerModal {
      */
     public activeTab: 'record' | 'headers' | 'post' | 'response' = 'record';
 
+    public contentTypeShort: 'xml'|'json'|'form'|'';
+
     constructor(public language: language, public backend: backend, public toast: toast, public libloader: libloader) {
         this.libloader.loadLib('jsbeautify').subscribe(loaded => {
             this.beautifyenabled = true;
@@ -97,6 +99,7 @@ export class APIlogViewerModal {
                 // try to parse the headers so we know how to handle post and response params
                 this.setRequestHeaders();
                 this.setResponseHeaders();
+                this.contentTypeShort = this.getContentTypeShort();
             },
             error: (error) => {
                 this.toast.sendToast('Error loading entry of log file!', 'error', 'Entry ' + this.entry.id + ' of REST log couldn´t be fetched.', false);
@@ -106,6 +109,18 @@ export class APIlogViewerModal {
         });
     }
 
+    public getContentTypeShort()
+    {
+        switch( this.determineContentType(this._requestheaders) )
+        {
+            case 'application/json':
+            case 'application/x-ndjson': return 'json';
+            case 'text/xml':
+            case 'application/xml': return 'xml';
+            case 'application/x-www-form-urlencoded': return 'form';
+        }
+        return '';
+    }
     /**
      * try to set the request header
      *
@@ -261,7 +276,7 @@ export class APIlogViewerModal {
     }
 
     public formattedResponse() {
-        return this.getFormattedBody(this.determineContentType(this._responseheaders), this.record.response_body);
+        return this.getFormattedBody( this.determineContentType(this._responseheaders), this.record.response_body);
     }
 
     public formattedRequest() {
@@ -344,7 +359,7 @@ export class APIlogViewerModal {
 
     public canReplay(): boolean
     {
-        return this.record.direction === 'I';
+        return this.record.direction === 'I' && /^json|xml$/.test( this.contentTypeShort );
     }
 
     public openReplay()

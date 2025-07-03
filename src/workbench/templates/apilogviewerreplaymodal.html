@@ -71,13 +71,29 @@
                         </table>
                     }
                     @default {
-                        <div class="slds-m-horizontal--small slds-m-vertical--x-small">
-                            <table class="slds-table" style="padding:0.75rem">
-                                @for ( property of replayData | keyvalue; let isLast = $last; track $index ) {
-                                    <tr apilogviewer-replay-item [isLast]="isLast" [key]="property.key" [objekt]="replayData" [editMode]="editMode"></tr>
-                                }
-                            </table>
-                        </div>
+                        @if ( contentTypeShort === 'xml' ) {
+                            <div class="slds-m-horizontal--small slds-m-vertical--x-small">
+                                <table class="slds-table" style="padding:0.75rem">
+                                    @for ( child of xmlNodes; track $index ) {
+                                        <tr apilog-replay-item-xml [item]="child" [editMode]="editMode"></tr>
+                                    }
+                                </table>
+                            </div>
+                        } @else {
+                            <div class="slds-m-horizontal--small slds-m-vertical--x-small">
+                                <table class="slds-table" style="padding:0.75rem">
+                                    @if ( getType( replayData ) === 'array' ) {
+                                        @for ( item of replayData; let rowIndex = $index; let isLast = $last; track $index ) {
+                                            <tr apilogviewer-replay-item [key]="rowIndex" [objekt]="replayData" [editMode]="editMode" [isLast]="isLast"></tr>
+                                        }
+                                    } @else {
+                                        @for ( property of replayData | keyvalue; let isLast = $last; track $index ) {
+                                            <tr apilogviewer-replay-item [isLast]="isLast" [key]="property.key" [objekt]="replayData" [editMode]="editMode"></tr>
+                                        }
+                                    }
+                                </table>
+                            </div>
+                        }
                     }
                 }
                 </div>
