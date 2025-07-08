@@ -387,7 +387,7 @@ class EmailTrackingActionsController
             case 'CampaignLog':
                 $emailAddressId = $db->fetchOne("SELECT email_address_id FROM email_addr_bean_rel eabr where eabr.id ='{$bean->email_addr_bean_rel_id}' and eabr.deleted = 0");
         }
-        return $emailAddressId;
+        return $emailAddressId['email_address_id'];
     }
     /**
      * finds the bean by searching the primary email address in the email-bean relationship table
