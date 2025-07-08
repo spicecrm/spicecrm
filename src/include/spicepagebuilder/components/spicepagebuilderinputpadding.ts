@@ -129,6 +129,12 @@ export class SpicePageBuilderInputPadding implements ControlValueAccessor {
      */
     public emitJoinedValue() {
         const suffix = this.spicePageBuilderService.defaultSuffix;
+
+        if (isNaN(this.value.top)) this.value.top = 0;
+        if (isNaN(this.value.right)) this.value.right = 0;
+        if (isNaN(this.value.bottom)) this.value.bottom = 0;
+        if (isNaN(this.value.left)) this.value.left = 0;
+
         let paddingValue = '';
         switch (parseInt(this.valueCount, 10)){
             case 1:
