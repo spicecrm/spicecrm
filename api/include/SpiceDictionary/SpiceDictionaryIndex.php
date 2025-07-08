@@ -72,7 +72,7 @@ class SpiceDictionaryIndex
         foreach ($this->indexItems as $indexItem) {
             $fieldnames = array_merge($fieldnames, $indexItem->fieldnames);
         }
-        return $fieldnames;
+        return array_unique($fieldnames);
     }
 
     public function getIndexDefinition($tablename = null)
