@@ -13,6 +13,7 @@ import {libloader} from "../../../services/libloader.service";
 import {asapScheduler} from "rxjs";
 import {backend} from "../../../services/backend.service";
 import {view} from "../../../services/view.service";
+import {TxControlParagraphStyleI} from "../interfaces/documenteditor.interfaces";
 
 declare var TXTextControl: any;
 declare var _;
@@ -165,6 +166,7 @@ export class DocumentEditor implements AfterViewInit, OnDestroy, OnChanges {
     private initializeEditor() {
         TXTextControl.addEventListener('textControlLoaded', () => {
             this.setIsLoading(false);
+            this.generateEssentialStylesOptions();
             this.loadContent();
         });
         TXTextControl.init({
@@ -175,6 +177,84 @@ export class DocumentEditor implements AfterViewInit, OnDestroy, OnChanges {
                 accessToken: this.settings.token
             }
         });
+    }
+
+    /**
+     * generate the essential predefined styles like heading 1,2,3 and title
+     * @private
+     */
+    private generateEssentialStylesOptions() {
+
+        const headings: TxControlParagraphStyleI[] = [
+            {
+                name: 'Title',
+                attributes: {
+                    setBold: true,
+                    setFontSize: 560,
+                },
+            },
+            {
+                name: 'Subtitle',
+                attributes: {
+                    setFontSize: 280,
+                    setForeColor: '#808080',
+                },
+            },
+            {
+                name: 'h1',
+                attributes: {
+                    setBold: true,
+                    setFontSize: 400,
+                },
+            },
+            {
+                name: 'h2',
+                attributes: {
+                    setBold: true,
+                    setFontSize: 320,
+                },
+            },
+            {
+                name: 'h3',
+                attributes: {
+                    setBold: true,
+                    setFontSize: 280,
+                },
+            },
+            {
+                name: 'h4',
+                attributes: {
+                    setBold: true,
+                    setFontSize: 240,
+                    setItalic: true,
+                },
+            },
+            {
+                name: 'h5',
+                attributes: {
+                    setBold: true,
+                    setFontSize: 240,
+                },
+            },
+            {
+                name: 'h6',
+                attributes: {
+                    setBold: true,
+                    setFontSize: 240,
+                    setItalic: true,
+                    setForeColor: '#808080'
+                },
+            }
+        ];
+
+        headings.forEach(headingStyle => {
+            TXTextControl.paragraphStyles.add(headingStyle.name, styleInstance => {
+                Object.keys(headingStyle.attributes).forEach(fn => {
+                    styleInstance[fn](headingStyle.attributes[fn]);
+                });
+            });
+        });
+
     }
 
     /**

@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceDictionary;
 
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceModules;
 use SpiceCRM\includes\SpiceDictionary\database\DBManager;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
@@ -636,7 +637,7 @@ class SpiceDictionaryDefinition
         $enumOptions = SpiceUtils::returnAppListStringsLanguage();
 
         foreach ($defs['fields'] as $field) {
-            if (in_array($field['type'], ['linked', 'link'])) continue;
+            if ($field['type'] == 'linked') continue;
             $fields->{$field['name']} = $this->generateExportFieldProperties($field, $enumOptions);
         }
 
@@ -651,9 +652,7 @@ class SpiceDictionaryDefinition
      */
     private function generateExportFieldProperties(array $fieldDef, array $enumOptions): object
     {
-        $properties = (object)[
-            'name' => $fieldDef['name'],
-        ];
+        $properties = (object)[];
 
         if ($fieldDef['required'] == 1) {
             $properties->required = true;
@@ -678,8 +677,8 @@ class SpiceDictionaryDefinition
             case 'enum':
                 $properties->type = 'string';
                 if ($enumOptions[$fieldDef['options']]) {
-                    $properties->enum = array_keys($enumOptions[$fieldDef['options']]);;
-                    $properties->example = $properties->enum[1];
+                    $properties->enum = array_keys(array_filter($enumOptions[$fieldDef['options']], fn($k) => $k != ' ', ARRAY_FILTER_USE_KEY));
+                    $properties->example = $properties->enum[0];
                     $properties->description = "options description: " . join(', ', array_map(fn($k, $v) => "'$k' = '$v'", array_keys($enumOptions[$fieldDef['options']]), array_values($enumOptions[$fieldDef['options']])));
                 }
            break;
@@ -701,6 +700,26 @@ class SpiceDictionaryDefinition
             case 'double':
                 $properties->type = 'number';
                 $properties->example = 20;
+                break;
+            case 'link':
+                $module = SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($this->id);
+                $bean = BeanFactory::getBean($module);
+                $relatedModule = !$bean->load_relationship($fieldDef['name']) ? null : $bean->{$fieldDef['name']}->getRelatedModuleName();
+                $properties->type = 'object';
+                $beanName = BeanFactory::getBean($relatedModule)->_objectname;
+
+                $properties->properties = (object)[
+                    'beans' => [
+                        'type' => 'object',
+                        'format' => 'dictionary' . ($beanName ? "::$beanName" : ''),
+                        'example' => '{id: "12051498-a813-cd2b-9307-67508a9210b5", name: "SpiceCRM"}'
+                    ],
+                    'beans_relations_to_delete' => [
+                        'type' => 'object',
+                        'format' => 'dictionary' . ($beanName ? "::$beanName" : ''),
+                        'example' => '{id: "12051498-a813-cd2b-9307-67508a9210b5", name: "SpiceCRM"}'
+                    ],
+                ];
                 break;
             default:
                 $properties->type = 'string';
