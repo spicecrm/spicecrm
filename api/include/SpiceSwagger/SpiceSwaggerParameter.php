@@ -2,6 +2,7 @@
 namespace SpiceCRM\includes\SpiceSwagger;
 
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainLoader;
 
 class SpiceSwaggerParameter
@@ -16,10 +17,15 @@ class SpiceSwaggerParameter
     const TYPE_NUMBER  = 'number';
     const TYPE_OBJECT  = 'object';
     const TYPE_STRING  = 'string';
+    /**
+     * @var array generated bean schemas
+     */
+    private array $beanSchemas;
 
-    public function __construct(string $parameterName, array $parameterArray) {
+    public function __construct(string $parameterName, array $parameterArray, array $beanSchemas = []) {
         $this->parameterName  = $parameterName;
         $this->parameterArray = $parameterArray;
+        $this->beanSchemas = $beanSchemas;
     }
 
     public function generateSwaggerParameter() {
@@ -181,6 +187,35 @@ class SpiceSwaggerParameter
                     ];
                 }
 
+            case ValidationMiddleware::TYPE_BEAN:
+
+                if (count($this->beanSchemas) == 1) {
+                    return ['$ref' => "#/components/schemas/{$this->beanSchemas[0]}"];
+                } else {
+
+                    $schemaRefs = [];
+
+                    foreach ($this->beanSchemas as $beanSchema) {
+                        $schemaRefs['- $ref'] = "#/components/schemas/$beanSchema";
+                    }
+
+                    return ['oneOf' => $schemaRefs];
+                }
+            case ValidationMiddleware::TYPE_LINK:
+
+                return [
+                    'type' => self::TYPE_OBJECT,
+                    'properties' => [
+                        'beans' => [
+                            'type' => self::TYPE_STRING,
+                            'format' => "dictionary::$subtype"
+                        ],
+                        'beans_relations_to_delete' => [
+                            'type' => self::TYPE_STRING,
+                            'format' => "dictionary::$subtype"
+                        ],
+                    ]
+                ];
             default:
                 return null;
         }
