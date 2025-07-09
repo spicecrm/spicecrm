@@ -121,7 +121,8 @@ class M2MRelationship extends Relationship
                 'module' => $rhsDictionaryDefinition->getModuleName(),
                 'vname' => $relationship->relationship->lhs_linklabel,
                 'duplicate_merge' => $relationship->relationship->lhs_duplicatemerge,
-                'duplicate_linked' => $relationship->relationship->lhs_duplicatelinked
+                'duplicate_linked' => $relationship->relationship->lhs_duplicatelinked,
+                'duplicate_m2m_records' => $relationship->relationship->lhs_clone_join_table_record_on_duplicate
             ];
 
             // set to load default
@@ -161,7 +162,8 @@ class M2MRelationship extends Relationship
                 'module' => $lhsDictionaryDefinition->getModuleName(),
                 'vname' => $relationship->relationship->rhs_linklabel,
                 'duplicate_merge' => $relationship->relationship->rhs_duplicatemerge,
-                'duplicate_linked' => $relationship->relationship->rhs_duplicatelinked
+                'duplicate_linked' => $relationship->relationship->rhs_duplicatelinked,
+                'duplicate_m2m_records' => $relationship->relationship->rhs_clone_join_table_record_on_duplicate
             ];
 
             // set to load default
