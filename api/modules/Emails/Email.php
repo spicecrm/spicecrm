@@ -1907,7 +1907,10 @@ class Email extends SpiceBean
                 (isset($message->properties['last_modification_time']) ? $message->properties['last_modification_time'] :
                     (isset($message->properties['creation_time']) ? $message->properties['creation_time'] : null)));
         $this->date_sent = date('Y-m-d H:i:s', $dateSent);
-        $this->from_addr = $message->getSender();
+
+        $extractedEmail = $this->extractEmailAddress(explode(', ', $message->getSender()));
+        $this->from_addr = $extractedEmail[0]['email'];
+
         foreach ($message->getRecipients() as $recipient) {
             $this->recipient_addresses[] = [
                 'email_address' => $recipient->getEmail(),
