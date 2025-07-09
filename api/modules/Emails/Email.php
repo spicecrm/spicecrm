@@ -390,11 +390,31 @@ class Email extends SpiceBean
             },
             ARRAY_FILTER_USE_KEY
         );
+
         foreach ($linked_fields as $name => $properties) {
-            $linkedBeans = $referenceEmail->get_linked_beans($name);
-            foreach ($linkedBeans as $linkedBean) {
+
+            if (!$referenceEmail->load_relationship($name)) continue;
+
+            $referenceEmail->$name->load(['relationship_fields' => $referenceEmail->$name->relationship_fields]);
+
+            $data = $referenceEmail->$name->rows;
+
+            if (!is_array($data) || empty($data)) continue;
+
+            foreach ($data as $row) {
+
+                if ($name == 'email_addresses' && $row['address_type'] == 'to') continue;
+
+                $additionalValues = [];
+
+                foreach ($referenceEmail->$name->relationship_fields as $field => $def) {
+                    $additionalValues[$field] = $row[$field];
+                }
+
                 if (!$this->load_relationship($name)) continue;
-                $this->{$name}->add($linkedBean->id);
+
+                # add to primary bean
+                $this->$name->add($row['id'], $additionalValues);
             }
         }
     }
