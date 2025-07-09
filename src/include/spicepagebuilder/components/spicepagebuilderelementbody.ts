@@ -51,7 +51,8 @@ export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
      */
     public readonly attributesList: AttributeObjectI[] = [
         {name: 'width', type: 'text'},
-        {name: 'background-color', type: 'color'}
+        {name: 'background-color', type: 'color'},
+        {name: 'trackinglinkall', type: 'bool'}
     ];
     constructor(public spicePageBuilderService: SpicePageBuilderService,
                 private injector: Injector,
@@ -107,6 +108,7 @@ export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
         this.spicePageBuilderService.emitData();
     }
 
+
     /**
      * push the dropped item to the container array
      * @param event
@@ -149,6 +151,13 @@ export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
     public handleEditResponse(res) {
         this.body.attributes = res.attributes;
         this.generateStyle();
+        if(!!this.body.attributes.trackinglinkall){
+            this.spicePageBuilderService.appendElementCustomAttribute(this.body, 'trackinglinkall', this.body.attributes.trackinglinkall);
+            this.body.attributes['css-class'] = this.body.attributes['css-class'] === `element-id-${this.body.id}` ? this.body.attributes['css-class'] : `element-id-${this.body.id}`;
+        }
+        else{
+            this.spicePageBuilderService.removeElementCustomAttribute(this.body, 'trackinglinkall');
+        }
         this.cdRef.markForCheck();
         this.spicePageBuilderService.emitData();
     }
