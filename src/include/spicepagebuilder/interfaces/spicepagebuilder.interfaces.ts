@@ -17,7 +17,8 @@ export interface BodyI extends TagElementI {
     attributes: {
         'background-color'?: string,
         'width'?: string,
-        'css-class'?: string
+        'css-class'?: string,
+        'trackinglinkall'?:boolean
     };
 }
 /**

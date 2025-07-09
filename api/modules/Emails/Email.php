@@ -1027,10 +1027,14 @@ class Email extends SpiceBean
 
         [$parentType, $parentId] = $this->getTrackingParentData();
 
+        $bodyDiv = $dom->getElementsByTagName('div')->item(0);
+           if($bodyDiv->hasAttribute('data-trackinglinkall')){
+            $trackAll = $bodyDiv->getAttribute('data-trackinglinkall');
+           }
         /** @var \DOMElement $node */
         foreach ($dom->getElementsByTagName('a') as $node) {
 
-            if ($node->hasAttribute('data-trackinglink')) {
+            if ($trackAll || $node->hasAttribute('data-trackinglink')) {
                 $trackingId = $node->getAttribute('data-trackinglink');
 
                 if (empty($trackingId)) {
@@ -1046,7 +1050,9 @@ class Email extends SpiceBean
                 $this->assignBeanToEmail($trackingId, 'EmailTrackingLinks');
                 $node->setAttribute('href', $trackingLink);
                 $tracked = true;
-            } else if ($node->hasAttribute('data-emailaction')) {
+            }
+
+            if ($node->hasAttribute('data-emailaction')) {
                 $emailAction= $node->getAttribute('data-emailaction');
                 switch($emailAction) {
                     case 'unsubscribe':
