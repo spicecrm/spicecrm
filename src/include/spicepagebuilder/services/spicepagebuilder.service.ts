@@ -826,7 +826,7 @@ export class SpicePageBuilderService {
      * @param attribute
      * @param value
      */
-    public appendElementCustomAttribute(element: TagElementI | ContentElementI, attribute: string, value: string) {
+    public appendElementCustomAttribute(element: TagElementI | ContentElementI, attribute: string, value: string | boolean) {
 
         let elementCustomAttributes = this.getElementCustomAttributes(element);
 
