@@ -863,6 +863,12 @@ class AdminController
     }
 
     private function getCollation(string $charset): string {
+        // try from the Spice config
+        $configuredCollation = SpiceConfig::getInstance()->config['dbconfigoption']['collation'];
+        if($configuredCollation && str_starts_with($configuredCollation, $charset)){ // we trust that utf8mb4 is set and not utf8
+            return $configuredCollation;
+        }
+
         switch ($charset) {
             case 'utf8mb4':
                 return 'utf8mb4_unicode_ci';
