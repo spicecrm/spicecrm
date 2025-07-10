@@ -767,7 +767,7 @@ class SpiceACLObject extends SpiceBean
      */
     private static function isFieldHandlerClass(string $class): bool
     {
-        return class_exists($class) && in_array('SpiceCRM\modules\SpiceACLObjects\interfaces\SpiceACLObjectFieldHandlerI', class_implements($class));
+        return class_exists($class) && is_subclass_of($class, 'SpiceCRM\modules\SpiceACLObjects\handlers\SpiceACLObjectFieldHandlerBase');
     }
 
     /*
