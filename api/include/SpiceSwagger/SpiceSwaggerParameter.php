@@ -187,7 +187,7 @@ class SpiceSwaggerParameter
                     ];
                 }
 
-            case ValidationMiddleware::TYPE_BEAN:
+            case ValidationMiddleware::TYPE_BEAN_SCHEMA:
 
                 if (count($this->beanSchemas) == 1) {
                     return ['$ref' => "#/components/schemas/{$this->beanSchemas[0]}"];

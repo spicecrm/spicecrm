@@ -32,7 +32,7 @@ $routes = [
                             'properties' => [
                                 'list' => [
                                     'type' => ValidationMiddleware::TYPE_ARRAY,
-                                    'subtype' => ValidationMiddleware::TYPE_BEAN
+                                    'subtype' => ValidationMiddleware::TYPE_BEAN_SCHEMA
                                 ],
                                 'aggregations' => [
                                     'type' => ValidationMiddleware::TYPE_OBJECT,
@@ -429,7 +429,7 @@ $routes = [
                 'content' => [
                     'application/json' => [
                         'schema' => [
-                            'type' => ValidationMiddleware::TYPE_BEAN
+                            'type' => ValidationMiddleware::TYPE_BEAN_SCHEMA
                         ]
                     ]
                 ]
@@ -461,23 +461,16 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'required' => false,
                 'description' => 'GUID or other id type for a bean that is being duplicated',
-            ],
-            // bean in body
-            ValidationMiddleware::ANONYMOUS_ARRAY => [
-                'in' => 'body',
-                'type' => ValidationMiddleware::TYPE_COMPLEX,
-                'description' => 'array with bean data',
-                'example' => '',
-                'required' => true
             ]
         ],
+        'bodySchemaType' => ValidationMiddleware::TYPE_BEAN_SCHEMA,
         'responses' => [
             '200' => [
                 'description' => 'OK',
                 'content' => [
                     'application/json' => [
                         'schema' => [
-                            'type' => ValidationMiddleware::TYPE_BEAN
+                            'type' => ValidationMiddleware::TYPE_BEAN_SCHEMA
                         ]
                     ]
                 ]

@@ -133,8 +133,8 @@ class SpiceSwaggerPath
                                 $currentParameter = new SpiceSwaggerParameter('bool', ['type' => ValidationMiddleware::TYPE_BOOL], $this->beanSchemas);
                                 $response['content']['application/json']['schema'] = $currentParameter->generateSwaggerSchemaParameter()['properties']['bool'];
                                 break;
-                            case ValidationMiddleware::TYPE_BEAN:
-                                $currentParameter = new SpiceSwaggerParameter('bean', ['type' => ValidationMiddleware::TYPE_BEAN], $this->beanSchemas);
+                            case ValidationMiddleware::TYPE_BEAN_SCHEMA:
+                                $currentParameter = new SpiceSwaggerParameter('bean', ['type' => ValidationMiddleware::TYPE_BEAN_SCHEMA], $this->beanSchemas);
                                 $response['content']['application/json']['schema'] = $currentParameter->generateSwaggerSchemaParameter()['properties']['bean'];
                                 break;
                             default:
@@ -167,7 +167,7 @@ class SpiceSwaggerPath
             return ($param['in'] ?? '') == 'body';
         });
 
-        if (!empty($bodyParameters)) {
+        if (!empty($bodyParameters) && !$this->route['bodySchemaType']) {
             $requestBody = [
                 'content' => [
                     'application/json' => [
@@ -181,7 +181,7 @@ class SpiceSwaggerPath
             ];
 
             foreach ($bodyParameters as $paramName => $paramDefinition) {
-                $swaggerParameter = new SpiceSwaggerParameter($paramName, $paramDefinition);
+                $swaggerParameter = new SpiceSwaggerParameter($paramName, $paramDefinition, $this->beanSchemas);
                 $paramSchema = $swaggerParameter->generateSwaggerSchemaParameter();
 
                 $requestBody['content']['application/json']['schema']['properties'][$paramName] = $paramSchema['properties'][$paramName];
@@ -202,6 +202,10 @@ class SpiceSwaggerPath
             if (!empty($requestBody['content']['application/json']['schema']['properties'])) {
                 $this->pathArray['requestBody'] = $requestBody;
             }
+        } else if ($this->route['bodySchemaType']) {
+            $currentParameter = new SpiceSwaggerParameter('bodySchemaType', ['type' => $this->route['bodySchemaType']], $this->beanSchemas);
+            $requestBody['content']['application/json']['schema'] = $currentParameter->generateSwaggerSchemaParameter()['properties']['bodySchemaType'];
+            $this->pathArray['requestBody'] = $requestBody;
         }
     }
 
