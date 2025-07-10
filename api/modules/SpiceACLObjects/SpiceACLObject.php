@@ -761,7 +761,7 @@ class SpiceACLObject extends SpiceBean
     }
 
     /**
-     * check if the class is a field handler class that implements the SpiceACLObjectFieldHandlerI interface
+     * check if the class is a field handler class that extends the abstract class SpiceACLObjectFieldHandlerBase
      * @param string $class
      * @return bool
      */

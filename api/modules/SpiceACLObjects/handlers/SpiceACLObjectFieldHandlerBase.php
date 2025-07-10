@@ -14,9 +14,9 @@ abstract class SpiceACLObjectFieldHandlerBase
      */
     public function getDBCondition(string $tableName, string $fieldName): string
     {
-        $projectIds = join(',', array_map(fn($id) => "'$id'", $this->getRelatedIds()));;
+        $relatedIds = join(',', array_map(fn($id) => "'$id'", $this->getRelatedIds()));;
 
-        return empty($projectIds) ? '1 = 0' : "$tableName.$fieldName IN ($projectIds)";
+        return empty($relatedIds) ? '1 = 0' : "$tableName.$fieldName IN ($relatedIds)";
     }
 
     /**
@@ -26,13 +26,13 @@ abstract class SpiceACLObjectFieldHandlerBase
      */
     public function getFTSCondition(string $fieldName): ?object
     {
-        $projectIds = $this->getRelatedIds();
+        $relatedIds = $this->getRelatedIds();
 
         return (object)[
             'key' => 'must',
             'value' => [
                 'terms' => [
-                    "$fieldName.raw" => $projectIds
+                    "$fieldName.raw" => $relatedIds
                 ]
             ]];
     }
@@ -45,9 +45,9 @@ abstract class SpiceACLObjectFieldHandlerBase
      */
     public function checkFieldAccess(mixed $fieldValue): bool
     {
-        $projectIds = $this->getRelatedIds();
+        $relatedIds = $this->getRelatedIds();
 
-        return in_array($fieldValue, $projectIds);
+        return in_array($fieldValue, $relatedIds);
     }
 
     /**
