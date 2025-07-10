@@ -446,7 +446,7 @@ export class FieldsetManager {
      */
     public async openCopyModal(subFieldset?) {
 
-        const fieldset = subFieldset ? subFieldset.item.fieldset : this.currentFieldSet;
+        const fieldset = subFieldset ? subFieldset.data.fieldset : this.currentFieldSet;
         const copyModal: ComponentRef<FieldsetManagerCopyDialog> = await firstValueFrom(this.modalservice.openModal('FieldsetManagerCopyDialog'));
 
         copyModal.instance.fieldset = this.metadata.getFieldset(fieldset);
@@ -500,7 +500,7 @@ export class FieldsetManager {
 
         // set the new parent fieldset for the sub fieldset
         if (subFieldset) {
-            subFieldset.item.fieldset = newFieldsetId;
+            subFieldset.data.fieldset = newFieldsetId;
         }
 
         const fieldsetData = {[newFieldsetId]: this.copyFieldsetToMetadata(newFieldsetId, copyDialogRes)};
