@@ -12,7 +12,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\modules\SpiceACL\SpiceACLUsers;
-use SpiceCRM\modules\SpiceACLObjects\interfaces\SpiceACLObjectFieldHandlerI;
+use SpiceCRM\modules\SpiceACLObjects\handlers\SpiceACLObjectFieldHandlerBase;
 use SpiceCRM\modules\UserAbsences\UserAbsence;
 
 /**
@@ -606,7 +606,7 @@ class SpiceACLObject extends SpiceBean
                     break;
                 case 'SYSHANDLER':
                     if (self::isFieldHandlerClass($fieldvalue['value1'])) {
-                        /** @var SpiceACLObjectFieldHandlerI $classInstance */
+                        /** @var SpiceACLObjectFieldHandlerBase $classInstance */
                         $classInstance = new $fieldvalue['value1']();
                         $condition = $classInstance->getFTSCondition($fieldvalue['name']);
                         if ($condition) {
@@ -734,7 +734,7 @@ class SpiceACLObject extends SpiceBean
                     break;
                 case 'SYSHANDLER':
                     if (self::isFieldHandlerClass($fieldvalue['value1'])) {
-                        /** @var SpiceACLObjectFieldHandlerI $classInstance */
+                        /** @var SpiceACLObjectFieldHandlerBase $classInstance */
                         $classInstance = new $fieldvalue['value1']();
                         $condition = $classInstance->getDBCondition($table_name, $fieldvalue['name']);
                         $whereClauses[] = $condition;
@@ -875,7 +875,7 @@ class SpiceACLObject extends SpiceBean
                     break;
                 case 'SYSHANDLER':
                     if (self::isFieldHandlerClass($fieldvalues['value1'])) {
-                        /** @var SpiceACLObjectFieldHandlerI $classInstance */
+                        /** @var SpiceACLObjectFieldHandlerBase $classInstance */
                         $classInstance = new $fieldvalues['value1']();
                         if ($classInstance->checkFieldAccess($bean->{$fieldname})) {
                             $authObjectAccess = true;
