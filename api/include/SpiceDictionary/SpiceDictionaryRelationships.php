@@ -290,7 +290,7 @@ class SpiceDictionaryRelationships
 
         SystemDeploymentCR::writeDBEntry($table, $relationship['id'], $relationship, $relationship['name']);
 
-        $this->handlePolymorphAdd($relationship, $relationshipPolymorphs, $isNew);
+        $this->handlePolymorphAdd($relationship, $relationshipPolymorphs ?? [], $isNew);
     }
 
     /**
