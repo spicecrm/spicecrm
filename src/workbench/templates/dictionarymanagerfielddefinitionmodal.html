@@ -1,0 +1,16 @@
+<system-modal size="small">
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_CACHE"/>/<system-label label="LBL_DEFINITION"/>
+    </system-modal-header>
+    <system-modal-content>
+        @for (keyValue of definition | keyvalue; track keyValue.key) {
+            <div class="slds-box slds-grid slds-grid--align-spread slds-m-bottom--xx-small" style="padding: 0.5rem">
+                <div [system-title]="keyValue.key" class="slds-text-title--caps slds-truncate slds-m-right--small">{{keyValue.key}}</div>
+                <div>{{keyValue.value}}</div>
+            </div>
+        }
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"/></button>
+    </system-modal-footer>
+</system-modal>

@@ -68,12 +68,12 @@
                         </system-checkbox>
                     </div>
                     <div class="slds-size--1-of-4 slds-form-element__control">
-                        <system-checkbox [(ngModel)]="dictionaryitem.non_db" [asinteger]="true">
+                        <system-checkbox [(ngModel)]="dictionaryitem.non_db" (ngModelChange)="onNonDBSet($event)" [asinteger]="true">
                             <system-label label="LBL_NON_DB"/>
                         </system-checkbox>
                     </div>
                     <div class="slds-size--1-of-4 slds-form-element__control">
-                        <system-checkbox [(ngModel)]="dictionaryitem.duplicate_merge" [asinteger]="true">
+                        <system-checkbox [(ngModel)]="dictionaryitem.duplicate_merge" [disabled]="dictionaryitem.non_db == 1" [asinteger]="true">
                             <system-label label="LBL_DUPLICATE_MERGE"/>
                         </system-checkbox>
                     </div>
