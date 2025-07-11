@@ -23,6 +23,10 @@ import {fieldGeneric} from './fieldgeneric';
     standalone: false
 })
 export class fieldCompanies extends fieldGeneric implements OnInit {
+    /**
+     * holds the id field name
+     */
+    public relateIdField: string;
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public backend: backend, public configuration: configurationService, public userpreferences: userpreferences) {
         super(model, view, language, metadata, router);
@@ -36,30 +40,39 @@ export class fieldCompanies extends fieldGeneric implements OnInit {
      * sets the first one by default if no value is set in edit mode
      */
     public setDefault() {
+        // the field name must be the field from type relate e.g. company_name
+        const fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
+        this.relateIdField = fieldDefs.id_name;
+
         if (this.view.isEditMode() && !this.model.getField(this.fieldname)) {
             if (this.userpreferences.companyCodeId) {
-                this.value = this.userpreferences.companyCodeId;
+                this.value = this.getName(this.userpreferences.companyCodeId);
+                this.model.setField(this.relateIdField, this.userpreferences.companyCodeId);
             } else {
-                let companyCodes = this.configuration.getData('companycodes').sort((a, b) => a.name.localeCompare(b.name));
+                const companyCodes = this.configuration.getData('companycodes').sort((a, b) => a.name.localeCompare(b.name));
                 if (companyCodes && companyCodes.length > 0) {
-                    this.value = companyCodes[0].id;
+                    this.value = companyCodes[0].name;
+                    this.model.setField(this.relateIdField, companyCodes[0].id);
                 }
             }
         }
     }
 
+    /**
+     * get the company code name from the configuration service loaded list
+     * @param id
+     * @private
+     */
+    private getName(id: string): string {
+        return this.configuration.getData('companycodes').find(company => company.id == id)?.name;
+    }
 
     /**
-     * returns ths name for the given id
+     * set id and name field on id change
+     * @param id
      */
-    get companyName() {
-        let companyName = '';
-        this.configuration.getData('companycodes').some(company => {
-            if (company.id == this.model.getField(this.fieldname)) {
-                companyName = company.name;
-                return true;
-            }
-        })
-        return companyName;
+    public onIdChange(id: string) {
+        this.value = this.getName(id);
+        this.model.setField(this.relateIdField, id);
     }
 }
