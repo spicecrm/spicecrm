@@ -192,6 +192,7 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
 import {DomainManagerDefinitionUsageModal} from "./components/domainmanagerdefinitionusagemodal";
 import {DictionaryManagerUsageModal} from "./components/dictionarymanagereusagemodal";
 import {DictionaryManagerFilterItemsPipe} from "./pipes/dictionarymanagerfilteritems.pipe";
+import {DictionaryManagerFieldDefinitionModal} from "./components/dictionarymanagerfielddefinitionmodal";
 
 
 @NgModule({
@@ -371,7 +372,8 @@ import {DictionaryManagerFilterItemsPipe} from "./pipes/dictionarymanagerfilteri
         HL7Manager,
         Hl7ManagerType,
         HL7ManagerRule,
-        WorkbenchConfigOptionKanban
+        WorkbenchConfigOptionKanban,
+        DictionaryManagerFieldDefinitionModal
     ],
     exports: [
         SortPipe,
