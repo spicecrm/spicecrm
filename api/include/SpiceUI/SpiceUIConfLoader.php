@@ -481,7 +481,7 @@ class SpiceUIConfLoader
                 if ($dictionaryDef['status'] != 'a') continue;
 
                 try {
-                    $definitions->repair($dictionaryDef['id']);
+                    $definitions->repair($dictionaryDef['id'], false, true, true);
                 } catch (\Throwable|Exception $exception) {
                     unset($response[$dictionaryDef['tablename']]);
 
