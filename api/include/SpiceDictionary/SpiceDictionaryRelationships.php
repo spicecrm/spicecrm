@@ -278,18 +278,48 @@ class SpiceDictionaryRelationships
         //get the table and do an upsert
         $table = $relationship['scope'] == 'c' ? 'syscustomdictionaryrelationships' : 'sysdictionaryrelationships';
 
-        $this->relationships[] = $relationship;
+        $isNew = !DBManagerFactory::getInstance()->getOne("SELECT id FROM $table WHERE id='{$relationship['id']}'");
+
+        if ($isNew) {
+            $this->relationships[] = $relationship;
+        }
+
         $this->resetCache();
 
         unset($relationship['scope']);
 
         SystemDeploymentCR::writeDBEntry($table, $relationship['id'], $relationship, $relationship['name']);
 
+        $this->handlePolymorphAdd($relationship, $relationshipPolymorphs ?? [], $isNew);
+    }
+
+    /**
+     * handle updating related polymorph list
+     * @param array $relationship
+     * @param array $relationshipPolymorphList
+     * @param bool $isNew
+     * @return void
+     * @throws Exception
+     */
+    private function handlePolymorphAdd(array $relationship, array $relationshipPolymorphList, bool $isNew): void
+    {
+        if ($relationship['relationship_type'] !== 'one-to-many-polymorph') return;
+
+        $existingRelatedPolymorph = $isNew ? [] : $this->getPolymorphs($relationship['id']);
+        $newPolymorphList = [];
+
         // handle the polymorph entries
-        foreach($relationshipPolymorphs as $relationshipPolymorph){
+        foreach($relationshipPolymorphList as $relationshipPolymorph){
             $table = $relationshipPolymorph['scope'] == 'c' ? 'syscustomdictionaryrelationshippolymorphs' : 'sysdictionaryrelationshippolymorphs';
             unset($relationshipPolymorph['scope']);
-            SystemDeploymentCR::writeDBEntry($table, $relationshipPolymorph['id'], $relationshipPolymorph, $relationshipPolymorph['relationship_name']);;
+            SystemDeploymentCR::writeDBEntry($table, $relationshipPolymorph['id'], $relationshipPolymorph, $relationshipPolymorph['relationship_name']);
+            $newPolymorphList[$relationshipPolymorph['id']] = true;
+        }
+
+        foreach ($existingRelatedPolymorph as $existing) {
+            if ($newPolymorphList[$existing['id']]) continue;
+            $table = $existing['scope'] == 'c' ? 'syscustomdictionaryrelationshippolymorphs' : 'sysdictionaryrelationshippolymorphs';
+            SystemDeploymentCR::deleteDBEntry($table, $existing['id'], "polymorph::{$existing['id']}");
         }
     }
 
