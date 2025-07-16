@@ -431,9 +431,10 @@ export class model implements OnDestroy {
      */
     private setRelateFieldsRequired() {
         Object.keys(this.fields).forEach(field => {
-            if (this.fields[field].type != 'relate') return;
-            this.relateFieldsRequired.set(this.fields[field].id_name, false);
-            this.relateFieldsRequired.set(field, this.fields[this.fields[field].id_name].required);
+            if (!['relate', 'relatePrimary'].includes(this.fields[field].type)) return;
+            const idFieldName = this.fields[field].type == 'relate' ? this.fields[field].id_name : this.fields[field].name + '_id';
+            this.relateFieldsRequired.set(idFieldName, false);
+            this.relateFieldsRequired.set(field, this.fields[idFieldName].required);
         });
     }
 
@@ -630,7 +631,7 @@ export class model implements OnDestroy {
         for (let field in this.fields) {
             stati[field] = this.evaluateFieldStati(field);
 
-            if (this.fields[field].type == 'relate') {
+            if (['relate', 'relatePrimary'].includes(this.fields[field].type)) {
                 relateFields.push(field);
             }
         }
@@ -648,7 +649,8 @@ export class model implements OnDestroy {
     private adjustRelateFieldsStatusesRequiredFlag(relateFields: string[], statusesObj: any) {
 
         relateFields.forEach(relateField => {
-            const idField = this.fields[relateField].id_name;
+            const idField = this.fields[relateField].type == 'relate' ? this.fields[relateField].id_name : this.fields[relateField].name + '_id';
+
             if (statusesObj[idField].required) {
                 statusesObj[idField].required = false;
                 statusesObj[relateField].required = true;
@@ -699,10 +701,6 @@ export class model implements OnDestroy {
         if (this.getFieldMessages(field, "error")) {
             this._fields_stati_tmp[field].invalid = true;
         }
-    }
-
-    private getRelateFields() {
-        Object.values(this.fields).filter(field => field.type == 'relate');
     }
 
     /**
