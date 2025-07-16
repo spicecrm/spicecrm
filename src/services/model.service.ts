@@ -416,7 +416,9 @@ export class model implements OnDestroy {
     get fields(): any[] {
         if (this.module && _.isEmpty(this._fields)) {
             this._fields = this.metadata.getModuleFields(this.module);
-            this.setRelateFieldsRequired();
+            if (this._fields.length > 0) {
+                this.setRelateFieldsRequired();
+            }
         }
 
         return this._fields;
