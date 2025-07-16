@@ -19,7 +19,7 @@ export class ObjectActionNewrelatedButton implements OnInit {
 
     public disabled: boolean = true;
 
-    public actionconfig: {required_model_state?: string, newtab?: boolean};
+    public actionconfig: {required_model_state?: string, newtab?: boolean, link_name?: string};
     /**
      * if set to true didpslay teh button as icon
      */
@@ -57,7 +57,7 @@ export class ObjectActionNewrelatedButton implements OnInit {
             // add the model
             this.model.addModel("", this.parent).subscribe(response => {
                 if (response != false) {
-                    this.relatedmodels.addItems([response]);
+                    this.relatedmodels.addItems([response], this.actionconfig.link_name);
                 }
             });
         }
