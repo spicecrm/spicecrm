@@ -84,7 +84,9 @@ export class DictionaryManagerRelationshipsDetails {
     public close() {
         // set back the values from teh backup
         this.dictionaryRelationship = JSON.parse(this.backup);
-        this.dictionarymanager.updateRelationshipInArray(this.dictionaryRelationship);
+        if (this.dictionarymanager.dictionaryrelationships.some(r => r.id == this.dictionaryRelationship.id)) {
+            this.dictionarymanager.updateRelationshipInArray(this.dictionaryRelationship);
+        }
 
         this.self.destroy();
     }

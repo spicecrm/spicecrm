@@ -172,7 +172,14 @@ export class dictionarymanager {
      */
     public updateRelationshipInArray(relationship: Relationship) {
         const idx = this.dictionaryrelationships.findIndex(r => r.id == relationship.id);
-        this.dictionaryrelationships[idx] = {...relationship};
+
+        // if the relationship not found push it the to array instead of update
+        if (idx == -1) {
+            this.pushNewRelationshipToArray(relationship);
+        } else {
+            this.dictionaryrelationships[idx] = {...relationship};
+        }
+
         // trigger the change detection
         this.dictionaryrelationships= [...this.dictionaryrelationships];
 
