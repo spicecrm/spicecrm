@@ -476,11 +476,15 @@ export class relatedmodels implements OnDestroy {
      * helper to add items when called from the handler
      *
      * @param items
+     * @param addLinkName
      */
-    public addItems(items): Observable<any> {
+    public addItems(items, addLinkName?: string): Observable<any> {
         let retSubject = new Subject<any>();
+
+        if (!addLinkName) addLinkName = this._linkName;
+
         if (this.saveToLinkOnly) {
-            this.model.addRelatedRecords(this._linkName, items);
+            this.model.addRelatedRecords(addLinkName, items);
             this.items = this.items.concat(items);
             this.count = this.count + items.length;
             return of(false) ;
@@ -489,7 +493,7 @@ export class relatedmodels implements OnDestroy {
         // only id and rel fields will be processed in the backend
         let body = {beansData: items.map(e => (this.modelutilities.spiceModel2backend(this.relatedModule, e)))};
 
-        this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], body, this.httpRequestsRefID).subscribe({
+        this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + addLinkName, [], body, this.httpRequestsRefID).subscribe({
             next: () => {
                     for (let item of items) {
                         let itemfound = false;
