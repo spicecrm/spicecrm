@@ -178,6 +178,21 @@ $routes = [
             ]
         ]
     ],
+    [
+        'method'      => 'get',
+        'route'       => '/module/ProspectLists/{id}/lastmembermodification',
+        'class'       => ProspectListsController::class,
+        'function'    => 'getLastMemberModification',
+        'description' => 'get the last modification member data of a the given prospect list',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'prospect list id',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
+        ]
+    ]
 
 ];
 

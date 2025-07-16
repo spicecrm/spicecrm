@@ -1,0 +1,10 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+    <div *ngIf="!isLoading" class="slds-grid">
+        <system-icon [system-title]="moduleLabel" [module]="lastMemberModificationModule" [size]="'x-small'"></system-icon>
+        <span system-model-popover [module]="lastMemberModificationModule" [id]="lastMemberModificationId">{{lastMemberModificationName}}</span>
+        <span>&nbsp;<system-label [label]="modificationDescriptionLabel"></system-label></span>
+        <span>&nbsp;{{formatedDate}}</span>
+    </div>
+    <system-stencil *ngIf="isLoading"></system-stencil>
+</field-generic-display>
