@@ -75,25 +75,6 @@ class Contact extends Person
         return parent::save($check_notify, $fts_index_bean);
     }
 
-    function save_relationship_changes($is_update, $exclude = [])
-    {
-
-        //if account_id was replaced unlink the previous account_id.
-        //this rel_fields_before_value is populated by sugarbean during the retrieve call.
-        if ((!empty($this->account_id) && !empty($this->rel_fields_before_value['account_id']) &&
-            (trim($this->account_id) != trim($this->rel_fields_before_value['account_id']))) ||
-            (empty($this->account_id) && $this->account_id != trim($this->rel_fields_before_value['account_id']))
-        ) {
-            //unlink the old record.
-            $this->load_relationship('accounts');
-            $this->accounts->delete($this->id, $this->rel_fields_before_value['account_id']);
-            $this->accounts->add($this->account_id);
-        } else if (!empty($this->account_id)){
-            $this->load_relationship('accounts');
-            $this->accounts->add($this->account_id);
-        }
-        parent::save_relationship_changes($is_update);
-    }
 
     /**
      * retrieve further data used in the frontend display mode
