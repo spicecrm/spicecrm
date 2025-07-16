@@ -15,7 +15,8 @@ declare var moment: any;
 
 @Component({
     selector: 'prospectlists-last-member-modification-field',
-    templateUrl: '../templates/prospectlistslastmembermodificationfield.html'
+    templateUrl: '../templates/prospectlistslastmembermodificationfield.html',
+    standalone: false
 })
 export class ProspectlistsLastMemberModificationField extends fieldGeneric implements OnInit {
 
