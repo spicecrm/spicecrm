@@ -260,5 +260,27 @@ class ProspectListsController
         }
         return $res->withJson($prospects);
     }
+
+    /**
+     * Retrieves the last modification details for a member of a prospect list.
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function getLastMemberModification(Request $req, Response $res, $args): Response
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $query = "SELECT related_id as modificated_memeber_id, related_type as modificated_memeber_module, date_modified, deleted FROM prospect_lists_prospects WHERE prospect_list_id = '{$args['id']}' AND date_modified = ( SELECT MAX(date_modified) FROM prospect_lists_prospects WHERE prospect_list_id = '{$args['id']}')";
+
+        $row = $db->fetchOne($query);
+
+        $modifiedMemberBean = BeanFactory::getBean($row['modificated_memeber_module'], $row['modificated_memeber_id']);
+
+        return $res->withJson(['prospect_list_data' => $row, 'modified_member_name' => $modifiedMemberBean->name]);
+    }
 }
 
