@@ -651,7 +651,7 @@ export class model implements OnDestroy {
         relateFields.forEach(relateField => {
             const idField = this.fields[relateField].type == 'relate' ? this.fields[relateField].id_name : this.fields[relateField].name + '_id';
 
-            if (statusesObj[idField].required) {
+            if (statusesObj[idField]?.required) {
                 statusesObj[idField].required = false;
                 statusesObj[relateField].required = true;
             }
