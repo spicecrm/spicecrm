@@ -124,6 +124,22 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit,
         this.relationship.lhs_linkdefault = value ? 1 : 0;
     }
 
+    get rhs_clone_join_table(){
+        return this.relationship.rhs_clone_join_table_record_on_duplicate == 1;
+    }
+
+    set rhs_clone_join_table(value){
+        this.relationship.rhs_clone_join_table_record_on_duplicate = value ? 1 : 0;
+    }
+
+    get lhs_clone_join_table(){
+        return this.relationship.lhs_clone_join_table_record_on_duplicate == 1;
+    }
+
+    set lhs_clone_join_table(value){
+        this.relationship.lhs_clone_join_table_record_on_duplicate = value ? 1 : 0;
+    }
+
 
     public ngOnChanges() {
         this.buildRelationshipFieldsPerItem();
