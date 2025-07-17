@@ -78,11 +78,6 @@ export class ObjectActionDuplicateButton {
         // set as duplicate
         this.model.duplicate = true;
         this.model.templateId = this.parent.id;
-        //
-        // let dateClosed = this.parent.getField('date_closed');
-        // if (dateClosed) {
-        //     this.model.setField('date_closed', dateClosed);
-        // }
 
         this.model.edit();
     }
