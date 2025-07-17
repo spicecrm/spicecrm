@@ -50,7 +50,7 @@ export class ObjectActionDuplicateButton {
         modelData.date_entered = new Date();
         modelData.date_modified = new Date();
 
-        this.model.setData(modelData, false);
+        this.model.setData(modelData, true);
 
         for (let field in this.parent.fields) {
             if (this.parent.fields[field].type == 'link' && this.model.data[field] && this.model.data[field].beans) {
