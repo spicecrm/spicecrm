@@ -46,6 +46,6 @@ export class ProspectlistsLastMemberModificationField extends fieldGeneric imple
     get formatedDate() {
         let timeZone = this.session.getSessionData('timezone');
         let pDateTime = typeof timeZone == 'string' && timeZone.length > 0 ? moment.utc(this.modificationDate).tz(timeZone) : moment(this.modificationDate);
-        return pDateTime.format('DD.MM.YYYY HH:mm');
+        return pDateTime.isValid() ? pDateTime.format('DD.MM.YYYY HH:mm') : null;
     }
 }
