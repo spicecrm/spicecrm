@@ -2,79 +2,60 @@
 
 namespace SpiceCRM\includes\SpiceCurlWrapper;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
-
-class SpiceCurlResponse implements ResponseInterface
+class SpiceCurlResponse
 {
+    private string|bool $response;
 
-    public function getProtocolVersion()
+    private string $errors;
+
+    private mixed $info;
+
+    public function __construct(string|bool $response, string $errors, mixed $info)
     {
-        // TODO: Implement getProtocolVersion() method.
+        $this->response = $response;
+        $this->errors   = $errors;
+        $this->info     = $info;
     }
 
-    public function withProtocolVersion(string $version)
+    public function getResponse(): string|bool
     {
-        // TODO: Implement withProtocolVersion() method.
+        return $this->response;
     }
 
-    public function getHeaders()
+    public function getErrors(): string
     {
-        // TODO: Implement getHeaders() method.
+        return $this->errors;
     }
 
-    public function hasHeader(string $name)
+    public function getInfo(): mixed
     {
-        // TODO: Implement hasHeader() method.
+        return $this->info;
     }
 
-    public function getHeader(string $name)
+    public function getHttpCode(): int
     {
-        // TODO: Implement getHeader() method.
+        if (isset($this->info['http_code'])) {
+            return (int) $this->info['http_code'];
+        }
+
+        return 0;
     }
 
-    public function getHeaderLine(string $name)
+    public function getHeaderSize(): int
     {
-        // TODO: Implement getHeaderLine() method.
+        if (isset($this->info['header_size'])) {
+            return (int) $this->info['header_size'];
+        }
+
+        return 0;
     }
 
-    public function withHeader(string $name, $value)
+    public function getContentType(): string
     {
-        // TODO: Implement withHeader() method.
-    }
+        if (isset($this->info['content_type'])) {
+            return $this->info['content_type'];
+        }
 
-    public function withAddedHeader(string $name, $value)
-    {
-        // TODO: Implement withAddedHeader() method.
-    }
-
-    public function withoutHeader(string $name)
-    {
-        // TODO: Implement withoutHeader() method.
-    }
-
-    public function getBody()
-    {
-        // TODO: Implement getBody() method.
-    }
-
-    public function withBody(StreamInterface $body)
-    {
-        // TODO: Implement withBody() method.
-    }
-
-    public function getStatusCode()
-    {
-        // TODO: Implement getStatusCode() method.
-    }
-
-    public function withStatus(int $code, string $reasonPhrase = '')
-    {
-        // TODO: Implement withStatus() method.
-    }
-
-    public function getReasonPhrase()
-    {
-        // TODO: Implement getReasonPhrase() method.
+        return '';
     }
 }

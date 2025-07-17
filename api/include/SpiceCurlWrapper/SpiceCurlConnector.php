@@ -2,39 +2,55 @@
 
 namespace SpiceCRM\includes\SpiceCurlWrapper;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use \CurlHandle;
+use SpiceCRM\includes\Logger\APILogEntryHandler;
 
 class SpiceCurlConnector
 {
     private CurlHandle $curl;
 
-    public function __construct()
+    private SpiceCurlRequest $request;
+
+    public function __construct(SpiceCurlRequest $request)
     {
-        $this->curl = curl_init();
+        $this->request = $request;
+        $this->curl    = curl_init();
     }
 
-    public function process(ServerRequestInterface $request): ResponseInterface
+    public function process(bool $closeAtFinish = true): SpiceCurlResponse
     {
-        curl_setopt_array($this->curl, $this->generateOptions());
+        $curlOptions = $this->request->getOptions();
+
+        if ($this->request->loggingEnabled()) {
+            $logEntryHandler = new APILogEntryHandler();
+            $logEntryHandler->generateOutgoingLogEntry($curlOptions, $this->request->getLoggedRoute());
+            $logEntryHandler->writeOutogingLogEntry();
+        }
+
+        curl_setopt_array($this->curl, $curlOptions);
 
         $response = curl_exec($this->curl);
         $errors = curl_error($this->curl);
         $info = curl_getinfo($this->curl);
 
-        curl_close($this->curl);
+        if ($this->request->loggingEnabled()) {
+            $logEntryHandler->updateOutgoingLogEntry($this->curl, $response);
+        }
+
+        if ($closeAtFinish) {
+            curl_close($this->curl);
+        }
 
         return $this->generateResponse($response, $errors, $info);
     }
 
-    private function generateOptions(): array
+    public function closeConnection(): void
     {
-        return [];
+        curl_close($this->curl);
     }
 
     private function generateResponse(string|bool $response, string $errors, mixed $info): SpiceCurlResponse
     {
-        return new SpiceCurlResponse();
+        return new SpiceCurlResponse($response, $errors, $info);
     }
 }
