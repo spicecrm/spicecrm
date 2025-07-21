@@ -4,7 +4,8 @@
     </system-modal-header>
     <system-modal-content margin="none" grow="true">
         <div class="slds-p-around--small">
-            <object-record-fieldset [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
+            <system-componentset *ngIf="componentset" [componentset]="componentset"></system-componentset>
+            <object-record-fieldset *ngIf="!componentset" [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
         </div>
     </system-modal-content>
     <system-modal-footer>

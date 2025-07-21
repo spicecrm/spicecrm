@@ -21,9 +21,15 @@ import {session} from "../../../services/session.service";
 export class ProjectActivityTrackTimeModal implements OnInit {
 
     /**
+     * @deprecated
      * the fieldset to be rendered
      */
     public fieldset: string;
+
+    /**
+     * the componentset to be rendered
+     */
+    public componentset: string;
 
     /**
      * self instance of the modal
@@ -53,7 +59,10 @@ export class ProjectActivityTrackTimeModal implements OnInit {
         this.model.initialize(this.parent);
 
         let componentConfig = this.metadata.getComponentConfig('ProjectActivityTrackTimeModal', 'ProjectActivities');
-        if (componentConfig.fieldset) {
+        if(componentConfig.componentset){
+            this.componentset = componentConfig.componentset;
+        }
+        else if (componentConfig.fieldset) { // BWC
             this.fieldset = componentConfig.fieldset;
         }
     }

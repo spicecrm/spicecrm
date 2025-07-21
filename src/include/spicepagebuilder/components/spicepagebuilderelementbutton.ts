@@ -104,6 +104,7 @@ export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
                 break;
             case 'left':
                 this.style.margin = '0px';
+                this.style.float = 'left';
                 break;
         }
     }
