@@ -159,15 +159,14 @@ class SpiceDictionaryDefinitions
      * @param $id
      * @param bool $keep
      * @param bool $execute
-     * @param bool $relationships
      * @return string|null
      * @throws DatabaseException
      * @throws Exception
      * @throws \Throwable
      */
-    public function repair($id, $keep = false, bool $execute = true, bool $relationships = false): ?string
+    public function repair($id, $keep = false, bool $execute = true): ?string
     {
-        $sql = (new SpiceDictionaryDefinition($id))->repair($relationships, $execute);
+        $sql = (new SpiceDictionaryDefinition($id))->repair(false, $execute);
         if ($keep) {
             $_SESSION['sysdictionary']['sqls'][md5($sql)] = $sql;
         }
