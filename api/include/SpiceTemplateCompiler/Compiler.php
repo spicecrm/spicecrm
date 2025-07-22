@@ -652,13 +652,13 @@ class Compiler
                     case 'data-spicefor-odd':
                         if(in_array($attribute->nodeName, $params)){
                             $newAttribute = $this->doc->createAttribute($attribute->nodeName);
-                            $newAttribute->value = $this->compileblock($attribute->nodeValue, $beans, $this->lang);
+                            $newAttribute->value = htmlspecialchars($this->compileblock($attribute->nodeValue, $beans, $this->lang));
                             $newElement->appendChild($newAttribute);
                         }
                         break;
                     default:
                         $newAttribute = $this->doc->createAttribute($attribute->nodeName);
-                        $newAttribute->value = $this->compileblock($attribute->nodeValue, $beans, $this->lang);
+                        $newAttribute->value = htmlspecialchars($this->compileblock($attribute->nodeValue, $beans, $this->lang));
                         $newElement->appendChild($newAttribute);
                 }
             }
