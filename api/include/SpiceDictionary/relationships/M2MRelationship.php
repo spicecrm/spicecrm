@@ -413,7 +413,6 @@ class M2MRelationship extends Relationship
             "id" => $this->relid,
             $this->def['join_key_lhs'] => $lhs->id,
             $this->def['join_key_rhs'] => $rhs->id,
-            'date_modified' => TimeDate::getInstance()->nowDb(),
             'deleted' => 0,
         ];
 
@@ -437,6 +436,8 @@ class M2MRelationship extends Relationship
         {
             $row = array_merge($row, $additionalFields);
         }
+
+        $row['date_modified'] = TimeDate::getInstance()->nowDb();
 
         return $row;
     }
