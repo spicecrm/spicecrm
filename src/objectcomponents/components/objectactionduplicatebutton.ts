@@ -79,6 +79,9 @@ export class ObjectActionDuplicateButton {
         this.model.duplicate = true;
         this.model.templateId = this.parent.id;
 
+        // trigger validation
+        this.model.validate();
+
         this.model.edit();
     }
 }
