@@ -88,7 +88,7 @@ export class DictionaryManagerIndexAdd implements OnInit{
         // if scope is not all reset to custom in any case
 
 
-        this.availableDictionaryItems = this.dictionarymanager.getDictionaryDefinitionItems(this.dictionarymanager.currentDictionaryDefinition).sort((a, b) => a.name.localeCompare(b.name));
+        this.availableDictionaryItems = this.dictionarymanager.getDictionaryDefinitionItems(this.dictionarymanager.currentDictionaryDefinition).filter(i => i.non_db != 1).sort((a, b) => a.name.localeCompare(b.name));
     }
 
     get foreignDefinitions(): DictionaryDefinition[]{
