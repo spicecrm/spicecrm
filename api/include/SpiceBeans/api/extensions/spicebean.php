@@ -845,6 +845,39 @@ $routes = [
             ],
 
         ],
+        'responses' => [
+            '200' => [
+                'description' => 'When the param getcount is set to true, the response will be an object with list => array of beans and count => total count. 
+                Otherwise the response will be an array of beans.
+                In addition to the bean schema a property relid is added to the bean representing the m2m join table record id',
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => ValidationMiddleware::TYPE_ONE_OF,
+                            'oneOfSchemas' =>  [
+                                [
+                                    'type' => ValidationMiddleware::TYPE_OBJECT,
+                                    'properties' => [
+                                        'list' => [
+                                            'type' => ValidationMiddleware::TYPE_ARRAY,
+                                            'subtype' => ValidationMiddleware::TYPE_BEAN_SCHEMA
+                                        ],
+                                        'count' => [
+                                            'type' => ValidationMiddleware::TYPE_NUMERIC,
+                                        ]
+                                    ]
+                                ],
+                                [
+                                    'type' => ValidationMiddleware::TYPE_ARRAY,
+                                    'subtype' => ValidationMiddleware::TYPE_BEAN_SCHEMA
+                                ]
+                            ]
+
+                        ]
+                    ]
+                ]
+            ]
+        ],
     ],
     [
         'method' => 'post',
