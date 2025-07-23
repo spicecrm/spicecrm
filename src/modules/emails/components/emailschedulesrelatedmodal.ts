@@ -220,10 +220,10 @@ export class EmailSchedulesRelatedModal {
                 beans => {
                     link.open = true;
                     if (!link.linkedbeans) link.linkedbeans = [];
-                    for (let id in beans) {
-                        beans[id].source = 'link';
-                        beans[id].deleted = false;
-                        link.linkedbeans.push(beans[id]);
+                    for (let bean of beans) {
+                        bean.source = 'link';
+                        bean.deleted = false;
+                        link.linkedbeans.push(bean);
                     }
                     this.sortLinkedBeans(link);
                     loadingModal.emit(true);

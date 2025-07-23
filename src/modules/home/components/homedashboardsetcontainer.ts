@@ -139,7 +139,7 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
         this.loadDashboardSetDashboards().subscribe(res => {
             this.isLoading = false;
             if (res) {
-                this.dashboardsList = _.toArray(res).map(item => ({label: this.language.getLabel(item.name), value: item.id}));
+                this.dashboardsList = res.map(item => ({label: this.language.getLabel(item.name), value: item.id}));
                 if (this.dashboardsList.length > 0) {
                     this.activeDashboardId = this.dashboardsList[0].value;
                 }

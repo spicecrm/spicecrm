@@ -1466,20 +1466,15 @@ class SpiceBeanHandler
 
         $retArray = [];
         foreach ($relBeans as $relBean) {
-            if (empty($relBean->relid))
-                $relBean->relid = SpiceUtils::createGuid();
-            $retArray[$relBean->relid] = $this->mapBeanToArray($relModule, $relBean, @$params['forceResolveLinks'] === '1' );
+
+            $mappedRecord = $this->mapBeanToArray($relModule, $relBean, @$params['forceResolveLinks'] === '1' );
 
             // add relationship fields
             if (is_array($relBean->relationhshipfields)) {
-                $retArray[$relBean->relid]['relationhshipfields'] = $relBean->relationhshipfields;
+                $mappedRecord['relationhshipfields'] = $relBean->relationhshipfields;
             }
 
-            // this code block is completely pointless
-//            if ($params['relationshipFields']) {
-//                $relFields = json_decode(html_entity_decode($params['relationshipFields']), true);
-//                if (count($relFields) > 0) ;
-//            }
+            $retArray[] = $mappedRecord;
         }
 
         if ($params['getcount']) {
