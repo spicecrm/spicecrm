@@ -213,6 +213,13 @@ class LogViewController{
         $url = $entry['url'];
         $user = AuthenticationController::getInstance()->getCurrentUser();
 
+        if ( !empty( $entry['request_headers'] ))
+            foreach ( json_decode( $entry['request_headers'], true ) as $k => $v )
+                if ( strtolower( $k ) === 'content-type' ) {
+                    $contentType = $v[0];
+                    break;
+                }
+
         $curl = curl_init();
         $curlOptions = [
             CURLOPT_SSL_VERIFYPEER => false,
@@ -221,8 +228,8 @@ class LogViewController{
             CURLOPT_POST           => true,
             CURLOPT_POSTFIELDS     => $bodyParams['bodyParams'],
             CURLOPT_HTTPHEADER     => [
-                'Content-Type: application/json',
-                'Authorization: Basic ' . base64_encode($user->user_name . ':' . base64_decode( $bodyParams['password'] ))
+                'Authorization: Basic ' . base64_encode($user->user_name . ':' . base64_decode( $bodyParams['password'] )),
+                'Content-Type: '.$contentType
             ],
         ];
         curl_setopt_array($curl, $curlOptions);
