@@ -61,10 +61,19 @@ class SpiceDictionaryRelationship
     /**
      * activates the relationship
      *
-     * @return void
-     * @throws \Exception
+     * @param bool $setStatus
+     * @param null $templateDefinitionId
+     * @param null $referencingDefinitonId
+     * @return SpiceDictionaryRelationship
+     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
      */
-    public function activate($setStatus = true, $templateDefinitionId = null,  $referencingDefinitonId = null){
+    public function activate($setStatus = true, $templateDefinitionId = null,  $referencingDefinitonId = null): SpiceDictionaryRelationship
+    {
+        # If the relationship is customized, cancel the action for the global relationship. Custom relationship must be handled instead.
+        $customized = $this->scope !== 'g' ? null : DBManagerFactory::getInstance()->getOne("SELECT id FROM syscustomdictionaryrelationships WHERE relationship_name = '{$this->relationship->relationship_name}'");
+
+        if ($customized) return $this;
+
         if($templateDefinitionId && $referencingDefinitonId){
             // get the definition
             $definition = new SpiceDictionaryDefinition($referencingDefinitonId);
@@ -104,10 +113,19 @@ class SpiceDictionaryRelationship
     /**
      * deactiovates the relationship
      *
-     * @return void
-     * @throws \Exception
+     * @param bool $setStatus
+     * @param null $originalDefinitionId
+     * @param null $newDefinitonId
+     * @return SpiceDictionaryRelationship
+     * @throws Exception
      */
-    public function deactivate($setStatus = true, $originalDefinitionId = null,  $newDefinitonId = null){
+    public function deactivate($setStatus = true, $originalDefinitionId = null,  $newDefinitonId = null): SpiceDictionaryRelationship
+    {
+        # If the relationship is customized, cancel the action for the global relationship. Custom relationship must be handled instead.
+        $customized = $this->scope !== 'g' ? null : DBManagerFactory::getInstance()->getOne("SELECT id FROM syscustomdictionaryrelationships WHERE relationship_name = '{$this->relationship->relationship_name}'");
+
+        if ($customized) return $this;
+
         // get the class for the activation
         $relType = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM sysdictionaryrelationshiptypes WHERE name='{$this->type}'");
 

@@ -172,7 +172,14 @@ export class dictionarymanager {
      */
     public updateRelationshipInArray(relationship: Relationship) {
         const idx = this.dictionaryrelationships.findIndex(r => r.id == relationship.id);
-        this.dictionaryrelationships[idx] = {...relationship};
+
+        // if the relationship not found push it the to array instead of update
+        if (idx == -1) {
+            this.pushNewRelationshipToArray(relationship);
+        } else {
+            this.dictionaryrelationships[idx] = {...relationship};
+        }
+
         // trigger the change detection
         this.dictionaryrelationships= [...this.dictionaryrelationships];
 
@@ -180,22 +187,17 @@ export class dictionarymanager {
 
     /**
      * update the input relationship in the relationship array
-     * @param relationship
+     * @param relationshipId
+     * @param polymorphs
      */
-    public updateRelationshipPolymorphsInArray(polymorphs: RelationshipPolymorph[]) {
-        polymorphs.forEach(p => {
-            const idx = this.dictionaryrelationshippolymorphs.findIndex(x => x.id == p.id);
-            if(idx >= 0) {
-                this.dictionaryrelationshippolymorphs[idx] = {...p};
-            } else {
-                this.dictionaryrelationshippolymorphs.push({...p})
-            }
-        })
+    public updateRelationshipPolymorphsInArray(relationshipId: string, polymorphs: RelationshipPolymorph[]) {
+        this.dictionaryrelationshippolymorphs = this.dictionaryrelationshippolymorphs.filter(p => p.relationship_id != relationshipId);
+        this.dictionaryrelationshippolymorphs.push(...polymorphs)
     }
 
     /**
      * update the input relationshipfields in the relationshipfields array
-     * @param relationship
+     * @param fields
      */
     public updateRelationshippFieldsInArray(fields: RelationshipField[]) {
         fields.forEach(f => {
@@ -422,6 +424,15 @@ export class dictionarymanager {
     }
 
     /**
+     * translate domain field name
+     * @param fieldName
+     * @param dictionaryItem
+     */
+    public translateDomainFieldName(fieldName, dictionaryItem): string {
+        return fieldName.replace('{sysdictionaryitems.name}', dictionaryItem.name);
+    }
+
+    /**
      * returns the domain name for the given id
      *
      * @param domainid
@@ -458,7 +469,7 @@ export class dictionarymanager {
      *
      * @param refid
      */
-    public getDictionaryDefinitionItems(refid) {
+    public getDictionaryDefinitionItems(refid): DictionaryItem[] {
         let itemsArray: any[] = [];
 
         for (let item of this.dictionaryitems.filter(i => i.sysdictionarydefinition_id == refid).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {

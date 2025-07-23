@@ -22,6 +22,36 @@ $routes = [
         'function' => 'getBeanList',
         'description' => 'Get bean list',
         'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'responses' => [
+            '200' => [
+                'description' => 'OK',
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'list' => [
+                                    'type' => ValidationMiddleware::TYPE_ARRAY,
+                                    'subtype' => ValidationMiddleware::TYPE_BEAN_SCHEMA
+                                ],
+                                'aggregations' => [
+                                    'type' => ValidationMiddleware::TYPE_OBJECT,
+                                ],
+                                'buckets' => [
+                                    'type' => ValidationMiddleware::TYPE_OBJECT,
+                                ],
+                                'source' => [
+                                    'type' => ValidationMiddleware::TYPE_STRING,
+                                ],
+                                'totalcount' => [
+                                    'type' => ValidationMiddleware::TYPE_NUMERIC,
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ],
         'parameters' => [
             'beanName' => [
                 'in' => 'path',
@@ -393,6 +423,18 @@ $routes = [
                 'description' => '',
             ],
         ],
+        'responses' => [
+            '200' => [
+                'description' => 'OK',
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => ValidationMiddleware::TYPE_BEAN_SCHEMA
+                        ]
+                    ]
+                ]
+            ]
+        ]
     ],
     [
         'method' => 'post',
@@ -419,16 +461,21 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'required' => false,
                 'description' => 'GUID or other id type for a bean that is being duplicated',
-            ],
-            // bean in body
-            ValidationMiddleware::ANONYMOUS_ARRAY => [
-                'in' => 'body',
-                'type' => ValidationMiddleware::TYPE_COMPLEX,
-                'description' => 'array with bean data',
-                'example' => '',
-                'required' => true
             ]
         ],
+        'bodySchemaType' => ValidationMiddleware::TYPE_BEAN_SCHEMA,
+        'responses' => [
+            '200' => [
+                'description' => 'OK',
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => ValidationMiddleware::TYPE_BEAN_SCHEMA
+                        ]
+                    ]
+                ]
+            ]
+        ]
     ],
     [
         'method' => 'delete',
@@ -451,6 +498,19 @@ $routes = [
                 'description' => 'GUID of the bean',
             ],
         ],
+        'responses' => [
+            '200' => [
+                'description' => 'OK',
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => ValidationMiddleware::TYPE_BOOL
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
     ],
     [
         'method' => 'get',
@@ -784,6 +844,39 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_STRING,
             ],
 
+        ],
+        'responses' => [
+            '200' => [
+                'description' => 'When the param getcount is set to true, the response will be an object with list => array of beans and count => total count. 
+                Otherwise the response will be an array of beans.
+                In addition to the bean schema a property relid is added to the bean representing the m2m join table record id',
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => ValidationMiddleware::TYPE_ONE_OF,
+                            'oneOfSchemas' =>  [
+                                [
+                                    'type' => ValidationMiddleware::TYPE_OBJECT,
+                                    'properties' => [
+                                        'list' => [
+                                            'type' => ValidationMiddleware::TYPE_ARRAY,
+                                            'subtype' => ValidationMiddleware::TYPE_BEAN_SCHEMA
+                                        ],
+                                        'count' => [
+                                            'type' => ValidationMiddleware::TYPE_NUMERIC,
+                                        ]
+                                    ]
+                                ],
+                                [
+                                    'type' => ValidationMiddleware::TYPE_ARRAY,
+                                    'subtype' => ValidationMiddleware::TYPE_BEAN_SCHEMA
+                                ]
+                            ]
+
+                        ]
+                    ]
+                ]
+            ]
         ],
     ],
     [

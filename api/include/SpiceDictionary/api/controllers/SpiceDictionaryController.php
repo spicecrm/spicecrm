@@ -361,37 +361,26 @@ class SpiceDictionaryController
 
         // rebuild the relationships Array to be unique
         $spiceDictionaryRelationships = [];
+
         foreach ($relArray as $rel) {
-            // duploicate check
-            $isDuplicate = false;
-            foreach($spiceDictionaryRelationships as $spiceDictionaryRelationship){
-                if($rel['id'] == $spiceDictionaryRelationship['id']) {
-                    $isDuplicate = true;
-                }
-                if($rel['relationship_name'] == $spiceDictionaryRelationship['relationship_name']) {
-                    $isDuplicate = true;
-                }
-                if($isDuplicate) break;
-
-            }
-
-            if($isDuplicate) continue;
 
             $leftId = $rel['lhs_sysdictionarydefinition_id'];
             $rightId = $rel['rhs_sysdictionarydefinition_id'];
 
             # if one of the sides is a template, set the side id as the reference dictionary id
-            if (!empty($leftId) && (new SpiceDictionaryDefinition($rel['lhs_sysdictionarydefinition_id'], false))?->type == 'template') {
+            if (!empty($leftId) && (new SpiceDictionaryDefinition($leftId, false))?->type == 'template') {
                 $leftId = $rel['referencing_sysdictionarydefinition_id'];
-            } else if (!empty($rightId) && (new SpiceDictionaryDefinition($rel['rhs_sysdictionarydefinition_id'], false))?->type == 'template') {
+            } else if (!empty($rightId) && (new SpiceDictionaryDefinition($rightId, false))?->type == 'template') {
                 $rightId = $rel['referencing_sysdictionarydefinition_id'];
             }
 
             # check if both sides modules exist, otherwise ignore the relationship
-            if ((!empty($leftId) && !SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($leftId)) || (!empty($rightId) && !SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($rightId))) continue;
+            if ((!empty($leftId) && !SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($leftId)) || (!empty($rightId) && !SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($rightId))) {
+                continue;
+            }
 
             // if this is considered unique ... go for it
-            $spiceDictionaryRelationships[] = $rel;
+            $spiceDictionaryRelationships[$rel['relationship_name']] = $rel;
         }
 
         // get vardefs
@@ -399,34 +388,19 @@ class SpiceDictionaryController
         $vardefDefinitions = SpiceDictionaryHandler::getInstance()->dictionary;
         $vardefDictionaryDefinitions = [];
         $vardefDictionaryRelationships = [];
+
         foreach($vardefDefinitions as $vardefName => $vardefDefinition){
             // check if we have relationships
             if($vardefDefinition['relationships']){
                 foreach ($vardefDefinition['relationships'] as $vardefRelationshipName => $vardefRelationship) {
                     // check that this is not defined in the dictionary already
-                    $isDuplicate = false;
-                    foreach ($spiceDictionaryRelationships as $spiceDictionaryRelationship) {
-                        if ($spiceDictionaryRelationship['relationship_name'] == $vardefRelationshipName) {
-                            $isDuplicate = true;
-                            break;
-                        }
-                    }
-
-                    // check the vardefs as well as we might have duplicates there as well
-                    if (!$isDuplicate) {
-                        foreach ($vardefDictionaryRelationships as $e) {
-                            if ($e['relationship_name'] == $vardefRelationshipName) {
-                                $isDuplicate = true;
-                                break;
-                            }
-                        }
-                    }
+                    $isDuplicate = !!$spiceDictionaryRelationships[$vardefRelationshipName] || !!$vardefDictionaryRelationships[$vardefRelationshipName];
 
                     // if we are here add it
                     if (!$isDuplicate && SpiceModules::getInstance()->moduleExists($vardefRelationship['lhs_module']) && SpiceModules::getInstance()->moduleExists($vardefRelationship['rhs_module'])) {
                         $vardefRelationship['dictionaryname'] = $vardefName;
                         $vardefRelationship['relationship_name'] = $vardefRelationshipName;
-                        $vardefDictionaryRelationships[] = $vardefRelationship;
+                        $vardefDictionaryRelationships[$vardefRelationshipName] = $vardefRelationship;
                     }
                 }
             }

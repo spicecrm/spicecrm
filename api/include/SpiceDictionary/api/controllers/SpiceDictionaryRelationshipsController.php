@@ -29,26 +29,18 @@ class SpiceDictionaryRelationshipsController
         // get the body
         $body = $req->getParsedBody();
 
+        # when a global relationship is customized, remove the definition from the relationships cache table. The custom relationship will take place instead
+        if ($body['relationship']['scope'] == 'c') {
+            foreach (SpiceDictionaryRelationships::getInstance()->relationships as $globalRelationship) {
+                $hasRelatedGlobalRelationship = $globalRelationship['scope'] == 'g' && $globalRelationship['relationship_name'] == $body['relationship']['relationship_name'];
+                if (!$hasRelatedGlobalRelationship) continue;
+                (new SpiceDictionaryRelationship($globalRelationship['id']))->deactivate(false);
+                break;
+            }
+        }
+
         SpiceDictionaryRelationships::getInstance()->add($body['relationship'], $body['relationshippolymorphs']);
         SpiceDictionaryHandler::getInstance()->setDictionaryRelationshipFields($body['relationshipFields']);
-
-        return $res->withJson(['success' => true]);
-    }
-
-    /**
-     * posts a Dictionary Relötionship
-     *
-     * @param $req
-     * @param $res
-     * @param $args
-     * @return mixed
-     */
-    public function postDictionaryRelationshipPolymorh(Request $req, Response $res, array $args): Response
-    {
-        // get the body
-        $body = $req->getParsedBody();
-
-        SpiceDictionaryRelationships::getInstance()->addPolymorphs($body);
 
         return $res->withJson(['success' => true]);
     }
@@ -95,6 +87,20 @@ class SpiceDictionaryRelationshipsController
      */
     public function deleteDictionaryRelationship(Request $req, Response $res, array $args): Response
     {
-        return $res->withJson(['success' => (new SpiceDictionaryRelationship($args['id']))->delete()]);
+        $relationship = new SpiceDictionaryRelationship($args['id']);
+
+        $response = $res->withJson(['success' => (new SpiceDictionaryRelationship($args['id']))->delete()]);
+
+        # after deleting a custom relationship, check if it has a related global relationship with the same name and repair the global one if the status is active
+        if ($relationship->scope == 'c') {
+            foreach (SpiceDictionaryRelationships::getInstance()->relationships as $globalRelationship) {
+                $hasActiveRelatedGlobalRelationship = $globalRelationship['relationship_name'] == $relationship->relationship->relationship_name && $globalRelationship['scope'] == 'g' && $globalRelationship['status'] == 'a';
+                if (!$hasActiveRelatedGlobalRelationship) continue;
+                (new SpiceDictionaryRelationship($globalRelationship['id']))->activate(false);
+                break;
+            }
+        }
+
+        return $response;
     }
 }

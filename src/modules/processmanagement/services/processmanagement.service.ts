@@ -40,9 +40,7 @@ export class processmanagement {
             this.processGroups = [];
             this.backend.getRequest(`module/CompanyCodes/${this.companyCodeId}/related/processmgmtgroups`, {limit: '-99', forceResolveLinks: true}).subscribe({
                 next: (related) => {
-                    for (let id in related) {
-                        this.processGroups.push(related[id]);
-                    }
+                    this.processGroups = related;
                 }
             })
         }

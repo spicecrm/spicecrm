@@ -260,5 +260,21 @@ class ProspectListsController
         }
         return $res->withJson($prospects);
     }
+
+    /**
+     * Retrieves the last modification date of a prospect list.
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function getLastMemberModification(Request $req, Response $res, $args): Response
+    {
+        $db = DBManagerFactory::getInstance();
+
+        return $res->withJson($db->getOne("SELECT MAX(date_modified) FROM prospect_lists_prospects WHERE prospect_list_id = '{$args['id']}'"));
+    }
 }
 

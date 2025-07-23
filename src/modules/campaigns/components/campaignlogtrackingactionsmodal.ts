@@ -59,9 +59,8 @@ export class CampaignLogTrackingActionsModal implements OnInit{
             limit: -99
         }).subscribe({
             next: (res) => {
-                for(let id in res){
-                    this.actionEntries.push(res[id]);
-                }
+
+                this.actionEntries = res;
 
                 // sort according to date entered
                 this.actionEntries.sort((a, b) => moment(a.date_entered).isBefore (moment(b.date_entered)) ? 1 : -1);

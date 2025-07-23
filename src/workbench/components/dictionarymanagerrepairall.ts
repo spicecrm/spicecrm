@@ -328,7 +328,7 @@ export class DictionaryManagerRepairAll {
         let resetAwait = this.modal.await('LBL_RESETTING');
 
         let params: any = {};
-        if(this.actions.fullreset) params.fullreset = true;
+        if(this.actions.fullreset && !this.searchTerm) params.fullreset = true;
 
         this.backend.putRequest('dictionary/repair/reset', params).subscribe({
             next: () => {

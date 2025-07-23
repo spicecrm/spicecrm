@@ -92,7 +92,7 @@ export class TeleSalesCockpitLockEntryButton implements OnDestroy{
         let date = new moment().format('YYYY-MM-DD HH:mm:ss');
         this.targetdate = new moment(date).add(this.lockTime,'m');
         this.telecockpitservice.selectedListItem.locked_until = this.targetdate;
-        this.telecockpitservice.selectedListItem.locked_by_id = this.metadata.session.authData.user.id;
+        this.telecockpitservice.selectedListItem.locked_by_id = this.metadata.session.authData.userId;
         this.model.setFields({
             locked_until: this.telecockpitservice.selectedListItem.locked_until,
             locked_by_id: this.telecockpitservice.selectedListItem.locked_by_id

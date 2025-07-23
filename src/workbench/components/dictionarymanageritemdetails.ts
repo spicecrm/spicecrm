@@ -145,4 +145,13 @@ export class DictionaryManagerItemDetails implements OnInit {
         this.dictionaryitem = JSON.parse(this.backup);
         this.self.destroy();
     }
+
+    /**
+     * reset duplicate merge if the item is non-db
+     */
+    public onNonDBSet(nonDB: 1 | 0) {
+        if (nonDB == 1) {
+            this.dictionaryitem.duplicate_merge = 0;
+        }
+    }
 }

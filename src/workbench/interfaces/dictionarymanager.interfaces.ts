@@ -105,6 +105,8 @@ export interface Relationship {
     join_sysdictionarydefinition_id?: string;
     join_lhs_sysdictionaryitem_id?: string;
     join_rhs_sysdictionaryitem_id?: string;
+    lhs_clone_join_table_record_on_duplicate?: number;
+    rhs_clone_join_table_record_on_duplicate?: number;
     relationship_role_column?: string;
     relationship_role_column_value?: string;
     deleted: number;
