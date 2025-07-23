@@ -128,6 +128,7 @@ class SpiceSwaggerPath
 
                     foreach ($response['content'] as $content) {
 
+                        # if the schema has a type, parse the referenced schema and add it to the response, otherwise parse a statically defined schema with properties
                         switch ($content['schema']['type']) {
                             case ValidationMiddleware::TYPE_BOOL:
                                 $currentParameter = new SpiceSwaggerParameter('bool', ['type' => ValidationMiddleware::TYPE_BOOL], $this->beanSchemas);
@@ -136,6 +137,15 @@ class SpiceSwaggerPath
                             case ValidationMiddleware::TYPE_BEAN_SCHEMA:
                                 $currentParameter = new SpiceSwaggerParameter('bean', ['type' => ValidationMiddleware::TYPE_BEAN_SCHEMA], $this->beanSchemas);
                                 $response['content']['application/json']['schema'] = $currentParameter->generateSwaggerSchemaParameter()['properties']['bean'];
+                                break;
+                            case ValidationMiddleware::TYPE_ONE_OF:
+                                $oneOf = [];
+                                foreach ($content['schema']['oneOfSchemas'] as $schema) {
+                                    $currentParameter = new SpiceSwaggerParameter('schema', $schema, $this->beanSchemas);
+                                    $oneOf[] = $currentParameter->generateSwaggerSchemaParameter()['properties']['schema'];
+                                }
+
+                                $response['content']['application/json']['schema'] = ['oneOf' => $oneOf];
                                 break;
                             default:
                                 $properties = [];
