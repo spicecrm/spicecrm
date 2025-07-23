@@ -217,6 +217,13 @@ export class model implements OnDestroy {
      */
     public reference: string = "";
     public _fields: any = [];
+    /**
+     * holds a mapping for the 'relate' fields (id, relate)
+     * id field required-flag = false
+     * relate field required-flag = transferred from the id field
+     * @private
+     */
+    private relateFieldsRequired = new Map<string, any>();
     public messageChange$ = new EventEmitter<boolean>();
 
     /**
@@ -409,9 +416,26 @@ export class model implements OnDestroy {
     get fields(): any[] {
         if (this.module && _.isEmpty(this._fields)) {
             this._fields = this.metadata.getModuleFields(this.module);
+            if (this._fields.length > 0) {
+                this.setRelateFieldsRequired();
+            }
         }
 
         return this._fields;
+    }
+
+    /**
+     * set the 'relate' fields (id, relate) required mapping. when the id field is mostly invisible, it will always be required = false
+     * transfer the required flag from the id field to the 'relate' field
+     * @private
+     */
+    private setRelateFieldsRequired() {
+        Object.keys(this.fields).forEach(field => {
+            if (!['relate', 'relatePrimary'].includes(this.fields[field].type)) return;
+            const idFieldName = this.fields[field].type == 'relate' ? this.fields[field].id_name : this.fields[field].name + '_id';
+            this.relateFieldsRequired.set(idFieldName, false);
+            this.relateFieldsRequired.set(field, this.fields[idFieldName].required);
+        });
     }
 
     /**
@@ -430,13 +454,19 @@ export class model implements OnDestroy {
      * @param field the fieldname
      */
     public isFieldRequired(field: string): boolean {
-        switch (field) {
-            // wtf???
-            case "date_entered":
-            case "date_modified":
-                return true;
-            default:
-                return this.metadata.getFieldRequired(this.module, field);
+
+        // read the required flag for the 'relate' fields (id, relate) from the generated mapping
+        if (this.relateFieldsRequired.has(field)) {
+            return this.relateFieldsRequired.get(field);
+        } else {
+            switch (field) {
+                // wtf???
+                case "date_entered":
+                case "date_modified":
+                    return true;
+                default:
+                    return this.metadata.getFieldRequired(this.module, field);
+            }
         }
     }
 
@@ -596,10 +626,36 @@ export class model implements OnDestroy {
 
     public initializeFieldsStati() {
         let stati = [];
+        const relateFields = [];
+
         for (let field in this.fields) {
             stati[field] = this.evaluateFieldStati(field);
+
+            if (['relate', 'relatePrimary'].includes(this.fields[field].type)) {
+                relateFields.push(field);
+            }
         }
+
+        this.adjustRelateFieldsStatusesRequiredFlag(relateFields, stati);
         this._fields_stati = stati;
+    }
+
+    /**
+     * transfer the required flag from the id to the 'relate' field since the id field is mostly invisible in the ui
+     * @param relateFields
+     * @param statusesObj
+     * @private
+     */
+    private adjustRelateFieldsStatusesRequiredFlag(relateFields: string[], statusesObj: any) {
+
+        relateFields.forEach(relateField => {
+            const idField = this.fields[relateField].type == 'relate' ? this.fields[relateField].id_name : this.fields[relateField].name + '_id';
+
+            if (statusesObj[idField]?.required) {
+                statusesObj[idField].required = false;
+                statusesObj[relateField].required = true;
+            }
+        });
     }
 
     public getDefaultStati(): fieldstati {
@@ -1323,6 +1379,7 @@ export class model implements OnDestroy {
         this.module = null;
         this._fields_stati_tmp = this._fields_stati = [];
         this._fields = [];
+        this.relateFieldsRequired.clear();
         this.isLoading = false;
         this.isEditing = false;
         this.mode$.emit('display');

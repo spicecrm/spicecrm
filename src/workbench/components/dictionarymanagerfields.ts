@@ -16,6 +16,7 @@ import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryDefinition, DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 import {DomainField} from "../interfaces/domainmanager.interfaces";
 import {Subscription} from "rxjs";
+import {DictionaryManagerFieldDefinitionModal} from "./dictionarymanagerfielddefinitionmodal";
 
 @Component({
     selector: 'dictionary-manager-fields',
@@ -277,15 +278,26 @@ export class DictionaryManagerFields implements OnInit, OnDestroy {
      * translate the field name
      *
      * @param fieldName
-     * @param $dictionaryId
+     * @param dictionaryItem
      */
-    public translateDomainField(fieldName, dictionaryItem) {
-        return fieldName.replace('{sysdictionaryitems.name}', dictionaryItem.name);
+    public translateDomainField(fieldName, dictionaryItem): string {
+        return this.dictionarymanager.translateDomainFieldName(fieldName, dictionaryItem);
     }
 
     public trackByFn(index, item) {
         return item.id;
     }
 
+    /**
+     * open field definition modal
+     * @param item
+     */
+    public openFieldDefinitionModal(item : DictionaryItem) {
+        const cachedDef = this.dictionarymanager.dictionaryfields.find(f => f.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition);
+        const fieldDef = cachedDef.fields.find(f => f.fieldname == item.name).fielddefinition;
 
+        this.modal.openStaticModal(DictionaryManagerFieldDefinitionModal, true).subscribe(modalRef => {
+            modalRef.instance.definition = fieldDef;
+        });
+    }
 }

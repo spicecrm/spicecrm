@@ -1,19 +1,8 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
-import {model} from '../../services/model.service';
-import {view} from '../../services/view.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {popup} from '../../services/popup.service';
-import {modal} from '../../services/modal.service';
-import {Router} from '@angular/router';
-import {language} from '../../services/language.service';
-import {metadata} from '../../services/metadata.service';
-import {fieldGeneric} from './fieldgeneric';
-import {backend} from '../../services/backend.service';
-import {toast} from '../../services/toast.service';
-import {relateFilter} from "../../services/interfaces.service";
-import {modelutilities} from "../../services/modelutilities.service";
 import {fieldRelate} from "./fieldrelate";
 
 @Component({
@@ -25,10 +14,10 @@ import {fieldRelate} from "./fieldrelate";
 export class fieldRelatePrimary extends fieldRelate implements OnInit, OnDestroy {
 
     public ngOnInit() {
-        const fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
+        const fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname + '_link');
         this.relateIdField = this.fieldname + '_id';
         this.relateNameField = this.fieldname + '_name';
-        this.relateType = 'Accounts'; //fieldDefs.module;
+        this.relateType = fieldDefs.module;
         this.isAuthorized = this.metadata.checkModuleAcl(this.relateType, 'list') || this.metadata.checkModuleAcl(this.relateType, 'listrelated');
         this.handleRelateFIlterField();
     }

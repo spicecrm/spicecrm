@@ -47,6 +47,8 @@
                     <th style="width: 30px" scope="col">
                         <system-utility-icon class="slds-th__action" icon="database" size="xx-small" title="LBL_FIELD_DEFINED_IN_DATABASE_TABLE"/>
                     </th>
+                    <th style="width: 20px" scope="col">
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -86,6 +88,13 @@
                             <system-checkbox *ngIf="!dictionaryitem.non_db" disabled
                                              [ngModel]="dictionaryitem.database"></system-checkbox>
                         </td>
+                        @if (dictionaryitem.cached) {
+                            <td class="slds-text-align--center">
+                                <button class="slds-button slds-button--icon" (click)="openFieldDefinitionModal(dictionaryitem)">
+                                    <system-button-icon icon="summarydetail" [inverse]="true"/>
+                                </button>
+                            </td>
+                        }
                     </tr>
                     <tr class="slds-hint-parent" *ngFor="let field of dictionaryitem.addFields">
                         <td colspan="3"></td>
@@ -103,6 +112,13 @@
                             <system-checkbox *ngIf="field.dbtype != 'non-db'" disabled
                                              [ngModel]="field.database"></system-checkbox>
                         </td>
+                        @if (dictionaryitem.cached) {
+                            <td class="slds-text-align--center">
+                                <button class="slds-button slds-button--icon" (click)="openFieldDefinitionModal(dictionaryitem)">
+                                    <system-button-icon icon="summarydetail"/>
+                                </button>
+                            </td>
+                        }
                     </tr>
                 }
             </tbody>

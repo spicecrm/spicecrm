@@ -86,10 +86,10 @@
         </div>
     </div>
     <div class="slds-grid slds-p-vertical--xx-small">
-        <div class="slds-size--1-of-4 slds-form-element">
+        <div system-title="LBL_LHS_DUPLICATEMERGE" class="slds-size--1-of-2 slds-truncate slds-form-element">
             <system-checkbox [(ngModel)]="relationship.lhs_duplicatemerge" [disabled]="readonly" [asinteger]="true"><system-label label="LBL_LHS_DUPLICATEMERGE"></system-label></system-checkbox>
         </div>
-        <div class="slds-size--1-of-4 slds-form-element">
+        <div system-title="LBL_LHS_LINKDEFAULT" class="slds-size--1-of-2 slds-truncate slds-form-element">
             <system-checkbox [(ngModel)]="relationship.lhs_linkdefault" [disabled]="readonly" [asinteger]="true"><system-label label="LBL_LHS_LINKDEFAULT"></system-label></system-checkbox>
         </div>
     </div>
@@ -123,7 +123,7 @@
                         <th class="" scope="col">
                             <div class="slds-truncate"><system-label label="LBL_VERSION"/></div>
                         </th>
-                        <!--th style="width: 2rem" scope="col"></th-->
+                        <th style="width: 2rem" scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -157,10 +157,9 @@
                         <td>
                             <system-input-version [disabled]="readonly" [(ngModel)]="relationshipPolymorph.version"/>
                         </td>
-                        <!--td>
-                            todo implement
-                            <button class="slds-button slds-button&#45;&#45;icon"><system-button-icon icon="delete"/></button>
-                        </td-->
+                        <td>
+                            <button (click)="deleteRelated(relationshipPolymorph)" class="slds-button slds-button--icon"><system-button-icon icon="delete"/></button>
+                        </td>
                     </tr>
                 </tbody>
             </table>

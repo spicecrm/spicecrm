@@ -1389,8 +1389,9 @@ class SpiceBean
             // overrides sugar bean variable "module_name".
             // this fix should not have any side effects, as long as all extended beans has the variable "module_dir" set.
             $GLOBALS['cloningData'] = ['count' => 1, 'cloned' => [['module' => $this->_module, 'id' => $this->newFromTemplate, 'bean' => &$this, 'cloneId' => $this->id]], 'custom' => null];
-            $templateBean = BeanFactory::getBean($this->_module, $this->newFromTemplate);
-            $templateBean->cloneBeansOfAllLinks($this);
+            $source = BeanFactory::getBean($this->_module, $this->newFromTemplate);
+            $source->cloneBeansOfAllLinks($this);
+            $source->cloneM2MRecords($this);
         }
 
         $this->in_save = true;
@@ -1512,6 +1513,12 @@ class SpiceBean
 
         if (empty($GLOBALS['resavingRelatedBeans'])) {
             Relationship::resaveRelatedBeans();
+        }
+
+
+        if (!empty($this->newFromTemplate)) {
+            $source = BeanFactory::getBean($this->_module, $this->newFromTemplate);
+            $this->cloneM2MRecords($source);
         }
 
         $this->callDomainHandlerMethod('afterSave');
@@ -3259,6 +3266,49 @@ class SpiceBean
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * clone m2m join table records from a source bean for all m2m links with duplicate_m2m_records = true
+     * @param SpiceBean $source
+     * @return void
+     */
+    public function cloneM2MRecords(SpiceBean $source): void
+    {
+        foreach ($this->field_defs as $fieldDef) {
+            if ($fieldDef['type'] === 'link' and @$fieldDef['duplicate_m2m_records'] === true) {
+                $this->cloneM2MRecord($fieldDef['name'], $source);
+            }
+        }
+
+    }
+
+    /**
+     * clone m2m join table records from a source bean
+     * @param string $linkName
+     * @param SpiceBean $source
+     * @return void
+     */
+    public function cloneM2MRecord(string $linkName, SpiceBean $source): void
+    {
+        if (!$source->load_relationship($linkName)) return;
+
+        $source->$linkName->load(['relationship_fields' => $source->$linkName->relationship_fields]);
+
+        $data = $source->$linkName->rows;
+
+        if (!is_array($data) || empty($data) || !$this->load_relationship($linkName)) return;
+
+        foreach ($data as $row) {
+
+            $additionalValues = [];
+
+            foreach ($source->$linkName->relationship_fields as $field => $def) {
+                $additionalValues[$field] = $row[$field];
+            }
+
+            $this->$linkName->add($row['id'], $additionalValues);
         }
     }
 

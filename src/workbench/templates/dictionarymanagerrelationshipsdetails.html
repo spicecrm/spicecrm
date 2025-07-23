@@ -1,5 +1,6 @@
 <system-modal>
-    <system-modal-header (close)="close()"><system-label label="LBL_RELATIONSHIP"/></system-modal-header>
+    <system-modal-header (close)="close()">
+        <system-label [label]="relationshipTitleLabel[dictionaryRelationship.relationship_type]"/></system-modal-header>
     <system-modal-content margin="none">
         @switch(dictionaryRelationship.relationship_type) {
             @case('email-address') {
@@ -15,7 +16,7 @@
                 <dictionary-manager-relationship-container-onetomany [readonly]="readonly" [relationship]="dictionaryRelationship"/>
             }
             @case('one-to-many-polymorph') {
-                <dictionary-manager-relationship-container-onetomanypolymorph [readonly]="readonly" [relationship]="dictionaryRelationship" [relationshipPolymorphs]="dictionaryRelationshipPolymorphs"/>
+                <dictionary-manager-relationship-container-onetomanypolymorph [readonly]="readonly" [relationship]="dictionaryRelationship" [(relationshipPolymorphs)]="dictionaryRelationshipPolymorphs"/>
             }
             @case('many-to-many') {
                 <dictionary-manager-relationship-container-manytomany [readonly]="readonly" [relationshipFields]="dictionaryRelationshipFields" [relationship]="dictionaryRelationship"/>
@@ -35,10 +36,6 @@
             @case('orgunit') {
                 <dictionary-manager-relationship-container-orgunit [readonly]="readonly" [relationship]="dictionaryRelationship"/>
             }
-
-
-
-
         }
     </system-modal-content>
     <system-modal-footer>

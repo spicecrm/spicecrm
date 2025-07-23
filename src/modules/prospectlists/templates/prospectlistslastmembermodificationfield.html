@@ -1,0 +1,7 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+    <div *ngIf="!isLoading">
+        <span>{{formatedDate}}</span>
+    </div>
+    <system-stencil *ngIf="isLoading"></system-stencil>
+</field-generic-display>

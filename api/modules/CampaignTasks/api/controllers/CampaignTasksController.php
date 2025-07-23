@@ -207,7 +207,9 @@ class CampaignTasksController
         $items = [];
 
         foreach ($list['list'] as $item) {
-            if($seed = BeanFactory::getBean($item->target_type, $item->target_id)){
+            // push all items to frontend and disable there, for proper handling of telesales
+            // if($seed = BeanFactory::getBean($item->target_type, $item->target_id)){
+                $seed = BeanFactory::getBean($item->target_type, $item->target_id);
                 $items[] = [
                     'campaignlog_id' => $item->id,
                     'campaignlog_activity_type' => $item->activity_type,
@@ -220,13 +222,13 @@ class CampaignTasksController
                     'campaignlog_hits' => $item->hits,
                     'campaignlog_locked_by_id' => $item->locked_by_id,
                     // tbd
-                    'data' => $KRESTModuleHandler->mapBeanToArray($item->target_type, $seed)
+                    'data' => $seed ? $KRESTModuleHandler->mapBeanToArray($item->target_type, $seed) : []
                 ];
-            }
+          //  }
         }
 
-        // get the stats
-        $stats = DBManagerFactory::getInstance()->fetchAll("SELECT count(id) count, activity_type FROM campaign_log WHERE campaigntask_id = '{$args['id']}' AND deleted = 0 GROUP BY activity_type");
+        // get the stats for correct display check there is a target id
+        $stats = DBManagerFactory::getInstance()->fetchAll("SELECT count(id) count, activity_type FROM campaign_log WHERE campaigntask_id = '{$args['id']}' AND deleted = 0 AND target_id IS NOT NULL GROUP BY activity_type");
 
         return $res->withJson(['items' => $items, 'row_count' => $list['row_count'], 'stats' => $stats]);
     }
