@@ -3,11 +3,12 @@
 
 namespace SpiceCRM\modules\Emails;
 
+use DateTime;
+use DateInterval;
 use DOMDocument;
 use DOMNodeList;
 use DOMXPath;
 use Exception;
-use DateTime;
 use Hfig\MAPI;
 use Hfig\MAPI\Mime\Swiftmailer;
 use Hfig\MAPI\OLE\Pear;
@@ -2035,10 +2036,27 @@ class Email extends SpiceBean
      */
     public function validateEmailForDownload( $doIncrement = false ): bool|string
     {
+        // is download enabled?
         $downloadAttachmentsEnabled = (int) $this->getFieldValue('downloadlink_attachments');
         if ( !$downloadAttachmentsEnabled ) return 'notAccessible';
 
-        $downloadCounterMax = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_counter_max');
+        // is the download within allowed time frame?
+        $downloadDaysMax = 3; // default
+        if(SpiceConfig::getInstance()->get('spiceattachments.downloadlink_days_max')){
+            $downloadDaysMax = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_days_max');
+        }
+        $datenow = TimeDate::getInstance()->nowDbDate();
+        $datesent = new DateTime($this->date_sent);
+        $datesent->add(new DateInterval('P'.$downloadDaysMax.'D'));
+        if($datenow > $datesent->format('Y-m-d') || $datenow < $this->date_sent){
+            return 'timeExceeded';
+        };
+
+        // is the number of number of downloads within range?
+        $downloadCounterMax = 3;
+        if(SpiceConfig::getInstance()->get('spiceattachments.downloadlink_counter_max')){
+            $downloadCounterMax = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_counter_max');
+        }
         $downloadCounter = $this->getFieldValue('download_counter');
 
         if ( $downloadCounterMax !== null and $downloadCounter >= $downloadCounterMax) return 'limitExceeded';
