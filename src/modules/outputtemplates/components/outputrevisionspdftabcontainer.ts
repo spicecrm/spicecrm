@@ -134,16 +134,14 @@ export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
                 // reset the current array
                 this.outputRevisions = [];
                 // sort the response
-                for (let id in response) {
-                    if (response.hasOwnProperty(id)) {
-                        let item = this.model.utils.backendModel2spice('OutputRevisions', response[id]);
-                        this.outputRevisions.push({
-                            id: item.id,
-                            date_entered: item.date_entered,
-                            created_by: item.created_by_user.user_name,
-                            description: item.description
-                        })
-                    }
+                for (let resItem of response) {
+                    let item = this.model.utils.backendModel2spice('OutputRevisions', resItem);
+                    this.outputRevisions.push({
+                        id: item.id,
+                        date_entered: item.date_entered,
+                        created_by: item.created_by_user.user_name,
+                        description: item.description
+                    })
                 }
 
                 // sort the array by date entered

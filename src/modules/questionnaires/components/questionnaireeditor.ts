@@ -70,11 +70,11 @@ export class QuestionnaireEditor implements OnInit {
         this.isLoadingQuestionsets = true;
         this.questionsets = [];
         this.backend.getRequest('module/Questionnaires/'+this.model.id+'/related/questionsets', {limit: 999}).subscribe( questionsets => {
-            for (let key of Object.keys( questionsets )) {
-                for ( let fieldName in questionsets[key] ) {
-                    questionsets[key][fieldName] = this.modelutilities.backend2spice( 'QuestionSets', fieldName, questionsets[key][fieldName] );
+            for (let item of questionsets) {
+                for ( let fieldName in item ) {
+                    item[fieldName] = this.modelutilities.backend2spice( 'QuestionSets', fieldName, item[fieldName] );
                 }
-                this.questionsets.push( questionsets[key] );
+                this.questionsets.push( item );
             }
             this.sortQuestionsets();
             this.isLoadingQuestionsets = false;

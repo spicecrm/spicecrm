@@ -90,10 +90,10 @@ export class PotentialsOpportunityAllocationLines implements OnChanges {
         this.backend.getRequest('module/Accounts/' + this._account_id + '/related/potentials', params).subscribe({
             next: (accountpotentials) => {
                 this.account_potentials = [];
-                for (let id in accountpotentials) {
-                    this.account_potentials.push(this.model.utils.backendModel2spice('Potentials', accountpotentials[id]));
+                for (let item of accountpotentials) {
+                    this.account_potentials.push(this.model.utils.backendModel2spice('Potentials', item));
 
-                    if (!this.companyCode) this.companyCode = accountpotentials[id].companycode_id;
+                    if (!this.companyCode) this.companyCode = item.companycode_id;
                 }
                 // set to loaded
                 this.isLoading = false;
