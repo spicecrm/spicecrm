@@ -1440,7 +1440,7 @@ class Email extends SpiceBean
 
         $this->recipient_addresses[] = [
             'address_type' => $type,
-            'email_address' => $this->emailAddress->splitEmailAddress($address)['email']
+            'email_address' => trim($this->emailAddress->splitEmailAddress($address)['email'])
         ];
     }
 
