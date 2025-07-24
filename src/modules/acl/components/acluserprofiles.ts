@@ -58,9 +58,7 @@ export class ACLUserProfiles {
             this.selectedProfileId = profileid;
             this.profileObjects = [];
             this.backend.getRequest("module/SpiceACLProfiles/" + profileid + "/related/spiceaclobjects").subscribe(res => {
-                for (let i in res) {
-                    this.profileObjects.push(res[i]);
-                }
+                this.profileObjects = res;
             });
         }
     }
