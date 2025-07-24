@@ -38,8 +38,8 @@ export class HCMSkillManagerButton {
                 this.modal.openModal('HCMSkillManager', true, this.injector).subscribe({
                     next: (modalref) => {
                         let scopes = [];
-                        for(let scope in res.list){
-                            scopes.push(res.list[scope]);
+                        for(let scope of res.list){
+                            scopes.push(scope);
                         }
                         modalref.instance.hcmProfileScopes = scopes;
                     }

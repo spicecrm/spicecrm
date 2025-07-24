@@ -2,15 +2,15 @@
 namespace SpiceCRM\includes\Logger\api\controllers;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
-use SpiceCRM\includes\RESTManager;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\includes\Logger\APIlogViewer;
 use SpiceCRM\includes\Logger\LogViewer;
-use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
-use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\Logger\APIlogViewer;
+use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\modules\Mailboxes\Handlers\DispatchResponse;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 
@@ -220,11 +220,16 @@ class LogViewController{
             CURLOPT_URL            => $url,
             CURLOPT_POST           => true,
             CURLOPT_POSTFIELDS     => $bodyParams['bodyParams'],
-            CURLOPT_HTTPHEADER     => [
-                'Content-Type: application/json',
-                'Authorization: Basic ' . base64_encode($user->user_name . ':' . base64_decode( $bodyParams['password'] ))
-            ],
+            CURLOPT_HTTPHEADER     => ['Authorization: Basic ' . base64_encode($user->user_name . ':' . base64_decode( $bodyParams['password'] ))],
         ];
+
+        if ( !empty( $entry['request_headers'] ))
+            foreach ( json_decode( $entry['request_headers'], true ) as $k => $v )
+                if ( strtolower( $k ) === 'content-type' ) {
+                    $curlOptions['CURLOPT_HTTPHEADER'][] = 'Content-Type: '.$v[0];
+                    break;
+                }
+
         curl_setopt_array($curl, $curlOptions);
         $response = curl_exec($curl);
         curl_close($curl);

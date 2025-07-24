@@ -153,12 +153,10 @@ export class fieldCatalogs extends fieldGeneric {
             this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
                 this.backend.getRequest(`module/OutputTemplates/${id}/related/products`).subscribe(
                     result => {
-                        for (let id in result) {
-                            if (result.hasOwnProperty(id)) {
-                                let item = this.items.find(e => e.id == result[id].id);
-                                if (item) {
-                                    item.quantity = 1;
-                                }
+                        for (let resItem of result) {
+                            let item = this.items.find(e => e.id == resItem.id);
+                            if (item) {
+                                item.quantity = 1;
                             }
                         }
                         this.convertItemsToValue();

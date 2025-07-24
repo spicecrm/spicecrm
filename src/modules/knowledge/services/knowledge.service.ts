@@ -134,7 +134,7 @@ export class KnowledgeService {
         this.backend.getRequest(`module/KnowledgeBooks/${book.id}/related/knowledgedocuments`, params)
             .subscribe(
                 (response: any) => {
-                    this.documents = this.moduleFilter.length > 0 ? _.toArray(response) : _.toArray(response).map(item => {
+                    this.documents = this.moduleFilter.length > 0 ? response : response.map(item => {
                         return {
                             id: item.id,
                             parent_id: item.parent_id,

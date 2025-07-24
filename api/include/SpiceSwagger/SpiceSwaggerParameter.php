@@ -175,7 +175,16 @@ class SpiceSwaggerParameter
                     ];
                 }
             case ValidationMiddleware::TYPE_OBJECT:
-            // todo add schemas for objects
+                $properties = [];
+
+                foreach ($this->parameterArray['properties'] as $propName => $property) {
+                    $properties[$propName] = $this->resolveType($property['type'], $property['subtype'] ?? null);
+                }
+
+                return [
+                    'type'  => self::TYPE_OBJECT,
+                    'properties' => $properties,
+                ];
             case ValidationMiddleware::TYPE_COMPLEX:
                 if (isset($this->parameterArray['schema'])) {
                     return $this->parameterArray['schema'];

@@ -34,8 +34,8 @@ export class QuestionsManager implements OnInit {
     public ngOnInit(): void {
         this.questiontypes_dom = this.language.getDisplayOptions('questionstypes_dom');
         this.backend.getRequest('module/QuestionSets/'+this.model.id+'/related/questions', {limit: 999} ).subscribe( (response: any) => {
-            for ( let id in response ) {
-                this.questions.push( this.model.utils.backendModel2spice('Questions', response[id] ));
+            for ( const item of response ) {
+                this.questions.push( this.model.utils.backendModel2spice('Questions', item ));
             }
             // Sort questions by field "position" (number). Only in case "position" is equal then use "date_entered".
             this.questions = this.questions.sort(( a, b ) => {

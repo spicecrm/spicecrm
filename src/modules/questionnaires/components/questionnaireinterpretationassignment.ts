@@ -48,16 +48,14 @@ export class QuestionnaireInterpretationAssignment implements OnInit {
         this.backend.getRequest( 'module/QuestionnaireParticipations/byParent/SUPConsultingOrderItems/' + this.reference_id + '/questionnaireId').subscribe(( data: any ) => {
             this.questionnaireId = data.questionnaireId;
             this.backend.getRequest( 'module/Questionnaires/' + this.questionnaireId + '/related/questionnaireinterpretations', {limit: 999} ).subscribe(( data: any ) => {
-                for( let interpretation in data ) {
-                    if ( data.hasOwnProperty( interpretation )) this.allInterpretations.push( data[interpretation] );
-                }
+                this.allInterpretations = data;
                 if ( this.assignedInterpretations ) this.isLoading = false;
             });
         });
 
         this.backend.getRequest( 'module/' + this.reference_module + '/' + this.reference_id + '/related/questionnaireinterpretations', {limit: 999} ).subscribe(( data: any ) => {
-            for ( let prop in data ) {
-                if ( data.hasOwnProperty( prop )) this.assign( data[prop], true );
+            for ( const item of data ) {
+                this.assign( item, true );
             }
             if ( this.allInterpretations ) this.isLoading = false;
         });
