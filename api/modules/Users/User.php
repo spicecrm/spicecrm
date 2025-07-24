@@ -40,6 +40,7 @@ use Exception;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
@@ -874,4 +875,79 @@ class User extends Person
         }
     }
 
+    /**
+     * @param bool $updateUser will update the user record
+     * @return bool|string  false on employee save error or the employee ID
+     * @throws Exception
+     */
+    public function convertUserToEmployee($updateUser = true) : bool| string
+    {
+        // check if you the user is elligible for conversion
+        $convert = $this->canConvertUserToEmployee();
+        if(!$convert){
+            return false;
+        }
+
+        // map User to employee
+        $employee = BeanFactory::newBean('Employees');
+        $matchProperties = $this->getPropertiesConvertUserToEmployee();
+        foreach($matchProperties as $matchProperty){
+            if(property_exists($this, $matchProperty)){
+                $employee->$matchProperty = $this->$matchProperty;
+            }
+        }
+        $employee->assigned_user_id = $this->id;
+        $employeeSaved = $employee->save();
+
+        // add primary orgunit
+        if($employeeSaved && $this->orgunit_id){
+            $orgunit = BeanFactory::getBean('OrgUnits', $this->orgunit_id);
+            if($orgunit && $orgunit->load_relationship('employeesasprimary')){
+                if(!$orgunit->employeesasprimary->add($employee, ['bean_type' => $employee->_module])){
+                    // log error
+                    LoggerManager::getLogger()->error(__FUNCTION__.' Could not add primary orgunit to employee record');
+                }
+            }
+        }
+
+        // update user record
+        if($updateUser && $employeeSaved){
+            $this->parent_id = $employee->id;
+            $this->parent_type = $employee->_module;
+            $this->processed = true;
+            $this->save();
+        }
+
+        return $employeeSaved;
+    }
+
+    /**
+     * default handling: don't do anything if the user
+     * -> already has a parent
+     * -> or is an API User
+     * -> or the user is inactive
+     * @return void
+     */
+    public function canConvertUserToEmployee() : bool
+    {
+        if(!empty($this->parent_id) || $this->is_api_user || $this->status == 'Inactive'){
+            // log error
+            LoggerManager::getLogger()->info(__FUNCTION__.' User '.$this->user_name.' with id '.$this->id.' shall not be converted to an employee. Check existing parent value, api user flag and status');
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * the list of properties to map
+     * @return string[]
+     */
+    public function getPropertiesConvertUserToEmployee() : array
+    {
+        return ['salutation', 'first_name', 'last_name', 'description', 'email1', 'title', 'department',
+            'phone_home', 'phone_mobile', 'phone_work', 'phone_other', 'phone_fax',
+            'primary_address_street', 'primary_address_city', 'primary_address_state', 'primary_address_postalcode', 'primary_address_country'
+        ];
+    }
 }
