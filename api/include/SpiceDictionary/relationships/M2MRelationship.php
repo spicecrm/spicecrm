@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\includes\SpiceDictionary\relationships;
 
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -438,6 +439,7 @@ class M2MRelationship extends Relationship
         }
 
         $row['date_modified'] = TimeDate::getInstance()->nowDb();
+        $row['modified_user_id'] = AuthenticationController::getInstance()->getCurrentUser()->id;
 
         return $row;
     }

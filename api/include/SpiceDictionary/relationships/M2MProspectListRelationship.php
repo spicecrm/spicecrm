@@ -1,6 +1,7 @@
 <?php
 namespace SpiceCRM\includes\SpiceDictionary\relationships;
 
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
@@ -172,6 +173,8 @@ class M2MProspectListRelationship extends M2MRelationship
             }
             $row = array_merge($row, $additionalFields);
         }
+
+        $row['modified_user_id'] = AuthenticationController::getInstance()->getCurrentUser()->id;
 
         return $row;
     }
