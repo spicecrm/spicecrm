@@ -16,10 +16,18 @@ export abstract class ObjectActionSetItemBase implements ActionSetItemI {
     /**
      * hidden flag
      */
-    public hidden: boolean = false;
+    public _hidden: boolean = false;
 
     constructor(protected metadata: metadata,
                           protected model: model) {
+    }
+
+    set hidden(val: boolean) {
+        this._hidden = val;
+    }
+
+    get hidden(): boolean {
+        return this._hidden;
     }
 
     /**
