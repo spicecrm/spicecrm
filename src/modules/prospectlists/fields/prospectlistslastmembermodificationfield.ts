@@ -24,6 +24,8 @@ export class ProspectlistsLastMemberModificationField extends fieldGeneric imple
 
     public modificationDate: string;
 
+    public modifiedBy: any;
+
     constructor(public model: model,
                 public view: view,
                 public backend: backend,
@@ -37,7 +39,8 @@ export class ProspectlistsLastMemberModificationField extends fieldGeneric imple
     public ngOnInit() {
         this.backend.getRequest(`module/ProspectLists/${this.model.id}/lastmembermodification`).subscribe({
             next: (res) => {
-                this.modificationDate = res;
+                this.modificationDate = res.date_modified;
+                this.modifiedBy = res.modified_by;
                 this.isLoading = false;
             }
         })
