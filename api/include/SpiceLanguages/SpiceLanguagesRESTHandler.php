@@ -1,8 +1,14 @@
 <?php
 namespace SpiceCRM\includes\SpiceLanguages;
 
+use Google\ApiCore\ApiException;
+use Google\ApiCore\ValidationException;
+use Google\Cloud\Translate\V3\Client\TranslationServiceClient;
+use Google\Cloud\Translate\V3\DocumentInputConfig;
+use Google\Cloud\Translate\V3\TranslateDocumentRequest;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
@@ -281,6 +287,48 @@ class SpiceLanguagesRESTHandler
     public function transferFromFilesToDB()
     {
         return (new SpiceLanguageFilesToDB())->transferFromFilesToDB();
+    }
+
+    /**
+     * translate a docx document to the given language by google translate service
+     * @throws ValidationException
+     * @throws ApiException
+     * @throws NotFoundException
+     * @throws Exception
+     */
+    public function translateDocument(string $content, string $from, string $to)
+    {
+        $keyFile = SpiceConfig::getInstance()->get('googleapi.translate_service_user_key');
+
+        if (!$keyFile) {
+            throw new NotFoundException('No Google API Key stored for translate');
+        }
+
+        $keyFile = json_decode($keyFile, true);
+        $projectId = $keyFile['project_id'];
+
+        $translationClient = new TranslationServiceClient(['credentials' => $keyFile]);
+
+        $documentInputConfig = new DocumentInputConfig();
+        $documentInputConfig->setContent($content);
+        $documentInputConfig->setMimeType('application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+
+        $request = (new TranslateDocumentRequest())
+            ->setParent("projects/$projectId/locations/global")
+            ->setSourceLanguageCode($from)
+            ->setTargetLanguageCode($to)
+            ->setDocumentInputConfig($documentInputConfig);
+
+        $response = $translationClient->translateDocument($request);
+        $translationClient->close();
+
+        $translatedDocument = $response->getDocumentTranslation();
+
+        if ($translatedDocument) {
+            return $translatedDocument->getByteStreamOutputs()[0];
+        } else {
+            throw new Exception('Google Translate API Service: Translated content is empty.');
+        }
     }
 
     /**
