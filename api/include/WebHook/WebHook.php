@@ -2,11 +2,13 @@
 
 namespace SpiceCRM\includes\WebHook;
 
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 
 
 class WebHook
@@ -141,7 +143,8 @@ class WebHook
                 $this->HooksBuffer[] = [
                     'event' => $event,
                     'module' => $bean->_module,
-                    'id' => $bean->id
+                    'id' => $bean->id,
+                     'modified_by' => $bean->modified_user_id
                 ];
             } else {
                 $this->makeCall($this->hooksMap[$bean->_module][$event], $bean, false);
@@ -155,7 +158,15 @@ class WebHook
             'id' => $bean->id,
             'module' => $bean->_module,
             'event' => $hook['event'],
+            'modified_by' => $bean->modified_user_id
         ];
+
+        if($hook['modulefilter_id']){
+            $moduleFilter = new SysModuleFilters();
+            if(!$moduleFilter->checkBeanForFilterIdMatch($hook['modulefilter_id'], $bean)){
+                return ['success' => false, 'output' => 'nothing to send'];
+            }
+        }
 
         if ($hook['send_data']) {
             $body['data'] = (new SpiceBeanHandler())->mapBean($bean);
@@ -181,7 +192,7 @@ class WebHook
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => json_encode($body),
             CURLOPT_HEADER => 1,
-            CURLOPT_HTTPHEADER => $headers
+            CURLOPT_HTTPHEADER => $headers ?: []
         ];
         curl_setopt_array($curl, $curlOptions);
         $logEntryHandler = new APILogEntryHandler();
