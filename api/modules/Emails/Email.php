@@ -404,7 +404,7 @@ class Email extends SpiceBean
 
             foreach ($data as $row) {
 
-                if ($name == 'email_addresses' && $row['address_type'] == 'to') continue;
+                if ($name == 'email_addresses' && $row['address_type'] !== 'from') continue;
 
                 $additionalValues = [];
 
