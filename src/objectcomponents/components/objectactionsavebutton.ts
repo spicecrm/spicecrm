@@ -1,11 +1,13 @@
 /**
  * @module ObjectComponents
  */
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Optional, Output} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 import {view} from "../../services/view.service";
+import {modellist} from "../../services/modellist.service";
+import {relatedmodels} from "../../services/relatedmodels.service";
 
 @Component({
     selector: 'object-action-save-button',
@@ -21,7 +23,14 @@ export class ObjectActionSaveButton {
      */
     public displayasicon: boolean = false;
 
-    constructor(public language: language, public metadata: metadata, public model: model, public view: view) {
+    constructor(
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public view: view,
+        @Optional() public modellist: modellist,
+        @Optional() public relatedmodels: relatedmodels,
+    ) {
 
     }
 
@@ -54,6 +63,9 @@ export class ObjectActionSaveButton {
                 this.view.setViewMode();
                 this.actionemitter.emit('save');
             });
+        } else if (this.modellist || this.relatedmodels){
+            this.model.edit();
+            this.view.setViewMode();
         }
     }
 }
