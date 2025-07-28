@@ -138,11 +138,13 @@ class Opportunity extends SpiceBean
             $this->amount = intval($this->amount);
         }
         //US DOLLAR
+        /*
         if (isset($this->amount) && $this->amount > 0) {
             $currency = BeanFactory::getBean('Currencies');
             $currency->retrieve($this->currency_id);
             $this->amount_systemcurrency = $currency->convertToBase($this->amount);
         }
+        */
 
         if (!$this->in_save && ($this->forecast != $this->fetched_row['forecast'] || $this->amount != $this->fetched_row['amount'] || $this->sales_stage != $this->fetched_row['sales_stage'] || $this->date_closed != $this->fetched_row['date_closed'] || $this->probability != $this->fetched_row['probability'] || $this->forecast != $this->fetched_row['forecast'])) {
             $oppStage = BeanFactory::getBean('OpportunityStages');
