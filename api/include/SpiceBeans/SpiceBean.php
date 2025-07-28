@@ -2210,16 +2210,21 @@ class SpiceBean
                 $curVals[$field] = $this->$field;
             }
 
-            $handler = new $handlerClass();
+            if(class_exists($handlerClass)){
+                $handler = new $handlerClass();
 
-            if($handler->$method($item, $domain, $curVals, $this)) {
-                foreach ($fields as $field) {
-                    $this->$field = $curVals[$field];
-                    // set the value also to the fetched row
-                    if($method == 'onRetrieve') {
-                        $this->fetched_row[$field] = $curVals[$field];
+                if ($handler->$method($item, $domain, $curVals, $this)) {
+                    foreach ($fields as $field) {
+                        $this->$field = $curVals[$field];
+                        // set the value also to the fetched row
+                        if ($method == 'onRetrieve') {
+                            $this->fetched_row[$field] = $curVals[$field];
+                        }
                     }
                 }
+            } else {
+                $domainDefs = $domain->getDefinition();
+                LoggerManager::getLogger()->fatal("Domain Handler Class '{$handlerClass}' for domain '{$domainDefs->name}' does not exist");
             }
         }
     }
