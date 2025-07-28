@@ -37,7 +37,7 @@ export class DictionaryManagerIndexEdit implements OnInit {
 
     private populateItems() {
         // Get all items for the current dictionary definition
-        const allItems = this.dictionarymanager.getDictionaryDefinitionItems(this.index.sysdictionarydefinition_id)
+        const allItems = this.dictionarymanager.getDictionaryDefinitionItems(this.index.sysdictionarydefinition_id).filter(item => item.non_db != 1)
             .sort((a, b) => a.name.localeCompare(b.name));
 
         if (this.index.indextype === 'foreign') {

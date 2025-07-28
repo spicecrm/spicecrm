@@ -66,9 +66,7 @@ export class ProcessManagementProcessGroup implements OnInit{
         } else {
             this.backend.getRequest(`module/ProcessMGMTGroups/${this.processGroup.id}/related/processmgmtprocesses`, {limit: '-99'}).subscribe({
                 next: (related) => {
-                    for (let id in related) {
-                        this.processes.push(related[id]);
-                    }
+                    this.processes = related;
                     this.processes.sort((a, b) => {
                         return a.sequence_number > b.sequence_number ? 1 : -1;
                     })

@@ -245,7 +245,11 @@ class SpiceFTSHandler
         }
 
         // format as in fts index
-        $phonenumber = SpicePhoneNumberParser::convertToE164($phonenumber);
+        $formattedPhoneNumber = SpicePhoneNumberParser::convertToE164($phonenumber);
+
+        if ($formattedPhoneNumber == "") {
+            return $phonenumber;
+        }
 
         // determine the modules
         // ToDo: move to fts utils and utilize cache
@@ -255,7 +259,7 @@ class SpiceFTSHandler
             $ftsParams = json_decode(html_entity_decode($ftsmodule['settings']));
             if ($ftsParams->phonesearch == true) {
                 $module = $ftsmodule['module'];
-                $searchresultsraw = $this->searchModuleByPhoneNumber($module, $phonenumber);
+                $searchresultsraw = $this->searchModuleByPhoneNumber($module, $formattedPhoneNumber);
 
                 foreach ($searchresultsraw['hits']['hits'] as $hit) {
                     $seed = BeanFactory::getBean($module, $hit['_id']);
