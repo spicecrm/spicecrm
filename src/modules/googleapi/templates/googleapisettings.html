@@ -17,6 +17,14 @@
         <system-label class="slds-size--1-of-4" label="LBL_GOOGLE_TRANSLATE_KEY"></system-label>
         <input type="text" class="slds-input slds-grow" [disabled]="loading" [(ngModel)]="configvalues.languagekey"/>
     </div>
+    <div class="slds-grid slds-p-vertical--xx-small">
+        <system-label class="slds-size--1-of-4 slds-p-vertical--xx-small" label="LBL_GOOGLE_TRANSLATE_SERVICE_USER_KEY"></system-label>
+        @if (loading) {
+            <textarea class="slds-input slds-grow" rows="7" [disabled]="true" [ngModel]="configvalues.translate_service_user_key"></textarea>
+        } @else {
+            <system-source-editor [(ngModel)]="configvalues.translate_service_user_key" language="json" style="height: 300px; width: 100%"/>
+        }
+    </div>
     <div class="slds-grid slds-grid--vertical-align-center slds-p-vertical--xx-small">
         <system-label class="slds-size--1-of-4" label="LBL_GOOGLE_CLIENTID"></system-label>
         <input type="text" class="slds-input slds-grow" [disabled]="loading" [(ngModel)]="configvalues.clientid"/>

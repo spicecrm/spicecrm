@@ -16,7 +16,6 @@ import {
     DictionaryIndexItem,
     DictionaryItem
 } from "../interfaces/dictionarymanager.interfaces";
-import {DomainField} from "../interfaces/domainmanager.interfaces";
 
 /**
  * redners a modal to add an index
@@ -47,7 +46,7 @@ export class DictionaryManagerIndexAdd implements OnInit{
      *
      * @private
      */
-    public availableItems: DomainField[] = [];
+    public availableDictionaryItems: DictionaryItem[] = [];
 
     /**
      * for the foreign key
@@ -88,18 +87,8 @@ export class DictionaryManagerIndexAdd implements OnInit{
 
         // if scope is not all reset to custom in any case
 
-        this.dictionarymanager.getDictionaryDefinitionItems(this.dictionarymanager.currentDictionaryDefinition).forEach(item => {
 
-            if (item.non_db == 1) return;
-
-            this.dictionarymanager.domainfields.forEach(df => {
-                if (df.sysdomaindefinition_id !== item.sysdomaindefinition_id) return;
-                const field = {...df, name: this.dictionarymanager.translateDomainFieldName(df.name, item)}
-                this.availableItems.push(field);
-            });
-        });
-
-        this.availableItems.sort((a, b) => a.name.localeCompare(b.name));
+        this.availableDictionaryItems = this.dictionarymanager.getDictionaryDefinitionItems(this.dictionarymanager.currentDictionaryDefinition).filter(i => i.non_db != 1).sort((a, b) => a.name.localeCompare(b.name));
     }
 
     get foreignDefinitions(): DictionaryDefinition[]{

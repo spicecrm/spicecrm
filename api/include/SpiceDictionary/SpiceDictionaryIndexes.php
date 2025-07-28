@@ -405,7 +405,8 @@ class SpiceDictionaryIndexes
         // get all index Items and remove them
         $items = $this->getIndexItems($id);
         foreach($items as $item){
-            SystemDeploymentCR::deleteDBEntry($this->getDefinitonTable($item['id']), $item['id'], $def['name']);
+            $itemTable = $def['scope'] == 'c' ? self::customitemtable : self::itemtable;
+            SystemDeploymentCR::deleteDBEntry($itemTable, $item['id'], $itemTable);
             // remove from the array
             unset($this->dictionaryIndexItems[$item['id']]);
         }

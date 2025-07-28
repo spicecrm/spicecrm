@@ -714,7 +714,7 @@ $routes = [
         'route' => '/dictionary/index/{id}',
         'class' => SpiceDictionaryIndexesController::class,
         'function' => 'deleteDictionaryIndex',
-        'description' => 'posts a dictionary Index',
+        'description' => 'deletes a dictionary Index and its items',
         'options' => ['adminOnly' => true],
         'parameters' => [
             'id' => [

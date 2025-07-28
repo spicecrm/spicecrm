@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\includes\SpiceDictionary\relationships;
 
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -413,7 +414,6 @@ class M2MRelationship extends Relationship
             "id" => $this->relid,
             $this->def['join_key_lhs'] => $lhs->id,
             $this->def['join_key_rhs'] => $rhs->id,
-            'date_modified' => TimeDate::getInstance()->nowDb(),
             'deleted' => 0,
         ];
 
@@ -437,6 +437,9 @@ class M2MRelationship extends Relationship
         {
             $row = array_merge($row, $additionalFields);
         }
+
+        $row['date_modified'] = TimeDate::getInstance()->nowDb();
+        $row['modified_user_id'] = AuthenticationController::getInstance()->getCurrentUser()->id;
 
         return $row;
     }

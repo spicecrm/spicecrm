@@ -274,7 +274,11 @@ class ProspectListsController
     {
         $db = DBManagerFactory::getInstance();
 
-        return $res->withJson($db->getOne("SELECT MAX(date_modified) FROM prospect_lists_prospects WHERE prospect_list_id = '{$args['id']}'"));
+        $modificationInfo = $db->fetchOne("SELECT date_modified, modified_user_id FROM prospect_lists_prospects WHERE prospect_list_id = '{$args['id']}' AND date_modified = (SELECT MAX(date_modified) FROM prospect_lists_prospects WHERE prospect_list_id = '{$args['id']}')");
+
+        $modifiedBy = BeanFactory::getBean('Users', $modificationInfo['modified_user_id']);
+
+        return $res->withJson(['date_modified' => $modificationInfo['date_modified'], 'modified_by' => $modifiedBy]);
     }
 }
 

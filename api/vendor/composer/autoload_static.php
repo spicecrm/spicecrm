@@ -120,6 +120,7 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
             'Google\\Protobuf\\' => 16,
             'Google\\LongRunning\\' => 19,
             'Google\\Iam\\' => 11,
+            'Google\\Cloud\\Translate\\' => 23,
             'Google\\Cloud\\Storage\\' => 21,
             'Google\\Cloud\\Core\\' => 18,
             'Google\\Cloud\\' => 13,
@@ -134,6 +135,7 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
             'GPBMetadata\\Google\\Longrunning\\' => 31,
             'GPBMetadata\\Google\\Logging\\' => 27,
             'GPBMetadata\\Google\\Iam\\' => 23,
+            'GPBMetadata\\Google\\Cloud\\Translate\\' => 35,
             'GPBMetadata\\Google\\Cloud\\' => 25,
             'GPBMetadata\\Google\\Api\\' => 23,
             'GPBMetadata\\ApiCore\\' => 20,
@@ -418,6 +420,10 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
         array (
             0 => __DIR__ . '/..' . '/google/common-protos/src/Iam',
         ),
+        'Google\\Cloud\\Translate\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/google/cloud-translate/src',
+        ),
         'Google\\Cloud\\Storage\\' => 
         array (
             0 => __DIR__ . '/..' . '/google/cloud-storage/src',
@@ -473,6 +479,10 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
         'GPBMetadata\\Google\\Iam\\' => 
         array (
             0 => __DIR__ . '/..' . '/google/common-protos/metadata/Iam',
+        ),
+        'GPBMetadata\\Google\\Cloud\\Translate\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/google/cloud-translate/metadata',
         ),
         'GPBMetadata\\Google\\Cloud\\' => 
         array (
