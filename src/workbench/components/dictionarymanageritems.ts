@@ -149,7 +149,7 @@ export class DictionaryManagerItems {
         let values = this.dictionaryitems;
         let prevIndex = this.getSanitizedItemIndex(event.previousIndex);
         let curIndex = this.getSanitizedItemIndex(event.currentIndex);
-        moveItemInArray(values, curIndex, prevIndex);
+        moveItemInArray(values, prevIndex, curIndex);
 
         let savingModal = this.modal.await('LBL_SAVING');
         this.backend.postRequest('dictionary/items/sequence', {}, {items: values.map(v => v.id)}).subscribe({
