@@ -40,6 +40,10 @@ export class EmailSendButton {
 
     }
 
+    get hidden() {
+        return this.model.getField('status') != 'draft' && this.model.getField('status') != 'created';
+    }
+
     /**
      * a getter that returns the disabled status. This getter checks if all data are available
      */
