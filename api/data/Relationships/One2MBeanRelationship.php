@@ -37,6 +37,7 @@ class One2MBeanRelationship extends One2MRelationship
      *
      * @param SpiceDictionaryRelationship $relationship
      * @return void
+     * @throws \Exception
      */
     public function activate(SpiceDictionaryRelationship $relationship){
 
@@ -72,7 +73,8 @@ class One2MBeanRelationship extends One2MRelationship
         ];
 
         if($this->relationship_role_column && $this->relationship_role_column_value){
-            $defs['relationship_role_column'] = $this->relationship_role_column;
+            $rhsRoleDictionaryItem = new SpiceDictionaryItem($this->relationship_role_column);
+            $defs['relationship_role_column'] = SpiceDictionaryField::getField($rhsRoleDictionaryItem, $rhsDictionaryDefinition)->fieldname;
             $defs['relationship_role_column_value'] = $this->relationship_role_column_value;
         }
 
