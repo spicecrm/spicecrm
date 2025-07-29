@@ -29,11 +29,17 @@ export class DocumentTranslateRevisionButton extends ObjectActionSetItemBase {
 
             if (!toLanguage) return;
 
+            const loading = this.modal.await('LBL_PROCESSING');
+
             this.backend.postRequest(`module/DocumentRevisions/${this.model.id}/translate/${toLanguage}`).subscribe({
                 next: () => {
+                    loading.next(true);
+                    loading.complete();
                     this.toast.sendToast('MSG_SUCCESSFULLY_EXECUTED', 'success');
                 },
                 error: () => {
+                    loading.next(true);
+                    loading.complete();
                     this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                 }
             });
