@@ -3,6 +3,7 @@ import {backend} from "../../../services/backend.service";
 import {modal} from "../../../services/modal.service";
 import {toast} from "../../../services/toast.service";
 import {ObjectActionSetItemBase} from "../../../objectcomponents/interfaces/objectactionsetitembase";
+import {broadcast} from "../../../services/broadcast.service";
 
 @Component({
     selector: 'document-translate-revision-button',
@@ -15,6 +16,7 @@ export class DocumentTranslateRevisionButton extends ObjectActionSetItemBase {
     private backend = inject(backend);
     private modal = inject(modal);
     private toast = inject(toast);
+    private broadcast = inject(broadcast);
 
     get hidden(): boolean {
         return this.model.getField('documentrevisionstatus') != 'r' || !!this.model.getField('parent_revision_id');
@@ -36,6 +38,8 @@ export class DocumentTranslateRevisionButton extends ObjectActionSetItemBase {
                     loading.next(true);
                     loading.complete();
                     this.toast.sendToast('MSG_SUCCESSFULLY_EXECUTED', 'success');
+
+                    this.broadcast.broadcastMessage('relatedmodels.reload', {module: 'DocumentRevisions'});
                 },
                 error: () => {
                     loading.next(true);
