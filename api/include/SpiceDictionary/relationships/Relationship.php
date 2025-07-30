@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\includes\SpiceDictionary\relationships;
 
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
@@ -253,13 +254,14 @@ abstract class Relationship
             return false;
 
         $date_modified = TimeDate::getInstance()->getNow()->format(TimeDate::DB_DATETIME_FORMAT);
+        $curr_user = AuthenticationController::getInstance()->getCurrentUser()->id;
         $stringSets = [];
         foreach ($where as $field => $val) {
             $stringSets[] = "$field = '$val'";
         }
         $whereString = "WHERE " . implode(" AND ", $stringSets);
 
-        $query = "UPDATE {$this->getRelationshipTable()} set deleted=1 , date_modified = '$date_modified' $whereString";
+        $query = "UPDATE {$this->getRelationshipTable()} set deleted=1 , date_modified = '$date_modified' , modified_user_id = '$curr_user' $whereString";
 
 
         return DBManagerFactory::getInstance()->query($query);
