@@ -271,14 +271,16 @@ class SpiceImport extends SpiceBean
                     switch ($this->import_action) {
                         case 'update':
                             if (!empty($classMethod)) {
-                                $classMethod->class->{$classMethod->method}($row, $fileHeader, $this->objectimport, $list);
+                                $result = $classMethod->class->{$classMethod->method}($row, $fileHeader, $this->objectimport, $list);
+                                $this->addLogEntry('Record Created', $row, $result);
                             } else {
                                 $this->updateExistingRecord($fileHeader, $newBean, $row, $retrieve, $error, $list);
                             }
                             break;
                         case 'new':
                             if (!empty($classMethod)) {
-                                $classMethod->class->{$classMethod->method}($row, $fileHeader, $this->objectimport, $list);
+                                $result = $classMethod->class->{$classMethod->method}($row, $fileHeader, $this->objectimport, $list);
+                                $this->addLogEntry('Record Created', $row, $result);
                             } else {
                                 $this->createNewRecord($newBean, $row, $fileHeader, $error, $list);
                             }
