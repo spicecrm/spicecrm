@@ -40,6 +40,18 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
      */
     public mailboxReadReceiptConfig: string;
 
+    /**
+     * config for attachments as download link
+     */
+    public mailboxDownloadLinkConfig: string;
+
+    /**
+     * properties holding the disabled value for each flag
+     */
+    public zipDisabled: boolean;
+    public receiptDisabled: boolean;
+    public downloadLinkDisabled: boolean;
+
     constructor(
         public model: model,
         public view: view,
@@ -81,9 +93,21 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
      * returns the css classes
      */
     public getFieldClass() {
-        if (this.receiptHidden && this.zipHidden) this.addCssClass('slds-size--1-of-1');
-        else if(!this.zipHidden && !this.receiptHidden) this.addCssClass('slds-size--2-of-4');
-        else{this.addCssClass('slds-size--3-of-4'); }
+        let sum = this.receiptHidden + this.zipHidden + this.downloadLinkHidden;
+        switch (sum){
+            case 0:
+                this.addCssClass('slds-size--1-of-1');
+                break;
+            case 1:
+                this.addCssClass('slds-size--3-of-4');
+                break;
+            case 2:
+                this.addCssClass('slds-size--2-of-4');
+                break;
+            case 3:
+                this.addCssClass('slds-size--1-of-4');
+                break;
+        }
         return this.css_classes;
     }
 
@@ -95,6 +119,7 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
         super.ngOnInit();
         this.getOptions();
         this.setConfigSettings(this.value);
+        this.checkDisabled();
     }
 
     /**
@@ -179,29 +204,47 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
      */
     public onChange(value){
         this.setConfigSettings(value);
+        this.checkDisabled();
         this.setZip(undefined);
         this.setReadReceipt(undefined);
+        this.setDownloadLink(undefined);
         this.setToPreferences(value);
+    }
+
+    /**
+     * run the check on disabled fields
+     */
+    checkDisabled(){
+        this.getZipDisabled();
+        this.getReceiptDisabled();
+        this.getDownloadLinkDisabled();
     }
 
     /**
      * get config to disable zip compress checkbox
      */
-    get zipDisabled() {
+    getZipDisabled() {
         const isDisabled = !this.mailboxZipConfig || this.mailboxZipConfig == '0' || this.model.getField('downloadlink_attachments') == 1;
 
         if (isDisabled) {
             this.model.setField('zip_compress', undefined, false, false);
         }
 
-        return isDisabled;
+        this.zipDisabled =  isDisabled;
     }
 
     /**
      * get config to disable send read receipt checkbox
      */
-    get receiptDisabled() {
-        return !this.mailboxZipConfig || this.mailboxReadReceiptConfig == '0';
+    getReceiptDisabled() {
+        this.receiptDisabled = !this.mailboxReadReceiptConfig || this.mailboxReadReceiptConfig == '0';
+    }
+
+    /**
+     * get config to disable send download link checkbox
+     */
+    getDownloadLinkDisabled() {
+        this.downloadLinkDisabled = !this.mailboxDownloadLinkConfig || this.mailboxDownloadLinkConfig == '0';
     }
 
     /**
@@ -219,6 +262,13 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
     }
 
     /**
+     * get config to hide downloadlink checkbox
+     */
+    get downloadLinkHidden() {
+        return this.downloadLinkDisabled;
+    }
+
+    /**
      * get congig for specific mailbox if zip compress and send read receipt are enabled
      * @param mailboxId
      * @private
@@ -232,11 +282,13 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
                         this.options = results.sort((a, b) => a.display.localeCompare(b.display));
                         this.mailboxZipConfig = this.options.find(id => id.value == mailboxId).zip_compress;
                         this.mailboxReadReceiptConfig = this.options.find(id => id.value == mailboxId).send_read_receipt;
+                        this.mailboxDownloadLinkConfig = this.options.find(id => id.value == mailboxId).downloadlink_attachments;
                     })
             } else {
                 const selectedMailboxData = this.configuration.getData(`mailboxes${this.scope}`).find(id => id.value == mailboxId);
                 this.mailboxZipConfig = selectedMailboxData.zip_compress;
                 this.mailboxReadReceiptConfig = selectedMailboxData.send_read_receipt;
+                this.mailboxDownloadLinkConfig = selectedMailboxData.downloadlink_attachments;
             }
         }
     }
@@ -258,6 +310,21 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
      * @param value
      */
     public setReadReceipt(value){
+        if (this.receiptDisabled) {
+            value = 0;
+        }
         this.model.setField('send_read_receipt', value);
+    }
+
+    /**
+     * set send download link value
+     * @param value
+     */
+    public setDownloadLink(value){
+        if (this.downloadLinkDisabled) {
+            value = 0;
+        }
+        this.model.setField('downloadlink_attachments', value);
+        this.getZipDisabled();
     }
 }
