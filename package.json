@@ -1,6 +1,6 @@
 {
   "name": "spicecrm",
-  "version": "2025.01.001",
+  "version": "2025.01.002",
   "private": true,
   "dependencies": {
     "@angular/animations": "19.2.12",
