@@ -161,9 +161,8 @@ class MailboxManagerController
                         'type' => $type,
                         'hidden' => $mailbox->hidden,
                         'max_upload' => $mailbox->max_upload,
-                        'zip_compress' => is_null($mailbox->zip_compress) ? 0 : $mailbox->zip_compress,
-                        'send_read_receipt' => is_null($mailbox->send_read_receipt) ? 0 : $mailbox->send_read_receipt,
-                        'downloadlink_attachments' => is_null($mailbox->downloadlink_attachments) ? 0 : $mailbox->downloadlink_attachments,
+                        'zip_compress' => $mailbox->zip_compress,
+                        'send_read_receipt' => $mailbox->send_read_receipt,
                         'stylesheet' => $mailbox->stylesheet,
                     ];
                 }
