@@ -222,7 +222,7 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
      * get config to disable send read receipt checkbox
      */
     get receiptDisabled() {
-        return !this.mailboxZipConfig || this.mailboxReadReceiptConfig == '0';
+        return !this.mailboxReadReceiptConfig || this.mailboxReadReceiptConfig == '0';
     }
 
     /**
