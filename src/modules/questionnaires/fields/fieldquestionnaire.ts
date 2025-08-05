@@ -35,6 +35,7 @@ export class fieldQuestionnaire extends fieldGeneric implements AfterViewInit, O
     }
 
     public ngOnInit() {
+        this.questionnaireId = this.model.getField('questionnaire_id');
         this.subscribeToModelDataChange();
         this.subscribeToModelEditCancel();
         this.subscriptions.add(
