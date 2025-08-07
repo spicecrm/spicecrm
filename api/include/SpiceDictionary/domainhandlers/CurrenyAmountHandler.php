@@ -3,7 +3,7 @@
 namespace SpiceCRM\includes\SpiceDictionary\domainhandlers;
 
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
 
 class CurrenyAmountHandler extends SpiceDictionaryDomainHandler
