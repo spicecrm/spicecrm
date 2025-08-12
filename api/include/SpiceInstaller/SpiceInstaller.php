@@ -9,6 +9,9 @@ use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\ServiceUnavailableException;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlConnector;
+use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlRequest;
+use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlWrapper;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\database\DBManager;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
@@ -47,8 +50,6 @@ class SpiceInstaller
 
     public function __construct()
     {
-        // init curl object
-        $this->curl = curl_init();
         // init database object
         $this->dbManagerFactory = new DBManagerFactory();
 
@@ -123,32 +124,28 @@ class SpiceInstaller
 
     /**
      * performs a curl call and returns a decoded response
-     * @param $curl
      * @param $url
      * @param bool $ssl
      * @return mixed
      */
-    private function curlCall($curl, $url, $ssl = false, $username = null, $password = null)
+    private function curlCall($url, $ssl = false, $username = null, $password = null)
     {
-        curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $request = SpiceCurlWrapper::getRequest($url)
+                    ->disableLogger()
+                    ->setSsl($ssl)
+                    ->setOption('returnTransfer', true)
+                    ->setOption('encoding', SpiceCurlRequest::ENCODING_UTF8)
+                    ->setContentType(SpiceCurlRequest::CONTENT_TYPE_JSON);
 
-        // turn off ssl check
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $ssl);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $ssl);
-        curl_setopt($curl, CURLOPT_ENCODING, "UTF-8");
-
-
-        if($username && $password) {
-            curl_setopt($curl, CURLOPT_USERPWD, "{$username}:{$password}");
+        if ($username && $password) {
+            $request->setOption('userPassword', "{$username}:{$password}");
         }
 
-        $response = curl_exec($curl);
-        if (empty($response)) {
-            $response = curl_error($curl);
+        $response = (new SpiceCurlConnector($request))->process();
+        if (empty($response->getResponse())) {
+            return json_decode($response->getErrors());
         }
-        return json_decode($response);
+        return json_decode($response->getResponse());
     }
 
     /**
