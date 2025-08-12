@@ -112,11 +112,11 @@ export class AdministrationLoginMethods implements OnInit {
     }
 
     get smsmailboxes(){
-        return this.mailboxes.filter(m => m.outbound_comm == 'single_sms');
+        return this.mailboxes.filter(m => m.outbound_comm == 'single_sms' || m.outbound_comm == 'mass_sms');
     }
 
     get emailmailboxes(){
-        return this.mailboxes.filter(m => m.outbound_comm == 'single');
+        return this.mailboxes.filter(m => m.outbound_comm == 'single' || m.outbound_comm == 'mass');
     }
 
     /**
