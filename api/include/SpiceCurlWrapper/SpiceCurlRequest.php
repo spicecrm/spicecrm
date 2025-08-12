@@ -376,10 +376,9 @@ class SpiceCurlRequest
         return null;
     }
 
-    private function generateHeader(): string
+    private function generateHeader(): array
     {
         $headers = [];
-        $headerString = '';
 
         foreach ($this->rawHeaders as $header => $value) {
             $headers[$header] = $value;
@@ -389,11 +388,7 @@ class SpiceCurlRequest
             $headers['Content-Length'] = $this->generateContentLength();
         }
 
-        foreach ($headers as $headerName => $headerValue) {
-            $headerString .= $headerName . ': ' . $headerValue . "\r\n";
-        }
-
-        return $headerString;
+        return $headers;
     }
 
     private function generateContentLength(): int
