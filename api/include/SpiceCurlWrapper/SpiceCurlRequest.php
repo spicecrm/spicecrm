@@ -50,7 +50,7 @@ class SpiceCurlRequest
      */
     private array $rawHeaders = [];
 
-    private array $allowedOptions = [
+    private array $optionsAliases = [
         'headerOut'      => CURLINFO_HEADER_OUT,
         'connectTimeout' => CURLOPT_CONNECTTIMEOUT,
         'encoding'       => CURLOPT_ENCODING,
@@ -182,6 +182,12 @@ class SpiceCurlRequest
         $this->method = $method;
     }
 
+    /**
+     * Setter for the route alias. The route alias is used for the API log. If no alias is present, the full url is used.
+     *
+     * @param string $routeAlias
+     * @return $this
+     */
     public function setRouteAlias(string $routeAlias): self
     {
         $this->routeAlias = $routeAlias;
@@ -189,15 +195,30 @@ class SpiceCurlRequest
         return $this;
     }
 
+    /**
+     * Sets the value of a curl option using an alias.
+     * Supported aliases are in the $optionsAliases array.
+     *
+     * @param string $optionName
+     * @param string $optionValue
+     * @return $this
+     */
     public function setOption(string $optionName, string $optionValue): self
     {
-        if (array_key_exists($optionName, $this->allowedOptions)) {
-            $this->rawOptions[$this->allowedOptions[$optionName]] = $optionValue;
+        if (array_key_exists($optionName, $this->optionsAliases)) {
+            $this->rawOptions[$this->optionsAliases[$optionName]] = $optionValue;
         }
 
         return $this;
     }
 
+    /**
+     * Sets the value of a curl option using curl constants i.e. CURLOPT_SSL_VERIFYPEER
+     *
+     * @param string $optionName
+     * @param string $optionValue
+     * @return $this
+     */
     public function setRawOption(string $optionName, string $optionValue): self
     {
         $this->rawOptions[$optionName] = $optionValue;
@@ -205,6 +226,15 @@ class SpiceCurlRequest
         return $this;
     }
 
+    /**
+     * Sets the value of a header curl option.
+     * Any string is allowed as the option name due to custom headers.
+     * These options end up in CURLOPT_HTTPHEADER.
+     *
+     * @param string $optionName
+     * @param string $optionValue
+     * @return $this
+     */
     public function setHeaderOption(string $optionName, string $optionValue): self
     {
         $this->rawHeaders[$optionName] = $optionValue;
@@ -212,6 +242,12 @@ class SpiceCurlRequest
         return $this;
     }
 
+    /**
+     * A helper function to quickly set the values of CURLOPT_SSL_VERIFYPEER and CURLOPT_SSL_VERIFYHOST.
+     *
+     * @param bool $ssl
+     * @return $this
+     */
     public function setSsl(bool $ssl): self
     {
         $this->rawOptions[CURLOPT_SSL_VERIFYPEER] = $ssl;
@@ -220,6 +256,15 @@ class SpiceCurlRequest
         return $this;
     }
 
+    /**
+     * A setter for the Authorization header option.
+     * Equivalent to:
+     * setHeaderOption(SpiceCurlRequest::HEADER_AUTHORIZATION, $value)
+     *
+     * @param string $method
+     * @param string $value
+     * @return $this
+     */
     public function setAuthorization(string $method, string $value): self
     {
         $this->rawHeaders[self::HEADER_AUTHORIZATION] = $method . $value;
@@ -227,6 +272,14 @@ class SpiceCurlRequest
         return $this;
     }
 
+    /**
+     * A setter for the Content Type header option.
+     * Equivalent to:
+     * setHeaderOption(SpiceCurlRequest::HEADER_CONTENT_TYPE, $value)
+     *
+     * @param string $contentType
+     * @return $this
+     */
     public function setContentType(string $contentType): self
     {
         $this->rawHeaders[self::HEADER_CONTENT_TYPE] = $contentType;
@@ -234,6 +287,14 @@ class SpiceCurlRequest
         return $this;
     }
 
+    /**
+     * A setter for the Cookie header option.
+     * Equivalent to:
+     * setHeaderOption(SpiceCurlRequest::HEADER_COOKIE, $value)
+     *
+     * @param string $cookie
+     * @return $this
+     */
     public function setCookie(string $cookie): self
     {
         $this->rawHeaders[self::HEADER_COOKIE] = $cookie;
@@ -241,6 +302,14 @@ class SpiceCurlRequest
         return $this;
     }
 
+    /**
+     * A setter for the Cache Control header option.
+     * Equivalent to:
+     * setHeaderOption(SpiceCurlRequest::HEADER_CACHE_CONTROL, $value)
+     *
+     * @param string $cacheControl
+     * @return $this
+     */
     public function setCacheControl(string $cacheControl): self
     {
         $this->rawHeaders[self::HEADER_CACHE_CONTROL] = $cacheControl;
@@ -248,6 +317,14 @@ class SpiceCurlRequest
         return $this;
     }
 
+    /**
+     * A setter for the Connection header option.
+     * Equivalent to:
+     * setHeaderOption(SpiceCurlRequest::HEADER_CONNECTION, $value)
+     *
+     * @param string $connection
+     * @return $this
+     */
     public function setConnection(string $connection): self
     {
         $this->rawHeaders[self::HEADER_CONNECTION] = $connection;
@@ -255,6 +332,14 @@ class SpiceCurlRequest
         return $this;
     }
 
+    /**
+     * A setter for the Accept header option.
+     * Equivalent to:
+     * setHeaderOption(SpiceCurlRequest::HEADER_ACCEPT, $value)
+     *
+     * @param string $accept
+     * @return $this
+     */
     public function setAccept(string $accept): self
     {
         $this->rawHeaders[self::HEADER_ACCEPT] = $accept;
@@ -262,6 +347,14 @@ class SpiceCurlRequest
         return $this;
     }
 
+    /**
+     * A setter for the Accept Encoding header option.
+     * Equivalent to:
+     * setHeaderOption(SpiceCurlRequest::HEADER_ACCEPT_ENCODING, $value)
+     *
+     * @param string $encoding
+     * @return $this
+     */
     public function setAcceptEncoding(string $encoding): self
     {
         $this->rawHeaders[self::HEADER_ACCEPT_ENCODING] = $encoding;
@@ -269,6 +362,17 @@ class SpiceCurlRequest
         return $this;
     }
 
+    /**
+     * A setter for the CURLOPT_POSTFIELDS option.
+     * Accepts only arrays and allows for automatic conversion to the format saved in $this->rawHeaders[self::HEADER_CONTENT_TYPE]
+     * i.e. into JSON or HTTP query string.
+     *
+     * Alternatively, for an already serialized string value the following should be used:
+     * ->setRawOption(CURLOPT_POSTFIELDS, $serializedValue)
+     *
+     * @param array $fields
+     * @return $this
+     */
     public function setPostFields(array $fields): self
     {
         $this->postFields = $fields;
@@ -276,6 +380,11 @@ class SpiceCurlRequest
         return $this;
     }
 
+    /**
+     * Returns an array of the curl options including the header options.
+     *
+     * @return array
+     */
     public function getOptions(): array
     {
         $curlOptions = [];
@@ -322,6 +431,12 @@ class SpiceCurlRequest
         return $curlOptions;
     }
 
+    /**
+     * Getter for the route being logged in the API log.
+     * Either the routeAlias if available, otherwise the url.
+     *
+     * @return string
+     */
     public function getLoggedRoute(): string
     {
         if (!empty($this->routeAlias)) {
@@ -331,6 +446,11 @@ class SpiceCurlRequest
         return $this->url;
     }
 
+    /**
+     * A flag for forcing the calculation and setting of the Content-Length header option.
+     *
+     * @return $this
+     */
     public function forceContentLength(): self
     {
         $this->forceContentLength = true;
@@ -338,6 +458,11 @@ class SpiceCurlRequest
         return $this;
     }
 
+    /**
+     * A flag for using the JSON_FORCE_OBJECT setting when json encoding the post fields.
+     *
+     * @return $this
+     */
     public function forceJsonObject(): self
     {
         $this->forceJsonObject = true;
@@ -345,6 +470,11 @@ class SpiceCurlRequest
         return $this;
     }
 
+    /**
+     * A flag for disabling logging the request.
+     *
+     * @return $this
+     */
     public function disableLogger(): self
     {
         $this->forceDisableLogger = true;
@@ -352,11 +482,22 @@ class SpiceCurlRequest
         return $this;
     }
 
+    /**
+     * A getter for the logger flag.
+     *
+     * @return bool
+     */
     public function loggingEnabled(): bool
     {
         return !$this->forceDisableLogger;
     }
 
+    /**
+     * Generates a serialized string out of the post fields array.
+     * The output format depends on the value of $this->rawHeaders[self::HEADER_CONTENT_TYPE].
+     *
+     * @return string|null
+     */
     private function generatePostFields(): ?string
     {
         if (!empty($this->rawOptions[CURLOPT_POSTFIELDS])) {
@@ -376,6 +517,11 @@ class SpiceCurlRequest
         return null;
     }
 
+    /**
+     * Generates an array of header options values.
+     *
+     * @return array
+     */
     private function generateHeader(): array
     {
         $headers = [];
@@ -391,6 +537,12 @@ class SpiceCurlRequest
         return $headers;
     }
 
+    /**
+     * Calculates the length of the serialized post fields (CURLOPT_POSTFIELDS).
+     * Is triggered when the forceContentLength flag is set.
+     *
+     * @return int
+     */
     private function generateContentLength(): int
     {
         if (empty($this->postFields) && empty($this->rawOptions[CURLOPT_POSTFIELDS])) {
