@@ -37,6 +37,8 @@ abstract class TransportHandler
     protected $incoming_settings = [];
     protected $outgoing_settings = [];
 
+    public $canSendScheduled = false;
+
     public function __construct(Mailbox $mailbox)
     {
         $this->mailbox = $mailbox;
@@ -177,7 +179,7 @@ abstract class TransportHandler
 
         // set the date sent
         $email->date_sent = $timedate->nowDb();
-        $result = $this->dispatch( $message );
+        $result = $this->dispatch( $message, $email);
         }
         catch (Exception $exception) {
             $result = new DispatchResponse(false, [
@@ -281,7 +283,7 @@ abstract class TransportHandler
      * @param $message
      * @return DispatchResponse
      */
-    abstract protected function dispatch($message): DispatchResponse;
+    abstract protected function dispatch($message, $email): DispatchResponse;
 
     /**
      * checkConfiguration
