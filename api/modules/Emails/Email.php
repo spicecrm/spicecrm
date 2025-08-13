@@ -1049,9 +1049,11 @@ class Email extends SpiceBean
         [$parentType, $parentId] = $this->getTrackingParentData();
 
         $bodyDiv = $dom->getElementsByTagName('div')->item(0);
-           if($bodyDiv->hasAttribute('data-trackinglinkall')){
-            $trackAll = $bodyDiv->getAttribute('data-trackinglinkall');
-           }
+        if(!empty($bodyDiv)){
+            if($bodyDiv->hasAttribute('data-trackinglinkall')){
+                $trackAll = $bodyDiv->getAttribute('data-trackinglinkall');
+            }
+        }
         /** @var \DOMElement $node */
         foreach ($dom->getElementsByTagName('a') as $node) {
 
