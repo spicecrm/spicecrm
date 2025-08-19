@@ -2083,8 +2083,9 @@ class Email extends SpiceBean
         }
         $datenow = TimeDate::getInstance()->nowDbDate();
         $datesent = new DateTime($this->date_sent);
-        $datesent->add(new DateInterval('P'.$downloadDaysMax.'D'));
-        if($datenow > $datesent->format('Y-m-d') || $datenow < $this->date_sent){
+        $datemax = new DateTime($this->date_sent);
+        $datemax->add(new DateInterval('P'.$downloadDaysMax.'D'));
+        if($datenow > $datemax->format(TimeDate::DB_DATE_FORMAT) || $datenow < $datesent->format(TimeDate::DB_DATE_FORMAT)){
             return 'timeExceeded';
         };
 

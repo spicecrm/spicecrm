@@ -624,7 +624,7 @@ class ImapHandler extends TransportHandler
      * @return DispatchResponse
      * @throws Exception
      */
-    protected function dispatch($message): DispatchResponse
+    protected function dispatch($message, $email): DispatchResponse
     {
         $logEntryHandler = new APILogEntryHandler();
         try {
