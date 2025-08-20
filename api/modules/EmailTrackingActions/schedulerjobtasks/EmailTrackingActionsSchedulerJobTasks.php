@@ -13,7 +13,7 @@ class EmailTrackingActionsSchedulerJobTasks
     {
         $db = DBManagerFactory::getInstance();
         $timedate = TimeDate::getInstance();
-        $emailTrackingActions = $db->fetchAll("SELECT * from emailtrackingactions where parent_type is NULL and parent_id is null");
+        $emailTrackingActions = $db->fetchAll("SELECT * from emailtrackingactions where update_bean = 1 and deleted = 0");
 
         foreach ($emailTrackingActions as $emailTrackingAction) {
             $records = array_merge($db->fetchAll("SELECT 'CampaignLog' module, id FROM campaign_log WHERE external_id '{$emailTrackingAction['message-id']}' AND deleted = 0") ?: [],
@@ -66,6 +66,7 @@ class EmailTrackingActionsSchedulerJobTasks
                 // update trackingAction record with parent module and id
                 $emailTrackingActionBean->parent_type = $bean->_module;
                 $emailTrackingActionBean->parent_id = $bean->id;
+                $emailTrackingActionBean->update_bean = 0;
                 $emailTrackingActionBean->save();
             }
 
