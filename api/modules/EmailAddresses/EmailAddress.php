@@ -515,20 +515,13 @@ class EmailAddress extends SpiceBean
         return true;
     }
 
-    public function getPrimaryAddressForBean(SpiceBean $bean){
-
-        // fetch primary email address + fetch opt in status
-        $q = "SELECT eabr.* FROM email_addr_bean_rel eabr where eabr.bean_id ='$bean->id' and eabr.primary_address = 1 and eabr.deleted = 0";
-        return $q;
-    }
-
     public function getEmailAddressForBean(SpiceBean $bean, $emailAddrBeanRelId = null)
     {
         if (isset($emailAddrBeanRelId)) {
             $q = "SELECT eabr.* FROM email_addr_bean_rel eabr where eabr.id ='{$emailAddrBeanRelId}' and eabr.bean_id ='$bean->id' and eabr.deleted = 0";
         }
         else{
-            $q = $this->getPrimaryAddressForBean($bean);
+            $q = "SELECT eabr.* FROM email_addr_bean_rel eabr where eabr.bean_id ='$bean->id' and eabr.primary_address = 1 and eabr.deleted = 0";
         }
         $row = $this->db->fetchOne($q);
         $emailAddress = BeanFactory::getBean('EmailAddresses', $row['email_address_id']);
