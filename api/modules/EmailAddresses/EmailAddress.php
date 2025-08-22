@@ -523,9 +523,10 @@ class EmailAddress extends SpiceBean
         else{
             $q = "SELECT eabr.* FROM email_addr_bean_rel eabr where eabr.bean_id ='$bean->id' and eabr.primary_address = 1 and eabr.deleted = 0";
         }
-        $row = $this->db->fetchOne($q);
-        $emailAddress = BeanFactory::getBean('EmailAddresses', $row['email_address_id']);
-        $emailAddress->opt_in_status = $row['opt_in_status'];
-        return $emailAddress;
+        if($row = $this->db->fetchOne($q)){
+            $emailAddress = BeanFactory::getBean('EmailAddresses', $row['email_address_id']);
+            $emailAddress->opt_in_status = $row['opt_in_status'];
+            return $emailAddress;
+        }
     }
 }
