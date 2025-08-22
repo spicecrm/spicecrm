@@ -455,7 +455,7 @@ class CampaignTask extends SpiceBean
         while ($row = $this->db->fetchByAssoc($res)) {
 
             $bean = BeanFactory::getBean($row['related_type'], $row['related_id']);
-            $emailAddress = $this->getEmailAddress($row['id'], $bean, $row['email_addr_bean_rel_id']);
+            $emailAddress = BeanFactory::getBean('EmailAddresses')->getEmailAddressForBean($bean);
             if (!$bean || !$emailAddress) continue;
 
             $email = $this->sendEmail($bean, $emailAddress->email_address, true, true);
@@ -504,7 +504,7 @@ class CampaignTask extends SpiceBean
             /** @var Person $seed */
             $seed = BeanFactory::getBean($queuedEmail['target_type'], $queuedEmail['target_id']);
 
-            $emailAddress = $this->getEmailAddress($queuedEmail['list_id'], $seed, $queuedEmail['email_addr_bean_rel_id']);
+            $emailAddress = BeanFactory::getBean('EmailAddresses')->getEmailAddressForBean($seed);
             $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
             $campaignLog->activity_type = "error";
 
@@ -554,23 +554,6 @@ class CampaignTask extends SpiceBean
         return true;
     }
 
-    public function getEmailAddress(string $listId, bool | SpiceBean $person, $emailAddrBeanRelId = null): ?EmailAddress
-    {
-        if (!$person) return null;
-
-        $db = DBManagerFactory::getInstance();
-//        $emailAddrBeanRelId = $db->getOne("SELECT email_addr_bean_rel_id from prospect_lists_prospects WHERE prospect_list_id = '$listId' AND related_id ='$person->id' AND deleted = 0");
-
-        // fallback
-        if(empty($emailAddrBeanRelId)) {
-            return !$person->email1 ? null : BeanFactory::newBean('EmailAddresses')->retrieve_by_string_fields(['email_address' => $person->email1]);
-        }
-
-        $q = "SELECT eabr.* FROM email_addr_bean_rel eabr where eabr.id ='{$emailAddrBeanRelId}' and eabr.bean_id ='$person->id' and eabr.deleted = 0";
-        $row = $db->fetchOne($q);
-
-        return BeanFactory::getBean('EmailAddresses', $row['email_address_id']);
-    }
 
     /**
      * send queued text messages for text message campaign tasks where the log entry is set to queued
