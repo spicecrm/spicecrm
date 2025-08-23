@@ -455,7 +455,7 @@ class CampaignTask extends SpiceBean
         while ($row = $this->db->fetchByAssoc($res)) {
 
             $bean = BeanFactory::getBean($row['related_type'], $row['related_id']);
-            $emailAddress = BeanFactory::getBean('EmailAddresses')->getEmailAddressForBean($bean);
+            $emailAddress = BeanFactory::getBean('EmailAddresses')->getEmailAddressForBean($bean, $row['email_addr_bean_rel_id']);
             if (!$bean || !$emailAddress) continue;
 
             $email = $this->sendEmail($bean, $emailAddress->email_address, true, true);
@@ -504,7 +504,7 @@ class CampaignTask extends SpiceBean
             /** @var Person $seed */
             $seed = BeanFactory::getBean($queuedEmail['target_type'], $queuedEmail['target_id']);
 
-            $emailAddress = BeanFactory::getBean('EmailAddresses')->getEmailAddressForBean($seed);
+            $emailAddress = BeanFactory::getBean('EmailAddresses')->getEmailAddressForBean($seed, $queuedEmail['email_addr_bean_rel_id']);
             $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
             $campaignLog->activity_type = "error";
 
