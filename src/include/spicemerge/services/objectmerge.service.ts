@@ -66,7 +66,7 @@ export class objectmerge {
             let fieldSetFields = this.metadata.getFieldSetFields(componenConfig.fieldset);
             for(let fieldSetField of fieldSetFields){
                 if(modelFields[fieldSetField.field] && modelFields[fieldSetField.field].type != 'id'
-                    && (modelFields[fieldSetField.field].source != 'non-db' || modelFields[fieldSetField.field].type == 'linked' || modelFields[fieldSetField.field].type == 'linkedparent' || modelFields[fieldSetField.field].name.endsWith('_address'))) {
+                    && (modelFields[fieldSetField.field].source != 'non-db' || modelFields[fieldSetField.field].type == 'relate' || modelFields[fieldSetField.field].type == 'linked' || modelFields[fieldSetField.field].type == 'linkedparent' || modelFields[fieldSetField.field].name.endsWith('_address'))) {
                     this.mergeFields.push(modelFields[fieldSetField.field]);
                 }
             }
