@@ -106,14 +106,7 @@ export class ObjectMergeModalData {
      * @param mergeSourceId
      */
     public setMergeSource(fieldDef: {name: string, source: 'non-db'}, mergeSourceId: string) {
-        if (this.isAddressGroupField(fieldDef)) {
-            this.objectmerge.mergeFields.forEach((f: {name: string, source: 'non-db'}) => {
-                if (!f.name.startsWith(`${fieldDef.name}_`)) return;
-                this.objectmerge.mergeSource[f.name] = mergeSourceId;
-            });
-        } else {
-            this.objectmerge.mergeSource[fieldDef.name] = mergeSourceId;
-        }
+        this.objectmerge.mergeSource[fieldDef.name] = mergeSourceId;
     }
 
     /**
