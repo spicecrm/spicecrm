@@ -1441,9 +1441,15 @@ class Email extends SpiceBean
             return null;
         }
 
+        // check that the email address is valid
+        $emailAddress = trim($this->emailAddress->splitEmailAddress($address)['email']);
+        if(!EmailAddress::isValidEmailAddress($emailAddress)) {
+            return null;
+        }
+
         $this->recipient_addresses[] = [
             'address_type' => $type,
-            'email_address' => trim($this->emailAddress->splitEmailAddress($address)['email'])
+            'email_address' => $emailAddress
         ];
     }
 
