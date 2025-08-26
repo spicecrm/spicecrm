@@ -161,6 +161,9 @@ class SpiceCurlRequest
      */
     public const ACCEPT_ALL = '*/*';
 
+    public const ACCEPT_JSON = 'application/json';
+
+
     /**
      * Accept encoding constants for 'Accept-Encoding' header.
      */
@@ -527,7 +530,7 @@ class SpiceCurlRequest
         $headers = [];
 
         foreach ($this->rawHeaders as $header => $value) {
-            $headers[$header] = $value;
+            $headers[] = $header . ': ' . $value;
         }
 
         if ($this->forceContentLength) {
