@@ -83,5 +83,6 @@ class EmailTrackingActionsSchedulerJobTasks
             $emailTrackingActionBean->update_bean = 0;
             $emailTrackingActionBean->save();
         }
+        return true;
     }
 }
