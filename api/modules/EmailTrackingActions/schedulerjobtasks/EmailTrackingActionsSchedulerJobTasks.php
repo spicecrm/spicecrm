@@ -31,7 +31,8 @@ class EmailTrackingActionsSchedulerJobTasks
                     'record_module' => $record['module'],
                     'action' => $emailTrackingAction['action'],
                     'message_id' => $emailTrackingAction['message_id'],
-                    'action_id' => $emailTrackingAction['id']
+                    'action_id' => $emailTrackingAction['id'],
+                    'severity' => $emailTrackingAction['severity']
                 ];
             }
 
