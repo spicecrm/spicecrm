@@ -517,7 +517,7 @@ class EmailAddress extends SpiceBean
 
     public function getEmailAddressForBean(SpiceBean $bean, $emailAddrBeanRelId = null)
     {
-        if (isset($emailAddrBeanRelId)) {
+        if (!empty($emailAddrBeanRelId)) {
             $q = "SELECT eabr.* FROM email_addr_bean_rel eabr where eabr.id ='{$emailAddrBeanRelId}' and eabr.bean_id ='$bean->id' and eabr.deleted = 0";
         }
         else{
