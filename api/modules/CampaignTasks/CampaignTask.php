@@ -541,6 +541,7 @@ class CampaignTask extends SpiceBean
                     $campaignLog->related_id = $email->id;
                     $campaignLog->related_type = 'Emails';
                 } else {
+                    $campaignLog->activity_type = "processing";
                     $campaignLog->external_id = $email->message_id;
                 }
             }
