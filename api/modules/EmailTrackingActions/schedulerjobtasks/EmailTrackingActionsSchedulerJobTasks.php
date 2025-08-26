@@ -4,6 +4,7 @@ namespace SpiceCRM\modules\EmailTrackingActions\schedulerjobtasks;
 
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 
 class EmailTrackingActionsSchedulerJobTasks
@@ -13,7 +14,8 @@ class EmailTrackingActionsSchedulerJobTasks
     {
         $db = DBManagerFactory::getInstance();
         $timedate = TimeDate::getInstance();
-        $emailTrackingActions = $db->limitQuery("SELECT * from emailtrackingactions where update_bean = 1 and deleted = 0 and action != 'link' ORDER BY date_entered", 0, 500);
+        $limit = SpiceConfig::getInstance()->get('emailtracking.update_logs_limit') ?: 500;
+        $emailTrackingActions = $db->limitQuery("SELECT * from emailtrackingactions where update_bean = 1 and deleted = 0 and action != 'link' ORDER BY date_entered", 0, $limit);
 
         $items = [];
 
