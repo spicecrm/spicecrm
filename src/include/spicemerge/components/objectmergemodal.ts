@@ -12,6 +12,7 @@ import {broadcast} from '../../../services/broadcast.service';
 
 import {objectmerge} from '../services/objectmerge.service';
 import {SystemLoadingModal} from "../../../systemcomponents/components/systemloadingmodal";
+import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'object-merge-modal',
@@ -41,7 +42,18 @@ export class ObjectMergeModal implements OnInit {
      */
     public self: any;
 
-    constructor(public broadcast: broadcast, public router: Router, public metadata: metadata, public objectmerge: objectmerge, @SkipSelf() public parentmodel: model, public model: model, public modellist: modellist, public backend: backend, public modal: modal) {
+    constructor(
+        public broadcast: broadcast,
+        public router: Router,
+        public metadata: metadata,
+        public objectmerge: objectmerge,
+        @SkipSelf() public parentmodel: model,
+        public model: model,
+        public modellist: modellist,
+        public backend: backend,
+        public modal: modal,
+        public toast: toast
+    ) {
 
     }
 
@@ -143,45 +155,51 @@ export class ObjectMergeModal implements OnInit {
             }
 
             //
-            this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
-                modalRef.instance.messagelabel = 'LBL_MERGING';
+            let aw = this.modal.await('LBL_MERGING');
+
                 this.backend.postRequest(`module/${this.model.module}/${this.objectmerge.masterId}/mergebeans`, {}, {
                     fields,
                     duplicates
-                }).subscribe(response => {
-                    // close the loading modal
-                    modalRef.instance.self.destroy();
+                }).subscribe({
+                    next: (response) => {
+                        // close the loading modal
+                        aw.emit(true);
 
-                    // emit the model save
-                    this.broadcast.broadcastMessage('model.save', {
-                        id: this.objectmerge.masterId,
-                        module: this.model.module,
-                        data: response.data
-                    });
+                        // emit the model save
+                        this.broadcast.broadcastMessage('model.save', {
+                            id: this.objectmerge.masterId,
+                            module: this.model.module,
+                            data: response.data
+                        });
 
-                    // emit the model merge message
-                    this.broadcast.broadcastMessage('model.merge', {
-                        id: this.objectmerge.masterId,
-                        module: this.model.module
-                    });
-
-                    // emit the model delete
-                    for (let duplicate of duplicates) {
-                        this.broadcast.broadcastMessage('model.delete', {
-                            id: duplicate,
+                        // emit the model merge message
+                        this.broadcast.broadcastMessage('model.merge', {
+                            id: this.objectmerge.masterId,
                             module: this.model.module
                         });
-                    }
 
-                    // if we switched master .. navigate to the new master
-                    if(this.model.id && this.model.id != this.objectmerge.masterId){
-                        this.router.navigate([`/module/${this.model.module}/${this.objectmerge.masterId}`]);
-                    }
+                        // emit the model delete
+                        for (let duplicate of duplicates) {
+                            this.broadcast.broadcastMessage('model.delete', {
+                                id: duplicate,
+                                module: this.model.module
+                            });
+                        }
 
-                    // close the modal
-                    this.closeModal();
+                        // if we switched master .. navigate to the new master
+                        if (this.model.id && this.model.id != this.objectmerge.masterId) {
+                            this.router.navigate([`/module/${this.model.module}/${this.objectmerge.masterId}`]);
+                        }
+
+                        // close the modal
+                        this.closeModal();
+                    },
+                    error: (e) => {
+                        aw.emit(true);
+                        this.toast.sendToast('LBL_ERROR_MERGIN_RECORDS', 'error');
+                    }
                 });
-            });
+
         }
     }
 
