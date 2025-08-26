@@ -21,23 +21,35 @@ class EmailTrackingActionsSchedulerJobTasks
 
         while ($emailTrackingAction = $db->fetchByAssoc($emailTrackingActions)) {
 
-            $records = array_merge($db->fetchAll("SELECT 'CampaignLog' module, id FROM campaign_log WHERE external_id = '<{$emailTrackingAction['message_id']}>' AND deleted = 0") ?: [],
-                $db->fetchAll("SELECT 'NewsletterLogs' module, id FROM newsletterlogs WHERE external_id = '<{$emailTrackingAction['message_id']}>' AND deleted = 0") ?: [],
-                $db->fetchAll("SELECT 'Emails' module, id FROM emails WHERE message_id='<{$emailTrackingAction['message_id']}>' AND deleted = 0") ?: []);
+            if ($emailTrackingAction['action'] != 'unsubscribe') {
 
-            foreach ($records as $record) {
-                $items[$emailTrackingAction['id']] = [
-                    'record_id' => $record['id'],
-                    'record_module' => $record['module'],
-                    'action' => $emailTrackingAction['action'],
-                    'message_id' => $emailTrackingAction['message_id'],
-                    'action_id' => $emailTrackingAction['id'],
-                    'severity' => $emailTrackingAction['severity']
-                ];
+                $records = array_merge($db->fetchAll("SELECT 'CampaignLog' module, id FROM campaign_log WHERE external_id = '<{$emailTrackingAction['message_id']}>' AND deleted = 0") ?: [],
+                    $db->fetchAll("SELECT 'NewsletterLogs' module, id FROM newsletterlogs WHERE external_id = '<{$emailTrackingAction['message_id']}>' AND deleted = 0") ?: [],
+                    $db->fetchAll("SELECT 'Emails' module, id FROM emails WHERE message_id='<{$emailTrackingAction['message_id']}>' AND deleted = 0") ?: []);
+
+                foreach ($records as $record) {
+                    $items[$emailTrackingAction['id']] = [
+                        'record_id' => $record['id'],
+                        'record_module' => $record['module'],
+                        'action' => $emailTrackingAction['action'],
+                        'message_id' => $emailTrackingAction['message_id'],
+                        'action_id' => $emailTrackingAction['id'],
+                        'severity' => $emailTrackingAction['severity']
+                    ];
+                }
             }
-
+            else {
+                    $items[$emailTrackingAction['id']] = [
+                        'record_id' => $emailTrackingAction['parent_id'],
+                        'record_module' => $emailTrackingAction['parent_type'],
+                        'action' => $emailTrackingAction['action'],
+                        'message_id' => $emailTrackingAction['message_id'],
+                        'action_id' => $emailTrackingAction['id'],
+                        'severity' => $emailTrackingAction['severity']
+                    ];
+            }
         }
-        foreach ($items as $item){
+        foreach ($items as $item) {
             $emailTrackingActionBean = BeanFactory::getBean('EmailTrackingActions', $item['action_id']);
 
             $bean = BeanFactory::getBean($item['record_module'], $item['record_id']);
