@@ -39,21 +39,8 @@ export class CampaignTaskActivateButton implements OnDestroy {
         );
     }
 
-    /**
-     * only show for campaign tasks of type email
-     */
-    get hidden() {
-        return this.model.getField('campaigntask_type') == 'Email';
-    }
-
 
     public handleDisabled() {
-
-        // not for email
-        if (this.model.getFieldValue('campaigntask_type') == 'Email'){
-            this.disabled = true;
-            return;
-        }
 
         // not if activated
         if (this.model.getFieldValue('activated')){
