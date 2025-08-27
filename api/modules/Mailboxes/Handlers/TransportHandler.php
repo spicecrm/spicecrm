@@ -175,6 +175,9 @@ abstract class TransportHandler
 
         $email->body = $this->parseTemplateBodyOnly($emailTemplate, $email, $html);
 
+        // cleanup the last \n for IMAP
+        $email->body = str_replace("\n", "",  $email->body);
+
         $message = $this->composeEmail($email, $noSecurityCheck);
 
         // set the date sent
