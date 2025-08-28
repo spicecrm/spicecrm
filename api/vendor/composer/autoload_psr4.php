@@ -55,6 +55,7 @@ return array(
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
     'Matrix\\' => array($vendorDir . '/markbaker/matrix/classes/src'),
     'Laravel\\SerializableClosure\\' => array($vendorDir . '/laravel/serializable-closure/src'),
+    'Karriere\\PdfMerge\\' => array($vendorDir . '/karriere/pdf-merge/src'),
     'Invoker\\' => array($vendorDir . '/php-di/invoker/src'),
     'Hfig\\MAPI\\' => array($vendorDir . '/hfig/mapi/src/MAPI'),
     'HeadlessChromium\\' => array($vendorDir . '/chrome-php/chrome/src'),
