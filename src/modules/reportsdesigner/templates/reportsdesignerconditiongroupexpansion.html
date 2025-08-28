@@ -61,7 +61,9 @@
             </div>
             <div class="slds-grid">
                 <div class="slds-form-element slds-size--1-of-2">
-                    <label class="slds-form-element__label"><system-label label="LBL_CUSTOM_FUNCTION"></system-label></label>
+                    <label class="slds-form-element__label"><system-label label="LBL_CUSTOM_SQL_FUNCTION"></system-label>
+                        <system-icon-help-text helpText="HLP_CUSTOM_SQL_FUNCTION_FILTER" />
+                    </label>
                     <system-input-base64 [(ngModel)]="whereCondition.customSqlQuery"></system-input-base64>
                 </div>
                 <div class="slds-form-element slds-size--1-of-2">
