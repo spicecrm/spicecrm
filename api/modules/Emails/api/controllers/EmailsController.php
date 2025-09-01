@@ -62,6 +62,12 @@ class EmailsController
 
         // get linked items
         if ($email->retrieve_by_string_fields(['message_id' => $message_id]) || $email->retrieve_by_string_fields(['thread_id' => $thread_id])) {
+            // re-check because of message ID case sensitivity! The SQL query will not consider the difference between a and A
+            if(($email->message_id && $email->message_id !== $message_id) || ($email->thread_id && $email->thread_id !== $thread_id)){
+                throw new NotFoundException('Email not found');
+            }
+
+
             $result['email_id']    = $email->id;
             $result['attachments'] = SpiceAttachments::getAttachmentsForBean('Emails', $email->id, 10, false);
             $linkedBeansObj = $db->query("SELECT bean_module, bean_id FROM emails_beans WHERE email_id = '$email->id'");
