@@ -7,7 +7,7 @@ use \SpiceCRM\modules\OutputTemplates\handlers\pdf\ChromeLocalPdfHandler;
 class PdfService
 {
 
-    public function getPdfDocument( $html )
+    public static function getPdfDocument( $html )
     {
         return ChromeLocalPdfHandler::createPdf( $html );
     }
