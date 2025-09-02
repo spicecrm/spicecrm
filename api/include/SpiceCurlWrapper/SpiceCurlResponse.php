@@ -103,4 +103,21 @@ class SpiceCurlResponse
 
         return '';
     }
+
+    /**
+     * Returns the cURL response as a JSON decoded array if possible.
+     * Otherwise, it returns the original response.
+     *
+     * @return array|null
+     */
+    public function getJsonResponse(): ?array
+    {
+        $decoded = json_decode($this->response, true);
+
+        if (json_last_error() === JSON_ERROR_NONE) {
+            return $decoded;
+        }
+
+        return $this->response;
+    }
 }
