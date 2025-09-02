@@ -183,6 +183,12 @@ class SchedulerJob extends SpiceBean
     {
         global $overCLI;
 
+        // reload scheduler job data:
+        // in case you changed the scheduled time or the hold_on_failure option while the job was running,
+        // your changes would be overwritten in this afterRun
+        // reload the record
+        $this->retrieve($this->id, false, true, false);
+
         if ($overCLI) {
             $this->process_id = '';
         }
