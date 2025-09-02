@@ -221,7 +221,7 @@ class LogicHook
             $allHooks = $this->getHooks($moduleDir);
 		}
 
-		$defaultHooks = $this->getHooks('');
+		$defaultHooks = $this->getHooks('*');
 
         foreach ($defaultHooks as $hookName => $items) {
             if (empty($allHooks[$hookName])) $allHooks[$hookName] = [];
