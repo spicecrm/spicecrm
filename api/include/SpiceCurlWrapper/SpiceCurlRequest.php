@@ -27,7 +27,7 @@ class SpiceCurlRequest
     /**
      * @var bool a flag for using the JSON_FORCE_OBJECT setting when json encoding the post fields.
      */
-    private ?bool $forceJsonObject;
+    private ?bool $forceJsonObject = null;
 
     /**
      * @var bool a flag for disabling logging.
