@@ -20,7 +20,7 @@ declare var moment: any;
 })
 export class ProspectlistsLastMemberModificationField extends fieldGeneric implements OnInit {
 
-    public isLoading: boolean = true;
+    public isLoading: boolean = false;
 
     public modificationDate: string;
 
@@ -37,18 +37,25 @@ export class ProspectlistsLastMemberModificationField extends fieldGeneric imple
     }
 
     public ngOnInit() {
-        this.backend.getRequest(`module/ProspectLists/${this.model.id}/lastmembermodification`).subscribe({
-            next: (res) => {
-                this.modificationDate = res.date_modified;
-                this.modifiedBy = res.modified_by;
-                this.isLoading = false;
-            }
-        })
+        if (this.fieldconfig.getModifiedUser) {
+            this.isLoading = true;
+
+            this.backend.getRequest(`module/ProspectLists/${this.model.id}/lastmembermodification`).subscribe({
+                next: (res) => {
+                    this.modificationDate = res.date_modified;
+                    this.modifiedBy = res.modified_by;
+                    this.isLoading = false;
+                }
+            })
+        }
     }
 
     get formatedDate() {
         let timeZone = this.session.getSessionData('timezone');
-        let pDateTime = typeof timeZone == 'string' && timeZone.length > 0 ? moment.utc(this.modificationDate).tz(timeZone) : moment(this.modificationDate);
+
+        let date = this.fieldconfig.getModifiedUser ? this.modificationDate : this.value;
+
+        let pDateTime = typeof timeZone == 'string' && timeZone.length > 0 ? moment.utc(date).tz(timeZone) : moment(date);
         return pDateTime.isValid() ? pDateTime.format('DD.MM.YYYY HH:mm') : null;
     }
 }
