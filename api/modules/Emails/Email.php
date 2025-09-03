@@ -1635,7 +1635,8 @@ class Email extends SpiceBean
         $q = $db->query($query);
 
         while ($row = $db->fetchRow($q)) {
-            if ($row['message_id'] != $message_id) {
+            // re-check because of message ID case sensitivity! The SQL query will not consider the difference between a and A
+            if ($row['message_id'] !== $message_id) {
                 continue;
             }
 

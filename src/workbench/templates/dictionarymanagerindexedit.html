@@ -41,16 +41,16 @@
             <div class="slds-form-element slds-p-right--x-small slds-size--1-of-2">
                 <span class="slds-form-element__label"><system-label label="LBL_AVAILABLE_ITEMS"></system-label></span>
                 <div class="slds-picklist slds-picklist__options slds-size--1-of-1" style="height: 50vh" cdkDropList #listOne="cdkDropList" [cdkDropListData]="availableDictionaryItems" [cdkDropListConnectedTo]="[listTwo]" (cdkDropListDropped)="onFieldDrop($event)">
-                    <div *ngFor="let domain of availableDictionaryItems" cdkDrag [cdkDragData]="domain" class="slds-drag--preview slds-picklist__item">
-                        <span class="slds-truncate">{{domain.name}}</span>
+                    <div *ngFor="let item of availableDictionaryItems" cdkDrag [cdkDragData]="item" class="slds-drag--preview slds-picklist__item">
+                        <span class="slds-truncate">{{item.name}}</span>
                     </div>
                 </div>
             </div>
             <div class="slds-form-element slds-p-left--x-small slds-size--1-of-2">
                 <span class="slds-form-element__label"><system-label label="LBL_INDEX_ITEMS"></system-label></span>
                 <div class="slds-picklist slds-picklist__options slds-size--1-of-1 cdk-drag" style="height: 50vh" cdkDropList #listTwo="cdkDropList" [cdkDropListData]="indexDictionaryItems" [cdkDropListConnectedTo]="[listOne]" (cdkDropListDropped)="onFieldDrop($event)">
-                    <div *ngFor="let domain of indexDictionaryItems" cdkDrag [cdkDragData]="domain" class="slds-drag--preview slds-picklist__item">
-                        <span class="slds-truncate">{{domain.name}}</span>
+                    <div *ngFor="let item of indexItems" cdkDrag [cdkDragData]="item" class="slds-drag--preview slds-picklist__item">
+                        <span class="slds-truncate">{{indexDictionaryItems.get(item.sysdictionaryitem_id).name}}</span>
                     </div>
                 </div>
             </div>
