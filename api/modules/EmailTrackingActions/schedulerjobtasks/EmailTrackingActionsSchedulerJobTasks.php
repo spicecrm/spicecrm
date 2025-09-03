@@ -54,6 +54,8 @@ class EmailTrackingActionsSchedulerJobTasks
 
             $bean = BeanFactory::getBean($item['record_module'], $item['record_id']);
 
+            if(!$bean) return;
+
             // update beans
             switch ($item['record_module']) {
                 case 'Emails':
