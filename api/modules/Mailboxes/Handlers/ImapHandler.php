@@ -602,6 +602,7 @@ class ImapHandler extends TransportHandler
         if ($email->id) {
             if(!$email->downloadlink_attachments) {
                 foreach ($email->attachments as $att) {
+                    $displayName = null;
                     if ($att->display_name) {
                         $displayName = $att->display_name . substr($att->filename, strrpos($att->filename, '.'));
                     }
