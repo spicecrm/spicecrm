@@ -11,18 +11,13 @@ use SpiceCRM\includes\SpiceBeans\SpiceBean;
  */
 class One2OneRelationship extends M2MRelationship
 {
-
-    public function __construct($def)
-    {
-        parent::__construct($def);
-    }
     /**
      * @param  $lhs SpiceBean left side bean to add to the relationship.
      * @param  $rhs SpiceBean right side bean to add to the relationship.
      * @param  $additionalFields key=>value pairs of fields to save on the relationship
      * @return boolean true if successful
      */
-    public function add($lhs, $rhs, $additionalFields = [])
+    public function add($lhs, $rhs, $additionalFields = []): bool
     {
         $dataToInsert = $this->getRowToInsert($lhs, $rhs, $additionalFields);
         //If the current data matches the existing data, don't do anything

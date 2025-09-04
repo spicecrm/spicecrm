@@ -6,9 +6,7 @@ namespace SpiceCRM\includes\SpiceDictionary;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
-use SpiceCRM\includes\SpiceDictionary\relationships\Relationship;
 use SpiceCRM\includes\SpiceDictionary\relationships\RelationshipFactory;
-use SpiceCRM\includes\SugarObjects\VardefManager;
 
 /*********************************************************************************
 
@@ -43,62 +41,20 @@ class SpiceDictionaryLink
     /**
      * @param  $linkName String name of a link field in the module's vardefs
      * @param  $bean SpiceBean focus bean for this link (one half of a relationship)
-     * @param  $linkDef array Optional vardef for the link in case it can't be found in the passed in bean for the global dictionary
-     * @return void
-     *
+     * @throws \Exception
      */
-    function __construct($linkName, $bean, $linkDef = false)
+    function __construct($linkName, $bean)
     {
         $this->focus = $bean;
-        //Try to load the link vardef from the beans field defs. Otherwise start searching
-        if (empty($bean->field_defs) || empty($bean->field_defs[$linkName]) || empty($bean->field_defs[$linkName]['relationship'])) {
-            if (empty($linkDef)) {
-                //Assume $linkName is really relationship_name, and find the link name with the vardef manager
-                $this->def = VardefManager::getLinkFieldForRelationship($bean->_module, $bean->_objectname, $linkName);
-            } else {
-                $this->def = $linkDef;
-            }
-            //Check if multiple links were found for a given relationship
-            if (is_array($this->def) && !isset($this->def['name'])) {
-                //More than one link found, we need to figure out if we are currently on the LHS or RHS
-                //default to lhs for now
-                if (isset($this->def[0]['side']) && $this->def[0]['side'] == 'left') {
-                    $this->def = $this->def[0];
-                } else if (isset($this->def[1]['side']) && $this->def[1]['side'] == 'left') {
-                    $this->def = $this->def[1];
-                } else {
-                    $this->def = $this->def[0];
-                }
-            }
-            if (empty($this->def['name'])) {
-                LoggerManager::getLogger()->fatal('link', "failed to find link for $linkName in " . __FILE__);
-                return false;
-            }
+        $this->def = $bean->field_defs[$linkName];
+        $this->name = $linkName;
 
-            $this->name = $this->def['name'];
-        } else {
-            //Linkdef was found in the bean (this is the normal expectation)
-            $this->def = $bean->field_defs[$linkName];
-            $this->name = $linkName;
-        }
-        //Instantiate the relationship for this link.
+        # Instantiate the relationship for this link.
         $this->relationship = RelationshipFactory::getInstance()->getRelationship($this->def['relationship']);
-
-        // Fix to restore functionality from Link.php that needs to be rewritten but for now this will do.
-        $this->relationship_fields = (!empty($this->def['rel_fields'])) ? $this->def['rel_fields'] : array();
+        $this->relationship_fields = $this->def['rel_fields'] ?? [];
 
         if (!$this->loadedSuccesfully()) {
             LoggerManager::getLogger()->debug("{$this->name} for {$this->def['relationship']} failed to load\n");
-        }
-        //Following behavior is tied to a property(ignore_role) value in the vardef. It alters the values of 2 properties, ignore_role_filter and add_distinct.
-        //the property values can be altered again before any requests are made.
-        if (!empty($this->def) && is_array($this->def)) {
-            if (isset($this->def['ignore_role'])) {
-                if ($this->def['ignore_role']) {
-                    $this->ignore_role_filter = true;
-                    $this->add_distinct = true;
-                }
-            }
         }
     }
 
@@ -123,7 +79,7 @@ class SpiceDictionaryLink
      */
     public function load($params = [])
     {
-        $data = $this->query($params);
+        $data = $this->loadRelatedRecords($params);
         $this->rows = $data['rows'];
         $this->beans = null;
         $this->loaded = true;
@@ -147,7 +103,7 @@ class SpiceDictionaryLink
      * <li><b>limit:</b> The maximum number of rows</li>
      * <li><b>deleted:</b> If deleted is set to 1, only deleted records related to the current record will be returned.</li></ul>
      */
-    public function query($params)
+    public function loadRelatedRecords($params)
     {
         return $this->relationship->load($this, $params);
     }
@@ -375,7 +331,7 @@ class SpiceDictionaryLink
         $rows = $this->rows;
         //If params is set, we are doing a query rather than a complete load of the relationship
         if (!empty($params)) {
-            $data = $this->query($params);
+            $data = $this->loadRelatedRecords($params);
             $rows = $data['rows'];
         }
 

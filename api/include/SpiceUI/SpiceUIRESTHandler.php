@@ -1343,35 +1343,6 @@ class SpiceUIRESTHandler
         return $navElements;
     }
 
-    private function getTableFieldTypes(string $tableName, array $fields)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $dictionaryDefinition = $db->fetchOne("SELECT id FROM sysdictionarydefinitions WHERE name = '{$tableName}'");
-        $dictionaryDefinitionId = $dictionaryDefinition['id'];
-
-        $dictionaryFieldDefinitions = $db->fetchAll("SELECT fielddefinition FROM sysdictionaryfields WHERE sysdictionarydefinition_id = '{$dictionaryDefinitionId}'");
-
-        $requiredFieldNames = [];
-        foreach ($dictionaryFieldDefinitions as $field) {
-            $fieldDefinition = json_decode($field['fielddefinition'], true);
-            if (isset($fieldDefinition['required']) && $fieldDefinition['required'] == 1) {
-                $requiredFieldNames[] = $fieldDefinition['name'];
-            }
-        }
-
-        foreach ($fields as &$field) {
-            $field['required'] = in_array($field['name'], $requiredFieldNames);
-
-            $def = $dictionaryFieldDefinitions[$field['name']] ?? null;
-            if (empty($field['type']) && $def) {
-                $field['type'] = $def['type'] ?? '';
-            }
-        }
-
-        return $fields;
-    }
-
     function getAllModules()
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();

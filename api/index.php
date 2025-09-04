@@ -13,6 +13,8 @@ use SpiceCRM\includes\Middleware\DeveloperMiddleware;
 use SpiceCRM\includes\SpiceBeans\SpiceModules;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SpiceSlim\SpiceResponseFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -41,15 +43,15 @@ try {
         throw new \SpiceCRM\includes\ErrorHandlers\SystemNotInstalledException();
     }
 
+    SpiceDictionaryHandler::loadLegacyFiles();
+
     DBManagerFactory::setDBConfig();
 
     SystemTenant::processTenantSwitch();
 
     SpiceConfig::getInstance()->reloadConfig();
 
-    if (!SpiceDictionary::compareSystemDumpHashes()) {
-        SpiceDictionary::getInstance(false)->reloadSystemDump();
-    }
+    SpiceInstaller::checkForSystemPackageChanges();
 
     SpiceLanguageManager::setCurrentLanguage();
 
@@ -90,6 +92,6 @@ try {
     // run the request
     $RESTManager->app->run();
 
-} catch (SpiceCRM\includes\ErrorHandlers\Exception|Exception $e) {
+} catch (SpiceCRM\includes\ErrorHandlers\Exception|Exception|Throwable $e) {
     $RESTManager->outputError($e);
 }
