@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\includes\SpiceDictionary\relationships;
 
-use SpiceCRM\includes\Logger\LoggerManager;
+use Exception;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
 
 
@@ -13,59 +13,46 @@ use SpiceCRM\includes\SpiceBeans\SpiceBean;
  */
 class One2MRelationship extends M2MRelationship
 {
-
-    public function __construct($def)
+    /**
+     * initialize the instance from the given vardef relationship array
+     * @param array $relationship
+     * @return void
+     */
+    protected function initializeFromVardef(array $relationship): void
     {
-        $this->def = $def;
-        $this->name = (!empty($def['name']) ? $def['name'] : $def['relationship_name']); // BWC
+        $this->def = $relationship;
 
-        $this->selfReferencing = $def['lhs_module'] == $def['rhs_module'];
-        $lhsModule = $def['lhs_module'];
-        $rhsModule = $def['rhs_module'];
+        $this->selfReferencing = $this->def['lhs_module'] == $this->def['rhs_module'];
 
-        if ($this->selfReferencing)
-        {
-            $links = $this->getLinkFieldForRelationship($lhsModule);
-            if (empty($links))
-            {
-                LoggerManager::getLogger()->developer('relationships',"No Links found for relationship {$this->name} in One2M");
-            }
-            else {
-                if (!is_array($links)) //Only one link for a self referencing relationship, this is very bad.
-                {
-                    $this->lhsLinkDef = $this->rhsLinkDef = $links;
-                }
-                else if (!empty($links[0]) && !empty($links[1]))
-                {
+        if (!$this->selfReferencing) {
 
-                    if ((!empty($links[0]['side']) && $links[0]['side'] == "right")
-                        || (!empty($links[0]['link_type']) && $links[0]['link_type'] == "one"))
-                    {
-                        //$links[0] is the RHS
-                        $this->lhsLinkDef = $links[1];
-                        $this->rhsLinkDef = $links[0];
-                    } else
-                    {
-                        //$links[0] is the LHS
-                        $this->lhsLinkDef = $links[0];
-                        $this->rhsLinkDef = $links[1];
-                    }
-                }
+            $lhsLinkDef = $this->getLinkFieldForRelationship($this->def['lhs_module']);
+            $rhsLinkDef = $this->getLinkFieldForRelationship($this->def['rhs_module']);
+
+            if (!isset($lhsLinkDef['name']) && isset($lhsLinkDef[0])) {
+                $lhsLinkDef = $lhsLinkDef[0];
             }
-        } else
-        {
-            $this->lhsLinkDef = $this->getLinkFieldForRelationship($lhsModule);
-            $this->rhsLinkDef = $this->getLinkFieldForRelationship($rhsModule);
-            if (!isset($this->lhsLinkDef['name']) && isset($this->lhsLinkDef[0]))
-            {
-              $this->lhsLinkDef = $this->lhsLinkDef[0];
+            if (!isset($rhsLinkDef['name']) && isset($rhsLinkDef[0])) {
+                $rhsLinkDef = $rhsLinkDef[0];
             }
-            if (!isset($this->rhsLinkDef['name']) && isset($this->rhsLinkDef[0])) {
-                $this->rhsLinkDef = $this->rhsLinkDef[0];
+
+            $this->lhsLink = $lhsLinkDef['name'];
+            $this->rhsLink = $rhsLinkDef;
+
+        } else {
+
+            $links = $this->getLinkFieldForRelationship($this->def['lhs_module']);
+
+            if ((!empty($links[0]['side']) && $links[0]['side'] == "right") || (!empty($links[0]['link_type']) && $links[0]['link_type'] == "one")) {
+                # first link is right side
+                $this->lhsLink = $links[1]['name'];
+                $this->rhsLink = $links[0]['name'];
+            } else {
+                # first link is left side
+                $this->lhsLink = $links[0]['name'];
+                $this->rhsLink = $links[1]['name'];
             }
         }
-        $this->lhsLink = $this->lhsLinkDef['name'];
-        $this->rhsLink = $this->rhsLinkDef['name'];
     }
 
     protected function linkIsLHS($link) {
@@ -78,8 +65,9 @@ class One2MRelationship extends M2MRelationship
      * @param  $rhs SpiceBean right side bean to add to the relationship.
      * @param  $additionalFields key=>value pairs of fields to save on the relationship
      * @return boolean true if successful
+     * @throws Exception
      */
-    public function add($lhs, $rhs, $additionalFields = [])
+    public function add($lhs, $rhs, $additionalFields = []): bool
     {
         $dataToInsert = $this->getRowToInsert($lhs, $rhs, $additionalFields);
         

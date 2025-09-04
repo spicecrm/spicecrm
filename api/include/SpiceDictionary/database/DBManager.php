@@ -43,6 +43,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\resource\ResourceManager;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -455,65 +456,6 @@ abstract class DBManager
     }
 
     /**
-     * Scans order by to ensure that any field being ordered by is.
-     *
-     * It will throw a warning error to the log file - fatal if slow query logging is enabled
-     *
-     * @param string $sql query to be run
-     * @param bool $object_name optional, object to look up indices in
-     * @return bool   true if an index is found false otherwise
-     */
-    protected function checkQuery($sql, $object_name = false)
-    {
-        $match = [];
-        preg_match_all("'.* FROM ([^ ]*).* ORDER BY (.*)'is", $sql, $match);
-        $indices = false;
-        if (!empty($match[1][0]))
-            $table = $match[1][0];
-        else
-            return false;
-
-        if (!empty($object_name) && !empty(SpiceDictionary::getInstance()->dictionary[$object_name]))
-            $indices = SpiceDictionary::getInstance()->dictionary[$object_name]['indices'];
-
-        if (empty($indices)) {
-            foreach (SpiceDictionary::getInstance()->dictionary as $current) {
-                if ($current['table'] == $table) {
-                    $indices = $current['indices'];
-                    break;
-                }
-            }
-        }
-        if (empty($indices)) {
-            LoggerManager::getLogger()->warn('CHECK QUERY: Could not find index definitions for table ' . $table);
-            return false;
-        }
-        if (!empty($match[2][0])) {
-            $orderBys = explode(' ', $match[2][0]);
-            foreach ($orderBys as $orderBy) {
-                $orderBy = trim($orderBy);
-                if (empty($orderBy))
-                    continue;
-                $orderBy = strtolower($orderBy);
-                if ($orderBy == 'asc' || $orderBy == 'desc')
-                    continue;
-
-                $orderBy = str_replace([$table . '.', ','], '', $orderBy);
-
-                foreach ($indices as $index)
-                    if (empty($index['db']) || $index['db'] == $this->dbType)
-                        foreach ($index['fields'] as $field)
-                            if ($field == $orderBy)
-                                return true;
-
-                $warning = 'Missing Index For Order By Table: ' . $table . ' Order By:' . $orderBy;
-                LoggerManager::getLogger()->warn('CHECK QUERY:' . $warning);
-            }
-        }
-        return false;
-    }
-
-    /**
      * Returns the time the last query took to execute
      *
      * @return int
@@ -910,11 +852,7 @@ abstract class DBManager
         if ($tablename == 'does_not_exist' || $tablename == '')
             return '';
 
-        $engine = null;
-        if (isset(SpiceDictionary::getInstance()->dictionary[$bean->getObjectName()]['engine']) && !empty(SpiceDictionary::getInstance()->dictionary[$bean->getObjectName()]['engine']))
-            $engine = SpiceDictionary::getInstance()->dictionary[$bean->getObjectName()]['engine'];
-
-        return $this->repairTableParams($tablename, $fielddefs, $new_index, $execute, $engine);
+        return $this->repairTableParams($tablename, $fielddefs, $new_index, $execute);
     }
 
     /**
@@ -936,11 +874,7 @@ abstract class DBManager
         if ($tablename == 'does_not_exist' || $tablename == '')
             return '';
 
-        $engine = null;
-        if (isset(SpiceDictionaryr::getInstance()->dictionary['audit']['engine']) && !empty(SpiceDictionary::getInstance()->dictionary['audit']['engine'])) {
-            $engine = SpiceDictionary::getInstance()->dictionary['audit']['engine'];
-        }
-        return $this->repairTableParams($tablename, $fielddefs, $new_index, $execute, $engine);
+        return $this->repairTableParams($tablename, $fielddefs, $new_index, $execute);
     }
 
     /**
@@ -2957,7 +2891,7 @@ abstract class DBManager
         $sql = "INSERT INTO " . $bean->get_audit_table_name();
         //get field defs for the audit table.
         // require('metadata/audit_templateMetaData.php');
-        $fieldDefs = SpiceDictionary::getInstance()->dictionary['audit']['fields'];
+        $fieldDefs = SpiceDictionary::getInstance()->buildFieldsByDictionaryName('audit');
 
         $values = [];
         $values['id'] = $this->massageValue(SpiceUtils::createGuid(), $fieldDefs['id']);

@@ -497,10 +497,6 @@ class OCI8Manager extends DBManager
 				WHERE rnum >= " . $start;
         $this->lastsql = $sql;
 
-        if (!empty(SpiceConfig::getInstance()->config['check_query'])) {
-            $this->checkQuery($sql);
-        }
-
         if (!$execute) {
             return $sql;
         }
@@ -1515,27 +1511,26 @@ class OCI8Manager extends DBManager
         $copy = array_merge([], $data);
         $lob_fields = [];
         $lob_dataType = [];
+
+        $dictionaryDefs = SpiceDictionary::getInstance()->buildFieldsByTable($table);
+
         // find the dictionary table
-        foreach (SpiceDictionary::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
-            if ($dictionaryDefs['table'] == $table) {
-                foreach ($dictionaryDefs['fields'] as $field => $vardef) {
-                    if ($this->type_map[$vardef['dbtype'] ?:$vardef['type']] == 'clob') {
-                        $copy[$field] = DBUtils::fromHtml($data[$field]);
-                        $data[$field] = $this->getEmptyClob();
-                        $lob_fields[$field] = ":" . $field;
-                        $lob_dataType[$field] = OCI_B_CLOB;
-                    } elseif ($vardef['type'] == 'blob' || $vardef['dbtype'] == 'blob') {
-                        $data[$field] = $this->getEmptyBlob();
-                        $lob_fields[$field] = ":" . $field;
-                        $lob_dataType[$field] = OCI_B_CLOB;
-                    }
-                }
-                $sql = $this->insertParams($table, $dictionaryDefs['fields'], $data, null, $execute);
-                $res = $this->oracleLOBBackDoor($sql, $copy, $lob_fields, $lob_dataType);
-                if (!$res) {
-                    $this->log->error("Oracle INSERT RAISED result error: " . $sql);
-                }
+        foreach ($dictionaryDefs['fields'] as $field => $vardef) {
+            if ($this->type_map[$vardef['dbtype'] ?:$vardef['type']] == 'clob') {
+                $copy[$field] = DBUtils::fromHtml($data[$field]);
+                $data[$field] = $this->getEmptyClob();
+                $lob_fields[$field] = ":" . $field;
+                $lob_dataType[$field] = OCI_B_CLOB;
+            } elseif ($vardef['type'] == 'blob' || $vardef['dbtype'] == 'blob') {
+                $data[$field] = $this->getEmptyBlob();
+                $lob_fields[$field] = ":" . $field;
+                $lob_dataType[$field] = OCI_B_CLOB;
             }
+        }
+        $sql = $this->insertParams($table, $dictionaryDefs['fields'], $data, null, $execute);
+        $res = $this->oracleLOBBackDoor($sql, $copy, $lob_fields, $lob_dataType);
+        if (!$res) {
+            $this->log->error("Oracle INSERT RAISED result error: " . $sql);
         }
 
         return $data['id'];
@@ -1557,38 +1552,34 @@ class OCI8Manager extends DBManager
         $lob_fields = [];
         $lob_dataType = [];
 
-        foreach (SpiceDictionary::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
-            if ($dictionaryDefs['table'] == $table) {
+        $dictionaryDefs = SpiceDictionary::getInstance()->buildFieldsByTable($table);
 
+        foreach ($data as $key => $val) {
+            // get the vardefs
+            $vardef = $dictionaryDefs['fields'][$key];
+            if(!$vardef) continue;
 
-                foreach ($data as $key => $val) {
-                    // get the vardefs
-                    $vardef = $dictionaryDefs['fields'][$key];
-                    if(!$vardef) continue;
-
-                    if (!empty($val) && $this->type_map[$vardef['dbtype'] ?: $vardef['type']] == 'clob') {
-                        $copy[$key] = DBUtils::fromHtml($val);
-                        $sets[] = "$key = {$this->getEmptyClob()}";
-                        $lob_fields[$key] = ":" . $key;
-                        $lob_dataType[$key] = OCI_B_CLOB;
-                    } elseif (!empty($val) && ($vardef['type'] == 'blob' || $vardef['dbtype'] == 'blob')) {
-                        $sets[] = "$key = {$this->getEmptyBlob()}";
-                        $lob_fields[$key] = ":" . $key;
-                        $lob_dataType[$key] = OCI_B_CLOB;
-                    } else {
-                        $sets[] = "$key = '{$this->quote($val)}'";
-                    }
-                }
-
-                foreach ($pks as $key => $val) {
-                    $wheres[] = "$key = '{$this->quote($val)}'";
-                }
-
-                $query = "UPDATE $table SET " . implode(',', $sets) . " WHERE " . implode(' AND ', $wheres);
-                $retVal = $this->oracleLOBBackDoor($query, $copy, $lob_fields, $lob_dataType);
-
+            if (!empty($val) && $this->type_map[$vardef['dbtype'] ?: $vardef['type']] == 'clob') {
+                $copy[$key] = DBUtils::fromHtml($val);
+                $sets[] = "$key = {$this->getEmptyClob()}";
+                $lob_fields[$key] = ":" . $key;
+                $lob_dataType[$key] = OCI_B_CLOB;
+            } elseif (!empty($val) && ($vardef['type'] == 'blob' || $vardef['dbtype'] == 'blob')) {
+                $sets[] = "$key = {$this->getEmptyBlob()}";
+                $lob_fields[$key] = ":" . $key;
+                $lob_dataType[$key] = OCI_B_CLOB;
+            } else {
+                $sets[] = "$key = '{$this->quote($val)}'";
             }
         }
+
+        foreach ($pks as $key => $val) {
+            $wheres[] = "$key = '{$this->quote($val)}'";
+        }
+
+        $query = "UPDATE $table SET " . implode(',', $sets) . " WHERE " . implode(' AND ', $wheres);
+        $retVal = $this->oracleLOBBackDoor($query, $copy, $lob_fields, $lob_dataType);
+
         return $retVal;
     }
 

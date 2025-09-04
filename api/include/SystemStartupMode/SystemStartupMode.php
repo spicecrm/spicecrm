@@ -26,7 +26,8 @@ class SystemStartupMode extends SpiceSingleton
      */
     public static function checkDictionary()
     {
-        if (SpiceCache::get(SpiceDictionary::cachename)) {
+        # todo refactor
+        /*if (SpiceCache::get(SpiceDictionary::cachename)) {
             return;
         }
 
@@ -36,7 +37,7 @@ class SystemStartupMode extends SpiceSingleton
 
         if (!$hasDBCache) {
             SystemStartupMode::setRecoveryMode(true);
-        }
+        }*/
     }
 
     /**

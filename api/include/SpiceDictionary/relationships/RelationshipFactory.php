@@ -3,134 +3,62 @@
 
 namespace SpiceCRM\includes\SpiceDictionary\relationships;
 
+use Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
-use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationships;
 
 /**
  * Create relationship objects
  * @api
  */
 class RelationshipFactory {
-    static $rfInstance;
 
-    protected $relationships;
-    protected $relationshiptypes;
-
-    protected function __construct(){
-        //Load the relationship definitions from the cache.
-        $this->loadRelationships();
-        $this->loadRelationshipTypes();
-    }
+    static ?RelationshipFactory $rfInstance = null;
 
     /**
      * @static
      * @return RelationshipFactory
      */
-    public static function getInstance()
+    public static function getInstance(): RelationshipFactory
     {
-        if (is_null(self::$rfInstance))
+        if (is_null(self::$rfInstance)) {
             self::$rfInstance = new RelationshipFactory();
+        }
+
         return self::$rfInstance;
     }
 
-
     /**
-     * @param  $relationshipName String name of relationship to load
-     * @return false|EmailAddressRelationship|M2MRelationship|One2MBeanRelationship|One2MRelationship|One2OneBeanRelationship|One2OneRelationship
+     * get an instance of the relationship by name
+     * @param  $relationshipName String
+     * @return null|Relationship
+     * @throws Exception
      */
-    public function getRelationship($relationshipName)
+    public function getRelationship(string $relationshipName): ?Relationship
     {
-        if (empty($this->relationships[$relationshipName])) {
-            LoggerManager::getLogger()->debug("Unable to find relationship in ".__CLASS__." ".__FUNCTION__."() on line ".__LINE__." $relationshipName");
-            return false;
+        $relationship = SpiceDictionaryRelationships::getInstance()->getRelationshipByName($relationshipName);
+
+        if ($relationship && $relationship['status'] != 'a') {
+            return null;
         }
 
-        $def = $this->relationships[$relationshipName];
-
-        $type = isset($def['true_relationship_type']) ? $def['true_relationship_type'] : $def['relationship_type'];
-        if(isset($this->relationshiptypes[$type])){
-            return new $this->relationshiptypes[$type]($def);
+        if (!$relationship) {
+            $relationship = SpiceDictionaryHandler::getInstance()->getVardefRelationship($relationshipName);
         }
-        /*
-        switch($type)
-        {
-            case "many-to-many-bean":
-                return new M2MBeanRelationship($def);
-            case "many-to-many":
-                if (isset($def['rhs_module']) && $def['rhs_module'] == 'EmailAddresses')
-                {
-                    return new EmailAddressRelationship($def);
-                }
-                return new M2MRelationship($def);
-            case "one-to-many":
-                //If a relationship has no table or join keys, it must be bean based
-                if (empty($def['true_relationship_type']) || (empty($def['table']) && empty($def['join_table'])) || empty($def['join_key_rhs'])){
-                    return new One2MBeanRelationship($def);
-                }
-                else {
-                    return new One2MRelationship($def);
-                }
-            case "one-to-one":
-                if (empty($def['true_relationship_type'])){
-                    return new One2OneBeanRelationship($def);
-                }
-                else {
-                    return new One2OneRelationship($def);
-                }
+
+        if (!$relationship) return null;
+
+        $typeDefinition = SpiceDictionaryRelationships::getInstance()->getRelationshipTypeDefinition($relationship['relationship_type']);
+
+        if($typeDefinition){
+            /** @var Relationship $classInstance */
+            $classInstance = new $typeDefinition['class']($relationshipName, $relationship);
+            return $classInstance;
         }
-        */
 
-        LoggerManager::getLogger()->fatal ("$relationshipName had an unknown type $type ");
+        LoggerManager::getLogger()->fatal("$relationshipName had an unknown type {$relationship['relationship_type']}");
 
-        return false;
+        return null;
     }
-
-
-    /**
-     * @param false $forceLoadFromDb
-     */
-    public function loadRelationships($forceLoadFromDb = false)
-    {
-        $cached = SpiceCache::get('relationships');
-        if(!$cached || $forceLoadFromDb) {
-            $this->relationships = SpiceDictionaryVardefs::loadRelationships();
-            SpiceCache::set('relationships', $this->relationships);
-        } else {
-            $this->relationships = $cached;
-        }
-    }
-
-
-    /**
-     * @param false $forceLoadFromDb
-     */
-    public function loadRelationshipTypes($forceLoadFromDb = false)
-    {
-        $this->relationshiptypes = [];
-        $cached = SpiceCache::get('relationshiptypes');
-        if(!$cached || $forceLoadFromDb) {
-            $relTypes = DBManagerFactory::getInstance()->fetchAll('SELECT name, class FROM sysdictionaryrelationshiptypes');
-            foreach ($relTypes as $relType) $this->relationshiptypes[$relType['name']] = $relType['class'];
-
-            SpiceCache::set('relationshiptypes', $this->relationshiptypes);
-        } else {
-            $this->relationshiptypes = $cached;
-        }
-    }
-
-
-    /**
-     * load relationships from cache table
-     * @param string $module filter on module
-     * @return void
-     */
-    private function loadRelationshipsCacheFromDb($module = null){
-        $relationships = SpiceDictionaryVardefs::getRelationshipsCacheFromDb($module);
-        $this->relationships = $relationships;
-    }
-
-
-
 }

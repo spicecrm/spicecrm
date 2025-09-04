@@ -64,19 +64,19 @@ class SpiceDictionaryDomainValidationsController
     /**
      * posts a Domain Validation
      *
-     * @param $req
-     * @param $res
-     * @param $args
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
      * @return mixed
+     * @throws \Exception
      */
     public function postDictionaryDomainValidationValues(Request $req, Response $res, array $args): Response
     {
         // get the body
         $values = $req->getParsedBody();
+        SpiceDictionaryDomainValidations::getInstance()->setValues($args['id'], $values);
 
-
-
-        return $res->withJson((new SpiceDictionaryDomainValidation($args['id']))->setValues($values));
+        return $res;
     }
 
     /**

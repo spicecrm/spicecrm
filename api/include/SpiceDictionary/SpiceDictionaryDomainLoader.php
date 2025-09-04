@@ -42,7 +42,7 @@ class SpiceDictionaryDomainLoader
 
     public function loadDomainValidations()
     {
-        return SpiceDictionaryDomainValidations::getInstance()->domainValidations;
+        return SpiceDictionaryDomainValidations::getInstance()->domainValidationsWithValues;
     }
 
     /**

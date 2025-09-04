@@ -59,7 +59,7 @@ export interface DictionaryItem {
     package?: string;
     addFields?: DomainField[];
     defined?:boolean;
-    cached?:boolean;
+    isVardef?:boolean;
     database?:boolean;
     selected?: boolean;
 }
