@@ -6,19 +6,26 @@ namespace SpiceCRM\includes\SpiceInstaller;
 use Exception;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
+use SpiceCRM\includes\ErrorHandlers\ServiceUnavailableException;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\database\DBManager;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainFields;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomains;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidations;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndex;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageLoader;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
 use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SystemDeploymentPackages\SystemDeploymentPackageSource;
@@ -29,6 +36,14 @@ use Throwable;
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 class SpiceInstaller
 {
+    /**
+     * @var string path to the system package file
+     */
+    private static string $systemPackageFilePath = './include/SpiceInstaller/SystemPackage/system-package.gz';
+    /**
+     * @var object|null the system package file content
+     */
+    private static ?object $systemPackageContent = null;
 
     public function __construct()
     {
@@ -41,6 +56,68 @@ class SpiceInstaller
         SpiceConfig::getInstance()->installing = true;
     }
 
+    /**
+     * @return object|mixed the system package file content
+     */
+    private static function getSystemPackageContent(): object
+    {
+        return json_decode(gzdecode(file_get_contents(self::$systemPackageFilePath)));
+    }
+
+    /**
+     * write the loaded system dump dictionaries to the cache to temporarily hold the system defined dictionaries.
+     * This keeps the system alive until SpiceDictionaryVardefs::repairDictionaries action is taken
+     * @return void
+     * @throws Throwable
+     */
+    public static function reloadSystemPackage(): void
+    {
+        SpiceCache::instance()->flush();
+        self::loadSystemPackage(DBManagerFactory::getInstance());
+    }
+
+    /**
+     * compare system package hashes to force repair system dictionaries if the hash
+     * on the database differs from the hash of the package file
+     * @return void
+     * @throws Throwable
+     */
+    public static function checkForSystemPackageChanges(): void
+    {
+        # skip the comparison for the SpiceCRM public-config reference system
+        if (SpiceConfig::getInstance()->get('systemvardefs.create_system_file_enabled') == 1) {
+            return;
+        }
+
+        $db = DBManagerFactory::getInstance();
+        $configHash = (string) $db->getOne("SELECT value FROM config WHERE category = 'dictionary' AND name = 'system_dump_hash'");
+
+        if ($configHash !== self::generateSystemPackageHash()) {
+            self::reloadSystemPackage();
+            throw new ServiceUnavailableException('New version detected. Admin user must reload the loaded packages.', 'systemVersionChange');
+        }
+    }
+
+    /**
+     * write system cache hash to config
+     * @param string $hash
+     * @return void
+     * @throws Exception
+     */
+    public static function writeSystemPackageFileHashToConfig(): void
+    {
+        $db = DBManagerFactory::getInstance();
+
+        if (!$db->tableExists('config')) return;
+
+        $hash = self::generateSystemPackageHash();
+
+        $db->query("DELETE FROM config WHERE category='dictionary' AND name='system_dump_hash'");
+        $db->query("INSERT INTO config (category, name, value) VALUES('dictionary', 'system_dump_hash', '{$hash}')");
+
+        SpiceCache::deleteByKey('dbconfig');
+        SpiceConfig::getInstance()->reloadConfig(true);
+    }
 
     /**
      * performs a curl call and returns a decoded response
@@ -470,138 +547,48 @@ class SpiceInstaller
     }
 
     /**
-     * load the dictionary dump file
-     * creates the system dictionary tables without indexes from teh dump for the system fields
-     * save the dump file hash in the config for later comparison
-     * @param \SpiceCRM\includes\SpiceDictionary\database\DBManager $db
+     * creates the system tables from the loaded system package
      * @return void
-     * @throws Exception
+     * @throws Exception|Throwable
      */
-    public function createSystemTablesFromDump(DBManager $db){
-
-        $hash = SpiceDictionary::getInstance(false)->loadSystemDumpFile();
-
-        $dictionary = SpiceDictionary::getInstance()->dictionary;
-
-        foreach ($dictionary as $dictFields){
-            $query = $db->createTableSQLParams($dictFields['table'], $dictFields['fields'], []);
-            $db->query($query, true);
+    public function createSystemTables()
+    {
+        foreach (SpiceDictionaryDefinitions::getInstance()->getDefinitions() as $definition) {
+            SpiceDictionaryDefinitions::getInstance()->repair($definition['id']);
         }
-
-        SpiceDictionary::writeSystemDumpFileHashToConfig($hash);
     }
 
     /**
-     * creates the tables from the dictionary, as well as the audit tables and relationship tables, writes the relationship cache
-     * @param $db
+     * initialize the dictionary definitions by loading the system package into the cache files to prepare for create tables
+     * @return void
      */
-    public function createTables($db)
+    private function initializeDictionaryFromSystemPackage()
     {
-        $globalBeanList = [];
-        // workaround load metadata definitions (tables like sysmodules ... will be needed for retrieveSysModules)
-        // load them now!
-        SpiceDictionaryHandler::loadMetaDataFiles();
-        $rel_dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
+        SpiceDictionaryItems::initializeFromSystemPackage(
+            self::$systemPackageContent->data->rows->{SpiceDictionaryItems::table}
+        );
 
-// will break installation under php8.1 and is unnecessary
-//        $vardef = new VardefManager();
-//        $vardef->clearVardef();
+        SpiceDictionaryDefinitions::initializeFromSystemPackage(
+            self::$systemPackageContent->data->rows->{SpiceDictionaryDefinitions::table}
+        );
 
-        // workaround create table from metadata definitions now
-        foreach ($rel_dictionary as $rel_name => $rel_data) {
-            $table = $rel_data['table'];
+        SpiceDictionaryDomains::initializeFromSystemPackage(
+            self::$systemPackageContent->data->rows->{SpiceDictionaryDomains::table}
+        );
 
-            if (!$db->tableExists($table)) {
-                $query = $db->createTableSQLParams($table, $rel_data['fields'], $rel_data['indices']);
-                $db->query($query);
-            }
-        }
+        SpiceDictionaryDomainFields::initializeFromSystemPackage(
+            self::$systemPackageContent->data->rows->{SpiceDictionaryDomainFields::table}
+        );
 
-        // retrieve available modules from reference
-        $sysModules = $this->retrieveSysModules();
+        SpiceDictionaryDomainValidations::initializeFromSystemPackage(
+            self::$systemPackageContent->data->rows->{SpiceDictionaryDomainValidations::table},
+            self::$systemPackageContent->data->rows->{SpiceDictionaryDomainValidations::valuesTable}
+        );
 
-        if (!empty($sysModules)) {
-            foreach ($sysModules['sysmodules'] as $sysModuleId => $moduleConf) {
-                $base64conf = base64_decode($moduleConf);
-                if ($decodedConf = json_decode($base64conf, true)) {
-                    if (!empty($decodedConf['bean'])) {
-                        $globalBeanList[$decodedConf['module']] = $decodedConf['bean'];
-                        //todo temporary bugfix, find correct solution?
-                        SpiceModules::getInstance()->setBeanClass(
-                            $decodedConf['module'],
-                            '\\SpiceCRM\\modules\\' . $decodedConf['module'] . '\\' . $decodedConf['bean']
-                        );
-                    }
-                }
-            }
-        }
-
-        // relationship workaround: relationship has to be the first table to be  created before module tables
-        //require_once('modules/Relationships/vardefs.php');
-        $table   = SpiceDictionaryHandler::getInstance()->dictionary['Relationship']['table'];
-        $fields  = SpiceDictionaryHandler::getInstance()->dictionary['Relationship']['fields'];
-        $indices = SpiceDictionaryHandler::getInstance()->dictionary['Relationship']['indices'];
-
-        if (!empty($table)) {
-            if (!$db->tableExists($table)) {
-                $query = $db->createTableSQLParams($table, $fields, $indices);
-                $db->query($query);
-            }
-        }
-        ksort($globalBeanList);
-
-        foreach ($globalBeanList as $dir => $bean) {
-            // in core edition some modules might be missing
-            // ignore them when it encountered
-            if (file_exists('modules/' . $dir . '/vardefs.php')) {
-                require_once('modules/' . $dir . '/vardefs.php');
-            } else {
-                continue;
-            }
-
-            if (SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'] == 'does_not_exist') {
-                continue;
-            }
-            $table   = SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'];
-            $fields  = SpiceDictionaryHandler::getInstance()->dictionary[$bean]['fields'];
-            $indices = SpiceDictionaryHandler::getInstance()->dictionary[$bean]['indices'];
-
-            if (!empty($table)) {
-                if (!$db->tableExists($table)) {
-                    $query = $db->createTableSQLParams($table, $fields, $indices);
-                    $db->query($query);
-                }
-            }
-
-            // creates audit table if object is audited
-            /*
-            SpiceBean::createRelationshipMeta(
-                $bean,
-                $db,
-                SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'],
-                '',
-                $dir
-            );
-            */
-        }
-        SpiceModules::getInstance()->setBeanList($globalBeanList);
-
-        ksort($rel_dictionary);
-        foreach ($rel_dictionary as $rel_name => $rel_data) {
-            $table = $rel_data['table'];
-
-            if (!$db->tableExists($table)) {
-                $query = $db->createTableSQLParams($table, $rel_data['fields'], $rel_data['indices']);
-                $db->query($query);
-            }
-
-            //SpiceBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
-        }
-
-
-        // repair relationships
-        SpiceDictionaryVardefs::build_relationship_cache();
-
+        SpiceDictionaryIndexes::initializeFromSystemPackage(
+            self::$systemPackageContent->data->rows->{SpiceDictionaryIndexes::table},
+            self::$systemPackageContent->data->rows->{SpiceDictionaryIndexes::itemTable}
+        );
     }
 
     /**
@@ -770,95 +757,69 @@ class SpiceInstaller
      * @param $db
      * @param string|null $language
      * @return void
-     * @throws Exception
+     * @throws Throwable
      */
     public function initializeSystem($db, ?string $language): void
     {
-        $this->createSystemTablesFromDump($db);
+        self::$systemPackageContent = self::getSystemPackageContent();
+
+        $this->initializeDictionaryFromSystemPackage();
+
+        $this->createSystemTables();
 
         $this->loadSystemPackage($db);
-
-        $this->writeDictionaryToCacheTable();
-
-        $this->createDatabaseIndexes();
 
         $this->retrieveLanguages( $db, $language );
     }
 
     /**
-     * write dictionary array to the cache table
-     * @return void
-     * @throws Exception
-     */
-    public function writeDictionaryToCacheTable(): void
-    {
-        # write the definitions to the cache table
-        $defsHandler = SpiceDictionaryDefinitions::getInstance();
-
-        foreach (SpiceDictionary::getInstance()->dictionary as $dicName => $dicFields) {
-            $defsHandler->writeVardefToFieldsTable($dicName, $dicFields);
-        }
-    }
-
-    /**
-     * create database indexes
-     * @return void
-     * @throws Exception
-     */
-    public function createDatabaseIndexes(): void
-    {
-        $indexHandler = SpiceDictionaryIndexes::getInstance();
-        $indexHandler->reloadItems();
-
-        foreach ($indexHandler->dictionaryIndexes as $index) {
-            try {
-                $index = new SpiceDictionaryIndex($index['id']);
-                $index->activate();
-            } catch (Throwable $t) {
-                throw new Exception("Error repairing index ($index->name). Check if all index items and dictionary related items have the package system in the system-package.gz file. Error: " . $t->getMessage());
-            }
-        }
-    }
-
-    /**
      * load system package
      * @param $db
-     * @throws Exception
+     * @throws Throwable
      */
     public static function loadSystemPackage($db): void
     {
-        $packageContent = json_decode( gzdecode ( file_get_contents('./include/SpiceInstaller/SystemPackage/system-package.gz')));
-        $tablesFields = [];
-        foreach (SpiceDictionary::getInstance()->dictionary as $dic) {
-            $tablesFields[$dic['table']] = array_map(function ($f) {return $f['name'];}, $dic['fields']);
+        if (!self::$systemPackageContent) {
+            self::$systemPackageContent = self::getSystemPackageContent();
         }
 
-        foreach ( $packageContent->data->tables as $tableName ) {
+        foreach (self::$systemPackageContent->data->tables as $tableName) {
 
-            if ( !$tablesFields[$tableName]) continue;
+            $tablesFields = SpiceDictionary::getInstance()->buildFieldsByTable($tableName);
+
+            if ( !$tablesFields) continue;
 
             // delete all system package entries
             $db->query("DELETE FROM {$tableName} WHERE package='system'");
 
-            foreach ($packageContent->data->rows->$tableName as $row) {
-                $row = self::prepareSystemPackageRow($row, $tablesFields, $tableName);
+            foreach (self::$systemPackageContent->data->rows->$tableName as $row) {
+                $row = self::prepareSystemPackageRow($row, $tablesFields);
                 $db->upsertQuery($tableName, ['id' => $row['id']] , $row);
             }
         }
+
+
+        self::writeSystemPackageFileHashToConfig();
+    }
+
+    /**
+     * generate system package hash
+     * @return false|string
+     */
+    private static function generateSystemPackageHash(): string
+    {
+        return md5_file(self::$systemPackageFilePath) ?: '';
     }
 
     /**
      * prepare system package row data and keep only the defined dictionary fields
      * @param object $row
      * @param array $tablesFields
-     * @param string $tableName
      * @return array
      */
-    private static function prepareSystemPackageRow(object $row, array $tablesFields, string $tableName): array
+    private static function prepareSystemPackageRow(object $row, array $tablesFields): array
     {
-        return array_filter((array) $row, function ($field) use ($tablesFields, $tableName) {
-            return $tablesFields[$tableName][$field];
-        }, ARRAY_FILTER_USE_KEY);
+        return array_filter((array) $row, fn ($field) => $tablesFields[$field], ARRAY_FILTER_USE_KEY);
     }
 }
 

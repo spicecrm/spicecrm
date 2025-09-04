@@ -5,7 +5,7 @@ namespace SpiceCRM\includes\SpiceDictionary;
 use Exception;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
-use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -13,26 +13,73 @@ use SpiceCRM\includes\utils\SpiceUtils;
 class SpiceDictionaryRelationships
 {
     /**
+     * the main table name
+     */
+    const table = 'sysdictionaryrelationships';
+
+    /**
+     * the custom table name
+     */
+    const customTable = 'syscustomdictionaryrelationships';
+
+    /**
      * the instance for the singelton
      *
-     * @var
+     * @var SpiceDictionaryRelationships|null
      */
-    private static $instance;
+    private static ?SpiceDictionaryRelationships $instance = null;
 
     /**
-     * @var the loaded relationships
+     * @var array loaded relationships with the id as the key
      */
-    public $relationships;
+    protected array $relationships = [];
 
     /**
-     * @var holds the relationshiptypes
+     * @var array loaded relationships with the name as the key
      */
-    public $relationshiptypes;
+    protected array $relationshipsByName = [];
+    /**
+     * @var array loaded relationships with the left dictionary id as the key
+     */
+    protected array $relationshipsByLeftId = [];
+    /**
+     * @var array loaded relationships with the right dictionary id as the key
+     */
+    protected array $relationshipsByRightId = [];
+    /**
+     * @var array loaded polymorph relationships with the left dictionary id as the key
+     */
+    protected array $polymorphRelationshipsByLeftId = [];
+    /**
+     * @var array loaded polymorph relationships with the id as the key
+     */
+    protected array $polymorphRelationships = [];
+    /**
+     * @var array loaded polymorph relationships with the relationship id as the key
+     */
+    protected array $polymorphRelationshipsByRelationId = [];
+    /**
+     * @var array loaded polymorph relationships with the relationship name as the key
+     */
+    protected array $polymorphRelationshipsByName = [];
+    /**
+     * @var array loaded relationship fields with the id as the key
+     */
+    protected array $relationshipFields = [];
+    /**
+     * @var array loaded relationship fields with the relationship id as the key
+     */
+    protected array $relationshipFieldsByRelationAndDefinitionId = [];
+
+    /**
+     * @var array loaded relationship types with the name as the key
+     */
+    protected array $relationshipTypes = [];
 
     /**
      * the cache object name
      */
-    const cachename = 'dictionaryrelationships';
+    const cacheName = 'dictionaryRelationships';
 
     private function __clone()
     {
@@ -56,17 +103,93 @@ class SpiceDictionaryRelationships
 
     public function __construct()
     {
-        $this->loadRelationshipTypes();
-        $this->loadRelationships();
+        # retrieve the relationship types
+        $cached = SpiceCache::get(self::cacheName);
+
+        if ($cached) {
+            $this->relationshipTypes = $cached['relationshipTypes'];
+            $this->relationships = $cached['relationships'];
+            $this->relationshipsByName = $cached['relationshipsByName'];
+            $this->relationshipsByLeftId = $cached['relationshipsByLeftId'];
+            $this->relationshipsByRightId = $cached['relationshipsByRightId'];
+            $this->polymorphRelationships = $cached['polymorphRelationships'];
+            $this->polymorphRelationshipsByLeftId = $cached['polymorphRelationshipsByLeftId'];
+            $this->polymorphRelationshipsByRelationId = $cached['polymorphRelationshipsByRelationId'];
+            $this->polymorphRelationshipsByName = $cached['polymorphRelationshipsByName'];
+            $this->relationshipFields = $cached['relationshipFields'];
+            $this->relationshipFieldsByRelationAndDefinitionId = $cached['relationshipFieldsByRelationAndDefinitionId'];
+
+        } else {
+            $this->reloadItems();
+        }
     }
 
-    private function loadRelationshipTypes(){
-        $this->relationshiptypes = [];
+    /**
+     * write cache
+     * @return void
+     */
+    private function writeCache(): void
+    {
+        SpiceCache::set(self::cacheName, [
+            'relationships' => $this->relationships,
+            'relationshipTypes' => $this->relationshipTypes,
+            'relationshipsByName' => $this->relationshipsByName,
+            'relationshipsByLeftId' => $this->relationshipsByLeftId,
+            'relationshipsByRightId' => $this->relationshipsByRightId,
+            'polymorphRelationships' => $this->polymorphRelationships,
+            'polymorphRelationshipsByLeftId' => $this->polymorphRelationshipsByLeftId,
+            'polymorphRelationshipsByRelationId' => $this->polymorphRelationshipsByRelationId,
+            'polymorphRelationshipsByName' => $this->polymorphRelationshipsByName,
+            'relationshipFields' => $this->relationshipFields,
+            'relationshipFieldsByRelationAndDefinitionId' => $this->relationshipFieldsByRelationAndDefinitionId,
+        ]);
+    }
+
+    /**
+     * get relationship by id
+     * @param string $id
+     * @return array|null
+     */
+    public function getRelationshipById(string $id): ?array
+    {
+        return $this->relationships[$id];
+    }
+
+    /**
+     * get relationship by id
+     * @param string $name
+     * @return array|null
+     */
+    public function getRelationshipByName(string $name): ?array
+    {
+        return $this->relationshipsByName[$name] ?? $this->polymorphRelationshipsByName[$name];
+    }
+
+    /**
+     * get relationship type definition by name
+     * @param string $name
+     * @return mixed
+     */
+    public function getRelationshipTypeDefinition(string $name)
+    {
+        return $this->relationshipTypes[$name];
+    }
+
+    /**
+     * retrieve relationship types
+     * @return array
+     * @throws DatabaseException
+     */
+    public function retrieveRelationshipTypes(): array
+    {
+        $this->relationshipTypes = [];
         $db = DBManagerFactory::getInstance();
         $types = $db->query("SELECT * FROM sysdictionaryrelationshiptypes");
         while($type = $db->fetchByAssoc($types)){
-            $this->relationshiptypes[] = $type;
+            $this->relationshipTypes[$type['name']] = $type;
         }
+
+        return $this->relationshipTypes;
     }
 
     /**
@@ -75,133 +198,183 @@ class SpiceDictionaryRelationships
      * @return void
      * @throws Exception
      */
-    public function reloadItems()
+    public function reloadItems(): void
     {
-        $this->relationships = $this->getRelationships();
-        SpiceCache::set(self::cachename, $this->relationships);
+        $this->retrieveRelationships();
+        $this->retrieveRelationshipTypes();
+        $this->retrievePolymorphRelationships();
+        $this->retrieveRelationshipFields();
+        $this->writeCache();
     }
 
     /**
-     * reset cache
+     * load relationships from cache or db and return array
+     * @return array
+     * @throws DatabaseException
+     * @throws Exception
      */
-    public function resetCache($rebuild = true){
-        SpiceCache::clear(self::cachename);
+    public function retrieveRelationships(): array
+    {
+        $this->relationships = [];
+        $this->relationshipsByName = [];
+        $this->relationshipsByLeftId = [];
+        $this->relationshipsByRightId = [];
 
-        if($rebuild) SpiceCache::set(self::cachename, $this->getRelationships());
-    }
+        $db = DBManagerFactory::getInstance();
 
-    private function loadRelationships(){
-        // check if we have a cached value
-        $cached = SpiceCache::get(self::cachename);
-        if($cached) {
-            $this->relationships = $cached;
-            return;
-        }
+        $scopeTables = ['g' => self::table, 'c' => self::customTable];
 
-        // read the items
-        $itemArray = $this->getRelationships();
-        SpiceCache::set(self::cachename, $itemArray);
+        foreach ($scopeTables as $scope => $table) {
 
-        $this->relationships = $itemArray;
-    }
+            $query = $db->query("SELECT *, '$scope' scope FROM $table");
 
-    /**
-     * repairs the relationships for the one definiton
-     *
-     * @param string $sysdictionaryDefinitonId
-     * @param string|null $package
-     * @return void
-     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
-     */
-    public function repairForDctionaryDefinition(string $sysdictionaryDefinitonId, ?string $package = null){
-
-        // get the relationships directly linked
-        $relationships = $this->getRelationships($sysdictionaryDefinitonId);
-        foreach ($relationships as $relationship){
-            if ($package && $relationship['package'] != $package) continue;
-            (new SpiceDictionaryRelationship($relationship['id']))->deactivate(false)->activate(false);
-        }
-
-        // get for all templates linked
-        $items  = SpiceDictionaryItems::getInstance()->getItems($sysdictionaryDefinitonId, ['a'], true);
-        foreach($items as $item){
-            $relationships = $this->getRelationships($item['sysdictionary_ref_id']);
-            foreach ($relationships as $relationship){
-                if ($package && $relationship['package'] != $package) continue;
-                // activate
-                (new SpiceDictionaryRelationship($relationship['id']))->deactivate(false, $item['sysdictionary_ref_id'], $sysdictionaryDefinitonId)->activate(false, $item['sysdictionary_ref_id'], $sysdictionaryDefinitonId);
+            while($relationship = $db->fetchByAssoc($query)){
+                $this->pushRelationshipInList($relationship);
             }
         }
+
+        return $this->relationships;
     }
 
     /**
-     * loads the relationships from the database
-     *
-     * @param string|null $sysdictionaryDefinitonId
-     * @param array $statusFilter
-     * @param $includeTemplates
-     * @param bool $includeParentPolymorph default is true, when disabled only child polymorph relationships will be retrieved
+     * push/update relationship in the list
+     * @param array $relationship
+     * @return void
+     */
+    private function pushRelationshipInList(array $relationship)
+    {
+        $this->relationships[$relationship['id']] = $relationship;
+        $this->relationshipsByName[$relationship['relationship_name']] = $relationship;
+
+        if (!empty($relationship['lhs_sysdictionarydefinition_id'])) {
+            if (!$this->relationshipsByLeftId[$relationship['lhs_sysdictionarydefinition_id']]) {
+                $this->relationshipsByLeftId[$relationship['lhs_sysdictionarydefinition_id']] = [];
+            }
+            $this->relationshipsByLeftId[$relationship['lhs_sysdictionarydefinition_id']][$relationship['id']] = $relationship;
+        }
+
+        if (!empty($relationship['rhs_sysdictionarydefinition_id'])) {
+            if (!$this->relationshipsByRightId[$relationship['rhs_sysdictionarydefinition_id']]) {
+                $this->relationshipsByRightId[$relationship['rhs_sysdictionarydefinition_id']] = [];
+            }
+            $this->relationshipsByRightId[$relationship['rhs_sysdictionarydefinition_id']][$relationship['id']] = $relationship;
+        }
+    }
+
+    /**
+     * retrieve the relationship fields from the database
+     * @return array
+     * @throws DatabaseException
+     */
+    public function retrieveRelationshipFields(): array
+    {
+        $this->relationshipFields = [];
+        $this->relationshipFieldsByRelationAndDefinitionId = [];
+
+        $db = DBManagerFactory::getInstance();
+
+        $fields = $db->query("SELECT *, 'g' scope FROM sysdictionaryrelationshipfields WHERE deleted = 0");
+
+        while($field = $db->fetchByAssoc($fields)){
+
+            $this->relationshipFields[$field['id']] = $field;
+
+            if (!$this->relationshipFieldsByRelationAndDefinitionId["{$field['sysdictionaryrelationship_id']}::{$field['sysdictionarydefinition_id']}"]) {
+                $this->relationshipFieldsByRelationAndDefinitionId["{$field['sysdictionaryrelationship_id']}::{$field['sysdictionarydefinition_id']}"] = [];
+            }
+
+            $this->relationshipFieldsByRelationAndDefinitionId["{$field['sysdictionaryrelationship_id']}::{$field['sysdictionarydefinition_id']}"][] = $field;
+        }
+
+        $fields = $db->query("SELECT *, 'c' scope FROM syscustomdictionaryrelationshipfields WHERE deleted = 0");
+
+        while($field = $db->fetchByAssoc($fields)){
+
+            $this->relationshipFields[$field['id']] = $field;
+
+            if (!$this->relationshipFieldsByRelationAndDefinitionId["{$field['sysdictionaryrelationship_id']}::{$field['sysdictionarydefinition_id']}"]) {
+                $this->relationshipFieldsByRelationAndDefinitionId["{$field['sysdictionaryrelationship_id']}::{$field['sysdictionarydefinition_id']}"] = [];
+            }
+
+            $this->relationshipFieldsByRelationAndDefinitionId["{$field['sysdictionaryrelationship_id']}::{$field['sysdictionarydefinition_id']}"][] = $field;
+        }
+
+        return $this->relationshipFields;
+    }
+
+    /**
+     * retrieve polymorph relationships
+     * @return array
+     * @throws DatabaseException
+     */
+    public function retrievePolymorphRelationships(): array
+    {
+        $this->polymorphRelationshipsByLeftId = [];
+        $this->polymorphRelationships = [];
+        $this->polymorphRelationshipsByName = [];
+        $this->polymorphRelationshipsByRelationId = [];
+
+        $db = DBManagerFactory::getInstance();
+        $tables = ['g' => 'sysdictionaryrelationshippolymorphs', 'c' => 'syscustomdictionaryrelationshippolymorphs'];
+
+        foreach ($tables as $scope => $table) {
+
+            $relationships = $db->query("SELECT *, '$scope' scope FROM $table");
+
+            while($polymorphRelationship = $db->fetchByAssoc($relationships)){
+
+                $this->pushPolymorphInList($polymorphRelationship['relationship_id'], $polymorphRelationship);
+            }
+        }
+
+        return $this->polymorphRelationships;
+    }
+
+    /**
+     * get dictionary relationships
+     * @param SpiceDictionaryDefinition $dictionaryDefinition
+     * @param bool $activeOnly
      * @return array
      * @throws \SpiceCRM\includes\ErrorHandlers\Exception
      */
-    public function getRelationships(string $sysdictionaryDefinitonId = null, array $statusFilter = ['a'], $includeTemplates = false, bool $includeParentPolymorph = true){
-        $db = DBManagerFactory::getInstance();
-
-        // build a where filter clause
-        $whereArray = [];
-        if($sysdictionaryDefinitonId){
-            $whereArray[] = "(lhs_sysdictionarydefinition_id='{$sysdictionaryDefinitonId}' OR rhs_sysdictionarydefinition_id='{$sysdictionaryDefinitonId}')";
-        }
-
-        if(is_array($statusFilter) && count($statusFilter) > 0){
-            $whereArray[] = "status IN ('".implode("','", $statusFilter)."')";
-        }
-        $whereClause = count($whereArray) > 0 ? " WHERE " . implode(" AND ", $whereArray) : '';
-
-        // build the items
+    public function getDictionaryRelationships(SpiceDictionaryDefinition $dictionaryDefinition, bool $activeOnly = true): array
+    {
         $relationshipsArray = [];
-        $dictionaryrelationships = $db->query("SELECT *, 'g' scope FROM sysdictionaryrelationships {$whereClause}");
-        while($dictionaryrelationship = $db->fetchByAssoc($dictionaryrelationships)){
-            $relationshipsArray[] = $dictionaryrelationship;
-        }
-        $dictionaryrelationships = $db->query("SELECT *, 'c' scope FROM syscustomdictionaryrelationships {$whereClause}");
-        while($dictionaryrelationship = $db->fetchByAssoc($dictionaryrelationships)){
-            $relationshipsArray[] = $dictionaryrelationship;
-        }
+        $combinedRelationships = [
+            $this->relationshipsByLeftId[$dictionaryDefinition->id] ?? [],
+            $this->relationshipsByRightId[$dictionaryDefinition->id] ?? [],
+            $this->getPolymorphRelationshipsForParentDictionary($dictionaryDefinition->id) ?? []
+        ];
 
-        # search for polymorph relationships for this dictionary as a parent
-        if ($sysdictionaryDefinitonId && $includeParentPolymorph) {
-            $polymorphRelationships = $this->getPolymorphRelationshipsForParentDictionary($sysdictionaryDefinitonId);
-            $relationshipsArray = array_merge($relationshipsArray, $polymorphRelationships);
+        foreach ($combinedRelationships as $relationships) {
+            foreach ($relationships as $relationship) {
+                if ($activeOnly && $relationship['status'] != 'a') continue;
+                $relationshipsArray[$relationship['id']] = $relationship;
+            }
         }
 
-        // if we have an ID and shoudl include templates retrieve them as well
-        if($sysdictionaryDefinitonId && $includeTemplates){
+        $items  = SpiceDictionaryItems::getInstance()->getItemsForTemplateDictionary($dictionaryDefinition->id);
 
-            $sysdictionaryDefiniton = new SpiceDictionaryDefinition($sysdictionaryDefinitonId);
-            // get for all templates linked
-            $items  = SpiceDictionaryItems::getInstance()->getItems($sysdictionaryDefinitonId, ['a'], true);
-            foreach($items as $item){
-                // make sure we have a refID
-                if(!$item['sysdictionary_ref_id']) continue;
+        foreach($items as $item){
 
-                // ret the ref relationships
-                $relationships = $this->getRelationships($item['sysdictionary_ref_id']);
-                foreach ($relationships as $relationship){
-                    // replace the name
-                    $relationship['name'] = str_replace('{tablename}', $sysdictionaryDefiniton->tablename, $relationship['name']);
-                    $relationship['relationship_name'] = str_replace('{tablename}', $sysdictionaryDefiniton->tablename, $relationship['relationship_name']);
-                    $relationship['lhs_linkname'] = str_replace('{tablename}', $sysdictionaryDefiniton->tablename, $relationship['lhs_linkname']);
-                    $relationship['rhs_linkname'] = str_replace('{tablename}', $sysdictionaryDefiniton->tablename, $relationship['rhs_linkname']);
+            $definition = new SpiceDictionaryDefinition($item['sysdictionary_ref_id']);
+            $relationships = $this->getDictionaryRelationships($definition);
 
-                    // build a new ID and keep the related ids
-                    $relationship['original_id'] = $relationship['id'];
-                    $relationship['template_sysdictionarydefinition_id'] = $item['sysdictionary_ref_id'];
-                    $relationship['referencing_sysdictionarydefinition_id'] = $sysdictionaryDefinitonId;
-                    $relationship['id'] = SpiceUtils::generateMD5GUID("{$item['id']}{$sysdictionaryDefinitonId}{$relationship['original_id']}");
+            foreach ($relationships as $relationship){
 
-                    $relationshipsArray[] = $relationship;
-                }
+                # replace the name
+                $relationship['name'] = str_replace('{tablename}', $dictionaryDefinition->tablename, $relationship['name']);
+                $relationship['relationship_name'] = str_replace('{tablename}', $dictionaryDefinition->tablename, $relationship['relationship_name']);
+                $relationship['lhs_linkname'] = str_replace('{tablename}', $dictionaryDefinition->tablename, $relationship['lhs_linkname']);
+                $relationship['rhs_linkname'] = str_replace('{tablename}', $dictionaryDefinition->tablename, $relationship['rhs_linkname']);
+
+                # build a new ID and keep the related ids
+                $relationship['original_id'] = $relationship['id'];
+                $relationship['template_sysdictionarydefinition_id'] = $item['sysdictionary_ref_id'];
+                $relationship['referencing_sysdictionarydefinition_id'] = $dictionaryDefinition->id;
+                $relationship['id'] = SpiceUtils::generateMD5GUID("{$item['id']}{$dictionaryDefinition->id}{$relationship['original_id']}");
+
+                $relationshipsArray[] = $relationship;
             }
         }
 
@@ -212,89 +385,216 @@ class SpiceDictionaryRelationships
      * get polymorph relationships for dictionary as a parent
      * @param string $definitionId
      * @return array
-     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
      */
     public function getPolymorphRelationshipsForParentDictionary(string $definitionId): array
     {
-        $db = DBManagerFactory::getInstance();
+        $polymorphs = $this->polymorphRelationshipsByLeftId[$definitionId];
+
+        if (!$polymorphs) return [];
+
         $relationships = [];
 
-        $query = $db->query("SELECT * FROM sysdictionaryrelationshippolymorphs WHERE lhs_sysdictionarydefinition_id = '$definitionId'");
-        while ($polymorph = $db->fetchByAssoc($query)){
-            try {
-                $relationship = new SpiceDictionaryRelationship($polymorph['relationship_id']);
-                $relationship->relationship->lhs_sysdictionarydefinition_id = $definitionId;
-                $relationship->relationship->lhs_sysdictionaryitem_id = $polymorph['lhs_sysdictionaryitem_id'];
-                $relationship->relationship->relationship_name = $polymorph['relationship_name'];
-                $relationships[] = json_decode(json_encode($relationship->relationship), true);
-            } catch (Exception $ignored) {
-                # do nothing if the relationship does not exist in the system.
-                # Reason is probably the package containing the relationship does not exist
-            }
+        foreach($polymorphs as $polymorph){
+            $relationships[] = $this->generatePolymorphDefinition($polymorph);
         }
 
         return $relationships;
     }
 
     /**
-     * gets the polymorph fields
-     *
-     * @return void
+     * get polymorph parent module list for relationship
+     * @param string $relationshipId
+     * @return array
      */
-    public function getPolymorphs($relationship_id = null){
-        $db = DBManagerFactory::getInstance();
+    public function getPolymorphParentModulesForRelationship(string $relationshipId): array
+    {
+        $relationships = $this->polymorphRelationshipsByRelationId[$relationshipId];
 
-        // build a where clause
-        $whereArray = [];
-        if($relationship_id){
-            $whereArray[] = "relationship_id='{$relationship_id}'";
+        $modules = [];
+        
+        foreach($relationships as $relationship){
+            $module = SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($relationship['lhs_sysdictionarydefinition_id']);
+            if (!$module) continue;
+            $modules[] = $module;
         }
-        $whereClause = count($whereArray) > 0 ? " WHERE " . implode(" AND ", $whereArray) : '';
-
-        // build the items
-        $relationshipPolymorphsArray = [];
-        $dictionaryrelationshippolymorphs = $db->query("SELECT *, 'g' scope FROM sysdictionaryrelationshippolymorphs {$whereClause}");
-        while($dictionaryrelationshippolymorph = $db->fetchByAssoc($dictionaryrelationshippolymorphs)){
-            $relationshipPolymorphsArray[] = $dictionaryrelationshippolymorph;
-        }
-        $dictionaryrelationshippolymorphs = $db->query("SELECT *, 'c' scope FROM syscustomdictionaryrelationshippolymorphs {$whereClause}");
-        while($dictionaryrelationshippolymorph = $db->fetchByAssoc($dictionaryrelationshippolymorphs)){
-            $relationshipPolymorphsArray[] = $dictionaryrelationshippolymorph;
-        }
-
-        return $relationshipPolymorphsArray;
+        
+        return $modules;
     }
 
     /**
-     * adds/saves a reoplationship
-     *
+     * generate polymorph definition with right and left side ids
+     * @param array $polymorph
+     * @return array
+     */
+    public function generatePolymorphDefinition(array $polymorph): array
+    {
+        $mainRelationship = $this->relationships[$polymorph['relationship_id']];
+
+        if (!$mainRelationship) return [];
+
+        $relationship = $polymorph;
+        
+        $relationship['rhs_sysdictionarydefinition_id'] = $mainRelationship['rhs_sysdictionarydefinition_id'];
+        $relationship['rhs_sysdictionaryitem_id'] = $mainRelationship['rhs_sysdictionaryitem_id'];
+
+        return $relationship;
+    }
+
+    /**
+     * get polymorph relationships for the given relationship id
+     * @param string $relationshipId
+     * @return array
+     */
+    public function getPolymorphListForRelationship(string $relationshipId): array
+    {
+        return $this->polymorphRelationshipsByRelationId[$relationshipId] ?? [];
+    }
+
+    /**
+     * adds/saves a relationship
      * @param array $relationship
-     * @param $relationshipPolymorphs
+     * @param array $relationshipPolymorphs
+     * @param array $fields
      * @return void
      * @throws Exception
      */
-    public function add(array $relationship, $relationshipPolymorphs = [])
+    public function add(array $relationship, array $relationshipPolymorphs = [], array $fields = []): void
     {
         //get the table and do an upsert
         $table = $relationship['scope'] == 'c' ? 'syscustomdictionaryrelationships' : 'sysdictionaryrelationships';
 
         $isNew = !DBManagerFactory::getInstance()->getOne("SELECT id FROM $table WHERE id='{$relationship['id']}'");
 
-        if ($isNew) {
-            $this->relationships[] = $relationship;
-        }
-
-        $this->resetCache();
+        $this->updateRelationshipInList($relationship);
 
         unset($relationship['scope']);
 
         SystemDeploymentCR::writeDBEntry($table, $relationship['id'], $relationship, $relationship['name']);
 
         $this->handlePolymorphAdd($relationship, $relationshipPolymorphs ?? [], $isNew);
+        $this->setDictionaryRelationshipFields($fields);
+
+        $this->writeCache();
     }
 
     /**
-     * handle updating related polymorph list
+     * writes the relationship changes to the database
+     * @param $fields
+     * @throws Exception
+     */
+    public function setDictionaryRelationshipFields($fields){
+
+        if (empty($fields)) return;
+
+        foreach($fields as $field){
+
+            $this->relationshipFields[$field['id']] = $field;
+            $this->relationshipFieldsByRelationAndDefinitionId["{$field['sysdictionaryrelationship_id']}::{$field['sysdictionarydefinition_id']}"] = $field;
+
+            switch($field['scope']){
+                case 'c':
+                    unset($field['scope']);
+                    SystemDeploymentCR::writeDBEntry("syscustomdictionaryrelationshipfields", $field['id'], $field, $field['sysdictionaryitem_id']);
+                    break;
+                default:
+                    unset($field['scope']);
+                    SystemDeploymentCR::writeDBEntry("sysdictionaryrelationshipfields", $field['id'], $field, $field['sysdictionaryitem_id']);
+                    break;
+            }
+        }
+    }
+
+    /**
+     * update relationship
+     * @param array $relationship
+     * @return void
+     */
+    private function updateRelationshipInList(array $relationship): void
+    {
+        $this->relationships[$relationship['id']] = $relationship;
+        $this->relationshipsByName[$relationship['relationship_name']] = $relationship;
+
+        if (!empty($relationship['lhs_sysdictionarydefinition_id'])) {
+            $this->relationshipsByLeftId[$relationship['lhs_sysdictionarydefinition_id']][$relationship['id']] = $relationship;
+        }
+
+        if (!empty($relationship['rhs_sysdictionarydefinition_id'])) {
+            $this->relationshipsByRightId[$relationship['rhs_sysdictionarydefinition_id']][$relationship['id']] = $relationship;
+        }
+    }
+
+    /**
+     * set the status of the relationship
+     * @param string $id
+     * @param string $status
+     * @return void
+     * @throws Exception
+     */
+    public function setStatus(string $id, string $status)
+    {
+        $relationship = $this->relationships[$id];
+
+        $table = $relationship['scope'] == 'c' ? 'syscustomdictionaryrelationships' : 'sysdictionaryrelationships';
+
+        SystemDeploymentCR::writeDBEntry($table, $id, ['status' => $status], $relationship['name']);
+
+        $this->updateRelationshipInList($relationship);
+    }
+
+    /**
+     * delete relationship
+     * @param string $relationshipId
+     * @return void
+     * @throws Exception
+     */
+    public function deleteRelationship(string $relationshipId): void
+    {
+        $relationship = $this->relationships[$relationshipId];
+
+        $table = $relationship['scope'] == 'c' ? 'syscustomdictionaryrelationships' : 'sysdictionaryrelationships';
+
+        SystemDeploymentCR::deleteDBEntry($table, $relationship['id'], $relationship['name']);
+
+        unset($this->relationships[$relationship['id']]);
+        unset($this->relationshipsByName[$relationship['relationship_name']]);
+
+        if (!empty($relationship['lhs_sysdictionarydefinition_id'])) {
+            unset($this->relationshipsByLeftId[$relationship['lhs_sysdictionarydefinition_id']][$relationship['id']]);;
+        }
+
+        if (!empty($relationship['rhs_sysdictionarydefinition_id'])) {
+            unset($this->relationshipsByRightId[$relationship['rhs_sysdictionarydefinition_id']][$relationship['id']]);
+        }
+
+        $this->deleteRelationshipFields($relationshipId);
+
+        $this->writeCache();
+    }
+
+    /**
+     * delete the relationship field from the list
+     * @param string $relationshipId
+     * @return void
+     * @throws Exception
+     */
+    public function deleteRelationshipFields(string $relationshipId): void
+    {
+        $relationship = $this->relationships[$relationshipId];
+        $table = $relationship['scope'] == 'c' ? 'syscustomdictionaryrelationshipfields' : 'sysdictionaryrelationshipfields';
+
+        foreach ($this->relationshipFields as $fieldId => $field) {
+
+            if ($field['sysdictionaryrelationship_id'] !== $relationshipId) continue;
+
+            SystemDeploymentCR::deleteDBEntry($table, $fieldId, $relationship['name'] . "/{$field['map_to_fieldname']}");
+
+            unset($this->relationshipFields[$fieldId]);
+            unset($this->relationshipFieldsByRelationAndDefinitionId["{$field['sysdictionaryrelationship_id']}::{$field['sysdictionarydefinition_id']}"]);
+        }
+    }
+
+    /**
+     * handle updating a related polymorph list
      * @param array $relationship
      * @param array $relationshipPolymorphList
      * @param bool $isNew
@@ -303,16 +603,21 @@ class SpiceDictionaryRelationships
      */
     private function handlePolymorphAdd(array $relationship, array $relationshipPolymorphList, bool $isNew): void
     {
-        if ($relationship['relationship_type'] !== 'one-to-many-polymorph') return;
+        if ($relationship['relationship_type'] !== 'one-to-many-polymorph' || empty($relationshipPolymorphList)) return;
 
-        $existingRelatedPolymorph = $isNew ? [] : $this->getPolymorphs($relationship['id']);
+        $existingRelatedPolymorph = $isNew ? [] : $this->getPolymorphListForRelationship($relationship['id']);
         $newPolymorphList = [];
 
         // handle the polymorph entries
         foreach($relationshipPolymorphList as $relationshipPolymorph){
             $table = $relationshipPolymorph['scope'] == 'c' ? 'syscustomdictionaryrelationshippolymorphs' : 'sysdictionaryrelationshippolymorphs';
+
+            $this->pushPolymorphInList($relationship['id'], $relationshipPolymorph);
+
             unset($relationshipPolymorph['scope']);
+
             SystemDeploymentCR::writeDBEntry($table, $relationshipPolymorph['id'], $relationshipPolymorph, $relationshipPolymorph['relationship_name']);
+
             $newPolymorphList[$relationshipPolymorph['id']] = true;
         }
 
@@ -320,95 +625,47 @@ class SpiceDictionaryRelationships
             if ($newPolymorphList[$existing['id']]) continue;
             $table = $existing['scope'] == 'c' ? 'syscustomdictionaryrelationshippolymorphs' : 'sysdictionaryrelationshippolymorphs';
             SystemDeploymentCR::deleteDBEntry($table, $existing['id'], "polymorph::{$existing['id']}");
+
+            unset($this->polymorphRelationships[$existing['id']]);
+            unset($this->polymorphRelationshipsByLeftId[$existing['lhs_sysdictionarydefinition_id']]);
+            unset($this->polymorphRelationshipsByRelationId[$relationship['id']]);
+            unset($this->polymorphRelationshipsByName[$relationship['relationship_name']]);
         }
     }
 
     /**
-     * repair dictionary vardef relationships
+     * push/update a polymorph relationship
+     * @param string $relationshipId
+     * @param array $polymorphRelationship
+     * @return void
+     */
+    private function pushPolymorphInList(string $relationshipId, array $polymorphRelationship)
+    {
+        $this->polymorphRelationships[$polymorphRelationship['id']] = $polymorphRelationship;
+
+        if (!$this->polymorphRelationshipsByLeftId[$polymorphRelationship['lhs_sysdictionarydefinition_id']]) {
+            $this->polymorphRelationshipsByLeftId[$polymorphRelationship['lhs_sysdictionarydefinition_id']] = [];
+        }
+
+        $this->polymorphRelationshipsByLeftId[$polymorphRelationship['lhs_sysdictionarydefinition_id']][$polymorphRelationship['id']] = $polymorphRelationship;
+
+        if (!$this->polymorphRelationshipsByRelationId[$relationshipId]) {
+            $this->polymorphRelationshipsByRelationId[$relationshipId] = [];
+        }
+
+        $this->polymorphRelationshipsByRelationId[$relationshipId][$polymorphRelationship['id']] = $polymorphRelationship;
+
+        $this->polymorphRelationshipsByName[$polymorphRelationship['relationship_name']] = $polymorphRelationship;
+    }
+
+    /**
+     * get the join table fields
      * @param string $dictionaryId
-     * @return void
-     * @throws DatabaseException
-     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     * @param string $relationshipId
+     * @return array
      */
-    public static function repairDictionaryVardefRelationships(string $dictionaryId): void
+    public function getJoinTableFields(string $dictionaryId, string $relationshipId): array
     {
-        $dic = (new SpiceDictionaryDefinition($dictionaryId));
-        self::repairVardefRelationshipsFromFields($dic->name, $dic->loadVardefs());
-    }
-
-    /**
-     * repair vardef relationships and related join tables
-     * @param string $dictionaryName
-     * @param $vardefDetails
-     * @return void
-     * @throws DatabaseException
-     * @throws Exception
-     */
-    public static function repairVardefRelationshipsFromFields(string $dictionaryName, $vardefDetails): void
-    {
-        SpiceDictionaryVardefs::loadLegacyFiles();
-
-        foreach ($vardefDetails['fields'] as $field) {
-
-            if ($field['type'] != 'link') continue;
-
-            try {
-                # try to locate the relationship on this dictionary vardef
-                SpiceDictionaryRelationships::getInstance()->repairVardefRelationship($dictionaryName, $field['relationship'], true, false);
-            } catch (NotFoundException $e) {
-                # on failure try to locate the relationship vardef
-                foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dicName => $dic) {
-                    if (!$dic['relationships'] || !$dic['relationships'][$field['relationship']]) continue;
-                    SpiceDictionaryRelationships::getInstance()->repairVardefRelationship($dicName, $field['relationship'], true, false);
-                    break;
-                }
-            }
-        }
-    }
-
-
-    /**
-     * legacy support to repair a vardef relationship
-     *
-     * @return true
-     * @throws DatabaseException
-     * @throws Exception
-     */
-    public function repairVardefRelationship($dictionaryName, $relationshipName, bool $repairJoinTable = false, bool $loadLegacyFiles = true): bool
-    {
-        $db = DBManagerFactory::getInstance();
-
-        // get the relationship data
-        if ($loadLegacyFiles) SpiceDictionaryVardefs::loadLegacyFiles();
-
-        // $relationshipDefinition = SpiceDictionary::getInstance()->getDefs($dictionaryName)['relationships'][$relationshipName];
-        $relationshipDefinition = SpiceDictionaryHandler::getInstance()->dictionary[$dictionaryName]['relationships'][$relationshipName];
-
-        if(!$relationshipDefinition){
-            throw new NotFoundException("Relationshipdefinition for {$relationshipName} not found");
-        }
-
-        // delete the rel from teh rel ta
-        $db->query("DELETE FROM relationships WHERE relationship_name='{$relationshipName}'");
-        $relationshipDefinition['relationship_name'] = $relationshipName;
-        $relationshipDefinition['id'] = SpiceUtils::generateMD5GUID($relationshipName);
-        $db->insertQuery('relationships', $relationshipDefinition);
-
-        #repair the join table for m2m relationship
-        if ($repairJoinTable && !empty($relationshipDefinition['join_table'])) {
-
-            $dictionaryId = SpiceDictionaryDefinitions::getInstance()->getIdByName($relationshipDefinition['join_table']);
-
-            if (!$dictionaryId) {
-                $sql = SpiceDictionaryDefinitions::getInstance()->repairVardefDefinition($relationshipDefinition['join_table'], false, false);
-                # execute the query
-                if (!empty($sql)) DBManagerFactory::getInstance()->query($sql, true);
-            } else {
-                $dictionary = new SpiceDictionaryDefinition($dictionaryId);
-                $dictionary->repair(false);
-            }
-        }
-
-        return true;
+        return $this->relationshipFieldsByRelationAndDefinitionId["$relationshipId::$dictionaryId"] ?? [];
     }
 }

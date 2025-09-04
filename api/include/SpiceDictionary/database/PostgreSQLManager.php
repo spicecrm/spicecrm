@@ -255,10 +255,6 @@ class PostgreSQLManager extends DBManager
         $sql = "$sql LIMIT $count OFFSET $start";
         $this->lastsql = $sql;
 
-        if(!empty(SpiceConfig::getInstance()->config['check_query'])){
-            $this->checkQuery($sql);
-        }
-
         if(!$execute) {
             return $sql;
         }

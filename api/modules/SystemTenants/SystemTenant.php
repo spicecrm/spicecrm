@@ -141,7 +141,6 @@ class SystemTenant extends SpiceBean
         self::$currentTenantID = null;
         $masterDBName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
         self::switchDB($masterDBName);
-        SpiceDictionary::getInstance()->loadDictionary();
     }
 
     /**
