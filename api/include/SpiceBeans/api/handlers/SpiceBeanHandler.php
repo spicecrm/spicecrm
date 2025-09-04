@@ -677,7 +677,7 @@ class SpiceBeanHandler
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
             throw (new ForbiddenException("Forbidden to view in module $beanModule."))->setErrorCode('noModuleView');
 
-        $thisBean = BeanFactory::getBean($beanModule, $beanId, ['encode' => false]); //set encode to false to avoid things like ' being translated to &#039;
+        $thisBean = BeanFactory::getBean($beanModule, $beanId, ['encode' => false, 'forceRetrieve' => true]); //set encode to false to avoid things like ' being translated to &#039;
         if (!$thisBean) throw (new NotFoundException('Record not found.'))->setLookedFor(['id' => $beanId, 'module' => $beanModule]);
 
         if (!$thisBean->ACLAccess('view')) {
@@ -2161,8 +2161,10 @@ class SpiceBeanHandler
                 case 'link':
                     if (($resolvelinks && $fieldData['default'] === true && $fieldData['module']) || $fieldData['name'] == 'email_addresses') {
                         $beanDataArray[$fieldId]['beans'] = new stdClass();
-                        $thisBean->load_relationship($fieldId);
-                        if ($thisBean->{$fieldId}) {
+
+                        $loaded = $thisBean->load_relationship($fieldId);
+
+                        if ($loaded && $thisBean->{$fieldId}) {
                             $relModule = $thisBean->{$fieldId}->getRelatedModuleName();
                             $relatedBeans = $thisBean->get_linked_beans($fieldId, $relModule, false, true);
                             foreach ($relatedBeans as $relatedBean) {

@@ -68,58 +68,54 @@ export class DictionaryManagerFields implements OnInit, OnDestroy {
             if(domainField[0]?.dbtype == 'non-db') s.non_db = 1;
 
             s.defined = true;
-            s.cached = false;
             s.database = false;
 
 
             // get the additonbal domain fields
             s.addFields = this.getDomainFields(s.sysdomaindefinition_id, false).map(a => {
                 a.defined = true;
-                a.cached = false;
                 a.database = false;
                 return a;
             });
         });
 
-        // get the cached fields
-        let cachedDef = this.dictionarymanager.dictionaryfields.find(f => f.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition);
-        if(cachedDef?.fields) {
-            cachedDef.fields.forEach(f => {
-                let def = definitions.find(d => {
-                    if(d.name == f.fieldname) return true;
-                    return d.addFields && d.addFields.find(a => this.translateDomainField(a.name, d) == f.fieldname);
+        // push legacy vardef fields
+        const vardefDictionary = this.dictionarymanager.vardefFields[this.dictionarymanager.getCurrentDefinition().name];
+
+        if (vardefDictionary) {
+
+            Object.values(vardefDictionary.fields).forEach((f: any) => {
+
+                const def = definitions.find(d => {
+                    if (d.name == f.name) return true;
+                    return d.addFields && d.addFields.find(a => this.translateDomainField(a.name, d) == f.name);
                 });
-                if (!def) {
+
+                if (!def && !!f.name) {
                     definitions.push({
-                        id: f.id,
-                        name: f.fieldname,
+                        id: this.modelutilities.generateGuid(),
+                        name: f.name,
                         scope: 'g',
                         status: 'a',
-                        non_db: f.fielddefinition?.source == 'non-db' ? 1 : 0,
+                        non_db: f.source == 'non-db' ? 1 : 0,
                         sequence: definitions.length + 1,
                         sysdictionarydefinition_id: this.dictionarymanager.currentDictionaryDefinition,
-                        sysdictionaryrelationship_id: f.sysdictionaryrelationship_id,
-                        defined: !!f.sysdictionaryrelationship_id ? true : false,
-                        cached: true,
+                        sysdictionaryrelationship_id: null,
+                        defined: false,
+                        isVardef: true,
                         database: false,
                     })
-                } else {
-                    if(def.name == f.fieldname) {
-                        def.cached = true;
-                    } else {
-                        def.addFields.find(a => this.translateDomainField(a.name, def) == f.fieldname).cached = true
-                    }
                 }
-            })
+            });
         }
 
         // get the database fields
-        this.dictionarymanager.dictionarydatabasefields.forEach(f =>{
+        this.dictionarymanager.dictionarydatabasefields.forEach(f => {
             let def = definitions.find(d => {
-                if(d.name == f.name) return true;
+                if (d.name == f.name) return true;
                 return d.addFields && d.addFields.find(a => this.translateDomainField(a.name, d) == f.name);
             });
-            if(!def){
+            if (!def) {
                 definitions.push({
                     id: '',
                     name: f.name,
@@ -128,17 +124,16 @@ export class DictionaryManagerFields implements OnInit, OnDestroy {
                     sequence: definitions.length + 1,
                     sysdictionarydefinition_id: this.dictionarymanager.currentDictionaryDefinition,
                     defined: false,
-                    cached: false,
                     database: true
                 })
             } else {
-                if(def.name == f.name) {
+                if (def.name == f.name) {
                     def.database = true;
                 } else {
                     def.addFields.find(a => this.translateDomainField(a.name, def) == f.name).database = true
                 }
             }
-        })
+        });
 
         // filter and sort the result
         return definitions.filter(d => {
@@ -167,10 +162,10 @@ export class DictionaryManagerFields implements OnInit, OnDestroy {
 
     public getRowClass(item: DictionaryItem){
         // all OK
-        if(item.defined && item.cached && (item.non_db || item.database)) return 'slds-theme--success';
+        if(item.defined && (item.non_db || item.database)) return 'slds-theme--success';
 
         // db only
-        if(item.database && !item.defined && !item.cached) return 'slds-theme--error';
+        if(item.database && !item.defined && !item.isVardef) return 'slds-theme--error';
 
         return 'slds-theme--warning';
     }
@@ -204,7 +199,7 @@ export class DictionaryManagerFields implements OnInit, OnDestroy {
      * checks if we have any items to be repaired
      */
     get canRepair(){
-        return this.dictionaryitems.filter(d => (!d.non_db && ! d.database) || (d.defined && !d.cached)).length > 0
+        return this.dictionaryitems.filter(d => (!d.non_db && ! d.database) || (d.defined)).length > 0
     }
 
     /**
@@ -230,16 +225,13 @@ export class DictionaryManagerFields implements OnInit, OnDestroy {
     public reload(){
         // load the database field
         this.dictionarymanager.loadDatabaseFields(this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition).tablename);
-
-        // load the cached fields
-        this.dictionarymanager.loadDictionaryFields();
     }
 
     /**
      * checks if we have any items to be repaired
      */
     get canDelete(){
-        return this.dictionaryitems.filter(item => item.database && !item.defined && !item.cached).length > 0
+        return this.dictionaryitems.filter(item => item.database && !item.defined).length > 0
     }
 
     /**
@@ -249,7 +241,7 @@ export class DictionaryManagerFields implements OnInit, OnDestroy {
     public deleteDictionaryColumns() {
         this.modal.openModal('DictionaryManagerDeleteFieldsModal', true, this.injector).subscribe({
             next: (ref) => {
-                ref.instance.items = this.dictionaryitems.filter(item => item.database && !item.defined && !item.cached);
+                ref.instance.items = this.dictionaryitems.filter(item => item.database && !item.defined);
             }
         })
     }
@@ -293,11 +285,12 @@ export class DictionaryManagerFields implements OnInit, OnDestroy {
      * @param item
      */
     public openFieldDefinitionModal(item : DictionaryItem) {
-        const cachedDef = this.dictionarymanager.dictionaryfields.find(f => f.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition);
-        const fieldDef = cachedDef.fields.find(f => f.fieldname == item.name).fielddefinition;
 
-        this.modal.openStaticModal(DictionaryManagerFieldDefinitionModal, true).subscribe(modalRef => {
-            modalRef.instance.definition = fieldDef;
+        this.modal.openStaticModal(DictionaryManagerFieldDefinitionModal, true, this.injector).subscribe(modalRef => {
+            modalRef.instance.dictionaryItem = item;
+            if (item.isVardef) {
+                modalRef.instance.definition = this.dictionarymanager.vardefFields[this.dictionarymanager.getCurrentDefinition().name].fields[item.name];
+            }
         });
     }
 }

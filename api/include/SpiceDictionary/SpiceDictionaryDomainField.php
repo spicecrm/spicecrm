@@ -37,8 +37,7 @@ class SpiceDictionaryDomainField
     }
 
     /**
-     * returns the definition as it is stored then in the end if sysdictionaryfields for the cached json values
-     *
+     * returns the dictionary item definition
      * @param SpiceDictionaryItem|null $sysdictionaryItem
      * @return void
      */

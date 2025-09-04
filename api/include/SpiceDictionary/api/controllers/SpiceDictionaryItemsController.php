@@ -3,7 +3,6 @@
 namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -101,7 +100,6 @@ class SpiceDictionaryItemsController
     public function activateDictionaryItem(Request $req, Response $res, array $args): Response
     {
         $success = (new SpiceDictionaryItem($args['id']))->activate();
-        SpiceDictionary::getInstance()->loadDictionary();
 
         return $res->withJson(['success' => $success]);
     }
@@ -117,7 +115,6 @@ class SpiceDictionaryItemsController
     public function deactivateDictionaryItem(Request $req, Response $res, array $args): Response
     {
         $success = (new SpiceDictionaryItem($args['id']))->deactivate();
-        SpiceDictionary::getInstance()->loadDictionary();
 
         return $res->withJson(['success' => $success]);
     }
