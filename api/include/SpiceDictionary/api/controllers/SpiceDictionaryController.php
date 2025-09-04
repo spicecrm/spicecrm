@@ -43,9 +43,9 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainFields;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomains;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidations;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationships;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
@@ -72,12 +72,12 @@ class SpiceDictionaryController
      */
     public function getDomains(Request $req, Response $res, array $args): Response
     {
-        $handler = SpiceDictionaryHandler::getInstance();
+        [$validations, $validationValues] = SpiceDictionaryDomainValidations::getInstance()->retrieveValidationsAndValues();
         $results = [
-            'domaindefinitions' => SpiceDictionaryDomains::getInstance()->getDomains(),
-            'domainfields' => SpiceDictionaryDomainFields::getInstance()->getDomainFields(),
-            'domainfieldvalidations' => $handler->getDomainFieldValidations(false),
-            'domainfieldvalidationvalues' => $handler->getDomainFieldValidationValues(false)
+            'domaindefinitions' => array_values(SpiceDictionaryDomains::getInstance()->retrieveDomains()),
+            'domainfields' => array_values(SpiceDictionaryDomainFields::getInstance()->retrieveFields()),
+            'domainfieldvalidations' => array_values($validations),
+            'domainfieldvalidationvalues' => array_values($validationValues)
         ];
         return $res->withJson($results);
     }
@@ -99,7 +99,7 @@ class SpiceDictionaryController
                 'migration_enabled' => SpiceConfig::getInstance()->get('systemvardefs.migration_enabled') == 1,
                 'create_system_file_enabled' => SpiceConfig::getInstance()->get('systemvardefs.create_system_file_enabled') == 1,
                 ],
-            'vardefFields' => SpiceDictionaryVardefs::loadVardefs()
+            'vardefFields' => SpiceDictionaryHandler::getInstance()->dictionary,
         ];
         return $res->withJson($results);
     }
