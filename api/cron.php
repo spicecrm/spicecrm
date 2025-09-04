@@ -38,12 +38,9 @@ date_default_timezone_set('UTC');
  * ------- load initial classes -------
  */
 SpiceConfig::getInstance();
-SpiceDictionaryHandler::loadMetaDataFiles();
+SpiceDictionaryHandler::loadLegacyFiles();
 StreamFactory::initialize();
 SpiceModules::getInstance()->loadModules();
-//SpiceDictionaryHandler::loadMetaDataDefinitions();
-// SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
-//$system_config = (new Administration())->retrieveSettings();
 
 SpiceLanguageManager::setCurrentLanguage();
 /**

@@ -4,8 +4,7 @@ namespace SpiceCRM\includes\SpiceBeans;
 
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 
 /**
  * Class SpiceModules
@@ -30,6 +29,10 @@ class SpiceModules
      * @var
      */
     public $modules = [];
+    /**
+     * @var array modules by dictionary id
+     */
+    private array $modulesByDictionaryId = [];
 
     /**
      * an associative array mapping the module id to the module name
@@ -66,7 +69,9 @@ class SpiceModules
      * @throws \Exception
      */
     public function loadModules($forceReload = false): void {
+
         $cached = SpiceCache::get('spiceModules');
+
         if (!$cached || $forceReload) {
 
             # reset the modules session cache when reloading the modules from the database
@@ -84,18 +89,18 @@ class SpiceModules
                     $module['id'] = $this->modules[$module['module']]['id'];
                 }
 
+                // put to the map
+                $this->moduleMap[$module['id']] = $module['module'];
+
                 $module['audited'] = false;
 
                 if (!empty($module['sysdictionarydefinition_id'])) {
-                    try {
-                        $module['audited'] = (new SpiceDictionaryDefinition($module['sysdictionarydefinition_id']))->getDefinition()->audited == 1;
-                    } catch (\Throwable) {}
-                } else {
-                    $module['audited'] = (bool) SpiceDictionary::getInstance()->getDefs($module['bean'])['audited'];
-                }
 
-                // put to the map
-                $this->moduleMap[$module['id']] = $module['module'];
+                    $this->modulesByDictionaryId[$module['sysdictionarydefinition_id']] = $module;
+
+                    $definition = SpiceDictionaryDefinitions::getInstance()->getDefinitionById($module['sysdictionarydefinition_id']);
+                    $module['audited'] = $definition &&  $definition['audited'] == 1;
+                }
 
                 // put the array
                 $this->modules[$module['module']] = $module;
@@ -116,23 +121,25 @@ class SpiceModules
                     }
                 }
             }
+
             $cached = [
                 'moduleMap' => $this->moduleMap,
                 'moduleDetails' => $this->modules,
                 'moduleList'    => $this->moduleList,
                 'beanList'      => $this->beanList,
-                'beanFiles'     => $this->beanFiles,
-                'beanClasses'   => $this->beanClasses
+                'beanClasses'   => $this->beanClasses,
+                'modulesByDictionaryId' => $this->modulesByDictionaryId
             ];
+
             SpiceCache::set('spiceModules', $cached);
 
-        } elseif ($cached) {
+        } else {
             $this->moduleMap = $cached['moduleMap'];
             $this->modules     = $cached['moduleDetails'];
             $this->moduleList  = $cached['moduleList'];
             $this->beanList    = $cached['beanList'];
             $this->beanClasses = $cached['beanClasses'];
-            $this->beanFiles   = $cached['beanFiles'];
+            $this->modulesByDictionaryId = $cached['modulesByDictionaryId'];
         }
 
         $this->setGlobals($cached);
@@ -178,16 +185,22 @@ class SpiceModules
      * gets the module name by the definition id
      *
      * @param $definitionId
-     * @return false|int|string
+     * @return ?string
      */
-    public function getModuleByDictionaryDefinitionId($definitionId){
-        foreach ($this->modules as $moduleName => $moduleDetails) {
-            if($moduleDetails['sysdictionarydefinition_id'] == $definitionId){
-                return $moduleName;
-            }
-        }
+    public function getModuleByDictionaryDefinitionId($definitionId): ?string
+    {
+        return !$this->modulesByDictionaryId[$definitionId] ? null : $this->modulesByDictionaryId[$definitionId]['module'];
+    }
 
-        return false;
+    /**
+     * get module details by dictionary definition id
+     * @param string $definitionId
+     * @return array|null
+     */
+    public function getModuleDetailsByDictionaryDefinitionId(string $definitionId): ?array
+    {
+        return $this->modulesByDictionaryId[$definitionId];
+
     }
 
     /**
@@ -247,21 +260,6 @@ class SpiceModules
      */
     public function setBeanList(array $beanList): void {
         $this->beanList = $beanList;
-    }
-
-    /**
-     * A getter for the bean files.
-     *
-     * @return array
-     * @throws \Exception
-     * @deprecated should be completely removed later
-     */
-    public function getBeanFiles(): array {
-        if (empty($this->beanFiles)) {
-            $this->loadModules();
-        }
-
-        return $this->beanFiles;
     }
 
     /**
@@ -333,12 +331,11 @@ class SpiceModules
      * Left for backwards compatibility.
      */
     private function setGlobals($cached): void {
-        global $moduleList, $beanList, $beanClasses, $beanFiles;
+        global $moduleList, $beanList, $beanClasses;
 
         $moduleList  = $cached['moduleList'];
         $beanList    = $cached['beanList'];
         $beanClasses = $cached['beanClasses'];
-        $beanFiles   = $cached['beanFiles'];
     }
 
 }

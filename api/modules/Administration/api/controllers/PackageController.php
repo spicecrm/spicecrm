@@ -13,6 +13,7 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\SystemDeploymentPackages\SystemDeploymentPackageSource;
+use Throwable;
 
 class PackageController {
 
@@ -174,7 +175,7 @@ class PackageController {
      * @param Response $res
      * @param array $args
      * @return Response
-     * @throws \Exception
+     * @throws Throwable
      */
     public function reloadSystemPackage(Request $req, Response $res, array $args): Response
     {

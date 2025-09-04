@@ -19,23 +19,10 @@ $routes = [
         'route'       => '/admin/migrate/legacydoms',
         'class'       => MigrateController::class,
         'function'    => 'migrateIdFields',
-//        'function'    => 'migrateLegacyDomTranslations',
-//        'function'    => 'migrateLegacyDoms',
         'description' => 'write language app_list_strings to sysdomainfieldvalidations',
         'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => false],
         'parameters'  => [],
     ],
-//    [
-//        'method'      => 'post',
-//        'route'       => '/spicedictionary/repaircache',
-//        'class'       => MigrateController::class,
-//        'function'    => 'repairCache',
-//        'description' => 'write to sysdictionaryfields',
-//        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => false],
-//        'parameters'  => [
-//
-//        ],
-//    ],
     [
         'method'      => 'get',
         'route'       => '/spicedictionary/{module}',

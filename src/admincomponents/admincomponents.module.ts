@@ -52,9 +52,6 @@ import { AdministrationApiInspectorMethodTest } from "./components/administratio
 import { AdministrationSysTrashcanManager } from './components/administrationsystrashcanmanager';
 import { AdministrationSysTrashcanRecover } from './components/administrationsystrashcanrecover';
 
-import { AdministrationDictRepair } from './components/administrationdictrepair';
-import {AdministrationDictRepairItem} from "./components/administrationdictrepairitem";
-import {AdministrationDictRepairModal} from "./components/administrationdictrepairmodal";
 import {AdministrationDictRepairACLRoles} from "./components/administrationdictrepairaclroles";
 import {AdministrationDictRepairDbColumnsModal} from "./components/administrationdictrepairdbcolumnsmodal";
 import {AdministrationDictRepairConvertDBCharsetModal} from "./components/administrationdictrepairconvertdbcharsetmodal";
@@ -71,7 +68,6 @@ import { AdministrationJobRunningList } from './components/administrationjobrunn
 import { AdministrationJobFailedList } from './components/administrationjobfailedlist';
 import { AdministrationJobCockpit } from './components/administrationjobcockpit';
 
-import { AdministrationDictionaryManager, AdministrationDictionaryManagerItem, AdministrationDictionaryManagerItemField } from './components/administrationdictionarymanager';
 import {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
 import {AdministrationLanguages} from "./components/administrationlanguages";
 import {AdministrationDefaultPreferences} from './components/administrationdefaultpreferences';
@@ -131,14 +127,8 @@ import {AdministrationBackupManagerPreviewModal} from "./components/administrati
         AdministrationFTSManagerDetails,
         AdministrationFTSManagerFieldsAdd,
         AdministrationFTSStats,
-        AdministrationDictionaryManager,
-        AdministrationDictionaryManagerItem,
-        AdministrationDictionaryManagerItemField,
         AdministrationSysTrashcanManager,
         AdministrationSysTrashcanRecover,
-        AdministrationDictRepair,
-        AdministrationDictRepairItem,
-        AdministrationDictRepairModal,
         AdministrationDictRepairACLRoles,
         AdministrationDictRepairDbColumnsModal,
         AdministrationConfigEditor,
