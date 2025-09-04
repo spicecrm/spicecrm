@@ -93,6 +93,9 @@ class SpiceInstaller
         $configHash = (string) $db->getOne("SELECT value FROM config WHERE category = 'dictionary' AND name = 'system_dump_hash'");
 
         if ($configHash !== self::generateSystemPackageHash()) {
+            self::$systemPackageContent = self::getSystemPackageContent();
+            self::initializeDictionaryFromSystemPackage();
+            self::createSystemTables();
             self::reloadSystemPackage();
             throw new ServiceUnavailableException('New version detected. Admin user must reload the loaded packages.', 'systemVersionChange');
         }
@@ -551,7 +554,7 @@ class SpiceInstaller
      * @return void
      * @throws Exception|Throwable
      */
-    public function createSystemTables()
+    public static function createSystemTables()
     {
         foreach (SpiceDictionaryDefinitions::getInstance()->getDefinitions() as $definition) {
             SpiceDictionaryDefinitions::getInstance()->repair($definition['id']);
@@ -562,7 +565,7 @@ class SpiceInstaller
      * initialize the dictionary definitions by loading the system package into the cache files to prepare for create tables
      * @return void
      */
-    private function initializeDictionaryFromSystemPackage()
+    private static function initializeDictionaryFromSystemPackage()
     {
         SpiceDictionaryItems::initializeFromSystemPackage(
             self::$systemPackageContent->data->rows->{SpiceDictionaryItems::table}
