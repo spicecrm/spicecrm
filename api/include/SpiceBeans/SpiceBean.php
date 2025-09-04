@@ -2572,7 +2572,23 @@ class SpiceBean
 
         // overwrite fields
         foreach ($overwriteFieldsWithId as $fieldname => $beanId) {
-            $this->{$fieldname} = $tmpBeans[$beanId]->{$fieldname};
+            switch($this->field_defs[$fieldname]['type']) {
+                case 'relate':
+                    $this->{$fieldname} = $tmpBeans[$beanId]->{$fieldname};
+                    $this->{$this->field_defs[$fieldname]['id_name']} = $tmpBeans[$beanId]->{$this->field_defs[$fieldname]['id_name']};
+                    break;
+                default:
+                    $domainDefinitionId = $this->field_defs[$fieldname]['sysdomaindefinition_id'];
+                    if($domainDefinitionId) {
+                        foreach ($this->field_defs as $thisFieldName => $thisFieldData){
+                            if($thisFieldData['sysdomaindefinition_id'] == $domainDefinitionId) {
+                                $this->{$thisFieldName} = $tmpBeans[$beanId]->{$thisFieldName};
+                            }
+                        }
+                    } else {
+                        $this->{$fieldname} = $tmpBeans[$beanId]->{$fieldname};
+                    }
+            }
         }
         //save bean master
         $this->save();
