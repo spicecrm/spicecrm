@@ -1,6 +1,0 @@
-<span *ngIf="!editMode" class="slds-badge slds-badge_inverse" style="padding-top:0;padding-bottom:0;font-weight:normal;opacity:0.66" (click)="edit()">ID {{question.specific_id != '' ? question.specific_id:'??'}}</span>
-<form *ngIf="editMode" class="slds-grid slds-m-right--xx-small" (submit)="save()">
-    <input class="slds-input" type="text" [(ngModel)]="specificID" system-autofocus size="3" [system-trim-input] style="text-align:right;width:auto" [ngModelOptions]="{standalone:true}" [disabled]="isSaving">
-    <button class="slds-m-left--xx-small slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" (click)="save()" [disabled]="isSaving"><system-button-icon icon="save"></system-button-icon></button>
-    <button class="slds-m-left--x-small slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" (click)="cancel()" [disabled]="isSaving"><system-button-icon icon="close"></system-button-icon></button>
-</form>
