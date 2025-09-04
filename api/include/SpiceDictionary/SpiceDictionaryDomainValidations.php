@@ -2,6 +2,8 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
+use Exception;
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
@@ -9,13 +11,36 @@ use SpiceCRM\includes\SugarObjects\LanguageManager;
 class SpiceDictionaryDomainValidations
 {
     /**
-     * the instance for the singelton
-     *
-     * @var
+     * the main table name
      */
-    private static $instance;
+    const table = 'sysdomainfieldvalidations';
 
-    public $domainValidations;
+    /**
+     * the custom table name
+     */
+    const customTable = 'syscustomdomainfieldvalidations';
+    /**
+     * the main table name
+     */
+    const valuesTable = 'sysdomainfieldvalidationvalues';
+
+    /**
+     * the custom table name
+     */
+    const valuesCustomTable = 'syscustomdomainfieldvalidationvalues';
+
+    /**
+     * the instance for the singleton
+     *
+     * @var SpiceDictionaryDomainValidations|null
+     */
+    private static ?SpiceDictionaryDomainValidations $instance = null;
+
+    public array $domainValidationsWithValues = [];
+
+    public array $domainValidations = [];
+
+    const cacheName = 'domainValidations';
 
     private function __clone()
     {
@@ -37,82 +62,123 @@ class SpiceDictionaryDomainValidations
         return self::$instance;
     }
 
-    public function __construct()
+    private function __construct(bool $load = true)
     {
-        $cached = SpiceCache::get('domainvalidations');
+        if (!$load) return;
+
+        $cached = SpiceCache::get(self::cacheName);
+
         if($cached) {
-            $this->domainValidations = $cached;
-            return;
+            $this->domainValidations = $cached['domainValidations'];
+            $this->domainValidationsWithValues = $cached['domainValidationsWithValues'];
+        } else {
+            $this->reloadItems();
         }
 
-        $this->reloadItems();
+    }
+
+    /**
+     * retrieve domain validations from the database
+     * @return void
+     * @throws Exception
+     */
+    private function retrieveValidations()
+    {
+        $db = DBManagerFactory::getInstance();
+        $this->domainValidations = [];
+        $this->domainValidationsWithValues = [];
+
+        $scopeTables = [ 'g' => self::table, 'c' => self::customTable];
+
+        foreach($scopeTables as $scope => $table){
+
+            $query = $db->query("SELECT *, '$scope' as scope FROM $table");
+
+            while($validation = $db->fetchByAssoc($query)){
+                $this->pushValidationInList($validation);
+            }
+        }
+
+        $this->retrieveValidationValues();
+    }
+
+    /**
+     * retrieve validation values for the loaded validations from the database
+     * @return void
+     * @throws Exception
+     */
+    private function retrieveValidationValues()
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $scopeTables = [ 'g' => self::valuesTable, 'c' => self::valuesCustomTable];
+
+        foreach($scopeTables as $scope => $table){
+
+            foreach($this->domainValidationsWithValues as $name => $data){
+
+                $query = $db->query("SELECT *, '$scope' as scope FROM $table WHERE sysdomainfieldvalidation_id = '{$data['id']}'");
+
+                while($value = $db->fetchByAssoc($query)){
+                    $this->domainValidationsWithValues[$name]['validationvalues'][$value['enumvalue']] = [
+                        'enumvalue' => $value['enumvalue'],
+                        'label' => $value['label'],
+                        'sequence' => (int)$value['sequence'],
+                        'status' => $value['status'],
+                    ];
+                }
+            }
+        }
+    }
+
+    /**
+     * push/update a validation in the list
+     * @param array $validation
+     * @return void
+     */
+    private function pushValidationInList(array $validation)
+    {
+        $this->domainValidations[$validation['id']] = $validation;
+
+        $validation['validationvalues'] = [];
+
+        $this->domainValidationsWithValues[$validation['name']] = $validation;
+    }
+
+    /**
+     * push/update a validation value in the list
+     * @param string $validationId
+     * @param array $value
+     * @return void
+     */
+    private function pushValidationValueInList(string $validationId, array $value)
+    {
+        $validationName = $this->domainValidations[$validationId]['name'];
+
+        $this->domainValidationsWithValues[$validationName]['validationvalues'][$value['enumvalue']] = $value;
     }
 
     /**
      * reload the items from the database
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function reloadItems(): void
     {
-        $db = DBManagerFactory::getInstance();
-        $validationsArray = [];
-        $domainfields = $db->query("SELECT * FROM sysdomainfieldvalidations");
-        while($domainfield = $db->fetchByAssoc($domainfields)){
-            $validationsArray[$domainfield['name']] = [
-                'id' => $domainfield['id'],
-                'validation_type' => $domainfield['validation_type'],
-                'operator' => $domainfield['operator'],
-                'order_by' => $domainfield['order_by'],
-                'sort_flag' => $domainfield['sort_flag'],
-                'validationvalues' => [],
-            ];
-        }
-        $domainfields = $db->query("SELECT * FROM syscustomdomainfieldvalidations");
-        while($domainfield = $db->fetchByAssoc($domainfields)){
-            $validationsArray[$domainfield['name']] = [
-                'id' => $domainfield['id'],
-                'validation_type' => $domainfield['validation_type'],
-                'operator' => $domainfield['operator'],
-                'order_by' => $domainfield['order_by'],
-                'sort_flag' => $domainfield['sort_flag'],
-                'validationvalues' => []
-            ];
-        }
+        $this->retrieveValidations();
+        $this->writeCache();
+    }
 
-        // load the values
-        foreach($validationsArray as $valname => $valdata){
-
-            $domainvalues = $db->query("SELECT * FROM sysdomainfieldvalidationvalues WHERE sysdomainfieldvalidation_id = '{$valdata['id']}'");
-            while($domainvalue = $db->fetchByAssoc($domainvalues)){
-                $validationsArray[$valname]['validationvalues'][$domainvalue['enumvalue']] = [
-                    'enumvalue' => $domainvalue['enumvalue'],
-//                    'minvalue' => $domainvalue['minvalue'],
-//                    'maxval' => $domainvalue['maxval'],
-                    'label' => $domainvalue['label'],
-                    'sequence' => (int)$domainvalue['sequence'],
-                    'status' => $domainvalue['status'],
-                ];
-            }
-
-            $domainvalues = $db->query("SELECT * FROM syscustomdomainfieldvalidationvalues WHERE sysdomainfieldvalidation_id = '{$valdata['id']}'");
-            while($domainvalue = $db->fetchByAssoc($domainvalues)){
-
-                // fill the dom
-                $validationsArray[$valname]['validationvalues'][$domainvalue['enumvalue']] = [
-                    'enumvalue' => $domainvalue['enumvalue'],
-//                'minvalue' => $domainvalue['minvalue'],
-//                'maxvalue' => $domainvalue['maxvalue'],
-                    'label' => $domainvalue['label'],
-                    'sequence' => (int)$domainvalue['sequence'],
-                    'status' => $domainvalue['status'],
-                ];
-            }
-        }
-
-        SpiceCache::set('domainvalidations', $validationsArray);
-
-        $this->domainValidations = $validationsArray;
+    /**
+     * write cache
+     * @return void
+     */
+    private function writeCache(): void
+    {
+        SpiceCache::set(self::cacheName, [
+            'domainValidations' => $this->domainValidations,
+            'domainValidationsWithValues' => $this->domainValidationsWithValues,
+        ]);
     }
 
     public function createDictionaryValidationDoms($language){
@@ -124,7 +190,7 @@ class SpiceDictionaryDomainValidations
         // $validations = self::loadDictionaryValidations();
         $syslanguagelabels[$language] = LanguageManager::loadDatabaseLanguage($language);
 
-        foreach($this->domainValidations as $dom => $definition){
+        foreach($this->domainValidationsWithValues as $dom => $definition){
             // re-organize and add translation
             foreach($definition['validationvalues'] as $def){
                 if($def['status'] == 'a') {
@@ -147,22 +213,108 @@ class SpiceDictionaryDomainValidations
         return $sys_app_list_strings;
     }
 
-
     /**
      * adds a validation
      *
      * @param array $validation
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function addValidation(array $validation)
     {
         //get teh table
-        $table = $validation['scope'] == 'c' ? 'syscustomdomainfieldvalidations' : 'sysdomainfieldvalidations';
+        $table = $validation['scope'] == 'c' ? self::customTable : self::table;
+
+        $this->pushValidationInList($validation);
+
         unset($validation['scope']);
+
         DBManagerFactory::getInstance()->upsertQuery($table, ['id' => $validation['id']], $validation);
 
-        SpiceCache::clear('domainvalidations');
+        $this->writeCache();
     }
 
+    /**
+     * save the enum values for a validation
+     * @param string $validationId
+     * @param array $values
+     * @return void
+     * @throws Exception
+     */
+    public function setValues(string $validationId, array $values){
+
+        $db = DBManagerFactory::getInstance();
+        $validationName = $this->domainValidations[$validationId]['name'];
+        $this->domainValidationsWithValues[$validationName]['validationvalues'] = [];
+
+        $activeValues = [];
+
+        $tableScopes = ['g' => self::valuesTable, 'c' => self::valuesCustomTable];
+
+        foreach($tableScopes as $scope => $table){
+
+            $query = $db->query("SELECT id, enumvalue, $scope scope FROM $table WHERE sysdomainfieldvalidation_id='$validationId'");
+
+            while($option = $db->fetchByAssoc($query)){
+                $activeValues[$option['id']] = $option;
+            }
+        }
+
+        foreach ($values as $value){
+
+            $table = $value['scope'] == 'c' ? self::valuesCustomTable : self::valuesTable;
+
+            # if a global value is customized, keep the global value
+            if ($value['scope'] == 'c' && $global = array_filter($activeValues, fn($v) => $v['scope'] == 'g' && $v['enumvalue'] == $value['enumvalue'])) {
+                unset($activeValues[array_key_first($global)]);
+            }
+
+            unset($value['scope']);
+
+            SystemDeploymentCR::writeDBEntry($table, $value['id'], $value, $value['enumvalue'] ?? 'empty');
+
+            unset($activeValues[$value['id']]);
+
+            $this->pushValidationValueInList($validationId, $value);
+        }
+
+        $this->writeCache();
+
+        // delete the nonexistent
+        foreach ($activeValues as $activeValue){
+            $table = $activeValue['scope'] == 'c' ? self::valuesCustomTable : self::valuesTable;
+            SystemDeploymentCR::deleteDBEntry($table,$activeValue['id'], $activeValue['enumvalue'] ?? 'empty' );
+        }
+
+        foreach (LanguageManager::getLanguages()['available'] as $language){
+            SpiceCache::clear("app_list_strings.{$language['language_code']}");
+            SpiceCache::clear("cachedlanguage{$language['language_code']}");
+        }
+    }
+
+    /**
+     * initialize and set validations and values from the system package for installer
+     * @param array $validations
+     * @param array $values
+     * @return void
+     */
+    public static function initializeFromSystemPackage(array $validations, array $values)
+    {
+        self::$instance = new self(false);
+
+        self::$instance->domainValidations = [];
+        self::$instance->domainValidationsWithValues = [];
+
+        foreach ($validations as $validation) {
+            $validation->scope = 'g';
+            self::$instance->pushValidationInList((array) $validation);
+        }
+
+        foreach ($values as $value) {
+            $value->scope = 'g';
+            self::$instance->pushValidationValueInList($value->sysdomainfieldvalidation_id, (array) $value);
+        }
+
+        self::$instance->writeCache();
+    }
 }

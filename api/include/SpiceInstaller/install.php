@@ -12,6 +12,7 @@ require_once 'vendor/autoload.php';
 use Fig\Http\Message\StatusCodeInterface;
 use Slim\Factory\AppFactory;
 use DI\Container;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponseFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -32,6 +33,9 @@ header('Content-Type: application/json');
 $RESTManager = SpiceCRM\includes\RESTManager::getInstance();
 
 try {
+
+    SpiceDictionaryHandler::loadLegacyFiles();
+
     // make sure this only happens when we have no config
     if(SpiceConfig::getInstance()->configExists()){
         throw new \SpiceCRM\includes\ErrorHandlers\ForbiddenException('system is already installed');

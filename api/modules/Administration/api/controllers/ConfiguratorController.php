@@ -10,6 +10,7 @@ use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
@@ -113,7 +114,7 @@ class ConfiguratorController{
         $retArray = [];
 
         // check that we have a dictionary entry
-        if(!isset(SpiceDictionary::getInstance()->dictionary[$args['table']])){
+        if(!SpiceDictionaryDefinitions::getInstance()->getDefinitionByTable($args['table'])){
             throw new NotFoundException('not a known table');
         }
         $entries = $db->query("SELECT * FROM {$args['table']}");
@@ -236,7 +237,7 @@ class ConfiguratorController{
         if (!$current_user->is_admin) throw ( new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
         # header("Access-Control-Allow-Origin: *");
 
-        if(!isset(SpiceDictionary::getInstance()->dictionary[$args['table']])){
+        if(!SpiceDictionaryDefinitions::getInstance()->getDefinitionByTable($args['table'])){
             throw new NotFoundException('not a known table');
         }
 
@@ -293,14 +294,7 @@ class ConfiguratorController{
 
         if (!$current_user->is_admin) throw ( new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
 
-        $tableExists = false;
-
-        foreach (SpiceDictionary::getInstance()->dictionary as $item) {
-            if ($item['table'] == $args['table']) {
-                $tableExists = true;
-            }
-        }
-        if(!$tableExists){
+        if(!SpiceDictionaryDefinitions::getInstance()->getDefinitionByTable($args['table'])){
             throw new NotFoundException('not a known table');
         }
 
