@@ -148,11 +148,11 @@ abstract class TransportHandler
             $bodySource = str_replace('<head>', '<head>'.$style, $bodySource);
         }
 
-        if(strpos($email->body, '<body>') === false){
+        if(strpos($email->body, '<body') === false){
             $bodyParts[] = '<body>';
             $bodyParts[] = $header;
         } else{
-            $bodySource = str_replace('<body>', '<body>'.$header, $bodySource);
+            $bodySource = preg_replace('<body.*?>', '$0'.$header, $bodySource);
         }
 
         if(strpos($email->body, '</body>') === false){

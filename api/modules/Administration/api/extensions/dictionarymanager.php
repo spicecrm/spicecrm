@@ -11,23 +11,6 @@ use SpiceCRM\modules\Administration\api\controllers\DictionaryManagerController;
 $routes = [
     [
         'method' => 'get',
-        'route' => '/dictionary/list/{table}',
-        'class' => DictionaryManagerController::class,
-        'function' => 'getDictionaryFields',
-        'description' => 'get the columns name for the table from the database',
-        'options' => ['adminOnly' => false, 'validate' => true],
-        'parameters' => [
-            'table' => [
-                'in' => 'path',
-                'description' => 'the name of the table to retrieve fields from',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'example' => 'accounts',
-                'required' => true
-            ]
-        ]
-    ],
-    [
-        'method' => 'get',
         'route' => '/dictionary/browser/{module}/nodes',
         'class' => DictionaryController::class,
         'function' => 'getNodes',
@@ -112,46 +95,6 @@ $routes = [
         ]
     ],
     [
-        'method' => 'get',
-        'route' => '/admin/repair/sql',
-        'oldroute' => '/repair/sql',
-        'class' => AdminController::class,
-        'function' => 'buildSQLArray',
-        'description' => 'building the query for a relationship repair',
-        'options' => ['adminOnly' => true, 'validate' => true],
-        'parameters' => []
-    ],
-    [
-        'method' => 'post',
-        'route' => '/admin/repair/database',
-        'oldroute' => '/repair/database',
-        'class' => AdminController::class,
-        'function' => 'repairAndRebuild',
-        'description' => 'repairs and rebuilds the database',
-        'options' => ['adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
-        'parameters' => [
-            'selectedqueries' => [
-                'in' => 'body',
-                'description' => 'the selected queries to be executed',
-                'type' => ValidationMiddleware::TYPE_COMPLEX,
-                'example' => '[{"comment": "/* Table : accounts */",
-                                "statement": "ALTER TABLE accounts   add COLUMN ticker_symbol varchar(10)  NULL   COMMENT;",
-                                "md5": "e3b8c6e1834848a40867f9debbd794c4",
-                                "selected": true}]',
-            ]
-        ]
-    ],
-    [
-        'method' => 'get',
-        'route' => '/admin/repair/cache',
-        'oldroute' => '/repair/cache',
-        'class' => AdminController::class,
-        'function' => 'repairCache',
-        'description' => 'clears the vardef cache, executes rebuilding of vardefs extensions and',
-        'options' => ['adminOnly' => true, 'validate' => true],
-        'parameters' => []
-    ],
-    [
         'method' => 'post',
         'route' => '/admin/repair/dbcolumns',
         'oldroute' => '/repair/dbcolumns',
@@ -173,16 +116,6 @@ $routes = [
                 'example' => 'Accounts'
             ]
         ]
-    ],
-    [
-        'method' => 'get',
-        'route' => '/admin/repair/core',
-        'oldroute' => '',
-        'class' => AdminController::class,
-        'function' => 'repairAndReloadCore',
-        'description' => 'repairs the database and loads the core package',
-        'options' => ['adminOnly' => true, 'validate' => true],
-        'parameters' => []
     ],
     [
         'method'      => 'get',
@@ -246,4 +179,4 @@ $routes = [
 /**
  * get a Rest Manager Instance
  */
-$RESTManager = RESTManager::getInstance()->registerExtension('admindictionary', '2.0', [], $routes);
+RESTManager::getInstance()->registerExtension('admindictionary', '2.0', [], $routes);

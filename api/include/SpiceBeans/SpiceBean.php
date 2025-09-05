@@ -1275,99 +1275,6 @@ class SpiceBean
     }
 
     /**
-     * If auditing is enabled, create the audit table.
-     *
-     * Function is used by the install scripts and a repair utility in the admin panel.
-     *
-     * Internal function, do not override.
-     */
-    function create_audit_table()
-    {
-        $table_name = $this->get_audit_table_name();
-
-//        require('metadata/audit_templateMetaData.php');
-//
-//        // Bug: 52583 Need ability to customize template for audit tables
-//        $custom = 'custom/metadata/audit_templateMetaData_' . $this->getTableName() . '.php';
-//        if (file_exists($custom)) {
-//            require($custom);
-//        }
-
-        $fieldDefs = SpiceDictionary::getInstance()->dictionary['audit']['fields'];
-        $indices   = SpiceDictionary::getInstance()->dictionary['audit']['indices'];
-
-        // Renaming template indexes to fit the particular audit table (removed the brittle hard coding)
-        foreach ($indices as $nr => $properties) {
-            // BEGIN CR1000085 enable repair/rebuild for audit tables. Make index name unique within database
-            //$indices[$nr]['name'] = 'idx_' . strtolower($this->getTableName()) . '_' . $properties['name'];
-            $indices[$nr]['name'] = 'idx_' . strtolower($table_name) . '_' . $properties['name'];
-            // END
-        }
-
-        $engine = null;
-        if (isset(SpiceDictionary::getInstance()->dictionary['audit']['engine'])) {
-            $engine = SpiceDictionary::getInstance()->dictionary['audit']['engine'];
-        } else if (isset(SpiceDictionary::getInstance()->dictionary[$this->getObjectName()]['engine'])) {
-            $engine = SpiceDictionary::getInstance()->dictionary[$this->getObjectName()]['engine'];
-        }
-
-        $this->db->createTableParams($table_name, $fieldDefs, $indices, $engine);
-    }
-
-    /**
-     * If auditing is enabled, create the audit table.
-     * CR1000085 enable repair/rebuild for audit tables. Introduced in spicecrm 2018.11.001
-     * Function is used by the install scripts and a repair utility in the admin panel.
-     * Internal function, do not override.
-     */
-    function update_audit_table($execute = true)
-    {
-        $table_name = $this->get_audit_table_name();
-
-//        require('metadata/audit_templateMetaData.php');
-//
-//        // Bug: 52583 Need ability to customize template for audit tables
-//        $custom = 'custom/metadata/audit_templateMetaData_' . $this->getTableName() . '.php';
-//        if (file_exists($custom)) {
-//            require($custom);
-//        }
-
-        $fieldDefs = SpiceDictionary::getInstance()->dictionary['audit']['fields'];
-        $indices   = SpiceDictionary::getInstance()->dictionary['audit']['indices'];
-
-        // Renaming template indexes to fit the particular audit table (removed the brittle hard coding)
-        foreach ($indices as $nr => $properties) {
-            $indices[$nr]['name'] = 'idx_' . strtolower($this->getTableName()) . '_audit_' . $properties['name'];
-        }
-
-        return $this->db->repairAuditTable($table_name, $fieldDefs, $indices, $execute);
-    }
-
-    /**
-     * Delete the primary table for the module implementing the class.
-     * If custom fields were added to this table/module, the custom table will be removed too, along with the cache
-     * entries that define the custom fields.
-     *
-     */
-    function drop_tables()
-    {
-        $key = $this->getObjectName();
-        if (!array_key_exists($key, SpiceDictionary::getInstance()->dictionary)) {
-            LoggerManager::getLogger()->fatal('dictionary', "drop_tables: Metadata for table " . $this->_tablename . " does not exist");
-            echo "meta data absent for table " . $this->_tablename . "<br>\n";
-        } else {
-            if (empty($this->_tablename))
-                return;
-            if ($this->db->tableExists($this->_tablename))
-                $this->db->dropTableName($this->getTableName());
-
-            if ($this->db->tableExists($this->get_audit_table_name())) {
-                $this->db->dropTableName($this->get_audit_table_name());
-            }
-        }
-    }
-
-    /**
      * Implements a generic insert and update logic for any SpiceBean
      * This method only works for subclasses that implement the same variable names.
      * This method uses the presence of an id field that is not null to signify and update.
@@ -2665,7 +2572,23 @@ class SpiceBean
 
         // overwrite fields
         foreach ($overwriteFieldsWithId as $fieldname => $beanId) {
-            $this->{$fieldname} = $tmpBeans[$beanId]->{$fieldname};
+            switch($this->field_defs[$fieldname]['type']) {
+                case 'relate':
+                    $this->{$fieldname} = $tmpBeans[$beanId]->{$fieldname};
+                    $this->{$this->field_defs[$fieldname]['id_name']} = $tmpBeans[$beanId]->{$this->field_defs[$fieldname]['id_name']};
+                    break;
+                default:
+                    $domainDefinitionId = $this->field_defs[$fieldname]['sysdomaindefinition_id'];
+                    if($domainDefinitionId) {
+                        foreach ($this->field_defs as $thisFieldName => $thisFieldData){
+                            if($thisFieldData['sysdomaindefinition_id'] == $domainDefinitionId) {
+                                $this->{$thisFieldName} = $tmpBeans[$beanId]->{$thisFieldName};
+                            }
+                        }
+                    } else {
+                        $this->{$fieldname} = $tmpBeans[$beanId]->{$fieldname};
+                    }
+            }
         }
         //save bean master
         $this->save();

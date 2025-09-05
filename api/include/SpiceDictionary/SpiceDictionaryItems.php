@@ -4,12 +4,12 @@ namespace SpiceCRM\includes\SpiceDictionary;
 
 use Exception;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 class SpiceDictionaryItems
 {
-
     /**
      * the main table name
      */
@@ -18,28 +18,31 @@ class SpiceDictionaryItems
     /**
      * the custom table name
      */
-    const customtable = 'syscustomdictionaryitems';
+    const customTable = 'syscustomdictionaryitems';
 
     /**
      * the cache object name
      */
-    const cachename = 'dictionaryitems';
-
+    const cacheName = 'dictionaryitems';
 
     /**
      * the instance for the singelton
      *
-     * @var
+     * @var SpiceDictionaryItems|null
      */
-    private static $instance;
-
-    protected $dictionaryItems;
+    private static ?SpiceDictionaryItems $instance = null;
+    /**
+     * @var array loaded dictionary items with the id as the key
+     */
+    protected array $dictionaryItems = [];
+    /**
+     * @var array loaded dictionary items with the dictionary id as the key
+     */
+    protected array $dictionaryItemsByDicId = [];
 
     private function __clone()
     {
     }
-
-
 
     private function __wakeup()
     {
@@ -57,24 +60,25 @@ class SpiceDictionaryItems
         return self::$instance;
     }
 
-    public function __construct()
+    private function __construct(bool $load = true)
     {
+        if (!$load) return;
+
         // check if we have a cached value
-        $cached = SpiceCache::get(self::cachename);
+        $cached = SpiceCache::get(self::cacheName);
         if($cached) {
-            $this->dictionaryItems = $cached;
-            return;
+            $this->dictionaryItems = $cached['dictionaryItems'];
+            $this->dictionaryItemsByDicId = $cached['dictionaryItemsByDicId'];
+        } else {
+            $this->reloadItems();
         }
-
-        // read the items
-        $this->dictionaryItems = $this->getItems(null, []);
-
-        // write the cache
-        $this->writeCache();
     }
 
     private function writeCache(){
-        SpiceCache::set(self::cachename,  $this->dictionaryItems);
+        SpiceCache::set(self::cacheName,  [
+            'dictionaryItems' => $this->dictionaryItems,
+            'dictionaryItemsByDicId' => $this->dictionaryItemsByDicId,
+        ]);
     }
 
     /**
@@ -88,121 +92,86 @@ class SpiceDictionaryItems
     }
 
     /**
-     * loads the items fromt eh database
-     *
+     * retrieve the dictionary items from the database
      * @return array
-     * @throws Exception
+     * @throws DatabaseException
      */
-    public function getItems($sysdictionaryDefinitionId = null, $statusFilter = ['a'], $templatesOnly = false){
-        $db = DBManagerFactory::getInstance();
+    public function retrieveItems(): array
+    {
+        $this->dictionaryItems = [];
+        $this->dictionaryItemsByDicId = [];
 
-        # if the items already loaded get filtered items for dictionary definition
-        if ($sysdictionaryDefinitionId && $this->dictionaryItems) {
-            $retArray = [];
-            foreach ($this->dictionaryItems as $item) {
-                if($item['sysdictionarydefinition_id'] != $sysdictionaryDefinitionId) continue;
-                if($templatesOnly && empty($item['sysdictionary_ref_id'])) continue;
-                $retArray[$item['id']] = $item;
+
+        $retrieveItems = function($scope, $table) {
+
+            $db = DBManagerFactory::getInstance();
+
+            $queryItems = $db->query("SELECT *, '$scope' scope FROM $table");
+
+            while($item = $db->fetchByAssoc($queryItems)){
+                $this->pushItemInList($item);
             }
+        };
 
-            return $retArray;
-        }
+        $retrieveItems('g', self::table);
+        $retrieveItems('c', self::customTable);
 
-        // build a where filter clause
-        $whereArray = [];
-        // adda filter for the id
-        if($sysdictionaryDefinitionId){
-            $whereArray[] = "sysdictionarydefinition_id='{$sysdictionaryDefinitionId}'";
-        }
+        uasort($this->dictionaryItems, fn($a, $b) => $a['sequence'] > $b['sequence'] ? 1 : -1);
 
-        // add a filter for the status
-        if(is_array($statusFilter) && count($statusFilter) > 0){
-            $whereArray[] = "status IN ('".implode("','", $statusFilter)."')";
-        }
-
-        if($templatesOnly){
-            $whereArray[] = "sysdictionary_ref_id IS NOT NULL";
-            $whereArray[] = "sysdictionary_ref_id != ''";
-        }
-
-        $whereClause = count($whereArray) > 0 ? " WHERE " . implode(" AND ", $whereArray) : '';
-
-        // build the items
-        $itemArray = [];
-        $dictionaryitems = $db->query("SELECT *, 'g' scope FROM sysdictionaryitems {$whereClause}");
-        while($dictionaryitem = $db->fetchByAssoc($dictionaryitems)){
-            $itemArray[$dictionaryitem['id']] = $this->mapDatabaseToCachedItem($dictionaryitem);
-        }
-        $dictionaryitems = $db->query("SELECT *, 'c' scope FROM syscustomdictionaryitems {$whereClause}");
-        while($dictionaryitem = $db->fetchByAssoc($dictionaryitems)){
-            $itemArray[$dictionaryitem['id']] = $this->mapDatabaseToCachedItem($dictionaryitem);
-        }
-
-        // sort the items
-        usort($itemArray, function ($a, $b){
-            return $a['sequence'] > $b['sequence'] ? 1 : -1;
-        });
-
-        // remap the array
-        $retArray = [];
-        foreach($itemArray as $item){
-            $retArray[$item['id']] = $item;
-        }
-
-        return $retArray;
+        return $this->dictionaryItems;
     }
 
     /**
-     * so some minor and type mapping
-     *
-     * @param $dictionaryitem
-     * @return mixed
+     * get dictionary items
+     * @param string $dictionaryId
+     * @param array|null $statusFilter
+     * @return array
      */
-    private function mapDatabaseToCachedItem($dictionaryitem){
-        $dictionaryitem['sequence'] = intval($dictionaryitem['sequence']);
-        // $dictionaryitem['deleted'] = intval($dictionaryitem['deleted']);
-        $dictionaryitem['non_db'] = $dictionaryitem['non_db'] ? intval($dictionaryitem['non_db']) : 0;
-        $dictionaryitem['exclude_from_audited'] = $dictionaryitem['exclude_from_audited'] ? intval($dictionaryitem['exclude_from_audited']) : 0;
-        return $dictionaryitem;
+    public function getItemsForDictionary(string $dictionaryId, ?array $statusFilter = ['a']): array
+    {
+        $items = $this->dictionaryItemsByDicId[$dictionaryId] ?? [];
+        return !$statusFilter ? $items : array_filter($items, fn($item) => in_array($item['status'], $statusFilter));
     }
 
+    /**
+     * get dictionary items
+     * @param string $dictionaryId
+     * @param string[] $statusFilter
+     * @return array
+     */
+    public function getItemsForTemplateDictionary(string $dictionaryId, ?array $statusFilter = ['a']): array
+    {
+        $items = $this->dictionaryItemsByDicId[$dictionaryId] ?? [];
+        return array_filter($items, fn($item) => (!$statusFilter || in_array($item['status'], $statusFilter)) && !empty($item['sysdictionary_ref_id']));
+    }
 
     private function getItemTable($id){
         // get the def
         $def = $this->dictionaryItems[$id];
 
         // get the proper table name
-        return $def['scope'] == 'c' ? self::customtable : self::table;
+        return $def['scope'] == 'c' ? self::customTable : self::table;
     }
 
 
     /**
      * sets the status for a given ID
-     *
      * @param $id
      * @param $status
      * @return void
+     * @throws Exception
      */
     public function setStatus($id, $status){
-        // get the def
+
         $def = $this->dictionaryItems[$id];
 
-        // write the stazus update
+        $def['status'] = $status;
+
+        $this->pushItemInList($def);
+
         SystemDeploymentCR::writeDBEntry($this->getItemTable($id), $id, ['id' => $id, 'status' => $status], $def['name']);
 
-        // sets the status
-        $this->dictionaryItems[$id]['status'] = $status;
-
-        // caches the values
         $this->writeCache();
-    }
-
-    /**
-     * @return voidclears the cache
-     */
-    public function resetCache($rebuild = true){
-        SpiceCache::clear(self::cachename);
-        if($rebuild) SpiceCache::set(self::cachename, $this->getItems(null, []));
     }
 
     /**
@@ -211,54 +180,65 @@ class SpiceDictionaryItems
      * @return void
      * @throws Exception
      */
-    public function reloadItems()
+    public function reloadItems(): void
     {
-        $this->dictionaryItems = $this->getItems(null, []);
-        SpiceCache::set(self::cachename, $this->dictionaryItems);
+        $this->retrieveItems();
+        $this->writeCache();
     }
 
-    public function getDictionaryItems(){
-        return array_values($this->dictionaryItems);
-    }
+    /**
+     * push/update item in all list arrays
+     * @param array $item
+     * @return void
+     */
+    private function pushItemInList(array $item): void
+    {
+        $item['sequence'] = intval($item['sequence']);
+        $item['non_db'] = $item['non_db'] ? intval($item['non_db']) : 0;
+        $item['exclude_from_audited'] = $item['exclude_from_audited'] ? intval($item['exclude_from_audited']) : 0;
 
+        $this->dictionaryItems[$item['id']] = $item;
+
+        if (!$this->dictionaryItemsByDicId[$item['sysdictionarydefinition_id']]) {
+            $this->dictionaryItemsByDicId[$item['sysdictionarydefinition_id']] = [];
+        }
+
+        $this->dictionaryItemsByDicId[$item['sysdictionarydefinition_id']][] = $this->dictionaryItems[$item['id']];
+    }
 
     /**
      * adds an item
-     *
      * @param $item
      * @return void
      * @throws Exception
      */
     public function addItem($item){
-        $table = $item['scope'] == 'c' ? self::customtable : self::table;
-        $cacheItem = $item;
+        $table = $item['scope'] == 'c' ? self::customTable : self::table;
+
+        $this->pushItemInList($item);
+
         unset($item['scope']);
+
         SystemDeploymentCR::writeDBEntry($table, $item['id'], $item, $item['name'], SystemDeploymentCR::ACTION_INSERT);
 
-        // add the item
-        $this->dictionaryItems[$item['id']] = $cacheItem;
-
-        // write the cache
         $this->writeCache();
     }
 
-
     /**
-     * removes the definition
-     *
+     * removes an item definition
      * @param $id
      * @return void
      * @throws Exception
      */
     public function deleteItem($id)
     {
-        // get the def
         $def = $this->dictionaryItems[$id];
-        // write the record
+
         SystemDeploymentCR::deleteDBEntry($this->getItemTable($id), $id, $def['name']);
-        // remove the definition
+
         unset($this->dictionaryItems[$id]);
-        // write Cache
+        unset($this->dictionaryItemsByDicId[$def['sysdictionarydefinition_id']]);
+
         $this->writeCache();
 
     }
@@ -270,16 +250,36 @@ class SpiceDictionaryItems
      * @return void
      * @throws Exception
      */
-    public function setItem($item){
-        $table = $item['scope'] == 'c' ? self::customtable : self::table;
-        $cacheItem = $item;
+    public function setItem($item)
+    {
+        $table = $item['scope'] == 'c' ? self::customTable : self::table;
+
+        $this->pushItemInList($item);
+
         unset($item['scope']);
+
         SystemDeploymentCR::writeDBEntry($table, $item['id'], $item, $item['name'], SystemDeploymentCR::ACTION_UPDATE);
 
-        // add the item
-        $this->dictionaryItems[$item['id']] = $cacheItem;
-
-        // write the cache
         $this->writeCache();
+    }
+
+    /**
+     * initialize and set items from the system package for installer
+     * @param array $items
+     * @return void
+     */
+    public static function initializeFromSystemPackage(array $items)
+    {
+        self::$instance = new self(false);
+
+        self::$instance->dictionaryItems = [];
+        self::$instance->dictionaryItemsByDicId = [];
+
+        foreach ($items as $item) {
+            $item->scope = 'g';
+            self::$instance->pushItemInList((array) $item);
+        }
+
+        self::$instance->writeCache();
     }
 }

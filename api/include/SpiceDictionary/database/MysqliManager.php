@@ -604,7 +604,7 @@ class MysqliManager extends DBManager
                         $colType ="varchar(" . $fieldDef['len'] . ")";
                     }
                 } elseif($writeEnums && !empty($fieldDef['options'])){
-                    $validationId = SpiceDictionaryDomainValidations::getInstance()->domainValidations[$fieldDef['options']];
+                    $validationId = SpiceDictionaryDomainValidations::getInstance()->domainValidationsWithValues[$fieldDef['options']];
                     if($validationId){
                         $enumValues = (new SpiceDictionaryDomainValidation($validationId['id']))->getValidationOptions();
                     }
@@ -630,7 +630,7 @@ class MysqliManager extends DBManager
                         $colType ="varchar(" . $fieldDef['len'] . ")";
                     }
                 } elseif($writeEnums && !empty($fieldDef['options'])){
-                    $validationId = SpiceDictionaryDomainValidations::getInstance()->domainValidations[$fieldDef['options']];
+                    $validationId = SpiceDictionaryDomainValidations::getInstance()->domainValidationsWithValues[$fieldDef['options']];
                     if($validationId){
                         $enumValues = (new SpiceDictionaryDomainValidation($validationId))->getValidationOptions();
                     }
@@ -718,56 +718,11 @@ class MysqliManager extends DBManager
         $sql = "$sql LIMIT $start,$count";
         $this->lastsql = $sql;
 
-        if(!empty(SpiceConfig::getInstance()->config['check_query'])){
-            $this->checkQuery($sql);
-        }
         if(!$execute) {
             return $sql;
         }
 
         return $this->query($sql, $dieOnError, $msg);
-    }
-
-
-    /**
-     * @see DBManager::checkQuery()
-     */
-
-    protected function checkQuery($sql, $object_name = false)
-    {
-        $result   = $this->query('EXPLAIN ' . $sql);
-        $badQuery = [];
-        while ($row = $this->fetchByAssoc($result)) {
-            if (empty($row['table']))
-                continue;
-            $badQuery[$row['table']] = '';
-            if (strtoupper($row['type']) == 'ALL')
-                $badQuery[$row['table']]  .=  ' Full Table Scan;';
-            if (empty($row['key']))
-                $badQuery[$row['table']] .= ' No Index Key Used;';
-            if (!empty($row['Extra']) && substr_count($row['Extra'], 'Using filesort') > 0)
-                $badQuery[$row['table']] .= ' Using FileSort;';
-            if (!empty($row['Extra']) && substr_count($row['Extra'], 'Using temporary') > 0)
-                $badQuery[$row['table']] .= ' Using Temporary Table;';
-        }
-
-        if ( empty($badQuery) )
-            return true;
-
-        foreach($badQuery as $table=>$data ){
-            if(!empty($data)){
-                $warning = ' Table:' . $table . ' Data:' . $data;
-                if(!empty(SpiceConfig::getInstance()->config['check_query_log'])){
-                    LoggerManager::getLogger()->fatal($sql);
-                    LoggerManager::getLogger()->fatal('CHECK QUERY:' .$warning);
-                }
-                else{
-                    LoggerManager::getLogger()->warn('CHECK QUERY:' .$warning);
-                }
-            }
-        }
-
-        return false;
     }
 
     /*
@@ -1075,22 +1030,6 @@ class MysqliManager extends DBManager
                 return $tmp[1] ?? $tmp[0];
         }
         return $string;
-    }
-
-    /**
-     * Returns the name of the engine to use or null if we are to use the default
-     *
-     * @param  object $bean SpiceBean instance
-     * @return string
-     */
-
-    protected function getEngine($bean)
-    {
-        $engine = null;
-        if (isset(SpiceDictionary::getInstance()->dictionary[$bean->getObjectName()]['engine'])) {
-            $engine = SpiceDictionary::getInstance()->dictionary[$bean->getObjectName()]['engine'];
-        }
-        return $engine;
     }
 
     /**
