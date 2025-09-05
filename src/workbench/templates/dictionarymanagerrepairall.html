@@ -57,33 +57,13 @@
                 </tbody>
             </table>
         </div>
-        <div *ngIf="displayDetailSetting" class="slds-is-absolute slds-theme--shade slds-size--1-of-2 slds-box--border" style="bottom:5px; left: 5px;">
-            <div class="slds-m-around--small">
-                <div class="slds-m-vertical--x-small slds-text-heading--small"><system-label label="LBL_FILTER"/></div>
-                <div class="slds-grid">
-                    <div class="slds-size--1-of-2 slds-grid slds-grid_vertical">
-                        <system-checkbox [disabled]="actions.fullreset" [(ngModel)]="itemfilters.definitions"><system-label label="LBL_DICTIONARYDEFINITIONS"/></system-checkbox>
-                        <system-checkbox [disabled]="actions.fullreset" [(ngModel)]="itemfilters.relationships"><system-label label="LBL_DICTIONARYRELATIONSHIPS"/></system-checkbox>
-                    </div>
-                </div>
-                <div class="slds-m-vertical--x-small slds-text-heading--small"><system-label label="LBL_SETTINGS"/></div>
-                <div class="slds-grid">
-                    <div class="slds-size--1-of-2 slds-grid slds-grid_vertical">
-                        <system-checkbox [disabled]="!itemfilters.definitions || !itemfilters.relationships" [(ngModel)]="actions.fullreset"><system-label label="LBL_FULLRESET"/></system-checkbox>
-                    </div>
-                </div>
-            </div>
-        </div>
     </system-modal-content>
     <system-modal-footer>
         @if(!repairing) {
             <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread">
                 <div class="slds-size--1-of-3 slds-grid slds-grid_vertical-align-center">
-                    <button  [disabled]="filtereddefinitions.length == 0 || itemfilters.erroneousDefinitions || itemfilters.alteredDefinitions" class="slds-button slds-button--icon" (click)="start()" system-title="LBL_START">
+                    <button  [disabled]="filtereddefinitions.length == 0 || itemfilters.erroneousDefinitions || itemfilters.alteredDefinitions" class="slds-button slds-button--icon slds-m-right--medium" (click)="start()" system-title="LBL_START">
                         <system-button-icon icon="play"/>
-                    </button>
-                    <button class="slds-button slds-button--icon" (click)="displayDetailSetting = !displayDetailSetting" [ngClass]="{'slds-is-selected': displayDetailSetting}" system-title="LBL_DETAILS">
-                        <system-button-icon icon="settings"/>
                     </button>
                     <system-checkbox class="slds-p-around--xx-small" [(ngModel)]="executerSQLs">
                         <system-label label="LBL_EXECUTE_SQLS"/>

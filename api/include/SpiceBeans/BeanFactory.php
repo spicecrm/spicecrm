@@ -5,6 +5,7 @@ namespace SpiceCRM\includes\SpiceBeans;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 /**
@@ -53,7 +54,7 @@ class BeanFactory
         if (self::$systemModules['Users']['beanclass']) return;
 
         foreach (self::$systemModules as $moduleName => $beanInfo) {
-            if(!SpiceDictionary::getInstance()->getDefs($beanInfo['beanname'])){
+            if(!SpiceDictionaryDefinitions::getInstance()->getDefinitionByName($beanInfo['beanname'])){
                 unset(self::$systemModules[$moduleClass]);
                 continue;
             }

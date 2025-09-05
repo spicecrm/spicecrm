@@ -162,4 +162,10 @@ export class StoreService {
             transaction.objectStore(storeName).clear();
         })
     }
+
+    public clearAllDBs() {
+        Object.keys(this.databases).forEach(db => {
+            indexedDB.deleteDatabase(db);
+        });
+    }
 }

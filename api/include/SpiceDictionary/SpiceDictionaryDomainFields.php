@@ -2,13 +2,12 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
+use Exception;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 class SpiceDictionaryDomainFields
 {
-
-
     /**
      * the main table name
      */
@@ -17,26 +16,26 @@ class SpiceDictionaryDomainFields
     /**
      * the custom table name
      */
-    const customtable = 'syscustomdomainfields';
+    const customTable = 'syscustomdomainfields';
 
     /**
      * the cache object name
      */
-    const cachename = 'domainfields';
+    const cacheName = 'domainfields';
 
     /**
      * the instance for the singelton
      *
-     * @var
+     * @var SpiceDictionaryDomainFields|null
      */
-    private static $instance;
+    private static ?SpiceDictionaryDomainFields $instance = null;
 
     /**
      * the fields loaded
      *
      * @var array
      */
-    protected $domainfields;
+    protected array $domainFields = [];
 
     private function __clone()
     {
@@ -58,44 +57,66 @@ class SpiceDictionaryDomainFields
         return self::$instance;
     }
 
-    public function __construct()
+    private function __construct(bool $load = true)
     {
-        $cached = SpiceCache::get(self::cachename);
+        if (!$load) return;
+
+        $cached = SpiceCache::get(self::cacheName);
+
         if($cached) {
-            $this->domainfields = $cached;
+            $this->domainFields = $cached;
+        } else {
+            $this->reloadItems();
+        }
+    }
+
+    /**
+     * retrieve domain fields from the database
+     * @return array
+     * @throws Exception
+     */
+    public function retrieveFields(): array
+    {
+        $db = DBManagerFactory::getInstance();
+        $this->domainFields = [];
+
+        $scopeTables = ['g' => self::table, 'c' => self::customTable];
+
+        foreach ($scopeTables as $scope => $table) {
+
+            $query = $db->query("SELECT *, '$scope' as scope FROM $table");
+
+            while ($field = $db->fetchByAssoc($query)) {
+                $this->pushFieldInList($field);
+            }
         }
 
-        $this->reloadItems();
+        return $this->domainFields;
+    }
+
+    /**
+     * push/update a field in the list
+     * @param array $field
+     * @return void
+     */
+    private function pushFieldInList(array $field)
+    {
+        $this->domainFields[$field['id']] = $field;
     }
 
     /**
      * reload the items from the database
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function reloadItems(): void 
     {
-        $db = DBManagerFactory::getInstance();
-        $this->domainfields = [];
-
-        $domainfields = $db->query("SELECT * FROM " . self::table);
-        while($domainfield = $db->fetchByAssoc($domainfields)){
-            $domainfield['sequence'] = (int)$domainfield['sequence'];
-            $this->domainfields[$domainfield['id']] = array_merge($domainfield, ['scope' => 'g']);
-        }
-        $domainfields = $db->query("SELECT * FROM " . self::customtable);
-        while($domainfield = $db->fetchByAssoc($domainfields)){
-            $domainfield['sequence'] = (int)$domainfield['sequence'];
-            $this->domainfields[$domainfield['id']] = array_merge($domainfield, ['scope' => 'c']);;
-        }
-
-        // write Cache
+        $this->retrieveFields();
         $this->writeCache();
     }
 
-
     public function writeCache(){
-        SpiceCache::set(self::cachename, $this->domainfields);
+        SpiceCache::set(self::cacheName, $this->domainFields);
     }
 
     /**
@@ -105,33 +126,57 @@ class SpiceDictionaryDomainFields
      * @return mixed
      */
     public function getDomainField($id){
-        return $this->domainfields[$id];
+        return $this->domainFields[$id];
     }
 
     public function getDomainFields($domainId = null){
         if($domainId){
             $filtered = [];
-            foreach ($this->domainfields As $domainfield){
+            foreach ($this->domainFields As $domainfield){
                 if($domainfield['sysdomaindefinition_id'] == $domainId) $filtered[] = $domainfield;
             }
             return $filtered;
         }
 
-        return array_values($this->domainfields);
+        return array_values($this->domainFields);
     }
 
-
+    /**
+     * add a domain field to the database and update the list
+     * @param array $domainField
+     * @return void
+     * @throws Exception
+     */
     public function addField(array $domainField)
     {
         //get teh table
-        $table = $domainField['scope'] == 'c' ? self::customtable : self::table;
+        $table = $domainField['scope'] == 'c' ? self::customTable : self::table;
+
+        $this->pushFieldInList($domainField);
+
         unset($domainField['scope']);
+
         DBManagerFactory::getInstance()->upsertQuery($table, ['id' => $domainField['id']], $domainField);
 
-        // add to the cached records
-        $this->domainfields[$domainField['id']] = $domainField;
-
-        // write the cache
         $this->writeCache();
+    }
+
+    /**
+     * initialize and set domain fields from the system package for installer
+     * @param array $fields
+     * @return void
+     */
+    public static function initializeFromSystemPackage(array $fields)
+    {
+        self::$instance = new self(false);
+
+        self::$instance->domainFields = [];
+
+        foreach ($fields as $field) {
+            $field->scope = 'g';
+            self::$instance->pushFieldInList((array) $field);
+        }
+
+        self::$instance->writeCache();
     }
 }

@@ -62,9 +62,6 @@ export class DictionaryManagerRelationshipContainerParent implements OnInit {
     public ngOnInit() {
         // load the items
         this.loadItems();
-
-        // load the relationship relate fields
-        this.loadRelationshipFields();
     }
 
     /**
@@ -75,15 +72,6 @@ export class DictionaryManagerRelationshipContainerParent implements OnInit {
         // build the left hand and right hand items
         this.lhs_items = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.lhs_sysdictionarydefinition_id);
         this.rhs_items = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.rhs_sysdictionarydefinition_id);
-    }
-
-    /**
-     * loads the relationship fields
-     *
-     * @private
-     */
-    public loadRelationshipFields() {
-        this.relationshiprelatefields = this.dictionarymanager.dictionaryrelationshiprelatefields.filter(rf => rf.relationship_id == this.relationship.id);
     }
 
     /**
