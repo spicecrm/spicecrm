@@ -226,15 +226,27 @@ export class metadata {
      * import the component file and return the factory
      * @private
      * @param moduleMetadata
+     * @param inExtensions
      */
-    public async importModule(moduleMetadata: { name: string, path: string }): Promise<any> {
+    public async importModule(moduleMetadata: { name: string, path: string }, inExtensions?: boolean): Promise<any> {
 
-        return import(
+        const moduleInstance = await import(
             /*
                webpackInclude: /^\.(\\|\/)[^\\|\/]+(\\|\/)?(\\|\/)[^\\|\/]+?$|(\\|\/)(addcomponents|admincomponents|globalcomponents|objectcomponents|objectfields|portalcomponents|systemcomponents|workbench)(\\|\/)[^\\|\/]+?$|(\\|\/)(modules|include|custom)(\\|\/)[^\\|\/]+(\\|\/)?(\\|\/)[^\\|\/]+?$/
              */
             `src/${moduleMetadata.path}.ts`)
             .then(m => m[moduleMetadata.name]);
+
+        if (!moduleInstance && !inExtensions) {
+            const extensionModuleMetadata = {
+                name: moduleMetadata.name,
+                path: 'extensions/' + moduleMetadata.path
+            };
+
+            return this.importModule(extensionModuleMetadata, true);
+        }
+
+        return Promise.resolve(moduleInstance);
     }
 
     private renderMissingComponent(vcr: ViewContainerRef, ComponentName: string) {
