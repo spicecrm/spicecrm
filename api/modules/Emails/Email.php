@@ -404,7 +404,7 @@ class Email extends SpiceBean
 
             foreach ($data as $row) {
 
-                if ($name == 'email_addresses' && $row['address_type'] !== 'from') continue;
+                if ($name == 'email_addresses' && ($row['address_type'] == 'from' || $row['address_type'] == 'to')) continue;
 
                 $additionalValues = [];
 
@@ -1953,6 +1953,12 @@ class Email extends SpiceBean
                     $this->type = strtolower($recipient->getEmail()) == $beanEmailAddress ? self::TYPE_INBOUND : self::TYPE_OUTBOUND;
             }
         }
+
+        # add the recipient address
+        $this->recipient_addresses[] = [
+            'email_address' => $this->emailAddress->splitEmailAddress($message->getSender())['email'],
+            'address_type' => 'from',
+        ];
 
         // if not set inbound as default
         if(!$this->type) $this->type = self::TYPE_INBOUND;
