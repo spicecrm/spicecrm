@@ -771,7 +771,7 @@ class CampaignTask extends SpiceBean
                 $feedback->save();
 
                 $campaignLog = BeanFactory::getBean('CampaignLog', $queuedFeedback['id']);
-                $campaignLog->activity_type = $feedback->servicefeedback_status;
+                //$campaignLog->activity_type = $feedback->servicefeedback_status;
                 $campaignLog->related_id = $feedback->id;
                 $campaignLog->related_type = 'ServiceFeedbacks';
                 $campaignLog->save();
