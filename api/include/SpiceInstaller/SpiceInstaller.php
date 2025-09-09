@@ -97,7 +97,6 @@ class SpiceInstaller
             self::initializeDictionaryFromSystemPackage();
             self::createSystemTables();
             self::reloadSystemPackage();
-            throw new ServiceUnavailableException('New version detected. Admin user must reload the loaded packages.', 'systemVersionChange');
         }
     }
 
