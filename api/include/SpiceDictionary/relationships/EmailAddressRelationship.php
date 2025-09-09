@@ -33,20 +33,20 @@ class EmailAddressRelationship extends M2MRelationship
      */
     protected function initialize(array $relationship): void
     {
-        $relationship = new SpiceDictionaryRelationship($relationship['id']);
-
         $this->def = $this->buildRelationshipDef($relationship);
-        $this->lhsLink = $this->isPrimaryRelationship($relationship->relationship->relationship_name) ? 'email_addresses_primary' : 'email_addresses';
+        $this->lhsLink = $this->isPrimaryRelationship($relationship['relationship_name']) ? 'email_addresses_primary' : 'email_addresses';
     }
 
     /**
      * build relationship definition
-     * @param SpiceDictionaryRelationship $relationship
+     * @param array $relationship
      * @return array[]
      * @throws \Exception
      */
-    public function buildRelationshipDef(SpiceDictionaryRelationship $relationship): array
+    public function buildRelationshipDef(array $relationship): array
     {
+        $relationship = new SpiceDictionaryRelationship($relationship['id']);
+
         try {
             $leftDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
             $leftField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($leftDefinition->name, $relationship->relationship->lhs_sysdictionaryitem_id);
