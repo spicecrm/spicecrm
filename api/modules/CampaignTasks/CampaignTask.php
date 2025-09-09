@@ -747,15 +747,17 @@ class CampaignTask extends SpiceBean
             };
 
             // check that the target is a contact
+            /*
             if($queuedFeedback['target_type'] != 'Contacts'){
                 $campaignLog = BeanFactory::getBean('CampaignLog', $queuedFeedback['id']);
                 $campaignLog->activity_type = 'error';
                 $campaignLog->save();
                 continue;
             }
+            */
 
 
-                // load the bean and send the email
+            // load the bean and send the email
             $seed = BeanFactory::getBean($queuedFeedback['target_type'], $queuedFeedback['target_id']);
             if($seed){
                 $feedback = BeanFactory::getBean('ServiceFeedbacks');
