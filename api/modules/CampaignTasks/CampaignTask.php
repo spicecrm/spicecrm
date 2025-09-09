@@ -739,7 +739,7 @@ class CampaignTask extends SpiceBean
      * @return bool
      */
     public function generateServiceFeedbacks(){
-        $queuedFeedbacks = $this->db->query("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = 'Feedback' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC");
+        $queuedFeedbacks = $this->db->query("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = 'Feedback' AND activity_type = 'queued' AND campaigntask_id <> '' AND related_id IS NULL ORDER by activity_date DESC");
         while($queuedFeedback = $this->db->fetchByAssoc($queuedFeedbacks)){
             /// load the campaign task if we have a new one
             if($queuedFeedback['campaigntask_id'] != $this->id){
