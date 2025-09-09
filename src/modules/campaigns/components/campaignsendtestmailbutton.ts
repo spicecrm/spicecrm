@@ -55,7 +55,7 @@ export class CampaignSendTestMailButton {
      * only show for campaign tasks of type email
      */
     get hidden() {
-        return !/^Email|SMS$/.test( this.model.getField('campaigntask_type') );
+        return !/^Email|SMS|Feedback$/.test( this.model.getField('campaigntask_type') );
     }
 
     /**
