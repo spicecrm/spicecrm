@@ -152,7 +152,7 @@ class ConfiguratorController{
         $retArray = [];
 
         // check that we have a dictionary entry
-        if(!isset(SpiceDictionaryHandler::getInstance()->dictionary[$config['dictionary']])){
+        if(!SpiceDictionaryDefinitions::getInstance()->getDefinitionByName($config['dictionary'])){
             throw new NotFoundException('not a known table');
         }
         $entries = $db->query("SELECT * FROM {$config['dictionary']}");
