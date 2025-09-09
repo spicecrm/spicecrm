@@ -87,14 +87,8 @@ class LogViewController{
      * @return mixed
      */
     public function APIlogGetLogTables( Request $req, Response $res, $args ): Response {
-        $dictionary = SpiceDictionary::getInstance()->dictionary;
 
-        $tables = [];
-        foreach($dictionary as $name => $data){
-            if($name != 'sysapilog' && $data['fields'] == $dictionary['sysapilog']['fields']){
-                $tables[] = $name;
-            }
-        }
+        $tables = (new APIlogViewer())->getLogTables();
 
         return $res->withJson($tables);
     }

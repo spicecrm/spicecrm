@@ -28,6 +28,7 @@ class CampaignTasksSchedulerJobTasks
 
     public function sendCampaignTaskFeedbacks(): bool {
         $campaignTask = BeanFactory::getBean('CampaignTasks');
-        return $campaignTask->generateServiceFeedbacks();
+        $campaignTask->generateServiceFeedbacks();
+        return $campaignTask->sendQueuedEmails('Feedback');
     }
 }

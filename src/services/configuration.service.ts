@@ -196,13 +196,25 @@ export class configurationService {
             },
             error: (err: any) => {
                 // if we figure the system is not installed add the route to the routes available so it can also be called and redirect to the installer
-                if (err.status == '503' && err.error.error.errorCode == 'crmNotInstalled') {
-                    this.enableinstall = true;
-                    this.router.config.unshift({
-                        path: 'install',
-                        component: SpiceInstaller
-                    });
-                    this.router.navigate(['/install']);
+                if (err.status == '503') {
+                    switch (err.error.error.errorCode) {
+                        case 'crmNotInstalled':
+                            this.enableinstall = true;
+                            this.router.config.unshift({
+                                path: 'install',
+                                component: SpiceInstaller
+                            });
+                            this.router.navigate(['/install']);
+                            break;
+                        case 'systemVersionChange':
+                            this.storeService.clearAllDBs();
+                            localStorage.clear();
+                            sessionStorage.clear();
+                            this.initialized = true;
+                            this.loadingError = err.error.error.message;
+                            break;
+                    }
+
                 } else {
                     this.initialized = true;
                     this.loadingError = err.error ? err.error.error.message : 'unknown system error';

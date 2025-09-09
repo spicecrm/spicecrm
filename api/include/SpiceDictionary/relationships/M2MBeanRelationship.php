@@ -2,6 +2,7 @@
 
 namespace SpiceCRM\includes\SpiceDictionary\relationships;
 
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
@@ -125,10 +126,12 @@ class M2MBeanRelationship extends M2MRelationship
     }
 
     /**
+     * load the relationship rows for this link
      * @param  $link SpiceDictionaryLink loads the relationship for this link.
-     * @return void
+     * @return array[]
+     * @throws DatabaseException
      */
-    public function load($link, $params = [])
+    public function load($link, $params = []): array
     {
         $db = DBManagerFactory::getInstance();
         $query = $this->getQuery($link, $params);
@@ -147,15 +150,16 @@ class M2MBeanRelationship extends M2MRelationship
 
 
     /**
-     * not allowed
+     * not allowed for m2m bean relationship since the relationship fields are already filled on the bean
      *
      * @param $lhs
      * @param $rhs
-     * @param $additionalFields
-     * @return bool|void
+     * @param array $additionalFields
+     * @return bool
      */
-    public function add($lhs, $rhs, $additionalFields = []){
-        return;
+    public function add($lhs, $rhs, $additionalFields = []): bool
+    {
+        return false;
     }
 
     /**

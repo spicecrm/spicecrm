@@ -4,13 +4,10 @@
 namespace SpiceCRM\includes\SpiceDictionary\relationships;
 
 use SpiceCRM\includes\ErrorHandlers\Exception;
-use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryField;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationships;
-use SpiceCRM\includes\utils\SpiceUtils;
 
 
 /**
@@ -23,149 +20,137 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
     var $type = "one-to-many-polymorph";
 
     /**
-     * activates the relationship
-     *
-     * @param SpiceDictionaryRelationship $relationship
-     * @return void
-     */
-    public function activate(SpiceDictionaryRelationship $relationship)
-    {
-        $db = DBManagerFactory::getInstance();
-        // clear current definitions
-        $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}'");
-        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
-
-        try {
-            $rhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
-            $rhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->rhs_sysdictionaryitem_id);
-            $rhsField = SpiceDictionaryField::getField($rhsDictionaryitem, $rhsDictionaryDefinition);
-            $roleColumnDictionaryitem = new SpiceDictionaryItem($relationship->relationship->relationship_role_column);
-            $roleColumnField = SpiceDictionaryField::getField($roleColumnDictionaryitem, $rhsDictionaryDefinition);
-        } catch (Exception $e){
-            return false;
-        }
-
-        # add the parent name field on the child (RHS)
-        $db->insertQuery('sysdictionaryfields', [
-            'id' => SpiceUtils::createGuid(),
-            'sysdictionaryname' => $rhsDictionaryDefinition->name,
-            'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
-            'sysdictionarytableaudited' => $rhsDictionaryDefinition->getDefinition()->audited,
-            'fieldname' => $relationship->relationship->rhs_relatename,
-            'fieldtype' => 'parent',
-            'fielddefinition' => json_encode([
-                'name' => $relationship->relationship->rhs_relatename,
-                'type' => 'parent',
-                'type_name' => $roleColumnField->fieldname,
-                'id_name' => $rhsField->fieldname,
-                'source' => 'non-db',
-                'vname' => $relationship->relationship->rhs_relatelabel
-            ]),
-            'sysdictionaryrelationship_id' => $relationship->id,
-            'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
-        ]);
-
-        // load all morphs and create relationships and links
-        $morphs = SpiceDictionaryRelationships::getInstance()->getPolymorphs($relationship->relationship->id);
-        foreach ($morphs as $morph) {
-            // convert to object
-            $morph = (object)$morph;
-
-            $db->query("DELETE FROM relationships WHERE id = '$morph->id'");
-            $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$morph->id}'");
-
-            try {
-                $lhsDictionaryDefinition = new SpiceDictionaryDefinition($morph->lhs_sysdictionarydefinition_id);
-                $lhsDictionaryitem = new SpiceDictionaryItem($morph->lhs_sysdictionaryitem_id);
-                $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
-            } catch (Exception $e){
-                continue;
-            }
-
-            $relationship_name = str_replace('{tablename}', $rhsDictionaryDefinition->tablename, $morph->relationship_name);
-
-            # insert the relationship
-            $db->insertQuery('relationships', [
-                'id' => $morph->id,
-                'relationship_name' => $relationship_name,
-                'relationship_type' => $this->type,
-                'lhs_table' => $lhsDictionaryDefinition->tablename,
-                'lhs_module' => $lhsDictionaryDefinition->getModuleName(),
-                'lhs_key' => $lhsField->fieldname,
-                'rhs_table' => $rhsDictionaryDefinition->tablename,
-                'rhs_module' => $rhsDictionaryDefinition->getModuleName(),
-                'rhs_key' => $rhsField->fieldname,
-                'deleted' => 0
-            ]);
-
-            # add link on the parent (LHS)
-            $db->insertQuery('sysdictionaryfields', [
-                'id' => SpiceUtils::createGuid(),
-                'sysdictionaryname' => $lhsDictionaryDefinition->name,
-                'sysdictionarytablename' => $lhsDictionaryDefinition->tablename,
-                'sysdictionarytableaudited' => $lhsDictionaryDefinition->getDefinition()->audited,
-                'fieldname' => $relationship->relationship->lhs_linkname,
-                'fieldtype' => 'link',
-                'fielddefinition' => json_encode([
-                    'name' => $relationship->relationship->lhs_linkname,
-                    'type' => 'link',
-                    'relationship' => $relationship_name,
-                    'module' => $lhsDictionaryDefinition->getModuleName(),
-                    'source' => 'non-db',
-                    'vname' => $relationship->relationship->lhs_linklabel,
-                    'duplicate_merge' => $relationship->relationship->lhs_duplicatemerge,
-                    'duplicate_linked' => $relationship->relationship->lhs_duplicatelinked,
-                    'default' => $relationship->relationship->lhs_linkdefault ? true : false
-                ]),
-                'sysdictionaryrelationship_id' => $morph->id,
-                'sysdictionarydefinition_id' => $lhsDictionaryDefinition->id
-            ]);
-
-            # add link for the parent on the child if isset
-            if (!empty($morph->rhs_link_name)) {
-                $db->insertQuery('sysdictionaryfields', [
-                    'id' => SpiceUtils::createGuid(),
-                    'sysdictionaryname' => $rhsDictionaryDefinition->name,
-                    'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
-                    'sysdictionarytableaudited' => $rhsDictionaryDefinition->getDefinition()->audited,
-                    'fieldname' => $morph->rhs_link_name,
-                    'fieldtype' => 'link',
-                    'fielddefinition' => json_encode([
-                        'name' => $morph->rhs_link_name,
-                        'vname' => $morph->rhs_link_label,
-                        'type' => 'link',
-                        'relationship' => $relationship_name,
-                        'source' => 'non-db',
-                        'duplicate_merge' => $morph->rhs_duplicatemerge,
-                        'duplicate_linked' => $morph->rhs_duplicatelinked
-                    ]),
-                    'sysdictionaryrelationship_id' => $morph->id,
-                    'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
-                ]);
-            }
-        }
-
-        // completed the activation
-        return true;
-    }
-
-    /**
-     * deactivate and remove the fields
-     *
-     * @param SpiceDictionaryRelationship $relationship
+     * initialize the instance from the given dictionary relationship
+     * @param array $relationship
      * @return void
      * @throws \Exception
      */
-    public function deactivate(SpiceDictionaryRelationship $relationship)
+    protected function initialize(array $relationship): void
     {
-        $relationshipIds = [$relationship->id];
-        $morphs = SpiceDictionaryRelationships::getInstance()->getPolymorphs($relationship->relationship->id);
-        foreach ($morphs as $morph) {
-            $relationshipIds[] = $morph['id'];
+        $this->def = $this->buildRelationshipDef($relationship);
+        $this->lhsLink = $this->def['lhs_linkname'];
+        $this->rhsLink = $this->def['rhs_linkname'];
+        $this->self_referencing = $relationship['rhs_sysdictionarydefinition_id'] == $relationship['lhs_sysdictionarydefinition_id'];
+    }
+
+    /**
+     * build relationship definition
+     * @param array $relationship
+     * @return array[]
+     * @throws \Exception
+     */
+    public function buildRelationshipDef(array $relationship): array
+    {
+        if (!$relationship['relationship_id']) {
+            return [];
         }
 
-        // delete the records
-        DBManagerFactory::getInstance()->query("DELETE FROM relationships WHERE id IN ('" . implode("','", $relationshipIds) . "')");
-        DBManagerFactory::getInstance()->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id IN ('" . implode("','", $relationshipIds) . "')");
+        try {
+            $mainRelationship = new SpiceDictionaryRelationship($relationship['relationship_id']);
+
+            $leftDefinition = new SpiceDictionaryDefinition($relationship['lhs_sysdictionarydefinition_id']);
+            $leftField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($leftDefinition->name, $relationship['lhs_sysdictionaryitem_id']);
+            $rightDefinition = new SpiceDictionaryDefinition($mainRelationship->relationship->rhs_sysdictionarydefinition_id);
+            $rightField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($rightDefinition->name, $mainRelationship->relationship->rhs_sysdictionaryitem_id);;
+        } catch (\Exception $e){
+            return [];
+        }
+
+        $relationshipName = str_replace('{tablename}', $rightDefinition->tablename, $relationship['relationship_name']);
+
+        return [
+            'id' => $relationship['id'],
+            'relationship_name' => $relationshipName,
+            'relationship_type' => $this->type,
+            'lhs_table' => $leftDefinition->tablename,
+            'lhs_module' => $leftDefinition->getModuleName(),
+            'lhs_key' => $leftField->name,
+            'lhs_linkname' => $mainRelationship->relationship->lhs_linkname,
+            'rhs_table' => $rightDefinition->tablename,
+            'rhs_module' => $rightDefinition->getModuleName(),
+            'rhs_key' => $rightField->name,
+            'rhs_linkname' => $relationship['rhs_link_name'],
+            'deleted' => 0
+        ];
+    }
+
+    /**
+     * build link fields
+     * @param SpiceDictionaryRelationship $relationship
+     * @param string $definitionId
+     * @return array[]
+     * @throws Exception|\Exception
+     */
+    public static function buildLinkFields(SpiceDictionaryRelationship $relationship, string $definitionId): array
+    {
+        $mainRelationship = $relationship;
+        $forSide = $mainRelationship->relationship->rhs_sysdictionarydefinition_id == $definitionId ? 'rhs' : 'lhs';
+
+        try {
+            $rightDefinition = new SpiceDictionaryDefinition($mainRelationship->relationship->rhs_sysdictionarydefinition_id);
+        } catch (Exception $e){
+            return [];
+        }
+
+        $polymorphRelationship = SpiceDictionaryRelationships::getInstance()->getPolymorphRelationshipForParent($mainRelationship->id, $definitionId);
+
+        $relationshipName = str_replace('{tablename}', $rightDefinition->tablename, $polymorphRelationship->relationship_name);
+        $fields = [];
+
+        if ($forSide == 'rhs') {
+            $roleField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($rightDefinition->name, $mainRelationship->relationship->relationship_role_column);
+            $rightField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($rightDefinition->name, $mainRelationship->relationship->rhs_sysdictionaryitem_id);
+
+            $rightParent = [
+                'name' => $mainRelationship->relationship->rhs_relatename,
+                'type' => 'parent',
+                'type_name' => $roleField->name,
+                'id_name' => $rightField->name,
+                'source' => 'non-db',
+                'vname' => $mainRelationship->relationship->rhs_relatelabel,
+                'parent_modules' => SpiceDictionaryRelationships::getInstance()->getPolymorphParentModulesForRelationship($mainRelationship->id)
+            ];
+
+            $fields[$mainRelationship->relationship->rhs_relatename] = $rightParent;
+
+            if (!empty($mainRelationship->relationship->rhs_link_name)) {
+
+                $rightLink = [
+                    'name' => $mainRelationship->relationship->rhs_link_name,
+                    'vname' => $mainRelationship->relationship->rhs_link_label,
+                    'type' => 'link',
+                    'relationship' => $relationshipName,
+                    'source' => 'non-db',
+                    'duplicate_merge' => $mainRelationship->relationship->rhs_duplicatemerge,
+                    'duplicate_linked' => $mainRelationship->relationship->rhs_duplicatelinked
+                ];
+
+                $fields[$mainRelationship->relationship->rhs_link_name] = $rightLink;
+            }
+
+        } else {
+
+            try {
+                $leftDefinition = new SpiceDictionaryDefinition($polymorphRelationship->lhs_sysdictionarydefinition_id);
+            } catch (Exception $e){
+                return [];
+            }
+
+            $leftLink = [
+                'name' => $mainRelationship->relationship->lhs_linkname,
+                'type' => 'link',
+                'relationship' => $relationshipName,
+                'module' => $leftDefinition->getModuleName(),
+                'source' => 'non-db',
+                'vname' => $mainRelationship->relationship->lhs_linklabel,
+                'duplicate_merge' => $mainRelationship->relationship->lhs_duplicatemerge,
+                'duplicate_linked' => $mainRelationship->relationship->lhs_duplicatelinked,
+                'default' => (bool) $mainRelationship->relationship->lhs_linkdefault
+            ];
+
+            $fields[$mainRelationship->relationship->lhs_linkname] = $leftLink;
+        }
+
+        return $fields;
     }
 }

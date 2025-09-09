@@ -2,6 +2,7 @@
 namespace SpiceCRM\includes\SpiceDictionary\relationships;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
@@ -11,11 +12,11 @@ use SpiceCRM\includes\utils\SpiceUtils;
 class M2MProspectListRelationship extends M2MRelationship
 {
     var $type = "many-to-many-prospectlists";
-    var $basetype = 'many-to-many';
 
     /**
      * @param array $row values to be inserted into the relationship
      * @return bool|void null if new row was inserted and true if an existing row was updated
+     * @throws DatabaseException
      */
     protected function addRow(&$row)
     {
@@ -82,10 +83,13 @@ class M2MProspectListRelationship extends M2MRelationship
 
 
     /**
-     * @param  $link \SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink loads the relationship for this link.
-     * @return void
+     * loads the relationship rows for a given link
+     * @param  $link SpiceDictionaryLink loads the relationship for this link.
+     * @param array $params
+     * @return array
+     * @throws DatabaseException
      */
-    public function load($link, $params = [])
+    public function load($link, $params = []): array
     {
         $db = DBManagerFactory::getInstance();
         // for elasticsearch results have to be returned without paging
@@ -178,6 +182,4 @@ class M2MProspectListRelationship extends M2MRelationship
 
         return $row;
     }
-
-
 }
