@@ -760,6 +760,8 @@ class CampaignTask extends SpiceBean
             if($seed){
                 $feedback = BeanFactory::getBean('ServiceFeedbacks');
                 $feedback->contact_id = $seed->id;
+                $feedback->related_type = $seed->_module;
+                $feedback->related_id = $seed->id;
                 $feedback->servicefeedback_status = 'created';
                 $feedback->questionnaire_id = $this->questionnaire_id;
                 $feedback->parent_type = 'CampaignTasks';
