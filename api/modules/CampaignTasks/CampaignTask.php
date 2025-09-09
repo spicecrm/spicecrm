@@ -531,7 +531,7 @@ class CampaignTask extends SpiceBean
                 # try to send the email after the pre send checks
             } else {
 
-                $email = $this->sendEmail($seed, $emailAddress->email_address,true, false, ['CampaignLog' => $campaignLog]);
+                $email = $this->sendEmail($seed, $emailAddress->email_address,$this->save_emails == 1, false, ['CampaignLog' => $campaignLog]);
 
                 if ( $email->status === 'sent' or $email->status === 'intercepted' ) {
                     $campaignLog->activity_type = $email->status;
