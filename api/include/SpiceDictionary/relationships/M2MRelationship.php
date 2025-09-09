@@ -446,13 +446,10 @@ class M2MRelationship extends Relationship
         $query = $this->getQuery($link, $rangeParams);
         $result = $db->query($query);
         $rows = [];
-        $idField = $link->getSide() == REL_LHS ? $this->def['join_key_rhs'] : $this->def['join_key_lhs'];
+        // $idField = $link->getSide() == REL_LHS ? $this->def['join_key_rhs'] : $this->def['join_key_lhs'];
         while ($row = $db->fetchByAssoc($result))
         {
-            if (empty($row['id']) && empty($row[$idField]))
-                continue;
-            $id = empty($row['id']) ? $row[$idField] : $row['id'];
-            $rows[$id] = $row;
+            $rows[$row['relid']] = $row;
         }
 
         if (!empty($params['searchterm'])) {
