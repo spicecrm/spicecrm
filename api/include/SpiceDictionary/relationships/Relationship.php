@@ -4,6 +4,7 @@
 namespace SpiceCRM\includes\SpiceDictionary\relationships;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
@@ -44,8 +45,50 @@ abstract class Relationship
 
     public function __debugInfo()
     {
-        //return ['name' => $this->name, 'type' => $this->type, 'def' => $this->def];
         return $this->def['relationships'];
+    }
+
+    /**
+     * initialize the instance properties
+     * @throws \Exception
+     */
+    public function __construct(string $relationshipName, array $relationship)
+    {
+        $this->name = $relationshipName;
+
+        if ($relationship['id']) {
+            $this->initialize($relationship);
+        } else {
+            $this->initializeFromVardef($relationship);
+        }
+    }
+
+    /**
+     * initialize the instance from the given dictionary relationship
+     * @param array $relationship
+     * @return void
+     * @throws \Exception
+     */
+    protected function initialize(array $relationship): void
+    {
+        $this->def = $this->buildRelationshipDef($relationship);
+        $this->lhsLink = $relationship['lhs_linkname'];
+        $this->rhsLink = $relationship['rhs_linkname'];
+        $this->self_referencing = $relationship['rhs_sysdictionarydefinition_id'] == $relationship['lhs_sysdictionarydefinition_id'];
+    }
+
+    /**
+     * initialize the instance from the given vardef relationship array
+     * @param array $relationship
+     * @return void
+     * @throws \Exception
+     */
+    protected function initializeFromVardef(array $relationship): void
+    {
+        $this->def = $relationship;
+        $this->lhsLink = $this->getLinkedDefForModuleByRelationship($this->def['lhs_module'], 'left')['name'];
+        $this->rhsLink = $this->getLinkedDefForModuleByRelationship($this->def['rhs_module'], 'right')['name'];
+        $this->self_referencing = $this->def['lhs_module'] == $this->def['rhs_module'] && $this->def['reverse'] != false;
     }
 
     public abstract function add($lhs, $rhs, $additionalFields = []);
@@ -59,22 +102,6 @@ abstract class Relationship
     public abstract function remove($lhs, $rhs, ?string $relId = null);
 
     /**
-     * needs to be overwritten to handle activation
-     *
-     * @param SpiceDictionaryRelationship $relationship
-     * @return mixed
-     */
-    public abstract function deactivate(SpiceDictionaryRelationship $relationship);
-
-    /**
-     * needs to be overwritten to handle deactivation
-     *
-     * @param SpiceDictionaryRelationship $relationship
-     * @return mixed
-     */
-    public abstract function activate(SpiceDictionaryRelationship $relationship);
-
-    /**
      * @abstract
      * @param $link SpiceDictionaryLink loads the rows for this relationship that match the given link
      * @return void
@@ -86,7 +113,7 @@ abstract class Relationship
      * This is currently public, but should prob be made protected later.
      * See SpiceDictionaryLink->getQuery
      * @abstract
-     * @param  $link Link Object to get query for.
+     * @param  $link SpiceDictionaryLink Object to get query for.
      * @return string|array query used to load this relationship
      */
     public abstract function getQuery($link, $params = []);
@@ -170,6 +197,14 @@ abstract class Relationship
     public function getRHSModule()
     {
         return $this->def['rhs_module'];
+    }
+
+    /**
+     * @return string name of right hand side module.
+     */
+    public function getRHSKey()
+    {
+        return $this->def['rhs_key'];
     }
 
     /**
@@ -304,7 +339,6 @@ abstract class Relationship
      */
     protected function getRoleWhere($table = "", $ignore_role_filter = false)
     {
-        $ignore_role_filter = $ignore_role_filter || $this->ignore_role_filter;
         $roleCheck = "";
         if (empty ($table))
             $table = $this->getRelationshipTable();
@@ -471,44 +505,29 @@ abstract class Relationship
     }
 
     /**
-     * returns the linked firled for a relationship
-     *
+     * returns the linked field for a relationship
      * @param $module
-     * @return array|false|mixed
+     * @return array
+     * @throws \Exception
      */
-    public function getLinkFieldForRelationship($module)
+    public function getLinkFieldForRelationship($module): array
     {
         $object = BeanFactory::getObjectName($module);
-        $defs = SpiceDictionary::getInstance()->getDefs($object);
+        $fields = SpiceDictionary::getInstance()->buildFieldsByDictionaryName($object);
 
-        if(!$defs['fields']) {
-            return false;
-        }
-
-        $relLinkFields = array_filter($defs['fields'], function($field){
-            return $field['type'] == 'link' && !empty($field['relationship']);
-        });
+        if(!$fields) return [];
 
         $matches = [];
-        if (!empty($relLinkFields))
-        {
-            foreach($relLinkFields as $rfName => $rfDef)
-            {
-                if ($rfDef['relationship'] == $this->name)
-                {
-                    $matches[] = $rfDef;
-                }
-            }
-        }
-        if (empty($matches))
-            return false;
-        if (sizeof($matches) == 1)
-            $results = $matches[0];
-        else
-            //For relationships where both sides are the same module, more than one link will be returned
-            $results = $matches;
 
-        return $results ;
+        foreach($fields as $rfDef) {
+            if ($rfDef['type'] != 'link' || !$rfDef['relationship'] || $rfDef['relationship'] != $this->name){
+                continue;
+            }
+            $matches[] = $rfDef;
+        }
+
+        # For relationships where both sides are the same module, more than one link will be returned
+        return sizeof($matches) == 1 ? $matches[0] : $matches;
     }
 
     public function __get($name)
@@ -537,5 +556,33 @@ abstract class Relationship
             return $this->$name;
 
         return null;
+    }
+
+    /**
+     * build link fields
+     * @param SpiceDictionaryRelationship $relationship
+     * @param string $definitionId
+     * @return array[]
+     * @throws Exception
+     */
+    abstract static public function buildLinkFields(SpiceDictionaryRelationship $relationship, string $definitionId): array;
+
+    /**
+     * build relationship definition
+     * @param array $relationship
+     * @return array[]
+     * @throws Exception
+     */
+    abstract public function buildRelationshipDef(array $relationship): array;
+
+    /**
+     * get definition side
+     * @param SpiceDictionaryRelationship $relationship
+     * @param string $definitionId
+     * @return string
+     */
+    protected static function getDefinitionSide(SpiceDictionaryRelationship $relationship, string $definitionId): string
+    {
+        return $definitionId == $relationship->relationship->lhs_sysdictionarydefinition_id ? 'lhs' : 'rhs';
     }
 }

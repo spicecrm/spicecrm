@@ -11,18 +11,13 @@ use SpiceCRM\includes\SpiceBeans\SpiceBean;
  */
 class One2OneBeanRelationship extends One2MBeanRelationship
 {
-
-    public function __construct($def)
-    {
-        parent::__construct($def);
-    }
     /**
      * @param  $lhs SpiceBean left side bean to add to the relationship.
      * @param  $rhs SpiceBean right side bean to add to the relationship.
      * @param  $additionalFields key=>value pairs of fields to save on the relationship
      * @return boolean true if successful
      */
-    public function add($lhs, $rhs, $additionalFields = [])
+    public function add($lhs, $rhs, $additionalFields = []): bool
     {
         $lhsLinkName = $this->lhsLink;
         //In a one to one, any existing links from both sides must be removed first.

@@ -404,7 +404,7 @@ class Email extends SpiceBean
 
             foreach ($data as $row) {
 
-                if ($name == 'email_addresses' && $row['address_type'] !== 'from') continue;
+                if ($name == 'email_addresses' && ($row['address_type'] == 'from' || $row['address_type'] == 'to')) continue;
 
                 $additionalValues = [];
 
@@ -1509,74 +1509,31 @@ class Email extends SpiceBean
     }
 
     /**
-     * links this email to another bean by using the assignBeanToEmail() method.
-     * @param SpiceBean $bean
-     * @return bool
-     */
-    public function assignToBean(SpiceBean $bean)
-    {
-        return $this->assignBeanToEmail($bean->id, $bean->module_name);
-    }
-
-    /**
      * assignBeanToEmail
      *
      * Assigns a Bean to Email
      *
-     * @param $bean / the bean or a string with te bean id
+     * @param $beanOrId
      * @param $bean_module
-     * @return bool
+     * @return array|null
      */
-    public function assignBeanToEmail($bean, $bean_module)
+    public function assignBeanToEmail($beanOrId, $bean_module): ?array
     {
-        // if no bean is passed in we assume it is an id and load the bean
-        if (is_string($bean)) {
-            $bean = BeanFactory::getBean($bean_module, $bean);
+        if (is_string($$beanOrId)) {
+            $bean = BeanFactory::getBean($bean_module, $beanOrId);
+        } else {
+            $bean = $beanOrId;
         }
 
-        // if no bean is passed in or it copuld nto be retrieved .. do nothing
         if (!$bean) {
-            return false;
+            return null;
         }
 
-        $db = DBManagerFactory::getInstance();
-        // check if assignment exists already
+        $bean->load_relationship('emails');
 
-        // try to find a relationship between Emails and the module
-        $rels = $db->query("SELECT relationship_name FROM relationships WHERE lhs_module = 'Emails' AND rhs_module = '$bean_module'");
-        while ($rel = $db->fetchByAssoc($rels)) {
-            foreach ($this->field_defs as $field => $fieldDetails) {
-                if ($fieldDetails['type'] == 'link' && $fieldDetails['relationship'] == $rel['relationship_name']) {
-                    if($this->load_relationship($field)){
-                        if($this->{$field}->add($bean->id) === true){
-                            return ['id' => $bean->id, 'module' => $bean->_module];
-                        }
-                    }
-                    return;
-                }
-            }
-        }
+        $bean->emails->add($this);
 
-        /*
-        $query = "INSERT INTO emails_beans (
-                      id,
-                      email_id,
-                      bean_id,
-                      bean_module,
-                      campaign_data,
-                      date_modified,
-                      deleted
-                    ) VALUES (
-                      UUID(),
-                      '{$this->id}',
-                      '{$bean_id}',
-                      '{$bean_module}',
-                      NULL,
-                      NOW(),
-                      0
-                    )";
-
-        return $db->query($query);*/
+        return ['id' => $bean->id, 'module' => $bean->_module];
     }
 
 
@@ -1953,6 +1910,12 @@ class Email extends SpiceBean
                     $this->type = strtolower($recipient->getEmail()) == $beanEmailAddress ? self::TYPE_INBOUND : self::TYPE_OUTBOUND;
             }
         }
+
+        # add the recipient address
+        $this->recipient_addresses[] = [
+            'email_address' => $this->emailAddress->splitEmailAddress($message->getSender())['email'],
+            'address_type' => 'from',
+        ];
 
         // if not set inbound as default
         if(!$this->type) $this->type = self::TYPE_INBOUND;

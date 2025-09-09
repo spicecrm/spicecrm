@@ -3,107 +3,97 @@
 namespace SpiceCRM\includes\SpiceDictionary\relationships;
 
 use SpiceCRM\includes\ErrorHandlers\Exception;
-use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryField;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
-use SpiceCRM\includes\utils\SpiceUtils;
 
 class OrgUnitRelationship extends One2MBeanRelationship
 {
     var $type = "orgunit";
 
     /**
-     * activate the relationship and add the necessary cache fields
-     * @param SpiceDictionaryRelationship $relationship
-     * @return void
-     * @throws Exception
+     * build relationship definition
+     * @param array $relationship
+     * @return array[]
+     * @throws \Exception
      */
-    public function activate(SpiceDictionaryRelationship $relationship){
-        // clear current definitions
-        $db = DBManagerFactory::getInstance();
-        $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}'");
-        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
+    public function buildRelationshipDef(array $relationship): array
+    {
+        $relationship = new SpiceDictionaryRelationship($relationship['id']);
 
         try {
-            $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
-            $rhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
-            $lhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
-            $rhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->rhs_sysdictionaryitem_id);
-            $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
-            $rhsField = SpiceDictionaryField::getField($rhsDictionaryitem, $rhsDictionaryDefinition);
-        } catch (Exception $e) {
-            return false;
+            $leftDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
+            $leftField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($leftDefinition->name, $relationship->relationship->lhs_sysdictionaryitem_id);
+            $rightDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
+            $rightField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($rightDefinition->name, $relationship->relationship->rhs_sysdictionaryitem_id);
+        } catch (Exception $e){
+            return [];
         }
 
-        // delete the fields if they remian from teh vardefs
-        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionarydefinition_id = '$rhsDictionaryDefinition->id' AND fieldname = '{$relationship->relationship->rhs_relatename}'");
-
-
-        // build the Defs
-        $defs = [
+        return [
             'id' => $relationship->id,
             'relationship_name' => $relationship->relationship->relationship_name,
             'relationship_type' => $this->type,
-            'lhs_table' => $lhsDictionaryDefinition->tablename,
-            'lhs_module' => $lhsDictionaryDefinition->getModuleName(),
-            'lhs_key' => $lhsField->fieldname,
-            'rhs_table' => $rhsDictionaryDefinition->tablename,
-            'rhs_module' => $rhsDictionaryDefinition->getModuleName(),
-            'rhs_key' => $rhsField->fieldname,
+            'lhs_table' => $leftDefinition->tablename,
+            'lhs_module' => $leftDefinition->getModuleName(),
+            'lhs_key' => $leftField->name,
+            'rhs_table' => $rightDefinition->tablename,
+            'rhs_module' => $rightDefinition->getModuleName(),
+            'rhs_key' => $rightField->name,
             'deleted' => 0
         ];
+    }
 
-        $db->insertQuery('relationships', $defs);
 
-        // write the rhs link
-        if($relationship->relationship->rhs_linkname){
-            $db->insertQuery('sysdictionaryfields', [
-                'id' => SpiceUtils::createGuid(),
-                'sysdictionaryname' => $rhsDictionaryDefinition->name,
-                'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
-                'sysdictionarytableaudited' => $rhsDictionaryDefinition->getDefinition()->audited,
-                'fieldname' => $relationship->relationship->rhs_linkname,
-                'fieldtype' => 'link',
-                'fielddefinition' => json_encode([
-                    'name' => $relationship->relationship->rhs_linkname,
-                    'type' => 'link',
-                    'relationship' => $relationship->relationship->relationship_name,
-                    'source' => 'non-db',
-                    'module' => $lhsDictionaryDefinition->getModuleName(),
-                    'vname' => $relationship->relationship->rhs_linklabel
-                ]),
-                'sysdictionaryrelationship_id' => $relationship->id,
-                'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
-            ]);
+    /**
+     * build link fields
+     * @param SpiceDictionaryRelationship $relationship
+     * @param string $definitionId
+     * @return array[]
+     */
+    public static function buildLinkFields(SpiceDictionaryRelationship $relationship, string $definitionId): array
+    {
+        $forSide = Relationship::getDefinitionSide($relationship, $definitionId);
 
-            // write the rhs linked field
-            if($relationship->relationship->rhs_relatename){
-                $db->insertQuery('sysdictionaryfields', [
-                    'id' => SpiceUtils::createGuid(),
-                    'sysdictionaryname' => $rhsDictionaryDefinition->name,
-                    'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
-                    'sysdictionarytableaudited' => $rhsDictionaryDefinition->getDefinition()->audited,
-                    'fieldname' => $relationship->relationship->rhs_relatename,
-                    'fieldtype' => 'linked',
-                    'fielddefinition' => json_encode([
-                        'name' => $relationship->relationship->rhs_relatename,
-                        'type' => 'linked',
-                        'rname' => 'name',
-                        'id_name' => $rhsField->fieldname,
-                        'link' => $relationship->relationship->rhs_linkname,
-                        'source' => 'non-db',
-                        'module' => $lhsDictionaryDefinition->getModuleName(),
-                        'vname' => $relationship->relationship->rhs_relatelabel
-                    ]),
-                    'sysdictionaryrelationship_id' => $relationship->id,
-                    'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
-                ]);
-            }
+        # only right side has link fields
+        if ($forSide != 'rhs' || !$relationship->relationship->rhs_linkname) {
+            return [];
         }
 
-        // completed the activation
-        return true;
+        try {
+            $leftDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
+            $rightDefinition = new SpiceDictionaryDefinition($definitionId);
+            $rightField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($rightDefinition->name, $relationship->relationship->rhs_sysdictionaryitem_id);
+        } catch (\Exception $e) {
+            return [];
+        }
+
+        $fields = [];
+
+        $linkField = [
+            'name' => $relationship->relationship->rhs_linkname,
+            'type' => 'link',
+            'relationship' => $relationship->relationship->relationship_name,
+            'source' => 'non-db',
+            'module' => $leftDefinition->getModuleName(),
+            'vname' => $relationship->relationship->rhs_linklabel
+        ];
+
+        $fields[$relationship->relationship->rhs_linkname] = $linkField;
+
+        if ($relationship->relationship->rhs_relatename) {
+            $fields[$relationship->relationship->rhs_relatename] = [
+                'name' => $relationship->relationship->rhs_relatename,
+                'type' => 'linked',
+                'rname' => 'name',
+                'id_name' => $rightField->name,
+                'link' => $relationship->relationship->rhs_linkname,
+                'source' => 'non-db',
+                'module' => $leftDefinition->getModuleName(),
+                'vname' => $relationship->relationship->rhs_relatelabel
+            ];
+        }
+
+        return $fields;
     }
 }

@@ -100,7 +100,7 @@ export class DictionaryManagerItemDetails implements OnInit {
 
         const toSave = {...this.dictionaryitem};
         delete toSave.addFields;
-        delete toSave.cached;
+        delete toSave.isVardef;
         delete toSave.database;
         delete toSave.defined;
 
