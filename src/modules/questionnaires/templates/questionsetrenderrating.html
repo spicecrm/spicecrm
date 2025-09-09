@@ -1,7 +1,34 @@
 <ng-container *ngIf="qp.isLoaded">
-
-    <table *ngIf="!hideFinishedQuestions || !allQuestionsOfQuestionsetFinished" class="slds-table slds-table_bordered slds-table_col-bordered slds-no-row-hover slds-border_left slds-border_right slds-border_top">
-        <thead>
+    @if (layout.screenwidth == 'small'){
+        <div class="slds-p-vertical--x-small" *ngFor="let question of qp.questionsArray[questionsetId]; let i=index">
+            <table *ngIf="!hideFinishedQuestions || !allQuestionsOfQuestionsetFinished" class="slds-table slds-table_bordered slds-table_col-bordered slds-no-row-hover slds-border_left slds-border_right slds-border_top">
+                <thead>
+                <tr class="slds-text-title_caps" >
+                    <th style="background-color:inherit;width:100%">
+                        <ng-container *ngIf="question.image_id">
+                            <media-file-image [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthQuestion"></media-file-image>
+                        </ng-container>
+                        <div *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-truncate" style="white-space: normal" [ngClass]="{'slds-text-color_error':showError(question)}">{{question.questiontext}}</div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <ng-container *ngFor="let option of qp.questionoptionsArray[question.id]; let j = index;">
+                    <tr *ngIf="!hideFinishedQuestions || !questionsMeta[question.id].finished" [ngClass]="{'slds-has-error':showError(question)}">
+                        <td  class="question-hover" (click)="qp.clickAnswerOption( option.id, $event )">
+                            <div class="slds-grid slds-grid--vertical-align-center">
+                                <question-render-radio-button [option]="option"></question-render-radio-button>
+                                <label class="slds-p-horizontal--small"><system-wrapped-text [text]="questionset.questiontypeparameter.rating.entries[j].value"></system-wrapped-text></label>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+                </tbody>
+            </table>
+        </div>
+    } @else {
+        <table *ngIf="!hideFinishedQuestions || !allQuestionsOfQuestionsetFinished" class="slds-table slds-table_bordered slds-table_col-bordered slds-no-row-hover slds-border_left slds-border_right slds-border_top">
+            <thead>
             <tr class="slds-text-title_caps" >
                 <th style="background-color:inherit;width:100%"></th>
                 <th *ngFor="let entry of questionset.questiontypeparameter.rating.entries" class="slds-text-align_center">
@@ -12,8 +39,8 @@
                     {{entry.value}}
                 </th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             <ng-container *ngFor="let question of qp.questionsArray[questionsetId]; let i=index">
                 <tr *ngIf="!hideFinishedQuestions || !questionsMeta[question.id].finished" [ngClass]="{'slds-has-error':showError(question)}">
                     <td>
@@ -27,7 +54,7 @@
                     </td>
                 </tr>
             </ng-container>
-        </tbody>
-    </table>
-
+            </tbody>
+        </table>
+    }
 </ng-container>

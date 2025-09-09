@@ -4,6 +4,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
 import { QuestionsetRenderBasic } from './questionsetrenderbasic';
+import {layout} from "../../../services/layout.service";
 
 @Component({
     selector: 'questionset-render-rating',
@@ -23,7 +24,7 @@ export class QuestionsetRenderRating extends QuestionsetRenderBasic implements O
 
     public ratingValuesHaveAlsoText = false;
 
-    constructor( public questionnaireParticipation: questionnaireParticipationService ) {
+    constructor( public questionnaireParticipation: questionnaireParticipationService, public layout: layout ) {
         super( questionnaireParticipation );
     }
 
