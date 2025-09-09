@@ -43,14 +43,14 @@ export class CampaignTaskActivateButton implements OnDestroy {
      * only show for campaign tasks of type email
      */
     get hidden() {
-        return this.model.getField('campaigntask_type') == 'Email';
+        return this.model.getField('campaigntask_type') == 'Email' || this.model.getField('campaigntask_type') == 'SMS' || this.model.getField('campaigntask_type') == 'Feedback';
     }
 
 
     public handleDisabled() {
 
         // not for email
-        if (this.model.getFieldValue('campaigntask_type') == 'Email'){
+        if (this.model.getFieldValue('campaigntask_type') == 'Email' || this.model.getField('campaigntask_type') == 'SMS' || this.model.getField('campaigntask_type') == 'Feedback'){
             this.disabled = true;
             return;
         }
