@@ -89,16 +89,16 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
         let sum = this.receiptHidden + this.zipHidden + this.downloadLinkHidden;
         switch (sum){
             case 0:
-                this.addCssClass('slds-size--1-of-1');
+                this.addCssClass('slds-size--1-of-4');
                 break;
             case 1:
-                this.addCssClass('slds-size--3-of-4');
+                this.addCssClass('slds-size--1-of-2');
                 break;
             case 2:
-                this.addCssClass('slds-size--2-of-4');
+                this.addCssClass('slds-size--3-of-4');
                 break;
             case 3:
-                this.addCssClass('slds-size--1-of-4');
+                this.addCssClass('slds-size--1-of-1');
                 break;
         }
         return this.css_classes;
