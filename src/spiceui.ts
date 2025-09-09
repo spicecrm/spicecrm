@@ -27,9 +27,9 @@ import {SystemDynamicRouteInterceptor} from "./systemcomponents/components/syste
 import {GlobalHeader} from "./globalcomponents/components/globalheader";
 import {SpiceInstallerModule} from "./include/spiceinstaller/spiceinstallermodule";
 import {ModuleGSuite} from "./extensions/include/gsuite/gsuite";
-import {Outlook} from "./include/outlook/outlook";
+import {Outlook} from "./extensions/include/outlook/outlook";
 import {GSuitePane} from "./extensions/include/gsuite/components/gsuitepane";
-import {OutlookPane} from "./include/outlook/components/outlookpane";
+import {OutlookPane} from "./extensions/include/outlook/components/outlookpane";
 import {loginCheck} from "./services/login.service";
 import {ModuleTOTPAuthentication} from "./include/totpauthentication/moduletotpauthentication";
 
