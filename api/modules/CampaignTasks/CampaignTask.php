@@ -653,16 +653,16 @@ class CampaignTask extends SpiceBean
             SpiceAttachments::cloneAttachmentsForBean('Emails', $email->id, 'CampaignTasks', $this->id, $saveEmail, $categoryId)
         );
 
+        if (isset($addBeans['CampaignLog'])) {
+            $email->registerTrackingParentData('CampaignLog', $addBeans['CampaignLog']->id);
+        }
+
         if($saveEmail){
             $email->parent_type = $seed->_module;
             $email->parent_id = $seed->id;
             $email->to_be_sent_now = true;
 
-            if (isset($addBeans['CampaignLog'])) {
-                $email->registerTrackingParentData('CampaignLog', $addBeans['CampaignLog']->id);
-            }
             $email->save(false, false);
-
         } else {
 
             try {
