@@ -6,7 +6,11 @@
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
     <div class="slds-form-element slds-m-vertical--xx-small">
-        <system-input-number [system-input-number-leftalign]="fieldconfig.leftalign" [(ngModel)]="value" [asNumber]="true" [precision]="precision"></system-input-number>
+        @if(displayCalculator) {
+            <system-input-number [system-input-number-with-calculator]="true" [system-input-number-leftalign]="fieldconfig.leftalign" [(ngModel)]="value" [asNumber]="true" [precision]="precision"></system-input-number>
+        } @else {
+            <system-input-number [system-input-number-leftalign]="fieldconfig.leftalign" [(ngModel)]="value" [asNumber]="true" [precision]="precision"></system-input-number>
+        }
     </div>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>
