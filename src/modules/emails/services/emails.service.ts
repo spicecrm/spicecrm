@@ -80,7 +80,7 @@ export class emailsService {
             containerDiv.remove();
 
         } else {
-            historytext += body.replace(/\n|\r/g, '<br>');
+            historytext += body.replace(/\n\r|\r/g, '<br>');
         }
 
         historytext += '</blockquote>';
