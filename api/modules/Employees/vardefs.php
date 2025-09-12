@@ -1,11 +1,11 @@
 <?php
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
-use SpiceCRM\includes\SugarObjects\VardefManager;
-
-SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
-    'table' => 'employees',
-    'audited' =>  true,
-    'fields' => [
+//use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+//use SpiceCRM\includes\SugarObjects\VardefManager;
+//
+//SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
+//    'table' => 'employees',
+//    'audited' =>  true,
+//    'fields' => [
 //        'users' => [
 //            'name' => 'users',
 //            'vname' => 'LBL_USERS',
@@ -91,14 +91,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
 //            'source' => 'non-db',
 //            'comment' => 'represents the value in orgunits_employees.employee_role'
 //        ],
-        'userabsences' => [
-            'name' => 'userabsences',
-            'vname' => 'LBL_USER_ABSENCES',
-            'type' => 'link',
-            'relationship' => 'employees_userabsences',
-            'source' => 'non-db',
-            'module' => 'UserAbsences'
-        ],
+//        'userabsences' => [
+//            'name' => 'userabsences',
+//            'vname' => 'LBL_USER_ABSENCES',
+//            'type' => 'link',
+//            'relationship' => 'employees_userabsences',
+//            'source' => 'non-db',
+//            'module' => 'UserAbsences'
+//        ],
 /*        'travels' => [
             'name' => 'travels',
             'vname' => 'LBL_TRAVELS',
@@ -169,18 +169,18 @@ SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
 //            'source' => 'non-db',
 //            'module' => 'HCMEmployeeObjectives'
 //        ],
-    ],
-    'indices' => [],
-    'relationships' => [
-        'employees_userabsences' => [
-            'lhs_module' => 'Employees',
-            'lhs_table' => 'employees',
-            'lhs_key' => 'id',
-            'rhs_module' => 'UserAbsences',
-            'rhs_table' => 'userabsences',
-            'rhs_key' => 'employee_id',
-            'relationship_type' => 'one-to-many'
-        ],
+//    ],
+//    'indices' => [],
+//    'relationships' => [
+//        'employees_userabsences' => [
+//            'lhs_module' => 'Employees',
+//            'lhs_table' => 'employees',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'UserAbsences',
+//            'rhs_table' => 'userabsences',
+//            'rhs_key' => 'employee_id',
+//            'relationship_type' => 'one-to-many'
+//        ],
 //        'employees_calls' => [
 //            'lhs_module' => 'Employees',
 //            'lhs_table' => 'employees',
@@ -236,8 +236,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
 //            'relationship_role_column' => 'parent_type',
 //            'relationship_role_column_value' => 'Employees'
 //        ],
-    ],
-];
+//    ],
+//];
 
 //VardefManager::createVardef('Employees', 'Employee', ['assignable','person', 'activities']);
 
