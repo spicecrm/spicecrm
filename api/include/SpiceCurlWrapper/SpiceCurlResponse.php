@@ -120,4 +120,32 @@ class SpiceCurlResponse
 
         return $this->response;
     }
+
+    /**
+     * Returns the curl response excluding the header.
+     *
+     * @return string|bool
+     */
+    public function getResponseWithoutHeader(): string|bool
+    {
+        return substr($this->getResponse(), $this->getHeaderSize());
+    }
+
+    /**
+     * Returns the cURL response excluding the headers as a JSON decoded array if possible.
+     * Otherwise, it returns the original response.
+     *
+     * @return array|null
+     */
+    public function getJsonResponseWithoutHeader(): ?array
+    {
+        $responseWithoutHeader = $this->getResponseWithoutHeader();
+        $decoded = json_decode($responseWithoutHeader, true);
+
+        if (json_last_error() === JSON_ERROR_NONE) {
+            return $decoded;
+        }
+
+        return $responseWithoutHeader;
+    }
 }
