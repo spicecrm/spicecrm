@@ -30,6 +30,8 @@ namespace SpiceCRM\includes\SpiceDemoData;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlConnector;
+use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlWrapper;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -404,14 +406,15 @@ class SpiceDemoDataGenerator
      * @param $api
      * @return mixed
      */
-    private function makeCall($api){
-        $cURL = "https://my.api.mockaroo.com/$api.json?key=".$this->key;
-        $ch = curl_init($cURL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        $result = curl_exec($ch);
-        return json_decode($result, true);
+    private function makeCall($api)
+    {
+        $request = SpiceCurlWrapper::getRequest("https://my.api.mockaroo.com/$api.json?key=".$this->key)
+                    ->setRouteAlias('spicedemodatagenerator')
+                    ->setOption('returnTransfer', true)
+                    ->setSsl(false);
+
+        $response = (new SpiceCurlConnector($request))->process();
+
+        return $response->getJsonResponse();
     }
 }
