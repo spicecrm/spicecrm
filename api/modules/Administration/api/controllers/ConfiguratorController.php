@@ -209,7 +209,7 @@ class ConfiguratorController{
         # header("Access-Control-Allow-Origin: *");
         if (!$current_user->is_admin) throw (new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
 
-        if(!isset(SpiceDictionaryHandler::getInstance()->dictionary[$args['table']])){
+        if(!SpiceDictionaryDefinitions::getInstance()->getDefinitionByTable($args['table'])){
             throw new NotFoundException('not a known table');
         }
 
