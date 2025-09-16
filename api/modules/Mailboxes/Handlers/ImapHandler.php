@@ -408,7 +408,8 @@ class ImapHandler extends TransportHandler
         if (!empty($result)) { // Substitute the old mailbox ID with the current one
             $query2 = "UPDATE emails SET mailbox_id='" . $this->mailbox->id . "' WHERE id='" . $result['id'] . "'";
             $q2 = $db->query($query2);
-            $result2 = $db->fetchByAssoc($q2);
+
+            return true;
         }
 
         return false;
