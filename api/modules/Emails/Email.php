@@ -1519,7 +1519,7 @@ class Email extends SpiceBean
      */
     public function assignBeanToEmail($beanOrId, $bean_module): ?array
     {
-        if (is_string($$beanOrId)) {
+        if (is_string($beanOrId)) {
             $bean = BeanFactory::getBean($bean_module, $beanOrId);
         } else {
             $bean = $beanOrId;
