@@ -401,16 +401,14 @@ class ImapHandler extends TransportHandler
 
         // Check if the Email exists for a different mailbox
         $db = DBManagerFactory::getInstance();
-        $quoted_message_id = $db->quote($message_id);
-        $query = "SELECT DISTINCT id FROM emails WHERE message_id = $quoted_message_id";
+        $query = "SELECT DISTINCT id FROM emails WHERE message_id='" . $message_id . "'";
         $q = $db->query($query);
         $result = $db->fetchByAssoc($q);
 
-        if (!empty($result)) {
-            $quoted_mailbox_id = $db->quote($this->mailbox->id);
-            $quoted_id = $db->quote($result['id']);
-            $query2 = "UPDATE emails SET mailbox_id = $quoted_mailbox_id WHERE id = $quoted_id";
-            $db->query($query2);
+        if (!empty($result)) { // Substitute the old mailbox ID with the current one
+            $query2 = "UPDATE emails SET mailbox_id='" . $this->mailbox->id . "' WHERE id='" . $result['id'] . "'";
+            $q2 = $db->query($query2);
+
             return true;
         }
 
@@ -428,8 +426,7 @@ class ImapHandler extends TransportHandler
     {
         $db = DBManagerFactory::getInstance();
 
-        $mailbox_id = $db->quote($this->mailbox->id); // Escape input
-        $query = "SELECT DISTINCT message_id FROM emails WHERE mailbox_id = $mailbox_id";
+        $query = "SELECT DISTINCT message_id FROM emails WHERE mailbox_id = '" . $this->mailbox->id . "'";
 
         $q = $db->query($query);
 
