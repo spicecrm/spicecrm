@@ -111,88 +111,88 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
             'fields' => ['portal_user_id','deleted']
         ]
     ],
-    'relationships' => [
-        'contact_direct_reports' => ['lhs_module' => 'Contacts',
-            'lhs_table' => 'contacts',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Contacts',
-            'rhs_table' => 'contacts',
-            'rhs_key' => 'reports_to_id',
-            'relationship_type' => 'one-to-many'],
-    ]
+//    'relationships' => [
+//        'contact_direct_reports' => ['lhs_module' => 'Contacts',
+//            'lhs_table' => 'contacts',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'Contacts',
+//            'rhs_table' => 'contacts',
+//            'rhs_key' => 'reports_to_id',
+//            'relationship_type' => 'one-to-many'],
+//    ]
 ];
 
 // CE version has not all modules...
 //set global else error with PHP7.1: Uncaught Error: Cannot use string offset as an array
-if (file_exists("extensions/modules/SalesDocs")) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['salesdocsop'] = [
-        'name' => 'salesdocsop',
-        'type' => 'link',
-        'vname' => 'LBL_SALESDOCSOP',
-        'relationship' => 'salesdocs_contactsop',
-        'module' => 'SalesDocs',
-        'source' => 'non-db',
-    ];
-    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['salesdocsrp'] = [
-        'name' => 'salesdocsrp',
-        'type' => 'link',
-        'vname' => 'LBL_SALESDOCSRP',
-        'relationship' => 'salesdocs_contactsrp',
-        'module' => 'SalesDocs',
-        'source' => 'non-db',
-    ];
-    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['salesdocs'] = [
-        'name' => 'salesdocs',
-        'type' => 'link',
-        'vname' => 'LBL_SALESDOCS',
-        'relationship' => 'salesdocs_contacts',
-        'module' => 'SalesDocs',
-        'source' => 'non-db',
-    ];
-}
+//if (file_exists("extensions/modules/SalesDocs")) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['salesdocsop'] = [
+//        'name' => 'salesdocsop',
+//        'type' => 'link',
+//        'vname' => 'LBL_SALESDOCSOP',
+//        'relationship' => 'salesdocs_contactsop',
+//        'module' => 'SalesDocs',
+//        'source' => 'non-db',
+//    ];
+//    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['salesdocsrp'] = [
+//        'name' => 'salesdocsrp',
+//        'type' => 'link',
+//        'vname' => 'LBL_SALESDOCSRP',
+//        'relationship' => 'salesdocs_contactsrp',
+//        'module' => 'SalesDocs',
+//        'source' => 'non-db',
+//    ];
+//    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['salesdocs'] = [
+//        'name' => 'salesdocs',
+//        'type' => 'link',
+//        'vname' => 'LBL_SALESDOCS',
+//        'relationship' => 'salesdocs_contacts',
+//        'module' => 'SalesDocs',
+//        'source' => 'non-db',
+//    ];
+//}
 
-if (file_exists("extensions/modules/ProcurementDocs")) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['procurementdoc'] = [
-        'name' => 'procurementdoc',
-        'type' => 'link',
-        'vname' => 'LBL_PROCUREMENTDOCS',
-        'relationship' => 'procurementdocs_contacts',
-        'module' => 'ProcurementDocs',
-        'source' => 'non-db'
-    ];
-}
+//if (file_exists("extensions/modules/ProcurementDocs")) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['procurementdoc'] = [
+//        'name' => 'procurementdoc',
+//        'type' => 'link',
+//        'vname' => 'LBL_PROCUREMENTDOCS',
+//        'relationship' => 'procurementdocs_contacts',
+//        'module' => 'ProcurementDocs',
+//        'source' => 'non-db'
+//    ];
+//}
 
-if (file_exists("extensions/modules/ContactsOnlineProfiles")) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['contactsonlineprofiles'] = [
-        'name' => 'contactsonlineprofiles',
-        'type' => 'link',
-        'vname' => 'LBL_CONTACTSONLINEPROFILES',
-        'relationship' => 'contact_contactonlineprofiles',
-        'module' => 'ContactsOnlineProfiles',
-        'source' => 'non-db',
-    ];
-}
-if (file_exists("extensions/modules/ContactCCDetails")) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['contactccdetails'] = [
-        'name' => 'contactccdetails',
-        'vname' => 'LBL_CONTACTCCDETAILS',
-        'type' => 'link',
-        'relationship' => 'contacts_contactccdetails',
-        'link_type' => 'one',
-        'source' => 'non-db',
-        'duplicate_merge' => false,
-        'default' => true, //UI: load related beans on contact load. module property required!
-        'module' => 'ContactCCDetails'
-    ];
-}
-if (file_exists("extensions/modules/ServiceOrders")) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['serviceorders'] = [
-        'name' => 'serviceorders',
-        'type' => 'link',
-        'relationship' => 'serviceorders_contacts',
-        'source' => 'non-db',
-        'vname' => 'LBL_SERVICEORDERS',
-        'module' => 'ServiceOrders',
-        'default' => false
-    ];
-}
+//if (file_exists("extensions/modules/ContactsOnlineProfiles")) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['contactsonlineprofiles'] = [
+//        'name' => 'contactsonlineprofiles',
+//        'type' => 'link',
+//        'vname' => 'LBL_CONTACTSONLINEPROFILES',
+//        'relationship' => 'contact_contactonlineprofiles',
+//        'module' => 'ContactsOnlineProfiles',
+//        'source' => 'non-db',
+//    ];
+//}
+//if (file_exists("extensions/modules/ContactCCDetails")) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['contactccdetails'] = [
+//        'name' => 'contactccdetails',
+//        'vname' => 'LBL_CONTACTCCDETAILS',
+//        'type' => 'link',
+//        'relationship' => 'contacts_contactccdetails',
+//        'link_type' => 'one',
+//        'source' => 'non-db',
+//        'duplicate_merge' => false,
+//        'default' => true, //UI: load related beans on contact load. module property required!
+//        'module' => 'ContactCCDetails'
+//    ];
+//}
+//if (file_exists("extensions/modules/ServiceOrders")) {
+//    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['serviceorders'] = [
+//        'name' => 'serviceorders',
+//        'type' => 'link',
+//        'relationship' => 'serviceorders_contacts',
+//        'source' => 'non-db',
+//        'vname' => 'LBL_SERVICEORDERS',
+//        'module' => 'ServiceOrders',
+//        'default' => false
+//    ];
+//}
