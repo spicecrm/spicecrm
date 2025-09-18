@@ -16,6 +16,7 @@ use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceSocket\SpiceSocket;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\modules\OutputTemplates\OutputTemplate;
 
 class OutputTemplatesController
@@ -263,8 +264,9 @@ class OutputTemplatesController
     {
         $params = $req->getParsedBody();
 
-        $templateBean = BeanFactory::getBean($args['module'], $args['id']);
-        $templateBean->body_html = $params['html'];
+        $templateBean = \SpiceCRM\data\BeanFactory::getBean($args['module'], $args['id']);
+        $field = $params['field'] ?? 'body';
+        $templateBean->$field = $params['html'];
 
         $parentBean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
 
@@ -279,11 +281,31 @@ class OutputTemplatesController
         $mailbox = BeanFactory::getBean('Mailboxes', $parentBean->mailbox_id);
         $styles = !$mailbox ? [] : [$mailbox->stylesheet];
 
-        $parsedTpl = $templateBean->parse($parentBean, null, [], $styles);
+        switch ($templateBean->_module) {
+            case 'OutputTemplates':
+                $field = 'html';
+                $html = $templateBean->parse($parentBean, $field);
+                break;
+            case 'LandingPages':
+                $parsedTpl = $templateBean->parse($parentBean, $field);
+                $field = 'html';
+                $html = $parsedTpl['content'];
+                break;
+            case 'TextMessages':
+                $field = 'description';
+                $parsedTpl = $templateBean->parse($parentBean);
+                $html = DBUtils::fromHtml(wordwrap($parsedTpl, true));
+                break;
+            default:
+                $field = 'html';
+                $parsedTpl = $templateBean->parse($parentBean, null, [], $styles);
+                $html = $parsedTpl['body_html'];
+        }
+
 
         # reset the current user for the system after parsing
         AuthenticationController::getInstance()->setCurrentUser($current_user);
 
-        return $res->withJson(['html' => $parsedTpl['body_html'], true]);
+        return $res->withJson([$field => $html, true]);
     }
 }
