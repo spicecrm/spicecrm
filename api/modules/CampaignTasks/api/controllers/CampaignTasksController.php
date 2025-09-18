@@ -365,43 +365,6 @@ class CampaignTasksController
     }
 
     /**
-     * queus the emails to be sent
-     *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     */
-    public function liveCompileEmailBody(Request $req, Response $res, array $args): Response
-    {
-        $params = $req->getParsedBody();
-        /** @var $emailTemplate EmailTemplate **/
-        $emailTemplate = BeanFactory::getBean('EmailTemplates');
-        $emailTemplate->body_html = $params['html'];
-        $bean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
-
-        $campaignTask = BeanFactory::getBean($args['module'], $args['id']);
-
-        if(!$campaignTask){
-            throw new NotFoundException("record for {$args['module']} with ID {$args['id']} not found");
-        }
-
-        # set the current user to the one assigned to the task. fallback set the admin user
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $user = BeanFactory::getBean('Users', $campaignTask->assigned_user_id ?: '1');
-        AuthenticationController::getInstance()->setCurrentUser($user);
-        $mailbox = BeanFactory::getBean('Mailboxes', $campaignTask->mailbox_id);
-        $styles = !$mailbox ? [] : [$mailbox->stylesheet];
-
-        $parsedTpl = $emailTemplate->parse($bean, null, [], $styles);
-
-        # reset the current user for the system after parsing
-        AuthenticationController::getInstance()->setCurrentUser($current_user);
-
-        return $res->withJson(['html' => $parsedTpl['body_html'], true]);
-    }
-
-    /**
      * returns a list of reports that can be used to export a campaign task target list
      *
      * @param Request $req

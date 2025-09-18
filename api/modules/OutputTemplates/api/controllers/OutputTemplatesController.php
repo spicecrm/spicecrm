@@ -3,6 +3,7 @@
 namespace SpiceCRM\modules\OutputTemplates\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\ConflictException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -249,5 +250,40 @@ class OutputTemplatesController
 
 
         return $content;
+    }
+    /**
+     * compiles the email body for a given module
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function liveCompileEmailBody(Request $req, Response $res, array $args): Response
+    {
+        $params = $req->getParsedBody();
+
+        $templateBean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
+        $templateBean->body_html = $params['html'];
+
+        $parentBean = BeanFactory::getBean($args['module'], $args['id']);
+
+        if(!$parentBean){
+            throw new NotFoundException("record for {$args['module']} with ID {$args['id']} not found");
+        }
+
+        # set the current user to the one assigned to the task. fallback set the admin user
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $user = BeanFactory::getBean('Users', $parentBean->assigned_user_id ?: '1');
+        AuthenticationController::getInstance()->setCurrentUser($user);
+        $mailbox = BeanFactory::getBean('Mailboxes', $parentBean->mailbox_id);
+        $styles = !$mailbox ? [] : [$mailbox->stylesheet];
+
+        $parsedTpl = $templateBean->parse($templateBean, null, [], $styles);
+
+        # reset the current user for the system after parsing
+        AuthenticationController::getInstance()->setCurrentUser($current_user);
+
+        return $res->withJson(['html' => $parsedTpl['body_html'], true]);
     }
 }
