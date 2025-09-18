@@ -509,7 +509,7 @@ $routes = [
     [
         'method'      => 'post',
         'route'       => '/module/{module}/{id}/livecompile/{parentmodule}/{parentid}',
-        'class'       => EmailTemplatesController::class,
+        'class'       => OutputTemplatesController::class,
         'function'    => 'liveCompileEmailBody',
         'description' => '',
         'options'     => ['validate' => true],
