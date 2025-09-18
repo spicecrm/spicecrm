@@ -263,10 +263,10 @@ class OutputTemplatesController
     {
         $params = $req->getParsedBody();
 
-        $templateBean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
+        $templateBean = BeanFactory::getBean($args['module'], $args['id']);
         $templateBean->body_html = $params['html'];
 
-        $parentBean = BeanFactory::getBean($args['module'], $args['id']);
+        $parentBean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
 
         if(!$parentBean){
             throw new NotFoundException("record for {$args['module']} with ID {$args['id']} not found");
@@ -279,7 +279,7 @@ class OutputTemplatesController
         $mailbox = BeanFactory::getBean('Mailboxes', $parentBean->mailbox_id);
         $styles = !$mailbox ? [] : [$mailbox->stylesheet];
 
-        $parsedTpl = $templateBean->parse($templateBean, null, [], $styles);
+        $parsedTpl = $templateBean->parse($parentBean, null, [], $styles);
 
         # reset the current user for the system after parsing
         AuthenticationController::getInstance()->setCurrentUser($current_user);
