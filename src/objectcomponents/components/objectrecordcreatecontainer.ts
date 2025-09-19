@@ -77,16 +77,17 @@ export class ObjectRecordCreateContainer implements OnInit {
         let params = this.navigationtab.activeRoute.params;
         this.model.module = params.module;
         this.model.id = params.id;
-        this.model.initialize();
-        this.model.isNew = true;
-
-        // start editing
-        this.model.startEdit();
 
         // set the data we giot passed in
         if(this.navigationtab.tabdata?.data) {
             this.model.setData(this.navigationtab.tabdata.data);
         }
+
+        this.model.initialize();
+        this.model.isNew = true;
+
+        // start editing
+        this.model.startEdit();
 
         if(!this.componentconfig) {
             this.componentconfig = this.metadata.getComponentConfig(this.constructor.name, this.model.module);

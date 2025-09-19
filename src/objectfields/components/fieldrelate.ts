@@ -116,7 +116,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldconfig.relatefilterfield);
         if (fieldDefs) {
             this.relateFilter = {
-                module: this.relateType,
+                module: (this.fieldconfig.relatefiltermodule ? this.fieldconfig.relatefiltermodule : this.relateType),
                 relationship: this.fieldconfig.relatefilterrelationship,
                 id: this.model.getField(fieldDefs.id_name),
                 display: this.model.getField(this.fieldconfig.relatefilterfield),

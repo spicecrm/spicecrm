@@ -1,8 +1,8 @@
 /**
  * @module AdminComponentsModule
  */
-import {Injectable} from '@angular/core';
-import {Subject, Observable} from 'rxjs';
+import { EventEmitter, Injectable } from '@angular/core';
+import { Subject, Observable, BehaviorSubject } from 'rxjs';
 
 import {backend} from '../../services/backend.service';
 import {modelutilities} from '../../services/modelutilities.service';
@@ -19,7 +19,29 @@ import {administration} from "./administration.service";
  */
 export class administrationconfigurator {
 
-    public loading: boolean = false;
+    public set loading( v: boolean ) {
+        this._loading = v;
+        this.closable$.next( !( this.saving || this.loading || this.editing ));
+    };
+    public get loading(): boolean { return this._loading; }
+    public _loading: boolean = false;
+
+    public set saving( v: boolean ) {
+        this._saving = v;
+        this.closable$.next( !( this.saving || this.loading || this.editing ));
+    };
+    public get saving(): boolean { return this._saving; }
+    public _saving = false;
+
+    public set editing( v: boolean ) {
+        this._editing = v;
+        this.closable$.next( !( this.saving || this.loading || this.editing ));
+    };
+    public get editing(): boolean { return this._editing; }
+    public _editing = false;
+
+    public closable$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>( !( this.saving || this.loading || this.editing ) );
+    public dataChanged$ = new EventEmitter();
 
     public dictionary: string = '';
     public entries: any = [];
@@ -122,6 +144,7 @@ export class administrationconfigurator {
                 id: newId
             }
         });
+        this.editing = this.isEditModeGeneral();
     }
 
     /**
@@ -158,10 +181,14 @@ export class administrationconfigurator {
                 this.reloadCache();
                 saveModal.emit(true);
                 retSubject.next(true);
+                this.editing = this.isEditModeGeneral();
+                this.saving = false;
+                this.dataChanged$.emit();
             }, error: (e) => {
                 this.toast.sendToast('MSG_ERROR_SAVING_RECORD', 'error')
                 saveModal.emit(true);
                 retSubject.error(e);
+                this.saving = false;
             }
         });
 
@@ -178,6 +205,7 @@ export class administrationconfigurator {
                 this.backend.deleteRequest('configuration/configurator/' + this.dictionary + '/' + id).subscribe(status => {
                     this.entries.splice(index, 1);
                     this.reloadCache();
+                    this.dataChanged$.emit();
                 });
                 return true;
             }
@@ -192,6 +220,7 @@ export class administrationconfigurator {
             if (entry.id === id) {
                 entry.mode = 'edit';
                 entry.backup = JSON.parse(JSON.stringify(entry.data));
+                this.editing = true;
                 return true;
             }
         });
@@ -210,6 +239,7 @@ export class administrationconfigurator {
                     delete(entry.backup);
                     entry.mode = '';
                 }
+                this.editing = this.isEditModeGeneral();
                 return true;
             }
         });
@@ -242,6 +272,7 @@ export class administrationconfigurator {
                     new_entry.id = this.modelutilities.generateGuid();
                     new_entry.data.id = new_entry.id;
                     this.entries.unshift(new_entry);
+                    this.editing = true;
                     return true;
                 }
             }
@@ -271,5 +302,10 @@ export class administrationconfigurator {
                 return a.data[this.sorting.field] < b.data[this.sorting.field] ? 1 : -1;
             }
         });
+    }
+
+    public isEditModeGeneral(): boolean
+    {
+        return this.entries.some( entry => entry.mode === 'edit' || entry.mode === 'new' );
     }
 }
