@@ -62,7 +62,8 @@ $routes = [
             ]
         ]
     ],
-    [
+
+   /* [
         'method'      => 'post',
         'route'       => '/module/EmailTemplates/{id}/livecompile/{parentmodule}/{parentid}',
         'class'       => EmailTemplatesController::class,
@@ -104,7 +105,7 @@ $routes = [
                 'required' => false
             ]
         ]
-    ],
+    ],*/
 
 ];
 $RESTManager->registerRoutes($routes);

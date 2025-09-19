@@ -2108,7 +2108,7 @@ class SpiceBean
 
             $handlerClass = $domain->getHandlerClass();
 
-            if (!$handlerClass) continue;
+            if (!$handlerClass || !class_exists($handlerClass)) continue;
 
             $fields = $domain->getFields(new SpiceDictionaryItem($item['id']));
             $curVals = [];
