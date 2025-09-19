@@ -29,7 +29,7 @@ export class DictionaryManagerFilterItemsPipe implements PipeTransform {
             const isCurrentItem = item.id === currentDictionaryItem;
             const isGlobal = item.scope === 'g';
             const isNotCustomized = !customItems.has(item.name);
-            const matchesFilterTerm = !filterTerm || item.name.toLowerCase().includes(filterTerm.toLowerCase());
+            const matchesFilterTerm = !filterTerm || (item.name && item.name.toLowerCase().includes(filterTerm.toLowerCase()));
             const matchesDefinition = item.sysdictionarydefinition_id === currentDictionaryDefinition;
             const matchesDraftFilter = !draftOnly || item.status === 'd';
 

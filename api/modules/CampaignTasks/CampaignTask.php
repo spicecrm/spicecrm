@@ -504,7 +504,10 @@ class CampaignTask extends SpiceBean
             /** @var Person $seed */
             $seed = BeanFactory::getBean($queuedEmail['target_type'], $queuedEmail['target_id']);
 
-            $emailAddress = BeanFactory::getBean('EmailAddresses')->getEmailAddressForBean($seed, $queuedEmail['email_addr_bean_rel_id']);
+            if($seed) {
+                $emailAddress = BeanFactory::getBean('EmailAddresses')->getEmailAddressForBean($seed, $queuedEmail['email_addr_bean_rel_id']);
+            }
+
             $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
             $campaignLog->activity_type = "error";
 
@@ -512,11 +515,15 @@ class CampaignTask extends SpiceBean
             if (!$seed) {
                 $campaignLog->activity_comment = 'LBL_ERROR_LOADING_RECORD';
 
+            } else if (empty($emailAddress?->email_address) && empty($queuedEmail['email_addr_bean_rel_id'])) {
+
+                $campaignLog->activity_comment = 'LBL_ERROR_LOADING_RELATED_EMAIL';
+
             } else if (empty($emailAddress?->email_address)) {
 
                 $campaignLog->activity_comment = 'ERR_NO_PRIMARY_EMAIL';
 
-            } else if ($this->disable_inactive_check != 1 && $seed->is_inactive) {
+            }  else if ($this->disable_inactive_check != 1 && $seed->is_inactive) {
 
                 $campaignLog->activity_comment = 'LBL_IS_INACTIVE';
 
@@ -531,7 +538,7 @@ class CampaignTask extends SpiceBean
                 # try to send the email after the pre send checks
             } else {
 
-                $email = $this->sendEmail($seed, $emailAddress->email_address,true, false, ['CampaignLog' => $campaignLog]);
+                $email = $this->sendEmail($seed, $emailAddress->email_address,$this->save_emails == 1, false, ['CampaignLog' => $campaignLog]);
 
                 if ( $email->status === 'sent' or $email->status === 'intercepted' ) {
                     $campaignLog->activity_type = $email->status;
@@ -653,16 +660,16 @@ class CampaignTask extends SpiceBean
             SpiceAttachments::cloneAttachmentsForBean('Emails', $email->id, 'CampaignTasks', $this->id, $saveEmail, $categoryId)
         );
 
+        if (isset($addBeans['CampaignLog'])) {
+            $email->registerTrackingParentData('CampaignLog', $addBeans['CampaignLog']->id);
+        }
+
         if($saveEmail){
             $email->parent_type = $seed->_module;
             $email->parent_id = $seed->id;
             $email->to_be_sent_now = true;
 
-            if (isset($addBeans['CampaignLog'])) {
-                $email->registerTrackingParentData('CampaignLog', $addBeans['CampaignLog']->id);
-            }
             $email->save(false, false);
-
         } else {
 
             try {

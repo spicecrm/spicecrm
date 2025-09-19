@@ -28,7 +28,7 @@ class SpiceDictionaryRelationshipsController
         // get the body
         $body = $req->getParsedBody();
 
-        SpiceDictionaryRelationships::getInstance()->add($body['relationship'], $body['relationshippolymorphs'], $body['relationshipFields']);
+        SpiceDictionaryRelationships::getInstance()->add($body['relationship'], $body['relationshippolymorphs'] ?: [], $body['relationshipFields'] ?: []);
 
         return $res->withJson(['success' => true]);
     }
