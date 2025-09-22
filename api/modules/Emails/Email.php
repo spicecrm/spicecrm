@@ -67,6 +67,8 @@ class Email extends SpiceBean
     const STATUS_CREATED = 'created';
 
     const STATUS_DRAFT = 'draft';
+    const STATUS_SENT = 'sent';
+    const STATUS_SEND_ERROR = 'send_error';
 
     const TYPE_INBOUND = 'inbound';
     const TYPE_OUTBOUND = 'out';
@@ -250,10 +252,10 @@ class Email extends SpiceBean
                 }
 
                 if ($result['result'] == true) {
-                    $this->status = 'sent';
+                    $this->status = self::STATUS_SENT;
 
                 } else {
-                    $this->status = $result['errors'] ? 'send_error' : 'created';
+                    $this->status = $result['errors'] ? self::STATUS_SEND_ERROR : self::STATUS_CREATED;
                 }
 
                 $this->new_with_id = false;
