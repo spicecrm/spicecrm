@@ -91,14 +91,14 @@ class One2MBeanRelationship extends One2MRelationship
             ];
 
             if ($relationship->relationship->rhs_linkdefault) {
-                $leftFieldDef['fielddefinition']['default'] = true;
+                $leftFieldDef['default'] = true;
             }
 
             if($relationship->relationship->rhs_sortfield) {
 
                 $rightSortField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($rightDefinition->name, $relationship->relationship->rhs_sortfield);
 
-                $leftFieldDef['fielddefinition']['sort'] = [
+                $leftFieldDef['sort'] = [
                     'sortfield' => $rightSortField->name,
                     'sortdirection' => $relationship->relationship->rhs_sortdirection ? strtoupper($relationship->relationship->rhs_sortdirection) : 'ASC'
                 ];
