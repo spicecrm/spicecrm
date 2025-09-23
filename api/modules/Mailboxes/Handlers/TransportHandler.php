@@ -182,9 +182,11 @@ abstract class TransportHandler
 
         // set the date sent
         $email->date_sent = $timedate->nowDb();
+        $email->status = $email::STATUS_SENT;
         $result = $this->dispatch( $message, $email);
         }
         catch (Exception $exception) {
+            $email->status = $email::STATUS_SEND_ERROR;
             $result = new DispatchResponse(false, [
                 'errors' => $exception->getMessage(),
             ]);
