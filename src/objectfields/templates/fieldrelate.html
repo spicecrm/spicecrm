@@ -29,7 +29,7 @@
                     </div>
                     <div [class.slds-hide]="!!model.data[relateIdField]" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" [ngClass]="getFieldClass()">
                         <input #focus [disabled]="disabled" type="text" class="slds-input slds-combobox__input" [(ngModel)]="relateSearchTerm" (blur)="closePopups()" (focus)="onFocus()" [placeholder]="placeholder" [autocomplete]="fieldid" role="combobox"/>
-                        <button (click)="searchWithModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon icon="search"></system-button-icon></button>
+                        <button (click)="searchWithModal()" [disabled]="disabled" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon icon="search"></system-button-icon></button>
                     </div>
                     <div class="slds-dropdown slds-dropdown_fluid" role="listbox" *ngIf="!disablerecent || !disablesearch">
                         <field-lookup-recent *ngIf="!disablerecent && (relateSearchTerm === '' && !fieldconfig.modulefilter && !relatedfilterrequired)"  [inputElement]="focus" [module]="relateType" (selectedObject)="setRelated($event)"></field-lookup-recent>
