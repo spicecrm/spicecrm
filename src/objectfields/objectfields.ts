@@ -315,7 +315,8 @@ declare var _: any;
         fieldToggle,
         fieldEmailEmailAddressStatus,
         fieldVersion,
-        fieldPackage
+        fieldPackage,
+        fieldPhone
     ]
 })
 export class ObjectFields {}
