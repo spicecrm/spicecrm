@@ -39,6 +39,6 @@ export class ObjectListViewAggregateItemTerm implements OnInit {
     public ngOnInit(): void {
         this.model.module = this.aggregate.fielddetails.module;
         // convert the value to a model value .. fix for the boolean aggregate
-        this.model.setField(this.aggregate.fielddetails.field, this.model.utils.backend2spice(this.model.module, this.aggregate.fielddetails.field, this.item.key));
+        this.model.setField(this.aggregate.fielddetails.field, this.model.utils.backend2spice(this.model.module, this.aggregate.fielddetails.field,  this.item.key));
     }
 }

@@ -32,7 +32,7 @@ export class FolderViewTree implements OnInit {
         if ( val === this._selectedItem ) return;
         this._selectedItem = val;
         this.setAggregate( val );
-        this.model.setField('folder_id', val);
+        this.model.setField('folder_id', val );
     }
 
     /*

@@ -114,7 +114,7 @@ export class fieldEnumMulti extends fieldGeneric implements OnInit {
         if(newValue.length > 0){
             valueString = "^" + newValue.join('^,^') + "^";
         }
-        this.model.setField(this.fieldname, valueString);
+        this.model.setField(this.fieldname,valueString);
     }
 
 

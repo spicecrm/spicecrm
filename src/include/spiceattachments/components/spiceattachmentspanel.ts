@@ -157,8 +157,8 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
             let text = this.language.getLabelFormatted('LBL_EXCEEDS_MAX_ATTACHMENTS', [this.modelattachments.totalHumanFileSize, this.maxUpload]);
             this.modal.info(text, headerText);
         }
-        this.model.setField('attachments_size', this.modelattachments.totalFileSize, false);
-        this.model.setField('attachments_count', this.modelattachments.files.length, false);
+        this.model.setField('attachments_size', this.modelattachments.totalFileSize, false, false);
+        this.model.setField('attachments_count', this.modelattachments.files.length, false, false);
     }
 
     /**

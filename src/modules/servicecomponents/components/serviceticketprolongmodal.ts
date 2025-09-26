@@ -126,7 +126,7 @@ export class ServiceTicketProlongModal {
 
             } else { // componentset in use
                 // save prolongatiom
-                this.model.setField('name', this.model.getField('assigned_user_name') + '/' + this.prolongDate.format("YYYY-MM-DD"));
+                this.model.setField('name',  this.model.getField('assigned_user_name') + '/' + this.prolongDate.format("YYYY-MM-DD"));
                 this.view.setViewMode();
                 this.model.save().subscribe(success => {
                     // save ticket

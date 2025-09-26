@@ -52,9 +52,9 @@ export class QuestionsManagerAddModal implements OnInit {
             });
         } else {
             this.model.initializeModel();
-            this.model.setField('questionset_id', this.questionset.id);
-            this.model.setField('id', this.model.id);
-            this.model.setField('questiontype', this.questiontype);
+            this.model.setField('questionset_id', this.questionset.id );
+            this.model.setField('id', this.model.id );
+            this.model.setField('questiontype', this.questiontype );
         }
     }
 

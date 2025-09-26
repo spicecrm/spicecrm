@@ -46,7 +46,7 @@ export class fieldJson extends fieldGeneric {
             this.setValid(false);
         }
         if ( !error ) {
-            this.model.setField(this.fieldname, val);
+            this.model.setField( this.fieldname, val );
         }
     }
 

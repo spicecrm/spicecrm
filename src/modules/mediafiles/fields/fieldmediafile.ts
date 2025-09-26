@@ -117,10 +117,10 @@ export class fieldMediaFile extends fieldGeneric implements OnInit, AfterViewIni
     public mediaChange( data ): void {
         if ( data.isDirty ) {
             // console.log( 'mediaChange, dirty' );
-            this.model.setField(this.fieldname, data.image);
+            this.model.setField( this.fieldname, data.image );
             this.fileformat = data.metaData.fileformat;
             if( data.isImported && this.fieldconfig.copyFilenameToFieldName && data.metaData.filename && !this.model.getField( this.fieldForName ) ) {
-                this.model.setField(this.fieldForName, data.metaData.filename.replace(/\.[^\.]+$/, '').replace(/_/, ' '));
+                this.model.setField( this.fieldForName, data.metaData.filename.replace( /\.[^\.]+$/, '' ).replace( /_/, ' ' ) );
             }
         } else {
             // console.log( 'mediaChange, not dirty' );
@@ -136,7 +136,7 @@ export class fieldMediaFile extends fieldGeneric implements OnInit, AfterViewIni
     }
 
     public set fileformat( value ) {
-        this.model.setField(this.fieldForFileformat, value);
+        this.model.setField( this.fieldForFileformat, value );
     }
     public get fileformat(): number {
         return this.model.getField( this.fieldForFileformat );
