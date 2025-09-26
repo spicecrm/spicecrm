@@ -32,7 +32,7 @@ export class MailboxesProcessors {
 
     public addProcessor() {
         if (!this.model.getField('mailbox_processors')) {
-            this.model.setField('mailbox_processors', []);
+            this.model.setField('mailbox_processors',  []);
         }
 
         this.model.getField('mailbox_processors').push({

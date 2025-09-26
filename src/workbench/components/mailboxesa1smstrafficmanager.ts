@@ -26,7 +26,7 @@ export class MailboxesA1SmsTrafficManager {
     ) {
         let settings = this.model.getField('settings');
         if (!settings || (settings && settings.length == 0)) {
-            this.model.setField('settings', {
+            this.model.setField('settings',  {
                 a1_username: "",
                 a1_password: "",
                 a1_sender: "",

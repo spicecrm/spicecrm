@@ -88,7 +88,7 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
                 // if the atring is an email address add it .. else do search
                 if (this.validateEmail(this.addAddress)) {
                     if (!this.model.getField('recipient_addresses')) {
-                        this.model.setField('recipient_addresses', [], false);
+                        this.model.setField('recipient_addresses', [], false, false);
                     }
 
                     this.model.getField('recipient_addresses').push({
@@ -152,7 +152,7 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
     public selectAddress(address) {
 
         if (!this.model.getField('recipient_addresses')) {
-            this.model.setField('recipient_addresses', [], false);
+            this.model.setField('recipient_addresses', [], false, false);
         }
 
         this.model.getField('recipient_addresses').push({
