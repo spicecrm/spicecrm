@@ -22,7 +22,7 @@ export class ObjectRelatedCardFile {
     /**
      * holds the big thumbnail value
      */
-    @Input() public bigThumbnail: boolean = false;
+    @Input() public displayAs: string = 'file';
 
     /**
      * disables the click event
