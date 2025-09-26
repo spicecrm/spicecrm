@@ -488,7 +488,7 @@ class SpiceDictionaryDefinition
             (new SpiceDictionaryIndex($index['id']))->activate(true, $this);
         }
 
-        $relationships = SpiceDictionaryRelationships::getInstance()->getDictionaryRelationships($this->id);
+        $relationships = SpiceDictionaryRelationships::getInstance()->getDictionaryRelationships($this);
 
         foreach ($relationships as $relationship){
             (new SpiceDictionaryRelationship($relationship['id']))->activate();
