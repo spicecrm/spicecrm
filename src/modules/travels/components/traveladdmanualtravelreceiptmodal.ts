@@ -2,12 +2,17 @@ import {Component, ComponentRef, Injector, OnInit, SkipSelf} from '@angular/core
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
 import {metadata} from "../../../services/metadata.service";
-import moment from "moment/moment";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {modal} from "../../../services/modal.service";
 import {Subject} from "rxjs";
 import {toast} from "../../../services/toast.service";
 import {language} from "../../../services/language.service";
+import {session} from "../../../services/session.service";
+
+/**
+ * @ignore
+ */
+declare var moment: any;
 
 @Component({
     selector: 'travel-add-manual-travel-receipt-modal',
@@ -47,7 +52,8 @@ export class TravelAddManualTravelReceiptModal implements OnInit {
         private userpreferences: userpreferences,
         private toast: toast,
         private language: language,
-        public injector: Injector
+        public injector: Injector,
+        public session: session
     ) {
         this.model.module = 'TravelReceipts';
         this.loadConfig();
