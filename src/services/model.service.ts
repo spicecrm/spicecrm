@@ -1107,9 +1107,8 @@ export class model implements OnDestroy {
      * @param field
      * @param value
      * @param silent
-     * @param setDirty
      */
-    public setField(field, value, silent: boolean = false, setDirty: boolean = true) {
+    public setField(field, value, silent: boolean = false) {
         if (!field) return false;
 
         const previousValue = this.data[field];
