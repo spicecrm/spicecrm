@@ -62,7 +62,7 @@ export class HL7ManagerRule {
 
     public toggleActive( active: boolean ) {
         this.rule.active = active;
-        this.model.setField('active', active );
+        this.model.setField('active', active);
         this.model.save(true);
         return;
     }
