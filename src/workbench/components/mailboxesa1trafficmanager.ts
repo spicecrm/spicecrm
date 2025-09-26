@@ -34,7 +34,7 @@ export class MailboxesA1TrafficManager implements OnInit {
 
     public ngOnInit() {
         if (this.model.getField('settings').length === 0) {
-            this.model.setField('settings',  {
+            this.model.setField('settings', {
                 api_key: "",
                 imap_pop3_display_name: "",
                 imap_pop3_username: "",

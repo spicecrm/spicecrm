@@ -43,7 +43,7 @@ export class QuestionsManagerSpecificID {
         this.editMode = true;
         this.model.module = 'Questions';
         this.model.id = this.question.id;
-        this.model.setField('specific_id', this.question.specific_id );
+        this.model.setField('specific_id', this.question.specific_id);
     }
 
     public cancel() {
@@ -55,7 +55,7 @@ export class QuestionsManagerSpecificID {
     }
 
     public set specificID( val: any ) {
-        this.model.setField('specific_id', val );
+        this.model.setField('specific_id', val);
     }
 
 }

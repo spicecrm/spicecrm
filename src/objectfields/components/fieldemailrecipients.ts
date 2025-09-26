@@ -84,7 +84,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
      * @param val the new value
      */
     set value(val) {
-        this.model.setField('recipient_addresses', val, false, false);
+        this.model.setField('recipient_addresses', val, false);
     }
 
     /**
