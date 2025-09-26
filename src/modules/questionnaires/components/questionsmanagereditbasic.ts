@@ -68,7 +68,7 @@ export class QuestionsManagerEditBasic implements OnInit {
      * Write the question parameters object to the field "questionparameter", stored as JSON string.
      */
     public writeQuestionparametersToModel(): void {
-        this.model.setField('questionparameter', JSON.stringify( this.questionparameters ));
+        this.model.setField('questionparameter', JSON.stringify(this.questionparameters));
     }
 
     /**
@@ -76,7 +76,7 @@ export class QuestionsManagerEditBasic implements OnInit {
      * @param val The name of the question.
      */
     public set name( val: string ) {
-        this.model.setField('name',val);
+        this.model.setField('name', val);
     }
 
     /**
@@ -91,7 +91,7 @@ export class QuestionsManagerEditBasic implements OnInit {
      * @param val The question text of the question.
      */
     public set questiontext( val: string ) {
-        this.model.setField('questiontext', val );
+        this.model.setField('questiontext', val);
     }
 
     /**
@@ -105,7 +105,7 @@ export class QuestionsManagerEditBasic implements OnInit {
      * Setter for the answer required option.
      */
     public set answerRequired( val: boolean ) {
-        this.model.setField('answer_required', val );
+        this.model.setField('answer_required', val);
     }
 
     /**

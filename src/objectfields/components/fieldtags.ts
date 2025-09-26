@@ -62,7 +62,7 @@ export class fieldTags extends fieldGeneric {
         if( tag !== '' ) {
             let tags = this.objecttags;
             tags.push( tag );
-            this.model.setField( 'tags', JSON.stringify( tags ) );
+            this.model.setField('tags', JSON.stringify(tags));
         }
     }
 
