@@ -1125,11 +1125,6 @@ export class model implements OnDestroy {
             this.data$.next(this.data);
         }
 
-        // also update the backupData if we do not consider this as something that should mark the model as dirty
-        if(!setDirty && !_.isEmpty(this.backupData)){
-            this.backupData[field] = value;
-        }
-
         // run the duplicate check
         this.duplicateCheckOnChange([field]);
     }
