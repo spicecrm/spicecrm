@@ -9,7 +9,7 @@
                         @if (modelattachments.loading){
                             <system-spinner size="20"></system-spinner>
                         } @else {
-                            ({{filteredFiles.length}}/{{modelattachments._files.length}})
+                            ({{filteredFiles.length}}/{{modelattachments.files.length}})
                         }
                     </span>
                 </h2>
@@ -121,11 +121,6 @@
                                                 }
                                             </div>
                                         </th>
-                                        <th scope="col" class="slds-is-resizable">
-                                            <div class="slds-truncate slds-p-left--x-small">
-                                                <system-label label="LBL_TYPE"></system-label>
-                                            </div>
-                                        </th>
                                         <th scope="col" style="width: 3rem"></th>
                                     </tr>
                                     </thead>
@@ -134,14 +129,13 @@
                                             <tr>
                                                 <td class="slds-truncate">
                                                     <a (click)="openInTab(file)" href="javascript:void(0)">
-                                                        <span [system-title]="file.filename" class="slds-grid"><system-icon size="xx-small" [icon]="file.file_mime_type == 'folder' ? 'folder' : 'file'"/>{{file.filename}}</span>
+                                                        <span [system-title]="file.filename" class="slds-grid"><system-icon size="xx-small" [icon]="file.file_mime_type == 'folder' ? 'folder' : 'file'"/>{{filename(file)}}</span>
                                                     </a>
                                                 </td>
                                                 <td class="slds-truncate">
                                                     <span>{{fileSize(file.filesize)}}</span>
                                                 </td>
                                                 <td class="slds-truncate">{{filedate(file.date)}}</td>
-                                                <td class="slds-truncate">{{file.file_mime_type == 'folder' ? 'folder' : 'file'}}</td>
                                                 <td><object-file-action-menu [file]="file"/></td>
                                             </tr>
                                         }
