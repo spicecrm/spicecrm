@@ -38,7 +38,7 @@ export class QuestionsetTypeParametersText implements OnInit {
         config.text = {
             sequenced: this.sequenced
         };
-        this.model.setField('questiontypeparameter', JSON.stringify( config ));
+        this.model.setField('questiontypeparameter', JSON.stringify(config));
     }
 
     public click(): void {
