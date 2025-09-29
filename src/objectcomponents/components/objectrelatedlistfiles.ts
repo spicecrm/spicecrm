@@ -9,6 +9,7 @@ import {
     ElementRef,
     Injector,
     Input,
+    effect,
     OnChanges,
     OnDestroy,
     Renderer2,
@@ -32,6 +33,11 @@ import {AgreementsAddRevisionModal} from "../../modules/agreements/components/ag
 import {userpreferences} from "../../services/userpreferences.service";
 import {navigationtab} from "../../services/navigationtab.service";
 import {Router} from "@angular/router";
+
+/**
+ * @ignore
+ */
+declare var moment: any;
 
 /**
  * a generic component that renders a panel in teh contect of a model. This allows uploading files and also has a drag and drop functionality to cimply drop files over the component and upload the file
@@ -208,6 +214,12 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
 
         // if the config exists, limit the file based on it
         this.fileTypeActionObject = this.configurationService.getCapabilityConfig('admin')?.fileTypes;
+
+        effect(() => {
+            if (this.modelattachments.fileActionPerformed()) {
+                this.sort(this.sortParams.field, false);
+            }
+        });
     }
 
     /**
@@ -245,6 +257,11 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
 
         // set to open if we have set to alwysopen per config
         if(this.componentconfig.alwaysExpanded) this.isopen = true;
+
+        let fileViewPref = this.userpreferences.getPreference('fileview');
+        if (fileViewPref) {
+            this.toggleView(fileViewPref);
+        }
     }
 
     /**
@@ -646,11 +663,16 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
     }
 
     public filedate(date) {
-        return date.format(this.userpreferences.getDateFormat());
+        let formattedDate = date ? new moment(date) : '';
+        return formattedDate.format(this.userpreferences.getDateFormat());
     }
 
     public fileSize(size): any {
         return size ? this.modelattachments.humanFileSize(size) : '';
+    }
+
+    public filename(file) {
+        return file.display_name ? file.display_name : file.filename;
     }
 
     public openInTab(file) {
@@ -674,17 +696,27 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         this.sortParams.field = sortParam;
 
         this.filteredFiles.sort((a, b) => {
+            const aIsFolder = a.file_mime_type === 'folder';
+            const bIsFolder = b.file_mime_type === 'folder';
+
+            if (aIsFolder !== bIsFolder) {
+                return aIsFolder ? -1 : 1;
+            }
+
             let aVal = a[sortParam];
             let bVal = b[sortParam];
 
+            if (this.sortParams.field == 'filename') {
+                aVal = this.filename(a);
+                bVal = this.filename(b);
+            }
+
             if (sortParam == 'date') {
-                // Handle as dates
                 aVal = new Date(aVal);
                 bVal = new Date(bVal);
                 const comparison = aVal - bVal;
                 return this.sortParams.order === 'desc' ? -comparison : comparison;
             } else {
-                // Handle as strings/numbers
                 const comparison = String(aVal).localeCompare(
                     String(bVal),
                     undefined,
