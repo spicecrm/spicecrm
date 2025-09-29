@@ -81,7 +81,7 @@ export class fieldParent extends fieldGeneric implements OnInit {
         this.determineParentTypes();
         // initialize the parenttype
         if (this.view.isEditMode() && (!this.model.getField(this.parentTypeField) || this.model.getField(this.parentTypeField) == '')) {
-            this.model.setField(this.parentTypeField, this.parentTypes[0], false, false);
+            this.model.setField(this.parentTypeField, this.parentTypes[0], false);
         }
 
     }

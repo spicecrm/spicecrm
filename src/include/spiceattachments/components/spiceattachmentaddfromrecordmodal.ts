@@ -130,7 +130,7 @@ export class SpiceAttachmentAddFromRecordModal {
      */
     set selectAll(val) {
         this.modelattachments._files.forEach(f => {
-            if (f.file_mime_type != 'folder' && f.folder_id === (this.modelattachments._folderId ?? '')) {
+            if (f.file_mime_type != 'folder' && (!f.folder_id && !this.modelattachments._folderId || (f.folder_id === this.modelattachments._folderId))) {
                 f.selected = val;
             }
         });
@@ -140,7 +140,7 @@ export class SpiceAttachmentAddFromRecordModal {
      * true if all files are selected in the given folder
      */
     get selectAll() {
-        return this.modelattachments._files.filter(f => f.file_mime_type != 'folder' && f.folder_id === (this.modelattachments._folderId ?? '')).length == this.selectedFilesInFolder;
+        return this.modelattachments._files.filter(f => f.file_mime_type != 'folder' && (!f.folder_id && !this.modelattachments._folderId || (f.folder_id === this.modelattachments._folderId))).length == this.selectedFilesInFolder;
     }
 
     get selectedFiles() {
@@ -152,7 +152,7 @@ export class SpiceAttachmentAddFromRecordModal {
     }
 
     get selectedFilesInFolder(): number {
-        return this.modelattachments._files.filter(f => f.selected && f.folder_id === (this.modelattachments._folderId ?? '')).length
+        return this.modelattachments._files.filter(f => f.selected && (!f.folder_id && !this.modelattachments._folderId || (f.folder_id === this.modelattachments._folderId))).length
     }
 
     /**

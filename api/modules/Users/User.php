@@ -42,10 +42,10 @@ use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\templates\person\Person;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -56,7 +56,7 @@ use SpiceCRM\modules\UserPreferences\UserPreference;
 // workaround for spiceinstaller
 
 // User is used to store customer information.
-class User extends Person
+class User extends SpiceBean
 {
     var $user_preferences;
     var $impersonating_user_id;
@@ -229,21 +229,21 @@ class User extends Person
 
 
         // is_group & portal should be set to 0 by default
-        if (!isset($this->is_group)) {
-            $this->is_group = 0;
-        }
-        if (!isset($this->portal_only)) {
-            $this->portal_only = 0;
-        }
+//        if (!isset($this->is_group)) {
+//            $this->is_group = 0;
+//        }
+//        if (!isset($this->portal_only)) {
+//            $this->portal_only = 0;
+//        }
 
         // wp: do not save user_preferences in this table, see user_preferences module
         $this->user_preferences = '';
 
-        // if this is an admin user, do not allow is_group or portal_only flag to be set.
-        if ($this->is_admin) {
-            $this->is_group = 0;
-            $this->portal_only = 0;
-        }
+//        // if this is an admin user, do not allow is_group or portal_only flag to be set.
+//        if ($this->is_admin) {
+//            $this->is_group = 0;
+//            $this->portal_only = 0;
+//        }
 
         // If ...
         // • the user name has been changed, or
@@ -265,7 +265,7 @@ class User extends Person
         parent::save($check_notify, $fts_index_bean);
 
         // populate the name field
-        $this->_create_proper_name_field();
+        // $this->_create_proper_name_field();
 
         // set some default preferences when creating a new user
         if ($setNewUserPreferences) {
@@ -303,7 +303,7 @@ class User extends Person
     function get_summary_text()
     {
         //$this->_create_proper_name_field();
-        return $this->name;
+        return $this->user_name;
     }
 
     /**
@@ -351,6 +351,20 @@ class User extends Person
             }
         }
 
+        // auto self healing and set email 1 - to be @deprecated inj one of the future releases
+        if(empty($this->user_email)){
+            if($this->email1) {
+                // populate the email field
+                $this->user_email = $this->email1;
+
+                // update the user and cut the email1 field
+                $this->db->query("UPDATE users SET user_email = '{$this->user_email}' WHERE id = '{$this->id}'");
+                $this->db->query("UPDATE email_addr_bean_rel SET deleted = 1 WHERE bean_id = '{$this->id}' AND bean_module='Users' AND deleted = 0");
+            }
+        } else {
+            $this->email1 = $this->user_email;
+        }
+
         return $ret;
     }
 
@@ -377,6 +391,11 @@ class User extends Person
         }
 
         $this->getPrimaryOrgUnit();
+    }
+
+    public function retrieve_by_email_address($email, $encode = true, $deleted = true, $relationships = true)
+    {
+        return $this->retrieve_by_string_fields(['user_email' => $email], $encode, $deleted, $relationships);
     }
 
     /**

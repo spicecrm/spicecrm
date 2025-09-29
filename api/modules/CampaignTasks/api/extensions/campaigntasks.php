@@ -164,64 +164,6 @@ $routes = [
         ],
     ],
     [
-        'method'      => 'post',
-        'route'       => '/module/{module}/{id}/livecompile/{parentmodule}/{parentid}',
-        'oldroute'    => '/CampaignTasks/liveCompile/{module}/{parent}',
-        'class'       => CampaignTasksController::class,
-        'function'    => 'liveCompileEmailBody',
-        'description' => '',
-        'options'     => ['validate' => true],
-        'parameters'  => [
-            'id' => [
-                'in' => 'path',
-                'type' => ValidationMiddleware::TYPE_GUID,
-                'description' => ''
-            ],
-            'module' => [
-                'in' => 'path',
-                'type' => ValidationMiddleware::TYPE_ENUM,
-                'options' => ['CampaignTasks', 'Newsletters', 'NewsletterIssues', 'EmailTemplates'],
-                'description' => 'name of parent module',
-                'example' => 'Accounts',
-                'required' => true
-            ],
-            'parentmodule' => [
-                'in' => 'path',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'description' => 'name of parent module',
-                'example' => 'Accounts',
-                'required' => true
-            ],
-            'parentid' => [
-                'in' => 'path',
-                'type' => 'guid',
-                'description' => 'if of parent bean',
-                'example' => '2816ba5c-97e7-11eb-8c42-00fffe0c4f07',
-                'required' => true
-            ],
-            'html' => [
-                'in' => 'body',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'description' => 'html string',
-                'example' => '',
-                'required' => true
-            ],
-            'field' => [
-                'in' => 'body',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'description' => 'html field',
-                'example' => '',
-                'required' => false
-            ],
-            'stylesheet_id' => [
-                'in' => 'body',
-                'type' => ValidationMiddleware::TYPE_GUID,
-                'description' => 'the ID of a stylesheet to be applied',
-                'required' => false
-            ]
-        ]
-    ],
-    [
         'method'      => 'get',
         'route'       => '/module/CampaignTasks/export/reports',
         'class'       => CampaignTasksController::class,

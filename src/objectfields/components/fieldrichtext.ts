@@ -373,7 +373,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         styleContent += styleTag?.innerHTML ?? '';
         styleTag?.remove();
 
-        this.model.setField(this.fieldname, element.innerHTML, true, false);
+        this.model.setField(this.fieldname, element.innerHTML, true);
         this._styleTag = styleContent;
 
         if (!this.fieldconfig.iframe_as_blob_url) {
