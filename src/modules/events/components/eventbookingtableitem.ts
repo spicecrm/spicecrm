@@ -113,7 +113,7 @@ export class EventBookingTableItem implements OnInit{
             () => {
                 this.isSavingParticipation = false;
             }, error => {
-                this.model.setField('participated', valueToReset );
+                this.model.setField('participated', valueToReset);
                 this.toast.sendToast('Error saving participation info.','error');
                 this.isSavingParticipation = false;
             });

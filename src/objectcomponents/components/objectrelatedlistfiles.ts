@@ -9,6 +9,7 @@ import {
     ElementRef,
     Injector,
     Input,
+    effect,
     OnChanges,
     OnDestroy,
     Renderer2,
@@ -29,6 +30,14 @@ import {backend} from "../../services/backend.service";
 import {broadcast} from "../../services/broadcast.service";
 import {Subscription} from "rxjs";
 import {AgreementsAddRevisionModal} from "../../modules/agreements/components/agreementsaddrevisionmodal";
+import {userpreferences} from "../../services/userpreferences.service";
+import {navigationtab} from "../../services/navigationtab.service";
+import {Router} from "@angular/router";
+
+/**
+ * @ignore
+ */
+declare var moment: any;
 
 /**
  * a generic component that renders a panel in teh contect of a model. This allows uploading files and also has a drag and drop functionality to cimply drop files over the component and upload the file
@@ -154,8 +163,20 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
     public toastMessage: string;
 
     /**
-     * holds the components subscriptions
-     *
+     * default sort order
+     */
+    public sortParams: {field: string, order: 'desc'|'asc'} = {
+        field: '',
+        order: 'asc'
+    }
+
+    /**
+     * uploading state
+     */
+    public isUploading: boolean = false;
+
+    /**
+     * holds the components subscriptions     *
      * @private
      */
     public subscriptions: Subscription = new Subscription();
@@ -172,6 +193,9 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
                 public elementRef: ElementRef,
                 public configurationService: configurationService,
                 public modal: modal,
+                public userpreferences: userpreferences,
+                public navigationtab: navigationtab,
+                public router: Router,
                 public injector: Injector,
                 public cdRef: ChangeDetectorRef,
     ) {
@@ -190,6 +214,12 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
 
         // if the config exists, limit the file based on it
         this.fileTypeActionObject = this.configurationService.getCapabilityConfig('admin')?.fileTypes;
+
+        effect(() => {
+            if (this.modelattachments.fileActionPerformed()) {
+                this.sort(this.sortParams.field, false);
+            }
+        });
     }
 
     /**
@@ -210,12 +240,28 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
             this.modelattachments.folderId$.subscribe({
                 next: () => {
                     this.filteredFiles = this.filterFiles();
+                    if (this.componentconfig.displayAs == 'table') {
+                        this.sort(this.sortParams.field, false);
+                    }
+                }
+            })
+        )
+
+        this.subscriptions.add(
+            this.modelattachments.attachmentDeleted$.subscribe({
+                next: () => {
+                    this.sort(this.sortParams.field, false);
                 }
             })
         )
 
         // set to open if we have set to alwysopen per config
         if(this.componentconfig.alwaysExpanded) this.isopen = true;
+
+        let fileViewPref = this.userpreferences.getPreference('fileview');
+        if (fileViewPref) {
+            this.toggleView(fileViewPref);
+        }
     }
 
     /**
@@ -326,6 +372,8 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
             this.loadCategories();
             // reload container
             this.setFilteredFiles('category', this.selectedCategoryId);
+
+            this.sort(this.sortParams.field, false);
         });
     }
 
@@ -507,14 +555,21 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
             this.selectedCategoryId = this.defaultCategoryId;
         }
 
+        this.isUploading = true;
+
         this.modelattachments.uploadAttachmentsBase64(files, (this.selectedCategoryId == '*' ? this.defaultCategoryId : this.selectedCategoryId)).subscribe({
             next: (res) => {
                 if (this.componentconfig.revComponent) {
                     this.openRevisionModal(files);
                 }
+
+                this.sort(this.sortParams.field, false);
+                this.isUploading = false;
+
             },
             error: () => {
                 this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+                this.isUploading = false;
             }
         });
     }
@@ -598,11 +653,78 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
     /**
      * toggle big thumbnail value
      */
-    public toggleBigThumbnail() {
+    public toggleView(view: string) {
         if (!this.componentconfig) {
             this.componentconfig = {};
         }
-        this.componentconfig.bigThumbnail = !this.componentconfig.bigThumbnail;
+        this.componentconfig.displayAs = view;
+
+        this.userpreferences.setPreference('fileview', view);
+    }
+
+    public filedate(date) {
+        let formattedDate = date ? new moment(date) : '';
+        return formattedDate.format(this.userpreferences.getDateFormat());
+    }
+
+    public fileSize(size): any {
+        return size ? this.modelattachments.humanFileSize(size) : '';
+    }
+
+    public filename(file) {
+        return file.display_name ? file.display_name : file.filename;
+    }
+
+    public openInTab(file) {
+        if(file.file_mime_type == 'folder') {
+            this.modelattachments.folderId = file.id;
+            this.sort(this.sortParams.field, false);
+        } else {
+            let routePrefix = '';
+            if (this.navigationtab?.tabid) {
+                routePrefix = '/tab/' + this.navigationtab.tabid;
+            }
+            this.router.navigate([`${routePrefix}/attachment/${file.id}/${this.modelattachments.module}/${this.modelattachments.id}`]);
+        }
+    }
+
+    public sort(sortParam: string, toggle: boolean = true) {
+        if (toggle) {
+            this.sortParams.order = this.sortParams.order == 'asc' ? 'desc' : 'asc';
+        }
+
+        this.sortParams.field = sortParam;
+
+        this.filteredFiles.sort((a, b) => {
+            const aIsFolder = a.file_mime_type === 'folder';
+            const bIsFolder = b.file_mime_type === 'folder';
+
+            if (aIsFolder !== bIsFolder) {
+                return aIsFolder ? -1 : 1;
+            }
+
+            let aVal = a[sortParam];
+            let bVal = b[sortParam];
+
+            if (this.sortParams.field == 'filename') {
+                aVal = this.filename(a);
+                bVal = this.filename(b);
+            }
+
+            if (sortParam == 'date') {
+                aVal = new Date(aVal);
+                bVal = new Date(bVal);
+                const comparison = aVal - bVal;
+                return this.sortParams.order === 'desc' ? -comparison : comparison;
+            } else {
+                const comparison = String(aVal).localeCompare(
+                    String(bVal),
+                    undefined,
+                    { numeric: true, sensitivity: 'base' }
+                );
+                return this.sortParams.order === 'desc' ? -comparison : comparison;
+            }
+        });
     }
 
     public toggleFolders(){

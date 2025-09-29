@@ -1107,9 +1107,8 @@ export class model implements OnDestroy {
      * @param field
      * @param value
      * @param silent
-     * @param setDirty
      */
-    public setField(field, value, silent: boolean = false, setDirty: boolean = true) {
+    public setField(field, value, silent: boolean = false) {
         if (!field) return false;
 
         const previousValue = this.data[field];
@@ -1123,11 +1122,6 @@ export class model implements OnDestroy {
 
         if (!silent) {
             this.data$.next(this.data);
-        }
-
-        // also update the backupData if we do not consider this as something that should mark the model as dirty
-        if(!setDirty && !_.isEmpty(this.backupData)){
-            this.backupData[field] = value;
         }
 
         // run the duplicate check
