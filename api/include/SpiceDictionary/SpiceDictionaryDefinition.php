@@ -509,7 +509,7 @@ class SpiceDictionaryDefinition
             (new SpiceDictionaryIndex($index['id']))->deactivate(false);
         }
 
-        $relationships = SpiceDictionaryRelationships::getInstance()->getDictionaryRelationships($this->id);
+        $relationships = SpiceDictionaryRelationships::getInstance()->getDictionaryRelationships($this);
 
         foreach ($relationships as $relationship){
             (new SpiceDictionaryRelationship($relationship['id']))->deactivate();

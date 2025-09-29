@@ -164,7 +164,7 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
 
         const fromPreferences = this.userpreferences.getPreference(`defaultmailbox_${this.scope}`);
         if (fromPreferences && this.isEditMode()) {
-            this.model.setField(this.fieldname, fromPreferences, false, false);
+            this.model.setField(this.fieldname, fromPreferences, false);
             this.setConfigSettings(fromPreferences);
         }
 
@@ -212,7 +212,7 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
         const isDisabled = !this.mailboxZipConfig || this.mailboxZipConfig == '0' || this.model.getField('downloadlink_attachments') == 1;
 
         if (isDisabled) {
-            this.model.setField('zip_compress', undefined, false, false);
+            this.model.setField('zip_compress', undefined, false);
         }
 
         return isDisabled;
