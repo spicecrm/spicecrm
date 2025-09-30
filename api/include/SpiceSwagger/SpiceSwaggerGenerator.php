@@ -48,7 +48,7 @@ class SpiceSwaggerGenerator
         $this->allExtensions = $allExtensions;
         $this->selectedRoute = $selectedRoute;
         $this->includeSubroutes = $includeSubroutes;
-        $this->modules = $modules;
+        $this->modules = $modules ?: [];
 
         $this->filterRoutes($extensions, $node);
 
