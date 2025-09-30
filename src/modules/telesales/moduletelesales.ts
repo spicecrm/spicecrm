@@ -31,6 +31,8 @@ import {DirectivesModule} from "../../directives/directives";
 import {TeleSalesCockpitStats} from "./components/telesalescockpitstats";
 import {FieldTeleSalesCockpitComplete} from "./fields/fieldtelesalescockpitcomplete";
 import {TeleSalesCockpitLockEntryButton} from "./components/telesalescockpitlockentrybutton";
+import {TeleSalesCockpitCallFlowButton} from "./components/telesalescockpitcallflowbutton";
+import {TeleSalesCockpitCallFlowModal} from "./components/telesalescockpitcallflowmodal";
 
 @NgModule({
     imports: [
@@ -59,6 +61,8 @@ import {TeleSalesCockpitLockEntryButton} from "./components/telesalescockpitlock
         TeleSalesCockpitStats,
         FieldTeleSalesCockpitComplete,
         TeleSalesCockpitLockEntryButton,
+        TeleSalesCockpitCallFlowButton,
+        TeleSalesCockpitCallFlowModal
 
     ],
     providers: [

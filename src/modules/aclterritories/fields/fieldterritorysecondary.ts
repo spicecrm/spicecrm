@@ -66,7 +66,7 @@ export class fieldTerritorySecondary extends fieldGeneric {
      * @param value an array of territory ids
      */
     set territories(value) {
-        this.model.setField('spiceacl_secondary_territories',JSON.stringify(value ? value : []));
+        this.model.setField('spiceacl_secondary_territories', JSON.stringify(value ? value : []));
     }
 
     /**

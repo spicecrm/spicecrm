@@ -9,7 +9,7 @@
                         @if (modelattachments.loading){
                             <system-spinner size="20"></system-spinner>
                         } @else {
-                            ({{filteredFiles.length}}/{{modelattachments._files.length}})
+                            ({{filteredFiles.length}}/{{modelattachments.files.length}})
                         }
                     </span>
                 </h2>
@@ -19,9 +19,39 @@
                 <button class="slds-col--bump-left slds-button slds-button--icon-border slds-m-right--xxx-small slds-button_dual-stateful" [ngClass]="{'slds-is-pressed': showFolders}" (click)="toggleFolders()" system-title="LBL_TOGGLE_BIG_THUMBNAIL">
                     <system-utility-icon size="x-small" icon="side_list"></system-utility-icon>
                 </button>
-                <button class="slds-col--bump-left slds-button slds-button--icon-border slds-m-right--xxx-small" (click)="toggleBigThumbnail()" system-title="LBL_TOGGLE_BIG_THUMBNAIL">
-                    <system-utility-icon size="x-small" [icon]="componentconfig?.bigThumbnail ? 'file' : 'ad_set'"></system-utility-icon>
-                </button>
+                <div class="slds-dropdown-trigger slds-dropdown-trigger--click slds-m-horizontal--xxx-small" aria-expanded="false"
+                     system-dropdown-trigger-simple>
+                    <button class="slds-button slds-button--icon slds-button--icon-border slds-button--neutral" aria-haspopup="true"
+                            system-title="LBL_CHANGE_VIEW">
+                        <system-button-icon icon="table" size="medium"></system-button-icon>
+                        <system-button-icon class="slds-p-left--xxx-small" icon="down" size="x-small"></system-button-icon>
+                    </button>
+                    <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions slds-p-around--none" style="max-width: initial;">
+                        <ul class="slds-dropdown__list" role="menu">
+                            <li class="slds-dropdown__header" role="separator">
+                                <span class="slds-text-title_caps slds-grid slds-grid--vertical-align-center slds-grid--align-spread"><system-label label="LBL_DISPLAYAS"/></span>
+                            </li>
+                            <li class="slds-dropdown__item" role="presentation" (click)="toggleView('table')">
+                                <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                                    <span class="slds-truncate slds-p-right--small"><system-label label="LBL_TABLE"/></span>
+                                    <system-utility-icon icon="table" size="xx-small"/>
+                                </a>
+                            </li>
+                            <li class="slds-dropdown__item" role="presentation" (click)="toggleView('bigThumbnail')">
+                                <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                                    <span class="slds-truncate slds-p-right--small"><system-label label="LBL_BIG_THUMBNAIL"/></span>
+                                    <system-utility-icon icon="ad_set" size="xx-small"/>
+                                </a>
+                            </li>
+                            <li class="slds-dropdown__item" role="presentation" (click)="toggleView('file')">
+                                <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                                    <span class="slds-truncate slds-p-right--small"><system-label label="LBL_FILE"/></span>
+                                    <system-utility-icon icon="file" size="xx-small"/>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
                 @if (!componentconfig.disableFilter && width > 550) {
                     <div class="slds-form-element slds-m-horizontal--xxx-small">
                         <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left-right">
@@ -55,15 +85,67 @@
         <input #fileupload style="display:none" type="file" multiple (click)="fileupload.value = null" (change)="uploadFile()"/>
     </div>
     @if (isopen) {
-        <div class="slds-card__body slds-card__body_inner" @displaycard>
+        <div class="slds-card__body_inner" @displaycard>
             <div class="slds-card__body--inner slds-grid">
                 <div *ngIf="showFolders" class="slds-border--right slds-p-right--small slds-m-right--small">
                     <system-tree [sourceList]="modelattachments.folderTreeItems" [selectedItem]="treeFolder" [config]="{expandall: true}" (selectedItemChange)="setTreeFolder($event)"/>
                 </div>
-                <div class="slds-grow slds-grid slds-grid--vertical-align-start slds-wrap slds-grid--pull-padded" #itemcontainer>
+                <div class="slds-grow slds-grid slds-grid--vertical-align-start slds-wrap" #itemcontainer>
                     @if (filteredFiles.length > 0) {
-                        @for (file of filteredFiles; track file.id) {
-                                <object-related-card-file [file]="file" [bigThumbnail]="componentconfig?.bigThumbnail" class="slds-tile slds-card__tile slds-p-horizontal--small slds-hint-parent" [ngClass]="{'slds-size--1-of-1': containerWidth < 400, 'slds-size--1-of-2': containerWidth >= 400 && containerWidth < 800, 'slds-size--1-of-3': containerWidth >= 800}"/>
+                        @if(componentconfig?.displayAs == 'table') {
+                            <div [system-overlay-loading-spinner]="isUploading">
+                                <table class="slds-table slds-p-around--none slds-table--fixed-layout slds-table--header-fixed slds-max-medium-table_stacked slds-table--bordered">
+                                    <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th style="overflow: hidden; resize: horizontal" scope="col" class="slds-is-resizable">
+                                            <div (click)="sort('filename')" class="slds-truncate slds-p-left--x-small" style="cursor: pointer;">
+                                                <system-label label="LBL_NAME" class="slds-p-right--x-small"></system-label>
+                                                @if (sortParams.field == 'filename') {
+                                                    <system-utility-icon [icon]="sortParams.order == 'desc' ? 'arrowdown' : 'arrowup'" size="x-small"></system-utility-icon>
+                                                }
+                                            </div>
+                                        </th>
+                                        <th scope="col" class="slds-is-resizable">
+                                            <div (click)="sort('filesize')" class="slds-truncate slds-p-left--x-small" style="cursor: pointer;">
+                                                <system-label label="LBL_SIZE" class="slds-p-right--x-small"></system-label>
+                                                @if (sortParams.field == 'filesize') {
+                                                    <system-utility-icon [icon]="sortParams.order == 'desc' ? 'arrowdown' : 'arrowup'" size="x-small"></system-utility-icon>
+                                                }
+                                            </div>
+                                        </th>
+                                        <th scope="col" class="slds-is-resizable">
+                                            <div (click)="sort('date')" class="slds-truncate slds-p-left--x-small" style="cursor: pointer;">
+                                                <system-label label="LBL_DATE" class="slds-p-right--x-small"></system-label>
+                                                @if (sortParams.field == 'date') {
+                                                    <system-utility-icon [icon]="sortParams.order == 'desc' ? 'arrowdown' : 'arrowup'" size="x-small"></system-utility-icon>
+                                                }
+                                            </div>
+                                        </th>
+                                        <th scope="col" style="width: 3rem"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (file of filteredFiles; track $index) {
+                                            <tr>
+                                                <td class="slds-truncate">
+                                                    <a (click)="openInTab(file)" href="javascript:void(0)">
+                                                        <span [system-title]="file.filename" class="slds-grid"><system-icon size="xx-small" [icon]="file.file_mime_type == 'folder' ? 'folder' : 'file'"/>{{filename(file)}}</span>
+                                                    </a>
+                                                </td>
+                                                <td class="slds-truncate">
+                                                    <span>{{fileSize(file.filesize)}}</span>
+                                                </td>
+                                                <td class="slds-truncate">{{filedate(file.date)}}</td>
+                                                <td><object-file-action-menu [file]="file"/></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        } @else {
+                            @for (file of filteredFiles; track file.id) {
+                                <object-related-card-file [file]="file" [displayAs]="componentconfig?.displayAs" class="slds-card__body slds-tile slds-card__tile slds-p-horizontal--small slds-hint-parent" [ngClass]="{'slds-size--1-of-1': containerWidth < 400, 'slds-size--1-of-2': containerWidth >= 400 && containerWidth < 800, 'slds-size--1-of-3': containerWidth >= 800}"/>
+                            }
                         }
                     } @else if (!modelattachments.loading) {
                         <div class="slds-align--absolute-center">

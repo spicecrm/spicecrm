@@ -63,7 +63,7 @@ export class QuestionsetTypeParametersNPS implements OnInit {
             textForScore0: this.textForScore0,
             textForScore10: this.textForScore10
         };
-        this.model.setField('questiontypeparameter', JSON.stringify( config ));
+        this.model.setField('questiontypeparameter', JSON.stringify(config));
     }
 
 }
