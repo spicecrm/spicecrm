@@ -217,27 +217,29 @@ class SpiceSwaggerGenerator
      */
     private function generateBeanSchemas(): void
     {
-        foreach ($this->modules as $module) {
+        if($this->modules) {
+            foreach ($this->modules as $module) {
 
-            $moduleDetails = SpiceModules::getInstance()->getModuleDetails($module);
+                $moduleDetails = SpiceModules::getInstance()->getModuleDetails($module);
 
-            if (!SpiceUtils::isValidModule($module) || !$moduleDetails['bean']) continue;
+                if (!SpiceUtils::isValidModule($module) || !$moduleDetails['bean']) continue;
 
-            $this->beanSchemas[] = $moduleDetails['bean'];
+                $this->beanSchemas[] = $moduleDetails['bean'];
 
-            $properties = (new SpiceDictionaryDefinition($moduleDetails['sysdictionarydefinition_id']))->exportFields();
-            $properties = json_decode(json_encode($properties), true);
+                $properties = (new SpiceDictionaryDefinition($moduleDetails['sysdictionarydefinition_id']))->exportFields();
+                $properties = json_decode(json_encode($properties), true);
 
-            uksort($properties, function ($a, $b) {
-                if ($a === 'id') return -1;
-                if ($b === 'id') return 1;
-                return strcmp($a, $b);
-            });
+                uksort($properties, function ($a, $b) {
+                    if ($a === 'id') return -1;
+                    if ($b === 'id') return 1;
+                    return strcmp($a, $b);
+                });
 
-            $this->structureArray['components']['schemas'][$moduleDetails['bean']] = [
-                'type' => 'object',
-                'properties' => $properties
-            ];
+                $this->structureArray['components']['schemas'][$moduleDetails['bean']] = [
+                    'type' => 'object',
+                    'properties' => $properties
+                ];
+            }
         }
     }
 
