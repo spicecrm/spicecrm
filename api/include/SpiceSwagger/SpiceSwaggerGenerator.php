@@ -248,7 +248,7 @@ class SpiceSwaggerGenerator
      */
     private function generateExternalDocs(): void {
         $this->structureArray['externalDocs']['description'] = 'Find out more about SpiceCRM';
-        $this->structureArray['externalDocs']['url']         = 'https://www.spicecrm.io/';
+        $this->structureArray['externalDocs']['url']         = 'https://www.spicecrm.com/';
     }
 
     /**
