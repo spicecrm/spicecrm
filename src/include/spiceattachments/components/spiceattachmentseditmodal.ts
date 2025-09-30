@@ -7,6 +7,7 @@ import {configurationService} from "../../../services/configuration.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {model} from "../../../services/model.service";
+import {modelattachments} from "../../../services/modelattachments.service";
 
 /**
  * Display edit fields for spice attachment
@@ -41,6 +42,7 @@ export class SpiceAttachmentsEditModal implements OnInit {
     constructor(public configurationService: configurationService,
                 public toast: toast,
                 public language: language,
+                public modelattachments: modelattachments,
                 public model: model,
                 public backend: backend) {
     }
@@ -91,6 +93,8 @@ export class SpiceAttachmentsEditModal implements OnInit {
                     if (this.inputData.display_name != this.attachment.display_name) {
                         this.attachment.display_name = this.inputData.display_name;
                     }
+
+                    this.modelattachments.fileActionPerformed.set('edited');
 
                     this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
                 } else {

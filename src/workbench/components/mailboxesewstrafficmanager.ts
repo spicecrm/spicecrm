@@ -29,7 +29,7 @@ export class MailboxesEWSTrafficManager {
     ) {
         let settings = this.model.getField('settings');
         if (!settings || (settings && settings.length == 0)) {
-            this.model.setField('settings',  {
+            this.model.setField('settings', {
                 ews_host: "",
                 ews_username: "",
                 ews_password: "",
