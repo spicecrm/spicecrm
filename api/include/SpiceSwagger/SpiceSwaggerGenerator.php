@@ -96,12 +96,12 @@ class SpiceSwaggerGenerator
 
     private function generateInfo():void {
         $infoArray = [];
-        $infoArray['description']    = 'Lorem ipsum dolor sit amet';
-        $infoArray['version']        = '2021.03.001';
+        $infoArray['description']    = 'SpiceCRM Swagger Definition';
+        $infoArray['version']        = '2025.02.001';
         $infoArray['title']          = 'SpiceCRM';
         $infoArray['termsOfService'] = '';
         $infoArray['contact']        = [
-            'email' => 'info@spicecrm.io',
+            'email' => 'info@spicecrm.com',
         ];
         /*$infoArray['license']        = [
             'name' => 'AGPL-3.0',
