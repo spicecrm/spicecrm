@@ -27,7 +27,7 @@ class SpiceSwaggerGenerator
     /**
      * @var array|null holds the modules
      */
-    private array $modules;
+    private array $modules = [];
     /**
      * @var array generated bean schemas
      */
