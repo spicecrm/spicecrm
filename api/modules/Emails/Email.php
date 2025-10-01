@@ -1857,7 +1857,7 @@ class Email extends SpiceBean
                         }
 
                         $fileArray = [
-                            'filename' => $bodyPart['content-name'],
+                            'filename' => SpiceAttachments::decodeEmailAttachmentName($bodyPart['content-name']),
                             'file' => base64_encode($contents[$index]),
                             'filemimetype' => $bodyPart['content-type'],
                             'external_id' => $bodyPart['content-id']
