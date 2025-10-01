@@ -77,7 +77,7 @@ class SpiceNotifications
 
         $db->insertQuery('spicenotifications', $data);
 
-        if ($this->assignedUser != false && $this->assignedUser->receive_notifications || $this->assignedUser->getPreference('sendEmailNotifications')) {
+        if ($this->assignedUser && ($this->assignedUser->receive_notifications || $this->assignedUser->getPreference('sendEmailNotifications'))) {
             $this->sendEmailNotification();
         }
 
