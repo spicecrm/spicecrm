@@ -6,6 +6,7 @@ namespace SpiceCRM\includes\SpiceUI\api\controllers;
 use Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
@@ -265,6 +266,108 @@ class CoreController
 //        $extensionName = $args['extensionName'] ?: '';
         $res->getBody()->write(RESTManager::getInstance()->getSwagger($selectedRoute, $includeSubroutes, $extensions, $modules, $node));
         return $res->withHeader('Content-Type', 'text/yaml');
+    }
+
+    /**
+     * Get the list of clients for a specific route+method
+     */
+    public function getIpClients( $req, $res, $args )
+    {
+        $queryParams = $req->getQueryParams();
+        $clients = $this->loadClientAccess( $queryParams['routePattern'], $queryParams['routeMethod'], $numberOfFixDefined );
+
+        return $res->withJson([ 'adminComponent' => self::getIpClientsAdminComponent(), 'clients' => array_values( $clients ), 'numberOfFixDefined' => $numberOfFixDefined ]);
+    }
+
+    /**
+     * Load the list of clients for a specific route+method from the DB. Consider also hard-coded clients from the route definition.
+     */
+    public function loadClientAccess( $routePattern, $routeMethod, &$numberOfFixDefined )
+    {
+        $clients = self::loadClientAccessFromDB( $routePattern, $routeMethod );
+
+        $slimRoutes = RESTManager::getInstance()->app->getRouteCollector()->getRoutes();
+        foreach ( $slimRoutes as $route ) {
+            if ( $route->getPattern() == $routePattern and $route->getMethods()[0] == strtoupper( $routeMethod )) {
+                $routeDefinition = RESTManager::getInstance()->getRoute( $route->getIdentifier(), $routeMethod );
+                break;
+            }
+        }
+        $numberOfFixDefined = 0;
+        if ( isset( $routeDefinition['options']['ipClients'] )) {
+            if ( !is_array( $routeDefinition['options']['ipClients'] )) $routeDefinition['options']['ipClients'] = [$routeDefinition['options']['ipClients']];
+            foreach ( $routeDefinition['options']['ipClients'] as $client ) {
+                $clients[] = [
+                    'name' => $client,
+                    'access' => true,
+                    'fixDefined' => true
+                ];
+                $numberOfFixDefined++;
+            }
+        }
+        return $clients;
+    }
+
+    /**
+     * Set the authorized clients for a specific route+method.
+     */
+    public function setIpClientAccess( $req, $res, $args )
+    {
+        $bodyParams  = $req->getParsedBody();
+        $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
+
+        $clientsInDB = self::loadClientAccessFromDB( $bodyParams['routePattern'], $bodyParams['routeMethod'] );
+
+        foreach ( $bodyParams['clients'] as $client ) {
+            if ( $client['access'] === true and $clientsInDB[$client['name']]['notDefined'] )
+                throw new BadRequestException("Unknown IP Client \"{$client['name']}\".");
+            else
+            {
+                if ( $clientsInDB[$client['name']]['access'] !== $client['access'] ) {
+                    if ( $client['access'] === false ) {
+                        $db->query( sprintf("DELETE FROM sysipclientroutes WHERE route_pattern = '%s' AND request_method = '%s' AND ip_client_name = '%s'", $db->quote( $bodyParams['routePattern'] ), $db->quote( $bodyParams['routeMethod'] ), $db->quote( $client['name'] ) ));
+                    } else {
+                        $db->query( sprintf("INSERT INTO sysipclientroutes ( id, route_pattern, request_method, ip_client_name ) VALUES ( UUID(), '%s', '%s', '%s' )", $db->quote( $bodyParams['routePattern'] ), $db->quote( $bodyParams['routeMethod'] ), $db->quote( $client['name'] ) ));
+                    }
+                }
+                $clientsInDB[$client['name']]['blabla'] = true;
+            }
+        }
+
+        $clients = $this->loadClientAccess( $bodyParams['routePattern'], $bodyParams['routeMethod'], $numberOfFixDefined );
+
+        return $res->withJson([ 'success' => true, 'clients' => array_values( $clients ), 'numberOfFixDefined' => $numberOfFixDefined ]);
+    }
+
+    /**
+     * Load the list of clients for a specific route/method from the DB.
+     */
+    public static function loadClientAccessFromDB( string $routePattern, string $routeMethod ): array
+    {
+        $db = DBManagerFactory::getInstance();
+        $clients = [];
+
+        $dbResult = $db->query("SELECT DISTINCT name, active FROM sysipclients");
+        while( $client = $db->fetchByAssoc( $dbResult ))
+            $clients[$client['name']] = [ 'name' => $client['name'], 'access' => false, 'active' => ( $client['active'] == 1 ) ];
+
+        $dbResult = $db->query( sprintf( "SELECT ip_client_name FROM sysipclientroutes WHERE route_pattern = '%s' and request_method = '%s'", $db->quote( $routePattern ), $db->quote( $routeMethod )));
+        while( $client = $db->fetchByAssoc( $dbResult )) {
+            if ( isset( $clients[$client['ip_client_name']] )) $clients[$client['ip_client_name']]['access'] = true;
+            else {
+                $clients[$client['ip_client_name']] = [ 'access' => true, 'name' => $client['ip_client_name'], 'notDefined' => true ];
+            }
+        }
+        return $clients;
+    }
+
+    /**
+     * Get ID and Component Configuration of the Admin Component for the admin action 'IP Clients'
+     */
+    public static function getIpClientsAdminComponent()
+    {
+        $db = DBManagerFactory::getInstance();
+        return $db->fetchOne("SELECT id, componentconfig FROM sysuiadmincomponents WHERE adminaction = 'IP Clients'");
     }
 
 }
