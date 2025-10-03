@@ -356,15 +356,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'rhs_key' => 'assigned_user_id',
             'relationship_type' => 'one-to-many'
         ],
-        'prospectlists_prospect_list_filters' => [
-            'lhs_module' => 'ProspectLists',
-            'lhs_table' => 'prospectlists',
-            'lhs_key' => 'id',
-            'rhs_module' => 'ProspectListFilters',
-            'rhs_table' => 'prospect_list_filters',
-            'rhs_key' => 'prospectlist_id',
-            'relationship_type' => 'one-to-many'
-        ],
+//        'prospectlists_prospect_list_filters' => [
+//            'lhs_module' => 'ProspectLists',
+//            'lhs_table' => 'prospectlists',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'ProspectListFilters',
+//            'rhs_table' => 'prospect_list_filters',
+//            'rhs_key' => 'prospectlist_id',
+//            'relationship_type' => 'one-to-many'
+//        ],
         'prospectlists_prospectlistunsubscribes' => [
             'lhs_module' => 'ProspectListUnsubscribes',
             'lhs_table' => 'prospectlistunsubscribes',
