@@ -88,7 +88,8 @@ import {WorkbenchModule} from "../workbench/workbench.module";
 import {AdministrationBackupManager} from "./components/administrationbackupmanager";
 import {AdministrationBackupManagerPreviewModal} from "./components/administrationbackupmanagerpreviewmodal";
 
-
+import { AdministrationIpClients } from "./components/administrationipclients";
+import { AdministrationApiInspectorMethodIpClients } from './components/administrationapiinspectormethodipclients';
 
 @NgModule({
     imports: [
@@ -165,8 +166,9 @@ import {AdministrationBackupManagerPreviewModal} from "./components/administrati
         AdministrationAssetManager,
         AdministrationLoginMethods,
         AdministrationBackupManager,
-        AdministrationBackupManagerPreviewModal
-
+        AdministrationBackupManagerPreviewModal,
+        AdministrationIpClients,
+        AdministrationApiInspectorMethodIpClients
     ]
 
 })
