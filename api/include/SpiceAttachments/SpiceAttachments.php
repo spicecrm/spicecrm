@@ -375,6 +375,21 @@ class SpiceAttachments
         return true;
     }
 
+    /**
+     * will decode a mime encoded attachment name
+     * @param $encodedName
+     * @return false|mixed|string
+     */
+    public static function decodeEmailAttachmentName($encodedName){
+        $filename = $encodedName;
+        if (function_exists('mb_decode_mimeheader')) {
+            $filename = mb_decode_mimeheader($encodedName);
+        } elseif (function_exists('iconv_mime_decode')) {
+            $filename =  iconv_mime_decode($encodedName, 0, "UTF-8");
+        }
+        return $filename;
+    }
+
     public static function saveBase64File(string $fileContent): string {
         $md5 = md5($fileContent);
         $filepath = StreamFactory::getPathPrefix('upload') . $md5;

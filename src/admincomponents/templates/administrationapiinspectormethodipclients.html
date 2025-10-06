@@ -1,0 +1,48 @@
+<system-modal [size]="'small'">
+    <system-modal-header (close)="onModalEscX()">
+        <system-label label="LBL_ACCESS_ONLY_SPEC_IP_CLIENTS"></system-label>
+    </system-modal-header>
+    <system-modal-content margin="none" [system-overlay-loading-spinner]="hasTraffic" class="slds-p-around--large">
+        <div>Route: &nbsp; <b>{{apiRoute.method.toUpperCase()}}</b> to <b>{{apiRoute.route}}</b></div>
+        @if ( numberOfFixDefined ) {
+            <div class="slds-m-top--small"><system-utility-icon icon="info" [size]="'x-small'" style="display:inline-block"></system-utility-icon>&nbsp;<system-label label="LBL_IP_CLIENTS_HARD_CODED_DEFINIED" [nestedValues]="[numberOfFixDefined]"></system-label> (*)</div>
+        }
+        @if ( clients.length ) {
+            <div class="slds-m-top--small">
+                @for ( client of clients; track client.name ) {
+                    <div class="slds-m-vertical--xx-small">
+                        <system-checkbox [(ngModel)]="client.access" (ngModelChange)="setDirty()" [disabled]="client.fixDefined">&nbsp;
+                            {{client.name}} @if ( client.fixDefined ) { &nbsp;* }
+                        </system-checkbox>
+                        @if ( client.notDefined ) {
+                            <span class="slds-text-color_error"><system-icon icon="warning" sprite="utility" addclasses="slds-m-right_xx-small slds-icon-text-error" divClass="slds-icon-utility-error" [size]="'xx-small'" style="display:inline-block"></system-icon><system-label label="LBL_CLIENT_NOT_DEFINED"></system-label></span>
+                        }
+                        @if ( client.active == false ) {
+                            <span class="slds-text-color_warning"><system-icon icon="warning" sprite="utility" addclasses="slds-m-right_xx-small slds-icon-text-warning" divClass="slds-icon-utility-error" [size]="'xx-small'" style="display:inline-block"></system-icon><system-label label="LBL_CLIENT_NOT_ACTIVE"></system-label></span>
+                        }
+                    </div>
+                }
+            </div>
+        } @else {
+            <div class="slds-m-top--medium"><system-label label="LBL_NO_IP_CLIENTS_DEFINED_YET"></system-label></div>
+        }
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid_align-spread">
+            <div>
+                <button [disabled]="hasTraffic" class="slds-button slds-button--neutral" (click)="buttonDefineClients()">
+                    <system-label label="LBL_IP_CLIENT_DEFINITION"></system-label>
+                </button>
+            </div>
+            <div>
+                <button [disabled]="hasTraffic" class="slds-button slds-button--neutral" (click)="close()">
+                    @if ( !isOrWasDirty ) { <system-label label="LBL_CLOSE"></system-label> }
+                    @else { <system-label label="LBL_CANCEL"></system-label> }
+                </button>
+                @if ( isOrWasDirty ) {
+                    <button [disabled]="hasTraffic" class="slds-button slds-button--brand" (click)="buttonSave()"><system-label label="LBL_SAVE"></system-label></button>
+                }
+            </div>
+        </div>
+    </system-modal-footer>
+</system-modal>
