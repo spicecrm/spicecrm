@@ -45,10 +45,10 @@ export class fieldCompanies extends fieldGeneric implements OnInit {
         // this.relateIdField = fieldDefs.id_name ? fieldDefs.id_name : this.fieldname;
 
         if (this.view.isEditMode() && !this.value) {
-            if (this.userpreferences.companyCodeId) {
+            if (this.userpreferences.getPreference('companyCodeId')) {
                 //this.value = this.getName(this.userpreferences.companyCodeId);
                 //this.model.setField(this.relateIdField, this.userpreferences.companyCodeId);
-                this.value =  this.userpreferences.companyCodeId;
+                this.value =  this.userpreferences.getPreference('companyCodeId');
             } else {
                 const companyCodes = this.configuration.getData('companycodes').sort((a, b) => a.name.localeCompare(b.name));
                 if (companyCodes && companyCodes.length > 0) {
@@ -81,5 +81,18 @@ export class fieldCompanies extends fieldGeneric implements OnInit {
         //this.value = this.getName(id);
         //this.model.setField(this.relateIdField, id);
         this.value = id;
+
+        // save to the user preferences
+        this.setToPreferences(id);
+    }
+
+    /**
+     * set the value to the preferences as default mailbox
+     * @param value
+     * @private
+     */
+    public setToPreferences(value: string) {
+
+        this.userpreferences.setPreference(`companyCodeId`, value);
     }
 }
