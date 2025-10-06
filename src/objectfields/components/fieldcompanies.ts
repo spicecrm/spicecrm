@@ -45,10 +45,10 @@ export class fieldCompanies extends fieldGeneric implements OnInit {
         // this.relateIdField = fieldDefs.id_name ? fieldDefs.id_name : this.fieldname;
 
         if (this.view.isEditMode() && !this.value) {
-            if (this.userpreferences.companyCodeId) {
+            if (this.userpreferences.getPreference('companyCodeId')) {
                 //this.value = this.getName(this.userpreferences.companyCodeId);
                 //this.model.setField(this.relateIdField, this.userpreferences.companyCodeId);
-                this.value =  this.userpreferences.companyCodeId;
+                this.value =  this.userpreferences.getPreference('companyCodeId');
             } else {
                 const companyCodes = this.configuration.getData('companycodes').sort((a, b) => a.name.localeCompare(b.name));
                 if (companyCodes && companyCodes.length > 0) {
