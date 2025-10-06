@@ -689,6 +689,12 @@ class Compiler
         // if we do not find it return an empty object
         if (!$obj) return [];
 
+        // if we have only part[0] => then we have an array of additional beans
+        // or some other object that we want to use in a template
+        if(count($parts) == 1){
+            return $beans[$parts[0]];
+        }
+
         // check that the field is a link
         if ($obj->field_defs[$parts[1]]['type'] != 'link') return [];
 
