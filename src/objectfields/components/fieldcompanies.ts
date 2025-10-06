@@ -81,5 +81,18 @@ export class fieldCompanies extends fieldGeneric implements OnInit {
         //this.value = this.getName(id);
         //this.model.setField(this.relateIdField, id);
         this.value = id;
+
+        // save to the user preferences
+        this.setToPreferences(id);
+    }
+
+    /**
+     * set the value to the preferences as default mailbox
+     * @param value
+     * @private
+     */
+    public setToPreferences(value: string) {
+
+        this.userpreferences.setPreference(`companyCodeId`, value);
     }
 }
