@@ -367,8 +367,8 @@ class Compiler
                             if( $index === 0 ) $params[] = 'data-spicefor-first';
                             if ( $index === count($linkedBeans) - 1) $params[] = 'data-spicefor-last';
                             if ( $index > 0 and $index < count($linkedBeans) - 1 ) $params[] = 'data-spicefor-inner';
-                            if ( $index % 2 === 0 ) $params[] = 'data-spicefor-even';
-                            if ( $index % 2 === 1 ) $params[] = 'data-spicefor-odd';
+                            if ( (int)$index % 2 === 0 ) $params[] = 'data-spicefor-even';
+                            if ( (int)$index % 2 === 1 ) $params[] = 'data-spicefor-odd';
 
                             $spiceforParent = ( isset( $beans['spicefor'] ) ? $beans['spicefor'] : null );
                             $elements[] = $this->createNewElement(
@@ -381,8 +381,8 @@ class Compiler
                                         'first' => ( $index === 0 ),
                                         'last' => ( $index === count( $linkedBeans ) - 1 ),
                                         'inner' => ( $index > 0 and $index < count( $linkedBeans ) - 1 ),
-                                        'even' => ( $index % 2 === 0 ),
-                                        'odd' => ( $index % 2 === 1 ),
+                                        'even' => ( (int)$index % 2 === 0 ),
+                                        'odd' => ( (int)$index % 2 === 1 ),
                                         'parent' => $spiceforParent,
                                         'total' => count( $linkedBeans )
                                     ])
