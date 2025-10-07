@@ -61,7 +61,7 @@
                             <td></td>
                             <td>
                                 <system-select [(ngModel)]="newKey.valid_for_months" (ngModelChange)="onValidForMonthChange($event)">
-                                    <system-select-option value="never" display="LBL_NEVER"/>
+                                    <system-select-option value="never" [display]="'LBL_NEVER' | systemtranslate"/>
                                     <system-select-option value="1" [display]="'1 ' + ('LBL_MONTHS' | systemtranslate)"/>
                                     <system-select-option value="3" [display]="'3 ' + ('LBL_MONTHS' | systemtranslate)"/>
                                     <system-select-option value="6" [display]="'6 ' + ('LBL_MONTHS' | systemtranslate)"/>
