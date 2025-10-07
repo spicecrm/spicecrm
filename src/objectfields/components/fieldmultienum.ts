@@ -75,19 +75,17 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
 
     public buildOptions() {
 
-        let retArray = [];
-
         // get the langiage options
-        let options = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
+        let options = this.language.getFieldDisplayOptions(this.model.module, this.fieldname, true);
 
-        for (let optionVal in options) {
-            retArray.push({
+        for (let option of options) {
+            this.options.push({
                 id: this.model.generateGuid(),
-                value: optionVal,
-                display: options[optionVal]
+                value: option.value,
+                display: option.display
             });
         }
-        this.options = retArray;
+
         if (this.fieldconfig.sortdirection) {
             switch (this.fieldconfig.sortdirection.toLowerCase()) {
                 case 'desc':
@@ -96,10 +94,6 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
                 case 'asc':
                     this.options.sort((a,b) => a.display.toLowerCase() > b.display.toLowerCase() ? 1 : -1);
             }
-        }
-        let countEntries = 0;
-        for (let item in this.options) {
-            countEntries++;
         }
 
         /*
