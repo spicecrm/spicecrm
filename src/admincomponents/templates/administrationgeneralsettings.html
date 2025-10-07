@@ -84,6 +84,14 @@
             <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
                 <div class="slds-p-around--x-small slds-size--1-of-2">
                     <div class="slds-form-element">
+                        <system-label label="LBL_ENCRYPTION_HASH_SALT"/>
+                        <system-input-text autocomplete="off" [(ngModel)]="settings.advanced.encryption_hash_salt"/>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
+                <div class="slds-p-around--x-small slds-size--1-of-2">
+                    <div class="slds-form-element">
                         <label class="slds-form-element__label"><system-label label="LBL_STACKTRACE"></system-label></label>
                         <div class="slds-form-element__control">
                             <div class="slds-select_container">
