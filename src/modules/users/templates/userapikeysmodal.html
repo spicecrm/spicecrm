@@ -1,0 +1,102 @@
+<system-modal size="medium">
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_API_KEYS"/>
+    </system-modal-header>
+    <system-modal-content [grow]="true" margin="none">
+        <div class="slds-scrollable--y slds-height_full">
+            <table class="slds-table slds-table--header-fixed slds-table--bordered slds-table--fixed-layout">
+                <thead>
+                <tr>
+                    <th class="slds-cell-shrink"></th>
+                    <th class="slds-text-title_caps"><system-label label="LBL_ID"/></th>
+                    <th class="slds-text-title_caps"><system-label label="LBL_CREATED_BY"/></th>
+                    <th class="slds-text-title_caps"><system-label label="LBL_DATE_ENTERED"/></th>
+                    <th class="slds-text-title_caps"><system-label label="LBL_EXPIRY_DATE"/></th>
+                    <th class="slds-cell-shrink" style="width: 5rem"></th>
+                </tr>
+                </thead>
+                <tbody>
+                    @for (key of apiKeys(); track key) {
+                        <tr>
+                            <td class="slds-cell-shrink">
+                                <button class="slds-button slds-button--icon" (click)="toggleActive(key)">
+                                    <system-button-icon icon="light_bulb" [colorclass]="key.is_active ? 'slds-icon-text-success' : 'slds-icon-text-default'"/>
+                                </button>
+                            </td>
+                            <td>
+                                {{key.id}}
+                            </td>
+                            <td>
+                                {{key.created_by_name}}
+                            </td>
+                            <td>
+                                {{key.date_entered}}
+                            </td>
+                            <td>
+                                @if (!key.expire_on) {
+                                    <system-label label="LBL_NEVER"/>
+                                } @else {
+                                    {{key.expire_on}}
+                                }
+                            </td>
+                            <td class="slds-cell-shrink">
+                                <button (click)="deleteKey(key.id)" class="slds-button slds-button--icon slds-m-left--xx-small">
+                                    <system-button-icon icon="delete"/>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+
+                    @if (newKey) {
+                        <tr>
+                            <td class="slds-cell-shrink">
+                                <system-utility-icon icon="light_bulb" colorclass="slds-icon-text-success" size="x-small"/>
+                            </td>
+                            <td>
+                                {{newKey.id}}
+                            </td>
+                            <td>
+                                {{session.authData.userName}}
+                            </td>
+                            <td></td>
+                            <td>
+                                <system-select [(ngModel)]="newKey.valid_for_months" (ngModelChange)="onValidForMonthChange($event)">
+                                    <system-select-option value="never" display="LBL_NEVER"/>
+                                    <system-select-option value="1" [display]="'1 ' + ('LBL_MONTHS' | systemtranslate)"/>
+                                    <system-select-option value="3" [display]="'3 ' + ('LBL_MONTHS' | systemtranslate)"/>
+                                    <system-select-option value="6" [display]="'6 ' + ('LBL_MONTHS' | systemtranslate)"/>
+                                    <system-select-option value="12" [display]="'12 ' + ('LBL_MONTHS' | systemtranslate)"/>
+                                </system-select>
+                            </td>
+                            <td class="slds-cell-shrink">
+                                <div class="slds-button-group">
+                                    <button (click)="cancelAdding()" class="slds-button slds-button-group-item slds-button--icon-border-filled slds-m-left--xx-small">
+                                        <system-button-icon icon="close"/>
+                                    </button>
+                                    <button (click)="saveNewKey()" class="slds-button slds-button-group-item slds-button--icon-border-filled slds-m-left--xx-small">
+                                        <system-button-icon icon="check"/>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                    @if (!newKey) {
+                        <tr>
+                            <td colspan="6">
+                                <div class="slds-align--absolute-center">
+                                    <button (click)="startAdding()" class="slds-button slds-m-vertical--x-small slds-button--icon">
+                                        <system-button-icon icon="add"/>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+    </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"/></button>
+    </system-modal-footer>
+</system-modal>

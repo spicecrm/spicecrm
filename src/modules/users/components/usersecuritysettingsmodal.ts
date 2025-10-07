@@ -1,4 +1,4 @@
-import {Component, ComponentRef, EventEmitter} from '@angular/core';
+import {Component, ComponentRef, EventEmitter, Injector, signal, WritableSignal} from '@angular/core';
 import {ModalComponentI} from "../../../objectcomponents/interfaces/objectcomponents.interfaces";
 import {session} from "../../../services/session.service";
 import {configurationService} from "../../../services/configuration.service";
@@ -13,6 +13,8 @@ import {backend} from "../../../services/backend.service";
 import {firstValueFrom} from "rxjs";
 import {language} from "../../../services/language.service";
 import {AuthServiceI, Config2FAI} from "../../../globalcomponents/interfaces/globalcomponents.interfaces";
+import {apiKeyI} from "../interfaces/users.interfaces";
+import {UserAPIKeysModal} from "./userapikeysmodal";
 
 @Component({
     selector: 'user-security-settings-modal',
@@ -48,17 +50,23 @@ export class UserSecuritySettingsModal implements ModalComponentI {
      * holds the preferred login metadata
      */
     public readonly preferredLoginMetadata: {[key: string]: {icon: {type: 'img' | 'icon', data: string}}} = {};
+    /**
+     * api keys array
+     */
+    public apiKeys: WritableSignal<apiKeyI[]> = signal([]);
 
     constructor(public session: session,
                 private modal: modal,
                 public model: model,
                 private language: language,
                 private backend: backend,
+                private injector: Injector,
                 private config: configurationService) {
         this.loadPreferredLoginMetadata();
         this.initializeActiveMethods();
         this.checkPasskeyRegistration();
         this.checkOneTimePasswordRegistration();
+        this.loadAPIKeys();
     }
 
     /**
@@ -338,5 +346,33 @@ export class UserSecuritySettingsModal implements ModalComponentI {
     public removePreferredLogin() {
         localStorage.removeItem('OAuth-Issuer');
         localStorage.removeItem('OAuth-Username');
+    }
+
+    /**
+     * load the api keys
+     */
+    public loadAPIKeys() {
+        this.backend.getRequest(`authentication/apiKeys/${this.model.id}`).subscribe({
+            next: (res) => {
+
+                res.forEach((key: apiKeyI) => {
+                    key.date_entered = this.model.userpreferences.formatDateTime(key.date_entered);
+                    if (!!key.expire_on) {
+                        key.expire_on = this.model.userpreferences.formatDateTime(key.expire_on);
+                    }
+                });
+
+                this.apiKeys.set(res);
+            },
+        })
+    }
+
+    /**
+     * open the api keys modal
+     */
+    public openAPIKeysModal() {
+        this.modal.openStaticModal(UserAPIKeysModal, true, this.injector).subscribe(modalRef => {
+            modalRef.instance.apiKeys = this.apiKeys;
+        });
     }
 }
