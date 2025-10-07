@@ -102,6 +102,7 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
             countEntries++;
         }
 
+        /*
         // reset the options
         this.options = [];
         // build the rows
@@ -134,6 +135,6 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
 
         // push what is left
         if (row==this.columns||rowArray.length > 0) this.options.push(rowArray);
-
+        */
     }
 }
