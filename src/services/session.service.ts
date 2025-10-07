@@ -27,7 +27,8 @@ interface authDataIf {
     canchangepassword: boolean;
     expiringPasswordValidityDays: boolean | number;
     renewPass?: boolean;
-    user: any
+    user: any,
+    is_api_user: boolean;
 }
 
 /**
@@ -56,7 +57,8 @@ export class session {
         obtainGDPRconsent: false,
         canchangepassword: false,
         expiringPasswordValidityDays: false,
-        user: {}
+        user: {},
+        is_api_user: false,
     };
 
     /**
@@ -254,6 +256,7 @@ export class session {
         this.authData.canchangepassword = false;
         this.authData.expiringPasswordValidityDays = false;
         this.authData.user = {};
+        this.authData.is_api_user = false;
 
         this.sessionData = {};
 

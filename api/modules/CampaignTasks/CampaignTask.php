@@ -108,6 +108,9 @@ class CampaignTask extends SpiceBean
             $addQueryValues = ", "."'".implode("', '", array_values($additionalParams))."'";
         }
 
+        $emailAddresses = [];
+        $prospectLists = [];
+
         $chunks = array_chunk($this->getAllTargetsEntries(), 500);
 
         foreach ($chunks as $chunkTargets) {
@@ -116,7 +119,9 @@ class CampaignTask extends SpiceBean
 
             foreach ($chunkTargets as $target) {
 
-                $query .= "($guidSQL, $currentDate, '$this->campaign_id', '$this->id', $guidSQL, '{$target['prospect_list_id']}', '{$target['related_id']}', '{$target['related_type']}','{$target['email_addr_bean_rel_id']}', '$status', 0, $currentDate, '$this->assigned_user_id' $addQueryValues),";
+                $targetStatus = $this->handleTargetDuplicateEmailAddressStatus($target, $status, $emailAddresses, $prospectLists);
+
+                $query .= "($guidSQL, $currentDate, '$this->campaign_id', '$this->id', $guidSQL, '{$target['prospect_list_id']}', '{$target['related_id']}', '{$target['related_type']}','{$target['email_addr_bean_rel_id']}', '$targetStatus', 0, $currentDate, '$this->assigned_user_id' $addQueryValues),";
             }
 
             # remove the last comma from the query
@@ -130,6 +135,36 @@ class CampaignTask extends SpiceBean
         $this->save();
 
         return ['success' => true, 'id' => $this->id];
+    }
+
+    /**
+     * handle target duplicate email address status
+     * @param array $target
+     * @param string $targetStatus
+     * @param array $emailAddresses
+     * @param array $prospectLists
+     * @return string duplicate | $targetStatus
+     */
+    private function handleTargetDuplicateEmailAddressStatus(array $target, string $targetStatus, array &$emailAddresses, array &$prospectLists): string
+    {
+        # collect the email addresses to set the duplicate status on the log entry if the only_unique_email_addresses flag is set
+        if ($this->only_unique_email_addresses == 1) {
+
+            if (!$prospectLists[$target['prospect_list_id']]) {
+                $prospectLists[$target['prospect_list_id']] = BeanFactory::getBean('ProspectLists', $target['prospect_list_id']);
+            }
+
+            $where = $prospectLists[$target['prospect_list_id']]->allow_multiple_emails_per_target && !empty($target['email_addr_bean_rel_id']) ? "id = '{$target['email_addr_bean_rel_id']}'" : "primary_address = 1 AND deleted = 0 AND bean_id = '{$target['related_id']}'";
+            $emailAddress = (string) $this->db->getOne("SELECT email_address_id FROM email_addr_bean_rel WHERE $where");
+
+            if ($emailAddress && $emailAddresses[$emailAddress]) {
+                $targetStatus = 'duplicate';
+            } else if ($emailAddress) {
+                $emailAddresses[$emailAddress] = 1;
+            }
+        }
+
+        return $targetStatus;
     }
 
     /**
