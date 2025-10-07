@@ -5,6 +5,7 @@ import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
 import {session} from "../../../services/session.service";
 import {userpreferences} from "../../../services/userpreferences.service";
+import {language} from "../../../services/language.service";
 
 declare var moment: any;
 
@@ -31,6 +32,7 @@ export class UserAPIKeysModal {
                 private model: model,
                 public session: session,
                 private userPreferences: userpreferences,
+                private language: language,
                 private modal: modal) {
     }
 
@@ -71,22 +73,25 @@ export class UserAPIKeysModal {
      */
     public deleteKey(keyId: string) {
 
-        const isLoading = this.modal.await('LBL_DELETING');
+        this.modal.confirmDeleteRecord().subscribe(res => {
+            if (!res) return;
+            const isLoading = this.modal.await('LBL_DELETING');
 
-        this.backend.deleteRequest(`authentication/apiKeys/${keyId}`).subscribe({
-            next: () => {
-                isLoading.next(true);
-                isLoading.complete();
-                this.apiKeys.set(
-                    [...this.apiKeys().filter(k => k.id != keyId)]
-                );
-            },
-            error: () => {
-                isLoading.next(true);
-                isLoading.complete();
-                this.modal.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
-            }
-        })
+            this.backend.deleteRequest(`authentication/apiKeys/${keyId}`).subscribe({
+                next: () => {
+                    isLoading.next(true);
+                    isLoading.complete();
+                    this.apiKeys.set(
+                        [...this.apiKeys().filter(k => k.id != keyId)]
+                    );
+                },
+                error: () => {
+                    isLoading.next(true);
+                    isLoading.complete();
+                    this.modal.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                }
+            });
+        });
     }
 
     /**
@@ -141,7 +146,8 @@ export class UserAPIKeysModal {
 
                 navigator.clipboard.writeText(res.value);
 
-                this.modal.info(`LBL_API_KEY_CREATED_DESC \n\r ${res.value}`, 'LBL_API_KEY_CREATED');
+                this.modal.toast.sendToast('LBL_COPIED_TO_CLIPBOARD', 'info');
+                this.modal.info(`${this.language.getLabel('MSG_API_KEY_CREATED_DESC', null, 'long')} \n\r ${res.value}`, 'LBL_API_KEY_CREATED');
 
                 res.date_entered = this.model.userpreferences.formatDateTime(res.date_entered);
                 if (!!res.expire_on) {
