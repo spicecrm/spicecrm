@@ -6,7 +6,7 @@
     </div>
 </field-generic-display>
 <div *ngIf="isEditMode()" class="slds-form-element">
-    <div class="slds-grid slds-wrap">
+    <div class="slds-grid slds-wrap" style="overflow: hidden">
         <field-multienum-checkbox class="slds-checkbox" [ngClass]="sizeClass" *ngFor="let option of options" [fieldname]="fieldname" [option]="option"></field-multienum-checkbox>
     </div>
     <field-messages [fieldname]="fieldname"></field-messages>
