@@ -129,6 +129,7 @@ export class loginService {
                     this.session.authData.googleToken = response.access_token;
                     this.session.authData.obtainGDPRconsent = response.obtainGDPRconsent;
                     this.session.authData.canchangepassword = response.canchangepassword;
+                    this.session.authData.is_api_user = response.is_api_user;
                     this.session.authData.user = this.modelutilities.backendModel2spice('Users', response.user);
 
                     this.session.storeToken(this.authData.keepMeLoggedIn);
