@@ -1,13 +1,14 @@
 /**
  * @module ObjectFields
  */
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
+import {size} from "underscore";
 
 @Component({
     selector: 'field-multienum',
@@ -22,7 +23,8 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
         public view: view,
         public language: language,
         public metadata: metadata,
-        public router: Router
+        public router: Router,
+        public elementRef: ElementRef
     ) {
         super(model, view, language, metadata, router);
         this.subscriptions.add(this.language.currentlanguage$.subscribe((newlang) => {
@@ -32,6 +34,16 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
 
     public ngOnInit() {
         this.buildOptions();
+    }
+
+
+    get width() {
+        return this.elementRef.nativeElement.parentElement.getBoundingClientRect().width;
+    }
+
+    get sizeClass(){
+        let matches = Math.ceil(this.width / 250);
+        return matches <= 8 ? `slds-size--1-of-${matches}` : 'slds-size--1-of-8';
     }
 
     get columns() {
@@ -131,4 +143,6 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
         if (row==this.columns||rowArray.length > 0) this.options.push(rowArray);
         */
     }
+
+    protected readonly size = size;
 }
