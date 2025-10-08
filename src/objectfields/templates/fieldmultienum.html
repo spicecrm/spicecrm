@@ -2,7 +2,7 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
     <span *ngIf="!displayCheckboxes">{{getValue()}}</span>
     <div *ngIf="displayCheckboxes" class="slds-grid slds-grid--align-spread slds-wrap">
-        <field-multienum-checkbox [disabled]="true" class="slds-checkbox slds-size--1-of-2 slds-medium-size--1-of-3 slds-large-size--1-of-4" *ngFor="let option of options" [fieldname]="fieldname" [option]="option"></field-multienum-checkbox>
+        <field-multienum-checkbox [disabled]="true" class="slds-checkbox" [ngClass]="sizeClass" *ngFor="let option of options" [fieldname]="fieldname" [option]="option"></field-multienum-checkbox>
     </div>
 </field-generic-display>
 <div *ngIf="isEditMode()" class="slds-form-element">

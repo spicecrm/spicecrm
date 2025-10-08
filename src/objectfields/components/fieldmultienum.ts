@@ -42,7 +42,7 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
     }
 
     get sizeClass(){
-        let matches = Math.ceil(this.width / 250);
+        let matches = Math.ceil(this.width / 300);
         return matches <= 8 ? `slds-size--1-of-${matches}` : 'slds-size--1-of-8';
     }
 
