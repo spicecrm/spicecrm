@@ -39,6 +39,8 @@ import {UserSecurityPasskeyButton} from "./components/usersecuritypasskeybutton"
 import {UserAliasManagerModal} from "./components/useraliasmanagermodal";
 import {UserAliasManagerButton} from "./components/useraliasmanagerbutton";
 import {UserManagementPanel} from "./components/usermanagementpanel";
+import {UserAPIKeysModal} from "./components/userapikeysmodal";
+import {SystemTranslatePipe} from "../../systemcomponents/pipes/systemtranslate.pipe";
 
 @NgModule({
     imports: [
@@ -49,6 +51,7 @@ import {UserManagementPanel} from "./components/usermanagementpanel";
         ObjectComponents,
         SystemComponents,
         DirectivesModule,
+        SystemTranslatePipe,
     ],
     exports: [
         UserPreferences
@@ -80,7 +83,8 @@ import {UserManagementPanel} from "./components/usermanagementpanel";
         UserSecurityPasskeyButton,
         UserAliasManagerModal,
         UserAliasManagerButton,
-        UserManagementPanel
+        UserManagementPanel,
+        UserAPIKeysModal
     ]
 })
 export class ModuleUsers {
