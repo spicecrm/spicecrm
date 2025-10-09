@@ -235,6 +235,11 @@ export class AlcatelToolbarIndicator implements OnDestroy {
      * @param event
      */
     public handleCallEvent(event: SocketEventI) {
+
+        if (this.telephony.closedCallsIds.has(event.data.id)) {
+            return;
+        }
+
         switch (event.type) {
             case 'update':
                 let call = this.telephony.calls.find(c => c.callid == event.data.id);

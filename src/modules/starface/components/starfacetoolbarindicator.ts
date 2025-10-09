@@ -300,6 +300,11 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      * @param eventData
      */
     public handleCallEvent(eventData: any) {
+
+        if (this.telephony.closedCallsIds.has(eventData.id)) {
+            return;
+        }
+
         let call = this.telephony.calls.find(c => c.callid == eventData.id);
         if (call) {
             call.status = this.translateStatus(eventData.state);
