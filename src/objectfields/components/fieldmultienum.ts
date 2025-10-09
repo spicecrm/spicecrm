@@ -1,13 +1,14 @@
 /**
  * @module ObjectFields
  */
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
+import {size} from "underscore";
 
 @Component({
     selector: 'field-multienum',
@@ -22,7 +23,8 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
         public view: view,
         public language: language,
         public metadata: metadata,
-        public router: Router
+        public router: Router,
+        public elementRef: ElementRef
     ) {
         super(model, view, language, metadata, router);
         this.subscriptions.add(this.language.currentlanguage$.subscribe((newlang) => {
@@ -32,6 +34,16 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
 
     public ngOnInit() {
         this.buildOptions();
+    }
+
+
+    get width() {
+        return this.elementRef.nativeElement.parentElement.getBoundingClientRect().width;
+    }
+
+    get sizeClass(){
+        let matches = Math.ceil(this.width / 300);
+        return matches <= 8 ? `slds-size--1-of-${matches}` : 'slds-size--1-of-8';
     }
 
     get columns() {
@@ -74,20 +86,20 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
     }
 
     public buildOptions() {
-
-        let retArray = [];
+        // reset the options
+        this.options = [];
 
         // get the langiage options
-        let options = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
+        let options = this.language.getFieldDisplayOptions(this.model.module, this.fieldname, true);
 
-        for (let optionVal in options) {
-            retArray.push({
+        for (let option of options) {
+            this.options.push({
                 id: this.model.generateGuid(),
-                value: optionVal,
-                display: options[optionVal]
+                value: option.value,
+                display: option.display
             });
         }
-        this.options = retArray;
+
         if (this.fieldconfig.sortdirection) {
             switch (this.fieldconfig.sortdirection.toLowerCase()) {
                 case 'desc':
@@ -97,11 +109,8 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
                     this.options.sort((a,b) => a.display.toLowerCase() > b.display.toLowerCase() ? 1 : -1);
             }
         }
-        let countEntries = 0;
-        for (let item in this.options) {
-            countEntries++;
-        }
 
+        /*
         // reset the options
         this.options = [];
         // build the rows
@@ -134,6 +143,8 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
 
         // push what is left
         if (row==this.columns||rowArray.length > 0) this.options.push(rowArray);
-
+        */
     }
+
+    protected readonly size = size;
 }
