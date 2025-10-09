@@ -86,6 +86,8 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
     }
 
     public buildOptions() {
+        // reset the options
+        this.options = [];
 
         // get the langiage options
         let options = this.language.getFieldDisplayOptions(this.model.module, this.fieldname, true);

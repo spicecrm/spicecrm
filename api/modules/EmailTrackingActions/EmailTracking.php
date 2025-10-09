@@ -140,6 +140,9 @@ class EmailTracking
     {
         $url = SpiceConfig::getInstance()->get('emailtracking.manage_preferences_url') ?: SpiceConfig::getInstance()->config['site_url'] . '/email/m/{refid}';
 
+        $mailbox = BeanFactory::getBean('Mailboxes', $email->mailbox_id);
+        $url = $mailbox->manage_preferences_url ?: $url;
+
         [$parentType, $parentId] = $email->getTrackingParentData();
 
         if ($url) {
