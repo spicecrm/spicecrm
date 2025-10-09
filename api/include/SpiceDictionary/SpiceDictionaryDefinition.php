@@ -491,6 +491,9 @@ class SpiceDictionaryDefinition
         $relationships = SpiceDictionaryRelationships::getInstance()->getDictionaryRelationships($this);
 
         foreach ($relationships as $relationship){
+            # exclude template relationships
+            if ($relationship['original_id']) continue;
+
             (new SpiceDictionaryRelationship($relationship['id']))->activate();
         }
 
@@ -512,6 +515,9 @@ class SpiceDictionaryDefinition
         $relationships = SpiceDictionaryRelationships::getInstance()->getDictionaryRelationships($this);
 
         foreach ($relationships as $relationship){
+            # exclude template relationships
+            if ($relationship['original_id']) continue;
+
             (new SpiceDictionaryRelationship($relationship['id']))->deactivate();
         }
 
