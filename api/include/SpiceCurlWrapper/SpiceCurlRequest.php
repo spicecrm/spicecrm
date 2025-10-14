@@ -589,7 +589,11 @@ class SpiceCurlRequest
      */
     private function generateQueryParams(): string
     {
-        return http_build_query($this->queryParams);
+        if (!empty($this->queryParams)) {
+            return http_build_query($this->queryParams);
+        }
+
+        return '';
     }
 
     /**
