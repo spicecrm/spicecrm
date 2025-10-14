@@ -35,9 +35,14 @@ class SpiceCurlRequest
     private bool $forceDisableLogger = false;
 
     /**
-     * @var array|null CURLOPT_POSTFIELDS the POST request payload.
+     * @var array|object CURLOPT_POSTFIELDS the POST request payload.
      */
-    private ?array $postFields;
+    private array|object $postFields;
+
+    /**
+     * @var array|object the query params that are concatenated onto the URL.
+     */
+    private array|object $queryParams;
 
     /**
      * @var array An array with the curl options stored. The keys are the curl constants e.g. CURLOPT_PORT
@@ -49,29 +54,6 @@ class SpiceCurlRequest
      * The most common header names are stored in the HEADER_XYZ constants.
      */
     private array $rawHeaders = [];
-
-    private array $optionsAliases = [
-        'headerOut'      => CURLINFO_HEADER_OUT,
-        'connectTimeout' => CURLOPT_CONNECTTIMEOUT,
-        'encoding'       => CURLOPT_ENCODING,
-        'failOnError'    => CURLOPT_FAILONERROR,
-        'followLocation' => CURLOPT_FOLLOWLOCATION,
-        'header'         => CURLOPT_HEADER,
-        'httpAuth'       => CURLOPT_HTTPAUTH,
-        'httpVersion'    => CURLOPT_HTTP_VERSION,
-        'maxRedirects'   => CURLOPT_MAXREDIRS,
-        'port'           => CURLOPT_PORT,
-        'post'           => CURLOPT_POST,
-        'postFields'     => CURLOPT_POSTFIELDS,
-        'returnTransfer' => CURLOPT_RETURNTRANSFER,
-        'sslVerifyHost'  => CURLOPT_SSL_VERIFYHOST,
-        'sslVerifyPeer'  => CURLOPT_SSL_VERIFYPEER,
-        'timeout'        => CURLOPT_TIMEOUT,
-        'timeoutMs'      => CURLOPT_TIMEOUT_MS,
-        'userAgent'      => CURLOPT_USERAGENT,
-        'userPassword'   => CURLOPT_USERPWD,
-        'verbose'        => CURLOPT_VERBOSE,
-    ];
 
 
     /**
@@ -144,6 +126,8 @@ class SpiceCurlRequest
 
     public const CONTENT_TYPE_XML = 'application/xml';
 
+    public const CONTENT_TYPE_XML_UTF8 = 'text/xml;charset="utf-8"';
+
     public const CONTENT_RFC822 = 'message/rfc822';
 
     /**
@@ -162,6 +146,8 @@ class SpiceCurlRequest
     public const ACCEPT_ALL = '*/*';
 
     public const ACCEPT_JSON = 'application/json';
+
+    public const ACCEPT_XML = 'text/xml';
 
 
     /**
@@ -205,14 +191,11 @@ class SpiceCurlRequest
      * @param string $optionName
      * @param string $optionValue
      * @return $this
+     * @deprecated
      */
     public function setOption(string $optionName, string $optionValue): self
     {
-        if (array_key_exists($optionName, $this->optionsAliases)) {
-            $this->rawOptions[$this->optionsAliases[$optionName]] = $optionValue;
-        }
-
-        return $this;
+        return $this->setRawOption($optionName, $optionValue);
     }
 
     /**
@@ -251,8 +234,12 @@ class SpiceCurlRequest
      * @param bool $ssl
      * @return $this
      */
-    public function setSsl(bool $ssl): self
+    public function setSsl(?bool $ssl): self
     {
+        if ($ssl === null) {
+            return $this;
+        }
+
         $this->rawOptions[CURLOPT_SSL_VERIFYPEER] = $ssl;
         $this->rawOptions[CURLOPT_SSL_VERIFYHOST] = $ssl;
 
@@ -271,6 +258,58 @@ class SpiceCurlRequest
     public function setAuthorization(string $method, string $value): self
     {
         $this->rawHeaders[self::HEADER_AUTHORIZATION] = $method . $value;
+
+        return $this;
+    }
+
+    /**
+     * A helper function for setting the basic Authorization header Option.
+     *
+     * @param string $value
+     * @return $this
+     */
+    public function setBasicAuthorization(string $value): self
+    {
+        $this->setAuthorization(self::AUTHORIZATION_BASIC, $value);
+
+        return $this;
+    }
+
+    /**
+     * A helper function for setting the bearer Authorization header option.
+     *
+     * @param string $value
+     * @return $this
+     */
+    public function setBearerAuthorization(string $value): self
+    {
+        $this->setAuthorization(self::AUTHORIZATION_BEARER, $value);
+
+        return $this;
+    }
+
+    /**
+     * A helper function for setting the token Authorization header option.
+     *
+     * @param string $value
+     * @return $this
+     */
+    public function setTokenAuthorization(string $value): self
+    {
+        $this->setAuthorization(self::AUTHORIZATION_TOKEN, $value);
+
+        return $this;
+    }
+
+    /**
+     * A helper function for setting the raw key Authorization header option.
+     *
+     * @param string $value
+     * @return $this
+     */
+    public function setRawKeyAuthorization(string $value): self
+    {
+        $this->setAuthorization(self::AUTHORIZATION_RAW_KEY, $value);
 
         return $this;
     }
@@ -376,9 +415,22 @@ class SpiceCurlRequest
      * @param array $fields
      * @return $this
      */
-    public function setPostFields(array $fields): self
+    public function setPostFields(array|object $fields): self
     {
         $this->postFields = $fields;
+
+        return $this;
+    }
+
+    /**
+     * A setter for the query params.
+     *
+     * @param array|object $params
+     * @return $this
+     */
+    public function setQueryParams(array|object $params): self
+    {
+        $this->queryParams = $params;
 
         return $this;
     }
@@ -392,7 +444,7 @@ class SpiceCurlRequest
     {
         $curlOptions = [];
 
-        $curlOptions[CURLOPT_URL] = $this->url ?? $this->rawOptions[CURLOPT_URL];
+        $curlOptions[CURLOPT_URL] = ($this->url ?? $this->rawOptions[CURLOPT_URL]) . $this->generateQueryParams();
 
         switch ($this->method) {
             case self::REQUEST_POST:
@@ -432,6 +484,17 @@ class SpiceCurlRequest
 
 
         return $curlOptions;
+    }
+
+    /**
+     * Hand the request over to the connector for processing and returns the response
+     *
+     * @return SpiceCurlResponse
+     * @throws \Exception
+     */
+    public function send(): SpiceCurlResponse
+    {
+        return (new SpiceCurlConnector($this))->process();
     }
 
     /**
@@ -508,16 +571,25 @@ class SpiceCurlRequest
         }
 
         switch ($this->rawHeaders[self::HEADER_CONTENT_TYPE]) {
+            case self::CONTENT_TYPE_FORM:
+                return http_build_query($this->postFields);
             case self::CONTENT_TYPE_JSON:
+            default:
                 if ($this->forceJsonObject === true) {
                     return json_encode($this->postFields, JSON_FORCE_OBJECT);
                 }
                 return json_encode($this->postFields);
-            case self::CONTENT_TYPE_FORM:
-                return http_build_query($this->postFields);
         }
+    }
 
-        return null;
+    /**
+     * Generates a query params string to be added onto the URL.
+     *
+     * @return string
+     */
+    private function generateQueryParams(): string
+    {
+        return http_build_query($this->queryParams);
     }
 
     /**
@@ -528,6 +600,10 @@ class SpiceCurlRequest
     private function generateHeader(): array
     {
         $headers = [];
+
+        if (empty($this->rawHeaders[self::HEADER_CONTENT_TYPE])) {
+            $this->rawHeaders[self::HEADER_CONTENT_TYPE] = self::CONTENT_TYPE_JSON;
+        }
 
         foreach ($this->rawHeaders as $header => $value) {
             $headers[] = $header . ': ' . $value;
