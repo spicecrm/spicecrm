@@ -46,7 +46,6 @@ use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceBeans\SpiceModules;
-use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlConnector;
 use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlRequest;
 use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlWrapper;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
@@ -555,6 +554,7 @@ class SpiceUIConfLoader
      * returns array with packages and versions
      * @return array[]
      * @throws Exception
+     * @throws \Exception
      */
     public function getRepositoryInfo(): array
     {
@@ -567,16 +567,12 @@ class SpiceUIConfLoader
             // prepare url
             $repositoryUrl = $repository['url'].'/';
 
-            $request = SpiceCurlWrapper::getRequest($repositoryUrl .'config')
+            $content = SpiceCurlWrapper::getRequest($repositoryUrl .'config')
                         ->setRouteAlias('spiceuiconfloader')
-                        ->setOption('returnTransfer', true)
-                        ->setOption('encoding', SpiceCurlRequest::ENCODING_UTF8)
+                        ->setRawOption(CURLOPT_ENCODING, SpiceCurlRequest::ENCODING_UTF8)
                         ->setSsl(false)
-                        ->setContentType(SpiceCurlRequest::CONTENT_TYPE_JSON);
-            $response = (new SpiceCurlConnector($request))->process();
-
-            // decode content as array
-            $content = $response->getJsonResponse();
+                        ->send()
+                        ->getJsonResponse();
 
             // loop through content and push the versions to repositoriesMetadata array
             foreach ($content['versions'] as $version) {
