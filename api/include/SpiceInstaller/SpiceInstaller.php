@@ -392,10 +392,10 @@ class SpiceInstaller
 
         $url = $protocol . "://" . $postData['server'] . ":" . $postData['port'] . "/";
 
-        $response = $this->curlCall($this->curl, $url, $postData['sslverify'], $postData['username'], $postData['password']);
+        $response = $this->curlCall($url, $postData['sslverify'], $postData['username'], $postData['password']);
 
         if (!empty($response)) {
-            if (version_compare($response->version->number, '7.5', '<') ) {
+            if (version_compare($response['version']['number'], '7.5', '<') ) {
                 $errors = ['version not supported'];
             } else {
                 $ftsconfig = ['https' => $postData['https'], 'username' => $postData['username'], 'password' => $postData['password'], 'protocol' => $protocol, 'server' => $postData['server'], 'port' => $postData['port'], 'prefix' => $postData['prefix']];
@@ -424,7 +424,7 @@ class SpiceInstaller
         $errors = [];
         $url = SystemDeploymentPackageSource::getPublicSource() . 'config';
 
-        $response = $this->curlCall($this->curl, $url);
+        $response = $this->curlCall($url);
 
         if (!empty($response)) {
             $outcome = true;
@@ -444,7 +444,7 @@ class SpiceInstaller
     public function getLanguages()
     {
         $url = SystemDeploymentPackageSource::getPublicSource() . 'config';
-        $response = $this->curlCall($this->curl, $url);
+        $response = $this->curlCall($url);
         return $response;
     }
 
