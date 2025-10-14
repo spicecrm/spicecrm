@@ -6,13 +6,11 @@ namespace SpiceCRM\includes\SpiceInstaller;
 use Exception;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
-use SpiceCRM\includes\ErrorHandlers\ServiceUnavailableException;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlConnector;
 use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlRequest;
 use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlWrapper;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\database\DBManager;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
@@ -20,15 +18,11 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainFields;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomains;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidations;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndex;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageLoader;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
 use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SystemDeploymentPackages\SystemDeploymentPackageSource;
@@ -124,28 +118,30 @@ class SpiceInstaller
 
     /**
      * performs a curl call and returns a decoded response
+     *
      * @param $url
-     * @param bool $ssl
+     * @param $ssl
+     * @param $username
+     * @param $password
      * @return mixed
+     * @throws Exception
      */
     private function curlCall($url, $ssl = false, $username = null, $password = null)
     {
         $request = SpiceCurlWrapper::getRequest($url)
                     ->disableLogger()
                     ->setSsl($ssl)
-                    ->setOption('returnTransfer', true)
-                    ->setOption('encoding', SpiceCurlRequest::ENCODING_UTF8)
-                    ->setContentType(SpiceCurlRequest::CONTENT_TYPE_JSON);
+                    ->setRawOption(CURLOPT_ENCODING, SpiceCurlRequest::ENCODING_UTF8);
 
         if ($username && $password) {
-            $request->setOption('userPassword', "{$username}:{$password}");
+            $request->setRawOption(CURLOPT_USERPWD, "{$username}:{$password}");
         }
 
-        $response = (new SpiceCurlConnector($request))->process();
-        if (empty($response->getResponse())) {
+        $response = $request->send();
+        if (empty($response->getRawResponse())) {
             return json_decode($response->getErrors());
         }
-        return json_decode($response->getResponse());
+        return $response->getJsonResponse();
     }
 
     /**
