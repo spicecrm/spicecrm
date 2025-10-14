@@ -276,6 +276,18 @@ class SpiceCurlRequest
     }
 
     /**
+     * A helper function for setting the basic Authorization with the standard base64 encoding.
+     *
+     * @param string $user
+     * @param string $password
+     * @return $this
+     */
+    public function setBasicBase64Authorization(string $user, string $password): self
+    {
+        return $this->setBasicAuthorization(base64_encode($user . ':' . $password));
+    }
+
+    /**
      * A helper function for setting the bearer Authorization header option.
      *
      * @param string $value
