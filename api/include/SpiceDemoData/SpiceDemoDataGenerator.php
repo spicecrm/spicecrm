@@ -30,7 +30,6 @@ namespace SpiceCRM\includes\SpiceDemoData;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlConnector;
 use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlWrapper;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -403,18 +402,17 @@ class SpiceDemoDataGenerator
 
     /**
      * call mockaroo api
+     *
      * @param $api
-     * @return mixed
+     * @return array|bool|string|null
+     * @throws \Exception
      */
     private function makeCall($api)
     {
-        $request = SpiceCurlWrapper::getRequest("https://my.api.mockaroo.com/$api.json?key=".$this->key)
+        return SpiceCurlWrapper::getRequest("https://my.api.mockaroo.com/$api.json?key=".$this->key)
                     ->setRouteAlias('spicedemodatagenerator')
-                    ->setOption('returnTransfer', true)
-                    ->setSsl(false);
-
-        $response = (new SpiceCurlConnector($request))->process();
-
-        return $response->getJsonResponse();
+                    ->setSsl(false)
+                    ->send()
+                    ->getJsonResponse();
     }
 }
