@@ -10,7 +10,6 @@ namespace SpiceCRM\includes\SpiceUI;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlConnector;
 use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlRequest;
 use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlWrapper;
 use SpiceCRM\modules\SystemDeploymentPackages\SystemDeploymentPackageSource;
@@ -68,20 +67,17 @@ class SpiceUILoader
             $getParams = "?" . http_build_query($getParams);
         $url = $this->endpoint . $route . $getParams;
 
-        $request = SpiceCurlWrapper::newRequest($url, $method)
+        $response = SpiceCurlWrapper::newRequest($url, $method)
                     ->setSsl(false)
-                    ->setOption('returnTransfer', true)
-                    ->setOption('encoding', SpiceCurlRequest::ENCODING_UTF8)
-                    ->setContentType(SpiceCurlRequest::CONTENT_TYPE_JSON);
+                    ->setRawOption(CURLOPT_ENCODING, SpiceCurlRequest::ENCODING_UTF8)
+                    ->send();
 
-        $response = (new SpiceCurlConnector($request))->process();
-
-        if (!$response->getResponse()) {
+        if (!$response->getRawResponse()) {
             LoggerManager::getLogger()->fatal("ERROR curl in " . __CLASS__ . $response->getErrors());
         }
 
         //catch empty response
-        if ($response->getResponse() == "[]") {
+        if ($response->getRawResponse() == "[]") {
             return ['nodata' => []];
         }
 
@@ -89,7 +85,7 @@ class SpiceUILoader
         //decode reponse
         if (!$data = $response->getJsonResponse()) {
             LoggerManager::getLogger()->fatal('json_decode error on REST response from reference server. Response: '
-                . print_r($response->getResponse(), true) . '. URL: ' . $url . '. Please check call parameters!');
+                . print_r($response->getRawResponse(), true) . '. URL: ' . $url . '. Please check call parameters!');
         }
 
         return $data;
