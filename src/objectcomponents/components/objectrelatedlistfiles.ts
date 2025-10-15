@@ -217,7 +217,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         this.fileTypeActionObject = this.configurationService.getCapabilityConfig('admin')?.fileTypes;
 
         effect(() => {
-            if (this.modelattachments.fileActionPerformed()) {
+            if (this.modelattachments.fileActionPerformed() > 0) {
                 this.sort(this.fileViewAndSort.field, false, false);
             }
         });
