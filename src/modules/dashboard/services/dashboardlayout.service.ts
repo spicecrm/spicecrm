@@ -358,6 +358,12 @@ export class dashboardlayout {
             });
     }
 
+    public showDashletInfo(dashletId) {
+        const selectedDashlet = this.dashboardElements.find(element => element.id === dashletId);
+
+        this.modal.info(`Name: ${selectedDashlet.name} \n Module: ${selectedDashlet.module} \n ID: ${selectedDashlet.dashlet_id}`);
+    }
+
     public addDashletInterval() {
         const currentDashlet = this.dashboardElements.find(element => element.id === this.editing);
         if (!currentDashlet) return;

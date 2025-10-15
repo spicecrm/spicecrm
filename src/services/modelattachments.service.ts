@@ -106,7 +106,7 @@ export class modelattachments implements OnDestroy {
     /**
      * holds the action performed
      */
-    public fileActionPerformed: WritableSignal<string> = signal(undefined);
+    public fileActionPerformed: WritableSignal<number> = signal(0);
 
     /**
      * a colection of subscriptions
