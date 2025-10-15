@@ -314,7 +314,7 @@ export class relatedmodels implements OnDestroy {
                     // get the count
                     this.count = parseInt(response.count, 10);
 
-                    this.items = response.list.map(item => this.modelutilities.backendModel2spice(this.relatedModule, item));
+                    this.items = response.list.map(item => ({...this.modelutilities.backendModel2spice(this.relatedModule, item), relid: item.relid}));
 
                     // set loaded
                     this.isloading = false;
