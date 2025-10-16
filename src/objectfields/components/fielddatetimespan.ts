@@ -195,7 +195,7 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
     }
 
     public stati(fieldname) {
-        let stati = this.model.getFieldStati(fieldname);
+        let stati = this.model.getFieldStates(fieldname);
 
         if (stati.editable && (!this.view.isEditable || this.fieldconfig.readonly)) {
             stati.editable = false;

@@ -37,12 +37,11 @@ export class UserAddModal implements OnInit {
     public userNameCheck: RegExp = new RegExp("^(?![_.])(?!.*[_.]{2})[@a-zA-Z0-9._-]{1,60}$");
     public pwdGuideline: string;
     public autogenerate: boolean = false;
-    public sendByEmail: boolean = false;
+    public sendBySystem: boolean = false;
     public forceReset: boolean = true;
     public externalAuthOnly: boolean = false;
     public showPassword: boolean = false;
     public saveTriggered: boolean = false;
-    public canSendByEmail: boolean = true;
 
     constructor(
         public language: language,
@@ -158,6 +157,16 @@ export class UserAddModal implements OnInit {
         this.getPassInfo();
     }
 
+    /**
+     * set required channel fields for send credentials
+     */
+    public setSendCredentialsRequiredFields() {
+        const config = this.configuration.getCapabilityConfig('userpassword');
+        const channels = {sms: 'phone_mobile', email: 'user_email'};
+        this.model.setFieldState(channels[config.sendPasswordChannel], 'required', this.sendBySystem && !this.externalAuthOnly);
+        this.model.setFieldState(channels[config.sendUsernameChannel], 'required', this.sendBySystem && !this.externalAuthOnly);
+    }
+
     public getFieldSets() {
         let conf = this.metadata.getComponentConfig("UserAddModal", "Users");
         this.profileFieldset = conf && conf.profile ? conf.profile : this.profileFieldset;
@@ -206,11 +215,26 @@ export class UserAddModal implements OnInit {
             pwd_last_changed: new moment(),
             external_auth_only: this.externalAuthOnly
         });
-        let saveData = this.modelutilities.spiceModel2backend("Users", this.model.data);
 
-        this.backend.postRequest("module/Users/" + this.model.id, {}, JSON.stringify(saveData))
+        const saveData = {
+            ...this.modelutilities.spiceModel2backend("Users", this.model.data),
+            credentials: {
+                newPassword: this.password,
+                forceReset: this.forceReset,
+                sendBySystem: this.sendBySystem,
+            }
+        };
+
+        this.backend.postRequest("module/Users/" + this.model.id, {}, saveData)
             .subscribe({
                 next: (response) => {
+
+                    this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED"), "success");
+
+                    if (this.sendBySystem) {
+                        this.toast.sendToast(this.language.getLabel("MSG_NEW_PASSWORD_EMAIL_SENT"), "success", "", 10);
+                    }
+
                     for (let fieldName in response) {
                         if (response.hasOwnProperty(fieldName)) {
                             response[fieldName] = this.modelutilities.backend2spice("Users", fieldName, response[fieldName]);
@@ -219,13 +243,10 @@ export class UserAddModal implements OnInit {
                     this.model.setData(response);
                     this.model.endEdit();
 
-                    // in case of external auth close direct - otherwise save password
-                    if(!this.externalAuthOnly) {
-                        this.savePassword(goDetail);
-                    } else {
-                        if(goDetail) this.model.goDetail();
-                        this.self.destroy();
-                    }
+
+                    if(goDetail) this.model.goDetail();
+                    this.self.destroy();
+
                 },
                 error: (resErr) => {
                     if (resErr.error.error.message) {
@@ -239,28 +260,5 @@ export class UserAddModal implements OnInit {
                     }
                 }
                 });
-    }
-
-    public savePassword(goDetail) {
-        let body = {
-            newPassword: this.password,
-            forceReset: this.forceReset,
-            sendEmail: this.canSendByEmail ? this.sendByEmail : false
-        };
-        this.backend.postRequest("module/Users/"+this.model.id+"/password/reset", {}, body).subscribe(res => {
-                if (this.sendByEmail) {
-                    this.toast.sendToast(this.language.getLabel("MSG_NEW_PASSWORD_EMAIL_SENT"), "success", "", 10);
-                } else {
-                    this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED"), "success");
-                }
-                if (goDetail) {
-                    this.model.goDetail();
-                }
-                this.self.destroy();
-        }, error => {
-            this.sendByEmail = false;
-            this.canSendByEmail = false;
-            this.toast.sendToast(this.language.getLabel("MSG_PASSWORD_RESET_FAILED"), "error");
-        });
     }
 }

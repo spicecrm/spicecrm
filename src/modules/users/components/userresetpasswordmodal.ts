@@ -69,7 +69,7 @@ export class UserResetPasswordModal implements OnInit {
      * set if the password shpudl be sent via email
      * @private
      */
-    public sendByEmail: boolean = false;
+    public sendBySystem: boolean = false;
 
     /**
      * toggle to show the password
@@ -206,7 +206,7 @@ export class UserResetPasswordModal implements OnInit {
             this.backend.postRequest(`module/Users/${this.model.id}/password/reset`, {}, {
                 newPassword: this.password,
                 forceReset: this.forceReset,
-                sendEmail: this.sendByEmail
+                sendBySystem: this.sendBySystem
             }).subscribe({
                 next: (res) => {
                     // set external auth on the model
