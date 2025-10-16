@@ -94,7 +94,7 @@ export class SpiceAttachmentsEditModal implements OnInit {
                         this.attachment.display_name = this.inputData.display_name;
                     }
 
-                    this.modelattachments.fileActionPerformed.set('edited');
+                    this.modelattachments.fileActionPerformed.update(n => n + 1);
 
                     this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
                 } else {
