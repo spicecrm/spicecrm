@@ -57,7 +57,9 @@ class APIKeysController
     public function getUserKeys(Request $request, Response $response, array $args): Response
     {
         $db = DBManagerFactory::getInstance();
-        $keys = $db->fetchAll("SELECT id, is_active, created_by_id, date_entered, expire_on FROM api_keys WHERE user_id = '{$args['user_id']}'");
+        $userId = $db->quote($args['user_id']);
+
+        $keys = $db->fetchAll("SELECT id, is_active, created_by_id, date_entered, expire_on FROM api_keys WHERE user_id = '$userId'") ?: [];
 
         foreach ($keys as &$key) {
             $key['created_by_name'] = $db->getOne("SELECT user_name FROM users WHERE id = '{$key['created_by_id']}' AND deleted = 0");
