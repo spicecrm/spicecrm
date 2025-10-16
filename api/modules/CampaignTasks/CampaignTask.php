@@ -108,6 +108,9 @@ class CampaignTask extends SpiceBean
             $addQueryValues = ", "."'".implode("', '", array_values($additionalParams))."'";
         }
 
+        $emailAddresses = [];
+        $prospectLists = [];
+
         $chunks = array_chunk($this->getAllTargetsEntries(), 500);
 
         foreach ($chunks as $chunkTargets) {
@@ -116,7 +119,9 @@ class CampaignTask extends SpiceBean
 
             foreach ($chunkTargets as $target) {
 
-                $query .= "($guidSQL, $currentDate, '$this->campaign_id', '$this->id', $guidSQL, '{$target['prospect_list_id']}', '{$target['related_id']}', '{$target['related_type']}','{$target['email_addr_bean_rel_id']}', '$status', 0, $currentDate, '$this->assigned_user_id' $addQueryValues),";
+                $targetStatus = $this->handleTargetDuplicateEmailAddressStatus($target, $status, $emailAddresses, $prospectLists);
+
+                $query .= "($guidSQL, $currentDate, '$this->campaign_id', '$this->id', $guidSQL, '{$target['prospect_list_id']}', '{$target['related_id']}', '{$target['related_type']}','{$target['email_addr_bean_rel_id']}', '$targetStatus', 0, $currentDate, '$this->assigned_user_id' $addQueryValues),";
             }
 
             # remove the last comma from the query
@@ -130,6 +135,36 @@ class CampaignTask extends SpiceBean
         $this->save();
 
         return ['success' => true, 'id' => $this->id];
+    }
+
+    /**
+     * handle target duplicate email address status
+     * @param array $target
+     * @param string $targetStatus
+     * @param array $emailAddresses
+     * @param array $prospectLists
+     * @return string duplicate | $targetStatus
+     */
+    private function handleTargetDuplicateEmailAddressStatus(array $target, string $targetStatus, array &$emailAddresses, array &$prospectLists): string
+    {
+        # collect the email addresses to set the duplicate status on the log entry if the only_unique_email_addresses flag is set
+        if ($this->only_unique_email_addresses == 1) {
+
+            if (!$prospectLists[$target['prospect_list_id']]) {
+                $prospectLists[$target['prospect_list_id']] = BeanFactory::getBean('ProspectLists', $target['prospect_list_id']);
+            }
+
+            $where = $prospectLists[$target['prospect_list_id']]->allow_multiple_emails_per_target && !empty($target['email_addr_bean_rel_id']) ? "id = '{$target['email_addr_bean_rel_id']}'" : "primary_address = 1 AND deleted = 0 AND bean_id = '{$target['related_id']}'";
+            $emailAddress = (string) $this->db->getOne("SELECT email_address_id FROM email_addr_bean_rel WHERE $where");
+
+            if ($emailAddress && $emailAddresses[$emailAddress]) {
+                $targetStatus = 'duplicate';
+            } else if ($emailAddress) {
+                $emailAddresses[$emailAddress] = 1;
+            }
+        }
+
+        return $targetStatus;
     }
 
     /**
@@ -504,7 +539,10 @@ class CampaignTask extends SpiceBean
             /** @var Person $seed */
             $seed = BeanFactory::getBean($queuedEmail['target_type'], $queuedEmail['target_id']);
 
-            $emailAddress = BeanFactory::getBean('EmailAddresses')->getEmailAddressForBean($seed, $queuedEmail['email_addr_bean_rel_id']);
+            if($seed) {
+                $emailAddress = BeanFactory::getBean('EmailAddresses')->getEmailAddressForBean($seed, $queuedEmail['email_addr_bean_rel_id']);
+            }
+
             $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
             $campaignLog->activity_type = "error";
 
@@ -512,11 +550,15 @@ class CampaignTask extends SpiceBean
             if (!$seed) {
                 $campaignLog->activity_comment = 'LBL_ERROR_LOADING_RECORD';
 
+            } else if (empty($emailAddress?->email_address) && empty($queuedEmail['email_addr_bean_rel_id'])) {
+
+                $campaignLog->activity_comment = 'LBL_ERROR_LOADING_RELATED_EMAIL';
+
             } else if (empty($emailAddress?->email_address)) {
 
                 $campaignLog->activity_comment = 'ERR_NO_PRIMARY_EMAIL';
 
-            } else if ($this->disable_inactive_check != 1 && $seed->is_inactive) {
+            }  else if ($this->disable_inactive_check != 1 && $seed->is_inactive) {
 
                 $campaignLog->activity_comment = 'LBL_IS_INACTIVE';
 
@@ -531,7 +573,7 @@ class CampaignTask extends SpiceBean
                 # try to send the email after the pre send checks
             } else {
 
-                $email = $this->sendEmail($seed, $emailAddress->email_address,true, false, ['CampaignLog' => $campaignLog]);
+                $email = $this->sendEmail($seed, $emailAddress->email_address,$this->save_emails == 1, false, ['CampaignLog' => $campaignLog]);
 
                 if ( $email->status === 'sent' or $email->status === 'intercepted' ) {
                     $campaignLog->activity_type = $email->status;
@@ -653,16 +695,16 @@ class CampaignTask extends SpiceBean
             SpiceAttachments::cloneAttachmentsForBean('Emails', $email->id, 'CampaignTasks', $this->id, $saveEmail, $categoryId)
         );
 
+        if (isset($addBeans['CampaignLog'])) {
+            $email->registerTrackingParentData('CampaignLog', $addBeans['CampaignLog']->id);
+        }
+
         if($saveEmail){
             $email->parent_type = $seed->_module;
             $email->parent_id = $seed->id;
             $email->to_be_sent_now = true;
 
-            if (isset($addBeans['CampaignLog'])) {
-                $email->registerTrackingParentData('CampaignLog', $addBeans['CampaignLog']->id);
-            }
             $email->save(false, false);
-
         } else {
 
             try {
@@ -739,7 +781,7 @@ class CampaignTask extends SpiceBean
      * @return bool
      */
     public function generateServiceFeedbacks(){
-        $queuedFeedbacks = $this->db->query("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = 'Feedback' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC");
+        $queuedFeedbacks = $this->db->query("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = 'Feedback' AND activity_type = 'queued' AND campaigntask_id <> '' AND related_id IS NULL ORDER by activity_date DESC");
         while($queuedFeedback = $this->db->fetchByAssoc($queuedFeedbacks)){
             /// load the campaign task if we have a new one
             if($queuedFeedback['campaigntask_id'] != $this->id){
@@ -747,19 +789,23 @@ class CampaignTask extends SpiceBean
             };
 
             // check that the target is a contact
+            /*
             if($queuedFeedback['target_type'] != 'Contacts'){
                 $campaignLog = BeanFactory::getBean('CampaignLog', $queuedFeedback['id']);
                 $campaignLog->activity_type = 'error';
                 $campaignLog->save();
                 continue;
             }
+            */
 
 
-                // load the bean and send the email
+            // load the bean and send the email
             $seed = BeanFactory::getBean($queuedFeedback['target_type'], $queuedFeedback['target_id']);
             if($seed){
                 $feedback = BeanFactory::getBean('ServiceFeedbacks');
                 $feedback->contact_id = $seed->id;
+                $feedback->related_type = $seed->_module;
+                $feedback->related_id = $seed->id;
                 $feedback->servicefeedback_status = 'created';
                 $feedback->questionnaire_id = $this->questionnaire_id;
                 $feedback->parent_type = 'CampaignTasks';
@@ -767,7 +813,7 @@ class CampaignTask extends SpiceBean
                 $feedback->save();
 
                 $campaignLog = BeanFactory::getBean('CampaignLog', $queuedFeedback['id']);
-                $campaignLog->activity_type = $feedback->servicefeedback_status;
+                //$campaignLog->activity_type = $feedback->servicefeedback_status;
                 $campaignLog->related_id = $feedback->id;
                 $campaignLog->related_type = 'ServiceFeedbacks';
                 $campaignLog->save();

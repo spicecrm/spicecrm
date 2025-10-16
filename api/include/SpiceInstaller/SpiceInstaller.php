@@ -97,7 +97,6 @@ class SpiceInstaller
             self::initializeDictionaryFromSystemPackage();
             self::createSystemTables();
             self::reloadSystemPackage();
-            throw new ServiceUnavailableException('New version detected. Admin user must reload the loaded packages.', 'systemVersionChange');
         }
     }
 
@@ -207,11 +206,11 @@ class SpiceInstaller
         }
 
         //check mailparse
-        if (!function_exists('mailparse_msg_parse_file')) {
-            $requirements['mailparse'] = false;
-        } else {
-            $requirements['mailparse'] = true;
-        }
+//        if (!function_exists('mailparse_msg_parse_file')) {
+//            $requirements['mailparse'] = false;
+//        } else {
+//            $requirements['mailparse'] = true;
+//        }
 
         // check imap
         if (!function_exists('imap_qprint')) {
@@ -655,10 +654,11 @@ class SpiceInstaller
         $username = $postData['credentials']['username'];
         $surname = $postData['credentials']['surname'];
         $password = $postData['credentials']['password'];
+        $user_email = $postData['credentials']['email'];
         $user_instance->user_hash = User::getPasswordHash($password);
         $date = date("Y-m-d h:i:s");
-        $user = "INSERT INTO users (id, user_name, user_hash, last_name, is_admin, date_entered, date_modified, modified_user_id, created_by, title, status, deleted) 
-            VALUES ('1', '$username', '$user_instance->user_hash', '$surname', 1, '$date','$date', '1', '1', 'Administrator', 'Active', 0)";
+        $user = "INSERT INTO users (id, user_name, user_hash, user_email, last_name, is_admin, date_entered, date_modified, modified_user_id, created_by, status, deleted) 
+            VALUES ('1', '{$username}', '{$user_instance->user_hash}', '{$user_email}', '$surname', 1, '$date','$date', '1', '1', 'Active', 0)";
 
         $userrole = "INSERT INTO sysuiuserroles (id, user_id, sysuirole_id, defaultrole) VALUES (" . $db->getGuidSQL() . ", '1', '3687463f-8ed3-49df-af07-1fa2638505db', 1)";
         if (!$db->query($user)) {
@@ -666,9 +666,9 @@ class SpiceInstaller
         }
         $db->query($userrole);
 
-        $current_user = $user_instance->retrieve(1);
-        $current_user->email1 = $postData['credentials']['email'];
-        $current_user->save();
+//        $current_user = $user_instance->retrieve(1);
+//        $current_user->email1 = $postData['credentials']['email'];
+//        $current_user->save();
     }
 
     /**

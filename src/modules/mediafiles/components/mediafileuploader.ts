@@ -121,12 +121,12 @@ export class MediaFileUploader {
     set image( imageData: string ) {
         // The image comes in the format 'filetype|base64filedata', like 'jpeg|/9j/4AAQSkZJRgABA...'
         let positionDelimiter = imageData.indexOf('|');
-        this.model.setField('file', imageData.substring( positionDelimiter + 1 ));
+        this.model.setField('file', imageData.substring(positionDelimiter + 1));
         this.mediaMetaData = this.inputMedia.mediaMetaData;
         if (!this.model.getField('name')) {
             this.model.setField('name', this.mediaMetaData.filename.replace(/\.[^\.]+$/, '').replace(/_/, ' '));
         }
-        this.model.setField('filetype', imageData.substring( 0, positionDelimiter ));
+        this.model.setField('filetype', imageData.substring(0, positionDelimiter));
     }
 
     /**

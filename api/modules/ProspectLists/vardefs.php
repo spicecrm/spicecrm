@@ -294,13 +294,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'len' => '255',
             'source' => 'non-db',
         ],
-        'prospect_list_filters' => [
-            'name' => 'prospect_list_filters',
-            'type' => 'link',
-            'relationship' => 'prospectlists_prospect_list_filters',
-            'source' => 'non-db',
-            'module' => 'ProspectListFilters'
-        ],
+//        'prospect_list_filters' => [
+//            'name' => 'prospect_list_filters',
+//            'type' => 'link',
+//            'relationship' => 'prospectlists_prospect_list_filters',
+//            'source' => 'non-db',
+//            'module' => 'ProspectListFilters'
+//        ],
 //        'emailschedules' => [
 //            'name' => 'emailschedules',
 //            'vname' => 'LBL_EMAIL_SCHEDULES',
@@ -356,15 +356,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'rhs_key' => 'assigned_user_id',
             'relationship_type' => 'one-to-many'
         ],
-        'prospectlists_prospect_list_filters' => [
-            'lhs_module' => 'ProspectLists',
-            'lhs_table' => 'prospectlists',
-            'lhs_key' => 'id',
-            'rhs_module' => 'ProspectListFilters',
-            'rhs_table' => 'prospect_list_filters',
-            'rhs_key' => 'prospectlist_id',
-            'relationship_type' => 'one-to-many'
-        ],
+//        'prospectlists_prospect_list_filters' => [
+//            'lhs_module' => 'ProspectLists',
+//            'lhs_table' => 'prospectlists',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'ProspectListFilters',
+//            'rhs_table' => 'prospect_list_filters',
+//            'rhs_key' => 'prospectlist_id',
+//            'relationship_type' => 'one-to-many'
+//        ],
         'prospectlists_prospectlistunsubscribes' => [
             'lhs_module' => 'ProspectListUnsubscribes',
             'lhs_table' => 'prospectlistunsubscribes',

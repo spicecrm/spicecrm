@@ -17,11 +17,14 @@ class UserRelationship extends One2MBeanRelationship
 
     /**
      * build relationship definition
-     * @param SpiceDictionaryRelationship $relationship
+     * @param array $relationship
      * @return array[]
+     * @throws \Exception
      */
-    public function buildRelationshipDef(SpiceDictionaryRelationship $relationship): array
+    public function buildRelationshipDef(array $relationship): array
     {
+        $relationship = new SpiceDictionaryRelationship($relationship['id']);
+
         try {
             $leftDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
             $leftField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($leftDefinition->name, $relationship->relationship->lhs_sysdictionaryitem_id);

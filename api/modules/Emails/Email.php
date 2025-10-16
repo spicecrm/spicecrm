@@ -67,6 +67,8 @@ class Email extends SpiceBean
     const STATUS_CREATED = 'created';
 
     const STATUS_DRAFT = 'draft';
+    const STATUS_SENT = 'sent';
+    const STATUS_SEND_ERROR = 'send_error';
 
     const TYPE_INBOUND = 'inbound';
     const TYPE_OUTBOUND = 'out';
@@ -250,10 +252,10 @@ class Email extends SpiceBean
                 }
 
                 if ($result['result'] == true) {
-                    $this->status = 'sent';
+                    $this->status = self::STATUS_SENT;
 
                 } else {
-                    $this->status = $result['errors'] ? 'send_error' : 'created';
+                    $this->status = $result['errors'] ? self::STATUS_SEND_ERROR : self::STATUS_CREATED;
                 }
 
                 $this->new_with_id = false;
@@ -404,7 +406,7 @@ class Email extends SpiceBean
 
             foreach ($data as $row) {
 
-                if ($name == 'email_addresses' && $row['address_type'] !== 'from') continue;
+                if ($name == 'email_addresses' && ($row['address_type'] == 'from' || $row['address_type'] == 'to')) continue;
 
                 $additionalValues = [];
 
@@ -553,6 +555,36 @@ class Email extends SpiceBean
         }
     }
 
+    /**
+     * compares the recipients before the save and removes the ones that are not in the POST data
+     * can happen when a draft is edited
+     * @return void
+     */
+    public function removeRecipientAdresses()
+    {
+        $removedIds = [];
+        $beforeSaveRecipients = $this->db->fetchAll(
+            "SELECT id FROM emails_email_addr_rel WHERE email_id = '{$this->id}'"
+        );
+
+       if($beforeSaveRecipients) {
+            foreach ($beforeSaveRecipients as $beforeSaveRecipient) {
+                if (array_search($beforeSaveRecipient['id'], array_column($this->recipient_addresses, 'id')) === false) {
+                    $removedIds[] = $beforeSaveRecipient['id'];
+                }
+            }
+
+            if (count($removedIds) > 0) {
+                $this->db->query(
+                    "UPDATE emails_email_addr_rel SET
+                            deleted = 1
+                            WHERE id IN ('" . implode("','", $removedIds) . "')
+                        "
+                );
+            }
+        }
+    }
+
     function saveRecipientAddresses($ignoreInvalid = true)
     {
         if (!is_array($this->recipient_addresses) || empty($this->recipient_addresses)) {
@@ -564,6 +596,9 @@ class Email extends SpiceBean
             'cc_addrs' => [],
             'bcc_addrs' => [],
         ];
+
+        // handle removed recipients
+        $this->removeRecipientAdresses();
 
         foreach ($this->recipient_addresses as $recipient_address) {
             $record = $this->db->fetchByAssoc($this->db->query(
@@ -1519,7 +1554,7 @@ class Email extends SpiceBean
      */
     public function assignBeanToEmail($beanOrId, $bean_module): ?array
     {
-        if (is_string($$beanOrId)) {
+        if (is_string($beanOrId)) {
             $bean = BeanFactory::getBean($bean_module, $beanOrId);
         } else {
             $bean = $beanOrId;
@@ -1822,7 +1857,7 @@ class Email extends SpiceBean
                         }
 
                         $fileArray = [
-                            'filename' => $bodyPart['content-name'],
+                            'filename' => SpiceAttachments::decodeEmailAttachmentName($bodyPart['content-name']),
                             'file' => base64_encode($contents[$index]),
                             'filemimetype' => $bodyPart['content-type'],
                             'external_id' => $bodyPart['content-id']
@@ -1910,6 +1945,12 @@ class Email extends SpiceBean
                     $this->type = strtolower($recipient->getEmail()) == $beanEmailAddress ? self::TYPE_INBOUND : self::TYPE_OUTBOUND;
             }
         }
+
+        # add the recipient address
+        $this->recipient_addresses[] = [
+            'email_address' => $this->emailAddress->splitEmailAddress($message->getSender())['email'],
+            'address_type' => 'from',
+        ];
 
         // if not set inbound as default
         if(!$this->type) $this->type = self::TYPE_INBOUND;

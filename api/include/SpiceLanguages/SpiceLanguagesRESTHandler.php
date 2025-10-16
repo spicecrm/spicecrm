@@ -65,6 +65,9 @@ class SpiceLanguagesRESTHandler
                         }
                         $data = $trans;
 
+                        # skip inserting if the mandatory field is not filled out
+                        if (!isset($data['translation_default'])) continue;
+
                         SystemDeploymentCR::writeDBEntry($table, $trans['id'], $data, $data['translation_default']);
                     }
                 }

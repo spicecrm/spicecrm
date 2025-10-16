@@ -26,4 +26,11 @@ export class AdministrationApiInspectorMethods {
         });
     }
 
+    public selectIpClients(apiMethod: any, e: MouseEvent)
+    {
+        this.modal.openModal('AdministrationApiInspectorMethodIpClients', true, this.injector).subscribe(modalRef => {
+            modalRef.instance.apiRoute = apiMethod;
+        });
+    }
+
 }

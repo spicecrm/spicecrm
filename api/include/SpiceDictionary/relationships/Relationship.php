@@ -71,12 +71,10 @@ abstract class Relationship
      */
     protected function initialize(array $relationship): void
     {
-        $relationship = new SpiceDictionaryRelationship($relationship['id']);
-
         $this->def = $this->buildRelationshipDef($relationship);
-        $this->lhsLink = $relationship->relationship->lhs_linkname;
-        $this->rhsLink = $relationship->relationship->rhs_linkname;
-        $this->self_referencing = $relationship->relationship->rhs_sysdictionarydefinition_id == $relationship->relationship->lhs_sysdictionarydefinition_id;
+        $this->lhsLink = $relationship['lhs_linkname'];
+        $this->rhsLink = $relationship['rhs_linkname'];
+        $this->self_referencing = $relationship['rhs_sysdictionarydefinition_id'] == $relationship['lhs_sysdictionarydefinition_id'];
     }
 
     /**
@@ -571,11 +569,11 @@ abstract class Relationship
 
     /**
      * build relationship definition
-     * @param SpiceDictionaryRelationship $relationship
+     * @param array $relationship
      * @return array[]
      * @throws Exception
      */
-    abstract public function buildRelationshipDef(SpiceDictionaryRelationship $relationship): array;
+    abstract public function buildRelationshipDef(array $relationship): array;
 
     /**
      * get definition side

@@ -223,6 +223,8 @@ class SpiceDictionaryIndexes
      */
     public function retrieveIndexItems(): array
     {
+        $this->dictionaryIndexItems = [];
+
         $db = DBManagerFactory::getInstance();
 
         $scopeTables = ['g' => self::itemTable, 'c' => self::itemCustomTable];

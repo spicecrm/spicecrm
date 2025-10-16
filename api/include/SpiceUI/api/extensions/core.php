@@ -132,6 +132,55 @@ $routes = [
             ],
         ],
     ],
+    [
+        'method'      => 'get',
+        'route'       => '/admin/ipclients',
+        'class'       => CoreController::class,
+        'function'    => 'getIpClients',
+        'description' => 'Get the IP Clients',
+        'options'     => ['noAuth' => false, 'validate' => true],
+        'parameters'  => [
+            'routePattern' => [
+                'in' => 'query',
+                'description' => 'The the pattern for the selected API route.',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
+            ],
+            'routeMethod' => [
+                'in' => 'query',
+                'description' => 'The http method for the selected API route.',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
+            ]
+        ]
+    ], [
+        'method'      => 'post',
+        'route'       => '/admin/ipclients',
+        'class'       => CoreController::class,
+        'function'    => 'setIpClientAccess',
+        'description' => 'Save the IP Clients access',
+        'options'     => ['noAuth' => false, 'validate' => true ],
+        'parameters'  => [
+            'routePattern' => [
+                'in' => 'body',
+                'description' => 'The the pattern for the selected API route.',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
+            ],
+            'routeMethod' => [
+                'in' => 'body',
+                'description' => 'The http method for the selected API route.',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
+            ],
+            'clients' => [
+                'in' => 'body',
+                'description' => 'The list of authorized IP clients.',
+                'type' => ValidationMiddleware::TYPE_COMPLEX,
+                'required' => true,
+            ]
+        ]
+    ],
 ];
 
 /**

@@ -62,7 +62,7 @@
                     </tr>
                     @if (showTemplated) {
                         <tr class="slds-theme--shade"><td></td><td colspan="6"><system-label label="LBL_TEMPLATED"/></td></tr>
-                        @for ( dictionaryRelationshipsForTemplate of dictionarymanager.dictionaryrelationships | dictionaryFilterRelationshipTemplate: dictionarymanager.currentDictionaryDefinition: dictionarymanager.dictionaryitems; track dictionaryRelationshipsForTemplate.id) {
+                        @for ( dictionaryRelationshipsForTemplate of dictionarymanager.dictionaryrelationships | dictionaryFilterRelationshipTemplate: dictionarymanager.currentDictionaryDefinition: dictionarymanager.dictionaryitems; track $index) {
                             <tr class="slds-hint-parent" *ngFor="let dictionaryrelationship of dictionaryRelationshipsForTemplate.relationships" (click)="setActiveId(dictionaryrelationship.id)" [ngClass]="{'slds-is-selected': dictionarymanager.currentDictionaryRelationship == dictionaryrelationship.id}">
                                 <td>
                                     <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionaryrelationship.scope == 'g' ? 'world' : 'people'"></system-utility-icon>

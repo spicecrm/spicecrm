@@ -40,6 +40,8 @@ class SpiceDictionaryDomainValidations
 
     public array $domainValidations = [];
 
+    public array $domainValidationValues = [];
+
     const cacheName = 'domainValidations';
 
     private function __clone()
@@ -71,6 +73,7 @@ class SpiceDictionaryDomainValidations
         if($cached) {
             $this->domainValidations = $cached['domainValidations'];
             $this->domainValidationsWithValues = $cached['domainValidationsWithValues'];
+            $this->domainValidationValues = $cached['domainValidationValues'];
         } else {
             $this->reloadItems();
         }
@@ -79,14 +82,15 @@ class SpiceDictionaryDomainValidations
 
     /**
      * retrieve domain validations from the database
-     * @return void
+     * @return array
      * @throws Exception
      */
-    private function retrieveValidations()
+    public function retrieveValidationsAndValues(): array
     {
         $db = DBManagerFactory::getInstance();
         $this->domainValidations = [];
         $this->domainValidationsWithValues = [];
+        $this->domainValidationValues = [];
 
         $scopeTables = [ 'g' => self::table, 'c' => self::customTable];
 
@@ -100,6 +104,8 @@ class SpiceDictionaryDomainValidations
         }
 
         $this->retrieveValidationValues();
+
+        return [$this->domainValidations, $this->domainValidationValues];
     }
 
     /**
@@ -120,12 +126,15 @@ class SpiceDictionaryDomainValidations
                 $query = $db->query("SELECT *, '$scope' as scope FROM $table WHERE sysdomainfieldvalidation_id = '{$data['id']}'");
 
                 while($value = $db->fetchByAssoc($query)){
+
                     $this->domainValidationsWithValues[$name]['validationvalues'][$value['enumvalue']] = [
                         'enumvalue' => $value['enumvalue'],
                         'label' => $value['label'],
                         'sequence' => (int)$value['sequence'],
                         'status' => $value['status'],
                     ];
+
+                    $this->domainValidationValues[$value['id']] = $value;
                 }
             }
         }
@@ -156,6 +165,7 @@ class SpiceDictionaryDomainValidations
         $validationName = $this->domainValidations[$validationId]['name'];
 
         $this->domainValidationsWithValues[$validationName]['validationvalues'][$value['enumvalue']] = $value;
+        $this->domainValidationValues[$value['id']] = $value;
     }
 
     /**
@@ -165,7 +175,7 @@ class SpiceDictionaryDomainValidations
      */
     public function reloadItems(): void
     {
-        $this->retrieveValidations();
+        $this->retrieveValidationsAndValues();
         $this->writeCache();
     }
 
@@ -178,6 +188,7 @@ class SpiceDictionaryDomainValidations
         SpiceCache::set(self::cacheName, [
             'domainValidations' => $this->domainValidations,
             'domainValidationsWithValues' => $this->domainValidationsWithValues,
+            'domainValidationValues' => $this->domainValidationValues,
         ]);
     }
 
@@ -304,6 +315,7 @@ class SpiceDictionaryDomainValidations
 
         self::$instance->domainValidations = [];
         self::$instance->domainValidationsWithValues = [];
+        self::$instance->domainValidationValues = [];
 
         foreach ($validations as $validation) {
             $validation->scope = 'g';
