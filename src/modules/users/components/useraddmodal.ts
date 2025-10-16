@@ -163,8 +163,8 @@ export class UserAddModal implements OnInit {
     public setSendCredentialsRequiredFields() {
         const config = this.configuration.getCapabilityConfig('userpassword');
         const channels = {sms: 'phone_mobile', email: 'user_email'};
-        this.model.setFieldStatus(channels[config.sendPasswordChannel], 'required', this.sendBySystem && !this.externalAuthOnly);
-        this.model.setFieldStatus(channels[config.sendUsernameChannel], 'required', this.sendBySystem && !this.externalAuthOnly);
+        this.model.setFieldState(channels[config.sendPasswordChannel], 'required', this.sendBySystem && !this.externalAuthOnly);
+        this.model.setFieldState(channels[config.sendUsernameChannel], 'required', this.sendBySystem && !this.externalAuthOnly);
     }
 
     public getFieldSets() {
