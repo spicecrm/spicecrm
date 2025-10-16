@@ -65,7 +65,7 @@ export class telecockpitservice implements OnDestroy {
 
     public isLocked(item?: any, checkOwner?: boolean) {
         if (!item) item = this.selectedListItem;
-        return moment(item.locked_until).isAfter(moment()) && (!checkOwner || item.locked_by_id != this.metadata.session.authData.user.id);
+        return moment(item.locked_until).isAfter(moment()) && (!checkOwner || item.locked_by_id != this.metadata.session.authData.userId);
     }
 
     private subscribeToModelChanges() {
