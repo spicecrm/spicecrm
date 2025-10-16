@@ -65,6 +65,25 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'required' => true,
             ],
+            'credentials' => [
+                'in' => 'body',
+                'description' => 'credentials for the user',
+                'type' => ValidationMiddleware::TYPE_OBJECT,
+                'properties' => [
+                    'newPassword' => [
+                        'description' => 'password for the user',
+                        'type' => ValidationMiddleware::TYPE_STRING,
+                    ],
+                    'forceReset' => [
+                        'description' => 'Force user to change the password on next login',
+                        'type' => ValidationMiddleware::TYPE_BOOL,
+                    ],
+                    'sendBySystem' => [
+                        'description' => 'Whether send the credentials to the user by the system',
+                        'type' => ValidationMiddleware::TYPE_BOOL,
+                    ],
+                ]
+            ],
         ]
     ],
     [

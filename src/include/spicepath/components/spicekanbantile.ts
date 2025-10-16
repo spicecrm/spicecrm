@@ -76,9 +76,6 @@ export class SpiceKanbanTile implements OnInit, OnDestroy {
         this.model.id = this.item.id;
         this.model.setData(_.clone(this.item));
 
-        // initialize the field statis
-        this.model.initializeFieldsStati();
-
         // handle drop from anopther kanban stage
         if (this.item._KanbanDrop) {
             // set the stage field back, start edit and set it now so it is picked up as dirty

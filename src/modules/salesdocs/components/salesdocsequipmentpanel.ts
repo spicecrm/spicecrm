@@ -144,7 +144,7 @@ export class SalesDocsEquipmentPanel implements OnInit {
      * So in this case set the field account_op_name to status "disabled". Or remove the disabled status, when no service equipment is selected any more.
      */
     public selectionChanged(): void {
-        this.model.setFieldStatus('account_op_name', 'disabled', this.model.getRelatedRecords('serviceequipments').length > 0 );
+        this.model.setFieldState('account_op_name', 'disabled', this.model.getRelatedRecords('serviceequipments').length > 0 );
     }
 
 }

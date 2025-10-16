@@ -72,6 +72,11 @@
                 <div class="slds-select_container">
                     <select [(ngModel)]="config.smsMailboxId" [disabled]="isLoading || smsmailboxes.length == 0" class="slds-select">
                         <option value=""></option>
+                        @if (configurationService.getCapabilityConfig('gateway').enabled) {
+                            <option value="gateway">
+                                <system-label label="LBL_SYSTEM_GATEWAY"></system-label>
+                            </option>
+                        }
                         <option *ngFor="let item of smsmailboxes" [value]="item.id">
                             {{item.name}}
                         </option>
@@ -88,6 +93,11 @@
                 <div class="slds-select_container">
                     <select [(ngModel)]="config.emailMailboxId" [disabled]="isLoading || emailmailboxes.length == 0" class="slds-select">
                         <option value=""></option>
+                        @if (configurationService.getCapabilityConfig('gateway').enabled) {
+                            <option value="gateway">
+                                <system-label label="LBL_SYSTEM_GATEWAY"></system-label>
+                            </option>
+                        }
                         <option *ngFor="let item of emailmailboxes" [value]="item.id">
                             {{item.name}}
                         </option>

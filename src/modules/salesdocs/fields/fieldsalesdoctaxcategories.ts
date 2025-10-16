@@ -38,8 +38,7 @@ export class fieldSalesdocTaxCategories extends fieldGeneric {
      */
     public isEditable(field: string = this.fieldname): boolean {
         if(!!this.model.getField('salesdocitempricecalculationschema_id')) return false;
-
-        return (this.model.checkAccess('edit') || this.model.checkAccess('create')) && this.getStati(field).editable && !this.getStati(field).readonly && !this.getStati(field).disabled && !this.getStati(field).hidden;
+        return super.isEditable(field);
     }
 
     /**
