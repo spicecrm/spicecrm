@@ -240,7 +240,7 @@ class SpiceDictionaryDomainValidations
 
         unset($validation['scope']);
 
-        DBManagerFactory::getInstance()->upsertQuery($table, ['id' => $validation['id']], $validation);
+        SystemDeploymentCR::writeDBEntry($table, $validation['id'], $validation, $validation['name']);
 
         $this->writeCache();
     }
