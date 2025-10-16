@@ -71,8 +71,8 @@ export class ObjectActionNewButton implements OnInit {
             url: `module/${this.model.module}/create/${this.model.id}`,
             tabdata: {
                 module: this.model.module,
-                id: this.model.id,
-                data: JSON.parse(JSON.stringify(this.model.data)),
+                id: this.model.id
+                // data: JSON.parse(JSON.stringify(this.model.data)),
             }
         })
     }

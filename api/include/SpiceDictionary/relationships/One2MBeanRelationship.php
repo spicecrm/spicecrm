@@ -27,11 +27,14 @@ class One2MBeanRelationship extends One2MRelationship
 
     /**
      * build relationship definition
-     * @param SpiceDictionaryRelationship $relationship
+     * @param array $relationship
      * @return array[]
+     * @throws \Exception
      */
-    public function buildRelationshipDef(SpiceDictionaryRelationship $relationship): array
+    public function buildRelationshipDef(array $relationship): array
     {
+        $relationship = new SpiceDictionaryRelationship($relationship['id']);
+
         try {
             $leftDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
             $leftField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($leftDefinition->name, $relationship->relationship->lhs_sysdictionaryitem_id);
@@ -88,14 +91,14 @@ class One2MBeanRelationship extends One2MRelationship
             ];
 
             if ($relationship->relationship->rhs_linkdefault) {
-                $leftFieldDef['fielddefinition']['default'] = true;
+                $leftFieldDef['default'] = true;
             }
 
             if($relationship->relationship->rhs_sortfield) {
 
                 $rightSortField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($rightDefinition->name, $relationship->relationship->rhs_sortfield);
 
-                $leftFieldDef['fielddefinition']['sort'] = [
+                $leftFieldDef['sort'] = [
                     'sortfield' => $rightSortField->name,
                     'sortdirection' => $relationship->relationship->rhs_sortdirection ? strtoupper($relationship->relationship->rhs_sortdirection) : 'ASC'
                 ];
@@ -176,7 +179,7 @@ class One2MBeanRelationship extends One2MRelationship
         if (!empty($rhs->{$this->def['rhs_key']}) && $rhs->{$this->def['rhs_key']} != $lhs->id)
         {
             $oldLHS = BeanFactory::getBean($lhs->_module, $rhs->{$this->def['rhs_key']}, ['relationships' => false]);
-            $this->remove($oldLHS, $rhs, false);
+            $this->remove($oldLHS, $rhs, null,false);
         }
 
         //Make sure we load the current relationship state to the LHS link
@@ -253,7 +256,7 @@ class One2MBeanRelationship extends One2MRelationship
         return $resaveRequired;
     }
 
-    public function remove($lhs, $rhs, $save = true)
+    public function remove($lhs, $rhs, ?string $relId = null, $save = true)
     {
         $rhsID = $this->def['rhs_key'];
 

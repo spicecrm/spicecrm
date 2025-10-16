@@ -2,12 +2,13 @@
  * @module AdminComponentsModule
  */
 import {
-    Component, ElementRef,
-    OnInit
+    Component, ElementRef, EventEmitter, Input,
+    OnInit, Output
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {administrationconfigurator} from '../services/administrationconfigurator.service';
+import { BehaviorSubject } from 'rxjs';
 
 /**
  * a generic configurator component that can load entries from a tabel and allow management of those
@@ -24,8 +25,9 @@ export class AdministrationConfigurator implements OnInit {
      *
      * @private
      */
-    public componentconfig: any = {};
-
+    @Input() public componentconfig: any = {};
+    @Output() public closable$: BehaviorSubject<boolean>;
+    @Output() public dataChanged$: EventEmitter<boolean>;
     /**
      *
      * set if filters shoudl be displayed
@@ -52,7 +54,8 @@ export class AdministrationConfigurator implements OnInit {
         public language: language,
         public elementRef: ElementRef
     ) {
-
+        this.closable$ = this.administrationconfigurator.closable$;
+        this.dataChanged$ = this.administrationconfigurator.dataChanged$;
     }
 
     public ngOnInit() {

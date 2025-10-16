@@ -27,7 +27,7 @@ class SpiceSwaggerGenerator
     /**
      * @var array|null holds the modules
      */
-    private array $modules;
+    private array $modules = [];
     /**
      * @var array generated bean schemas
      */
@@ -48,7 +48,9 @@ class SpiceSwaggerGenerator
         $this->allExtensions = $allExtensions;
         $this->selectedRoute = $selectedRoute;
         $this->includeSubroutes = $includeSubroutes;
-        $this->modules = $modules;
+        if($modules) {
+            $this->modules = $modules;
+        }
 
         $this->filterRoutes($extensions, $node);
 
@@ -94,12 +96,12 @@ class SpiceSwaggerGenerator
 
     private function generateInfo():void {
         $infoArray = [];
-        $infoArray['description']    = 'Lorem ipsum dolor sit amet';
-        $infoArray['version']        = '2021.03.001';
+        $infoArray['description']    = 'SpiceCRM Swagger Definition';
+        $infoArray['version']        = '2025.02.001';
         $infoArray['title']          = 'SpiceCRM';
         $infoArray['termsOfService'] = '';
         $infoArray['contact']        = [
-            'email' => 'info@spicecrm.io',
+            'email' => 'info@spicecrm.com',
         ];
         /*$infoArray['license']        = [
             'name' => 'AGPL-3.0',
@@ -215,27 +217,29 @@ class SpiceSwaggerGenerator
      */
     private function generateBeanSchemas(): void
     {
-        foreach ($this->modules as $module) {
+        if($this->modules) {
+            foreach ($this->modules as $module) {
 
-            $moduleDetails = SpiceModules::getInstance()->getModuleDetails($module);
+                $moduleDetails = SpiceModules::getInstance()->getModuleDetails($module);
 
-            if (!SpiceUtils::isValidModule($module) || !$moduleDetails['bean']) continue;
+                if (!SpiceUtils::isValidModule($module) || !$moduleDetails['bean']) continue;
 
-            $this->beanSchemas[] = $moduleDetails['bean'];
+                $this->beanSchemas[] = $moduleDetails['bean'];
 
-            $properties = (new SpiceDictionaryDefinition($moduleDetails['sysdictionarydefinition_id']))->exportFields();
-            $properties = json_decode(json_encode($properties), true);
+                $properties = (new SpiceDictionaryDefinition($moduleDetails['sysdictionarydefinition_id']))->exportFields();
+                $properties = json_decode(json_encode($properties), true);
 
-            uksort($properties, function ($a, $b) {
-                if ($a === 'id') return -1;
-                if ($b === 'id') return 1;
-                return strcmp($a, $b);
-            });
+                uksort($properties, function ($a, $b) {
+                    if ($a === 'id') return -1;
+                    if ($b === 'id') return 1;
+                    return strcmp($a, $b);
+                });
 
-            $this->structureArray['components']['schemas'][$moduleDetails['bean']] = [
-                'type' => 'object',
-                'properties' => $properties
-            ];
+                $this->structureArray['components']['schemas'][$moduleDetails['bean']] = [
+                    'type' => 'object',
+                    'properties' => $properties
+                ];
+            }
         }
     }
 
@@ -244,7 +248,7 @@ class SpiceSwaggerGenerator
      */
     private function generateExternalDocs(): void {
         $this->structureArray['externalDocs']['description'] = 'Find out more about SpiceCRM';
-        $this->structureArray['externalDocs']['url']         = 'https://www.spicecrm.io/';
+        $this->structureArray['externalDocs']['url']         = 'https://www.spicecrm.com/';
     }
 
     /**

@@ -395,7 +395,7 @@ class SpiceDictionaryRelationships
         $relationships = [];
 
         foreach($polymorphs as $polymorph){
-            $relationships[] = $this->generatePolymorphDefinition($polymorph);
+            $relationships[] = $this->relationships[$polymorph['relationship_id']];
         }
 
         return $relationships;
@@ -422,25 +422,6 @@ class SpiceDictionaryRelationships
     }
 
     /**
-     * generate polymorph definition with right and left side ids
-     * @param array $polymorph
-     * @return array
-     */
-    public function generatePolymorphDefinition(array $polymorph): array
-    {
-        $mainRelationship = $this->relationships[$polymorph['relationship_id']];
-
-        if (!$mainRelationship) return [];
-
-        $relationship = $polymorph;
-        
-        $relationship['rhs_sysdictionarydefinition_id'] = $mainRelationship['rhs_sysdictionarydefinition_id'];
-        $relationship['rhs_sysdictionaryitem_id'] = $mainRelationship['rhs_sysdictionaryitem_id'];
-
-        return $relationship;
-    }
-
-    /**
      * get polymorph relationships for the given relationship id
      * @param string $relationshipId
      * @return array
@@ -448,6 +429,25 @@ class SpiceDictionaryRelationships
     public function getPolymorphListForRelationship(string $relationshipId): array
     {
         return $this->polymorphRelationshipsByRelationId[$relationshipId] ?? [];
+    }
+
+    /**
+     * get polymorph relationships for the given relationship id
+     * @param string $relationshipId
+     * @param string $dictionaryId
+     * @return object|null
+     */
+    public function getPolymorphRelationshipForParent(string $relationshipId, string $dictionaryId): ?object
+    {
+        $polymorphRelationships = $this->getPolymorphListForRelationship($relationshipId);
+
+        foreach ($polymorphRelationships as $polymorphRelationship) {
+            if ($polymorphRelationship['lhs_sysdictionarydefinition_id'] == $dictionaryId) {
+                return (object) $polymorphRelationship;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -642,6 +642,13 @@ class SpiceDictionaryRelationships
     private function pushPolymorphInList(string $relationshipId, array $polymorphRelationship)
     {
         $this->polymorphRelationships[$polymorphRelationship['id']] = $polymorphRelationship;
+
+        # append the main relationship status field to the definition before pushing it to the cached lists
+        $polymorphRelationship = [
+            ...$polymorphRelationship,
+            'status' => $this->relationships[$polymorphRelationship['relationship_id']]['status'] ?? 'i',
+            'relationship_type' => 'one-to-many-polymorph'
+        ];
 
         if (!$this->polymorphRelationshipsByLeftId[$polymorphRelationship['lhs_sysdictionarydefinition_id']]) {
             $this->polymorphRelationshipsByLeftId[$polymorphRelationship['lhs_sysdictionarydefinition_id']] = [];

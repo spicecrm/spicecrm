@@ -7,6 +7,7 @@
         <system-utility-icon class="slds-p-left--xx-small" icon="ribbon" size="x-small" [colorclass]="apimethod.options?.validate ? 'slds-icon-text-success' : 'slds-icon-text-light'"></system-utility-icon>
         <system-utility-icon class="slds-p-left--xx-small" icon="unlock" size="x-small" [colorclass]="apimethod.options?.noAuth ? 'slds-icon-text-error' : 'slds-icon-text-light'"></system-utility-icon>
         <system-utility-icon class="slds-p-left--xx-small" icon="user_role" size="x-small" [colorclass]="apimethod.options?.adminOnly ? 'slds-icon-text-error' : 'slds-icon-text-light'"></system-utility-icon>
+        <system-custom-icon class="slds-p-left--xx-small slds-text-link--reset" icon="wan" size="x-small" (click)="selectIpClients(apimethod, $event)" [color]="apimethod.options?.adminOnly ? 'red' : 'grey'" addclasses="slds-icon slds-icon-text-light" title="IP Cient Access"></system-custom-icon>
         <system-utility-icon class="slds-p-left--xx-small slds-text-link--reset" (click)="test(apimethod, $event)" icon="play" size="x-small"></system-utility-icon>
     </div>
     <div class="slds-p-around--small">
