@@ -78,14 +78,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
 //			'comment' => 'Identifier of target record',
 //            'reportable' => false,
 //        ],
-        'target_name' => [
-            'name' => 'target_name',
-            'type_name' => 'target_type',
-            'id_name' => 'target_id',
-            'vname' => 'LBL_RELATED_TO',
-            'type' => 'parent',
-            'source' => 'non-db',
-        ],
+//        'target_name' => [
+//            'name' => 'target_name',
+//            'type_name' => 'target_type',
+//            'id_name' => 'target_id',
+//            'vname' => 'LBL_RELATED_TO',
+//            'type' => 'parent',
+//            'source' => 'non-db',
+//        ],
 //		'target_type' => [
 //			'name' => 'target_type',
 //			'vname' => 'LBL_TARGET_TYPE',
@@ -169,6 +169,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
 //			'reportable'=>false,
 //			'comment' => 'Record deletion indicator'
 //        ],
+
+    #notmigrated
+        /*
 		'recipient_name' => [
 			'name' => 'recipient_name',
 			'type' => 'varchar',
@@ -201,6 +204,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
     		'len' => '255',
    	 		'source'=>'non-db',
         ],
+        */
 //      	'campaigntask_name' => [
 //    		'name' => 'campaigntask_name',
 //    		'rname' => 'name',
@@ -215,31 +219,33 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
 //    		'len' => '255',
 //   	 		'source'=>'non-db',
 //        ],
-		'campaign_name' => [
-			'name' => 'campaign_name',
-			'type' => 'varchar',
-			'len' => '255',
-			'source'=>'non-db',
-        ],
-		'campaign_objective' => [
-			'name' => 'campaign_objective',
-			'type' => 'varchar',
-			'len' => '255',
-			'source'=>'non-db',
-        ],
-		'campaign_content' => [
-            'name' => 'campaign_content',
-            'type' => 'varchar',
-            'len' => '255',
-            'source'=>'non-db',
-        ],
-		'campaign'=> [
-            'name' => 'campaign',
-            'type' => 'link',
-            'relationship' => 'campaign_campaignlog',
-            'source'=>'non-db',
-            'vname'=> 'LBL_CAMPAIGNS',
-        ],
+//		'campaign_name' => [
+//			'name' => 'campaign_name',
+//			'type' => 'varchar',
+//			'len' => '255',
+//			'source'=>'non-db',
+//        ],
+    #nitmigrated
+
+//		'campaign_objective' => [
+//			'name' => 'campaign_objective',
+//			'type' => 'varchar',
+//			'len' => '255',
+//			'source'=>'non-db',
+//        ],
+//		'campaign_content' => [
+//            'name' => 'campaign_content',
+//            'type' => 'varchar',
+//            'len' => '255',
+//            'source'=>'non-db',
+//        ],
+//		'campaign'=> [
+//            'name' => 'campaign',
+//            'type' => 'link',
+//            'relationship' => 'campaign_campaignlog',
+//            'source'=>'non-db',
+//            'vname'=> 'LBL_CAMPAIGNS',
+//        ],
 //		'campaigntask'=> [
 //  			'name' => 'campaigntask',
 //    		'type' => 'link',
@@ -280,48 +286,48 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
 //	        'reportable' =>false,
 //	        'comment' => 'ID of marketing email this entry is associated with',
 //        ],
-        'created_contact'=> [
-            'name' => 'created_contact',
-            'vname' => 'LBL_CREATED_CONTACT',
-            'type' => 'link',
-            'relationship' => 'campaignlog_contact',
-            'source'=>'non-db',
-        ],
-        'created_consumer'=> [
-            'name' => 'created_consumer',
-            'vname' => 'LBL_CREATED_CONSUMER',
-            'type' => 'link',
-            'relationship' => 'campaignlog_consumer',
-            'source'=>'non-db',
-        ],
-        'created_lead'=> [
-            'name' => 'created_lead',
-            'vname' => 'LBL_CREATED_LEAD',
-            'type' => 'link',
-            'relationship' => 'campaignlog_lead',
-            'source'=>'non-db',
-        ],
-        'created_opportunities'=> [
-            'name'         => 'created_opportunities',
-            'vname'        => 'LBL_CREATED_OPPORTUNITY',
-            'type'         => 'link',
-            'relationship' => 'campaignlog_created_opportunities',
-            'source'       => 'non-db',
-        ],
-        'targeted_user' => [
-            'name'         => 'targeted_user',
-            'vname'        => 'LBL_TARGETED_USER',
-            'type'         => 'link',
-            'relationship' => 'campaignlog_targeted_users',
-            'source'       => 'non-db',
-        ],
-        'sent_email'    => [
-            'name'         => 'sent_email',
-            'vname'        => 'LBL_SENT_EMAIL',
-            'type'         => 'link',
-            'relationship' => 'campaignlog_sent_emails',
-            'source'       => 'non-db',
-        ],
+//        'created_contact'=> [
+//            'name' => 'created_contact',
+//            'vname' => 'LBL_CREATED_CONTACT',
+//            'type' => 'link',
+//            'relationship' => 'campaignlog_contact',
+//            'source'=>'non-db',
+//        ],
+//        'created_consumer'=> [
+//            'name' => 'created_consumer',
+//            'vname' => 'LBL_CREATED_CONSUMER',
+//            'type' => 'link',
+//            'relationship' => 'campaignlog_consumer',
+//            'source'=>'non-db',
+//        ],
+//        'created_lead'=> [
+//            'name' => 'created_lead',
+//            'vname' => 'LBL_CREATED_LEAD',
+//            'type' => 'link',
+//            'relationship' => 'campaignlog_lead',
+//            'source'=>'non-db',
+//        ],
+//        'created_opportunities'=> [
+//            'name'         => 'created_opportunities',
+//            'vname'        => 'LBL_CREATED_OPPORTUNITY',
+//            'type'         => 'link',
+//            'relationship' => 'campaignlog_created_opportunities',
+//            'source'       => 'non-db',
+//        ],
+//        'targeted_user' => [
+//            'name'         => 'targeted_user',
+//            'vname'        => 'LBL_TARGETED_USER',
+//            'type'         => 'link',
+//            'relationship' => 'campaignlog_targeted_users',
+//            'source'       => 'non-db',
+//        ],
+//        'sent_email'    => [
+//            'name'         => 'sent_email',
+//            'vname'        => 'LBL_SENT_EMAIL',
+//            'type'         => 'link',
+//            'relationship' => 'campaignlog_sent_emails',
+//            'source'       => 'non-db',
+//        ],
 //        'source_id' => [
 //            'name' => 'source_id',
 //            'vname' => 'LBL_SOURCE_ID',
@@ -336,170 +342,170 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
 //            'len' => 100,
 //            'comment' => 'Module name of the bean that is the original reason for the campaign log entry'
 //        ],
-        'targeted_prospects' => [
-            'name' => 'targeted_prospects',
-            'vname' => 'LBL_PROSPECTS',
-            'type' => 'link',
-            'relationship' => 'prospect_campaign_log',
-            'source' => 'non-db',
-        ],
-        'targeted_consumers' => [
-            'name' => 'targeted_consumers',
-            'type' => 'link',
-            'vname' => 'LBL_CONSUMERS',
-            'relationship' => 'consumer_campaign_log',
-            'source' => 'non-db',
-        ],
-        'targeted_accounts' => [
-            'name' => 'targeted_accounts',
-            'vname' => 'LBL_ACCOUNTS',
-            'type' => 'link',
-            'relationship' => 'account_campaign_log',
-            'source' => 'non-db',
-        ],
-        'targeted_contacts' => [
-            'name' => 'targeted_contacts',
-            'vname' => 'LBL_CONTACTS',
-            'type' => 'link',
-            'relationship' => 'contact_campaign_log',
-            'source' => 'non-db',
-        ],
-        'emailtrackingactions' => [
-            'name' => 'emailtrackingactions',
-            'vname' => 'LBL_EMAILTRACKINGACTIONS',
-            'type' => 'link',
-            'module' => 'EmailTrackingActions',
-            'relationship' => 'campaign_log_emailtrackingactions',
-            'source' => 'non-db'
-        ],
+//        'targeted_prospects' => [
+//            'name' => 'targeted_prospects',
+//            'vname' => 'LBL_PROSPECTS',
+//            'type' => 'link',
+//            'relationship' => 'prospect_campaign_log',
+//            'source' => 'non-db',
+//        ],
+//        'targeted_consumers' => [
+//            'name' => 'targeted_consumers',
+//            'type' => 'link',
+//            'vname' => 'LBL_CONSUMERS',
+//            'relationship' => 'consumer_campaign_log',
+//            'source' => 'non-db',
+//        ],
+//        'targeted_accounts' => [
+//            'name' => 'targeted_accounts',
+//            'vname' => 'LBL_ACCOUNTS',
+//            'type' => 'link',
+//            'relationship' => 'account_campaign_log',
+//            'source' => 'non-db',
+//        ],
+//        'targeted_contacts' => [
+//            'name' => 'targeted_contacts',
+//            'vname' => 'LBL_CONTACTS',
+//            'type' => 'link',
+//            'relationship' => 'contact_campaign_log',
+//            'source' => 'non-db',
+//        ],
+//        'emailtrackingactions' => [
+//            'name' => 'emailtrackingactions',
+//            'vname' => 'LBL_EMAILTRACKINGACTIONS',
+//            'type' => 'link',
+//            'module' => 'EmailTrackingActions',
+//            'relationship' => 'campaign_log_emailtrackingactions',
+//            'source' => 'non-db'
+//        ],
     ],
 	'indices' => [
 //		[
 //			'name' =>'campaign_log_pk',
 //			'type' =>'primary',
 //			'fields'=> ['id']
+////        ],
+//		[
+//			'name' =>'idx_camp_tracker',
+//			'type' =>'index',
+//			'fields'=> ['target_tracker_key']
 //        ],
-		[
-			'name' =>'idx_camp_tracker',
-			'type' =>'index',
-			'fields'=> ['target_tracker_key']
-        ],
-
-		[
-			'name' =>'idx_camp_campaign_id',
-			'type' =>'index',
-			'fields'=> ['campaign_id']
-        ],
-
-		[
-			'name' =>'idx_camp_more_info',
-			'type' =>'index',
-			'fields'=> ['more_information']
-        ],
-		[
-			'name' =>'idx_target_id',
-			'type' =>'index',
-			'fields'=> ['target_id']
-        ],
-        [
-			'name' =>'idx_target_id_deleted',
-			'type' =>'index',
-			'fields'=> ['target_id','deleted']
-        ],
-        [
-            'name' =>'idx_campainlog_sourceiddel',
-            'type' =>'index',
-            'fields'=> ['source_id', 'source_type', 'deleted']
-        ],
+//
+//		[
+//			'name' =>'idx_camp_campaign_id',
+//			'type' =>'index',
+//			'fields'=> ['campaign_id']
+//        ],
+//
+//		[
+//			'name' =>'idx_camp_more_info',
+//			'type' =>'index',
+//			'fields'=> ['more_information']
+//        ],
+//		[
+//			'name' =>'idx_target_id',
+//			'type' =>'index',
+//			'fields'=> ['target_id']
+//        ],
+//        [
+//			'name' =>'idx_target_id_deleted',
+//			'type' =>'index',
+//			'fields'=> ['target_id','deleted']
+//        ],
+//        [
+//            'name' =>'idx_campainlog_sourceiddel',
+//            'type' =>'index',
+//            'fields'=> ['source_id', 'source_type', 'deleted']
+//        ],
     ],
-	'relationships' => [
-        'campaignlog_source_eventregistrations' => ['lhs_module'=> 'CampaignLog',
-            'lhs_table'=> 'campaign_log',
-            'lhs_key' => 'related_id',
-            'rhs_module'=> 'EventRegistrations',
-            'rhs_table'=> 'eventregistrations',
-            'rhs_key' => 'id',
-            'relationship_type'=>'one-to-many',
-            'relationship_role_column' => 'source_type',
-            'relationship_role_column_value' => 'EventRegistrations',
-        ],
-        'campaignlog_consumer' => [
-            'lhs_module'=> 'CampaignLog',
-            'lhs_table'=> 'campaign_log',
-            'lhs_key' => 'related_id',
-            'rhs_module'=> 'Consumers',
-            'rhs_table'=> 'consumers',
-            'rhs_key' => 'id',
-            'relationship_type'=>'one-to-many'
-        ],
-        'campaignlog_contact' => [
-            'lhs_module'=> 'CampaignLog',
-            'lhs_table'=> 'campaign_log',
-            'lhs_key' => 'related_id',
-            'rhs_module'=> 'Contacts',
-            'rhs_table'=> 'contacts',
-            'rhs_key' => 'id',
-            'relationship_type'=>'one-to-many'
-        ],
-        'campaignlog_lead' => [
-            'lhs_module'=> 'CampaignLog',
-            'lhs_table'=> 'campaign_log',
-            'lhs_key' => 'related_id',
-            'rhs_module'=> 'Leads',
-            'rhs_table'=> 'leads',
-            'rhs_key' => 'id',
-            'relationship_type'=>'one-to-many'
-        ],
-        'campaignlog_created_opportunities' => [
-            'lhs_module'=> 'CampaignLog',
-            'lhs_table'=> 'campaign_log',
-            'lhs_key' => 'related_id',
-            'rhs_module'=> 'Opportunities',
-            'rhs_table'=> 'opportunities',
-            'rhs_key' => 'id',
-            'relationship_type'=>'one-to-many'
-        ],
-        'campaignlog_targeted_users' => [
-            'lhs_module'=> 'CampaignLog',
-            'lhs_table'=> 'campaign_log',
-            'lhs_key' => 'target_id',
-            'rhs_module'=> 'Users',
-            'rhs_table'=> 'users',
-            'rhs_key' => 'id',
-            'relationship_type'=>'one-to-many'
-        ],
-        'campaignlog_sent_emails' => [
-            'lhs_module'=> 'CampaignLog',
-            'lhs_table'=> 'campaign_log',
-            'lhs_key' => 'related_id',
-            'rhs_module'=> 'Emails',
-            'rhs_table'=> 'emails',
-            'rhs_key' => 'id',
-            'relationship_type'=>'one-to-many'
-        ],
-    ]
+//	'relationships' => [
+//        'campaignlog_source_eventregistrations' => ['lhs_module'=> 'CampaignLog',
+//            'lhs_table'=> 'campaign_log',
+//            'lhs_key' => 'related_id',
+//            'rhs_module'=> 'EventRegistrations',
+//            'rhs_table'=> 'eventregistrations',
+//            'rhs_key' => 'id',
+//            'relationship_type'=>'one-to-many',
+//            'relationship_role_column' => 'source_type',
+//            'relationship_role_column_value' => 'EventRegistrations',
+//        ],
+//        'campaignlog_consumer' => [
+//            'lhs_module'=> 'CampaignLog',
+//            'lhs_table'=> 'campaign_log',
+//            'lhs_key' => 'related_id',
+//            'rhs_module'=> 'Consumers',
+//            'rhs_table'=> 'consumers',
+//            'rhs_key' => 'id',
+//            'relationship_type'=>'one-to-many'
+//        ],
+//        'campaignlog_contact' => [
+//            'lhs_module'=> 'CampaignLog',
+//            'lhs_table'=> 'campaign_log',
+//            'lhs_key' => 'related_id',
+//            'rhs_module'=> 'Contacts',
+//            'rhs_table'=> 'contacts',
+//            'rhs_key' => 'id',
+//            'relationship_type'=>'one-to-many'
+//        ],
+//        'campaignlog_lead' => [
+//            'lhs_module'=> 'CampaignLog',
+//            'lhs_table'=> 'campaign_log',
+//            'lhs_key' => 'related_id',
+//            'rhs_module'=> 'Leads',
+//            'rhs_table'=> 'leads',
+//            'rhs_key' => 'id',
+//            'relationship_type'=>'one-to-many'
+//        ],
+//        'campaignlog_created_opportunities' => [
+//            'lhs_module'=> 'CampaignLog',
+//            'lhs_table'=> 'campaign_log',
+//            'lhs_key' => 'related_id',
+//            'rhs_module'=> 'Opportunities',
+//            'rhs_table'=> 'opportunities',
+//            'rhs_key' => 'id',
+//            'relationship_type'=>'one-to-many'
+//        ],
+//        'campaignlog_targeted_users' => [
+//            'lhs_module'=> 'CampaignLog',
+//            'lhs_table'=> 'campaign_log',
+//            'lhs_key' => 'target_id',
+//            'rhs_module'=> 'Users',
+//            'rhs_table'=> 'users',
+//            'rhs_key' => 'id',
+//            'relationship_type'=>'one-to-many'
+//        ],
+//        'campaignlog_sent_emails' => [
+//            'lhs_module'=> 'CampaignLog',
+//            'lhs_table'=> 'campaign_log',
+//            'lhs_key' => 'related_id',
+//            'rhs_module'=> 'Emails',
+//            'rhs_table'=> 'emails',
+//            'rhs_key' => 'id',
+//            'relationship_type'=>'one-to-many'
+//        ],
+//    ]
 ];
 
 //VardefManager::createVardef('CampaignLog', 'CampaignLog', []); // 'assignable' migrated
 
 if (file_exists('extensions/modules/ServiceFeedbacks')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog']['fields']['servicefeedbacks'] = [
-        'vname' => 'LBL_SERVICEFEEDBACKS',
-        'name' => 'servicefeedbacks',
-        'type' => 'link',
-        'module' => 'ServiceFeedbacks',
-        'relationship' => 'campaignlog_created_servicefeedbacks',
-        'link_type' => 'one',
-        'source' => 'non-db'
-    ];
-    SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog']['relationships']['campaignlog_created_servicefeedbacks'] = [
-        'lhs_module'=> 'CampaignLog',
-        'lhs_table'=> 'campaign_log',
-        'lhs_key' => 'related_id',
-        'rhs_module'=> 'ServiceFeedbacks',
-        'rhs_table'=> 'servicefeedbacks',
-        'rhs_key' => 'id',
-        'relationship_type'=>'one-to-many'
-    ];
+//    SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog']['fields']['servicefeedbacks'] = [
+//        'vname' => 'LBL_SERVICEFEEDBACKS',
+//        'name' => 'servicefeedbacks',
+//        'type' => 'link',
+//        'module' => 'ServiceFeedbacks',
+//        'relationship' => 'campaignlog_created_servicefeedbacks',
+//        'link_type' => 'one',
+//        'source' => 'non-db'
+//    ];
+//    SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog']['relationships']['campaignlog_created_servicefeedbacks'] = [
+//        'lhs_module'=> 'CampaignLog',
+//        'lhs_table'=> 'campaign_log',
+//        'lhs_key' => 'related_id',
+//        'rhs_module'=> 'ServiceFeedbacks',
+//        'rhs_table'=> 'servicefeedbacks',
+//        'rhs_key' => 'id',
+//        'relationship_type'=>'one-to-many'
+//    ];
 }
 
