@@ -5,6 +5,7 @@ import { Component, OnInit } from '@angular/core';
 import { backend } from '../../services/backend.service';
 import { toast } from '../../services/toast.service';
 import {AdminConfig2FAI} from "../interfaces/admincomponents.interfaces";
+import {configurationService} from "../../services/configuration.service";
 @Component({
     selector: 'administration-login-methods',
     templateUrl: '../templates/administrationloginmethods.html',
@@ -33,6 +34,7 @@ export class AdministrationLoginMethods implements OnInit {
     public configBackup: any;
 
     constructor( public backend: backend,
+                 public configurationService: configurationService,
                  public toast: toast ) { }
 
     public cancel() {

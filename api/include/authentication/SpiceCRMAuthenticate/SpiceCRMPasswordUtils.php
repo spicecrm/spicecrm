@@ -14,6 +14,7 @@ use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceGateway\SpiceGatewayClientHandler;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
@@ -251,25 +252,41 @@ class SpiceCRMPasswordUtils
         $db->query(sprintf("delete from users_password_tokens where id != '%s' and user_id = '%s'", $db->quote($token), $user_id));
 
         $sendChannel = SpiceConfig::getInstance()->get('passwordsetting.send_password_channel');
+        $mailboxId = SpiceConfig::getInstance()->get('passwordsetting.send_password_channel_mailbox_id');
 
-        $emailTempl = $this->getChannelTemplateByType($user_id, 'sendTokenForNewPassword', $sendChannel);
+        if ($mailboxId == 'gateway') {
 
-        //replace instance variables in email templates
-        $memmy = $emailTempl->parse(null, ['token' => $token]);
-        $emailTempl->body_html = $memmy['body_html'];
-        $emailTempl->body = $memmy['body'];
-        $emailTempl->subject = $memmy['subject'];
+            if ($sendChannel == 'sms') {
+                SpiceGatewayClientHandler::sendTemplateTypeSMS(
+                    $userObj->phone_mobile,'sendTokenForNewPassword', ['token' => $token], $userObj->getPreference('language')
+                );
+            } else {
+                SpiceGatewayClientHandler::sendTemplateTypeEmail(
+                    [['type' => 'to', 'email' => $userObj->email1]],'sendTokenForNewPassword', ['token' => $token], $userObj->getPreference('language')
+                );
+            }
 
-        /** @var Email $emailObj */
-        $emailObj = BeanFactory::getBean('Emails');
+        } else {
 
-        $emailObj->name = DBUtils::fromHtml($emailTempl->subject);
-        $emailObj->body = DBUtils::fromHtml($emailTempl->body_html);
-        $emailObj->addEmailAddress('to', $email);
-        $result = $emailObj->sendEmail();
+            $emailTempl = $this->getChannelTemplateByType($user_id, 'sendTokenForNewPassword', $sendChannel);
 
-        if (!$result['result']) {
-            throw new Exception("Unable to send email");
+            //replace instance variables in email templates
+            $memmy = $emailTempl->parse(null, ['token' => $token]);
+            $emailTempl->body_html = $memmy['body_html'];
+            $emailTempl->body = $memmy['body'];
+            $emailTempl->subject = $memmy['subject'];
+
+            /** @var Email $emailObj */
+            $emailObj = BeanFactory::getBean('Emails');
+
+            $emailObj->name = DBUtils::fromHtml($emailTempl->subject);
+            $emailObj->body = DBUtils::fromHtml($emailTempl->body_html);
+            $emailObj->addEmailAddress('to', $email);
+            $result = $emailObj->sendEmail();
+
+            if (!$result['result']) {
+                throw new Exception("Unable to send email");
+            }
         }
 
         return true;
