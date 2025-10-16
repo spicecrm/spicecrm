@@ -235,7 +235,11 @@ export class metadata {
                webpackInclude: /^\.(\\|\/)[^\\|\/]+(\\|\/)?(\\|\/)[^\\|\/]+?$|(\\|\/)(addcomponents|admincomponents|globalcomponents|objectcomponents|objectfields|portalcomponents|systemcomponents|workbench)(\\|\/)[^\\|\/]+?$|(\\|\/)(modules|include|custom)(\\|\/)[^\\|\/]+(\\|\/)?(\\|\/)[^\\|\/]+?$/
              */
             `src/${moduleMetadata.path}.ts`)
-            .then(m => m[moduleMetadata.name]);
+            .then(m => m[moduleMetadata.name]).catch(e => {
+                if (inExtensions) {
+                    throw Error(e);
+                }
+            });
 
         if (!moduleInstance && !inExtensions) {
             const extensionModuleMetadata = {
