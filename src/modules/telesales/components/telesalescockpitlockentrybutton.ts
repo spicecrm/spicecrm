@@ -70,12 +70,18 @@ export class TeleSalesCockpitLockEntryButton implements OnDestroy{
     private setModel() {
         this.model.resetData();
         this.model.id = this.telecockpitservice.selectedListItem.id;
-        this.model.setData(window._.omit({...this.telecockpitservice.selectedListItem}, ['data']));
-        this.model.startEdit();
+
         if (this.telecockpitservice.isLocked()) {
+            this.model.setData({
+                locked_until: this.telecockpitservice.selectedListItem.locked_until,
+                locked_by_id: this.telecockpitservice.selectedListItem.locked_by_id
+            });
+
             this.targetdate = moment(this.telecockpitservice.selectedListItem.locked_until);
             this.startTimer();
         }
+
+        this.model.startEdit();
     }
 
     private subscribeToSelectedItem() {
