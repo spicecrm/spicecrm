@@ -55,6 +55,11 @@ class SpiceCurlRequest
      */
     private array $rawHeaders = [];
 
+    /**
+     * Default timeout values 600 seconds = 10 minutes.
+     */
+    private const DEFAULT_TIMEOUT = 600;
+
 
     /**
      * Most common headers.
@@ -481,15 +486,18 @@ class SpiceCurlRequest
                 break;
         }
 
-        $curlOptions[CURLOPT_RETURNTRANSFER] = true;
-        if (!empty($this->rawOptions[CURLOPT_RETURNTRANSFER])) {
-            $curlOptions[CURLOPT_RETURNTRANSFER] = $this->rawOptions[CURLOPT_RETURNTRANSFER];
-        }
-
         foreach ($this->rawOptions as $optionName => $optionValue) {
             if (!isset($curlOptions[$optionName])) {
                 $curlOptions[$optionName] = $optionValue;
             }
+        }
+
+        if (!isset($curlOptions[CURLOPT_RETURNTRANSFER])) {
+            $curlOptions[CURLOPT_RETURNTRANSFER] = true;
+        }
+
+        if (!isset($curlOptions[CURLOPT_TIMEOUT])) {
+            $curlOptions[CURLOPT_TIMEOUT] = $this->getDefaultTimeout();
         }
 
         $curlOptions[CURLOPT_HTTPHEADER] = $this->generateHeader();
@@ -645,5 +653,18 @@ class SpiceCurlRequest
         }
 
         return strlen($this->generatePostFields());
+    }
+
+
+    /**
+     * A getter for the default timeout value.
+     * Uses the hardcoded constant for now.
+     * Might be used to read it from config if necessary.
+     *
+     * @return int
+     */
+    private function getDefaultTimeout(): int
+    {
+        return self::DEFAULT_TIMEOUT;
     }
 }
