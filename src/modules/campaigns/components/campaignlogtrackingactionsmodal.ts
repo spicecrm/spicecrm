@@ -79,6 +79,16 @@ export class CampaignLogTrackingActionsModal implements OnInit{
         });
     }
 
+    public getMailgunLog(){
+        let log = '';
+        this.backend.getRequest(`/channels/mailgun/analytics/logs/${this.model.data.external_id}`).subscribe({
+            next: (res) => {
+                log = res;
+            }
+        })
+
+    }
+
     /**
      * closes the modal
      * @private
