@@ -1,6 +1,0 @@
-<ng-container *ngIf="!!fieldset; else nofieldset">
-    <object-record-fieldset-horizontal-list [fieldset]="fieldset"></object-record-fieldset-horizontal-list>
-</ng-container>
-<ng-template #nofieldset>
-    {{model.data.name}}
-</ng-template>
