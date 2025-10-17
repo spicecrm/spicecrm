@@ -37,6 +37,7 @@
 namespace SpiceCRM\modules\Users;
 
 use Exception;
+use SpiceCRM\extensions\modules\TextMessageTemplates\TextMessageTemplate;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
@@ -44,12 +45,14 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceGateway\SpiceGatewayClientHandler;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
+use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\SystemTenants\hooks\TenantUserHooks;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 
@@ -652,41 +655,63 @@ class User extends SpiceBean
      * Replacement for the deprecated sendEmailForPassword function, to be used with KREST.
      * Sends a new password to the user.
      *
-     * @param object $emailTempl
+     * @param EmailTemplate|TextMessageTemplate $template
+     * @param string $type
      * @param array $additionalData
      * @return array
+     * @throws Exception
      */
-    public function sendPasswordToUser($emailTempl, $additionalData = [])
+    public function sendCredentialToUser(EmailTemplate | TextMessageTemplate $template, string $type, array $additionalData = []): array
     {
         $result = ['status' => false];
 
-        $memmy = $emailTempl->parse($this, ['password' => $additionalData['password']]);
-        $emailTempl->body_html = $memmy['body_html'];
-        $emailTempl->body = $memmy['body'];
-        $emailTempl->subject = $memmy['subject'];
+        $sendChannel = SpiceConfig::getInstance()->get("passwordsetting.send_{$type}_channel");
+        $mailboxId = SpiceConfig::getInstance()->get("passwordsetting.send_{$type}_channel_mailbox_id");
 
-        $itemail = $this->email1;
+        if ($mailboxId == 'gateway') {
 
-        /** @var Email $emailObj */
-        $emailObj = BeanFactory::getBean('Emails');
-        $emailObj->name = DBUtils::fromHtml($emailTempl->subject);
-        $emailObj->body = DBUtils::fromHtml($emailTempl->body_html);
-        $emailObj->addEmailAddress('to', $itemail);
+            $channelType = 'send' . ucfirst($type);
 
-        try {
-            $response = $emailObj->sendEmail();
-        } catch (Exception $e) {
-            $result['message'] = $e->getMessage();
-            return $result;
-        }
-
-        if ($response['result']) {
-            $result['status'] = true;
-            if (!isset($additionalData['link']) || $additionalData['link'] == false) {
-                $this->setNewPassword($additionalData['password'], '1');
+            if ($sendChannel == 'sms') {
+                SpiceGatewayClientHandler::sendTemplateTypeSMS(
+                    $this->phone_mobile, $channelType, $additionalData, $this->getPreference('language')
+                );
+            } else {
+                SpiceGatewayClientHandler::sendTemplateTypeEmail(
+                    [['type' => 'to', 'email' => $this->email1]], $channelType, $additionalData, $this->getPreference('language')
+                );
             }
+
+            $result['status'] = true;
         } else {
-            $result['message'] = 'The Email was not sent. Check Mailbox settings.';
+            $compiledContent = $template->parse($this, $additionalData);
+            $template->body_html = $compiledContent['body_html'];
+            $template->body = $compiledContent['body'];
+            $template->subject = $compiledContent['subject'];
+
+            $itemail = $this->email1;
+
+            /** @var Email $emailObj */
+            $emailObj = BeanFactory::getBean('Emails');
+            $emailObj->name = DBUtils::fromHtml($template->subject);
+            $emailObj->body = DBUtils::fromHtml($template->body_html);
+            $emailObj->addEmailAddress('to', $itemail);
+
+            try {
+                $response = $emailObj->sendEmail();
+            } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+                return $result;
+            }
+
+            if ($response['result']) {
+                $result['status'] = true;
+                if ($type == 'password' && !$additionalData['link']) {
+                    $this->setNewPassword($additionalData['password'], '1');
+                }
+            } else {
+                $result['message'] = 'The Email was not sent. Check Mailbox settings.';
+            }
         }
 
         return $result;
