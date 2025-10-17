@@ -1468,7 +1468,9 @@ class SpiceBeanHandler
         foreach ($relBeans as $relBean) {
 
             $mappedRecord = $this->mapBeanToArray($relModule, $relBean, @$params['forceResolveLinks'] === '1' );
-
+            if(isset($relBean->relid)){
+                $mappedRecord['relid'] = $relBean->relid;
+            }
             // add relationship fields
             if (is_array($relBean->relationhshipfields)) {
                 $mappedRecord['relationhshipfields'] = $relBean->relationhshipfields;

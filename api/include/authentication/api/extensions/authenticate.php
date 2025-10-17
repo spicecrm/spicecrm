@@ -109,9 +109,9 @@ $routes = [
                 'required' => true,
                 'example' => 'newP@$$word1!!'
             ],
-            'sendEmail' => [
+            'sendBySystem' => [
                 'in' => 'body',
-                'description' => 'Whether send the password to the user via email',
+                'description' => 'Whether send the password to the user by the system',
                 'type' => ValidationMiddleware::TYPE_BOOL,
                 'required' => true,
                 'example' => true
@@ -362,7 +362,10 @@ $RESTManager->registerExtension('userpassword', '2.0', [
     'onenumber' => (boolean)$config['passwordsetting']['onenumber'],
     'onespecial' => (boolean)$config['passwordsetting']['onespecial'],
     'minpwdlength' => $config['passwordsetting']['minpwdlength'],
-    'regex' => '^' . SpiceCRMPasswordUtils::getPwdCheckRegex() . '$'
+    'regex' => '^' . SpiceCRMPasswordUtils::getPwdCheckRegex() . '$',
+    'sendCredentialsEnabled' => !empty($config['passwordsetting']['send_password_channel']) && !empty($config['passwordsetting']['send_password_channel_mailbox_id']),
+    'sendPasswordChannel' => $config['passwordsetting']['send_password_channel'],
+    'sendUsernameChannel' => $config['passwordsetting']['send_username_channel'],
 ],
     $routes
 );

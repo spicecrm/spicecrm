@@ -6,7 +6,7 @@
                 <object-record-fieldset [fieldset]="fieldset" [direction]="'vertical'"></object-record-fieldset>
             </system-section>
             <system-section titlelabel="LBL_USER_PASSWORD" [alwaysExpanded]="true">
-                <user-create-password [(ngModel)]="password" (forcereset)="forceReset" (systemgenerated)="systemGenerated" (sendbyemail)="sendByEmail" (extauthonly)="externalAuthOnly"></user-create-password>
+                <user-create-password [(ngModel)]="password" (forcereset)="forceReset" (systemgenerated)="systemGenerated" (sendbyemail)="sendBySystem" (extauthonly)="externalAuthOnly"></user-create-password>
             </system-section>
         </div>
         <div [ngClass]="{'slds-hide': step != 'role'}">

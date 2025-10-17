@@ -43,6 +43,8 @@ abstract class Relationship
 
     protected $count = -1;
 
+    protected SpiceDictionaryLink $linkInstance;
+
     public function __debugInfo()
     {
         return $this->def['relationships'];
@@ -52,8 +54,9 @@ abstract class Relationship
      * initialize the instance properties
      * @throws \Exception
      */
-    public function __construct(string $relationshipName, array $relationship)
+    public function __construct(string $relationshipName, array $relationship, SpiceDictionaryLink $link)
     {
+        $this->linkInstance = $link;
         $this->name = $relationshipName;
 
         if ($relationship['id']) {
