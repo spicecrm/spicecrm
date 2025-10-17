@@ -50,7 +50,7 @@ class SpiceDictionaryLink
         $this->name = $linkName;
 
         # Instantiate the relationship for this link.
-        $this->relationship = RelationshipFactory::getInstance()->getRelationship($this->def['relationship']);
+        $this->relationship = RelationshipFactory::getInstance()->getRelationship($this->def['relationship'], $this);
         $this->relationship_fields = $this->def['rel_fields'] ?? [];
 
         if (!$this->loadedSuccesfully()) {
