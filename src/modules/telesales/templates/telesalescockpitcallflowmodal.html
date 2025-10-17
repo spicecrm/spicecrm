@@ -1,45 +1,72 @@
 <system-modal>
     <system-modal-header (close)="close()"></system-modal-header>
     <system-modal-content>
-        <div>
-            @for(number of numbers; track number) {
-                <field-label [fieldname]="number.label" ></field-label>
-            <field-generic-display  [title]="number.label">
-           <div class="slds-grid slds-grid--vertical-align-center">
-               <div *ngIf="telephonyActive && number.value" (click)="initiateCall($event, number.value)" class="slds-p-right--x-small slds-text-link--reset">
-                   <system-utility-icon icon="outbound_call" size="xx-small"></system-utility-icon>
-               </div>
-               <div class="slds-truncate">
-               <a *ngIf="number.value && !telephonyActive" [href]="'tel:'+number.value">{{number.value}}</a><span *ngIf="number.value && telephonyActive">{{number.value}}</span></div>
-            </div>
-        </field-generic-display>
+        <div [system-model-provider]="{module: selectedListItem.target_type, data: null}" class="slds-grid slds-grid--vertical-align-center slds-m-around--medium">
+            @for (number of numbers; track number) {
+                <div class="slds-col">
+                    <field-label [fieldname]="number.label"></field-label>
+                    <field-generic-display [title]="number.label">
+                        <div class="slds-grid slds-grid--vertical-align-center">
+                            <div *ngIf="telephonyActive && number.value" (click)="initiateCall($event, number.value)"
+                                 class="slds-p-right--x-small slds-text-link--reset">
+                                <system-utility-icon icon="outbound_call" size="xx-small"></system-utility-icon>
+                            </div>
+                            <div class="slds-truncate">
+                                <a *ngIf="number.value && !telephonyActive"
+                                   [href]="'tel:'+number.value">{{ number.value }}</a><span
+                                    *ngIf="number.value && telephonyActive">{{ number.value }}</span></div>
+                        </div>
+                    </field-generic-display>
+                </div>
             }
         </div>
-
-        <system-input-radio name="callstatus" value="reached" [(ngModel)]="callStatus"><system-label label = 'LBL_REACHED'></system-label></system-input-radio>
-        <system-input-radio name="callstatus" value="notreached" [(ngModel)]="callStatus"><system-label label = 'LBL_NOT_REACHED'></system-label></system-input-radio>
-        <div> @if(callStatus == 'reached') {
-            <div> hello 1</div>
-            }
-            @else if (callStatus == 'notreached'){
-            <div><system-label label="LBL_ADD_ATTEMPT"></system-label></div>
-            <object-record-fieldset [fieldset]="fieldset" [direction]="'vertical'"></object-record-fieldset>
-            <system-checkbox [(ngModel)]="reserved">
-            <system-label label="LBL_RESERVE_FOR_USER"></system-label></system-checkbox>
-<!--        <button *ngIf="model.data.hits >= maxAttempts" class="slds-button slds-button&#45;&#45;neutral" (click)="remove()">-->
-<!--            <system-label label="LBL_REMOVE"></system-label>-->
-<!--        </button>-->
-            }
-
+        <div class=" slds-grid slds-align-content-center slds-m-around--medium">
+        <system-input-radio-button-group [(ngModel)]="callStatus" [inputOptions]="callActions">
+        </system-input-radio-button-group>
+        </div>
+<!--        <div class="slds-radio_button-group slds-m-around&#45;&#45;medium slds-grid slds-align-content-center">-->
+<!--            <system-input-radio name="callstatus" value="reached" [(ngModel)]="callStatus">-->
+<!--                <system-label label='LBL_REACHED'></system-label>-->
+<!--            </system-input-radio>-->
+<!--            <system-input-radio name="callstatus" value="notreached" [(ngModel)]="callStatus">-->
+<!--                <system-label label='LBL_NOT_REACHED'></system-label>-->
+<!--            </system-input-radio>-->
+<!--        </div>-->
+        <div> @if (callStatus == 'reached') {
+            <system-collapsable-tab tabtitle="LBL_CALL_DETAILS">
+                <object-record-fieldset [fieldset]="logCallFieldset" [direction]="'vertical'"></object-record-fieldset>
+            </system-collapsable-tab>
+        } @else if (callStatus == 'notreached') {
+            <system-collapsable-tab tabtitle="LBL_ADD_ATTEMPT">
+                <object-record-fieldset [fieldset]="attemptFieldset" [direction]="'vertical'"></object-record-fieldset>
+                <system-checkbox [(ngModel)]="reserved">
+                    <system-label label="LBL_RESERVE_FOR_USER"></system-label>
+                </system-checkbox>
+            </system-collapsable-tab>
+        }
         </div>
     </system-modal-content>
     <system-modal-footer>
-        @if(callStatus == 'reached') {
-            <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
-        }
-        @else if (callStatus == 'notreached'){
-        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
-<!--        <button class="slds-button slds-button&#45;&#45;brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>-->
+        @if (callStatus == 'reached') {
+            <button class="slds-button slds-button--neutral" (click)="close()">
+                <system-label label="LBL_CANCEL"></system-label>
+            </button>
+            <button class="slds-button slds-button--brand" (click)="saveCalled()">
+                <system-label label="LBL_SAVE"></system-label>
+            </button>
+            <button class="slds-button slds-button--brand" (click)="saveAndClose()">
+                <system-label label="LBL_SAVE_AND_CLOSE"></system-label>
+            </button>
+        } @else if (callStatus == 'notreached') {
+            <button class="slds-button slds-button--neutral" (click)="close()">
+                <system-label label="LBL_CANCEL"></system-label>
+            </button>
+            <button *ngIf="model.data.hits >= maxAttempts" class="slds-button slds-button--neutral" (click)="remove()">
+                <system-label label="LBL_REMOVE"></system-label>
+            </button>
+            <button class="slds-button slds-button--brand" (click)="saveNotReached()">
+                <system-label label="LBL_SAVE"></system-label>
+            </button>
         }
     </system-modal-footer>
 </system-modal>

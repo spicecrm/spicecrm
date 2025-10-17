@@ -17,6 +17,7 @@ import {telephony} from "../../../services/telephony.service";
 
 
 declare var moment: any;
+
 @Component({
     selector: 'telesales-cockpitcall-flow-modal',
     templateUrl: '../templates/telesalescockpitcallflowmodal.html',
@@ -28,6 +29,11 @@ export class TeleSalesCockpitCallFlowModal {
 
     @Input() public selectedListItem: any;
 
+    public parent: any = undefined;
+
+    public callActions =
+        [{label: 'LBL_REACHED', value: 'reached'}, {label: 'LBL_NOT_REACHED', value: 'notreached'}];
+
     public self: ComponentRef<TeleSalesCockpitCallFlowModal>;
 
     public callStatus: string;
@@ -36,10 +42,12 @@ export class TeleSalesCockpitCallFlowModal {
 
     @Input() public maxAttempts: any;
     @Input() public campaignTask: any;
-    public fieldset: string = '';
-    public numbers:{value: string, label: string}[] = [];
+    public attemptFieldset: string = '';
+    public logCallFieldset: string = '';
+    public numbers: { value: string, label: string }[] = [];
 
     public reserved: boolean;
+
     constructor(public language: language,
                 public model: model,
                 public modal: modal,
@@ -48,6 +56,7 @@ export class TeleSalesCockpitCallFlowModal {
                 public backend: backend,
                 public view: view,
                 public metadata: metadata,
+                public injector: Injector,
                 public telecockpit: telecockpitservice,
                 public telephony: telephony) {
         this.responseSubject = new Subject<object>();
@@ -56,7 +65,7 @@ export class TeleSalesCockpitCallFlowModal {
 
     public ngOnInit() {
         this.initializeModel();
-        this.loadFieldset();
+        this.loadFieldsets();
         this.setEditMode();
         this.getPhoneNumbers();
     }
@@ -65,13 +74,13 @@ export class TeleSalesCockpitCallFlowModal {
     /**
      * get all phone numbers from the selected item
      */
-    public getPhoneNumbers(){
+    public getPhoneNumbers() {
         this.numbers = [];
         let phones = Object.keys(this.selectedListItem.data).filter(fieldName => fieldName.startsWith(`phone_`));
-        phones.forEach(phone=> {
-            if(this.selectedListItem.data[phone] && this.selectedListItem.data[phone]!==""){
+        phones.forEach(phone => {
+            if (this.selectedListItem.data[phone] && this.selectedListItem.data[phone] !== "") {
                 this.numbers.push({
-                    value:  this.selectedListItem.data[phone],
+                    value: this.selectedListItem.data[phone],
                     label: phone
                 });
             }
@@ -94,20 +103,23 @@ export class TeleSalesCockpitCallFlowModal {
         }, false);
     }
 
-    public loadFieldset() {
-        let componentConf = this.metadata.getComponentConfig('TeleSalesCockpitAddAttemptModal');
-        this.fieldset = componentConf && componentConf.fieldset ? componentConf.fieldset : '';
+    public loadFieldsets() {
+        let componentConf = this.metadata.getComponentConfig('TeleSalesCockpitCallFlowModal');
+        this.attemptFieldset = componentConf && componentConf.attemptFieldset ? componentConf.attemptFieldset : '';
+        this.logCallFieldset = componentConf && componentConf.logCallFieldset ? componentConf.logCallFieldset : '';
     }
 
     public setEditMode() {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
+
     public close() {
         this.responseSubject.next(false);
         this.responseSubject.complete();
         this.self.destroy();
     }
+
     get telephonyActive() {
         return this.telephony.isActive;
     }
@@ -124,5 +136,114 @@ export class TeleSalesCockpitCallFlowModal {
         });
     }
 
+    public remove() {
+        this.backend.postRequest(`module/CampaignLog/${this.model.id}/completed`)
+            .subscribe({
+                next: (status) => {
+                    if (status.success) {
+                        this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
+                        this.responseSubject.next(true);
+                        this.self.destroy();
+                    } else {
+                        this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+                    }
+                },
+                error: (err) => {
+                    this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error');
+                }
+            });
+    }
+
+
+    public saveNotReached() {
+        let awaitModal = this.modal.await('LBL_SAVING');
+        let planned_activity_date = this.modelutilities.spice2backend(this.model.module, 'planned_activity_date', this.model.getField('planned_activity_date'));
+        let planned_activity_user_id = !!this.reserved ? this.metadata.session.authData.user.id : '';
+        let activity_comment = this.modelutilities.spice2backend(this.model.module, 'activity_comment', this.model.getField('activity_comment'));
+        let params = {
+            planned_activity_date: planned_activity_date,
+            activity_comment: activity_comment,
+            planned_activity_user_id: planned_activity_user_id
+        };
+
+        this.backend.postRequest(`module/CampaignLog/${this.model.id}/attempted`, params).subscribe({
+            next: (status) => {
+                if (status.success) {
+                    this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
+                    this.responseSubject.next(true);
+                    this.responseSubject.complete();
+                    this.telecockpit.loadStats();
+
+                    awaitModal.emit(true);
+
+                    this.self.destroy();
+
+                } else {
+                    this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+
+                    awaitModal.emit(true);
+
+                    this.self.destroy();
+                }
+            },
+            error: (err) => {
+                this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error')
+            }
+        });
+    }
+
+    public saveCalled() {
+        this.model.module = 'Calls';
+        this.model.id = this.model.generateGuid();
+        let item = this.telecockpit.selectedListItem;
+        if (!item) {
+            return;
+        }
+
+        let params = {call_id: this.model.id};
+
+        this.backend.postRequest(`module/CampaignLog/${item.id}/called`, params)
+            .subscribe(status => {
+                if (status.success) {
+                    this.updateItem();
+                    this.close();
+                }
+            }, err => this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error'));
+    }
+
+
+    public updateItem() {
+        let item = this.telecockpit.selectedListItem;
+        item.hits++;
+        item.related_id = this.model.id;
+        item.planned_activity_date = undefined;
+    }
+
+    public saveAndClose() {
+        let item = this.telecockpit.selectedListItem;
+        if (!item) {
+            return;
+        }
+        this.modal.openModal('TeleSalesCockpitCompleteModal', true, this.injector).subscribe(modalRef => {
+            modalRef.instance.selectedListItem = item;
+            modalRef.instance.campaignTask = this.telecockpit.selectedcampaigntask;
+            modalRef.instance.response.subscribe(response => {
+                if (!!response) {
+                    this.removeItem(item);
+                    this.close();
+                }
+            })
+        });
+    }
+
+    public removeItem(item) {
+        let index = this.telecockpit.listItems.indexOf(item);
+        if (index < 0) {
+            return;
+        }
+        this.telecockpit.listItems.splice(index, 1);
+        this.telecockpit.listItems = this.telecockpit.listItems.slice();
+        this.telecockpit.selectedListItem$ = this.telecockpit.listItems[0];
+    }
 
 }
