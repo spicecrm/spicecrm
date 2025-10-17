@@ -3,8 +3,11 @@
 namespace SpiceCRM\modules\Users\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\authentication\api\controllers\AuthenticateController;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
@@ -16,6 +19,7 @@ use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
+use SpiceCRM\modules\Users\User;
 
 class UsersController
 {
@@ -26,14 +30,13 @@ class UsersController
      * @return Response
      * @throws BadRequestException
      * @throws NotFoundException
-     * @throws \SpiceCRM\includes\ErrorHandlers\ConflictException
-     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     * @throws \Exception
      */
     public function saveUser(Request $req, Response $res, array $args): Response {
         $db = DBManagerFactory::getInstance();
         $params = $req->getParsedBody();
 
-        $email1 = $params['email1'];
+        $email1 = $params['user_email'];
         if (!empty($email1)) {
             $q = "select id from users where id in ( SELECT  er.bean_id AS id FROM email_addr_bean_rel er,
                 email_addresses ea WHERE ea.id = er.email_address_id
@@ -44,15 +47,60 @@ class UsersController
             if ($row && $row['id'] != $params['id'])
                 throw (new BadRequestException("Email already exists."))->setErrorCode('duplicateEmail1');
 
-            $email1 = htmlspecialchars(stripslashes(trim($params['email1'])));
+            $email1 = htmlspecialchars(stripslashes(trim($params['user_email'])));
             if (!filter_var($email1, FILTER_VALIDATE_EMAIL))
                 throw (new BadRequestException("Invalid email format."))->setErrorCode('invalidEmailFormat');
         }
 
+        $userId = $db->quote($args['id']);
+        $exists = (bool) $db->getOne("SELECT id FROM users WHERE id = '$userId'");
+
         $KRESTModuleHandler = new SpiceBeanHandler();
         $beanResponse = $KRESTModuleHandler->add_bean("Users", $args['id'], $params);
 
+        if (!$exists && !$params['external_auth_only']) {
+
+            /** @var User $user */
+            $user = BeanFactory::getBean('Users', $args['id']);
+
+            if ($params['credentials']['sendBySystem']) {
+                $this->sendUsernameBySystem($user);
+            }
+
+            $this->setNewUserPassword($user, $params['credentials']['newPassword'], $params['credentials']['sendBySystem'], $params['credentials']['forceReset']);;
+        }
+
         return $res->withJson($beanResponse);
+    }
+
+    /**
+     * send username to the person by system
+     * @param User $user
+     * @return void
+     * @throws \Exception
+     */
+    private function sendUsernameBySystem(User $user): void
+    {
+        $configs = SpiceCRMPasswordUtils::getSendCredentialConfigs('username');
+        $template = SpiceCRMPasswordUtils::getChannelTemplateByType($user, 'sendUsername', $configs->channel);
+        $user->sendCredentialToUser($template, 'username', ['username' => $user->user_name]);
+    }
+
+    /**
+     * set a new user password
+     * @param User $user
+     * @param string $newPassword
+     * @param bool $sendBySystem
+     * @param bool $forceReset
+     * @return void
+     * @throws ForbiddenException
+     * @throws \Exception
+     */
+    private function setNewUserPassword(User $user, string $newPassword, bool $sendBySystem, bool $forceReset): void
+    {
+        AuthenticateController::checkCanSetPassword();
+        $sugarAuthenticationObj = AuthenticationController::getInstance()->getPasswordUtilsInstance();
+        $sugarAuthenticationObj->setNewPassword($user, $newPassword, $sendBySystem, $forceReset);
     }
 
     /**
@@ -63,7 +111,7 @@ class UsersController
      * @throws BadRequestException
      * @throws NotFoundException
      * @throws \SpiceCRM\includes\ErrorHandlers\ConflictException
-     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     * @throws Exception
      */
     public function createUser(Request $req, Response $res, array $args): Response {
         $db = DBManagerFactory::getInstance();

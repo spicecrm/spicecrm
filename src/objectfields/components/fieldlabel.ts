@@ -62,32 +62,23 @@ export class fieldLabel  implements OnInit{
     }
 
     get stati() {
-        let stati = this.model.getFieldStati(this.fieldname);
+        return this.model.getFieldStates(this.fieldname);
+    }
 
-        if (stati.editable && (!this.view.isEditable || this.fieldconfig.readonly)) {
-            stati.editable = false;
-        }
-
-        // add required flag if set via fieldconfig
-        if (this.fieldconfig.required) {
-            stati.required = true;
-        }
-
-        return stati;
+    /**
+     * check if the field is readonly
+     * @returns {boolean}
+     */
+    get isReadonly(): boolean {
+        return (!this.view.isEditable || this.fieldconfig.readonly);
     }
 
     public isRequired() {
-        return this.stati.editable && this.stati.required;
+        return this.stati.required;
     }
 
     public isEditable() {
-        return this.stati.editable;
-        /*
-        if (!this.view.isEditable || this.fieldconfig.readonly)
-            return false;
-        else
-            return true;
-        */
+        return !this.isReadonly && (this.model.checkAccess('edit') || this.model.checkAccess('create')) && this.stati.editable &&  !this.stati.disabled && !this.stati.hidden;
     }
 
     public isEditMode() {
