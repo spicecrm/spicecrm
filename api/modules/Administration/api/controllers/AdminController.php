@@ -178,6 +178,8 @@ class AdminController
                 'file_types' => SpiceConfig::getInstance()->config['attachments']['file_types'],
                 'international_email_addresses' => SpiceConfig::getInstance()->config['international_email_addresses'],
                 'encryption_hash_salt' => SpiceConfig::getInstance()->get('system.encryption_hash_salt'),
+                'gateway_server_api_key' => SpiceConfig::getInstance()->get('system.gateway_server_api_key'),
+                'gateway_server_domain' => SpiceConfig::getInstance()->get('system.gateway_server_domain'),
             ],
             'cache' => [
                 'class' => SpiceConfig::getInstance()->config['cache']['class'] ?? 'SpiceCacheFile',
@@ -249,6 +251,12 @@ class AdminController
                         break;
                     case 'encryption_hash_salt':
                         SpiceConfig::getInstance()->set('system', 'encryption_hash_salt', $itemvalue);
+                        break;
+                    case 'gateway_server_api_key':
+                        SpiceConfig::getInstance()->set('system', 'gateway_server_api_key', $itemvalue);
+                        break;
+                    case 'gateway_server_domain':
+                        SpiceConfig::getInstance()->set('system', 'gateway_server_domain', $itemvalue);
                         break;
                     default:
                         SpiceConfig::getInstance()->config[$itemname] = $itemvalue;

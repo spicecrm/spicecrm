@@ -101,7 +101,7 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
      * a getter to return the additonal css classes
      */
     get css_classes() {
-        if (this.getStati().invalid) {
+        if (this.model.getFieldStates(this.fieldname).invalid) {
             this.addCssClass('slds-has-error');
         } else {
             this.removeCssClass('slds-has-error');
@@ -177,25 +177,28 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
     }
 
     /**
-     * checks the satus for the field
-     *
-     * @param field optional the fieldname
+     * get field states
+     * @param field
      */
     public getStati(field: string = this.fieldname) {
-        let stati = this.model.getFieldStati(field);
-        if (stati.editable && (!this.view.isEditable || stati.readonly || this.fieldconfig.readonly)) {
-            stati.editable = false;
-        }
-        return stati;
+        return this.model.getFieldStates(field);
     }
 
     /**
-     * checks if the field is editbale
-     *
-     * @param field optional the fieldname
+     * check if the field is readonly
+     * @returns {boolean}
+     */
+    get isReadonly(): boolean {
+        return (!this.view.isEditable || this.fieldconfig.readonly);
+    }
+
+    /**
+     * checks if the field is editable
+     * @param field
      */
     public isEditable(field: string = this.fieldname): boolean {
-        return (this.model.checkAccess('edit') || this.model.checkAccess('create')) && this.getStati(field).editable && !this.getStati(field).readonly && !this.getStati(field).disabled && !this.getStati(field).hidden;
+        const states = this.getStati(field);
+        return !this.isReadonly && (this.model.checkAccess('edit') || this.model.checkAccess('create')) && states.editable && !states.readonly && !states.disabled && !states.hidden;
     }
 
     /**
@@ -242,7 +245,7 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
 
 
     public hasFieldErrors(field: string = this.fieldname): boolean {
-        return !!(this.getStati(field).invalid || this.errors);
+        return !!(this.model.getFieldStates(field).invalid || this.errors);
     }
 
     /**

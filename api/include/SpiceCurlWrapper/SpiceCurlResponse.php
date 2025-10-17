@@ -25,6 +25,11 @@ class SpiceCurlResponse
      */
     private mixed $info;
 
+    /**
+     * Constant for Content type JSON
+     */
+    public const CONTENT_TYPE_JSON = 'application/json';
+
     public function __construct(string|bool $response, string $errors, mixed $info)
     {
         $this->response = $response;
@@ -37,7 +42,7 @@ class SpiceCurlResponse
      *
      * @return string|bool
      */
-    public function getResponse(): string|bool
+    public function getRawResponse(): string|bool
     {
         return $this->response;
     }
@@ -104,6 +109,11 @@ class SpiceCurlResponse
         return '';
     }
 
+    public function isJson(): bool
+    {
+        return strpos($this->getContentType(),  self::CONTENT_TYPE_JSON) === 0;
+    }
+
     /**
      * Returns the cURL response as a JSON decoded array if possible.
      * Otherwise, it returns the original response.
@@ -126,9 +136,9 @@ class SpiceCurlResponse
      *
      * @return string|bool
      */
-    public function getResponseWithoutHeader(): string|bool
+    public function getRawResponseWithoutHeader(): string|bool
     {
-        return substr($this->getResponse(), $this->getHeaderSize());
+        return substr($this->getRawResponse(), $this->getHeaderSize());
     }
 
     /**
@@ -139,7 +149,7 @@ class SpiceCurlResponse
      */
     public function getJsonResponseWithoutHeader(): ?array
     {
-        $responseWithoutHeader = $this->getResponseWithoutHeader();
+        $responseWithoutHeader = $this->getRawResponseWithoutHeader();
         $decoded = json_decode($responseWithoutHeader, true);
 
         if (json_last_error() === JSON_ERROR_NONE) {
@@ -147,5 +157,15 @@ class SpiceCurlResponse
         }
 
         return $responseWithoutHeader;
+    }
+
+    /**
+     * Returns the response header without the response body.
+     *
+     * @return string|bool
+     */
+    public function getRawHeader(): string|bool
+    {
+        return substr($this->getRawResponse(), 0, $this->getHeaderSize());
     }
 }

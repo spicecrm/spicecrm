@@ -41,128 +41,128 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
     'unified_search' => true,
     'full_text_search' => true,
     'fields' => [
-        'id' => [
-            'name' => 'id',
-            'vname' => 'LBL_ID',
-            'type' => 'id',
-            'required' => true
-        ],
-        'name' => [
-            'name' => 'name',
-            'vname' => 'LBL_NAME',
-            'type' => 'varchar',
-            'len' => '255',
-            'importable' => 'required',
-            'unified_search' => true,
-            'full_text_search' => ['boost' => 3],
-        ],
-        'list_type' => [
-            'name' => 'list_type',
-            'vname' => 'LBL_TYPE',
-            'type' => 'enum',
-            'options' => 'prospect_list_type_dom',
-            'len' => 100,
-            'importable' => 'required',
-            'required' => true
-        ],
-        'is_generated_by_system' => [
-            'name' => 'is_generated_by_system',
-            'type' => 'bool'
-        ],
-        'date_entered' => [
-            'name' => 'date_entered',
-            'vname' => 'LBL_DATE_ENTERED',
-            'type' => 'datetime',
-        ],
-        'date_modified' => [
-            'name' => 'date_modified',
-            'vname' => 'LBL_DATE_MODIFIED',
-            'type' => 'datetime',
-        ],
-        'modified_user_id' => [
-            'name' => 'modified_user_id',
-            'rname' => 'user_name',
-            'id_name' => 'modified_user_id',
-            'vname' => 'LBL_MODIFIED_BY',
-            'type' => 'assigned_user_name',
-            'table' => 'modified_user_id_users',
-            'isnull' => 'false',
-            'dbType' => 'id',
-            'reportable' => true,
-        ],
-        'modified_by_name' => [
-            'name' => 'modified_by_name',
-            'vname' => 'LBL_MODIFIED_BY',
-            'type' => 'relate',
-            'reportable' => false,
-            'source' => 'non-db',
-            'table' => 'users',
-            'id_name' => 'modified_user_id',
-            'module' => 'Users',
-            'duplicate_merge' => false,
-        ],
-        'created_by' => [
-            'name' => 'created_by',
-            'rname' => 'user_name',
-            'id_name' => 'created_by',
-            'vname' => 'LBL_CREATED',
-            'type' => 'assigned_user_name',
-            'table' => 'created_by_users',
-            'isnull' => 'false',
-            'dbType' => 'id'
-        ],
-        'created_by_name' => [
-            'name' => 'created_by_name',
-            'vname' => 'LBL_CREATED',
-            'type' => 'relate',
-            'reportable' => false,
-            'source' => 'non-db',
-            'table' => 'users',
-            'id_name' => 'created_by',
-            'module' => 'Users',
-            'duplicate_merge' => false,
-        ],
-        'deleted' => [
-            'name' => 'deleted',
-            'vname' => 'LBL_CREATED_BY',
-            'type' => 'bool',
-            'required' => false,
-            'reportable' => false,
-        ],
-        'description' => [
-            'name' => 'description',
-            'vname' => 'LBL_DESCRIPTION',
-            'type' => 'text',
-        ],
-        'domain_name' => [
-            'name' => 'domain_name',
-            'vname' => 'LBL_DOMAIN_NAME',
-            'type' => 'varchar',
-            'len' => '255',
-        ],
-        'entry_count' => [
-            'name' => 'entry_count',
-            'type' => 'int',
-            'source' => 'non-db',
-            'vname' => 'LBL_LIST_ENTRIES',
-        ],
-        'ext_id' => [
-            'name' => 'ext_id',
-            'vname' => 'LBL_EXT_ID',
-            'type' => 'varchar',
-            'len' => '50'
-        ],
-        'attribute_id' => [
-            'name' => 'attribute_id',
-            'type' => 'varchar',
-            'len' => '50'
-        ],
-        'prospectlists_accounts_quantity' => [
-            'name' => 'prospectlists_accounts_quantity',
-            'vname' => 'LBL_QUANTITY',
-            'type' => 'varchar',
-            'source' => 'non-db'
-        ],
+//        'id' => [
+//            'name' => 'id',
+//            'vname' => 'LBL_ID',
+//            'type' => 'id',
+//            'required' => true
+//        ],
+//        'name' => [
+//            'name' => 'name',
+//            'vname' => 'LBL_NAME',
+//            'type' => 'varchar',
+//            'len' => '255',
+//            'importable' => 'required',
+//            'unified_search' => true,
+//            'full_text_search' => ['boost' => 3],
+//        ],
+//        'list_type' => [
+//            'name' => 'list_type',
+//            'vname' => 'LBL_TYPE',
+//            'type' => 'enum',
+//            'options' => 'prospect_list_type_dom',
+//            'len' => 100,
+//            'importable' => 'required',
+//            'required' => true
+//        ],
+//        'is_generated_by_system' => [
+//            'name' => 'is_generated_by_system',
+//            'type' => 'bool'
+//        ],
+//        'date_entered' => [
+//            'name' => 'date_entered',
+//            'vname' => 'LBL_DATE_ENTERED',
+//            'type' => 'datetime',
+//        ],
+//        'date_modified' => [
+//            'name' => 'date_modified',
+//            'vname' => 'LBL_DATE_MODIFIED',
+//            'type' => 'datetime',
+//        ],
+//        'modified_user_id' => [
+//            'name' => 'modified_user_id',
+//            'rname' => 'user_name',
+//            'id_name' => 'modified_user_id',
+//            'vname' => 'LBL_MODIFIED_BY',
+//            'type' => 'assigned_user_name',
+//            'table' => 'modified_user_id_users',
+//            'isnull' => 'false',
+//            'dbType' => 'id',
+//            'reportable' => true,
+//        ],
+//        'modified_by_name' => [
+//            'name' => 'modified_by_name',
+//            'vname' => 'LBL_MODIFIED_BY',
+//            'type' => 'relate',
+//            'reportable' => false,
+//            'source' => 'non-db',
+//            'table' => 'users',
+//            'id_name' => 'modified_user_id',
+//            'module' => 'Users',
+//            'duplicate_merge' => false,
+//        ],
+//        'created_by' => [
+//            'name' => 'created_by',
+//            'rname' => 'user_name',
+//            'id_name' => 'created_by',
+//            'vname' => 'LBL_CREATED',
+//            'type' => 'assigned_user_name',
+//            'table' => 'created_by_users',
+//            'isnull' => 'false',
+//            'dbType' => 'id'
+//        ],
+//        'created_by_name' => [
+//            'name' => 'created_by_name',
+//            'vname' => 'LBL_CREATED',
+//            'type' => 'relate',
+//            'reportable' => false,
+//            'source' => 'non-db',
+//            'table' => 'users',
+//            'id_name' => 'created_by',
+//            'module' => 'Users',
+//            'duplicate_merge' => false,
+//        ],
+//        'deleted' => [
+//            'name' => 'deleted',
+//            'vname' => 'LBL_CREATED_BY',
+//            'type' => 'bool',
+//            'required' => false,
+//            'reportable' => false,
+//        ],
+//        'description' => [
+//            'name' => 'description',
+//            'vname' => 'LBL_DESCRIPTION',
+//            'type' => 'text',
+//        ],
+//        'domain_name' => [
+//            'name' => 'domain_name',
+//            'vname' => 'LBL_DOMAIN_NAME',
+//            'type' => 'varchar',
+//            'len' => '255',
+//        ],
+//        'entry_count' => [
+//            'name' => 'entry_count',
+//            'type' => 'int',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_LIST_ENTRIES',
+//        ],
+//        'ext_id' => [
+//            'name' => 'ext_id',
+//            'vname' => 'LBL_EXT_ID',
+//            'type' => 'varchar',
+//            'len' => '50'
+//        ],
+//        'attribute_id' => [
+//            'name' => 'attribute_id',
+//            'type' => 'varchar',
+//            'len' => '50'
+//        ],
+//        'prospectlists_accounts_quantity' => [
+//            'name' => 'prospectlists_accounts_quantity',
+//            'vname' => 'LBL_QUANTITY',
+//            'type' => 'varchar',
+//            'source' => 'non-db'
+//        ],
         /*
         'prospectlists_contacts_quantity' => [
             'name' => 'prospectlists_contacts_quantity',
@@ -171,12 +171,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'source' => 'non-db'
         ],
         */
-        'prospectlists_consumer_quantity' => [
-            'name' => 'prospectlists_consumer_quantity',
-            'vname' => 'LBL_QUANTITY',
-            'type' => 'varchar',
-            'source' => 'non-db'
-        ],
+//        'prospectlists_consumer_quantity' => [
+//            'name' => 'prospectlists_consumer_quantity',
+//            'vname' => 'LBL_QUANTITY',
+//            'type' => 'varchar',
+//            'source' => 'non-db'
+//        ],
         /*
         'prospectlists_contacts_unsubscribegroup_status' => [
             'name' => 'prospectlists_contacts_unsubscribegroup_status',
@@ -280,20 +280,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
 //            'relationship' => 'email_marketing_prospect_lists',
 //            'source' => 'non-db',
 //        ),
-        'marketing_id' => [
-            'name' => 'marketing_id',
-            'vname' => 'LBL_MARKETING_ID',
-            'type' => 'varchar',
-            'len' => '36',
-            'source' => 'non-db',
-        ],
-        'marketing_name' => [
-            'name' => 'marketing_name',
-            'vname' => 'LBL_MARKETING_NAME',
-            'type' => 'varchar',
-            'len' => '255',
-            'source' => 'non-db',
-        ],
+//        'marketing_id' => [
+//            'name' => 'marketing_id',
+//            'vname' => 'LBL_MARKETING_ID',
+//            'type' => 'varchar',
+//            'len' => '36',
+//            'source' => 'non-db',
+//        ],
+//        'marketing_name' => [
+//            'name' => 'marketing_name',
+//            'vname' => 'LBL_MARKETING_NAME',
+//            'type' => 'varchar',
+//            'len' => '255',
+//            'source' => 'non-db',
+//        ],
 //        'prospect_list_filters' => [
 //            'name' => 'prospect_list_filters',
 //            'type' => 'link',
@@ -309,53 +309,53 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
 //            'source' => 'non-db',
 //            'module' => 'EmailSchedules'
 //        ],
-        'prospectlistunsubscribes' => [
-            'name' => 'prospectlistunsubscribes',
-            'vname' => 'LBL_PROSPECTLIST_UNSUBSCRIBES',
-            'type' => 'link',
-            'relationship' => 'prospectlists_prospectlistunsubscribes',
-            'source' => 'non-db',
-        ],
-        'prospectlistunsubscribe_id' => [
-            'name' => 'prospectlistunsubscribe_id',
-            'vname' => 'LBL_PROSPECTLIST_UNSUBSCRIBE_ID',
-            'type' => 'varchar',
-            'len' => 36,
-        ],
-        'prospectlistunsubscribe_name' => [
-            'name' => 'prospectlistunsubscribe_name',
-            'rname' => 'name',
-            'id_name' => 'prospectlistunsubscribe_id',
-            'vname' => 'LBL_PROSPECTLISTS_UNSUBSCRIBE',
-            'type' => 'relate',
-            'table' => 'prospectlistunsubscribes',
-            'isnull' => 'true',
-            'module' => 'ProspectListUnsubscribes',
-            'dbType' => 'varchar',
-            'link' => 'prospectlistunsubscribes',
-            'len' => '255',
-            'source' => 'non-db',
-        ],
+//        'prospectlistunsubscribes' => [
+//            'name' => 'prospectlistunsubscribes',
+//            'vname' => 'LBL_PROSPECTLIST_UNSUBSCRIBES',
+//            'type' => 'link',
+//            'relationship' => 'prospectlists_prospectlistunsubscribes',
+//            'source' => 'non-db',
+//        ],
+//        'prospectlistunsubscribe_id' => [
+//            'name' => 'prospectlistunsubscribe_id',
+//            'vname' => 'LBL_PROSPECTLIST_UNSUBSCRIBE_ID',
+//            'type' => 'varchar',
+//            'len' => 36,
+//        ],
+//        'prospectlistunsubscribe_name' => [
+//            'name' => 'prospectlistunsubscribe_name',
+//            'rname' => 'name',
+//            'id_name' => 'prospectlistunsubscribe_id',
+//            'vname' => 'LBL_PROSPECTLISTS_UNSUBSCRIBE',
+//            'type' => 'relate',
+//            'table' => 'prospectlistunsubscribes',
+//            'isnull' => 'true',
+//            'module' => 'ProspectListUnsubscribes',
+//            'dbType' => 'varchar',
+//            'link' => 'prospectlistunsubscribes',
+//            'len' => '255',
+//            'source' => 'non-db',
+//        ],
     ],
 
 
     'indices' => [
-        [
-            'name' => 'idx_prospect_list_name',
-            'type' => 'index',
-            'fields' => ['name']
-        ],
+//        [
+//            'name' => 'idx_prospect_list_name',
+//            'type' => 'index',
+//            'fields' => ['name']
+//        ],
     ],
     'relationships' => [
-        'prospectlists_assigned_user' => [
-            'lhs_module' => 'Users',
-            'lhs_table' => 'users',
-            'lhs_key' => 'id',
-            'rhs_module' => 'prospectlists',
-            'rhs_table' => 'prospect_lists',
-            'rhs_key' => 'assigned_user_id',
-            'relationship_type' => 'one-to-many'
-        ],
+//        'prospectlists_assigned_user' => [
+//            'lhs_module' => 'Users',
+//            'lhs_table' => 'users',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'prospectlists',
+//            'rhs_table' => 'prospect_lists',
+//            'rhs_key' => 'assigned_user_id',
+//            'relationship_type' => 'one-to-many'
+//        ],
 //        'prospectlists_prospect_list_filters' => [
 //            'lhs_module' => 'ProspectLists',
 //            'lhs_table' => 'prospectlists',
@@ -365,15 +365,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
 //            'rhs_key' => 'prospectlist_id',
 //            'relationship_type' => 'one-to-many'
 //        ],
-        'prospectlists_prospectlistunsubscribes' => [
-            'lhs_module' => 'ProspectListUnsubscribes',
-            'lhs_table' => 'prospectlistunsubscribes',
-            'lhs_key' => 'id',
-            'rhs_module' => 'ProspectLists',
-            'rhs_table' => 'prospectlists',
-            'rhs_key' => 'prospectlistunsubscribe_id',
-            'relationship_type' => 'one-to-many'
-        ],
+//        'prospectlists_prospectlistunsubscribes' => [
+//            'lhs_module' => 'ProspectListUnsubscribes',
+//            'lhs_table' => 'prospectlistunsubscribes',
+//            'lhs_key' => 'id',
+//            'rhs_module' => 'ProspectLists',
+//            'rhs_table' => 'prospectlists',
+//            'rhs_key' => 'prospectlistunsubscribe_id',
+//            'relationship_type' => 'one-to-many'
+//        ],
 
     ]
 ];
