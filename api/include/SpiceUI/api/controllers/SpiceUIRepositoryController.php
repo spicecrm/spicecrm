@@ -25,23 +25,7 @@ class SpiceUIRepositoryController
 
         $retArray = [];
 
-        // the query will only return the newest record for each module
-        $modules = $db->query("SELECT $sysuimodulerepositoryColumns
-FROM (
-  SELECT s.*, 
-         ROW_NUMBER() OVER (
-           PARTITION BY module
-           ORDER BY CAST(REPLACE(version,'.','') AS UNSIGNED) DESC
-         ) AS rn
-  FROM (
-    SELECT $sysuimodulerepositoryColumns
-    FROM sysuimodulerepository
-    UNION ALL
-    SELECT $sysuimodulerepositoryColumns
-    FROM sysuicustommodulerepository
-  ) AS s
-) AS x
-WHERE rn = 1; ");
+        $modules = $db->query("SELECT {$sysuimodulerepositoryColumns} FROM sysuimodulerepository UNION ALL SELECT {$sysuimodulerepositoryColumns} FROM sysuicustommodulerepository");
 
         while ($module = $db->fetchByAssoc($modules)) {
             $retArray[$module['id']] = [
