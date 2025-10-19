@@ -9,6 +9,7 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {modal} from '../../services/modal.service';
+import {toast} from "../../services/toast.service";
 
 @Component({
     selector: 'dashlet-generator-dashlets',
@@ -35,6 +36,7 @@ export class DashletGeneratorDashlets {
         public metadata: metadata,
         public modelutilities: modelutilities,
         public modal: modal,
+        public toast: toast
     ) {
         this.modules = this.metadata.getModules();
         this.modules.sort();
@@ -61,13 +63,13 @@ export class DashletGeneratorDashlets {
 
     get moduleDashlets() {
         return this.dashlets.filter(dashlet => {
-            return dashlet.module == this.module && dashlet.type == 'global' && (!this.definitionfiltertermGlobal || dashlet.name.toLowerCase().includes(this.definitionfiltertermGlobal.toLowerCase()));
+            return dashlet.module == this.module && dashlet.type == 'global' && (!this.definitionfiltertermGlobal || dashlet.name.toLowerCase().includes(this.definitionfiltertermGlobal.toLowerCase()) || dashlet.id.includes(this.definitionfiltertermGlobal));
         }).sort((a, b) => a.name.localeCompare(b.name, undefined, {'sensitivity': 'base'}));
     }
 
     get customModuleDashlets() {
         return this.dashlets.filter(dashlet => {
-            return dashlet.module == this.module && dashlet.type == 'custom' && (!this.definitionfiltertermCustom || dashlet.name.toLowerCase().includes(this.definitionfiltertermCustom.toLowerCase()));
+            return dashlet.module == this.module && dashlet.type == 'custom' && (!this.definitionfiltertermCustom || dashlet.name.toLowerCase().includes(this.definitionfiltertermCustom.toLowerCase()) || dashlet.id.includes(this.definitionfiltertermCustom));
         }).sort((a, b) => a.name.localeCompare(b.name, undefined, {'sensitivity': 'base'}));
     }
 
@@ -106,25 +108,32 @@ export class DashletGeneratorDashlets {
         this[`activeDashlet${type === 'custom' ? 'Custom' : 'Global' }`] = dashlet.id;
     }
 
-    private dashletRemoval(dashletId) {
-        this.backend.deleteRequest('module/Dashboards/dashlets/' + dashletId);
-        this.dashlets = this.dashlets.filter(dashlet => dashlet.id != dashletId);
-        if (this.activeDashletGlobal === dashletId || this.activeDashletCustom === dashletId) this.dashlet.emit(undefined);
-    }
-
     public remove(dashletId) {
         let dashletToRemove = this.dashlets.find(dashlet => dashlet.id === dashletId);
         let modalMessage = `${this.language.getLabel('MSG_DASHLET_USAGE', '_', 'long')} "${dashletToRemove.component}"`;
         let modalTitle = `${this.language.getLabel('LBL_DELETE')} "${dashletToRemove.name}"?`;
 
-        if(dashletToRemove.componentconfig) { // Only dashlets that are saved in the database have a componentconfig property
+        if(dashletToRemove.componentconfig) {
             this.modal.confirm(modalMessage, modalTitle, 'warning').subscribe(res => {
                 if (res) {
-                    this.dashletRemoval(dashletId)
+                    let awaitModal = this.modal.await('LBL_DELETING');
+                    this.backend.deleteRequest('module/Dashboards/dashlets/' + dashletId).subscribe({
+                        next: () => {
+                            this.dashlets = this.dashlets.filter(dashlet => dashlet.id != dashletId);
+                            if (this.activeDashletGlobal === dashletId || this.activeDashletCustom === dashletId) this.dashlet.emit(undefined);
+
+                            awaitModal.emit(true);
+
+                            this.toast.sendToast(this.language.getLabel('LBL_DASHLET_DELETED'), 'info');
+                        }, error: () => {
+                            awaitModal.emit(true);
+                            this.toast.sendToast(this.language.getLabel('LBL_ERROR_DELETING_RECORD'), 'error');
+                        }
+                    })
                 }
             });
         } else {
-            this.dashletRemoval(dashletId)
+            this.dashlets = this.dashlets.filter(dashlet => dashlet.id != dashletId);
         }
     }
 }

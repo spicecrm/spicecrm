@@ -45,7 +45,11 @@ class SpiceDictionaryItemsController
         $body = $req->getParsedBody();
 
         foreach ($body['items'] as $item) {
-            SpiceDictionaryItems::getInstance()->addItem($item);
+            if (SpiceDictionaryItems::getInstance()->getItem($item['id'])) {
+                SpiceDictionaryItems::getInstance()->setItem($item);
+            } else {
+                SpiceDictionaryItems::getInstance()->addItem($item);
+            }
         }
 
         return $res->withJson(['success' => true]);

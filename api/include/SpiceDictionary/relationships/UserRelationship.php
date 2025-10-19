@@ -29,6 +29,9 @@ class UserRelationship extends One2MBeanRelationship
             $leftDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
             $leftField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($leftDefinition->name, $relationship->relationship->lhs_sysdictionaryitem_id);
             $rightDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
+            if ($rightDefinition->type == 'template') {
+                $rightDefinition = new SpiceDictionaryDefinition($this->linkInstance->getFocus()->_sysdictionarydefinition_id);
+            }
             $rightField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($rightDefinition->name, $relationship->relationship->rhs_sysdictionaryitem_id);
         } catch (\Exception $e){
             return [];
