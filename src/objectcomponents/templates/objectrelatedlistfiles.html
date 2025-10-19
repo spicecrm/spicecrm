@@ -16,14 +16,14 @@
                 <system-utility-icon *ngIf="!modelattachments.loading && !componentconfig.alwaysExpanded" class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen($event)" [@animateicon]="isopen? 'open' : 'closed'"></system-utility-icon>
             </div>
             <div class="slds-grow slds-grid">
-                <button class="slds-col--bump-left slds-button slds-button--icon-border slds-m-right--xxx-small slds-button_dual-stateful" [ngClass]="{'slds-is-pressed': showFolders}" (click)="toggleFolders()" system-title="LBL_TOGGLE_BIG_THUMBNAIL">
+                <button class="slds-col--bump-left slds-button slds-button--icon-border slds-m-right--xxx-small slds-button_dual-stateful" [ngClass]="{'slds-is-pressed': showFolders}" (click)="toggleFolders()" system-title="LBL_TOGGLE_FOLDERS">
                     <system-utility-icon size="x-small" icon="side_list"></system-utility-icon>
                 </button>
                 <div class="slds-dropdown-trigger slds-dropdown-trigger--click slds-m-horizontal--xxx-small" aria-expanded="false"
                      system-dropdown-trigger-simple>
                     <button class="slds-button slds-button--icon slds-button--icon-border slds-button--neutral" aria-haspopup="true"
                             system-title="LBL_CHANGE_VIEW">
-                        <system-button-icon icon="table" size="medium"></system-button-icon>
+                        <system-button-icon [icon]="changeViewIcon" size="medium"></system-button-icon>
                         <system-button-icon class="slds-p-left--xxx-small" icon="down" size="x-small"></system-button-icon>
                     </button>
                     <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions slds-p-around--none" style="max-width: initial;">
@@ -100,24 +100,24 @@
                                         <th style="overflow: hidden; resize: horizontal" scope="col" class="slds-is-resizable">
                                             <div (click)="sort('filename')" class="slds-truncate slds-p-left--x-small" style="cursor: pointer;">
                                                 <system-label label="LBL_NAME" class="slds-p-right--x-small"></system-label>
-                                                @if (sortParams.field == 'filename') {
-                                                    <system-utility-icon [icon]="sortParams.order == 'desc' ? 'arrowdown' : 'arrowup'" size="x-small"></system-utility-icon>
+                                                @if (fileViewAndSort.field == 'filename') {
+                                                    <system-utility-icon [icon]="fileViewAndSort.order == 'desc' ? 'arrowdown' : 'arrowup'" size="x-small"></system-utility-icon>
                                                 }
                                             </div>
                                         </th>
                                         <th scope="col" class="slds-is-resizable">
                                             <div (click)="sort('filesize')" class="slds-truncate slds-p-left--x-small" style="cursor: pointer;">
                                                 <system-label label="LBL_SIZE" class="slds-p-right--x-small"></system-label>
-                                                @if (sortParams.field == 'filesize') {
-                                                    <system-utility-icon [icon]="sortParams.order == 'desc' ? 'arrowdown' : 'arrowup'" size="x-small"></system-utility-icon>
+                                                @if (fileViewAndSort.field == 'filesize') {
+                                                    <system-utility-icon [icon]="fileViewAndSort.order == 'desc' ? 'arrowdown' : 'arrowup'" size="x-small"></system-utility-icon>
                                                 }
                                             </div>
                                         </th>
                                         <th scope="col" class="slds-is-resizable">
                                             <div (click)="sort('date')" class="slds-truncate slds-p-left--x-small" style="cursor: pointer;">
                                                 <system-label label="LBL_DATE" class="slds-p-right--x-small"></system-label>
-                                                @if (sortParams.field == 'date') {
-                                                    <system-utility-icon [icon]="sortParams.order == 'desc' ? 'arrowdown' : 'arrowup'" size="x-small"></system-utility-icon>
+                                                @if (fileViewAndSort.field == 'date') {
+                                                    <system-utility-icon [icon]="fileViewAndSort.order == 'desc' ? 'arrowdown' : 'arrowup'" size="x-small"></system-utility-icon>
                                                 }
                                             </div>
                                         </th>

@@ -16,7 +16,6 @@ export class DashboardAddElement {
     public self: any = {};
     public kreports: any[] = [];
     public dashboarddashlets: any[] = [];
-    public dashletName: string = '';
     public searchKey: string = '';
     public dashlettype: string = 'Generic';
     public dashletModule: string = '*';
@@ -134,7 +133,7 @@ export class DashboardAddElement {
 
     public add(dashlet) {
         if (!dashlet) return;
-        let name = this.dashletName;
+        let name = dashlet.name ? dashlet.name : dashlet.label;
         let component = '';
         let componentconfig: any = {};
         let dashletconfig: any = {};

@@ -23,6 +23,10 @@ export class telephony {
      * the current calls
      */
     public calls: telephonyCallI[] = [];
+    /**
+     * save closed calls ids to prevent popup on event change
+     */
+    public closedCallsIds = new Map();
 
     /**
      * emits when a MSISDN should be called
@@ -84,6 +88,7 @@ export class telephony {
     public removeCallById(callid: string) {
         let index = this.calls.findIndex(c => c.id == callid || c.callid == callid);
         if (index >= 0) {
+            this.closedCallsIds.set(this.calls[index].callid, true);
             this.calls.splice(index, 1);
         }
     }

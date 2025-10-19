@@ -79,7 +79,7 @@ export class ObjectRecordAdministrationTab implements OnInit {
             this.model.data$.subscribe({
                 next: (modeldata) => {
                     if (!!this.model.getField('assigned_user_id')) {
-                        this.model._fields_stati.assigned_orgunit.readonly = true;
+                        this.model.fieldStates.assigned_orgunit.readonly = true;
                         // check if we have another orgunit and if there is a change update it
                         if(this.model.getField('assigned_orgunit_id') != this.model.getField('assigned_user').orgunit_id){
                             this.model.setFields({
@@ -88,7 +88,7 @@ export class ObjectRecordAdministrationTab implements OnInit {
                             }, true)
                         }
                     } else {
-                        this.model._fields_stati.assigned_orgunit.readonly = false;
+                        this.model.fieldStates.assigned_orgunit.readonly = false;
                     }
                 }
             })
