@@ -489,9 +489,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
             this.model.id = event.item.data.id;
             this.model.setData(_.clone(event.item.data));
 
-            // initialize the field statis
-            this.model.initializeFieldsStati();
-
             // start the edit and set the new stage
             this.model.startEdit();
             this.model.setField(this.confdata.statusfield, event.container.data.stage);

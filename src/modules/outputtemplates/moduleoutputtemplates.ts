@@ -25,7 +25,6 @@ import {OutputRevisionsPDFTabContainer} from "./components/outputrevisionspdftab
 import {OutputRevisionsPDFTabContainerEmail} from "./components/outputrevisionspdftabcontaineremail";
 import {OutputRevisionsPDFTabContainerPreview} from "./components/outputrevisionspdftabcontainerpreview";
 import {ObjectActionOutputPdfModal} from "./components/objectactionoutputpdfmodal";
-import {ModuleSAPIDOCs} from "../sapidocs/modulesapidocs";
 import {ObjectActionRelatedOutputPdfModal} from "./components/objectactionrelatedoutpudpdfmodal";
 
 @NgModule({
@@ -36,8 +35,7 @@ import {ObjectActionRelatedOutputPdfModal} from "./components/objectactionrelate
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        DirectivesModule,
-        ModuleSAPIDOCs
+        DirectivesModule
     ],
     declarations: [
         OutputTemplatesEditor,

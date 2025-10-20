@@ -10,6 +10,7 @@ use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceGateway\SpiceGatewayClientHandler;
 use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
@@ -87,11 +88,11 @@ class SpiceCRM2FAUtils
         switch ($method) {
             case 'email':
                 $message = 'Enter the code sent to your email';
-                self::send2FACodeByEmail($user->id);
+                self::send2FACodeByEmail($user);
                 break;
             case 'sms':
                 $message = 'Enter the sms code sent to your mobile device';
-                self::send2FACodeBySMS($user->id);
+                self::send2FACodeBySMS($user);
                 break;
             case 'one_time_password':
                 self::checkActiveOneTimePassword($user);
@@ -222,16 +223,17 @@ class SpiceCRM2FAUtils
 
     /**
      * send code by sms
-     * @param string $userId
+     * @param User $user
      * @return void
      * @throws UnauthorizedException | Exception
      */
-    public static function send2FACodeBySMS(string $userId): void
+    public static function send2FACodeBySMS(User $user): void
     {
+        $userId = $user->id;
         $db = DBManagerFactory::getInstance();
         $code = self::generateCode($userId);
 
-        $phoneNumber = $db->getOne("SELECT phone_mobile FROM users WHERE id = '$userId'");
+        $phoneNumber = (string) $db->getOne("SELECT phone_mobile FROM users WHERE id = '$userId'");
 
         if (!$phoneNumber) {
             throw new UnauthorizedException("User mobile phone number missing", 5);
@@ -250,12 +252,18 @@ class SpiceCRM2FAUtils
             throw new UnauthorizedException("Missing configuration mailbox id", 5);
         }
 
-        /** @var TextMessage $sms */
-        $sms = BeanFactory::newBean('TextMessages');
-        $sms->mailbox_id = $mailboxId;
-        $sms->description = "Your CRM login code is $code";
-        $sms->msisdn = $phoneNumber;
-        $sms->send();
+        if ($mailboxId == 'gateway') {
+            SpiceGatewayClientHandler::sendTemplateTypeSMS(
+                $phoneNumber, 'twoFactorToken', ['code' => $code], $user->getPreference('language')
+            );
+        } else {
+            /** @var TextMessage $sms */
+            $sms = BeanFactory::newBean('TextMessages');
+            $sms->mailbox_id = $mailboxId;
+            $sms->description = "Your CRM login code is $code";
+            $sms->msisdn = $phoneNumber;
+            $sms->send();
+        }
 
         if (SystemTenant::multitenancyEnabled()) {
             SystemTenant::switchToTenant($tenantId);
@@ -264,19 +272,20 @@ class SpiceCRM2FAUtils
 
     /**
      * send code by email
-     * @param string $userId
+     * @param User $user
      * @return void
      * @throws UnauthorizedException | Exception
      */
-    public static function send2FACodeByEmail(string $userId): void
+    public static function send2FACodeByEmail(User $user): void
     {
+        $userId = $user->id;
         $db = DBManagerFactory::getInstance();
         $code = self::generateCode($userId);
 
-        $emailAddress = $db->getOne("SELECT user_email FROM users WHERE id ='$userId' AND deleted != 1");
+        $emailAddress = (string) $db->getOne("SELECT user_email FROM users WHERE id ='$userId' AND deleted != 1");
 
         if (empty($emailAddress)) {
-            $emailAddress = $db->getOne("SELECT email_address FROM email_addresses ea, email_addr_bean_rel ear WHERE ear.bean_id='$userId' AND ear.bean_module= 'Users'  AND ear.primary_address = 1 AND ear.deleted != 1 AND ear.email_address_id = ea.id AND ea.deleted != 1");
+            $emailAddress = (string) $db->getOne("SELECT email_address FROM email_addresses ea, email_addr_bean_rel ear WHERE ear.bean_id='$userId' AND ear.bean_module= 'Users'  AND ear.primary_address = 1 AND ear.deleted != 1 AND ear.email_address_id = ea.id AND ea.deleted != 1");
         }
 
         if (!$emailAddress) {
@@ -297,14 +306,20 @@ class SpiceCRM2FAUtils
             throw new UnauthorizedException("Missing configuration mailbox id", 5);
         }
 
-        /** @var Email $email */
-        $email = BeanFactory::newBean('Emails');
-        $email->mailbox_id = $mailboxId;
-        $email->name = 'Verification Code';
-        $email->body = "Your CRM login code is $code";
-        $email->addEmailAddress('to', $emailAddress);
+        if ($mailboxId == 'gateway') {
+            SpiceGatewayClientHandler::sendTemplateTypeEmail(
+                [['type' => 'to', 'email' => $emailAddress]], 'twoFactorToken', ['code' => $code], $user->getPreference('language')
+            );
+        } else {
+            /** @var Email $email */
+            $email = BeanFactory::newBean('Emails');
+            $email->mailbox_id = $mailboxId;
+            $email->name = 'Verification Code';
+            $email->body = "Your CRM login code is $code";
+            $email->addEmailAddress('to', $emailAddress);
 
-        $email->sendEmail();
+            $email->sendEmail();
+        }
 
         if (SystemTenant::multitenancyEnabled()) {
             SystemTenant::switchToTenant($tenantId);

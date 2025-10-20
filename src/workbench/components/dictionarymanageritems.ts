@@ -203,6 +203,10 @@ export class DictionaryManagerItems {
         e.preventDefault();
         this.modal.confirm('MSG_ACTIVATE_ALL', 'MSG_ACTIVATE_ALL').subscribe({
             next: (res) => {
+                if (!res) return;
+
+                const loadingModal = this.modal.await('LBL_EXECUTING');
+
                 const draftItems = this.filterPipe.transform(
                     this.dictionarymanager.dictionaryitems,
                     this.dictionarymanager.currentDictionaryDefinition,
@@ -210,7 +214,23 @@ export class DictionaryManagerItems {
                     this.filterterm,
                     true
                 );
-                if (res) draftItems.forEach(d => d.status = 'a');
+
+                draftItems.forEach(d => d.status = 'a');
+
+                this.backend.postRequest('dictionary/items', {}, {items: draftItems}).subscribe({
+                    next: () => {
+                        this.dictionarymanager.dictionaryitems = [...this.dictionarymanager.dictionaryitems];
+                        loadingModal.next(true);
+                        loadingModal.complete();
+                    },
+                    error: (e) => {
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                        draftItems.forEach(d => d.status = 'd');
+                        this.dictionarymanager.dictionaryitems = [...this.dictionarymanager.dictionaryitems];
+                        loadingModal.next(true);
+                        loadingModal.complete();
+                    }
+                });
             }
         })
     }

@@ -279,8 +279,8 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     public doupload(files) {
         this.modelattachments.uploadAttachmentsBase64(files, this.componentconfig.systemCateogryId).subscribe({
             next: () => {
-                this.processAttachmentsSize();
                 this.broadcastUpload();
+                this.processAttachmentsSize();
             }
         });
     }
@@ -295,8 +295,8 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
             // wait for modal to finish upload
             modalRef.instance.responseSubject.subscribe({
                 next: () => {
-                    this.processAttachmentsSize();
                     this.broadcastUpload();
+                    this.processAttachmentsSize();
                 }
             })
         });

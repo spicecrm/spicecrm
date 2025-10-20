@@ -63,6 +63,10 @@ export class EmailSendButton {
         let body = this.model.getFieldValue('body');
         let recipientTo = recipientAddresses ? recipientAddresses.find(re => re.address_type == 'to') : undefined;
 
+        if (this.model.getField('zip_compress')) {
+            return false;
+        }
+
         return (!name || !body || !mailbox || !recipientAddresses || !recipientTo || sizeTooBig) ? true : this.sending;
     }
 
