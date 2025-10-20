@@ -126,8 +126,7 @@ export class ObjectListItem implements OnInit, OnDestroy {
         this.model.module = this.modellist.module;
         this.model.id = this.listItem.id;
         this.model.setData(this.listItem);
-        this.model.validate('change');
-        this.model.initializeFieldsStati();
+        this.model.validate();
         this.model.initializeFieldsAlertStyles(this.listItem);
 
         this.view.isEditable = this.inlineedit && this.model.checkAccess('edit');

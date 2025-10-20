@@ -38,7 +38,7 @@ export class fieldContainer implements AfterViewInit {
     }
 
     get stati() {
-        let stati = this.model.getFieldStati(this.field);
+        let stati = this.model.getFieldStates(this.field);
         return stati;
     }
 

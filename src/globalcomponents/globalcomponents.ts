@@ -111,7 +111,10 @@ import {GlobalNavigationTabContextMenu} from "./components/globalnavigationtabco
 import {CdkDrag, CdkDragHandle, CdkDropList, CdkDropListGroup} from "@angular/cdk/drag-drop";
 import {GlobalLogin2FAMethodSelectModal} from "./components/globallogin2famethodselectmodal";
 import {GlobalLoginPasskeyModal} from "./components/globalloginpasskeymodal";
-import {GlobalProjectActivityTrackTimeIcon} from "./components/globalprojectactivitytracktimeicon";
+/**
+ * TODO importing anything from extensions is not allowed here.
+ */
+import {GlobalProjectActivityTrackTimeIcon} from "../extensions/modules/projects/components/globalprojectactivitytracktimeicon";
 import {GlobalHeaderModuleShortcut} from "./components/globalheadermoduleshortcut";
 
 /**
