@@ -152,7 +152,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     }
 
     public processAttachmentsSize() {
-        if (this.modelattachments.totalFileSize > this.maxUploadBytes) {
+        if (this.modelattachments.totalFileSize > this.maxUploadBytes && !this.model.getField('downloadlink_attachments')) {
             let headerText = `LBL_ERROR`;
             let text = this.language.getLabelFormatted('LBL_EXCEEDS_MAX_ATTACHMENTS', [this.modelattachments.totalHumanFileSize, this.maxUpload]);
             this.modal.info(text, headerText);
