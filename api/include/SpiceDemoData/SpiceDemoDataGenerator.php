@@ -413,6 +413,6 @@ class SpiceDemoDataGenerator
                     ->setRouteAlias('spicedemodatagenerator')
                     ->setSsl(false)
                     ->send()
-                    ->getJsonResponse();
+                    ->getResponse();
     }
 }
