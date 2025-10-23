@@ -109,20 +109,26 @@ class SpiceCurlResponse
         return '';
     }
 
+    /**
+     * Checks if the response content type is JSON.
+     *
+     * @return bool
+     */
     public function isJson(): bool
     {
         return strpos($this->getContentType(),  self::CONTENT_TYPE_JSON) === 0;
     }
 
     /**
-     * Returns the cURL response as a JSON decoded array if possible.
+     * Returns the cURL response as a JSON decoded array or object if possible.
      * Otherwise, it returns the original response.
      *
-     * @return array|null
+     * @param bool $assoc
+     * @return array|bool|string|null
      */
-    public function getJsonResponse(): ?array
+    public function getResponse(bool $assoc = true): array|bool|string|null
     {
-        $decoded = json_decode($this->response, true);
+        $decoded = json_decode($this->response, $assoc);
 
         if (json_last_error() === JSON_ERROR_NONE) {
             return $decoded;
@@ -132,11 +138,33 @@ class SpiceCurlResponse
     }
 
     /**
+     * Returns the cURL response as a JSON decoded array if possible.
+     * Otherwise, it returns the original response.
+     *
+     * @return array|null
+     */
+    public function getResponseArray(): ?array
+    {
+        return $this->getResponse(true);
+    }
+
+    /**
+     *  Returns the cURL response as a JSON decoded object or array if possible.
+     *  Otherwise, it returns the original response.
+     *
+     * @return object|array|null
+     */
+    public function getResponseObject(): object|array|null
+    {
+        return $this->getResponse(false);
+    }
+
+    /**
      * Returns the curl response excluding the header.
      *
      * @return string|bool
      */
-    public function getRawResponseWithoutHeader(): string|bool
+    public function getRawResponseBody(): string|bool
     {
         return substr($this->getRawResponse(), $this->getHeaderSize());
     }
@@ -147,9 +175,9 @@ class SpiceCurlResponse
      *
      * @return array|null
      */
-    public function getJsonResponseWithoutHeader(): ?array
+    public function getResponseBody(): ?array
     {
-        $responseWithoutHeader = $this->getRawResponseWithoutHeader();
+        $responseWithoutHeader = $this->getRawResponseBody();
         $decoded = json_decode($responseWithoutHeader, true);
 
         if (json_last_error() === JSON_ERROR_NONE) {
