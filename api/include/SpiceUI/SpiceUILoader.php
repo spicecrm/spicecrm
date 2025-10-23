@@ -83,7 +83,7 @@ class SpiceUILoader
 
 
         //decode reponse
-        if (!$data = $response->getJsonResponse()) {
+        if (!$data = $response->getResponse()) {
             LoggerManager::getLogger()->fatal('json_decode error on REST response from reference server. Response: '
                 . print_r($response->getRawResponse(), true) . '. URL: ' . $url . '. Please check call parameters!');
         }
