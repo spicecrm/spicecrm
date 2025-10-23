@@ -268,28 +268,15 @@ class SpiceCurlRequest
     }
 
     /**
-     * A helper function for setting the basic Authorization header Option.
-     *
-     * @param string $value
-     * @return $this
-     */
-    public function setBasicAuthorization(string $value): self
-    {
-        $this->setAuthorization(self::AUTHORIZATION_BASIC, $value);
-
-        return $this;
-    }
-
-    /**
      * A helper function for setting the basic Authorization with the standard base64 encoding.
      *
      * @param string $user
      * @param string $password
      * @return $this
      */
-    public function setBasicBase64Authorization(string $user, string $password): self
+    public function setBasicAuthorization(string $user, string $password): self
     {
-        return $this->setBasicAuthorization(base64_encode($user . ':' . $password));
+        return $this->setAuthorization(self::AUTHORIZATION_BASIC, base64_encode($user . ':' . $password));
     }
 
     /**
@@ -429,12 +416,14 @@ class SpiceCurlRequest
      * Alternatively, for an already serialized string value the following should be used:
      * ->setRawOption(CURLOPT_POSTFIELDS, $serializedValue)
      *
-     * @param array $fields
+     * @param array|object $fields
+     * @param bool $forceJsonObject
      * @return $this
      */
-    public function setPostFields(array|object $fields): self
+    public function setPostFields(array|object $fields, bool $forceJsonObject = false): self
     {
         $this->postFields = $fields;
+        $this->forceJsonObject = $forceJsonObject;
 
         return $this;
     }
@@ -540,18 +529,6 @@ class SpiceCurlRequest
     public function forceContentLength(): self
     {
         $this->forceContentLength = true;
-
-        return $this;
-    }
-
-    /**
-     * A flag for using the JSON_FORCE_OBJECT setting when json encoding the post fields.
-     *
-     * @return $this
-     */
-    public function forceJsonObject(): self
-    {
-        $this->forceJsonObject = true;
 
         return $this;
     }
