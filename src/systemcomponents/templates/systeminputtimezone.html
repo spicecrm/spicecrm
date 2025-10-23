@@ -9,7 +9,6 @@
             </select>
         } @else {
             <system-select [system-select-id-only]="true" [disabled]="disabled" [(ngModel)]="timezone" id="{{id}}">
-                <system-select-option *ngIf="!denyEmpty" [value]="null" display="-"/>
                 <system-select-option *ngFor="let timezone of timezones; let i=index" [value]="timezone" [display]="timezone + '(GMT' + offsetTimezones[i] + ')'"/>
             </system-select>
         }
