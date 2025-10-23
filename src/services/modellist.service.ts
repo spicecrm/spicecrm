@@ -1430,6 +1430,7 @@ export class modellist implements OnDestroy {
             this.httpRequestsRefID)
             .subscribe((res: any) => {
                 this.listData.list = this.listData.list.concat(res.list);
+                this.buckets = res.buckets;
                 this.lastLoad = new moment();
                 this.isLoading = false;
                 this.listDataChanged$.next(true);
