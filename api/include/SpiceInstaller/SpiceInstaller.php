@@ -141,7 +141,7 @@ class SpiceInstaller
         if (empty($response->getRawResponse())) {
             return json_decode($response->getErrors());
         }
-        return $response->getJsonResponse();
+        return $response->getResponse();
     }
 
     /**
