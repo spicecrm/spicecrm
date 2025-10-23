@@ -572,7 +572,7 @@ class SpiceUIConfLoader
                         ->setRawOption(CURLOPT_ENCODING, SpiceCurlRequest::ENCODING_UTF8)
                         ->setSsl(false)
                         ->send()
-                        ->getJsonResponse();
+                        ->getResponse();
 
             // loop through content and push the versions to repositoriesMetadata array
             foreach ($content['versions'] as $version) {
