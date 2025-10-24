@@ -9,9 +9,8 @@
     </ng-template>
 </div>
 <div *ngIf="isEditMode()" class="slds-form-element">
-    <div class="slds-form-element__control">
-        <div [class]="fielddisplayclass">
-            <system-input-radio [name]="fieldid" [value]="o.value" *ngFor="let o of options" [(ngModel)]="value" >{{o.display}}</system-input-radio>
-        </div>
+    <div class="slds-grid slds-wrap" style="overflow: hidden">
+        <system-input-radio [ngClass]="sizeClass" [name]="fieldid" [value]="o.value" *ngFor="let o of options" [(ngModel)]="value" >{{o.display}}</system-input-radio>
     </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
 </div>

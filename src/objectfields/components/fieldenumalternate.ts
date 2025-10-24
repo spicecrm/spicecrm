@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component} from '@angular/core';
+import {Component, ElementRef, inject, OnInit} from '@angular/core';
 import {fieldEnum} from './fieldenum';
 
 @Component({
@@ -11,6 +11,11 @@ import {fieldEnum} from './fieldenum';
 })
 
 export class fieldEnumAlternate extends fieldEnum {
+
+    /**
+     * injected instance of the ElementRef
+     */
+    public elementRef: ElementRef = inject(ElementRef);
 
     public ngOnInit() {
         super.ngOnInit();
@@ -22,5 +27,14 @@ export class fieldEnumAlternate extends fieldEnum {
 
     public setValue(value) {
         this.value = value; // not needed anymore? :o
+    }
+
+    get width() {
+        return this.elementRef.nativeElement.parentElement.getBoundingClientRect().width;
+    }
+
+    get sizeClass(){
+        let matches = Math.ceil(this.width / 300);
+        return matches <= 8 ? `slds-size--1-of-${matches}` : 'slds-size--1-of-8';
     }
 }
