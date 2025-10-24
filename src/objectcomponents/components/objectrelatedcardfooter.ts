@@ -167,8 +167,7 @@ export class ObjectRelatedCardFooter implements OnInit {
      */
     public lastPage() {
         if (!this.nextDisabled) {
-            let lastOffset = Math.floor(this.relatedmodels.count / this.relatedmodels.loaditems) * this.relatedmodels.loaditems;
-            this.relatedmodels.offset = lastOffset;
+            this.relatedmodels.offset = Math.floor((this.relatedmodels.count - 1) / this.relatedmodels.loaditems) * this.relatedmodels.loaditems;
             this.paginating = true;
             this.relatedmodels.getData(true).subscribe(() => this.paginating = false);
         }
