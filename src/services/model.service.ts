@@ -1773,7 +1773,7 @@ export class model implements OnDestroy {
     /*
     * open an edit modal using the injecor from the provider
      */
-    public edit(reload: boolean = false, componentSet: string = ""): Observable<any> {
+    public edit(reload: boolean = false, componentconfig: any = undefined): Observable<any> {
         // check if the user can edit
         if (!this.checkAccess("edit")) {
             return of(false);
@@ -1787,8 +1787,8 @@ export class model implements OnDestroy {
             if (editModalRef) {
 
                 // check if a requested componentset for the modal was passed in
-                if (componentSet && componentSet != "") {
-                    editModalRef.instance.componentSet = componentSet;
+                if (componentconfig) {
+                    editModalRef.instance.componentconfig = componentconfig;
                 }
 
                 // check if the model shoudl be reloaded
