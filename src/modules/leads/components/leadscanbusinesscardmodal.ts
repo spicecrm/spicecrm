@@ -130,6 +130,9 @@ export class LeadScanBusinessCardModal implements AfterViewInit{
                     this.model.initialize();
                     this.model.setData(res);
 
+                    // run the generic copy rules to set local Frontend
+                    this.model.executeCopyRulesGeneric();
+
                     let componentconfig: any = undefined;
                     if(this.actionconfig.componentset || this.actionconfig.actionset || this.actionconfig.grow) {
                         componentconfig = {
