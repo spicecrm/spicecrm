@@ -692,6 +692,7 @@ class Compiler
         // if we have only part[0] => then we have an array of additional beans
         // or some other object that we want to use in a template
         if(count($parts) == 1){
+            if(!is_array($beans[$parts[0]])) return [];
             return $beans[$parts[0]];
         }
 
