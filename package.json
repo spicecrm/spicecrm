@@ -12,7 +12,7 @@
     "@angular/platform-browser": "19.2.12",
     "@angular/platform-browser-dynamic": "19.2.12",
     "@angular/router": "19.2.12",
-    "ace-builds": "^1.39.1",
+    "ace-builds": "1.39.1",
     "chart.js": "^4.4.5",
     "cropperjs": "1.6.2",
     "croppie": "2.6.5",
