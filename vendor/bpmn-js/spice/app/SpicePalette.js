@@ -38,6 +38,35 @@
       14: 'create.group'
       */
 
+        const types = SpicePalette.taskTypes ?? [];
+
+        if (types.length === 0) {
+            return entries => entries;
+        }
+
+        const customEntries = {};
+
+        types.forEach(type => {
+
+            const bpmnType = SpicePalette.elementTypes.find(e => e.taskType === type.type);
+
+            const createTaskType = event => {
+                var shape = this.elementFactory.createShape({ type: bpmnType.bpmnType });
+                this.create.start(event, shape);
+                this.eventBus.fire(type.id, shape);
+            };
+
+            customEntries[type.id] = {
+                group: 'model',
+                className: `bpmn-icon-${(type.icon ?? 'intermediate-event-none')}`,
+                title: `add ${type.name} task`,
+                action: {
+                    click: createTaskType,
+                    dragstart: createTaskType
+                }
+            };
+        });
+
         return entries => {
             return {
                 'hand-tool': entries['hand-tool'],
@@ -66,7 +95,7 @@
                     }
                 },
                 'create.group': entries['create.group']
-            }
+            , ...customEntries}
         }
     }
 }
