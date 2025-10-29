@@ -52,6 +52,7 @@ import {fieldModifiedBy} from './components/fieldmodifiedby';
 import {fieldLookup} from './components/fieldlookup';
 import {fieldDate} from './components/fielddate';
 import {fieldTime} from './components/fieldtime';
+import {fieldTimeZone} from './components/fieldtimezone';
 import {fieldDateTime} from './components/fielddatetime';
 import {fieldDateTimeDuration} from './components/fielddatetimeduration';
 import {fieldDuration} from './components/fieldduration';
@@ -198,6 +199,7 @@ declare var _: any;
         fieldBoolLabelAligned,
         fieldDate,
         fieldTime,
+        fieldTimeZone,
         fieldDateTime,
         fieldDateTimeDuration,
         fieldDuration,

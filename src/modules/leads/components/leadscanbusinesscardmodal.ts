@@ -21,7 +21,8 @@ import {configurationService} from "../../../services/configuration.service";
 @Component({
     selector: 'lead-scan-business-card-modal',
     templateUrl: '../templates/leadscanbusinesscardmodal.html',
-    standalone: false
+    standalone: false,
+    providers: [model]
 })
 export class LeadScanBusinessCardModal implements AfterViewInit{
 
@@ -29,6 +30,11 @@ export class LeadScanBusinessCardModal implements AfterViewInit{
      * reference to the modal itself
      */
     public self: any;
+
+    /**
+     * the actionconfig config passed from the button
+     */
+    public actionconfig: any;
 
     /**
      * The reference to the bottom toolbar.
@@ -109,13 +115,35 @@ export class LeadScanBusinessCardModal implements AfterViewInit{
     }
 
 
-    public scan() {
+    public scan(save: boolean = true) {
         let loader = this.modal.await('LBL_PROCESSING');
-        this.backend.postRequest('common/mindee/scan/businesscard/Leads', {}, {filetype: 'image/jpeg', filedata: this.file}).subscribe({
+        this.backend.postRequest('common/mindee/scan/businesscard/Leads', {}, {filetype: 'image/jpeg', filedata: this.file, save: save}).subscribe({
             next: (res) => {
 
-                let objectlink = "/module/Leads/" + res.id;
-                this.router.navigate([objectlink]);
+                if(save) {
+                    let objectlink = "/module/Leads/" + res.id;
+                    this.router.navigate([objectlink]);
+                } else {
+                    // make sure we have no idea so a new on gets issues
+                    this.model.module = 'Leads';
+                    this.model.id = res.id;
+                    this.model.initialize();
+                    this.model.setData(res);
+
+                    // run the generic copy rules to set local Frontend
+                    this.model.executeCopyRulesGeneric();
+
+                    let componentconfig: any = undefined;
+                    if(this.actionconfig.componentset || this.actionconfig.actionset || this.actionconfig.grow) {
+                        componentconfig = {
+                            componentset: this.actionconfig.componentset,
+                            actionset: this.actionconfig.actionset,
+                            grow: this.actionconfig.grow,
+                        }
+                    }
+
+                    this.model.addModel(undefined, undefined, null, null, componentconfig);
+                }
 
                 // close the modal
                 this.self.destroy();
