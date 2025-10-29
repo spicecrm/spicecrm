@@ -38,9 +38,10 @@ export interface DiagramLinkChangeI {
     action: 'change' | 'delete';
 }
 
-export interface DiagramTypeChangeI {
+export interface DiagramItemChangeI {
     id: string;
     type: string;
+    name: string;
 }
 
 /**
