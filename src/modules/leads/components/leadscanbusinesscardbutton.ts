@@ -26,6 +26,9 @@ export class LeadScanBusinessCardButton {
      */
     @Input() public hideLabel: boolean = false;
 
+
+    public actionconfig: any;
+
     constructor(public modal: modal,
                 public injector: Injector,
                 @Optional() public view: view,
@@ -37,7 +40,9 @@ export class LeadScanBusinessCardButton {
      * creates a TravelReceipt Bean
      */
     public execute() {
-        this.modal.openModal("LeadScanBusinessCardModal", true, this.injector);
+        this.modal.openModal("LeadScanBusinessCardModal", true, this.injector).subscribe(modalRef => {
+            modalRef.instance.actionconfig = this.actionconfig;
+        });
     }
 
 }
