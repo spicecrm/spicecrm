@@ -32,6 +32,7 @@ import {GSuitePane} from "./extensions/include/gsuite/components/gsuitepane";
 import {OutlookPane} from "./extensions/include/outlook/components/outlookpane";
 import {loginCheck} from "./services/login.service";
 import {ModuleTOTPAuthentication} from "./include/totpauthentication/moduletotpauthentication";
+import {ModuleSpiceDiagrams} from "./include/spicediagrams/modulespicediagrams";
 
 // declarations for TS
 /**
@@ -108,7 +109,8 @@ export class SpiceUI {
                 {path: "", redirectTo: "/module/Home", pathMatch: "full"},
                 {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]}
             ]
-        )
+        ),
+        ModuleSpiceDiagrams
     ],
     declarations: [SpiceUI],
     providers: [
