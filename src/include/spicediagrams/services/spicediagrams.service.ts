@@ -8,7 +8,7 @@ import {
     DiagramItemI,
     DiagramLinkChangeI,
     DiagramNextItemI,
-    DiagramOptionsI, DiagramTypeChangeI
+    DiagramOptionsI, DiagramItemChangeI
 } from "../interfaces/spicediagrams.interfaces";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
@@ -73,7 +73,7 @@ export class SpiceDiagramService implements OnDestroy {
     /**
      * holds the lastest created link between two items
      */
-    public latestTypeChange = signal<DiagramTypeChangeI>(undefined);
+    public latestItemChange = signal<DiagramItemChangeI>(undefined);
     /**
      * holds the diagram data
      */
@@ -301,7 +301,7 @@ export class SpiceDiagramService implements OnDestroy {
             this.saveDiagramData();
         });
 
-        this.listenToDiagramEvent('commandStack.element.updateLabel.preExecute', (event: BpmnEventI) => {
+        this.listenToDiagramEvent('commandStack.element.updateLabel.postExecute', (event: BpmnEventI) => {
             this.updateItemDisplayLabels(event);
             this.saveDiagramData();
         });
@@ -460,7 +460,11 @@ export class SpiceDiagramService implements OnDestroy {
             oldItem.type += '::' + event.context.newData.eventDefinitionType;
         }
 
-        this.latestTypeChange.set({id: oldItem.id, type: oldItem.type});
+        this.latestItemChange.set({
+            id: oldItem.id,
+            type: oldItem.type,
+            name: oldItem.name
+        });
     }
 
     /**
@@ -495,23 +499,28 @@ export class SpiceDiagramService implements OnDestroy {
     private updateItemDisplayLabels(event: BpmnEventI) {
 
         const isConnection = event.context.element.businessObject.$type == 'bpmn:SequenceFlow';
-        const id = isConnection ? event.context.element.businessObject.sourceRef.$attrs.taskId : event.context.element.businessObject.$attrs.taskId;
-        const target = isConnection ? event.context.element.businessObject.targetRef.$attrs.taskId : id;
 
-        this.items.forEach(item => {
+        if (isConnection) {
 
-            if (!isConnection && id == item.id) {
-                item.name = event.context.newLabel;
-            } else {
+            const sourceItem = this.items.find(t => t.id == event.context.element.businessObject.sourceRef.$attrs.taskId);
+            const nextId = event.context.element.businessObject.targetRef.$attrs.taskId;
+            const nextItem = this.getItemNextItems(sourceItem).find(entry => entry.id == nextId);
 
-                if (isConnection && item.id != id) return;
-
-                this.getItemNextItems(item).some(entry => {
-                    if (entry.id != target) return false;
-                    entry.name = event.context.newLabel;
-                });
+            if (nextItem) {
+                nextItem.name = event.context.newLabel;
             }
-        });
+
+        } else {
+            const item = this.items.find(t => t.id == event.context.element.businessObject.$attrs.taskId);
+            item.name = event.context.newLabel;
+
+            // emit the name change only for the item. Connection name change emit is not supported
+            this.latestItemChange.set({
+                id: item.id,
+                type: item.type,
+                name: item.name
+            });
+        }
     }
 
     /**

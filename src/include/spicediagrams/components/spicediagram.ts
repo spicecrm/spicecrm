@@ -12,7 +12,12 @@ import {
     ViewChild
 } from '@angular/core';
 import {SpiceDiagramService} from "../services/spicediagrams.service";
-import {DiagramItemI, DiagramLinkChangeI, DiagramOptionsI} from "../interfaces/spicediagrams.interfaces";
+import {
+    DiagramItemI,
+    DiagramLinkChangeI,
+    DiagramOptionsI,
+    DiagramItemChangeI
+} from "../interfaces/spicediagrams.interfaces";
 import {model} from "../../../services/model.service";
 
 @Component({
@@ -45,7 +50,7 @@ export class SpiceDiagram implements AfterViewInit, OnChanges {
     /**
      * emit on item create
      */
-    public onTypeChange$: OutputEmitterRef<{id: string, type: string}> = output();
+    public onItemChange$: OutputEmitterRef<DiagramItemChangeI> = output();
     /**
      * emit on item create
      */
@@ -106,9 +111,9 @@ export class SpiceDiagram implements AfterViewInit, OnChanges {
      */
     private listenToTypeChange() {
         effect(() => {
-            const latestTypeChange = this.spiceDiagramService.latestTypeChange();
-            if (latestTypeChange) {
-                this.onTypeChange$.emit(latestTypeChange);
+            const latestItemChange = this.spiceDiagramService.latestItemChange();
+            if (latestItemChange) {
+                this.onItemChange$.emit(latestItemChange);
             }
         });
     }
