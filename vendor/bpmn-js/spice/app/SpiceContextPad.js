@@ -166,7 +166,7 @@ export default class SpiceContextPad {
             if (!SpiceContextPad.taskTypes?.length || !SpiceContextPad.elementTypes.some(t => t.bpmnType === element.type)) {
 
                 //exclude elements that are not items
-                if (!['bpmn:Participant', 'label', 'bpmn:Group', 'bpmn:Lane', 'bpmn:TextAnnotation', 'bpmn:SubProcess'].includes(element.type)) {
+                if (!['bpmn:SequenceFlow', 'bpmn:Participant', 'label', 'bpmn:Group', 'bpmn:Lane', 'bpmn:TextAnnotation', 'bpmn:SubProcess'].includes(element.type)) {
                     entries['edit.task'] = editTaskAction;
                 }
 
