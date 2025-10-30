@@ -100,63 +100,73 @@ class M2MRelationship extends Relationship
             return [];
         }
 
-        $fields = [];
+        $generateSideFieldsFn = function ($forSide) use ($oppositeSideDefinition, $relationship, $forSideDefinition) {
+            $fields = [];
 
-        $linkField = [
-            'name' => $relationship->relationship->{"{$forSide}_linkname"},
-            'type' => 'link',
-            'relationship' => $relationship->relationship->relationship_name,
-            'source' => 'non-db',
-            'module' => $oppositeSideDefinition->getModuleName(),
-            'vname' => $relationship->relationship->{"{$forSide}_linklabel"},
-            'duplicate_merge' => $relationship->relationship->{"{$forSide}_duplicatemerge"},
-            'duplicate_linked' => $relationship->relationship->{"{$forSide}_duplicatelinked"},
-            'duplicate_m2m_records' => $relationship->relationship->{"{$forSide}_clone_join_table_record_on_duplicate"}
-        ];
-
-        if($relationship->relationship->{"{$forSide}_linkdefault"}){
-            $linkField['default'] = true;
-        }
-
-        # add side for self-referencing
-        if($forSideDefinition->id == $oppositeSideDefinition->id){
-            $linkField['side'] = $forSide == 'rhs' ? 'right' : 'left';
-        }
-
-        # add join table fields
-        $joinTableRoleFields = $relationship->getJoinTableFields($forSideDefinition->id);
-        $joinDefinition = new SpiceDictionaryDefinition($relationship->relationship->join_sysdictionarydefinition_id);
-
-        foreach ($joinTableRoleFields as $field) {
-
-            $joinField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($joinDefinition->name, $field['sysdictionaryitem_id']);
-
-            if (!$joinField) continue;
-
-            unset($joinField->sysdictionaryitem_id,$joinField->dbtype);
-
-            $joinField->name = $field['map_to_fieldname'];
-            $joinField->source = 'non-db';
-            $joinField->required = 0;
-
-            $fields[$joinField->name] = (array) $joinField;
-        }
-
-        # add the mapping fields to the link to the opposite side
-        $joinTableRoleFields = $relationship->getJoinTableFields($oppositeSideDefinition->id);
-
-        $linkField['rel_fields'] = [];
-
-        foreach ($joinTableRoleFields as $field) {
-
-            $joinTableRoleField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($joinDefinition->name, $field['sysdictionaryitem_id']);
-
-            $linkField['rel_fields'][$joinTableRoleField->name] = [
-                'map' => $field['map_to_fieldname']
+            $linkField = [
+                'name' => $relationship->relationship->{"{$forSide}_linkname"},
+                'type' => 'link',
+                'relationship' => $relationship->relationship->relationship_name,
+                'source' => 'non-db',
+                'module' => $oppositeSideDefinition->getModuleName(),
+                'vname' => $relationship->relationship->{"{$forSide}_linklabel"},
+                'duplicate_merge' => $relationship->relationship->{"{$forSide}_duplicatemerge"},
+                'duplicate_linked' => $relationship->relationship->{"{$forSide}_duplicatelinked"},
+                'duplicate_m2m_records' => $relationship->relationship->{"{$forSide}_clone_join_table_record_on_duplicate"}
             ];
-        }
 
-        $fields[$relationship->relationship->{"{$forSide}_linkname"}] = $linkField;
+            if($relationship->relationship->{"{$forSide}_linkdefault"}){
+                $linkField['default'] = true;
+            }
+
+            # add side for self-referencing
+            if($forSideDefinition->id == $oppositeSideDefinition->id){
+                $linkField['side'] = $forSide == 'rhs' ? 'right' : 'left';
+            }
+
+            # add join table fields
+            $joinTableRoleFields = $relationship->getJoinTableFields($forSideDefinition->id);
+            $joinDefinition = new SpiceDictionaryDefinition($relationship->relationship->join_sysdictionarydefinition_id);
+
+            foreach ($joinTableRoleFields as $field) {
+
+                $joinField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($joinDefinition->name, $field['sysdictionaryitem_id']);
+
+                if (!$joinField) continue;
+
+                unset($joinField->sysdictionaryitem_id,$joinField->dbtype);
+
+                $joinField->name = $field['map_to_fieldname'];
+                $joinField->source = 'non-db';
+                $joinField->required = 0;
+
+                $fields[$joinField->name] = (array) $joinField;
+            }
+
+            # add the mapping fields to the link to the opposite side
+            $joinTableRoleFields = $relationship->getJoinTableFields($oppositeSideDefinition->id);
+
+            $linkField['rel_fields'] = [];
+
+            foreach ($joinTableRoleFields as $field) {
+
+                $joinTableRoleField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($joinDefinition->name, $field['sysdictionaryitem_id']);
+
+                $linkField['rel_fields'][$joinTableRoleField->name] = [
+                    'map' => $field['map_to_fieldname']
+                ];
+            }
+
+            $fields[$relationship->relationship->{"{$forSide}_linkname"}] = $linkField;
+
+            return $fields;
+        };
+
+        $fields = $generateSideFieldsFn($forSide);
+
+        if ($forSideDefinition->id == $oppositeSideDefinition->id) {
+            $fields = array_merge($fields, $generateSideFieldsFn($forSide == 'lhs' ? 'rhs' : 'lhs'));
+        }
 
         return $fields;
     }
@@ -248,8 +258,6 @@ class M2MRelationship extends Relationship
             return false;
         }
 
-
-
         if($lhsLinkName) $this->callBeforeAdd($lhs, $rhs, $lhsLinkName);
         if($rhsLinkName) $this->callBeforeAdd($rhs, $lhs, $rhsLinkName);
 
@@ -257,20 +265,34 @@ class M2MRelationship extends Relationship
         $dataToInsert = $this->getRowToInsert($lhs, $rhs, $additionalFields);
 
         $this->addRow($dataToInsert);
+        $this->afterRowAdd($dataToInsert, $lhs, $rhs, $additionalFields);
+
+        return true;
+    }
+
+    /**
+     * after adding the row to the database.
+     * add the beans to the link instance.
+     * call the after-add logic hook.
+     * reindex the beans.
+     * @param array $dataToInsert
+     * @param SpiceBean $lhs
+     * @param SpiceBean $rhs
+     * @param array $additionalFields
+     * @return void
+     */
+    protected function afterRowAdd(array $dataToInsert, SpiceBean $lhs, SpiceBean $rhs, array $additionalFields = []): void
+    {
+        $lhsLinkName = $this->lhsLink;
+        $rhsLinkName = $this->rhsLink;
 
         if($lhsLinkName) $lhs->$lhsLinkName->addBean($rhs);
         if($rhsLinkName) $rhs->$rhsLinkName->addBean($lhs);
-
-        if ($this->self_referencing) {
-            $this->addSelfReferencing($lhs, $rhs, $additionalFields);
-        }
 
         if($lhsLinkName) $this->callAfterAdd($lhs, $rhs, $lhsLinkName, $dataToInsert);
         if($rhsLinkName) $this->callAfterAdd($rhs, $lhs, $rhsLinkName, $dataToInsert);
 
         $this->reindexBeans($lhs, $rhs);
-
-        return true;
     }
 
     /**
@@ -323,22 +345,6 @@ class M2MRelationship extends Relationship
         return $row;
     }
 
-    /**
-     * Adds the reversed version of this relationship to the table so that it can be accessed from either side equally
-     * @param $lhs
-     * @param $rhs
-     * @param array $additionalFields
-     * @return void
-     */
-    protected function addSelfReferencing($lhs, $rhs, $additionalFields = [])
-    {
-        if ($rhs->id != $lhs->id)
-        {
-            $dataToInsert = $this->getRowToInsert($rhs, $lhs, $additionalFields);
-            $this->addRow($dataToInsert);
-        }
-    }
-
     public function remove($lhs, $rhs, ?string $relId = null)
     {
         if(!($lhs instanceof SpiceBean) || !($rhs instanceof SpiceBean)) {
@@ -387,44 +393,35 @@ class M2MRelationship extends Relationship
         }
 
         $this->removeRow($dataToRemove);
-
-        if ($this->self_referencing)
-            $this->removeSelfReferencing($lhs, $rhs);
-
-        if (empty($_SESSION['disable_workflow']) || $_SESSION['disable_workflow'] != "Yes")
-        {
-            if ($lhs->$lhsLinkName instanceof SpiceDictionaryLink)
-            {
-                $lhs->$lhsLinkName->load();
-                $this->callAfterDelete($lhs, $rhs, $lhsLinkName);
-            }
-
-            if ($rhs->$rhsLinkName instanceof SpiceDictionaryLink)
-            {
-                $rhs->$rhsLinkName->load();
-                $this->callAfterDelete($rhs, $lhs, $rhsLinkName);
-            }
-        }
+        $this->afterRowRemove($lhs, $rhs);
 
         return true;
     }
 
     /**
-     * Removes the reversed version of this relationship
-     * @param $lhs
-     * @param $rhs
-     * @param array $additionalFields
+     * after removing the row from the database.
+     * reload the rows from the link instance.
+     * call the after-remove logic hook.
+     * @param SpiceBean $lhs
+     * @param SpiceBean $rhs
      * @return void
      */
-    protected function removeSelfReferencing($lhs, $rhs)
+    protected function afterRowRemove(SpiceBean $lhs, SpiceBean $rhs): void
     {
-        if ($rhs->id != $lhs->id)
-        {
-            $dataToRemove = [
-                $this->def['join_key_lhs'] => $rhs->id,
-                $this->def['join_key_rhs'] => $lhs->id
-            ];
-            $this->removeRow($dataToRemove);
+        $lhsLinkName = $this->lhsLink;
+        $rhsLinkName = $this->rhsLink;
+
+        if (empty($_SESSION['disable_workflow']) || $_SESSION['disable_workflow'] != "Yes") {
+
+            if ($lhs->$lhsLinkName instanceof SpiceDictionaryLink) {
+                $lhs->$lhsLinkName->load();
+                $this->callAfterDelete($lhs, $rhs, $lhsLinkName);
+            }
+
+            if ($rhs->$rhsLinkName instanceof SpiceDictionaryLink) {
+                $rhs->$rhsLinkName->load();
+                $this->callAfterDelete($rhs, $lhs, $rhsLinkName);
+            }
         }
     }
 
