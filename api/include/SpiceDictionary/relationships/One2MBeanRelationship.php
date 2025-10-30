@@ -67,9 +67,9 @@ class One2MBeanRelationship extends One2MRelationship
      */
     public static function buildLinkFields(SpiceDictionaryRelationship $relationship, string $definitionId): array
     {
-        $selfReference = $relationship->relationship->lhs_sysdictionarydefinition_id == $relationship->relationship->rhs_sysdictionarydefinition_id;
+        $isSidesDictionaryIdentical = $relationship->relationship->lhs_sysdictionarydefinition_id == $relationship->relationship->rhs_sysdictionarydefinition_id;
 
-        $forSide = $selfReference ? 'both' : Relationship::getDefinitionSide($relationship, $definitionId);
+        $forSide = $isSidesDictionaryIdentical ? 'both' : Relationship::getDefinitionSide($relationship, $definitionId);
 
         $fields = [];
 

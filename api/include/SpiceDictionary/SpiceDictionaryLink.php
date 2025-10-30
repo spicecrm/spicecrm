@@ -250,14 +250,6 @@ class SpiceDictionaryLink
     }
 
     /**
-     * @return bool true if LHSModule == RHSModule
-     */
-    protected function is_self_relationship()
-    {
-        return $this->relationship->isSelfReferencing();
-    }
-
-    /**
      * @return bool true if this link represents a relationship where the parent could be one of multiple modules. (ex. Activities parent)
      */
     public function isParentRelationship()

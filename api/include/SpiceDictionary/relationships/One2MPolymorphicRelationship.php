@@ -30,7 +30,6 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
         $this->def = $this->buildRelationshipDef($relationship);
         $this->lhsLink = $this->def['lhs_linkname'];
         $this->rhsLink = $this->def['rhs_linkname'];
-        $this->self_referencing = $relationship['rhs_sysdictionarydefinition_id'] == $relationship['lhs_sysdictionarydefinition_id'];
     }
 
     /**
