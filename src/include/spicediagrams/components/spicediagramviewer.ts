@@ -15,7 +15,8 @@ import {BpmnSVGAttributesI} from "../interfaces/spicediagrams.interfaces";
 @Component({
     selector: 'spice-diagram-viewer',
     templateUrl: '../templates/spicediagramviewer.html',
-    standalone: false
+    standalone: false,
+    host: {class: 'slds-grid slds-grid--align-center'}
 })
 export class SpiceDiagramViewer implements OnChanges, AfterViewInit {
     /**
@@ -65,7 +66,6 @@ export class SpiceDiagramViewer implements OnChanges, AfterViewInit {
         const svgString = atob(this.svg().replace('data:image/svg+xml;base64,', ''));
         const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
         const svgElement = svgDoc.getElementsByTagName('svg')[0];
-        const viewBox = svgElement.viewBox.baseVal;
 
         this.svgAttributes.set({
             height: svgElement.getAttribute('height'),
