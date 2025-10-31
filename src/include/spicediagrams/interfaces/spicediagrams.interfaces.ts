@@ -48,6 +48,7 @@ export interface DiagramItemChangeI {
  * bpmn-js diagram element structure
  */
 export interface BpmnElementI {
+    id: string,
     type: 'bpmn:IntermediateThrowEvent' | 'bpmn:EndEvent' | 'bpmn:StartEvent' | 'bpmn:ExclusiveGateway' | 'bpmn:EventBasedGateway' | 'bpmn:TextAnnotation' | 'label';
     source: BpmnElementI,
     target: BpmnElementI,
@@ -82,4 +83,10 @@ export interface BpmnEventI {
         newShape: BpmnElementI,
     }
 
+}
+
+export interface BpmnSVGAttributesI {
+    viewBox: string;
+    width: string;
+    height: string;
 }
