@@ -221,8 +221,26 @@ export class SpiceDiagramService implements OnDestroy {
             }).then(xml => {
                 if (!xml) return;
             this.bpmnJS.saveSVG().then(data => {
-                const svg = 'data:image/svg+xml;base64,' + btoa(data.svg);
-                this.diagramData.set({xml, svg})
+
+                const parser = new DOMParser();
+                const svgDoc = parser.parseFromString(data.svg, 'image/svg+xml');
+
+                const allElements = this.bpmnJS.get('elementRegistry').filter((e: BpmnElementI) => !!e.businessObject?.$attrs?.taskId && e.type != 'label');
+
+                allElements.forEach((element: BpmnElementI) => {
+
+                    const svgElement = svgDoc.querySelector(`g[data-element-id="${element.id}"]`);
+
+                    if (svgElement) {
+                        svgElement.setAttribute('data-task-id', element.businessObject.$attrs.taskId);
+                    }
+                });
+
+                const newSvgString = new XMLSerializer().serializeToString(svgDoc);
+
+                const svg = 'data:image/svg+xml;base64,' + btoa(newSvgString);
+
+                this.diagramData.set({xml, svg});
             });
         });
     }
@@ -497,6 +515,8 @@ export class SpiceDiagramService implements OnDestroy {
      * @private
      */
     private updateItemDisplayLabels(event: BpmnEventI) {
+
+        if (!event.context.newLabel) return;
 
         const isConnection = event.context.element.businessObject.$type == 'bpmn:SequenceFlow';
 
