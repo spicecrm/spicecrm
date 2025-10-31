@@ -1,13 +1,19 @@
 import {NgModule} from '@angular/core';
 import {SpiceDiagram} from "./components/spicediagram";
+import {SpiceDiagramViewer} from "./components/spicediagramviewer";
+import {DirectivesModule} from "../../directives/directives";
 
 @NgModule({
-    imports: [],
+    imports: [
+        DirectivesModule
+    ],
     exports: [
-        SpiceDiagram
+        SpiceDiagram,
+        SpiceDiagramViewer
     ],
     declarations: [
-        SpiceDiagram
+        SpiceDiagram,
+        SpiceDiagramViewer
     ],
     providers: [],
 })
