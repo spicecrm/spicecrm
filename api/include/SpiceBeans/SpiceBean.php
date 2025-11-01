@@ -2206,7 +2206,7 @@ class SpiceBean
      * @param bool $encode
      * @return string
      */
-    public function convertField($fieldvalue, $fieldDef, bool $encode = false): string
+    public function convertField($fieldvalue, $fieldDef, bool $encode = false): string|null
     {
         if (empty($fieldvalue)) return $fieldvalue;
 
@@ -3097,11 +3097,12 @@ class SpiceBean
 
         $dupRet = [];
         foreach ($duplicates['records'] as $duplicate) {
-            $seed = BeanFactory::getBean($this->_module, $duplicate);
-            if ($seed) {
-                $dupRet[] = $seed;
-            } else {
-                $duplicates['count']--;
+            if($seed = BeanFactory::getBean($this->_module, $duplicate, ['relationships' => false])){
+                if ($seed) {
+                    $dupRet[] = $seed;
+                } else {
+                    $duplicates['count']--;
+                }
             }
         }
         return ['count' => $duplicates['count'], 'records' => $dupRet];

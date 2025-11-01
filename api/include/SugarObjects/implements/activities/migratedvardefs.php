@@ -1,7 +1,7 @@
 <?php
-
-$vardefs = [
-    'fields' => [
+//
+//$vardefs = [
+//    'fields' => [
         //=> activities
 //        'calls' => [
 //            'name' => 'calls',
@@ -53,8 +53,8 @@ $vardefs = [
 //            'source' => 'non-db',
 //            'vname' => 'LBL_LETTERS',
 //        ],
-    ],
-    'relationships' => [
+//    ],
+//    'relationships' => [
 //        strtolower($table_name) . '_calls' => [
 //            'lhs_module'=> $module, 'lhs_table'=> $table_name, 'lhs_key' => 'id',
 //            'rhs_module'=> 'Calls', 'rhs_table'=> 'calls', 'rhs_key' => 'parent_id',
@@ -91,5 +91,5 @@ $vardefs = [
 //            'relationship_type'=>'one-to-many', 'relationship_role_column'=>'parent_type',
 //            'relationship_role_column_value' => $module
 //        ]
-    ]
-];
+//    ]
+//];
