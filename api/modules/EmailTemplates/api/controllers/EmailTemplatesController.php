@@ -57,6 +57,7 @@ class EmailTemplatesController{
             'subject' => $parsedTpl['subject'],
             'body_html' => $parsedTpl['body_html'],
             'body' => $parsedTpl['body'],
+            'reply_to_addr' => $parsedTpl['reply_to_addr'],
         ]);
     }
 
