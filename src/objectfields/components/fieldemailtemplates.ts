@@ -44,6 +44,10 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
         return this.fieldconfig.body ? this.fieldconfig.body : 'body';
     }
 
+    get replytoaddrField() {
+        return this.fieldconfig.body ? this.fieldconfig.body : 'reply_to_addr';
+    }
+
     get addtocurrentquote() {
         return this.fieldconfig.addtocurrentquote == true ? true : false;
     }
@@ -111,38 +115,43 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
     public chooseTemplate(event) {
         if (this.value != '') {
             this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
-                this.backend.getRequest('module/EmailTemplates/' + this.value + '/parse/' + this.model.getFieldValue('parent_type') + '/' + this.model.getFieldValue('parent_id')).subscribe((data: any) => {
-                    // overwrite if no subject or if action confirmed
-                    if (!this.model.getField(this.subjectField)) {
-                        this.model.setField(this.subjectField, data.subject);
+                this.backend.getRequest('module/EmailTemplates/' + this.value + '/parse/' + this.model.getFieldValue('parent_type') + '/' + this.model.getFieldValue('parent_id')).subscribe({
+                    next: (data: any) => {
+                        // overwrite if no subject or if action confirmed
+                        if (!this.model.getField(this.subjectField)) {
+                            this.model.setField(this.subjectField, data.subject);
+                        }
+                        else {
+                            this.modal.confirm('LBL_OVERWRITE_SUBJECT', 'LBL_OVERWRITE_SUBJECT')
+                                .subscribe(answer => {
+                                    if (answer) {
+                                        this.model.setField(this.subjectField, data.subject);
+                                    }
+                                });
+                        }
+                        // create a new document to manage the current html string (body)
+                        let virtualDocument = document.implementation.createHTMLDocument("Virtual Document");
+                        virtualDocument.documentElement.innerHTML = this.model.getFieldValue(this.bodyField);
+
+                        let selectedEleTemp = virtualDocument.querySelectorAll("div[data-spice-temp-quote]");
+                        let selectedEleSign = virtualDocument.querySelectorAll("div[data-signature]");
+                        let selectedEleReply = virtualDocument.querySelectorAll("div[data-spice-reply-quote]");
+
+                        selectedEleTemp[0]?.parentNode.removeChild(selectedEleTemp[0]);
+
+                        let newBody = [
+                            '<div class="spicecrm_temp_quote">' + data.body_html + '</div>',
+                            selectedEleSign[0]?.outerHTML,
+                            selectedEleReply[0]?.outerHTML
+                        ].join("<p><br></p>");
+
+                        this.model.setField(this.bodyField, newBody);
+
+                        // set the reply to addr
+                        this.model.setField(this.replytoaddrField, data.reply_to_addr);
+
+                        modalRef.instance.self.destroy();
                     }
-                    else {
-                        this.modal.confirm('LBL_OVERWRITE_SUBJECT', 'LBL_OVERWRITE_SUBJECT')
-                            .subscribe(answer => {
-                                if (answer) {
-                                    this.model.setField(this.subjectField, data.subject);
-                                }
-                            });
-                    }
-                    // create a new document to manage the current html string (body)
-                    let virtualDocument = document.implementation.createHTMLDocument("Virtual Document");
-                    virtualDocument.documentElement.innerHTML = this.model.getFieldValue(this.bodyField);
-
-                    let selectedEleTemp = virtualDocument.querySelectorAll("div[data-spice-temp-quote]");
-                    let selectedEleSign = virtualDocument.querySelectorAll("div[data-signature]");
-                    let selectedEleReply = virtualDocument.querySelectorAll("div[data-spice-reply-quote]");
-
-                    selectedEleTemp[0]?.parentNode.removeChild(selectedEleTemp[0]);
-
-                    let newBody = [
-                        '<div class="spicecrm_temp_quote">' + data.body_html + '</div>',
-                        selectedEleSign[0]?.outerHTML,
-                        selectedEleReply[0]?.outerHTML
-                    ].join("<p><br></p>");
-
-                    this.model.setField(this.bodyField, newBody);
-
-                    modalRef.instance.self.destroy();
                 });
             });
         } else {
