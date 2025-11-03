@@ -351,7 +351,7 @@ class SpiceLanguagesRESTHandler
         }
 
         // build the language URL
-        $url = "https://translation.googleapis.com/language/translate/v2?key=" . $spice_config['googleapi']['languagekey'];
+        $url = "https://translation.googleapis.com/language/translate/v2?format=text&key=" . $spice_config['googleapi']['languagekey'];
 
         // build the body
         $requestBody = json_encode([
