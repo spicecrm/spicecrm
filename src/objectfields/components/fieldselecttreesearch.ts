@@ -7,11 +7,16 @@ import {language} from '../../services/language.service';
 import {backend} from "../../services/backend.service";
 import {configurationService} from "../../services/configuration.service";
 
+/**
+ * @deprecated in 2025.02.001
+ */
 @Component({
     selector: 'select-tree-search',
     templateUrl: '../templates/fieldselecttreesearch.html',
     standalone: false
 })
+
+
 export class fieldSelectTreeSearch
 {
     @Input() search:string;
