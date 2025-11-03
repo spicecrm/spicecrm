@@ -592,7 +592,9 @@ class ImapHandler extends TransportHandler
             if ( count( $bccAddresses )) $message->setBcc( $bccAddresses );
         }
 
-        if ($this->mailbox->reply_to != '') {
+        if (!empty($email->reply_to_addr)) {
+            $message->setReplyTo($email->reply_to_addr);
+        } else if ($this->mailbox->reply_to != '') {
             $message->setReplyTo($this->mailbox->reply_to);
         }
 

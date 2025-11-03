@@ -80,8 +80,8 @@ export class LeadScanBusinessCardModal implements AfterViewInit{
         public configuration: configurationService,
         @Optional() public navigationtab: navigationtab,
         public router: Router) {
-            // check if we have an API key
-            this.canScan = configuration.getCapabilityConfig('mindee').apikey;
+        // check if we have an API key
+        this.canScan = configuration.getCapabilityConfig('mindee').apikey;
     }
 
     /**
@@ -117,7 +117,7 @@ export class LeadScanBusinessCardModal implements AfterViewInit{
 
     public scan(save: boolean = true) {
         let loader = this.modal.await('LBL_PROCESSING');
-        this.backend.postRequest('common/mindee/scan/businesscard/Leads', {}, {filetype: 'image/jpeg', filedata: this.file, save: save}).subscribe({
+        this.backend.postRequest('common/mindee/scan/businesscard/Leads', {}, {filetype: 'image/jpeg', filedata: this.file, save: true}).subscribe({
             next: (res) => {
 
                 if(save) {
@@ -142,7 +142,7 @@ export class LeadScanBusinessCardModal implements AfterViewInit{
                         }
                     }
 
-                    this.model.addModel(undefined, undefined, null, null, componentconfig);
+                    this.model.edit(false, componentconfig);
                 }
 
                 // close the modal
