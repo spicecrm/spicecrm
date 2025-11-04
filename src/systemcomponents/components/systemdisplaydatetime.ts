@@ -109,6 +109,8 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
         }
     }
 
+    @Input() public specificFormat: string;
+
     /**
      * holds the components subscriptions
      *
@@ -184,8 +186,11 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
             return this.date.fromNow();
         } else {
             let formatArray = [];
-            if (this.displayDate) formatArray.push(this.userpreferences.getDateFormat());
-            if (this.displayTime) formatArray.push(this.userpreferences.getTimeFormat());
+            if (this.specificFormat) formatArray.push( this.specificFormat );
+            else {
+                if( this.displayDate ) formatArray.push( this.userpreferences.getDateFormat() );
+                if( this.displayTime ) formatArray.push( this.userpreferences.getTimeFormat() );
+            }
 
             if (moment.isMoment(this.date)) {
                 return this.date.format(formatArray.join(' '));

@@ -31,7 +31,6 @@ namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -88,7 +87,6 @@ class SpiceDictionaryDefinitionsController
     public function activateDictionaryDefinition(Request $req, Response $res, array $args): Response
     {
         $success = (new SpiceDictionaryDefinition($args['id']))->activate();
-        SpiceDictionary::getInstance()->loadDictionary();
 
         return $res->withJson($success);
     }
@@ -105,8 +103,7 @@ class SpiceDictionaryDefinitionsController
     {
         $params = $req->getQueryParams();
 
-        $success = (new SpiceDictionaryDefinition($args['id']))->deactivate($params['drop'] == '1' ? true : false);
-        SpiceDictionary::getInstance()->loadDictionary();
+        $success = (new SpiceDictionaryDefinition($args['id']))->deactivate();
 
         return $res->withJson($success);
     }
@@ -122,8 +119,6 @@ class SpiceDictionaryDefinitionsController
     public function repairDictionaryDefinition(Request $req, Response $res, array $args): Response
     {
         $sql = (new SpiceDictionaryDefinition($args['id']))->repair();
-
-        SpiceDictionary::getInstance()->loadDictionary();
 
         return $res->withJson(['success' => true, 'sql' => $sql]);
     }
@@ -153,8 +148,6 @@ class SpiceDictionaryDefinitionsController
     public function repairTemplateRelatedDictionaries(Request $req, Response $res, array $args): Response
     {
         $sql = (new SpiceDictionaryDefinition($args['id']))->repairRelatedDictionaries();
-
-        SpiceDictionary::getInstance()->loadDictionary();
 
         return $res->withJson(['success' => true, 'sql' => $sql]);
     }

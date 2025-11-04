@@ -4,7 +4,7 @@
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use DOMDocument;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\extensions\modules\TextMessageTemplates\TextMessageTemplate;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Emails\Email;
@@ -36,6 +36,8 @@ abstract class TransportHandler
     protected $logger;
     protected $incoming_settings = [];
     protected $outgoing_settings = [];
+
+    public $canSendScheduled = false;
 
     public function __construct(Mailbox $mailbox)
     {
@@ -73,6 +75,7 @@ abstract class TransportHandler
 
     public function sendMail(Email|TextMessage $email, $noSecurityCheck = false )
     {
+        try{
         $timedate = TimeDate::getInstance();
 
         if ($this->mailbox->active == false) {
@@ -130,8 +133,7 @@ abstract class TransportHandler
 
         // Check if downloadlink_attachments is enabled
         $downloadLink = "";
-        $downloadAttachmentsEnabled = $email->getFieldValue('downloadlink_attachments');
-        if ($downloadAttachmentsEnabled == 1) {
+        if ($email->downloadlink_attachments) {
             $downloadLink = $this->parseDownloadLink($email);
         }
 
@@ -146,11 +148,11 @@ abstract class TransportHandler
             $bodySource = str_replace('<head>', '<head>'.$style, $bodySource);
         }
 
-        if(strpos($email->body, '<body>') === false){
+        if(strpos($email->body, '<body') === false){
             $bodyParts[] = '<body>';
             $bodyParts[] = $header;
         } else{
-            $bodySource = str_replace('<body>', '<body>'.$header, $bodySource);
+            $bodySource = preg_replace('<body.*?>', '$0'.$header, $bodySource);
         }
 
         if(strpos($email->body, '</body>') === false){
@@ -173,12 +175,23 @@ abstract class TransportHandler
 
         $email->body = $this->parseTemplateBodyOnly($emailTemplate, $email, $html);
 
+        // cleanup the last \n for IMAP
+        $email->body = str_replace("\n", "",  $email->body);
+
         $message = $this->composeEmail($email, $noSecurityCheck);
 
         // set the date sent
         $email->date_sent = $timedate->nowDb();
-
-        return (array) $this->dispatch( $message );
+        $email->status = $email::STATUS_SENT;
+        $result = $this->dispatch( $message, $email);
+        }
+        catch (Exception $exception) {
+            $email->status = $email::STATUS_SEND_ERROR;
+            $result = new DispatchResponse(false, [
+                'errors' => $exception->getMessage(),
+            ]);
+        }
+        return (array) $result;
     }
 
     /**
@@ -275,7 +288,7 @@ abstract class TransportHandler
      * @param $message
      * @return DispatchResponse
      */
-    abstract protected function dispatch($message): DispatchResponse;
+    abstract protected function dispatch($message, $email): DispatchResponse;
 
     /**
      * checkConfiguration

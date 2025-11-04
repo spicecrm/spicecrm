@@ -1,18 +1,18 @@
 <?php
 namespace SpiceCRM\modules\ProspectLists\api\controllers;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
+use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\modules\ProspectLists\ProspectList;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\includes\TimeDate;
 
 
 class ProspectListsController
@@ -259,6 +259,26 @@ class ProspectListsController
             $prospects[] = $row['name'];
         }
         return $res->withJson($prospects);
+    }
+
+    /**
+     * Retrieves the last modification date of a prospect list.
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function getLastMemberModification(Request $req, Response $res, $args): Response
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $modificationInfo = $db->fetchOne("SELECT date_modified, modified_user_id FROM prospect_lists_prospects WHERE prospect_list_id = '{$args['id']}' AND date_modified = (SELECT MAX(date_modified) FROM prospect_lists_prospects WHERE prospect_list_id = '{$args['id']}')");
+
+        $modifiedBy = BeanFactory::getBean('Users', $modificationInfo['modified_user_id']);
+
+        return $res->withJson(['date_modified' => $modificationInfo['date_modified'], 'modified_by' => $modifiedBy]);
     }
 }
 

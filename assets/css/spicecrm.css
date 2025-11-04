@@ -759,6 +759,11 @@ input[type="submit"] {
     min-height: 0;
 }
 
+.slds-icon-text-superlight{
+    /*! @css-var-fallback fill */
+    --slds-c-icon-color-foreground:var(--color-gray-4, #ecebea);
+}
+
 .spice-sticky-top, .spice-sticky-bottom , .spice-sticky-left , .spice-sticky-right {
     position: sticky;
     z-index: 1;
@@ -778,4 +783,10 @@ input[type="submit"] {
 
 .spice-sticky-right {
     right: 0;
+}
+
+.spice-select-disabled {
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }

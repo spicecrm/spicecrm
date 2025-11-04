@@ -4,163 +4,15 @@
 namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\utils\SpiceUtils;
 
-/**
- * @deprecated
- */
+
 class MigrateController
 {
-
-    /**
-     * move dom keys to table, create corresponding labels
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     * @throws \Exception
-     */
-    public function migrateLegacyDoms(Request $req, Response $res, array $args): Response
-    {
-        ini_set('max_execution_time', 300);
-        $appListStrings = SpiceUtils::returnAppListStringsLanguage('en_us');
-        $db = DBManagerFactory::getInstance();
-
-        $doms = [];
-        $sqls = [];
-        // loop through array and only consider associative arrays
-        foreach ($appListStrings as $listName => $stringValues) {
-            if (is_array($stringValues)) {
-                $sysdomainfieldvalidation_id = SpiceUtils::createGuid();
-                // check if entry is already present in the table
-                $checkInsert = true;
-                $checkQ = "SELECT * FROM sysdomainfieldvalidations WHERE name ='{$listName}' AND deleted=0";
-                if ($checkRow = $db->fetchOne($checkQ)) {
-                    $checkInsert = false;
-                    $sysdomainfieldvalidation_id = $checkRow['id'];
-                }
-
-                $sequence = 0;
-                $doms[$listName]['id'] = $sysdomainfieldvalidation_id;
-                $doms[$listName]['name'] = $listName;
-                $doms[$listName]['order_by'] = 'sequence';
-                $doms[$listName]['sort_flag'] = 'asc';
-                $doms[$listName]['status'] = 'a';
-                $doms[$listName]['deleted'] = 0;
-
-                if ($checkInsert) {
-                    $insertData = [
-                        'id' => $sysdomainfieldvalidation_id,
-                        'name' => $doms[$listName]['name'],
-                        'validation_type' => 'options',
-                        'order_by' => $doms[$listName]['order_by'],
-                        'sort_flag' => $doms[$listName]['sort_flag'],
-                        'status' => $doms[$listName]['status'],
-                        'deleted' => $doms[$listName]['deleted'],
-                    ];
-//                    $sqls[] = $db->insertQuery('sysdomainfieldvalidations', $insertData, false);
-                    $sqls[] = $db->query("INSERT INTO sysdomainfieldvalidations (" . implode(',', array_keys($insertData)) . ") VALUES('" . implode("','", $insertData) . "')");
-
-                    // create sysdomaindefinition
-                    $sysdomaindefinition_id = SpiceUtils::createGuid();
-                    $insertData = [
-                        'id' => $sysdomaindefinition_id,
-                        'name' => self::cleanNameForDomainDefinition($doms[$listName]['name']),
-                        'fieldtype' => 'enum',
-                        'status' => $doms[$listName]['status'],
-                        'deleted' => $doms[$listName]['deleted'],
-                    ];
-                    $sqls[] = $db->query("INSERT INTO sysdomaindefinitions (" . implode(',', array_keys($insertData)) . ") VALUES('" . implode("','", $insertData) . "')");
-
-                    // create sysdomainfields
-                    $parentVardefs = self::getVardefsUsingDom($doms[$listName]['name']);
-                    $insertData = [
-                        'id' => SpiceUtils::createGuid(),
-                        'name' => '{sysdictionaryitems.name}',
-                        'sysdomaindefinition_id' => $sysdomaindefinition_id,
-                        'sysdomainfieldvalidation_id' => $sysdomainfieldvalidation_id,
-                        'sequence' => 0,
-                        'dbtype' => ($parentVardefs[0]['dbtype'] ?: 'varchar'),
-                        'fieldtype' => ($parentVardefs[0]['type'] ?: 'enum'),
-                        'len' => ($parentVardefs[0]['len'] ?: 99),
-                        'label' => ($parentVardefs[0]['vname'] ?: ''),
-                        'status' => $doms[$listName]['status'],
-                        'deleted' => $doms[$listName]['deleted'],
-                    ];
-                    if (isset($parentVardefs[0]['default'])) {
-                        $insertData['defaultvalue'] = $parentVardefs[0]['default'];
-                    }
-                    if (isset($parentVardefs[0]['required'])) {
-                        $insertData['required'] = $parentVardefs[0]['required'];
-                    }
-                    $sqls[] = $db->query("INSERT INTO sysdomainfields (" . implode(',', array_keys($insertData)) . ") VALUES('" . implode("','", $insertData) . "')");
-
-                }
-
-                foreach ($stringValues as $key => $value) {
-                    $doms[$listName]['validations'][$key]['id'] = SpiceUtils::createGuid();
-                    $doms[$listName]['validations'][$key]['valuetype'] = (is_string($value) ? 'string' : 'integer');
-                    $doms[$listName]['validations'][$key]['enumvalue'] = $key;
-                    $doms[$listName]['validations'][$key]['label'] = 'LBL_' . ($value === '' ? 'BLANK' : strtoupper(str_replace([' / ', '/ ', '/', ' ', '-', '&', '(', ')'], ['_', '_', '_', '_', '_', '', '', ''], $value)));
-                    $doms[$listName]['validations'][$key]['status'] = 'a';
-                    $doms[$listName]['validations'][$key]['deleted'] = 0;
-                    $doms[$listName]['validations'][$key]['sequence'] = $sequence;
-                    $doms[$listName]['validations'][$key]['sysdomainfieldvalidation_id'] = $sysdomainfieldvalidation_id;
-                    $sequence++;
-
-                    // check if entry is already present in the table
-                    $checkInsertV = true;
-                    if (!empty($checkCurrentId)) {
-                        $checkQV = "SELECT * FROM sysdomainfieldvalidationvalues WHERE sysdomainfieldvalidation_id ='{$checkCurrentValidationId}' AND label = '{$doms[$listName]['validations'][$key]['label']}' AND deleted=0";
-                        $checkCurrentIdV = null;
-                        if ($checkRowV = $db->fetchOne($checkQ)) {
-                            $checkInsertV = false;
-                        }
-                    }
-
-                    if ($checkInsertV) {
-                        $sysdomainfieldvalidationvalue_id = SpiceUtils::createGuid();
-                        $insertData = [
-                            'id' => $sysdomainfieldvalidationvalue_id,
-                            'sysdomainfieldvalidation_id' => $sysdomainfieldvalidation_id,
-                            'enumvalue' => $doms[$listName]['validations'][$key]['enumvalue'],
-                            'sequence' => $doms[$listName]['validations'][$key]['sequence'],
-                            'label' => $doms[$listName]['validations'][$key]['label'],
-                            'status' => $doms[$listName]['validations'][$key]['status'],
-                            'deleted' => $doms[$listName]['validations'][$key]['deleted'],
-                            'valuetype' => $doms[$listName]['validations'][$key]['valuetype']
-                        ];
-//                        $sqls[] = $db->insertQuery('sysdomainfieldvalidationvalues', $insertData, false);
-                        $sqls[] = "INSERT INTO sysdomainfieldvalidationvalues (" . implode(',', array_keys($insertData)) . ") VALUES('" . implode("','", $insertData) . "')";
-                    }
-                }
-
-            }
-        }
-
-        // do inserts
-        foreach ($sqls as $sql) {
-            if (!empty($sql))
-                $db->query($sql);
-        }
-        return $res->withJson($sqls);
-    }
-
-    /**
-     * @deprecated
-     *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
-     */
     public function migrateLegacyDomTranslations(Request $req, Response $res, array $args): Response
     {
         $sqls = [];
@@ -253,7 +105,6 @@ class MigrateController
     }
 
     /**
-     * @deprecated
      * migrate all vardefs id fieldefinitions to table
      * @param Request $req
      * @param Response $res
@@ -384,43 +235,6 @@ die(print_r(implode("\n", $sqlList), true));
         return $res->withJson($sqlList);
     }
 
-
-    /**
-     * @deprecated
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     * @throws \Exception
-     */
-    public function repairCache(Request $req, Response $res, array $args): Response
-    {
-        $db = DBManagerFactory::getInstance();
-        $execute = false;
-        VardefManager::clearVardef();
-        if (SpiceDictionaryVardefs::isDbManaged()) {
-            SpiceDictionaryVardefs::loadDictionaries('all');
-            // store processed dictionaries
-            $storedDicts = [];
-            // save cache to DB
-            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dict) {
-                if (!in_array($dict['id'], $storedDicts)) {
-                    SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
-                    $storedDicts[] = $dict['id'];
-                }
-            }
-        }
-        return $res->withJson([]);
-    }
-
-    /**
-     * @deprecated
-     *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     */
     public function getDictionary(Request $req, Response $res, array $args): Response
     {
         return $res->withJson(SpiceDictionaryVardefs::loadDictionaryModule($args['module']));
@@ -438,18 +252,18 @@ die(print_r(implode("\n", $sqlList), true));
      * return first encountered use of the dom
      * @param $dom
      * @return array
+     * @throws \Exception
      */
-    public function getVardefsUsingDom($dom)
+    public function getVardefsUsingDom($dom): array
     {
-        $vardefs = [];
-        $db = DBManagerFactory::getInstance();
-        $q = "SELECT * FROM sysdictionaryfields WHERE fielddefinition like '%{$dom}%'";
-        if ($results = $db->limitQuery($q, 0, 1)) {
-            while ($row = $db->fetchByAssoc($results)) {
-                $vardefs[] = json_decode(html_entity_decode($row['fielddefinition']), true);
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionary) {
+            foreach ($dictionary['fields'] as $field) {
+                if ($field['options'] != $dom) continue;
+                return $field;
             }
         }
-        return $vardefs;
+
+        return [];
     }
 
     public static function cleanNameForDomainDefinition($dom)

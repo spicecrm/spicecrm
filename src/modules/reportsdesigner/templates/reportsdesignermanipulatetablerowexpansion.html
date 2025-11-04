@@ -45,12 +45,16 @@
                     </div>
                 </div>
                 <div class="slds-form-element slds-m-top--x-small slds-has-divider--top">
-                    <label class="slds-form-element__label"><system-label label="LBL_CUSTOM_FUNCTION"></system-label></label>
+                    <label class="slds-form-element__label"><system-label label="LBL_CUSTOM_SQL_FUNCTION"></system-label>
+                        <system-icon-help-text helpText="HLP_CUSTOM_SQL_FUNCTION" />
+                    </label>
                     <system-input-base64 [(ngModel)]="listItem.customsqlfunction"></system-input-base64>
                 </div>
                 <div class="slds-grid slds-has-divider--top">
                     <div class="slds-form-element slds-size--1-of-2">
-                        <label class="slds-form-element__label"><system-label label="LBL_STORE"></system-label></label>
+                        <label class="slds-form-element__label"><system-label label="LBL_STORE_IN_VARIABLE"></system-label>
+                            <system-icon-help-text helpText="HLP_STORE_IN_VARIABLE"/>
+                        </label>
                         <div class="slds-form-element__control">
                             <input type="text" [(ngModel)]="listItem.assigntovalue" class="slds-input">
                         </div>
@@ -63,7 +67,9 @@
                     </div>
                 </div>
                 <div class="slds-form-element">
-                    <label class="slds-form-element__label"><system-label label="LBL_FORMULA"></system-label></label>
+                    <label class="slds-form-element__label"><system-label label="LBL_FORMULA_ON_RESULTS_PHP"></system-label>
+                        <system-icon-help-text helpText="HLP_FORMULA_ON_RESULTS_PHP" />
+                    </label>
                     <system-input-base64 [(ngModel)]="listItem.formulavalue"></system-input-base64>
                 </div>
                 <div class="slds-grid slds-has-divider--top">

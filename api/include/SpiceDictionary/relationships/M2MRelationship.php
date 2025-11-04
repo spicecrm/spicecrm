@@ -1,0 +1,831 @@
+<?php
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
+
+namespace SpiceCRM\includes\SpiceDictionary\relationships;
+
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
+use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
+use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\SpiceACL\SpiceACL;
+
+/**
+ * Represents a many to many relationship that is table based.
+ * @api
+ */
+class M2MRelationship extends Relationship
+{
+    var $type = "many-to-many";
+
+    const REL_ID = "relid";
+
+    /**
+     * build relationship definition
+     * @param array $relationship
+     * @return array[]
+     * @throws \Exception
+     */
+    public function buildRelationshipDef(array $relationship): array
+    {
+        $relationship = new SpiceDictionaryRelationship($relationship['id']);
+
+        try {
+            $leftDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
+            $rightDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
+            $lhsField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($leftDefinition->name, $relationship->relationship->lhs_sysdictionaryitem_id);
+            $rhsField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($rightDefinition->name, $relationship->relationship->rhs_sysdictionaryitem_id);
+            $joinDefinition = new SpiceDictionaryDefinition($relationship->relationship->join_sysdictionarydefinition_id);
+            $joinLeftField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($joinDefinition->name, $relationship->relationship->join_lhs_sysdictionaryitem_id);
+            $joinRightField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($joinDefinition->name, $relationship->relationship->join_rhs_sysdictionaryitem_id);
+
+        } catch (\Exception $e) {
+            return [];
+        }
+
+        $joinRoleColumn = null;
+
+        if(!empty($relationship->relationship->relationship_role_column)){
+            $joinField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($joinDefinition->name, $relationship->relationship->relationship_role_column);
+            $joinRoleColumn =  $joinField->name;
+        }
+
+        return [
+            'id' => $relationship->id,
+            'relationship_name' => $relationship->relationship->relationship_name,
+            'relationship_type' => $this->type,
+            'lhs_table' => $leftDefinition->tablename,
+            'lhs_module' => $leftDefinition->getModuleName(),
+            'lhs_key' => $lhsField->name,
+            'rhs_table' => $rightDefinition->tablename,
+            'rhs_module' => $rightDefinition->getModuleName(),
+            'rhs_key' => $rhsField->name,
+            'join_table' => $joinDefinition->tablename,
+            'join_key_lhs' => $joinLeftField->name,
+            'join_key_rhs' => $joinRightField->name,
+            'deleted' => 0,
+            'relationship_role_column' => $joinRoleColumn,
+            'relationship_role_column_value' => $relationship->relationship->relationship_role_column_value,
+        ];
+    }
+
+    /**
+     * build link fields
+     * @param SpiceDictionaryRelationship $relationship
+     * @param string $definitionId
+     * @return array[]
+     * @throws \Exception
+     */
+    public static function buildLinkFields(SpiceDictionaryRelationship $relationship, string $definitionId): array
+    {
+        $forSide = Relationship::getDefinitionSide($relationship, $definitionId);
+
+        try {
+            $forSideDefinition = new SpiceDictionaryDefinition($relationship->relationship->{"{$forSide}_sysdictionarydefinition_id"});
+            $oppositeSideDefinition = new SpiceDictionaryDefinition($relationship->relationship->{($forSide == 'rhs' ? 'lhs' : 'rhs') . "_sysdictionarydefinition_id"});
+        } catch (\Exception $e) {
+            return [];
+        }
+
+        # return an empty array if the side does not have a link field
+        if (($forSide == 'lhs' && !$relationship->relationship->lhs_linkname) || ($forSide == 'rhs' && !$relationship->relationship->rhs_linkname)) {
+            return [];
+        }
+
+        $generateSideFieldsFn = function ($forSide) use ($oppositeSideDefinition, $relationship, $forSideDefinition) {
+            $fields = [];
+
+            $linkField = [
+                'name' => $relationship->relationship->{"{$forSide}_linkname"},
+                'type' => 'link',
+                'relationship' => $relationship->relationship->relationship_name,
+                'source' => 'non-db',
+                'module' => $oppositeSideDefinition->getModuleName(),
+                'vname' => $relationship->relationship->{"{$forSide}_linklabel"},
+                'duplicate_merge' => $relationship->relationship->{"{$forSide}_duplicatemerge"},
+                'duplicate_linked' => $relationship->relationship->{"{$forSide}_duplicatelinked"},
+                'duplicate_m2m_records' => $relationship->relationship->{"{$forSide}_clone_join_table_record_on_duplicate"}
+            ];
+
+            if($relationship->relationship->{"{$forSide}_linkdefault"}){
+                $linkField['default'] = true;
+            }
+
+            # add side for self-referencing
+            if($forSideDefinition->id == $oppositeSideDefinition->id){
+                $linkField['side'] = $forSide == 'rhs' ? 'right' : 'left';
+            }
+
+            # add join table fields
+            $joinTableRoleFields = $relationship->getJoinTableFields($forSideDefinition->id);
+            $joinDefinition = new SpiceDictionaryDefinition($relationship->relationship->join_sysdictionarydefinition_id);
+
+            foreach ($joinTableRoleFields as $field) {
+
+                $joinField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($joinDefinition->name, $field['sysdictionaryitem_id']);
+
+                if (!$joinField) continue;
+
+                unset($joinField->sysdictionaryitem_id,$joinField->dbtype);
+
+                $joinField->name = $field['map_to_fieldname'];
+                $joinField->source = 'non-db';
+                $joinField->required = 0;
+
+                $fields[$joinField->name] = (array) $joinField;
+            }
+
+            # add the mapping fields to the link to the opposite side
+            $joinTableRoleFields = $relationship->getJoinTableFields($oppositeSideDefinition->id);
+
+            $linkField['rel_fields'] = [];
+
+            foreach ($joinTableRoleFields as $field) {
+
+                $joinTableRoleField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($joinDefinition->name, $field['sysdictionaryitem_id']);
+
+                $linkField['rel_fields'][$joinTableRoleField->name] = [
+                    'map' => $field['map_to_fieldname']
+                ];
+            }
+
+            $fields[$relationship->relationship->{"{$forSide}_linkname"}] = $linkField;
+
+            return $fields;
+        };
+
+        $fields = $generateSideFieldsFn($forSide);
+
+        if ($forSideDefinition->id == $oppositeSideDefinition->id) {
+            $fields = array_merge($fields, $generateSideFieldsFn($forSide == 'lhs' ? 'rhs' : 'lhs'));
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Find the link entry for a particular relationship and module.
+     *
+     * @param $module
+     * @param $side
+     * @return array|null
+     * @throws \Exception
+     */
+    public function getLinkedDefForModuleByRelationship($module, $side): ?array
+    {
+        $results = $this->getLinkFieldForRelationship($module);
+
+        # Only a single link was found
+        if( isset($results['name'])){
+            return $results;
+
+        } else if( sizeof($results) > 1 ) { # Multiple links with the same relationship name
+
+            LoggerManager::getLogger()->error("Warning: Multiple links found for relationship {$this->name} within module {$module}");
+            return $this->getMostAppropriateLinkedDefinition($results, $side);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Find the most 'appropriate' link entry for a relationship/module in which there are multiple link entries with the
+     * same relationship name.
+     * @param $links
+     * @param $side
+     * @return array
+     */
+    protected function getMostAppropriateLinkedDefinition($links, $side): array
+    {
+        # The priority is to find a link name that matches the relationship name
+        foreach($links as $link) {
+            if( isset($link['name']) && $link['name'] == $this->name )
+            {
+                return $link;
+            }
+        }
+        # Next would be a relationship that has a side defined
+        foreach($links as $link) {
+            if( isset($link['id_name'])) {
+                return $link;
+            }
+        }
+
+        # make sure to process the correct link side for m-2-m relationship in self referenced module
+        foreach($links as $link) {
+            if( isset($link['side']) && $side == $link['side']) {
+                return $link;
+            }
+        }
+
+        # Unable to find an appropriate link, guess and use the first one
+        LoggerManager::getLogger()->error("Unable to determine best appropriate link for relationship {$this->name}");
+
+        return $links[0];
+    }
+
+    /**
+     * Adds a relationship between two beans
+     * @param  $lhs SpiceBean the left side bean to add to the relationship.
+     * @param  $rhs SpiceBean right side bean to add to the relationship.
+     * @param  $additionalFields array key => value pairs of fields to save on the relationship
+     * @return boolean true if successful
+     * @throws \Exception
+     */
+    public function add($lhs, $rhs, $additionalFields = []): bool
+    {
+        $lhsLinkName = $this->lhsLink;
+        $rhsLinkName = $this->rhsLink;
+
+        if ($lhsLinkName && empty($lhs->$lhsLinkName) && !$lhs->load_relationship($lhsLinkName))
+        {
+            $lhsClass = get_class($lhs);
+            LoggerManager::getLogger()->fatal('relationships', "could not load LHS $lhsLinkName in $lhsClass in M2M");
+            return false;
+        }
+        if ($rhsLinkName && empty($rhs->$rhsLinkName) && !$rhs->load_relationship($rhsLinkName))
+        {
+            $rhsClass = get_class($rhs);
+            LoggerManager::getLogger()->fatal('relationships', "could not load RHS $rhsLinkName in $rhsClass in M2M");
+            return false;
+        }
+
+        if($lhsLinkName) $this->callBeforeAdd($lhs, $rhs, $lhsLinkName);
+        if($rhsLinkName) $this->callBeforeAdd($rhs, $lhs, $rhsLinkName);
+
+        //Many to many has no additional logic, so just add a new row to the table and notify the beans.
+        $dataToInsert = $this->getRowToInsert($lhs, $rhs, $additionalFields);
+
+        $this->addRow($dataToInsert);
+        $this->afterRowAdd($dataToInsert, $lhs, $rhs, $additionalFields);
+
+        return true;
+    }
+
+    /**
+     * after adding the row to the database.
+     * add the beans to the link instance.
+     * call the after-add logic hook.
+     * reindex the beans.
+     * @param array $dataToInsert
+     * @param SpiceBean $lhs
+     * @param SpiceBean $rhs
+     * @param array $additionalFields
+     * @return void
+     */
+    protected function afterRowAdd(array $dataToInsert, SpiceBean $lhs, SpiceBean $rhs, array $additionalFields = []): void
+    {
+        $lhsLinkName = $this->lhsLink;
+        $rhsLinkName = $this->rhsLink;
+
+        if($lhsLinkName) $lhs->$lhsLinkName->addBean($rhs);
+        if($rhsLinkName) $rhs->$rhsLinkName->addBean($lhs);
+
+        if($lhsLinkName) $this->callAfterAdd($lhs, $rhs, $lhsLinkName, $dataToInsert);
+        if($rhsLinkName) $this->callAfterAdd($rhs, $lhs, $rhsLinkName, $dataToInsert);
+
+        $this->reindexBeans($lhs, $rhs);
+    }
+
+    /**
+     * reindex sides beans
+     * @param SpiceBean $lhs
+     * @param SpiceBean $rhs
+     * @return void
+     */
+    private function reindexBeans(SpiceBean $lhs, SpiceBean $rhs): void
+    {
+        SpiceFTSHandler::getInstance()->indexBean($lhs);
+        SpiceFTSHandler::getInstance()->indexBean($rhs);
+    }
+
+    protected function getRowToInsert($lhs, $rhs, $additionalFields = [])
+    {
+        // 20reasons modification for mobile Client to get created relationship ID
+        $this->relid = SpiceUtils::createGuid();
+        $row = [
+            "id" => $this->relid,
+            $this->def['join_key_lhs'] => $lhs->id,
+            $this->def['join_key_rhs'] => $rhs->id,
+            'deleted' => 0,
+        ];
+
+
+        if (!empty($this->def['relationship_role_column']) && !empty($this->def['relationship_role_column_value']) && !$this->ignore_role_filter )
+        {
+            $row[$this->relationship_role_column] = $this->relationship_role_column_value;
+        }
+
+        if (!empty($this->def['fields']))
+        {
+            foreach($this->def['fields'] as $fieldDef)
+            {
+                if (!empty($fieldDef['name']) && !isset($row[$fieldDef['name']]) && !empty($fieldDef['default']))
+                {
+                    $row[$fieldDef['name']] = $fieldDef['default'];
+                }
+            }
+        }
+        if (!empty($additionalFields))
+        {
+            $row = array_merge($row, $additionalFields);
+        }
+
+        $row['date_modified'] = TimeDate::getInstance()->nowDb();
+        $row['modified_user_id'] = AuthenticationController::getInstance()->getCurrentUser()->id;
+
+        return $row;
+    }
+
+    public function remove($lhs, $rhs, ?string $relId = null)
+    {
+        if(!($lhs instanceof SpiceBean) || !($rhs instanceof SpiceBean)) {
+            LoggerManager::getLogger()->fatal('relationships', "LHS and RHS must be beans in M2M");
+            return false;
+        }
+
+        $lhsLinkName = $this->lhsLink;
+        $rhsLinkName = $this->rhsLink;
+
+        if (empty($lhs->$lhsLinkName) && !$lhs->load_relationship($lhsLinkName))
+        {
+            LoggerManager::getLogger()->fatal('relationships',"could not load LHS $lhsLinkName in M2M");
+            return false;
+        }
+        if (empty($rhs->$rhsLinkName) && !$rhs->load_relationship($rhsLinkName))
+        {
+            LoggerManager::getLogger()->fatal('relationships',"could not load RHS $rhsLinkName in M2M");
+            return false;
+        }
+
+        if (empty($_SESSION['disable_workflow']) || $_SESSION['disable_workflow'] != "Yes")
+        {
+            if ($lhs->$lhsLinkName instanceof SpiceDictionaryLink)
+            {
+                $lhs->$lhsLinkName->load();
+                $this->callBeforeDelete($lhs, $rhs, $lhsLinkName);
+            }
+
+            if ($rhs->$rhsLinkName instanceof SpiceDictionaryLink)
+            {
+                $rhs->$rhsLinkName->load();
+                $this->callBeforeDelete($rhs, $lhs, $rhsLinkName);
+            }
+        }
+
+        if (!empty($relId)) {
+            $dataToRemove = [
+                'id' => $relId
+            ];
+        } else {
+            $dataToRemove = [
+                $this->def['join_key_lhs'] => $lhs->id,
+                $this->def['join_key_rhs'] => $rhs->id
+            ];
+        }
+
+        $this->removeRow($dataToRemove);
+        $this->afterRowRemove($lhs, $rhs);
+
+        return true;
+    }
+
+    /**
+     * after removing the row from the database.
+     * reload the rows from the link instance.
+     * call the after-remove logic hook.
+     * @param SpiceBean $lhs
+     * @param SpiceBean $rhs
+     * @return void
+     */
+    protected function afterRowRemove(SpiceBean $lhs, SpiceBean $rhs): void
+    {
+        $lhsLinkName = $this->lhsLink;
+        $rhsLinkName = $this->rhsLink;
+
+        if (empty($_SESSION['disable_workflow']) || $_SESSION['disable_workflow'] != "Yes") {
+
+            if ($lhs->$lhsLinkName instanceof SpiceDictionaryLink) {
+                $lhs->$lhsLinkName->load();
+                $this->callAfterDelete($lhs, $rhs, $lhsLinkName);
+            }
+
+            if ($rhs->$rhsLinkName instanceof SpiceDictionaryLink) {
+                $rhs->$rhsLinkName->load();
+                $this->callAfterDelete($rhs, $lhs, $rhsLinkName);
+            }
+        }
+    }
+
+    /**
+     * load the relationship rows for this link
+     * @param  $link SpiceDictionaryLink loads the relationship for this link.
+     * @return array[]
+     * @throws DatabaseException
+     */
+    public function load($link, $params = []): array
+    {
+        $db = DBManagerFactory::getInstance();
+        // for elasticsearch results have to be returned without paging
+        $rangeParams = $params;
+
+        if (!empty($params['searchterm'])) {
+            $rangeParams['limit'] = 0;
+            $rangeParams['offset'] = 0;
+        }
+
+        $query = $this->getQuery($link, $rangeParams);
+        $result = $db->query($query);
+        $rows = [];
+        $idField = $link->getSide() == REL_LHS ? $this->def['join_key_rhs'] : $this->def['join_key_lhs'];
+        while ($row = $db->fetchByAssoc($result))
+        {
+            if (empty($row['id']) && empty($row[$idField]))
+                continue;
+            $id = empty($row['id']) ? $row[$idField] : $row['id'];
+            $rows[$id] = $row;
+        }
+
+        if (!empty($params['searchterm'])) {
+            if(isset($rangeParams['limit'])) $params['limit'] = $rangeParams['limit'];
+            if(isset($rangeParams['offset'])) $params['offset'] = $rangeParams['offset'];
+            $rows = $this->getResultsFilteredByFTS($link->getRelatedModuleName(), $params, $rows);
+
+            $this->count = count($rows);
+            if($params['limit']===0){
+                $rows = array_slice($rows, $params['offset']);
+            }
+            else{
+                $rows = array_slice($rows, $params['offset'], $params['limit']);
+            }
+        } else {
+            $this->count = count($rows);
+        }
+
+        return [
+            "rows" => $rows
+        ];
+    }
+
+    protected function linkIsLHS($link) {
+        return $link->getSide() == REL_LHS;
+    }
+
+    public function getQuery($link, $params = [])
+    {
+        $rel_table = $this->getRelationshipTable();
+
+        $joinRelated = false;
+        if ($this->linkIsLHS($link)) {
+            $knownKey = $this->def['join_key_lhs'];
+            $targetKey = $this->def['join_key_rhs'];
+            $relatedSeed = BeanFactory::getBean($this->getRHSModule());
+            $relatedSeedKey = $this->def['rhs_key'];
+            $seedFocusKey = $this->def['lhs_key'];
+            if (!empty($params['where'])) {
+                $whereTable = (empty($params['right_join_table_alias']) ? $relatedSeed->_tablename : $params['right_join_table_alias']);
+            }
+            $relatedJoin = " INNER JOIN " . $this->def['rhs_table'] . ' ON ' . $this->def['rhs_table'] . '.' . $this->def['rhs_key'] . ' = ' . $rel_table . '.' . $this->def['join_key_rhs'];
+        }
+        else
+        {
+            $knownKey = $this->def['join_key_rhs'];
+            $targetKey = $this->def['join_key_lhs'];
+            $relatedSeed = BeanFactory::getBean($this->getLHSModule());
+            $relatedSeedKey = $this->def['lhs_key'];
+            $seedFocusKey = $this->def['rhs_key'];
+            if (!empty($params['where'])) {
+                $whereTable = (empty($params['left_join_table_alias']) ? $relatedSeed->_tablename : $params['left_join_table_alias']);
+            }
+            $relatedJoin = " INNER JOIN " . $this->def['lhs_table'] . ' ON ' . $this->def['lhs_table'] . '.' . $this->def['lhs_key'] . ' = ' . $rel_table . '.' . $this->def['join_key_lhs'];
+        }
+
+
+        $where = "$rel_table.$knownKey = '{$link->getFocus()->$seedFocusKey}'" . $this->getRoleWhere();
+
+        //Add any optional where clause
+        if (!empty($params['where'])){
+            $add_where = is_string($params['where']) ? $params['where'] : "$whereTable." . $this->getOptionalWhereClause($params['where']);
+            if (!empty($add_where) && $add_where != "()")
+                $where .= " AND {$rel_table}.{$targetKey}={$whereTable}.{$relatedSeedKey} AND {$add_where}";
+        }
+
+
+
+        // add teh acl relevant query
+        //SpiceACL::getInstance()->addACLAccessToListArray($ret_array, $this);
+        $retArray = [];
+        SpiceACL::getInstance()->addACLAccessToListArray($retArray, $relatedSeed);
+        if($retArray['where']) {
+            $where = "({$where}) AND {$retArray['where']}";
+            $joinRelated = true;
+        }
+
+        $deleted = !empty($params['deleted']) ? 1 : 0;
+        $from = $rel_table . " ";
+        if (!empty($params['where']) && !$joinRelated) {
+            $from .= ", $whereTable";
+//            if (isset($relatedSeed->custom_fields)) {
+//                $customJoin = $relatedSeed->custom_fields->getJOIN();
+//                $from .= $customJoin ? $customJoin['join'] : '';
+//            }
+        }
+
+        $sort = '';
+        if(!empty($params['sort'])){
+            $sortFieldTable = null;
+            $sortField = null;
+            if (!empty($params['relationship_fields']) && $params['sort']['sortfield']) {
+                foreach ($params['relationship_fields'] as $fieldName => $fieldProperties) {
+                    if ($fieldProperties['map'] && $fieldName == $params['sort']['sortfield']) {
+                        $sortFieldTable = $rel_table;
+                        $sortField = $fieldName;
+                        break;
+                    }
+                }
+            }
+
+            if(is_null($sortField)) $sortField = $params['sort']['sortfield'];
+
+            $from = "$rel_table ";
+            $joinRelated = true;
+
+            if ($this->linkIsLHS($link)) {
+                // if we have an order by and the inner join, we need to reset $from .= ", $whereTable" to $from = $rel_table . " ";
+                if (is_null($sortFieldTable))$sortFieldTable = $this->def['rhs_table'];
+                if($params['sort']['sortfield']) { // CR1000382
+                    $sort = ' ORDER BY ' . $sortFieldTable . '.' . $sortField . ' ' . ($params['sort']['sortdirection'] ?: 'ASC');
+                }
+            } else {
+                // if we have an order by and the inner join, we need to reset $from .= ", $whereTable" to $from = $rel_table . " ";
+                if (is_null($sortFieldTable))$sortFieldTable = $this->def['lhs_table'];
+                if($params['sort']['sortfield']) { // CR1000382
+                    $sort = ' ORDER BY ' . $sortFieldTable . '.' . $sortField . ' ' . ($params['sort']['sortdirection'] ?: 'ASC');
+                }
+            }
+
+
+        }
+
+        $relFieldsSelect = '';
+        if ( isset( $params['relationship_fields'] )) {
+            if ( is_array( $params['relationship_fields'] )) {
+                if ( count( @$params['relationship_fields'] ) > 0 ) {
+                    foreach ( $params['relationship_fields'] as $fieldName => $fieldData )
+                        $relFieldsSelect .= ', ' . $rel_table . '.' . $fieldName;
+                }
+            }
+        }
+
+        if (empty($params['return_as_array'])) {
+
+            // if we should join the related table do this
+            if($joinRelated) {
+                $from .= $relatedJoin;
+            }
+
+            // 20reasons add the relid to the query
+            // $query = "SELECT $targetKey id FROM $from WHERE $where AND $rel_table.deleted=$deleted";
+            $query = "SELECT $rel_table.id relid, $rel_table.$targetKey id $relFieldsSelect FROM $from WHERE $where AND $rel_table.deleted=$deleted ".$this->getRoleFilterForJoin()." $sort";  // CR1000269: added $this->getRoleFilterForJoin()
+
+            // BEGIN Exception SpiceACL
+            if($rel_table == 'spiceaclterritories_hash' || $rel_table == 'spiceaclusers_hash'){
+                $query = "SELECT $rel_table.hash_id relid, $targetKey id $relFieldsSelect FROM $from WHERE $where AND $rel_table.deleted=$deleted $sort";
+            }
+            // END
+
+            //Limit is not compatible with return_as_array
+            if (!empty($params['limit']) && $params['limit'] > 0) {
+                $offset = isset($params['offset']) ? $params['offset'] : 0;
+                $query = DBManagerFactory::getInstance()->limitQuery($query, $offset, $params['limit'], false, "", false);
+            }
+            return $query;
+        }
+        else
+        {
+            return [
+                // 20reasons add the relid to the query
+                //'select' => "SELECT $targetKey id",
+                'select' => "SELECT $rel_table.id relid, $rel_table.$targetKey id $relFieldsSelect",
+                'from' => $joinRelated ? "FROM $from $relatedJoin" : "FROM $from",
+                'where' => "WHERE $where AND $rel_table.deleted=$deleted ".$this->getRoleFilterForJoin(), // CR1000269: added $this->getRoleFilterForJoin()
+                'sort' => $sort
+            ];
+        }
+    }
+
+    public function getJoin($link, $params = [], $return_array = false)
+    {
+        $linkIsLHS = $link->getSide() == REL_LHS;
+        if ($linkIsLHS) {
+            $startingTable = (empty($params['left_join_table_alias']) ? $link->getFocus()->_tablename : $params['left_join_table_alias']);
+        } else {
+            $startingTable = (empty($params['right_join_table_alias']) ? $link->getFocus()->_tablename : $params['right_join_table_alias']);
+        }
+
+        $startingKey = $linkIsLHS ? $this->def['lhs_key'] : $this->def['rhs_key'];
+        $startingJoinKey = $linkIsLHS ? $this->def['join_key_lhs'] : $this->def['join_key_rhs'];
+        $joinTable = $this->getRelationshipTable();
+        $joinTableWithAlias = $joinTable;
+        $joinKey = $linkIsLHS ? $this->def['join_key_rhs'] : $this->def['join_key_lhs'];
+        $targetTable = $linkIsLHS ? $this->def['rhs_table'] : $this->def['lhs_table'];
+        $targetTableWithAlias = $targetTable;
+        $targetKey = $linkIsLHS ? $this->def['rhs_key'] : $this->def['lhs_key'];
+        $join_type= isset($params['join_type']) ? $params['join_type'] : ' INNER JOIN ';
+
+        $join = '';
+
+        //Set up any table aliases required
+        if (!empty($params['join_table_link_alias']))
+        {
+            $joinTableWithAlias = $joinTable . " ". $params['join_table_link_alias'];
+            $joinTable = $params['join_table_link_alias'];
+        }
+        if ( ! empty($params['join_table_alias']))
+        {
+            $targetTableWithAlias = $targetTable . " ". $params['join_table_alias'];
+            $targetTable = $params['join_table_alias'];
+        }
+
+        $join1 = "$startingTable.$startingKey=$joinTable.$startingJoinKey";
+        $join2 = "$targetTable.$targetKey=$joinTable.$joinKey";
+        $where = "";
+
+
+        //First join the relationship table
+        $join .= "$join_type $joinTableWithAlias ON $join1 AND $joinTable.deleted=0\n"
+        //Next add any role filters
+               . $this->getRoleWhere($joinTable) . "\n"
+        //Then finally join the related module's table
+               . "$join_type $targetTableWithAlias ON $join2 AND $targetTable.deleted=0\n";
+
+        if($return_array){
+            return [
+                'join' => $join,
+                'type' => $this->type,
+                'rel_key' => $joinKey,
+                'join_tables' =>[$joinTable, $targetTable],
+                'where' => $where,
+                'select' => "$targetTable.id",
+            ];
+        }
+        return $join . $where;
+    }
+
+    protected function getRoleFilterForJoin()
+    {
+        $ret = "";
+        // BEGIN CR1000269: fix getRoleFilterForJoin()
+        if(!empty($this->def['relationship_role_column']))
+            $this->relationship_role_column = $this->def['relationship_role_column'];
+        if(!empty($this->def['relationship_role_column_value']))
+            $this->relationship_role_column_value = $this->def['relationship_role_column_value'];
+        // END
+        if (!empty($this->relationship_role_column) && !$this->ignore_role_filter)
+        {
+            $ret .= " AND ".$this->getRelationshipTable().'.'.$this->relationship_role_column;
+            //role column value.
+            if (empty($this->relationship_role_column_value) && $this->relationship_role_column_value !== 0)
+            {
+                $ret.=' IS NULL';
+            } else {
+                $ret.= "='".$this->relationship_role_column_value."'";
+            }
+            $ret.= "\n";
+        }
+        return $ret;
+    }
+
+    /**
+     * @param  $lhs
+     * @param  $rhs
+     * @return bool
+     */
+    public function relationship_exists($lhs, $rhs)
+    {
+        $query = "SELECT id FROM {$this->getRelationshipTable()} WHERE {$this->join_key_lhs} = '{$lhs->id}' AND {$this->join_key_rhs} = '{$rhs->id}'";
+
+        //Roles can allow for multiple links between two records with different roles
+        $query .= $this->getRoleWhere() . " and deleted = 0";
+
+        return DBManagerFactory::getInstance()->getOne($query);
+    }
+
+    /**
+     * @return Array - set of fields that uniquely identify an entry in this relationship
+     */
+    protected function getAlternateKeyFields()
+    {
+        $fields = [$this->join_key_lhs, $this->join_key_rhs];
+
+        //Roles can allow for multiple links between two records with different roles
+        if (!empty($this->def['relationship_role_column']) && !$this->ignore_role_filter)
+        {
+            $fields[] = $this->relationship_role_column;
+        }
+
+        return $fields;
+    }
+
+    public function getRelationshipTable()
+    {
+        if (!empty($this->def['table']))
+            return $this->def['table'];
+        else if(!empty($this->def['join_table']))
+            return $this->def['join_table'];
+
+        return false;
+    }
+
+    public function getFields()
+    {
+        if (!empty($this->def['fields']))
+            return $this->def['fields'];
+        $fields = [
+            "id" => ['name' => 'id'],
+            'date_modified' => ['name' => 'date_modified'],
+            'modified_user_id' => ['name' => 'modified_user_id'],
+            'created_by' => ['name' => 'created_by'],
+            $this->def['join_key_lhs'] => ['name' => $this->def['join_key_lhs']],
+            $this->def['join_key_rhs'] => ['name' => $this->def['join_key_rhs']]
+        ];
+        if (!empty($this->def['relationship_role_column']))
+        {
+            $fields[$this->def['relationship_role_column']] = ["name" => $this->def['relationship_role_column']];
+        }
+        $fields['deleted'] = ['name' => 'deleted'];
+
+        return $fields;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getResultsFilteredByFTS($module, $params, $presults) {
+        $rows = [];
+
+        // check if fts index available for module
+        if (!SpiceFTSHandler::getInstance()->checkModule($module, true)) {
+            return $presults;
+        }
+
+        // extract needed params
+        [
+            'limit' => $size,
+            'offset' => $start,
+            'searchterm' => $searchterm
+        ] = $params;
+
+        // collect ids from unfiltered results
+        $ids = array_column($presults, self::REL_ID);
+
+        // build fts search options
+        $filterArray = [
+            'bool' => [
+                'must' => [
+                    [
+                        'terms' => [
+                            "id" => $ids
+                        ]
+                    ],
+                ],
+            ]
+        ];
+
+        // get results from FTS (make sure 'filterArray' is within in an array itself)
+        $filteredResults = SpiceFTSHandler::getInstance()->searchModule($module, $searchterm, [], [], ($params['limit'] ? $params['limit'] : 25), ($params['offset'] ? $params['offset'] : 0), [$filterArray]);
+
+        // collect FTS ids
+        if ($hits = $filteredResults['hits']['hits']) {
+            $filteredIds = array_column($hits, '_id');
+
+            // filter db results by FTS results
+            $rows = array_filter($presults, function($row) use ($filteredIds) {
+                return in_array($row['id'], $filteredIds);
+            });
+        }
+
+        return $rows;
+    }
+
+    public function getCount($link, $params) {
+        if (!empty($params['searchterm'])) {
+            return $this->count;
+        } else {
+            $params['return_as_array'] = true;
+            $queryArray = $this->getQuery($link, $params);
+            $queryArray['select'] = 'SELECT count(*) relcount';
+            $db = DBManagerFactory::getInstance();
+            $result = $db->fetchByAssoc($db->query($queryArray['select'] . ' ' . $queryArray['from'] . ' ' . $queryArray['where']));
+            return $result['relcount'];
+        }
+    }
+}

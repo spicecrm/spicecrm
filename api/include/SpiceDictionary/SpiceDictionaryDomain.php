@@ -3,9 +3,9 @@
 namespace SpiceCRM\includes\SpiceDictionary;
 
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryDomain
@@ -61,29 +61,32 @@ class SpiceDictionaryDomain
      * returns an array of fielddefinitions
      *
      * @param SpiceDictionaryItem|null $sysdictionaryItem
-     * @param bool $activeOnly
      * @return array
      * @throws Exception
      */
-    public function getFieldDefinitions(SpiceDictionaryItem $sysdictionaryItem = null, bool $activeOnly = true){
+    public function getFieldDefinitions(SpiceDictionaryItem $sysdictionaryItem = null){
         $fieldDefinitions = [];
-        $db = DBManagerFactory::getInstance();
 
-        $fieldObjects = $db->query("SELECT id FROM syscustomdomainfields WHERE sysdomaindefinition_id='{$this->id}'");
-        while($fieldObject = $db->fetchByAssoc($fieldObjects)){
+        $fields = SpiceDictionaryDomainFields::getInstance()->getDomainFields($this->id);
+
+        foreach($fields as $fieldObject){
             $definition = (new SpiceDictionaryDomainField($fieldObject['id']))->getDefinition($sysdictionaryItem);
             $fieldDefinitions[$definition->name] = $definition;
         }
 
+        $fieldDefinitions = array_values($fieldDefinitions);
 
-        $fieldObjects = $db->query("SELECT id FROM sysdomainfields WHERE sysdomaindefinition_id='{$this->id}'");
-        while($fieldObject = $db->fetchByAssoc($fieldObjects)){
-            $definition = (new SpiceDictionaryDomainField($fieldObject['id']))->getDefinition($sysdictionaryItem);
-            if(!isset($fieldDefinitions[$definition->name])) {
-                $fieldDefinitions[$definition->name] = $definition;
-            }
+        # call handler class method on repair to manipulate the field definitions dynamically
+        $handlerClass = $this->getHandlerClass();
+
+        if ($handlerClass && class_exists($handlerClass) && is_subclass_of($handlerClass, 'SpiceCRM\includes\SpiceDictionary\domainhandlers\SpiceDictionaryDomainHandler')) {
+
+            $handler = new $handlerClass();
+
+            $fieldDefinitions = $handler->onRepair($sysdictionaryItem, $this, $fieldDefinitions);
         }
-        return array_values($fieldDefinitions);
+
+        return $fieldDefinitions;
     }
 
     /**
@@ -91,11 +94,10 @@ class SpiceDictionaryDomain
      * writes the cahced fielddefs
      *
      * @param SpiceDictionaryItem $dictionaryitem
-     * @param SpiceDictionaryDefinition $dictionaryDefinition
      * @return array
      * @throws Exception
      */
-    public function activateForItem(SpiceDictionaryItem $dictionaryitem, SpiceDictionaryDefinition $dictionaryDefinition){
+    public function activateForItem(SpiceDictionaryItem $dictionaryitem){
         $alldefinitons = [];
 
         // get the field Definitons
@@ -128,23 +130,6 @@ class SpiceDictionaryDomain
                 // enum is the deprecated value
                 if($validation->domainvalidation->validation_type == 'options' || $validation->domainvalidation->validation_type == 'enum') $definition->options = $validation->domainvalidation->name;
             }
-
-            // write to the cached fields
-            $sysDictionaryField = [
-                'id' => SpiceUtils::createGuid(),
-                'sysdictionaryname' => $dictionaryDefinition->name,
-                'sysdictionarytablename' => $dictionaryDefinition->tablename,
-                'sysdictionarytableaudited' => $dictionaryDefinition->getDefinition()->audited,
-                'sysdictionarydefinition_id' => $dictionaryDefinition->id,
-                'sysdictionaryitem_id' => $dictionaryitem->id,
-                'sysdomainfield_id' => $definition->sysdictionarydomainfield_id,
-                'fieldname' => $definition->name,
-                'fieldtype' => $definition->type,
-                'fielddefinition' => json_encode($definition)
-            ];
-
-            // insert into the cached file
-            DBManagerFactory::getInstance()->insertQuery('sysdictionaryfields', $sysDictionaryField);
 
             // collect the definiton entry
             $alldefinitons[] = $definition;

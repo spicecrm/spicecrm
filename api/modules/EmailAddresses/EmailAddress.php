@@ -2,22 +2,21 @@
 
 namespace SpiceCRM\modules\EmailAddresses;
 
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ValidationException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\TimeDate;
-use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
@@ -123,7 +122,7 @@ class EmailAddress extends SpiceBean
     public function save($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
     {
         $this->email_address = $this->splitEmailAddress($this->email_address)['email'];
-        $this->email_address_caps = strtoupper($this->splitEmailAddress($this->email_address_caps)['email']);
+        $this->email_address_caps = strtoupper($this->email_address);
 
         if (!$this->isValidEmailAddress($this->email_address)) {
             if (!$ignoreInvalidEmailAddresses) {
@@ -514,5 +513,20 @@ class EmailAddress extends SpiceBean
         $bean->email_addresses->add($emailAddress, ['opt_in_status' => $newStatus, $dateField => date('Y-m-d H:m:s')]);
 
         return true;
+    }
+
+    public function getEmailAddressForBean(SpiceBean $bean, $emailAddrBeanRelId = null)
+    {
+        if (!empty($emailAddrBeanRelId)) {
+            $q = "SELECT eabr.* FROM email_addr_bean_rel eabr where eabr.id ='{$emailAddrBeanRelId}' and eabr.bean_id ='$bean->id' and eabr.deleted = 0";
+        }
+        else{
+            $q = "SELECT eabr.* FROM email_addr_bean_rel eabr where eabr.bean_id ='$bean->id' and eabr.primary_address = 1 and eabr.deleted = 0";
+        }
+        if($row = $this->db->fetchOne($q)){
+            $emailAddress = BeanFactory::getBean('EmailAddresses', $row['email_address_id']);
+            $emailAddress->opt_in_status = $row['opt_in_status'];
+            return $emailAddress;
+        }
     }
 }

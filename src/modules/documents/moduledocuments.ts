@@ -17,6 +17,8 @@ import {DocumentCreateRevisionButton} from "./components/documentcreaterevisionb
 import {DocumentCreateRevisionModal} from "./components/documentcreaterevisionmodal";
 import {DocumentRevisionDisplay} from "./components/documentrevisiondisplay";
 import {DocumentNewFromTemplateButton} from "./components/documentnewfromtemplatebutton";
+import {DocumentTranslateRevisionButton} from "./actions/documenttranslaterevisionbutton";
+import {DocumentRevisionContentContainer} from "./components/documentrevisioncontentcontainer";
 
 @NgModule({
     imports: [
@@ -33,7 +35,9 @@ import {DocumentNewFromTemplateButton} from "./components/documentnewfromtemplat
         DocumentCreateRevisionButton,
         DocumentCreateRevisionModal,
         DocumentRevisionDisplay,
-        DocumentNewFromTemplateButton
+        DocumentNewFromTemplateButton,
+        DocumentTranslateRevisionButton,
+        DocumentRevisionContentContainer
     ]
 })
 export class ModuleDocuments {}

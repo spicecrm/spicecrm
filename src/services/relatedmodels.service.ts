@@ -243,14 +243,11 @@ export class relatedmodels implements OnDestroy {
                             }
                         }
                         eventHandled = true;
-                        this.sortItems();
                     }
                 }
 
                 if (!eventHandled || this.modulefilter) {
                     this.getData(true);
-                } else {
-                    this.sortItems();
                 }
 
                 break;
@@ -314,34 +311,16 @@ export class relatedmodels implements OnDestroy {
         this.backend.getRequest(url, params, this.httpRequestsRefID).subscribe({
             next: (response: any) => {
 
-                    // reset the list .. to make sure nobody added in the meantime ... the new data is the truth
-                    this.items = [];
-
                     // get the count
                     this.count = parseInt(response.count, 10);
 
-                    // count .. this is not an array but an object
-                    for (let key in response.list) {
-                        if (response.list.hasOwnProperty(key)) {
-                            response.list[key].relid = key;
-
-                            response.list[key] = this.modelutilities.backendModel2spice(this.relatedModule, response.list[key]);
-
-                            this.items.push(response.list[key]);
-                        }
-                    }
+                    this.items = response.list.map(item => ({...this.modelutilities.backendModel2spice(this.relatedModule, item), relid: item.relid}));
 
                     // set loaded
                     this.isloading = false;
 
-                    // sort
-                    this.sortItems();
-
                     // set the load time
                     this.lastLoad = new moment();
-
-                    // emit that a change has happened
-                    // this.items$.emit(this.items);
 
                     // complete the Observable
                     responseSubject.next(true);
@@ -417,9 +396,6 @@ export class relatedmodels implements OnDestroy {
                     }
                 }
 
-                // sort
-                this.sortItems();
-
                 // set the load time
                 this.lastLoad = new moment();
 
@@ -437,35 +413,6 @@ export class relatedmodels implements OnDestroy {
     }
 
     /**
-     * sorts the items according to the sort settings
-     */
-    public sortItems() {
-
-        let sortfield: string;
-        let sortdirection: string;
-        if (this.sort.sortfield) {
-            sortfield = this.sort.sortfield;
-            sortdirection = this.sort.sortdirection;
-        } else if (this.sortBySequencefield) {
-            sortfield = this.sequencefield;
-            sortdirection = 'ASC';
-        }
-
-        if (sortfield) {
-            this.items.sort((a, b) => {
-                let sortval;
-                // check if we can sort as integer
-                if (!isNaN(parseInt(a[sortfield], 10)) && !isNaN(parseInt(b[sortfield], 10))) {
-                    sortval = parseInt(a[sortfield], 10) > parseInt(b[sortfield], 10) ? 1 : -1;
-                } else {
-                    sortval = a[sortfield] > b[sortfield] ? 1 : -1;
-                }
-                return sortdirection == 'ASC' ? sortval : (sortval * -1);
-            });
-        }
-    }
-
-    /**
      * helper method to reset the items
      */
     public resetData() {
@@ -476,11 +423,15 @@ export class relatedmodels implements OnDestroy {
      * helper to add items when called from the handler
      *
      * @param items
+     * @param addLinkName
      */
-    public addItems(items): Observable<any> {
+    public addItems(items, addLinkName?: string): Observable<any> {
         let retSubject = new Subject<any>();
+
+        if (!addLinkName) addLinkName = this._linkName;
+
         if (this.saveToLinkOnly) {
-            this.model.addRelatedRecords(this._linkName, items);
+            this.model.addRelatedRecords(addLinkName, items);
             this.items = this.items.concat(items);
             this.count = this.count + items.length;
             return of(false) ;
@@ -489,7 +440,7 @@ export class relatedmodels implements OnDestroy {
         // only id and rel fields will be processed in the backend
         let body = {beansData: items.map(e => (this.modelutilities.spiceModel2backend(this.relatedModule, e)))};
 
-        this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], body, this.httpRequestsRefID).subscribe({
+        this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + addLinkName, [], body, this.httpRequestsRefID).subscribe({
             next: () => {
                     for (let item of items) {
                         let itemfound = false;

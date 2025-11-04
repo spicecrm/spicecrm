@@ -79,6 +79,6 @@ export class fieldLanguage extends fieldGeneric implements OnInit {
      */
     public setDisplayValue() {
         const lang = this.options.find(lang => lang.value == this.model.getField(this.fieldname));
-        this.displayValue = lang?.display || '';
+        this.displayValue = lang?.display || this.value;
     }
 }

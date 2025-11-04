@@ -1,7 +1,7 @@
 /**
  * @module services
  */
-import {Injectable, OnDestroy} from "@angular/core";
+import {Injectable, OnDestroy, signal, WritableSignal} from "@angular/core";
 import {BehaviorSubject, Observable, Subject, Subscription} from "rxjs";
 
 import {configurationService} from "./configuration.service";
@@ -102,6 +102,11 @@ export class modelattachments implements OnDestroy {
      * emits the action when the attachment is deleted
      */
     public attachmentDeleted$: Subject<boolean> = new Subject<boolean>();
+
+    /**
+     * holds the action performed
+     */
+    public fileActionPerformed: WritableSignal<number> = signal(0);
 
     /**
      * a colection of subscriptions

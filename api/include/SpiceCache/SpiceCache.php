@@ -143,7 +143,7 @@ class SpiceCache
      * get values from the cache
      *
      * @param $key
-     * @return false
+     * @return mixed
      */
     public static function get($key)
     {

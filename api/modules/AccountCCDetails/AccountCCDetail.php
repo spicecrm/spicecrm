@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\AccountCCDetails;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 
 class AccountCCDetail extends SpiceBean
 {

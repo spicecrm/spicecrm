@@ -41,7 +41,17 @@ export class ObjectActionNewButton implements OnInit {
             this.model.module = this.parentmodel.module;
             this.model.id = undefined;
             this.model.initialize();
-            this.model.addModel("", this.parentmodel);
+
+            let componentconfig: any = undefined;
+            if(this.actionconfig.componentset || this.actionconfig.actionset || this.actionconfig.grow) {
+                componentconfig = {
+                    componentset: this.actionconfig.componentset,
+                    actionset: this.actionconfig.actionset,
+                    grow: this.actionconfig.grow,
+                }
+            }
+
+            this.model.addModel("", this.parentmodel, null, null, componentconfig).subscribe;
         }
     }
 
@@ -57,7 +67,7 @@ export class ObjectActionNewButton implements OnInit {
      *
      * @private
      */
-    private addNewTab(){
+    protected addNewTab(){
         this.navigation = this.injector.get<navigation>(navigation);
         this.model.id = this.model.generateGuid();
         this.model.module = this.parentmodel.module;
@@ -72,6 +82,7 @@ export class ObjectActionNewButton implements OnInit {
             tabdata: {
                 module: this.model.module,
                 id: this.model.id
+                // data: JSON.parse(JSON.stringify(this.model.data)),
             }
         })
     }

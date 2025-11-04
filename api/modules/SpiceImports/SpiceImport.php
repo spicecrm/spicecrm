@@ -3,14 +3,14 @@
 
 namespace SpiceCRM\modules\SpiceImports;
 
-use SpiceCRM\data\SpiceBean;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -160,7 +160,7 @@ class SpiceImport extends SpiceBean
         $this->module = $this->objectimport->module;
         $this->csv_enclosure = $this->objectimport->enclosure;
         $this->csv_delimiter = $this->objectimport->separator;
-        $this->import_actions = $this->objectimport->importAction;
+        $this->import_action = $this->objectimport->importAction;
         $this->name = $this->objectimport->module . "_" . gmdate('Y-m-d H:i:s');
         $this->assigned_user_id = $current_user->id;
 
@@ -271,14 +271,16 @@ class SpiceImport extends SpiceBean
                     switch ($this->import_action) {
                         case 'update':
                             if (!empty($classMethod)) {
-                                $classMethod->class->{$classMethod->method}($row, $fileHeader, $this->objectimport, $list);
+                                $result = $classMethod->class->{$classMethod->method}($row, $fileHeader, $this->objectimport, $list, $this->rows_imported);
+                                $this->addLogEntry('Record Created', $row, $result);
                             } else {
                                 $this->updateExistingRecord($fileHeader, $newBean, $row, $retrieve, $error, $list);
                             }
                             break;
                         case 'new':
                             if (!empty($classMethod)) {
-                                $classMethod->class->{$classMethod->method}($row, $fileHeader, $this->objectimport, $list);
+                                $result = $classMethod->class->{$classMethod->method}($row, $fileHeader, $this->objectimport, $list, $this->rows_imported);
+                                $this->addLogEntry('Record Created', $row, $result);
                             } else {
                                 $this->createNewRecord($newBean, $row, $fileHeader, $error, $list);
                             }

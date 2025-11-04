@@ -56,7 +56,7 @@ export class fieldEnum extends fieldGeneric {
 
     public getOptions() {
 
-        this.options = this.language.getFieldDisplayOptions(this.model.module, this.fieldname, true, true);
+        this.options = this.language.getFieldDisplayOptions(this.model.module, this.fieldname, true, this.fieldconfig.hideinactive ? false : true);
 
         if (this.fieldconfig.sortdirection) {
             switch (this.fieldconfig.sortdirection.toLowerCase()) {

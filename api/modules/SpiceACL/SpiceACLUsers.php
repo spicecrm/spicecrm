@@ -3,9 +3,9 @@
 
 namespace SpiceCRM\modules\SpiceACL;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\modules\Users\User;
 
 class SpiceACLUsers{
@@ -84,7 +84,11 @@ class SpiceACLUsers{
 
         if(empty($table_name)) $table_name = $bean->_tablename;
 
-        $whereClauses[] = "$table_name.assigned_user_id IN ($userIDs)";
+        $column = 'assigned_user_id';
+        if($table_name == 'users'){ // workaround when the table is users
+            $column = 'id';
+        }
+        $whereClauses[] = "$table_name.$column IN ($userIDs)";
 
         if ( isset($bean->field_defs['spiceacl_users_hash'])) {
             $whereClauses[] = "$table_name.spiceacl_users_hash IN (SELECT hash_id FROM spiceaclusers_hash WHERE user_id in ($userIDs))";

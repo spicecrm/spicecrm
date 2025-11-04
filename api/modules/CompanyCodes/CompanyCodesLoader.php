@@ -3,14 +3,13 @@
 
 namespace SpiceCRM\modules\CompanyCodes;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 class CompanyCodesLoader{
 
-    public function loadCompanyCodes(){
-        $db = DBManagerFactory::getInstance();
-
+    public function loadCompanyCodes()
+    {
         $retArray = [];
 
         $companyCode = BeanFactory::getBean('CompanyCodes');
@@ -20,11 +19,11 @@ class CompanyCodesLoader{
                 'id' => $companyCode->id,
                 'name' => $companyCode->name,
                 'companycode' => $companyCode->companycode,
-                'country' => $companyCode->company_address_country
+                'country' => $companyCode->company_address_country,
+                'systemholidaycalendar_id' => $companyCode->systemholidaycalendar_id
             ];
         }
 
         return $retArray;
-
     }
 }

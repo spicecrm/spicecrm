@@ -52,6 +52,7 @@ import {fieldModifiedBy} from './components/fieldmodifiedby';
 import {fieldLookup} from './components/fieldlookup';
 import {fieldDate} from './components/fielddate';
 import {fieldTime} from './components/fieldtime';
+import {fieldTimeZone} from './components/fieldtimezone';
 import {fieldDateTime} from './components/fielddatetime';
 import {fieldDateTimeDuration} from './components/fielddatetimeduration';
 import {fieldDuration} from './components/fieldduration';
@@ -139,6 +140,7 @@ import {fieldEnumRoles} from "./components/fieldenumroles";
 import {fieldVersion} from "./components/fieldVersion";
 import {fieldPackage} from "./components/fieldpackage";
 import {fieldActivityStatus} from "./components/fieldactivitystatus";
+import {SystemDateTimeFormatPipe} from "../systemcomponents/pipes/systemdatetimeformat";
 
 
 
@@ -157,6 +159,7 @@ declare var _: any;
         SystemComponents,
         DirectivesModule,
         DragDropModule,
+        SystemDateTimeFormatPipe,
     ],
     declarations: [
         fieldSet,
@@ -196,6 +199,7 @@ declare var _: any;
         fieldBoolLabelAligned,
         fieldDate,
         fieldTime,
+        fieldTimeZone,
         fieldDateTime,
         fieldDateTimeDuration,
         fieldDuration,
@@ -313,7 +317,8 @@ declare var _: any;
         fieldToggle,
         fieldEmailEmailAddressStatus,
         fieldVersion,
-        fieldPackage
+        fieldPackage,
+        fieldPhone
     ]
 })
 export class ObjectFields {}

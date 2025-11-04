@@ -232,6 +232,9 @@
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label></button>
+        <div class="slds-grid slds-grid_align-spread">
+            <span class="slds-col--bump-right"><button *ngIf="canReplay()" class="slds-button slds-button--neutral" (click)="openReplay()"><system-label label="LBL_REPLAY"></system-label></button></span>
+            <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label></button>
+        </div>
     </system-modal-footer>
 </system-modal>

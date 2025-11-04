@@ -12,7 +12,7 @@ import {
     Optional,
     SkipSelf,
     AfterViewInit,
-    ComponentRef, Input
+    ComponentRef, Input, ElementRef
 } from '@angular/core';
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
@@ -95,6 +95,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
         public navigationtab: navigationtab,
         public broadcast: broadcast,
         public backend: backend,
+        public elementRef: ElementRef
     ) {
         this._modelattachments.module = this.model.module;
         this._modelattachments.id = this.model.id;
@@ -152,13 +153,13 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     }
 
     public processAttachmentsSize() {
-        if (this.modelattachments.totalFileSize > this.maxUploadBytes) {
+        if (this.modelattachments.totalFileSize > this.maxUploadBytes && !this.model.getField('downloadlink_attachments')) {
             let headerText = `LBL_ERROR`;
             let text = this.language.getLabelFormatted('LBL_EXCEEDS_MAX_ATTACHMENTS', [this.modelattachments.totalHumanFileSize, this.maxUpload]);
             this.modal.info(text, headerText);
         }
-        this.model.setField('attachments_size', this.modelattachments.totalFileSize, false, false);
-        this.model.setField('attachments_count', this.modelattachments.files.length, false, false);
+        this.model.setField('attachments_size', this.modelattachments.totalFileSize, false);
+        this.model.setField('attachments_count', this.modelattachments.files.length, false);
     }
 
     /**
@@ -199,6 +200,28 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
         if (!this.parentmodelattachments) {
             setTimeout(() => this.loadFiles(), 10);
         }
+    }
+
+
+    /**
+     * gets the width
+     */
+    get width() {
+        return this.elementRef.nativeElement.parentElement.getBoundingClientRect().width;
+    }
+
+    /**
+     * a getter if we have a parent attachment service
+     */
+    get hasParentAttachments(){
+        return !!this.parentModel.data.parent_type && !!this.parentModel.data.parent_id;
+    }
+
+    /**
+     * getter to determine if we shoudl display the size info
+     */
+    get displaySizeInfo(){
+       return this.modelattachments.files.length > 0 && (this.model.module == 'Emails' || this.model.module == 'EmailSchedules');
     }
 
     /**
@@ -279,8 +302,8 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     public doupload(files) {
         this.modelattachments.uploadAttachmentsBase64(files, this.componentconfig.systemCateogryId).subscribe({
             next: () => {
-                this.processAttachmentsSize();
                 this.broadcastUpload();
+                this.processAttachmentsSize();
             }
         });
     }
@@ -295,8 +318,8 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
             // wait for modal to finish upload
             modalRef.instance.responseSubject.subscribe({
                 next: () => {
-                    this.processAttachmentsSize();
                     this.broadcastUpload();
+                    this.processAttachmentsSize();
                 }
             })
         });

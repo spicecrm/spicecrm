@@ -46,7 +46,7 @@
                 <th *ngIf="isExpanded" class="" scope="col">
                     <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_AUDITED"></system-label></div>
                 </th>
-                <th style="width:3rem" scope="col"></th>
+                <th style="width:4.5rem" scope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -71,12 +71,12 @@
                     <td *ngIf="isExpanded" data-label="audited">
                         <system-checkbox system-checkbox-asinteger disabled [ngModel]="dictionarydefinition.audited"/>
                     </td>
-                    <td>
-                        <button class="slds-button slds-button--icon" (click)="editDictionaryDefinition(dictionarydefinition)">
-                            <system-button-icon size="xx-small" icon="edit"/>
-                        </button>
+                    <td class="slds-text-align--right">
                         <button *ngIf="dictionarydefinition.sysdictionary_type == 'template'" class="slds-button slds-button--icon" (click)="dictionaryDefinitionUsage(dictionarydefinition)">
                             <system-button-icon size="xx-small" icon="data_graph"/>
+                        </button>
+                        <button class="slds-button slds-button--icon" (click)="editDictionaryDefinition(dictionarydefinition)">
+                            <system-button-icon size="xx-small" icon="edit"/>
                         </button>
                         <button class="slds-button slds-button--icon" [disabled]="dictionarydefinition.status == 'a' || !dictionarymanager.canChange(dictionarydefinition.scope)" (click)="delete(dictionarydefinition.id)">
                             <system-button-icon size="xx-small" icon="delete"/>

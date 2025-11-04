@@ -3,23 +3,24 @@
 
 namespace SpiceCRM\modules\Emails;
 
+use DateTime;
+use DateInterval;
 use DOMDocument;
 use DOMNodeList;
 use DOMXPath;
 use Exception;
-use DateTime;
 use Hfig\MAPI;
 use Hfig\MAPI\Mime\Swiftmailer;
 use Hfig\MAPI\OLE\Pear;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTask;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
-use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
 use SpiceCRM\includes\SugarCleaner;
@@ -30,9 +31,8 @@ use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
-use SpiceCRM\modules\Mailboxes\Mailbox;
 use SpiceCRM\modules\EmailTrackingLinks\EmailTrackingLink;
-use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTask;
+use SpiceCRM\modules\Mailboxes\Mailbox;
 use ZipArchive;
 
 class Email extends SpiceBean
@@ -50,6 +50,12 @@ class Email extends SpiceBean
     public $attachments = [];
 
     /**
+     * holds wether or not the attachments shall be sent as download link
+     * @var bool
+     */
+    public $downloadlink_attachments = false;
+
+    /**
      * Openness Statuses
      */
     const OPENNESS_OPEN = 'open';
@@ -61,6 +67,8 @@ class Email extends SpiceBean
     const STATUS_CREATED = 'created';
 
     const STATUS_DRAFT = 'draft';
+    const STATUS_SENT = 'sent';
+    const STATUS_SEND_ERROR = 'send_error';
 
     const TYPE_INBOUND = 'inbound';
     const TYPE_OUTBOUND = 'out';
@@ -75,7 +83,7 @@ class Email extends SpiceBean
      */
     private ?string $runtime_tracking_parent_id = null;
     /**
-     * @var false|\SpiceCRM\data\SpiceBean
+     * @var false|\SpiceCRM\includes\SpiceBeans\SpiceBean
      */
     public $emailAddress;
     /**
@@ -244,10 +252,10 @@ class Email extends SpiceBean
                 }
 
                 if ($result['result'] == true) {
-                    $this->status = 'sent';
+                    $this->status = self::STATUS_SENT;
 
                 } else {
-                    $this->status = $result['errors'] ? 'send_error' : 'created';
+                    $this->status = $result['errors'] ? self::STATUS_SEND_ERROR : self::STATUS_CREATED;
                 }
 
                 $this->new_with_id = false;
@@ -385,11 +393,31 @@ class Email extends SpiceBean
             },
             ARRAY_FILTER_USE_KEY
         );
+
         foreach ($linked_fields as $name => $properties) {
-            $linkedBeans = $referenceEmail->get_linked_beans($name);
-            foreach ($linkedBeans as $linkedBean) {
+
+            if (!$referenceEmail->load_relationship($name)) continue;
+
+            $referenceEmail->$name->load(['relationship_fields' => $referenceEmail->$name->relationship_fields]);
+
+            $data = $referenceEmail->$name->rows;
+
+            if (!is_array($data) || empty($data)) continue;
+
+            foreach ($data as $row) {
+
+                if ($name == 'email_addresses' && ($row['address_type'] == 'from' || $row['address_type'] == 'to')) continue;
+
+                $additionalValues = [];
+
+                foreach ($referenceEmail->$name->relationship_fields as $field => $def) {
+                    $additionalValues[$field] = $row[$field];
+                }
+
                 if (!$this->load_relationship($name)) continue;
-                $this->{$name}->add($linkedBean->id);
+
+                # add to primary bean
+                $this->$name->add($row['id'], $additionalValues);
             }
         }
     }
@@ -527,6 +555,36 @@ class Email extends SpiceBean
         }
     }
 
+    /**
+     * compares the recipients before the save and removes the ones that are not in the POST data
+     * can happen when a draft is edited
+     * @return void
+     */
+    public function removeRecipientAdresses()
+    {
+        $removedIds = [];
+        $beforeSaveRecipients = $this->db->fetchAll(
+            "SELECT id FROM emails_email_addr_rel WHERE email_id = '{$this->id}'"
+        );
+
+       if($beforeSaveRecipients) {
+            foreach ($beforeSaveRecipients as $beforeSaveRecipient) {
+                if (array_search($beforeSaveRecipient['id'], array_column($this->recipient_addresses, 'id')) === false) {
+                    $removedIds[] = $beforeSaveRecipient['id'];
+                }
+            }
+
+            if (count($removedIds) > 0) {
+                $this->db->query(
+                    "UPDATE emails_email_addr_rel SET
+                            deleted = 1
+                            WHERE id IN ('" . implode("','", $removedIds) . "')
+                        "
+                );
+            }
+        }
+    }
+
     function saveRecipientAddresses($ignoreInvalid = true)
     {
         if (!is_array($this->recipient_addresses) || empty($this->recipient_addresses)) {
@@ -538,6 +596,9 @@ class Email extends SpiceBean
             'cc_addrs' => [],
             'bcc_addrs' => [],
         ];
+
+        // handle removed recipients
+        $this->removeRecipientAdresses();
 
         foreach ($this->recipient_addresses as $recipient_address) {
             $record = $this->db->fetchByAssoc($this->db->query(
@@ -1022,10 +1083,16 @@ class Email extends SpiceBean
 
         [$parentType, $parentId] = $this->getTrackingParentData();
 
+        $bodyDiv = $dom->getElementsByTagName('div')->item(0);
+        if(!empty($bodyDiv)){
+            if($bodyDiv->hasAttribute('data-trackinglinkall')){
+                $trackAll = $bodyDiv->getAttribute('data-trackinglinkall');
+            }
+        }
         /** @var \DOMElement $node */
         foreach ($dom->getElementsByTagName('a') as $node) {
 
-            if ($node->hasAttribute('data-trackinglink')) {
+            if ($trackAll || $node->hasAttribute('data-trackinglink')) {
                 $trackingId = $node->getAttribute('data-trackinglink');
 
                 if (empty($trackingId)) {
@@ -1041,7 +1108,9 @@ class Email extends SpiceBean
                 $this->assignBeanToEmail($trackingId, 'EmailTrackingLinks');
                 $node->setAttribute('href', $trackingLink);
                 $tracked = true;
-            } else if ($node->hasAttribute('data-emailaction')) {
+            }
+
+            if ($node->hasAttribute('data-emailaction')) {
                 $emailAction= $node->getAttribute('data-emailaction');
                 switch($emailAction) {
                     case 'unsubscribe':
@@ -1407,9 +1476,15 @@ class Email extends SpiceBean
             return null;
         }
 
+        // check that the email address is valid
+        $emailAddress = trim($this->emailAddress->splitEmailAddress($address)['email']);
+        if(!EmailAddress::isValidEmailAddress($emailAddress)) {
+            return null;
+        }
+
         $this->recipient_addresses[] = [
             'address_type' => $type,
-            'email_address' => $this->emailAddress->splitEmailAddress($address)['email']
+            'email_address' => $emailAddress
         ];
     }
 
@@ -1469,74 +1544,31 @@ class Email extends SpiceBean
     }
 
     /**
-     * links this email to another bean by using the assignBeanToEmail() method.
-     * @param SpiceBean $bean
-     * @return bool
-     */
-    public function assignToBean(SpiceBean $bean)
-    {
-        return $this->assignBeanToEmail($bean->id, $bean->module_name);
-    }
-
-    /**
      * assignBeanToEmail
      *
      * Assigns a Bean to Email
      *
-     * @param $bean / the bean or a string with te bean id
+     * @param $beanOrId
      * @param $bean_module
-     * @return bool
+     * @return array|null
      */
-    public function assignBeanToEmail($bean, $bean_module)
+    public function assignBeanToEmail($beanOrId, $bean_module): ?array
     {
-        // if no bean is passed in we assume it is an id and load the bean
-        if (is_string($bean)) {
-            $bean = BeanFactory::getBean($bean_module, $bean);
+        if (is_string($beanOrId)) {
+            $bean = BeanFactory::getBean($bean_module, $beanOrId);
+        } else {
+            $bean = $beanOrId;
         }
 
-        // if no bean is passed in or it copuld nto be retrieved .. do nothing
         if (!$bean) {
-            return false;
+            return null;
         }
 
-        $db = DBManagerFactory::getInstance();
-        // check if assignment exists already
+        $bean->load_relationship('emails');
 
-        // try to find a relationship between Emails and the module
-        $rels = $db->query("SELECT relationship_name FROM relationships WHERE lhs_module = 'Emails' AND rhs_module = '$bean_module'");
-        while ($rel = $db->fetchByAssoc($rels)) {
-            foreach ($this->field_defs as $field => $fieldDetails) {
-                if ($fieldDetails['type'] == 'link' && $fieldDetails['relationship'] == $rel['relationship_name']) {
-                    if($this->load_relationship($field)){
-                        if($this->{$field}->add($bean->id) === true){
-                            return ['id' => $bean->id, 'module' => $bean->_module];
-                        }
-                    }
-                    return;
-                }
-            }
-        }
+        $bean->emails->add($this);
 
-        /*
-        $query = "INSERT INTO emails_beans (
-                      id,
-                      email_id,
-                      bean_id,
-                      bean_module,
-                      campaign_data,
-                      date_modified,
-                      deleted
-                    ) VALUES (
-                      UUID(),
-                      '{$this->id}',
-                      '{$bean_id}',
-                      '{$bean_module}',
-                      NULL,
-                      NOW(),
-                      0
-                    )";
-
-        return $db->query($query);*/
+        return ['id' => $bean->id, 'module' => $bean->_module];
     }
 
 
@@ -1595,7 +1627,8 @@ class Email extends SpiceBean
         $q = $db->query($query);
 
         while ($row = $db->fetchRow($q)) {
-            if ($row['message_id'] != $message_id) {
+            // re-check because of message ID case sensitivity! The SQL query will not consider the difference between a and A
+            if ($row['message_id'] !== $message_id) {
                 continue;
             }
 
@@ -1824,7 +1857,7 @@ class Email extends SpiceBean
                         }
 
                         $fileArray = [
-                            'filename' => $bodyPart['content-name'],
+                            'filename' => SpiceAttachments::decodeEmailAttachmentName($bodyPart['content-name']),
                             'file' => base64_encode($contents[$index]),
                             'filemimetype' => $bodyPart['content-type'],
                             'external_id' => $bodyPart['content-id']
@@ -1896,7 +1929,10 @@ class Email extends SpiceBean
                 (isset($message->properties['last_modification_time']) ? $message->properties['last_modification_time'] :
                     (isset($message->properties['creation_time']) ? $message->properties['creation_time'] : null)));
         $this->date_sent = date('Y-m-d H:i:s', $dateSent);
-        $this->from_addr = $message->getSender();
+
+        $extractedEmail = $this->extractEmailAddress(explode(', ', $message->getSender()));
+        $this->from_addr = $extractedEmail[0]['email'];
+
         foreach ($message->getRecipients() as $recipient) {
             $this->recipient_addresses[] = [
                 'email_address' => $recipient->getEmail(),
@@ -1909,6 +1945,12 @@ class Email extends SpiceBean
                     $this->type = strtolower($recipient->getEmail()) == $beanEmailAddress ? self::TYPE_INBOUND : self::TYPE_OUTBOUND;
             }
         }
+
+        # add the recipient address
+        $this->recipient_addresses[] = [
+            'email_address' => $this->emailAddress->splitEmailAddress($message->getSender())['email'],
+            'address_type' => 'from',
+        ];
 
         // if not set inbound as default
         if(!$this->type) $this->type = self::TYPE_INBOUND;
@@ -2035,10 +2077,28 @@ class Email extends SpiceBean
      */
     public function validateEmailForDownload( $doIncrement = false ): bool|string
     {
+        // is download enabled?
         $downloadAttachmentsEnabled = (int) $this->getFieldValue('downloadlink_attachments');
         if ( !$downloadAttachmentsEnabled ) return 'notAccessible';
 
-        $downloadCounterMax = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_counter_max');
+        // is the download within allowed time frame?
+        $downloadDaysMax = 3; // default
+        if(SpiceConfig::getInstance()->get('spiceattachments.downloadlink_days_max')){
+            $downloadDaysMax = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_days_max');
+        }
+        $datenow = TimeDate::getInstance()->nowDbDate();
+        $datesent = new DateTime($this->date_sent);
+        $datemax = new DateTime($this->date_sent);
+        $datemax->add(new DateInterval('P'.$downloadDaysMax.'D'));
+        if($datenow > $datemax->format(TimeDate::DB_DATE_FORMAT) || $datenow < $datesent->format(TimeDate::DB_DATE_FORMAT)){
+            return 'timeExceeded';
+        };
+
+        // is the number of number of downloads within range?
+        $downloadCounterMax = 3;
+        if(SpiceConfig::getInstance()->get('spiceattachments.downloadlink_counter_max')){
+            $downloadCounterMax = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_counter_max');
+        }
         $downloadCounter = $this->getFieldValue('download_counter');
 
         if ( $downloadCounterMax !== null and $downloadCounter >= $downloadCounterMax) return 'limitExceeded';

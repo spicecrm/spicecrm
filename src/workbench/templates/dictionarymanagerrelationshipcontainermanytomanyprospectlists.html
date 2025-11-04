@@ -93,6 +93,14 @@
             </div>
         </div>
     </div>
+    <div class="slds-grid slds-p-vertical--xx-small">
+        <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element" system-title="LBL_LHS_CLONE_JOIN_ENTRIES">
+            <system-checkbox [disabled]="readonly" [(ngModel)]="lhs_clone_join_table"><system-label label="LBL_LHS_CLONE_JOIN_ENTRIES"/></system-checkbox>
+        </div>
+        <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element" system-title="LBL_RHS_CLONE_JOIN_ENTRIES">
+            <system-checkbox [disabled]="readonly" [(ngModel)]="rhs_clone_join_table"><system-label label="LBL_RHS_CLONE_JOIN_ENTRIES"/></system-checkbox>
+        </div>
+    </div>
     <div class="slds-grid">
         <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
             <label class="slds-form-element__label"><system-label label="LBL_JOIN_LHS_SYSDICTIONARYITEM"></system-label></label>

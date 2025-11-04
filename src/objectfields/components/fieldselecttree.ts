@@ -12,6 +12,7 @@ import {backend} from "../../services/backend.service";
 import {configurationService} from "../../services/configuration.service";
 
 /**
+ * @deprecated in 2025.02.001
  * documentation: https://spicecrm.gitbooks.io/spicecrm-ui/content/component-directory/fields/service-categories.html
  * created by Sebastian Franz
  */

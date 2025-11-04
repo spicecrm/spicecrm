@@ -38,7 +38,7 @@ export class SystemButtonIcon implements OnChanges {
     /**
      * an optional color class: can be any of the avialable SLDS icon color classes
      */
-    @Input() public colorclass: 'slds-icon-text-default'|'slds-icon-text-success'|'slds-icon-text-warning'|'slds-icon-text-error'|'slds-icon-text-light';
+    @Input() public colorclass: 'slds-icon-text-default'|'slds-icon-text-success'|'slds-icon-text-warning'|'slds-icon-text-error'|'slds-icon-text-light'|'slds-icon-text-superlight';
 
     /**
      * a module name if the icon shoudl be loaded from teh metadata

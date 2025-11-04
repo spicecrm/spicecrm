@@ -22,12 +22,16 @@ class RESTRateLimiter {
         $ruleDefinitions = &SpiceConfig::getInstance()->config['krest']['rateLimiting']['ruleDefinitions'];
         $rules = &SpiceConfig::getInstance()->config['krest']['rateLimiting']['rules'];
 
-        $kasimir = isset( $rulesApplied[$userId] ) ? $userId : '*';
+        $ruleUserID = $userId ?: '*';
 
         # Get the rules from config.php (noticing specific rules for a specific user, noticing specific rules for the http method of the request):
-        foreach ( [ '*', $httpMethod ] as $m )
-            if ( isset( $rules[$kasimir][$m] ))
-                foreach ( $rules[$kasimir][$m] as $v ) self::$myRules[$m][$v] = &$ruleDefinitions[$v];
+        foreach ( [ '*', $httpMethod ] as $m ) {
+            if (isset($rules[$ruleUserID][$m])) {
+                foreach ($rules[$ruleUserID][$m] as $v) {
+                    self::$myRules[$m][$v] = &$ruleDefinitions[$v];
+                }
+            }
+        }
 
     }
 
@@ -83,73 +87,36 @@ class RESTRateLimiter {
 
                 # There is already user data for this rule:
                 if ( isset( self::$data[$method][$ruleName] )) {
+                    foreach ( self::$data[$method][$ruleName]['timestamps'] as $index => $value ) {
+                        if( $value < $now - $rule['duration']) unset( self::$data[$method][$ruleName]['timestamps'][$index] );
+                    }
 
                     # The last request for this rule was to long ago, so renew timestamp and counter:
-                    if ( self::$data[$method][$ruleName]['timestamp'] < ( $now - $rule['duration'] )) {
-
-                        self::$data[$method][$ruleName]['timestamp'] = $now;
-                        self::$data[$method][$ruleName]['count'] = 1;
-                        $doSave = true;
-
-                    # The last request for this rule is young enough to be relevant.
+                    if ( count(self::$data[$method][$ruleName]['timestamps']) > $rule['limit']) {
+                        $doBlock = true;
                     } else {
-
-                        # The limit is not reached yet, so only count the request.
-                        if ( self::$data[$method][$ruleName]['count'] < $rule['limit'] ) {
-                            self::$data[$method][$ruleName]['count']++;
-                            $doSave = true;
-
-                        # The limit is reached, so the request has to blocked and the retry-after-seconds are to be calculated.
-                        } else {
-                            $doBlock = true;
-                            $dummy = $rule['duration'] - floor( ( $now - self::$data[$method][$ruleName]['timestamp'] ));
-                            if ( $dummy > $retryAfter ) $retryAfter = $dummy;
-                        }
-
+                        // add the timestamp
+                        self::$data[$method][$ruleName]['timestamps'][] = $now;
                     }
 
                 # There is no user data yet for this rule. Create it:
                 } else {
-
                     if ( !isset( self::$data[$method] )) self::$data[$method] = [];
-                    self::$data[$method][$ruleName] = [ 'timestamp' => $now, 'count' => 1 ];
-                    $doSave = true;
-
+                    self::$data[$method][$ruleName] = [ 'timestamps' => [$now]];
                 }
+
+                $doSave = true;
             }
         }
 
-        # Remove old user data (but do the check not every time).
-        if ( time() % 123 === 0 ) $doSave = self::cleanData() || $doSave;
-
-        if ( $doSave ) self::saveData();
-        else self::unlockFile();
+        if ( $doSave ) {
+            self::saveData();
+        } else {
+            self::unlockFile();
+        }
 
         # The blocking:
-        if ( $doBlock ) throw ( new TooManyRequestsException())->setRetryAfter( $retryAfter );
+        if ( $doBlock ) throw ( new TooManyRequestsException());
 
     }
-
-    # Maybe somebody changed the rules in the config.php. Then there might be user data, which is not longer necessary.
-    private static function cleanData() {
-
-        $now = microtime(true);
-
-        $weekBefore = $now - 5;#7*24*60*60; # All data older than one week will be deleted.
-
-        $doSave = false;
-
-        foreach ( self::$data as $method => $dataForMethod ) {
-            foreach ( $dataForMethod as $ruleName => $data ) {
-                if ( $data['timestamp'] < $weekBefore ) {
-                    unset( self::$data[$method][$ruleName] );
-                    $doSave = true;
-                }
-            }
-        }
-
-        return $doSave;
-
-    }
-
 }

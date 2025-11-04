@@ -3,20 +3,20 @@
 
 namespace SpiceCRM\modules\SchedulerJobs;
 
+use Cron\CronExpression;
 use DateTime;
 use DateTimeZone;
-use Cron\CronExpression;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\modules\SchedulerJobTasks\SchedulerJobTask;
 use SpiceCRM\modules\Mailboxes\Mailbox;
-use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\modules\SchedulerJobTasks\SchedulerJobTask;
 
 /**
  * handles loading/creating jobs and their jobs to manage executing crontab jobs
@@ -182,6 +182,12 @@ class SchedulerJob extends SpiceBean
     public function afterRun(SchedulerJobTask $lastTask)
     {
         global $overCLI;
+
+        // reload scheduler job data:
+        // in case you changed the scheduled time or the hold_on_failure option while the job was running,
+        // your changes would be overwritten in this afterRun
+        // reload the record
+        $this->retrieve($this->id, false, true, false);
 
         if ($overCLI) {
             $this->process_id = '';

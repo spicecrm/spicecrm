@@ -2,10 +2,10 @@
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\DataStreams\StreamFactory;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\Soap\SpiceSoap;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 /**
  * generate wssdl with <url>/apoi/soap?wsdl?style=rpc|document&use=encoded|literal
@@ -32,9 +32,6 @@ StreamFactory::initialize();
 
 // load the modules first
 SpiceModules::getInstance()->loadModules();
-
-// load the vardefs
-//SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
 
 if (!empty(SpiceConfig::getInstance()->config['session_dir'])) {
     session_save_path(SpiceConfig::getInstance()->config['session_dir']);

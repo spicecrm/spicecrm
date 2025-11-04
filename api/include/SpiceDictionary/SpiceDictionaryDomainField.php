@@ -3,10 +3,8 @@
 namespace SpiceCRM\includes\SpiceDictionary;
 
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
-use stdClass;
-use SpiceCRM\includes\database\DBManager;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use stdClass;
 
 class SpiceDictionaryDomainField
 {
@@ -39,8 +37,7 @@ class SpiceDictionaryDomainField
     }
 
     /**
-     * returns the definition as it is stored then in the end if sysdictionaryfields for the cached json values
-     *
+     * returns the dictionary item definition
      * @param SpiceDictionaryItem|null $sysdictionaryItem
      * @return void
      */

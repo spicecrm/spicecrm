@@ -7,6 +7,8 @@ import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 import {navigationtab} from '../../services/navigationtab.service';
 import {Router} from '@angular/router';
+import {session} from "../../services/session.service";
+import {toast} from "../../services/toast.service";
 
 /**
  * the footer in the object-related-card
@@ -64,7 +66,18 @@ export class ObjectRelatedCardFooter implements OnInit {
      */
     public paginating: boolean = false;
 
-    constructor(public language: language, public relatedmodels: relatedmodels, public model: model, public router: Router, public navigationtab: navigationtab) {
+    /**
+     * flag that indicates if it should display entries assigned to the user
+     */
+    public assignedToMe: boolean = false;
+
+    constructor(public language: language,
+                public relatedmodels: relatedmodels,
+                public session: session,
+                public model: model,
+                public toast: toast,
+                public router: Router,
+                public navigationtab: navigationtab) {
         this.componentid = this.model.utils.generateGuid();
     }
 
@@ -140,6 +153,25 @@ export class ObjectRelatedCardFooter implements OnInit {
         }
     }
 
+    public showAssignedToMe() {
+        this.assignedToMe = !this.assignedToMe;
+        this.relatedmodels.searchTerm = this.assignedToMe ? this.session.authData.userId : '';
+        this.relatedmodels.getData().subscribe({
+            next: () => {
+                if (this.relatedmodels.items.length == 0) {
+                    this.assignedToMe = false;
+                    this.relatedmodels.searchTerm = '';
+                    this.relatedmodels.getData();
+                    this.toast.sendToast('LBL_NO_ASSIGNED_ENTRIES', 'info');
+                }
+            }
+        })
+    }
+
+    get iconColor() {
+        return this.assignedToMe ? 'slds-text-link' : '';
+    }
+
     /**
      * getter if the next button should be disabled
      */
@@ -167,8 +199,7 @@ export class ObjectRelatedCardFooter implements OnInit {
      */
     public lastPage() {
         if (!this.nextDisabled) {
-            let lastOffset = Math.floor(this.relatedmodels.count / this.relatedmodels.loaditems) * this.relatedmodels.loaditems;
-            this.relatedmodels.offset = lastOffset;
+            this.relatedmodels.offset = Math.floor((this.relatedmodels.count - 1) / this.relatedmodels.loaditems) * this.relatedmodels.loaditems;
             this.paginating = true;
             this.relatedmodels.getData(true).subscribe(() => this.paginating = false);
         }

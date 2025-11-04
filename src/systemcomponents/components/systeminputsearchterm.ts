@@ -124,7 +124,7 @@ export class SystemInputSearchTerm implements ControlValueAccessor {
         if (this.searchTimeoutId) window.clearTimeout(this.searchTimeoutId);
 
         // clear the search term
-        this._searchTerm = '';
+        this.searchTerm = '';
         this.onSearchTermClear.emit();
     }
 

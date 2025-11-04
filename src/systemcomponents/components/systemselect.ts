@@ -45,7 +45,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
     /**
      * when true emit and receive the id as ngModel value
      */
-    @Input('system-select-id-only') set setIdOnly(value: boolean) {
+    @Input('system-select-id-only') set setIdOnly(value) {
         this.idOnly = value !== false;
     }
     @Input() public idOnly: boolean = false;
@@ -114,8 +114,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
         this.subscription.add(this.options.changes.subscribe(() => {
             // rebuild the search list options on content change
             this.searchList = this.generateSearchList();
-            this.value = undefined;
-            this.focusedItem = undefined;
+            this.setFocusedItem(this.value);
             this.cdRef.detectChanges();
         }));
     }
@@ -145,6 +144,24 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
     }
 
     /**
+     * set focused item from id or object
+     * @param focusedItemOrId
+     * @private
+     */
+    private setFocusedItem(focusedItemOrId: string | SystemSelectNgModelValue) {
+
+        if(typeof focusedItemOrId == 'string') {
+            this.focusedItem = this.searchList.find(e => e.id == focusedItemOrId);
+        } else {
+            this.focusedItem = focusedItemOrId;
+        }
+
+        if (this.focusedItem) {
+            this.inputIsVisible = false;
+        }
+    }
+
+    /**
      * Write a new focusedItemOrString to the element.
      * @param focusedItemOrString
      */
@@ -156,17 +173,10 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
             return;
         }
 
-        if(typeof focusedItemOrString == 'string') {
-            const focusedItem = this.searchList.find(e => e.id == focusedItemOrString);
-            if (!focusedItem) {
-                this.value = focusedItemOrString;
-            } else {
-                this.focusedItem = focusedItem;
-                this.inputIsVisible = false;
-            }
-        } else {
-            this.focusedItem = focusedItemOrString;
-            this.inputIsVisible = false;
+        this.setFocusedItem(focusedItemOrString);
+
+        if (!this.focusedItem && typeof focusedItemOrString == 'string') {
+            this.value = focusedItemOrString;
         }
 
         this.cdRef.detectChanges();

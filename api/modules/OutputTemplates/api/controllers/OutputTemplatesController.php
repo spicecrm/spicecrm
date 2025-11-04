@@ -3,19 +3,20 @@
 namespace SpiceCRM\modules\OutputTemplates\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\ConflictException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\RESTManager;
-use SpiceCRM\includes\SpiceFTSManager\ElasticHandler;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceSocket\SpiceSocket;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\modules\OutputTemplates\OutputTemplate;
 
 class OutputTemplatesController
@@ -250,5 +251,61 @@ class OutputTemplatesController
 
 
         return $content;
+    }
+    /**
+     * compiles the email body for a given module
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function liveCompileEmailBody(Request $req, Response $res, array $args): Response
+    {
+        $params = $req->getParsedBody();
+
+        $templateBean = \SpiceCRM\data\BeanFactory::getBean($args['module'], $args['id']);
+        $field = $params['field'] ?? 'body';
+        $templateBean->$field = $params['html'];
+
+        $parentBean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
+
+        if(!$parentBean){
+            throw new NotFoundException("record for {$args['module']} with ID {$args['id']} not found");
+        }
+
+        # set the current user to the one assigned to the task. fallback set the admin user
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $user = BeanFactory::getBean('Users', $parentBean->assigned_user_id ?: '1');
+        AuthenticationController::getInstance()->setCurrentUser($user);
+        $mailbox = BeanFactory::getBean('Mailboxes', $parentBean->mailbox_id);
+        $styles = !$mailbox ? [] : [$mailbox->stylesheet];
+
+        switch ($templateBean->_module) {
+            case 'OutputTemplates':
+                $field = 'html';
+                $html = $templateBean->parse($parentBean, $field);
+                break;
+            case 'LandingPages':
+                $parsedTpl = $templateBean->parse($parentBean, $field);
+                $field = 'html';
+                $html = $parsedTpl['content'];
+                break;
+            case 'TextMessages':
+                $field = 'description';
+                $parsedTpl = $templateBean->parse($parentBean);
+                $html = DBUtils::fromHtml(wordwrap($parsedTpl, true));
+                break;
+            default:
+                $field = 'html';
+                $parsedTpl = $templateBean->parse($parentBean, null, [], $styles);
+                $html = $parsedTpl['body_html'];
+        }
+
+
+        # reset the current user for the system after parsing
+        AuthenticationController::getInstance()->setCurrentUser($current_user);
+
+        return $res->withJson([$field => $html, true]);
     }
 }

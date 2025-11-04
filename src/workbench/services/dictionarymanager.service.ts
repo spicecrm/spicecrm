@@ -71,11 +71,6 @@ export class dictionarymanager {
     public dictionaryitems: DictionaryItem[] = [];
 
     /**
-     * the dictionary items
-     */
-    public dictionaryfields: any[] = [];
-
-    /**
      * the loaded list of dictionaryDefinitions
      */
     public dictionarydatabasefields: DictionaryDatabaseField[] = [];
@@ -99,11 +94,6 @@ export class dictionarymanager {
      * the additonal relationship fields for the n:m relationships
      */
     public dictionaryrelationshipfields: RelationshipField[] = [];
-
-    /**
-     * the dictionary relationships
-     */
-    public dictionaryrelationshiprelatefields: RelationshipRelateField[] = [];
 
     /**
      * the dictionary relationships
@@ -149,6 +139,8 @@ export class dictionarymanager {
      */
     public settings: any;
 
+    public vardefFields: any[] = [];
+
     constructor(public backend: backend,
                 public metadata: metadata,
                 public language: language,
@@ -158,7 +150,6 @@ export class dictionarymanager {
                 public modal: modal,
                 public configurationService: configurationService) {
         this.loadDictionaryDefinitions();
-        this.loadDictionaryFields();
         this.loadWords();
 
         // set teh change scope
@@ -172,7 +163,14 @@ export class dictionarymanager {
      */
     public updateRelationshipInArray(relationship: Relationship) {
         const idx = this.dictionaryrelationships.findIndex(r => r.id == relationship.id);
-        this.dictionaryrelationships[idx] = {...relationship};
+
+        // if the relationship not found push it the to array instead of update
+        if (idx == -1) {
+            this.pushNewRelationshipToArray(relationship);
+        } else {
+            this.dictionaryrelationships[idx] = {...relationship};
+        }
+
         // trigger the change detection
         this.dictionaryrelationships= [...this.dictionaryrelationships];
 
@@ -180,22 +178,17 @@ export class dictionarymanager {
 
     /**
      * update the input relationship in the relationship array
-     * @param relationship
+     * @param relationshipId
+     * @param polymorphs
      */
-    public updateRelationshipPolymorphsInArray(polymorphs: RelationshipPolymorph[]) {
-        polymorphs.forEach(p => {
-            const idx = this.dictionaryrelationshippolymorphs.findIndex(x => x.id == p.id);
-            if(idx >= 0) {
-                this.dictionaryrelationshippolymorphs[idx] = {...p};
-            } else {
-                this.dictionaryrelationshippolymorphs.push({...p})
-            }
-        })
+    public updateRelationshipPolymorphsInArray(relationshipId: string, polymorphs: RelationshipPolymorph[]) {
+        this.dictionaryrelationshippolymorphs = this.dictionaryrelationshippolymorphs.filter(p => p.relationship_id != relationshipId);
+        this.dictionaryrelationshippolymorphs.push(...polymorphs)
     }
 
     /**
      * update the input relationshipfields in the relationshipfields array
-     * @param relationship
+     * @param fields
      */
     public updateRelationshippFieldsInArray(fields: RelationshipField[]) {
         fields.forEach(f => {
@@ -231,7 +224,6 @@ export class dictionarymanager {
             'dictionarydefinitions',
             'dictionaryitems',
             'dictionaryrelationships',
-            'dictionaryrelationshiprelatefields',
             'dictionaryindexes',
             'dictionaryindexitem'
         ];
@@ -305,7 +297,7 @@ export class dictionarymanager {
                 this.dictionaryrelationshiptypes = res.dictionaryrelationshiptypes;
                 this.dictionaryrelationships = res.dictionaryrelationships;
                 this.dictionaryrelationshippolymorphs = res.dictionaryrelationshippolymorphs;
-                this.dictionaryrelationshiprelatefields = res.dictionaryrelationshiprelatefields;
+                this.vardefFields = res.vardefFields;
                 this.dictionaryrelationshipfields = res.dictionaryrelationshipfields;
                 this.dictionaryindexes = res.dictionaryindexes;
                 this.dictionaryindexitems = res.dictionaryindexitems;
@@ -318,17 +310,6 @@ export class dictionarymanager {
             },
             error: () =>{
                 awaitModal.emit(true);
-            }
-        });
-    }
-
-    /**
-     * load the fields
-     */
-    public loadDictionaryFields() {
-        this.backend.getRequest('dictionary/fields').subscribe({
-            next: (fields) => {
-                this.dictionaryfields = fields
             }
         });
     }
@@ -422,6 +403,15 @@ export class dictionarymanager {
     }
 
     /**
+     * translate domain field name
+     * @param fieldName
+     * @param dictionaryItem
+     */
+    public translateDomainFieldName(fieldName, dictionaryItem): string {
+        return fieldName.replace('{sysdictionaryitems.name}', dictionaryItem.name);
+    }
+
+    /**
      * returns the domain name for the given id
      *
      * @param domainid
@@ -458,7 +448,7 @@ export class dictionarymanager {
      *
      * @param refid
      */
-    public getDictionaryDefinitionItems(refid) {
+    public getDictionaryDefinitionItems(refid): DictionaryItem[] {
         let itemsArray: any[] = [];
 
         for (let item of this.dictionaryitems.filter(i => i.sysdictionarydefinition_id == refid).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
@@ -470,49 +460,6 @@ export class dictionarymanager {
         }
 
         return itemsArray;
-    }
-
-    /**
-     * save the settings
-     */
-    public save() {
-        let changes = this.determineChangedRecords();
-        this.backend.postRequest('dictionary/definitions', {}, changes).subscribe({
-            next: res => {
-                this.loaded = JSON.stringify(res);
-                this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
-            },
-            error: () => {
-                this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
-            }
-        });
-    }
-
-    /**
-     * check which records are changed
-     */
-    public determineChangedRecords() {
-        let loaded = JSON.parse(this.loaded);
-        let changed = {
-            dictionarydefinitions: [],
-            dictionaryitems: [],
-            dictionaryrelationships: [],
-            dictionaryrelationshiprelatefields: [],
-            dictionaryindexes: [],
-            dictionaryindexitems: []
-        };
-
-        for (let item in changed) {
-            for (let rec of this[item]) {
-                let dd = loaded[item].find(d => d.id == rec.id);
-                if (!dd || (dd && JSON.stringify(dd) != JSON.stringify(rec))) {
-                    changed[item].push(rec);
-                }
-            }
-        }
-
-        return changed;
-
     }
 
     /**
@@ -563,29 +510,6 @@ export class dictionarymanager {
     }
 
     /**
-     *
-     * @param definition
-     */
-    public repairDictionaryOld(definitionid) {
-        let awaitModal =  this.modal.await('LBL_REPAIRING');
-        let definition = this.dictionarydefinitions.find(d => d.id == definitionid)
-        this.backend.postRequest('admin/repair/dictionary', {}, {dictionaries: [definition.name]}).subscribe({
-            next: (result) => {
-                if (result.success) {
-                    this.toast.sendToast(this.language.getLabel('LBL_DICTIONARY_REPAIRED'), 'success', result.sql, !result.sql);
-                } else {
-                    this.toast.sendToast(this.language.getLabel('LBL_NO_DATA'), 'error', result.msg);
-                }
-                awaitModal.emit(true);
-            },
-            error: () => {
-                this.toast.sendToast(this.language.getLabel('ERR_REPAIRING_DICTIONARY'), 'error');
-                awaitModal.emit(true);
-            }
-        });
-    }
-
-    /**
      * reload fielddefs frontend cache
      */
     public handleAfterActivate() {
@@ -620,4 +544,30 @@ export class dictionarymanager {
     ngOnDestroy(): void {
     }
 
+    /**
+     * generate and download json of the definition fields
+     */
+    public jsonExport() {
+
+        const isLoading = this.modal.await('LBL_PROCESSING');
+
+        this.backend.getDownloadPostRequestFile(`dictionary/definition/${this.currentDictionaryDefinition}/export/json`).subscribe({
+            next: res => {
+                isLoading.next(true);
+                isLoading.complete();
+                const a: HTMLAnchorElement = document.createElement("a");
+                document.body.appendChild(a);
+                a.href = res;
+                a.type = 'application/json'
+                a.download = `${this.getCurrentDefinition().name}.json`;
+                a.click();
+                a.remove();
+            },
+            error: () => {
+                isLoading.next(true);
+                isLoading.complete();
+                this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+            },
+        });
+    }
 }

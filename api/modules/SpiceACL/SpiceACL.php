@@ -3,14 +3,12 @@
 
 namespace SpiceCRM\modules\SpiceACL;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
 use SpiceCRM\extensions\modules\SpiceACLTerritories\SpiceACLTerritory;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\modules\SpiceACL\SpiceACLUsers;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 class SpiceACL
 {
@@ -698,8 +696,8 @@ class SpiceACL
      */
     public function getACLObjectValues($aclObjectId){
         if(!isset($this->aclObjectValues[$aclObjectId])){
-            $standardValues = DBManagerFactory::getInstance()->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues, spiceaclmodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclmodulefields.id AND spiceaclobject_id='{$aclObjectId}'");
-            $customValues = DBManagerFactory::getInstance()->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclcustommodulefields.name FROM spiceaclobjectvalues, spiceaclcustommodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclcustommodulefields.id AND spiceaclobject_id='$aclObjectId}'");
+            $standardValues = DBManagerFactory::getInstance()->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues, spiceaclmodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclmodulefields.id AND spiceaclobject_id='$aclObjectId'");
+            $customValues = DBManagerFactory::getInstance()->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclcustommodulefields.name FROM spiceaclobjectvalues, spiceaclcustommodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclcustommodulefields.id AND spiceaclobject_id='$aclObjectId'");
             $this->aclObjectValues[$aclObjectId] = array_merge($standardValues ?: [], $customValues ?: []);
         }
         return $this->aclObjectValues[$aclObjectId];

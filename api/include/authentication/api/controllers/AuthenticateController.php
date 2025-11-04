@@ -3,27 +3,26 @@
 
 namespace SpiceCRM\includes\authentication\api\controllers;
 
+use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRM2FAUtils;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\SessionExpiredException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\modules\SystemTenants\SystemTenant;
 use SpiceCRM\modules\Users\User;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 
 class AuthenticateController
@@ -108,11 +107,11 @@ class AuthenticateController
                 switch ($method) {
                     case 'sms':
                         $message = 'Enter the code sent to your email';
-                        SpiceCRM2FAUtils::send2FACodeBySMS($user->id);
+                        SpiceCRM2FAUtils::send2FACodeBySMS($user);
                         break;
                     case 'email':
                         $message = 'Enter the sms code sent to your mobile device';
-                        SpiceCRM2FAUtils::send2FACodeByEmail($user->id);
+                        SpiceCRM2FAUtils::send2FACodeByEmail($user);
                         break;
                     case 'one_time_password':
                         $message = 'Enter the one-time password code displayed on the authenticator app in your mobile device';
@@ -140,11 +139,39 @@ class AuthenticateController
      * @param Response $res
      * @param array $args
      * @return Response
-     * @throws Exception
      * @throws ForbiddenException
      * @throws UnauthorizedException
+     * @throws \Exception
      */
     public function authSetNewPassword(Request $req, Response $res, array $args): Response
+    {
+        $parsedBody = $req->getParsedBody();
+
+        /** @var User $userObj */
+        $userObj = BeanFactory::getBean("Users", $args['id']);
+
+        if (!$userObj) {
+            throw new UnauthorizedException("No User with id " . $args['id']);
+        }
+
+        if ($userObj->external_auth_only == 1) {
+            throw new UnauthorizedException("Password Reset due to external_auth_only unavailable");
+        }
+
+        self::checkCanSetPassword();
+
+        $sugarAuthenticationObj = AuthenticationController::getInstance()->getPasswordUtilsInstance();
+        $sugarAuthenticationObj->setNewPassword($userObj, $parsedBody['newPassword'], $parsedBody['sendBySystem'], $parsedBody['forceReset']);
+
+        return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * check if the current user can set a new password for other users
+     * @return void
+     * @throws ForbiddenException
+     */
+    public static function checkCanSetPassword(): void
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $editEnabled = false;
@@ -160,29 +187,6 @@ class AuthenticateController
         }
 
         if (!$editEnabled) throw (new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
-
-
-        $parsedBody = $req->getParsedBody();
-        /** @var User $userObj */
-        $userObj = BeanFactory::getBean("Users", $args['id']);
-        if (!$userObj) {
-            throw new UnauthorizedException("No User with id " . $args['id']);
-        }
-
-        // check external auth only flag and reset it if the user is an admin.
-        // if the user is not an admin throw an error
-        if ($userObj->external_auth_only == "1" && !$current_user->is_admin) {
-            throw new UnauthorizedException("Password Reset due to external_auth_only unavailable");
-        } else if ($userObj->external_auth_only == "1"){
-            $userObj->external_auth_only = 0;
-            $userObj->save();
-        }
-
-        $sugarAuthenticationObj = AuthenticationController::getInstance()->getPasswordUtilsInstance();
-        $sugarAuthenticationObj->setNewPassword($userObj, $parsedBody['newPassword'], $parsedBody['sendEmail'], $parsedBody['forceReset']);
-
-        return $res->withJson(['success' => true]);
-
     }
 
     /**
@@ -262,10 +266,12 @@ class AuthenticateController
      */
     public function validateTOTPCode( Request $req, Response $res, array $args): Response
     {
-        $this->checkCanManage2FA();
-
         $db = DBManagerFactory::getInstance();
         $forUser = $this->get2FAUserObject($req);
+
+        AuthenticationController::getInstance()->setCurrentUser($forUser);
+
+        $this->checkCanManage2FA();
 
         $record = $db->fetchOne("SELECT * FROM users_totp WHERE user_id = '{$forUser->id}' AND auth_status = 'C' AND deleted = 0");
 
@@ -373,10 +379,10 @@ class AuthenticateController
 
         switch ($args['method']) {
             case 'sms':
-                SpiceCRM2FAUtils::send2FACodeBySMS($forUser->id);
+                SpiceCRM2FAUtils::send2FACodeBySMS($forUser);
                 break;
             case 'email':
-                SpiceCRM2FAUtils::send2FACodeByEmail($forUser->id);
+                SpiceCRM2FAUtils::send2FACodeByEmail($forUser);
                 break;
         }
 
@@ -444,10 +450,10 @@ class AuthenticateController
 
         switch ($args['method']){
             case 'sms':
-                 SpiceCRM2FAUtils::send2FACodeBySMS($currentUser->id);
+                 SpiceCRM2FAUtils::send2FACodeBySMS($currentUser);
                 break;
             case 'email':
-                 SpiceCRM2FAUtils::send2FACodeByEmail($currentUser->id);
+                 SpiceCRM2FAUtils::send2FACodeByEmail($currentUser);
                 break;
         }
 

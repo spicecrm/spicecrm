@@ -2,8 +2,8 @@
 namespace SpiceCRM\includes\google;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class GoogleAPIRestHandler
@@ -28,7 +28,6 @@ class GoogleAPIRestHandler
             $lang = strtolower(substr($currentLanguage, 0, 2));
         }
 
-        // https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=sol4 it&inputtype=textquery&fields=photos,formatted_address,name,place_id&key=AIzaSyCmw4Z9h4lf9eUGVyjKPyr9yr1s8WeXlPM
         $geocodingkey = SpiceConfig::getInstance()->config['googleapi']['geocodingkey'] ?: SpiceConfig::getInstance()->config['googleapi']['mapskey'];
 
         // Timeout in seconds

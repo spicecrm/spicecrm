@@ -21,5 +21,15 @@
                 </div>
             </div>
         </system-section>
+        <system-section titlelabel="LBL_CLICKS_TRACKING" [alwaysExpanded]="false" class="spice-collapsible-tab-grow">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_TRACK_ALL"/>
+                </label>
+                <div class="slds-p-vertical--xx-small">
+                    <system-checkbox [(ngModel)]="body.attributes['trackinglinkall']"/>
+                </div>
+            </div>
+        </system-section>
     </div>
 }

@@ -2,24 +2,22 @@
 
 namespace SpiceCRM\includes\SpiceUI;
 
-use SpiceCRM\data\BeanFactory;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFavorites\SpiceFavorites;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSActivityHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
-use stdClass;
 
 class SpiceUIRESTHandler
 {
@@ -1343,35 +1341,6 @@ class SpiceUIRESTHandler
         }
 
         return $navElements;
-    }
-
-    private function getTableFieldTypes(string $tableName, array $fields)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $dictionaryDefinition = $db->fetchOne("SELECT id FROM sysdictionarydefinitions WHERE name = '{$tableName}'");
-        $dictionaryDefinitionId = $dictionaryDefinition['id'];
-
-        $dictionaryFieldDefinitions = $db->fetchAll("SELECT fielddefinition FROM sysdictionaryfields WHERE sysdictionarydefinition_id = '{$dictionaryDefinitionId}'");
-
-        $requiredFieldNames = [];
-        foreach ($dictionaryFieldDefinitions as $field) {
-            $fieldDefinition = json_decode($field['fielddefinition'], true);
-            if (isset($fieldDefinition['required']) && $fieldDefinition['required'] == 1) {
-                $requiredFieldNames[] = $fieldDefinition['name'];
-            }
-        }
-
-        foreach ($fields as &$field) {
-            $field['required'] = in_array($field['name'], $requiredFieldNames);
-
-            $def = $dictionaryFieldDefinitions[$field['name']] ?? null;
-            if (empty($field['type']) && $def) {
-                $field['type'] = $def['type'] ?? '';
-            }
-        }
-
-        return $fields;
     }
 
     function getAllModules()

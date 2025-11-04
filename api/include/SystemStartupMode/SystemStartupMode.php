@@ -3,8 +3,8 @@
 namespace SpiceCRM\includes\SystemStartupMode;
 
 use Exception;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceSingleton;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -26,7 +26,8 @@ class SystemStartupMode extends SpiceSingleton
      */
     public static function checkDictionary()
     {
-        if (SpiceCache::get(SpiceDictionary::cachename)) {
+        # todo refactor
+        /*if (SpiceCache::get(SpiceDictionary::cachename)) {
             return;
         }
 
@@ -36,7 +37,7 @@ class SystemStartupMode extends SpiceSingleton
 
         if (!$hasDBCache) {
             SystemStartupMode::setRecoveryMode(true);
-        }
+        }*/
     }
 
     /**

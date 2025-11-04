@@ -4,9 +4,9 @@ namespace SpiceCRM\includes\SpiceUI;
 
 use DateTime;
 use DirectoryIterator;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
@@ -43,7 +43,7 @@ class SpiceUIConfHandler
         'sysgsuiteuserconfig'
     ];
 
-    static public $dataFormat = 2;
+    static public $dataFormat = 3;
     static public $allTablenamesOfDB = null;
     static public $blacklistedTables = [];
     static public $selectableTables = [];
@@ -150,7 +150,7 @@ class SpiceUIConfHandler
         if (self::checkTableHasPackageField($tablename)) {
             $where = empty($packages) ? "where package != 'system' OR package is null" : "where package in ('" . implode("','", explode(',', $packages)) . "')";
         } else {
-            $where = '';
+            if ( empty( $packages )) $where = ''; else return [];
         }
 
         $result = $db->query(sprintf("SELECT * FROM %s $where", $db->quote($tablename)), false, '', true);

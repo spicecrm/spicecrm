@@ -41,12 +41,12 @@
 
 namespace SpiceCRM\includes\SpiceUI;
 
-use SpiceCRM\data\Relationships\RelationshipFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
-use SpiceCRM\includes\database\DBManager;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainFields;
@@ -55,9 +55,6 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidations;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationships;
-use SpiceCRM\includes\SugarObjects\VardefManager;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\includes\authentication\AuthenticationController;
 
 class SpiceUIConfLoader
 {
@@ -140,16 +137,7 @@ class SpiceUIConfLoader
      */
     public function __construct($endpoint = null)
     {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $this->loader = new SpiceUILoader($endpoint);
-
-        // module dictionaries are unknown at that time
-        // load them to make sure DBManager will have proper content in global $dictionary
-        SpiceModules::getInstance()->loadModules();
-        foreach(SpiceModules::getInstance()->getModuleList() as $idx => $module){
-            VardefManager::loadVardef($module, SpiceModules::getInstance()->getBeanName($module));
-        }
-
     }
 
     /**
@@ -408,7 +396,7 @@ class SpiceUIConfLoader
     {
         if (in_array($table, ['sysfts', 'syslangs'])) return;
 
-        /** @var DBManager $db */
+        /** @var \SpiceCRM\includes\SpiceDictionary\database\DBManager $db */
         $db = DBManagerFactory::getInstance();
 
         //$deleteWhere = "package IN('" . implode("','", $packages) . "') OR package IS NULL OR package=''";
@@ -463,7 +451,7 @@ class SpiceUIConfLoader
         foreach ($dictionaryTables as $table) {
             $this->loadTableRecords($table, $response[$table], $packages);
         }
-
+        SpiceDictionary::getInstance()->clearSessionCache();
         SpiceDictionaryDomainValidations::getInstance()->reloadItems();
         SpiceDictionaryDomainFields::getInstance()->reloadItems();
         SpiceDictionaryDomains::getInstance()->reloadItems();
@@ -488,36 +476,10 @@ class SpiceUIConfLoader
                     $this->loadErrors[] = ['scope' => 'dictionary', 'name' => $dictionaryDef['name'], 'mismatch' => is_callable([$exception, 'getDetails']) ? $exception->getDetails() : null, 'message' => $exception->getMessage()];
                 }
             }
-
-            SpiceDictionary::getInstance()->loadDictionary();
-
-            $this->repairNewRelationships($response['sysdictionarydefinitions']);
         }
-
-        RelationshipFactory::getInstance()->loadRelationships(true);
 
         foreach ($dictionaryTables as $table) {
             unset($response[$table]);
-        }
-    }
-
-    /**
-     * repair relationships for new dictionaries
-     * @param array $dictionaries
-     * @return void
-     */
-    public function repairNewRelationships(array $dictionaries): void
-    {
-        foreach ($dictionaries as $dic) {
-
-            $dic = json_decode(base64_decode($dic), true);
-
-            SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($dic['id'], $dic['package']);
-            try {
-                SpiceDictionaryRelationships::repairDictionaryVardefRelationships($dic['id']);
-            } catch (\Throwable $exception) {
-                $this->loadErrors[] = ['scope' => 'dictionary' ,'name' => $dic['name'], 'message' => $exception->getMessage()];
-            }
         }
     }
 

@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {popup} from '../../services/popup.service';
@@ -44,7 +44,8 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
         public modal: modal,
         public backend: backend,
         public toast: toast,
-        public modelutilities: modelutilities
+        public modelutilities: modelutilities,
+        public cdref: ChangeDetectorRef
     ) {
         super(model, view, language, metadata, router);
     }
@@ -106,6 +107,15 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
                     this.updateRelateFilter();
                 })
             );
+
+            /*
+            this.subscriptions.add(
+                this.model.data$.subscribe(data => {
+                    this.cdref.detectChanges();
+                })
+            );
+            */
+
         }
     }
 
@@ -116,7 +126,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldconfig.relatefilterfield);
         if (fieldDefs) {
             this.relateFilter = {
-                module: this.relateType,
+                module: (this.fieldconfig.relatedfiltermodule ? this.fieldconfig.relatedfiltermodule : this.relateType),
                 relationship: this.fieldconfig.relatefilterrelationship,
                 id: this.model.getField(fieldDefs.id_name),
                 display: this.model.getField(this.fieldconfig.relatefilterfield),

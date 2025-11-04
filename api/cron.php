@@ -1,12 +1,12 @@
 <?php
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
 use SpiceCRM\includes\SpiceCronJobs\SpiceCronJobs;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_WARNING & ~E_CORE_WARNING & ~E_DEPRECATED);
@@ -38,12 +38,9 @@ date_default_timezone_set('UTC');
  * ------- load initial classes -------
  */
 SpiceConfig::getInstance();
-SpiceDictionaryHandler::loadMetaDataFiles();
+SpiceDictionaryHandler::loadLegacyFiles();
 StreamFactory::initialize();
 SpiceModules::getInstance()->loadModules();
-//SpiceDictionaryHandler::loadMetaDataDefinitions();
-// SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
-//$system_config = (new Administration())->retrieveSettings();
 
 SpiceLanguageManager::setCurrentLanguage();
 /**

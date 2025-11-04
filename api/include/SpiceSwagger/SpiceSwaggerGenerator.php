@@ -2,6 +2,8 @@
 namespace SpiceCRM\includes\SpiceSwagger;
 
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
 use Symfony\Component\Yaml\Yaml;
@@ -22,6 +24,14 @@ class SpiceSwaggerGenerator
     private $structureArray = [];
     private $selectedRoute;
     private $includeSubroutes;
+    /**
+     * @var array|null holds the modules
+     */
+    private array $modules = [];
+    /**
+     * @var array generated bean schemas
+     */
+    private array $beanSchemas = [];
 
     /**
      * SpiceSwaggerGenerator constructor.
@@ -38,10 +48,8 @@ class SpiceSwaggerGenerator
         $this->allExtensions = $allExtensions;
         $this->selectedRoute = $selectedRoute;
         $this->includeSubroutes = $includeSubroutes;
-
-
-        if ($modules) {
-            $this->instantiateGenericRoutes($modules);
+        if($modules) {
+            $this->modules = $modules;
         }
 
         $this->filterRoutes($extensions, $node);
@@ -55,16 +63,17 @@ class SpiceSwaggerGenerator
      * Generates all the necessary parts for the swagger file and converts it into the yaml format.
      *
      * @return string
+     * @throws Exception
      */
     public function generateSwaggerFile(): string {
         $this->generateStructure();
+        $this->generateComponents();
         $this->generateInfo();
         $this->generateTags();
 //        $this->generateSchemes();
         $this->generatePaths();
 //        $this->generateSecurityDefinitions();
 //        $this->generateDefinitions();
-        $this->generateComponents();
         $this->generateExternalDocs();
         return $this->convertToYaml();
     }
@@ -87,12 +96,12 @@ class SpiceSwaggerGenerator
 
     private function generateInfo():void {
         $infoArray = [];
-        $infoArray['description']    = 'Lorem ipsum dolor sit amet';
-        $infoArray['version']        = '2021.03.001';
+        $infoArray['description']    = 'SpiceCRM Swagger Definition';
+        $infoArray['version']        = '2025.02.001';
         $infoArray['title']          = 'SpiceCRM';
         $infoArray['termsOfService'] = '';
         $infoArray['contact']        = [
-            'email' => 'info@spicecrm.io',
+            'email' => 'info@spicecrm.com',
         ];
         /*$infoArray['license']        = [
             'name' => 'AGPL-3.0',
@@ -156,7 +165,7 @@ class SpiceSwaggerGenerator
         $pathsArray = [];
 
         foreach ($this->routes as $route) {
-                $path = new SpiceSwaggerPath($route);
+                $path = new SpiceSwaggerPath($route, $this->beanSchemas);
                 $pathRoute = $route['route'];
                 $pathMethod = $route['method'];
                 $pathsArray[$pathRoute][$pathMethod] = $path->generatePathArray();
@@ -186,12 +195,52 @@ class SpiceSwaggerGenerator
 
     /**
      * Generates components.
+     * @throws \Exception
      */
     private function generateComponents(): void {
-        $this->structureArray['components']['schemas']['GenericSchema'] = [
-            'type'   => 'string',
-            'format' => 'json',
+        $this->structureArray['components'] = [
+            'schemas' => [
+                'GenericSchema' => [
+                    'type' => 'string',
+                    'format' => 'json',
+                ]
+            ]
         ];
+
+        $this->generateBeanSchemas();
+    }
+
+    /**
+     * generate module schemas
+     * @return void
+     * @throws \Exception
+     */
+    private function generateBeanSchemas(): void
+    {
+        if($this->modules) {
+            foreach ($this->modules as $module) {
+
+                $moduleDetails = SpiceModules::getInstance()->getModuleDetails($module);
+
+                if (!SpiceUtils::isValidModule($module) || !$moduleDetails['bean']) continue;
+
+                $this->beanSchemas[] = $moduleDetails['bean'];
+
+                $properties = (new SpiceDictionaryDefinition($moduleDetails['sysdictionarydefinition_id']))->exportFields();
+                $properties = json_decode(json_encode($properties), true);
+
+                uksort($properties, function ($a, $b) {
+                    if ($a === 'id') return -1;
+                    if ($b === 'id') return 1;
+                    return strcmp($a, $b);
+                });
+
+                $this->structureArray['components']['schemas'][$moduleDetails['bean']] = [
+                    'type' => 'object',
+                    'properties' => $properties
+                ];
+            }
+        }
     }
 
     /**
@@ -199,7 +248,7 @@ class SpiceSwaggerGenerator
      */
     private function generateExternalDocs(): void {
         $this->structureArray['externalDocs']['description'] = 'Find out more about SpiceCRM';
-        $this->structureArray['externalDocs']['url']         = 'https://www.spicecrm.io/';
+        $this->structureArray['externalDocs']['url']         = 'https://www.spicecrm.com/';
     }
 
     /**
@@ -311,31 +360,5 @@ class SpiceSwaggerGenerator
             }
             $this->extensions[$extensionName] = $this->allExtensions[$extensionName];
         }
-    }
-
-    /**
-     * Appends the route list with module generic routes
-     * eg. instead of {beanName} generate Accounts/Contacts etc
-     *
-     * @param array $modules
-     */
-    private function instantiateGenericRoutes(array $modules): void {
-        foreach ($this->allRoutes as $route) {
-            if (strpos($route['route'], '{beanName}') !== false) {
-                foreach ($modules as $moduleName) {
-                    if (!SpiceUtils::isValidModule($moduleName)) {
-//                        throw new Exception('Invalid module name ' . $moduleName);
-                        continue;
-                    }
-
-                    $routeCopy = $route;
-                    $routeCopy['route'] = str_replace('{beanName}', $moduleName, $route['route']);
-                    unset($routeCopy['parameters']['beanName']);
-                    $this->allRoutes[$routeCopy['method'].':'.$routeCopy['route']] = $routeCopy;
-                    $this->routes[$routeCopy['method'].':'.$routeCopy['route']] = $routeCopy;
-                }
-            }
-        }
-
     }
 }

@@ -1,0 +1,13 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+    @if (fieldconfig.getModifiedUser) {
+        @if (!isLoading) {
+            <span system-model-popover module="Users" [id]="modifiedBy.id">{{modifiedBy.name}}</span>
+            <span>,&nbsp;{{formatedDate}}</span>
+        } @else {
+            <system-stencil *ngIf="isLoading"></system-stencil>
+        }
+    } @else {
+        {{formatedDate}}
+    }
+</field-generic-display>

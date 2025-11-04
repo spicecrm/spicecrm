@@ -8,14 +8,15 @@ use DateTime;
 use DateTimeZone;
 use DOMDocument;
 use DOMXPath;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SystemTemplateFunctions;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -332,14 +333,15 @@ class Compiler
                             $params = [];
 
                             // scenario 1: we have 1 parts only. This means NO additional parameters
-                            // $attributeParts[0] = bean.linkname as linkedbean (the full haystack returned when no match)
+                            // $attributeParts[0] = bean.linkname as linkedbean (the full haystack returned when no match) or
+                            // $attributeParts[0] = func.functionname as function (a template function to be called)
                             if ($countParts == 1) {
                                 $forArray = explode(" as ", $attributeParts[0]);
                             }
 
                             // scenario 2: we have 3 parts. This means additional parameters
                             // CR1000360 check on params (like filter)
-                            // $attributeParts[0] = bean.linkname
+                            // $attributeParts[0] = bean.linkname | func.functionname
                             // $attributeParts[1] = some_urlencode_sring (the string between the pipes)
                             // $attributeParts[2] = as linkedbean
                             if ($countParts == 3) {
@@ -351,7 +353,11 @@ class Compiler
 
                             if (str_starts_with($forArray[0], 'value.') && $this->additionalValues[explode('.', $forArray[0])[1]]) {
                                 $linkedBeans = $this->additionalValues[explode('.', $forArray[0])[1]];
-                            } else {
+                            } elseif (str_starts_with($forArray[0], 'func.')) {
+                                $tplFunctionName = explode('.', $forArray[0])[1];
+                                $linkedBeans = $this->doFunction($tplFunctionName, '', $beans) ;
+                            }
+                            else {
                                 $linkedBeans = $this->getLinkedBeans($forArray[0], NULL, $beans, $params); // CR1000360 added $params
                             }
                         }
@@ -361,8 +367,8 @@ class Compiler
                             if( $index === 0 ) $params[] = 'data-spicefor-first';
                             if ( $index === count($linkedBeans) - 1) $params[] = 'data-spicefor-last';
                             if ( $index > 0 and $index < count($linkedBeans) - 1 ) $params[] = 'data-spicefor-inner';
-                            if ( $index % 2 === 0 ) $params[] = 'data-spicefor-even';
-                            if ( $index % 2 === 1 ) $params[] = 'data-spicefor-odd';
+                            if ( (int)$index % 2 === 0 ) $params[] = 'data-spicefor-even';
+                            if ( (int)$index % 2 === 1 ) $params[] = 'data-spicefor-odd';
 
                             $spiceforParent = ( isset( $beans['spicefor'] ) ? $beans['spicefor'] : null );
                             $elements[] = $this->createNewElement(
@@ -375,8 +381,8 @@ class Compiler
                                         'first' => ( $index === 0 ),
                                         'last' => ( $index === count( $linkedBeans ) - 1 ),
                                         'inner' => ( $index > 0 and $index < count( $linkedBeans ) - 1 ),
-                                        'even' => ( $index % 2 === 0 ),
-                                        'odd' => ( $index % 2 === 1 ),
+                                        'even' => ( (int)$index % 2 === 0 ),
+                                        'odd' => ( (int)$index % 2 === 1 ),
                                         'parent' => $spiceforParent,
                                         'total' => count( $linkedBeans )
                                     ])
@@ -432,6 +438,10 @@ class Compiler
                         $node = $this->parseRSSFeed($node);
 
                         $elements[] = $this->createNewElement($node, $beans);
+                    } else if ($node->getAttribute('data-media-article')) {
+
+                        $node = $this->parseMediaArticle($node);
+                        $elements[] = $this->createNewElement($node, $beans);
                     } else {
                         $elements[] = $this->createNewElement($node, $beans);
                     }
@@ -439,6 +449,60 @@ class Compiler
             }
         }
         return $elements;
+    }
+
+    /**
+     * read the media article content and fill in the part elements with its content
+     * @param \DOMElement $node
+     * @return \DOMElement
+     */
+    private function parseMediaArticle(\DOMElement $node)
+    {
+        $article = BeanFactory::getBean('MediaArticles', $node->getAttribute('data-media-article'));
+
+        if (!$article) return $node;
+
+        $publicUrl = SpiceConfig::getInstance()->config['mediafiles']['public_url'] ?? 'https://cdn.spicecrm.io/';
+
+        $finder = new DomXPath($node->ownerDocument);
+
+        $mediaFiles = null;
+
+        $articleParts = $finder->query("//*[@data-media-article-part]", $node);
+
+        foreach ($articleParts as $articlePart) {
+
+            [$scope, $value] = explode('.', $articlePart->getAttribute('data-media-article-part'));;
+
+            switch ($scope) {
+                case 'article':
+                    foreach ($articlePart->childNodes as $childNode) {
+                        if (get_class($childNode) != 'DOMElement') continue;
+                        $childNode->nodeValue = $article->$value;
+                    }
+                    break;
+                case 'media_article_image_size':
+
+                    # load the media files when needed
+                    if (!$mediaFiles) {
+                        $mediaFiles = $article->get_linked_beans('mediafiles');
+                    }
+
+                    foreach ($mediaFiles as $mediaFile) {
+                        if ($mediaFile->media_article_image_size != $value) continue;
+
+                        foreach ($articlePart->getElementsByTagName('img') as $childNode) {
+                            $childNode->setAttribute('src', "$publicUrl$mediaFile->id");
+                        }
+
+                        break;
+                    }
+                    break;
+
+            }
+        }
+
+        return $node;
     }
 
     /**
@@ -588,13 +652,13 @@ class Compiler
                     case 'data-spicefor-odd':
                         if(in_array($attribute->nodeName, $params)){
                             $newAttribute = $this->doc->createAttribute($attribute->nodeName);
-                            $newAttribute->value = $this->compileblock($attribute->nodeValue, $beans, $this->lang);
+                            $newAttribute->value = htmlspecialchars($this->compileblock($attribute->nodeValue, $beans, $this->lang));
                             $newElement->appendChild($newAttribute);
                         }
                         break;
                     default:
                         $newAttribute = $this->doc->createAttribute($attribute->nodeName);
-                        $newAttribute->value = $this->compileblock($attribute->nodeValue, $beans, $this->lang);
+                        $newAttribute->value = htmlspecialchars($this->compileblock($attribute->nodeValue, $beans, $this->lang));
                         $newElement->appendChild($newAttribute);
                 }
             }
@@ -624,6 +688,13 @@ class Compiler
         }
         // if we do not find it return an empty object
         if (!$obj) return [];
+
+        // if we have only part[0] => then we have an array of additional beans
+        // or some other object that we want to use in a template
+        if(count($parts) == 1){
+            if(!is_array($beans[$parts[0]])) return [];
+            return $beans[$parts[0]];
+        }
 
         // check that the field is a link
         if ($obj->field_defs[$parts[1]]['type'] != 'link') return [];
@@ -1010,7 +1081,7 @@ class Compiler
                         }
                         break;
                     case 'currency':
-                        // $currency = \SpiceCRM\data\BeanFactory::getBean('Currencies');
+                        // $currency = \SpiceCRM\includes\SpiceBeans\BeanFactory::getBean('Currencies');
                         $value = $raw ? $obj->{$part} : SpiceUtils::currencyFormatNumber($obj->{$part}, ['symbol_space' => true]);
                         break;
                     case 'html':

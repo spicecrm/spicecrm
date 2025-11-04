@@ -35,7 +35,7 @@ export class EmailCloneAttachmentsButton {
      * check ACLs & if we've got a parent on the Email
      */
     get disabled() {
-        return !this.modelattachments || !this.metadata.checkModuleAcl('Emails', 'create') && !this.activityTimeline.parent || !this.parentModel;
+        return !this.modelattachments || !this.model.data.attachments_count || !this.metadata.checkModuleAcl('Emails', 'create') && !this.activityTimeline.parent || !this.parentModel;
     }
 
     /**
