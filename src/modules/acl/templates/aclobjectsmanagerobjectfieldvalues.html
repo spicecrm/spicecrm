@@ -42,20 +42,31 @@
                             <option value="SW">starts with</option>
                             <option value="SN">does not start with</option>
                             <option value="CU">Current User Field</option>
+                            <option value="SYSHANDLER">System Handler</option>
                         </select>
                     </div>
                 </div>
             </td>
-            <td>
-                <div class="slds-form-element__control">
-                    <input type="text" class="slds-input" [disabled]="!view.isEditMode()" [value]="getFieldValue('value1', field.id)" (blur)="setFieldValue('value1', field.id, 'blur', $event)"/>
-                </div>
-            </td>
-            <td>
-                <div class="slds-form-element__control">
-                    <input type="text" class="slds-input" [disabled]="!view.isEditMode()" [value]="getFieldValue('value2', field.id)" (change)="setFieldValue('value2', field.id, 'change', $event)"/>
-                </div>
-            </td>
+            @if (getFieldValue('operator', field.id) == 'SYSHANDLER') {
+
+                <td colspan="2">
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" system-placeholder="LBL_HANDLER_CLASS" [disabled]="!view.isEditMode()" [value]="getFieldValue('value1', field.id)" (blur)="setFieldValue('value1', field.id, 'blur', $event)"/>
+                    </div>
+                </td>
+            } @else {
+                <td>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [disabled]="!view.isEditMode()" [value]="getFieldValue('value1', field.id)" (blur)="setFieldValue('value1', field.id, 'blur', $event)"/>
+                    </div>
+                </td>
+                <td>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [disabled]="!view.isEditMode()" [value]="getFieldValue('value2', field.id)" (change)="setFieldValue('value2', field.id, 'change', $event)"/>
+                    </div>
+                </td>
+            }
+
             <td>
                 <button class="slds-button slds-button--icon" [disabled]="!view.isEditMode()" (click)="resetid(field.id)">
                     <system-button-icon icon="clear"/>

@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\Mailboxes\processors;
 
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 class MailboxProcessor {
     public $id;

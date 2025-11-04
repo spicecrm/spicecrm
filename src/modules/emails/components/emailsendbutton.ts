@@ -40,6 +40,10 @@ export class EmailSendButton {
 
     }
 
+    get hidden() {
+        return this.model.getField('status') != 'draft' && this.model.getField('status') != 'created';
+    }
+
     /**
      * a getter that returns the disabled status. This getter checks if all data are available
      */
@@ -53,11 +57,15 @@ export class EmailSendButton {
                 mailboxData = (this.configuration.getData('mailboxes'+k));
             }
         });
-        const selectedMailboxData = mailboxData.find(id => id.value == mailbox);
+        let selectedMailboxData = mailboxData.find(id => id.value == mailbox);
         let sizeTooBig = !!this.model.getFieldValue('attachments_size') ? this.model.getFieldValue('attachments_size') > selectedMailboxData.max_upload : false;
         let name = this.model.getFieldValue('name');
         let body = this.model.getFieldValue('body');
         let recipientTo = recipientAddresses ? recipientAddresses.find(re => re.address_type == 'to') : undefined;
+
+        if (this.model.getField('downloadlink_attachments')) {
+            sizeTooBig = false;
+        }
 
         return (!name || !body || !mailbox || !recipientAddresses || !recipientTo || sizeTooBig) ? true : this.sending;
     }

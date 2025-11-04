@@ -3,19 +3,14 @@ namespace SpiceCRM\modules\Administration\api\controllers;
 
 use Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\api\controllers\MigrateController;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\includes\SpiceDictionary\api\controllers\MigrateController;
 
 class DictionaryController
 {
@@ -33,7 +28,6 @@ class DictionaryController
     }
 
     /**
-     * @deprecated
      * repair custom enum
      * @param Request $req
      * @param Response $res
@@ -358,60 +352,4 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
 
         return $returnArray;
     }
-
-
-    /**
-     * @deprecated
-     * legacy & cache table
-     */
-    public function repairCacheDb(Request $req, Response $res, array $args): Response {
-        $body = $req->getParsedBody();
-        $returnArray = SpiceDictionaryVardefs::getInstance()->repairDictionaries(isset($body['dictionaries']) ? $body['dictionaries'] : []);
-
-        return $res->withJson($returnArray);
-    }
-
-    /**
-     * run a silent repair/rebuild, reoair cache, repair relationships for a dictionary list
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     * @throws Exception
-     */
-    public function repairDictionary(Request $req, Response $res, array $args): Response {
-        $dictionaryNames = $req->getParsedBody()['dictionaries'];
-        $success = true;
-        $msg = '';
-        $sql = AdminController::buildSQLQueries($dictionaryNames);
-        if(!empty($sql) && !DBManagerFactory::getInstance()->query($sql)){
-            $success = false;
-            $msg = DBManagerFactory::getInstance()->lastDbError();
-        }
-        //@todo: update relationship cache
-        return $res->withJson(['success' => $success, 'msg' => $msg, 'sql' => $sql]);
-    }
-
-
-    /**
-     * returns a list of link names for which no module property is defined
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     */
-//    public function checkLinks(Request $req, Response $res, array $args): Response {
-//        // load Vardefs
-//        $repair=[];
-//        $vardefs = SpiceDictionaryVardefs::loadVardefs();
-//        foreach($vardefs as $dictName => $dict){
-//            foreach($dict['fields'] as $field){
-//                if($field['type'] == 'link' && !key_exists('module', $field)){
-//                    $repair[$dictName][] = $field['name'];
-//                }
-//            }
-//        }
-//        return $res->withJson($repair);
-//    }
-
 }

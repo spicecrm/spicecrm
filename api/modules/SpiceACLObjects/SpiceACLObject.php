@@ -3,16 +3,16 @@
 
 namespace SpiceCRM\modules\SpiceACLObjects;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
 use SpiceCRM\extensions\modules\SpiceACLTerritories\SpiceACLTerritory;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\modules\SpiceACL\SpiceACLUsers;
-use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\modules\SpiceACLObjects\handlers\SpiceACLObjectFieldHandlerBase;
 use SpiceCRM\modules\UserAbsences\UserAbsence;
 
 /**
@@ -30,7 +30,7 @@ class SpiceACLObject extends SpiceBean
     /*
     public function __construct($id = '')
     {
-        $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
+        $db = \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance();
 
         if ($id != '') {
             $this->id = $id;
@@ -126,6 +126,7 @@ class SpiceACLObject extends SpiceBean
         foreach ($fieldValues as $fieldValue) {
             // check that the id matches
             if ($fieldValue->spiceaclobject_id == $this->id) {
+                $fieldValue->value1 = $fieldValue->operator == 'SYSHANDLER' ? addslashes($fieldValue->value1) : $fieldValue->value1;
                 $this->db->query("INSERT INTO spiceaclobjectvalues (id, spiceaclobject_id, spiceaclmodulefield_id, operator, value1, value2) VALUES('".SpiceUtils::createGuid()."', '$fieldValue->spiceaclobject_id', '$fieldValue->spiceaclmodulefield_id', '$fieldValue->operator', '$fieldValue->value1', '$fieldValue->value2')");
             }
         }
@@ -603,6 +604,16 @@ class SpiceACLObject extends SpiceBean
                         ]
                     ];
                     break;
+                case 'SYSHANDLER':
+                    if (self::isFieldHandlerClass($fieldvalue['value1'])) {
+                        /** @var SpiceACLObjectFieldHandlerBase $classInstance */
+                        $classInstance = new $fieldvalue['value1']();
+                        $condition = $classInstance->getFTSCondition($fieldvalue['name']);
+                        if ($condition) {
+                            $filters[$condition->key][] = $condition->value;
+                        }
+                    }
+                    break;
             }
         }
 
@@ -721,6 +732,14 @@ class SpiceACLObject extends SpiceBean
                         $valArray[$valIndex] = trim($valValue);
                     $whereClauses[] = "$table_name.{$fieldvalue['name']} NOT IN ('" . implode("','", $valArray) . "')";
                     break;
+                case 'SYSHANDLER':
+                    if (self::isFieldHandlerClass($fieldvalue['value1'])) {
+                        /** @var SpiceACLObjectFieldHandlerBase $classInstance */
+                        $classInstance = new $fieldvalue['value1']();
+                        $condition = $classInstance->getDBCondition($table_name, $fieldvalue['name']);
+                        $whereClauses[] = $condition;
+                    }
+                    break;
             }
         }
 
@@ -739,6 +758,16 @@ class SpiceACLObject extends SpiceBean
         }
 
         return implode(' AND ', $whereClauses) ?: '1=1';
+    }
+
+    /**
+     * check if the class is a field handler class that extends the abstract class SpiceACLObjectFieldHandlerBase
+     * @param string $class
+     * @return bool
+     */
+    private static function isFieldHandlerClass(string $class): bool
+    {
+        return class_exists($class) && is_subclass_of($class, 'SpiceCRM\modules\SpiceACLObjects\handlers\SpiceACLObjectFieldHandlerBase');
     }
 
     /*
@@ -843,6 +872,15 @@ class SpiceACLObject extends SpiceBean
                 case 'ignore': //BWC
                 case '':
                     $authObjectAccess = true;
+                    break;
+                case 'SYSHANDLER':
+                    if (self::isFieldHandlerClass($fieldvalues['value1'])) {
+                        /** @var SpiceACLObjectFieldHandlerBase $classInstance */
+                        $classInstance = new $fieldvalues['value1']();
+                        if ($classInstance->checkFieldAccess($bean->{$fieldname})) {
+                            $authObjectAccess = true;
+                        }
+                    }
                     break;
             }
 

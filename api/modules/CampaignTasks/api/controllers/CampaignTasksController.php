@@ -3,26 +3,24 @@
 
 namespace SpiceCRM\modules\CampaignTasks\api\controllers;
 
-use SpiceCRM\data\SpiceBean;
-use SpiceCRM\includes\database\DBManager;
-use SpiceCRM\includes\database\DBManagerFactory;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
-use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\utils\DBUtils;
-use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManager;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
+use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\CampaignTasks\CampaignTask;
 use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\includes\TimeDate;
-use function DI\string;
 
 class CampaignTasksController
 {
@@ -196,7 +194,7 @@ class CampaignTasksController
         $now = $timedate->nowDb();
         $campaignLog = BeanFactory::getBean('CampaignLog');
         $list = $campaignLog->get_list(
-            "planned_activity_date DESC",
+            "planned_activity_date DESC, priority",
             "campaigntask_id = '{$args['id']}' AND target_id<>'' AND target_id IS NOT NULL AND target_type <>'' AND target_type IS NOT NULL AND IFNULL(planned_activity_date, '$now') <= '$now' AND activity_type NOT IN ('completed','converted', 'maxattempts')",
             $getParams['offset'] ?: 0,
             $getParams['limit'] ?: 10,
@@ -209,7 +207,9 @@ class CampaignTasksController
         $items = [];
 
         foreach ($list['list'] as $item) {
-            if($seed = BeanFactory::getBean($item->target_type, $item->target_id)){
+            // push all items to frontend and disable there, for proper handling of telesales
+            // if($seed = BeanFactory::getBean($item->target_type, $item->target_id)){
+                $seed = BeanFactory::getBean($item->target_type, $item->target_id);
                 $items[] = [
                     'campaignlog_id' => $item->id,
                     'campaignlog_activity_type' => $item->activity_type,
@@ -222,13 +222,13 @@ class CampaignTasksController
                     'campaignlog_hits' => $item->hits,
                     'campaignlog_locked_by_id' => $item->locked_by_id,
                     // tbd
-                    'data' => $KRESTModuleHandler->mapBeanToArray($item->target_type, $seed)
+                    'data' => $seed ? $KRESTModuleHandler->mapBeanToArray($item->target_type, $seed) : []
                 ];
-            }
+          //  }
         }
 
-        // get the stats
-        $stats = DBManagerFactory::getInstance()->fetchAll("SELECT count(id) count, activity_type FROM campaign_log WHERE campaigntask_id = '{$args['id']}' AND deleted = 0 GROUP BY activity_type");
+        // get the stats for correct display check there is a target id
+        $stats = DBManagerFactory::getInstance()->fetchAll("SELECT count(id) count, activity_type FROM campaign_log WHERE campaigntask_id = '{$args['id']}' AND deleted = 0 AND target_id IS NOT NULL GROUP BY activity_type");
 
         return $res->withJson(['items' => $items, 'row_count' => $list['row_count'], 'stats' => $stats]);
     }
@@ -290,7 +290,7 @@ class CampaignTasksController
         $status = 'targeted';
         switch ($campaignTask->campaigntask_type) {
             case 'Telesales':
-                $status = 'tobecalled';
+                $status = 'initial';
                 break;
             case 'Mail':
                 $status = 'sent';
@@ -362,43 +362,6 @@ class CampaignTasksController
         /** @var CampaignTask load the campaign task **/
         $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
         return $res->withJson($campaignTask->activate('queued'));
-    }
-
-    /**
-     * queus the emails to be sent
-     *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     */
-    public function liveCompileEmailBody(Request $req, Response $res, array $args): Response
-    {
-        $params = $req->getParsedBody();
-        /** @var $emailTemplate EmailTemplate **/
-        $emailTemplate = BeanFactory::getBean('EmailTemplates');
-        $emailTemplate->body_html = $params['html'];
-        $bean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
-
-        $campaignTask = BeanFactory::getBean($args['module'], $args['id']);
-
-        if(!$campaignTask){
-            throw new NotFoundException("record for {$args['module']} with ID {$args['id']} not found");
-        }
-
-        # set the current user to the one assigned to the task. fallback set the admin user
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $user = BeanFactory::getBean('Users', $campaignTask->assigned_user_id ?: '1');
-        AuthenticationController::getInstance()->setCurrentUser($user);
-        $mailbox = BeanFactory::getBean('Mailboxes', $campaignTask->mailbox_id);
-        $styles = !$mailbox ? [] : [$mailbox->stylesheet];
-
-        $parsedTpl = $emailTemplate->parse($bean, null, [], $styles);
-
-        # reset the current user for the system after parsing
-        AuthenticationController::getInstance()->setCurrentUser($current_user);
-
-        return $res->withJson(['html' => $parsedTpl['body_html'], true]);
     }
 
     /**

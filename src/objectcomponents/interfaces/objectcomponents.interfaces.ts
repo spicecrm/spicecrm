@@ -101,3 +101,25 @@ export interface ObjectActionMenuItemI {
     singlebutton:  boolean,
     displayasicon?: boolean
 }
+
+/**
+ * generic basic bean interface
+ */
+export interface SpiceBeanI {
+    id: string;
+    name?: string;
+    summary_text?: string;
+    deleted?: boolean;
+    [key: string]: any
+}
+
+/**
+ * possible states for a model field
+ */
+export type ModelFieldStateI = 'editable' | 'invalid' | 'required' | 'incomplete' | 'disabled' | 'hidden' | 'readonly';
+/**
+ * field states object
+ */
+export type ModelFieldStatesI  = {
+    [State in ModelFieldStateI]: boolean
+}

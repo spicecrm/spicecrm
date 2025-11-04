@@ -125,6 +125,7 @@ export class DictionaryManagerRelationshipAddOneToManyPolymorph {
         this.backend.postRequest(`dictionary/relationship/${this.relationship.id}`, {}, {relationship: this.relationship, relationshippolymorphs: this.relationshipPolymorphs}).subscribe({
             next: (res) => {
                 this.dictionarymanager.pushNewRelationshipToArray(this.relationship);
+                this.dictionarymanager.dictionaryrelationshippolymorphs.push(...this.relationshipPolymorphs);
                 this.close();
             }
         })

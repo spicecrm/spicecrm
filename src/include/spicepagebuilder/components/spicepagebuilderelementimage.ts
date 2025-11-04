@@ -1,12 +1,13 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Injector, Input} from '@angular/core';
 import {DomSanitizer} from "@angular/platform-browser";
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {modal} from "../../../services/modal.service";
 import {AttributeObjectI, ImageI} from "../interfaces/spicepagebuilder.interfaces";
 import {SpicePageBuilderElement} from "./spicepagebuilderelement";
+import {configurationService} from "../../../services/configuration.service";
 
 /**
  * Parse and renders renderer container
@@ -25,12 +26,15 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
     /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[][] = [
-        [
+    public readonly attributesList: AttributeObjectI[][] = [ [
             {name: 'title', type: 'text'},
             {name: 'alt', type: 'text'},
+        ],
+        [
             {name: 'href', type: 'text'},
             {name: 'fluid-on-mobile', type: 'text'},
+        ],
+        [
             {name: 'srcset', type: 'text'},
             {name: 'target', type: 'text'}
         ], [
@@ -46,6 +50,11 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
             {name: 'css-class', type: 'text', class: 'slds-size--1-of-1'}
         ]
     ];
+    /**
+     * reference to the configuration service
+     * @private
+     */
+    private configurationService = inject(configurationService);
 
     constructor(public domSanitizer: DomSanitizer,
                 public modal: modal,
@@ -84,4 +93,29 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
         }
     }
 
+    /**
+     * handle media attribute change
+     */
+    public handleMediaAttributeChange(imageSize: string) {
+
+        if (!imageSize) {
+            this.element.attributes.src = null;
+            this.cdRef.detectChanges();
+            return;
+        }
+
+        this.articleService.getElementMediaArticle(this.columnComponent).subscribe(article => {
+
+            if (!article) return;
+
+            const mediaFileConfig: {public_url: string} = this.configurationService.getCapabilityConfig('mediafiles');
+            imageSize = imageSize.split('.')[1];
+            const mediaFile = article.mediafiles.find(f => f.media_article_image_size == imageSize);
+
+            this.element.attributes.src = !mediaFile ? null : mediaFileConfig.public_url + mediaFile.id;
+
+            this.cdRef.detectChanges();
+        });
+
+    }
 }

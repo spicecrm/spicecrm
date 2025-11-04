@@ -11,6 +11,9 @@
     <button class="slds-button slds-button--neutral" (click)="reshuffleDictionaryDefinition()">
         <system-label label="LBL_RESHUFFLE"/>
     </button>
+    <button class="slds-button slds-button--neutral slds-button--icon-border slds-button--icon" (click)="dictionarymanager.jsonExport()">
+        <system-button-icon icon="download"/>
+    </button>
     <button class="slds-button slds-button--neutral slds-button--icon-border slds-button--icon" (click)="reload()">
         <system-button-icon icon="sync"/>
     </button>
@@ -39,10 +42,9 @@
                         <system-utility-icon class="slds-th__action" icon="builder" size="xx-small" title="LBL_FIELD_DEFINED_IN_DICTIONARY"/>
                     </th>
                     <th style="width: 30px" scope="col">
-                        <system-utility-icon class="slds-th__action" icon="file" size="xx-small" title="LBL_FIELD_DEFINED_IN_DICTIONARY_CACHE"/>
-                    </th>
-                    <th style="width: 30px" scope="col">
                         <system-utility-icon class="slds-th__action" icon="database" size="xx-small" title="LBL_FIELD_DEFINED_IN_DATABASE_TABLE"/>
+                    </th>
+                    <th style="width: 20px" scope="col">
                     </th>
                 </tr>
             </thead>
@@ -66,6 +68,9 @@
                                  *ngIf="!getDomainFields(dictionaryitem.sysdomaindefinition_id)[0]"></div>
                         </td>
                         <td data-label="Source">
+                            @if (dictionaryitem.isVardef) {
+                                VARDEFS
+                            }
                             <div *ngIf="dictionaryitem.sysdictionarydefinition_id != dictionarymanager.currentDictionaryDefinition"
                                  class="slds-truncate">{{ getRefDefinitionName(dictionaryitem.sysdictionarydefinition_id) }}
                             </div>
@@ -77,11 +82,13 @@
                             <system-checkbox disabled [ngModel]="dictionaryitem.defined"></system-checkbox>
                         </td>
                         <td class="slds-text-align--center">
-                            <system-checkbox disabled [ngModel]="dictionaryitem.cached"></system-checkbox>
-                        </td>
-                        <td class="slds-text-align--center">
                             <system-checkbox *ngIf="!dictionaryitem.non_db" disabled
                                              [ngModel]="dictionaryitem.database"></system-checkbox>
+                        </td>
+                        <td class="slds-text-align--center">
+                            <button class="slds-button slds-button--icon" (click)="openFieldDefinitionModal(dictionaryitem)">
+                                <system-button-icon icon="summarydetail" [inverse]="true"/>
+                            </button>
                         </td>
                     </tr>
                     <tr class="slds-hint-parent" *ngFor="let field of dictionaryitem.addFields">
@@ -94,11 +101,13 @@
                             <system-checkbox disabled [ngModel]="field.defined"></system-checkbox>
                         </td>
                         <td class="slds-text-align--center">
-                            <system-checkbox disabled [ngModel]="field.cached"></system-checkbox>
-                        </td>
-                        <td class="slds-text-align--center">
                             <system-checkbox *ngIf="field.dbtype != 'non-db'" disabled
                                              [ngModel]="field.database"></system-checkbox>
+                        </td>
+                        <td class="slds-text-align--center">
+                            <button class="slds-button slds-button--icon" (click)="openFieldDefinitionModal(dictionaryitem)">
+                                <system-button-icon icon="summarydetail"/>
+                            </button>
                         </td>
                     </tr>
                 }

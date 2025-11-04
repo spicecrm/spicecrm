@@ -1,11 +1,12 @@
 /**
  * @module WorkbenchModule
  */
-import {Component, ViewChild, ElementRef} from '@angular/core';
+import { Component, ViewChild, ElementRef, EventEmitter } from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {modal} from '../../services/modal.service';
 import {toast} from '../../services/toast.service';
 import { userpreferences } from '../../services/userpreferences.service';
+import { take } from 'rxjs/operators';
 
 /**
  * @ignore
@@ -259,6 +260,24 @@ export class APIlogViewer {
         this.modal.openModal('APIlogViewerModal').subscribe(modal => {
             modal.instance.entry = entry;
             modal.instance.logtable = this.logtable;
+            modal.instance.replay = new EventEmitter();
+            modal.instance.replay.pipe(take(1)).subscribe(
+                record => this.showReplayModal( record )
+            );
+        });
+    }
+
+    /**
+     * open the entry in a modal with all details
+     *
+     * @param entry
+     * @private
+     */
+    public showReplayModal( record) {
+        this.modal.openModal('APIlogViewerReplayModal').subscribe( modal => {
+            // modal.instance.entry = entry;
+            modal.instance.logtable = this.logtable;
+            modal.instance.record = record;
         });
     }
 

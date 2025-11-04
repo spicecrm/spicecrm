@@ -54,6 +54,9 @@ class ValidationMiddleware
     const TYPE_EXTENSION    = 'extension';
     const TYPE_OBJECT       = 'object';
     const TYPE_COMPLEX      = 'complex';
+    const TYPE_BEAN_SCHEMA      = 'beanSchema';
+    const TYPE_LINK      = 'link';
+    const TYPE_ONE_OF      = 'oneOf';
 
     const VOPT_MIN_SIZE      = 'minSize';
     const VOPT_MAX_SIZE      = 'maxSize';

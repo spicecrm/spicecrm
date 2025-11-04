@@ -19,7 +19,7 @@ import {backend} from "../../services/backend.service";
     templateUrl: '../templates/dictionarymanageritemdetails.html',
     standalone: false
 })
-export class DictionaryManagerItemDetails implements OnInit{
+export class DictionaryManagerItemDetails implements OnInit {
 
     /**
      * reference to the modal itself
@@ -41,6 +41,10 @@ export class DictionaryManagerItemDetails implements OnInit{
      * the list of the domains
      */
     public domains: any[] = [];
+    /**
+     * if set to true from the parent, push the custom item to the items array and remove the global item after saving
+     */
+    public isCustomizing: boolean = false;
 
     constructor(public dictionarymanager: dictionarymanager,
                 private modal: modal,
@@ -96,15 +100,18 @@ export class DictionaryManagerItemDetails implements OnInit{
 
         const toSave = {...this.dictionaryitem};
         delete toSave.addFields;
-        delete toSave.cached;
+        delete toSave.isVardef;
         delete toSave.database;
         delete toSave.defined;
 
-        this.backend.postRequest(`dictionary/item/${this.dictionaryitem.id}`, {}, toSave).subscribe({
+        this.backend.postRequest(`dictionary/item/${toSave.id}`, {}, toSave).subscribe({
             next: () => {
                 saveModal.emit(true);
                 saveModal.complete();
-                this.close();
+
+                if (this.isCustomizing) {
+                    this.dictionarymanager.dictionaryitems = [...this.dictionarymanager.dictionaryitems, this.dictionaryitem];
+                }
             },
             error: () => {
                 saveModal.emit(true);
@@ -137,5 +144,14 @@ export class DictionaryManagerItemDetails implements OnInit{
         // set back the values from teh backup
         this.dictionaryitem = JSON.parse(this.backup);
         this.self.destroy();
+    }
+
+    /**
+     * reset duplicate merge if the item is non-db
+     */
+    public onNonDBSet(nonDB: 1 | 0) {
+        if (nonDB == 1) {
+            this.dictionaryitem.duplicate_merge = 0;
+        }
     }
 }

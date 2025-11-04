@@ -17,6 +17,22 @@ import {view} from "../../services/view.service";
     standalone: false
 })
 export class DictionaryManagerRelationshipsDetails {
+    /**
+     * label mapping for type
+     */
+    public readonly relationshipTitleLabel = {
+        'email-address': 'LBL_EMAIL_ADDRESS',
+        'email-one': 'LBL_ONE_TO_MANY',
+        'one-to-many': 'LBL_ONE_TO_MANY',
+        'many-to-one': 'LBL_ONE_TO_MANY',
+        'one-to-many-polymorph': 'LBL_1_TO_N_POLYMORPHIC',
+        'many-to-many': 'LBL_MANY_TO_MANY',
+        'many-to-many-bean': 'LBL_MANY_TO_MANY',
+        'many-to-many-prospectlists': 'LBL_MANY_TO_MANY_PROSPECTLISTS',
+        'parent': 'LBL_PARENT',
+        'user': 'LBL_USER',
+        'orgunit': 'LBL_ORGUNIT',
+    };
 
     /**
      * reference to the modal itself
@@ -68,7 +84,9 @@ export class DictionaryManagerRelationshipsDetails {
     public close() {
         // set back the values from teh backup
         this.dictionaryRelationship = JSON.parse(this.backup);
-        this.dictionarymanager.updateRelationshipInArray(this.dictionaryRelationship);
+        if (this.dictionarymanager.dictionaryrelationships.some(r => r.id == this.dictionaryRelationship.id)) {
+            this.dictionarymanager.updateRelationshipInArray(this.dictionaryRelationship);
+        }
 
         this.self.destroy();
     }
@@ -100,7 +118,7 @@ export class DictionaryManagerRelationshipsDetails {
             next: () => {
                 this.dictionarymanager.updateRelationshipInArray(this.dictionaryRelationship);
                 this.dictionarymanager.updateRelationshippFieldsInArray(relationshipFields);
-                this.dictionarymanager.updateRelationshipPolymorphsInArray(this.dictionaryRelationshipPolymorphs);
+                this.dictionarymanager.updateRelationshipPolymorphsInArray(this.dictionaryRelationship.id, this.dictionaryRelationshipPolymorphs);
                 this.self.destroy();
             }
         });

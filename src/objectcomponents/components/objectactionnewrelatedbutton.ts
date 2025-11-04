@@ -19,7 +19,7 @@ export class ObjectActionNewrelatedButton implements OnInit {
 
     public disabled: boolean = true;
 
-    public actionconfig: {required_model_state?: string, newtab?: boolean};
+    public actionconfig: {required_model_state?: string, newtab?: boolean, link_name?: string, componentset?: string, actionset?: string, grow?: string};
     /**
      * if set to true didpslay teh button as icon
      */
@@ -54,10 +54,19 @@ export class ObjectActionNewrelatedButton implements OnInit {
             // make sure we have no id so a new on gets issues
             this.model.id = "";
 
+            let componentconfig: any = undefined;
+            if(this.actionconfig.componentset || this.actionconfig.actionset || this.actionconfig.grow) {
+                componentconfig = {
+                    componentset: this.actionconfig.componentset,
+                    actionset: this.actionconfig.actionset,
+                    grow: this.actionconfig.grow,
+                }
+            }
+
             // add the model
-            this.model.addModel("", this.parent).subscribe(response => {
+            this.model.addModel("", this.parent, null, null, componentconfig).subscribe(response => {
                 if (response != false) {
-                    this.relatedmodels.addItems([response]);
+                    this.relatedmodels.addItems([response], this.actionconfig.link_name);
                 }
             });
         }

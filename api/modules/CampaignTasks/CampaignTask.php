@@ -5,26 +5,26 @@ namespace SpiceCRM\modules\CampaignTasks;
 
 use SpiceCRM\extensions\modules\TextMessages\TextMessage;
 use SpiceCRM\extensions\modules\TextMessageTemplates\TextMessageTemplate;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
+use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
+use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\EmailTemplates\EmailTemplate;
-use SpiceCRM\modules\OutputTemplates\OutputTemplate;
-use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
-use SpiceCRM\modules\Users\User;
-use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\modules\Mailboxes\Mailbox;
+use SpiceCRM\modules\OutputTemplates\OutputTemplate;
+use SpiceCRM\modules\Users\User;
 
 class CampaignTask extends SpiceBean
 {
@@ -108,6 +108,9 @@ class CampaignTask extends SpiceBean
             $addQueryValues = ", "."'".implode("', '", array_values($additionalParams))."'";
         }
 
+        $emailAddresses = [];
+        $prospectLists = [];
+
         $chunks = array_chunk($this->getAllTargetsEntries(), 500);
 
         foreach ($chunks as $chunkTargets) {
@@ -116,7 +119,9 @@ class CampaignTask extends SpiceBean
 
             foreach ($chunkTargets as $target) {
 
-                $query .= "($guidSQL, $currentDate, '$this->campaign_id', '$this->id', $guidSQL, '{$target['prospect_list_id']}', '{$target['related_id']}', '{$target['related_type']}','{$target['email_addr_bean_rel_id']}', '$status', 0, $currentDate, '$this->assigned_user_id' $addQueryValues),";
+                $targetStatus = $this->handleTargetDuplicateEmailAddressStatus($target, $status, $emailAddresses, $prospectLists);
+
+                $query .= "($guidSQL, $currentDate, '$this->campaign_id', '$this->id', $guidSQL, '{$target['prospect_list_id']}', '{$target['related_id']}', '{$target['related_type']}','{$target['email_addr_bean_rel_id']}', '$targetStatus', 0, $currentDate, '$this->assigned_user_id' $addQueryValues),";
             }
 
             # remove the last comma from the query
@@ -130,6 +135,36 @@ class CampaignTask extends SpiceBean
         $this->save();
 
         return ['success' => true, 'id' => $this->id];
+    }
+
+    /**
+     * handle target duplicate email address status
+     * @param array $target
+     * @param string $targetStatus
+     * @param array $emailAddresses
+     * @param array $prospectLists
+     * @return string duplicate | $targetStatus
+     */
+    private function handleTargetDuplicateEmailAddressStatus(array $target, string $targetStatus, array &$emailAddresses, array &$prospectLists): string
+    {
+        # collect the email addresses to set the duplicate status on the log entry if the only_unique_email_addresses flag is set
+        if ($this->only_unique_email_addresses == 1) {
+
+            if (!$prospectLists[$target['prospect_list_id']]) {
+                $prospectLists[$target['prospect_list_id']] = BeanFactory::getBean('ProspectLists', $target['prospect_list_id']);
+            }
+
+            $where = $prospectLists[$target['prospect_list_id']]->allow_multiple_emails_per_target && !empty($target['email_addr_bean_rel_id']) ? "id = '{$target['email_addr_bean_rel_id']}'" : "primary_address = 1 AND deleted = 0 AND bean_id = '{$target['related_id']}'";
+            $emailAddress = (string) $this->db->getOne("SELECT email_address_id FROM email_addr_bean_rel WHERE $where");
+
+            if ($emailAddress && $emailAddresses[$emailAddress]) {
+                $targetStatus = 'duplicate';
+            } else if ($emailAddress) {
+                $emailAddresses[$emailAddress] = 1;
+            }
+        }
+
+        return $targetStatus;
     }
 
     /**
@@ -455,12 +490,12 @@ class CampaignTask extends SpiceBean
         while ($row = $this->db->fetchByAssoc($res)) {
 
             $bean = BeanFactory::getBean($row['related_type'], $row['related_id']);
-            $emailAddress = $this->getEmailAddress($row['id'], $bean, $row['email_addr_bean_rel_id']);
+            $emailAddress = BeanFactory::getBean('EmailAddresses')->getEmailAddressForBean($bean, $row['email_addr_bean_rel_id']);
             if (!$bean || !$emailAddress) continue;
 
             $email = $this->sendEmail($bean, $emailAddress->email_address, true, true);
             $testCount++;
-            if ($email->status == 'sent') $sentCount++;
+            if ( $email->status === 'sent' or $email->status === 'intercepted' ) $sentCount++;
         }
 
         # reset the current user for the system after parsing
@@ -504,7 +539,10 @@ class CampaignTask extends SpiceBean
             /** @var Person $seed */
             $seed = BeanFactory::getBean($queuedEmail['target_type'], $queuedEmail['target_id']);
 
-            $emailAddress = $this->getEmailAddress($queuedEmail['list_id'], $seed, $queuedEmail['email_addr_bean_rel_id']);
+            if($seed) {
+                $emailAddress = BeanFactory::getBean('EmailAddresses')->getEmailAddressForBean($seed, $queuedEmail['email_addr_bean_rel_id']);
+            }
+
             $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
             $campaignLog->activity_type = "error";
 
@@ -512,11 +550,15 @@ class CampaignTask extends SpiceBean
             if (!$seed) {
                 $campaignLog->activity_comment = 'LBL_ERROR_LOADING_RECORD';
 
+            } else if (empty($emailAddress?->email_address) && empty($queuedEmail['email_addr_bean_rel_id'])) {
+
+                $campaignLog->activity_comment = 'LBL_ERROR_LOADING_RELATED_EMAIL';
+
             } else if (empty($emailAddress?->email_address)) {
 
                 $campaignLog->activity_comment = 'ERR_NO_PRIMARY_EMAIL';
 
-            } else if ($this->disable_inactive_check != 1 && $seed->is_inactive) {
+            }  else if ($this->disable_inactive_check != 1 && $seed->is_inactive) {
 
                 $campaignLog->activity_comment = 'LBL_IS_INACTIVE';
 
@@ -531,16 +573,17 @@ class CampaignTask extends SpiceBean
                 # try to send the email after the pre send checks
             } else {
 
-                $email = $this->sendEmail($seed, $emailAddress->email_address,true, false, ['CampaignLog' => $campaignLog]);
+                $email = $this->sendEmail($seed, $emailAddress->email_address,$this->save_emails == 1, false, ['CampaignLog' => $campaignLog]);
 
-                if ($email->status == 'sent') {
-                    $campaignLog->activity_type = 'sent';
+                if ( $email->status === 'sent' or $email->status === 'intercepted' ) {
+                    $campaignLog->activity_type = $email->status;
                 }
 
                 if ($this->save_emails == 1) {
                     $campaignLog->related_id = $email->id;
                     $campaignLog->related_type = 'Emails';
                 } else {
+                    $campaignLog->activity_type = "processing";
                     $campaignLog->external_id = $email->message_id;
                 }
             }
@@ -554,21 +597,6 @@ class CampaignTask extends SpiceBean
         return true;
     }
 
-    public function getEmailAddress(string $listId, SpiceBean $person, $emailAddrBeanRelId = null): ?EmailAddress
-    {
-        $db = DBManagerFactory::getInstance();
-//        $emailAddrBeanRelId = $db->getOne("SELECT email_addr_bean_rel_id from prospect_lists_prospects WHERE prospect_list_id = '$listId' AND related_id ='$person->id' AND deleted = 0");
-
-        // fallback
-        if(empty($emailAddrBeanRelId)) {
-            return !$person->email1 ? null : BeanFactory::newBean('EmailAddresses')->retrieve_by_string_fields(['email_address' => $person->email1]);
-        }
-
-        $q = "SELECT eabr.* FROM email_addr_bean_rel eabr where eabr.id ='{$emailAddrBeanRelId}' and eabr.bean_id ='$person->id' and eabr.deleted = 0";
-        $row = $db->fetchOne($q);
-
-        return BeanFactory::getBean('EmailAddresses', $row['email_address_id']);
-    }
 
     /**
      * send queued text messages for text message campaign tasks where the log entry is set to queued
@@ -667,28 +695,28 @@ class CampaignTask extends SpiceBean
             SpiceAttachments::cloneAttachmentsForBean('Emails', $email->id, 'CampaignTasks', $this->id, $saveEmail, $categoryId)
         );
 
+        if (isset($addBeans['CampaignLog'])) {
+            $email->registerTrackingParentData('CampaignLog', $addBeans['CampaignLog']->id);
+        }
+
         if($saveEmail){
             $email->parent_type = $seed->_module;
             $email->parent_id = $seed->id;
             $email->to_be_sent_now = true;
 
-            if (isset($addBeans['CampaignLog'])) {
-                $email->registerTrackingParentData('CampaignLog', $addBeans['CampaignLog']->id);
-            }
-            $email->save();
-
+            $email->save(false, false);
         } else {
 
             try {
                 $email->loadAttachments();
                 $result = $email->sendEmail();
+                $email->status = $result['result'] ? 'sent' : 'send_error';
             } catch ( MessageInterceptedException $e ) {
-                throw $e;
+                $email->status = 'intercepted';
             } catch (\Throwable $e) {
-                $result = ['result' => false];
+                $email->status = 'send_error';
             }
 
-            $email->status = $result['result'] ? 'sent' : 'send_error';
         }
 
         return $email;
@@ -730,7 +758,7 @@ class CampaignTask extends SpiceBean
                 $textMessage->parent_type = $seed->_module;
                 $textMessage->parent_id = $seed->id;
                 $textMessage->to_be_sent = true;
-                $textMessage->save();
+                $textMessage->save(false, false);
             } else {
                 $textMessage->send();
             }
@@ -753,7 +781,7 @@ class CampaignTask extends SpiceBean
      * @return bool
      */
     public function generateServiceFeedbacks(){
-        $queuedFeedbacks = $this->db->query("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = 'Feedback' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC");
+        $queuedFeedbacks = $this->db->query("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = 'Feedback' AND activity_type = 'queued' AND campaigntask_id <> '' AND related_id IS NULL ORDER by activity_date DESC");
         while($queuedFeedback = $this->db->fetchByAssoc($queuedFeedbacks)){
             /// load the campaign task if we have a new one
             if($queuedFeedback['campaigntask_id'] != $this->id){
@@ -761,19 +789,23 @@ class CampaignTask extends SpiceBean
             };
 
             // check that the target is a contact
+            /*
             if($queuedFeedback['target_type'] != 'Contacts'){
                 $campaignLog = BeanFactory::getBean('CampaignLog', $queuedFeedback['id']);
                 $campaignLog->activity_type = 'error';
                 $campaignLog->save();
                 continue;
             }
+            */
 
 
-                // load the bean and send the email
+            // load the bean and send the email
             $seed = BeanFactory::getBean($queuedFeedback['target_type'], $queuedFeedback['target_id']);
             if($seed){
                 $feedback = BeanFactory::getBean('ServiceFeedbacks');
                 $feedback->contact_id = $seed->id;
+                $feedback->related_type = $seed->_module;
+                $feedback->related_id = $seed->id;
                 $feedback->servicefeedback_status = 'created';
                 $feedback->questionnaire_id = $this->questionnaire_id;
                 $feedback->parent_type = 'CampaignTasks';
@@ -781,7 +813,7 @@ class CampaignTask extends SpiceBean
                 $feedback->save();
 
                 $campaignLog = BeanFactory::getBean('CampaignLog', $queuedFeedback['id']);
-                $campaignLog->activity_type = $feedback->servicefeedback_status;
+                //$campaignLog->activity_type = $feedback->servicefeedback_status;
                 $campaignLog->related_id = $feedback->id;
                 $campaignLog->related_type = 'ServiceFeedbacks';
                 $campaignLog->save();

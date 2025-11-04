@@ -2,14 +2,17 @@
 
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\relationships\RelationshipFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationships;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSActivityHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSBeanHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SysCategoryTrees\SysCategoryTree;
 use SpiceCRM\includes\SysModuleLists\SysModuleListManager;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
@@ -174,24 +177,15 @@ class SpiceUIModulesController
     {
         $retArray = [];
         $modules = self::getModules();
+
         foreach ($modules as $module => $moduleDetails) {
+
             $seed = BeanFactory::getBean($module);
+
             if (!$seed) continue;
-            foreach ($seed->field_defs as $fieldname => $fielddata) {
-                $retArray[$module][$fieldname] = $fielddata;
-                switch ($fielddata['type']) {
-                    case 'parent':
-                    case 'linkedparent':
-                        $parentmodules = [];
-                        $relationships = $seed->db->query("SELECT lhs_module FROM relationships WHERE rhs_module='{$module}' AND rhs_key='{$fielddata['id_name']}' AND deleted=0");
-                        while ($relationship = $seed->db->fetchByAssoc($relationships)) {
-                            if (isset($modules[$relationship['lhs_module']])) {
-                                $parentmodules[] = $relationship['lhs_module'];
-                            }
-                        }
-                        $retArray[$module][$fieldname]['parent_modules'] = $parentmodules;
-                        break;
-                }
+
+            foreach ($seed->field_defs as $fieldName => $fieldDef) {
+                $retArray[$module][$fieldName] = $fieldDef;
             }
 
             $indexProperties = SpiceFTSUtils::getBeanIndexProperties($module);

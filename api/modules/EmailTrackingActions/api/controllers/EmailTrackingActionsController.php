@@ -4,14 +4,14 @@ namespace SpiceCRM\modules\EmailTrackingActions\api\controllers;
 
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
 use SpiceCRM\extensions\modules\LandingPages\LandingPage;
 use SpiceCRM\extensions\modules\NewsletterLogs\NewsletterLog;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
@@ -344,6 +344,7 @@ class EmailTrackingActionsController
             if (array_key_exists('EmailTrackingLinks', $data) && !empty($data['EmailTrackingLinks'])) {
                 $trackedAction->emailtrackinglink_id = $data['EmailTrackingLinks'];
             }
+            $trackedAction->emailaddress_id = $this->getEmailAddressId($data);
 
             $trackedAction->save();
 
@@ -353,6 +354,7 @@ class EmailTrackingActionsController
                     case 'clicked':
                     case 'link':
                     case 'unsubscribe':
+                    case 'doubleoptin':
                         // set the email to opened
                         $seed = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
                         if ($seed) {
@@ -374,7 +376,19 @@ class EmailTrackingActionsController
             }
         }
     }
-
+    public function getEmailAddressId($data){
+        $db = DBManagerFactory::getInstance();
+        $bean = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+        switch ($bean->_module){
+            case 'Emails':
+                $emailAddressId = $db->fetchOne("SELECT email_address_id FROM emails_email_addr_rel where email_id ='{$bean->id}' and address_type = 'to' and deleted = 0");
+                break;
+            case 'NewsletterLogs':
+            case 'CampaignLog':
+                $emailAddressId = $db->fetchOne("SELECT email_address_id FROM email_addr_bean_rel eabr where eabr.id ='{$bean->email_addr_bean_rel_id}' and eabr.deleted = 0");
+        }
+        return $emailAddressId['email_address_id'];
+    }
     /**
      * finds the bean by searching the primary email address in the email-bean relationship table
      * Delivers an array containing the found bean and the email address instances
@@ -410,6 +424,8 @@ class EmailTrackingActionsController
         if (!$data) {
             throw new BadRequestException('Failed to decrypt key');
         }
+
+        $this->logTrackingAction($data, 'doubleoptin');
 
         // get the email seed
         /** @var Email | CampaignLog | NewsletterLog $seed */

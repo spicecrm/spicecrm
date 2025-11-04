@@ -45,6 +45,11 @@ export class SystemCheckbox implements ControlValueAccessor, OnChanges, AfterVie
     @Input() public hidelabel: boolean = false;
 
     /**
+     * Set to true to prevent the label text from being cut off
+     */
+    @Input() public noTextTruncation = false;
+
+    /**
      * holds the checkbox indeterminate value
      */
     @Input() public indeterminate: boolean = false;

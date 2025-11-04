@@ -7,8 +7,15 @@ use Exception;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
+use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
+use SpiceCRM\modules\Mailboxes\Mailbox;
 use Swift_Attachment;
 use Swift_Mailer;
 use Swift_Message;
@@ -16,13 +23,6 @@ use Swift_Mime_ContentEncoder_PlainContentEncoder;
 use Swift_RfcComplianceException;
 use Swift_SmtpTransport;
 use Swift_TransportException;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\modules\Emails\Email;
-use SpiceCRM\modules\Mailboxes\Mailbox;
 
 /**
  * Class ImapHandler
@@ -408,7 +408,8 @@ class ImapHandler extends TransportHandler
         if (!empty($result)) { // Substitute the old mailbox ID with the current one
             $query2 = "UPDATE emails SET mailbox_id='" . $this->mailbox->id . "' WHERE id='" . $result['id'] . "'";
             $q2 = $db->query($query2);
-            $result2 = $db->fetchByAssoc($q2);
+
+            return true;
         }
 
         return false;
@@ -591,18 +592,23 @@ class ImapHandler extends TransportHandler
             if ( count( $bccAddresses )) $message->setBcc( $bccAddresses );
         }
 
-        if ($this->mailbox->reply_to != '') {
+        if (!empty($email->reply_to_addr)) {
+            $message->setReplyTo($email->reply_to_addr);
+        } else if ($this->mailbox->reply_to != '') {
             $message->setReplyTo($this->mailbox->reply_to);
         }
 
         if ($email->id) {
-            foreach ($email->attachments as $att) {
-                if($att->display_name){
-                    $displayName = $att->display_name . substr($att->filename, strrpos($att->filename, '.'));
+            if(!$email->downloadlink_attachments) {
+                foreach ($email->attachments as $att) {
+                    $displayName = null;
+                    if ($att->display_name) {
+                        $displayName = $att->display_name . substr($att->filename, strrpos($att->filename, '.'));
+                    }
+                    $message->attach(
+                        Swift_Attachment::fromPath(StreamFactory::getPathPrefix('upload') . $att->filemd5)->setFilename($displayName ?: $att->filename)
+                    );
                 }
-                $message->attach(
-                    Swift_Attachment::fromPath(StreamFactory::getPathPrefix('upload') . $att->filemd5)->setFilename($displayName ?: $att->filename)
-                );
             }
 
             $this->handleInlineImages($message, $email);
@@ -618,7 +624,7 @@ class ImapHandler extends TransportHandler
      * @return DispatchResponse
      * @throws Exception
      */
-    protected function dispatch($message): DispatchResponse
+    protected function dispatch($message, $email): DispatchResponse
     {
         $logEntryHandler = new APILogEntryHandler();
         try {

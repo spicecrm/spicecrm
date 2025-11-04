@@ -2,11 +2,9 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
-use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryItem
 {
@@ -23,12 +21,13 @@ class SpiceDictionaryItem
     {
         $this->id = $id;
 
-        // $this->itemDefinition = (object)DBManagerFactory::getInstance()->fetchOne("SELECT *, 'g' scope FROM sysdictionaryitems WHERE deleted = 0 AND id='{$id}' UNION SELECT *, 'c' scope FROM syscustomdictionaryitems WHERE deleted = 0 AND id='{$id}'");
         $res = SpiceDictionaryItems::getInstance()->getItem($id);
+
         if (!$res) {
             throw new Exception("dictionary Item with id {$id} not found");
         }
-        $this->itemDefinition = (object)$res;
+
+        $this->itemDefinition = (object) $res;
 
         $this->name = $this->itemDefinition->name;
         $this->sysdomaindefinition_id = $this->itemDefinition->sysdomaindefinition_id;
@@ -72,10 +71,11 @@ class SpiceDictionaryItem
 
     /**
      * activates the item and writes the cached entry
-     *
-     * @return void
+     * @param bool $repair
+     * @return array
+     * @throws Exception
      */
-    public function activate($repair = true)
+    public function activate(bool $repair = true): array
     {
         // collect the definitions
         $definitions = [];
@@ -84,16 +84,16 @@ class SpiceDictionaryItem
         $dictionaryDefinition = new SpiceDictionaryDefinition($this->sysdictionarydefinition_id);
 
         if ($dictionaryDefinition->type != 'template' && $this->sysdomaindefinition_id) {
-            $definitions = (new SpiceDictionaryDomain($this->sysdomaindefinition_id))->activateForItem($this, $dictionaryDefinition);
+            $definitions = (new SpiceDictionaryDomain($this->sysdomaindefinition_id))->activateForItem($this);
             if ($repair) {
                 $this->repairItem($dictionaryDefinition->tablename, $definitions);
             }
         } elseif ($dictionaryDefinition->type != 'template' && $this->sysdictionary_ref_id) {
             // process the template
-            $items = SpiceDictionaryItems::getInstance()->getItems($this->sysdictionary_ref_id);
+            $items = SpiceDictionaryItems::getInstance()->getItemsForDictionary($this->sysdictionary_ref_id);
             $definitions = [];
             foreach($items as $item){
-                $definitions = array_merge( $definitions, (new SpiceDictionaryDomain($item['sysdomaindefinition_id']))->activateForItem(new SpiceDictionaryItem($item['id']), $dictionaryDefinition));
+                $definitions = array_merge( $definitions, (new SpiceDictionaryDomain($item['sysdomaindefinition_id']))->activateForItem(new SpiceDictionaryItem($item['id'])));
             }
             if ($repair) {
                 $this->repairItem($dictionaryDefinition->tablename, $definitions);
@@ -106,20 +106,11 @@ class SpiceDictionaryItem
                     (new SpiceDictionaryIndex($index['id']))->activate(true, $dictionaryDefinition);
                 }
             }
-
-            // get the template relationships
-            if($repair) {
-                $relationships = SpiceDictionaryRelationships::getInstance()->getRelationships($this->sysdictionary_ref_id);
-                foreach ($relationships as $relationship) {
-
-                    // activate
-                    (new SpiceDictionaryRelationship($relationship['id']))->activate(false, $this->sysdictionary_ref_id, $this->sysdictionarydefinition_id);
-                }
-            }
         }
 
-        // set the status
-        $this->setStatus('a');
+        if ($this->itemDefinition->status != 'a') {
+            $this->setStatus('a');
+        }
 
         // return the definitions
         return ['definitions' => $definitions, 'indexes' => $indexes ?: []];
@@ -143,7 +134,7 @@ class SpiceDictionaryItem
 
         } elseif ($dictionaryDefinition->type != 'template' && $this->sysdictionary_ref_id) {
             // process the template
-            $items = SpiceDictionaryItems::getInstance()->getItems($this->sysdictionary_ref_id);
+            $items = SpiceDictionaryItems::getInstance()->getItemsForDictionary($this->sysdictionary_ref_id);
             $definitions = [];
             foreach($items as $item){
                 $definitions = array_merge( $definitions, (new SpiceDictionaryDomain($item['sysdomaindefinition_id']))->activateForItem(new SpiceDictionaryItem($item['id']), $dictionaryDefinition));
@@ -192,7 +183,7 @@ class SpiceDictionaryItem
 
         } elseif ($dictionaryDefinition->type != 'template' && $this->sysdictionary_ref_id) {
             // process the template
-            $items = SpiceDictionaryItems::getInstance()->getItems($this->sysdictionary_ref_id);
+            $items = SpiceDictionaryItems::getInstance()->getItemsForDictionary($this->sysdictionary_ref_id);
 
             foreach($items as $item){
                 $fields = array_merge($fields,(new SpiceDictionaryDomain($item['sysdomaindefinition_id']))->getFields(new SpiceDictionaryItem($item['id'])));
@@ -203,18 +194,6 @@ class SpiceDictionaryItem
             foreach ($indexes as $index){
                 (new SpiceDictionaryIndex($index['id']))->deactivate(true, $dictionaryDefinition);
             }
-
-            $relationships = SpiceDictionaryRelationships::getInstance()->getRelationships($this->sysdictionary_ref_id);
-            foreach ($relationships as $relationship){
-
-                // activate
-                (new SpiceDictionaryRelationship($relationship['id']))->deactivate(false, $this->sysdictionary_ref_id, $this->sysdictionarydefinition_id);
-            }
-        }
-
-        // delete the field entries if we have any
-        if(count($fields) > 0) {
-            DBManagerFactory::getInstance()->query("DELETE FROM sysdictionaryfields WHERE sysdictionarydefinition_id='$this->sysdictionarydefinition_id' AND fieldname IN ('" . implode("','", $fields) . "')");
         }
 
         // set the status
@@ -249,7 +228,7 @@ class SpiceDictionaryItem
 
             } elseif ($this->sysdictionary_ref_id) {
                 // process the template
-                $items = SpiceDictionaryItems::getInstance()->getItems($this->sysdictionary_ref_id);
+                $items = SpiceDictionaryItems::getInstance()->getItemsForDictionary($this->sysdictionary_ref_id);
 
                 foreach ($items as $item) {
                     $fields = array_merge($fields, (new SpiceDictionaryDomain($item['sysdomaindefinition_id']))->getFields(new SpiceDictionaryItem($item['id'])));

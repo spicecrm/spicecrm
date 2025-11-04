@@ -1,8 +1,8 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 $current_user = AuthenticationController::getInstance()->getCurrentUser();
 $db = DBManagerFactory::getInstance();

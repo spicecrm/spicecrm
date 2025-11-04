@@ -5,7 +5,7 @@ import {
     AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-    Component, HostBinding,
+    Component, HostBinding, Injector,
     Input,
     OnInit,
     ViewChild
@@ -13,6 +13,7 @@ import {
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
 import {AttributeObjectI, BodyI} from "../interfaces/spicepagebuilder.interfaces";
+import {SpicePageBuilderMediaArticleService} from "../services/spicepagebuildermediaarticle.service";
 
 /**
  * Parse and renders renderer body
@@ -21,6 +22,7 @@ import {AttributeObjectI, BodyI} from "../interfaces/spicepagebuilder.interfaces
     selector: 'spice-page-builder-element-body',
     templateUrl: '../templates/spicepagebuilderelementbody.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [SpicePageBuilderMediaArticleService],
     standalone: false
 })
 export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
@@ -49,9 +51,11 @@ export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
      */
     public readonly attributesList: AttributeObjectI[] = [
         {name: 'width', type: 'text'},
-        {name: 'background-color', type: 'color'}
+        {name: 'background-color', type: 'color'},
+        {name: 'trackinglinkall', type: 'bool'}
     ];
     constructor(public spicePageBuilderService: SpicePageBuilderService,
+                private injector: Injector,
                 private cdRef: ChangeDetectorRef) {
     }
 
@@ -104,6 +108,7 @@ export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
         this.spicePageBuilderService.emitData();
     }
 
+
     /**
      * push the dropped item to the container array
      * @param event
@@ -133,7 +138,7 @@ export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
      */
     public edit() {
 
-        this.spicePageBuilderService.openEditModal(this.body).subscribe({
+        this.spicePageBuilderService.openEditModal(this.body, true, this.injector).subscribe({
             next: res => {
                 if (!!res) this.handleEditResponse(res);
             }
@@ -146,6 +151,13 @@ export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
     public handleEditResponse(res) {
         this.body.attributes = res.attributes;
         this.generateStyle();
+        if(!!this.body.attributes.trackinglinkall){
+            this.spicePageBuilderService.appendElementCustomAttribute(this.body, 'trackinglinkall', this.body.attributes.trackinglinkall);
+            this.body.attributes['css-class'] = this.body.attributes['css-class'] === `element-id-${this.body.id}` ? this.body.attributes['css-class'] : `element-id-${this.body.id}`;
+        }
+        else{
+            this.spicePageBuilderService.removeElementCustomAttribute(this.body, 'trackinglinkall');
+        }
         this.cdRef.markForCheck();
         this.spicePageBuilderService.emitData();
     }

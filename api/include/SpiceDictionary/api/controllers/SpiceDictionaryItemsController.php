@@ -3,7 +3,6 @@
 namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -46,7 +45,11 @@ class SpiceDictionaryItemsController
         $body = $req->getParsedBody();
 
         foreach ($body['items'] as $item) {
-            SpiceDictionaryItems::getInstance()->addItem($item);
+            if (SpiceDictionaryItems::getInstance()->getItem($item['id'])) {
+                SpiceDictionaryItems::getInstance()->setItem($item);
+            } else {
+                SpiceDictionaryItems::getInstance()->addItem($item);
+            }
         }
 
         return $res->withJson(['success' => true]);
@@ -101,7 +104,6 @@ class SpiceDictionaryItemsController
     public function activateDictionaryItem(Request $req, Response $res, array $args): Response
     {
         $success = (new SpiceDictionaryItem($args['id']))->activate();
-        SpiceDictionary::getInstance()->loadDictionary();
 
         return $res->withJson(['success' => $success]);
     }
@@ -117,7 +119,6 @@ class SpiceDictionaryItemsController
     public function deactivateDictionaryItem(Request $req, Response $res, array $args): Response
     {
         $success = (new SpiceDictionaryItem($args['id']))->deactivate();
-        SpiceDictionary::getInstance()->loadDictionary();
 
         return $res->withJson(['success' => $success]);
     }

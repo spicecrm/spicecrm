@@ -2,10 +2,10 @@
 
 namespace SpiceCRM\modules\EmailTrackingActions;
 
-use SpiceCRM\data\BeanFactory;
 use SpiceCRM\extensions\modules\NewsletterLogs\NewsletterLog;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\CampaignLog\CampaignLog;
@@ -139,6 +139,9 @@ class EmailTracking
     static function getManagePreferencesUrl(Email $email)
     {
         $url = SpiceConfig::getInstance()->get('emailtracking.manage_preferences_url') ?: SpiceConfig::getInstance()->config['site_url'] . '/email/m/{refid}';
+
+        $mailbox = BeanFactory::getBean('Mailboxes', $email->mailbox_id);
+        $url = $mailbox->manage_preferences_url ?: $url;
 
         [$parentType, $parentId] = $email->getTrackingParentData();
 

@@ -3,21 +3,21 @@
 namespace SpiceCRM\includes\SpiceAttachments;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachment;
+use SpiceCRM\extensions\modules\Mailboxes\Handlers\OutlookAttachment;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\UploadFile;
 use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
-use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachment;
-use SpiceCRM\extensions\modules\Mailboxes\Handlers\OutlookAttachment;
 
 class SpiceAttachments
 {
@@ -373,6 +373,21 @@ class SpiceAttachments
                         '{$payload['name']}', '{$payload['size']}', '{$payload['md5']}', '', '{$thumbnail}', 0, '{$payload['content-type']}')");
 
         return true;
+    }
+
+    /**
+     * will decode a mime encoded attachment name
+     * @param $encodedName
+     * @return false|mixed|string
+     */
+    public static function decodeEmailAttachmentName($encodedName){
+        $filename = $encodedName;
+        if (function_exists('mb_decode_mimeheader')) {
+            $filename = mb_decode_mimeheader($encodedName);
+        } elseif (function_exists('iconv_mime_decode')) {
+            $filename =  iconv_mime_decode($encodedName, 0, "UTF-8");
+        }
+        return $filename;
     }
 
     public static function saveBase64File(string $fileContent): string {

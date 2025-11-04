@@ -2,12 +2,11 @@
 
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use stdClass;
 
 class SpiceUIRepositoryController
 {
@@ -27,6 +26,7 @@ class SpiceUIRepositoryController
         $retArray = [];
 
         $modules = $db->query("SELECT {$sysuimodulerepositoryColumns} FROM sysuimodulerepository UNION ALL SELECT {$sysuimodulerepositoryColumns} FROM sysuicustommodulerepository");
+
         while ($module = $db->fetchByAssoc($modules)) {
             $retArray[$module['id']] = [
                 'id' => $module['id'],

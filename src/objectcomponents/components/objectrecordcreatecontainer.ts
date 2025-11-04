@@ -77,6 +77,7 @@ export class ObjectRecordCreateContainer implements OnInit {
         let params = this.navigationtab.activeRoute.params;
         this.model.module = params.module;
         this.model.id = params.id;
+
         this.model.initialize();
         this.model.isNew = true;
 

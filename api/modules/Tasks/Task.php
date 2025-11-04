@@ -3,8 +3,8 @@
 namespace SpiceCRM\modules\Tasks;
 
 use DateInterval;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use DateTime;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;

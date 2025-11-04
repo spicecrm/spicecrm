@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\ProspectListFilters;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 
 class ProspectListFilter extends SpiceBean {

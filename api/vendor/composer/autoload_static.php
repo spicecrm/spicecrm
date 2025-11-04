@@ -99,6 +99,10 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
         array (
             'Laravel\\SerializableClosure\\' => 28,
         ),
+        'K' => 
+        array (
+            'Karriere\\PdfMerge\\' => 18,
+        ),
         'I' => 
         array (
             'Invoker\\' => 8,
@@ -120,6 +124,7 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
             'Google\\Protobuf\\' => 16,
             'Google\\LongRunning\\' => 19,
             'Google\\Iam\\' => 11,
+            'Google\\Cloud\\Translate\\' => 23,
             'Google\\Cloud\\Storage\\' => 21,
             'Google\\Cloud\\Core\\' => 18,
             'Google\\Cloud\\' => 13,
@@ -134,6 +139,7 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
             'GPBMetadata\\Google\\Longrunning\\' => 31,
             'GPBMetadata\\Google\\Logging\\' => 27,
             'GPBMetadata\\Google\\Iam\\' => 23,
+            'GPBMetadata\\Google\\Cloud\\Translate\\' => 35,
             'GPBMetadata\\Google\\Cloud\\' => 25,
             'GPBMetadata\\Google\\Api\\' => 23,
             'GPBMetadata\\ApiCore\\' => 20,
@@ -366,6 +372,10 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
         array (
             0 => __DIR__ . '/..' . '/laravel/serializable-closure/src',
         ),
+        'Karriere\\PdfMerge\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/karriere/pdf-merge/src',
+        ),
         'Invoker\\' => 
         array (
             0 => __DIR__ . '/..' . '/php-di/invoker/src',
@@ -417,6 +427,10 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
         'Google\\Iam\\' => 
         array (
             0 => __DIR__ . '/..' . '/google/common-protos/src/Iam',
+        ),
+        'Google\\Cloud\\Translate\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/google/cloud-translate/src',
         ),
         'Google\\Cloud\\Storage\\' => 
         array (
@@ -473,6 +487,10 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
         'GPBMetadata\\Google\\Iam\\' => 
         array (
             0 => __DIR__ . '/..' . '/google/common-protos/metadata/Iam',
+        ),
+        'GPBMetadata\\Google\\Cloud\\Translate\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/google/cloud-translate/metadata',
         ),
         'GPBMetadata\\Google\\Cloud\\' => 
         array (
@@ -558,7 +576,10 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
         'BaseSendGridClientInterface' => __DIR__ . '/..' . '/sendgrid/sendgrid/lib/BaseSendGridClientInterface.php',
         'CURLStringFile' => __DIR__ . '/..' . '/symfony/polyfill-php81/Resources/stubs/CURLStringFile.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Datamatrix' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
         'Dompdf\\Cpdf' => __DIR__ . '/..' . '/dompdf/dompdf/lib/Cpdf.php',
+        'FPDF' => __DIR__ . '/..' . '/karriere/pdf-merge/tcpi/tcpdi.php',
+        'FPDF_TPL' => __DIR__ . '/..' . '/karriere/pdf-merge/tcpi/fpdf_tpl.php',
         'GPBMetadata\\GrpcGcp' => __DIR__ . '/..' . '/google/grpc-gcp/src/generated/GPBMetadata/GrpcGcp.php',
         'Grpc\\Gcp\\AffinityConfig' => __DIR__ . '/..' . '/google/grpc-gcp/src/generated/Grpc/Gcp/AffinityConfig.php',
         'Grpc\\Gcp\\AffinityConfig_Command' => __DIR__ . '/..' . '/google/grpc-gcp/src/generated/Grpc/Gcp/AffinityConfig_Command.php',
@@ -570,11 +591,23 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
         'HTML5_Parser' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/Parser.php',
         'HTML5_Tokenizer' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/Tokenizer.php',
         'HTML5_TreeBuilder' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/TreeBuilder.php',
+        'PDF417' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/pdf417.php',
         'PEAR_Exception' => __DIR__ . '/..' . '/pear/pear_exception/PEAR/Exception.php',
         'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
+        'QRcode' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/qrcode.php',
         'ReturnTypeWillChange' => __DIR__ . '/..' . '/symfony/polyfill-php81/Resources/stubs/ReturnTypeWillChange.php',
         'SendGrid' => __DIR__ . '/..' . '/sendgrid/sendgrid/lib/SendGrid.php',
         'Stringable' => __DIR__ . '/..' . '/myclabs/php-enum/stubs/Stringable.php',
+        'TCPDF' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf.php',
+        'TCPDF2DBarcode' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf_barcodes_2d.php',
+        'TCPDFBarcode' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf_barcodes_1d.php',
+        'TCPDF_COLORS' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_colors.php',
+        'TCPDF_FILTERS' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_filters.php',
+        'TCPDF_FONTS' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_fonts.php',
+        'TCPDF_FONT_DATA' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_font_data.php',
+        'TCPDF_IMAGES' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_images.php',
+        'TCPDF_STATIC' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_static.php',
+        'TCPDI' => __DIR__ . '/..' . '/karriere/pdf-merge/tcpi/tcpdi.php',
         'TwilioEmail' => __DIR__ . '/..' . '/sendgrid/sendgrid/lib/TwilioEmail.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
         'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
@@ -592,6 +625,7 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
         'soap_transport_http' => __DIR__ . '/..' . '/nusoap/nusoap.php',
         'soapclient' => __DIR__ . '/..' . '/nusoap/nusoap.php',
         'soapval' => __DIR__ . '/..' . '/nusoap/nusoap.php',
+        'tcpdi_parser' => __DIR__ . '/..' . '/karriere/pdf-merge/tcpi/tcpdi_parser.php',
         'wsdl' => __DIR__ . '/..' . '/nusoap/nusoap.php',
         'wsdlcache' => __DIR__ . '/..' . '/nusoap/nusoap.php',
     );

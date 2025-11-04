@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\modules\AccountVATIDs;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\modules\Accounts\AccountVIESCheck;
 
 class AccountVATID extends SpiceBean

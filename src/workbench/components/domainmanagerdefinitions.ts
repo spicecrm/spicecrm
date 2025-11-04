@@ -120,6 +120,9 @@ export class DomainManagerDefinitions {
                             this.domainmanager.currentDomainDefinition == null;
                             this.domainmanager.currentDomainField == null;
                         }
+                    },
+                    error: () => {
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                     }
                 });
             }
@@ -146,6 +149,7 @@ export class DomainManagerDefinitions {
                         loadingModal.emit(true);
                     },
                     error: () => {
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                         loadingModal.emit(true);
                     }
                 })
@@ -162,6 +166,7 @@ export class DomainManagerDefinitions {
                         loadingModal.emit(true);
                     },
                     error: () => {
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                         loadingModal.emit(true);
                     }
                 })

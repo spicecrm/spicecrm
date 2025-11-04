@@ -4,21 +4,22 @@
 namespace SpiceCRM\includes\SpiceFTSManager;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\modules\SystemTenants\SystemTenant;
-use stdClass;
 use SpiceCRM\modules\UserPreferences\UserPreference;
-use SpiceCRM\includes\TimeDate;
+use stdClass;
 
 class SpiceFTSHandler
 {
@@ -245,7 +246,11 @@ class SpiceFTSHandler
         }
 
         // format as in fts index
-        $phonenumber = SpicePhoneNumberParser::convertToE164($phonenumber);
+        $formattedPhoneNumber = SpicePhoneNumberParser::convertToE164($phonenumber);
+
+        if ($formattedPhoneNumber == "") {
+            return $phonenumber;
+        }
 
         // determine the modules
         // ToDo: move to fts utils and utilize cache
@@ -255,7 +260,7 @@ class SpiceFTSHandler
             $ftsParams = json_decode(html_entity_decode($ftsmodule['settings']));
             if ($ftsParams->phonesearch == true) {
                 $module = $ftsmodule['module'];
-                $searchresultsraw = $this->searchModuleByPhoneNumber($module, $phonenumber);
+                $searchresultsraw = $this->searchModuleByPhoneNumber($module, $formattedPhoneNumber);
 
                 foreach ($searchresultsraw['hits']['hits'] as $hit) {
                     $seed = BeanFactory::getBean($module, $hit['_id']);
@@ -561,7 +566,7 @@ class SpiceFTSHandler
     /**
      * indexes a given bean that is passed in
      *
-     * @param $bean the sugarbean to be indexed
+     * @param $bean SpiceBean the sugarbean to be indexed
      *
      * @return bool
      */
@@ -1399,7 +1404,7 @@ class SpiceFTSHandler
 
                     foreach ($seed->field_defs as $field => $fieldData) {
                         //if (!isset($hit['_source']{$field}))
-                        if(is_string($seed->$field)) { // might be Link2 Object! so check on it
+                        if(is_string($seed->$field)) { // might be SpiceDictionaryLink Object! so check on it
                             $hit['_source'][$field] = html_entity_decode($seed->$field, ENT_QUOTES);
                         }
                     }

@@ -144,6 +144,9 @@ import {CRMLogViewerListModal} from './components/crmlogviewerlistmodal';
 
 import {APIlogViewer} from './components/apilogviewer';
 import {APIlogViewerModal} from './components/apilogviewermodal';
+import {APIlogViewerReplayModal} from './components/apilogviewerreplaymodal';
+import {APIlogViewerReplayItem} from './components/apilogviewerreplayitem';
+import {APIlogReplayItemXML} from './components/apilogreplayitemxml';
 
 import {ModuleFilterBuilder} from "./components/modulefilterbuilder";
 import {ModuleFilterBuilderFilters} from "./components/modulefilterbuilderfilters";
@@ -188,6 +191,12 @@ import {HL7ManagerRule} from './components/hl7managerrule';
 import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkanban";
 import {DomainManagerDefinitionUsageModal} from "./components/domainmanagerdefinitionusagemodal";
 import {DictionaryManagerUsageModal} from "./components/dictionarymanagereusagemodal";
+import {DictionaryManagerFilterItemsPipe} from "./pipes/dictionarymanagerfilteritems.pipe";
+import {DictionaryManagerFieldDefinitionModal} from "./components/dictionarymanagerfielddefinitionmodal";
+import {MailboxesSpiceGatewayManager} from "./components/mailboxesspicegatewaymanager";
+import {
+    DictionaryManagerRelationshipAddManyToManySelf
+} from "./components/dictionarymanagerrelationshipaddmanytomanyself";
 
 
 @NgModule({
@@ -199,7 +208,8 @@ import {DictionaryManagerUsageModal} from "./components/dictionarymanagereusagem
         ObjectFields,
         ObjectComponents,
         GlobalComponents,
-        DragDropModule
+        DragDropModule,
+        DictionaryManagerFilterItemsPipe
     ],
     declarations: [
         CategoryTreeManager,
@@ -333,6 +343,9 @@ import {DictionaryManagerUsageModal} from "./components/dictionarymanagereusagem
         APIlogConfig,
         APIlogViewer,
         APIlogViewerModal,
+        APIlogViewerReplayModal,
+        APIlogViewerReplayItem,
+        APIlogReplayItemXML,
         APIlogConfig,
         ModuleFilterBuilder,
         ModuleFilterBuilderFilters,
@@ -363,7 +376,10 @@ import {DictionaryManagerUsageModal} from "./components/dictionarymanagereusagem
         HL7Manager,
         Hl7ManagerType,
         HL7ManagerRule,
-        WorkbenchConfigOptionKanban
+        WorkbenchConfigOptionKanban,
+        DictionaryManagerFieldDefinitionModal,
+        MailboxesSpiceGatewayManager,
+        DictionaryManagerRelationshipAddManyToManySelf
     ],
     exports: [
         SortPipe,

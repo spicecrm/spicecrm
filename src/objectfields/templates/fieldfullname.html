@@ -5,35 +5,45 @@
     </field-generic-display>
 </ng-container>
 <div *ngIf="isEditable() && isEditMode()">
-    <div class="slds-grid slds-grid_vertical-align-center slds-wrap">
+    <div class="slds-grid slds-grid_vertical-align-center slds-gutters_direct-xx-small slds-wrap">
         <div class="slds-col slds-form-element__control slds-align-top" [ngClass]="getClassesForSubField(fieldsalutation)">
-            <field-label *ngIf="displayLabel" [fieldname]="fieldsalutation"></field-label>
-            <div class="slds-select_container slds-m-vertical--xx-small">
-                <select class="slds-select" [(ngModel)]="salutation">
-                    <option *ngFor="let o of getSalutations()" [ngValue]="o.value">{{o.display}}</option>
-                </select>
-            </div>
-            <field-messages [fieldname]="fieldsalutation"></field-messages>
+            <field-label *ngIf="displayLabel" [fieldname]="fieldsalutation"/>
+            @if (view.size == 'small') {
+                <div class="slds-grid slds-wrap" style="overflow: hidden">
+                    @for (o of salutations; track o.value){
+                        @if(o.value.trim() != ''){
+                            <system-input-radio [ngClass]="sizeClass" [name]="fieldid + '_salutation'" [(ngModel)]="salutation">{{o.display}}</system-input-radio>
+                        }
+                    }
+                </div>
+            } @else {
+                <div class="slds-select_container slds-m-vertical--xx-small">
+                    <select class="slds-select" [(ngModel)]="salutation">
+                        <option *ngFor="let o of salutations" [ngValue]="o.value">{{o.display}}</option>
+                    </select>
+                </div>
+            }
+            <field-messages [fieldname]="fieldsalutation"/>
         </div>
         <div *ngIf="!isSimple" class="slds-col slds-form-element__control slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fielddegree)">
-            <field-label *ngIf="displayLabel" [fieldname]="fielddegree"></field-label>
+            <field-label *ngIf="displayLabel" [fieldname]="fielddegree"/>
             <input class="slds-input slds-m-vertical--xx-small" type="text" [(ngModel)]="degree1"/>
-            <field-messages [fieldname]="fielddegree"></field-messages>
+            <field-messages [fieldname]="fielddegree"/>
         </div>
         <div class="slds-col slds-form-element__control slds-align-top" [ngClass]="getClassesForSubField(fieldfirstname)">
-            <field-label *ngIf="displayLabel" [fieldname]="fieldfirstname"></field-label>
+            <field-label *ngIf="displayLabel" [fieldname]="fieldfirstname"/>
             <input class="slds-input slds-m-vertical--xx-small" type="text" [(ngModel)]="first_name" [ngModelOptions]="{updateOn: 'blur'}"/>
-            <field-messages [fieldname]="fieldfirstname"></field-messages>
+            <field-messages [fieldname]="fieldfirstname"/>
         </div>
-        <div class="slds-col slds-form-element__control slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fieldlastname)">
-            <field-label *ngIf="displayLabel" [fieldname]="fieldlastname"></field-label>
+        <div class="slds-col slds-form-element__control slds-align-top" [ngClass]="getClassesForSubField(fieldlastname)">
+            <field-label *ngIf="displayLabel" [fieldname]="fieldlastname"/>
             <input #focus class="slds-input slds-m-vertical--xx-small" type="text" [(ngModel)]="last_name" [ngModelOptions]="{updateOn: 'blur'}"/>
-            <field-messages [fieldname]="fieldlastname"></field-messages>
+            <field-messages [fieldname]="fieldlastname"/>
         </div>
         <div *ngIf="!isSimple" class="slds-col slds-form-element__control slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fieldlasttitle)">
-            <field-label *ngIf="displayLabel" [fieldname]="fieldlasttitle"></field-label>
+            <field-label *ngIf="displayLabel" [fieldname]="fieldlasttitle"/>
             <input class="slds-input slds-m-vertical--xx-small" type="text" [(ngModel)]="degree2"/>
-            <field-messages [fieldname]="fieldlasttitle"></field-messages>
+            <field-messages [fieldname]="fieldlasttitle"/>
         </div>
     </div>
 </div>

@@ -89,9 +89,6 @@ export class DictionaryManagerRelationshipContainerOneToMany implements OnInit {
         // load the items
         this.loadItems();
 
-        // load the relationship relate fields
-        this.loadRelationshipFields();
-
     }
 
     /**
@@ -103,16 +100,4 @@ export class DictionaryManagerRelationshipContainerOneToMany implements OnInit {
         this.lhs_items = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.lhs_sysdictionarydefinition_id);
         this.rhs_items = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.rhs_sysdictionarydefinition_id);
     }
-
-    /**
-     * loads the relationship fields
-     *
-     * @private
-     */
-    public loadRelationshipFields() {
-        if(this.dictionarymanager.dictionaryrelationshiprelatefields){
-            this.relationshiprelatefields = this.dictionarymanager.dictionaryrelationshiprelatefields.filter(rf => rf.relationship_id == this.relationship.id);
-        }
-    }
-
 }

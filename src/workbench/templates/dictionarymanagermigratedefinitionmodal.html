@@ -1,4 +1,4 @@
-<system-modal size="large" *ngIf="!loading">
+<system-modal size="large">
     <system-modal-header (close)="close()">Migrate Dictionary Definition</system-modal-header>
     <system-modal-content margin="none">
         <div *ngIf="view=='tables'" style="height: 80vh">
@@ -13,11 +13,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let table of _tables" (dblclick)="goDetails()" (click)="selectedtable = table.sysdictionarytablename">
-                        <td><system-input-radio name="migratedid" [value]="table.sysdictionarytablename" [ngModel]="selectedtable"></system-input-radio></td>
-                        <td><div class="slds-truncate">{{table.sysdictionaryname}}</div></td>
-                        <td><div class="slds-truncate">{{table.sysdictionarytablename}}</div></td>
-                        <td><system-checkbox disabled [ngModel]="table.sysdictionarytableaudited == '1'"></system-checkbox></td>
+                    <tr *ngFor="let table of _tables" (dblclick)="goDetails()" (click)="selectedtable = table.table">
+                        <td><system-input-radio name="migratedid" [value]="table.table" [ngModel]="selectedtable"></system-input-radio></td>
+                        <td><div class="slds-truncate">{{table.name}}</div></td>
+                        <td><div class="slds-truncate">{{table.table}}</div></td>
+                        <td><system-checkbox disabled [ngModel]="table.audited"></system-checkbox></td>
                         <td><system-checkbox disabled [ngModel]="!!table.sysdictionarydefinition_id"></system-checkbox></td>
                     </tr>
                 </tbody>
@@ -101,10 +101,10 @@
                     <ng-container *ngFor="let field of fields">
                         <tr *ngIf="!filterundefined || !field.sysdomainfield_id">
                             <td><system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.selected"></system-checkbox></td>
-                            <td><div class="slds-truncate">{{field.fieldname}}</div></td>
+                            <td><div class="slds-truncate">{{field.name}}</div></td>
                             <td><system-checkbox disabled [ngModel]="!!field.sysdomainfield_id"></system-checkbox></td>
-                            <td><div class="slds-truncate">{{field.fieldtype}}<span *ngIf="field.fielddefinition.len">({{field.fielddefinition.len}})</span></div></td>
-                            <td><system-checkbox disabled [ngModel]="field.fielddefinition.source && field.fielddefinition.source == 'non-db'"></system-checkbox></td>
+                            <td><div class="slds-truncate">{{field.type}}<span *ngIf="field.len">({{field.len}})</span></div></td>
+                            <td><system-checkbox disabled [ngModel]="field.source && field.source == 'non-db'"></system-checkbox></td>
                             <td>
                                 <div class="slds-select_container">
                                     <select class="slds-select" [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.scope">
@@ -113,8 +113,8 @@
                                     </select>
                                 </div>
                             </td>
-                            <td><system-input-label [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.fielddefinition.vname"></system-input-label></td>
-                            <td><system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.fielddefinition.required"></system-checkbox></td>
+                            <td><system-input-label [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.vname"></system-input-label></td>
+                            <td><system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.required"></system-checkbox></td>
                             <td>
                                 <!--div class="slds-select_container">
                                     <select class="slds-select" [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.sysdomaindefinition_id">
@@ -146,7 +146,7 @@
                                     Comment
                                 </td>
                                 <td colspan="6">
-                                    <system-input-text [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.fielddefinition.comment"></system-input-text>
+                                    <system-input-text [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.comment"></system-input-text>
                                 </td>
                             </tr>
                             <tr>
@@ -155,7 +155,7 @@
                                     audited
                                 </td>
                                 <td colspan="6">
-                                    <system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.fielddefinition.audited"></system-checkbox>
+                                    <system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.audited"></system-checkbox>
                                 </td>
                             </tr>
                             <tr>
@@ -164,7 +164,7 @@
                                     reportable
                                 </td>
                                 <td colspan="6">
-                                    <system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.fielddefinition.reportable"></system-checkbox>
+                                    <system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.reportable"></system-checkbox>
                                 </td>
                             </tr>
                             <tr>
@@ -173,10 +173,10 @@
                                     duplicate merge
                                 </td>
                                 <td colspan="6">
-                                    <system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.fielddefinition.duplicate_merge"></system-checkbox>
+                                    <system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.duplicate_merge"></system-checkbox>
                                 </td>
                             </tr>
-                            <tr *ngFor="let k of getFieldDefinitions(field.fielddefinition)">
+                            <tr *ngFor="let k of getFieldDefinitions(field)">
                                 <td></td>
                                 <td colspan="2">
                                     {{k.key}}
@@ -273,7 +273,10 @@
         <div class="slds-grid slds-grid--vertical-align-center">
             <div class="slds-col--bump-right slds-grid slds-grid--vertical-align-center">
                 <system-input-text class="slds-m-horizontal--xx-small" [showClear]="true" *ngIf="view=='tables'" [(ngModel)]="filterterm"></system-input-text>
-                <system-checkbox class="slds-m-horizontal--xx-small" *ngIf="view=='fields' || view=='tables'" [(ngModel)]="filterundefined">undefined onyl</system-checkbox>
+                <system-checkbox class="slds-m-horizontal--xx-small" *ngIf="view=='fields' || view=='tables'" [(ngModel)]="filterundefined">undefined only</system-checkbox>
+                @if (view == 'tables') {
+                    {{_tables.length}} records
+                }
             </div>
             <button *ngIf="view=='tables'" [disabled]="!selectedtable" class="slds-button slds-button--neutral slds-m-horizontal--xx-small" (click)="goDetails()">
                 <system-label label="LBL_NEXT"></system-label>
@@ -285,7 +288,7 @@
                 <system-label label="LBL_FIELDS"></system-label>
             </button>
             <button *ngIf="view=='fields' || view=='templates'" class="slds-button slds-button--neutral slds-m-horizontal--xx-small" (click)="goIndices()">
-                <system-label label="LBL_INDICES"></system-label>
+                <system-label label="LBL_INDEXES"></system-label>
             </button>
             <button *ngIf="view=='fields' || view=='indices'" class="slds-button slds-button--neutral slds-m-horizontal--xx-small" (click)="goTemplates()">
                 <system-label label="LBL_TEMPLATES"></system-label>

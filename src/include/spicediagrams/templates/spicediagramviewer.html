@@ -1,0 +1,5 @@
+<svg #svgContainer [attr.width]="svgAttributes()?.width" [attr.height]="svgAttributes()?.height" [attr.viewBox]="svgAttributes()?.viewBox" xmlns="http://www.w3.org/2000/svg">
+    @for (shapeElement of svgShapeElements(); track shapeElement.id) {
+        <g [system-model-popover] [id]="shapeElement.id" [module]="module()" [innerHTML]="shapeElement.html" class="djs-group"></g>
+    }
+</svg>

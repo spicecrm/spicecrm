@@ -1,6 +1,6 @@
 {
   "name": "spicecrm",
-  "version": "2025.01.001",
+  "version": "2025.02.001",
   "private": true,
   "dependencies": {
     "@angular/animations": "19.2.12",
@@ -12,7 +12,7 @@
     "@angular/platform-browser": "19.2.12",
     "@angular/platform-browser-dynamic": "19.2.12",
     "@angular/router": "19.2.12",
-    "ace-builds": "^1.39.1",
+    "ace-builds": "1.39.1",
     "chart.js": "^4.4.5",
     "cropperjs": "1.6.2",
     "croppie": "2.6.5",
@@ -36,7 +36,6 @@
     "@types/underscore": "1.11.15",
     "css-minimizer-webpack-plugin": "6.0.0",
     "html-webpack-plugin": "5.6.3",
-    "less": "^4.2.0",
     "terser-webpack-plugin": "5.3.10",
     "typescript": "5.5.4",
     "webpack": "^5.96.1",

@@ -127,6 +127,11 @@ export class modelutilities {
                 if (moment.isMoment(value)) return value; // check if the object is already a moment object
                 let pDate = moment(value); // without a specific time zone, because it´s only a date (without time)
                 return pDate.isValid() ? pDate : null;
+            case "time":
+                if (!value) return null;
+                if (moment.isMoment(value)) return value;
+                const pTime = moment.utc(`1970-01-01 ${value}`); // without a specific time zone, because it's only a time
+                return pTime.isValid() ? pTime : null;
             case "datetime":
             case "datetimecombo":
                 if (moment.isMoment(value)) return value; // check if the object is already a moment object
@@ -200,6 +205,14 @@ export class modelutilities {
                     return pDate.isValid() ? pDate.format('YYYY-MM-DD') : ''; // ... to validate it and to format it.
                 } else if (value && value._isAMomentObject) { // It is a moment object (the usual case).
                     return value.isValid() ? value.format('YYYY-MM-DD') : ''; // Validate it and format it for the backend (without a specific time zone, because it´s only a date).
+                }
+                return '';
+            case "time":
+                if (typeof value === 'string') { // A date field should not be a string, it should be a moment object. Anyway, if it happens, it is handled here.
+                    const pTime = moment(value); // We create a moment object from the string (without a specific time zone, because it´s only a date) ...
+                    return pTime.isValid() ? pTime.format('HH:mm:ss') : ''; // ... to validate it and to format it.
+                } else if (value && value._isAMomentObject) { // It is a moment object (the usual case).
+                    return value.isValid() ? value.format('HH:mm:ss') : ''; // Validate it and format it for the backend (without a specific time zone, because it´s only a date).
                 }
                 return '';
             case "datetime":

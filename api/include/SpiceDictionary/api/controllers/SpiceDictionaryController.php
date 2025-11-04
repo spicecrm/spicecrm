@@ -30,32 +30,28 @@
 namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainFields;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomains;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidations;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndex;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationships;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceUI\Loaders\SpiceUIWordsLoader;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
@@ -66,20 +62,6 @@ use SpiceCRM\includes\utils\SpiceUtils;
  */
 class SpiceDictionaryController
 {
-
-    /**
-     * generates the system cache
-     *
-     * @param $req
-     * @param $res
-     * @param $args
-     * @return mixed
-     */
-    public function generateSystem(Request $req, Response $res, array $args): Response
-    {
-        $res->getBody()->write(SpiceDictionary::getInstance()->generateSystemDumpFile());
-        return $res->withHeader('Content-Type', 'text/plain');
-    }
     /**
      * retrieves the domain definitions
      *
@@ -90,74 +72,34 @@ class SpiceDictionaryController
      */
     public function getDomains(Request $req, Response $res, array $args): Response
     {
-        $handler = SpiceDictionaryHandler::getInstance();
+        [$validations, $validationValues] = SpiceDictionaryDomainValidations::getInstance()->retrieveValidationsAndValues();
         $results = [
-            'domaindefinitions' => SpiceDictionaryDomains::getInstance()->getDomains(),
-            'domainfields' => SpiceDictionaryDomainFields::getInstance()->getDomainFields(),
-            'domainfieldvalidations' => $handler->getDomainFieldValidations(false),
-            'domainfieldvalidationvalues' => $handler->getDomainFieldValidationValues(false)
+            'domaindefinitions' => array_values(SpiceDictionaryDomains::getInstance()->retrieveDomains()),
+            'domainfields' => array_values(SpiceDictionaryDomainFields::getInstance()->retrieveFields()),
+            'domainfieldvalidations' => array_values($validations),
+            'domainfieldvalidationvalues' => array_values($validationValues)
         ];
         return $res->withJson($results);
     }
 
     public function getDefinitions(Request $req, Response $res, array $args): Response
     {
-        $handler =  SpiceDictionaryHandler::getInstance();
         $results = [
-            'domaindefinitions' => SpiceDictionaryDomains::getInstance()->getDomains(),
-            'domainfields' => SpiceDictionaryDomainFields::getInstance()->getDomainFields(),
-            'dictionarydefinitions' => array_values(SpiceDictionaryDefinitions::getInstance()->getDefinitions()),
-            'dictionaryitems' => SpiceDictionaryItems::getInstance()->getDictionaryItems(),
-            'dictionaryrelationshiptypes' => SpiceDictionaryRelationships::getInstance()->relationshiptypes,
-            'dictionaryrelationships' => SpiceDictionaryRelationships::getInstance()->getRelationships(null, []),
-            'dictionaryrelationshippolymorphs' => SpiceDictionaryRelationships::getInstance()->getPolymorphs(),
-//            'dictionaryrelationshiprelatefields' => $handler->getDictionaryRelateFields(),
-            'dictionaryrelationshipfields' => $handler->getDictionaryRelationshipFields(),
-            'dictionaryindexes' => SpiceDictionaryIndexes::getInstance()->getIndexes(),
-            'dictionaryindexitems' => SpiceDictionaryIndexes::getInstance()->getIndexItems(),
+            'domaindefinitions' => array_values(SpiceDictionaryDomains::getInstance()->retrieveDomains()),
+            'domainfields' => array_values(SpiceDictionaryDomainFields::getInstance()->retrieveFields()),
+            'dictionarydefinitions' => array_values(SpiceDictionaryDefinitions::getInstance()->retrieveDefinitions()),
+            'dictionaryitems' => array_values(SpiceDictionaryItems::getInstance()->retrieveItems()),
+            'dictionaryrelationshiptypes' => array_values(SpiceDictionaryRelationships::getInstance()->retrieveRelationshipTypes()),
+            'dictionaryrelationships' => array_values(SpiceDictionaryRelationships::getInstance()->retrieveRelationships()),
+            'dictionaryrelationshippolymorphs' => array_values(SpiceDictionaryRelationships::getInstance()->retrievePolymorphRelationships()),
+            'dictionaryrelationshipfields' => array_values(SpiceDictionaryRelationships::getInstance()->retrieveRelationshipFields()),
+            'dictionaryindexes' => array_values(SpiceDictionaryIndexes::getInstance()->retrieveIndexes()),
+            'dictionaryindexitems' => array_values(SpiceDictionaryIndexes::getInstance()->retrieveIndexItems()),
             'settings' => [
                 'migration_enabled' => SpiceConfig::getInstance()->get('systemvardefs.migration_enabled') == 1,
                 'create_system_file_enabled' => SpiceConfig::getInstance()->get('systemvardefs.create_system_file_enabled') == 1,
-                ]
-        ];
-        return $res->withJson($results);
-    }
-
-
-    /**
-     * post the domain changes
-     *
-     * @param $req
-     * @param $res
-     * @param $args
-     * @return mixed
-     */
-    public function postDefinitions(Request $req, Response $res, array $args): Response
-    {
-        $handler =  SpiceDictionaryHandler::getInstance();
-
-        // get the body
-        $body = $req->getParsedBody();
-
-        $handler->setDictionaryDefinitions($body['dictionarydefinitions']);
-        $handler->setDictionaryItems($body['dictionaryitems']);
-        $handler->setDictionaryRelationships($body['dictionaryrelationships']);
-        $handler->setDictionaryRelationshipFields($body['dictionaryrelationshipfields']);
-//        $handler->setDictionaryRelateFields($body['dictionaryrelationshiprelatefields']);
-        SpiceDictionaryIndexes::getInstance()->setDictionaryIndexes($body['dictionaryindexes']);
-        SpiceDictionaryIndexes::getInstance()->setDictionaryIndexItems($body['dictionaryindexitems']);
-
-        $results = [
-            'domaindefinitions' => SpiceDictionaryDomains::getInstance()->getDomains(),
-            'domainfields' => SpiceDictionaryDomainFields::getInstance()->getDomainFields(),
-            'dictionarydefinitions' => array_values(SpiceDictionaryDefinitions::getInstance()->getDefinitions()),
-            'dictionaryitems' => $handler->getDictionaryItems(),
-            'dictionaryrelationshiptypes' => SpiceDictionaryRelationships::getInstance()->relationshiptypes,
-            'dictionaryrelationships' => SpiceDictionaryRelationships::getInstance()->relationships,
-//            'dictionaryrelationshiprelatefields' => $handler->getDictionaryRelateFields(),
-            'dictionaryrelationshipfields' => $handler->getDictionaryRelationshipFields(),
-            'dictionaryindexes' => SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes(),
-            'dictionaryindexitems' => SpiceDictionaryIndexes::getInstance()->getDictionaryIndexItems()
+                ],
+            'vardefFields' => SpiceDictionaryHandler::getInstance()->dictionary,
         ];
         return $res->withJson($results);
     }
@@ -245,45 +187,37 @@ class SpiceDictionaryController
      * @return Response
      * @throws \Exception
      */
-    public function getDictionaryFields(Request $req, Response $res, array $args): Response{
-        $db = DBManagerFactory::getInstance();
-        $rawArray = [];
-        $retArray = [];
+    public function getDictionaryFields(Request $req, Response $res, array $args): Response
+    {
+        $definitionNames = [];
 
-        $fields = $db->query("SELECT * FROM sysdictionaryfields");
-        while($field = $db->fetchByAssoc($fields)){
-            $rawArray[$field['sysdictionarytablename']][] = $field;
+        # extract vardef definition names
+        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $name => $dictionary) {
+            $definitionNames[] = $name;
         }
 
-        // mingle the data
-        $definitions = array_keys($rawArray);
-        foreach ($definitions as $definition) {
-            $definitionFields = $rawArray[$definition];
 
-            $defArray = [
-                'sysdictionarytablename' => $definition,
-                'sysdictionarydefinition_id' => $definitionFields[0]['sysdictionarydefinition_id'],
-                'sysdictionaryname' => $definitionFields[0]['sysdictionaryname'],
-                'sysdictionarytableaudited' => $definitionFields[0]['sysdictionarytableaudited'],
-                'sysdictionarytablecontenttype' => $definitionFields[0]['sysdictionarytablecontenttype'],
-                'fields' => []
+        foreach (SpiceDictionaryDefinitions::getInstance()->getAllDefinitions() as $definition) {
+            $definitionNames[] = $definition['name'];
+        }
+
+        $definitions = [];
+
+        foreach ($definitionNames as $name) {
+
+            $def = SpiceDictionary::getInstance()->getDefs($name);
+
+            $definitions[] = [
+                'sysdictionarytablename' => $def['table'],
+                'sysdictionarydefinition_id' => $def['id'],
+                'sysdictionaryname' => $def['name'],
+                'sysdictionarytableaudited' => $def['audited'],
+                'sysdictionarytablecontenttype' => $def['contenttype'],
+                'fields' => $def['fields']
             ];
-
-            foreach ($definitionFields as $definitionField){
-                $defArray['fields'][] = [
-                    'id' => $definitionField['id'],
-                    'fieldtype' => $definitionField['fieldtype'],
-                    'fieldname' => $definitionField['fieldname'],
-                    'fielddefinition' => json_decode(html_entity_decode($definitionField['fielddefinition'], true)),
-                    'sysdomainfield_id' => $definitionField['sysdomainfield_id'],
-                    'sysdictionaryrelationship_id' => $definitionField['sysdictionaryrelationship_id'],
-                ];
-            }
-
-            $retArray[] = $defArray;
         }
 
-        return $res->withJson($retArray);
+        return $res->withJson($definitions);
     }
 
 
@@ -339,10 +273,12 @@ class SpiceDictionaryController
      * @param array $args
      * @return Response
      */
-    public function getRepairDefintions(Request $req, Response $res, array $args): Response {
+    public function getRepairDefinitions(Request $req, Response $res, array $args): Response {
         // get all active that are not templates
         $spiceDictionaryDefinitions = [];
-        $allSpiceDictionaryDefinitions = array_filter(SpiceDictionaryDefinitions::getInstance()->getDefinitions('a'), function($d){ return $d['sysdictionary_type'] != 'template';});
+        $allSpiceDictionaryDefinitions = array_filter(
+            SpiceDictionaryDefinitions::getInstance()->getDefinitions('a'), fn($d) => $d['sysdictionary_type'] != 'template'
+        );
 
         foreach ($allSpiceDictionaryDefinitions as $spiceDictionaryDefinition){
 
@@ -356,103 +292,28 @@ class SpiceDictionaryController
             }
         }
 
-        // get all relationships
-        $relArray = [];
-        foreach ($spiceDictionaryDefinitions as $spiceDictionaryDefinition){
-            $relArray = array_merge($relArray, SpiceDictionaryRelationships::getInstance()->getRelationships($spiceDictionaryDefinition['id'], ['a'], true, false));
-        }
-
-        // rebuild the relationships Array to be unique
-        $spiceDictionaryRelationships = [];
-        foreach ($relArray as $rel) {
-            // duploicate check
-            $isDuplicate = false;
-            foreach($spiceDictionaryRelationships as $spiceDictionaryRelationship){
-                if($rel['id'] == $spiceDictionaryRelationship['id']) {
-                    $isDuplicate = true;
-                }
-                if($rel['relationship_name'] == $spiceDictionaryRelationship['relationship_name']) {
-                    $isDuplicate = true;
-                }
-                if($isDuplicate) break;
-
-            }
-
-            if($isDuplicate) continue;
-
-            $leftId = $rel['lhs_sysdictionarydefinition_id'];
-            $rightId = $rel['rhs_sysdictionarydefinition_id'];
-
-            # if one of the sides is a template, set the side id as the reference dictionary id
-            if (!empty($leftId) && (new SpiceDictionaryDefinition($rel['lhs_sysdictionarydefinition_id'], false))?->type == 'template') {
-                $leftId = $rel['referencing_sysdictionarydefinition_id'];
-            } else if (!empty($rightId) && (new SpiceDictionaryDefinition($rel['rhs_sysdictionarydefinition_id'], false))?->type == 'template') {
-                $rightId = $rel['referencing_sysdictionarydefinition_id'];
-            }
-
-            # check if both sides modules exist, otherwise ignore the relationship
-            if ((!empty($leftId) && !SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($leftId)) || (!empty($rightId) && !SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($rightId))) continue;
-
-            // if this is considered unique ... go for it
-            $spiceDictionaryRelationships[] = $rel;
-        }
-
         // get vardefs
-        SpiceDictionaryVardefs::loadLegacyFiles();
-        $vardefDefinitions = SpiceDictionaryHandler::getInstance()->dictionary;
         $vardefDictionaryDefinitions = [];
-        $vardefDictionaryRelationships = [];
-        foreach($vardefDefinitions as $vardefName => $vardefDefinition){
-            // check if we have relationships
-            if($vardefDefinition['relationships']){
-                foreach ($vardefDefinition['relationships'] as $vardefRelationshipName => $vardefRelationship) {
-                    // check that this is not defined in the dictionary already
-                    $isDuplicate = false;
-                    foreach ($spiceDictionaryRelationships as $spiceDictionaryRelationship) {
-                        if ($spiceDictionaryRelationship['relationship_name'] == $vardefRelationshipName) {
-                            $isDuplicate = true;
-                            break;
-                        }
-                    }
 
-                    // check the vardefs as well as we might have duplicates there as well
-                    if (!$isDuplicate) {
-                        foreach ($vardefDictionaryRelationships as $e) {
-                            if ($e['relationship_name'] == $vardefRelationshipName) {
-                                $isDuplicate = true;
-                                break;
-                            }
-                        }
-                    }
+        foreach(SpiceDictionaryHandler::getInstance()->dictionary as $vardefName => $vardefDefinition){
 
-                    // if we are here add it
-                    if (!$isDuplicate && SpiceModules::getInstance()->moduleExists($vardefRelationship['lhs_module']) && SpiceModules::getInstance()->moduleExists($vardefRelationship['rhs_module'])) {
-                        $vardefRelationship['dictionaryname'] = $vardefName;
-                        $vardefRelationship['relationship_name'] = $vardefRelationshipName;
-                        $vardefDictionaryRelationships[] = $vardefRelationship;
-                    }
+            if (!$vardefDefinition['table']) continue;
+
+            // check that this is not defined in the dictionary already
+            $isDuplicate = false;
+            foreach ($spiceDictionaryDefinitions as $spiceDictionaryDefinition) {
+                if ($spiceDictionaryDefinition['tablename'] == $vardefDefinition['table']) {
+                    $isDuplicate = true;
+                    break;
                 }
             }
 
-            // check if this also defines a table
-            if($vardefDefinition['table']) {
-
-                // check that this is not defined in the dictionary already
-                $isDuplicate = false;
-                foreach ($spiceDictionaryDefinitions as $spiceDictionaryDefinition) {
-                    if ($spiceDictionaryDefinition['tablename'] == $vardefDefinition['table']) {
-                        $isDuplicate = true;
-                        break;
-                    }
-                }
-
-                // if we are here add it
-                if (!$isDuplicate) {
-                    $vardefDictionaryDefinitions[] = [
-                        'dictionaryname' => $vardefName,
-                        'table' => $vardefDefinition['table']
-                    ];
-                }
+            // if we are here add it
+            if (!$isDuplicate) {
+                $vardefDictionaryDefinitions[] = [
+                    'dictionaryname' => $vardefName,
+                    'table' => $vardefDefinition['table']
+                ];
             }
         }
 
@@ -460,8 +321,6 @@ class SpiceDictionaryController
         return $res->withJson([
             'SpiceDictionaryDefinitions' => array_values($spiceDictionaryDefinitions),
             'VardefDictionaryDefinitions' => array_values($vardefDictionaryDefinitions),
-            'SpiceDictionaryRelationships' => array_values($spiceDictionaryRelationships),
-            'VardefDictionaryRelationships' => array_values($vardefDictionaryRelationships)
         ]);
 
     }
@@ -488,47 +347,9 @@ class SpiceDictionaryController
             }
         }
 
-        if (!isset($error)) {
-            SystemStartupMode::setRecoveryMode(false);
-        }
-
         return $res->withJson(['sql' => $sql, 'sqlerror' => $error]);
     }
 
-    /**
-     * does a dictionary repair for a given relationship
-     *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     */
-    public function repairRelationship(Request $req, Response $res, array $args): Response {
-        // get the params
-        $params = $req->getQueryParams();
-
-        if($params['template_sysdictionarydefinition_id'] && $params['referencing_sysdictionarydefinition_id']){
-            (new SpiceDictionaryRelationship($args['id']))->activate(false, $params['template_sysdictionarydefinition_id'], $params['referencing_sysdictionarydefinition_id']);
-        } else {
-            (new SpiceDictionaryRelationship($args['id']))->activate(false);
-        }
-
-        return $res->withJson(['success' => true]);
-    }
-
-    /**
-     * does a dictionary repair for a given relationship fromt eh vardefs
-     *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     */
-    public function repairVardefRelationship(Request $req, Response $res, array $args): Response {
-
-        return $res->withJson(['success' => SpiceDictionaryRelationships::getInstance()->repairVardefRelationship($args['dictionaryname'], $args['relationshipname'])]);
-    }
-    
     /**
      * does a dictionary repair
      *
@@ -564,23 +385,6 @@ class SpiceDictionaryController
     }
 
     /**
-     * does a clpmplete repair onm all relationships
-     *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     */
-    public function repairRerlationships(Request $req, Response $res, array $args): Response {
-        $definitions = SpiceDictionaryDefinitions::getInstance()->getDefinitions('a');
-        foreach ($definitions as $definition){
-            SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($definition['id']);
-        }
-
-        return $res->withJson(['success' => true]);
-    }
-
-    /**
      * does a complete repair
      *
      * @param Request $req
@@ -589,20 +393,6 @@ class SpiceDictionaryController
      * @return Response
      */
     public function reset(Request $req, Response $res, array $args): Response {
-        $params = $req->getQueryParams();
-
-        if($params['fullreset']){
-            DBManagerFactory::getInstance()->query("TRUNCATE TABLE relationships");
-            DBManagerFactory::getInstance()->query("TRUNCATE TABLE sysdictionaryfields");
-
-            // write cache for all system package definitions so we have a safe state
-            $defsHandler = SpiceDictionaryDefinitions::getInstance();
-            foreach ($defsHandler->getDefinitions() as $definition) {
-                if($definition['package'] != 'system' || !SpiceDictionary::getInstance()->dictionary[$definition['name']]) continue;
-                $defsHandler->writeVardefToFieldsTable($definition['name'], SpiceDictionary::getInstance()->dictionary[$definition['name']]);
-            }
-        }
-
         unset($_SESSION['sysdictionary']['sqls']);
         return $res->withJson(['success' => true]);
     }
@@ -697,4 +487,35 @@ class SpiceDictionaryController
 
         return $res->withJson(['success' => true]);
     }
+
+    /**
+     * export dictionary definition as json
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function exportDictionaryDefinitionJson(Request $req, Response $res, array $args): Response
+    {
+        $definition = new SpiceDictionaryDefinition($args['id']);
+        $res->getBody()->write(json_encode($definition->exportFields()));
+        return $res->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * get dictionary item build field
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function getDictionaryItemBuild(Request $request, Response $response, array $args): Response
+    {
+        $field = SpiceDictionary::getInstance()->getFieldByDefinitionIdAndItemId($args['defId'], $args['itemId']);
+
+        return $response->withJson($field);
+    }
+
 }

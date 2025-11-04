@@ -31,18 +31,10 @@ $routes = [
         'options' => ['adminOnly' => true],
     ],
     [
-        'method' => 'post',
-        'route' => '/dictionary/generatesystem',
-        'class' => SpiceDictionaryController::class,
-        'function' => 'generateSystem',
-        'description' => 'generates the System cached file',
-        'options' => ['adminOnly' => true],
-    ],
-    [
         'method' => 'get',
         'route' => '/dictionary/repair',
         'class' => SpiceDictionaryController::class,
-        'function' => 'getRepairDefintions',
+        'function' => 'getRepairDefinitions',
         'description' => 'gets all definitions and relationships to be repaired',
         'options' => ['adminOnly' => true],
     ],
@@ -93,51 +85,6 @@ $routes = [
                 'in' => 'query',
                 'description' => 'set to true of the query shoudl be executed also immediately',
                 'type' => ValidationMiddleware::TYPE_BOOL
-            ]
-        ]
-    ],
-    [
-        'method' => 'put',
-        'route' => '/dictionary/repair/relationship/{id}',
-        'class' => SpiceDictionaryController::class,
-        'function' => 'repairRelationship',
-        'description' => 'does a general repair for one relationship',
-        'options' => ['adminOnly' => true, 'validate' => true],
-        'parameters' => [
-            'id' => [
-                'in' => 'path',
-                'description' => 'the id of the definition',
-                'type' => ValidationMiddleware::TYPE_GUID
-            ],
-            'template_sysdictionarydefinition_id' => [
-                'in' => 'query',
-                'description' => 'the id of the template from teh dictionary',
-                'type' => ValidationMiddleware::TYPE_GUID
-            ],
-            'referencing_sysdictionarydefinition_id' => [
-                'in' => 'query',
-                'description' => 'the id of the item this reference is going to',
-                'type' => ValidationMiddleware::TYPE_GUID
-            ]
-        ]
-    ],
-    [
-        'method' => 'put',
-        'route' => '/dictionary/repair/relationship/{dictionaryname}/{relationshipname}',
-        'class' => SpiceDictionaryController::class,
-        'function' => 'repairVardefRelationship',
-        'description' => 'does a general repair for one relationship',
-        'options' => ['adminOnly' => true, 'validate' => true],
-        'parameters' => [
-            'dictionaryname' => [
-                'in' => 'path',
-                'description' => 'the name of the dictionary where this relationship is defined',
-                'type' => ValidationMiddleware::TYPE_STRING
-            ],
-            'relationshipname' => [
-                'in' => 'path',
-                'description' => 'the name of the relationship',
-                'type' => ValidationMiddleware::TYPE_STRING
             ]
         ]
     ],
@@ -212,6 +159,26 @@ $routes = [
         ]
     ],
     [
+        'method' => 'get',
+        'route' => '/dictionary/{defId}/item/{itemId}/build',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'getDictionaryItemBuild',
+        'description' => 'get the dictionary item build field definition',
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'defId' => [
+                'in' => 'path',
+                'description' => 'id of the dictionary definition',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
+            'itemId' => [
+                'in' => 'path',
+                'description' => 'id of the dictionary item',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
+        ]
+    ],
+    [
         'method' => 'delete',
         'route' => '/dictionary/columns/{dictionaryname}',
         'class' => SpiceDictionaryController::class,
@@ -245,73 +212,6 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_STRING
             ]
         ]
-    ],
-    [
-        'method' => 'post',
-        'route' => '/dictionary/definitions',
-        'oldroute' => '/system/dictionary/definitions',
-        'class' => SpiceDictionaryController::class,
-        'function' => 'postDefinitions',
-        'description' => 'save dictionary definitions including relationship & index definitions ',
-        'options' => ['noAuth' => false, 'adminOnly' => true],
-        'parameters' => [
-            'dictionarydefinitions' => [
-                'in' => 'body',
-                'description' => '',
-                'type' => 'array',
-                'subtype' => 'array',
-                'example' => '',
-                'required' => false
-            ],
-            'dictionaryitems' => [
-                'in' => 'body',
-                'description' => '',
-                'type' => 'array',
-                'subtype' => 'array',
-                'example' => '',
-                'required' => false
-            ],
-            'dictionaryrelationships' => [
-                'in' => 'body',
-                'description' => '',
-                'type' => 'array',
-                'subtype' => 'array',
-                'example' => '',
-                'required' => false
-            ],
-            'dictionaryrelationshipfields' => [
-                'in' => 'body',
-                'description' => '',
-                'type' => 'array',
-                'subtype' => 'array',
-                'example' => '',
-                'required' => false
-            ],
-            'dictionaryrelationshiprelatefields' => [
-                'in' => 'body',
-                'description' => '',
-                'type' => 'array',
-                'subtype' => 'array',
-                'example' => '',
-                'required' => false
-            ],
-            'dictionaryindexes' => [
-                'in' => 'body',
-                'description' => '',
-                'type' => 'array',
-                'subtype' => 'array',
-                'example' => '',
-                'required' => false
-            ],
-            'dictionaryindexitems' => [
-                'in' => 'body',
-                'description' => '',
-                'type' => 'array',
-                'subtype' => 'array',
-                'example' => '',
-                'required' => false
-            ]
-        ],
     ],
     // for the domains
     [
@@ -714,7 +614,7 @@ $routes = [
         'route' => '/dictionary/index/{id}',
         'class' => SpiceDictionaryIndexesController::class,
         'function' => 'deleteDictionaryIndex',
-        'description' => 'posts a dictionary Index',
+        'description' => 'deletes a dictionary Index and its items',
         'options' => ['adminOnly' => true],
         'parameters' => [
             'id' => [
@@ -892,6 +792,21 @@ $routes = [
                 'in' => 'path',
                 'description' => 'column to fix',
                 'type' => ValidationMiddleware::TYPE_STRING
+            ]
+        ]
+    ],
+    [
+        'method' => 'post',
+        'route' => '/dictionary/definition/{id}/export/json',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'exportDictionaryDefinitionJson',
+        'description' => 'Export a dictionary definition as JSON',
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'id of the dictionary definition',
+                'type' => ValidationMiddleware::TYPE_GUID
             ]
         ]
     ],

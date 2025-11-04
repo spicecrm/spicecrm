@@ -29,16 +29,15 @@
 
 namespace SpiceCRM\includes\SysModuleFilters;
 
-use Cassandra\Time;
-use DateTimeZone;
-use Exception;
-use SpiceCRM\data\BeanFactory;
 use DateInterval;
 use DateTime;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\ErrorHandlers\BadRequestException;
-use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
+use DateTimeZone;
+use Exception;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 
@@ -758,7 +757,6 @@ class SysModuleFilters
             case 'notempty':
                 return ['exists' => ["field" => $condition->field]];
             case 'equals':
-                $this->checkMinNGramLength($condition->filtervalue);
                 $seed = BeanFactory::getBean($this->filtermodule);
                 $isMultiEnum = $seed->field_defs[$condition->field]['type'] == 'multienum';
                 if ($isMultiEnum) {

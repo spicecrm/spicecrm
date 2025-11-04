@@ -24,6 +24,11 @@ export class fieldFloat extends fieldGeneric implements OnInit {
      */
     public precision: number = 0;
 
+    /**
+     * set to true from the config to display the calculator button
+     */
+    public displayCalculator: boolean = false;
+
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public userpreferences: userpreferences) {
         super(model, view, language, metadata, router);
     }
@@ -34,5 +39,8 @@ export class fieldFloat extends fieldGeneric implements OnInit {
     public ngOnInit() {
         // set decimal precision
         this.precision = (this.fieldconfig.precision === undefined || this.fieldconfig.precision === '' ? parseInt(this.userpreferences.toUse.currency_significant_digits, 10) : parseInt(this.fieldconfig.precision, 10));
+
+        // check if we should display the caluclator
+        if(this.fieldconfig.withcalculator) this.displayCalculator = true;
     }
 }

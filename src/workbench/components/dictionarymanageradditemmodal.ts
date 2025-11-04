@@ -75,6 +75,7 @@ export class DictionaryManagerAddItemModal implements OnInit{
             status: 'd',
             package: currentDefinition.package,
             version: currentDefinition.version,
+            duplicate_merge: this.dictionarymanager.currentDictionaryScope == 'g' ? 1 : 0,
             sequence: this.dictionarymanager.dictionaryitems.filter(d => d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).length
         };
 
@@ -190,7 +191,7 @@ export class DictionaryManagerAddItemModal implements OnInit{
             let saveModal = this.modal.await('LBL_SAVING');
             this.backend.postRequest(`dictionary/item/${this.dictionaryitem.id}`, {}, this.dictionaryitem).subscribe({
                 next: (res) => {
-                    this.dictionarymanager.dictionaryitems.push(this.dictionaryitem);
+                    this.dictionarymanager.dictionaryitems = [...this.dictionarymanager.dictionaryitems, this.dictionaryitem];
                     saveModal.emit(true);
                     this.close();
                 },
@@ -198,6 +199,15 @@ export class DictionaryManagerAddItemModal implements OnInit{
                     saveModal.emit(true);
                 }
             })
+        }
+    }
+
+    /**
+     * reset duplicate merge if the item is non-db
+     */
+    public onNonDBSet(nonDB: 1 | 0) {
+        if (nonDB == 1) {
+            this.dictionaryitem.duplicate_merge = 0;
         }
     }
 }

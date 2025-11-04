@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\CampaignTasks\schedulerjobtasks;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 
 class CampaignTasksSchedulerJobTasks
 {
@@ -28,6 +28,7 @@ class CampaignTasksSchedulerJobTasks
 
     public function sendCampaignTaskFeedbacks(): bool {
         $campaignTask = BeanFactory::getBean('CampaignTasks');
-        return $campaignTask->generateServiceFeedbacks();
+        $campaignTask->generateServiceFeedbacks();
+        return $campaignTask->sendQueuedEmails('Feedback');
     }
 }

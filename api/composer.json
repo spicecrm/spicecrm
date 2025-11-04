@@ -36,7 +36,9 @@
     "google/cloud-storage": "^1.30",
     "phpoffice/phpspreadsheet": "^1.29",
     "lbuchs/webauthn": "v2.0.0",
-    "chrome-php/chrome": "^1.13"
+    "chrome-php/chrome": "^1.13",
+    "google/cloud-translate": "^1.17",
+    "karriere/pdf-merge": "2.1"
   },
   "minimum-stability": "rc",
   "description": ""

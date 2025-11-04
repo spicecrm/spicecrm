@@ -186,7 +186,7 @@ class ChromeLocalPdfHandler extends PdfHandler
 
         try {
             $page = $browser->createPage();
-            $page->setHtml($html);
+            $page->setHtml($html, 3000, Page::NETWORK_IDLE);
             $options = ['format' => $format];
 
             $options += self::getScreenshotElementRect($page, $selector);

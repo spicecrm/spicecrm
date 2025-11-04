@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const fs = require('fs');
+const path = require('path');
 
 const releaseNumber = require('./package.json').version;
 const moment = require("moment");
@@ -50,7 +51,7 @@ module.exports = {
             if (path[0] === 'default-src') {
                 return pathData.chunk.id.replace(/_ts$/, '') + '.js';
             }
-            return path[['include', 'modules', 'custom'].indexOf(path[1]) > -1 ? 3 : 2] + '.js';
+            return path[path.length -2] + '.js';
         },
         filename: "[name].js"
     },

@@ -1,11 +1,23 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Injector, Input, OnInit, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    inject,
+    Injector,
+    Input,
+    OnInit,
+    Output
+} from '@angular/core';
 import {DomSanitizer} from "@angular/platform-browser";
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {modal} from "../../../services/modal.service";
 import {AttributeObjectI, ContentElementI} from "../interfaces/spicepagebuilder.interfaces";
+import {SpicePageBuilderMediaArticleService} from "../services/spicepagebuildermediaarticle.service";
+import {SpicePageBuilderElementColumn} from "./spicepagebuilderelementcolumn";
 
 /** @ignore */
 declare var _;
@@ -47,6 +59,14 @@ export class SpicePageBuilderElement implements OnInit {
      * hold the style object for the element
      */
     public style: any = {};
+    /**
+     * reference to the article service provided on the parent section or column
+     */
+    public articleService = inject(SpicePageBuilderMediaArticleService);
+    /**
+     * reference to the parent column component
+     */
+    public columnComponent = inject(SpicePageBuilderElementColumn);
 
     constructor(public domSanitizer: DomSanitizer,
                 public modal: modal,
@@ -68,6 +88,7 @@ export class SpicePageBuilderElement implements OnInit {
     public handleEditResponse(res) {
         this.element.attributes = res.attributes;
         this.generateStyle();
+        this.spicePageBuilderService.handleMediaArticleAttribute(this.element, 'media-article-part');
         this.spicePageBuilderService.emitData();
         this.cdRef.detectChanges();
     }
@@ -77,7 +98,19 @@ export class SpicePageBuilderElement implements OnInit {
      * @param pickList
      */
     public generateStyle(pickList?: string[]) {
+        this.prepareAttributeList();
         this.style = JSON.parse(JSON.stringify(!pickList ? this.element.attributes : _.pick(this.element.attributes, pickList)));
+    }
+
+    /**
+     * removes the attribute from the style object if null values found
+     */
+    public prepareAttributeList() {
+        for (const [key, value] of Object.entries(this.element.attributes)) {
+            if (String(value).includes('null')) {
+                delete this.element.attributes[key];
+            }
+        }
     }
 
     /**
@@ -101,7 +134,7 @@ export class SpicePageBuilderElement implements OnInit {
      */
     public edit() {
 
-        this.spicePageBuilderService.openEditModal(this.element, this.growEditorModal).subscribe({
+        this.spicePageBuilderService.openEditModal(this.element, this.growEditorModal, this.injector).subscribe({
             next: res => {
                 if (!!res) {
                     this.handleEditResponse(res);
