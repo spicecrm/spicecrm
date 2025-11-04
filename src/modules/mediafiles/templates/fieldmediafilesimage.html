@@ -8,6 +8,6 @@
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="css_classes">
     <div class="slds-box--border">
-        <system-input-media [(ngModel)]="value" class="slds-height_full" [mimetype]="'image/jpeg'"></system-input-media>
+        <system-input-media [(ngModel)]="value" [allowModifications]="!disableModifications" class="slds-height_full" [mimetype]="'image/jpeg'"></system-input-media>
     </div>
 </div>
