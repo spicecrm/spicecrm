@@ -31,6 +31,7 @@ namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -58,6 +59,8 @@ class SpiceDictionaryDefinitionsController
 
         SpiceDictionaryDefinitions::getInstance()->addDefinition($body);
 
+        SpiceDictionary::getInstance()->clearSessionCache();
+
         return $res->withJson((new SpiceDictionaryDefinition($args['id']))->getDefinition());
     }
 
@@ -73,7 +76,11 @@ class SpiceDictionaryDefinitionsController
     {
         $params = $req->getQueryParams();
 
-        return $res->withJson((new SpiceDictionaryDefinition($args['id']))->delete($params['drop'] == '1'));
+        $deleted = (new SpiceDictionaryDefinition($args['id']))->delete($params['drop'] == '1');
+
+        SpiceDictionary::getInstance()->clearSessionCache();
+
+        return $res->withJson($deleted);
     }
 
     /**
@@ -87,6 +94,8 @@ class SpiceDictionaryDefinitionsController
     public function activateDictionaryDefinition(Request $req, Response $res, array $args): Response
     {
         $success = (new SpiceDictionaryDefinition($args['id']))->activate();
+
+        SpiceDictionary::getInstance()->clearSessionCache();
 
         return $res->withJson($success);
     }
@@ -105,6 +114,8 @@ class SpiceDictionaryDefinitionsController
 
         $success = (new SpiceDictionaryDefinition($args['id']))->deactivate();
 
+        SpiceDictionary::getInstance()->clearSessionCache();
+
         return $res->withJson($success);
     }
 
@@ -119,6 +130,8 @@ class SpiceDictionaryDefinitionsController
     public function repairDictionaryDefinition(Request $req, Response $res, array $args): Response
     {
         $sql = (new SpiceDictionaryDefinition($args['id']))->repair();
+
+        SpiceDictionary::getInstance()->clearSessionCache();
 
         return $res->withJson(['success' => true, 'sql' => $sql]);
     }
@@ -148,6 +161,8 @@ class SpiceDictionaryDefinitionsController
     public function repairTemplateRelatedDictionaries(Request $req, Response $res, array $args): Response
     {
         $sql = (new SpiceDictionaryDefinition($args['id']))->repairRelatedDictionaries();
+
+        SpiceDictionary::getInstance()->clearSessionCache();
 
         return $res->withJson(['success' => true, 'sql' => $sql]);
     }

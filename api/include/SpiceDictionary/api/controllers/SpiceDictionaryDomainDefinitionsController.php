@@ -31,6 +31,7 @@ namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomains;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
@@ -59,6 +60,8 @@ class SpiceDictionaryDomainDefinitionsController
 
         SpiceDictionaryDomains::getInstance()->addDefinition($body);
 
+        SpiceDictionary::getInstance()->clearSessionCache();
+
         return $res->withJson((new SpiceDictionaryDomain($args['id']))->getDefinition());
     }
 
@@ -73,7 +76,11 @@ class SpiceDictionaryDomainDefinitionsController
     public function deleteDictionaryDomainDefinition(Request $req, Response $res, array $args): Response
     {
 
-        return $res->withJson((new SpiceDictionaryDomain($args['id']))->delete());
+        $deleted = (new SpiceDictionaryDomain($args['id']))->delete();
+
+        SpiceDictionary::getInstance()->clearSessionCache();
+
+        return $res->withJson($deleted);
     }
 
     /**
@@ -86,7 +93,11 @@ class SpiceDictionaryDomainDefinitionsController
      */
     public function activateDictionaryDomainDefinition(Request $req, Response $res, array $args): Response
     {
-        return $res->withJson((new SpiceDictionaryDomain($args['id']))->activate());
+        (new SpiceDictionaryDomain($args['id']))->activate();
+
+        SpiceDictionary::getInstance()->clearSessionCache();
+
+        return $res->withJson(true);
     }
 
     /**
@@ -99,8 +110,11 @@ class SpiceDictionaryDomainDefinitionsController
      */
     public function deactivateDictionaryDomainDefinition(Request $req, Response $res, array $args): Response
     {
-        $params = $req->getQueryParams();
-        return $res->withJson((new SpiceDictionaryDomain($args['id']))->deactivate());
+        (new SpiceDictionaryDomain($args['id']))->deactivate();
+
+        SpiceDictionary::getInstance()->clearSessionCache();
+
+        return $res->withJson(true);
     }
 
     /**
@@ -113,8 +127,11 @@ class SpiceDictionaryDomainDefinitionsController
      */
     public function repairDictionaryDefinition(Request $req, Response $res, array $args): Response
     {
-        $params = $req->getQueryParams();
-        return $res->withJson(['success' => true, 'sql' => (new SpiceDictionaryDefinition($args['id']))->repair()]);
+        $repairRes = (new SpiceDictionaryDefinition($args['id']))->repair();
+
+        SpiceDictionary::getInstance()->clearSessionCache();
+
+        return $res->withJson(['success' => true, 'sql' => $repairRes]);
     }
 
     /**
@@ -128,6 +145,8 @@ class SpiceDictionaryDomainDefinitionsController
     public function repairDomainDefinitionRelatedDictionaryItems(Request $req, Response $res, array $args): Response
     {
         (new SpiceDictionaryDomain($args['id']))->repairRelatedDictionaryItems();
+
+        SpiceDictionary::getInstance()->clearSessionCache();
 
         return $res->withJson(['success' => true]);
     }

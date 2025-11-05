@@ -30,6 +30,7 @@
 namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainField;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidation;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidations;
@@ -58,6 +59,8 @@ class SpiceDictionaryDomainValidationsController
 
         SpiceDictionaryDomainValidations::getInstance()->addValidation($body);
 
+        SpiceDictionary::getInstance()->clearSessionCache();
+
         return $res->withJson((new SpiceDictionaryDomainValidation($args['id']))->getDefinition());
     }
 
@@ -76,6 +79,8 @@ class SpiceDictionaryDomainValidationsController
         $values = $req->getParsedBody();
         SpiceDictionaryDomainValidations::getInstance()->setValues($args['id'], $values);
 
+        SpiceDictionary::getInstance()->clearSessionCache();
+
         return $res;
     }
 
@@ -89,8 +94,11 @@ class SpiceDictionaryDomainValidationsController
      */
     public function deleteDictionaryDomainValidation(Request $req, Response $res, array $args): Response
     {
+        $deleted = (new SpiceDictionaryDomainField($args['id']))->delete();
 
-        return $res->withJson((new SpiceDictionaryDomainField($args['id']))->delete());
+        SpiceDictionary::getInstance()->clearSessionCache();
+
+        return $res->withJson($deleted);
     }
 
 }

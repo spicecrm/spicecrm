@@ -1,0 +1,54 @@
+<system-modal size="medium">
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_TRANSLATIONS"/>
+    </system-modal-header>
+    <system-modal-content [grow]="true" margin="none">
+        <div class="slds-grid slds-grid--vertical slds-height_full">
+            <div class="slds-p-around--small">
+                <div class="slds-text-title--caps slds-m-bottom--x-small">
+                    <system-label label="LBL_TEXT"/>
+                </div>
+                <div class="slds-box">
+                    {{originalText}}
+                </div>
+                <div class="slds-grid slds-text-title--caps slds-m-top--medium slds-grid--vertical-align-center">
+                    <system-label label="LBL_TRANSLATIONS"/>
+                    @if (isEditMode) {
+                        <div class="slds-grid slds-m-top--x-small slds-m-left--small slds-grow">
+                            <system-select [(ngModel)]="translationLanguageToAdd" placeholder="LBL_LANGUAGE" [disabled]="availableLanguages().length == 0" [idOnly]="true" class="slds-size--1-of-8">
+                                @for (language of availableLanguages(); track language.code) {
+                                    <system-select-option [value]="language.code" [display]="language.name"/>
+                                }
+                            </system-select>
+                            <button (click)="addTranslation()" [disabled]="!translationLanguageToAdd()" class="slds-m-left--xx-small slds-button slds-button--neutral">
+                                <system-label label="LBL_ADD"/>
+                            </button>
+                        </div>
+                    }
+                </div>
+
+            </div>
+            <div class="slds-scrollable--y slds-grow slds-p-around--small">
+                @for (translation of translations(); track $index) {
+                    <div class="slds-m-bottom--medium">
+                        <div>
+                            {{translation.translation_language}}
+                        </div>
+                        <div class="slds-box">
+                            @if (isEditMode) {
+                                <textarea [(ngModel)]="translation.translation_text" (ngModelChange)="translations.set(translations().slice())" class="slds-textarea slds-grow"></textarea>
+                            } @else {
+                                <span class="slds-grow">{{translation.translation_text}}</span>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button (click)="close()" class="slds-button slds-button--neutral">
+            <system-label label="LBL_DONE"/>
+        </button>
+    </system-modal-footer>
+</system-modal>
