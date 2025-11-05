@@ -84,6 +84,12 @@ export class SystemInputMedia implements OnDestroy {
     }
 
     /**
+     * a getter to get if any of the modifications is allowed
+     */
+    get allowModifications(){
+        return this.allowMirroring || this.allowResizing || this.allowRotating || this.allowCropping;
+    }
+    /**
      * Should cropping be allowed?
      */
     @Input() public allowCropping = true;
@@ -228,6 +234,10 @@ export class SystemInputMedia implements OnDestroy {
     @Input('system-input-media-imagequality') public set quality( value: number ) {
         this._imageQuality = value;
 
+    }
+
+    get displayToolbars(){
+        return this.showToolBars && this.allowModifications;
     }
 
     get imageQuality(){
@@ -404,44 +414,48 @@ export class SystemInputMedia implements OnDestroy {
      * @param event
      */
     public imageLoaded(event): void {
+        if(!this.allowModifications){
+            this.emitChange();
+        } else {
+            let image = this.imageElement.nativeElement;
 
-        let image = this.imageElement.nativeElement;
+            if (this.cropper) this.cropper.destroy();
+            this.cropper = new Cropper(image, {
+                autoCrop: true,
+                autoCropArea: 1,
+                viewMode: 1,
+                zoom: -0.1,
+                toggleDragModeOnDblclick: this.allowCropping,
+                dragMode: this.allowCropping ? 'crop' : 'move'
+            });
 
-        if (this.cropper) this.cropper.destroy();
-        this.cropper = new Cropper(image, {
-            autoCrop: true,
-            autoCropArea: 1,
-            viewMode: 1,
-            zoom: -0.1,
-            toggleDragModeOnDblclick: this.allowCropping,
-            dragMode: this.allowCropping ? 'crop' : 'move'
-        });
-
-        this.cropper.crop();
-
-        image.addEventListener('ready', () => {
-            if (this.cropper) {
-                this.mediaMetaData.originalWidth = this.cropper.getImageData().naturalWidth;
-                this.mediaMetaData.originalHeight = this.cropper.getImageData().naturalHeight;
-                if (this.isDirty) this.emitChange();
-                // this.cropper.zoomTo(1);
+            if (this.allowCropping) {
+                this.cropper.crop();
             }
-        });
 
-        if (this.allowCropping) {
-            image.addEventListener('cropend', () => {
-                let cropBoxData = this.cropper.getCropBoxData();
-                this.isCropped = !_.isEmpty(this.cropper.getCropBoxData());
-                if (_.isEqual(cropBoxData, this.lastCropBoxData)) return;
-                this.lastCropBoxData = _.clone(cropBoxData);
-                this.emitChange();
+            image.addEventListener('ready', () => {
+                if (this.cropper) {
+                    this.mediaMetaData.originalWidth = this.cropper.getImageData().naturalWidth;
+                    this.mediaMetaData.originalHeight = this.cropper.getImageData().naturalHeight;
+                    if (this.isDirty) this.emitChange();
+                    // this.cropper.zoomTo(1);
+                }
+            });
+
+            if (this.allowCropping) {
+                image.addEventListener('cropend', () => {
+                    let cropBoxData = this.cropper.getCropBoxData();
+                    this.isCropped = !_.isEmpty(this.cropper.getCropBoxData());
+                    if (_.isEqual(cropBoxData, this.lastCropBoxData)) return;
+                    this.lastCropBoxData = _.clone(cropBoxData);
+                    this.emitChange();
+                });
+            }
+
+            image.addEventListener('zoom', () => {
+                if (this.isEdited) this.emitChange();
             });
         }
-
-        image.addEventListener('zoom', () => {
-            if (this.isEdited) this.emitChange();
-        });
-
     }
 
     /**
@@ -731,9 +745,17 @@ export class SystemInputMedia implements OnDestroy {
         return this.isEdited || this.isImported || this.isResized;
     }
 
+    /**
+     * strips the base64 prefix from the mediaBase64String
+     */
+    get base64Raw(){
+        let b64index = this.mediaBase64.toString().indexOf('base64,')
+        return this.mediaBase64.toString().slice(b64index+7);
+    }
+
     public emitChange() {
         this.mimetype.emit( this.mediaMetaData.mimetype );
-        this.onChange( this.getImage() );
+        this.onChange( this.allowCropping ? this.getImage() : this.base64Raw);
     }
 
     /**
