@@ -843,7 +843,11 @@ $routes = [
                 'description' => 'a searchterm to search by',
                 'type' => ValidationMiddleware::TYPE_STRING,
             ],
-
+            'filteron' => [
+                'in' => 'query',
+                'description' => 'if true, filter the items based on assigned user id',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+            ]
         ],
         'responses' => [
             '200' => [
