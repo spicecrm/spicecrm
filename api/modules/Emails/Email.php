@@ -272,8 +272,8 @@ class Email extends SpiceBean
         $timedate = TimeDate::getInstance();
         $mailbox = null;
         if (!empty($this->mailbox_id)) {
-                $mailbox = $this->getMailbox();
-            }
+            $mailbox = $this->getMailbox();
+        }
 
         $this->generateGUID();
 
@@ -542,15 +542,27 @@ class Email extends SpiceBean
         if ($this->type != 'out') {
             return;
         }
-        $fromAddress = '';
-        $mailbox = $this->getMailbox();
-        foreach ($this->recipient_addresses as $recipientAddress) {
-            if ($recipientAddress->address_type == 'from' && $recipientAddress->email_address != '') {
-                $fromAddress = $recipientAddress->email_address;
+        $fromAddress = $this->from_addr;
+
+        if(empty($fromAddress)){
+            foreach ($this->recipient_addresses as $recipientAddress) {
+                if(is_object($recipientAddress)) {
+                    if ($recipientAddress->address_type == 'from' && !empty($recipientAddress->email_address)) {
+                        $fromAddress = $recipientAddress->email_address;
+                        break;
+                    }
+                }
+                elseif(is_array($recipientAddress)) {
+                    if ($recipientAddress['address_type'] == 'from' && $recipientAddress['email_address'] != '') {
+                        $fromAddress = $recipientAddress['email_address'];
+                        break;
+                    }
+                }
             }
         }
 
-        if ($fromAddress == '') {
+        if (empty($fromAddress)) {
+            $mailbox = $this->getMailbox();
             $this->addEmailAddress('from', $mailbox->getEmailAddress());
         }
     }
@@ -598,7 +610,9 @@ class Email extends SpiceBean
         ];
 
         // handle removed recipients
-        $this->removeRecipientAdresses();
+        if($this->status == self::STATUS_DRAFT){
+            $this->removeRecipientAdresses();
+        }
 
         foreach ($this->recipient_addresses as $recipient_address) {
             $record = $this->db->fetchByAssoc($this->db->query(
@@ -1437,7 +1451,7 @@ class Email extends SpiceBean
      */
     public function addressesToArray()
     {
-        if ($this->recipient_addresses == '') {
+        if (empty($this->recipient_addresses)) {
             $this->recipient_addresses = [];
         }
 
