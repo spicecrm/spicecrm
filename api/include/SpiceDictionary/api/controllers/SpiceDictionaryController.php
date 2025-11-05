@@ -347,6 +347,8 @@ class SpiceDictionaryController
             }
         }
 
+        SpiceDictionary::getInstance()->clearSessionCache();
+
         return $res->withJson(['sql' => $sql, 'sqlerror' => $error]);
     }
 
@@ -380,6 +382,8 @@ class SpiceDictionaryController
                 return $res->withJson($result);
             }
         }
+
+        SpiceDictionary::getInstance()->clearSessionCache();
 
         return $res->withJson(['sql' => $sql, 'sqlerror' => null]);
     }

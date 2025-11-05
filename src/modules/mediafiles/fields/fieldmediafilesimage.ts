@@ -46,6 +46,11 @@ export class fieldMediaFilesImage extends fieldGeneric {
         this.initialize();
     }
 
+    get disableModifications(){
+        return !!this.fieldconfig.disableModifications;
+    }
+
+
     /**
      * getter for the value overwritten to access the buffered value loaded from the backend for the image
      */

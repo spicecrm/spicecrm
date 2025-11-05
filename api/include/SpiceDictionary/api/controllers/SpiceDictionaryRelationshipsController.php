@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceDictionary\relationships\RelationshipFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationships;
@@ -30,6 +31,8 @@ class SpiceDictionaryRelationshipsController
 
         SpiceDictionaryRelationships::getInstance()->add($body['relationship'], $body['relationshippolymorphs'] ?: [], $body['relationshipFields'] ?: []);
 
+        SpiceDictionary::getInstance()->clearSessionCache();
+
         return $res->withJson(['success' => true]);
     }
 
@@ -44,6 +47,8 @@ class SpiceDictionaryRelationshipsController
     public function activate(Request $req, Response $res, array $args): Response
     {
         $success = (new SpiceDictionaryRelationship($args['id']))->activate();
+
+        SpiceDictionary::getInstance()->clearSessionCache();
 
         return $res->withJson(['success' => $success]);
     }
@@ -60,6 +65,8 @@ class SpiceDictionaryRelationshipsController
     {
         $success = (new SpiceDictionaryRelationship($args['id']))->deactivate();
 
+        SpiceDictionary::getInstance()->clearSessionCache();
+
         return $res->withJson(['success' => $success]);
     }
 
@@ -73,8 +80,10 @@ class SpiceDictionaryRelationshipsController
      */
     public function deleteDictionaryRelationship(Request $req, Response $res, array $args): Response
     {
-        $success = (new SpiceDictionaryRelationship($args['id']))->delete();
+        (new SpiceDictionaryRelationship($args['id']))->delete();
 
-        return $res->withJson(['success' => $success]);
+        SpiceDictionary::getInstance()->clearSessionCache();
+
+        return $res->withJson(['success' => true]);
     }
 }
