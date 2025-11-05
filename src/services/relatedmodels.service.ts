@@ -133,6 +133,11 @@ export class relatedmodels implements OnDestroy {
      */
     public serviceSubscriptions: any[] = [];
 
+    /**
+     * filter based on assigned user id
+     */
+    public filteron: boolean = false;
+
     constructor(
         public metadata: metadata,
         public backend: backend,
@@ -292,7 +297,8 @@ export class relatedmodels implements OnDestroy {
             offset: this.offset,
             limit: this.loaditems,
             fieldfilters: this.fieldfilters,
-            searchterm: this.searchTerm
+            searchterm: this.searchTerm,
+            filteron: this.filteron,
         };
 
         // check if we have a sortfield
