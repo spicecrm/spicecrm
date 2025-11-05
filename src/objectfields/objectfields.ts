@@ -141,6 +141,7 @@ import {fieldVersion} from "./components/fieldVersion";
 import {fieldPackage} from "./components/fieldpackage";
 import {fieldActivityStatus} from "./components/fieldactivitystatus";
 import {SystemDateTimeFormatPipe} from "../systemcomponents/pipes/systemdatetimeformat";
+import {FieldTranslatableText} from "./components/fieldtranslatabletext";
 
 
 
@@ -292,7 +293,8 @@ declare var _: any;
         fieldEnumRoles,
         fieldVersion,
         fieldPackage,
-        fieldActivityStatus
+        fieldActivityStatus,
+        FieldTranslatableText
     ],
     exports: [
         fieldSet,

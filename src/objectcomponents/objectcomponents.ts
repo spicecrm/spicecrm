@@ -239,6 +239,7 @@ import {ObjectTemplateSendTestEmailModal} from "./components/objecttemplatesendt
 import {ObjectListHeaderActionsBulkSetStatusButton} from "./actions/objectlistheaderactionsbulksetstatusbutton";
 import {ObjectActionDownloadIcsButton} from "./components/objectactiondownloadicsbutton";
 import {ObjectRouteRedirect} from "./components/objectrouteredirect";
+import {ObjectFieldTranslationsModal} from "./components/objectfieldtranslationsmodal";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -452,7 +453,8 @@ import {ObjectRouteRedirect} from "./components/objectrouteredirect";
         ObjectTemplateSendTestEmailModal,
         ObjectListHeaderActionsBulkSetStatusButton,
         ObjectActionDownloadIcsButton,
-        ObjectRouteRedirect
+        ObjectRouteRedirect,
+        ObjectFieldTranslationsModal
     ],
     exports: [
         ObjectListViewHeader,
