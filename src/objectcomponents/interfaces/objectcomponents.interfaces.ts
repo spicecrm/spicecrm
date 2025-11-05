@@ -123,3 +123,12 @@ export type ModelFieldStateI = 'editable' | 'invalid' | 'required' | 'incomplete
 export type ModelFieldStatesI  = {
     [State in ModelFieldStateI]: boolean
 }
+
+export interface ModuleFieldTranslationI {
+    id?: string;
+    translation_language: string;
+    bean_module?: string;
+    bean_id?: string;
+    field_name?: string;
+    translation_text: string;
+}

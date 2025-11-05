@@ -1,0 +1,10 @@
+<div class="slds-grid">
+    @if (displayLabel) {
+        <field-label [fieldname]="fieldname" [fieldconfig]="fieldconfig"/>
+    }
+    <button class="slds-button slds-button--icon" (click)="openTranslationsModal()">
+        <system-button-icon icon="translate" size="xx-small"/>
+    </button>
+</div>
+<field-container [field]="textFieldName" [fieldconfig]="textFieldConfig"/>
+
