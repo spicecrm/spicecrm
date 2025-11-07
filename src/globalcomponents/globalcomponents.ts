@@ -116,6 +116,7 @@ import {GlobalLoginPasskeyModal} from "./components/globalloginpasskeymodal";
  */
 import {GlobalProjectActivityTrackTimeIcon} from "../extensions/modules/projects/components/globalprojectactivitytracktimeicon";
 import {GlobalHeaderModuleShortcut} from "./components/globalheadermoduleshortcut";
+import {GlobalFieldTranslationsLanguageButton} from "./components/globalfieldtranslationslanguagebutton";
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
@@ -228,7 +229,8 @@ import {GlobalHeaderModuleShortcut} from "./components/globalheadermoduleshortcu
         GlobalLogin2FAMethodSelectModal,
         GlobalLoginPasskeyModal,
         GlobalProjectActivityTrackTimeIcon,
-        GlobalHeaderModuleShortcut
+        GlobalHeaderModuleShortcut,
+        GlobalFieldTranslationsLanguageButton
     ],
     exports: [
         GlobalCopyright,

@@ -1,6 +1,20 @@
 <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
-    <div>
-        <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+    <div class="slds-grid slds-grow slds-grid--vertical-align-center">
+        @if (displayLabel) {
+            <field-label [fieldname]="fieldname" [fieldconfig]="fieldconfig" class="slds-truncate"></field-label>
+
+            @if (isEditMode()) {
+                @if (fieldTranslatableText) {
+                    <button (click)="fieldTranslatableText.openTranslationsModal(true, true)" class="slds-button slds-button--icon">
+                        <system-button-icon icon="translate" size="xx-small"/>
+                    </button>
+                }
+            } @else if ( fieldTranslatableText && fieldTranslatableText.getTranslatedValue()) {
+                <div class="slds-button slds-button--brand slds-p-around--none" style="width: 18px; height: 18px; font-size: 10px;">
+                    {{language.currentFieldTranslationLanguage().slice(0, 2).toUpperCase()}}
+                </div>
+            }
+        }
     </div>
     <button *ngIf="!isEditMode() && isEditable()" class="slds-button slds-button--icon slds-m-left--xx-small spice-hover-button" (click)="setEditMode()">
         <system-button-icon [icon]="'edit'"></system-button-icon>
@@ -57,6 +71,13 @@
                 </div>
             </div>
         </li>
+        @if (!displayLabel && fieldTranslatableText) {
+            <li>
+                <button (click)="fieldTranslatableText.openTranslationsModal(true, true)" class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" aria-pressed=true system-title="LBL_TRANSLATE">
+                    <system-button-icon icon="translate"></system-button-icon>
+                </button>
+            </li>
+        }
     </system-richtext-editor>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>

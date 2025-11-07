@@ -132,3 +132,7 @@ export interface ModuleFieldTranslationI {
     field_name?: string;
     translation_text: string;
 }
+
+export interface ModuleFieldTranslationsObjectI {
+    [key: string]: ModuleFieldTranslationI;
+}

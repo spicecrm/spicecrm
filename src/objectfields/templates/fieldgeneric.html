@@ -1,8 +1,26 @@
-<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+@if (displayLabel) {
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <field-label [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+        @if (isEditMode() && fieldTranslatableText) {
+            <button (click)="fieldTranslatableText.openTranslationsModal(true)" class="slds-button slds-button--icon">
+                <system-button-icon icon="translate" size="xx-small"/>
+            </button>
+        } @else if (fieldTranslatableText && fieldTranslatableText.getTranslatedValue()) {
+            <div class="slds-button slds-button--brand slds-p-around--none" style="width: 18px; height: 18px; font-size: 10px;">
+                {{language.currentFieldTranslationLanguage().slice(0, 2).toUpperCase()}}
+            </div>
+        }
+    </div>
+}
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
     {{value}}
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="css_classes">
+<div *ngIf="isEditable() && isEditMode()" [class.slds-input-has-icon]="fieldTranslatableText" [class.slds-input-has-icon_right]="fieldTranslatableText" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="css_classes">
     <input #focus [placeholder]="displayLabel ? '' : language.getFieldDisplayName(model.module, fieldname)" type="text" class="slds-input" [(ngModel)]="value" [maxlength]="fieldlength" [autocomplete]="fieldid" [ngModelOptions]="modelOptions" />
+    @if (!displayLabel && fieldTranslatableText) {
+        <button (click)="fieldTranslatableText.openTranslationsModal(true)" class="slds-button slds-button--icon slds-input__icon slds-input__icon_right">
+            <system-button-icon icon="translate" size="xx-small"/>
+        </button>
+    }
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>
