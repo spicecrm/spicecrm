@@ -60,9 +60,11 @@ class TranslatableTextHandler extends SpiceDictionaryDomainHandler
 
         foreach ($translations as $translation) {
 
+            $translation = (array) $translation;
+
             if (empty($translation['translation_text'])) continue;
 
-            $db->insertQuery('spicemodulefieldtranslations', (array) $translation);
+            $db->insertQuery('spicemodulefieldtranslations', $translation);
         }
 
         return true;
