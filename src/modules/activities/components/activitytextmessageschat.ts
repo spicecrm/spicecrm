@@ -1,24 +1,14 @@
 /**
  * @module ModuleActivities
  */
-import {Component, Injector, OnDestroy, OnInit, Optional, ViewChild, ViewContainerRef} from '@angular/core';
-import {language} from '../../../services/language.service';
-import {navigationtab} from '../../../services/navigationtab.service';
+import {Component, Injector, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {activitiytimeline} from '../../../services/activitiytimeline.service';
-import {modelattachments} from "../../../services/modelattachments.service";
-import {modelutilities} from "../../../services/modelutilities.service";
-import {metadata} from "../../../services/metadata.service";
 import {layout} from "../../../services/layout.service";
-import {Router} from "@angular/router";
 import {view} from "../../../services/view.service";
 import {Subscription} from "rxjs";
 import {socket} from "../../../services/socket.service";
 
-/**
- * @ignore
- */
-declare var moment;
 
 @Component({
     selector: 'activity-textmessages-chat',
@@ -33,6 +23,9 @@ export class ActivityTextMessagesChat implements OnInit, OnDestroy {
      */
     public componentconfig: any = {};
 
+    /**
+     * holds any subscruptiuon
+     */
     public subscriptions: Subscription = new Subscription();
 
     /**
@@ -45,7 +38,10 @@ export class ActivityTextMessagesChat implements OnInit, OnDestroy {
      */
     @ViewChild('addcontainer', {read: ViewContainerRef, static: true}) public addcontainer: ViewContainerRef;
 
-
+    /**
+     * indicate that we are initialized
+     */
+    public initialized: boolean = false;
 
     constructor(
         public model: model,
@@ -79,6 +75,9 @@ export class ActivityTextMessagesChat implements OnInit, OnDestroy {
         this.disconnectSocket()
     }
 
+    /**
+     * gets the container style in the proper height
+     */
     get containerStyle(){
         if(!this.addcontainer) return undefined;
 
@@ -101,14 +100,23 @@ export class ActivityTextMessagesChat implements OnInit, OnDestroy {
                 window.setTimeout(() => {
                     this.scrollToBottom();
                 }, 0);
+
+                // set that we are initialized
+                this.initialized = true;
             }
         });
     }
 
+    /**
+     * getter for the chat messages
+     */
     get chatMessages() {
         return this.activitiytimeline.activities.History.list.sort((a, b) => a.data.date_sent > b.data.date_sent ? -1 : 1);
     }
 
+    /**
+     * a helper function to scroll the container to the bottom .. newest message is at the bottom
+     */
     public scrollToBottom(){
         let nElement = this.chatcontainer.element.nativeElement;
         nElement.scrollTop = nElement.scrollHeight;

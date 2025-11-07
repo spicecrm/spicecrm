@@ -1,5 +1,5 @@
 <div system-to-bottom-noscroll>
-    <div #chatcontainer [ngStyle]="containerStyle" class="slds-m-bottom--x-small slds-box slds-box--border slds-scrollable--y">
+    <div #chatcontainer [ngStyle]="containerStyle" class="slds-m-bottom--x-small slds-box slds-box--border slds-scrollable--y" [system-overlay-loading-spinner]="!initialized">
         <section role="log" class="slds-chat">
             <ul class="slds-chat-list" style="display: flex; flex-direction: column-reverse;">
                 @for (chatMessage of chatMessages; track chatMessage.id){
@@ -9,6 +9,6 @@
         </section>
     </div>
     <div #addcontainer>
-        <activity-textmessages-chat-compose/>
+        <activity-textmessages-chat-compose (messagesent)="reload()"/>
     </div>
 </div>

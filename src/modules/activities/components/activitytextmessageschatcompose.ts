@@ -1,22 +1,10 @@
 /**
  * @module ModuleActivities
  */
-import {Component, Injector, OnDestroy, OnInit, Optional} from '@angular/core';
-import {language} from '../../../services/language.service';
-import {navigationtab} from '../../../services/navigationtab.service';
+import {Component, EventEmitter, OnInit, Output, SkipSelf} from '@angular/core';
 import {model} from '../../../services/model.service';
-import {activitiytimeline} from '../../../services/activitiytimeline.service';
-import {modelattachments} from "../../../services/modelattachments.service";
-import {modelutilities} from "../../../services/modelutilities.service";
-import {metadata} from "../../../services/metadata.service";
-import {layout} from "../../../services/layout.service";
-import {Router} from "@angular/router";
 import {view} from "../../../services/view.service";
 
-/**
- * @ignore
- */
-declare var moment;
 
 @Component({
     selector: 'activity-textmessages-chat-compose',
@@ -31,18 +19,69 @@ export class ActivityTextMessagesChatCompose implements OnInit {
      */
     public componentconfig: any = {};
 
+    /**
+     * when we are sending
+     */
+    public sending: boolean = false;
+
+    /**
+     * the event emitter when a message was sent
+     */
+    @Output() messagesent: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(
+        @SkipSelf() public parent: model,
         public model: model,
         public view: view
     ) {
+        this.view.isEditable = true;
+        this.view.setEditMode();
     }
 
     /**
      * @ignore
      */
     public ngOnInit() {
+        this.initializeModel();
+    }
 
+    /**
+     * getter to disable the send button
+     */
+    public canSend(){
+        return this.parent.getField('phone_mobile') && this.model.getField('description') && this.model.getField('mailbox_id') && !this.sending;
+    }
+
+    /**
+     * initialize the model
+     */
+    public initializeModel(){
+        this.model.module = 'TextMessages';
+        this.model.id = undefined;
+        this.model.initialize();
+    }
+
+    /**
+     * sends the message
+     */
+    public send(){
+        this.model.setFields({
+            msisdn: this.parent.getField('phone_mobile'),
+            parent_type: this.parent.module,
+            parent_id: this.parent.id
+        })
+
+        // set that we are sending
+        this.sending = true;
+
+        // save the model
+        this.model.save().subscribe({
+            next: () => {
+                this.messagesent.emit(this.model.id);
+                this.initializeModel();
+                this.sending = false;
+            }
+        })
     }
 
 }
