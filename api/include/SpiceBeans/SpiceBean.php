@@ -3323,9 +3323,9 @@ class SpiceBean
     public function translateTranslatableFields(string $language): void
     {
         foreach ($this->field_defs as $fieldDef) {
-            if ($fieldDef['type'] != 'translatabletext' || empty($this->{$fieldDef['name']}) || !$this->{$fieldDef['name']}[$language]) continue;
+            if ($fieldDef['type'] != 'translatabletext' || empty($this->{$fieldDef['name']}) || !$this->{$fieldDef['name']}->$language) continue;
             $originalField = str_replace('_translations', '', $fieldDef['name']);
-            $this->$originalField = $this->{$fieldDef['name']}[$language]['translation_text'];
+            $this->$originalField = $this->{$fieldDef['name']}->$language->translation_text;
         }
     }
 }
