@@ -1,0 +1,10 @@
+<li class="slds-chat-listitem slds-chat-listitem_inbound" [ngClass]="{'slds-chat-listitem_inbound': direction == 'i', 'slds-chat-listitem_outbound': direction != 'i'}">
+    <div class="slds-chat-message">
+        <div class="slds-chat-message__body">
+            <div class="slds-chat-message__text" [ngClass]="{'slds-chat-message__text_inbound': direction == 'i', 'slds-chat-message__text_outbound': direction != 'i'}">
+                <span>{{message}}</span>
+            </div>
+            <div class="slds-chat-message__meta"><system-display-datetime [date]="messagedate"></system-display-datetime></div>
+        </div>
+    </div>
+</li>

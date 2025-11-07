@@ -59,6 +59,9 @@ import {fieldActivityDate} from './fields/fieldactivitydate';
 
 import {ActivityTimelineSpiceMailButton} from "./components/activitytimelinespicemailbutton";
 import {ClipboardModule} from "@angular/cdk/clipboard";
+import {ActivityTextMessagesChat} from "./components/activitytextmessageschat";
+import {ActivityTextMessagesChatMessage} from "./components/activitytextmessageschatmessage";
+import {ActivityTextMessagesChatCompose} from "./components/activitytextmessageschatcompose";
 
 @NgModule({
     imports: [
@@ -112,6 +115,9 @@ import {ClipboardModule} from "@angular/cdk/clipboard";
         ActivityTimelineSummaryButton,
         ActivityTimelineSummaryAggregates,
         ActivityTimelineSpiceMailButton,
+        ActivityTextMessagesChat,
+        ActivityTextMessagesChatMessage,
+        ActivityTextMessagesChatCompose,
         fieldActivityDate
     ],
     exports: [
