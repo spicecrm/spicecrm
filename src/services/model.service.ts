@@ -1191,7 +1191,7 @@ export class model implements OnDestroy {
                 !_.isEqual(
                     this.data[property] === null ? '' : this.data[property],
                     this.backupData[property] === null ? '' : this.backupData[property]
-                )
+                ) || (typeof this.data[property] == 'object' && JSON.stringify(this.data[property]) != JSON.stringify(this.backupData[property]))
             )) {
                 d[property] = this.data[property];
             }
