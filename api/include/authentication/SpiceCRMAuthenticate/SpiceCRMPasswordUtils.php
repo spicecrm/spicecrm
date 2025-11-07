@@ -65,7 +65,11 @@ class SpiceCRMPasswordUtils
 
         if ($sendByEmail) {
             $configs = self::getSendCredentialConfigs('password');
-            $template = $this->getChannelTemplateByType($userObj, 'sendPassword', $configs->channel);;
+            $template = null;
+            # gateway mailbox does not require email template. The template must be defined on the gateway server
+            if ($configs->mailboxId != 'gateway') {
+                $template = $this->getChannelTemplateByType($userObj, 'sendPassword', $configs->channel);
+            }
             $userObj->sendCredentialToUser($template, 'password', ['password' => $newPassword]);
         }
 

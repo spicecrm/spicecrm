@@ -675,13 +675,13 @@ class User extends SpiceBean
      * Replacement for the deprecated sendEmailForPassword function, to be used with KREST.
      * Sends a new password to the user.
      *
-     * @param EmailTemplate|TextMessageTemplate $template
+     * @param EmailTemplate|TextMessageTemplate|null $template
      * @param string $type
      * @param array $additionalData
      * @return array
      * @throws Exception
      */
-    public function sendCredentialToUser(EmailTemplate | TextMessageTemplate $template, string $type, array $additionalData = []): array
+    public function sendCredentialToUser(EmailTemplate | TextMessageTemplate | null  $template, string $type, array $additionalData = []): array
     {
         $result = ['status' => false];
 
