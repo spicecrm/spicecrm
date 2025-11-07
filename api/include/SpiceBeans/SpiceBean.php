@@ -3314,4 +3314,18 @@ class SpiceBean
     protected function getDictionaryField(string $attributeName): ?array {
         return $this->field_defs[$attributeName] ?? null;
     }
+
+    /**
+     * translate all translatable fields and override the original value with the translation
+     * @param string $language
+     * @return void
+     */
+    public function translateTranslatableFields(string $language): void
+    {
+        foreach ($this->field_defs as $fieldDef) {
+            if ($fieldDef['type'] != 'translatabletext' || empty($this->{$fieldDef['name']}) || !$this->{$fieldDef['name']}[$language]) continue;
+            $originalField = str_replace('_translations', '', $fieldDef['name']);
+            $this->$originalField = $this->{$fieldDef['name']}[$language]['translation_text'];
+        }
+    }
 }
