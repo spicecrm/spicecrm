@@ -9,6 +9,7 @@ import {navigationtab} from '../../services/navigationtab.service';
 import {Router} from '@angular/router';
 import {session} from "../../services/session.service";
 import {toast} from "../../services/toast.service";
+import {metadata} from "../../services/metadata.service";
 
 /**
  * the footer in the object-related-card
@@ -76,6 +77,7 @@ export class ObjectRelatedCardFooter implements OnInit {
                 public session: session,
                 public model: model,
                 public toast: toast,
+                public metadata: metadata,
                 public router: Router,
                 public navigationtab: navigationtab) {
         this.componentid = this.model.utils.generateGuid();
@@ -155,12 +157,12 @@ export class ObjectRelatedCardFooter implements OnInit {
 
     public showAssignedToMe() {
         this.assignedToMe = !this.assignedToMe;
-        this.relatedmodels.searchTerm = this.assignedToMe ? this.session.authData.userId : '';
+        this.relatedmodels.filteron = this.assignedToMe;
         this.relatedmodels.getData().subscribe({
             next: () => {
                 if (this.relatedmodels.items.length == 0) {
                     this.assignedToMe = false;
-                    this.relatedmodels.searchTerm = '';
+                    this.relatedmodels.filteron = false;
                     this.relatedmodels.getData();
                     this.toast.sendToast('LBL_NO_ASSIGNED_ENTRIES', 'info');
                 }
@@ -168,8 +170,12 @@ export class ObjectRelatedCardFooter implements OnInit {
         })
     }
 
+    get hasAssignedUserField(): boolean {
+        return !!this.metadata.hasField(this.relatedmodels.relatedModule, 'assigned_user_id');
+    }
+
     get iconColor() {
-        return this.assignedToMe ? 'slds-text-link' : '';
+        return this.assignedToMe ? 'slds-icon-text-success' : 'slds-icon-text-superlight';
     }
 
     /**

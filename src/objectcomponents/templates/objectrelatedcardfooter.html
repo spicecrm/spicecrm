@@ -27,9 +27,9 @@
                 <a *ngIf="canViewAll" href="javascript:void(0);" (click)="showAll()"><system-label label="LBL_VIEWALL"></system-label></a>
             </div>
             <div class="slds-text-align--right slds-grow">
-                @if (relatedmodels.count > 0 || assignedToMe) {
+                @if (hasAssignedUserField && (relatedmodels.count > 0 || assignedToMe)) {
                     <button [disabled]="paginating || relatedmodels.isloading" system-title="LBL_SHOW_ASSIGNED_TO_ME" class="slds-button slds-button_icon" (click)="showAssignedToMe()">
-                        <system-button-icon icon="user" [addclasses]="iconColor"/>
+                        <system-button-icon icon="user" [colorclass]="iconColor"/>
                     </button>
                 }
                 <button [disabled]="paginating || relatedmodels.isloading" class="slds-button slds-button_icon" (click)="reload()">

@@ -1,0 +1,13 @@
+<div  [system-overlay-loading-spinner]="sending">
+    <div class="slds-p-around--x-small">
+        <field-container field="description" [fieldconfig]="{label:'LBL_MESSAGE'}"></field-container>
+        <div class="slds-grid slds-grid--vertical-align-center slds-grid_align-spread">
+            <div class="slds-grow slds-m-right--small">
+                <field-container field="mailbox_id" [fieldconfig]="{hidelabel:true, hideZipCompress: true, hideReadReceipt: true, scope: 'outboundsingle_sms'}"></field-container>
+            </div>
+            <button [disabled]="!canSend()" class="slds-button slds-button--brand" (click)="send()">
+                <system-label label="LBL_SEND"/>
+            </button>
+        </div>
+    </div>
+</div>
