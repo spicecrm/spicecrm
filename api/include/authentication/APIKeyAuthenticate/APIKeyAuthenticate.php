@@ -28,7 +28,7 @@ class APIKeyAuthenticate extends SpiceCRMAuthenticate implements AuthenticatorI
                 $userId = (string) $db->getOne("SELECT user_id FROM api_keys WHERE is_active = 1 AND (valid_until IS NULL OR valid_until <= $now) AND api_key = '$apiKey'");
 
                 if (!$userId) {
-                    throw new UnauthorizedException('Invalid Token', 'InvalidToken');
+                    throw new UnauthorizedException('Invalid API Key', 'InvalidToken');
                 }
 
                 break;
