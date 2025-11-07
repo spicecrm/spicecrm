@@ -9,7 +9,11 @@
                     <system-label label="LBL_TEXT"/>
                 </div>
                 <div class="slds-box">
-                    {{originalText}}
+                    @if (asRichtext) {
+                        <system-richtext-editor [readOnly]="true" [ngModel]="originalText" innerheight="100"/>
+                    } @else {
+                        {{originalText}}
+                    }
                 </div>
                 <div class="slds-grid slds-text-title--caps slds-m-top--medium slds-grid--vertical-align-center">
                     <system-label label="LBL_TRANSLATIONS"/>
@@ -29,14 +33,18 @@
 
             </div>
             <div class="slds-scrollable--y slds-grow slds-p-around--small">
-                @for (translation of translations(); track $index) {
+                @for (translation of translationsArray(); track $index) {
                     <div class="slds-m-bottom--medium">
                         <div>
                             {{translation.translation_language}}
                         </div>
-                        <div class="slds-box">
+                        <div [system-overlay-loading-spinner]="isTranslating() == translation.translation_language" class="slds-box">
                             @if (isEditMode) {
-                                <textarea [(ngModel)]="translation.translation_text" (ngModelChange)="translations.set(translations().slice())" class="slds-textarea slds-grow"></textarea>
+                                @if (asRichtext) {
+                                    <system-richtext-editor [(ngModel)]="translation.translation_text" (ngModelChange)="emitChange()" class="slds-grow"/>
+                                } @else {
+                                    <textarea [(ngModel)]="translation.translation_text" (ngModelChange)="emitChange()" class="slds-textarea slds-grow"></textarea>
+                                }
                             } @else {
                                 <span class="slds-grow">{{translation.translation_text}}</span>
                             }

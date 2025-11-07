@@ -1,13 +1,14 @@
 /**
  * @module ObjectFields
  */
-import {AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, Component, inject, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {Router} from '@angular/router';
 import {Subscription} from "rxjs";
+import {FieldTranslatableText} from "./fieldtranslatabletext";
 
 @Component({
     selector: 'field-generic',
@@ -56,6 +57,11 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
      * holds any subscription a field might have
      */
     public subscriptions: Subscription = new Subscription();
+    /**
+     * reference to the parent field translatable text
+     * @private
+     */
+    public fieldTranslatableText: FieldTranslatableText = inject(FieldTranslatableText, {optional: true});
 
     constructor(
         public model: model,
@@ -121,7 +127,7 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
      * a getter for the value bound top the model
      */
     get value() {
-        return this.model.getField(this.fieldname);
+        return this.fieldTranslatableText?.getValue(this.isEditMode()) ?? this.model.getField(this.fieldname);
     }
 
     /**
