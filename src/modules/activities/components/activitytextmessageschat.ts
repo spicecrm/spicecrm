@@ -107,6 +107,10 @@ export class ActivityTextMessagesChat implements OnInit, OnDestroy {
         });
     }
 
+    get parentHasMobile(){
+        return !!this.model.getField('phone_mobile');
+    }
+
     /**
      * getter for the chat messages
      */
