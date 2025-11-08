@@ -28,7 +28,7 @@ class TranslatableTextHandler extends SpiceDictionaryDomainHandler
         $query = $db->query("SELECT * FROM spicemodulefieldtranslations WHERE bean_id = '$bean->id' AND bean_module = '$bean->_module' AND field_name = '{$item['name']}'");
 
         while ($row = $db->fetchByAssoc($query)) {
-            $translations[$row['translation_language']] = $row;
+            $translations[$row['translation_language']] = (object) $row;
         }
 
         $fields[$item['name'] . '_translations'] = (object) $translations;
@@ -60,9 +60,11 @@ class TranslatableTextHandler extends SpiceDictionaryDomainHandler
 
         foreach ($translations as $translation) {
 
+            $translation = (array) $translation;
+
             if (empty($translation['translation_text'])) continue;
 
-            $db->insertQuery('spicemodulefieldtranslations', (array) $translation);
+            $db->insertQuery('spicemodulefieldtranslations', $translation);
         }
 
         return true;
