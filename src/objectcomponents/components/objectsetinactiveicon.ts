@@ -55,6 +55,14 @@ export class ObjectSetInactiveIcon {
         return this.model.data.is_inactive == '1' ? 'slds-icon-text-error' : 'slds-icon-text-default'
     }
 
+    get disabled() {
+        return !this.model.getFieldAccess('is_inactive') || this.model.getFieldAccess('is_inactive') < 3 ? true : false;
+    }
+
+    get addClasses(){
+        return this.disabled ? 'slds-is-disabled' : '';
+    }
+
     /**
      * sets is_inactive flag on a Bean
      */
@@ -62,6 +70,9 @@ export class ObjectSetInactiveIcon {
 
         // do nothing if Bean is being edited
         if (this.model.isEditing) return;
+
+        // do nothing if acl is not enough
+        if(this.disabled) return;
 
         this.inProcess = true;
 
