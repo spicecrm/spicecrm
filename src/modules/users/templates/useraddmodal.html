@@ -1,6 +1,6 @@
 <system-modal size="large">
     <system-modal-header (close)="cancel()">{{model.module}}</system-modal-header>
-    <system-modal-content #addcontainer>
+    <system-modal-content margin="x-small" #addcontainer>
         <system-section titlelabel="LBL_USER_PROFILE">
             <object-record-fieldset [fieldset]="profileFieldset" [direction]="'vertical'"></object-record-fieldset>
         </system-section>
@@ -53,13 +53,20 @@
                 </div>
             }
         </system-section>
-        <system-section titlelabel="LBL_USER_INFORMATION">
-            <object-record-fieldset [fieldset]="informationFieldset" [direction]="'vertical'"></object-record-fieldset>
-        </system-section>
+        @if (informationFieldset) {
+            <system-section titlelabel="LBL_USER_INFORMATION">
+                <object-record-fieldset [fieldset]="informationFieldset"
+                                        [direction]="'vertical'"></object-record-fieldset>
+            </system-section>
+        }
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
         <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
-        <button class="slds-button slds-button--brand" (click)="save(true)"><system-label label="LBL_SAVE_AND_GO_TO_RECORD"></system-label></button>
+        @if (hideGotoDetailButton !== true) {
+            <button class="slds-button slds-button--brand" (click)="save(true)">
+                <system-label label="LBL_SAVE_AND_GO_TO_RECORD"></system-label>
+            </button>
+        }
     </system-modal-footer>
 </system-modal>

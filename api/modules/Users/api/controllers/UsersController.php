@@ -217,6 +217,25 @@ class UsersController
         return $res->withJson($list);
     }
 
+
+    /**
+     * gets a user based on the parent type & id
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function getUserByParent(Request $req, Response $res, array $args): Response {
+        $seed = BeanFactory::getBean('Users')->retrieve_by_string_fields(['parent_type' => $args['parenttype'], 'parent_id' => $args['parentid']]);
+
+        if(!$seed){
+            throw new NotFoundException('User with the given Parent exists not found');
+        }
+
+        return $res->withJson((new SpiceBeanHandler())->mapBean($seed));
+    }
+
     /**
      * CR1000453
      * get information about modules and records counts to reassign
