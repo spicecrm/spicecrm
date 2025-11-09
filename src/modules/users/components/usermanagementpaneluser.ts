@@ -8,6 +8,7 @@ import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
 import {configurationService} from "../../../services/configuration.service";
 import {view} from "../../../services/view.service";
+import {layout} from "../../../services/layout.service";
 
 /**
  * a panel to manage the user details from the parent item
@@ -35,6 +36,7 @@ export class UserManagementPanelUser implements OnInit{
         public model: model,
         public metadata: metadata,
         public view: view,
+        public layout: layout
     ) {
         this.model.module = 'Users';
         this.view.isEditable = false;
