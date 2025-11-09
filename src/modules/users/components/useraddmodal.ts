@@ -262,6 +262,7 @@ export class UserAddModal implements OnInit {
                             this.model.setFieldMessage("error", resErr.error.error.message, "user_name", "validation");
                         }
                         if (resErr.error.error.errorCode == 'duplicateEmail1') {
+                            this.model.setFieldMessage("error", resErr.error.error.message, "user_email", "validation");
                             this.model.setFieldMessage("error", resErr.error.error.message, "email1", "validation");
                         }
                     }
