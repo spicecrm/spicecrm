@@ -41,6 +41,7 @@ import {UserAliasManagerButton} from "./components/useraliasmanagerbutton";
 import {UserManagementPanel} from "./components/usermanagementpanel";
 import {UserAPIKeysModal} from "./components/userapikeysmodal";
 import {SystemTranslatePipe} from "../../systemcomponents/pipes/systemtranslate.pipe";
+import {UserManagementPanelUser} from "./components/usermanagementpaneluser";
 
 @NgModule({
     imports: [
@@ -84,6 +85,7 @@ import {SystemTranslatePipe} from "../../systemcomponents/pipes/systemtranslate.
         UserAliasManagerModal,
         UserAliasManagerButton,
         UserManagementPanel,
+        UserManagementPanelUser,
         UserAPIKeysModal
     ]
 })

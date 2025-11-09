@@ -133,6 +133,28 @@ $routes = [
     ],
     [
         'method'      => 'get',
+        'route'       => '/module/Users/byparent/{parenttype}/{parentid}',
+        'class'       => UsersController::class,
+        'function'    => 'getUserByParent',
+        'description' => '',
+        'options'     => ['validate' => true],
+        'parameters' => [
+            'parenttype' => [
+                'in' => 'path',
+                'description' => 'the parent type',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
+            ],
+            'parentid' => [
+                'in' => 'path',
+                'description' => 'the parent id',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
+            ],
+        ]
+    ],
+    [
+        'method'      => 'get',
         'route'       => '/module/Users/{id}/deactivate',
         'oldroute'    => '/module/Users/{id}/deactivate',
         'class'       => UsersController::class,
