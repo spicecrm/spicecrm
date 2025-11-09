@@ -25,13 +25,13 @@ class TranslatableTextHandler extends SpiceDictionaryDomainHandler
 
         $db = DBManagerFactory::getInstance();
 
-        $query = $db->query("SELECT * FROM module_field_translations WHERE bean_id = '$bean->id' AND bean_module = '$bean->_module' AND field_name = '{$item['name']}'");
+        $query = $db->query("SELECT * FROM spicemodulefieldtranslations WHERE bean_id = '$bean->id' AND bean_module = '$bean->_module' AND field_name = '{$item['name']}'");
 
         while ($row = $db->fetchByAssoc($query)) {
-            $translations[] = $row;
+            $translations[$row['translation_language']] = (object) $row;
         }
 
-        $fields[$item['name'] . '_translations'] = $translations;
+        $fields[$item['name'] . '_translations'] = (object) $translations;
 
         return true;
     }
@@ -50,19 +50,21 @@ class TranslatableTextHandler extends SpiceDictionaryDomainHandler
     {
         $translations = $bean->{$item['name'] . '_translations'};
 
-        if (!is_array($translations)) return true;
+        if (!is_object($translations) && !is_array($translations)) return true;
 
         $db = DBManagerFactory::getInstance();
 
-        $db->deleteQuery('module_field_translations', [
+        $db->deleteQuery('spicemodulefieldtranslations', [
             'bean_id' => $bean->id, 'bean_module' => $bean->_module, 'field_name' => $item['name']
         ]);
 
         foreach ($translations as $translation) {
 
+            $translation = (array) $translation;
+
             if (empty($translation['translation_text'])) continue;
 
-            $db->insertQuery('module_field_translations', $translation);
+            $db->insertQuery('spicemodulefieldtranslations', $translation);
         }
 
         return true;

@@ -1,7 +1,7 @@
 /**
  * @module services
  */
-import {Injectable, EventEmitter} from '@angular/core';
+import {Injectable, EventEmitter, WritableSignal, signal} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Subject} from 'rxjs';
 
@@ -26,6 +26,11 @@ declare var _: any;
     providedIn: 'root'
 })
 export class language {
+    /**
+     * holds the current display language for translatable fields set from the object-field-translations-language-button
+     */
+    public currentFieldTranslationLanguage: WritableSignal<string> = signal(undefined);
+
     /**
      * interla object that holds all language labels retrieved from the backend in the current language
      */

@@ -1,14 +1,19 @@
 import {Component, effect, inject, Injector, OnInit} from '@angular/core';
-import {fieldText} from "./fieldtext";
 import {ObjectFieldTranslationsModal} from "../../objectcomponents/components/objectfieldtranslationsmodal";
-import {ModuleFieldTranslationI} from "../../objectcomponents/interfaces/objectcomponents.interfaces";
+import {
+    ModuleFieldTranslationsObjectI
+} from "../../objectcomponents/interfaces/objectcomponents.interfaces";
+import {modal} from "../../services/modal.service";
+import {model} from "../../services/model.service";
+import {language} from "../../services/language.service";
+import {metadata} from "../../services/metadata.service";
 
 @Component({
     selector: 'field-translatable-text',
     templateUrl: '../templates/fieldtranslatabletext.html',
     standalone: false
 })
-export class FieldTranslatableText extends fieldText implements OnInit {
+export class FieldTranslatableText implements OnInit {
     /**+
      * reference to the injector api
      * @private
@@ -21,11 +26,46 @@ export class FieldTranslatableText extends fieldText implements OnInit {
     /**
      * holds the text field name
      */
-    public textFieldConfig: {fieldtype: string, hidelabel: boolean};
+    public textFieldConfig: {fieldtype: string, hidelabel: boolean; hasTranslationField: boolean};
+    /**
+     * the field name passed by the field container
+     */
+    public fieldname: string = '';
+    /**
+     * the field config passed by the field container
+     */
+    public fieldconfig: any = {};
+
+    constructor(private modal: modal,
+                private model: model,
+                private metadata: metadata,
+                private language: language) {
+    }
 
     public ngOnInit() {
-        super.ngOnInit();
         this.initializeTextFieldConfig();
+    }
+
+    /**
+     * @return string the value in the current language or the original text
+     */
+    public getValue(editMode: boolean): string {
+        if (!editMode && this.language.currentFieldTranslationLanguage()) {
+            return this.getTranslatedValue() ?? this.model.getField(this.textFieldName);
+        } else {
+            return this.model.getField(this.textFieldName);
+        }
+    }
+
+    /**
+     * @return string the value in the current language or undefined
+     */
+    public getTranslatedValue(): string {
+        if (!this.language.currentFieldTranslationLanguage()) {
+            return undefined;
+        }
+
+        return this.model.getField(this.fieldname)[this.language.currentFieldTranslationLanguage()]?.translation_text;
     }
 
     /**
@@ -34,32 +74,33 @@ export class FieldTranslatableText extends fieldText implements OnInit {
      */
     private initializeTextFieldConfig() {
         this.textFieldConfig = {...this.fieldconfig};
-        this.textFieldConfig.hidelabel = true;
         this.textFieldName = this.fieldname.replace('_translations', '');
         this.textFieldConfig.fieldtype = this.metadata.getFieldType(this.model.module, this.textFieldName);
+        this.textFieldConfig.hasTranslationField = true;
 
     }
 
     /**
      * open the translation modal
      */
-    public openTranslationsModal() {
+    public openTranslationsModal(editMode: boolean, asRichtext?: boolean) {
 
         this.modal.openStaticModal(ObjectFieldTranslationsModal, true, this.injector).subscribe(ref => {
 
-            ref.instance.isEditMode = this.isEditMode();
+            ref.instance.isEditMode = editMode;
             ref.instance.originalText = this.model.getField(this.textFieldName);
+            ref.instance.asRichtext = asRichtext;
             const translations = this.model.getField(this.fieldname);
-            if (Array.isArray(translations)) {
-                ref.instance.setTranslations(this.model.getField(this.fieldname));
+            if (!window._.isEmpty(translations)) {
+                ref.instance.setTranslationsArray(Object.values(translations));
             }
 
             effect(() => {
 
-                const translations: ModuleFieldTranslationI[] = ref.instance.translations();
+                const translations: ModuleFieldTranslationsObjectI = ref.instance.translations();
 
                 if (translations) {
-                    translations.forEach(translation => {
+                    Object.values(translations).forEach(translation => {
                         translation.id = this.model.generateGuid();
                         translation.bean_module = this.model.module;
                         translation.bean_id = this.model.id;

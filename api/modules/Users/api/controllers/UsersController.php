@@ -15,6 +15,7 @@ use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -82,7 +83,13 @@ class UsersController
     private function sendUsernameBySystem(User $user): void
     {
         $configs = SpiceCRMPasswordUtils::getSendCredentialConfigs('username');
-        $template = SpiceCRMPasswordUtils::getChannelTemplateByType($user, 'sendUsername', $configs->channel);
+        $template = null;
+
+        # gateway mailbox does not require email template. The template must be defined on the gateway server
+        if ($configs->mailboxId != 'gateway') {
+            $template = SpiceCRMPasswordUtils::getChannelTemplateByType($user, 'sendUsername', $configs->channel);
+        }
+
         $user->sendCredentialToUser($template, 'username', ['username' => $user->user_name]);
     }
 
