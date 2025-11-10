@@ -1,4 +1,13 @@
 <div class="slds-text-align--right">
     <object-action-container [actionset]="componentconfig.actionset" [onlyDropdown]="layout.screenwidth == 'small'" class="slds-m-around--xxx-small"/>
 </div>
-<system-componentset [componentset]="componentconfig.componentset"/>
+<div class="slds-m-vertical--small slds-box slds-box--border">
+    <div class="slds-p-around--xx-small">
+        <system-componentset [componentset]="componentconfig.componentset"/>
+    </div>
+</div>
+<div class="slds-m-vertical--small slds-box slds-box--border">
+    <div class="slds-p-around--xx-small">
+        <system-dynamic-component component="ACLUserProfiles"/>
+    </div>
+</div>

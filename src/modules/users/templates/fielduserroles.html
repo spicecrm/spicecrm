@@ -1,0 +1,32 @@
+@if (displayLabel) {
+    <field-label [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+}
+<div class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="css_classes">
+    <table class="slds-table slds-table_bordered">
+        <thead>
+        <tr class="slds-line-height_reset">
+            <th style="width: 2em" scope="col" system-title="LBL_ROLE_ACTIVE"><system-label class="slds-m-horizontal--xx-small" label="LBL_ROLE_ACTIVE" length="short"/></th>
+            <th style="width: 2em" scope="col" system-title="LBL_ROLE_DEFAULT"><system-label class="slds-m-horizontal--xx-small" label="LBL_ROLE_DEFAULT" length="short"/></th>
+            <th scope="col">
+                <div class="slds-truncate"><system-label label="LBL_ROLE"/></div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+            @for (sysRole of sysRoles; track sysRole.id){
+                <tr class="slds-hint-parent">
+                    <td>
+                        <system-checkbox system-checkbox-asinteger [value]="sysRole.id" [disabled]="isPrimaryRole(sysRole.id) || (!(isEditable() && isEditMode()))" [ngModel]="roleChecked(sysRole.id)" (ngModelChange)="checkRole(sysRole.id, $event)"/>
+                    </td>
+                    <td>
+                        <system-input-radio [name]="'role'+model.id" [value]="sysRole.id" [disabled]="!(isEditable() && isEditMode())" [(ngModel)]="primaryId"/>
+                    </td>
+                    <td>
+                        <div class="slds-truncate" >{{sysRole.name}}</div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>
