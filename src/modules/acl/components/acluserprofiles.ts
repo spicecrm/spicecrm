@@ -90,6 +90,9 @@ export class ACLUserProfiles implements OnInit{
         }
     }
 
+    /**
+     * render a modal to select profiles
+     */
     public selectNewProfiles(){
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
             selectModal.instance.module = 'SpiceACLProfiles';
@@ -101,6 +104,11 @@ export class ACLUserProfiles implements OnInit{
         });
     }
 
+    /**
+     * add profiles
+     *
+     * @param items
+     */
     public addProfiles(items){
         this.relatedmodels.addItems(items).subscribe({
             next: () => {
@@ -109,6 +117,11 @@ export class ACLUserProfiles implements OnInit{
         });
     }
 
+    /**
+     * delete the profiles
+     *
+     * @param id
+     */
     public deleteProfile(id){
         this.modal.prompt('confirm', 'MSG_DELETE_CONFIRM', 'LBL_DELETE_RECORD').subscribe({
             next: (a) => {
