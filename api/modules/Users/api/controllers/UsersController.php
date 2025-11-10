@@ -43,7 +43,7 @@ class UsersController
                 email_addresses ea WHERE ea.id = er.email_address_id
                 AND ea.deleted = 0 AND er.deleted = 0 AND er.bean_module = 'Users' AND email_address_caps IN ('{$db->quote(strtoupper($email1))}') )";
 
-            $row = $db->fetchByAssoc($db->query($q));
+            $row = $db->fetchOne("SELECT id FROM users WHERE UPPER(user_email) = '{$db->quote(strtoupper($email1))}'");
 
             if ($row && $row['id'] != $params['id'])
                 throw (new BadRequestException("Email already exists."))->setErrorCode('duplicateEmail1');
