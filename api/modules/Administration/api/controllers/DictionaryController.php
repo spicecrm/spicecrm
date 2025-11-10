@@ -204,7 +204,7 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
             foreach ($nodeModule->field_defs as $field_name => $field_defs) {
                 // 2011-03-23 also exculde the excluded modules from the config in the Module Tree
                 //if ($field_defs['type'] == 'link' && (!isset($field_defs['module']) || (isset($field_defs['module']) && array_search($field_defs['module'], $excludedModules) == false))) {
-                if ($field_defs['type'] == 'link') {
+                if ($field_defs['type'] == 'link' && $field_defs['relationship']) {
                     if($nodeModule->load_relationship($field_name)) {
                         //BUGFIX 2010/07/13 to display alternative module name if vname is not maintained
                         $entry = [
