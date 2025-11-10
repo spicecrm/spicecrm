@@ -78,6 +78,7 @@ class EmailTemplate extends SpiceBean {
             'body' => $this->parseHTMLTextField('body', $bean, $additionalValues, $additionalBeans, $additionalStyles ),
             'body_html' => $this->parseHTMLTextField('body_html', $bean, $additionalValues, $additionalBeans, $additionalStyles, $addtionalHeadItems ),
             'reply_to_addr' => $this->parsePlainTextField('reply_to_addr', $bean, $additionalValues, $additionalBeans, $additionalStyles, $addtionalHeadItems ),
+            'to_addr' => $this->parsePlainTextField('to_addr', $bean, $additionalValues, $additionalBeans, $additionalStyles, $addtionalHeadItems ),
             'attachments' => array_merge($this->getAttachmentsWithFiles(), $pdfFiles)
         ];
         $retArray['subject'] = preg_replace('#\s+#', ' ', trim( $retArray['subject'] )); // multiple white spaces -> one
