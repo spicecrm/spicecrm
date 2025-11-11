@@ -24,6 +24,8 @@ class VoiceOverIP
     const STATE_RINGING    = 'RINGING';
     const STATE_INCOMING   = 'INCOMING';
 
+    const ANONYMOUS_CALLERNUMBER = 'ANONYMOUS';
+
     const CALL_DIRECTIONS = [self::DIRECTION_INCOMING, self::DIRECTION_OUTGOING];
 
     /**

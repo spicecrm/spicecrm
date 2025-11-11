@@ -28,6 +28,7 @@ export class UserAddModal implements OnInit {
     public self: any;
     public informationFieldset: string;
     public profileFieldset: string;
+    public hideGotoDetailButton: boolean = false;
     public response: Observable<object> = null;
     public responseSubject: Subject<any> = null;
 
@@ -168,9 +169,11 @@ export class UserAddModal implements OnInit {
     }
 
     public getFieldSets() {
-        let conf = this.metadata.getComponentConfig("UserAddModal", "Users");
-        this.profileFieldset = conf && conf.profile ? conf.profile : this.profileFieldset;
-        this.informationFieldset = conf && conf.information ? conf.information : this.informationFieldset;
+        if(!this.profileFieldset && !this.informationFieldset) {
+            let conf = this.metadata.getComponentConfig("UserAddModal", "Users");
+            this.profileFieldset = conf && conf.profile ? conf.profile : this.profileFieldset;
+            this.informationFieldset = conf && conf.information ? conf.information : this.informationFieldset;
+        }
     }
 
 
@@ -243,9 +246,13 @@ export class UserAddModal implements OnInit {
                     this.model.setData(response);
                     this.model.endEdit();
 
+                    // emit and complete the subject
+                    this.responseSubject.next(true);
+                    this.responseSubject.complete();
 
                     if(goDetail) this.model.goDetail();
                     this.self.destroy();
+
 
                 },
                 error: (resErr) => {
@@ -255,6 +262,7 @@ export class UserAddModal implements OnInit {
                             this.model.setFieldMessage("error", resErr.error.error.message, "user_name", "validation");
                         }
                         if (resErr.error.error.errorCode == 'duplicateEmail1') {
+                            this.model.setFieldMessage("error", resErr.error.error.message, "user_email", "validation");
                             this.model.setFieldMessage("error", resErr.error.error.message, "email1", "validation");
                         }
                     }

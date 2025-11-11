@@ -43,7 +43,7 @@ class UsersController
                 email_addresses ea WHERE ea.id = er.email_address_id
                 AND ea.deleted = 0 AND er.deleted = 0 AND er.bean_module = 'Users' AND email_address_caps IN ('{$db->quote(strtoupper($email1))}') )";
 
-            $row = $db->fetchByAssoc($db->query($q));
+            $row = $db->fetchOne("SELECT id FROM users WHERE UPPER(user_email) = '{$db->quote(strtoupper($email1))}'");
 
             if ($row && $row['id'] != $params['id'])
                 throw (new BadRequestException("Email already exists."))->setErrorCode('duplicateEmail1');
@@ -222,6 +222,25 @@ class UsersController
         $params['userid'] = $args['id'];
         $list = $this->getReassignModuleData($params);
         return $res->withJson($list);
+    }
+
+
+    /**
+     * gets a user based on the parent type & id
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function getUserByParent(Request $req, Response $res, array $args): Response {
+        $seed = BeanFactory::getBean('Users')->retrieve_by_string_fields(['parent_type' => $args['parenttype'], 'parent_id' => $args['parentid']]);
+
+        if(!$seed){
+            throw new NotFoundException('User with the given Parent exists not found');
+        }
+
+        return $res->withJson((new SpiceBeanHandler())->mapBean($seed));
     }
 
     /**

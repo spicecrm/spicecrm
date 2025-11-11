@@ -127,6 +127,24 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
                 $fields[$mainRelationship->relationship->rhs_link_name] = $rightLink;
             }
 
+            // process the polymorph links
+            $polymorphs = SpiceDictionaryRelationships::getInstance()->getPolymorphListForRelationship($mainRelationship->id);
+            foreach ($polymorphs as $polymorph) {
+                if(empty($polymorph['rhs_link_name'])) continue;
+
+                $rightLink = [
+                    'name' => $polymorph['rhs_link_name'],
+                    'vname' => $polymorph['rhs_link_label'],
+                    'type' => 'link',
+                    'relationship' => $polymorph['relationship_name'],
+                    'source' => 'non-db',
+                    'duplicate_merge' =>$polymorph['rhs_duplicatemerge'],
+                    'duplicate_linked' =>$polymorph['rhs_duplicatelinked']
+                ];
+                $fields[$polymorph['rhs_link_name']] = $rightLink;
+            }
+
+
         } else {
 
             try {
