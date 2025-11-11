@@ -685,7 +685,7 @@ class ImapHandler extends TransportHandler
         // If there is no incoming communication and SMTP authentication is disabled the password is allowed to be empty
         foreach ($response['missing'] as $index => $missingSetting) {
             if ($missingSetting == 'imap_pop3_password' && $this->mailbox->inbound_comm == 0
-                && ($this->mailbox->smtp_auth == 0 || !isset($this->mailbox->smtp_auth))) {
+                && (!isset($this->mailbox->smtp_auth) || $this->mailbox->smtp_auth == 0)) {
                 unset($response['missing'][$index]);
             }
         }
