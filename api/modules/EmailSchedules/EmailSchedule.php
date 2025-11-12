@@ -52,7 +52,7 @@ class EmailSchedule extends SpiceBean
         $email->mailbox_id = $emailSchedule->mailbox_id;
         $email->name = $emailSchedule->email_subject;
         $email->body = $parsedTemplate['body_html'];
-        $primaryAddress = $seed->email1;
+        $primaryAddress = BeanFactory::getBean('EmailAddresses')->getEmailAddressForBean($seed);
 
         if(empty($primaryAddress)) {
             // reset the current user to admin
@@ -60,7 +60,7 @@ class EmailSchedule extends SpiceBean
             return false;
         }
 
-        $email->addEmailAddress('to', $seed->email1);
+        $email->addEmailAddress('to', $primaryAddress->email_address);
         $mailbox = BeanFactory::getBean('Mailboxes', $emailSchedule->mailbox_id);
         $email->addEmailAddress('from', $mailbox->imap_pop3_username);
 
