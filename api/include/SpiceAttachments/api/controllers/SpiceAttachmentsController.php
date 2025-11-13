@@ -113,6 +113,9 @@ class SpiceAttachmentsController
 
         $postBody = $req->getParsedBody();
         $postParams = $req->getQueryParams();
+
+        $seed->call_custom_logic('attachment_added');
+
         return $res->withJson(SpiceAttachments::saveAttachmentHashFiles($args['beanName'], $args['beanId'], array_merge($postBody, $postParams)));
     }
 
