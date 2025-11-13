@@ -1,5 +1,5 @@
 <div *ngIf="!hidden">
-    <system-collapsable-tab *ngIf="showTitle" [title]="componentconfig.name" [expanded]="expanded">
+    <system-collapsable-tab *ngIf="showTitle" [title]="componentconfig.name" [expanded]="expanded" [collapsable]="collapsable">
         <div class="slds-p-horizontal--xx-small">
             <object-record-fieldset [fieldset]="fieldSet" [direction]="'vertical'"></object-record-fieldset>
         </div>
