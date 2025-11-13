@@ -42,7 +42,7 @@ export class SystemCollabsableTab {
     /**
      * if set to false the panel will not be collapsible
      */
-    @Input() public collapsible: boolean = true;
+    @Input() public collapsable: boolean = true;
 
     /**
      * set to true to expand it when loaded. if set to false the panel will be collapsed by default

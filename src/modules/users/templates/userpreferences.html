@@ -7,7 +7,7 @@
 
         <system-preferences-panel #systemPreferencesPanel [preferences]="preferences" [isPersonalContext]="true"></system-preferences-panel>
 
-        <system-collapsable-tab [collapsible]="false" tabtitle="LBL_HOME_PREFERENCES">
+        <system-collapsable-tab [collapsable]="false" tabtitle="LBL_HOME_PREFERENCES">
             <div class="slds-grid slds-wrap">
                 <system-preferences-panel-item class="slds-size--1-of-1 slds-medium-size--1-of-3" itemlabel="LBL_HOME_DASHBOARD">
 <!--                    <field-container *ngIf="!preferences.home_dashboard" [system-model-provider]="{module: 'Dashboards', id: preferences.home_dashboard, data: homeDashboardData}" field="name" [fieldconfig]="{link: true, hidelabel: true}"></field-container>-->
