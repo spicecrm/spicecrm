@@ -1064,7 +1064,7 @@ class Email extends SpiceBean
      * search for trackable links and replace them with encrypted crm web hook urls
      * @throws Exception
      */
-    private function replaceEmailTrackingLinks($trackMailbox)
+    private function replaceEmailTrackingLinks($trackMailbox, $trackAll = false)
     {
         $handlingLink = SpiceConfig::getInstance()->get('emailtracking.tracking_clicks_url');
 
@@ -1097,12 +1097,15 @@ class Email extends SpiceBean
 
         [$parentType, $parentId] = $this->getTrackingParentData();
 
-        $bodyDiv = $dom->getElementsByTagName('div')->item(0);
-        if(!empty($bodyDiv)){
-            if($bodyDiv->hasAttribute('data-trackinglinkall')){
-                $trackAll = $bodyDiv->getAttribute('data-trackinglinkall');
+        if(!$trackAll){
+            $bodyDiv = $dom->getElementsByTagName('div')->item(0);
+            if(!empty($bodyDiv)){
+                if($bodyDiv->hasAttribute('data-trackinglinkall')){
+                    $trackAll = $bodyDiv->getAttribute('data-trackinglinkall');
+                }
             }
         }
+
         /** @var \DOMElement $node */
         foreach ($dom->getElementsByTagName('a') as $node) {
 
@@ -1213,7 +1216,7 @@ class Email extends SpiceBean
 
 
 
-        $this->replaceEmailTrackingLinks($mailbox->track_mailbox);
+        $this->replaceEmailTrackingLinks($mailbox->track_mailbox, $this->track_all);
 
         /*
         if ($mailbox->track_mailbox) {
