@@ -344,8 +344,8 @@ abstract class TransportHandler
     }
 
     /**
-     * Can handle *one* address (as string) or a *list* of addresses (as array).
-     * @param $addressOrAddresses
+     * Check if an destination email address ist white listed or not.
+     * @param $destinationAddress
      * @return boolean
      */
     protected function isWhiteListed( string $destinationAddress ): bool
@@ -353,9 +353,23 @@ abstract class TransportHandler
         # Parse the (comma separated) content of the field "whitelist" and build an array
         $whiteAddresses = empty( $this->mailbox->whitelist ) ? [] : explode(',', $this->mailbox->whitelist );
         # Check, if the destination address is one of the addresses in the array (ignoring space characters in case it is a phone number) and return true;
-        foreach ( $whiteAddresses as $address ) {
-            if ( mb_strtolower( str_replace(' ', '', $address )) === mb_strtolower( str_replace( ' ', '', $destinationAddress ))) return true;
+        foreach ( $whiteAddresses as $whiteAddress ) {
+            if ( self::compareToWhiteAddress( mb_strtolower( str_replace(' ', '', $destinationAddress )), mb_strtolower( str_replace( ' ', '', $whiteAddress )))) return true;
         }
         return false;
+    }
+
+    /**
+     * Compare an email address to an email address pattern that may contain a wildcard ("~", not "*"!).
+     * @param $destinationAddress
+     * @return boolean
+     */
+    protected static function compareToWhiteAddress( string $address, string $whiteAddress ): bool
+    {
+        $whiteAdressArray = explode('~', $whiteAddress);
+        foreach ( $whiteAdressArray as $k => $v ) $whiteAdressArray[$k] = preg_quote( $v );
+        $whiteAdress = implode('.*', $whiteAdressArray );
+        $result = preg_match( '/^'.$whiteAdress.'$/', $address );
+        return ( $result !== false and $result > 0 );
     }
 }
