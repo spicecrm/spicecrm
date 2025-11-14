@@ -291,17 +291,29 @@ export class APIlogViewerReplayModal {
             .pipe(take(1))
             .subscribe({
                 next: (response) => {
+                    let responseText: string;
+                    let responseObject: any;
                     this.isLoading = false;
                     if ( response.success ) {
-                        this.toast.sendToast( 'REPLAY SUCCESSFUL', 'success' );
+                        this.toast.sendToast( 'LBL_REPLAY_SUCCESSFUL', 'success' );
                         this.self.destroy();
                     } else {
-                        this.toast.sendToast('ERROR REPLAYING', 'error');
+                        if ( response.response ) {
+                            try {
+                                responseObject = JSON.parse( response.response );
+                            } catch (e) {
+                                responseObject = {};
+                            }
+                            if ( responseObject.error && responseObject.error.message ) {
+                                responseText = responseObject.error.message;
+                            }
+                        }
+                        this.toast.sendToast('LBL_REPLAY_UNSUCCESSFUL', 'error', 'Status Code: ' + response.httpStatusCode + ( responseText ? ', Message: ' + responseText : '' ));
                     }
                 },
                 error: (error) => {
                     this.isLoading = false;
-                    this.toast.sendToast('REPLAY ERROR', 'error');
+                    this.toast.sendToast('LBL_REPLAY_UNSUCCESSFUL', 'error');
                 }
             });
     }
