@@ -19,7 +19,7 @@
                         <div class="slds-truncate slds-size--1-of-1 slds-grid slds-grid--vertical-align-center" [title]="navModule">
                             <system-icon [module]="navModule" size="x-small"></system-icon>
                             <span><system-label-modulename [module]="navModule"></system-label-modulename></span>
-                            <button class="slds-button slds-button--icon slds-col--bump-left" (click)="setActiveModule($event, navModule)">
+                            <button *ngIf="showModuleTrigger(navModule)" class="slds-button slds-button--icon slds-col--bump-left" (click)="setActiveModule($event, navModule)">
                                 <system-button-icon icon="chevronright" addclasses="slds-icon-text-light"></system-button-icon>
                             </button>
                         </div>
@@ -30,7 +30,7 @@
                         <div class="slds-truncate slds-size--1-of-1 slds-grid slds-grid--vertical-align-center" [title]="menuItem">
                             <system-icon [module]="menuItem" size="x-small"></system-icon>
                             <span><system-label-modulename [module]="menuItem"></system-label-modulename></span>
-                            <button class="slds-button slds-button--icon slds-col--bump-left" (click)="setActiveModule($event, menuItem)">
+                            <button *ngIf="showModuleTrigger(menuItem)" class="slds-button slds-button--icon slds-col--bump-left" (click)="setActiveModule($event, menuItem)">
                                 <system-button-icon icon="chevronright" addclasses="slds-icon-text-light"></system-button-icon>
                             </button>
                         </div>

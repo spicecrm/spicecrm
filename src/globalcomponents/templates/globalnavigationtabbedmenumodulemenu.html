@@ -7,7 +7,7 @@
             </a>
         </li>
     </ng-container>
-    <ng-container *ngIf="favorites.length > 0">
+    <ng-container *ngIf="hasFavorites && favorites.length > 0">
         <li class="slds-dropdown__header" role="separator">
             <span class="slds-text-title--caps"><system-label label="LBL_FAVORITES"></system-label></span>
         </li>
