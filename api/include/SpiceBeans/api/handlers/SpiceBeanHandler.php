@@ -2194,6 +2194,8 @@ class SpiceBeanHandler
             }
         }
 
+        if(!$thisBean) return null;
+
         // call the bean mapper if that one exists
         if ($thisBean && method_exists($thisBean, 'mapToRestArray')) {
             $beanDataArray = $thisBean->mapToRestArray($beanDataArray);
