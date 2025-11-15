@@ -42,9 +42,12 @@ export class GlobalHeaderDocumentRevisions implements OnInit {
 
     public loadRelated(){
         if(this.model.data.assigned_user_id){
-            this.backend.getRequest(`module/documentrevisions/${this.model.data.assigned_user_id}/relateduserrevisions`).subscribe(
+            this.backend.getRequest(`module/DocumentRevisions/unread/foruser`).subscribe(
                 res => {
                     this.relatedRevisions = res;
+                    if(this.relatedRevisions.length > 0){
+                        this.openModal();
+                    }
                 })
         }
     }
@@ -57,12 +60,5 @@ export class GlobalHeaderDocumentRevisions implements OnInit {
                 modalRef.instance.relatedRevisions = this.relatedRevisions;
             }
         );
-    }
-
-    /**
-     * a getter to see if the user has subscriptions
-     */
-    get hasSubscriptions(){
-        return this.subscription.subscriptions.length > 0;
     }
 }
