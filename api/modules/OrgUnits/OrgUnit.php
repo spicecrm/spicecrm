@@ -212,7 +212,7 @@ class OrgUnit extends \SpiceCRM\includes\SpiceBeans\SpiceBean
         }
     }
 
-    public function getAllEmployees(){
+    public function getAllEmployees($mapped = true){
         $employees = [];
         $nowDB = TimeDate::getInstance()->nowDbDate();
         // get the ids of all employees
@@ -229,9 +229,9 @@ class OrgUnit extends \SpiceCRM\includes\SpiceBeans\SpiceBean
             $employee->hcmjobposition_date_end = $employeeArrayItem['date_end'];
 
             // map the employee for the response
-            $employees[] = (new SpiceBeanHandler())->mapBean($employee);
+            $employees[] = $mapped ? (new SpiceBeanHandler())->mapBean($employee) : $employee;
         }
-        return ['count' => count($employees), 'list' => $employees];
+        return $employees;
     }
 
 }
