@@ -157,12 +157,12 @@ export class ObjectRelatedCardFooter implements OnInit {
 
     public showAssignedToMe() {
         this.assignedToMe = !this.assignedToMe;
-        this.relatedmodels.filteron = this.assignedToMe;
+        this.relatedmodels.filterown = this.assignedToMe;
         this.relatedmodels.getData().subscribe({
             next: () => {
                 if (this.relatedmodels.items.length == 0) {
                     this.assignedToMe = false;
-                    this.relatedmodels.filteron = false;
+                    this.relatedmodels.filterown = false;
                     this.relatedmodels.getData();
                     this.toast.sendToast('LBL_NO_ASSIGNED_ENTRIES', 'info');
                 }
