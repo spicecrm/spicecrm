@@ -36,19 +36,23 @@ export class GlobalHeaderDocumentRevisions implements OnInit {
     public ngOnInit() {
         this.model.module = 'DocumentRevisions';
         this.model.initialize();
-        this.loadRelated();
+        this.loadUnaccepted();
     }
 
 
-    public loadRelated(){
+    /**
+     *
+     */
+    public loadUnaccepted(){
         if(this.model.data.assigned_user_id){
-            this.backend.getRequest(`module/DocumentRevisions/unread/foruser`).subscribe(
-                res => {
+            this.backend.getRequest(`module/DocumentRevisions/unaccepted/foruser`).subscribe({
+                next: (res) => {
                     this.relatedRevisions = res;
-                    if(this.relatedRevisions.length > 0){
+                    if (this.relatedRevisions.length > 0) {
                         this.openModal();
                     }
-                })
+                }
+            })
         }
     }
 
