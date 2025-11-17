@@ -917,7 +917,7 @@ class MysqliManager extends DBManager
      * @param $fields
      * @return false
      */
-    public function reshuffleFields($tablename, $fields)
+    public function reshuffleFields($tablename, $fields): bool
     {
         $columns = [];
         $columnsObj = $this->query("SHOW FULL COLUMNS FROM {$tablename}");
@@ -950,7 +950,7 @@ class MysqliManager extends DBManager
             return true;
         }
 
-        return false;
+        return true;
     }
 
     /**
