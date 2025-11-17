@@ -136,7 +136,7 @@ export class relatedmodels implements OnDestroy {
     /**
      * filter based on assigned user id
      */
-    public filteron: boolean = false;
+    public filterown: boolean = false;
 
     constructor(
         public metadata: metadata,
@@ -298,7 +298,7 @@ export class relatedmodels implements OnDestroy {
             limit: this.loaditems,
             fieldfilters: this.fieldfilters,
             searchterm: this.searchTerm,
-            filteron: this.filteron,
+            filterown: this.filterown,
         };
 
         // check if we have a sortfield

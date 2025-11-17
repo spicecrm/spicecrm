@@ -1412,7 +1412,7 @@ class SpiceBeanHandler
             $sequenceField = $thisBean->field_defs[$linkName]['sequence_field'];
         }
 
-        if ($params['filteron']) {
+        if ($params['filterown']) {
             $currentUserId = AuthenticationController::getInstance()->getCurrentUser()->id;
             $addWhere = "assigned_user_id = '$currentUserId'";
         }
@@ -2193,6 +2193,8 @@ class SpiceBeanHandler
                     break;
             }
         }
+
+        if(!$thisBean) return null;
 
         // call the bean mapper if that one exists
         if ($thisBean && method_exists($thisBean, 'mapToRestArray')) {

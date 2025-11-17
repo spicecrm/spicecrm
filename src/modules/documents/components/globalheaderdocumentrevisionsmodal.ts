@@ -54,54 +54,55 @@ export class GlobalHeaderDocumentRevisionsModal implements OnInit {
      *
      * @param id
      */
-    process(id) {
+    public preview(id) {
         let retSubject = new Subject();
         let relatedRevision = this.relatedRevisions.find(s => s.id == id);
-        this.backend.getRequest(`common/spiceattachments/module/${this.model.module}/${relatedRevision.id}/byfield/file`).subscribe(
-            fileData => {
+        this.backend.getRequest(`common/spiceattachments/module/${this.model.module}/${relatedRevision.id}/byfield/file_pdf`).subscribe({
+            next: (fileData) => {
                 retSubject.next(fileData.file);
-                    let fileTypeArray = fileData.file_mime_type.toLowerCase().split("/");
-                    // check the application
-                    switch (fileTypeArray[0].trim()) {
-                        case "image":
-                            this.modal.openModal('SystemImagePreviewModal').subscribe(modalref => {
-                                modalref.instance.imgname = fileData.file_name;
-                                modalref.instance.imgtype = fileData.file_mime_type.toLowerCase();
-                                modalref.instance.imgsrc = 'data:' + fileData.file_mime_type.toLowerCase() + ';base64,' + fileData;
-                            });
-                            break;
-                        case 'text':
-                        case 'audio':
-                        case 'video':
-                            this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
-                                modalref.instance.name = fileData.file_name;
-                                modalref.instance.type = fileData.file_mime_type.toLowerCase();
-                                modalref.instance.data = atob(fileData.file);
-                            });
-                            break;
-                        case "application":
-                            switch (fileTypeArray[1]) {
-                                case 'pdf':
-                                    this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
-                                        modalref.instance.name = fileData.file_name;
-                                        modalref.instance.type = fileData.file_mime_type.toLowerCase();
-                                        modalref.instance.data = atob(fileData.file);
-                                    });
-                                    break;
-                                default:
-                                    this.modelattachments.downloadAttachmentForField(this.model.module, relatedRevision.id, 'file');
-                                    break;
-                            }
-                            break;
-                        default:
-                            this.modelattachments.downloadAttachmentForField(this.model.module, relatedRevision.id, 'file');
-                            break;
-                    }
+                let fileTypeArray = fileData.file_mime_type.toLowerCase().split("/");
+                // check the application
+                switch (fileTypeArray[0].trim()) {
+                    case "image":
+                        this.modal.openModal('SystemImagePreviewModal').subscribe(modalref => {
+                            modalref.instance.imgname = fileData.file_name;
+                            modalref.instance.imgtype = fileData.file_mime_type.toLowerCase();
+                            modalref.instance.imgsrc = 'data:' + fileData.file_mime_type.toLowerCase() + ';base64,' + fileData;
+                        });
+                        break;
+                    case 'text':
+                    case 'audio':
+                    case 'video':
+                        this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
+                            modalref.instance.name = fileData.file_name;
+                            modalref.instance.type = fileData.file_mime_type.toLowerCase();
+                            modalref.instance.data = atob(fileData.file);
+                        });
+                        break;
+                    case "application":
+                        switch (fileTypeArray[1]) {
+                            case 'pdf':
+                                this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
+                                    modalref.instance.name = fileData.file_name;
+                                    modalref.instance.type = fileData.file_mime_type.toLowerCase();
+                                    modalref.instance.data = atob(fileData.file);
+                                });
+                                break;
+                            default:
+                                this.modelattachments.downloadAttachmentForField(this.model.module, relatedRevision.id, 'file');
+                                break;
+                        }
+                        break;
+                    default:
+                        this.modelattachments.downloadAttachmentForField(this.model.module, relatedRevision.id, 'file');
+                        break;
+                }
                 retSubject.complete();
             },
-            err => {
+            error: (err)   => {
                 retSubject.error(err);
                 retSubject.complete();
+                }
             }
         );
         return retSubject;
@@ -111,11 +112,23 @@ export class GlobalHeaderDocumentRevisionsModal implements OnInit {
      * set the reision as accepted in the backend
      * @param id
      */
-    acceptance(id) {
-        this.relatedRevisions.splice(this.relatedRevisions.findIndex(item => item.id === id), 1)
-        let body = {userid: this.session.authData.userId};
-        this.backend.postRequest(`module/documentrevisions/${id}/revisionaccepted`, '', body)
-        this.toast.sendToast('revision accepted');
+    public accept(id) {
+        let awaitModal = this.modal.await('LBL_ACCEPTING');
+        this.backend.postRequest(`module/DocumentRevisions/${id}/accept`).subscribe({
+            next: (res) => {
+                if(res.success){
+                    this.relatedRevisions.splice(this.relatedRevisions.findIndex(item => item.id === id), 1);
+                    // if all are done close the modal
+                    if(this.relatedRevisions.length == 0) this.closeModal();
+                }
+                awaitModal.emit(true);
+            },
+            error: (e) => {
+                this.toast.sendToast('LBL_ERROR', "error");
+                awaitModal.emit(true);
+            }
+        })
+
     }
 
     // Close the modal.
