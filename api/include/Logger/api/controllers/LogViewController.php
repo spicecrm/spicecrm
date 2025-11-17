@@ -220,7 +220,7 @@ class LogViewController{
         if ( !empty( $entry['request_headers'] ))
             foreach ( json_decode( $entry['request_headers'], true ) as $k => $v )
                 if ( strtolower( $k ) === 'content-type' ) {
-                    $curlOptions['CURLOPT_HTTPHEADER'][] = 'Content-Type: '.$v[0];
+                    $curlOptions[CURLOPT_HTTPHEADER][] = 'Content-Type: '.$v[0];
                     break;
                 }
 
