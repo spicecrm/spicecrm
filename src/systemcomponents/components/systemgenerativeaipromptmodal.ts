@@ -65,7 +65,7 @@ export class SystemGenerativeAIPromptModal implements ModalComponentI {
      * emit the confirmed response
      */
     public confirm() {
-        this.confirmedResponse.set(this.response());
+        this.confirmedResponse.set(this.response().replace(/\n/g, "<br/>"));
         this.close();
     }
 }

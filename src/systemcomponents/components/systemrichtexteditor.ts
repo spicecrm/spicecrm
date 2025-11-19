@@ -916,7 +916,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 if (!response) return;
 
                 this.editor.model.change(writer => {
-                    this.editor.model.insertContent(writer.createText(`${response}`));
+                    const viewFragment = this.editor.data.htmlProcessor.toView(response);
+                    const modelFragment = this.editor.data.toModel(viewFragment);
+                    this.editor.model.insertContent(modelFragment);
                 });
 
             }, {injector: this.injector});
