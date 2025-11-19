@@ -5,11 +5,11 @@
 // from https://github.com/kolkov/angular-editor
 import {
     ApplicationRef,
-    Component, createComponent,
+    Component, createComponent, effect,
     ElementRef,
     EventEmitter,
     forwardRef,
-    Inject,
+    Inject, Injector,
     Input,
     NgZone,
     OnDestroy,
@@ -38,6 +38,7 @@ import {configurationService} from "../../services/configuration.service";
 import {MentionCustomization} from "../../../vendor/ckeditor/spice/MentionCustomizer";
 import {fts} from "../../services/fts.service";
 import {SystemRichTextEditorMentionDropdown} from "./systemrichtexteditormentiondropdown";
+import {SystemGenerativeAIPromptModal} from "./systemgenerativeaipromptmodal";
 
 declare var ClassicEditor;
 
@@ -158,7 +159,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 @Optional() public model: model,
                 private appRef: ApplicationRef,
                 private fts: fts,
-                public helper: helper) {
+                public helper: helper,
+                private injector: Injector) {
     }
 
     get expandIcon() {
@@ -897,6 +899,27 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     this.editor.setData(newHtml)
                 }
             })
+        });
+    }
+
+    /**
+     * open  the generative api prompt and insert the response in the content
+     */
+    public openAIPrompt() {
+
+        this.modal.openStaticModal(SystemGenerativeAIPromptModal).subscribe(ref => {
+
+            effect(() => {
+
+                const response = ref.instance.confirmedResponse();
+
+                if (!response) return;
+
+                this.editor.model.change(writer => {
+                    this.editor.model.insertContent(writer.createText(`${response}`));
+                });
+
+            }, {injector: this.injector});
         });
     }
 }
