@@ -352,24 +352,25 @@ abstract class TransportHandler
     {
         # Parse the (comma separated) content of the field "whitelist" and build an array
         $whiteAddresses = empty( $this->mailbox->whitelist ) ? [] : explode(',', $this->mailbox->whitelist );
+        foreach ( $whiteAddresses as $k => $v ) $whiteAddresses[$k] = trim($v); # Remove whitespace left and right, especially line breaks.
         # Check, if the destination address is one of the addresses in the array (ignoring space characters in case it is a phone number) and return true;
         foreach ( $whiteAddresses as $whiteAddress ) {
-            if ( self::compareToWhiteAddress( mb_strtolower( str_replace(' ', '', $destinationAddress )), mb_strtolower( str_replace( ' ', '', $whiteAddress )))) return true;
+            if ( self::compareToWhiteAddress( mb_strtolower( trim( $destinationAddress )), mb_strtolower( $whiteAddress ))) return true;
         }
         return false;
     }
 
     /**
-     * Compare an email address to an email address pattern that may contain a wildcard ("~", not "*"!).
+     * Compare an email address to an email address pattern that may contain a wildcard ("*").
      * @param $destinationAddress
      * @return boolean
      */
     protected static function compareToWhiteAddress( string $address, string $whiteAddress ): bool
     {
-        $whiteAdressArray = explode('~', $whiteAddress);
-        foreach ( $whiteAdressArray as $k => $v ) $whiteAdressArray[$k] = preg_quote( $v );
-        $whiteAdress = implode('.*', $whiteAdressArray );
-        $result = preg_match( '/^'.$whiteAdress.'$/', $address );
+        $whiteAddressArray = explode('*', $whiteAddress);
+        foreach ( $whiteAddressArray as $k => $v ) $whiteAddressArray[$k] = preg_quote( $v );
+        $whiteAddress = implode('.*', $whiteAddressArray );
+        $result = preg_match( '/^'.$whiteAddress.'$/', $address );
         return ( $result !== false and $result > 0 );
     }
 }
