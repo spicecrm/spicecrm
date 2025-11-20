@@ -734,7 +734,7 @@ export class model implements OnDestroy {
      * @param event
      */
     public evaluateValidationRules(field?: string, event?: 'change' | 'initialize') {
-        let validations = this.metadata.getModuleValidations(this.module);
+        let validations = this.metadata.getModuleValidations(this.module, true);
         if (!validations) {
             return true;
         }

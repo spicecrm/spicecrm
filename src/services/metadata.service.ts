@@ -936,9 +936,9 @@ export class metadata {
         return dupfields;
     }
 
-    public getModuleValidations(module: string) {
+    public getModuleValidations(module: string, activeOnly = false) {
         try {
-            return this.validationRules[module].validations;
+            return this.validationRules[module].validations && activeOnly ? this.validationRules[module].validations.filter((v) => v.active).sort((a, b) => parseInt(a.priority, 10) > parseInt(b.priority, 10) ? 1 : -1  ) : this.validationRules[module].validations;
         } catch (e) {
             return [];
         }
