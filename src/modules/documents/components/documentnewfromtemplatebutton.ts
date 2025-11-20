@@ -56,7 +56,9 @@ export class DocumentNewFromTemplateButton {
                     file_md5: items[0].file_md5,
                     file_pdf_name: items[0].file_pdf_name,
                     file_pdf_mime_type: items[0].file_pdf_mime_type,
-                    file_pdf_md5: items[0].file_pdf_md5
+                    file_pdf_md5: items[0].file_pdf_md5,
+                    document_language: items[0].document_language,
+                    companycode_id: items[0].companycode_id,
                 }
                 this.model.addModel(null, null, presets, false, {componentset: this.actionconfig.componentset, actionset: this.actionconfig.actionset});
             });

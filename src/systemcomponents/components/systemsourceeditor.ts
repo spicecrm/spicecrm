@@ -157,6 +157,9 @@ export class SystemSourceEditor implements OnInit, OnDestroy, ControlValueAccess
      */
     public writeValue(code: string): void {
         this.sourceCode = code;
+        if (this.editor) {
+            this.editor.setValue(this.sourceCode);
+        }
     }
 
     /**

@@ -112,3 +112,23 @@ export interface GoogleChartSelectedObject {
 }
 
 export type ChartJSTypeOneDimensional = 'Bar' | 'Column' | 'Line' | 'Pie' | 'Doughnut';
+
+/**
+ * this params config can be one of multiple interfaces based on the system selected service provider
+ */
+export type GenerativeAIParams = GeminiAIParams;
+
+export interface GeminiAIParams {
+    responseJsonSchema: {
+        [key: string]: {
+            type: 'STRING' | 'NUMBER' | 'INTEGER' | 'BOOLEAN' | 'ARRAY';
+            maxLength?: number; // for string
+            minLength?: number; // for string
+            minimum?: number; // for integer
+            maximum?: number; // for integer
+            nullable?: boolean;
+            items?: {} // for array type
+        };
+    }
+
+}

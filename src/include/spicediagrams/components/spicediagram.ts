@@ -73,7 +73,7 @@ export class SpiceDiagram implements AfterViewInit, OnChanges {
      */
     @ViewChild('diagramContainer', {read: ElementRef}) diagramContainer: ElementRef;
 
-    constructor(private spiceDiagramService: SpiceDiagramService) {
+    constructor(public spiceDiagramService: SpiceDiagramService) {
 
         this.listenToCreateEvent();
         this.listenToDataChangeEvent();

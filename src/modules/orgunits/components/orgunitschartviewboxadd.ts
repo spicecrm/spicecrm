@@ -24,7 +24,12 @@ export class OrgunitsChartViewBoxAdd {
      */
     @Input() customStyles: any = {};
 
-    constructor(public oview: orgunitsViewService, public backend: backend, public modal: modal, public model: model, @SkipSelf() public parent: model) {
+    constructor(
+        public oview: orgunitsViewService,
+        public backend: backend,
+        public modal: modal,
+        public model: model, @SkipSelf() public parent: model
+    ) {
     }
 
     public add(){

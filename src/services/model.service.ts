@@ -734,7 +734,7 @@ export class model implements OnDestroy {
      * @param event
      */
     public evaluateValidationRules(field?: string, event?: 'change' | 'initialize') {
-        let validations = this.metadata.getModuleValidations(this.module);
+        let validations = this.metadata.getModuleValidations(this.module, true);
         if (!validations) {
             return true;
         }
@@ -818,11 +818,11 @@ export class model implements OnDestroy {
 
         let val_left = this.data[condition.fieldname];
         let val_right: null;
-        if (condition.comparator.match(/regex/g)) {
+        //if (condition.comparator.match(/regex/g)) {
             val_right = condition.valuations;
-        } else {
-            val_right = this.evaluateValidationParams(condition.valuations);
-        }
+        //} else {
+        //    val_right = this.evaluateValidationParams(condition.valuations);
+        //}
 
         check = modelutilities.compare(val_left, condition.comparator, val_right);
 

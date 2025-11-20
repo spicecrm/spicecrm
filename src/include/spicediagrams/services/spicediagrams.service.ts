@@ -5,10 +5,11 @@ import {
     BpmnElementI,
     BpmnEventI,
     BpmnInstanceI,
+    DiagramItemChangeI,
     DiagramItemI,
     DiagramLinkChangeI,
     DiagramNextItemI,
-    DiagramOptionsI, DiagramItemChangeI
+    DiagramOptionsI
 } from "../interfaces/spicediagrams.interfaces";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
@@ -83,6 +84,11 @@ export class SpiceDiagramService implements OnDestroy {
      * @private
      */
     private currentAddingTypeId: string;
+    /**
+     * temporarily hold the item id after drag start or click from the palette and wait until the shape.added event is fired
+     * @private
+     */
+    private currentAddingItem: { id: string; name: string };
     /**
      * while changing the item type in the diagram, ignore handling the 'add' and 'delete' events
      * @private
@@ -390,8 +396,14 @@ export class SpiceDiagramService implements OnDestroy {
     private generateNewItem(bpmnTypeOrId: string): DiagramItemI {
         this.model.reset();
         this.model.module = this.module;
+
+        if (this.currentAddingItem) {
+            this.model.id = this.currentAddingItem.id;
+        }
+
         this.model.initialize();
-        this.model.setField('name', 'new item ' + (this.items.length + 1));
+
+        this.model.setField('name', this.currentAddingItem?.name ?? 'new item ' + (this.items.length + 1));
 
         const data = this.model.data;
 
@@ -656,4 +668,70 @@ export class SpiceDiagramService implements OnDestroy {
             action: 'change'
         });
     }
+
+    /**
+     * connect diagram elements
+     * @param sourceId
+     * @param targetId
+     */
+    public connectDiagramElements(sourceId: string, targetId: string) {
+
+        const elements = this.bpmnJS.get('elementRegistry');
+        const source = elements.find(e => e.businessObject.$attrs.taskId == sourceId);
+        const target = elements.find(e => e.businessObject.$attrs.taskId == targetId);
+
+        const modeling = this.bpmnJS.get('modeling');
+
+        modeling.connect(source, target);
+    }
+
+    /**
+     * create a diagram item and append it
+     * @param item
+     * @param parentId
+     */
+    public createAndAppendDiagramElement(item: {name: string, id: string}, parentId?: string) {
+
+        this.currentAddingItem = item;
+        const element = this.createDiagramElement();
+
+        // item is appended to the parent element
+        if (parentId) {
+            const source = this.bpmnJS.get('elementRegistry').find(e => e.businessObject.$attrs.taskId == parentId);
+            const autoPlace = this.bpmnJS.get('autoPlace');
+            autoPlace.append(source, element);
+        } else { // first element is appended to the process
+
+            const elementRegistry = this.bpmnJS.get('elementRegistry');
+            const modeling = this.bpmnJS.get('modeling');
+
+            const process = elementRegistry.get('Process_1');
+
+            const tap = 150;
+
+            modeling.createElements(element, {x: tap, y: tap}, process);
+        }
+
+        this.currentAddingItem = undefined;
+    }
+
+    /**
+     * create diagram element from task
+     * @private
+     */
+    private createDiagramElement(): BpmnElementI {
+
+        const elementFactory = this.bpmnJS.get('elementFactory');
+
+        const type = {
+            bpmnType: 'bpmn:IntermediateThrowEvent',
+            eventDefinitionType: undefined
+        };
+
+        return elementFactory.createShape({
+            type: type.bpmnType,
+            eventDefinitionType: type.eventDefinitionType
+        });
+    }
+
 }
