@@ -88,7 +88,7 @@ export class SpiceDiagramService implements OnDestroy {
      * temporarily hold the item id after drag start or click from the palette and wait until the shape.added event is fired
      * @private
      */
-    private currentAddingItem: { id: string; name: string };
+    private currentAddingItem: { id: string; name: string, description?: string };
     /**
      * while changing the item type in the diagram, ignore handling the 'add' and 'delete' events
      * @private
@@ -403,7 +403,10 @@ export class SpiceDiagramService implements OnDestroy {
 
         this.model.initialize();
 
-        this.model.setField('name', this.currentAddingItem?.name ?? 'new item ' + (this.items.length + 1));
+        this.model.setFields({
+            name: this.currentAddingItem?.name ?? 'new item ' + (this.items.length + 1),
+            description: this.currentAddingItem.description
+        });
 
         const data = this.model.data;
 
@@ -690,10 +693,10 @@ export class SpiceDiagramService implements OnDestroy {
      * @param item
      * @param parentId
      */
-    public createAndAppendDiagramElement(item: {name: string, id: string}, parentId?: string) {
+    public createAndAppendDiagramElement(item: {name: string, id: string, tasktype: string}, parentId?: string) {
 
         this.currentAddingItem = item;
-        const element = this.createDiagramElement();
+        const element = this.createDiagramElement(item.tasktype);
 
         // item is appended to the parent element
         if (parentId) {
@@ -719,12 +722,12 @@ export class SpiceDiagramService implements OnDestroy {
      * create diagram element from task
      * @private
      */
-    private createDiagramElement(): BpmnElementI {
+    private createDiagramElement(tasktype?: string): BpmnElementI {
 
         const elementFactory = this.bpmnJS.get('elementFactory');
 
         const type = {
-            bpmnType: 'bpmn:IntermediateThrowEvent',
+            bpmnType: tasktype ? `bpmn:${tasktype}` : 'bpmn:Task',
             eventDefinitionType: undefined
         };
 
