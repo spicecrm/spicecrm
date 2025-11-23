@@ -119,7 +119,7 @@ export type ChartJSTypeOneDimensional = 'Bar' | 'Column' | 'Line' | 'Pie' | 'Dou
 export type GenerativeAIParams = GeminiAIParams;
 
 export interface GeminiAIParams {
-    responseJsonSchema: {
+    responseItemsSchema: {
         [key: string]: {
             type: 'STRING' | 'NUMBER' | 'INTEGER' | 'BOOLEAN' | 'ARRAY';
             maxLength?: number; // for string
@@ -127,6 +127,7 @@ export interface GeminiAIParams {
             minimum?: number; // for integer
             maximum?: number; // for integer
             nullable?: boolean;
+            enum?: string[];
             items?: {} // for array type
         };
     }

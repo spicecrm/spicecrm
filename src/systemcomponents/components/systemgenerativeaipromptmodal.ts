@@ -45,9 +45,10 @@ export class SystemGenerativeAIPromptModal implements ModalComponentI {
         const loading = this.modal.await('LBL_GENERATING');
 
         this.generativeAIService.submitPrompt(this.input).subscribe({
-            next: (res: { parts: {text: string}[] }) => {
+            next: (res: { text: string, parts: {text: string}[] }) => {
 
-                this.response.set(res.parts[0].text);
+
+                this.response.set(res.parts ? res.parts[0].text : res.text);
 
                 loading.next(true);
                 loading.complete();
