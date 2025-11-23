@@ -2906,6 +2906,8 @@ class SpiceBean
                     $valArray[] = $this->db->quoted($thisValue, false);
                 }
                 $where_clause .= "$name IN (" . implode(',', $valArray) . ")";
+            } else if ($value == null) {
+                $where_clause .= "$name IS NULL";
             } else {
                 $where_clause .= "$name = " . $this->db->quoted($value, false);
             }
