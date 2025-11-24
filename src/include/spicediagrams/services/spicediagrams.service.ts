@@ -405,7 +405,7 @@ export class SpiceDiagramService implements OnDestroy {
 
         this.model.setFields({
             name: this.currentAddingItem?.name ?? 'new item ' + (this.items.length + 1),
-            description: this.currentAddingItem.description
+            description: this.currentAddingItem?.description
         });
 
         const data = this.model.data;
