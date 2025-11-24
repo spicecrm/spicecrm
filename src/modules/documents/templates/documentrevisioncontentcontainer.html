@@ -1,5 +1,0 @@
-@if (model.getField('documentrevisionstatus') != 'r' && !!model.getField('parent_revision_id')) {
-    <system-dynamic-component component="DocumentFileEditor" [componentconfig]="{field_name: componentconfig.field_name_docx}"/>
-} @else {
-    <system-dynamic-component component="DocumentRevisionDisplay" [componentconfig]="{fieldname: componentconfig.field_name_pdf}"/>
-}
