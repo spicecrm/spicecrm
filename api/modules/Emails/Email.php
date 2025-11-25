@@ -256,6 +256,7 @@ class Email extends SpiceBean
 
                 } else {
                     $this->status = $result['errors'] ? self::STATUS_SEND_ERROR : self::STATUS_CREATED;
+                    LoggerManager::getLogger()->error(__FUNCTION__, 'e-mail was not sent. Status '.$this->status. ' for id '.$this->id.' . '.$result['message']);
                 }
 
                 $this->new_with_id = false;

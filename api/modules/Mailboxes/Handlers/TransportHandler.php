@@ -4,6 +4,7 @@
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use DOMDocument;
+use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\extensions\modules\TextMessageTemplates\TextMessageTemplate;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -190,6 +191,7 @@ abstract class TransportHandler
             $result = new DispatchResponse(false, [
                 'errors' => $exception->getMessage(),
             ]);
+            LoggerManager::getLogger()->error(__FUNCTION__, 'e-mail was not sent. Status '.$email->status. ' for id '.$email->id.' . '.$exception->getMessage());
         }
         return (array) $result;
     }
