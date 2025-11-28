@@ -58,7 +58,7 @@ export interface AdminComponentI {
 export interface LogicHookI {
     id: string;
     module: string;
-    event: 'before_relationship_add' | 'after_relationship_add' | 'before_relationship_delete' | 'after_relationship_delete' | 'before_save' | 'after_save' | 'before_retrieve' | 'after_retrieve' | 'before_delete' | 'after_delete' | 'before_restore' | 'after_restore' | 'after_save_completed' | 'before_logout';
+    event: 'before_relationship_add' | 'after_relationship_add' | 'before_relationship_delete' | 'after_relationship_delete' | 'before_save' | 'after_save' | 'before_retrieve' | 'after_retrieve' | 'before_delete' | 'after_delete' | 'before_restore' | 'after_restore' | 'after_save_completed' | 'before_logout' | 'attachment_added';
     hook_index: number;
     hook_include: string;
     hook_class: string;
