@@ -41,7 +41,7 @@
         <system-language-selector (selected)="close()"/>
         <div class="slds-form-element slds-m-top--x-small">
             <label class="slds-form-element__label"><system-label label="LBL_SELECT_TIMEZONE"/></label>
-            <system-input-timezone [(ngModel)]="currentTz" denyEmpty="true"/>
+            <system-input-timezone [(ngModel)]="currentTz" [denyEmpty]="true"/>
         </div>
     </div>
     <div class="slds-theme--shade slds-p-around--x-small slds-grid">

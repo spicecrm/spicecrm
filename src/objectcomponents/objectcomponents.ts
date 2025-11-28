@@ -115,6 +115,7 @@ import {ObjectRecordViewContainer} from './components/objectrecordviewcontainer'
 import {ObjectRecordView} from './components/objectrecordview';
 import {ObjectRecordViewDetail1} from './components/objectrecordviewdetail1';
 import {ObjectRecordViewDetail2and1} from './components/objectrecordviewdetail2and1';
+import {ObjectRecordViewDetail1and2and1} from './components/objectrecordviewdetail1and2and1';
 import {ObjectRecordViewDetailsplit} from './components/objectrecordviewdetailsplit';
 import {ObjectRecordCreateContainer} from "./components/objectrecordcreatecontainer";
 import {ObjectPageHeader} from './components/objectpageheader';
@@ -341,6 +342,7 @@ import {ObjectFieldTranslationsModal} from "./components/objectfieldtranslations
         ObjectRecordView,
         ObjectRecordViewDetail1,
         ObjectRecordViewDetail2and1,
+        ObjectRecordViewDetail1and2and1,
         ObjectRecordViewDetailsplit,
         ObjectPageHeader,
         ObjectPageHeaderIcon,
