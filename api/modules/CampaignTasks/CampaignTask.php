@@ -115,13 +115,13 @@ class CampaignTask extends SpiceBean
 
         foreach ($chunks as $chunkTargets) {
 
-            $query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, email_addr_bean_rel_id, activity_type, deleted, date_modified, assigned_user_id $addQueryCols) VALUES ";
+            $query = "INSERT INTO campaign_log (id,activity_date, planned_activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, email_addr_bean_rel_id, activity_type, deleted, date_modified, assigned_user_id $addQueryCols) VALUES ";
 
             foreach ($chunkTargets as $target) {
 
                 $targetStatus = $this->handleTargetDuplicateEmailAddressStatus($target, $status, $emailAddresses, $prospectLists);
-
-                $query .= "($guidSQL, $currentDate, '$this->campaign_id', '$this->id', $guidSQL, '{$target['prospect_list_id']}', '{$target['related_id']}', '{$target['related_type']}','{$target['email_addr_bean_rel_id']}', '$targetStatus', 0, $currentDate, '$this->assigned_user_id' $addQueryValues),";
+                $plannedDate = !$this->planned_activity_date ? 'NULL' : "'$this->planned_activity_date'";
+                $query .= "($guidSQL, $currentDate, $plannedDate, '$this->campaign_id', '$this->id', $guidSQL, '{$target['prospect_list_id']}', '{$target['related_id']}', '{$target['related_type']}','{$target['email_addr_bean_rel_id']}', '$targetStatus', 0, $currentDate, '$this->assigned_user_id' $addQueryValues),";
             }
 
             # remove the last comma from the query
@@ -131,7 +131,13 @@ class CampaignTask extends SpiceBean
         }
 
         $this->activated = true;
-        $this->status = 'Active';
+        if($this->campaigntask_type = 'Email') {
+            $this->status = $status;
+        }
+        else {
+            $this->status = 'Active';
+        }
+
         $this->save();
 
         return ['success' => true, 'id' => $this->id];
@@ -495,7 +501,7 @@ class CampaignTask extends SpiceBean
 
             $email = $this->sendEmail($bean, $emailAddress->email_address, true, true);
             $testCount++;
-            if ( $email->status === 'sent' or $email->status === 'intercepted' ) $sentCount++;
+            if ($email->status === 'sent' or $email->status === 'intercepted') $sentCount++;
         }
 
         # reset the current user for the system after parsing
@@ -519,77 +525,106 @@ class CampaignTask extends SpiceBean
         AuthenticationController::getInstance()->setCurrentUser($admin);
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        $limit = SpiceConfig::getInstance()->get('campaign.emails_limit') ?: 500;
-        // get the queued emails
-        $queuedEmails = $this->db->limitQuery("SELECT campaign_log.id, target_type, target_id, campaigntask_id, list_id, email_addr_bean_rel_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = '$campaignTaskType' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC", 0, $limit);
+        $queuedCampaignTasks = $this->db->fetchAll("SELECT DISTINCT campaigntask_id FROM campaign_log cl WHERE cl.deleted = 0 AND activity_type = 'queued'");
 
-        while($queuedEmail = $this->db->fetchByAssoc($queuedEmails)){
-            /// load the campaign task if we have a new one
-            if($queuedEmail['campaigntask_id'] != $this->id){
-                $this->retrieve($queuedEmail['campaigntask_id']);
+        foreach ($queuedCampaignTasks as $queuedCampaignTasksId) {
+            /** @var CampaignTask $campaignTask */
+            $campaignTask = BeanFactory::getBean('CampaignTasks', $queuedCampaignTasksId['campaigntask_id']);
+            if (!$campaignTask) continue;
 
-                // set the current user to the one assigned to the task .. if none assigned go back to the admin
-                if($current_user->id != $this->assigned_user_id){
-                    /** @var User $user */
-                    $user = BeanFactory::getBean('Users', $this->assigned_user_id ?: '1');
-                    AuthenticationController::getInstance()->setCurrentUser($user);
-                    $current_user = AuthenticationController::getInstance()->getCurrentUser();
-                }
+            if ($current_user->id != $campaignTask->assigned_user_id) {
+                /** @var User $user */
+                $user = BeanFactory::getBean('Users', $campaignTask->assigned_user_id ?: '1');
+                AuthenticationController::getInstance()->setCurrentUser($user);
+                $current_user = AuthenticationController::getInstance()->getCurrentUser();
             }
 
-            /** @var Person $seed */
-            $seed = BeanFactory::getBean($queuedEmail['target_type'], $queuedEmail['target_id']);
+            $limit = SpiceConfig::getInstance()->get('campaign.emails_limit') ?: 500;
+            $now = gmDate('Y-m-d H:i:s');
+            $schedulerTime = date("Y-m-d H:i:s", strtotime($now . '+ 24 hours'));
+            /** @var Mailbox $mailbox */
+            $mailbox = BeanFactory::getBean('Mailboxes', $campaignTask->mailbox_id);
+            $mailbox->initTransportHandler();
+            $where = $mailbox->transport_handler->canSendScheduled ? " AND (campaigntasks.planned_activity_date IS NULL OR campaigntasks.planned_activity_date <= '$schedulerTime')" : " AND (campaigntasks.planned_activity_date IS NULL OR campaigntasks.planned_activity_date <= '$now')";
 
-            if($seed) {
-                $emailAddress = BeanFactory::getBean('EmailAddresses')->getEmailAddressForBean($seed, $queuedEmail['email_addr_bean_rel_id']);
-            }
+            // get the queued emails
+            $queuedEmails = $this->db->limitQuery("SELECT campaign_log.id, target_type, target_id, campaigntask_id, list_id, email_addr_bean_rel_id FROM campaign_log, campaigntasks  WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = '$campaignTaskType' AND activity_type = 'queued' AND campaigntask_id <> '' and campaigntask_id = '$campaignTask->id' $where ORDER by activity_date DESC", 0, $limit);
+            while ($queuedEmail = $this->db->fetchByAssoc($queuedEmails)) {
 
-            $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
-            $campaignLog->activity_type = "error";
+                /// load the campaign task if we have a new one
+                if ($queuedEmail['campaigntask_id'] != $this->id) {
+                    $this->retrieve($queuedEmail['campaigntask_id']);
 
-            # do pre send checks before sending the email
-            if (!$seed) {
-                $campaignLog->activity_comment = 'LBL_ERROR_LOADING_RECORD';
-
-            } else if (empty($emailAddress?->email_address) && empty($queuedEmail['email_addr_bean_rel_id'])) {
-
-                $campaignLog->activity_comment = 'LBL_ERROR_LOADING_RELATED_EMAIL';
-
-            } else if (empty($emailAddress?->email_address)) {
-
-                $campaignLog->activity_comment = 'ERR_NO_PRIMARY_EMAIL';
-
-            }  else if ($this->disable_inactive_check != 1 && $seed->is_inactive) {
-
-                $campaignLog->activity_comment = 'LBL_IS_INACTIVE';
-
-            } else if ($this->disable_marketing_agreement_check != 1 && $seed->gdpr_marketing_agreement == 'r') {
-
-                $campaignLog->activity_comment = 'ERR_MARKETING_AGREEMENT_REJECTED';
-
-            } else if ($this->disable_opt_out_check != 1 && $emailAddress->opt_in_status == 'opted_out') {
-
-                $campaignLog->activity_comment = 'LBL_OPTED_OUT';
-
-                # try to send the email after the pre send checks
-            } else {
-
-                $email = $this->sendEmail($seed, $emailAddress->email_address,$this->save_emails == 1, false, ['CampaignLog' => $campaignLog]);
-
-                if ( $email->status === 'sent' or $email->status === 'intercepted' ) {
-                    $campaignLog->activity_type = $email->status;
+                    // set the current user to the one assigned to the task .. if none assigned go back to the admin
+                    if ($current_user->id != $this->assigned_user_id) {
+                        /** @var User $user */
+                        $user = BeanFactory::getBean('Users', $this->assigned_user_id ?: '1');
+                        AuthenticationController::getInstance()->setCurrentUser($user);
+                        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+                    }
                 }
 
-                if ($this->save_emails == 1) {
-                    $campaignLog->related_id = $email->id;
-                    $campaignLog->related_type = 'Emails';
+                /** @var Person $seed */
+                $seed = BeanFactory::getBean($queuedEmail['target_type'], $queuedEmail['target_id']);
+
+                if ($seed) {
+                    $emailAddress = BeanFactory::getBean('EmailAddresses')->getEmailAddressForBean($seed, $queuedEmail['email_addr_bean_rel_id']);
+                }
+
+                $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
+                $campaignLog->activity_type = "error";
+
+                # do pre send checks before sending the email
+                if (!$seed) {
+                    $campaignLog->activity_comment = 'LBL_ERROR_LOADING_RECORD';
+
+                } else if (empty($emailAddress?->email_address) && empty($queuedEmail['email_addr_bean_rel_id'])) {
+
+                    $campaignLog->activity_comment = 'LBL_ERROR_LOADING_RELATED_EMAIL';
+
+                } else if (empty($emailAddress?->email_address)) {
+
+                    $campaignLog->activity_comment = 'ERR_NO_PRIMARY_EMAIL';
+
+                } else if ($this->disable_inactive_check != 1 && $seed->is_inactive) {
+
+                    $campaignLog->activity_comment = 'LBL_IS_INACTIVE';
+
+                } else if ($this->disable_marketing_agreement_check != 1 && $seed->gdpr_marketing_agreement == 'r') {
+
+                    $campaignLog->activity_comment = 'ERR_MARKETING_AGREEMENT_REJECTED';
+
+                } else if ($this->disable_opt_out_check != 1 && $emailAddress->opt_in_status == 'opted_out') {
+
+                    $campaignLog->activity_comment = 'LBL_OPTED_OUT';
+
+                    # try to send the email after the pre send checks
                 } else {
-                    $campaignLog->activity_type = "processing";
-                    $campaignLog->external_id = $email->message_id;
-                }
-            }
 
-            $campaignLog->save();
+                    $email = $this->sendEmail($seed, $emailAddress->email_address, $this->save_emails == 1, false, ['CampaignLog' => $campaignLog]);
+
+                    if ($email->status === 'sent' or $email->status === 'intercepted') {
+                        $campaignLog->activity_type = $email->status;
+                    }
+
+                    if ($this->save_emails == 1) {
+                        $campaignLog->related_id = $email->id;
+                        $campaignLog->related_type = 'Emails';
+                    } else {
+                        $campaignLog->activity_type = "processing";
+                        $campaignLog->external_id = $email->message_id;
+                    }
+                }
+
+                $campaignLog->save();
+            }
+        }
+        if (!empty($campaignTask->id)) {
+            $queuedEmailsCount = $this->db->getOne("SELECT COUNT(cl.id) FROM campaign_log cl, campaigntasks ct WHERE cl.deleted = 0 AND cl.campaigntask_id = ct.id AND ct.id = '$campaignTask->id' AND activity_type = 'queued' AND campaigntask_id <> ''");
+            if ($queuedEmailsCount == 0) {
+                $campaignTask->status = 'sent';
+                $campaignTask->save();
+            }
         }
 
         // set the assigned user back to the admin
@@ -684,7 +719,8 @@ class CampaignTask extends SpiceBean
         $email->mailbox_id = $this->mailbox_id;
         $email->name = $parsedContent['subject'];
         $email->body = $parsedContent['body_html'];
-        if ( $test ) $email->name = '[TEST] ' . $email->name;
+        if ($test) $email->name = '[TEST] ' . $email->name;
+        $email->track_all = $this->track_all;
 
         $email->addEmailAddress('to', $emailAddress);
 
@@ -698,6 +734,7 @@ class CampaignTask extends SpiceBean
 
         if (isset($addBeans['CampaignLog'])) {
             $email->registerTrackingParentData('CampaignLog', $addBeans['CampaignLog']->id);
+            $email->date_scheduled = $addBeans['CampaignLog']->planned_activity_date;
         }
 
         if($saveEmail){
