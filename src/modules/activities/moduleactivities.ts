@@ -23,6 +23,10 @@ import {ActionActivityCloseCreateButton} from "./components/actionactivityclosec
 import {ActivityCloseModal} from "./components/activityclosemodal";
 import {ActivityCloseCreateModal} from "./components/activityclosecreatemodal";
 
+import {ActionGenerateTasksButton} from "./components/actiongeneratetasksbutton";
+import {ActionGenerateTasksModal} from "./components/actiongeneratetasksmodal";
+import {ActionGenerateTasksItem} from "./components/actiongeneratetasksitem";
+
 import {ActivitiesPopoverAddBar} from "./components/activitiespopoveraddbar";
 import {ActivitiesPopoverAddBarButton} from "./components/activitiespopoveraddbarbutton";
 import {fieldActivitiesAddActions} from "./fields/fieldactivitiesaddactions";
@@ -63,6 +67,7 @@ import {ActivityTextMessagesChat} from "./components/activitytextmessageschat";
 import {ActivityTextMessagesChatMessage} from "./components/activitytextmessageschatmessage";
 import {ActivityTextMessagesChatCompose} from "./components/activitytextmessageschatcompose";
 
+
 @NgModule({
     imports: [
         CommonModule,
@@ -83,6 +88,9 @@ import {ActivityTextMessagesChatCompose} from "./components/activitytextmessages
         ActivityTimelineSaveButton,
         ActionActivityCloseButton,
         ActionActivityCloseCreateButton,
+        ActionGenerateTasksButton,
+        ActionGenerateTasksModal,
+        ActionGenerateTasksItem,
         ActivityCloseModal,
         ActivityCloseCreateModal,
         ActivitiesPopoverAddBar,
