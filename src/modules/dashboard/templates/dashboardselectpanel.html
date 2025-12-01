@@ -4,7 +4,7 @@
             <h2 id="entity-header" class="slds-text-heading--small slds-grow"><system-label-modulename module="Dashboards"></system-label-modulename></h2>
             <dashboard-select-panel-add-button *ngIf="canAdd" (dashboardAdded)="setDashboard($event)"></dashboard-select-panel-add-button>
             @if (canEditDashboardSets){
-            <button class="slds-show--large slds-button slds-button--icon-border slds-m-horizontal--xx-small" (click)="goDashboardSets()">
+            <button class="slds-show--large slds-button slds-button--icon-border slds-m-horizontal--xx-small" system-title="LBL_DASHBOARDSETS" (click)="goDashboardSets()">
                 <system-button-icon icon="tabset"/>
             </button>
             }
