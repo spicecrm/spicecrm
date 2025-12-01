@@ -1,0 +1,15 @@
+@if (!hidden){
+<div class="slds-p-vertical--xx-small">
+    <div class="slds-box slds-box--border" [system-overlay-loading-spinner]="saving">
+        <object-record-fieldset [fieldset]="componentconfig.fieldset" direction="vertical"/>
+        <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-end slds-p-around--x-small slds-theme--shade slds-border--top">
+            <button class="slds-button slds-button--neutral" (click)="hide()">
+                <system-label label="LBL_IGNORE"/>
+            </button>
+            <button class="slds-button slds-button--brand" (click)="save()">
+                <system-label label="LBL_SAVE"/>
+            </button>
+        </div>
+    </div>
+</div>
+}
