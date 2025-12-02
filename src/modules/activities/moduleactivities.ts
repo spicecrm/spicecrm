@@ -66,6 +66,7 @@ import {ClipboardModule} from "@angular/cdk/clipboard";
 import {ActivityTextMessagesChat} from "./components/activitytextmessageschat";
 import {ActivityTextMessagesChatMessage} from "./components/activitytextmessageschatmessage";
 import {ActivityTextMessagesChatCompose} from "./components/activitytextmessageschatcompose";
+import {ActionActivityNewOccurrenceButton} from "./components/actionactivitynewoccurrencebutton";
 
 
 @NgModule({
@@ -126,7 +127,8 @@ import {ActivityTextMessagesChatCompose} from "./components/activitytextmessages
         ActivityTextMessagesChat,
         ActivityTextMessagesChatMessage,
         ActivityTextMessagesChatCompose,
-        fieldActivityDate
+        fieldActivityDate,
+        ActionActivityNewOccurrenceButton
     ],
     exports: [
         ActivityTimelineItemContainer,

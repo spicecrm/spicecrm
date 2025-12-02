@@ -9,12 +9,12 @@ import moment from "moment";
 
 
 @Component({
-    selector: "object-action-new-occurrence-button",
-    templateUrl: "../templates/objectactionnewoccurrencebutton.html",
+    selector: "action-activity-new-occurrence-button",
+    templateUrl: "../templates/actionactivitynewoccurrencebutton.html",
     providers: [model],
     standalone: false
 })
-export class JourFixesNewOccurrenceButton implements OnInit {
+export class ActionActivityNewOccurrenceButton implements OnInit {
 
     public displayasicon: boolean = false;
     public actionconfig: any = {};
@@ -47,9 +47,9 @@ export class JourFixesNewOccurrenceButton implements OnInit {
             this.model.setField("date_end", backendResult.date_end);
 
             this.model.addModel("", this.parent, {
-                date_start: startDateVal,
-                date_end: endDateVal,
-            },null,
+                    date_start: startDateVal,
+                    date_end: endDateVal,
+                },null,
                 {
                     componentset: this.actionconfig.componentset,
                     actionset: this.actionconfig.actionset,
