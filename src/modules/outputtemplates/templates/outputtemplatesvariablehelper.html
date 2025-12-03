@@ -32,6 +32,8 @@
                                             <option value="label" style="font-style:normal"><system-label label="LBL_LABEL"></system-label></option>
                                             <hr>
                                             <option value="function" style="font-style:normal"><system-label label="LBL_STANDALONE_FUNCTION"></system-label></option>
+                                            <hr>
+                                            <option value="ai" style="font-style:normal"><system-label label="LBL_GENERATIVE_AI"></system-label></option>
                                         </select>
                                     </div>
                                 </div>
@@ -49,12 +51,82 @@
                         @if ( sourceType && sourceType !== 'function' ) {
                         <div class="slds-grid slds-grid--vertical" style="overflow:hidden" [ngStyle]="{height: sourceType === 'label' ? 'auto' : '50%'}">
 
+                            @if (sourceType !== 'ai') {
                                 <div class="slds-input-has-icon slds-input-has-icon_left slds-m-vertical--x-small slds-m-horizontal--small" role="none">
                                     <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
                                     <input class="slds-input" type="search" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="fieldFilter" (ngModelChange)="searchInput()"/>
                                 </div>
+                            }
                                 <div class="slds-grow slds-scrollable--y slds-m-bottom--x-small">
-                                    @if ( sourceType !== 'label' ) {
+                                    @if (sourceType === 'ai') {
+                                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--header-fixed" style="border-top:none">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col" style="min-width:7rem">
+                                                    <div class="slds-truncate"><system-label label="LBL_FUNCTION"></system-label></div>
+                                                </th>
+                                                <th scope="col" class="slds-p-horizontal--x-small" style="width:100%">
+                                                    <div class="slds-truncate slds-p-left--x-small"><system-label label="LBL_DESCRIPTION"></system-label></div>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr (click)="selectAIFunction('generateContent')" [class.slds-theme--info]="functionResult == 'generateContent'">
+                                                    <td>
+                                                        <div class="slds-truncate">
+                                                            <a href="javascript:void(0)" class="slds-truncate slds-text-font_monospace">
+                                                                generateContent
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="slds-truncate">
+                                                            <system-label label="MSG_AI_FN_GENERATE_CONTENT"/>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                <tr (click)="selectAIFunction('parsePrompt')" [class.slds-theme--info]="functionResult == 'parsePrompt'">
+                                                    <td>
+                                                        <div class="slds-truncate">
+                                                            <a href="javascript:void(0)" class="slds-truncate slds-text-font_monospace">
+                                                                parsePrompt
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="slds-truncate">
+                                                            <system-label label="MSG_AI_FN_PARSE_PROMPT"/>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                        <div class="slds-p-horizontal--medium">
+                                            @if (functionResult == 'parsePrompt') {
+
+                                                <div class="slds-form-element slds-m-top--small">
+                                                    <label class="slds-form-element__label">
+                                                        <abbr class="slds-required" title="required">* </abbr>
+                                                        <system-label label="LBL_NAME"/></label>
+                                                    <div class="slds-form-element__control">
+                                                        <input [(ngModel)]="aiParam" (ngModelChange)="appendAIParam($event)" type="text" class="slds-input"/>
+                                                    </div>
+                                                </div>
+                                            }
+                                            @if (functionResult == 'generateContent') {
+                                                <div class="slds-form-element slds-m-top--small">
+                                                    <label class="slds-form-element__label">
+                                                        <abbr class="slds-required" title="required">* </abbr>
+                                                        <system-label label="LBL_TEXT"/>
+                                                    </label>
+                                                    <div class="slds-form-element__control">
+                                                        <textarea class="slds-textarea" [(ngModel)]="aiParam" (ngModelChange)="appendAIParam($event)"></textarea>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    } @else  if ( sourceType !== 'label' ) {
                                         <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--header-fixed" style="border-top:none">
                                             <thead>
                                                 <tr>
@@ -149,11 +221,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let function of offeredFunctions">
-                                    <td>
-                                        <div class="slds-truncate"><a href="javascript:void(0)" (click)="functionSelected(function)">{{function.name}}</a></div>
-                                    </td>
-                                </tr>
+                                @if (sourceType !== 'ai') {
+                                    <tr *ngFor="let function of offeredFunctions">
+                                        <td>
+                                            <div class="slds-truncate"><a href="javascript:void(0)" (click)="functionSelected(function)">{{function.name}}</a></div>
+                                        </td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>

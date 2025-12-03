@@ -8,9 +8,12 @@ use DateTime;
 use DateTimeZone;
 use DOMDocument;
 use DOMXPath;
+use SpiceCRM\extensions\includes\GenerativeAI\GenerativeAIAgent;
+use SpiceCRM\extensions\includes\GenerativeAI\GenerativeAIHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
@@ -909,6 +912,9 @@ class Compiler
             case 'root_template':
                 $obj = BeanFactory::getBean($this->rootTemplate->_module, $this->rootTemplate->id);
                 break;
+            case 'ai':
+                $obj = (object)[];
+                break;
             default:
                 $obj = $beans[$object];
         }
@@ -968,6 +974,29 @@ class Compiler
         return $currentValue;
     }
 
+    /**
+     * generate an AI content and return the result text
+     * @param string $function
+     * @param string $param
+     * @param SpiceBean|null $bean
+     * @return string
+     * @throws Exception
+     */
+    private function generateAIContent(string $function, string $param, ?SpiceBean $bean): string
+    {
+        switch ($function) {
+            case 'parsePrompt':
+                $idOrName = str_replace("'", '', $param);
+                $agent = new GenerativeAIAgent($idOrName, $this->lang, $bean);
+                return $agent->submit()->parts[0]->text;
+            case 'generateContent':
+                $text = $param;
+                return GenerativeAIHandler::getInstance()->generateContent($text)->parts[0]->text;
+        }
+
+        throw new Exception('Unknown AI Function');
+    }
+
     function getValueForCompileblock($m, $beans, $raw = false ) {
 
         # quoted string has nothing to parse. Just return the string as is
@@ -990,6 +1019,10 @@ class Compiler
         // get the object
         $obj = $this->getObject( $objectname, $beans );
         if ( !$obj ) return null;
+
+        if ($objectname == 'ai') {
+            return $this->generateAIContent($parts[1], $matches[3], $beans['bean']);
+        }
 
         if ( $objectname === 'func' ) {
             return $this->doFunction( $parts[1], $matches[3], $beans );

@@ -19,4 +19,14 @@ export class GenerativeAIService {
     public submitPrompt(input: string, params?: GenerativeAIParams): Observable<{ parts: {text: string}[] }> {
         return this.backend.postRequest('common/ai/content/generate', null, {input, params});
     }
+
+    /**
+     * parse the prompt for the given id and the bean context and return the parts
+     * @param id
+     * @param module
+     * @param beanId
+     */
+    public parsePrompt(id: string, module: string, beanId: string) {
+        return this.backend.getRequest(`module/${module}/${beanId}/AIPrompt/${id}`);
+    }
 }
