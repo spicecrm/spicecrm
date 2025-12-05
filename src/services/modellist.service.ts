@@ -1,7 +1,7 @@
 /**
  * @module services
  */
-import {EventEmitter, Injectable, OnDestroy} from '@angular/core';
+import {EventEmitter, Injectable, OnDestroy, signal, WritableSignal} from '@angular/core';
 import {Observable, Subject, of, BehaviorSubject, Subscription} from 'rxjs';
 import {backend} from './backend.service';
 import {userpreferences} from './userpreferences.service';
@@ -86,6 +86,11 @@ export class modellist implements OnDestroy {
      * emits when the selection of the list has been changed via select all .. to trigger chanmge detection on the components
      */
     public selectionChanged$: EventEmitter<boolean|string> = new EventEmitter<boolean|string>();
+
+    /**
+     * switch to signal for the selection change
+     */
+    public selectedItems: WritableSignal<string[]> = signal([]);
 
     /**
      * holds an array of fields and direction for multidimensional sorting
@@ -1028,6 +1033,7 @@ export class modellist implements OnDestroy {
 
         // emit also that the seldection changed
         this.selectionChanged$.next(true);
+        this.selectedItems.set([]);
     }
 
     /**
@@ -1200,6 +1206,7 @@ export class modellist implements OnDestroy {
         if(item && !item.selected) {
             item.selected = true;
             this.selectionChanged$.emit(id);
+            this.selectedItems.set(this.getSelectedIDs());
         }
     }
 
@@ -1213,6 +1220,7 @@ export class modellist implements OnDestroy {
         if(item && item.selected) {
             item.selected = false;
             this.selectionChanged$.emit(id);
+            this.selectedItems.set(this.getSelectedIDs());
         }
     }
 
@@ -1227,6 +1235,8 @@ export class modellist implements OnDestroy {
 
         // emit so items can trigger change detection
         this.selectionChanged$.emit(true);
+        this.selectedItems.set(this.getSelectedIDs());
+
     }
 
     /**
@@ -1240,6 +1250,7 @@ export class modellist implements OnDestroy {
 
         // emit so items can trigger change detection
         this.selectionChanged$.emit(true);
+        this.selectedItems.set([]);
     }
 
     /*
@@ -1253,6 +1264,7 @@ export class modellist implements OnDestroy {
 
         // emit so items can trigger change detection
         this.selectionChanged$.emit(true);
+        this.selectedItems.set(this.getSelectedIDs());
     }
 
     /**
