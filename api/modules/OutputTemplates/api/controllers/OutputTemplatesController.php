@@ -283,8 +283,8 @@ class OutputTemplatesController
 
         switch ($templateBean->_module) {
             case 'OutputTemplates':
-                $field = 'html';
-                $html = $templateBean->parse($parentBean, $field);
+                $field = 'html'; // for frontend content
+                $html = $templateBean->parse($parentBean, 'body');
                 break;
             case 'LandingPages':
                 $parsedTpl = $templateBean->parse($parentBean, $field);
