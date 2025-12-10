@@ -82,37 +82,4 @@ export class SystemIconHelpText {
             return this.divClass;
         }
     }
-
-    get PopoverMaxWidth() {
-        return this.popoverMaxWidth;
-    }
-
-    /**
-     * it get the correct distance for the icon size
-     */
-    get bottomdistance() {
-        if (this.size == "xx-small" || this.size == "x-small") {
-            return ' 2.5em';
-        }
-        if (this.size == "small") {
-            return ' 2.8em';
-        }
-        if (this.size == "large") {
-            return ' 3.5em';
-        }
-    }
-
-    get leftdistance() {
-        if (this.size == "xx-small" || this.size == "x-small") {
-            return '-65%';
-        }
-        if (this.size == "small") {
-            return '-30%';
-        }
-        if (this.size == "large") {
-            return '10%';
-        }
-    }
-
-
 }

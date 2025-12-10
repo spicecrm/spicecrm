@@ -790,3 +790,37 @@ input[type="submit"] {
     -ms-user-select: none;
     user-select: none;
 }
+
+.slds-popover__body {
+    overflow: auto;
+}
+
+.slds-popover-container {
+    position: absolute;
+    overflow: visible;
+    margin: 1px;
+}
+
+.slds-popover-container:has(.slds-nubbin_top), .slds-popover-container:has(.slds-nubbin_top-left), .slds-popover-container:has(.slds-nubbin_top-right) {
+    padding-top: 1rem;
+}
+
+.slds-popover-container:has(.slds-nubbin_top-right), .slds-popover-container:has(.slds-nubbin_bottom-right) {
+    margin-right: -1rem;
+}
+
+.slds-popover-container:has(.slds-nubbin_top-left), .slds-popover-container:has(.slds-nubbin_bottom-left) {
+    margin-left: -1rem;
+}
+
+.slds-popover-container:has(.slds-nubbin_bottom), .slds-popover-container:has(.slds-nubbin_bottom-left), .slds-popover-container:has(.slds-nubbin_bottom-right) {
+    padding-bottom: 1rem;
+}
+
+.slds-popover-container:has(.slds-nubbin_left), .slds-popover-container:has(.slds-nubbin_left-bottom), .slds-popover-container:has(.slds-nubbin_left-top) {
+    padding-left: 1rem;
+}
+
+.slds-popover-container:has(.slds-nubbin_right), .slds-popover-container:has(.slds-nubbin_right-bottom), .slds-popover-container:has(.slds-nubbin_right-top) {
+    padding-right: 1rem;
+}
