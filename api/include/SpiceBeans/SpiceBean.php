@@ -2330,7 +2330,7 @@ class SpiceBean
             // fill in parents as well
             if (0 == strcmp($field['type'], 'parent') && !empty($this->{$field['id_name']}) && !empty($this->{$field['type_name']})) {
                 $mod = BeanFactory::getBean($this->{$field['type_name']}, $this->{$field['id_name']}, ['relationships' => false]);
-                $this->{$field['name']} = $mod->name;
+                $this->{$field['name']} = $mod->get_summary_text();
             }
 
             // fill in linked as well
