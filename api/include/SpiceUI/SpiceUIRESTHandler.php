@@ -1431,9 +1431,13 @@ class SpiceUIRESTHandler
             // check if we have the asset
             $asssetRecord = $db->fetchOne("SELECT id FROM sysuiassets WHERE assetkey='{$asset['assetkey']}'");
             $asset['id'] = $asssetRecord['id'] ?: SpiceUtils::createGuid();
-
-            // upsert it
-            $db->upsertQuery('sysuiassets', ['id' => $asset['id'] ?: SpiceUtils::createGuid()], $asset);
+            if($asset['assetvalue']) {
+                // upsert it
+                $db->upsertQuery('sysuiassets', ['id' => $asset['id'] ?: SpiceUtils::createGuid()], $asset);
+            } elseif ($asssetRecord['id']) {
+                // delete it
+                $db->query("DELETE FROM sysuiassets WHERE id='{$asssetRecord['id']}'");
+            }
         }
         return $this->getAssets();
     }
