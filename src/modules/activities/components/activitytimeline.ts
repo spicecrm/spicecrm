@@ -40,7 +40,6 @@ export class ActivityTimeline implements OnInit, OnDestroy {
 
     constructor(public model: model,
                 public router: Router,
-                public language: language,
                 public activitiytimeline: activitiytimeline,
                 public metadata: metadata,
                 public utils: modelutilities,
@@ -117,6 +116,13 @@ export class ActivityTimeline implements OnInit, OnDestroy {
      */
     public loadMore(module) {
         this.activitiytimeline.getMoreTimeLineData(module, this.componentconfig.defaultentries);
+    }
+
+    /**
+     * check if we can toggle
+     */
+    get canToggleOpen(){
+        return this.activitiytimeline.activities.Activities.totalcount > 0 || this.activitiytimeline.activities.History.totalcount > 0;
     }
 
     /**
