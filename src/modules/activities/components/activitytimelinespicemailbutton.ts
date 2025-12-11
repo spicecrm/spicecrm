@@ -76,11 +76,17 @@ export class ActivityTimelineSpiceMailButton implements OnInit {
      * checks if the mailbox uses SpiceMailToken processor
      */
     public getMailboxToken(): void {
-        this.backend.getRequest('spicemailtoken/mailboxprocessor').subscribe({
-            next: (result) => {
-                this.tokenconfig = result.tokenConfig;
-            }
-        });
+        if(this.configuration.getData('spicemailtoken') === false){
+            this.backend.getRequest('spicemailtoken/mailboxprocessor').subscribe({
+                next: (result) => {
+                    this.tokenconfig = result.tokenConfig;
+                    this.configuration.setData('spicemailtoken', result.tokenConfig ? 1 : 0, false);
+                }
+            });
+        } else {
+            this.tokenconfig = this.configuration.getData('spicemailtoken') == 1 ? true : false;
+        }
+
     }
 
     /**
