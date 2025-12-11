@@ -2,11 +2,9 @@
  * @module ModuleActivities
  */
 import {Component, Injector, OnDestroy, OnInit, Optional} from '@angular/core';
-import {language} from '../../../services/language.service';
 import {navigationtab} from '../../../services/navigationtab.service';
 import {model} from '../../../services/model.service';
 import {activitiytimeline} from '../../../services/activitiytimeline.service';
-import {modelattachments} from "../../../services/modelattachments.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {metadata} from "../../../services/metadata.service";
 import {layout} from "../../../services/layout.service";
