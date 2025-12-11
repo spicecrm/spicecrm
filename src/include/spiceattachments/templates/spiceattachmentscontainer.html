@@ -16,5 +16,11 @@
                 <system-image-preview [data]="imgData"/>
             }
         }
+    } @else if (attachmentNotFound){
+        <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+            <system-illustration-no-data>
+                <system-label label="ERR_ATTACHMENT_NOT_FOUND"></system-label>
+            </system-illustration-no-data>
+        </div>
     }
 </div>
