@@ -37,7 +37,7 @@
             <div class="slds-size--1-of-3">
                 {{cssvar.name}}
             </div>
-            <div class="slds-grow">
+            <div class="slds-grow slds-m-right--x-small">
                 <system-input-color *ngIf="cssvar.csstype == 'color'" [isedited]="cssvar.value != cssvar.originalvalue" [(ngModel)]="cssvar.value"></system-input-color>
                 <input class="slds-input" [ngClass]="{'slds-is-edited': cssvar.value != cssvar.originalvalue}" *ngIf="cssvar.csstype == 'string'" [(ngModel)]="cssvar.value"/>
             </div>
