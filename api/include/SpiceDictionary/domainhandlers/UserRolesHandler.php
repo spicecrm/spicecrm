@@ -21,7 +21,7 @@ class UserRolesHandler extends SpiceDictionaryDomainHandler
      */
     public function onRetrieve(array $item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
     {
-        $fields[$item['name']] = json_encode(DBManagerFactory::getInstance()->fetchAll("SELECT id, sysuirole_id, defaultrole FROM sysuiuserroles WHERE user_id = '$bean->id'"));
+        $fields[$item['name']] = json_encode(DBManagerFactory::getInstance()->fetchAll("SELECT id, sysuirole_id, defaultrole FROM sysuiuserroles WHERE user_id = '$bean->id'") ?: []);
         return true;
     }
 
