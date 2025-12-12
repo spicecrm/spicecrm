@@ -4,7 +4,7 @@
             <field-label [fieldname]="fieldname" [fieldconfig]="fieldconfig" class="slds-truncate"></field-label>
 
             @if (isEditMode()) {
-                @if (fieldTranslatableText) {
+                @if (isTranslatable) {
                     <button (click)="fieldTranslatableText.openTranslationsModal(true)" class="slds-button slds-button--icon">
                         <system-button-icon icon="translate" size="xx-small"/>
                     </button>
@@ -25,7 +25,7 @@
                         <system-button-icon icon="unmuted" size="xx-small"/>
                     </button>
                 }
-            } @else if ( fieldTranslatableText && fieldTranslatableText.getTranslatedValue()) {
+            } @else if ( isTranslatable && fieldTranslatableText.getTranslatedValue()) {
                 <div class="slds-button slds-button--brand slds-p-around--none" style="width: 18px; height: 18px; font-size: 10px;">
                     {{language.currentFieldTranslationLanguage().slice(0, 2).toUpperCase()}}
                 </div>
@@ -69,7 +69,7 @@
                         <system-button-icon icon="unmuted" size="xx-small"/>
                     </button>
                 }
-                @if (fieldTranslatableText) {
+                @if (isTranslatable) {
                     <button (click)="fieldTranslatableText.openTranslationsModal(true)"
                             class="slds-button slds-m-left--none slds-m-bottom--xxx-small slds-button--icon">
                         <system-button-icon icon="translate" size="xx-small"/>
