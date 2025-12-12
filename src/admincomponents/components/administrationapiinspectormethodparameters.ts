@@ -26,6 +26,11 @@ export class AdministrationApiInspectorMethodParameters implements OnChanges {
     @Input() public apimethod: any;
 
     /**
+     * if set to true the fields are disabled
+     */
+    @Input() public disabled: boolean = false;
+
+    /**
      * the path to filter by
      *
      * @private

@@ -29,7 +29,7 @@
                 <div class="slds-truncate">{{parameter.type}}</div>
             </td>
             <td *ngIf="parameterCollector">
-                <input class="slds-input" [(ngModel)]="parameterCollector[parameter.name]">
+                <input [disabled]="disabled" class="slds-input" [(ngModel)]="parameterCollector[parameter.name]">
             </td>
         </tr>
         </tbody>

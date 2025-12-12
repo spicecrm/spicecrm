@@ -73,6 +73,16 @@ export class AdministrationApiInspectorMethodTest implements AfterViewInit {
      */
     public parameterCollector: any = {};
 
+    /**
+     * set to true to use the raw body
+     */
+    public _useRawBody: boolean = false;
+
+    /**
+     * the body
+     */
+    public body: string = '';
+
     constructor(
         public backend: backend,
         public libloader: libloader,
@@ -110,44 +120,48 @@ export class AdministrationApiInspectorMethodTest implements AfterViewInit {
         this.activetab = 'response';
         switch (this.apiMethod.method) {
             case 'get':
-                this.backend.getRequest(this.buildRoute(), this.buildParams()).subscribe(
-                    res => {
+                this.backend.getRequest(this.buildRoute(), this.buildParams()).subscribe({
+                    next: (res) => {
                         this.response = js_beautify(JSON.stringify(res));
                         this.executing = false;
                     },
-                    err => {
+                    error: (err) => {
                         this.response = js_beautify(JSON.stringify(err));
-                    });
+                    }
+                });
                 break;
             case 'post':
-                this.backend.postRequest(this.buildRoute(), this.buildParams(), this.buildBody()).subscribe(
-                    res => {
+                this.backend.postRequest(this.buildRoute(), this.buildParams(), this.useRawBody ? JSON.parse(this.body) : this.buildBody()).subscribe({
+                    next: (res) => {
                         this.response = js_beautify(JSON.stringify(res));
                         this.executing = false;
                     },
-                    err => {
+                    error: (err) => {
                         this.response = js_beautify(JSON.stringify(err));
-                    });
+                    }
+                });
                 break;
             case 'put':
-                this.backend.putRequest(this.buildRoute(), this.buildParams(), this.buildBody()).subscribe(
-                    res => {
+                this.backend.putRequest(this.buildRoute(), this.buildParams(), this.useRawBody ? JSON.parse(this.body) : this.buildBody()).subscribe({
+                    next: (res) => {
                         this.response = js_beautify(JSON.stringify(res));
                         this.executing = false;
                     },
-                    err => {
+                    error: (err) => {
                         this.response = js_beautify(JSON.stringify(err));
-                    });
+                    }
+                });
                 break;
             case 'delete':
-                this.backend.deleteRequest(this.buildRoute(), this.buildParams()).subscribe(
-                    res => {
+                this.backend.deleteRequest(this.buildRoute(), this.buildParams()).subscribe({
+                    next: (res) => {
                         this.response = js_beautify(JSON.stringify(res));
                         this.executing = false;
                     },
-                    err => {
+                    error: (err) => {
                         this.response = js_beautify(JSON.stringify(err));
-                    });
+                    }
+                });
                 break;
         }
     }
@@ -189,6 +203,18 @@ export class AdministrationApiInspectorMethodTest implements AfterViewInit {
         return params;
     }
 
+
+    get useRawBody(){
+        return this._useRawBody;
+    }
+
+    set useRawBody(value){
+        this._useRawBody = value;
+        if(value){
+            this.body = JSON.stringify(this.buildBody());
+        }
+    }
+
     /**
      * buidls the body from teh parameters
      *
@@ -198,12 +224,12 @@ export class AdministrationApiInspectorMethodTest implements AfterViewInit {
         let body: any = {};
         let bodyParameters = this.apiInspector.getMethodParameters(this.apiMethod.route, this.apiMethod.method, 'body');
         for (let bodyParameter of bodyParameters) {
-            let bodyParamValue =  this.parameterCollector[bodyParameter.name];
+            let bodyParamValue = this.parameterCollector[bodyParameter.name];
             // json decode to match array or object
-            if(bodyParameter.type && (bodyParameter.type == 'array' || bodyParameter.type == 'object')){
+            if (bodyParameter.type && (bodyParameter.type == 'array' || bodyParameter.type == 'object')) {
                 try {
                     let inputData = JSON.parse(this.parameterCollector[bodyParameter.name]);
-                    if(inputData){
+                    if (inputData) {
                         bodyParamValue = inputData;
                     }
                 } catch (e) {
