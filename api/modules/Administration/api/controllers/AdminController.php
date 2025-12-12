@@ -177,6 +177,7 @@ class AdminController
                 'upload_dir' => SpiceConfig::getInstance()->config['upload_dir'],
                 'file_types' => SpiceConfig::getInstance()->config['attachments']['file_types'],
                 'international_email_addresses' => SpiceConfig::getInstance()->config['international_email_addresses'],
+                'translatable_fields' => SpiceConfig::getInstance()->config['translatable_fields'],
                 'encryption_hash_salt' => SpiceConfig::getInstance()->get('system.encryption_hash_salt'),
                 'gateway_server_api_key' => SpiceConfig::getInstance()->get('system.gateway_server_api_key'),
                 'gateway_server_domain' => SpiceConfig::getInstance()->get('system.gateway_server_domain'),

@@ -7,6 +7,7 @@ use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class TranslatableTextHandler extends SpiceDictionaryDomainHandler
 {
@@ -21,6 +22,10 @@ class TranslatableTextHandler extends SpiceDictionaryDomainHandler
      */
     public function onRetrieve(array $item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
     {
+        if (!SpiceConfig::getInstance()->get('translatable_fields')) {
+            return true;
+        }
+
         $translations = [];
 
         $db = DBManagerFactory::getInstance();
@@ -48,6 +53,10 @@ class TranslatableTextHandler extends SpiceDictionaryDomainHandler
      */
     public function beforeSave(array $item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
     {
+        if (!SpiceConfig::getInstance()->get('translatable_fields')) {
+            return true;
+        }
+
         $translations = $bean->{$item['name'] . '_translations'};
 
         if (!is_object($translations) && !is_array($translations)) return true;
