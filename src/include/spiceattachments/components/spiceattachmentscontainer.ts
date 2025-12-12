@@ -11,6 +11,7 @@ import {backend} from "../../../services/backend.service";
 import {model} from "../../../services/model.service";
 import {Router} from "@angular/router";
 import {configurationService} from "../../../services/configuration.service";
+import {toast} from "../../../services/toast.service";
 
 /**
  * Display spice attachment in a new tab
@@ -79,10 +80,16 @@ export class SpiceAttachmentsContainer implements OnDestroy {
      */
     public imgData: string;
 
+    /**
+     * set to true if the attachment was not found - Server returned 404
+     */
+    public attachmentNotFound: boolean = false;
+
     constructor(
         public navigationtab: navigationtab,
         public modelattachments: modelattachments,
         public helper: helper,
+        public toast: toast,
         private backend: backend,
         private router: Router,
         private configurationService: configurationService,
@@ -162,9 +169,16 @@ export class SpiceAttachmentsContainer implements OnDestroy {
                         }
                     }
 
-                }, error: () => {
+                }, error: (e) => {
                     this.isLoading = false;
                     this.loadingerror = true;
+                    if(e.status == 404){
+                        this.attachmentNotFound = true;
+                        this.setTabTitleNotFound();
+                    } else {
+                        this.toast.sendToast('ERR_LOADING_ATTACHMENT', 'error');
+                        this.navigationtab.closeTab();
+                    }
                 }
             });
         } else {
@@ -190,9 +204,16 @@ export class SpiceAttachmentsContainer implements OnDestroy {
                             this.imgData = 'data:' + this.file.file_mime_type.toLowerCase() + ';base64,' + this.file.file;
                         }
                     }
-                }, error: () => {
+                }, error: (e) => {
                     this.isLoading = false;
                     this.loadingerror = true;
+                    if(e.status == 404){
+                        this.attachmentNotFound = true;
+                        this.setTabTitleNotFound();
+                    } else {
+                        this.toast.sendToast('ERR_LOADING_ATTACHMENT', 'error');
+                        this.navigationtab.closeTab();
+                    }
                 }
             });
         }
@@ -230,6 +251,17 @@ export class SpiceAttachmentsContainer implements OnDestroy {
         const tabInfoObj = {
             displayname: this.file.filename,
             displayicon: 'attach',
+        }
+        this.navigationtab.setTabInfo(tabInfoObj)
+    }
+
+    /**
+     * displays header info in the tab
+     */
+    public setTabTitleNotFound() {
+        const tabInfoObj = {
+            displayname: 'ERR_NOT_FOUND',
+            displayicon: 'unlinked',
         }
         this.navigationtab.setTabInfo(tabInfoObj)
     }

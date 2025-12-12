@@ -420,7 +420,7 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 .slds-button--icon:enabled:hover,
 .slds-button--icon-border-filled:enabled:focus,
 .slds-button--icon-border-filled:enabled:hover {
-    color: var(--color-border-brand);
+    color: var(--sds-c-button-text-color-hover);
 }
 
 .slds-button.slds-button--brand, .slds-button.slds-button_brand {
@@ -473,14 +473,27 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     align-items:center;
 }
 
-/** overwrite dropdown triggers and icon button to not be styled like regular button, excluding the stateful button for the reminders **/
-.slds-button--icon:hover,
-.slds-button--icon:focus,
-.slds-button--icon:active,
+
 .slds-dropdown-trigger > .slds-button:not(.slds-button_stateful):hover,
 .slds-dropdown-trigger > .slds-button:not(.slds-button_stateful):focus,
 .slds-dropdown-trigger > .slds-button:not(.slds-button_stateful):active {
     color: var(--color-border-brand);
+    background: var(--brand-primary);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+/** overwrite the color for focus and active **/
+.slds-dropdown-trigger > .slds-button:not(.slds-button_stateful):focus,
+.slds-dropdown-trigger > .slds-button:not(.slds-button_stateful):active{
+    color: var(--sds-c-button-text-color-hover);
+}
+
+/** overwrite dropdown triggers and icon button to not be styled like regular button, excluding the stateful button for the reminders **/
+.slds-button--icon:hover,
+.slds-button--icon:focus,
+.slds-button--icon:active {
+    color: var(--sds-c-button-text-color-hover);
     -webkit-box-shadow: none;
     box-shadow: none;
 }

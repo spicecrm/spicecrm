@@ -9,6 +9,7 @@ import {metadata} from '../../services/metadata.service';
 import {Router} from '@angular/router';
 import {Subscription} from "rxjs";
 import {FieldTranslatableText} from "./fieldtranslatabletext";
+import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'field-generic',
@@ -62,6 +63,8 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
      * @private
      */
     public fieldTranslatableText: FieldTranslatableText = inject(FieldTranslatableText, {optional: true});
+
+    public configurationService = inject(configurationService);
 
     constructor(
         public model: model,
@@ -124,10 +127,21 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
     }
 
     /**
+     * @return boolean true if the field is translatable
+     */
+    get isTranslatable(): boolean {
+        return this.fieldTranslatableText && this.configurationService.data.systemparameters.translatable_fields;
+    }
+
+    /**
      * a getter for the value bound top the model
      */
     get value() {
-        return this.fieldTranslatableText?.getValue(this.isEditMode()) ?? this.model.getField(this.fieldname);
+        if (this.isTranslatable) {
+            return this.fieldTranslatableText.getValue(this.isEditMode())
+        } else {
+            return this.model.getField(this.fieldname);
+        }
     }
 
     /**

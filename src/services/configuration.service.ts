@@ -355,7 +355,7 @@ export class configurationService {
      */
     public getData(key) {
         // console.log('appdata',this.appdata);
-        return this.appdata[key] ? this.appdata[key] : false;
+        return this.appdata.hasOwnProperty(key) ? this.appdata[key] : false;
     }
 
     public updateThemeColors() {
