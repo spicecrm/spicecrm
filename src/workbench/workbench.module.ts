@@ -197,6 +197,8 @@ import {MailboxesSpiceGatewayManager} from "./components/mailboxesspicegatewayma
 import {
     DictionaryManagerRelationshipAddManyToManySelf
 } from "./components/dictionarymanagerrelationshipaddmanytomanyself";
+import {DictionaryRelationships} from "./components/dictionaryrelationships";
+import {DictionaryRelationshipsDefinitions} from "./components/dictionaryrelationshipsdefinitions";
 
 
 @NgModule({
@@ -269,6 +271,8 @@ import {
         DictionaryManagerRepairAll,
         DictionaryIndexes,
         DictionaryIndexesDefinitions,
+        DictionaryRelationships,
+        DictionaryRelationshipsDefinitions,
         FieldsetManager,
         FieldsetManagerFieldsetDetails,
         FieldsetManagerFieldDetails,
