@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {language} from "../../services/language.service";
+import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'global-field-translations-language-button',
@@ -12,7 +13,7 @@ export class GlobalFieldTranslationsLanguageButton {
      */
     public languages: {code: string; name: string;}[] = [];
 
-    constructor(public language: language) {
+    constructor(public language: language, public configurationService: configurationService) {
         this.initialize();
     }
 
