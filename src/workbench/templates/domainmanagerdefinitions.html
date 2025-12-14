@@ -1,24 +1,23 @@
 <div class="slds-p-around--xx-small slds-grid slds-grid--vertical-align-center slds-border--bottom">
     <system-input-text placeholder="LBL_SEARCH" class="slds-grow" [(ngModel)]="definitionfilterterm"></system-input-text>
     <system-select-icon class="slds-p-left--xx-small" [(ngModel)]="definitionfilterscope">
-        <system-select-icon-item></system-select-icon-item>
+        <system-select-icon-item/>
         <system-select-icon-item value="g" icon="world"></system-select-icon-item>
         <system-select-icon-item value="c" icon="people"></system-select-icon-item>
     </system-select-icon>
     <system-select-icon class="slds-p-left--xx-small" [(ngModel)]="definitionfilterstatus">
-        <system-select-icon-item></system-select-icon-item>
+        <system-select-icon-item/>
         <system-select-icon-item value="d" icon="light_bulb" colorclass="slds-icon-text-warning"></system-select-icon-item>
         <system-select-icon-item value="a" icon="light_bulb" colorclass="slds-icon-text-success"></system-select-icon-item>
         <system-select-icon-item value="i" icon="light_bulb" colorclass="slds-icon-text-light"></system-select-icon-item>
     </system-select-icon>
-    <div class="slds-select_container slds-p-left--xx-small">
-        <select class="slds-select" [(ngModel)]="definitionsfiltertype">
-            <option value=""><system-label label="LBL_ALL"></system-label></option>
-            <option *ngFor="let fieldtype of domainmanager.fieldtypes" [value]="fieldtype">{{fieldtype}}</option>
-        </select>
-    </div>
+    <system-select system-select-id-only [(ngModel)]="definitionsfiltertype" class="slds-p-left--xx-small" style="min-width: 200px;">
+        @for (fieldtype of domainmanager.fieldtypes; track fieldtype){
+            <system-select-option [value]="fieldtype" [display]="fieldtype"/>
+        }
+    </system-select>
 </div>
-<div system-to-bottom marginBottom="45" #itemscontainer>
+<div system-to-bottom [marginBottom]="45" #itemscontainer>
     <table class="slds-table slds-table--fixed-layout slds-table_bordered slds-table--header-fixed">
         <thead>
         <tr class="slds-line-height_reset">
