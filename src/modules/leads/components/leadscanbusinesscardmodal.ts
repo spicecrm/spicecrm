@@ -134,7 +134,7 @@ export class LeadScanBusinessCardModal implements AfterViewInit{
                     this.model.executeCopyRulesGeneric();
 
                     let componentconfig: any = undefined;
-                    if(this.actionconfig.componentset || this.actionconfig.actionset || this.actionconfig.grow) {
+                    if(this.actionconfig?.componentset || this.actionconfig?.actionset || this.actionconfig?.grow) {
                         componentconfig = {
                             componentset: this.actionconfig.componentset,
                             actionset: this.actionconfig.actionset,
