@@ -46,25 +46,34 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
     public triggerClickListener: any;
     public previousTriggerRect: any;
     public dropdownElement: HTMLElement;
+    public dropdowntriggerdisabled: boolean = false;
     /**
      * if true apply the sticky bottom class for the dropdown container
      * @private
      */
-    @Input() private stickyOnMobile: boolean = false;
+    @Input() public stickyOnMobile: boolean = false;
        /**
      * if true always close the dropdown on click
      * @private
      */
-    @Input() private autoClose: boolean = false;
+    @Input() public autoClose: boolean = false;
     /**
      * A boolean flag that determines whether the trigger element's width
      * should match the width of its associated dropdown trigger component.
      */
     @Input() public fitTriggerWidth: boolean = false;
-    /*
-    * @input dropdowntrigger: boolean = false
-    */
-    @Input('system-dropdown-trigger') public dropdowntriggerdisabled: boolean = false;
+
+    /**
+     * A boolean flag that determines whether the trigger element's width
+     * should match the width of its associated dropdown trigger component.
+     */
+    @Input('system-dropdown-trigger') set triggerDisabled(value) {
+        if (value === true) {
+            this.dropdowntriggerdisabled = true;
+        } else {
+            this.dropdowntriggerdisabled = false;
+        }
+    }
     /**
      * holds a reference of the mobile modal
      * @private
@@ -254,9 +263,10 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
             }
         }
 
-        if (!this.dropdownElement.classList.contains('slds-hidden')) {
+        if (this.dropdownElement && !this.dropdownElement.classList.contains('slds-hidden')) {
             this.renderer.addClass(this.dropdownElement, 'slds-hidden');
         }
+
     }
 
     /*
