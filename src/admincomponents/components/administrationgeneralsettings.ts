@@ -35,6 +35,7 @@ export class AdministrationGeneralSettings implements OnInit {
             upload_maxsize: 0,
             file_types: {},
             international_email_addresses: 0,
+            translatable_fields: 0,
             encryption_hash_salt: undefined,
             gateway_server_api_key: undefined,
             gateway_server_domain: undefined,

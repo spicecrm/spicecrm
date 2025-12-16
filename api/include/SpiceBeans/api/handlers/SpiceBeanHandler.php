@@ -1412,6 +1412,11 @@ class SpiceBeanHandler
             $sequenceField = $thisBean->field_defs[$linkName]['sequence_field'];
         }
 
+        if ($params['filterown']) {
+            $currentUserId = AuthenticationController::getInstance()->getCurrentUser()->id;
+            $addWhere = "assigned_user_id = '$currentUserId'";
+        }
+
         // apply module filter if one is set
         if ($params['modulefilter']) {
             $sysModuleFilters = new SysModuleFilters();

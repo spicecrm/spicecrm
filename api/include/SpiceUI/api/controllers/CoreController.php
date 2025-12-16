@@ -80,7 +80,8 @@ class CoreController
                 'enableSettingUserPrefsByAdmin' => isset(SpiceConfig::getInstance()->config['enableSettingUserPrefsByAdmin']) ? (boolean)@SpiceConfig::getInstance()->config['enableSettingUserPrefsByAdmin'] : false,
                 'aclcontroller' => $aclcontroller, //CR1000463
                 'stack_trace_errors' => SpiceUtils::getStackTrace(),
-                'international_email_addresses' => SpiceConfig::getInstance()->config['international_email_addresses'] ?? 0
+                'international_email_addresses' => SpiceConfig::getInstance()->config['international_email_addresses'] ?? 0,
+                'translatable_fields' => SpiceConfig::getInstance()->config['translatable_fields'] ?? 0,
             ],
             'extensions' => RESTManager::getInstance()->extensions,
             'languages' => $languages,
