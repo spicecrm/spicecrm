@@ -721,7 +721,7 @@ class SpiceBean
 
                 if (
                     // todo: figure out why the modified fields are always set to wrong audited value
-                    $properties['audited'] !== false && $properties['name'] != 'modified_by_name' && $properties['name'] != 'date_modified'
+                $properties['source'] != 'non-db' && $properties['audited'] !== false && $properties['name'] != 'modified_by_name' && $properties['name'] != 'date_modified'
                 ) {
 
                     $this->audit_enabled_fields[$field] = $properties;
