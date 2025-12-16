@@ -1067,17 +1067,17 @@ class Compiler
                         }
                         break;
                     case 'time':
+                        $value = '';
                         if (!empty($obj->{$part})) {
+                            $value = $obj->{$part};
                             //set to user preferences format
-                            $userTimezone = new DateTimeZone(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timezone"));
-                            $gmtTimezone = new DateTimeZone('GMT');
-                            $myDateTime = new DateTime($obj->{$part}, $gmtTimezone);
-                            $offset = $userTimezone->getOffset($myDateTime);
-                            $myInterval = DateInterval::createFromDateString((string)$offset . 'seconds');
-                            $myDateTime->add($myInterval);
-                            $value = $myDateTime->format(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"));
-                        } else {
-                            $value = '';
+//                            $userTimezone = new DateTimeZone(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timezone"));
+//                            $gmtTimezone = new DateTimeZone('GMT');
+//                            $myDateTime = new DateTime($obj->{$part}, $gmtTimezone);
+//                            $offset = $userTimezone->getOffset($myDateTime);
+//                            $myInterval = DateInterval::createFromDateString((string)$offset . 'seconds');
+//                            $myDateTime->add($myInterval);
+//                            $value = $myDateTime->format(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"));
                         }
                         break;
                     case 'currency':
