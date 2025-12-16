@@ -66,6 +66,33 @@ class SystemTemplateFunctions {
 
     }
 
+    /**
+     * The difference to date format is that we need to handle the time as UTC time (use the raw value)
+     */
+    static function timeFormat($compiler, $beans, $inputString, $format, $placeHolderForOldLanguageParameter = null){
+        if (empty($inputString)) return '';
+
+        # For formatting look here:
+        # https://www.php.net/manual/de/datetime.format.php
+
+        $time = DateTime::createFromFormat(TimeDate::getInstance()->get_db_time_format(), $inputString);
+        if(!$time){
+            $time = DateTime::createFromFormat(TimeDate::getInstance()->get_time_format(), $inputString);
+        }
+        if(!$time){
+            $time = DateTime::createFromFormat(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef")." ". AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"), $inputString);
+        }
+        if(!$time){
+            $time = DateTime::createFromFormat(TimeDate::DB_TIME_FORMAT, $inputString);
+        }
+        if(!$time){
+            $time = DateTime::createFromFormat(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"), $inputString);
+        }
+
+        return $time ? $time->format( $format ) : $inputString;
+
+    }
+
     static function cat( $compiler, $beans, $inputString, $stringToAdd ) {
         return isset( $inputstring[0] ) ? $$inputstring.$stringToAdd : $$inputString;
     }
