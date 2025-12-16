@@ -950,7 +950,7 @@ class User extends SpiceBean
      * @return void
      */
     private function buildReportees($userID, &$reportees){
-        $reporttoIDs = $this->db->fetchAll("SELECT id FROM users WHERE reports_to_id='{$userID}'");
+        $reporttoIDs = $this->db->fetchAll("SELECT id FROM users WHERE reports_to_id='{$userID}' AND status = 'Active'");
         foreach ($reporttoIDs as $reporttoID) {
             if(!in_array($reporttoID['id'], $reportees) && $reporttoID['id'] != $this->id){
                 $reportees[] = $reporttoID['id'];
