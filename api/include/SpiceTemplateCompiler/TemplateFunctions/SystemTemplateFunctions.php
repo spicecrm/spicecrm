@@ -90,9 +90,7 @@ class SystemTemplateFunctions {
         }
 
         return $time ? $time->format( $format ) : $inputString;
-
     }
-
     static function cat( $compiler, $beans, $inputString, $stringToAdd ) {
         return isset( $inputstring[0] ) ? $$inputstring.$stringToAdd : $$inputString;
     }
