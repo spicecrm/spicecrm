@@ -251,7 +251,9 @@ class EmailTrackingActionsController
             case 'NewsletterLogs':
                 $recipient = BeanFactory::getBean($bean->target_type, $bean->target_id);
                 $recipient->load_relationship('email_addresses');
-                $emailAddress = $this->getEmailAddress($recipient, $bean->email_addr_bean_rel_id);
+
+                $emailAddress = BeanFactory::getBean('EmailAddresses')->getEmailAddressForBean($recipient, $bean->email_addr_bean_rel_id);
+
                 if (EmailAddress::setOptInStatus($recipient, $emailAddress, $status)) {
                     return true;
                 } else {
@@ -278,7 +280,11 @@ class EmailTrackingActionsController
         $newsletter->unsubscribeTargetFromAllNewsletters($recipient->id);
     }
 
-    public function getEmailAddress(SpiceBean $person, $emailAddrBeanRelId): ?EmailAddress
+    /**
+     * this is done in the email addresses class
+     * @deprecated
+     * */
+/*    public function getEmailAddress(SpiceBean $person, $emailAddrBeanRelId): ?EmailAddress
     {
         $db = DBManagerFactory::getInstance();
 //        $emailAddrBeanRelId = $db->getOne("SELECT email_addr_bean_rel_id from prospect_lists_prospects WHERE prospect_list_id = '$listId' AND related_id ='$person->id' AND deleted = 0");
@@ -292,7 +298,7 @@ class EmailTrackingActionsController
         $row = $db->fetchOne($q);
 
         return BeanFactory::getBean('EmailAddresses', $row['email_address_id']);
-    }
+    }*/
 
     /**
      * sets the optin status of a recipient's email address to opted out
