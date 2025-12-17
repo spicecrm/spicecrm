@@ -105,8 +105,6 @@ import {GlobalSubscriptionsManager} from "./components/globalsubscriptionsmanage
 import {GlobalLoginOAuth2} from "./components/globalloginoauth2";
 import {GlobalLoginOAuth2Button} from "./components/globalloginoauth2button";
 import {GlobalHeaderReloadModal} from "./components/globalheaderreloadmodal";
-import {GlobalHeaderDocumentRevisions} from "../extensions/modules/documents/components/globalheaderdocumentrevisions";
-import {GlobalHeaderDocumentRevisionsModal} from "../extensions/modules/documents/components/globalheaderdocumentrevisionsmodal";
 import {GlobalNavigationTabContextMenu} from "./components/globalnavigationtabcontextmenu";
 import {CdkDrag, CdkDragHandle, CdkDropList, CdkDropListGroup} from "@angular/cdk/drag-drop";
 import {GlobalLogin2FAMethodSelectModal} from "./components/globallogin2famethodselectmodal";
@@ -114,7 +112,6 @@ import {GlobalLoginPasskeyModal} from "./components/globalloginpasskeymodal";
 /**
  * TODO importing anything from extensions is not allowed here.
  */
-import {GlobalProjectActivityTrackTimeIcon} from "../extensions/modules/projects/components/globalprojectactivitytracktimeicon";
 import {GlobalHeaderModuleShortcut} from "./components/globalheadermoduleshortcut";
 import {GlobalFieldTranslationsLanguageButton} from "./components/globalfieldtranslationslanguagebutton";
 
@@ -224,11 +221,8 @@ import {GlobalFieldTranslationsLanguageButton} from "./components/globalfieldtra
         GlobalSubscriptionsManager,
         GlobalLoginOAuth2,
         GlobalLoginOAuth2Button,
-        GlobalHeaderDocumentRevisions,
-        GlobalHeaderDocumentRevisionsModal,
         GlobalLogin2FAMethodSelectModal,
         GlobalLoginPasskeyModal,
-        GlobalProjectActivityTrackTimeIcon,
         GlobalHeaderModuleShortcut,
         GlobalFieldTranslationsLanguageButton
     ],
@@ -242,7 +236,6 @@ import {GlobalFieldTranslationsLanguageButton} from "./components/globalfieldtra
         GlobalDockedComposerOverflow,
         GlobalComposeButton,
         GlobalHeaderSearchResultsItem,
-        GlobalHeaderDocumentRevisionsModal,
         GlobalLoginOAuth2
     ]
 })
