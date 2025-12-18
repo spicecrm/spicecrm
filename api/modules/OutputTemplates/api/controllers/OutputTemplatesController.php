@@ -296,6 +296,18 @@ class OutputTemplatesController
                 $parsedTpl = $templateBean->parse($parentBean);
                 $html = DBUtils::fromHtml(wordwrap($parsedTpl, true));
                 break;
+            case 'Newsletters':
+            case 'NewsletterIssues':
+            case 'CampaignTasks':
+                $field = 'html';
+                // set email template values for parsing
+                $emailTemplate = BeanFactory::newBean('EmailTemplates');
+                $emailTemplate->subject = $templateBean->email_subject;
+                $emailTemplate->body = $templateBean->email_body;
+
+                $parsedTpl = $emailTemplate->parse($parentBean, null, [], $styles);
+                $html = $parsedTpl['body'];
+                break;
             default:
                 $field = 'html';
                 $parsedTpl = $templateBean->parse($parentBean, null, [], $styles);
