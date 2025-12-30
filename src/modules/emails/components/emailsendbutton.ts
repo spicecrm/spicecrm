@@ -58,7 +58,7 @@ export class EmailSendButton {
             }
         });
         let selectedMailboxData = mailboxData.find(id => id.value == mailbox);
-        let sizeTooBig = !!this.model.getFieldValue('attachments_size') ? this.model.getFieldValue('attachments_size') > selectedMailboxData.max_upload : false;
+        let sizeTooBig = !!selectedMailboxData && !!this.model.getFieldValue('attachments_size') ? this.model.getFieldValue('attachments_size') > selectedMailboxData.max_upload : false;
         let name = this.model.getFieldValue('name');
         let body = this.model.getFieldValue('body');
         let recipientTo = recipientAddresses ? recipientAddresses.find(re => re.address_type == 'to') : undefined;
