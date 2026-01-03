@@ -241,7 +241,7 @@ class SysModuleFilters
             // a group condition which we might have at this stage is always to be used with an AND statement
            if(!empty($filterCondition)) $filterCondition .= " AND ";
 
-            $filterCondition .= ' (' . implode(' ' . $group->logicaloperator . ' ', $filterConditionArray) . ')';
+            $filterCondition .= ' (' . implode(' ' . strtoupper($group->logicaloperator) . ' ', $filterConditionArray) . ')';
             if ($group->groupscope == 'own') {
                 $userIds = array_merge([$current_user->id], $absence->getSubstituteIDs());
                 $userIds = "'" . join("','", $userIds) . "'";
