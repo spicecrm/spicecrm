@@ -68,7 +68,7 @@ class EmailTrackingActionsController
     }
 
     /**
-     * handles logging of email opening
+     * handles unsubscribe
      * @param Request $req
      * @param Response $res
      * @param array $args
@@ -113,6 +113,57 @@ class EmailTrackingActionsController
             $lpContent['content'] = 'unsubscribed';
         }
 
+
+        $res->getBody()->write($lpContent['content']);
+        return $res->withHeader('Content-Type', 'text/html');
+    }
+
+
+    /**
+     * handles newsletter unsubscribe
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws BadRequestException|Exception
+     */
+    public function handleNewsletterUnsubscribe(Request $req, Response $res, array $args): Response
+    {
+        $data = EmailTracking::decodeTrackingID($args['key']);
+
+        if (!$data) {
+            throw new BadRequestException('Failed to decrypt key');
+        }
+
+        $this->logTrackingAction($data, 'unsubscribe');
+
+        // get the email seed
+        /** @var Email | CampaignLog | NewsletterLog $seed */
+        $seed = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+
+        if (!$seed) {
+            new NotFoundException('Email or CampaignLog or NewsletterLog not found');
+        }
+
+        if ($seed->_module = 'NewsletterLogs') {
+            $recipient = BeanFactory::getBean($seed->target_type, $seed->target_id);
+            BeanFactory::getBean('Newsletters')->handleUnsubscribeAction($seed->newsletter_id, $recipient->id);
+        }
+
+        $redirectUrl = $this->getEmailTrackingRedirectUrl('unsubscribe_redirect_url', $seed);
+
+        if (!empty($redirectUrl)) {
+            return $res->withHeader('Location', $redirectUrl)->withStatus(302);
+        }
+
+        // load the unsub landingpage content
+        /** @var LandingPage $landingPage */
+        $landingPage = BeanFactory::getBean('LandingPages', SpiceConfig::getInstance()->get('emailtracking.unsubscribelandingpage'));
+        if ($landingPage && SpiceConfig::getInstance()->get('emailtracking.unsubscribelandingpage') && $landingPage->retrieve(SpiceConfig::getInstance()->get('emailtracking.unsubscribelandingpage'))) {
+            $lpContent = $landingPage->parse($seed);
+        } else {
+            $lpContent['content'] = 'unsubscribed';
+        }
 
         $res->getBody()->write($lpContent['content']);
         return $res->withHeader('Content-Type', 'text/html');

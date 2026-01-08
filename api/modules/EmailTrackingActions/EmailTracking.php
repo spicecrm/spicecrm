@@ -99,7 +99,7 @@ class EmailTracking
 
 
     /**
-     * generates the tracking pixel image
+     * generates unsubscribe url
      *
      * @param Email $email
      * @return string
@@ -115,6 +115,29 @@ class EmailTracking
         }
         return false;
     }
+
+
+    /**
+     * generates newsletter unsubscribe url
+     *
+     * @param Email $email
+     * @return string
+     */
+    static function getNewsletterUnsubscribeURL(Email $email)
+    {
+        $url = SpiceConfig::getInstance()->get('emailtracking.newsletterunsubscribeurl') ?: SpiceConfig::getInstance()->config['site_url'] . '/email/nu/{refid}';
+
+        $mailbox = BeanFactory::getBean('Mailboxes', $email->mailbox_id);
+        $url = $mailbox->manage_preferences_url ?: $url;
+
+        [$parentType, $parentId] = $email->getTrackingParentData();
+
+        if ($url) {
+            return str_replace('{refid}', self::encodeTrackingID("ParentType:$parentType:ParentId:$parentId"), $url);
+        }
+        return false;
+    }
+
 
     /**
      * @param Email $email
