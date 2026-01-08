@@ -394,9 +394,13 @@ class One2MBeanRelationship extends One2MRelationship
             // add teh acl relevant query
             //SpiceACL::getInstance()->addACLAccessToListArray($ret_array, $this);
             $retArray = [];
-            SpiceACL::getInstance()->addACLAccessToListArray($retArray, BeanFactory::getBean($this->def['rhs_module']));
-            if($retArray['where']) {
-                $where = "({$where}) AND {$retArray['where']}";
+
+            // check if we should add an ACL query
+            if($link->ignoreACL !== true) {
+                SpiceACL::getInstance()->addACLAccessToListArray($retArray, BeanFactory::getBean($this->def['rhs_module']));
+                if ($retArray['where']) {
+                    $where = "({$where}) AND {$retArray['where']}";
+                }
             }
 
             $from = $this->def['rhs_table'];

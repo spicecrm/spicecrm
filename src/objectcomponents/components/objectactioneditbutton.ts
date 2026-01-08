@@ -1,11 +1,12 @@
 /**
  * @module ObjectComponents
  */
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, Optional} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 import {Subscription} from "rxjs";
+import {relatedmodels} from "../../services/relatedmodels.service";
 
 /**
  * renders an edit button that can be used in actionsets to start editing the model and render the model edit modal
@@ -18,6 +19,11 @@ import {Subscription} from "rxjs";
 export class ObjectActionEditButton {
 
     /**
+     * holds the action config
+     */
+    public actionconfig: any = {};
+
+    /**
      * if set to true didpslay teh button as icon
      */
     public displayasicon: boolean = false;
@@ -26,6 +32,7 @@ export class ObjectActionEditButton {
         public language: language,
         public metadata: metadata,
         public model: model,
+        @Optional() public relatedmodel: relatedmodels
     ) {
 
     }
@@ -51,7 +58,7 @@ export class ObjectActionEditButton {
     * @call model.edit
     */
     public execute() {
-        this.model.edit();
+        this.model.edit(false, this.actionconfig.editcomponentset ?? this.relatedmodel?.editcomponentset);
     }
 
 }

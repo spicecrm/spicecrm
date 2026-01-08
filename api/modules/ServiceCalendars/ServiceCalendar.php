@@ -179,7 +179,7 @@ class ServiceCalendar extends SpiceBean
      * @param $date
      * @return bool
      */
-    private function isWorkingDay($date)
+    public function isWorkingDay($date)
     {
         return count($this->workingdays) > 0 && array_search($date->format('N'), $this->workingdays) === false ? false : true;
     }
@@ -189,9 +189,27 @@ class ServiceCalendar extends SpiceBean
      * @param $date
      * @return bool
      */
-    private function isHoliday($date) {
+    public function isHoliday($date) {
         $timedate = TimeDate::getInstance();
         return array_search($date->format($timedate->get_db_date_format()), $this->holidays) !== false ? true : false;
+    }
+
+    /**
+     * returns the working time in seconds for a given date
+     *
+     * @param $date
+     * @return void
+     */
+    public function getWorkingSeconds($date){
+        $totaltime = 0;
+        foreach ($this->workingtimes as $workingtimeslot) {
+            if ($workingtimeslot->dayofweek == $date->format('N')) {
+                $workingtime = str_pad($workingtimeslot->timeend - $workingtimeslot->timestart, 4, "0", STR_PAD_LEFT) ;
+                $workingseconds = (((int) substr($workingtime, 0, 2) * 60) + (int) substr($workingtime, 2, 2)) * 60;
+                $totaltime += $workingseconds;
+            }
+        }
+        return $totaltime;
     }
 
     /**

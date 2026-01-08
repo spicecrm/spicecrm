@@ -6,14 +6,7 @@
                     <label for="moduleselect" class="slds-form-element__label">
                         <system-label label="LBL_MODULE"></system-label>
                     </label>
-                    <div class="slds-form-element__control">
-                        <div class="slds-select_container">
-                            <select id="moduleselect" class="slds-select" [(ngModel)]="module">
-                                <option value="*">*</option>
-                                <option *ngFor="let thismodule of modules" [value]="thismodule">{{thismodule}}</option>
-                            </select>
-                        </div>
-                    </div>
+                    <system-input-module style="min-width: 200px" system-input-module-display_asterisk [(ngModel)]="_module"/>
                 </div>
             </div>
             <system-input-radio-button-group [(ngModel)]="activeTab" [inputOptions]="hooksManager">
