@@ -127,9 +127,6 @@ class EmailTracking
     {
         $url = SpiceConfig::getInstance()->get('emailtracking.newsletterunsubscribeurl') ?: SpiceConfig::getInstance()->config['site_url'] . '/email/nu/{refid}';
 
-        $mailbox = BeanFactory::getBean('Mailboxes', $email->mailbox_id);
-        $url = $mailbox->manage_preferences_url ?: $url;
-
         [$parentType, $parentId] = $email->getTrackingParentData();
 
         if ($url) {
