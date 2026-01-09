@@ -580,8 +580,36 @@ export class SystemInputMedia implements OnDestroy {
             }
         }
 
+        // workaround for jpeg to remove the gray border bug resize the crop box to -1 of the original size
+        const data = this.cropper.getData();
+        const widthCropped = data.x > 0 || Math.abs(data.width - this.mediaMetaData.originalWidth) >= 1;
+        const heightCropped = data.y > 0 || Math.abs(data.height - this.mediaMetaData.originalHeight) >= 1;
+
+        if (this.mediaMetaData.mimetype == 'image/jpeg') {
+
+            if (!heightCropped || this.maxSizeInput) {
+                this.cropper.setData({height: data.height -1});
+            }
+
+            if (!widthCropped || this.maxSizeInput) {
+                this.cropper.setData({width: data.width -1});
+            }
+        }
+
+
         // generate the image
         image = this.cropper.getCroppedCanvas(cropParams).toDataURL(this.mediaMetaData.mimetype, this.imageQuality);
+
+        // workaround for jpeg to remove the gray border bug restore the previous crop box size
+        if (this.mediaMetaData.mimetype == 'image/jpeg') {
+            if (!heightCropped || this.maxSizeInput) {
+                this.cropper.setData({height: data.height});
+            }
+
+            if (!widthCropped || this.maxSizeInput) {
+                this.cropper.setData({width: data.width});
+            }
+        }
 
         return image.substring(image.indexOf('base64,') + 7);
     }
