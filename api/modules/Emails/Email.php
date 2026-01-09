@@ -1135,6 +1135,10 @@ class Email extends SpiceBean
                         $node->setAttribute('href', EmailTracking::getUnsubscribeURL($this));
                         $tracked = true;
                         break;
+                        case 'newsletterunsubscribe':
+                        $node->setAttribute('href', EmailTracking::getNewsletterUnsubscribeURL($this));
+                        $tracked = true;
+                        break;
                     case 'doi':
                         $node->setAttribute('href', EmailTracking::getDoubleOptinUrl($this));
                         $tracked = true;
