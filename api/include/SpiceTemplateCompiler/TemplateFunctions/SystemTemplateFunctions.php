@@ -258,6 +258,7 @@ class SystemTemplateFunctions {
         return $currency->currency_symbol;
 
     }
+
     /**
      * returns a currency ISO4217
      *
@@ -274,6 +275,28 @@ class SystemTemplateFunctions {
 
         return $currency->iso4217;
 
+    }
+
+    /**
+     * returns a value given in seconds in hh:mm Form at
+     *
+     * @param $compiler
+     * @param $beans
+     * @param $inputString
+     * @return string
+     */
+    static function seconds2hours($compiler, $beans, $inputString){
+
+        if (empty($inputString)) return '';
+
+        // Calculate total hours
+        $hours = floor((float) $inputString / 3600);
+
+        // Calculate remaining minutes
+        $minutes = floor(((float) $inputString / 60) % 60);
+
+        // Format with leading zeros (e.g., 5 becomes 05)
+        return sprintf('%02d:%02d', $hours, $minutes);
     }
 
 }
