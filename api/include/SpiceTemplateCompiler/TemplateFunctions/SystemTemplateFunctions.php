@@ -296,7 +296,7 @@ class SystemTemplateFunctions {
         $minutes = floor(((float) $inputString / 60) % 60);
 
         // Format with leading zeros (e.g., 5 becomes 05)
-        return sprintf('%02d:%02d', $hours, $minutes);
+        return sprintf('%d:%02d', $hours, $minutes);
     }
 
 }
