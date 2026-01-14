@@ -50,6 +50,23 @@ $routes = [
     ],
     [
         'method' => 'get',
+        'route' => '/email/nu/{key}',
+        'class' => EmailTrackingActionsController::class,
+        'function' => 'handleNewsletterUnsubscribe',
+        'description' => 'handles the Unsubscribe from one specific newsletter',
+        'options' => ['noAuth' => true],
+        'parameters' => [
+            'key' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'description' => '',
+                'example' => '',
+                'required' => true
+            ]
+        ]
+    ],
+    [
+        'method' => 'get',
         'route' => '/email/doi/{key}',
         'class' => EmailTrackingActionsController::class,
         'function' => 'handleDoubleOptin',

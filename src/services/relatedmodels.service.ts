@@ -109,6 +109,11 @@ export class relatedmodels implements OnDestroy {
     public saveToLinkOnly = false;
 
     /**
+     * an edit componentset that can  be set by the related püanel and is then used for the edit modal
+     */
+    public editcomponentset: string;
+
+    /**
      * sort parameters
      */
     public sort: any = {
