@@ -4,13 +4,13 @@
 
 // from https://github.com/kolkov/angular-editor
 import {
-    ApplicationRef,
+    ApplicationRef, booleanAttribute,
     Component, createComponent, effect,
     ElementRef,
     EventEmitter,
     forwardRef,
-    Inject, Injector,
-    Input,
+    Inject, Injector, input,
+    Input, InputSignalWithTransform,
     NgZone,
     OnDestroy,
     OnInit,
@@ -27,7 +27,6 @@ import {DOCUMENT} from "@angular/common";
 import {modal} from "../../services/modal.service";
 import {systemrichtextservice} from "../services/systemrichtext.service";
 import {language} from "../../services/language.service";
-import {take} from "rxjs/operators";
 import {metadata} from "../../services/metadata.service";
 import {model} from '../../services/model.service';
 import {helper} from '../../services/helper.service';
@@ -99,6 +98,10 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * @private
      */
     @Input() private stylesheetId: string;
+    /**
+     * if true, hide the border in view mode
+     */
+    public disableReadonlyBorder: InputSignalWithTransform<boolean, unknown> = input(false, {transform: booleanAttribute});
 
     get displayTemplateVariableHelper() {
         return this.model?.module in {
@@ -185,9 +188,11 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             resize: 'none',
             position: 'fixed',
             'z-index': 9999,
+            border: this.readOnly && this.disableReadonlyBorder() ? 'none' : undefined
         } : {
-            height: (+this.innerHeight + (this.readOnly ? 0 : 50)) + 'px',
-            resize: this.resizeable ? 'vertical' : 'none'
+            height: this.innerheight?.endsWith('%') ? this.innerheight : (+this.innerHeight + (this.readOnly ? 0 : 50)) + 'px',
+            resize: this.resizeable ? 'vertical' : 'none',
+            border: this.readOnly && this.disableReadonlyBorder() ? 'none' : undefined
         };
     }
 
@@ -212,81 +217,78 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
 
         this.loadCustomStyleDefinitions();
 
-        this.libLoader.loadLib('ckeditor').subscribe(res => {
-            this.zone.runOutsideAngular(() => {
+        this.zone.runOutsideAngular(() => {
 
-                ClassicEditor.create(this.ckEditor.element.nativeElement, {
-                    removePlugins: ['Markdown', 'Title'],
-                    extraPlugins: [MentionCustomization],
-                    mention: {
-                        feeds: [
-                            {
-                                marker: '@',
-                                feed: (term: string) => this.getMentionItems(term),
-                                minimumCharacters: 2,
-                                itemRenderer: item => this.customMentionRenderer(item)
-                            }
-                        ]
-                    },
-                    style: {
-                        definitions: this.customStyleDefinitions.map(s => ({
-                            name: s.id,
-                            element: s.element,
-                            classes: s.classes
-                        }))
-                    },
-                    image: {
-                        styles: [
-                            'alignCenter',
-                            'alignLeft',
-                            'alignRight'
-                        ],
-                        resizeOptions: [
-                            {
-                                name: 'resizeImage:original',
-                                label: 'Original size',
-                                value: null
-                            },
-                            {
-                                name: 'resizeImage:50',
-                                label: '50%',
-                                value: '50'
-                            },
-                            {
-                                name: 'resizeImage:75',
-                                label: '75%',
-                                value: '75'
-                            }
-                        ],
-                        toolbar: [ // 'toggleImageCaption'
-                            'imageTextAlternative', '|',
-                            'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
-                            'resizeImage'
-                        ]
-                    },
-                    toolbar: [],
-                    htmlSupport: {
-                        allow: this.generateHtmlTagsAllowAttributes(['div', 'img', 'span', 'table', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'input', 'fieldset', 'button', 'label', 'textarea', 'select', 'option', 'optgroup'])
-                        // hr
-                    },
-                    autosave: {
-                        save: (editor) => {
-                            return this.onChange(editor.getData());
+            ClassicEditor.create(this.ckEditor.element.nativeElement, {
+                removePlugins: ['Markdown', 'Title'],
+                extraPlugins: [MentionCustomization],
+                mention: {
+                    feeds: [
+                        {
+                            marker: '@',
+                            feed: (term: string) => this.getMentionItems(term),
+                            minimumCharacters: 2,
+                            itemRenderer: item => this.customMentionRenderer(item)
                         }
-                    },
-                }).then(res => {
-                    this.editor = res;
-                    if (this.readOnly) {
-                        this.editor.enableReadOnlyMode('efsjeflksjefloikjse');
+                    ]
+                },
+                style: {
+                    definitions: this.customStyleDefinitions.map(s => ({
+                        name: s.id,
+                        element: s.element,
+                        classes: s.classes
+                    }))
+                },
+                image: {
+                    styles: [
+                        'alignCenter',
+                        'alignLeft',
+                        'alignRight'
+                    ],
+                    resizeOptions: [
+                        {
+                            name: 'resizeImage:original',
+                            label: 'Original size',
+                            value: null
+                        },
+                        {
+                            name: 'resizeImage:50',
+                            label: '50%',
+                            value: '50'
+                        },
+                        {
+                            name: 'resizeImage:75',
+                            label: '75%',
+                            value: '75'
+                        }
+                    ],
+                    toolbar: [ // 'toggleImageCaption'
+                        'imageTextAlternative', '|',
+                        'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
+                        'resizeImage'
+                    ]
+                },
+                toolbar: [],
+                htmlSupport: {
+                    allow: this.generateHtmlTagsAllowAttributes(['div', 'img', 'span', 'table', 'p', 'h1', 'h2', 'h3', 'h4', 'input', 'fieldset', 'button', 'label', 'textarea', 'select', 'option', 'optgroup'])
+                    // hr
+                },
+                autosave: {
+                    save: (editor) => {
+                        return this.onChange(editor.getData());
                     }
-                    this.editor.editing.view.change(writer => {
-                        writer.setStyle('height', '100%', this.editor.editing.view.document.getRoot());
-                    });
-                    this.editor.setData(this._html);
-
+                },
+            }).then(res => {
+                this.editor = res;
+                if (this.readOnly) {
+                    this.editor.enableReadOnlyMode('efsjeflksjefloikjse');
+                }
+                this.editor.editing.view.change(writer => {
+                    writer.setStyle('height', '100%', this.editor.editing.view.document.getRoot());
                 });
-            });
+                this.editor.setData(this._html);
 
+            });
         });
         this.handleKeyboardShortcuts();
     }
@@ -496,7 +498,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * execute custom style
      */
     public customStyle(name: string) {
-        if (name) this.editor.execute('style', name);
+        if (name) this.editor.execute('style', {styleName: name});
     }
 
     /**
