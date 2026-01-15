@@ -209,8 +209,9 @@ class SpiceCRM2FAUtils
         $db = DBManagerFactory::getInstance();
         $expiresInDurationMin = 5;
         $code = random_int(100000, 999999);
+        $now = $db->now();
 
-        $db->query("DELETE FROM user_2fa_codes WHERE user_id = '$userId'");
+        $db->query("DELETE FROM user_2fa_codes WHERE user_id = '$userId' AND expires_in < $now");
 
         $date = TimeDate::getInstance()->getNow();
         $date->add(new DateInterval("PT{$expiresInDurationMin}M"));
