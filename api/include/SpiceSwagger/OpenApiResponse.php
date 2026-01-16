@@ -2,6 +2,8 @@
 
 namespace SpiceCRM\includes\SpiceSwagger;
 
+use SpiceCRM\includes\Middleware\ValidationMiddleware;
+
 class OpenApiResponse
 {
     /**
@@ -10,9 +12,32 @@ class OpenApiResponse
      * @param int $code
      * @return OpenApiBuilder
      */
-    public static function json(string $description, int $code = 200): OpenApiBuilder
+    public function json(string $description, int $code = 200): OpenApiBuilder
     {
         return new OpenApiBuilder($description, $code);
+    }
+
+    /**
+     * generate a JSON response with a bean schema
+     * @param string|null $description
+     * @param int $code
+     * @return array[]
+     */
+    public function beanAsJson(?string $description = null, int $code = 200): array
+    {
+        return [
+            $code => [
+                'description' => $description ?: 'Object of bean data',
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => ValidationMiddleware::TYPE_BEAN_SCHEMA
+                        ]
+
+                    ]
+                ]
+            ]
+        ];
     }
 
     /**
