@@ -2045,6 +2045,10 @@ class SpiceBean
         $this->is_updated_dependent_fields = false;
         $this->fill_in_additional_detail_fields();
 
+        // populate the summary text
+        $this->summary_text = $this->get_summary_text();
+
+        // call the domain handlers on retrieve
         $this->callDomainHandlerMethod('onRetrieve');
 
         if ($relationships) {

@@ -162,13 +162,9 @@ class ServiceTicket extends SpiceBean
          */
 
         // set the closed date
-        if ($this->serviceticket_status == 'Closed' || $this->serviceticket_status == 'Rejected' || $this->serviceticket_status == 'Duplicate') {
-            $closeDate = new DateTime();
-            $this->resolve_date = $closeDate->format($timedate->get_db_date_time_format());
-        } else {
-            $this->resolve_date = '';
-        }
+        $this->setResolveDate();
 
+        // save
         $saveResponse = parent::save($check_notify);
 
         if (!empty(json_decode($this->questionnaire_answers, true))) {
@@ -177,6 +173,20 @@ class ServiceTicket extends SpiceBean
 
         return $saveResponse;
 
+    }
+
+    /**
+     * Will set the value for the resolve_date
+     * @return void
+     */
+    public function setResolveDate(){
+
+        if ($this->serviceticket_status == 'Closed' || $this->serviceticket_status == 'Rejected' || $this->serviceticket_status == 'Duplicate') {
+            $closeDate = new DateTime();
+            $this->resolve_date = $closeDate->format(TimeDate::getInstance()->get_db_date_time_format());
+        } else {
+            $this->resolve_date = '';
+        }
     }
 
     /**

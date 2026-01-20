@@ -27,6 +27,7 @@ import {SystemCalculatorTriggerDirective} from './directives/systemcalculatortri
 import {SystemStopClickPropagationDirective} from './directives/systemstopclickpropagation';
 import {SystemDropUrl} from "./directives/systemdropurl";
 import {SystemDataLabelDirective} from "./directives/systemdatalabel";
+import {SystemResponsiveSidebarDirective} from "./directives/systemresponsivesidebar";
 
 /**
  * the angular module that collects all teh directives and can be imported by other modules to use the set of directives
@@ -56,7 +57,8 @@ import {SystemDataLabelDirective} from "./directives/systemdatalabel";
         SystemMultiSelectCheckboxesDirective,
         SystemCalculatorTriggerDirective,
         SystemStopClickPropagationDirective,
-        SystemDropUrl
+        SystemDropUrl,
+        SystemResponsiveSidebarDirective,
     ],
     exports: [
         SystemModelPopOverDirective,
@@ -79,7 +81,8 @@ import {SystemDataLabelDirective} from "./directives/systemdatalabel";
         SystemMultiSelectCheckboxesDirective,
         SystemCalculatorTriggerDirective,
         SystemStopClickPropagationDirective,
-        SystemDropUrl
+        SystemDropUrl,
+        SystemResponsiveSidebarDirective,
     ]
 })
 export class DirectivesModule {

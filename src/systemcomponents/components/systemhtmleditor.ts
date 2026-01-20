@@ -144,7 +144,7 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
             position: 'fixed',
             'z-index': 9999
         } : {
-            height: (+this.innerHeight + 50) + 'px',
+            height: this.innerheight?.endsWith('%') ? this.innerheight : (+this.innerHeight + 50) + 'px',
             resize: this.resizeable ? 'vertical' : 'none'
         };
     }
