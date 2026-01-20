@@ -837,3 +837,10 @@ input[type="submit"] {
 .slds-popover-container:has(.slds-nubbin_right), .slds-popover-container:has(.slds-nubbin_right-bottom), .slds-popover-container:has(.slds-nubbin_right-top) {
     padding-right: 1rem;
 }
+
+.system-responsive-sidebar-small {
+    position: absolute;
+    top: 0;
+    z-index: 10;
+    transform: translateX(-100%);
+}
