@@ -70,10 +70,6 @@ export class EmailSendButton {
         return (!name || !body || !mailbox || !recipientAddresses || !recipientTo || sizeTooBig) ? true : this.sending;
     }
 
-    get buttonLabel(): string {
-        return this.model.getFieldValue('date_scheduled') ? 'LBL_SEND_EMAIL_LATER' : 'LBL_SEND';
-    }
-
     /**
      * the method invoed when selecting the action. It sends the email
      */
