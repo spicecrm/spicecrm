@@ -17,6 +17,7 @@ import {OrgunitsChartConnector} from "./components/orgunitschartconnector";
 import {OrgunitsChartOrgViewOrgunit} from "./components/orgunitschartvieworgunit";
 import {OrgunitsChartViewBoxAdd} from "./components/orgunitschartviewboxadd";
 import {OrgunitsChartViewBoxAddOptions} from "./components/orgunitschartviewboxaddoptions";
+import {OrgunitsChartContainer} from "./components/orgunitschartcontainer";
 
 /**
  * a module to render org units and allow the chart view on an org structure
@@ -37,7 +38,8 @@ import {OrgunitsChartViewBoxAddOptions} from "./components/orgunitschartviewboxa
         OrgunitsChartViewBox,
         OrgunitsChartViewBoxAdd,
         OrgunitsChartViewBoxAddOptions,
-        OrgunitsChartConnector
+        OrgunitsChartConnector,
+        OrgunitsChartContainer
     ]
 })
 export class ModuleOrgunits {
