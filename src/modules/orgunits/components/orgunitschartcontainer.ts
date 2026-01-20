@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {relatedmodels} from "../../../services/relatedmodels.service";
+import {metadata} from "../../../services/metadata.service";
 
 /**
  * renders a container for related org charts
@@ -22,6 +23,7 @@ export class OrgunitsChartContainer implements OnInit {
 
 
     constructor(
+        public metadata: metadata,
         @SkipSelf() public parent: model,
         public model: model,
         public relatedmodels: relatedmodels
@@ -40,6 +42,12 @@ export class OrgunitsChartContainer implements OnInit {
 
         // set the related data
         this.relatedmodels.relatedModule = this.model.module;
+
+        // load the org charts
+        this.getOrgCharts();
+    }
+
+    private getOrgCharts(){
         this.relatedmodels.getData().subscribe({
             // select the first item
             next: () => {
@@ -61,6 +69,20 @@ export class OrgunitsChartContainer implements OnInit {
         } else {
             this.model.id = undefined;
         }
+    }
+
+    get canAdd(){
+        return this.metadata.checkModuleAcl(this.model.module, 'create');
+    }
+
+    public addOrgChart(){
+        this.model.id = undefined;
+        this.model.initializeModel();
+        this.model.addModel(undefined, this.parent).subscribe({
+            next: (added) => {
+                this.getOrgCharts();
+            }
+        })
     }
 
 }
