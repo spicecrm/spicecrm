@@ -356,7 +356,7 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
     * @remove global click listener
     */
     public onClick(event): void {
-        if (this.autoClose || !this.elementRef.nativeElement.contains(event.target)) {
+        if (this.autoClose && !this.elementRef.nativeElement.contains(event.target) && !this.dropdownElement.contains(event.target)) {
             this.close();
         }
     }
