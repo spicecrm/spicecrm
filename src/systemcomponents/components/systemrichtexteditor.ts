@@ -30,7 +30,6 @@ import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
 import {model} from '../../services/model.service';
 import {helper} from '../../services/helper.service';
-import {libloader} from "../../services/libloader.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import * as less from 'less'
 import {configurationService} from "../../services/configuration.service";
@@ -144,12 +143,21 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     };
 
     @Output() public save$: EventEmitter<string> = new EventEmitter<string>();
-
-    public select = ["H1", "H2", "H3", "H4", "H5", "H6", "P", "PRE", "DIV"];
+    /**
+     * stores the heading options
+     */
+    public readonly headings = [
+        { model: 'paragraph', view: 'p', title: 'Paragraph', class: 'ck-heading_paragraph' },
+        { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+        { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+        { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+        { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
+    ];
 
     constructor(public modal: modal,
                 public renderer: Renderer2,
-                private libLoader: libloader,
                 public metadata: metadata,
                 public editorService: systemrichtextservice,
                 @Inject(DOCUMENT) public _document: any,
@@ -205,6 +213,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         setData: (data: string) => void,
         getData: () => string,
         model: any,
+        commands: {get: (command: string) => any},
         data: any,
         ui: any,
         editing: any,
@@ -222,6 +231,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             ClassicEditor.create(this.ckEditor.element.nativeElement, {
                 removePlugins: ['Markdown', 'Title'],
                 extraPlugins: [MentionCustomization],
+                heading: {
+                    options: this.headings                },
                 mention: {
                     feeds: [
                         {
@@ -286,11 +297,67 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 this.editor.editing.view.change(writer => {
                     writer.setStyle('height', '100%', this.editor.editing.view.document.getRoot());
                 });
-                this.editor.setData(this._html);
+
+                this.setData(this._html);
 
             });
         });
         this.handleKeyboardShortcuts();
+    }
+
+    /**
+     * set editor data
+     * @param data
+     * @private
+     */
+    private setData(data) {
+        this.editor.setData(data);
+        this.syncCustomStyles();
+    }
+
+    /**
+     * sync the custom styles with the editor model after setData
+     * @private
+     */
+    private syncCustomStyles() {
+
+        this.editor.model.change(writer => {
+
+            const elements = this.editor.model.createRangeIn(this.editor.model.document.getRoot()).getItems();
+
+            for (const element of elements) {
+
+                if (!element.is('element')) continue;
+
+                const htmlAttrs = element.getAttribute('htmlAttributes') || {};
+                const currentClasses = htmlAttrs.classes ? [...htmlAttrs.classes] : [];
+
+                // Get the "raw" class string
+                const rawClassString = htmlAttrs.attributes?.class || '';
+
+                let hasChanged = false;
+
+                this.customStyleDefinitions.forEach(def => {
+
+                    const modelElementName = this.headings.find(h => h.view == def.element)?.model ?? def.element;
+
+                    if (element.name === modelElementName) {
+                        def.classes.forEach(cls => {
+                            // If the class is hidden in the raw string but not in the classes array
+                            if (rawClassString.includes(cls) && !currentClasses.includes(cls)) {
+                                currentClasses.push(cls);
+                                hasChanged = true;
+                            }
+                        });
+                    }
+                });
+
+                if (hasChanged) {
+                    htmlAttrs.attributes.class = undefined;
+                    writer.setAttribute('htmlAttributes', {...htmlAttrs, classes: currentClasses }, element);
+                }
+            }
+        });
     }
 
     /**
@@ -463,7 +530,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     public writeValue(value: any): void {
         this._html = value ? value : '';
         if (this.editor) {
-            this.editor.setData(value);
+            this.setData(value);
         }
     }
 
@@ -497,7 +564,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      *
      * execute custom style
      */
-    public customStyle(name: string) {
+    public applyCustomStyle(name: string) {
         if (name) this.editor.execute('style', {styleName: name});
     }
 
@@ -561,28 +628,6 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     }
 
     /**
-     * toggles editor buttons when cursor moved or positioning
-     *
-     * Send a node array from the contentEditable of the editor
-     */
-    public exec() {
-        let userSelection;
-        if (window.getSelection) {
-            userSelection = window.getSelection();
-        }
-
-        let a = userSelection.focusNode;
-        const els = [];
-        while (a && a.id !== 'editor') {
-            els.unshift(a);
-            a = a.parentNode;
-        }
-
-        // this.editorToolbar.triggerBlocks(els);
-        this.triggerBlocks(els);
-    }
-
-    /**
      * handle inserting image from media file if active or from url directly
      */
     public insertImage() {
@@ -631,30 +676,6 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     public commandIsActive(commandState) {
         // check the state
         return this.isActive && this._document.queryCommandState(commandState);
-    }
-
-    /**
-     * trigger highlight editor buttons when cursor moved or positioning in block
-     */
-    public triggerBlocks(nodes: Node[]) {
-        if (!this.isActive) {
-            return;
-        }
-
-        let found = false;
-        this.select.forEach(y => {
-            const node = nodes.find(x => x.nodeName === y);
-            if (node !== undefined && (y === node.nodeName || node.nodeName == 'code')) {
-                if (found === false) {
-                    this.block = node.nodeName.toLowerCase();
-                    found = true;
-                }
-            } else if (found === false) {
-                this.block = 'default';
-            }
-        });
-
-        found = false;
     }
 
     /**
@@ -898,7 +919,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                         this.onChange(newHtml);
                     }
 
-                    this.editor.setData(newHtml)
+                    this.setData(newHtml);
                 }
             })
         });
