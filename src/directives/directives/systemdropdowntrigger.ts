@@ -56,7 +56,7 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
      * if true always close the dropdown on click
      * @private
      */
-    @Input() public autoClose: boolean = false;
+    @Input() public autoClose: boolean = true;
     /**
      * A boolean flag that determines whether the trigger element's width
      * should match the width of its associated dropdown trigger component.
