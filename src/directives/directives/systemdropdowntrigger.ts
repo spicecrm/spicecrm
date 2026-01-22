@@ -184,8 +184,9 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
      * open the dropdown on the host click if the trigger button was not defined
      * @private
      */
-    @HostListener('click')
-    public hostClick() {
+    @HostListener('click', ['$event'])
+    public hostClick(e: MouseEvent) {
+        e.stopPropagation();
         if (this.hasTriggerButton || this.triggerOnHover()) return;
         this.toggleDropdown();
     }
