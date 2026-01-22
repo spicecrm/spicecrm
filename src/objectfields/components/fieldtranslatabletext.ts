@@ -1,4 +1,4 @@
-import {Component, effect, inject, Injector, OnInit} from '@angular/core';
+import {Component, effect, inject, Injector, Input, OnInit} from '@angular/core';
 import {ObjectFieldTranslationsModal} from "../../objectcomponents/components/objectfieldtranslationsmodal";
 import {
     ModuleFieldTranslationsObjectI
@@ -30,11 +30,15 @@ export class FieldTranslatableText implements OnInit {
     /**
      * the field name passed by the field container
      */
-    public fieldname: string = '';
+    @Input() public fieldname: string = '';
     /**
      * the field config passed by the field container
      */
-    public fieldconfig: any = {};
+    @Input() public fieldconfig: any = {};
+    /**
+     * additonal classes top be added when the field is displayed
+     */
+    @Input() public fielddisplayclass: string = '';
 
     constructor(private modal: modal,
                 private model: model,
