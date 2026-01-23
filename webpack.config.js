@@ -49,9 +49,9 @@ module.exports = {
 
             const path = pathData.chunk.id.split('_');
             if (path[0] === 'default-src') {
-                return pathData.chunk.id.replace(/_ts$/, '') + '.js';
+                return pathData.chunk.id.replace(/_ts$/, '') + '.js?[contenthash]';
             }
-            return path[path.length -2] + '.js';
+            return path[path.length -2] + '.js?[contenthash]';
         },
         filename: "[name].js"
     },
