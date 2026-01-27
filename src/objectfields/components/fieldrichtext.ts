@@ -295,7 +295,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
     }
 
     public setStylesheetsToUse() {
-        this.useStylesheets = !_.isEmpty(this.stylesheetField) && !_.isEmpty(this.stylesheets);
+        this.useStylesheets = !_.isEmpty(this.stylesheets);
         if (this.useStylesheets) {
             if (this.stylesheets.length === 1) {
                 this.stylesheetToUse = this.stylesheets[0].id;

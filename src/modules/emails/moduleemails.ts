@@ -46,6 +46,8 @@ import {fieldZipCompress} from "./fields/fieldzipcompress";
 import {fieldReadReceipt} from "./fields/fieldreadreceipt";
 import {EmailForwardToTargetListButton} from "./components/emailforwardtotargetlistbutton";
 import {EmailsDetailsContainer} from "./components/emailsdetailscontainer";
+import {EmailPlanButton} from "./components/emailplanbutton";
+import {EmailPlanModal} from "./components/emailplanmodal";
 
 @NgModule({
     imports: [
@@ -70,6 +72,8 @@ import {EmailsDetailsContainer} from "./components/emailsdetailscontainer";
         EmailForwardToTargetListButton,
         EmailReplyModal,
         EmailSendButton,
+        EmailPlanButton,
+        EmailPlanModal,
         EmailSaveDraftButton,
         EmailForwardButton,
         EmailForwardModal,

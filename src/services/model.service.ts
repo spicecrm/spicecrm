@@ -1278,6 +1278,18 @@ export class model implements OnDestroy {
                                 lockingModalRef.instance.responseSubject = responseSubject;
                             });
                             break;
+                        case 422:
+                            if (notify) {
+                                this.toast.sendToast(this.language.getLabel("LBL_UNPROCESSABLE_ENTRY") + " " + error.status, "error", error.error.error.lbl ? this.language.getLabel( error.error.error.lbl ) : error.error.error.message, 5 );
+                            }
+                            if(error.error?.error?.details?.fields){
+                                error.error.error.details.fields.forEach(f => {
+                                    return this.setFieldMessage('error', f.msg, f.field, null);
+                                })
+                            }
+                            responseSubject.error(error);
+                            responseSubject.complete();
+                            break;
                         default:
                             if (notify) {
                                 this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.lbl ? this.language.getLabel( error.error.error.lbl ) : error.error.error.message );

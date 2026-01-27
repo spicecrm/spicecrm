@@ -1679,6 +1679,30 @@ class Email extends SpiceBean
     }
 
     /**
+     * sends planned emails
+     */
+    public function sendPlannedEmails()
+    {
+        $now =  gmDate( 'Y-m-d H:i:s');
+
+        // get the planned emails
+        $plannedEmails = $this->db->limitQuery("SELECT id from emails WHERE status = 'planned' AND deleted = 0 AND date_scheduled <= '$now' ORDER by date_modified DESC", 0, 25);
+
+        while ($plannedEmail = $this->db->fetchByAssoc($plannedEmails)) {
+
+            $email = BeanFactory::getBean('Emails', $plannedEmail['id']);
+            $mailbox = BeanFactory::getBean('Mailboxes', $email->mailbox_id);
+
+            if($mailbox->transport == 'personalMSGraph' || $mailbox->transport == 'personalGmail'){
+                $current_user = AuthenticationController::getInstance()->getCurrentUser();
+                $current_user->retrieve($email->assigned_user_id);
+            }
+          $email->sendEmail();
+        }
+        return true;
+    }
+
+    /**
      * saveSentiment
      *
      * Sets and saves the sentiment and magnitude of the email

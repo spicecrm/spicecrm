@@ -12,7 +12,7 @@ import {
     enableProdMode, ViewChild, ApplicationRef
 } from "@angular/core";
 import {FormsModule} from "@angular/forms";
-import {RouterModule} from "@angular/router";
+import {RouterModule, UrlMatchResult, UrlSegment} from "@angular/router";
 import {HttpClientModule} from "@angular/common/http";
 import {LocationStrategy, HashLocationStrategy} from "@angular/common";
 
@@ -106,8 +106,23 @@ export class SpiceUI {
         RouterModule.forRoot(
             [
                 {path: "login", component: GlobalLogin},
+                // path docs and docs/:id use matcher to combine two routes docs and docs/guid in the same component
+                // to prevent reloading the component when switching between the two routes
+                {
+                    matcher: (segments: UrlSegment[]): UrlMatchResult | null => {
+                        if (segments.length > 0 && segments[0].path === 'docs' && segments.length <= 2) {
+                            return {
+                                consumed: segments,
+                                posParams: segments[1] ? { id: segments[1] } : {}
+                            };
+                        }
+                        return null;
+                    }
+                    ,
+                    loadComponent: () => import('src/extensions/modules/knowledge/components/knowledgepublicbrowser').then(m => m.KnowledgePublicBrowser)
+                },
                 {path: "", redirectTo: "/module/Home", pathMatch: "full"},
-                {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]}
+                {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]},
             ]
         ),
         ModuleSpiceDiagrams

@@ -129,6 +129,19 @@ export class fieldDateSpan extends fieldGeneric implements OnInit {
     }
 
     /**
+     * a getter to return the additonal css classes
+     */
+    public fieldcss_classes(fieldname) {
+        if (this.model.getFieldStates(fieldname).invalid) {
+            this.addCssClass('slds-has-error');
+        } else {
+            this.removeCssClass('slds-has-error');
+        }
+
+        return this._css_classes;
+    }
+
+    /**
      * sets wither start or end date valid or invalid
      *
      * @param date

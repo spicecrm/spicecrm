@@ -198,7 +198,7 @@ class CoreController
 
         // see if the user has a default language set
         if (empty($language)) {
-            $language = $current_user->getPreference('language');
+            $language = $current_user?->getPreference('language');
         }
 
         // see if we have a language passed in .. if not use the default

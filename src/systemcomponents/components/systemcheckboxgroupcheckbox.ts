@@ -90,6 +90,7 @@ export class SystemCheckboxGroupCheckbox implements OnChanges, AfterViewInit {
      * @private
      */
     public setGroupValue() {
+        this.systemCheckboxGroup.singleValue$.emit(this.value);
         if (!this.checked && this.systemCheckboxGroup.value.indexOf(this.value) > -1) {
             this.systemCheckboxGroup.value = this.systemCheckboxGroup.value.filter(e => e != this.value);
         } else if (this.checked && this.systemCheckboxGroup.value.indexOf(this.value) == -1) {
