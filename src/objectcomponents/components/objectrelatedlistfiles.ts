@@ -214,7 +214,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         }
 
         // if the config exists, limit the file based on it
-        this.fileTypeActionObject = this.configurationService.getCapabilityConfig('admin')?.fileTypes;
+        this.fileTypeActionObject = this.configurationService.getCapabilityConfig('spiceattachments')?.fileTypes;
 
         effect(() => {
             if (this.modelattachments.fileActionPerformed() > 0) {
