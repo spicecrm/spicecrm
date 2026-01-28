@@ -4,7 +4,7 @@ namespace SpiceCRM\modules\ServiceTickets\ACLObjectFieldHandlers;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
-use SpiceCRM\modules\Projects\Project;
+use SpiceCRM\extensions\modules\Projects\Project;
 use SpiceCRM\modules\SpiceACLObjects\handlers\SpiceACLObjectFieldHandlerBase;
 
 class ServiceTicketsACLFieldProjectIDHandler extends SpiceACLObjectFieldHandlerBase
