@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, forwardRef} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, forwardRef, output} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 /**
@@ -39,6 +39,10 @@ export class SystemCheckboxGroup implements ControlValueAccessor, AfterViewInit 
      * save on touched function for ControlValueAccessor
      */
     public onTouched: () => void;
+    /**
+     * emit the single checked value
+     */
+    public singleValue$ = output<string>();
 
     constructor(public cdRef: ChangeDetectorRef) {
     }

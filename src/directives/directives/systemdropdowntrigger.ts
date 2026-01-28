@@ -56,7 +56,7 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
      * if true always close the dropdown on click
      * @private
      */
-    @Input() public autoClose: boolean = false;
+    @Input() public autoClose: boolean = true;
     /**
      * A boolean flag that determines whether the trigger element's width
      * should match the width of its associated dropdown trigger component.
@@ -184,8 +184,9 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
      * open the dropdown on the host click if the trigger button was not defined
      * @private
      */
-    @HostListener('click')
-    public hostClick() {
+    @HostListener('click', ['$event'])
+    public hostClick(e: MouseEvent) {
+        e.stopPropagation();
         if (this.hasTriggerButton || this.triggerOnHover()) return;
         this.toggleDropdown();
     }
@@ -356,7 +357,7 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
     * @remove global click listener
     */
     public onClick(event): void {
-        if (this.autoClose || !this.elementRef.nativeElement.contains(event.target)) {
+        if (this.autoClose || (!this.elementRef.nativeElement.contains(event.target) && !this.dropdownElement.contains(event.target))) {
             this.close();
         }
     }
