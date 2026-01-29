@@ -204,9 +204,11 @@ export class fieldFullName extends fieldGeneric {
             fieldClass += ' slds-has-error';
         }
 
+        if (this.getStati(fieldname).required) {
+            fieldClass += ' spice-field-is-required';
+        }
+
         return fieldClass;
-
-
     }
 
     public getSalutations(): any[] {

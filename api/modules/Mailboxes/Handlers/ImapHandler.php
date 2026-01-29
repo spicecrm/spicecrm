@@ -213,6 +213,7 @@ class ImapHandler extends TransportHandler
 
                 $email->body = $structure->getEmailBody();
                 try {
+                    $email->processEmail();
                     $email->save(false, true, false);
                 } catch (Exception $e) {
                     LoggerManager::getLogger()->error('Could not save email: ' . $email->name . ' ' . $email->message_id .'. Error Message: '.$e->getMessage());
@@ -224,7 +225,6 @@ class ImapHandler extends TransportHandler
                     SpiceAttachments::saveEmailAttachment('Emails', $email->id, $attachment);
                 }
 
-                $email->processEmail();
 
                 if ($new_mail_count > 100) {
                     break;

@@ -175,7 +175,7 @@ class AdminController
                 'slow_query_time_msec' => SpiceConfig::getInstance()->config['slow_query_time_msec'],
                 'upload_maxsize' => SpiceConfig::getInstance()->config['upload_maxsize'],
                 'upload_dir' => SpiceConfig::getInstance()->config['upload_dir'],
-                'file_types' => SpiceConfig::getInstance()->config['attachments']['file_types'],
+                'file_types' => SpiceConfig::getInstance()->config['attachments']['file_types'] ?: false,
                 'international_email_addresses' => SpiceConfig::getInstance()->config['international_email_addresses'],
                 'translatable_fields' => SpiceConfig::getInstance()->config['translatable_fields'],
                 'encryption_hash_salt' => SpiceConfig::getInstance()->get('system.encryption_hash_salt'),
