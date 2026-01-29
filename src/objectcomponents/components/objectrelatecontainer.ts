@@ -33,7 +33,12 @@ export class ObjectRelateContainer implements OnInit {
         }
 
         // fill the array with items so the stencils get rendered. Default is 3 but can be set from the config
-        this.stencils = Array(this.componentconfig.stencils ?? 3);
+        // get the componentset components
+        if(this.componentset && !this.componentconfig.stencils) {
+            this.stencils= Array(this.metadata.getComponentSetObjects(this.componentset).length ?? 3);
+        } else {
+            this.stencils = Array(this.componentconfig.stencils ?? 3);
+        }
     }
 
     /**
