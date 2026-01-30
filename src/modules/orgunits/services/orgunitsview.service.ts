@@ -64,13 +64,13 @@ export class orgunitsViewService {
         this.connectors = [];
 
         this.loading = true;
-        this.backend.getRequest(`module/OrgCharts/${this.model.id}/allOrgunits`).subscribe({
+        this.backend.getRequest(`module/OrgCharts/${this.orgChart.id}/allOrgunits`).subscribe({
             next: (beans) => {
                 this.orgunits = beans.orgunits;
                 this.orgcharts = beans.orgcharts;
 
                 // ugly but effective way to ensure the update ont eh page happens before the update on the connectors happen
-                window.setTimeout(() => this.buildConnectors(), 0);
+                // window.setTimeout(() => this.buildConnectors(), 0);
 
                 retSubject.next(true);
                 retSubject.complete();

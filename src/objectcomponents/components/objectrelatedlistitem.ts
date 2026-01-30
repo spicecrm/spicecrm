@@ -40,7 +40,18 @@ export class ObjectRelatedListItem implements OnInit {
     public expanded: boolean = false;
     public componentconfig: any = {};
 
-    constructor(public metadata: metadata, public footer: footer, public model: model, @SkipSelf() public parentModel: model, public relatedmodels: relatedmodels, public view: view, public router: Router, public language: language, public layout: layout, public modalservice: modal) {
+    constructor(
+        public metadata: metadata,
+        public footer: footer,
+        public model: model,
+        @SkipSelf() public parentModel: model,
+        public relatedmodels: relatedmodels,
+        public view: view,
+        public router: Router,
+        public language: language,
+        public layout: layout,
+        public modalservice: modal
+    ) {
     }
 
     /**
@@ -73,62 +84,6 @@ export class ObjectRelatedListItem implements OnInit {
      */
     public navigateDetail() {
         this.router.navigate(["/module/" + this.model.module + "/" + this.model.id]);
-    }
-
-    /**
-     * handling the actions
-     *
-     * ToDo: switch this to proper actionset item handling
-     *
-     * @param action
-     */
-    public handleAction(action) {
-        switch (action) {
-            case "canceledit":
-                this.model.cancelEdit();
-                this.view.setViewMode();
-                break;
-            case "edit":
-                this.metadata.addComponentDirect("ObjectEditModalWReference", this.footer.footercontainer).subscribe(editModalRef => {
-                    editModalRef.instance.model.module = this.module;
-                    editModalRef.instance.model.id = this.model.id;
-                    editModalRef.instance.model.setData(this.model.data, false);
-
-                    if (this.editcomponentset && this.editcomponentset != "") {
-                        editModalRef.instance.componentSet = this.editcomponentset;
-                    }
-                    this.model.startEdit();
-                    editModalRef.instance.modalAction$.subscribe(action => {
-                        if (action === false) {
-                            editModalRef.destroy();
-                            this.model.cancelEdit();
-                        } else {
-                            this.relatedmodels.setItem(this.model.data);
-                            this.model.endEdit();
-                            editModalRef.destroy();
-                        }
-                    });
-                });
-                break;
-            case "remove":
-                this.modalservice.confirm(this.language.getLabel('QST_REMOVE_ENTRY'), this.language.getLabel('QST_REMOVE_ENTRY', null, 'short')).subscribe((answer) => {
-                    if (answer) this.relatedmodels.deleteItem(this.model.id);
-                });
-                break;
-            case "saverelated":
-                if (this.model.validate()) {
-                    // get changed Data
-                    let changedData: any = this.model.getDirtyFields();
-                    // in any case update date modified and set the id for the PUT
-                    changedData.date_modified = this.model.getField('date_modified');
-                    changedData.id = this.model.id;
-                    // save related model
-                    this.relatedmodels.setItem(changedData);
-                    this.model.endEdit();
-                    this.view.setViewMode();
-                }
-                break;
-        }
     }
 
     public toggleexpanded(e: MouseEvent) {

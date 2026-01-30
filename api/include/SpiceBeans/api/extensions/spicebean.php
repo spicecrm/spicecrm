@@ -4,6 +4,7 @@
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceBeans\api\controllers\SpiceBeanController;
+use SpiceCRM\includes\SpiceSwagger\OpenApiResponse;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 $RESTManager = RESTManager::getInstance();
@@ -12,6 +13,7 @@ $RESTManager = RESTManager::getInstance();
  * register the extension
  */
 $RESTManager->registerExtension('module', '2.0', ['disableAutoloadListAll' => SpiceConfig::getInstance()->config['module_list']['disable_autoload_list_all']]);
+$res = new OpenApiResponse();
 
 $routes = [
     [
@@ -383,6 +385,7 @@ $routes = [
                 'required' => true,
             ]
         ],
+        'responses' => $res->beanAsJson()
     ],
     [
         'method' => 'get',
@@ -843,7 +846,11 @@ $routes = [
                 'description' => 'a searchterm to search by',
                 'type' => ValidationMiddleware::TYPE_STRING,
             ],
-
+            'filterown' => [
+                'in' => 'query',
+                'description' => 'if true, filter the items based on assigned user id',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+            ]
         ],
         'responses' => [
             '200' => [

@@ -130,6 +130,7 @@ class SpiceDictionaryItems
     public function getItemsForDictionary(string $dictionaryId, ?array $statusFilter = ['a']): array
     {
         $items = $this->dictionaryItemsByDicId[$dictionaryId] ?? [];
+        usort($items, function($a, $b){return (int)$a['sequence'] > (int)$b['sequence'] ? 1 : -1;});
         return !$statusFilter ? $items : array_filter($items, fn($item) => in_array($item['status'], $statusFilter));
     }
 

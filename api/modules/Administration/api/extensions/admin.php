@@ -2,7 +2,6 @@
 /***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\RESTManager;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Administration\api\controllers\AdminController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 
@@ -95,4 +94,4 @@ $routes = [
 /**
  * register the Extension
  */
-RESTManager::getInstance()->registerExtension('admin', '2.0', ['fileTypes' => SpiceConfig::getInstance()->get('attachments.file_types')], $routes);
+RESTManager::getInstance()->registerExtension('admin', '2.0', [], $routes);

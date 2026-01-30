@@ -37,11 +37,12 @@ abstract class Relationship
     public $fetchedRow;
     public $updatedRow;
     protected $ignore_role_filter = false;
-    protected $self_referencing = false; //A relationship is self referencing when LHS module = RHS Module
 
     protected static $beansToResave = [];
 
     protected $count = -1;
+
+    protected SpiceDictionaryLink $linkInstance;
 
     public function __debugInfo()
     {
@@ -52,8 +53,9 @@ abstract class Relationship
      * initialize the instance properties
      * @throws \Exception
      */
-    public function __construct(string $relationshipName, array $relationship)
+    public function __construct(string $relationshipName, array $relationship, SpiceDictionaryLink $link)
     {
+        $this->linkInstance = $link;
         $this->name = $relationshipName;
 
         if ($relationship['id']) {
@@ -74,7 +76,6 @@ abstract class Relationship
         $this->def = $this->buildRelationshipDef($relationship);
         $this->lhsLink = $relationship['lhs_linkname'];
         $this->rhsLink = $relationship['rhs_linkname'];
-        $this->self_referencing = $relationship['rhs_sysdictionarydefinition_id'] == $relationship['lhs_sysdictionarydefinition_id'];
     }
 
     /**
@@ -88,7 +89,6 @@ abstract class Relationship
         $this->def = $relationship;
         $this->lhsLink = $this->getLinkedDefForModuleByRelationship($this->def['lhs_module'], 'left')['name'];
         $this->rhsLink = $this->getLinkedDefForModuleByRelationship($this->def['rhs_module'], 'right')['name'];
-        $this->self_referencing = $this->def['lhs_module'] == $this->def['rhs_module'] && $this->def['reverse'] != false;
     }
 
     public abstract function add($lhs, $rhs, $additionalFields = []);

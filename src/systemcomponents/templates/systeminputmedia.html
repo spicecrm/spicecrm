@@ -1,5 +1,5 @@
 <div class="slds-grid slds-grid_vertical slds-nowrap">
-    <div #toolbar role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none" [ngClass]="{'slds-hide': !showToolBars}">
+    <div #toolbar role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none" [ngClass]="{'slds-hide': !displayToolbars}">
         <ul class="slds-button-group-list">
             <li >
                 <button class="slds-button slds-button--icon-border slds-button--neutral" (click)="removeImage()" [disabled]="!mediaBase64"><system-button-icon icon="delete"></system-button-icon></button>
@@ -49,7 +49,7 @@
         </div>
     </div>
     <div [ngStyle]="{height:cropperHeight}">
-        <div class="slds-height_full" style="overflow:hidden" (system-drop-file)="onDrop($event)" [system-overlay-loading-spinner]="isLoading" >
+        <div class="slds-height_full" [ngClass]="{'slds-align--absolute-center': !allowModifications}" style="overflow:hidden" (system-drop-file)="onDrop($event)" [system-overlay-loading-spinner]="isLoading" >
             <img #imgelement *ngIf="mediaBase64, else uploadbutton" [src]="mediaBase64" (load)="imageLoaded($event)" style="display:block"/>
             <ng-template #uploadbutton>
                 <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
@@ -62,7 +62,7 @@
             </ng-template>
         </div>
     </div>
-    <div #bottomtoolbar role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none slds-rich-text-editor__toolbar_bottom" [ngClass]="{'slds-hide': !showToolBars || !mediaMetaData.fileformat}">
+    <div #bottomtoolbar role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none slds-rich-text-editor__toolbar_bottom" [ngClass]="{'slds-hide': !displayToolbars || !mediaMetaData.fileformat}">
         <div *ngIf="mediaMetaData.fileformat" class="slds-col--bump-right">Format: {{mediaMetaData.fileformat.toUpperCase()}}</div>
         <div class="slds-p-horizontal--x-small slds-border--right">
             <system-slider [(ngModel)]="imageQuality" theme="default" min="0" max="1" step="0.1"><system-label label="LBL_IMAGE_QUALITY"/></system-slider>

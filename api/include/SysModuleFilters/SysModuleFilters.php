@@ -241,7 +241,7 @@ class SysModuleFilters
             // a group condition which we might have at this stage is always to be used with an AND statement
            if(!empty($filterCondition)) $filterCondition .= " AND ";
 
-            $filterCondition .= ' (' . implode(' ' . $group->logicaloperator . ' ', $filterConditionArray) . ')';
+            $filterCondition .= ' (' . implode(' ' . strtoupper($group->logicaloperator) . ' ', $filterConditionArray) . ')';
             if ($group->groupscope == 'own') {
                 $userIds = array_merge([$current_user->id], $absence->getSubstituteIDs());
                 $userIds = "'" . join("','", $userIds) . "'";
@@ -342,7 +342,7 @@ class SysModuleFilters
      * @return string
      * @throws Exception
      */
-    private function bildSQLWhereStatementForCondition($condition, $tablename)
+    public function bildSQLWhereStatementForCondition($condition, $tablename)
     {
         switch ($condition->operator) {
             case 'empty':
@@ -646,7 +646,7 @@ class SysModuleFilters
     /**
      * builds an elastic filter for a given group. Calls itself recursivley if a group has subgrups
      *
-     * @param $group the group definition
+     * @param $group object the group definition
      * @return array
      */
     public function buildElasticFilterForGroup($group)
@@ -735,7 +735,7 @@ class SysModuleFilters
      * @return array
      * @throws Exception
      */
-    private function buildElasticFilterForCondition($condition)
+    public function buildElasticFilterForCondition($condition)
     {
         switch ($condition->operator) {
             case 'empty':
@@ -1213,5 +1213,16 @@ class SysModuleFilters
             default:
                 return false;
         }
+    }
+
+    /**
+     * generate module filter condition group
+     * @param string $module
+     * @param string $operator
+     * @return SysModuleFilterGroup
+     */
+    public static function generateConditionGroup(string $module, string $operator = 'and'): SysModuleFilterGroup
+    {
+        return new SysModuleFilterGroup($module, $operator);
     }
 }

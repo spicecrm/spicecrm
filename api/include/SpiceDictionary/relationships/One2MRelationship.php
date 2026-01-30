@@ -17,14 +17,15 @@ class One2MRelationship extends M2MRelationship
      * initialize the instance from the given vardef relationship array
      * @param array $relationship
      * @return void
+     * @throws Exception
      */
     protected function initializeFromVardef(array $relationship): void
     {
         $this->def = $relationship;
 
-        $this->selfReferencing = $this->def['lhs_module'] == $this->def['rhs_module'];
+        $isSidesModuleIdentical = $this->def['lhs_module'] == $this->def['rhs_module'];
 
-        if (!$this->selfReferencing) {
+        if (!$isSidesModuleIdentical) {
 
             $lhsLinkDef = $this->getLinkFieldForRelationship($this->def['lhs_module']);
             $rhsLinkDef = $this->getLinkFieldForRelationship($this->def['rhs_module']);
@@ -55,11 +56,6 @@ class One2MRelationship extends M2MRelationship
         }
     }
 
-    protected function linkIsLHS($link) {
-        return ($link->getSide() == REL_LHS && !$this->selfReferencing) ||
-               ($link->getSide() == REL_RHS && $this->selfReferencing);
-    }
-
     /**
      * @param  $lhs SpiceBean left side bean to add to the relationship.
      * @param  $rhs SpiceBean right side bean to add to the relationship.
@@ -84,7 +80,9 @@ class One2MRelationship extends M2MRelationship
 			// If it's a One2Many self-referencing relationship
         	// the positions of the default One (LHS) and Many (RHS) are swaped
         	// so we should clear the links from the many (left) side
-        	if ($this->selfReferencing) {
+            $isSidesModuleIdentical = $this->def['lhs_module'] == $this->def['rhs_module'];
+
+            if ($isSidesModuleIdentical) {
         		// Load right hand side relationship name
 	            $linkName = $this->rhsLink;
 	            // Load the relationship into the left hand side bean
@@ -108,23 +106,7 @@ class One2MRelationship extends M2MRelationship
             // Add relationship
             parent::add($lhs, $rhs, $additionalFields);
         }
-    }
 
-    /**
-     * Just overriding the function from M2M to prevent it from occuring
-     * 
-     * The logic for dealing with adding self-referencing one-to-many relations is in the add() method
-     */
-    protected function addSelfReferencing($lhs, $rhs, $additionalFields = [])
-    {
-        //No-op on One2M.
-    }
-
-    /**
-     * Just overriding the function from M2M to prevent it from occuring
-     */
-    protected function removeSelfReferencing($lhs, $rhs, $additionalFields = [])
-    {
-        //No-op on One2M.
+        return true;
     }
 }

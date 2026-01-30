@@ -7,8 +7,8 @@ import {
     ChangeDetectorRef,
     Component, ContentChildren,
     ElementRef,
-    forwardRef,
-    Input, OnChanges, OnDestroy, QueryList,
+    forwardRef, input,
+    Input, InputSignal, OnChanges, OnDestroy, QueryList,
     Renderer2, SimpleChanges,
     ViewChild,
     ViewContainerRef
@@ -45,7 +45,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
     /**
      * when true emit and receive the id as ngModel value
      */
-    @Input('system-select-id-only') set setIdOnly(value: boolean) {
+    @Input('system-select-id-only') set setIdOnly(value) {
         this.idOnly = value !== false;
     }
     @Input() public idOnly: boolean = false;
@@ -75,6 +75,10 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      * desc -> asc
      */
     @Input() public sortReversed: boolean = false;
+    /**
+     * pass the placeholder as input
+     */
+    public placeholder: InputSignal<string> = input();
 
     /**
      * holds the search list results

@@ -193,6 +193,12 @@ import {DomainManagerDefinitionUsageModal} from "./components/domainmanagerdefin
 import {DictionaryManagerUsageModal} from "./components/dictionarymanagereusagemodal";
 import {DictionaryManagerFilterItemsPipe} from "./pipes/dictionarymanagerfilteritems.pipe";
 import {DictionaryManagerFieldDefinitionModal} from "./components/dictionarymanagerfielddefinitionmodal";
+import {MailboxesSpiceGatewayManager} from "./components/mailboxesspicegatewaymanager";
+import {
+    DictionaryManagerRelationshipAddManyToManySelf
+} from "./components/dictionarymanagerrelationshipaddmanytomanyself";
+import {DictionaryRelationships} from "./components/dictionaryrelationships";
+import {DictionaryRelationshipsDefinitions} from "./components/dictionaryrelationshipsdefinitions";
 
 
 @NgModule({
@@ -265,6 +271,8 @@ import {DictionaryManagerFieldDefinitionModal} from "./components/dictionarymana
         DictionaryManagerRepairAll,
         DictionaryIndexes,
         DictionaryIndexesDefinitions,
+        DictionaryRelationships,
+        DictionaryRelationshipsDefinitions,
         FieldsetManager,
         FieldsetManagerFieldsetDetails,
         FieldsetManagerFieldDetails,
@@ -373,7 +381,9 @@ import {DictionaryManagerFieldDefinitionModal} from "./components/dictionarymana
         Hl7ManagerType,
         HL7ManagerRule,
         WorkbenchConfigOptionKanban,
-        DictionaryManagerFieldDefinitionModal
+        DictionaryManagerFieldDefinitionModal,
+        MailboxesSpiceGatewayManager,
+        DictionaryManagerRelationshipAddManyToManySelf
     ],
     exports: [
         SortPipe,

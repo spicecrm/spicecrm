@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, Renderer2, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
+import {Component, ElementRef, Renderer2, ViewChild, ViewContainerRef, OnInit, SkipSelf} from '@angular/core';
 import {Router} from '@angular/router';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
@@ -81,7 +81,17 @@ export class fieldParent extends fieldGeneric implements OnInit {
         this.determineParentTypes();
         // initialize the parenttype
         if (this.view.isEditMode() && (!this.model.getField(this.parentTypeField) || this.model.getField(this.parentTypeField) == '')) {
-            this.model.setField(this.parentTypeField, this.parentTypes[0], false);
+            // check if we have a parent
+            if(this.model.parentmodel && this.parentTypes.indexOf(this.model.parentmodel.module) >= 0){
+                this.model.setFields({
+                    [this.parentTypeField]: this.model.parentmodel.module,
+                    [this.parentIdField]: this.model.parentmodel.id,
+                    [this.fieldname]: this.model.parentmodel.getField('summary_text')
+                });
+            } else {
+                this.model.setField(this.parentTypeField, this.parentTypes[0], false);
+            }
+
         }
 
     }

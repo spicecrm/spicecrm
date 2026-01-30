@@ -1,10 +1,19 @@
 <div class="slds-size--1-of-1 slds-height_full" >
     <div class="slds-grid slds-p-bottom--xx-small">
         <div class="slds-form-element slds-grid slds-grid_vertical-align-center slds-col--bump-right">
+            @if (outputTemplates.length > 0){
+            <div class="slds-form-element__control slds-p-right--x-small">
+                <div class="slds-select_container" style="min-width: 200px;">
+                    <select [disabled]="outputTemplates.length < 2 || loading || showEmail" class="slds-select" [(ngModel)]="outputtemplate">
+                        <option *ngFor="let ot of outputTemplates" [ngValue]="ot.id">{{ot.name}}</option>
+                    </select>
+                </div>
+            </div>
+            }
             <div class="slds-form-element__control">
                 <div class="slds-select_container" style="min-width: 200px;">
-                    <select [disabled]="outputRevisions.length < 2 || loading || showEmail" class="slds-select" [(ngModel)]="outputRevision" (ngModelChange)="loadOutput()">
-                        <option *ngFor="let sdo of outputRevisions" [ngValue]="sdo.id"><system-display-datetime [date]="sdo.date_entered"></system-display-datetime> ({{sdo.created_by}})</option>
+                    <select [disabled]="outputrevisions.length < 2 || loading || showEmail" class="slds-select" [(ngModel)]="outputRevision" (ngModelChange)="loadOutput()">
+                        <option *ngFor="let sdo of outputrevisions" [ngValue]="sdo.id"><system-display-datetime [date]="sdo.date_entered"/> ({{sdo.created_by}})</option>
                     </select>
                 </div>
             </div>

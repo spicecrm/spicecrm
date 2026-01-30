@@ -18,6 +18,7 @@ import {modelutilities} from '../../services/modelutilities.service';
 export class AdministrationAssetManager implements OnInit{
 
     public assets: any = {
+        favicon: null,
         loginimage: null,
         headerimage: null
     }
@@ -80,6 +81,12 @@ export class AdministrationAssetManager implements OnInit{
             cropwidth: 300,
             croptype: 'square',
             cropresize: false
+        },
+        favicon: {
+            cropheight: 32,
+            cropwidth: 32,
+            croptype: 'square',
+            cropresize: false
         }
     }
 
@@ -105,6 +112,10 @@ export class AdministrationAssetManager implements OnInit{
         this.loadSystemAssets();
     }
 
+    get assetKeys(){
+        return Object.keys(this.assets);
+    }
+
     private loadSystemAssets(){
         this.backend.getRequest('system/spiceui/admin/assets').subscribe(assets => {
             this.loadedassets = assets;
@@ -120,6 +131,14 @@ export class AdministrationAssetManager implements OnInit{
             if(headerimage){
                 this.assets.headerimage = headerimage.assetvalue;
             }
+
+            // see if we have a headerimage
+            let favicon = assets.find(a => a.assetkey == 'favicon');
+            if(favicon){
+                this.assets.favicon = favicon.assetvalue;
+            }
+
+
             let colors = assets.find(a => a.assetkey == 'colors');
             if(colors){
                 let c = JSON.parse(colors.assetvalue);
@@ -145,6 +164,10 @@ export class AdministrationAssetManager implements OnInit{
         })
     }
 
+    public deleteAsset(assetType){
+        this.assets[assetType] = undefined
+    }
+
     /**
      * composes a color label fromt eh cvar name
      * @param colorname
@@ -158,7 +181,7 @@ export class AdministrationAssetManager implements OnInit{
      * @param assetType
      */
     public assetBoxStyle(assetType){
-        return {width: this.assetdimensions[assetType].cropwidth, height: this.assetdimensions[assetType].cropheight};
+        return {width: this.assetdimensions[assetType].cropwidth + 2 + 'px', height: this.assetdimensions[assetType].cropheight + 2 + 'px'};
     }
 
     public save(){
@@ -177,6 +200,13 @@ export class AdministrationAssetManager implements OnInit{
             id: headerimage ? headerimage.id : this.modelutilities.generateGuid(),
             assetkey: 'headerimage',
             assetvalue: this.assets.headerimage
+        });
+
+        let favicon = this.loadedassets.find(a => a.assetkey == 'favicon');
+        assets.push({
+            id: favicon ? favicon.id : this.modelutilities.generateGuid(),
+            assetkey: 'favicon',
+            assetvalue: this.assets.favicon
         });
 
         // build the css values
@@ -223,6 +253,13 @@ export class AdministrationAssetManager implements OnInit{
         assets.push({
             id: headerImage.id,
             assetkey: 'headerimage',
+            assetvalue: ''
+        });
+
+        let favicon = this.loadedassets.find(a => a.assetkey == 'favicon');
+        assets.push({
+            id: favicon.id,
+            assetkey: 'favicon',
             assetvalue: ''
         });
 

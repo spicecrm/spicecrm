@@ -208,6 +208,7 @@ import {CdkPortalOutlet} from "@angular/cdk/portal";
 import {SystemInputPackage} from "./components/systeminputpackage";
 import {SystemInputVersion} from "./components/systeminputversion";
 import {SystemSourceEditor} from "./components/systemsourceeditor";
+import {SystemGenerativeAIPromptModal} from "./components/systemgenerativeaipromptmodal";
 
 
 @NgModule({
@@ -404,7 +405,8 @@ import {SystemSourceEditor} from "./components/systemsourceeditor";
         SystemInputRoles,
         SystemSelectModuleModal,
         SystemDropdownMobileModal,
-        SystemSourceEditor
+        SystemSourceEditor,
+        SystemGenerativeAIPromptModal
     ],
     exports: [
         PaginationControlsComponent,

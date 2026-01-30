@@ -6,7 +6,7 @@ import {
     Directive,
     ElementRef,
     HostBinding,
-    HostListener,
+    HostListener, input,
     Input,
     OnDestroy, OnInit,
     Renderer2
@@ -32,7 +32,10 @@ import {take} from "rxjs/operators";
  */
 @Directive({
     selector: '[system-dropdown-trigger]',
-    standalone: false
+    standalone: false,
+    host: {
+        'class': 'slds-dropdown-trigger'
+    }
 })
 export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
 
@@ -43,30 +46,47 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
     public triggerClickListener: any;
     public previousTriggerRect: any;
     public dropdownElement: HTMLElement;
+    public dropdowntriggerdisabled: boolean = false;
     /**
      * if true apply the sticky bottom class for the dropdown container
      * @private
      */
-    @Input() private stickyOnMobile: boolean = false;
+    @Input() public stickyOnMobile: boolean = false;
        /**
      * if true always close the dropdown on click
      * @private
      */
-    @Input() private autoClose: boolean = false;
+    @Input() public autoClose: boolean = true;
     /**
      * A boolean flag that determines whether the trigger element's width
      * should match the width of its associated dropdown trigger component.
      */
     @Input() public fitTriggerWidth: boolean = false;
-    /*
-    * @input dropdowntrigger: boolean = false
-    */
-    @Input('system-dropdown-trigger') public dropdowntriggerdisabled: boolean = false;
+
+    /**
+     * A boolean flag that determines whether the trigger element's width
+     * should match the width of its associated dropdown trigger component.
+     */
+    @Input('system-dropdown-trigger') set triggerDisabled(value) {
+        if (value === true) {
+            this.dropdowntriggerdisabled = true;
+        } else {
+            this.dropdowntriggerdisabled = false;
+        }
+    }
     /**
      * holds a reference of the mobile modal
      * @private
      */
     private mobileModalRef: ComponentRef<SystemDropdownMobileModal>;
+    /**
+     * if true, the dropdown will be opened on hover of the trigger element
+     */
+    public triggerOnHover = input(false);
+    /**
+     * the selector for the dropdown element.
+     */
+    public dropdownSelectorClass = input('slds-dropdown');
 
     constructor(
         public renderer: Renderer2,
@@ -138,6 +158,7 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
     public open() {
 
         this.dropDownOpen = true;
+        this.renderer.removeClass(this.dropdownElement, 'slds-hidden');
 
         this.moveDropdownToFooter();
         this.setDropdownElementPosition();
@@ -146,7 +167,9 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
             () => this.setDropdownElementPosition()
         );
 
-        this.clickListener = this.renderer.listen("document", "click", (e) => this.onClick(e));
+        if (!this.triggerOnHover()) {
+            this.clickListener = this.renderer.listen("document", "click", (e) => this.onClick(e));
+        }
         // use window scroll listener with capture to catch any scroll event in the app
         window.addEventListener("scroll", this.scrollHandlerFn, {capture: true});
     }
@@ -161,10 +184,29 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
      * open the dropdown on the host click if the trigger button was not defined
      * @private
      */
-    @HostListener('click')
-    public hostClick() {
-        if (this.hasTriggerButton) return;
+    @HostListener('click', ['$event'])
+    public hostClick(e: MouseEvent) {
+        e.stopPropagation();
+        if (this.hasTriggerButton || this.triggerOnHover()) return;
         this.toggleDropdown();
+    }
+
+    /**
+     * open the dropdown on the mouse enter event
+     */
+    @HostListener('mouseenter')
+    public onMouseEnter() {
+        if (this.hasTriggerButton || !this.triggerOnHover()) return;
+        this.toggleDropdown();
+    }
+
+    /**
+     * close the dropdown on the mouse leave event
+     */
+    @HostListener('mouseleave')
+    public onMouseExit() {
+        if (this.hasTriggerButton || !this.triggerOnHover()) return;
+        this.close();
     }
 
     /*
@@ -206,6 +248,7 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
         } else if (this.dropdownElement && this.footer.footercontainer.element.nativeElement.contains(this.dropdownElement)) {
             this.renderer.removeChild(this.footer.footercontainer.element.nativeElement, this.dropdownElement);
             this.renderer.appendChild(this.elementRef.nativeElement, this.dropdownElement);
+            this.renderer.setStyle(this.dropdownElement, 'inset', undefined);
         }
     }
 
@@ -215,11 +258,16 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
     public setDropdownElement() {
         if (this.dropdownElement) return;
         for (let child of this.elementRef.nativeElement.children) {
-            if (child.classList.contains('slds-dropdown')) {
+            if (child.classList.contains(this.dropdownSelectorClass())) {
                 this.dropdownElement = child;
                 break;
             }
         }
+
+        if (this.dropdownElement && !this.dropdownElement.classList.contains('slds-hidden')) {
+            this.renderer.addClass(this.dropdownElement, 'slds-hidden');
+        }
+
     }
 
     /*
@@ -235,11 +283,22 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
 
         if (this.previousTriggerRect && JSON.stringify(this.previousTriggerRect) == JSON.stringify(triggerRect)) return;
 
+        // clear the nubbin class for popovers
+        if (this.dropdownSelectorClass() == 'slds-popover-container') {
+            const popover = this.dropdownElement.querySelector('.slds-popover');
+            popover.classList.forEach((className) => {
+                if (!className.startsWith('slds-nubbin_')) return;
+                this.renderer.removeClass(popover, className);
+            });
+        }
+
+        const nubbinDirection = {x: 'left', y: 'bottom'};
+
         this.previousTriggerRect = triggerRect;
 
         this.renderer.setStyle(this.dropdownElement, 'transform', 'translateX(0)');
-        this.renderer.setStyle(this.dropdownElement, 'z-index', '999999');
         this.renderer.addClass(this.dropdownElement, 'slds-scrollable');
+
 
         // from bottom to top direction
         if (triggerRect.bottom > window.innerHeight * 0.70 && triggerRect.bottom + this.dropdownElement.clientHeight > window.innerHeight) {
@@ -248,7 +307,6 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
 
             // on overflow adjust the height
             this.renderer.setStyle(this.dropdownElement, 'max-height', (triggerRect.top - 10) + 'px');
-
             // from top to bottom direction
         } else {
             this.renderer.setStyle(this.dropdownElement, 'top', triggerRect.bottom + 'px');
@@ -258,6 +316,8 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
             if (triggerRect.bottom < window.innerHeight * 0.70) {
                 this.renderer.setStyle(this.dropdownElement, 'max-height', (window.innerHeight - triggerRect.bottom - 10) + 'px');
             }
+
+            nubbinDirection.y = 'top';
         }
 
         if (this.fitTriggerWidth) {
@@ -270,11 +330,21 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
             this.renderer.setStyle(this.dropdownElement, 'right', (window.innerWidth - triggerRect.right) + 'px');
             this.renderer.setStyle(this.dropdownElement, 'left', 'auto');
 
+            nubbinDirection.x = 'right';
+
             // from left to right direction
         } else {
             this.renderer.setStyle(this.dropdownElement, 'left', triggerRect.left + 'px');
             this.renderer.setStyle(this.dropdownElement, 'right', 'auto');
         }
+
+        // add the nubbin class for popovers
+        if (this.dropdownSelectorClass() == 'slds-popover-container') {
+            const popover = this.dropdownElement.querySelector('.slds-popover');
+            this.renderer.addClass(popover, `slds-nubbin_${nubbinDirection.y}-${nubbinDirection.x}`);
+        }
+
+        this.renderer.setStyle(this.dropdownElement, 'z-index', '999999');
 
         // make sure we detect changes in case we are on a push strategy
         this.cdRef.markForCheck();
@@ -287,7 +357,7 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
     * @remove global click listener
     */
     public onClick(event): void {
-        if (this.autoClose || !this.elementRef.nativeElement.contains(event.target)) {
+        if (this.autoClose || (!this.elementRef.nativeElement.contains(event.target) && !this.dropdownElement.contains(event.target))) {
             this.close();
         }
     }
@@ -297,9 +367,14 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
      */
     public close() {
         this.dropDownOpen = false;
+        if (!this.dropdownElement.classList.contains('slds-hidden')) {
+            this.renderer.addClass(this.dropdownElement, 'slds-hidden');
+        }
         this.removeScrollListener();
         this.restoreDropdownFromFooter();
-        this.clickListener();
+        if (this.clickListener) {
+            this.clickListener();
+        }
         // make sure we detect changes in case we are on a push strategy
         this.cdRef.markForCheck();
     }

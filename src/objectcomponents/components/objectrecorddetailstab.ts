@@ -29,6 +29,11 @@ export class ObjectRecordDetailsTab implements OnInit {
      */
     public expanded: boolean = true;
 
+    /**
+     * set if tab shoudl be collapsable
+     */
+    public collapsable: boolean = true;
+
     constructor(public metadata: metadata, public model: model, public language: language) {
     }
 
@@ -38,6 +43,10 @@ export class ObjectRecordDetailsTab implements OnInit {
     public ngOnInit() {
         if (this.componentconfig.collapsed) {
             this.expanded = false;
+        }
+
+        if (this.componentconfig.notcollapsable) {
+            this.collapsable = false;
         }
     }
 

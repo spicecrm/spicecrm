@@ -187,10 +187,6 @@ export class configurationService {
                     this.setAssets(res.assets);
                 }
 
-                // set the favicon
-                // ToDo: move to separate theming service
-                this.setFavIcon();
-
                 // set the title
                 this.title.setTitle(this.systemName);
             },
@@ -261,7 +257,11 @@ export class configurationService {
     public setAssets(assets, emit = false) {
         this.assets = assets;
 
+        // set the color
         this.setColors();
+
+        // set the favicon
+        this.setFavIcon();
 
         if (emit) this.loaded$.next(true);
     }
@@ -355,7 +355,7 @@ export class configurationService {
      */
     public getData(key) {
         // console.log('appdata',this.appdata);
-        return this.appdata[key] ? this.appdata[key] : false;
+        return this.appdata.hasOwnProperty(key) ? this.appdata[key] : false;
     }
 
     public updateThemeColors() {
@@ -425,14 +425,12 @@ export class configurationService {
      * sets the favicon
      */
     public setFavIcon() {
+        // chek that we have a favicon
+        if (!this.getAsset('favicon')) return;
+        let favicon = this.getAsset('favicon');
         let icon = document.querySelectorAll("link[ rel ~= 'icon' i]")[0];
         if (icon) {
-            let config = this.getCapabilityConfig('theme');
-            if (config.icon_image) {
-                icon.setAttribute('href', 'data:' + config.icon_image);
-            } else {
-                icon.setAttribute('href', './config/favicon');
-            }
+            icon.setAttribute('href', favicon);
         }
     }
 
@@ -450,7 +448,6 @@ export class configurationService {
         for (let assetColor in colorObj) {
             document.documentElement.style.setProperty('--' + assetColor, colorObj[assetColor]);
         }
-
     }
 
     /**

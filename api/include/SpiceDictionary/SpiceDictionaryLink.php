@@ -38,6 +38,8 @@ class SpiceDictionaryLink
     //Used to store unsaved beans on this relationship that will be combined with the ones pulled from the DB if getBeans() is called.
     protected $tempBeans = [];
 
+    public $ignoreACL = false;
+
     /**
      * @param  $linkName String name of a link field in the module's vardefs
      * @param  $bean SpiceBean focus bean for this link (one half of a relationship)
@@ -50,7 +52,7 @@ class SpiceDictionaryLink
         $this->name = $linkName;
 
         # Instantiate the relationship for this link.
-        $this->relationship = RelationshipFactory::getInstance()->getRelationship($this->def['relationship']);
+        $this->relationship = RelationshipFactory::getInstance()->getRelationship($this->def['relationship'], $this);
         $this->relationship_fields = $this->def['rel_fields'] ?? [];
 
         if (!$this->loadedSuccesfully()) {
@@ -247,14 +249,6 @@ class SpiceDictionaryLink
         }
 
         LoggerManager::getLogger()->developer("Unable to get proper side for link {$this->name} in {$this->focus->_module}");
-    }
-
-    /**
-     * @return bool true if LHSModule == RHSModule
-     */
-    protected function is_self_relationship()
-    {
-        return $this->relationship->isSelfReferencing();
     }
 
     /**

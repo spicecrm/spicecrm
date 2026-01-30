@@ -1,0 +1,31 @@
+<div class="slds-size--1-of-1 slds-height_full slds-grid slds-grid--vertical" system-to-bottom-noscroll>
+    <div class="slds-box slds-box--border slds-theme--shade">
+        <div class="slds-p-around--x-small slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
+            <system-label label="LBL_ORGCHART"/>
+            @if (!relatedmodels.isloading){
+                @if(relatedmodels.items.length > 0){
+                    <system-select system-select-id-only [disabled]="relatedmodels.items.length < 2" style="width: 300px" [(ngModel)]="orgChartId">
+                        @for (orgchart of relatedmodels.items; track orgchart.id){
+                            <system-select-option [value]="orgchart.id" [display]="orgchart.name"/>
+                        }
+                    </system-select>
+                } @else if (canAdd) {
+                    <button class="slds-button slds-button--neutral" (click)="addOrgChart()">
+                        <system-label label="LBL_ADD"/>
+                    </button>
+                }
+            }
+        </div>
+    </div>
+    <div class="slds-grow">
+        @if (model.id){
+            <orgunits-chart-view/>
+        } @else {
+            <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+                <system-illustration-no-data>
+                    <system-label label="LBL_NO_RECORD_SELECTED"/>
+                </system-illustration-no-data>
+            </div>
+        }
+    </div>
+</div>

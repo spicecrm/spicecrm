@@ -27,6 +27,12 @@ export class SystemInputTimezone implements ControlValueAccessor {
      * input to disable the input
      */
     @Input() public disabled = false;
+    public systemselect = false;
+
+    @Input('system-select') set setSystemSelect(value) {
+        this.systemselect = value !== false;
+    }
+
     @Input() public id = '';
 
     // for the value accessor

@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component} from '@angular/core';
+import {Component, ElementRef, inject} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -18,6 +18,13 @@ import {userpreferences} from "../../services/userpreferences.service";
 export class fieldFullName extends fieldGeneric {
     public isValid: boolean = true;
     public errorMessage: string = '';
+
+    public salutations: any[] = [];
+
+    /**
+     * injected instance of the ElementRef
+     */
+    public elementRef: ElementRef = inject(ElementRef);
 
     get fieldsalutation() {
         return this.fieldconfig.field_salutation ? this.fieldconfig.field_salutation : 'salutation';
@@ -95,7 +102,7 @@ export class fieldFullName extends fieldGeneric {
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public userpreferences:userpreferences) {
         super(model, view, language, metadata, router);
-
+        this.salutations = this.getSalutations();
     }
 
     public getNameFormat() {
@@ -141,6 +148,16 @@ export class fieldFullName extends fieldGeneric {
         return this.fieldconfig.simple;
     }
 
+    get width() {
+        return this.elementRef.nativeElement.parentElement.getBoundingClientRect().width;
+    }
+
+    get sizeClass(){
+        let matches = Math.ceil(this.width / 150);
+        return matches <= 8 ? `slds-size--1-of-${matches}` : 'slds-size--1-of-8';
+    }
+
+
     /**
      * determines the width of the fields based on the size of the view
      *
@@ -151,31 +168,47 @@ export class fieldFullName extends fieldGeneric {
 
         let fieldClass = '';
 
-        switch (fieldname) {
-            case this.fieldsalutation:
-                fieldClass = this.view.size == 'small' ? 'slds-size--1-of-3 slds-order--1' : (this.isSimple ? 'slds-size--1-of-5' : 'slds-size--1-of-7');
-                break;
-            case this.fielddegree:
-                fieldClass = this.view.size == 'small' ? 'slds-size--1-of-3 slds-order--2' : 'slds-size--1-of-7';
-                break;
-            case this.fieldlasttitle:
-                fieldClass = this.view.size == 'small' ? 'slds-size--1-of-3 slds-order--3' : 'slds-size--1-of-7';
-                break;
-            case this.fieldfirstname:
-                fieldClass = this.view.size == 'small' ? 'slds-size--1-of-2 slds-order--4' : (this.isSimple ? 'slds-p-left--xx-small slds-size--2-of-5' : 'slds-p-left--xx-small slds-size--2-of-7');
-                break;
-            case this.fieldlastname:
-                fieldClass = this.view.size == 'small' ? 'slds-size--1-of-2 slds-order--5' : (this.isSimple ? 'slds-size--2-of-5' : 'slds-size--2-of-7');
-                break;
+        if(this.isSimple){
+            switch (fieldname) {
+                case this.fieldsalutation:
+                    fieldClass = this.view.size == 'small' ? 'slds-size--1-of-1 slds-order--1' : (this.isSimple ? 'slds-size--1-of-5' : 'slds-size--1-of-7');
+                    break;
+                case this.fieldfirstname:
+                    fieldClass = this.view.size == 'small' ? 'slds-size--1-of-1 slds-order--4' : (this.isSimple ? 'slds-size--2-of-5' : 'slds-size--2-of-7');
+                    break;
+                case this.fieldlastname:
+                    fieldClass = this.view.size == 'small' ? 'slds-size--1-of-1 slds-order--5' : (this.isSimple ? 'slds-size--2-of-5' : 'slds-size--2-of-7');
+                    break;
+            }
+        } else {
+            switch (fieldname) {
+                case this.fieldsalutation:
+                    fieldClass = this.view.size == 'small' ? 'slds-size--1-of-1 slds-order--1' : (this.isSimple ? 'slds-size--1-of-5' : 'slds-size--1-of-7');
+                    break;
+                case this.fielddegree:
+                    fieldClass = this.view.size == 'small' ? 'slds-size--1-of-2 slds-order--2' : 'slds-size--1-of-7';
+                    break;
+                case this.fieldlasttitle:
+                    fieldClass = this.view.size == 'small' ? 'slds-size--1-of-2 slds-order--3' : 'slds-size--1-of-7';
+                    break;
+                case this.fieldfirstname:
+                    fieldClass = this.view.size == 'small' ? 'slds-size--1-of-2 slds-order--4' : (this.isSimple ? 'slds-size--2-of-5' : 'slds-size--2-of-7');
+                    break;
+                case this.fieldlastname:
+                    fieldClass = this.view.size == 'small' ? 'slds-size--1-of-2 slds-order--5' : (this.isSimple ? 'slds-size--2-of-5' : 'slds-size--2-of-7');
+                    break;
+            }
         }
 
         if (this.getStati(fieldname).invalid) {
             fieldClass += ' slds-has-error';
         }
 
+        if (this.getStati(fieldname).required) {
+            fieldClass += ' spice-field-is-required';
+        }
+
         return fieldClass;
-
-
     }
 
     public getSalutations(): any[] {

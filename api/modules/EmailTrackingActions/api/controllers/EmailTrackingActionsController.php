@@ -68,7 +68,7 @@ class EmailTrackingActionsController
     }
 
     /**
-     * handles logging of email opening
+     * handles unsubscribe
      * @param Request $req
      * @param Response $res
      * @param array $args
@@ -113,6 +113,57 @@ class EmailTrackingActionsController
             $lpContent['content'] = 'unsubscribed';
         }
 
+
+        $res->getBody()->write($lpContent['content']);
+        return $res->withHeader('Content-Type', 'text/html');
+    }
+
+
+    /**
+     * handles newsletter unsubscribe
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws BadRequestException|Exception
+     */
+    public function handleNewsletterUnsubscribe(Request $req, Response $res, array $args): Response
+    {
+        $data = EmailTracking::decodeTrackingID($args['key']);
+
+        if (!$data) {
+            throw new BadRequestException('Failed to decrypt key');
+        }
+
+        $this->logTrackingAction($data, 'unsubscribe');
+
+        // get the email seed
+        /** @var Email | CampaignLog | NewsletterLog $seed */
+        $seed = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+
+        if (!$seed) {
+            new NotFoundException('Email or CampaignLog or NewsletterLog not found');
+        }
+
+        if ($seed->_module = 'NewsletterLogs') {
+            $recipient = BeanFactory::getBean($seed->target_type, $seed->target_id);
+            BeanFactory::getBean('Newsletters')->handleUnsubscribeAction($seed->newsletter_id, $recipient->id);
+        }
+
+        $redirectUrl = $this->getEmailTrackingRedirectUrl('unsubscribe_redirect_url', $seed);
+
+        if (!empty($redirectUrl)) {
+            return $res->withHeader('Location', $redirectUrl)->withStatus(302);
+        }
+
+        // load the unsub landingpage content
+        /** @var LandingPage $landingPage */
+        $landingPage = BeanFactory::getBean('LandingPages', SpiceConfig::getInstance()->get('emailtracking.unsubscribelandingpage'));
+        if ($landingPage && SpiceConfig::getInstance()->get('emailtracking.unsubscribelandingpage') && $landingPage->retrieve(SpiceConfig::getInstance()->get('emailtracking.unsubscribelandingpage'))) {
+            $lpContent = $landingPage->parse($seed);
+        } else {
+            $lpContent['content'] = 'unsubscribed';
+        }
 
         $res->getBody()->write($lpContent['content']);
         return $res->withHeader('Content-Type', 'text/html');
@@ -251,7 +302,9 @@ class EmailTrackingActionsController
             case 'NewsletterLogs':
                 $recipient = BeanFactory::getBean($bean->target_type, $bean->target_id);
                 $recipient->load_relationship('email_addresses');
-                $emailAddress = $this->getEmailAddress($recipient, $bean->email_addr_bean_rel_id);
+
+                $emailAddress = BeanFactory::getBean('EmailAddresses')->getEmailAddressForBean($recipient, $bean->email_addr_bean_rel_id);
+
                 if (EmailAddress::setOptInStatus($recipient, $emailAddress, $status)) {
                     return true;
                 } else {
@@ -278,7 +331,11 @@ class EmailTrackingActionsController
         $newsletter->unsubscribeTargetFromAllNewsletters($recipient->id);
     }
 
-    public function getEmailAddress(SpiceBean $person, $emailAddrBeanRelId): ?EmailAddress
+    /**
+     * this is done in the email addresses class
+     * @deprecated
+     * */
+/*    public function getEmailAddress(SpiceBean $person, $emailAddrBeanRelId): ?EmailAddress
     {
         $db = DBManagerFactory::getInstance();
 //        $emailAddrBeanRelId = $db->getOne("SELECT email_addr_bean_rel_id from prospect_lists_prospects WHERE prospect_list_id = '$listId' AND related_id ='$person->id' AND deleted = 0");
@@ -292,7 +349,7 @@ class EmailTrackingActionsController
         $row = $db->fetchOne($q);
 
         return BeanFactory::getBean('EmailAddresses', $row['email_address_id']);
-    }
+    }*/
 
     /**
      * sets the optin status of a recipient's email address to opted out

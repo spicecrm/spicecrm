@@ -5,22 +5,33 @@
         </div>
         <div *ngIf="modelattachments.loading" class="slds-p-around--x-small slds-align--absolute-center">
             <div class="slds-grid slds-grid--vertical-align-center">
-                <system-spinner size="14"></system-spinner>
+                <system-spinner [size]="14"></system-spinner>
                 <system-label class="slds-p-left--x-small" label="LBL_INITIALIZING"></system-label>
             </div>
         </div>
     </div>
-    <div *ngIf="editing && !componentconfig.disableupload && !modelattachments.loading" class="slds-grid slds-grid--align-center slds-grid--vertical-align-center slds-gutters_direct-xx-small slds-wrap">
-        <div class="slds-col"><system-label label="LBL_DROP_FILES"></system-label></div>
-        <div class="slds-col"><system-label label="LBL_OR"></system-label></div>
-        <button *ngIf="!componentconfig.disableupload" class="slds-col slds-button slds-button--neutral" (click)="selectFile()"><system-label label="LBL_UPLOAD_FILES"></system-label></button>
-        <div class="slds-col"><system-label label="LBL_OR"></system-label></div>
-        <button *ngIf="!componentconfig.disableupload" class="slds-col slds-button slds-button--neutral" (click)="addImage()"><system-label label="LBL_ADD_IMAGE"></system-label></button>
-        <input #fileupload style="display:none" type="file" multiple (click)="fileupload.value = null" (change)="uploadFile()"/>
-        <div class="slds-col"><system-label label="LBL_OR"></system-label></div>
-        <button *ngIf="!componentconfig.disableupload" [disabled]="_modelattachments.module =='Tasks'" class="slds-col slds-button slds-button--neutral" (click)="addFromRecord()"><system-label label="LBL_ADD_FROM_RECORD"></system-label></button>
-    </div>
-    <div *ngIf="modelattachments.files.length > 0 && (model.module == 'Emails' || model.module == 'EmailSchedules')" class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded slds-grid--align-spread slds-m-top--small">
-        <div class="slds-m-left--small"><system-label label="LBL_TOTAL_ATTACHMENTS_SIZE"></system-label>&nbsp;{{modelattachments.totalHumanFileSize}} / {{maxUpload}}</div>
-    </div>
+    @if(!modelattachments.loading){
+        <div class="slds-grid slds-grid--align-center slds-grid--vertical-align-center" [ngClass]="{'slds-p-top--x-small': modelattachments.files.length > 0}">
+            <div *ngIf="editing && !componentconfig.disableupload" class="slds-grid slds-grid--align-center slds-grid--vertical-align-center slds-gutters_direct-xx-small slds-wrap">
+                @if ((modelattachments.files.length == 0 || !displaySizeInfo) && width >= 500){
+                    <div class="slds-col"><system-label label="LBL_DROP_FILES"></system-label></div>
+                    <div class="slds-col"><system-label label="LBL_OR"></system-label></div>
+                }
+                <button *ngIf="!componentconfig.disableupload" class="slds-col slds-button slds-button--icon-border slds-button--neutral" (click)="selectFile()" system-title="LBL_UPLOAD"><system-button-icon icon="upload"/></button>
+                <div class="slds-col"><system-label label="LBL_OR"></system-label></div>
+                <button *ngIf="!componentconfig.disableupload" class="slds-col slds-button slds-button--icon-border slds-button--neutral" (click)="addImage()" system-title="LBL_ADD_IMAGE"><system-button-icon icon="image"/></button>
+                <input #fileupload style="display:none" type="file" multiple (click)="fileupload.value = null" (change)="uploadFile()"/>
+                @if (hasParentAttachments){
+                    <div class="slds-col"><system-label label="LBL_OR"></system-label></div>
+                    <button *ngIf="!componentconfig.disableupload" [disabled]="_modelattachments.module =='Tasks'" class="slds-col slds-button slds-button--icon-border slds-button--neutral" (click)="addFromRecord()" system-title="LBL_ADD_FROM_RECORD"><system-button-icon icon="link"/></button>
+                }
+            </div>
+            @if (displaySizeInfo){
+                <div class="slds-col--bump-left slds-card__body--inner">
+                    <div class="slds-text-align--right"><system-label label="LBL_TOTAL_ATTACHMENTS_SIZE"></system-label></div>
+                    <div class="slds-text-align--right">{{modelattachments.totalHumanFileSize}}<span *ngIf="maxUpload">&nbsp;/&nbsp;{{maxUpload}}</span></div>
+                </div>
+            }
+        </div>
+    }
 </div>

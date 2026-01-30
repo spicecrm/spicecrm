@@ -58,16 +58,16 @@ export class EmailSendButton {
             }
         });
         let selectedMailboxData = mailboxData.find(id => id.value == mailbox);
-        let sizeTooBig = !!this.model.getFieldValue('attachments_size') ? this.model.getFieldValue('attachments_size') > selectedMailboxData.max_upload : false;
+        let sizeTooBig = !!selectedMailboxData && !!this.model.getFieldValue('attachments_size') ? this.model.getFieldValue('attachments_size') > selectedMailboxData.max_upload : false;
         let name = this.model.getFieldValue('name');
         let body = this.model.getFieldValue('body');
         let recipientTo = recipientAddresses ? recipientAddresses.find(re => re.address_type == 'to') : undefined;
 
-        return (!name || !body || !mailbox || !recipientAddresses || !recipientTo || sizeTooBig) ? true : this.sending;
-    }
+        if (this.model.getField('downloadlink_attachments')) {
+            sizeTooBig = false;
+        }
 
-    get buttonLabel(): string {
-        return this.model.getFieldValue('date_scheduled') ? 'LBL_SEND_EMAIL_LATER' : 'LBL_SEND';
+        return (!name || !body || !mailbox || !recipientAddresses || !recipientTo || sizeTooBig) ? true : this.sending;
     }
 
     /**

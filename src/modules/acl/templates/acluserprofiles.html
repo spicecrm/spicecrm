@@ -2,8 +2,11 @@
     <thead class="slds-table--bordered slds-text-align_center">
         <tr class="slds-text-title--caps">
             <th><system-label label="LBL_SPICEACLPROFILE"></system-label></th>
-            <th style="width: 4rem" class="slds-text-align--center"><system-label label="LBL_SCOPE"></system-label></th>
-            <th style="width: 4rem" class="slds-text-align--center"><system-label label="LBL_ACTIVE"></system-label></th>
+            <th style="width: 2rem" class="slds-text-align--center" system-title="LBL_SCOPE"><system-label label="LBL_SCOPE" length="short"></system-label></th>
+            <th style="width: 2rem" class="slds-text-align--center" system-title="LBL_ACTIVE"><system-label label="LBL_ACTIVE" length="short"></system-label></th>
+            @if (enableAdd) {
+                <th style="width: 2rem" class="slds-text-align--center slds-truncate" system-title="LBL_DELETE"><system-label label="LBL_DELETE" length="short"></system-label></th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -20,8 +23,26 @@
                 <td class="slds-text-align--center">
                     <system-utility-icon icon="light_bulb" [colorclass]="userProfile.status == 'r' ? 'slds-icon-text-success' : 'slds-icon-text-light'" size="x-small"></system-utility-icon>
                 </td>
+                @if (enableAdd) {
+                    <td class="slds-text-align--center">
+                        @if (userProfile.profilesource == 'user') {
+                            <button class="slds-button slds-button--icon" (click)="deleteProfile(userProfile.id)">
+                                <system-button-icon icon="delete"></system-button-icon>
+                            </button>
+                        }
+                    </td>
+                }
             </ng-container>
         </tr>
+        @if (enableAdd) {
+            <tr>
+                <td colspan="4" class="slds-text-align--center">
+                    <button class="slds-button slds-button--icon" (click)="selectNewProfiles()">
+                        <system-button-icon icon="new"/>
+                    </button>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 

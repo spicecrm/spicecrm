@@ -1,13 +1,15 @@
 /**
  * @module ObjectFields
  */
-import {AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, Component, inject, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {Router} from '@angular/router';
 import {Subscription} from "rxjs";
+import {FieldTranslatableText} from "./fieldtranslatabletext";
+import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'field-generic',
@@ -56,6 +58,13 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
      * holds any subscription a field might have
      */
     public subscriptions: Subscription = new Subscription();
+    /**
+     * reference to the parent field translatable text
+     * @private
+     */
+    public fieldTranslatableText: FieldTranslatableText = inject(FieldTranslatableText, {optional: true});
+
+    public configurationService = inject(configurationService);
 
     constructor(
         public model: model,
@@ -101,7 +110,7 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
      * a getter to return the additonal css classes
      */
     get css_classes() {
-        if (this.getStati().invalid) {
+        if (this.model.getFieldStates(this.fieldname).invalid) {
             this.addCssClass('slds-has-error');
         } else {
             this.removeCssClass('slds-has-error');
@@ -118,10 +127,21 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
     }
 
     /**
+     * @return boolean true if the field is translatable
+     */
+    get isTranslatable(): boolean {
+        return this.fieldTranslatableText && this.configurationService.data.systemparameters.translatable_fields;
+    }
+
+    /**
      * a getter for the value bound top the model
      */
     get value() {
-        return this.model.getField(this.fieldname);
+        if (this.isTranslatable) {
+            return this.fieldTranslatableText.getValue(this.isEditMode())
+        } else {
+            return this.model.getField(this.fieldname);
+        }
     }
 
     /**
@@ -177,25 +197,28 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
     }
 
     /**
-     * checks the satus for the field
-     *
-     * @param field optional the fieldname
+     * get field states
+     * @param field
      */
     public getStati(field: string = this.fieldname) {
-        let stati = this.model.getFieldStati(field);
-        if (stati.editable && (!this.view.isEditable || stati.readonly || this.fieldconfig.readonly)) {
-            stati.editable = false;
-        }
-        return stati;
+        return this.model.getFieldStates(field);
     }
 
     /**
-     * checks if the field is editbale
-     *
-     * @param field optional the fieldname
+     * check if the field is readonly
+     * @returns {boolean}
+     */
+    get isReadonly(): boolean {
+        return (!this.view.isEditable || this.fieldconfig.readonly);
+    }
+
+    /**
+     * checks if the field is editable
+     * @param field
      */
     public isEditable(field: string = this.fieldname): boolean {
-        return (this.model.checkAccess('edit') || this.model.checkAccess('create')) && this.getStati(field).editable && !this.getStati(field).readonly && !this.getStati(field).disabled && !this.getStati(field).hidden;
+        const states = this.getStati(field);
+        return !this.isReadonly && (this.model.checkAccess('edit') || this.model.checkAccess('create')) && states.editable && !states.readonly && !states.disabled && !states.hidden;
     }
 
     /**
@@ -242,7 +265,7 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
 
 
     public hasFieldErrors(field: string = this.fieldname): boolean {
-        return !!(this.getStati(field).invalid || this.errors);
+        return !!(this.model.getFieldStates(field).invalid || this.errors);
     }
 
     /**

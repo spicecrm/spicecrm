@@ -190,10 +190,14 @@ export class ObjectRelatedlistTable implements OnInit {
 
         let actionitems = this.metadata.getActionSetItems(this.listitemactionset);
 
-        for (let actionitem of actionitems) {
-            if (actionitem.actionconfig.singlebutton || actionitem.actionconfig.displayasicon) {
-                this.singlebutton = true;
+        if(actionitems.length > 0) {
+            for (let actionitem of actionitems) {
+                if (actionitem.actionconfig.singlebutton || actionitem.actionconfig.displayasicon) {
+                    this.singlebutton = true;
+                }
             }
+        } else {
+            this.hideActions = true;
         }
     }
 

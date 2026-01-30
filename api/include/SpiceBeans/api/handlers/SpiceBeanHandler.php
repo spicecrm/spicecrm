@@ -1412,6 +1412,11 @@ class SpiceBeanHandler
             $sequenceField = $thisBean->field_defs[$linkName]['sequence_field'];
         }
 
+        if ($params['filterown']) {
+            $currentUserId = AuthenticationController::getInstance()->getCurrentUser()->id;
+            $addWhere = "assigned_user_id = '$currentUserId'";
+        }
+
         // apply module filter if one is set
         if ($params['modulefilter']) {
             $sysModuleFilters = new SysModuleFilters();
@@ -1468,7 +1473,9 @@ class SpiceBeanHandler
         foreach ($relBeans as $relBean) {
 
             $mappedRecord = $this->mapBeanToArray($relModule, $relBean, @$params['forceResolveLinks'] === '1' );
-
+            if(isset($relBean->relid)){
+                $mappedRecord['relid'] = $relBean->relid;
+            }
             // add relationship fields
             if (is_array($relBean->relationhshipfields)) {
                 $mappedRecord['relationhshipfields'] = $relBean->relationhshipfields;
@@ -2166,7 +2173,7 @@ class SpiceBeanHandler
 
                         if ($loaded && $thisBean->{$fieldId}) {
                             $relModule = $thisBean->{$fieldId}->getRelatedModuleName();
-                            $relatedBeans = $thisBean->get_linked_beans($fieldId, $relModule, false, true);
+                            $relatedBeans = $thisBean->get_linked_beans($fieldId, $relModule);
                             foreach ($relatedBeans as $relatedBean) {
                                 $beanDataArray[$fieldId]['beans']->{$relatedBean->id} = $this->mapBeanToArray($relModule, $relatedBean);
                             }
@@ -2186,6 +2193,8 @@ class SpiceBeanHandler
                     break;
             }
         }
+
+        if(!$thisBean) return null;
 
         // call the bean mapper if that one exists
         if ($thisBean && method_exists($thisBean, 'mapToRestArray')) {

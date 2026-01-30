@@ -12,7 +12,7 @@ import {
     enableProdMode, ViewChild, ApplicationRef
 } from "@angular/core";
 import {FormsModule} from "@angular/forms";
-import {RouterModule} from "@angular/router";
+import {RouterModule, UrlMatchResult, UrlSegment} from "@angular/router";
 import {HttpClientModule} from "@angular/common/http";
 import {LocationStrategy, HashLocationStrategy} from "@angular/common";
 
@@ -26,12 +26,13 @@ import {GlobalLogin} from "./globalcomponents/components/globallogin";
 import {SystemDynamicRouteInterceptor} from "./systemcomponents/components/systemdynamicrouteinterceptor";
 import {GlobalHeader} from "./globalcomponents/components/globalheader";
 import {SpiceInstallerModule} from "./include/spiceinstaller/spiceinstallermodule";
-import {ModuleGSuite} from "./include/gsuite/gsuite";
-import {Outlook} from "./include/outlook/outlook";
-import {GSuitePane} from "./include/gsuite/components/gsuitepane";
-import {OutlookPane} from "./include/outlook/components/outlookpane";
+import {ModuleGSuite} from "./extensions/include/gsuite/gsuite";
+import {Outlook} from "./extensions/include/outlook/outlook";
+import {GSuitePane} from "./extensions/include/gsuite/components/gsuitepane";
+import {OutlookPane} from "./extensions/include/outlook/components/outlookpane";
 import {loginCheck} from "./services/login.service";
 import {ModuleTOTPAuthentication} from "./include/totpauthentication/moduletotpauthentication";
+import {ModuleSpiceDiagrams} from "./include/spicediagrams/modulespicediagrams";
 
 // declarations for TS
 /**
@@ -105,10 +106,26 @@ export class SpiceUI {
         RouterModule.forRoot(
             [
                 {path: "login", component: GlobalLogin},
+                // path docs and docs/:id use matcher to combine two routes docs and docs/guid in the same component
+                // to prevent reloading the component when switching between the two routes
+                {
+                    matcher: (segments: UrlSegment[]): UrlMatchResult | null => {
+                        if (segments.length > 0 && segments[0].path === 'docs' && segments.length <= 2) {
+                            return {
+                                consumed: segments,
+                                posParams: segments[1] ? { id: segments[1] } : {}
+                            };
+                        }
+                        return null;
+                    }
+                    ,
+                    loadComponent: () => import('src/extensions/modules/knowledge/components/knowledgepublicbrowser').then(m => m.KnowledgePublicBrowser)
+                },
                 {path: "", redirectTo: "/module/Home", pathMatch: "full"},
-                {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]}
+                {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]},
             ]
-        )
+        ),
+        ModuleSpiceDiagrams
     ],
     declarations: [SpiceUI],
     providers: [

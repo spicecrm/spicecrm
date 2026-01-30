@@ -213,6 +213,7 @@ class ImapHandler extends TransportHandler
 
                 $email->body = $structure->getEmailBody();
                 try {
+                    $email->processEmail();
                     $email->save(false, true, false);
                 } catch (Exception $e) {
                     LoggerManager::getLogger()->error('Could not save email: ' . $email->name . ' ' . $email->message_id .'. Error Message: '.$e->getMessage());
@@ -224,7 +225,6 @@ class ImapHandler extends TransportHandler
                     SpiceAttachments::saveEmailAttachment('Emails', $email->id, $attachment);
                 }
 
-                $email->processEmail();
 
                 if ($new_mail_count > 100) {
                     break;
@@ -592,7 +592,9 @@ class ImapHandler extends TransportHandler
             if ( count( $bccAddresses )) $message->setBcc( $bccAddresses );
         }
 
-        if ($this->mailbox->reply_to != '') {
+        if (!empty($email->reply_to_addr)) {
+            $message->setReplyTo($email->reply_to_addr);
+        } else if ($this->mailbox->reply_to != '') {
             $message->setReplyTo($this->mailbox->reply_to);
         }
 
@@ -683,7 +685,7 @@ class ImapHandler extends TransportHandler
         // If there is no incoming communication and SMTP authentication is disabled the password is allowed to be empty
         foreach ($response['missing'] as $index => $missingSetting) {
             if ($missingSetting == 'imap_pop3_password' && $this->mailbox->inbound_comm == 0
-                && ($this->mailbox->smtp_auth == 0 || !isset($this->mailbox->smtp_auth))) {
+                && (!isset($this->mailbox->smtp_auth) || $this->mailbox->smtp_auth == 0)) {
                 unset($response['missing'][$index]);
             }
         }

@@ -268,9 +268,6 @@ class EmailAddressRelationship extends M2MRelationship
 
         $this->removeRow($dataToRemove);
 
-        if ($this->self_referencing)
-            $this->removeSelfReferencing($lhs, $rhs);
-
         if (empty($_SESSION['disable_workflow']) || $_SESSION['disable_workflow'] != "Yes")
         {
             if (!empty($lhs->$lhsLinkName))

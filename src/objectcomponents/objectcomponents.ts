@@ -115,6 +115,7 @@ import {ObjectRecordViewContainer} from './components/objectrecordviewcontainer'
 import {ObjectRecordView} from './components/objectrecordview';
 import {ObjectRecordViewDetail1} from './components/objectrecordviewdetail1';
 import {ObjectRecordViewDetail2and1} from './components/objectrecordviewdetail2and1';
+import {ObjectRecordViewDetail1and2and1} from './components/objectrecordviewdetail1and2and1';
 import {ObjectRecordViewDetailsplit} from './components/objectrecordviewdetailsplit';
 import {ObjectRecordCreateContainer} from "./components/objectrecordcreatecontainer";
 import {ObjectPageHeader} from './components/objectpageheader';
@@ -239,6 +240,7 @@ import {ObjectTemplateSendTestEmailModal} from "./components/objecttemplatesendt
 import {ObjectListHeaderActionsBulkSetStatusButton} from "./actions/objectlistheaderactionsbulksetstatusbutton";
 import {ObjectActionDownloadIcsButton} from "./components/objectactiondownloadicsbutton";
 import {ObjectRouteRedirect} from "./components/objectrouteredirect";
+import {ObjectFieldTranslationsModal} from "./components/objectfieldtranslationsmodal";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -340,6 +342,7 @@ import {ObjectRouteRedirect} from "./components/objectrouteredirect";
         ObjectRecordView,
         ObjectRecordViewDetail1,
         ObjectRecordViewDetail2and1,
+        ObjectRecordViewDetail1and2and1,
         ObjectRecordViewDetailsplit,
         ObjectPageHeader,
         ObjectPageHeaderIcon,
@@ -452,7 +455,8 @@ import {ObjectRouteRedirect} from "./components/objectrouteredirect";
         ObjectTemplateSendTestEmailModal,
         ObjectListHeaderActionsBulkSetStatusButton,
         ObjectActionDownloadIcsButton,
-        ObjectRouteRedirect
+        ObjectRouteRedirect,
+        ObjectFieldTranslationsModal
     ],
     exports: [
         ObjectListViewHeader,

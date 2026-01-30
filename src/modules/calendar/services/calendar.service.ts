@@ -381,7 +381,7 @@ export class calendar implements OnDestroy {
 
 
         if (forceReload || this.doReload(start, end, calendarId)) {
-            this.backend.cancelPendingRequests([this.httpRequestsRefID + '_load_events']);
+            this.backend.cancelPendingRequests([`${this.httpRequestsRefID}_${userId}_${calendarId}_load_events`]);
             this.isLoading = true;
             this.cdRef.detectChanges();
             let responseSubject = new Subject<any[]>();
@@ -390,7 +390,7 @@ export class calendar implements OnDestroy {
             this.currentEnd[calendarId] = end;
             this.currentStart[calendarId] = start;
 
-            this.backend.getRequest(`module/Calendar/${calendarId}/user/${userId}`, params, this.httpRequestsRefID + '_load_events')
+            this.backend.getRequest(`module/Calendar/${calendarId}/user/${userId}`, params, `${this.httpRequestsRefID}_${userId}_${calendarId}_load_events`)
                 .subscribe({
                     next: events => {
                         this.calendarData[calendarId] = [];

@@ -1,0 +1,17 @@
+@if (!thinking) {
+    <system-modal>
+        <system-modal-header (close)="close()">
+            <system-label label="LBL_GENERATE_TASKS"/>
+        </system-modal-header>
+        <system-modal-content>
+            @for (task of tasks; track task.id){
+                <action-generate-tasks-item [task]="task"/>
+            }
+        </system-modal-content>
+        <system-modal-footer>
+            <button class="slds-button slds-button--neutral" (click)="close()">
+                <system-label label="LBL_CLOSE"/>
+            </button>
+        </system-modal-footer>
+    </system-modal>
+}

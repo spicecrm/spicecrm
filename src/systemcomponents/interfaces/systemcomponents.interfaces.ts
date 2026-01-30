@@ -2,6 +2,9 @@
  * @module SystemComponents
  */
 
+import {ElementRef} from "@angular/core";
+import {Point} from "@angular/cdk/drag-drop";
+
 /**
  * used for input radio group input
  */
@@ -112,3 +115,48 @@ export interface GoogleChartSelectedObject {
 }
 
 export type ChartJSTypeOneDimensional = 'Bar' | 'Column' | 'Line' | 'Pie' | 'Doughnut';
+
+/**
+ * this params config can be one of multiple interfaces based on the system selected service provider
+ */
+export type GenerativeAIParams = GeminiAIParams;
+
+export interface GeminiAIParams {
+    responseItemsSchema: {
+        [key: string]: {
+            type: 'STRING' | 'NUMBER' | 'INTEGER' | 'BOOLEAN' | 'ARRAY';
+            maxLength?: number; // for string
+            minLength?: number; // for string
+            minimum?: number; // for integer
+            maximum?: number; // for integer
+            nullable?: boolean;
+            enum?: string[];
+            items?: {} // for array type
+        };
+    }
+
+}
+
+export interface ResizeEvent {
+    width: number;
+    height: number;
+    deltaWidth: number;
+    deltaHeight: number;
+}
+
+export type ResizeConstrainFn = (
+    userSize: { width: number; height: number },
+    element: ElementRef,
+    dimensions: DOMRect,
+    pickupPositionInElement: Point
+) => { width: number; height: number };
+
+export type ResizeHandle =
+    | 'bottom-right'
+    | 'bottom-left'
+    | 'top-right'
+    | 'top-left'
+    | 'top'
+    | 'bottom'
+    | 'right'
+    | 'left';

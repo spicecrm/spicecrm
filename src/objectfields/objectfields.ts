@@ -31,6 +31,7 @@ import {fieldCurrency} from './components/fieldcurrency';
 import {fieldWeightedAmount} from './components/fieldweightedamount';
 import {fieldTotalAmount} from './components/fieldtotalamount';
 import {fieldEnum} from './components/fieldenum';
+import {fieldSelect} from './components/fieldselect';
 import {fieldLanguage} from './components/fieldlanguage';
 import {fieldEmailTo} from './components/fieldemailto';
 import {fieldEmailTemplates} from './components/fieldemailtemplates';
@@ -52,6 +53,7 @@ import {fieldModifiedBy} from './components/fieldmodifiedby';
 import {fieldLookup} from './components/fieldlookup';
 import {fieldDate} from './components/fielddate';
 import {fieldTime} from './components/fieldtime';
+import {fieldTimeZone} from './components/fieldtimezone';
 import {fieldDateTime} from './components/fielddatetime';
 import {fieldDateTimeDuration} from './components/fielddatetimeduration';
 import {fieldDuration} from './components/fieldduration';
@@ -140,6 +142,7 @@ import {fieldVersion} from "./components/fieldVersion";
 import {fieldPackage} from "./components/fieldpackage";
 import {fieldActivityStatus} from "./components/fieldactivitystatus";
 import {SystemDateTimeFormatPipe} from "../systemcomponents/pipes/systemdatetimeformat";
+import {FieldTranslatableText} from "./components/fieldtranslatabletext";
 
 
 
@@ -184,6 +187,7 @@ declare var _: any;
         fieldCompanies,
         fieldColor,
         fieldEnum,
+        fieldSelect,
         fieldLanguage,
         fieldEmailTo,
         fieldEmailTemplates,
@@ -198,6 +202,7 @@ declare var _: any;
         fieldBoolLabelAligned,
         fieldDate,
         fieldTime,
+        fieldTimeZone,
         fieldDateTime,
         fieldDateTimeDuration,
         fieldDuration,
@@ -290,7 +295,8 @@ declare var _: any;
         fieldEnumRoles,
         fieldVersion,
         fieldPackage,
-        fieldActivityStatus
+        fieldActivityStatus,
+        FieldTranslatableText
     ],
     exports: [
         fieldSet,

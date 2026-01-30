@@ -97,6 +97,44 @@ export class GlobalNavigationTabbedMenuModules {
         }
     }
 
+
+    public showModuleTrigger(module){
+        return this.trackRecent(module) || this.hasFavorites(module) || this.hasItemActions(module);
+    }
+
+    /**
+     * set to true when the model is tracking and thus has recent items
+     */
+    public trackRecent(module) {
+        if (module) {
+            return this.metadata.getModuleDefs(module)?.track == '1';
+        }
+
+        return false;
+    }
+
+    public hasFavorites(module){
+        if (module) {
+            return this.metadata.getModuleDefs(module)?.favorites == '1';
+        }
+
+        return false;
+    }
+
+    public hasItemActions(module){
+        let itemMenu = [];
+        // get the config and the menu for the module
+        let componentconfig = this.metadata.getComponentConfig('GlobalNavigationMenuItem', module);
+        if (componentconfig.actionset) {
+            itemMenu = this.metadata.getActionSetItems(componentconfig.actionset);
+        } else {
+            itemMenu = this.metadata.getModuleMenu(module);
+        }
+
+        return itemMenu.length > 0;
+    }
+
+
     /**
      * checks if the current tab is the active tab
      */

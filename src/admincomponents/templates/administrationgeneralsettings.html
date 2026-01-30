@@ -82,6 +82,26 @@
         </h3>
         <div class="slds-section__content">
             <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
+                <div class="slds-p-around--x-small slds-size--1-of-3">
+                    <div class="slds-form-element">
+                        <system-label label="LBL_GATEWAY_SERVER_DOMAIN"/>
+                        <system-input-text autocomplete="off" [(ngModel)]="settings.advanced.gateway_server_domain"/>
+                    </div>
+                </div>
+                <div class="slds-p-around--x-small slds-size--1-of-3">
+                    <div class="slds-form-element">
+                        <system-label label="LBL_GATEWAY_SERVER_API_KEY"/>
+                        <system-input-text autocomplete="off" [(ngModel)]="settings.advanced.gateway_server_api_key"/>
+                    </div>
+                </div>
+                <div class="slds-p-around--x-small slds-size--1-of-3">
+                    <div class="slds-form-element">
+                        <system-label label="LBL_ENCRYPTION_HASH_SALT"/>
+                        <system-input-text autocomplete="off" [(ngModel)]="settings.advanced.encryption_hash_salt"/>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
                 <div class="slds-p-around--x-small slds-size--1-of-2">
                     <div class="slds-form-element">
                         <label class="slds-form-element__label"><system-label label="LBL_STACKTRACE"></system-label></label>
@@ -144,6 +164,12 @@
                     <div class="slds-grid slds-grid_vertical">
                         <system-label label="LBL_INTERNATIONAL_EMAIL_ADDRESSES"></system-label>
                         <system-checkbox class="slds-p-vertical--xx-small" [(ngModel)]="settings.advanced.international_email_addresses"></system-checkbox>
+                    </div>
+                </div>
+                <div class="slds-p-around--x-small slds-size--1-of-2">
+                    <div class="slds-grid slds-grid_vertical">
+                        <system-label label="LBL_TRANSLATABLE_FIELDS"></system-label>
+                        <system-checkbox class="slds-p-vertical--xx-small" [(ngModel)]="settings.advanced.translatable_fields"></system-checkbox>
                     </div>
                 </div>
             </div>

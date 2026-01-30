@@ -721,7 +721,7 @@ class SpiceBean
 
                 if (
                     // todo: figure out why the modified fields are always set to wrong audited value
-                    $properties['audited'] !== false && $properties['name'] != 'modified_by_name' && $properties['name'] != 'date_modified'
+                $properties['source'] != 'non-db' && $properties['audited'] !== false && $properties['name'] != 'modified_by_name' && $properties['name'] != 'date_modified'
                 ) {
 
                     $this->audit_enabled_fields[$field] = $properties;
@@ -2045,6 +2045,10 @@ class SpiceBean
         $this->is_updated_dependent_fields = false;
         $this->fill_in_additional_detail_fields();
 
+        // populate the summary text
+        $this->summary_text = $this->get_summary_text();
+
+        // call the domain handlers on retrieve
         $this->callDomainHandlerMethod('onRetrieve');
 
         if ($relationships) {
@@ -2206,7 +2210,7 @@ class SpiceBean
      * @param bool $encode
      * @return string
      */
-    public function convertField($fieldvalue, $fieldDef, bool $encode = false): string
+    public function convertField($fieldvalue, $fieldDef, bool $encode = false): string|null
     {
         if (empty($fieldvalue)) return $fieldvalue;
 
@@ -2330,7 +2334,7 @@ class SpiceBean
             // fill in parents as well
             if (0 == strcmp($field['type'], 'parent') && !empty($this->{$field['id_name']}) && !empty($this->{$field['type_name']})) {
                 $mod = BeanFactory::getBean($this->{$field['type_name']}, $this->{$field['id_name']}, ['relationships' => false]);
-                $this->{$field['name']} = $mod->name;
+                $this->{$field['name']} = $mod ? $mod->get_summary_text() : null;
             }
 
             // fill in linked as well
@@ -2906,6 +2910,8 @@ class SpiceBean
                     $valArray[] = $this->db->quoted($thisValue, false);
                 }
                 $where_clause .= "$name IN (" . implode(',', $valArray) . ")";
+            } else if ($value == null) {
+                $where_clause .= "$name IS NULL";
             } else {
                 $where_clause .= "$name = " . $this->db->quoted($value, false);
             }
@@ -3097,11 +3103,12 @@ class SpiceBean
 
         $dupRet = [];
         foreach ($duplicates['records'] as $duplicate) {
-            $seed = BeanFactory::getBean($this->_module, $duplicate);
-            if ($seed) {
-                $dupRet[] = $seed;
-            } else {
-                $duplicates['count']--;
+            if($seed = BeanFactory::getBean($this->_module, $duplicate, ['relationships' => false])){
+                if ($seed) {
+                    $dupRet[] = $seed;
+                } else {
+                    $duplicates['count']--;
+                }
             }
         }
         return ['count' => $duplicates['count'], 'records' => $dupRet];
@@ -3312,5 +3319,19 @@ class SpiceBean
      */
     protected function getDictionaryField(string $attributeName): ?array {
         return $this->field_defs[$attributeName] ?? null;
+    }
+
+    /**
+     * translate all translatable fields and override the original value with the translation
+     * @param string $language
+     * @return void
+     */
+    public function translateTranslatableFields(string $language): void
+    {
+        foreach ($this->field_defs as $fieldDef) {
+            if ($fieldDef['type'] != 'translatabletext' || empty($this->{$fieldDef['name']}) || !$this->{$fieldDef['name']}->$language) continue;
+            $originalField = str_replace('_translations', '', $fieldDef['name']);
+            $this->$originalField = $this->{$fieldDef['name']}->$language->translation_text;
+        }
     }
 }

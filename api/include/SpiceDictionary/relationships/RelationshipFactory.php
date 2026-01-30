@@ -6,6 +6,7 @@ namespace SpiceCRM\includes\SpiceDictionary\relationships;
 use Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationships;
 
 /**
@@ -32,10 +33,10 @@ class RelationshipFactory {
     /**
      * get an instance of the relationship by name
      * @param  $relationshipName String
+     * @param SpiceDictionaryLink $link
      * @return null|Relationship
-     * @throws Exception
      */
-    public function getRelationship(string $relationshipName): ?Relationship
+    public function getRelationship(string $relationshipName, SpiceDictionaryLink $link): ?Relationship
     {
         $relationship = SpiceDictionaryRelationships::getInstance()->getRelationshipByName($relationshipName);
 
@@ -53,7 +54,7 @@ class RelationshipFactory {
 
         if($typeDefinition){
             /** @var Relationship $classInstance */
-            $classInstance = new $typeDefinition['class']($relationshipName, $relationship);
+            $classInstance = new $typeDefinition['class']($relationshipName, $relationship, $link);
             return $classInstance;
         }
 

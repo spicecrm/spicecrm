@@ -65,11 +65,15 @@ export class toast {
             return '';
         }
 
-        if (type === 'error') autoClose = false;
-        if (autoClose === true) {
+        if (type === 'error' && Number.isNaN(autoClose)) {
+            autoClose = false;
+        } else if (autoClose === true) {
             // 5 seconds is standard
             autoClose = 5;
+        } else if(Number.isNaN(autoClose)){
+            autoClose = false
         }
+
         let messageId = this.modelutilities.generateGuid();
         this.activeToasts.push({
             id: messageId,

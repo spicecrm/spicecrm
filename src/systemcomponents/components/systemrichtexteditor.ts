@@ -4,13 +4,13 @@
 
 // from https://github.com/kolkov/angular-editor
 import {
-    ApplicationRef,
-    Component, createComponent,
+    ApplicationRef, booleanAttribute,
+    Component, createComponent, effect,
     ElementRef,
     EventEmitter,
     forwardRef,
-    Inject,
-    Input,
+    Inject, Injector, input,
+    Input, InputSignalWithTransform,
     NgZone,
     OnDestroy,
     OnInit,
@@ -27,17 +27,16 @@ import {DOCUMENT} from "@angular/common";
 import {modal} from "../../services/modal.service";
 import {systemrichtextservice} from "../services/systemrichtext.service";
 import {language} from "../../services/language.service";
-import {take} from "rxjs/operators";
 import {metadata} from "../../services/metadata.service";
 import {model} from '../../services/model.service';
 import {helper} from '../../services/helper.service';
-import {libloader} from "../../services/libloader.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import * as less from 'less'
 import {configurationService} from "../../services/configuration.service";
 import {MentionCustomization} from "../../../vendor/ckeditor/spice/MentionCustomizer";
 import {fts} from "../../services/fts.service";
 import {SystemRichTextEditorMentionDropdown} from "./systemrichtexteditormentiondropdown";
+import {SystemGenerativeAIPromptModal} from "./systemgenerativeaipromptmodal";
 
 declare var ClassicEditor;
 
@@ -98,6 +97,10 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * @private
      */
     @Input() private stylesheetId: string;
+    /**
+     * if true, hide the border in view mode
+     */
+    public disableReadonlyBorder: InputSignalWithTransform<boolean, unknown> = input(false, {transform: booleanAttribute});
 
     get displayTemplateVariableHelper() {
         return this.model?.module in {
@@ -140,12 +143,21 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     };
 
     @Output() public save$: EventEmitter<string> = new EventEmitter<string>();
-
-    public select = ["H1", "H2", "H3", "H4", "H5", "H6", "P", "PRE", "DIV"];
+    /**
+     * stores the heading options
+     */
+    public readonly headings = [
+        { model: 'paragraph', view: 'p', title: 'Paragraph', class: 'ck-heading_paragraph' },
+        { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+        { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+        { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+        { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
+    ];
 
     constructor(public modal: modal,
                 public renderer: Renderer2,
-                private libLoader: libloader,
                 public metadata: metadata,
                 public editorService: systemrichtextservice,
                 @Inject(DOCUMENT) public _document: any,
@@ -158,7 +170,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 @Optional() public model: model,
                 private appRef: ApplicationRef,
                 private fts: fts,
-                public helper: helper) {
+                public helper: helper,
+                private injector: Injector) {
     }
 
     get expandIcon() {
@@ -183,9 +196,11 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             resize: 'none',
             position: 'fixed',
             'z-index': 9999,
+            border: this.readOnly && this.disableReadonlyBorder() ? 'none' : undefined
         } : {
-            height: (+this.innerHeight + (this.readOnly ? 0 : 50)) + 'px',
-            resize: this.resizeable ? 'vertical' : 'none'
+            height: this.innerheight?.endsWith('%') ? this.innerheight : (+this.innerHeight + (this.readOnly ? 0 : 50)) + 'px',
+            resize: this.resizeable ? 'vertical' : 'none',
+            border: this.readOnly && this.disableReadonlyBorder() ? 'none' : undefined
         };
     }
 
@@ -198,6 +213,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         setData: (data: string) => void,
         getData: () => string,
         model: any,
+        commands: {get: (command: string) => any},
         data: any,
         ui: any,
         editing: any,
@@ -210,83 +226,138 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
 
         this.loadCustomStyleDefinitions();
 
-        this.libLoader.loadLib('ckeditor').subscribe(res => {
-            this.zone.runOutsideAngular(() => {
+        this.zone.runOutsideAngular(() => {
 
-                ClassicEditor.create(this.ckEditor.element.nativeElement, {
-                    removePlugins: ['Markdown', 'Title'],
-                    extraPlugins: [MentionCustomization],
-                    mention: {
-                        feeds: [
-                            {
-                                marker: '@',
-                                feed: (term: string) => this.getMentionItems(term),
-                                minimumCharacters: 2,
-                                itemRenderer: item => this.customMentionRenderer(item)
-                            }
-                        ]
-                    },
-                    style: {
-                        definitions: this.customStyleDefinitions.map(s => ({
-                            name: s.id,
-                            element: s.element,
-                            classes: s.classes
-                        }))
-                    },
-                    image: {
-                        styles: [
-                            'alignCenter',
-                            'alignLeft',
-                            'alignRight'
-                        ],
-                        resizeOptions: [
-                            {
-                                name: 'resizeImage:original',
-                                label: 'Original size',
-                                value: null
-                            },
-                            {
-                                name: 'resizeImage:50',
-                                label: '50%',
-                                value: '50'
-                            },
-                            {
-                                name: 'resizeImage:75',
-                                label: '75%',
-                                value: '75'
-                            }
-                        ],
-                        toolbar: [ // 'toggleImageCaption'
-                            'imageTextAlternative', '|',
-                            'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
-                            'resizeImage'
-                        ]
-                    },
-                    toolbar: [],
-                    htmlSupport: {
-                        allow: this.generateHtmlTagsAllowAttributes(['div', 'img', 'span', 'table', 'p', 'h1', 'h2', 'h3', 'h4', 'input', 'fieldset', 'button', 'label', 'textarea', 'select', 'option', 'optgroup'])
-                        // hr
-                    },
-                    autosave: {
-                        save: (editor) => {
-                            return this.onChange(editor.getData());
+            ClassicEditor.create(this.ckEditor.element.nativeElement, {
+                removePlugins: ['Markdown', 'Title'],
+                extraPlugins: [MentionCustomization],
+                heading: {
+                    options: this.headings                },
+                mention: {
+                    feeds: [
+                        {
+                            marker: '@',
+                            feed: (term: string) => this.getMentionItems(term),
+                            minimumCharacters: 2,
+                            itemRenderer: item => this.customMentionRenderer(item)
                         }
-                    },
-                }).then(res => {
-                    this.editor = res;
-                    if (this.readOnly) {
-                        this.editor.enableReadOnlyMode('efsjeflksjefloikjse');
+                    ]
+                },
+                style: {
+                    definitions: this.customStyleDefinitions.map(s => ({
+                        name: s.id,
+                        element: s.element,
+                        classes: s.classes
+                    }))
+                },
+                image: {
+                    styles: [
+                        'alignCenter',
+                        'alignLeft',
+                        'alignRight'
+                    ],
+                    resizeOptions: [
+                        {
+                            name: 'resizeImage:original',
+                            label: 'Original size',
+                            value: null
+                        },
+                        {
+                            name: 'resizeImage:50',
+                            label: '50%',
+                            value: '50'
+                        },
+                        {
+                            name: 'resizeImage:75',
+                            label: '75%',
+                            value: '75'
+                        }
+                    ],
+                    toolbar: [ // 'toggleImageCaption'
+                        'imageTextAlternative', '|',
+                        'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
+                        'resizeImage'
+                    ]
+                },
+                toolbar: [],
+                htmlSupport: {
+                    allow: this.generateHtmlTagsAllowAttributes(['div', 'img', 'span', 'table', 'p', 'h1', 'h2', 'h3', 'h4', 'input', 'fieldset', 'button', 'label', 'textarea', 'select', 'option', 'optgroup'])
+                    // hr
+                },
+                autosave: {
+                    save: (editor) => {
+                        return this.onChange(editor.getData());
                     }
-                    this.editor.editing.view.change(writer => {
-                        writer.setStyle('height', '100%', this.editor.editing.view.document.getRoot());
-                    });
-                    this.editor.setData(this._html);
-
+                },
+            }).then(res => {
+                this.editor = res;
+                if (this.readOnly) {
+                    this.editor.enableReadOnlyMode('efsjeflksjefloikjse');
+                }
+                this.editor.editing.view.change(writer => {
+                    writer.setStyle('height', '100%', this.editor.editing.view.document.getRoot());
                 });
-            });
 
+                this.setData(this._html);
+
+            });
         });
         this.handleKeyboardShortcuts();
+    }
+
+    /**
+     * set editor data
+     * @param data
+     * @private
+     */
+    private setData(data) {
+        this.editor.setData(data);
+        this.syncCustomStyles();
+    }
+
+    /**
+     * sync the custom styles with the editor model after setData
+     * @private
+     */
+    private syncCustomStyles() {
+
+        this.editor.model.change(writer => {
+
+            const elements = this.editor.model.createRangeIn(this.editor.model.document.getRoot()).getItems();
+
+            for (const element of elements) {
+
+                if (!element.is('element')) continue;
+
+                const htmlAttrs = element.getAttribute('htmlAttributes') || {};
+                const currentClasses = htmlAttrs.classes ? [...htmlAttrs.classes] : [];
+
+                // Get the "raw" class string
+                const rawClassString = htmlAttrs.attributes?.class || '';
+
+                let hasChanged = false;
+
+                this.customStyleDefinitions.forEach(def => {
+
+                    const modelElementName = this.headings.find(h => h.view == def.element)?.model ?? def.element;
+
+                    if (element.name === modelElementName) {
+                        def.classes.forEach(cls => {
+                            // If the class is hidden in the raw string but not in the classes array
+                            if (rawClassString.includes(cls) && !currentClasses.includes(cls)) {
+                                currentClasses.push(cls);
+                                hasChanged = true;
+                            }
+                        });
+                    }
+                });
+
+                if (hasChanged) {
+                    htmlAttrs.attributes.class = undefined;
+                    writer.setAttribute('htmlAttributes', {...htmlAttrs, classes: currentClasses }, element);
+                }
+            }
+        });
     }
 
     /**
@@ -459,7 +530,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     public writeValue(value: any): void {
         this._html = value ? value : '';
         if (this.editor) {
-            this.editor.setData(value);
+            this.setData(value);
         }
     }
 
@@ -493,8 +564,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      *
      * execute custom style
      */
-    public customStyle(name: string) {
-        if (name) this.editor.execute('style', name);
+    public applyCustomStyle(name: string) {
+        if (name) this.editor.execute('style', {styleName: name});
     }
 
     /**
@@ -557,28 +628,6 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     }
 
     /**
-     * toggles editor buttons when cursor moved or positioning
-     *
-     * Send a node array from the contentEditable of the editor
-     */
-    public exec() {
-        let userSelection;
-        if (window.getSelection) {
-            userSelection = window.getSelection();
-        }
-
-        let a = userSelection.focusNode;
-        const els = [];
-        while (a && a.id !== 'editor') {
-            els.unshift(a);
-            a = a.parentNode;
-        }
-
-        // this.editorToolbar.triggerBlocks(els);
-        this.triggerBlocks(els);
-    }
-
-    /**
      * handle inserting image from media file if active or from url directly
      */
     public insertImage() {
@@ -627,30 +676,6 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     public commandIsActive(commandState) {
         // check the state
         return this.isActive && this._document.queryCommandState(commandState);
-    }
-
-    /**
-     * trigger highlight editor buttons when cursor moved or positioning in block
-     */
-    public triggerBlocks(nodes: Node[]) {
-        if (!this.isActive) {
-            return;
-        }
-
-        let found = false;
-        this.select.forEach(y => {
-            const node = nodes.find(x => x.nodeName === y);
-            if (node !== undefined && (y === node.nodeName || node.nodeName == 'code')) {
-                if (found === false) {
-                    this.block = node.nodeName.toLowerCase();
-                    found = true;
-                }
-            } else if (found === false) {
-                this.block = 'default';
-            }
-        });
-
-        found = false;
     }
 
     /**
@@ -894,9 +919,32 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                         this.onChange(newHtml);
                     }
 
-                    this.editor.setData(newHtml)
+                    this.setData(newHtml);
                 }
             })
+        });
+    }
+
+    /**
+     * open  the generative api prompt and insert the response in the content
+     */
+    public openAIPrompt() {
+
+        this.modal.openStaticModal(SystemGenerativeAIPromptModal).subscribe(ref => {
+
+            effect(() => {
+
+                const response = ref.instance.confirmedResponse();
+
+                if (!response) return;
+
+                this.editor.model.change(writer => {
+                    const viewFragment = this.editor.data.htmlProcessor.toView(response);
+                    const modelFragment = this.editor.data.toModel(viewFragment);
+                    this.editor.model.insertContent(modelFragment);
+                });
+
+            }, {injector: this.injector});
         });
     }
 }

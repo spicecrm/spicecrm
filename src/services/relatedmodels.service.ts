@@ -109,6 +109,11 @@ export class relatedmodels implements OnDestroy {
     public saveToLinkOnly = false;
 
     /**
+     * an edit componentset that can  be set by the related püanel and is then used for the edit modal
+     */
+    public editcomponentset: string;
+
+    /**
      * sort parameters
      */
     public sort: any = {
@@ -132,6 +137,11 @@ export class relatedmodels implements OnDestroy {
      * a handler to the broadcast subscrition. Making sure the susbcription is cancelled whent he component is destroyed
      */
     public serviceSubscriptions: any[] = [];
+
+    /**
+     * filter based on assigned user id
+     */
+    public filterown: boolean = false;
 
     constructor(
         public metadata: metadata,
@@ -292,7 +302,8 @@ export class relatedmodels implements OnDestroy {
             offset: this.offset,
             limit: this.loaditems,
             fieldfilters: this.fieldfilters,
-            searchterm: this.searchTerm
+            searchterm: this.searchTerm,
+            filterown: this.filterown,
         };
 
         // check if we have a sortfield
@@ -314,7 +325,7 @@ export class relatedmodels implements OnDestroy {
                     // get the count
                     this.count = parseInt(response.count, 10);
 
-                    this.items = response.list.map(item => this.modelutilities.backendModel2spice(this.relatedModule, item));
+                    this.items = response.list.map(item => ({...this.modelutilities.backendModel2spice(this.relatedModule, item), relid: item.relid}));
 
                     // set loaded
                     this.isloading = false;

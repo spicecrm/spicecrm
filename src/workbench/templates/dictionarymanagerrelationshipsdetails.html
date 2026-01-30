@@ -36,6 +36,9 @@
             @case('orgunit') {
                 <dictionary-manager-relationship-container-orgunit [readonly]="readonly" [relationship]="dictionaryRelationship"/>
             }
+            @case('many-to-many-self') {
+                <dictionary-manager-relationship-container-manytomany [readonly]="readonly" [relationshipFields]="dictionaryRelationshipFields" [relationship]="dictionaryRelationship"/>
+            }
         }
     </system-modal-content>
     <system-modal-footer>

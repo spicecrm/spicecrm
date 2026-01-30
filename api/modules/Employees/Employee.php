@@ -4,6 +4,8 @@ namespace SpiceCRM\modules\Employees;
 
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
+use SpiceCRM\includes\TimeDate;
+use DateTime;
 
 class Employee extends Person {
 
@@ -59,5 +61,25 @@ class Employee extends Person {
         return false;
     }
 
+    /**
+     * checks absences for the employee for the given date and returns true if the user is absent
+     *
+     * @param $date
+     * @return void
+     */
+    public function isAbsent(DateTime $date, $statuses = ['created', 'submitted', 'approved']){
+
+        $user = BeanFactory::getBean('Users')->retrieve_by_string_fields(['parent_id' => $this->id]);
+        if($user){
+            $checkDate = $date->format(TimeDate::DB_DATE_FORMAT);
+            $statusFilter = "'" . implode("','", $statuses) . "'";
+            $record = $this->db->fetchOne("SELECT id FROM userabsences WHERE deleted = 0 AND assigned_user_id = '$user->id' AND date_start <= '$checkDate' AND date_end >= '$checkDate' AND status IN ($statusFilter)");
+            if($record){
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 }

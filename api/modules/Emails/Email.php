@@ -256,6 +256,7 @@ class Email extends SpiceBean
 
                 } else {
                     $this->status = $result['errors'] ? self::STATUS_SEND_ERROR : self::STATUS_CREATED;
+                    LoggerManager::getLogger()->error(__FUNCTION__, 'e-mail was not sent. Status '.$this->status. ' for id '.$this->id.' . '.$result['message']);
                 }
 
                 $this->new_with_id = false;
@@ -272,8 +273,8 @@ class Email extends SpiceBean
         $timedate = TimeDate::getInstance();
         $mailbox = null;
         if (!empty($this->mailbox_id)) {
-                $mailbox = $this->getMailbox();
-            }
+            $mailbox = $this->getMailbox();
+        }
 
         $this->generateGUID();
 
@@ -542,15 +543,27 @@ class Email extends SpiceBean
         if ($this->type != 'out') {
             return;
         }
-        $fromAddress = '';
-        $mailbox = $this->getMailbox();
-        foreach ($this->recipient_addresses as $recipientAddress) {
-            if ($recipientAddress->address_type == 'from' && $recipientAddress->email_address != '') {
-                $fromAddress = $recipientAddress->email_address;
+        $fromAddress = $this->from_addr;
+
+        if(empty($fromAddress)){
+            foreach ($this->recipient_addresses as $recipientAddress) {
+                if(is_object($recipientAddress)) {
+                    if ($recipientAddress->address_type == 'from' && !empty($recipientAddress->email_address)) {
+                        $fromAddress = $recipientAddress->email_address;
+                        break;
+                    }
+                }
+                elseif(is_array($recipientAddress)) {
+                    if ($recipientAddress['address_type'] == 'from' && $recipientAddress['email_address'] != '') {
+                        $fromAddress = $recipientAddress['email_address'];
+                        break;
+                    }
+                }
             }
         }
 
-        if ($fromAddress == '') {
+        if (empty($fromAddress)) {
+            $mailbox = $this->getMailbox();
             $this->addEmailAddress('from', $mailbox->getEmailAddress());
         }
     }
@@ -598,7 +611,9 @@ class Email extends SpiceBean
         ];
 
         // handle removed recipients
-        $this->removeRecipientAdresses();
+        if($this->status == self::STATUS_DRAFT){
+            $this->removeRecipientAdresses();
+        }
 
         foreach ($this->recipient_addresses as $recipient_address) {
             $record = $this->db->fetchByAssoc($this->db->query(
@@ -1050,7 +1065,7 @@ class Email extends SpiceBean
      * search for trackable links and replace them with encrypted crm web hook urls
      * @throws Exception
      */
-    private function replaceEmailTrackingLinks($trackMailbox)
+    private function replaceEmailTrackingLinks($trackMailbox, $trackAll = false)
     {
         $handlingLink = SpiceConfig::getInstance()->get('emailtracking.tracking_clicks_url');
 
@@ -1083,12 +1098,15 @@ class Email extends SpiceBean
 
         [$parentType, $parentId] = $this->getTrackingParentData();
 
-        $bodyDiv = $dom->getElementsByTagName('div')->item(0);
-        if(!empty($bodyDiv)){
-            if($bodyDiv->hasAttribute('data-trackinglinkall')){
-                $trackAll = $bodyDiv->getAttribute('data-trackinglinkall');
+        if(!$trackAll){
+            $bodyDiv = $dom->getElementsByTagName('div')->item(0);
+            if(!empty($bodyDiv)){
+                if($bodyDiv->hasAttribute('data-trackinglinkall')){
+                    $trackAll = $bodyDiv->getAttribute('data-trackinglinkall');
+                }
             }
         }
+
         /** @var \DOMElement $node */
         foreach ($dom->getElementsByTagName('a') as $node) {
 
@@ -1115,6 +1133,10 @@ class Email extends SpiceBean
                 switch($emailAction) {
                     case 'unsubscribe':
                         $node->setAttribute('href', EmailTracking::getUnsubscribeURL($this));
+                        $tracked = true;
+                        break;
+                        case 'newsletterunsubscribe':
+                        $node->setAttribute('href', EmailTracking::getNewsletterUnsubscribeURL($this));
                         $tracked = true;
                         break;
                     case 'doi':
@@ -1199,7 +1221,7 @@ class Email extends SpiceBean
 
 
 
-        $this->replaceEmailTrackingLinks($mailbox->track_mailbox);
+        $this->replaceEmailTrackingLinks($mailbox->track_mailbox, $this->track_all);
 
         /*
         if ($mailbox->track_mailbox) {
@@ -1437,7 +1459,7 @@ class Email extends SpiceBean
      */
     public function addressesToArray()
     {
-        if ($this->recipient_addresses == '') {
+        if (empty($this->recipient_addresses)) {
             $this->recipient_addresses = [];
         }
 
@@ -1653,6 +1675,30 @@ class Email extends SpiceBean
     {
         $this->parent_type = $bean->_module;
         $this->parent_id = $bean->id;
+        return true;
+    }
+
+    /**
+     * sends planned emails
+     */
+    public function sendPlannedEmails()
+    {
+        $now =  gmDate( 'Y-m-d H:i:s');
+
+        // get the planned emails
+        $plannedEmails = $this->db->limitQuery("SELECT id from emails WHERE status = 'planned' AND deleted = 0 AND date_scheduled <= '$now' ORDER by date_modified DESC", 0, 25);
+
+        while ($plannedEmail = $this->db->fetchByAssoc($plannedEmails)) {
+
+            $email = BeanFactory::getBean('Emails', $plannedEmail['id']);
+            $mailbox = BeanFactory::getBean('Mailboxes', $email->mailbox_id);
+
+            if($mailbox->transport == 'personalMSGraph' || $mailbox->transport == 'personalGmail'){
+                $current_user = AuthenticationController::getInstance()->getCurrentUser();
+                $current_user->retrieve($email->assigned_user_id);
+            }
+          $email->sendEmail();
+        }
         return true;
     }
 

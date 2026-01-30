@@ -1979,7 +1979,7 @@ abstract class DBManager
      * @param $fields an array of strings with field names
      * @return true or false
      */
-    public function reshuffleFields($tablename, $fields)
+    public function reshuffleFields($tablename, $fields): bool
     {
         return false;
     }

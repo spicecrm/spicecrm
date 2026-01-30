@@ -34,7 +34,11 @@ export class AdministrationGeneralSettings implements OnInit {
             slow_query_time_msec: 0,
             upload_maxsize: 0,
             file_types: {},
-            international_email_addresses: 0
+            international_email_addresses: 0,
+            translatable_fields: 0,
+            encryption_hash_salt: undefined,
+            gateway_server_api_key: undefined,
+            gateway_server_domain: undefined,
         },
         cache: {
             class: 'SpiceCacheFile',

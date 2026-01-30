@@ -165,7 +165,8 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
     /**
      * default sort order
      */
-    public sortParams: {field: string, order: 'desc'|'asc'} = {
+    public fileViewAndSort: {fileview: string, field: string, order: 'desc'|'asc'} = {
+        fileview: '',
         field: '',
         order: 'asc'
     }
@@ -213,11 +214,11 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         }
 
         // if the config exists, limit the file based on it
-        this.fileTypeActionObject = this.configurationService.getCapabilityConfig('admin')?.fileTypes;
+        this.fileTypeActionObject = this.configurationService.getCapabilityConfig('spiceattachments')?.fileTypes;
 
         effect(() => {
-            if (this.modelattachments.fileActionPerformed()) {
-                this.sort(this.sortParams.field, false);
+            if (this.modelattachments.fileActionPerformed() > 0) {
+                this.sort(this.fileViewAndSort.field, false, false);
             }
         });
     }
@@ -241,7 +242,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
                 next: () => {
                     this.filteredFiles = this.filterFiles();
                     if (this.componentconfig.displayAs == 'table') {
-                        this.sort(this.sortParams.field, false);
+                        this.sort(this.fileViewAndSort.field, false, false);
                     }
                 }
             })
@@ -250,7 +251,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         this.subscriptions.add(
             this.modelattachments.attachmentDeleted$.subscribe({
                 next: () => {
-                    this.sort(this.sortParams.field, false);
+                    this.sort(this.fileViewAndSort.field, false, false);
                 }
             })
         )
@@ -258,9 +259,14 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         // set to open if we have set to alwysopen per config
         if(this.componentconfig.alwaysExpanded) this.isopen = true;
 
-        let fileViewPref = this.userpreferences.getPreference('fileview');
+        let fileViewPref = this.userpreferences.getPreference('fileviewpref');
         if (fileViewPref) {
-            this.toggleView(fileViewPref);
+            this.fileViewAndSort = fileViewPref;
+            this.toggleView(fileViewPref.fileview, true);
+        }
+
+        if (fileViewPref.field != '') {
+            this.sort(fileViewPref.field, false, false);
         }
     }
 
@@ -373,7 +379,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
             // reload container
             this.setFilteredFiles('category', this.selectedCategoryId);
 
-            this.sort(this.sortParams.field, false);
+            this.sort(this.fileViewAndSort.field, false, false);
         });
     }
 
@@ -563,7 +569,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
                     this.openRevisionModal(files);
                 }
 
-                this.sort(this.sortParams.field, false);
+                this.sort(this.fileViewAndSort.field, false, false);
                 this.isUploading = false;
 
             },
@@ -653,13 +659,28 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
     /**
      * toggle big thumbnail value
      */
-    public toggleView(view: string) {
+    public toggleView(view: string, isInit: boolean = false) {
         if (!this.componentconfig) {
             this.componentconfig = {};
         }
         this.componentconfig.displayAs = view;
 
-        this.userpreferences.setPreference('fileview', view);
+        this.fileViewAndSort.fileview = view;
+
+        if (!isInit) {
+            this.userpreferences.setPreference('fileviewpref', this.fileViewAndSort);
+        }
+    }
+
+    get changeViewIcon() {
+        switch (this.fileViewAndSort.fileview) {
+            case 'table':
+                return 'table';
+            case 'file':
+                return 'file';
+            case 'bigThumbnail':
+                return 'ad_set';
+        }
     }
 
     public filedate(date) {
@@ -678,7 +699,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
     public openInTab(file) {
         if(file.file_mime_type == 'folder') {
             this.modelattachments.folderId = file.id;
-            this.sort(this.sortParams.field, false);
+            this.sort(this.fileViewAndSort.field, false, false);
         } else {
             let routePrefix = '';
             if (this.navigationtab?.tabid) {
@@ -688,12 +709,22 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         }
     }
 
-    public sort(sortParam: string, toggle: boolean = true) {
+    /**
+     *
+     * @param sortField field to be used for sorting
+     * @param toggle if the sort order should be toggled
+     * @param setPref on init don't set prefs
+     */
+    public sort(sortField: string, toggle: boolean = true, setPref: boolean = true) {
         if (toggle) {
-            this.sortParams.order = this.sortParams.order == 'asc' ? 'desc' : 'asc';
+            this.fileViewAndSort.order = this.fileViewAndSort.order == 'asc' ? 'desc' : 'asc';
         }
 
-        this.sortParams.field = sortParam;
+        this.fileViewAndSort.field = sortField;
+
+        if (setPref) {
+            this.userpreferences.setPreference('fileviewpref', this.fileViewAndSort);
+        }
 
         this.filteredFiles.sort((a, b) => {
             const aIsFolder = a.file_mime_type === 'folder';
@@ -703,26 +734,26 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
                 return aIsFolder ? -1 : 1;
             }
 
-            let aVal = a[sortParam];
-            let bVal = b[sortParam];
+            let aVal = a[sortField];
+            let bVal = b[sortField];
 
-            if (this.sortParams.field == 'filename') {
+            if (this.fileViewAndSort.field == 'filename') {
                 aVal = this.filename(a);
                 bVal = this.filename(b);
             }
 
-            if (sortParam == 'date') {
+            if (sortField == 'date') {
                 aVal = new Date(aVal);
                 bVal = new Date(bVal);
                 const comparison = aVal - bVal;
-                return this.sortParams.order === 'desc' ? -comparison : comparison;
+                return this.fileViewAndSort.order === 'desc' ? -comparison : comparison;
             } else {
                 const comparison = String(aVal).localeCompare(
                     String(bVal),
                     undefined,
                     { numeric: true, sensitivity: 'base' }
                 );
-                return this.sortParams.order === 'desc' ? -comparison : comparison;
+                return this.fileViewAndSort.order === 'desc' ? -comparison : comparison;
             }
         });
     }
@@ -730,6 +761,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
     public toggleFolders(){
         this.showFolders = !this.showFolders;
         this.filteredFiles = this.filterFiles();
+        this.sort(this.fileViewAndSort.field, false, false);
         this.cdRef.detectChanges();
     }
 

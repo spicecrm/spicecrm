@@ -37,6 +37,48 @@ export class ObjectListViewHeader {
      */
     public actionSet: any = {};
 
+    /**
+     * an attribute that can be set to hide the settings button
+     *
+     * @param value
+     */
+    public noSettings: boolean = false;
+    @Input('object-listview-header-nosettings') set setNoSettings(value) {
+        if (value === false) {
+            this.noSettings = false;
+        } else {
+            this.noSettings = true;
+        }
+    }
+
+    /**
+     * an attribute that can be set to hide the selector button
+     *
+     * @param value
+     */
+    public noSelector: boolean = false;
+    @Input('object-listview-header-noselector') set setNoSelector(value) {
+        if (value === false) {
+            this.noSelector = false;
+        } else {
+            this.noSelector = true;
+        }
+    }
+
+    /**
+     * an attribute that can be set to hide the actionset
+     *
+     * @param value
+     */
+    public noActionSet: boolean = false;
+    @Input('object-listview-header-noactionset') set setNoActionSet(value) {
+        if (value === false) {
+            this.noActionSet = false;
+        } else {
+            this.noActionSet = true;
+        }
+    }
+
     constructor(
         public metadata: metadata,
         public configuration: configurationService,

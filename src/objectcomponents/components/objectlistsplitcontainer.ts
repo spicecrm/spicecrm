@@ -20,7 +20,6 @@ import {ListTypeI} from "../../services/interfaces.service";
 import {model} from "../../services/model.service";
 import {skip} from "rxjs/operators";
 import {view} from "../../services/view.service";
-import {outlookNameValuePairI} from "../../include/outlook/interfaces/outlook.interfaces";
 
 /**
  * renders the modellist
