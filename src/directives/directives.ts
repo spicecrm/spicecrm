@@ -28,6 +28,7 @@ import {SystemStopClickPropagationDirective} from './directives/systemstopclickp
 import {SystemDropUrl} from "./directives/systemdropurl";
 import {SystemDataLabelDirective} from "./directives/systemdatalabel";
 import {SystemResponsiveSidebarDirective} from "./directives/systemresponsivesidebar";
+import {SystemNativeResizableDirective} from "./directives/systemnativeresizable";
 
 /**
  * the angular module that collects all teh directives and can be imported by other modules to use the set of directives
@@ -59,6 +60,7 @@ import {SystemResponsiveSidebarDirective} from "./directives/systemresponsivesid
         SystemStopClickPropagationDirective,
         SystemDropUrl,
         SystemResponsiveSidebarDirective,
+        SystemNativeResizableDirective
     ],
     exports: [
         SystemModelPopOverDirective,
@@ -83,6 +85,7 @@ import {SystemResponsiveSidebarDirective} from "./directives/systemresponsivesid
         SystemStopClickPropagationDirective,
         SystemDropUrl,
         SystemResponsiveSidebarDirective,
+        SystemNativeResizableDirective
     ]
 })
 export class DirectivesModule {

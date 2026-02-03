@@ -2,6 +2,9 @@
  * @module SystemComponents
  */
 
+import {ElementRef} from "@angular/core";
+import {Point} from "@angular/cdk/drag-drop";
+
 /**
  * used for input radio group input
  */
@@ -133,3 +136,27 @@ export interface GeminiAIParams {
     }
 
 }
+
+export interface ResizeEvent {
+    width: number;
+    height: number;
+    deltaWidth: number;
+    deltaHeight: number;
+}
+
+export type ResizeConstrainFn = (
+    userSize: { width: number; height: number },
+    element: ElementRef,
+    dimensions: DOMRect,
+    pickupPositionInElement: Point
+) => { width: number; height: number };
+
+export type ResizeHandle =
+    | 'bottom-right'
+    | 'bottom-left'
+    | 'top-right'
+    | 'top-left'
+    | 'top'
+    | 'bottom'
+    | 'right'
+    | 'left';
