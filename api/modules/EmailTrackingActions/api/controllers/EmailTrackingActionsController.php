@@ -135,7 +135,7 @@ class EmailTrackingActionsController
             throw new BadRequestException('Failed to decrypt key');
         }
 
-        $this->logTrackingAction($data, 'unsubscribe');
+        $this->logTrackingAction($data, 'newsletterunsubscribe');
 
         // get the email seed
         /** @var Email | CampaignLog | NewsletterLog $seed */
@@ -411,6 +411,7 @@ class EmailTrackingActionsController
                     case 'clicked':
                     case 'link':
                     case 'unsubscribe':
+                    case 'newsletterunsubscribe':
                     case 'doubleoptin':
                         // set the email to opened
                         $seed = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
