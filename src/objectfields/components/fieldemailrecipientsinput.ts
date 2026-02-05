@@ -139,7 +139,7 @@ export class fieldEmailRecipientsInput {
                             const newEmailAddress = {
                                 id: this.model.generateGuid(),
                                 address_type: this.addressType,
-                                email_address: address.email_address,
+                                email_address: address.email_address.trim(),
                                 email_address_id: address.email_address_id,
                                 parent_type: address.module,
                                 parent_id: address.id
@@ -248,7 +248,7 @@ export class fieldEmailRecipientsInput {
         const newEmailAddress = {
             id: this.model.generateGuid(),
             address_type: this.addressType,
-            email_address: this.inputTextValue
+            email_address: this.inputTextValue.trim()
         };
 
         this.value = [...this.model.getField('recipient_addresses'), newEmailAddress];
@@ -303,7 +303,7 @@ export class fieldEmailRecipientsInput {
         const newEmailAddress = {
             id: this.model.generateGuid(),
             address_type: this.addressType,
-            email_address: emailAddress.email_address,
+            email_address: emailAddress.email_address.trim(),
             email_address_id: emailAddress.email_address_id,
             parent_type: emailAddress.module,
             parent_id: emailAddress.id
@@ -370,7 +370,7 @@ export class fieldEmailRecipientsInput {
                 const newEmailAddress = {
                     id: this.model.generateGuid(),
                     address_type: this.addressType,
-                    email_address: addrMatch[0]
+                    email_address: addrMatch[0].trim()
                 };
 
                 this.value = [...this.model.getField('recipient_addresses'), newEmailAddress];

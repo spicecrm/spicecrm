@@ -64,7 +64,8 @@ export class EmailForwardModal extends EmailReplyModal {
                     recipient_addresses: [],
                     reference_id: this.parent.id,
                     name: emailTexts.name,
-                    body: emailTexts.body
+                    body: emailTexts.body,
+                    from_addr: '' // will be set by mailbox data on send
                 });
             }
         });

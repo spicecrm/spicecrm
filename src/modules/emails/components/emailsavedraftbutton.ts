@@ -39,6 +39,9 @@ export class EmailSaveDraftButton {
                 type: 'draft',
                 status: 'draft',
                 to_be_sent: false,
+                from_addr: this.model.getField('from_addr_name'),
+                to_addrs: this.model.getField('to_addrs_names'),
+                cc_addrs: this.model.getField('cc_addrs_names')
             });
 
             this.model.save().subscribe({
