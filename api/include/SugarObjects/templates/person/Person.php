@@ -158,7 +158,6 @@ class Person extends SpiceBean
             $auditFields = $db->query("SELECT * FROM $audittablename WHERE parent_id = '{$this->id}' AND field_name like 'gdpr_%' ORDER BY date_created DESC");
             while($auditField = $db->fetchByAssoc($auditFields)){
                 $createdUser = BeanFactory::getBean('Users', $auditField['created_by']);
-                $createdUser->_create_proper_name_field();
                 $gdprReleases['audit'][]= [
                     'date_created' => $auditField['date_created'],
                     'field_name' => $auditField['field_name'],
