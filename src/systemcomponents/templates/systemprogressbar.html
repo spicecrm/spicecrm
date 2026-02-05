@@ -4,6 +4,6 @@
         <strong class="slds-m-right--x-small">{{progressText}} {{lang.getLabel('LBL_COMPLETED')}}</strong>
     </div>
     <div class="slds-progress-bar slds-progress-bar_circular slds-grow" [style.border-radius.px]="borderRadius()" [ngClass]="sizeClass">
-        <span class="slds-progress-bar__value" [ngStyle]="{'width.%':progressWidth, 'background':color}" [style.border-radius]="borderRadius()"></span>
+        <span class="slds-progress-bar__value" [ngStyle]="{'width.%':progressWidth, 'background':color, 'border': borderStyle()}" [style.border-radius]="borderRadius()"></span>
     </div>
 </div>

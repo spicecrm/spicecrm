@@ -50,8 +50,14 @@ export class SystemProgressBar {
      * When 'total' is not given, the input parameter 'progress' will be interpreted as percentage value.
      */
     @Input() public total: number = null;
-
+    /**
+     * input border radius css style
+     */
     public borderRadius = input<string>();
+    /**
+     * input border color css style
+     */
+    public borderStyle = input<string>();
 
     constructor( public lang: language, public userprefs: userpreferences ) { }
 
