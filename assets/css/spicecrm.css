@@ -852,3 +852,7 @@ input[type="submit"] {
     -webkit-user-drag: none;
     touch-action: none;
 }
+
+.spice-progress-bar-transparent .slds-progress-bar {
+    background-color: unset;
+}
