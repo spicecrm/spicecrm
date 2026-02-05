@@ -61,6 +61,11 @@ export class SystemNativeResizableDirective implements AfterViewInit {
      * Emits when the user releases the mouse button
      */
     public resizeEnd = output<ResizeEvent>();
+
+    /**
+     * Emits on resize change
+     */
+    public resized = output<ResizeEvent>();
     /**
      * stores the handle to cursor mapping
      * @private
@@ -294,6 +299,15 @@ export class SystemNativeResizableDirective implements AfterViewInit {
             if (handle.includes('bottom') || handle.includes('top')) {
                 this.renderer.setStyle(this.elementRef.nativeElement, 'height', `${newHeight}px`);
             }
+
+            this.ngZone.run(() => {
+                this.resized.emit({
+                    width: newWidth,
+                    height: newHeight,
+                    deltaWidth: newWidth - this.startWidth,
+                    deltaHeight: newHeight - this.startHeight
+                });
+            });
         });
     }
 
