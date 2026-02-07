@@ -844,3 +844,15 @@ input[type="submit"] {
     z-index: 10;
     transform: translateX(-100%);
 }
+
+.system-native-resizable-handle {
+    user-select: none;
+    z-index: 9999;
+    position: absolute;
+    -webkit-user-drag: none;
+    touch-action: none;
+}
+
+.spice-progress-bar-transparent .slds-progress-bar {
+    background-color: unset;
+}

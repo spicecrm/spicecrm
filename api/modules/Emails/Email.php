@@ -390,7 +390,7 @@ class Email extends SpiceBean
         $linked_fields = array_filter(
             $this->get_linked_fields(),
             function ($key) {
-                return !in_array($key, ['assigned_user_link', 'created_by_link', 'modified_user_link', 'mailboxes']);
+                return !in_array($key, ['assigned_user_link', 'created_by_link', 'modified_user_link', 'mailboxes', 'email_addresses']);
             },
             ARRAY_FILTER_USE_KEY
         );
@@ -406,8 +406,6 @@ class Email extends SpiceBean
             if (!is_array($data) || empty($data)) continue;
 
             foreach ($data as $row) {
-
-                if ($name == 'email_addresses' && ($row['address_type'] == 'from' || $row['address_type'] == 'to')) continue;
 
                 $additionalValues = [];
 
@@ -577,10 +575,10 @@ class Email extends SpiceBean
     {
         $removedIds = [];
         $beforeSaveRecipients = $this->db->fetchAll(
-            "SELECT id FROM emails_email_addr_rel WHERE email_id = '{$this->id}'"
+            "SELECT id FROM emails_email_addr_rel WHERE email_id = '{$this->id}' AND deleted='0' AND address_type IN('to','cc','bcc')"
         );
 
-       if($beforeSaveRecipients) {
+       if($beforeSaveRecipients && $this->recipient_addresses) {
             foreach ($beforeSaveRecipients as $beforeSaveRecipient) {
                 if (array_search($beforeSaveRecipient['id'], array_column($this->recipient_addresses, 'id')) === false) {
                     $removedIds[] = $beforeSaveRecipient['id'];
@@ -611,19 +609,26 @@ class Email extends SpiceBean
         ];
 
         // handle removed recipients
-        if($this->status == self::STATUS_DRAFT){
+        // if($this->status == self::STATUS_DRAFT){
             $this->removeRecipientAdresses();
-        }
+        // }
 
         foreach ($this->recipient_addresses as $recipient_address) {
+            $doUpdate = false; // for the emails_email_addr_rel record
+
             $record = $this->db->fetchByAssoc($this->db->query(
                 "SELECT * FROM emails_email_addr_rel WHERE id = '{$recipient_address['id']}'"
             ));
             if ($record) {
                 // check if record has been deleted
-                if ($recipient_address['deleted']) {
+                if (array_key_exists('deleted', $recipient_address) && !empty($recipient_address['deleted'])) {
                     $this->db->query(
                         "UPDATE emails_email_addr_rel SET deleted = 1 WHERE id='{$recipient_address['id']}'"
+                    );
+                } // check if record changed recipient group
+                elseif($recipient_address['address_type'] && $record['address_type'] != $recipient_address['address_type']){
+                    $this->db->query(
+                        "UPDATE emails_email_addr_rel SET address_type = '{$recipient_address['address_type']}' WHERE id='{$recipient_address['id']}'"
                     );
                 }
             } else {
@@ -646,9 +651,8 @@ class Email extends SpiceBean
                 }
 
                 // check if we have an id
-                if (empty($recipient_address['id'])) {
+                if (empty($recipient_address['id']) || !$record) {
                     $recordid = $this->db->fetchByAssoc($this->db->query("SELECT id FROM emails_email_addr_rel WHERE email_id = '$this->id' AND address_type='{$recipient_address['address_type']}' AND email_address_id='{$recipient_address['email_address_id']}' AND deleted = 0"));
-                    $doUpdate = false;
                     if ($recordid['id']) {
                         $doUpdate = true;
                     }
@@ -708,11 +712,11 @@ class Email extends SpiceBean
                 }
             }
 
-            $addresses[$recipient_address['address_type'] . '_addrs'][] = $recipient_address['email_address'];
+            $addresses[$recipient_address['address_type'] . '_addrs'][] = trim($recipient_address['email_address']);
         }
 
         foreach ($addresses as $type => $items) {
-            if ($this->$type == '') {
+            if ($items && $this->$type == '') {
                 $this->$type = implode(', ', $items);
             }
         }
@@ -768,7 +772,7 @@ class Email extends SpiceBean
         if (is_array($emails)) {
             foreach ($emails as $email) {
                 if (!empty($email['email'])) {
-                    $res[] = $email['email'];
+                    $res[] = trim($email['email']);
                 }
             }
         } else {
@@ -783,7 +787,7 @@ class Email extends SpiceBean
                 if (!empty($parts["name"])) {
                     $res[] = "{$parts['name']} <{$parts['email']}>";
                 } else {
-                    $res[] .= $parts["email"];
+                    $res[] .= trim($parts["email"]);
                 }
             }
         }
@@ -1269,7 +1273,7 @@ class Email extends SpiceBean
                     $address['name'] = substr($item['displayname'], 0, strpos($item['displayname'], '<'));
                 }
                 if (!empty($item['email'])) {
-                    $address['email'] = $item['email'];
+                    $address['email'] = trim($item['email']);
                 }
 
                 array_push($addresses, $address);
@@ -1435,8 +1439,8 @@ class Email extends SpiceBean
             $pos = strpos($item, ' <');
             if ($pos > 0) { // name and email
                 $emailAddress['name'] = substr($item, 0, $pos);
-                $emailAddress['email'] = str_replace('<', '',
-                    str_replace('>', '', substr($item, $pos + 1))
+                $emailAddress['email'] = trim(str_replace('<', '',
+                    str_replace('>', '', substr($item, $pos + 1)))
                 );
             } else { // just email
                 $emailAddress['name'] = null;
@@ -1481,7 +1485,7 @@ class Email extends SpiceBean
             foreach ($items as $item) {
                 $address = [
                     'address_type' => $type,
-                    'email_address' => $item['email'],
+                    'email_address' => trim($item['email']),
                     'name' => $item['name'],
                 ];
 
