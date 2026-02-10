@@ -4,6 +4,8 @@ namespace SpiceCRM\modules\Emails\api\controllers;
 
 use Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\extensions\includes\GenerativeAI\GenerativeAIAgent;
+use SpiceCRM\extensions\includes\GenerativeAI\GenerativeAIHandler;
 use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachmentHandler;
 use SpiceCRM\extensions\modules\Mailboxes\Handlers\OutlookAttachmentHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -589,6 +591,9 @@ class EmailsController
 
         return $res->withJson($attachment);
     }
+
+
+
     public function sendTestEmail(Request $req, Response $res, array $args): Response{
         $body = $req->getParsedBody();
 
@@ -609,6 +614,21 @@ class EmailsController
         $email->sendEmail();
 
         return $res->withJson(['success' => true]);
+    }
+
+
+    public function extractEmailSignature(Request $req, Response $res, array $args): Response{
+        $seed = BeanFactory::getBean('Emails', $args['id']);
+
+        if(!$seed) {
+            throw new NotFoundException('Email not found');
+        }
+
+        $agent = new GenerativeAIAgent('90114fdf-07ff-74e8-5597-3b7916873927', 'de', $seed);
+
+        $response = $agent->submit();
+
+        return $res->withJson(json_decode($response->parts[0]->text)[0]);
     }
 
 }

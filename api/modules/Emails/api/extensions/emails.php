@@ -573,6 +573,20 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_GUID
             ]
         ]
+    ],
+    [
+        'method' => 'get',
+        'route' => '/module/Emails/{id}/extractEmailSignature',
+        'class' => EmailsController::class,
+        'function' => 'extractEmailSignature',
+        'description' => '',
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'the subject of the email',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ]
 ];
 

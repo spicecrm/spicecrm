@@ -48,6 +48,7 @@ import {EmailForwardToTargetListButton} from "./components/emailforwardtotargetl
 import {EmailsDetailsContainer} from "./components/emailsdetailscontainer";
 import {EmailPlanButton} from "./components/emailplanbutton";
 import {EmailPlanModal} from "./components/emailplanmodal";
+import {EmailCreateContactButton} from "./components/emailcreatecontactbutton";
 
 @NgModule({
     imports: [
@@ -95,7 +96,8 @@ import {EmailPlanModal} from "./components/emailplanmodal";
         EmailCloneAttachmentsModal,
         fieldZipCompress,
         fieldReadReceipt,
-        EmailsDetailsContainer
+        EmailsDetailsContainer,
+        EmailCreateContactButton
     ]
 })
 export class ModuleEmails {}

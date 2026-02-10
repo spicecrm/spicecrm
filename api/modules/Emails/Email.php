@@ -155,6 +155,7 @@ class Email extends SpiceBean
 
     /**
      * Overrides save handler
+     * @throws Exception
      */
     public function saveEmail($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
     {
@@ -264,8 +265,8 @@ class Email extends SpiceBean
 
                 return $result;
             }
-
         }
+        $this->setParentNotification();
     }
 
     public function saveDraft($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
@@ -349,6 +350,50 @@ class Email extends SpiceBean
         unlink($path);
 
         return $newZipAttachment;
+    }
+
+    /**
+     * sets notification on @parentBean at the end of save when an Email comes
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function setParentNotification()
+    {
+        if (empty($this->parent_type) || empty($this->parent_id)) return;
+
+        // load the parent bean and check that we haf a field 'has_notification'
+        $parentBean = BeanFactory::getBean($this->parent_type, $this->parent_id);
+
+        if (!$parentBean || !isset($parentBean->has_notification)) return;
+
+        // check that the read status is changed or the status is unread and the bean is being deleted
+        $isUnread = ($this->status === self::STATUS_UNREAD);
+        $isDeleted = ($this->deleted == 1);
+
+        // if then
+        // email is unread and status of the bean has notifcation => false -> set to true and save parent
+        if (!$isDeleted && $isUnread) {
+            if (!$parentBean->has_notification) {
+                $parentBean->has_notification = true;
+                $parentBean->save();
+            }
+            return;
+        }
+
+        // email status changes from unread to read -> and the status on the bean is true
+        // -> make a query if any other email not deletd and linked to the parnet is unread -> if no -> set the status to false and save parent
+
+        if ($parentBean->has_notification) {
+            $query = "SELECT count(e.id) FROM emails e WHERE e.parent_type = '{$this->parent_type}'  AND e.parent_id = '{$this->parent_id}' AND e.deleted = 0 AND e.status = '" . self::STATUS_UNREAD . "' AND e.id != '{$this->id}'";
+
+            $count = $this->db->getOne($query);
+
+            if ($count == 0) {
+                $parentBean->has_notification = false;
+                $parentBean->save();
+            }
+        }
     }
 
     private function setEmailAddresses(): void
@@ -757,7 +802,11 @@ class Email extends SpiceBean
             $mailbox = BeanFactory::getBean('Mailboxes', $this->mailbox_id);
             if($mailbox) $mailbox->deleteEmail($this);
         }
-        return parent::mark_deleted($id);
+        $result = parent::mark_deleted($id);
+
+        $this->setParentNotification();
+
+        return $result;
     }
 
 
