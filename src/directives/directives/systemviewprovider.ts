@@ -59,7 +59,7 @@ export class SystemViewProviderDirective implements AfterViewInit, OnDestroy {
 
 
     public setviewSize() {
-        if (this.elementRef.nativeElement.getBoundingClientRect().width < 500) {
+        if (this.elementRef.nativeElement.getBoundingClientRect && this.elementRef.nativeElement.getBoundingClientRect().width < 500) {
             this.view.size = 'small';
         } else {
             this.view.size = 'regular';
