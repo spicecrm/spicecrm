@@ -6,6 +6,7 @@ use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceUI\SpiceUIPackageValidator;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryDomain
@@ -14,9 +15,11 @@ class SpiceDictionaryDomain
     /**
      * @var the id of the domain
      */
-    protected $id;
+    public $id;
 
-    protected $domainDefinition;
+    public $domainDefinition;
+
+    public string $package;
 
     public function __construct($id){
         $this->id = $id;
@@ -30,6 +33,7 @@ class SpiceDictionaryDomain
 
         // write to the object we keep on the definition
         $this->domainDefinition = (object) $domainDefinition;
+        $this->package = $this->domainDefinition->package;
     }
 
     public function getFields(?SpiceDictionaryItem $sysdictionaryItem = null, $indexOnly = false){

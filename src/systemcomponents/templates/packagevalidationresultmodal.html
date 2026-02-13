@@ -1,0 +1,77 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_PACKAGE_VALIDATION_RESULT"/>
+    </system-modal-header>
+    <system-modal-content margin="none">
+        @for (error of filteredValues() | keyvalue; track $index; let isLast = $last) {
+            <div [ngClass]="isLast ? 'slds-m-top--medium slds-m-bottom--medium' : 'slds-m-top--medium slds-m-bottom--x-large'" >
+                <h2 class="slds-text-title--caps slds-text-heading_medium slds-hyphenate slds-m-left--small slds-m-bottom--small" style="font-weight: bold">{{error.key}}</h2>
+                <table class="slds-no-row-hover slds-table slds-table--bordered slds-table--fixed-layout slds-table--col-bordered slds-table_header-fixed" style="border: 1px solid lightgray">
+                    <thead>
+                    <tr class="slds-text-title_caps">
+                        <th scope="col"></th>
+                        <th scope="col" colspan="3"><system-label class="slds-th__action" label="LBL_ITEM"/></th>
+                        <th scope="col" colspan="3"><system-label class="slds-th__action" label="LBL_ITEM_DEPENDENCY"/></th>
+                    </tr>
+                    <tr class="slds-text-title_caps">
+                        <th scope="col"><system-label class="slds-th__action" label="LBL_ERROR"/></th>
+                        <th scope="col"><system-label class="slds-th__action" label="LBL_ID"/></th>
+                        <th scope="col"><system-label class="slds-th__action" label="LBL_NAME"/></th>
+                        <th scope="col"><system-label class="slds-th__action" label="LBL_TABLE"/></th>
+                        <th scope="col"><system-label class="slds-th__action" label="LBL_ID"/></th>
+                        <th scope="col"><system-label class="slds-th__action" label="LBL_NAME"/></th>
+                        <th scope="col"><system-label class="slds-th__action" label="LBL_TABLE"/></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @for (subItem of $any(error.value); track $index) {
+                            <tr [ngClass]="{'slds-theme--error' : subItem.is_fatal}">
+                                <td class="slds-truncate">
+                                    <div class="slds-grid slds-grid--vertical-align-center">
+                                        @if (subItem.error_type == 'package dependency mismatch') {
+                                            <system-utility-icon [system-title]="subItem.error_message" icon="info" size="xx-small" colorclass="slds-icon-text-default" class="slds-m-right--x-small"/>
+                                        }
+                                        <span class="slds-truncate" [system-title]="subItem.error_type">{{subItem.error_type}}</span>
+                                    </div>
+                                </td>
+                                <td class="slds-truncate">{{subItem.item_id}}</td>
+                                <td class="slds-truncate" [system-title]="subItem.item_name">{{subItem.item_name}}</td>
+                                <td class="slds-truncate" [system-title]="subItem.item_table">{{subItem.item_table}}</td>
+                                <td class="slds-truncate">{{subItem.dep_id ?? '-'}}</td>
+                                <td class="slds-truncate" [system-title]="subItem.dep_name ?? ''">{{subItem.dep_name ?? '-'}}</td>
+                                <td class="slds-truncate" [system-title]="subItem.dep_table ?? ''">{{subItem.dep_table ?? '-'}}</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid_align-spread">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <system-label label="LBL_ERROR"/>
+                <div class="slds-select_container slds-m-left--x-small" style="width: 10rem">
+                    <select [ngModel]="errorFilter()" (ngModelChange)="errorFilter.set($event)" class="slds-select">
+                        <option [ngValue]="null"></option>
+                        @for (val of getFilterValues('error'); track val) {
+                            <option>{{ val }}</option>
+                        }
+                    </select>
+                </div>
+                <system-label label="LBL_PACKAGE" class="slds-m-left--x-small"/>
+                <div class="slds-select_container slds-m-left--x-small" style="width: 10rem">
+                    <select [ngModel]="packageFilter()" (ngModelChange)="packageFilter.set($event)" class="slds-select">
+                        <option [ngValue]="null"></option>
+                        @for (val of getFilterValues('package'); track val) {
+                            <option>{{ val }}</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <button (click)="close()" title="LBL_CLOSE" class="slds-button slds-button_icon slds-button_icon-border-filled">
+                <system-button-icon icon="close"/>
+            </button>
+        </div>
+    </system-modal-footer>
+</system-modal>

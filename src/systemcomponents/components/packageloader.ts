@@ -1,16 +1,14 @@
 /**
  * @module SystemComponents
  */
-import {
-    Component, Pipe
-} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
 import {toast} from '../../services/toast.service';
 import {metadata} from '../../services/metadata.service';
 import {modal} from "../../services/modal.service";
 import {PackageLoaderReloadLoadedModal} from "./packageloaderreloadloadedmodal";
-import {error} from "@angular/compiler-cli/src/transformers/util";
+import {PackageValidationResultModal} from "./packagevalidationresultmodal";
 
 /**
  * @ignore
@@ -22,7 +20,7 @@ declare var _;
     templateUrl: '../templates/packageloader.html',
     standalone: false
 })
-export class PackageLoader {
+export class PackageLoader implements OnInit {
 
     public scope: string = 'essentials';
     public loading: boolean = true;
@@ -36,6 +34,8 @@ export class PackageLoader {
     public opencrs: boolean = false;
     public errorpackages: string[] = [];
     public loadedPackages: string[] = [];
+
+    public validatePackagesVisible: boolean = false;
 
     constructor(
         public language: language,
@@ -64,13 +64,20 @@ export class PackageLoader {
         );
     }
 
+    public ngOnInit() {
+        this.backend.getRequest('configuration/configurator/editor/configrepository').subscribe({
+            next: (res) => {
+                if (res) this.validatePackagesVisible = true
+            }
+        })
+    }
+
     /**
      * system package visible flag
      */
     get systemPackageVisible() {
         return this.metadata.configuration.getCapabilityConfig('adminpackages')?.system_package_visible;
     }
-
 
     get errorpackagesdisplay() {
         return this.errorpackages.join(', ');
@@ -136,6 +143,25 @@ export class PackageLoader {
                 this.loading = false;
             }
         });
+    }
+
+    public validatePackages() {
+        const awaitModal = this.modal.await('LBL_VALIDATING_PACKAGES');
+        this.backend.getRequest('config/packages/validate').subscribe({
+            next: (res) => {
+                if (res.length == 0) {
+                    this.toast.sendToast('LBL_NO_ERRORS_FOUND', 'success');
+                    awaitModal.next(true);
+                } else {
+                    this.modal.openStaticModal(PackageValidationResultModal).subscribe(ref => {
+                        ref.instance.erroneousPackages = res;
+                    })
+                    awaitModal.next(true);
+                }
+            }, error: () => {
+                awaitModal.next(true);
+            }
+        })
     }
 
     public selectRepository(repository) {
