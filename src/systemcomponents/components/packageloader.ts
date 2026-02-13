@@ -67,7 +67,7 @@ export class PackageLoader implements OnInit {
     public ngOnInit() {
         this.backend.getRequest('configuration/configurator/editor/configrepository').subscribe({
             next: (res) => {
-                if (res) this.validatePackagesVisible = true
+                if (Object.keys(res).length != 0) this.validatePackagesVisible = true
             }
         })
     }
