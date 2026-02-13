@@ -15,11 +15,9 @@ class SpiceDictionaryDomain
     /**
      * @var the id of the domain
      */
-    public $id;
+    protected $id;
 
-    public $domainDefinition;
-
-    public string $package;
+    protected $domainDefinition;
 
     public function __construct($id){
         $this->id = $id;
@@ -33,7 +31,6 @@ class SpiceDictionaryDomain
 
         // write to the object we keep on the definition
         $this->domainDefinition = (object) $domainDefinition;
-        $this->package = $this->domainDefinition->package;
     }
 
     public function getFields(?SpiceDictionaryItem $sysdictionaryItem = null, $indexOnly = false){

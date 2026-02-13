@@ -187,7 +187,7 @@ class SpiceUIPackageValidator
             # stop validating further if no domainfieldvalidation defined
             if (empty($domainField['sysdomainfieldvalidation_id'])) continue;
 
-            $domainValidation = SpiceDictionaryDomainValidations::getInstance()->getDomainValidation($domainField['sysdomainfieldvalidation_id']);
+            $domainValidation = SpiceDictionaryDomainValidations::getInstance()->domainValidations[$domainField['sysdomainfieldvalidation_id']];
 
             if (!$domainValidation) {
                 return $this->buildErrorObject($domainField, self::TYPE_EMPTY_CHILDREN, $domain);

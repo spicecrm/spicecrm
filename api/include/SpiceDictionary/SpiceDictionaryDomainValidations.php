@@ -329,21 +329,4 @@ class SpiceDictionaryDomainValidations
 
         self::$instance->writeCache();
     }
-
-    /**
-     * gets a single domain field by ID
-     *
-     * @param string $sysdomainfieldvalidation_id
-     * @return array|null
-     */
-    public function getDomainValidation(string $sysdomainfieldvalidation_id): array|null
-    {
-        foreach ($this->domainValidations as $domainfield) {
-            if ($domainfield['id'] == $sysdomainfieldvalidation_id) {
-                return $domainfield;
-            }
-        }
-
-        return null;
-    }
 }
