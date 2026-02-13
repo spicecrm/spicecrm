@@ -649,8 +649,24 @@ class SpiceBeanHandler
         fputcsv($fh, $returnFields, $delimiter);
         foreach ($beans as $thisBean) {
             $entryArray = [];
-            foreach ($returnFields as $returnField)
-                $entryArray[] = !empty($charsetTo) ? mb_convert_encoding($thisBean->$returnField, $charsetTo) : $thisBean->$returnField;
+            foreach ($returnFields as $returnField){
+                // set default values
+                $linkedBean = null;
+                $entryValue = '';
+
+                // check linked fields i.e. assigned_user, modified_vy_user, created_by_user...
+                if($thisBean->field_defs[$returnField]['type'] == 'linked'){
+                    $linkedBean = BeanFactory::getBean($thisBean->field_defs[$returnField]['module'], $thisBean->{$thisBean->field_defs[$returnField]['id_name']}, ['relationships' => false]);
+                    if($linkedBean && $linkedBean->id){
+                        $entryValue = !empty($charsetTo) ? mb_convert_encoding($linkedBean->get_summary_text(), $charsetTo) : $linkedBean->get_summary_text();
+                    }
+                } else{
+                    $entryValue = !empty($charsetTo) ? mb_convert_encoding($thisBean->$returnField, $charsetTo) : $thisBean->$returnField;
+                }
+
+                // allocate the value
+                $entryArray[] = $entryValue;
+            }
             fputcsv($fh, $entryArray, $delimiter);
         }
         rewind($fh);
