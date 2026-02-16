@@ -18,7 +18,7 @@
                               [isDragging]="isDragging"
                               (toggleExpandedChange)="handleExpand($event)"
                               (dragPositionChange)="handleDragPosition($event)"
-                              (onItemAdd)="onItemAdd.emit($event)"
+                              (onItemAdd)="addItem($event)"
                               [title]="item.name"
                               style="width: 100%"
                               class="slds-grid--vertical slds-p-vertical--none slds-tree__item">
