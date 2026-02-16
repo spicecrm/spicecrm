@@ -265,7 +265,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
             this.toggleView(fileViewPref.fileview, true);
         }
 
-        if (fileViewPref.field != '') {
+        if (fileViewPref && fileViewPref.field != '') {
             this.sort(fileViewPref.field, false, false);
         }
     }

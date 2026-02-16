@@ -6,6 +6,7 @@ use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceUI\SpiceUIPackageValidator;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryDomain
