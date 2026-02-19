@@ -33,7 +33,7 @@ class ContactsACLFieldProjectIDHandler extends SpiceACLObjectFieldHandlerBase
         $ids = [];
 
         while ($row = $db->fetchByAssoc($query)) {
-            $ids[] = $row['id'];
+            $ids[] = $row['contact_id'];
         }
 
         return $ids;
