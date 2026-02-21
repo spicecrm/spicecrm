@@ -1804,6 +1804,9 @@ class SpiceBean
                         case 'asc':
                         case 'desc':
                             break;
+                        case 'isnull':
+                            $list_column[1] = 'IS NULL';
+                            break;
                         default:
                             LoggerManager::getLogger()->debug("process_order_by: ($list_column[1]) is not a valid order.");
                             unset($list_column[1]);

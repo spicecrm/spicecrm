@@ -545,6 +545,7 @@ class SpiceAttachments
             'date' => $thisAttachment['trdate'],
             'text' => nl2br($thisAttachment['text']),
             'filename' => $thisAttachment['filename'],
+            'display_name' => $thisAttachment['display_name'],
             'filesize' => $thisAttachment['filesize'],
             'file_mime_type' => $thisAttachment['file_mime_type'],
             'file' => $file,

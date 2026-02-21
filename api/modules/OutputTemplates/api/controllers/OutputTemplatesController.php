@@ -268,6 +268,10 @@ class OutputTemplatesController
         $field = $params['field'] ?? 'body';
         $templateBean->$field = $params['html'];
 
+        if ($params['language']) {
+            $templateBean->translateTranslatableFields($params['language']);
+        }
+
         $parentBean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
 
         if(!$parentBean){

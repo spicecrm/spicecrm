@@ -87,13 +87,13 @@ export class FieldTranslatableText implements OnInit {
     /**
      * open the translation modal
      */
-    public openTranslationsModal(editMode: boolean, asRichtext?: boolean) {
+    public openTranslationsModal(editMode: boolean, fieldType?: 'html' | 'text' | 'richtext'): void {
 
         this.modal.openStaticModal(ObjectFieldTranslationsModal, true, this.injector).subscribe(ref => {
 
             ref.instance.isEditMode = editMode;
-            ref.instance.originalText = this.model.getField(this.textFieldName);
-            ref.instance.asRichtext = asRichtext;
+            ref.instance.originalText.set(this.model.getField(this.textFieldName));
+            ref.instance.fieldType = fieldType ?? 'text';
             const translations = this.model.getField(this.fieldname);
             if (!window._.isEmpty(translations)) {
                 ref.instance.setTranslationsArray(Object.values(translations));

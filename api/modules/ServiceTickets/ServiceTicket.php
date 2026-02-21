@@ -163,6 +163,7 @@ class ServiceTicket extends SpiceBean
 
         // set the closed date
         $this->setResolveDate();
+        $this->setCommunicationLanguage();
 
         // save
         $saveResponse = parent::save($check_notify);
@@ -173,6 +174,19 @@ class ServiceTicket extends SpiceBean
 
         return $saveResponse;
 
+    }
+
+    /**
+     * set communication language
+     * @return void
+     */
+    private function setCommunicationLanguage(): void
+    {
+        if (!$this->isNew() || !empty($this->communication_language)) return;
+
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+        $person = !$currentUser->parent_id ? null : BeanFactory::getBean($currentUser->parent_type, $currentUser->parent_id);
+        $this->communication_language = $person?->communication_language;
     }
 
     /**
