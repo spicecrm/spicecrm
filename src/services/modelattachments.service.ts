@@ -884,7 +884,11 @@ export class modelattachments implements OnDestroy {
         const calcNestedFolderSize = (nestedFileId: string): void => {
             let folderFiles = this._files.filter(f => f.folder_id === nestedFileId);
             folderFiles.forEach(f => {
-                sum += parseInt(f.filesize);
+                if (f.file_mime_type === 'folder') {
+                    calcNestedFolderSize(f.id);
+                } else {
+                    sum += parseInt(f.filesize);
+                }
             });
         };
 
