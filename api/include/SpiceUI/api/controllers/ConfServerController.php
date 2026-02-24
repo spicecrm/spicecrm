@@ -154,6 +154,8 @@ class ConfServerController
             'sysuiroles',
             'sysuiroutes',
             'workflowtasktypes',
+            'sysprocessmgmtsystemclausetemplates',
+            'sysprocessmgmtsystemscopetemplates'
         ];
 
         $tableArray = [];
