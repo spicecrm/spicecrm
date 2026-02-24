@@ -9,10 +9,16 @@
                     <system-label label="LBL_TEXT"/>
                 </div>
                 <div class="slds-box">
-                    @if (asRichtext) {
-                        <system-richtext-editor [readOnly]="true" [ngModel]="originalText" innerheight="100"/>
-                    } @else {
-                        {{originalText}}
+                    @switch (fieldType) {
+                        @case ('richtext') {
+                            <system-richtext-editor [readOnly]="true" [ngModel]="originalText()" innerheight="100"/>
+                        }
+                        @case ('html') {
+                            <iframe [src]="safeHtmlValue()" style="resize: vertical; border: 0; height: 100%" width="100%" sandbox></iframe>
+                        }
+                        @default {
+                            {{originalText()}}
+                        }
                     }
                 </div>
                 <div class="slds-grid slds-text-title--caps slds-m-top--medium slds-grid--vertical-align-center">
@@ -40,10 +46,16 @@
                         </div>
                         <div [system-overlay-loading-spinner]="isTranslating() == translation.translation_language" class="slds-box">
                             @if (isEditMode) {
-                                @if (asRichtext) {
-                                    <system-richtext-editor [(ngModel)]="translation.translation_text" (ngModelChange)="emitChange()" class="slds-grow"/>
-                                } @else {
-                                    <textarea [(ngModel)]="translation.translation_text" (ngModelChange)="emitChange()" class="slds-textarea slds-grow"></textarea>
+                                @switch (fieldType) {
+                                    @case ('richtext') {
+                                        <system-richtext-editor [(ngModel)]="translation.translation_text" (ngModelChange)="emitChange()" class="slds-grow"/>
+                                    }
+                                    @case ('html') {
+                                        <system-html-editor [(ngModel)]="translation.translation_text" (ngModelChange)="emitChange()" class="slds-grow"/>
+                                    }
+                                    @default {
+                                        <textarea [(ngModel)]="translation.translation_text" (ngModelChange)="emitChange()" class="slds-textarea slds-grow"></textarea>
+                                    }
                                 }
                             } @else {
                                 <span class="slds-grow">{{translation.translation_text}}</span>

@@ -134,8 +134,13 @@ abstract class TransportHandler
 
         // Check if downloadlink_attachments is enabled
         $downloadLink = "";
+        $downloadLinkPosition = "";
         if ($email->downloadlink_attachments) {
             $downloadLink = $this->parseDownloadLink($email);
+            $downloadLinkPosition = "beforemailboxfooter"; // default
+            if(SpiceConfig::getInstance()->get('spiceattachments.downloadlink_position')){
+                $downloadLinkPosition = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_position');
+            }
         }
 
         if(strpos($email->body, '<html') === false) {
@@ -151,18 +156,49 @@ abstract class TransportHandler
 
         if(strpos($email->body, '<body') === false){
             $bodyParts[] = '<body>';
+            if($downloadLinkPosition == 'beforemailboxheader'){
+                $bodyParts[] = $downloadLink;
+            }
             $bodyParts[] = $header;
+            if($downloadLinkPosition == 'aftermailboxheader'){
+                $bodyParts[] = $downloadLink;
+            }
         } else{
-            $bodySource = preg_replace('<body.*?>', '$0'.$header, $bodySource);
+            $headerText = $header;
+            // consider download link position
+            switch($downloadLinkPosition){
+                case 'beforemailboxheader':
+                    $headerText = $downloadLink . $header;
+                    break;
+                case 'aftermailboxheader':
+                    $headerText = $downloadLink . $header;
+                    break;
+            }
+            $bodySource = preg_replace('<body.*?>', '$0'.$headerText, $bodySource);
         }
 
         if(strpos($email->body, '</body>') === false){
             $bodyParts[] = $bodySource;
-            $bodyParts[] = $downloadLink;
+            if($downloadLinkPosition == 'beforemailboxfooter'){
+                $bodyParts[] = $downloadLink;
+            }
             $bodyParts[] = $footer;
+            if($downloadLinkPosition == 'aftermailboxfooter'){
+                $bodyParts[] = $downloadLink;
+            }
             $bodyParts[] = '</body>';
         } else{
-            $bodySource = str_replace('</body>',$downloadLink . $footer.'</body>', $bodySource);
+            $footerText = $footer;
+            // consider download link position
+            switch($downloadLinkPosition){
+                case 'beforemailboxfooter':
+                    $footerText = $downloadLink . $footer;
+                    break;
+                case 'aftermailboxfooter':
+                    $footerText = $downloadLink . $footer;
+                    break;
+            }
+            $bodySource = str_replace('</body>',$footerText.'</body>', $bodySource);
             $bodyParts[] = $bodySource;
         }
 

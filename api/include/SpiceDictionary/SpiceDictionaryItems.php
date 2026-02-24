@@ -195,6 +195,7 @@ class SpiceDictionaryItems
     private function pushItemInList(array $item): void
     {
         $item['sequence'] = intval($item['sequence']);
+        $item['unified_search'] = intval($item['unified_search']);
         $item['non_db'] = $item['non_db'] ? intval($item['non_db']) : 0;
         $item['exclude_from_audited'] = $item['exclude_from_audited'] ? intval($item['exclude_from_audited']) : 0;
 

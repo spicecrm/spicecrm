@@ -331,6 +331,14 @@ export class SystemTree implements OnChanges {
         });
     }
 
+    public addItem(parent){
+
+        // get the next itemsequence
+        parent.nextsequence = this.sourceList.filter(t => t.parent_id == parent.id).length;
+
+        this.onItemAdd.emit(parent)
+    }
+
     /*
     * A function that defines how to track changes for items in the iterable (ngForOf).
     * https://angular.io/api/common/NgForOf#properties

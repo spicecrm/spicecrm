@@ -343,7 +343,7 @@ class User extends SpiceBean
 
         // get the parent if we have one
         if($this->parent_type && $this->parent_id){
-            $parent = BeanFactory::getBean($this->parent_type, $this->parent_id);
+            $parent = BeanFactory::getBean($this->parent_type, $this->parent_id, ['relationships' => false]);
             if($parent){
                 $this->user_image = $parent->image;
                 $this->salutation = $parent->salutation;
