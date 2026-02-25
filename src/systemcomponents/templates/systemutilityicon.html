@@ -1,5 +1,5 @@
 <div class="slds-icon_container" [system-title]="title">
-    <svg aria-hidden="true" [ngClass]="getIconClass()">
+    <svg aria-hidden="true" [ngClass]="getIconClass()" [style.fill]="customColor()">
         <use [attr.xlink:href]="getSvgHRef()"></use>
     </svg>
 </div>

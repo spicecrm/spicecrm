@@ -586,6 +586,17 @@ export class language {
     }
 
     /**
+     * get field display option object
+     * @param module
+     * @param fieldName
+     * @param value
+     */
+    public getValidationValueObject(module: string, fieldName: string, value: string): DomainValidationValue {
+        let options = this.metadata.getFieldOptions(module, fieldName);
+            return this.metadata.getDomainValidationValues(options)[value];
+    }
+
+    /**
      * returns an object with the available languages in the systems
      *
      * @param systemonly if set to true onb the languages that are also loaded systemlanguages are returned

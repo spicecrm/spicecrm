@@ -1,6 +1,16 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid" [fieldname]="fieldname">
-    {{getValue()}}
+    @if (fieldconfig.displayIconSide == 'left') {
+        <system-utility-icon [icon]="language.getValidationValueObject(model.module, fieldname, value).icon || 'circle'" [customColor]="language.getValidationValueObject(model.module, fieldname, value).color" size="x-small"/>
+    }
+    @if (fieldconfig.displayIconSide != 'iconOnly') {
+        {{getValue()}}
+    } @else {
+        <system-utility-icon [icon]="language.getValidationValueObject(model.module, fieldname, value).icon || 'circle'" [customColor]="language.getValidationValueObject(model.module, fieldname, value).color" size="x-small" class="slds-align--absolute-center"/>
+    }
+    @if (fieldconfig.displayIconSide == 'right') {
+        <system-utility-icon [icon]="language.getValidationValueObject(model.module, fieldname, value).icon || 'circle'" [customColor]="language.getValidationValueObject(model.module, fieldname, value).color" size="x-small"/>
+    }
 </field-generic-display>
 <div *ngIf="isEditMode()" class="slds-form-element">
     <div class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="getFieldClass()">
