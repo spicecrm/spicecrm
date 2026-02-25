@@ -28,7 +28,7 @@ import {modal} from "../../services/modal.service";
 import {configurationService} from "../../services/configuration.service";
 import {backend} from "../../services/backend.service";
 import {broadcast} from "../../services/broadcast.service";
-import {Subscription} from "rxjs";
+import {firstValueFrom, Subscription} from "rxjs";
 import {AgreementsAddRevisionModal} from "../../modules/agreements/components/agreementsaddrevisionmodal";
 import {userpreferences} from "../../services/userpreferences.service";
 import {navigationtab} from "../../services/navigationtab.service";
@@ -182,6 +182,25 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
      */
     public subscriptions: Subscription = new Subscription();
 
+    public tableViewActions: {action: string, label: string}[] = [
+        {
+            action: 'selectall',
+            label: 'LBL_SELECT_ALL'
+        },
+        {
+            action: 'unselectall',
+            label: 'LBL_UNSELECT_ALL'
+        },
+        {
+            action: 'download',
+            label: 'LBL_DOWNLOAD'
+        },
+        {
+            action: 'delete',
+            label: 'LBL_DELETE'
+        }
+    ]
+
     constructor(public modelattachments: modelattachments,
                 public language: language,
                 public model: model,
@@ -252,6 +271,14 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
             this.modelattachments.attachmentDeleted$.subscribe({
                 next: () => {
                     this.sort(this.fileViewAndSort.field, false, false);
+                }
+            })
+        )
+
+        this.subscriptions.add(
+            this.modelattachments.folderId$.subscribe({
+                next: () => {
+                    this.modelattachments._files.forEach(file => file.selected = null);
                 }
             })
         )
@@ -374,7 +401,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
             this.doupload(this.files);
         }
         this.modelattachments.getAttachments().subscribe(res => {
-            this.filteredFiles = res;
+            this.filteredFiles = res.map(file => ({...file, selected: null}));
             this.loadCategories();
             // reload container
             this.setFilteredFiles('category', this.selectedCategoryId);
@@ -688,12 +715,73 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         return formattedDate.format(this.userpreferences.getDateFormat());
     }
 
-    public fileSize(size): any {
-        return size ? this.modelattachments.humanFileSize(size) : '';
+    get selectedFiles() {
+        return this.modelattachments._files.filter(file => file.selected);
+    }
+
+    public fileSize(file): any {
+        if (file.file_mime_type == 'folder') {
+            let folderSize = this.modelattachments.calcFolderSize(file.id);
+            return folderSize ? this.modelattachments.humanFileSize(folderSize) : '';
+        }
+
+        return file.filesize ? this.modelattachments.humanFileSize(file.filesize) : '';
     }
 
     public filename(file) {
         return file.display_name ? file.display_name : file.filename;
+    }
+
+    public toggleSelectFile(file) {
+        file.selected = !file.selected;
+    }
+
+    public actionDisabled(action) {
+        if (action == 'selectall') return false;
+        return this.selectedFiles.length == 0;
+    }
+
+    public async doAction(action) {
+        if (this.actionDisabled(action)) return;
+
+        switch (action) {
+            case 'selectall':
+                this.filteredFiles.forEach(file => file.selected = true);
+                break;
+            case 'unselectall':
+                this.filteredFiles.forEach(file => file.selected = false);
+                break;
+            case 'download':
+                const loading = this.modal.await(this.language.getLabel('LBL_DOWNLOADING'));
+                this.backend.downloadFile({
+                    route: `common/spiceattachments/module/${this.model.module}/${this.model.id}/download`,
+                    method: 'POST',
+                    params: null,
+                    body: { selectedAttachments: this.selectedFiles.map(file => file.id) },
+                    headers: null
+                } as any, 'testing', 'application/zip').subscribe({
+                    next: () => {
+                        loading.emit(true);
+                    },
+                    error: () => {
+                        loading.emit(true);
+                        this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+                    }
+                });
+                break;
+            case 'delete':
+                let modalRes = await firstValueFrom(this.modal.prompt('confirm', 'MSG_DELETE_RECORD', 'LBL_DELETE'));
+
+                if (modalRes) {
+                    this.backend.deleteRequest(`common/spiceattachments/module/${this.model.module}/${this.model.id}/deleteattachments`,
+                        {selectedAttachments: this.selectedFiles.map(file => file.id).join(',')}
+                    ).subscribe(() => {
+                        this.toast.sendToast(this.language.getLabel('LBL_DELETED'), 'success');
+                        this.loadFiles();
+                    });
+                }
+
+        }
     }
 
     public openInTab(file) {

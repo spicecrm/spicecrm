@@ -37,6 +37,7 @@
 namespace SpiceCRM\modules\Users;
 
 use Exception;
+use SpiceCRM\extensions\modules\TextMessages\TextMessage;
 use SpiceCRM\extensions\modules\TextMessageTemplates\TextMessageTemplate;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
@@ -704,25 +705,44 @@ class User extends SpiceBean
 
             $result['status'] = true;
         } else {
+
             $compiledContent = $template->parse($this, $additionalData);
-            $template->body_html = $compiledContent['body_html'];
-            $template->body = $compiledContent['body'];
-            $template->subject = $compiledContent['subject'];
 
-            $itemail = $this->email1;
+            if ($sendChannel == 'sms') {
 
-            /** @var Email $emailObj */
-            $emailObj = BeanFactory::getBean('Emails');
-            $emailObj->name = DBUtils::fromHtml($template->subject);
-            $emailObj->body = DBUtils::fromHtml($template->body_html);
-            $emailObj->addEmailAddress('to', $itemail);
+                /** @var TextMessage $sms */
+                $sms = BeanFactory::newBean('TextMessages');
+                $sms->description = $compiledContent;
+                $sms->msisdn = $this->phone_mobile;
+                $sms->mailbox_id = $mailboxId;
 
-            try {
-                $response = $emailObj->sendEmail();
-            } catch (Exception $e) {
-                $result['message'] = $e->getMessage();
-                return $result;
+                try {
+                    $response = $sms->send();
+                } catch (Exception $e) {
+                    $result['message'] = $e->getMessage();
+                }
+
+            } else {
+                $template->body_html = $compiledContent['body_html'];
+                $template->body = $compiledContent['body'];
+                $template->subject = $compiledContent['subject'];
+
+                $itemail = $this->email1;
+
+                /** @var Email $emailObj */
+                $emailObj = BeanFactory::getBean('Emails');
+                $emailObj->name = DBUtils::fromHtml($template->subject);
+                $emailObj->body = DBUtils::fromHtml($template->body_html);
+                $emailObj->addEmailAddress('to', $itemail);
+
+                try {
+                    $response = $emailObj->sendEmail();
+                } catch (Exception $e) {
+                    $result['message'] = $e->getMessage();
+                    return $result;
+                }
             }
+
 
             if ($response['result']) {
                 $result['status'] = true;
