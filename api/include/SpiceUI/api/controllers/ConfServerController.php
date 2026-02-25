@@ -195,7 +195,7 @@ class ConfServerController
             if($refRecordEntry) {
                 $tmpRec = [];
                 foreach ($refRecordEntry as $field => $value) {
-                    $tmpRec[$field] = html_entity_decode(utf8_encode($value));
+                    $tmpRec[$field] = html_entity_decode(mb_check_encoding($value, 'UTF-8') ? $value : utf8_encode($value));
                 }
                 $tableArray[$refRecord['tablename']][$refRecord['tablekey']] = base64_encode(json_encode($tmpRec));
             }
