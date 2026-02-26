@@ -559,6 +559,12 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'description' => 'the ID of a stylesheet to be applied',
                 'required' => false
+            ],
+            'language' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'description' => 'The language code to be applied',
+                'required' => false
             ]
         ]
     ],

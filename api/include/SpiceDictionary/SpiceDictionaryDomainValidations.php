@@ -132,6 +132,8 @@ class SpiceDictionaryDomainValidations
                         'label' => $value['label'],
                         'sequence' => (int)$value['sequence'],
                         'status' => $value['status'],
+                        'icon' => $value['icon'],
+                        'color' => $value['color'],
                     ];
 
                     $this->domainValidationValues[$value['id']] = $value;

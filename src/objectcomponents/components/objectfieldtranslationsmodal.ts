@@ -1,10 +1,11 @@
-import {Component, ComponentRef, model, ModelSignal, signal, WritableSignal} from '@angular/core';
+import {Component, ComponentRef, computed, model, ModelSignal, Sanitizer, signal, WritableSignal} from '@angular/core';
 import {
     ModalComponentI, ModuleFieldTranslationI,
     ModuleFieldTranslationsObjectI
 } from "../interfaces/objectcomponents.interfaces";
 import {language} from "../../services/language.service";
 import {backend} from "../../services/backend.service";
+import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 
 @Component({
     selector: 'object-field-translations-modal',
@@ -15,7 +16,7 @@ export class ObjectFieldTranslationsModal implements ModalComponentI {
     /**
      * if true, display the richtext editor
      */
-    public asRichtext: boolean = false;
+    public fieldType: 'richtext' | 'html' | 'text' = 'text';
     /**
      * if true, enable editing. Passed by the parent component
      */
@@ -23,7 +24,7 @@ export class ObjectFieldTranslationsModal implements ModalComponentI {
     /**
      * holds the original text passed by the parent component
      */
-    public originalText: string;
+    public originalText = signal<string>(undefined);
     /**
      * holds the translation object to emit the changes to any signal effect subscriber
      */
@@ -48,8 +49,19 @@ export class ObjectFieldTranslationsModal implements ModalComponentI {
      * is translating flag
      */
     public isTranslating: WritableSignal<string> = signal(undefined);
+    /**
+     * safe html value of the original text html
+     */
+    public safeHtmlValue = computed<SafeHtml>(() => {
 
-    constructor(public language: language, private backend: backend) {
+        const originalText = this.originalText();
+
+        if (!originalText) return undefined;
+
+        return this.sanitizer.bypassSecurityTrustResourceUrl('data:text/html;charset=UTF-8,' + encodeURIComponent(originalText));
+    })
+
+    constructor(public language: language, private backend: backend, private sanitizer: DomSanitizer) {
         this.loadAvailableLanguages();
     }
 
@@ -128,7 +140,7 @@ export class ObjectFieldTranslationsModal implements ModalComponentI {
 
         this.isTranslating.set(translation.translation_language);
 
-        this.backend.postRequest(`syslanguage/labels/translate/${this.language.currentlanguage}/${translation.translation_language}`, {}, {labels: [this.originalText]}).subscribe({
+        this.backend.postRequest(`syslanguage/labels/translate/${this.language.currentlanguage}/${translation.translation_language}`, {}, {labels: [this.originalText()]}).subscribe({
             next: (res) => {
                 translation.translation_text = res[0];
                 this.emitChange();

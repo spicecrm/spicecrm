@@ -66,9 +66,28 @@ class EmailTemplate extends SpiceBean {
 		parent::__construct();
 	}
 
+    /**
+     * get language from the bean or the template
+     * @param SpiceBean $bean
+     * @return string | null
+     */
+    private function getBeanCommunicationLanguage(SpiceBean $bean): ?string
+    {
+        $languageField = array_column(array_filter($bean->field_defs, fn($field) => $field['type'] == 'language'), 'name')[0];
+        return $bean->$languageField;
+    }
 
     function parse( $bean, $additionalValues = null, $additionalBeans = [], $additionalStyles = [], $addtionalHeadItems = [] ){
         global $app_list_strings;
+
+        $beanLanguage = $this->getBeanCommunicationLanguage($bean);
+
+        # if the bean has a communication language apply the template translated content language before parsing
+        if ($beanLanguage) {
+            $this->language = $beanLanguage;
+            $this->translateTranslatableFields($beanLanguage);
+        }
+
         $app_list_strings = SpiceUtils::returnAppListStringsLanguage($this->language);
 
         $pdfFiles = $this->generatePdfFilesFromOutputTemplates($bean);

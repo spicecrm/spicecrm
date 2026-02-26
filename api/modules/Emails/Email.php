@@ -330,7 +330,18 @@ class Email extends SpiceBean
 
         if ($zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE === TRUE)) {
             foreach ($this->attachments as $attachment) {
-                $zip->addFile("upload/" . $attachment->filemd5, $attachment->filename);
+                if ($attachment->display_name && str_contains($attachment->display_name, "/")) {
+
+                    $filePath = explode("/", $attachment->display_name);
+
+                    if (count($filePath) > 1 && $zip->locateName(implode("/", array_slice($filePath, 0, -1))) === FALSE) {
+                        $zip->addEmptyDir(implode("/", array_slice($filePath, 0, -1)));
+                    }
+
+                    $zip->addFile("upload/" . $attachment->filemd5, $attachment->display_name);
+                } else {
+                    $zip->addFile("upload/" . $attachment->filemd5, $attachment->filename);
+                }
             }
         }
 

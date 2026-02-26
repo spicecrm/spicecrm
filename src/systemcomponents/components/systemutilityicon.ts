@@ -5,7 +5,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    EventEmitter,
+    EventEmitter, input,
     Input,
     OnChanges,
     Output, SimpleChanges
@@ -50,7 +50,10 @@ export class SystemUtilityIcon implements OnChanges{
      * a string for the title that is rendered as part of the SVG HTML element
      */
     @Input() public title: string = '';
-
+    /**
+     * hex custom fill color
+     */
+    public customColor = input<string>(undefined);
 
     constructor(public cdref: ChangeDetectorRef) {
 

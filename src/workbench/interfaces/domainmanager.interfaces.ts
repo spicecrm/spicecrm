@@ -71,4 +71,6 @@ export interface DomainValidationValue {
     description?: string;
     version?: string;
     package?: string;
+    icon?: string;
+    color?: string;
 }
