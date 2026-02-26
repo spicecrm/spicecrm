@@ -174,7 +174,7 @@ abstract class TransportHandler
                     $headerText = $header . $downloadLink;
                     break;
             }
-            $bodySource = preg_replace('<body.*?>', '$0'.$headerText, $bodySource);
+            $bodySource = preg_replace('/<body.*?>/', '$0'.$headerText, $bodySource);
         }
 
         if(strpos($email->body, '</body>') === false){
