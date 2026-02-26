@@ -171,7 +171,7 @@ abstract class TransportHandler
                     $headerText = $downloadLink . $header;
                     break;
                 case 'aftermailboxheader':
-                    $headerText = $downloadLink . $header;
+                    $headerText = $header . $downloadLink;
                     break;
             }
             $bodySource = preg_replace('<body.*?>', '$0'.$headerText, $bodySource);
@@ -195,7 +195,7 @@ abstract class TransportHandler
                     $footerText = $downloadLink . $footer;
                     break;
                 case 'aftermailboxfooter':
-                    $footerText = $downloadLink . $footer;
+                    $footerText = $footer . $downloadLink;
                     break;
             }
             $bodySource = str_replace('</body>',$footerText.'</body>', $bodySource);
