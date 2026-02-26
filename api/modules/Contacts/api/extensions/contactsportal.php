@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 use SpiceCRM\includes\RESTManager;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\modules\Contacts\api\controllers\ContactsPortalController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 
@@ -66,7 +65,7 @@ $routes = [
                 'description' => 'The name of the user to be created.',
                 'validationOptions' => [
                     ValidationMiddleware::VOPT_MIN_SIZE => 1,
-                    ValidationMiddleware::VOPT_MAX_SIZE => SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['user_name']['len']
+                    ValidationMiddleware::VOPT_MAX_SIZE => 60
                 ]
             ],
             'password'        => [
@@ -129,7 +128,7 @@ $routes = [
                 'description' => 'The name of the user to be created.',
                 'validationOptions' => [
                     ValidationMiddleware::VOPT_MIN_SIZE => 1,
-                    ValidationMiddleware::VOPT_MAX_SIZE => SpiceDictionaryHandler::getInstance()->dictionary['User']['fields']['user_name']['len']
+                    ValidationMiddleware::VOPT_MAX_SIZE => 60
                 ]
             ],
             'password'        => [
