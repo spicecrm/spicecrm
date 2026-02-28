@@ -160,3 +160,11 @@ export type ResizeHandle =
     | 'bottom'
     | 'right'
     | 'left';
+
+/**
+ * object emitted by the SystemSizeListener Directive
+ */
+export interface SizeChangeI {
+    rect: DOMRectReadOnly;
+    element: HTMLElement;
+}
