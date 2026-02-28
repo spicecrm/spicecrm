@@ -155,7 +155,9 @@ class ConfServerController
             'sysuiroutes',
             'workflowtasktypes',
             'sysprocessmgmtsystemclausetemplates',
-            'sysprocessmgmtsystemscopetemplates'
+            'sysprocessmgmtsystemscopetemplates',
+            'spicebeanguides',
+            'spicebeanguidestages'
         ];
 
         $tableArray = [];
