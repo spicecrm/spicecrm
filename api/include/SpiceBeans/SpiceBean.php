@@ -1094,6 +1094,18 @@ class SpiceBean
         return [];
     }
 
+    /*
+     * Returns an array of beans of related data. Like get_linked_beans(), however disabling ACL.
+     */
+    function get_linked_beans_ignoreacl( $field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "", $relationships = false )
+    {
+        $this->load_relationship( $field_name );
+        $this->{$field_name}->ignoreACL = true;
+        $return = $this->get_linked_beans( $field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "", $relationships = false );
+        $this->{$field_name}->ignoreACL = false;
+        return $return;
+    }
+
     /**
      * CR1000509 get a collection of related beans
      * EXPERIMENTAL! DO NOT USE FOR NOW!
