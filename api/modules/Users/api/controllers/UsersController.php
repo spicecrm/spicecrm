@@ -14,6 +14,7 @@ use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SpiceTemplateCompiler\System;
 use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
@@ -43,7 +44,7 @@ class UsersController
                 email_addresses ea WHERE ea.id = er.email_address_id
                 AND ea.deleted = 0 AND er.deleted = 0 AND er.bean_module = 'Users' AND email_address_caps IN ('{$db->quote(strtoupper($email1))}') )";
 
-            $row = $db->fetchOne("SELECT id FROM users WHERE UPPER(user_email) = '{$db->quote(strtoupper($email1))}'");
+            $row = $db->fetchOne("SELECT id FROM users WHERE UPPER(user_email) = '{$db->quote(strtoupper($email1))}' AND deleted = 0");
 
             if ($row && $row['id'] != $params['id'])
                 throw (new BadRequestException("Email already exists."))->setErrorCode('duplicateEmail1');
@@ -90,7 +91,7 @@ class UsersController
             $template = SpiceCRMPasswordUtils::getChannelTemplateByType($user, 'sendUsername', $configs->channel);
         }
 
-        $user->sendCredentialToUser($template, 'username', ['username' => $user->user_name]);
+        $user->sendCredentialToUser($template, 'username', ['username' => $user->user_name, 'source_frontend_url' => (new System())->frontend_url()]);
     }
 
     /**
