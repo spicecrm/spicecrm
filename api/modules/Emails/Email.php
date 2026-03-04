@@ -100,7 +100,7 @@ class Email extends SpiceBean
     /**
      * sole constructor
      */
-    function __construct()
+    private function __construct()
     {
         parent::__construct();
 
@@ -1354,7 +1354,7 @@ class Email extends SpiceBean
      */
     public static function getTestEmail(Mailbox $mailbox, $testEmailAddress)
     {
-        $testEmail = new Email();
+        $testEmail = BeanFactory::newBean('Emails');
 
         // todo add recipient_addresses
         // that would require saving the test email
