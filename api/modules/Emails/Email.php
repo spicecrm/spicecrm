@@ -100,7 +100,7 @@ class Email extends SpiceBean
     /**
      * sole constructor
      */
-    private function __construct()
+    function __construct()
     {
         parent::__construct();
 
