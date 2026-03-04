@@ -14,6 +14,7 @@ use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SpiceTemplateCompiler\System;
 use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
@@ -90,7 +91,7 @@ class UsersController
             $template = SpiceCRMPasswordUtils::getChannelTemplateByType($user, 'sendUsername', $configs->channel);
         }
 
-        $user->sendCredentialToUser($template, 'username', ['username' => $user->user_name]);
+        $user->sendCredentialToUser($template, 'username', ['username' => $user->user_name, 'source_frontend_url' => (new System())->frontend_url()]);
     }
 
     /**
