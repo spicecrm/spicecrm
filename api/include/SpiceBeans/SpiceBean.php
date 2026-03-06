@@ -2636,7 +2636,7 @@ class SpiceBean
             }
             //handle related beans
             foreach ($linked_fields as $name => $properties) {
-                if ($properties['name'] == 'modified_user_link' || $properties['name'] == 'created_by_link')
+                if ($properties['name'] == 'modified_user_link' || $properties['name'] == 'created_by_link' || $properties['name'] == 'assigned_user_link')
                     continue;
 
                 if (isset($properties['duplicate_merge'])) {
