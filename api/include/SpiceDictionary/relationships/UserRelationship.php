@@ -82,7 +82,8 @@ class UserRelationship extends One2MBeanRelationship
             'relationship' => $relationship->relationship->relationship_name,
             'source' => 'non-db',
             'module' => $leftDefinition->getModuleName(),
-            'vname' => $relationship->relationship->rhs_linklabel
+            'vname' => $relationship->relationship->rhs_linklabel,
+            'duplicate_merge' => $relationship->relationship->rhs_duplicatemerge
         ];
 
         $fields[$relationship->relationship->rhs_linkname] = $linkField;
@@ -96,7 +97,8 @@ class UserRelationship extends One2MBeanRelationship
                 'link' => $relationship->relationship->rhs_linkname,
                 'source' => 'non-db',
                 'module' => $leftDefinition->getModuleName(),
-                'vname' => $relationship->relationship->rhs_relatelabel
+                'vname' => $relationship->relationship->rhs_relatelabel,
+                'duplicate_merge' => $relationship->relationship->rhs_duplicatemerge
             ];
         }
 
