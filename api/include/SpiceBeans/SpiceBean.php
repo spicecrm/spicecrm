@@ -1100,9 +1100,10 @@ class SpiceBean
     function get_linked_beans_ignoreacl( $field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "", $relationships = false )
     {
         $this->load_relationship( $field_name );
+        $currentValue = $this->{$field_name}->ignoreACL;
         $this->{$field_name}->ignoreACL = true;
         $return = $this->get_linked_beans( $field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "", $relationships = false );
-        $this->{$field_name}->ignoreACL = false;
+        $this->{$field_name}->ignoreACL = $currentValue;
         return $return;
     }
 
@@ -2636,7 +2637,7 @@ class SpiceBean
             }
             //handle related beans
             foreach ($linked_fields as $name => $properties) {
-                if ($properties['name'] == 'modified_user_link' || $properties['name'] == 'created_by_link')
+                if ($properties['name'] == 'modified_user_link' || $properties['name'] == 'created_by_link' || $properties['name'] == 'assigned_user_link')
                     continue;
 
                 if (isset($properties['duplicate_merge'])) {

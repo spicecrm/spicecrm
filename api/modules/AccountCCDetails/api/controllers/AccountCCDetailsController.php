@@ -11,7 +11,7 @@ class AccountCCDetailsController
     public function getAllMaintainedForAccount(Request $req, Response $res, array $args): Response {
        $companyCodeIDs = DBManagerFactory::getInstance()->fetchAll("SELECT companycode_id FROM accountccdetails WHERE account_id='{$args['id']}' AND deleted = 0");
 
-       $ccIDS = [];
+        $ccIDs = [];
        foreach ($companyCodeIDs as $companyCodeID) {
            $ccIDs[] = $companyCodeID['companycode_id'];
        }

@@ -342,7 +342,7 @@ class SpiceBeanController
 
     public function mergeBeans(Request $req, Response $res, array $args): Response
     {
-
+        set_time_limit(90);
 
         $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
         $postBody = $body = $req->getParsedBody();

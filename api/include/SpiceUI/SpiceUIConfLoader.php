@@ -99,6 +99,7 @@ class SpiceUIConfLoader
         'sysaiprompts',
         'sysprocessmgmtsystemclausetemplates',
         'sysprocessmgmtsystemscopetemplates',
+        'syshazardousmaterialimages',
         'spicebeanguides',
         'spicebeanguidestages'
     ];

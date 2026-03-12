@@ -156,6 +156,7 @@ class ConfServerController
             'workflowtasktypes',
             'sysprocessmgmtsystemclausetemplates',
             'sysprocessmgmtsystemscopetemplates',
+            'syshazardousmaterialimages',
             'spicebeanguides',
             'spicebeanguidestages'
         ];
@@ -182,7 +183,7 @@ class ConfServerController
             while ($record = $db->fetchByAssoc($records)) {
                 $tmpRec = [];
                 foreach ($record as $field => $value) {
-                    $tmpRec[$field] = html_entity_decode(utf8_encode($value));
+                    $tmpRec[$field] = html_entity_decode(mb_check_encoding($value, 'UTF-8') ? $value : utf8_encode($value));
                 }
                 $tableArray[$table][$record['id']] = base64_encode(json_encode($tmpRec));
             }

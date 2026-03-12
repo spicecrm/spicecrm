@@ -43,6 +43,7 @@ import {UserAPIKeysModal} from "./components/userapikeysmodal";
 import {SystemTranslatePipe} from "../../systemcomponents/pipes/systemtranslate.pipe";
 import {UserManagementPanelUser} from "./components/usermanagementpaneluser";
 import {fieldUserRoles} from "./fields/fielduserroles";
+import {UserAPIKeysButton} from "./components/userapikeysbutton";
 
 @NgModule({
     imports: [
@@ -88,7 +89,8 @@ import {fieldUserRoles} from "./fields/fielduserroles";
         UserManagementPanel,
         UserManagementPanelUser,
         fieldUserRoles,
-        UserAPIKeysModal
+        UserAPIKeysModal,
+        UserAPIKeysButton
     ]
 })
 export class ModuleUsers {
