@@ -789,6 +789,16 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
             this.modelattachments.folderId = file.id;
             this.sort(this.fileViewAndSort.field, false, false);
         } else {
+
+            let fileTypeArray = file.file_mime_type.toLowerCase().split("/");
+            const applicationFile =  fileTypeArray[0] == 'application' && !['pdf', 'msg', 'vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(fileTypeArray[1]);
+            const csvFile = fileTypeArray[0] == 'text' && fileTypeArray[1] == 'csv';
+
+            if(applicationFile || csvFile) {
+                this.modelattachments.downloadAttachment(file.id, file.filename);
+                return;
+            }
+
             let routePrefix = '';
             if (this.navigationtab?.tabid) {
                 routePrefix = '/tab/' + this.navigationtab.tabid;
