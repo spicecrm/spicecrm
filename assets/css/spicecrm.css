@@ -856,3 +856,7 @@ input[type="submit"] {
 .spice-progress-bar-transparent .slds-progress-bar {
     background-color: unset;
 }
+
+.field-container-height-full field-container > div {
+    height: 100%;
+}
