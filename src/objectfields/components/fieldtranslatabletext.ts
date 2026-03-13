@@ -1,4 +1,4 @@
-import {Component, effect, inject, Injector, Input, OnInit} from '@angular/core';
+import {Component, effect, inject, Injector, input, Input, OnInit} from '@angular/core';
 import {ObjectFieldTranslationsModal} from "../../objectcomponents/components/objectfieldtranslationsmodal";
 import {
     ModuleFieldTranslationsObjectI
@@ -39,6 +39,10 @@ export class FieldTranslatableText implements OnInit {
      * additonal classes top be added when the field is displayed
      */
     @Input() public fielddisplayclass: string = '';
+    /**
+     * if true, use the field type passed directly to the component
+     */
+    public useOriginalFieldType = input<boolean>(true);
 
     constructor(private modal: modal,
                 private model: model,
@@ -79,7 +83,9 @@ export class FieldTranslatableText implements OnInit {
     private initializeTextFieldConfig() {
         this.textFieldConfig = {...this.fieldconfig};
         this.textFieldName = this.fieldname.replace('_translations', '');
-        this.textFieldConfig.fieldtype = this.metadata.getFieldType(this.model.module, this.textFieldName);
+        if (this.useOriginalFieldType()) {
+            this.textFieldConfig.fieldtype = this.metadata.getFieldType(this.model.module, this.textFieldName);
+        }
         this.textFieldConfig.hasTranslationField = true;
 
     }
@@ -94,6 +100,9 @@ export class FieldTranslatableText implements OnInit {
             ref.instance.isEditMode = editMode;
             ref.instance.originalText.set(this.model.getField(this.textFieldName));
             ref.instance.fieldType = fieldType ?? 'text';
+            if (!this.useOriginalFieldType() && ['html', 'richtext'].includes(this.textFieldConfig.fieldtype)) {
+                ref.instance.fieldType = this.textFieldConfig.fieldtype as 'html' | 'richtext';
+            }
             const translations = this.model.getField(this.fieldname);
             if (!window._.isEmpty(translations)) {
                 ref.instance.setTranslationsArray(Object.values(translations));
