@@ -1579,7 +1579,7 @@ class SpiceUtils
 
         if($field){
             foreach($treeLinks as $treeLink){
-                if($treeLink['module_field'] == $field){
+                if(in_array($field, [$treeLink['module_field'], $treeLink['module_field_c1'], $treeLink['module_field_c2'], $treeLink['module_field_c3'], $treeLink['module_field_c4']])){
                     $treeId = $treeLink['syscategorytree_id'];
                     break;
                 }
