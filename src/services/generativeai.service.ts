@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {backend} from "./backend.service";
 import {GenerativeAIParams} from "../systemcomponents/interfaces/systemcomponents.interfaces";
 import {Observable} from "rxjs";
+import {map} from "rxjs/operators";
 
 @Injectable({
     providedIn: 'root'
@@ -18,6 +19,27 @@ export class GenerativeAIService {
      */
     public submitPrompt(input: string, params?: GenerativeAIParams): Observable<{ parts: {text: string}[] }> {
         return this.backend.postRequest('common/ai/content/generate', null, {input, params});
+    }
+
+    /**
+     * submit the prompt input and return the result
+     * @param id
+     * @param inputs
+     * @param asJsonArray
+     * @param params
+     */
+    public submitPromptWithInputs(id: string, inputs: string[], asJsonArray?: true, params?: GenerativeAIParams): Observable<any[]>
+    public submitPromptWithInputs(id: string, inputs: string[], asJsonArray?: boolean, params?: GenerativeAIParams): Observable<{ parts: {text: string}[] } | any[]> {
+
+        const req = () => this.backend.postRequest(`common/ai/prompt/${id}/submit`, null, {inputs, params});
+
+        if (asJsonArray) {
+            return req().pipe(map((res: any) => {
+                return !res.parts[0]?.text ? [] : JSON.parse(res.parts[0].text);
+            }));
+        } else {
+            return req();
+        }
     }
 
     /**
