@@ -545,7 +545,7 @@ class AuthenticationController
         }
 
         // get the current user
-        $currentUser = $this->getCurrentUser();
+        $currentUser = BeanFactory::getBean('Users', $this->getCurrentUser()->id, ['forceRetrieve' => true]);
 
         // get a module handler to map the current user
         $moduleHandler = new SpiceBeanHandler();
@@ -571,7 +571,7 @@ class AuthenticationController
             'obtainGDPRconsent' => false,
             'canchangepassword' => AuthenticationController::getInstance()->getCanChangePassword(),
             'expiringPasswordValidityDays' => AuthenticationController::getInstance()->expiringPasswordValidityDays,
-            'user' => $moduleHandler->mapBean($currentUser),
+            'user' => $moduleHandler->mapBean(BeanFactory::getBean('Users', $currentUser->id)),
             'deviceID' => $this->deviceID
         ];
 
