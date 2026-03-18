@@ -284,4 +284,11 @@ class SpiceDictionaryItems
 
         self::$instance->writeCache();
     }
+
+    public static function compareItems( $item1, $item2 ): bool
+    {
+        if ( $item1['name'] !== $item2['name'] ) return false;
+        if ( $item1['domaindefinition_id'] !== $item2['domaindefinition_id'] ) return false;
+        return true;
+    }
 }

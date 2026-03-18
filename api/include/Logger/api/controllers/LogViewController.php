@@ -3,6 +3,8 @@ namespace SpiceCRM\includes\Logger\api\controllers;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\Logger\LogViewer;
 use SpiceCRM\includes\Logger\APIlogViewer;
@@ -86,10 +88,9 @@ class LogViewController{
      * @param $args
      * @return mixed
      */
-    public function APIlogGetLogTables( Request $req, Response $res, $args ): Response {
-
-        $tables = (new APIlogViewer())->getLogTables();
-
+    public function APIlogGetAdditionalLogTables( Request $req, Response $res, $args ): Response
+    {
+        $tables = APIlogViewer::getAdditionalLogTables();
         return $res->withJson($tables);
     }
 
@@ -125,6 +126,63 @@ class LogViewController{
         $db = DBManagerFactory::getInstance();
         $db->query("UPDATE sysapilogconfig SET is_active = {$args['status']} WHERE id='{$args['id']}'");
         return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * Set or remove pin for an API Log Entry
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function APIlogSetPinned( Request $req, Response $res, $args ): Response
+    {
+        $body = $req->getParsedBody();
+        $queryParams = $req->getQueryParams();
+
+        $logtable = self::getLogtable( $queryParams['logtable'] );
+
+        if ( $body['pinned'] !== 1 and $body['pinned'] !== 0 ) throw new BadRequestException();
+
+        $db = DBManagerFactory::getInstance();
+
+        if (( $pinned = $db->getOne("SELECT pinned FROM $logtable WHERE id='{$args['id']}'")) === false )
+            throw new NotFoundException('API log entry with ID '.$args['id'].' not found.');
+
+        if ( ( $pinned = (int)$pinned ) !== $body['pinned'] ) {
+            $result = $db->query("UPDATE $logtable SET pinned = {$body['pinned']} WHERE id='{$args['id']}'");
+            $pinned = ( $db->getAffectedRowCount( $result ) === 0 ? $pinned : $body['pinned'] );
+        } else $pinned = $body['pinned'];
+
+        return $res->withJson([ 'success' => true, 'pinned' => $pinned ]);
+    }
+
+    /**
+     * Set or remove pin for a CRM Log Entry
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function CRMlogSetPinned( Request $req, Response $res, $args ): Response
+    {
+        $body = $req->getParsedBody();
+
+        $db = DBManagerFactory::getInstance();
+
+        if ( $body['pinned'] !== 1 and $body['pinned'] !== 0 ) throw new BadRequestException();
+
+        if ( ( $pinned = $db->getOne("SELECT pinned FROM syslogs WHERE id='{$args['id']}'")) === false )
+            throw new NotFoundException('API log entry with ID '.$args['id'].' not found.');
+
+        if ( ( $pinned = (int)$pinned ) !== $body['pinned'] ) {
+            $result = $db->query("UPDATE syslogs SET pinned = {$body['pinned']} WHERE id='{$args['id']}'");
+            $pinned = ( $db->getAffectedRowCount( $result ) === 0 ? $pinned : $body['pinned'] );
+        } else $pinned = $body['pinned'];
+
+        return $res->withJson([ 'success' => true, 'pinned' => $pinned ]);
     }
 
     /**
@@ -188,9 +246,13 @@ class LogViewController{
      * @param $args
      * @return mixed
      */
-    public function APIlogTruncate( Request $req, Response $res, $args ): Response {
+    public function APIlogTruncate( Request $req, Response $res, $args ): Response
+    {
         $db = DBManagerFactory::getInstance();
-        $db->query("truncate table sysapilog");
+        $queryParams = $req->getQueryParams();
+
+        $logtable = self::getLogtable( $queryParams['logtable'] );
+        $db->query("truncate table {$logtable}");
         return $res->withJson(['success' => true]);
     }
 
@@ -202,7 +264,7 @@ class LogViewController{
         $bodyParams = $req->getParsedBody();
 
         $viewer = new APIlogViewer();
-        $entry = $viewer->getFullEntry( $args['id'] );
+        $entry = $viewer->getFullEntry( $args['id'], 'sysapilog' );
 
         $url = $entry['url'];
         $user = AuthenticationController::getInstance()->getCurrentUser();
@@ -212,10 +274,15 @@ class LogViewController{
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_URL            => $url,
-            CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS     => $bodyParams['bodyParams'],
-            CURLOPT_HTTPHEADER     => ['Authorization: Basic ' . base64_encode($user->user_name . ':' . base64_decode( $bodyParams['password'] ))],
+            CURLOPT_HTTPHEADER     => [ 'oauth-issuer: SpiceCRM', 'oauth-token: '.session_id() ],
         ];
+
+        if ( !empty( $bodyParams['bodyParams'] )) $curlOptions[CURLOPT_POSTFIELDS] = $bodyParams['bodyParams'];
+        switch ( $entry['method'] ) {
+            case 'POST': $curlOptions[CURLOPT_POST] = true; break;
+            case 'PUT': $curlOptions[CURLOPT_PUT] = true; break;
+            case 'DELETE': $curlOptions[CURLOPT_CUSTOMREQUEST] = 'DELETE'; break;
+        }
 
         if ( !empty( $entry['request_headers'] ))
             foreach ( json_decode( $entry['request_headers'], true ) as $k => $v )
@@ -234,6 +301,19 @@ class LogViewController{
             'httpStatusCode' => ( $dummy = curl_getinfo( $curl, CURLINFO_HTTP_CODE )),
             'success' => ( $dummy < 300 and $dummy >= 200 )
         ]);
+    }
+
+    public static function getLogtable( $specificLogtable = null)
+    {
+        $logtable = 'sysapilog';
+        if ( !empty( $specificLogtable ) and $specificLogtable !== 'sysapilog' )
+        {
+            $logtables = APIlogViewer::getAdditionalLogTables();
+            if ( array_search( $specificLogtable, $logtables ) === false )
+                throw ( new NotFoundException("Logtable not found"))->setLookedFor( $logtable );
+            $logtable = $specificLogtable;
+        }
+        return $logtable;
     }
 
 }

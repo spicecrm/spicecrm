@@ -59,12 +59,12 @@
 
             <div class="slds-grid slds-grid_vertical-align-end slds-m-bottom_xxx-small" style="padding-top:0">
 
-                <div class="slds-p-right_x-small slds-size--1-of-4">
+                <div class="slds-p-right_x-small slds-size--3-of-12">
                     <label class="slds-form-element__label">{{lang.getLabel('LBL_USER')}}</label>
                     <system-input-relate module="Users" [(ngModel)]="filterUser" nameField="user_name"></system-input-relate>
                 </div>
 
-                <div class="slds-form-element slds-p-right_x-small slds-size--1-of-4">
+                <div class="slds-form-element slds-p-right_x-small slds-size--3-of-12">
                     <!--
                     <system-label label="LBL_LOGFILE_LEVEL"></system-label>
                     <system-checkbox-group #loglevelsCheckboxes [(ngModel)]="filter.loglevels" class="slds-grid slds-wrap">
@@ -98,7 +98,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="slds-form-element slds-size--1-of-4 slds-p-right_x-small">
+                <div class="slds-form-element slds-size--2-of-12 slds-p-right_x-small">
                     <label class="slds-form-element__label" >Sub Log Level</label>
                     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                         <input system-trim-input class="slds-input" type="text" [(ngModel)]="filter.subloglevel" />
@@ -107,7 +107,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="slds-form-element slds-size--1-of-4">
+                <div class="slds-form-element slds-size--3-of-12 slds-p-right_x-small">
                     <label class="slds-form-element__label" >Text</label>
                     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                         <input  system-trim-input class="slds-input" type="text" [(ngModel)]="filter.text" />
@@ -115,6 +115,10 @@
                             <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                         </button>
                     </div>
+                </div>
+                <div class="slds-col slds-size--1-of-12">
+                    <label class="slds-form-element__label"><system-label label="LBL_PINNED"></system-label></label>
+                    <system-checkbox [(ngModel)]="filter.pinned" style="display:block;height:2rem"></system-checkbox>
                 </div>
             </div>
         </div>

@@ -25,7 +25,7 @@ export class CRMLogViewer {
      * filter
      * @private
      */
-    public filter = { loglevel: '', subloglevel: '', pid: '', user_id: '', text: '', transaction_id: '', end: undefined };
+    public filter = { loglevel: '', subloglevel: '', pid: '', user_id: '', text: '', transaction_id: '', end: undefined, pinned: false };
     public filterUserName: string;
 
     /**

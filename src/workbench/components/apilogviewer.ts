@@ -62,7 +62,8 @@ export class APIlogViewer {
         ip: '',
         route: '',
         status: '',
-        direction: ''
+        direction: '',
+        pinned: false
     };
 
     /**
@@ -198,6 +199,7 @@ export class APIlogViewer {
             if (this.filter.status) queryParams.status = this.filter.status;
             if (this.filter.session_id) queryParams.session_id = this.filter.session_id;
             if (this.filter.direction) queryParams.direction = this.filter.direction;
+            if (this.filter.pinned) queryParams.pinned = true;
             if (this.dateEnd) queryParams.end = this.dateEnd?.utc().format('YYYY-MM-DD HH:mm:ss');
             if (this.dateStart) queryParams.start = this.dateStart?.utc().format('YYYY-MM-DD HH:mm:ss');
 
@@ -205,6 +207,7 @@ export class APIlogViewer {
             this.backend.getRequest('admin/apilog', queryParams).subscribe({
                 next: (response) => {
                     this.entries = response.entries;
+                    this.entries.forEach( entry => entry.pinned = ( entry.pinned === '1' ? true : false ));
                     this.totalCount = response.totalCount;
                     this.isLoading = false;
                     this.isLoaded = true;
@@ -234,7 +237,7 @@ export class APIlogViewer {
         this.modal.prompt('confirm', 'Truncate the API log and delete all entries?', 'Truncate API Log').subscribe(
             res => {
                 if (res) {
-                    this.backend.deleteRequest('admin/apilog').subscribe({
+                    this.backend.deleteRequest('admin/apilog', { logtable: this.logtable }).subscribe({
                         next: () => {
                             this.isLoading = false;
                             this.loadData();
@@ -319,4 +322,23 @@ export class APIlogViewer {
                 break;
         }
     }
+
+    /**
+     * Toggle pin of API log entry.
+     */
+    public togglePin(entry) {
+        this.backend.postRequest('admin/apilog/'+entry.id+'/pin', { "logtable": this.logtable }, {"pinned": (entry.pinned ? 0:1 ) }).subscribe({
+            next: ( response ) => {
+                if ( response.success === true ) {
+                    entry.pinned = response.pinned;
+                    this.toast.sendToast('API Log Entry successfully '+( response.pinned ? '':'un-' )+'pinned.', 'success');
+                }
+                else this.toast.sendToast('Error changing pin', 'error');
+            },
+            error: () => {
+                this.toast.sendToast('Error changing pin', 'error');
+            }
+        });
+    }
+
 }
