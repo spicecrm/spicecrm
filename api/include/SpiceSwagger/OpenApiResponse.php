@@ -7,6 +7,20 @@ use SpiceCRM\includes\Middleware\ValidationMiddleware;
 class OpenApiResponse
 {
     /**
+     * generate an empty successful response
+     * @param string $description
+     * @return array
+     */
+    public function empty(string $description): array
+    {
+        return [
+            204 => [
+                'description' => $description
+            ]
+        ];
+    }
+
+    /**
      * generate a JSON response by the api builder
      * @param string $description
      * @param int $code
