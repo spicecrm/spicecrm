@@ -236,7 +236,7 @@ class LogViewController{
                 break;
             }
         }
-       return $res->withJson($entry);
+        return $res->withJson($entry);
     }
 
     /**
@@ -266,15 +266,37 @@ class LogViewController{
         $viewer = new APIlogViewer();
         $entry = $viewer->getFullEntry( $args['id'], 'sysapilog' );
 
+        # The following code regarding sessions is necessary
+        # because a session can only be open once at a time.
+        # Simply including the session ID in the replay request
+        # would result in a blocked request, as it would be unable to open the session.
+        # Therefore, a second, identical session is required.
+
+        # temporary close the current session
+        $currentSessionId = session_id(); # remember the session id
+        $currentSessionData = $_SESSION;  # save the session data ($_SESSION)
+        session_write_close();
+
+        # create/start a session for the replay process
+        session_id( $replaySessionId = session_create_id());
+        session_start();
+        $_SESSION = $currentSessionData; # fill the session with previous saved session data ($_SESSION)
+        session_write_close();
+
+        # reconstruct the original session (with the remembered session id)
+        session_id( $currentSessionId );
+        session_start();
+
         $url = $entry['url'];
-        $user = AuthenticationController::getInstance()->getCurrentUser();
 
         $curl = curl_init();
         $curlOptions = [
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_URL            => $url,
-            CURLOPT_HTTPHEADER     => [ 'oauth-issuer: SpiceCRM', 'oauth-token: '.session_id() ],
+            CURLOPT_HTTPHEADER     => [ 'oauth-issuer: SpiceCRM', 'oauth-token: '.$replaySessionId ],
+            CURLOPT_TIMEOUT => 20, // sec
+            CURLOPT_CONNECTTIMEOUT => 5 // sec
         ];
 
         if ( !empty( $bodyParams['bodyParams'] )) $curlOptions[CURLOPT_POSTFIELDS] = $bodyParams['bodyParams'];
