@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {backend} from "./backend.service";
-import {GenerativeAIParams} from "../systemcomponents/interfaces/systemcomponents.interfaces";
+import {GenerativeAIInputI, GenerativeAIParams} from "../systemcomponents/interfaces/systemcomponents.interfaces";
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
 
@@ -17,7 +17,7 @@ export class GenerativeAIService {
      * @param input
      * @param params
      */
-    public submitPrompt(input: string, params?: GenerativeAIParams): Observable<{ parts: {text: string}[] }> {
+    public submitPrompt(input: GenerativeAIInputI, params?: GenerativeAIParams): Observable<{ parts: {text: string}[] }> {
         return this.backend.postRequest('common/ai/content/generate', null, {input, params});
     }
 
@@ -28,8 +28,8 @@ export class GenerativeAIService {
      * @param asJsonArray
      * @param params
      */
-    public submitPromptWithInputs(id: string, inputs: string[], asJsonArray?: true, params?: GenerativeAIParams): Observable<any[]>
-    public submitPromptWithInputs(id: string, inputs: string[], asJsonArray?: boolean, params?: GenerativeAIParams): Observable<{ parts: {text: string}[] } | any[]> {
+    public submitPromptWithInputs(id: string, inputs: GenerativeAIInputI[], asJsonArray?: true, params?: GenerativeAIParams): Observable<any[]>
+    public submitPromptWithInputs(id: string, inputs: GenerativeAIInputI[], asJsonArray?: boolean, params?: GenerativeAIParams): Observable<{ parts: {text: string}[] } | any[]> {
 
         const req = () => this.backend.postRequest(`common/ai/prompt/${id}/submit`, null, {inputs, params});
 

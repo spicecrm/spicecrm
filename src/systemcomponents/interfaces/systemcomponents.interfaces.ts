@@ -116,6 +116,18 @@ export interface GoogleChartSelectedObject {
 
 export type ChartJSTypeOneDimensional = 'Bar' | 'Column' | 'Line' | 'Pie' | 'Doughnut';
 
+export type GenerativeAIInputI = string | GenerativeAIInputObjectI;
+
+/**
+ * input object for the generative AI service
+ */
+interface GenerativeAIInputObjectI {
+    type: 'file' | 'text';
+    mime?: string;
+    md5?: string;
+    content?: string;
+}
+
 /**
  * this params config can be one of multiple interfaces based on the system selected service provider
  */

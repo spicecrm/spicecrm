@@ -29,6 +29,7 @@ use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
+use SpiceCRM\modules\Emails\interfaces\ParseEmailObject;
 use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
 use SpiceCRM\modules\EmailTrackingLinks\EmailTrackingLink;
@@ -1844,6 +1845,147 @@ class Email extends SpiceBean
         // set the parent
         $this->parent_id = $beanId;
         $this->parent_type = $beanModule;
+    }
+
+    /**
+     * parse msg file
+     * @param $path
+     * @return ParseEmailObject
+     * @throws Exception
+     */
+    public static function parseMsgFile($path): ParseEmailObject
+    {
+        $messageFactory = new MAPI\MapiMessageFactory(new Swiftmailer\Factory());
+        $documentFactory = new Pear\DocumentFactory();
+        $msg = $messageFactory->parseMessage($documentFactory->createFromFile($path));
+
+        # Access the property store via the public method
+        $props = $msg->properties();
+
+        # Extract Recipients (To, Cc, Bcc are handled by the lib's internal collection)
+        $recipientList = [];
+        foreach ($msg->getRecipients() as $recipient) {
+            # getEmail() is the standard way to get the address in this lib
+            $recipientList[] = $recipient->getEmail();
+        }
+        $recipientList = array_unique($recipientList);
+
+        # Extract Metadata
+        $subject = $props['subject'] ?? '(No Subject)';
+        $from    = $msg->getSender() ?? 'Unknown'; # Returns "Name <email>"
+
+        # Handle Date (getSendTime returns a DateTime object)
+        $dateObj = $msg->getSendTime();
+        $dateStr = $dateObj ? $dateObj->format('Y-m-d H:i:s') : 'Unknown Date';
+
+        # Body extraction with exception safety for RTF-only messages
+        $finalBody = '';
+        $isHtml = false;
+
+        $html = $msg->getBodyHTML();
+        if ($html) {
+            $finalBody = $html;
+            $isHtml = true;
+        }
+
+        if (!$isHtml) {
+            try {
+                $finalBody = $msg->getBody() ?? '';
+            } catch (\Exception $e) {
+                $finalBody = null;
+            }
+        }
+
+        return new ParseEmailObject(
+            subject:   (string) $subject,
+            from:      (string) $from,
+            date_sent: $dateStr,
+            recipients: $recipientList,
+            body:      (string) $finalBody,
+            isHtml:    $isHtml
+        );
+    }
+
+    /**
+     * Parses EML and returns a structured object.
+     */
+    public static function parseEmlContent(string $path): ParseEmailObject
+    {
+        # Initialize mailparse resource
+        $mime = mailparse_msg_parse_file($path);
+        $structure = mailparse_msg_get_structure($mime);
+
+        # Extract headers from the root part
+        $rootPart = mailparse_msg_get_part($mime, "1");
+        $data = mailparse_msg_get_part_data($rootPart);
+        $headers = $data['headers'] ?? [];
+
+        # Extract recipients
+        $toAddr  = mailparse_rfc822_parse_addresses($headers['to'] ?? '');
+        $ccAddr  = mailparse_rfc822_parse_addresses($headers['cc'] ?? '');
+        $bccAddr = mailparse_rfc822_parse_addresses($headers['bcc'] ?? '');
+        $allRecipients = array_merge($toAddr, $ccAddr, $bccAddr);
+        $recipientList = array_unique(array_column($allRecipients, 'address'));
+
+        # Parse From address
+        $fromArr = mailparse_rfc822_parse_addresses($headers['from'] ?? '')[0] ?? [];
+
+        # Loop through parts to find the body content
+        $parts = [];
+        foreach ($structure as $partName) {
+            $part = mailparse_msg_get_part($mime, $partName);
+            $partData = mailparse_msg_get_part_data($part);
+
+            # Skip actual file attachments
+            if (($partData['content-disposition'] ?? '') === 'attachment') continue;
+
+            $contentType = strtolower($partData['content-type'] ?? '');
+
+            # Capture text and html parts
+            if (str_contains($contentType, 'text/plain') || str_contains($contentType, 'text/html')) {
+                ob_start();
+                mailparse_msg_extract_part_file($part, $path);
+                $raw = ob_get_clean();
+
+                # 1. Decode Transfer Encoding (QP or Base64)
+                $encoding = strtolower($partData['transfer-encoding'] ?? '');
+                $decoded = match($encoding) {
+                    'quoted-printable' => quoted_printable_decode($raw),
+                    'base64'           => base64_decode($raw),
+                    default            => $raw
+                };
+
+                # 2. Handle Character Encoding (Convert to UTF-8)
+                # Extract charset from "text/html; charset=ISO-8859-1"
+                if (preg_match('/charset=["\']?([^"\';\s]+)/i', $contentType, $match)) {
+                    $charset = strtoupper($match[1]);
+                    if ($charset !== 'UTF-8') {
+                        $decoded = mb_convert_encoding($decoded, 'UTF-8', $charset);
+                    }
+                } else {
+                    # Fallback to auto-detection if no charset is provided
+                    $decoded = mb_convert_encoding($decoded, 'UTF-8', 'auto');
+                }
+
+                $typeKey = str_contains($contentType, 'text/html') ? 'text/html' : 'text/plain';
+                $parts[$typeKey] = trim($decoded);
+            }
+        }
+
+        mailparse_msg_free($mime);
+
+        # Final assignment
+        $isHtml = isset($parts['text/html']);
+        $finalBody = $isHtml ? $parts['text/html'] : ($parts['text/plain'] ?? '');
+
+        return new ParseEmailObject(
+            subject:   $headers['subject'],
+            from:      $fromArr['address'],
+            date_sent: $headers['date'],
+            recipients: $recipientList,
+            body:      $finalBody,
+            isHtml:    $isHtml
+        );
     }
 
     /**
