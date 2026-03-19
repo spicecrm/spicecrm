@@ -112,7 +112,7 @@ class APIlogViewer {
         if ( !empty( $queryParams['direction'])) $filter[] = "a.direction = '{$db->quote($queryParams['direction'])}'";
         if ( !empty( $queryParams['end'])) $filter[] = "a.date_entered <= '{$db->quote($queryParams['end'])}'";
         if ( !empty( $queryParams['start'])) $filter[] = "a.date_entered >= '{$db->quote($queryParams['start'])}'";
-#        if ( !empty( $queryParams['pinned'])) $filter[] = "a.pinned = 1";
+        if ( !empty( $queryParams['pinned'])) $filter[] = "a.pinned = 1";
 
         if (count( $filter) > 0) {
             $whereClause = 'WHERE ' . implode(' AND ', $filter);
