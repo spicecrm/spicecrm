@@ -199,6 +199,7 @@ import {
 } from "./components/dictionarymanagerrelationshipaddmanytomanyself";
 import {DictionaryRelationships} from "./components/dictionaryrelationships";
 import {DictionaryRelationshipsDefinitions} from "./components/dictionaryrelationshipsdefinitions";
+import {WorkbenchConfigOptionAiprompt} from "./components/workbenchconfigoptionaiprompt";
 
 
 @NgModule({
@@ -381,6 +382,7 @@ import {DictionaryRelationshipsDefinitions} from "./components/dictionaryrelatio
         Hl7ManagerType,
         HL7ManagerRule,
         WorkbenchConfigOptionKanban,
+        WorkbenchConfigOptionAiprompt,
         DictionaryManagerFieldDefinitionModal,
         MailboxesSpiceGatewayManager,
         DictionaryManagerRelationshipAddManyToManySelf

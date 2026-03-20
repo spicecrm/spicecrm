@@ -57,7 +57,7 @@ export class ObjectRepositoryManager {
     public configList: any = {};
     public currentConfigArray: any[] = [];
     public objectFilter: string = '';
-    public fieldTypeList: any[] = ["string", "label", "boolean", "fieldset", "actionset", "componentset", "module", "modulefilter", "kanban"];
+    public fieldTypeList: any[] = ["string", "label", "boolean", "fieldset", "actionset", "componentset", "module", "modulefilter", "kanban", "aiprompt"];
     public newRepo: any = {};
     public emptyRepo: any = {
         component: "",
