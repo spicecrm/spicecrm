@@ -5,7 +5,6 @@ namespace SpiceCRM\modules\Emails\api\controllers;
 use Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\extensions\includes\GenerativeAI\GenerativeAIAgent;
-use SpiceCRM\extensions\includes\GenerativeAI\GenerativeAIHandler;
 use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachmentHandler;
 use SpiceCRM\extensions\modules\Mailboxes\Handlers\OutlookAttachmentHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -18,8 +17,6 @@ use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\includes\UploadFile;
-use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
 
 class EmailsController
@@ -367,23 +364,9 @@ class EmailsController
      */
     public function createEmailFromMSGFile(Request $req, Response $res, array $args): Response {
         $postBody = $req->getParsedBody();
-
-        $email = BeanFactory::getBean('Emails');
-        $email->id = SpiceUtils::createGuid();
-        $email->new_with_id = true;
-        $email->file_name = $postBody['filename'];
-        $email->file_mime_type = $postBody['filemimetype'];
-
-        // create a guid for the email and save the message as file with the bean id
-        $upload_file = new UploadFile('file');
-        $decodedFile = base64_decode($postBody['file']);
-
-        $email->file_md5 = md5($decodedFile);
-
-        $upload_file->set_for_soap($email->id, $decodedFile);
-        $upload_file->final_move($email->file_md5, true);
-
-        // convert the message
+        /** @var Email $email */
+        $email = BeanFactory::newBean('Emails');
+        $email->initializeForMimeFile($postBody);
         $email->convertMsgToEmail($email->file_md5, $postBody['beanModule'], $postBody['beanId']);
         $email->save();
 
@@ -403,24 +386,10 @@ class EmailsController
      */
     public function createEmailFromEMLFile(Request $req, Response $res, array $args): Response {
         $postBody = $req->getParsedBody();
-
-        $email = BeanFactory::getBean('Emails');
-        $email->id = SpiceUtils::createGuid();
-        $email->new_with_id = true;
-        $email->file_name = $postBody['filename'];
-        $email->file_mime_type = $postBody['filemimetype'];
-
-        // create a guid for the email and save the message as file with the bean id
-        $upload_file = new UploadFile('file');
-        $decodedFile = base64_decode($postBody['file']);
-
-        $email->file_md5 = md5($decodedFile);
-
-        $upload_file->set_for_soap($email->id, $decodedFile);
-        $upload_file->final_move($email->file_md5, true);
-
-        // convert the message
-        $email->convertEMLToEmail($email->file_md5, $decodedFile, $postBody['beanModule'], $postBody['beanId']);
+        /** @var Email $email */
+        $email = BeanFactory::newBean('Emails');
+        $decodedFile = $email->initializeForMimeFile($postBody);
+        $email->convertEMLToEmail($email->file_md5, $decodedFile , $postBody['beanModule'], $postBody['beanId']);
         $email->save();
 
         $KRESTModuleHandler = new SpiceBeanHandler();
