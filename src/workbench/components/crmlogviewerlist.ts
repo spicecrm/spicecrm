@@ -128,8 +128,10 @@ export class CRMLogViewerList implements OnInit {
      * Toggle pin of CRM log entry.
      */
     public togglePin(entry) {
+        let loadingModal = this.modalservice.await('LBL_EXECUTING');
         this.backend.postRequest('admin/crmlog/'+entry.id+'/pin', null, {"pinned": (entry.pinned ? 0:1 ) }).subscribe({
             next: ( response ) => {
+                loadingModal.emit(true);
                 if ( response.success === true ) {
                     entry.pinned = response.pinned;
                     this.toast.sendToast('CRM Log Entry successfully '+( response.pinned ? '':'un-' )+'pinned.', 'success');
@@ -137,6 +139,7 @@ export class CRMLogViewerList implements OnInit {
                 else this.toast.sendToast('Error changing pin', 'error');
             },
             error: () => {
+                loadingModal.emit(true);
                 this.toast.sendToast('Error changing pin', 'error');
             }
         });
