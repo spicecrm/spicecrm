@@ -6,11 +6,11 @@ import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
-import {Observable, Subject, switchMap} from "rxjs";
+import {BehaviorSubject, Observable, Subject, switchMap} from "rxjs";
 import {view} from "../../../services/view.service";
-import {GenerativeAIService} from "../../../services/generativeai.service";
 import {GenerativeAIInputI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
 import {tap} from "rxjs/operators";
+import {backend} from "../../../services/backend.service";
 
 /**
  * a separet modal to display the steps for th elad comversion as well as the progress
@@ -40,7 +40,7 @@ export class LeadSelectTypeModal {
      * reference to the generative ai service
      * @private
      */
-    private generativeAIService = inject(GenerativeAIService);
+    private backend = inject(backend);
     /**
      * id of the AI prompt for generating the lead from file
      */
@@ -83,24 +83,28 @@ export class LeadSelectTypeModal {
      * create a new lead from a file
      * @param file
      */
-    public createLeadFromFile(file: { file_name: string, file_mime_type: string, file_md5?: string, file_size?: string, remove: () => void}) {
+    public createLeadFromFile(file: { file_name: string, file_mime_type: string, file: string, progressSubscription: BehaviorSubject<number>}) {
 
-        const input: GenerativeAIInputI[] = [{type: 'file', md5: file.file_md5, mime: file.file_mime_type}];
+        const body = {
+            filename: file.file_name,
+            file: file.file,
+            mime: file.file_mime_type
+        };
+
         const processing = this.modal.await('LBL_PROCESSING');
 
-        this.generativeAIService.submitPromptWithInputs(this.promptId(), input, true)
-            .pipe(
-                tap(res => this.model.setFields(res[0])),
-                switchMap(() => this.model.save(true))
-            )
+        this.backend.postRequestWithProgress(`module/Leads/generateai/${this.promptId()}`, null, body, file.progressSubscription)
             .subscribe({
-                next: () => {
+                next: res => {
+                    file.progressSubscription.complete();
                     processing.next(true);
                     processing.complete();
+                    this.model.id = res.id;
                     this.model.goDetail();
                     this.close();
                 },
                 error: () => {
+                    file.progressSubscription.complete();
                     processing.next(true);
                     processing.complete();
                     this.modal.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');

@@ -1,7 +1,18 @@
 <?php
 namespace SpiceCRM\modules\Leads;
 
+use SpiceCRM\data\BeanFactory;
+use SpiceCRM\extensions\includes\GenerativeAI\GenerativeAIAgent;
+use SpiceCRM\includes\DataStreams\wrappers\UploadStream;
+use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
+use SpiceCRM\includes\utils\SpiceFileUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\Emails\Email;
+
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
@@ -70,5 +81,65 @@ class Lead extends Person {
 		return $value;
 	}
 
+    /**
+     * generate lead by AI prompt
+     * @param string $promptId
+     * @param array{file: string, filename: string, mime: string, md5: string} $file
+     * @return SpiceBean
+     * @throws Exception
+     * @throws \Exception
+     */
+    public function generateLeadByAIPrompt(string $promptId, array $file): SpiceBean
+    {
+        $agent = new GenerativeAIAgent($promptId, 'en_us');
+        $lead = BeanFactory::newBean('Leads');
+        $lead->id = SpiceUtils::createGuid();
+        $lead->new_with_id = true;
+
+        $attachment = SpiceAttachments::saveAttachmentHashFiles('Leads', $lead->id, $file)[0];
+        $file['md5'] = $attachment['filemd5'];
+
+        if (empty($file['mime'])) {
+            $file['mime'] = SpiceFileUtils::getMimeSoap(UploadStream::getFilePath($file['md5']));
+        }
+
+        $initializeEmail = function ($file) {
+            /** @var Email $email */
+            $email = BeanFactory::newBean('Emails');
+            $decodedFile = $email->initializeForMimeFile($file);
+            return [$email, $decodedFile];
+        };
+
+        $emailAfterConvert = function ($email, $agent) use ($file) {
+            $moduleHandler = new SpiceBeanHandler();
+            $email->save();
+            $agent->appendInput(json_encode($moduleHandler->mapBean($email)));
+            unset($file['file']);
+        };
+
+        if ($file['mime'] === 'message/rfc822') {
+            [$email, $decodedFile] = $initializeEmail($file);
+            $email->convertEMLToEmail($file['md5'], $decodedFile, 'Leads', $lead->id);
+            $emailAfterConvert($email, $agent);
+        } else if (str_starts_with($file['mime'], 'application/vnd.ms-outlook') || $file['mime'] === 'application/x-msg') {
+            [$email,] = $initializeEmail($file);
+            $email->convertMsgToEmail($file['md5'], 'Leads', $lead->id);
+            $emailAfterConvert($email, $agent);
+        } else {
+            unset($file['file']);
+            $agent->appendInput((object) $file);
+        }
+
+        unset($file['file']);
+
+        $result = $agent->submit();
+        $data = json_decode($result->parts[0]->text, true)[0];
+        $data['id'] = $lead->id;
+
+        $lead->populateFromRow($data);
+        $lead->save();
+
+        return $lead;
+    }
 }
 

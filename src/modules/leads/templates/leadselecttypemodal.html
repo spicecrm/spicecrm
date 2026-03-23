@@ -3,7 +3,7 @@
     <system-modal-content>
         <object-record-fieldset [fieldset]="fieldset"></object-record-fieldset>
         @if (promptId()) {
-            <system-input-file [ngModel]="leadFile()" (ngModelChange)="createLeadFromFile($event)"/>
+            <system-input-file [ngModel]="leadFile()" [uploadFiles]="false" (ngModelChange)="createLeadFromFile($event)"/>
         }
     </system-modal-content>
     <system-modal-footer>

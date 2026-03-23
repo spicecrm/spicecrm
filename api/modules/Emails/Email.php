@@ -2394,4 +2394,29 @@ class Email extends SpiceBean
             unlink($zipFilePath);
         }
     }
+
+    /**
+     * initialize this email for generating from msg or eml file
+     * upload the file
+     * @param array{filename: string, filemimetype: string, file: string, md5: string} $file
+     * @return string
+     */
+    public function initializeForMimeFile(array $file): string
+    {
+        $this->id = SpiceUtils::createGuid();
+        $this->new_with_id = true;
+        $this->file_name = $file['filename'];
+        $this->file_mime_type = $file['filemimetype'];
+
+        // create a guid for the email and save the message as file with the bean id
+        $decodedFile = base64_decode($file['file']);
+
+        # upload the file if is not yet uploaded
+        if (!$file['md5']) {
+            $this->file_md5 = md5($decodedFile);
+            file_put_contents(StreamFactory::getPathPrefix('upload') . $this->file_md5, $decodedFile);
+        }
+
+        return $decodedFile;
+    }
 }
