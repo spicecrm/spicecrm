@@ -442,9 +442,46 @@ $routes = [
             'folder_id' => [
                 'in' => 'body',
                 'type'        => ValidationMiddleware::TYPE_GUID,
-                'description' => 'the file Name',
+                'description' => 'the folder ID in which the file is stored',
                 'required' => false
-            ]
+            ],
+            'display_name' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'optional file name to display',
+                'required' => false
+            ],
+        ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/common/spiceattachments/module/{beanName}/{beanId}/files',
+        'oldroute'    => '/spiceAttachments/module/{beanName}/{beanId}',
+        'class'       => SpiceAttachmentsController::class,
+        'function'    => 'saveMultipleAttachments',
+        'description' => 'upload multiple files to a record',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters'  => [
+            'beanName' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'description' => 'name of a module',
+                'example' => 'Accounts',
+                'required' => true
+            ],
+            'beanId' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'description' => 'GUID of bean',
+                'required' => true
+            ],
+            'files' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_ARRAY,
+                'subtype' => ValidationMiddleware::TYPE_FILE,
+                'description' => 'the file array',
+                'required' => true
+            ],
         ]
     ],[
         'method'      => 'post',

@@ -225,6 +225,37 @@ class SpiceSwaggerParameter
                         ],
                     ]
                 ];
+            case ValidationMiddleware::TYPE_FILE:
+                return [
+                    'type' => self::TYPE_OBJECT,
+                    'properties' => [
+                        'file' => [
+                            'type' => self::TYPE_STRING,
+                            'format' => 'base64',
+                            'description' => 'the file content base64 encoded',
+                        ],
+                        'filemimetype' => [
+                            'type'        => self::TYPE_STRING,
+                            'description' => 'the file Mime Type',
+                        ],
+                        'filename' => [
+                            'type'        => self::TYPE_STRING,
+                            'description' => 'the file Name',
+                        ],
+                        'category_ids' => [
+                            'type' => self::TYPE_STRING,
+                            'description' => 'ids of categories joined with ,',
+                        ],
+                        'folder_id' => [
+                            'type'        => self::TYPE_STRING,
+                            'description' => 'the folder ID in which the file is stored',
+                        ],
+                        'display_name' =>[
+                            'type'        => self::TYPE_STRING,
+                            'description' => 'optional file name to display',
+                        ]
+                    ]
+                ];
             default:
                 return null;
         }
