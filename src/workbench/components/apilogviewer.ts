@@ -327,8 +327,10 @@ export class APIlogViewer {
      * Toggle pin of API log entry.
      */
     public togglePin(entry) {
+        let loadingModal = this.modal.await('LBL_EXECUTING');
         this.backend.postRequest('admin/apilog/'+entry.id+'/pin', { "logtable": this.logtable }, {"pinned": (entry.pinned ? 0:1 ) }).subscribe({
             next: ( response ) => {
+                loadingModal.emit(true);
                 if ( response.success === true ) {
                     entry.pinned = response.pinned;
                     this.toast.sendToast('API Log Entry successfully '+( response.pinned ? '':'un-' )+'pinned.', 'success');
@@ -336,6 +338,7 @@ export class APIlogViewer {
                 else this.toast.sendToast('Error changing pin', 'error');
             },
             error: () => {
+                loadingModal.emit(true);
                 this.toast.sendToast('Error changing pin', 'error');
             }
         });

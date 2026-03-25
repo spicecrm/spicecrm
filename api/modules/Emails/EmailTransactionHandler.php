@@ -39,6 +39,7 @@ class EmailTransactionHandler extends SpiceSingleton
             /** @var Email $email */
             $email = BeanFactory::getBean('Emails', $id);
             $email->to_be_sent_now = true;
+            $email->addressesToArray();
             $email->save();
         }
     }

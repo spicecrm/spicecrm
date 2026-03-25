@@ -83,8 +83,8 @@ class SpiceAttachments
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
-        if(!is_array($selectedFiles)) $selectedFiles = [];
-        if(count($selectedFiles) > 0) {
+        if (!is_array($selectedFiles)) $selectedFiles = [];
+        if (count($selectedFiles) > 0) {
             // get selected attachments
             $attachments = $selectedFiles;
         } else {
@@ -97,7 +97,7 @@ class SpiceAttachments
         foreach ($attachments as $attachment) {
 
             // do not clone excluded filenames
-            if($attachment['external_id'] && array_search($attachment['external_id'], $excludedFileIDs) !== false) continue;
+            if ($attachment['external_id'] && array_search($attachment['external_id'], $excludedFileIDs) !== false) continue;
 
             $attachment['id'] = SpiceUtils::createGuid();
             $attachment['bean_type'] = $beanName;
@@ -141,11 +141,11 @@ class SpiceAttachments
      * @param null $categoryId
      * @throws Exception
      */
-    public static function getAttachmentsCountPerBean(string $beanName, array $beanIds,  $returnFiles = false)
+    public static function getAttachmentsCountPerBean(string $beanName, array $beanIds, $returnFiles = false)
     {
         $attachments = [];
         foreach ($beanIds as $beanId) {
-          $attachments[$beanId] = self::getAttachmentsForBean($beanName,$beanId, 25, false);
+            $attachments[$beanId] = self::getAttachmentsForBean($beanName, $beanId, 25, false);
         }
         $res = $attachments;
         return $res;
@@ -208,7 +208,8 @@ class SpiceAttachments
                 'file_mime_type' => $file_mime_type,
                 'category_ids' => $file['category_ids'],
                 'external_id' => $file['external_id'],
-                'folder_id' => $file['folder_id']
+                'folder_id' => $file['folder_id'],
+                'display_name' => $file['display_name']
             ]);
             // $db->query("INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type, category_ids) VALUES ('{$guid}', '{$beanName}', '{$beanId}', '" . $current_user->id . "', '" . gmdate('Y-m-d H:i:s') . "', '{$filename}', '{$filesize}', '{$filemd5}', '{$file['text']}', '$thumbnail', 0, '{$file_mime_type}', '{$file['category_ids']}')");
         }
@@ -225,10 +226,30 @@ class SpiceAttachments
             'thumbnail' => $thumbnail,
             'filemd5' => $filemd5,
             'external_id' => $file['external_id'],
-            'category_ids' => $file['category_ids']
+            'category_ids' => $file['category_ids'],
+            'display_name' => $file['display_name']
         ];
         return $attachments;
     }
+
+
+    /**
+     * Will process multiple files
+     * @param $beanName
+     * @param $beanId
+     * @param $files
+     * @return array
+     * @throws Exception
+     */
+    public static function saveMultipleAttachmentHashFiles($beanName, $beanId, $files): array
+    {
+        $attachments = [];
+        foreach($files['files'] as $file){
+            $attachments[] = self::saveAttachmentHashFiles($beanName, $beanId, $file);
+        }
+        return $attachments;
+    }
+
 
     /**
      * saves a Folder
