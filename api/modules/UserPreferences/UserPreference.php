@@ -68,7 +68,8 @@ class UserPreference extends SpiceBean
      */
     protected string $created_by;
 
-    public function setUser(User $user = null){
+    public function setUser(?User $user = null): UserPreference
+    {
         $this->_userFocus = $user;
         $this->tracker_visibility = false;
         return $this;

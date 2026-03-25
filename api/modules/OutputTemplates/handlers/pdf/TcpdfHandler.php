@@ -18,7 +18,7 @@ class TcpdfHandler extends PdfHandler
         return new TCPDF();
     }
 
-    public function process($html = null, array $options = null)
+    public function process($html = null, ?array $options = null)
     {
         parent::process($html, $options);
 
@@ -27,7 +27,7 @@ class TcpdfHandler extends PdfHandler
         return true;
     }
 
-    private function createTcpdf($html = null, array $options = null)
+    private function createTcpdf($html = null, ?array $options = null)
     {
         $options = (object) $options;
         $this->class_instance->setPrintHeader(false);

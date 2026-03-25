@@ -14,7 +14,7 @@ class PdfCrowdHandler extends ApiPdfHandler
         'api_key' => '0d206136e419b0bb29a7cc96816442be'
     ];
 
-    public function process($html = null, array $options = null)
+    public function process($html = null, ?array $options = null): bool
     {
         parent::process($html, $options);
 

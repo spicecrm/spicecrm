@@ -11,7 +11,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 class ExternalPdfServiceHandler extends ChromeLocalPdfHandler
 {
 
-    public function process( $html = null, array $options = null )
+    public function process($html = null, ?array $options = null): void
     {
         parent::process( $html, $options );
 

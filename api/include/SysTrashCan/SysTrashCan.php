@@ -60,10 +60,13 @@ class SysTrashCan
     }
 
     /**
-     * @return array
+     * @param $offset
+     * @param $limit
+     * @param array|null $filter
+     * @return array[]
      * @throws \Exception
      */
-    static function getRecords($offset = 0, $limit = 50, array $filter = null)
+    static function getRecords($offset = 0, $limit = 50, ?array $filter = null): array
     {
         $db = DBManagerFactory::getInstance();
 

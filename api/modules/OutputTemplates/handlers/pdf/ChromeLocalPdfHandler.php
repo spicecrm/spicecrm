@@ -17,7 +17,7 @@ class ChromeLocalPdfHandler extends PdfHandler
 {
     public $basicFontSize = '9pt';
 
-    public function process( $html = null, array $options = null )
+    public function process($html = null, ?array $options = null)
     {
         parent::process( $html, $options );
         if ( get_class( $this ) === 'SpiceCRM\modules\OutputTemplates\handlers\pdf\ChromeLocalPdfHandler' ) $this->createChromeLocalPdf();
