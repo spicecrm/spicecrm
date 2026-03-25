@@ -21,7 +21,7 @@ class SentimentProcessor extends Processor
             $document = new GoogleLanguageDocument($this->email->body);
 
             if ($this->email->body == strip_tags($this->email->body)) {
-                $document->setType(GoogleLanguageDocument::CONTENT_TYPES[PLAIN_TEXT]);
+                $document->setType(GoogleLanguageDocument::CONTENT_TYPES['PLAIN_TEXT']);
             }
 
             try {
