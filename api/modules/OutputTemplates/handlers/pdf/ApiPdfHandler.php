@@ -33,4 +33,9 @@ abstract class ApiPdfHandler extends PdfHandler
 
         return $this->content;
     }
+
+    protected function createInstance()
+    {
+        // TODO: Implement createInstance() method.
+    }
 }

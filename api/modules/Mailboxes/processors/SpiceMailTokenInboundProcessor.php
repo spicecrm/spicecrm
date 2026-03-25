@@ -16,7 +16,7 @@ class SpiceMailTokenInboundProcessor extends Processor
      * holds the email instance
      * @var Email $email
      */
-    public $email;
+    public Email $email;
 
     /**
      * start processing SpiceEmailToken
