@@ -1,52 +1,101 @@
 <system-modal>
     <system-modal-header (close)="close()"><system-label label="LBL_SELECT_SPICEACLOBJECT"></system-label></system-modal-header>
     <system-modal-content margin="none" [grow]="true">
-            <div #header class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
-                <div class="slds-form-element__control slds-size--1-of-3 slds-p-right--xx-small">
-                    <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="activeTypeId" (change)="selectType($event)" [disabled]="acltypes.length == 0">
-                            <ng-container *ngFor="let acltype of acltypes">
-                                <option [value]="acltype.id">{{acltype.module}}</option>
-                            </ng-container>
-                        </select>
+            <div class="slds-grid slds-height_full slds-grid--vertical">
+                <div #header class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small slds-border--bottom">
+                    <system-select [(ngModel)]="activeTypeId" [idOnly]="true" (ngModelChange)="selectType($event)" [disabled]="acltypes.length == 0" class="slds-size--1-of-3 slds-p-right--xx-small">
+                        @for (acltype of acltypes; track acltype.id) {
+                            <system-select-option [value]="acltype.id" [display]="acltype.module"/>
+                        }
+                    </system-select>
+                    <input [disabled]="!activeTypeId" type="text" [(ngModel)]="searchterm" (keyup)="keyUp($event)" class="slds-input"/>
+                </div>
+                <div class="slds-grow slds-grid">
+                    <div class="slds-size--1-of-2 slds-border--right slds-height_full slds-scrollable--y">
+                        <div *ngIf="loading; else typesdisplay" class="slds-p-around--medium slds-align--absolute-center">
+                            <system-spinner></system-spinner>
+                        </div>
+                        <ng-template #typesdisplay>
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table--header-fixed">
+                                <thead>
+                                <tr class="slds-text-title_caps">
+                                    <th scope="col">
+                                        <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate"><system-label label="LBL_TYPE"></system-label></div>
+                                    </th>
+                                    <th scope="col" style="width: 3rem;"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    @for (aclobject of aclobjects; track aclobject.id) {
+                                        <tr (click)="selectObject(aclobject)" [ngClass]="{'slds-theme--shade': aclobject.id == activeObjectId}" style="cursor: pointer">
+                                            <td>
+                                                <div class="slds-truncate">{{aclobject.name}}</div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate">{{getType(aclobject.spiceaclobjecttype)}}</div>
+                                            </td>
+                                            <td style="width: 3rem;">
+                                                @if (aclobject.status == 'r') {
+                                                    <system-custom-icon icon="light-bulb-on" size="x-small" addclasses="slds-icon slds-icon-text-default"/>
+
+                                                } @else {
+                                                    <system-custom-icon icon="light-bulb-off" size="x-small" addclasses="slds-icon slds-icon-text-light"/>
+                                                }
+                                            </td>
+                                        </tr>
+
+                                    }
+                                </tbody>
+                            </table>
+                        </ng-template>
+                    </div>
+                    <div class="slds-size--1-of-2 slds-height_full slds-scrollable--y">
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table--header-fixed">
+                            <thead>
+                            <tr class="slds-text-title_caps">
+                                <th scope="col">
+                                    <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate"><system-label label="LBL_TYPE"></system-label></div>
+                                </th>
+                                <th scope="col" style="width: 3rem;"></th>
+                                <th scope="col" class="slds-cell-shrink"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                @for (aclobject of selectedObjects(); track aclobject.id) {
+                                    <tr>
+                                        <td>
+                                            <div class="slds-truncate">{{aclobject.name}}</div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate">{{getType(aclobject.spiceaclobjecttype)}}</div>
+                                        </td>
+                                        <td style="width: 3rem;">
+                                            @if (aclobject.status == 'r') {
+                                                <system-custom-icon icon="light-bulb-on" size="x-small" addclasses="slds-icon slds-icon-text-default"/>
+
+                                            } @else {
+                                                <system-custom-icon icon="light-bulb-off" size="x-small" addclasses="slds-icon slds-icon-text-light"/>
+                                            }
+                                        </td>
+                                        <td class="slds-cell-shrink">
+                                            <system-utility-icon (click)="removeObject(aclobject.id)" icon="delete" size="x-small" style="cursor: pointer"/>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <input [disabled]="!activeTypeId" class="slds-input" type="text" [(ngModel)]="searchterm" (keyup)="keyUp($event)"/>
             </div>
-            <div *ngIf="loading; else typesdisplay" class="slds-p-around--medium slds-align--absolute-center">
-                <system-spinner></system-spinner>
-            </div>
-            <ng-template #typesdisplay>
-                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
-                    <thead>
-                    <tr class="slds-text-title_caps">
-                        <th scope="col">
-                            <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
-                        </th>
-                        <th scope="col">
-                            <div class="slds-truncate"><system-label label="LBL_TYPE"></system-label></div>
-                        </th>
-                        <th scope="col" style="width: 3rem;"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let aclobject of aclobjects" (click)="selectObject(aclobject)" [ngClass]="{'slds-theme--shade': aclobject.id == activeObjectId}">
-                        <td>
-                            <div class="slds-truncate">{{aclobject.name}}</div>
-                        </td>
-                        <td>
-                            <div class="slds-truncate">{{getType(aclobject.spiceaclobjecttype)}}</div>
-                        </td>
-                        <td style="width: 3rem;">
-                            <system-custom-icon *ngIf="aclobject.status == 'r'" icon="light-bulb-on" size="x-small" addclasses="slds-icon slds-icon-text-default"></system-custom-icon>
-                            <system-custom-icon *ngIf="aclobject.status != 'r'" icon="light-bulb-off" size="x-small" addclasses="slds-icon slds-icon-text-light"></system-custom-icon>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </ng-template>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button (click)="close()" class="slds-button slds-button--neutral"><system-label label="LBL_CANCEL"/></button>
+        <button (click)="save()" class="slds-button slds-button--brand"><system-label label="LBL_SAVE"/></button>
     </system-modal-footer>
 </system-modal>
