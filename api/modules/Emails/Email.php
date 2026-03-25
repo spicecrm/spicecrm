@@ -1596,15 +1596,16 @@ class Email extends SpiceBean
      * processEmail
      *
      * Goes thru the list of email processors assigned to this email's mailbox and runs the processing.
+     * @param string $phase 'before_save' | 'after_save'
      */
-    public function processEmail()
+    public function processEmail(string $phase)
     {
         if (empty($this->processors)) {
             $this->initProcessors();
         }
 
         foreach ($this->processors as $processor) {
-            if (class_exists($processor['processor_class'])) {
+            if (class_exists($processor['processor_class']) && $processor['processor_phase'] == $phase) {
                 if (method_exists($processor['processor_class'], $processor['processor_method'])) {
                     $mailbox_processor = new $processor['processor_class']($this);
 

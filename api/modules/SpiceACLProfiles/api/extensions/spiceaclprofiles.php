@@ -1,5 +1,7 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
+
+use SpiceCRM\includes\Middleware\ValidationMiddleware;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\SpiceACLProfiles\api\controllers\SpiceACLProfilesController;
 
@@ -87,8 +89,7 @@ $routes = [
     ],
     [
         'method'      => 'post',
-        'route'       => '/module/SpiceACLProfiles/{id}/related/spiceaclobjects/{objectid}',
-        'oldroute'    => '/spiceaclprofiles/{id}/aclobjects/{objectid}',
+        'route'       => '/module/SpiceACLProfiles/{id}/related/spiceaclobjects',
         'class'       => SpiceACLProfilesController::class,
         'function'    => 'addProfileObject',
         'description' => 'add a SpiceACLObject to a specified Profile',
@@ -100,10 +101,11 @@ $routes = [
                 'description' => 'a profile id',
                 'example' => '8571a91c-9456-11eb-ac92-00fffe0c4f07'
             ],
-            'objectid' => [
-                'in' => 'path',
-                'type' => 'guid',
-                'description' => 'a spice acl object id',
+            'objectIds' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_ARRAY,
+                'subtype' => ValidationMiddleware::TYPE_GUID,
+                'description' => 'array of spice acl object ids',
                 'example' => '32712d30-9458-11eb-ac92-00fffe0c4f07'
             ]
         ]

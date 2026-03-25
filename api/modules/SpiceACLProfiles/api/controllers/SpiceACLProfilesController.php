@@ -63,7 +63,13 @@ class SpiceACLProfilesController
      */
     public function addProfileObject(Request $req, Response $res, array $args): Response {
         $spiceACLProfilesRESTHandler = new SpiceACLProfilesRESTHandler();
-        return $res->withJson($spiceACLProfilesRESTHandler->addProfileObject($args['id'], $args['objectid']));
+        $postBody = $req->getParsedBody();
+
+        foreach ($postBody['objectIds'] as $objectId) {
+            $spiceACLProfilesRESTHandler->addProfileObject($args['id'], $objectId);
+        }
+
+        return $res->withJson(true);
     }
 
 
