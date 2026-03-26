@@ -31,10 +31,10 @@ class One2OneBeanRelationship extends One2MBeanRelationship
     protected function updateLinks($lhs, $lhsLinkName, $rhs, $rhsLinkName)
     {
         //RHS and LHS only ever have one bean
-        if (isset($lhs->$lhsLinkName))
+        if ($lhs->load_relationship($lhsLinkName))
             $lhs->$lhsLinkName->beans = [$rhs->id => $rhs];
 
-        if (isset($rhs->$rhsLinkName))
+        if ($rhs->load_relationship($rhsLinkName))
             $rhs->$rhsLinkName->beans = [$lhs->id => $lhs];
     }
 
