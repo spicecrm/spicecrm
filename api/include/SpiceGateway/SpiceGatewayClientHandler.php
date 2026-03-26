@@ -147,8 +147,6 @@ class SpiceGatewayClientHandler
             $response = true;
         }
 
-        curl_close($curl);
-
         return $response;
     }
 }

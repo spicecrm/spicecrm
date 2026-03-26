@@ -59,7 +59,6 @@ class ExternalPdfServiceHandler extends ChromeLocalPdfHandler
         }
 
         $this->content = base64_decode( $result['document'] );
-        curl_close($ch);
     }
 
 }

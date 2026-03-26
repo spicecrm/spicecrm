@@ -315,7 +315,6 @@ class LogViewController{
 
         curl_setopt_array($curl, $curlOptions);
         $response = curl_exec($curl);
-        curl_close($curl);
 
         return $res->withJson([
             'response' => $response,

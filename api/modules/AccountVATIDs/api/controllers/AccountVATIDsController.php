@@ -48,7 +48,6 @@ class AccountVATIDsController
         // converting
         $response = curl_exec($ch);
         $e = curl_error($ch);
-        curl_close($ch);
 
         if ($response !== false) {
             // converting
@@ -113,7 +112,6 @@ class AccountVATIDsController
         // converting
         $response = curl_exec($ch);
         $e = curl_error($ch);
-        curl_close($ch);
 
         if ($response !== false) {
             // converting
