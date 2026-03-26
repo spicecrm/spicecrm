@@ -197,7 +197,7 @@ class SpiceImport extends SpiceBean
         if (($handle = fopen(StreamFactory::getPathPrefix('upload') . $this->file_md5, "r")) !== FALSE) {
             $fileHeader = fgetcsv($handle, 1000, $delimiter, $enclosure, '');
             $fileHeader = array_map(function ($item) {
-                return !mb_detect_encoding($item, 'utf-8', true) ? utf8_encode($item) : $item;
+                return !mb_detect_encoding($item, 'utf-8', true) ? mb_convert_encoding($item, 'UTF-8', 'ISO-8859-1') : $item;
             }, $fileHeader);
             fclose($handle);
         }
@@ -258,7 +258,7 @@ class SpiceImport extends SpiceBean
                     // increase row count
 
                     $row = array_map(function ($item) {
-                        return !mb_detect_encoding($item, 'utf-8', true) ? utf8_encode($item) : $item;
+                        return !mb_detect_encoding($item, 'utf-8', true) ? mb_convert_encoding($item, 'UTF-8', 'ISO-8859-1') : $item;
                     }, $row);
 
                     $retrieve = [];

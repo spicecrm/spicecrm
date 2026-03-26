@@ -722,7 +722,7 @@ class KReport extends SpiceBean
         $fieldIdArray = [];
         foreach ($arrayList as $thisList) {
             if ($thisList['display'] == 'yes') {
-                $fieldArray[] = ['label' => utf8_decode($thisList ['name']), 'width' => (isset($thisList['width']) && $thisList ['width']!= '' && $thisList['width'] != '0') ? $thisList['width'] : '100', 'display' => $thisList['display']];
+                $fieldArray[] = ['label' => mb_convert_encoding($thisList['name'], 'ISO-8859-1', 'UTF-8') , 'width' => (isset($thisList['width']) && $thisList ['width']!= '' && $thisList['width'] != '0') ? $thisList['width'] : '100', 'display' => $thisList['display']];
                 $fieldIdArray[] = $thisList['fieldid'];
             }
         }
