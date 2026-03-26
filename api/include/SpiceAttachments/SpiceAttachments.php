@@ -625,7 +625,6 @@ class SpiceAttachments
                     imagejpeg($thumb);
                     $thumbnail = base64_encode(ob_get_contents());
                     ob_end_clean();
-                    imagedestroy($thumb);
 
                     return $thumbnail;
                 } else {
