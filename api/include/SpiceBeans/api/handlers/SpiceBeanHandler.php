@@ -635,7 +635,7 @@ class SpiceBeanHandler
 
         // prepare the output
         $fh = fopen('php://temp', 'rw');
-        fputcsv($fh, $returnFields, $delimiter);
+        fputcsv(stream: $fh, fields: $returnFields, separator: $delimiter, escape: '');
         foreach ($beans as $thisBean) {
             $entryArray = [];
             foreach ($returnFields as $returnField){
@@ -656,7 +656,7 @@ class SpiceBeanHandler
                 // allocate the value
                 $entryArray[] = $entryValue;
             }
-            fputcsv($fh, $entryArray, $delimiter);
+            fputcsv(stream: $fh, fields: $entryArray, separator: $delimiter, escape: '');
         }
         rewind($fh);
         $csv = stream_get_contents($fh);

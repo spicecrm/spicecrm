@@ -305,12 +305,12 @@ class SpiceFTSHandler
         }
 
         $fh = @fopen('php://output', 'w');
-        fputcsv($fh, $postBody['fields'], $delimiter);
+        fputcsv(stream: $fh, fields: $postBody['fields'], separator: $delimiter, escape: '');
         foreach ($result as $thisBean) {
             $entryArray = [];
             foreach ($postBody['fields'] as $returnField)
                 $entryArray[] = !empty($charsetTo) ? mb_convert_encoding($thisBean[$returnField], $charsetTo) : $thisBean[$returnField];
-            fputcsv($fh, $entryArray, $delimiter);
+            fputcsv(stream: $fh, fields: $entryArray, separator: $delimiter, escape: '');
         }
         fclose($fh);
 
