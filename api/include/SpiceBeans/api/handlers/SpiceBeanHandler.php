@@ -473,8 +473,8 @@ class SpiceBeanHandler
                     $assoc = $thisBean->db->fetchByAssoc($result);
                     if (isset($assoc['c'])) {
                         $bucketitem['total'] = (int)$assoc['c'];
-                        $bucketitem['value'] = (double)$assoc['total'] ?: 0;
-                        $bucketitem['values']['_bucket_agg_' . $searchParams['buckets']['buckettotal'][0]['name']] = (double)$assoc['total'] ?: 0;
+                        $bucketitem['value'] = (float)$assoc['total'] ?: 0;
+                        $bucketitem['values']['_bucket_agg_' . $searchParams['buckets']['buckettotal'][0]['name']] = (float)$assoc['total'] ?: 0;
                         $totalcount += $assoc['c'];
                     }
                 }
@@ -2191,7 +2191,7 @@ class SpiceBeanHandler
                 case 'quantity':
                 case 'double':
                 case 'currency':
-                    $beanDataArray[$fieldId] = (double) $thisBean->$fieldId;
+                    $beanDataArray[$fieldId] = (float) $thisBean->$fieldId;
                     break;
                 default:
                     $beanDataArray[$fieldId] = $thisBean->$fieldId;

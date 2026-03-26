@@ -372,7 +372,7 @@ class KReport extends SpiceBean
                 switch ($valuetypeArray [0]) {
                     case 'P' :
                         // calculate the value
-                        $returnArray [$thisFieldData['fieldid']] = round((double)$returnArray [$thisFieldData['fieldid']] / (double)$this->totalResult[$thisFieldData['fieldid'] . '_total'] * 100, 2);
+                        $returnArray [$thisFieldData['fieldid']] = round((float)$returnArray [$thisFieldData['fieldid']] / (float)$this->totalResult[$thisFieldData['fieldid'] . '_total'] * 100, 2);
 
                         // set the format to float so we interpret this as number
                         $this->fieldNameMap [$thisFieldData['fieldid']] ['type'] = 'float';
@@ -380,7 +380,7 @@ class KReport extends SpiceBean
                         break;
                     case 'D' :
                         // calculate the value
-                        $returnArray[$thisFieldData ['fieldid']] = round((double)$returnArray[$thisFieldData['fieldid']] - (double)$this->totalResult[$thisFieldData['fieldid'] . '_total'], 2);
+                        $returnArray[$thisFieldData ['fieldid']] = round((float)$returnArray[$thisFieldData['fieldid']] - (float)$this->totalResult[$thisFieldData['fieldid'] . '_total'], 2);
                         break;
                     case 'C':
                         if (!empty($cumulatedArray[$thisFieldData ['fieldid']])) {

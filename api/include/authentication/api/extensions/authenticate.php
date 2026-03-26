@@ -357,10 +357,10 @@ $routes = [
 $config = SpiceConfig::getInstance()->config;
 
 $RESTManager->registerExtension('userpassword', '2.0', [
-    'oneupper' => (boolean)$config['passwordsetting']['oneupper'],
-    'onelower' => (boolean)$config['passwordsetting']['onelower'],
-    'onenumber' => (boolean)$config['passwordsetting']['onenumber'],
-    'onespecial' => (boolean)$config['passwordsetting']['onespecial'],
+    'oneupper' => (bool)$config['passwordsetting']['oneupper'],
+    'onelower' => (bool)$config['passwordsetting']['onelower'],
+    'onenumber' => (bool)$config['passwordsetting']['onenumber'],
+    'onespecial' => (bool)$config['passwordsetting']['onespecial'],
     'minpwdlength' => $config['passwordsetting']['minpwdlength'],
     'regex' => '^' . SpiceCRMPasswordUtils::getPwdCheckRegex() . '$',
     'sendCredentialsEnabled' => !empty($config['passwordsetting']['send_password_channel']) && !empty($config['passwordsetting']['send_password_channel_mailbox_id']),

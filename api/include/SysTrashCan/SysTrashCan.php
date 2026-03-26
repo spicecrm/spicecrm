@@ -85,7 +85,7 @@ class SysTrashCan
         $sql = "SELECT systrashcan.*, users.user_name FROM systrashcan, users WHERE systrashcan.user_deleted = users.id $filterWhere AND recordtype = 'bean' AND recovered = '0' ORDER BY date_deleted DESC";
 
         $count = $db->getOne("SELECT count(0) FROM systrashcan, users WHERE systrashcan.user_deleted = users.id $filterWhere AND recordtype = 'bean' AND recovered = '0'");
-        $retArray['count'] = (double) $count;
+        $retArray['count'] = (float) $count;
 
         $records = $db->limitQuery($sql, $offset, $limit);
 

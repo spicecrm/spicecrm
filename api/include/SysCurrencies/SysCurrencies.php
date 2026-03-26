@@ -342,7 +342,7 @@ class SysCurrencies
                 $exchangeRates[$currency['iso4217']] = [
                     'id' => $rate['id'],
                     'date' => $rate['exchangerate_date'],
-                    'rate' => (double) $rate['exchange_rate']
+                    'rate' => (float) $rate['exchange_rate']
                 ];
             }
         }
