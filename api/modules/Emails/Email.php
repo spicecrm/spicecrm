@@ -909,7 +909,7 @@ class Email extends SpiceBean
         // forec utf8 encode if body cannot be encoded
         if (!json_encode(['text' => $this->body])) {
             if (json_last_error() == 5)
-                $this->body = utf8_encode($this->body);
+                $this->body = mb_convert_encoding($this->body, 'UTF-8', 'ISO-8859-1');
         }
 
         // get the number of attachments
@@ -1596,15 +1596,16 @@ class Email extends SpiceBean
      * processEmail
      *
      * Goes thru the list of email processors assigned to this email's mailbox and runs the processing.
+     * @param string $phase 'before_save' | 'after_save'
      */
-    public function processEmail()
+    public function processEmail(string $phase)
     {
         if (empty($this->processors)) {
             $this->initProcessors();
         }
 
         foreach ($this->processors as $processor) {
-            if (class_exists($processor['processor_class'])) {
+            if (class_exists($processor['processor_class']) && $processor['processor_phase'] == $phase) {
                 if (method_exists($processor['processor_class'], $processor['processor_method'])) {
                     $mailbox_processor = new $processor['processor_class']($this);
 
@@ -1801,12 +1802,13 @@ class Email extends SpiceBean
     }
 
     /**
-     * @param $body
-     * @return mixed|string
+     * @param string $body
+     * @return string
      */
-    public function setBodyEncodingToUTF8($body){
+    public function setBodyEncodingToUTF8(string $body): string
+    {
         if (!mb_check_encoding($body, 'UTF-8')) {
-            $body = utf8_encode($body);
+            $body = mb_convert_encoding($body, 'UTF-8', 'ISO-8859-1');
         }
         return $body;
     }

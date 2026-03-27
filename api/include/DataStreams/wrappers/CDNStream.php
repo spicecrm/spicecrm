@@ -134,8 +134,6 @@ class CDNStream extends StreamWrapperAbstract implements StreamWrapperRegisterI
 
         $info = curl_getinfo($curl);
 
-        curl_close($curl);
-
         if ($info['http_code'] > 300 || $info['http_code'] < 200) {
             LoggerManager::getLogger()->error("MediaFile: Could not upload file ($fileName) to the CDN server ");
         }

@@ -39,9 +39,10 @@ class SpiceDictionaryDomainField
     /**
      * returns the dictionary item definition
      * @param SpiceDictionaryItem|null $sysdictionaryItem
-     * @return void
+     * @return stdClass
      */
-    public function getDefinition(SpiceDictionaryItem $sysdictionaryItem = null){
+    public function getDefinition(?SpiceDictionaryItem $sysdictionaryItem = null): stdClass
+    {
         $definition = new stdClass();
         $definition->sysdictionarydomainfield_id = $this->id;
         $definition->sysdictionaryitem_id = $sysdictionaryItem->id;

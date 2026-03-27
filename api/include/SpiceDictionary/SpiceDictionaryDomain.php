@@ -65,7 +65,8 @@ class SpiceDictionaryDomain
      * @return array
      * @throws Exception
      */
-    public function getFieldDefinitions(SpiceDictionaryItem $sysdictionaryItem = null){
+    public function getFieldDefinitions(?SpiceDictionaryItem $sysdictionaryItem = null): array
+    {
         $fieldDefinitions = [];
 
         $fields = SpiceDictionaryDomainFields::getInstance()->getDomainFields($this->id);

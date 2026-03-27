@@ -473,8 +473,8 @@ class SpiceBeanHandler
                     $assoc = $thisBean->db->fetchByAssoc($result);
                     if (isset($assoc['c'])) {
                         $bucketitem['total'] = (int)$assoc['c'];
-                        $bucketitem['value'] = (double)$assoc['total'] ?: 0;
-                        $bucketitem['values']['_bucket_agg_' . $searchParams['buckets']['buckettotal'][0]['name']] = (double)$assoc['total'] ?: 0;
+                        $bucketitem['value'] = (float)$assoc['total'] ?: 0;
+                        $bucketitem['values']['_bucket_agg_' . $searchParams['buckets']['buckettotal'][0]['name']] = (float)$assoc['total'] ?: 0;
                         $totalcount += $assoc['c'];
                     }
                 }
@@ -635,7 +635,7 @@ class SpiceBeanHandler
 
         // prepare the output
         $fh = fopen('php://temp', 'rw');
-        fputcsv($fh, $returnFields, $delimiter);
+        fputcsv(stream: $fh, fields: $returnFields, separator: $delimiter, escape: '');
         foreach ($beans as $thisBean) {
             $entryArray = [];
             foreach ($returnFields as $returnField){
@@ -656,7 +656,7 @@ class SpiceBeanHandler
                 // allocate the value
                 $entryArray[] = $entryValue;
             }
-            fputcsv($fh, $entryArray, $delimiter);
+            fputcsv(stream: $fh, fields: $entryArray, separator: $delimiter, escape: '');
         }
         rewind($fh);
         $csv = stream_get_contents($fh);
@@ -2191,7 +2191,7 @@ class SpiceBeanHandler
                 case 'quantity':
                 case 'double':
                 case 'currency':
-                    $beanDataArray[$fieldId] = (double) $thisBean->$fieldId;
+                    $beanDataArray[$fieldId] = (float) $thisBean->$fieldId;
                     break;
                 default:
                     $beanDataArray[$fieldId] = $thisBean->$fieldId;

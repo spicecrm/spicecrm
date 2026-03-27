@@ -213,8 +213,9 @@ class ImapHandler extends TransportHandler
 
                 $email->body = $structure->getEmailBody();
                 try {
-                    $email->processEmail();
+                    $email->processEmail('before_save');
                     $email->save(false, true, false);
+                    $email->processEmail('after_save');
                 } catch (Exception $e) {
                     LoggerManager::getLogger()->error('Could not save email: ' . $email->name . ' ' . $email->message_id .'. Error Message: '.$e->getMessage());
                     continue;
@@ -717,7 +718,7 @@ class ImapHandler extends TransportHandler
         if ((substr(strtolower($decodedSubject[0]->charset), 0 ,3) == 'iso')
             || (strtolower($decodedSubject[0]->charset) == 'windows-1252')
             || (strtolower($decodedSubject[0]->charset) == 'windows-1250')) {
-            $subject = utf8_encode($decodedSubject[0]->text);
+            $subject = mb_convert_encoding($decodedSubject[0]->text, 'UTF-8', 'ISO-8859-1');
         } else {
             $subject = $decodedSubject[0]->text;
         }
@@ -740,7 +741,7 @@ class ImapHandler extends TransportHandler
         foreach ($decodedAddress as $addressPart) {
             if (strtolower($addressPart->charset) != 'utf-8'
                 && strtolower($addressPart->charset) != 'default') {
-                $address .= utf8_encode($addressPart->text);
+                $address .= mb_convert_encoding($addressPart->text, 'UTF-8', 'ISO-8859-1');
             } else {
                 $address .= $addressPart->text;
             }

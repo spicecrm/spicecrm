@@ -2936,11 +2936,11 @@ abstract class DBManager
      * The before and after values are stored in the bean.
      * Uses $bean->fetched_row && $bean->fetched_rel_row to compare
      *
-     * @param SpiceBean $bean Sugarbean instance that was changed
+     * @param SpiceBean $bean SpiceBean instance that was changed
      * @param array|null $field_filter Array of filter names to be inspected (NULL means all fields)
      * @return array
      */
-    public function getDataChanges(SpiceBean &$bean, array $field_filter = null)
+    public function getDataChanges(SpiceBean &$bean, ?array $field_filter = null): array
     {
         $changed_values = [];
 
@@ -3934,10 +3934,10 @@ abstract class DBManager
      * db_user_name - database user name
      * db_password - database password
      *
-     * @param array $configOptions
+     * @param array|null $configOptions
      * @param boolean $dieOnError
      */
-    abstract public function connect(array $configOptions = null, $dieOnError = false);
+    abstract public function connect(?array $configOptions = null, bool $dieOnError = false);
 
     /**
      * Generates sql for create table statement for a bean.

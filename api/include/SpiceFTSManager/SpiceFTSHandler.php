@@ -305,12 +305,12 @@ class SpiceFTSHandler
         }
 
         $fh = @fopen('php://output', 'w');
-        fputcsv($fh, $postBody['fields'], $delimiter);
+        fputcsv(stream: $fh, fields: $postBody['fields'], separator: $delimiter, escape: '');
         foreach ($result as $thisBean) {
             $entryArray = [];
             foreach ($postBody['fields'] as $returnField)
                 $entryArray[] = !empty($charsetTo) ? mb_convert_encoding($thisBean[$returnField], $charsetTo) : $thisBean[$returnField];
-            fputcsv($fh, $entryArray, $delimiter);
+            fputcsv(stream: $fh, fields: $entryArray, separator: $delimiter, escape: '');
         }
         fclose($fh);
 
@@ -1339,7 +1339,21 @@ class SpiceFTSHandler
                         }
                     }
 
-                    $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $bucketitem['items'] ?: 0, $sort, array_merge($addFilters, $bucketfilters), $useWildcard, $required, true, $addAggrs, $useGlobalFilter, 'globalSearch');
+                    $searchresultsraw = $this->searchModule(
+                        module: $module,
+                        searchterm: $searchterm,
+                        searchtags: $searchtags,
+                        aggregatesFilters: $aggregatesFilters,
+                        size: $params['records'] ?: 5,
+                        from: $bucketitem['items'] ?: 0,
+                        sort: $sort,
+                        addFilters: array_merge($addFilters, $bucketfilters),
+                        requiredFields: $required,
+                        source: true,
+                        addAggregates: $addAggrs,
+                        useGlobalFilter: $useGlobalFilter,
+                        listId: 'globalSearch',
+                    );
                     foreach ($searchresultsraw['hits']['hits'] as &$hit) {
                         $seed = BeanFactory::getBean($module, $hit['_id'], ['forceRetrieve' => true]);
 

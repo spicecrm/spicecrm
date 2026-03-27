@@ -55,7 +55,6 @@ class GoogleAPIRestHandler
         $logEntryHandler->updateOutgoingLogEntry($ch, $response);
 
         $info = curl_getinfo($ch);
-        curl_close($ch);
 
         $response = substr($response, $info['header_size']);
 
@@ -107,7 +106,6 @@ class GoogleAPIRestHandler
         $logEntryHandler->updateOutgoingLogEntry($ch, $response);
 
         $info = curl_getinfo($ch);
-        curl_close($ch);
 
         $response = substr($response, $info['header_size']);
 
@@ -155,7 +153,6 @@ class GoogleAPIRestHandler
         $logEntryHandler->updateOutgoingLogEntry($ch, $response);
 
         $info = curl_getinfo($ch);
-        curl_close($ch);
 
         $response = substr($response, $info['header_size']);
 
@@ -216,7 +213,6 @@ class GoogleAPIRestHandler
 
         $errors = curl_error($curl);
         $info = curl_getinfo($curl);
-        curl_close($curl);
 
         if ($response) {
             $body = substr($response, $info['header_size']);

@@ -57,7 +57,6 @@ class AccountVIESCheck
         // converting
         $response = curl_exec($ch);
         $this->lastError = curl_error($ch);
-        curl_close($ch);
 
         $logEntryHandler->updateOutgoingLogEntry($ch, $response);
         $logEntryHandler->writeOutogingLogEntry();

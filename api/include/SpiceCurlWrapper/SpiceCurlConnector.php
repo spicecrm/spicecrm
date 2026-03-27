@@ -23,13 +23,11 @@ class SpiceCurlConnector
      * logs the request in the API log (unless it's disabled),
      * executes the request,
      * generates a response object with response, errors and info,
-     * closes the curl handle (unless it's disabled by the flag $closeAtFinish).
      *
-     * @param bool $closeAtFinish
      * @return SpiceCurlResponse
      * @throws \Exception
      */
-    public function process(bool $closeAtFinish = true): SpiceCurlResponse
+    public function process(): SpiceCurlResponse
     {
         $curlOptions = $this->request->getOptions();
 
@@ -49,22 +47,7 @@ class SpiceCurlConnector
             $logEntryHandler->updateOutgoingLogEntry($this->curl, $response);
         }
 
-        if ($closeAtFinish) {
-            curl_close($this->curl);
-        }
-
         return $this->generateResponse($response, $errors, $info);
-    }
-
-    /**
-     * Closes the curl handle connection.
-     * Mainly useful for the request which had the $closeAtFinish flag set to false.
-     *
-     * @return void
-     */
-    public function closeConnection(): void
-    {
-        curl_close($this->curl);
     }
 
     /**

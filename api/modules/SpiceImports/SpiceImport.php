@@ -58,7 +58,7 @@ class SpiceImport extends SpiceBean
 
 
         if (($handle = fopen(StreamFactory::getPathPrefix('upload') . $params['file_md5'], "r")) !== FALSE) {
-            $fileHeader = fgetcsv($handle, 0, $delimiter, $enclosure);
+            $fileHeader = fgetcsv($handle, 0, $delimiter, $enclosure, '');
             $fileHeader = array_map(function ($item) {
                 return !mb_detect_encoding($item, 'utf-8', true) ? mb_convert_encoding($item, 'UTF-8', 'ISO-8859-1') : $item;
             }, $fileHeader);
@@ -67,7 +67,7 @@ class SpiceImport extends SpiceBean
                 throw new BadRequestException('separator or enclosure settings do not match the file settings');
             }
 
-            while (($data = fgetcsv($handle, 0, $delimiter, $enclosure)) !== FALSE) {
+            while (($data = fgetcsv($handle, 0, $delimiter, $enclosure, '')) !== FALSE) {
                 if ([null] !== $data) {
                     if ($row < 2) {
                         $fileData[] = array_map(function ($item) {
@@ -195,9 +195,9 @@ class SpiceImport extends SpiceBean
      */
     public function getFileHeader($delimiter, $enclosure){
         if (($handle = fopen(StreamFactory::getPathPrefix('upload') . $this->file_md5, "r")) !== FALSE) {
-            $fileHeader = fgetcsv($handle, 1000, $delimiter, $enclosure);
+            $fileHeader = fgetcsv($handle, 1000, $delimiter, $enclosure, '');
             $fileHeader = array_map(function ($item) {
-                return !mb_detect_encoding($item, 'utf-8', true) ? utf8_encode($item) : $item;
+                return !mb_detect_encoding($item, 'utf-8', true) ? mb_convert_encoding($item, 'UTF-8', 'ISO-8859-1') : $item;
             }, $fileHeader);
             fclose($handle);
         }
@@ -243,7 +243,7 @@ class SpiceImport extends SpiceBean
                 $processedRowsCount = 0;
                 $bucketRowsCount = 0;
 
-                while ($row = fgetcsv($handle, 0, $this->delimiter(),$this->enclosure())) {
+                while ($row = fgetcsv($handle, 0, $this->delimiter(),$this->enclosure(),'')) {
 
                     $processedRowsCount++;
 
@@ -258,7 +258,7 @@ class SpiceImport extends SpiceBean
                     // increase row count
 
                     $row = array_map(function ($item) {
-                        return !mb_detect_encoding($item, 'utf-8', true) ? utf8_encode($item) : $item;
+                        return !mb_detect_encoding($item, 'utf-8', true) ? mb_convert_encoding($item, 'UTF-8', 'ISO-8859-1') : $item;
                     }, $row);
 
                     $retrieve = [];
@@ -491,7 +491,7 @@ class SpiceImport extends SpiceBean
     private function getRowCount(){
         $row = 0;
         if (($handle = fopen(StreamFactory::getPathPrefix('upload') . $this->file_md5, "r")) !== FALSE) {
-            $fileHeader = fgetcsv($handle, 0, $this->delimiter(), $this->enclosure());
+            $fileHeader = fgetcsv($handle, 0, $this->delimiter(), $this->enclosure(), '');
             $fileHeader = array_map(function ($item) {
                 return !mb_detect_encoding($item, 'utf-8', true) ? mb_convert_encoding($item, 'UTF-8', 'ISO-8859-1') : $item;
             }, $fileHeader);
@@ -500,7 +500,7 @@ class SpiceImport extends SpiceBean
                 throw new BadRequestException('separator or enclosure settings do not match the file settings');
             }
 
-            while (($data = fgetcsv($handle, 0, $this->delimiter(), $this->enclosure())) !== FALSE) {
+            while (($data = fgetcsv($handle, 0, $this->delimiter(), $this->enclosure(), '')) !== FALSE) {
                 if ([null] !== $data) {
                     if ($row < 2) {
                         $fileData[] = array_map(function ($item) {

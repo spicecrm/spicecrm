@@ -143,7 +143,7 @@ class SpiceUIPackageValidator
      * @param bool $isFatal
      * @return array
      */
-    public function buildErrorObject(array $item, string $errorType, array $itemDependency = null, string $table = null, string $errorMessage = null, bool $isFatal = false): array
+    public function buildErrorObject(array $item, string $errorType, ?array $itemDependency = null, ?string $table = null, ?string $errorMessage = null, bool $isFatal = false): array
     {
         $itemTable = $item['table'] ?: $table;
         $depTable = $itemDependency['table'] ?? null;

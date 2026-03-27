@@ -111,7 +111,7 @@ class Compiler
      */
     public $idsOfParentTemplates = [];
 
-    public function compile($txt, $bean = null, $lang = null, array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null, $bodyContentOnly = false, $headItems = [])
+    public function compile($txt, $bean = null, $lang = null, ?array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null, $bodyContentOnly = false, $headItems = [])
     {
         $this->additionalValues = $additionalValues;
         $this->lang = empty( $lang ) ? AuthenticationController::getInstance()->getCurrentUser()?->getPreference('language') : $lang;

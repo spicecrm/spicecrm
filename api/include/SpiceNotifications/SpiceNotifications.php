@@ -34,7 +34,8 @@ class SpiceNotifications
     const TYPE_GENERIC     = 'generic';
     const TYPE_RELATE     = 'relate';
 
-    public function __construct(SpiceBean $bean, string $type = self::TYPE_ASSIGNMENT, string $userId = null, ?string $text = null) {
+    public function __construct(SpiceBean $bean, string $type = self::TYPE_ASSIGNMENT, ?string $userId = null, ?string $text = null)
+    {
         $timedate = TimeDate::getInstance();
 
         $this->id = SpiceUtils::createGuid();

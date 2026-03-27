@@ -91,7 +91,7 @@ class LogViewer {
         $sqlResult = $db->limitQuery( $sql, 0, $limit );
 
         while ( $row = $db->fetchByAssoc( $sqlResult )) {
-            $row['descriptionTruncated'] = (boolean)$row['descriptionTruncated'];
+            $row['descriptionTruncated'] = (bool)$row['descriptionTruncated'];
             $row['pid'] = isset( $row['pid'][0]) ? (int)$row['pid']:null;
             $response['entries'][] = $row;
         }

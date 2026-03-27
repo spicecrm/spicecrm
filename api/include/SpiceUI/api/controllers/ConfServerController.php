@@ -183,7 +183,7 @@ class ConfServerController
             while ($record = $db->fetchByAssoc($records)) {
                 $tmpRec = [];
                 foreach ($record as $field => $value) {
-                    $tmpRec[$field] = html_entity_decode(mb_check_encoding($value, 'UTF-8') ? $value : utf8_encode($value));
+                    $tmpRec[$field] = html_entity_decode(mb_check_encoding($value, 'UTF-8') ? $value : mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1'));
                 }
                 $tableArray[$table][$record['id']] = base64_encode(json_encode($tmpRec));
             }
@@ -198,7 +198,7 @@ class ConfServerController
             if($refRecordEntry) {
                 $tmpRec = [];
                 foreach ($refRecordEntry as $field => $value) {
-                    $tmpRec[$field] = html_entity_decode(mb_check_encoding($value, 'UTF-8') ? $value : utf8_encode($value));
+                    $tmpRec[$field] = html_entity_decode(mb_check_encoding($value, 'UTF-8') ? $value : mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1'));
                 }
                 $tableArray[$refRecord['tablename']][$refRecord['tablekey']] = base64_encode(json_encode($tmpRec));
             }

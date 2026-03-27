@@ -12,7 +12,7 @@ class RocketPdfHandler extends ApiPdfHandler
         'key' => 'abada36d-531d-4872-8ab2-f2df8c50f844'
     ];
 
-    public function process($html = null, array $options = null)
+    public function process($html = null, ?array $options = null)
     {
         parent::process($html, $options);
 
