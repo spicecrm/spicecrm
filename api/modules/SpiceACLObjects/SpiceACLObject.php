@@ -8,6 +8,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
@@ -105,8 +106,10 @@ class SpiceACLObject extends SpiceBean
 
         // check for territory values
         $this->territoryelementvalues = [];
-        $territory = BeanFactory::getBean('SpiceACLTerritories');
-        if ($territory instanceof SpiceACLTerritory) {
+
+        $territoryDictionaryExist = (bool) SpiceDictionary::getInstance()->getDefs('spiceaclobjectsterritoryelementvalues');
+
+        if ($territoryDictionaryExist) {
             $territoryelementvalues = $this->db->query("SELECT * FROM spiceaclobjectsterritoryelementvalues WHERE spiceaclobject_id='$this->id'");
             while ($territoryelementvalue = $this->db->fetchByAssoc($territoryelementvalues)) {
                 $this->territoryelementvalues[] = $territoryelementvalue;
