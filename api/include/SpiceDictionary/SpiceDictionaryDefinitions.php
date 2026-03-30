@@ -331,7 +331,7 @@ class SpiceDictionaryDefinitions
         // get the def
         $def = $this->dictionaryDefinitions[$id];
         // write the record
-        SystemDeploymentCR::deleteDBEntry($this->getDefinitionTable($id), $id, $def['name']);
+        SystemDeploymentCR::deleteDBEntry($this->getDefinitionTable($def), $id, $def['name']);
 
         $this->deleteDefinitionFromList($def);
     }
