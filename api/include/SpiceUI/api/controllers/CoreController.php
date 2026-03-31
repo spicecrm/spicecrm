@@ -315,7 +315,7 @@ class CoreController
     public function setIpClientAccess( $req, $res, $args )
     {
         $bodyParams  = $req->getParsedBody();
-        $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
+        $db = \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance();
 
         $clientsInDB = self::loadClientAccessFromDB( $bodyParams['routePattern'], $bodyParams['routeMethod'] );
 
