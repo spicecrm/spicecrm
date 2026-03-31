@@ -273,8 +273,8 @@ class DBManagerFactory
     public static function getDbDrivers($validate = true)
     {
         $drivers = [];
-        self::scanDriverDir("include/database", $drivers, $validate);
-        self::scanDriverDir("custom/include/database", $drivers, $validate);
+        self::scanDriverDir("include/SpiceDictionary/database", $drivers, $validate);
+        self::scanDriverDir("custom/include/SpiceDictionary/database", $drivers, $validate);
 
         $result = [];
         foreach ($drivers as $type => $tdrivers) {
