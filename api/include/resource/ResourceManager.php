@@ -124,10 +124,10 @@ class ResourceManager
     /**
      * notifyObservers
      * This method notifies the registered observers with the provided message.
-     * @param $msg Message from language file to notify observers with
+     * @param $msg string Message from language file to notify observers with
      */
-    public function notifyObservers($msg) {
-
+    public function notifyObservers($msg): void
+    {
         if(empty($this->_observers)) {
            return;
         }

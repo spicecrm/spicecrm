@@ -1270,7 +1270,6 @@ class nusoap_xmlschema extends nusoap_base
                 $this->setError($errstr);
             }
 
-            xml_parser_free($this->parser);
             unset($this->parser);
         } else {
             $this->debug('no xml passed to parseString()!!');
@@ -2461,7 +2460,7 @@ class soap_transport_http extends nusoap_base
 
             // set response timeout
             $this->debug('set response timeout to ' . $response_timeout);
-            socket_set_timeout($this->fp, $response_timeout);
+            stream_set_timeout($this->fp, $response_timeout);
 
             $this->debug('socket connected');
             return true;
@@ -3223,7 +3222,6 @@ class soap_transport_http extends nusoap_base
                 }
                 $this->debug($err);
                 $this->setError($err);
-                curl_close($this->ch);
                 return false;
             } else {
                 //echo '<pre>';
@@ -3232,7 +3230,6 @@ class soap_transport_http extends nusoap_base
             }
             // close curl
             $this->debug('No cURL error, closing cURL');
-            curl_close($this->ch);
 
             // try removing skippable headers
             $savedata = $data;
@@ -5030,12 +5027,10 @@ class wsdl extends nusoap_base
             $this->debug($errstr);
             $this->debug("XML payload:\n" . $wsdl_string);
             $this->setError($errstr);
-            xml_parser_free($this->parser);
             unset($this->parser);
             return false;
         }
         // free the parser
-        xml_parser_free($this->parser);
         unset($this->parser);
         $this->debug('Parsing WSDL done');
         // catch wsdl parse errors
@@ -6930,7 +6925,7 @@ class nusoap_parser extends nusoap_base
                     }
                 }
             }
-            xml_parser_free($this->parser);
+
             unset($this->parser);
         } else {
             $this->debug('xml was empty, didn\'t parse!');
@@ -7217,7 +7212,7 @@ class nusoap_parser extends nusoap_base
             // raw UTF-8 that, e.g., might not map to iso-8859-1
             // TODO: this can also be handled with xml_parser_set_option($this->parser, XML_OPTION_TARGET_ENCODING, "ISO-8859-1");
             if ($this->decode_utf8) {
-                $data = function_exists('mb_convert_encoding') ? mb_convert_encoding($data, 'ISO-8859-1', 'UTF-8') : utf8_decode($data);
+                $data = mb_convert_encoding($data, 'ISO-8859-1', 'UTF-8');
             }
         }
         $this->message[$pos]['cdata'] .= $data;
@@ -7293,13 +7288,13 @@ class nusoap_parser extends nusoap_base
             return (int) $value;
         }
         if ($type == 'float' || $type == 'double' || $type == 'decimal') {
-            return (double) $value;
+            return (float) $value;
         }
         if ($type == 'boolean') {
             if (strtolower($value) == 'false' || strtolower($value) == 'f') {
                 return false;
             }
-            return (boolean) $value;
+            return (bool) $value;
         }
         if ($type == 'base64' || $type == 'base64Binary') {
             $this->debug('Decode base64 value');

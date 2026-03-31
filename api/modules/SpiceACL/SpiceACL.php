@@ -292,7 +292,7 @@ class SpiceACL
             if (DBManagerFactory::getInstance()) {
                 $dbresult = DBManagerFactory::getInstance()->query("SELECT acl FROM sysmodules WHERE module='" . $module . "' UNION SELECT acl FROM syscustommodules WHERE module='" . $module . "'");
                 while ($row = DBManagerFactory::getInstance()->fetchByAssoc($dbresult)) {
-                    $_SESSION['spiceaclaccess']['aclmoduleactions'][$module] = (boolean)$row['acl'];
+                    $_SESSION['spiceaclaccess']['aclmoduleactions'][$module] = (bool)$row['acl'];
                 }
             }
             //check acl support on bean

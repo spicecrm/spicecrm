@@ -58,8 +58,6 @@ class SysCurrenciesSchedulerJobTasks
             }
         }
 
-        curl_close($curl);
-
         return $response->success;
     }
 
@@ -111,8 +109,6 @@ class SysCurrenciesSchedulerJobTasks
                 }
             }
         }
-
-        curl_close($curl);
 
         return true;
     }

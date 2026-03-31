@@ -77,7 +77,7 @@ class CoreController
             'version' => SpiceConfig::getSystemVersion(),
             'systemsettings' => [
                 'upload_maxsize' => SpiceConfig::getInstance()->config['upload_maxsize'],
-                'enableSettingUserPrefsByAdmin' => isset(SpiceConfig::getInstance()->config['enableSettingUserPrefsByAdmin']) ? (boolean)@SpiceConfig::getInstance()->config['enableSettingUserPrefsByAdmin'] : false,
+                'enableSettingUserPrefsByAdmin' => isset(SpiceConfig::getInstance()->config['enableSettingUserPrefsByAdmin']) ? (bool)@SpiceConfig::getInstance()->config['enableSettingUserPrefsByAdmin'] : false,
                 'aclcontroller' => $aclcontroller, //CR1000463
                 'stack_trace_errors' => SpiceUtils::getStackTrace(),
                 'international_email_addresses' => SpiceConfig::getInstance()->config['international_email_addresses'] ?? 0,
@@ -93,8 +93,8 @@ class CoreController
             'socket_frontend' => SpiceConfig::getInstance()->config['core']['socket_frontend'],
             'loginSidebarUrl' => isset (SpiceConfig::getInstance()->config['uiLoginSidebarUrl'][0]) ? SpiceConfig::getInstance()->config['uiLoginSidebarUrl'] : false,
             'displayloginsidebar' => SpiceConfig::getInstance()->config['uiDisplayLoginSidebar'] ?: false,
-            'allowForgotPass' => (boolean)( SpiceConfig::getInstance()->config['uiAllowForgotPass'] ),
-            'ChangeRequestRequired' => isset(SpiceConfig::getInstance()->config['change_request_required']) ? (boolean)SpiceConfig::getInstance()->config['change_request_required'] : false,
+            'allowForgotPass' => (bool)( SpiceConfig::getInstance()->config['uiAllowForgotPass'] ),
+            'ChangeRequestRequired' => isset(SpiceConfig::getInstance()->config['change_request_required']) ? (bool)SpiceConfig::getInstance()->config['change_request_required'] : false,
             'sessionMaxLifetime' => (int)ini_get('session.gc_maxlifetime'),
             'unique_key' => SpiceConfig::getInstance()->config['unique_key'],
             'name' => SpiceConfig::getInstance()->config['system']['name'],
@@ -315,7 +315,7 @@ class CoreController
     public function setIpClientAccess( $req, $res, $args )
     {
         $bodyParams  = $req->getParsedBody();
-        $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
+        $db = \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance();
 
         $clientsInDB = self::loadClientAccessFromDB( $bodyParams['routePattern'], $bodyParams['routeMethod'] );
 

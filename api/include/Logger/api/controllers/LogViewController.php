@@ -2,7 +2,7 @@
 namespace SpiceCRM\includes\Logger\api\controllers;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
@@ -315,7 +315,6 @@ class LogViewController{
 
         curl_setopt_array($curl, $curlOptions);
         $response = curl_exec($curl);
-        curl_close($curl);
 
         return $res->withJson([
             'response' => $response,

@@ -37,9 +37,9 @@ class APILogEntryHandler
      *
      * @param array $curlOptions
      * @param string $route
-     * @param $transactionId - optional pass a transaction ID in if you want to override the global one for the log
+     * @param string|null $transactionId - optional pass a transaction ID in if you want to override the global one for the log
      */
-    public function generateOutgoingLogEntry(array $curlOptions, string $route, string $transactionId = null): void {
+    public function generateOutgoingLogEntry(array $curlOptions, string $route, ?string $transactionId = null): void {
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
         $this->startingTime = microtime(true);
 
@@ -91,7 +91,7 @@ class APILogEntryHandler
      * @param string $route
      * @param string|null $transactionId
      */
-    public function generateSmtpLogEntry(Swift_Message $message, Mailbox $mailbox, string $route, string $transactionId = null): void {
+    public function generateSmtpLogEntry(Swift_Message $message, Mailbox $mailbox, string $route, ?string $transactionId = null): void {
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
         $this->startingTime = microtime(true);
 
@@ -197,7 +197,7 @@ class APILogEntryHandler
      * @param $response
      * @param $transactionId - optional pass a transaction ID in if you want to override the current one
      */
-    public function updateOutgoingLogEntry($curl, $response, string $transactionId = null): void {
+    public function updateOutgoingLogEntry($curl, $response, ?string $transactionId = null): void {
 
         $error = curl_error($curl);
         $info = curl_getinfo($curl);
@@ -234,7 +234,7 @@ class APILogEntryHandler
      * @param $response
      * @param string|null $transactionId
      */
-    public function updateSmtpLogEntry($response, string $transactionId = null): void {
+    public function updateSmtpLogEntry($response, ?string $transactionId = null): void {
         $this->logEntry->runtime = (microtime(true) - $this->startingTime) * 1000;
 
         if ($response instanceof \Exception) {

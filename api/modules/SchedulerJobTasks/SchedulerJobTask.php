@@ -92,10 +92,11 @@ class SchedulerJobTask extends SpiceBean
      * resolve job as success/failure or call retry
      * @param string $resolution
      * @param string|null $message
+     * @return void
+     * @throws Exception
      */
-    public function resolve(string $resolution, string $message = null)
+    public function resolve(string $resolution, ?string $message = null): void
     {
-
         switch ($resolution) {
             case self::JOB_TASK_RESOLUTION_FAILURE:
 
@@ -167,8 +168,9 @@ class SchedulerJobTask extends SpiceBean
      * run the job method and log the process
      * @param string|null $jobId
      * @return array
+     * @throws Exception
      */
-    public function run(string $jobId = null): array
+    public function run(?string $jobId = null): array
     {
         register_shutdown_function([$this, 'shutdownHandler']);
 
@@ -202,9 +204,10 @@ class SchedulerJobTask extends SpiceBean
 
     /**
      * set necessary fields before run
-     * @param string $jobId
+     * @param string|null $jobId
+     * @throws Exception
      */
-    private function beforeRun(string $jobId = null)
+    private function beforeRun(?string $jobId = null): void
     {
         $this->run_by_job_id = $jobId;
 

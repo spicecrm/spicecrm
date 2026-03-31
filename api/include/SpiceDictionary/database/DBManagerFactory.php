@@ -240,7 +240,7 @@ class DBManagerFactory
             if (substr($name, -11) != "Manager.php") continue;
             if ($name == "DBManager.php") continue;
             // require_once("$dir/$name");
-            $classname = '\\SpiceCRM\\includes\\database\\' . substr($name, 0, -4);
+            $classname = '\\SpiceCRM\\includes\\SpiceDictionary\\database\\' . substr($name, 0, -4);
             if (!class_exists($classname)) continue;
             $driver = new $classname([]);
             if (!$validate || $driver->valid()) {
@@ -273,8 +273,8 @@ class DBManagerFactory
     public static function getDbDrivers($validate = true)
     {
         $drivers = [];
-        self::scanDriverDir("include/database", $drivers, $validate);
-        self::scanDriverDir("custom/include/database", $drivers, $validate);
+        self::scanDriverDir("include/SpiceDictionary/database", $drivers, $validate);
+        self::scanDriverDir("custom/include/SpiceDictionary/database", $drivers, $validate);
 
         $result = [];
         foreach ($drivers as $type => $tdrivers) {

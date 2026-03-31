@@ -155,10 +155,8 @@ class SqlsrvManager extends DBManager
 	/**
      * @see DBManager::connect()
      */
-    public function connect(array $configOptions = null, $dieOnError = false)
+    public function connect(?array $configOptions = null, $dieOnError = false)
     {
-
-
         if (is_null($configOptions))
             $configOptions = $this->dbConfig['dbconfig'];
 

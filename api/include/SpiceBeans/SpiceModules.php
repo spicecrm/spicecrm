@@ -206,10 +206,12 @@ class SpiceModules
     /**
      * Returns the module details
      *
-     * @param string $modulename
-     * @return array
+     * @param string|null $modulename
+     * @param string|null $moduleId
+     * @return array|null
      */
-    public function getModuleDetails(string $modulename = null, string $moduleId = null): ?array {
+    public function getModuleDetails(?string $modulename = null, ?string $moduleId = null): ?array
+    {
         if($modulename) {
             return $this->modules[$modulename] ?: [];
         } else if ($moduleId){

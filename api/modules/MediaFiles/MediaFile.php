@@ -74,7 +74,6 @@ class MediaFile extends SpiceBean {
                 $functionName( $thumb, null, $this->imageQualities[$mimetype] );
                 $thumbnail = base64_encode( ob_get_contents() );
                 ob_end_clean();
-                imagedestroy( $thumb );
 
                 return $thumbnail;
             }
@@ -139,7 +138,6 @@ class MediaFile extends SpiceBean {
             $functionName = 'image'.$this->imageFunctions[$this->filetype];
             $functionName( $thumb, self::getFolderOfThumbs().$this->id.'.thumb'.$destSize, $this->imageQualities[$this->filetype] );
 
-            imagedestroy( $thumb );
             return true;
         } else
             return false;
@@ -277,8 +275,6 @@ class MediaFile extends SpiceBean {
 
         $functionName = 'image'.$this->imageFunctions[$this->filetype];
         $functionName( $image, $filename );
-
-        imagedestroy( $image );
 
         return $filename;
 

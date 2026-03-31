@@ -501,7 +501,7 @@ class EmailsController
     private static function getEmailBean(string $emailId): Email {
         $email = BeanFactory::getBean('Emails', $emailId);
         if (!$email) {
-            throw (new NotFoundException('Record not found.'))->setLookedFor(id);
+            throw (new NotFoundException('Record not found.'))->setLookedFor($emailId);
         }
 
         if (!$email->ACLAccess('edit')) {

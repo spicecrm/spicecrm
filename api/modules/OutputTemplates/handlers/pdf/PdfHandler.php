@@ -31,7 +31,7 @@ abstract class PdfHandler
         return $this->content;
     }
 
-    public function process($html = null, array $options = null)
+    public function process($html = null, ?array $options = null)
     {
         if($html)
             $this->html_content = $html;

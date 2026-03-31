@@ -25,10 +25,9 @@ class SpiceCRMAccessUtils implements AccessUtilsI
      * Blocks a user (prevent from login) permanent or for a specific time
      * @param string $username The name of the user.
      * @param string|null $blockingDuration The time in minutes that the user should be blocked from logging in. From now on
-     * @throws BadRequestException
      * @throws NotFoundException
      */
-    public function blockUserByName(string $username, string $blockingDuration = null)
+    public function blockUserByName(string $username, ?string $blockingDuration = null)
     {
         /** @var User $user */
         $user = BeanFactory::getBean('Users');

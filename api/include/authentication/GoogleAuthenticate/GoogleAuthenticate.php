@@ -97,8 +97,6 @@ class GoogleAuthenticate implements AuthenticatorI
 
         $result = json_decode(curl_exec($curl));
 
-        curl_close($curl);
-
         if (!$result) {
             LoggerManager::getLogger()->warn("unable to verify google id token".$result);
             throw new UnauthorizedException('Cannot verify Google ID Token');
@@ -152,7 +150,6 @@ class GoogleAuthenticate implements AuthenticatorI
         ]);
 
         $response = json_decode(curl_exec($curl));
-        curl_close($curl);
         if (isset($response->error)) {
             if ($response->error && $response->error_description) {
                 throw new Exception($response->error . ': ' . $response->error_description);

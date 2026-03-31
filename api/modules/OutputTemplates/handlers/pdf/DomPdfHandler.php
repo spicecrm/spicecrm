@@ -60,7 +60,7 @@ class DomPdfHandler extends PdfHandler
     }
 
 
-    public function process($html = null, array $options = null)
+    public function process($html = null, ?array $options = null)
     {
         parent::process($html, $options);
 

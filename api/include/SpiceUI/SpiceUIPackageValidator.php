@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\includes\SpiceUI;
 
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
@@ -143,7 +143,7 @@ class SpiceUIPackageValidator
      * @param bool $isFatal
      * @return array
      */
-    public function buildErrorObject(array $item, string $errorType, array $itemDependency = null, string $table = null, string $errorMessage = null, bool $isFatal = false): array
+    public function buildErrorObject(array $item, string $errorType, ?array $itemDependency = null, ?string $table = null, ?string $errorMessage = null, bool $isFatal = false): array
     {
         $itemTable = $item['table'] ?: $table;
         $depTable = $itemDependency['table'] ?? null;

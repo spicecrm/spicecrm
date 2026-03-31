@@ -922,7 +922,7 @@ class User extends SpiceBean
 
     public static function isAdmin_byName( $username ) {
         $db = DBManagerFactory::getInstance();
-        return (boolean)$db->getOne("SELECT is_admin FROM users WHERE deleted = 0 AND user_name = '".$db->quote( $username )."'" );
+        return (bool)$db->getOne("SELECT is_admin FROM users WHERE deleted = 0 AND user_name = '".$db->quote( $username )."'" );
     }
 
     /**

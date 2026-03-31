@@ -8,7 +8,7 @@ if(!function_exists("randomstring")){
         $max=strlen($base)-1;
         $returnstring = '';
         //2013-09-06 BUG #496 removed ... causing issues in higher php releases
-        //mt_srand((double)microtime()*1000000);
+        //mt_srand((float)microtime()*1000000);
         while (strlen($returnstring)<$len+1)
             $returnstring.=$base[mt_rand(0,$max)];
 

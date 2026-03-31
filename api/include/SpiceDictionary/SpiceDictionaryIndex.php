@@ -127,10 +127,13 @@ class SpiceDictionaryIndex
     /**
      * creates an index from teh definition
      *
-     * @return string
-     * @throws \Exception
+     * @param $create
+     * @param SpiceDictionaryDefinition|null $dictionaryDefinition
+     * @return true
+     * @throws Exception
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
      */
-    public function activate($create = true, SpiceDictionaryDefinition $dictionaryDefinition = null)
+    public function activate($create = true, ?SpiceDictionaryDefinition $dictionaryDefinition = null): bool
     {
         // get the definition
         $indexDictionaryDefinition = new SpiceDictionaryDefinition($this->sysdictionarydefinition_id);
@@ -160,10 +163,13 @@ class SpiceDictionaryIndex
     /**
      * drops an index based ont eh definition
      *
-     * @return string
-     * @throws \Exception
+     * @param $drop
+     * @param SpiceDictionaryDefinition|null $dictionaryDefinition
+     * @return true
+     * @throws Exception
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
      */
-    public function deactivate($drop = true, SpiceDictionaryDefinition $dictionaryDefinition = null)
+    public function deactivate($drop = true, ?SpiceDictionaryDefinition $dictionaryDefinition = null): bool
     {
         // get a db instance
         $db = DBManagerFactory::getInstance();
