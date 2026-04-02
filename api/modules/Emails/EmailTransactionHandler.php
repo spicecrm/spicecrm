@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\modules\Emails;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceSingleton;
 
 class EmailTransactionHandler extends SpiceSingleton

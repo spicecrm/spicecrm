@@ -791,7 +791,14 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         } else {
 
             let fileTypeArray = file.file_mime_type.toLowerCase().split("/");
-            const applicationFile =  fileTypeArray[0] == 'application' && !['pdf', 'msg', 'vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(fileTypeArray[1]);
+
+            let supportedMimeTypes = ['pdf', 'msg'];
+
+            if (this.metadata.configuration.getCapabilityConfig('txcontrol').isActive) {
+                supportedMimeTypes.push('vnd.openxmlformats-officedocument.wordprocessingml.document');
+            }
+
+            const applicationFile =  fileTypeArray[0] == 'application' && !supportedMimeTypes.includes(fileTypeArray[1]);
             const csvFile = fileTypeArray[0] == 'text' && fileTypeArray[1] == 'csv';
 
             if(applicationFile || csvFile) {

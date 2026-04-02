@@ -1,7 +1,7 @@
 <?php
 namespace SpiceCRM\modules\Leads;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\extensions\includes\GenerativeAI\GenerativeAIAgent;
 use SpiceCRM\includes\DataStreams\wrappers\UploadStream;
 use SpiceCRM\includes\ErrorHandlers\Exception;

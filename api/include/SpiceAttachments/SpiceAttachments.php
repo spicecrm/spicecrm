@@ -97,6 +97,7 @@ class SpiceAttachments
         foreach ($attachments as $attachment) {
 
             // do not clone excluded filenames
+            if(!is_array($excludedFileIDs)) $excludedFileIDs = [];
             if ($attachment['external_id'] && array_search($attachment['external_id'], $excludedFileIDs) !== false) continue;
 
             $attachment['id'] = SpiceUtils::createGuid();

@@ -264,7 +264,7 @@ class OutputTemplatesController
     {
         $params = $req->getParsedBody();
 
-        $templateBean = \SpiceCRM\data\BeanFactory::getBean($args['module'], $args['id']);
+        $templateBean = \SpiceCRM\includes\SpiceBeans\BeanFactory::getBean($args['module'], $args['id']);
         $field = $params['field'] ?? 'body';
         $templateBean->$field = $params['html'];
 

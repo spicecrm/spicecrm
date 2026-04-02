@@ -225,7 +225,7 @@ class TimeDate
      * @internal
      * @return User
      */
-    protected function _getUser(?User $user = null): User
+    protected function _getUser(?User $user = null): ?User
     {
         return AuthenticationController::getInstance()->getCurrentUser();
     }

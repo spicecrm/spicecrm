@@ -1711,7 +1711,7 @@ class Email extends SpiceBean
     {
         $db = DBManagerFactory::getInstance();
 
-        $query = "SELECT id, message_id FROM emails WHERE message_id='" . $message_id . "'";
+        $query = "SELECT id, message_id FROM emails WHERE message_id='$message_id' AND deleted = 0";
         $q = $db->query($query);
 
         while ($row = $db->fetchRow($q)) {
