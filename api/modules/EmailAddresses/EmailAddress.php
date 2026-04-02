@@ -180,7 +180,13 @@ class EmailAddress extends SpiceBean
             $fields = array_column(array_filter(SpiceFTSUtils::getBeanIndexProperties($ftsModule['module']),fn($property) => $property['email'] === true),'indexfieldname');
 
             foreach ($emailAddresses as $emailAddress) {
-                $searchResult = SpiceFTSHandler::getInstance()->searchModule($ftsModule['module'], strtolower($emailAddress), [], [], 1000, 0, [], [], false, $fields, false);
+                $searchResult = SpiceFTSHandler::getInstance()->searchModule(
+                    module:         $ftsModule['module'],
+                    searchterm:     strtolower($emailAddress),
+                    size:           1000,
+                    requiredFields: $fields,
+                    source:         false,
+                );
                 foreach ($searchResult['hits']['hits'] as $item) {
                     $bean = BeanFactory::getBean($ftsModule['module'], $item['_id']);
                     $results[$bean->id] = [

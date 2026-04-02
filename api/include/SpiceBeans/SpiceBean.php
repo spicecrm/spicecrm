@@ -1195,7 +1195,11 @@ class SpiceBean
             if ($this->load_relationship($field_name)) {
                 // get fts count
                 if (!empty($searchterm)) {
-                    $filteredResults = SpiceFTSHandler::getInstance()->searchModule($this->$field_name->getRelatedModuleName(), $searchterm, [], [], 0, 0);
+                    $filteredResults = SpiceFTSHandler::getInstance()->searchModule(
+                        module:     $this->$field_name->getRelatedModuleName(),
+                        searchterm: $searchterm,
+                        size:       0,
+                    );
                     $count += ($filteredResults['hits']['total']['value'] ?: 0);
                 } else {
                     $count += $this->$field_name->getBeanCount([
