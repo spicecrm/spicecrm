@@ -25,7 +25,7 @@ use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceNotes\SpiceNotes;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotificationsLoader;
 use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
-use SpiceCRM\includes\SugarCleaner;
+use SpiceCRM\includes\SpiceCleanerHelper;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysTrashCan\SysTrashCan;
 use SpiceCRM\includes\TimeDate;
@@ -1195,7 +1195,11 @@ class SpiceBean
             if ($this->load_relationship($field_name)) {
                 // get fts count
                 if (!empty($searchterm)) {
-                    $filteredResults = SpiceFTSHandler::getInstance()->searchModule($this->$field_name->getRelatedModuleName(), $searchterm, [], [], 0, 0);
+                    $filteredResults = SpiceFTSHandler::getInstance()->searchModule(
+                        module:     $this->$field_name->getRelatedModuleName(),
+                        searchterm: $searchterm,
+                        size:       0,
+                    );
                     $count += ($filteredResults['hits']['total']['value'] ?: 0);
                 } else {
                     $count += $this->$field_name->getBeanCount([
@@ -1477,13 +1481,13 @@ class SpiceBean
                 $type .= $def['dbType'];
 
             if ($def['type'] == 'html' || $def['type'] == 'longhtml') {
-                $this->$key = SugarCleaner::cleanHtml($this->$key, true);
+                $this->$key = SpiceCleanerHelper::cleanHtml($this->$key, true);
             } elseif ((strpos($type, 'char') !== false ||
                     strpos($type, 'text') !== false ||
                     $type == 'enum') &&
                 !empty($this->$key)
             ) {
-                $this->$key = SugarCleaner::cleanHtml($this->$key);
+                $this->$key = SpiceCleanerHelper::cleanHtml($this->$key);
             }
         }
     }

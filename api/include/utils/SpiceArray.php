@@ -40,38 +40,38 @@ use ArrayObject;
 
 /**
  * Wrapper around PHP's ArrayObject class that provides dot-notation recursive searching
- * for multi-dimensional arrays
+ * for multidimensional arrays
  */
-class SugarArray extends ArrayObject
+class SpiceArray extends ArrayObject
 {
     /**
      * Return the value matching $key if exists, otherwise $default value
      *
-     * This method uses dot notation to look through multi-dimensional arrays
+     * This method uses dot notation to look through multidimensional arrays
      *
      * @param string $key key to look up
      * @param mixed $default value to return if $key does not exist
      * @return mixed
      */
-    public function get($key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         return $this->_getFromSource($key, $default);
     }
 
     /**
-     * Provided as a convinience method for fetching a value within an existing
-     * array without instantiating a SugarArray
+     * Provided as a convenience method for fetching a value within an existing
+     * array without instantiating a SpiceArray
      *
-     * NOTE: This should only used where refactoring an array into a SugarArray
+     * NOTE: This should only be used where refactoring an array into a SpiceArray
      *       is unfeasible.  This operation is more expensive than a direct
-     *       SugarArray as each time it creates and throws away a new instance
+     *       SpiceArray as each time it creates and throws away a new instance
      *
      * @param array $haystack haystack
      * @param string $needle needle
      * @param mixed $default default value to return
      * @return mixed
      */
-    static public function staticGet($haystack, $needle, $default = null)
+    static public function staticGet(array $haystack, string $needle, mixed $default = null): mixed
     {
         if (empty($haystack)) {
             return $default;
@@ -80,9 +80,9 @@ class SugarArray extends ArrayObject
         return $array->get($needle, $default);
     }
 
-    private function _getFromSource($key, $default)
+    private function _getFromSource(string $key, mixed $default): mixed
     {
-        if (strpos($key, '.') === false) {
+        if (!str_contains($key, '.')) {
             return isset($this[$key]) ? $this[$key] : $default;
         }
 
@@ -91,7 +91,7 @@ class SugarArray extends ArrayObject
         return $this->_getRecursive($this->_getFromSource($current_key, $default), $exploded, $default);
     }
 
-    private function _getRecursive($raw_config, $children, $default)
+    private function _getRecursive(mixed $raw_config, array $children, mixed $default): mixed
     {
         if ($raw_config === $default) {
             return $default;

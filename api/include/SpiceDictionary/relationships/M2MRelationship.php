@@ -801,7 +801,13 @@ class M2MRelationship extends Relationship
         ];
 
         // get results from FTS (make sure 'filterArray' is within in an array itself)
-        $filteredResults = SpiceFTSHandler::getInstance()->searchModule($module, $searchterm, [], [], ($params['limit'] ? $params['limit'] : 25), ($params['offset'] ? $params['offset'] : 0), [], [$filterArray]);
+        $filteredResults = SpiceFTSHandler::getInstance()->searchModule(
+            module: $module,
+            searchterm: $searchterm,
+            size: ($params['limit'] ?: 25),
+            from: ($params['offset'] ?: 0),
+            addFilters: [$filterArray],
+        );
 
         // collect FTS ids
         if ($hits = $filteredResults['hits']['hits']) {
