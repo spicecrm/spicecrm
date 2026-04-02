@@ -55,8 +55,11 @@ export class ObjectSetInactiveIcon {
         return this.model.data.is_inactive == '1' ? 'slds-icon-text-error' : 'slds-icon-text-default'
     }
 
+    /**
+     * disabled if the field acl action is hide = 1 or display = 2
+     */
     get disabled() {
-        return !this.model.getFieldAccess('is_inactive') || this.model.getFieldAccess('is_inactive') < 3 ? true : false;
+        return [1,2].includes(this.model.getFieldAccess('is_inactive'));
     }
 
     get addClasses(){
