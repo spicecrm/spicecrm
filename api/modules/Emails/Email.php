@@ -23,7 +23,7 @@ use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
-use SpiceCRM\includes\SugarCleaner;
+use SpiceCRM\includes\SpiceCleanerHelper;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
@@ -189,9 +189,9 @@ class Email extends SpiceBean
             }
 
             $this->setEmailAddresses();
-            $this->description = SugarCleaner::cleanHtml($this->description);
-            $this->description_html = SugarCleaner::cleanHtml($this->description_html, true);
-            $this->raw_source = SugarCleaner::cleanHtml($this->raw_source, true);
+            $this->description      = SpiceCleanerHelper::cleanHtml($this->description);
+            $this->description_html = SpiceCleanerHelper::cleanHtml($this->description_html, true);
+            $this->raw_source       = SpiceCleanerHelper::cleanHtml($this->raw_source, true);
             // disable cache! timedate->now() return null at this time
             $timedate->allow_cache = false;
 
@@ -285,8 +285,8 @@ class Email extends SpiceBean
         }
 
         $this->setEmailAddresses();
-        $this->description = SugarCleaner::cleanHtml($this->description);
-        $this->description_html = SugarCleaner::cleanHtml($this->description_html, true);
+        $this->description      = SpiceCleanerHelper::cleanHtml($this->description);
+        $this->description_html = SpiceCleanerHelper::cleanHtml($this->description_html, true);
         // disable cache! timedate->now() return null at this time
         $timedate->allow_cache = false;
 
