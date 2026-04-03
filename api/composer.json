@@ -1,7 +1,7 @@
 {
   "config": {
     "platform": {
-      "php": "7.4.21"
+      "php": "8.2"
     }
   },
   "autoload": {
@@ -11,8 +11,6 @@
       "SpiceCRM\\custom\\": "custom",
       "SpiceCRM\\modules\\": "modules",
       "SpiceCRM\\custom\\modules\\": "custom/modules",
-      "SpiceCRM\\KREST\\": "KREST",
-      "SpiceCRM\\data\\": "data",
       "SpiceCRM\\extensions\\includes\\": "extensions/include",
       "SpiceCRM\\extensions\\": "extensions"
     },
@@ -38,7 +36,13 @@
     "lbuchs/webauthn": "v2.0.0",
     "chrome-php/chrome": "^1.13",
     "google/cloud-translate": "^1.17",
-    "karriere/pdf-merge": "2.1"
+    "karriere/pdf-merge": "2.1",
+    "ext-bcmath" : "*",
+    "ext-curl" : "*",
+    "ext-imap" : "*",
+    "ext-mbstring" : "*",
+    "ext-simplexml" : "*",
+    "ext-zip" : "*"
   },
   "minimum-stability": "rc",
   "description": ""
