@@ -40,6 +40,7 @@
     "ext-bcmath" : "*",
     "ext-curl" : "*",
     "ext-imap" : "*",
+    "ext-mailparse" : "*",
     "ext-mbstring" : "*",
     "ext-simplexml" : "*",
     "ext-zip" : "*"
