@@ -49,10 +49,12 @@ export class DomainManagerAddFieldModal implements OnInit{
             fieldtype: '',
             scope: this.domainDefiniton.scope,
             label: '',
-            sequence: this.domainmanager.domainfields.filter(d => d.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition).length,
+            sequence: this.domainmanager.domainfields().filter(d => d.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition).length,
             required: 0,
             exclude_from_index: 0,
-            status: 'd'
+            status: 'd',
+            version: this.domainmanager.getCurrentReleaseVersion(),
+            package: this.domainDefiniton.package,
         }
     }
 
@@ -70,7 +72,7 @@ export class DomainManagerAddFieldModal implements OnInit{
      *
      */
     get canSave() {
-        return this.domainfield.name && this.domainfield.dbtype && !this.domainmanager.domainfields.find(f => f.name == this.domainfield.name && f.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition);
+        return this.domainfield.name && this.domainfield.dbtype && !this.domainmanager.domainfields().find(f => f.name == this.domainfield.name && f.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition);
     }
 
     /**
@@ -81,7 +83,7 @@ export class DomainManagerAddFieldModal implements OnInit{
             // add the sequence that represents the number of items
             this.backend.postRequest(`dictionary/domainfield/${this.domainfield.id}`, {}, this.domainfield).subscribe({
                 next: (res) => {
-                    this.domainmanager.domainfields.push(this.domainfield);
+                    this.domainmanager.domainfields.update(arr => [...arr, this.domainfield]);
                     this.close();
                 }
             });
@@ -89,3 +91,5 @@ export class DomainManagerAddFieldModal implements OnInit{
     }
 
 }
+
+export default DomainManagerAddFieldModal

@@ -40,7 +40,7 @@ export class DomainManagerFieldTabs {
     }
 
     get domainfields() {
-        return this.domainmanager.domainfields;
+        return this.domainmanager.domainfields();
     }
 
     get currentField() {
