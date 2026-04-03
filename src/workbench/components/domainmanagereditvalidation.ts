@@ -1,70 +1,73 @@
 /**
  * @module WorkbenchModule
  */
-import {
-    Component, EventEmitter, Output
-} from '@angular/core';
+import {Component, ComponentRef, inject, OnInit, output, signal} from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
 import {domainmanager} from '../services/domainmanager.service';
-import {DomainValidation} from "../interfaces/domainmanager.interfaces";
+import {DomainField, DomainValidation} from "../interfaces/domainmanager.interfaces";
+import {toast} from "../../services/toast.service";
 
 /**
  * a modal window to add a new validation to a domain field
  */
 @Component({
-    selector: 'domain-manager-add-validation',
-    templateUrl: '../templates/domainmanageraddvalidation.html',
+    selector: 'domain-manager-edit-validation',
+    templateUrl: '../templates/domainmanagereditvalidation.html',
     standalone: false
 })
-export class DomainManagerAddValidation {
-
+export class DomainManagerEditValidation implements OnInit {
     /**
      * reference to the modal itself
      */
-    public self: any;
-
+    public self: ComponentRef<this>;
     /**
      *  an empty validation record
      */
-    public fieldvalidation: DomainValidation ;
-
-    @Output() public validation: EventEmitter<string> = new EventEmitter<string>();
-
-
-    constructor(public domainmanager: domainmanager, public backend: backend, public modelutilities: modelutilities) {
-        this.fieldvalidation = {
-            name: "",
-            order_by: 'sequence',
-            sort_flag: undefined,
-            status: 'a',
-            validation_type: "enum",
-            scope: 'c',
-            id: this.modelutilities.generateGuid(),
-        }
-    }
-
+    public fieldValidation = signal<DomainValidation>(undefined);
     /**
-     * select the validation id
-     *
-     * @param id
+     * stores the domain field definition
      */
-    public selectValidation(id) {
-        this.domainmanager.domainfields.find(f => f.id == this.domainmanager.currentDomainField).sysdomainfieldvalidation_id = id;
-        this.close();
+    public domainField = signal<DomainField>(undefined);
+    /**
+     * output to emit the validation id
+     */
+    public validationId = output<string>();
+    /**
+     * reference to the domain manager service
+     */
+    public domainmanager = inject(domainmanager);
+    /**
+     * reference to the backend service
+     */
+    public backend = inject(backend);
+    /**
+     * reference to the model utilities service
+     */
+    public modelutilities = inject(modelutilities);
+    /**
+     * reference to the toast service
+     */
+    public toast = inject(toast);
+
+    public ngOnInit() {
+        this.initializeValidation();
     }
 
     /**
      * adds the validation, selects it and closes the modal
      */
-    public add() {
-        this.backend.postRequest(`dictionary/domainvalidation/${this.fieldvalidation.id}`, {}, this.fieldvalidation).subscribe({
-            next: (res) => {
-                this.domainmanager.domainfieldvalidations.push(this.fieldvalidation);
-                this.validation.emit(this.fieldvalidation.id);
+    public save() {
+        this.backend.postRequest(`dictionary/domainvalidation/${this.fieldValidation().id}`, {}, this.fieldValidation()).subscribe({
+            next: () => {
+                if (!this.domainmanager.domainfieldvalidations().some(v => v.id == this.fieldValidation().id)) {
+                    this.domainmanager.domainfieldvalidations.set([...this.domainmanager.domainfieldvalidations(), this.fieldValidation()]);
+                }
+                this.validationId.emit(this.fieldValidation().id);
                 this.close();
-            }
-        })
+            },
+            error: () => this.toast.sendError('ERR_FAILED_TO_EXECUTE')
+        });
     }
 
     /**
@@ -74,4 +77,24 @@ export class DomainManagerAddValidation {
         this.self.destroy();
     }
 
+    /**
+     * initializes the validation record
+     * @private
+     */
+    private initializeValidation() {
+
+        if (this.fieldValidation()) return;
+
+        this.fieldValidation.set({
+            name: "",
+            order_by: 'sequence',
+            sort_flag: undefined,
+            status: 'a',
+            validation_type: "enum",
+            scope: 'c',
+            id: this.modelutilities.generateGuid(),
+            version: this.domainmanager.getCurrentReleaseVersion(),
+            package: this.domainField()?.package
+        });
+    }
 }
