@@ -158,7 +158,9 @@ class ConfServerController
             'sysprocessmgmtsystemscopetemplates',
             'syshazardousmaterialimages',
             'spicebeanguides',
-            'spicebeanguidestages'
+            'spicebeanguidestages',
+            'sysaiprompts',
+            'sysaipromptinputmethods'
         ];
 
         $tableArray = [];

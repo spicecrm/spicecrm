@@ -17,6 +17,7 @@ use SpiceCRM\includes\Middleware\ValidationMiddleware;
  * get a Rest Manager Instance
  */
 $RESTManager = RESTManager::getInstance();
+$openAPI = new \SpiceCRM\includes\SpiceSwagger\OpenApiResponse();
 
 /**
  * routes
@@ -396,7 +397,8 @@ $routes = [
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_GUID
             ]
-        ]
+        ],
+        'responses' => $openAPI->empty('Successfully deleted the dictionary Domain Validation')
     ],
     // ---
     [

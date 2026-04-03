@@ -1,0 +1,57 @@
+<workbench-header titlelabel="LBL_DOMAIN_VALIDATIONS" icon="secondary_index">
+    {{domainmanager.domainfieldvalidations().length}} <system-label label="LBL_ITEMS"/>
+</workbench-header>
+<div>
+    <div class="slds-p-around--xx-small slds-grid slds-grid--vertical-align-center slds-theme--default">
+        <system-input-text placeholder="LBL_SEARCH" class="slds-grow" [(ngModel)]="searchterm" autocomplete="off" [showClear]="true"/>
+        <system-select-icon class="slds-p-horizontal--xx-small" [(ngModel)]="filterScope">
+            <system-select-icon-item/>
+            <system-select-icon-item value="g" icon="world"/>
+            <system-select-icon-item value="c" icon="people"/>
+        </system-select-icon>
+        <button (click)="addValidation()" class="slds-button slds-button--icon slds-button--icon-border">
+            <system-button-icon icon="add" size="small"/>
+        </button>
+    </div>
+    <div class="slds-border--top slds-scrollable">
+        <table class="slds-table slds-table--bordered slds-table--fixed-layout slds-table--header-fixed slds-max-medium-table_stacked-horizontal">
+            <thead>
+            <tr class="slds-text-title--caps">
+                <th scope="col" style="width: 1.5rem;"></th>
+                <th scope="col">
+                    <span class="slds-th__action slds-truncate"><system-label label="LBL_NAME"></system-label></span>
+                </th>
+                <th scope="col">
+                    <span class="slds-th__action slds-truncate"><system-label label="LBL_TYPE"></system-label></span>
+                </th>
+                <th scope="col" style="width: 6rem;"></th>
+            </tr>
+            </thead>
+            <tbody >
+                @for (validation of filteredValidations(); track validation.id) {
+                    <tr>
+                        <td>
+                            <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="validation.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
+                        </td>
+                        <td>{{validation.name}}</td>
+                        <td>{{validation.validation_type}}</td>
+                        <td style="width: 6rem">
+                            <button (click)="showUsedIn(validation.id)" [disabled]="!validationsInUse()[validation.id]" class="slds-button slds-button--icon">
+                                <system-button-icon size="xx-small" icon="data_graph"/>
+                            </button>
+                            <button (click)="openValidationOptions(validation.id)" class="slds-button slds-button--icon">
+                                <system-button-icon size="xx-small" icon="list"/>
+                            </button>
+                            <button (click)="openEditModal(validation)" class="slds-button slds-button--icon">
+                                <system-button-icon size="xx-small" icon="edit"/>
+                            </button>
+                            <button (click)="deleteValidation(validation.id)" [disabled]="validationsInUse()[validation.id]" class="slds-button slds-button--icon">
+                                <system-button-icon size="xx-small" icon="delete"/>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

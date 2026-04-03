@@ -144,7 +144,7 @@ export class DomainManagerDefinitions {
                         domaindefinition.status = status;
 
                         // set for all fields
-                        this.domainmanager.domainfields.filter(f => f.sysdomaindefinition_id == domaindefinition.id).forEach(f => f.status = status);
+                        this.domainmanager.domainfields().filter(f => f.sysdomaindefinition_id == domaindefinition.id).forEach(f => f.status = status);
 
                         loadingModal.emit(true);
                     },
@@ -161,7 +161,7 @@ export class DomainManagerDefinitions {
                         domaindefinition.status = status;
 
                         // set for all fields
-                        this.domainmanager.domainfields.filter(f => f.sysdomaindefinition_id == domaindefinition.id).forEach(f => f.status = status);
+                        this.domainmanager.domainfields().filter(f => f.sysdomaindefinition_id == domaindefinition.id).forEach(f => f.status = status);
 
                         loadingModal.emit(true);
                     },

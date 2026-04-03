@@ -30,6 +30,8 @@
 namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainField;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidation;
@@ -85,20 +87,20 @@ class SpiceDictionaryDomainValidationsController
     }
 
     /**
-     * posts a Domain Validation
-     *
-     * @param $req
-     * @param $res
-     * @param $args
+     * delete a Domain Validation
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
      * @return mixed
+     * @throws \Exception
      */
     public function deleteDictionaryDomainValidation(Request $req, Response $res, array $args): Response
     {
-        $deleted = (new SpiceDictionaryDomainField($args['id']))->delete();
+        SpiceDictionaryDomainValidations::getInstance()->deleteValidationWithValues($args['id']);
 
         SpiceDictionary::getInstance()->clearSessionCache();
 
-        return $res->withJson($deleted);
+        return $res->withStatus(204);
     }
 
 }

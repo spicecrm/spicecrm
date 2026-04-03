@@ -160,7 +160,7 @@ class SpiceInstaller
     {
         $requirements = [];
         // check php version
-        if (version_compare(phpversion(), '8.0', '<')) {
+        if (version_compare(phpversion(), '8.2', '<')) {
             $requirements['php'] = false;
         } else {
             $requirements['php'] = true;
@@ -206,11 +206,11 @@ class SpiceInstaller
         }
 
         //check mailparse
-//        if (!function_exists('mailparse_msg_parse_file')) {
-//            $requirements['mailparse'] = false;
-//        } else {
-//            $requirements['mailparse'] = true;
-//        }
+        if (!function_exists('mailparse_msg_parse_file')) {
+            $requirements['mailparse'] = false;
+        } else {
+            $requirements['mailparse'] = true;
+        }
 
         // check imap
         if (!function_exists('imap_qprint')) {
