@@ -160,7 +160,7 @@ class SpiceInstaller
     {
         $requirements = [];
         // check php version
-        if (version_compare(phpversion(), '8.0', '<')) {
+        if (version_compare(phpversion(), '8.2', '<')) {
             $requirements['php'] = false;
         } else {
             $requirements['php'] = true;
