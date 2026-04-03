@@ -51,6 +51,17 @@ export class toast {
     }
 
     /**
+     * send error toast
+     * @param text
+     * @param description
+     * @param autoClose
+     * @param uniqueMessageCode
+     */
+    public sendError(text: string, description: string = "", autoClose: boolean | number = true, uniqueMessageCode?: string): string {
+        return this.addToast(text, 'toast', 'error', description, autoClose, uniqueMessageCode);
+    }
+
+    /**
      * the internal funtion handling the toast adding
      *
      * @param text the text of the message to be sent

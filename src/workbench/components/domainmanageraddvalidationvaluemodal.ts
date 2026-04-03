@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, EventEmitter, OnInit, Output
+    Component, EventEmitter, OnInit, output, Output
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {domainmanager} from '../services/domainmanager.service';
@@ -40,7 +40,7 @@ export class DomainManagerAddValidationValueModal implements OnInit{
      */
     public fieldvalidationvalue: DomainValidationValue;
 
-    @Output() validationValue: EventEmitter<DomainValidationValue> = new EventEmitter<DomainValidationValue>();
+    public validationValue = output<DomainValidationValue>();
 
     constructor(public domainmanager: domainmanager, public modelutilities: modelutilities) {
 
@@ -54,7 +54,9 @@ export class DomainManagerAddValidationValueModal implements OnInit{
             sequence: this.fieldvalidationvalues.length,
             status: 'd',
             valuetype: 'string',
-            enumvalue: undefined
+            enumvalue: undefined,
+            version: this.domainmanager.getCurrentReleaseVersion(),
+            package: this.fieldvalidation.package
         }
     }
 

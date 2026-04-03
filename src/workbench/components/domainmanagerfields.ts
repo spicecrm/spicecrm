@@ -12,6 +12,12 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {modal} from '../../services/modal.service';
 import {domainmanager} from '../services/domainmanager.service';
+import {EMPTY, Observable, of, switchMap} from "rxjs";
+import {outputToObservable} from "@angular/core/rxjs-interop";
+import {filter, map, tap} from "rxjs/operators";
+import {DomainField} from "../interfaces/domainmanager.interfaces";
+import {DomainManagerEditValidation} from "./domainmanagereditvalidation";
+import {DomainManagerFieldValidation} from "./domainmanagerfieldvalidation";
 
 /**
  * a table with the field in a domain. Enables also drag and drop to sequence and adding as well as removing fields
@@ -27,8 +33,8 @@ export class DomainManagerFields {
     }
 
     get domainfields() {
-        let domainfields = this.domainmanager.domainfields.filter(f => f.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition && f.scope == 'c');
-        for (let domainfield of this.domainmanager.domainfields.filter(f => f.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition && f.scope != 'c')) {
+        let domainfields = this.domainmanager.domainfields().filter(f => f.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition && f.scope == 'c');
+        for (let domainfield of this.domainmanager.domainfields().filter(f => f.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition && f.scope != 'c')) {
             if (domainfields.findIndex(d => d.name == domainfield.name) == -1) {
                 domainfields.push(domainfield);
             }
@@ -94,7 +100,7 @@ export class DomainManagerFields {
             next: (resp) => {
                 if (resp) {
                     domainfield.sysdomainfieldvalidation_id = '';
-                    this.updateDomainField(domainfield);
+                    this.updateDomainField(domainfield).subscribe();
                 }
             }
         });
@@ -102,43 +108,58 @@ export class DomainManagerFields {
 
     /**
      * shows the validation for the field
-     *
-     * @param event
-     * @param id
+     * @param domainField
      */
-    public showValidation(domainfield) {
-        if (!domainfield.sysdomainfieldvalidation_id) {
-            this.modal.openModal('DomainManagerSelectValidation', true, this.injector).subscribe({
-                next: (modalRef) => {
-                    modalRef.instance.validation.subscribe({
-                        next: (validationId) => {
-                            if (validationId == 'new') {
-                                // add a new Validation
-                                this.modal.openModal('DomainManagerAddValidation', true, this.injector).subscribe({
-                                    next: (modalRef) => {
-                                        modalRef.instance.validation.subscribe({
-                                            next: (validationId) => {
-                                                domainfield.sysdomainfieldvalidation_id = validationId;
-                                                this.updateDomainField(domainfield);
-                                            }
-                                        })
-                                    }
-                                })
-                            } else {
-                                domainfield.sysdomainfieldvalidation_id = validationId;
-                                this.updateDomainField(domainfield);
-                            }
-                        }
-                    })
-                }
-            })
+    public showValidation(domainField: DomainField) {
+        if (!domainField.sysdomainfieldvalidation_id) {
+            this.modal.openModal('DomainManagerSelectValidation', true, this.injector).pipe(
+                switchMap(modalRef => outputToObservable<string>(modalRef.instance.validationId)),
+                switchMap(id => this.handleSelectValidation(id, domainField)),
+                tap(validation => domainField.sysdomainfieldvalidation_id = validation.id),
+                switchMap(validation => this.updateDomainField(domainField).pipe(map(() => validation))),
+                switchMap(validation => this.openFieldValidation(domainField, validation.action))
+            ).subscribe({
+                error: () => this.toast.sendError('ERR_FAILED_TO_EXECUTE'),
+            });
         } else {
-            this.modal.openModal('DomainManagerFieldValidation', true, this.injector).subscribe({
-                next: (modalRef) => {
-                    modalRef.instance.field = domainfield;
-                }
-            })
+            this.openFieldValidation(domainField).subscribe();
         }
+    }
+
+    /**
+     * handles the select validation event
+     * @param selectedValidationId
+     * @param domainField
+     * @private
+     */
+    private handleSelectValidation(selectedValidationId: string, domainField: DomainField): Observable<{action: 'new' | 'edit', id: string}> {
+        if (selectedValidationId == 'new') {
+            return this.modal.openStaticModal(DomainManagerEditValidation, true, this.injector).pipe(
+                tap(modalRef => modalRef.instance.domainField.set( domainField)),
+                switchMap(modalRef => outputToObservable<string>(modalRef.instance.validationId)),
+                map(id => ({id, action: 'new'}))
+            )
+        } else {
+            return of({id: selectedValidationId, action: 'edit'});
+        }
+    }
+
+    /**
+     * opens the validation modal
+     * @param domainField
+     * @param action
+     * @private
+     */
+    private openFieldValidation(domainField: DomainField, action: 'new' | 'edit' = 'new') {
+        if (action != 'new') {
+            return EMPTY;
+        }
+
+        return this.modal.openStaticModal(DomainManagerFieldValidation, true, this.injector).pipe(
+            tap((modalRef) =>
+                modalRef.instance.validationId = domainField.sysdomainfieldvalidation_id
+            )
+        );
     }
 
     /**
@@ -152,10 +173,9 @@ export class DomainManagerFields {
             if (answer) {
                 this.backend.deleteRequest(`dictionary/domainfield/${id}`).subscribe({
                     next: (res) => {
-                        let index = this.domainmanager.domainfields.findIndex(f => f.id == id);
-                        this.domainmanager.domainfields.splice(index, 1);
+                        this.domainmanager.domainfields.update(arr => arr.filter(f => f.id != id));
                         if (this.domainmanager.currentDomainField == id) {
-                            this.domainmanager.currentDomainField == null;
+                            this.domainmanager.currentDomainField = null;
                         }
                     }
                 })
@@ -177,7 +197,7 @@ export class DomainManagerFields {
                     let newValue = {...domainField};
                     newValue.id = this.modelutilities.generateGuid();
                     newValue.scope = 'c';
-                    this.domainmanager.domainfields.push(newValue);
+                    this.domainmanager.domainfields.update(arr => [...arr, newValue]);
                     this.domainmanager.currentDomainField = newValue.id;
                     this.domainmanager.currentDomainScope = newValue.scope;
                 }
@@ -229,11 +249,11 @@ export class DomainManagerFields {
      * @private
      */
     private updateDomainField(domainfield) {
-        this.backend.postRequest(`dictionary/domainfield/${domainfield.id}`, {}, domainfield).subscribe({
-            next: (res) => {
-                this.toast.sendToast('LBL_SAVED', 'info');
-            }
-        });
+        return this.backend.postRequest(`dictionary/domainfield/${domainfield.id}`, {}, domainfield).pipe(
+            tap({
+                next: () => this.toast.sendToast('LBL_SAVED', 'success')
+            })
+        );
     }
 
     public trackByFn(index, item) {

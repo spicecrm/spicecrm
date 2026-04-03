@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Injector, OnInit
+    Component, ComponentRef, Injector, OnInit
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {modal} from '../../services/modal.service';
@@ -10,6 +10,9 @@ import {backend} from '../../services/backend.service';
 import {domainmanager} from '../services/domainmanager.service';
 import {DomainValidationValue, DomainValidation} from "../interfaces/domainmanager.interfaces";
 import {language} from "../../services/language.service";
+import {tap} from "rxjs/operators";
+import {switchMap} from "rxjs";
+import {outputToObservable} from "@angular/core/rxjs-interop";
 
 /**
  * a component rendering the validation details as part of a domain field
@@ -21,17 +24,16 @@ import {language} from "../../services/language.service";
 })
 export class DomainManagerFieldValidation implements OnInit {
 
-    public self: any;
-
-    /**
-     * the field
-     */
-    field: any = {};
+    public self: ComponentRef<this>;
 
     /**
      * define which fields are displayed
      */
     public view: 'core'|'extended' = "core";
+    /**
+     * passed from the trigger component
+     */
+    public validationId: string;
 
     public validation: DomainValidation;
 
@@ -50,9 +52,9 @@ export class DomainManagerFieldValidation implements OnInit {
      */
     public ngOnInit() {
         // get the valdiation
-        this.validation = {...this.domainmanager.getValidationById(this.field.sysdomainfieldvalidation_id)}
+        this.validation = {...this.domainmanager.getValidationById(this.validationId)}
         // get the values
-        this.validationvalues = this.domainmanager.getValidationValuesdById(this.field.sysdomainfieldvalidation_id);
+        this.validationvalues = this.domainmanager.getValidationValuesdById(this.validationId);
         this.sortValues();
     }
 
@@ -80,14 +82,16 @@ export class DomainManagerFieldValidation implements OnInit {
      */
     public addValidationValue(e: MouseEvent) {
         e.stopPropagation();
-        this.modal.openModal('DomainManagerAddValidationValueModal', true, this.injector).subscribe(modalRef => {
-            modalRef.instance.fieldvalidationvalues = this.validationvalues;
-            modalRef.instance.fieldvalidation = this.validation;
-            modalRef.instance.validationValue.subscribe({
-                next: (value: DomainValidationValue) => {
-                    this.validationvalues.push(value);
-                }
-            });
+        this.modal.openModal('DomainManagerAddValidationValueModal', true, this.injector).pipe(
+            tap(modalRef => {
+                modalRef.instance.fieldvalidationvalues = this.validationvalues;
+                modalRef.instance.fieldvalidation = this.validation;
+            }),
+            switchMap(modalRef => outputToObservable(modalRef.instance.validationValue)),
+        ).subscribe({
+            next: (value: DomainValidationValue) => {
+                this.validationvalues.push(value);
+            }
         });
     }
 
@@ -191,7 +195,7 @@ export class DomainManagerFieldValidation implements OnInit {
 
         this.saveValidationSortedBy();
 
-        this.backend.postRequest(`dictionary/domainvalidation/${this.field.sysdomainfieldvalidation_id}/values`, {}, this.validationvalues).subscribe({
+        this.backend.postRequest(`dictionary/domainvalidation/${this.validationId}/values`, {}, this.validationvalues).subscribe({
             next: (res) => {
                 // handle the values
                 this.validationvalues.forEach(v => {
@@ -220,7 +224,7 @@ export class DomainManagerFieldValidation implements OnInit {
      * save the validation sorted_by field change
      */
     public saveValidationSortedBy() {
-        const dbValidation = this.domainmanager.domainfieldvalidations.find(v => v.id == this.field.sysdomainfieldvalidation_id);
+        const dbValidation = this.domainmanager.domainfieldvalidations().find(v => v.id == this.validationId);
 
         if (dbValidation.order_by == this.validation.order_by && dbValidation.sort_flag == this.validation.sort_flag) return;
 

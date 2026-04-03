@@ -1,7 +1,7 @@
 /**
  * @module WorkbenchModule
  */
-import {EventEmitter, Injectable} from "@angular/core";
+import {EventEmitter, Injectable, signal} from "@angular/core";
 import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
 import {modelutilities} from '../../services/modelutilities.service';
@@ -26,12 +26,12 @@ export class domainmanager {
     /**
      * the loaded domain fields
      */
-    public domainfields: DomainField[] = [];
+    public domainfields = signal<DomainField[]>([]);
 
     /**
      * the loaded domain field validations
      */
-    public domainfieldvalidations: DomainValidation[] = [];
+    public domainfieldvalidations = signal<DomainValidation[]>([]);
 
     /**
      * the loaded domain field validation values
@@ -95,8 +95,8 @@ export class domainmanager {
         this.backend.getRequest('dictionary/domains').subscribe({
             next: (res) => {
                 this.domaindefinitions = res.domaindefinitions;
-                this.domainfields = res.domainfields;
-                this.domainfieldvalidations = res.domainfieldvalidations;
+                this.domainfields.set(res.domainfields);
+                this.domainfieldvalidations.set(res.domainfieldvalidations.sort((a, b) => a.name > b.name ? 1 : -1));
                 this.domainfieldvalidationvalues = res.domainfieldvalidationvalues;
 
                 this.loaded = JSON.stringify(res);
@@ -120,7 +120,7 @@ export class domainmanager {
      * @param validationid
      */
     public getValidationById(validationid) {
-        return this.domainfieldvalidations.find(v => v.id == validationid);
+        return this.domainfieldvalidations().find(v => v.id == validationid);
     }
 
 
@@ -182,6 +182,13 @@ export class domainmanager {
 
         });
 
+    }
+
+    /**
+     * get the current release version
+     */
+    public getCurrentReleaseVersion() {
+        return this.language.getDisplayOptions('spicecrmversion_dom', true)?.[0]?.value;
     }
 
     /**
