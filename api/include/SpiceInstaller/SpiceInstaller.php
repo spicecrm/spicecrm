@@ -206,11 +206,11 @@ class SpiceInstaller
         }
 
         //check mailparse
-//        if (!function_exists('mailparse_msg_parse_file')) {
-//            $requirements['mailparse'] = false;
-//        } else {
-//            $requirements['mailparse'] = true;
-//        }
+        if (!function_exists('mailparse_msg_parse_file')) {
+            $requirements['mailparse'] = false;
+        } else {
+            $requirements['mailparse'] = true;
+        }
 
         // check imap
         if (!function_exists('imap_qprint')) {
