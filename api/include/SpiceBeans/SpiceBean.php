@@ -1480,7 +1480,7 @@ class SpiceBean
             if (isset($def['dbType']))
                 $type .= $def['dbType'];
 
-            if ($def['type'] == 'html' || $def['type'] == 'longhtml') {
+            if (!empty($this->$key) && $def['type'] == 'html' || $def['type'] == 'longhtml') {
                 $this->$key = SpiceCleanerHelper::cleanHtml($this->$key, true);
             } elseif ((strpos($type, 'char') !== false ||
                     strpos($type, 'text') !== false ||
