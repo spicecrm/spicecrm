@@ -29,7 +29,7 @@ export class SpiceInstallerSetPreferences {
      * holds a list of currency signification digits
      * @public
      */
-    public currencySignificantDigitsList: number[] = [1,2,3,4,5,6];
+    public currencySignificantDigitsList: number[] = [0,1,2,3,4,5,6];
 
     /**
      * holds a list of the thousand delimiters

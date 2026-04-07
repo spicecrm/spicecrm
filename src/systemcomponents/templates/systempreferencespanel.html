@@ -75,17 +75,11 @@
                     </span>
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
-                    <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="preferences.currency" (ngModelChange)="prefChanged()">
-                            <option *ngIf="isPersonalContext"></option>
-                            <option *ngFor="let item of currencyList" [value]="item.id">
-                                {{ item.name }}
-                            </option>
-                        </select>
-                    </div>
+                    <system-select system-select-id-only [(ngModel)]="preferences.currency">
+                        <system-select-option *ngFor="let currency of currencyList" [value]="currency.id" [display]="currency.iso + ' (' + currency.symbol + ')'" [displayselect]="currency.name + ' ' + currency.iso + ' (' + currency.symbol + ')'"/>
+                    </system-select>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
-
             <system-preferences-panel-item class="slds-size--1-of-1 slds-medium-size--1-of-5" itemlabel="LBL_DECIMAL_DIGITS">
                 <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('currency_significant_digits')">
                     {{ getPrefValue('currency_significant_digits') }}
