@@ -1036,4 +1036,24 @@ class User extends SpiceBean
             'primary_address_street', 'primary_address_city', 'primary_address_state', 'primary_address_postalcode', 'primary_address_country'
         ];
     }
+
+    /**
+     * returns "the reports to" record from the parent record
+     * @return false|SpiceBean|null
+     */
+    public function getParentReportsTo() : bool|SpiceBean {
+        $parentReportsTo = false;
+
+        if($this->parent_id && $this->parent_type){
+            $parent = BeanFactory::getBean($this->parent_type, $this->parent_id, ['relationships' => false]);
+            if($parent && $parent->load_relationship('report_to_link')){
+                $parentReportsTo = BeanFactory::getBean($parent->_module, $parent->reports_to_id, ['relationships' => false]);
+            }
+        }
+        // fallback on user
+        if(!$parentReportsTo && $this->reports_to_id){
+            $parentReportsTo = BeanFactory::getBean($this->_module, $this->reports_to_id, ['relationships' => false]);
+        }
+        return $parentReportsTo;
+    }
 }
