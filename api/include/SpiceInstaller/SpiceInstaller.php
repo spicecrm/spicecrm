@@ -159,18 +159,12 @@ class SpiceInstaller
     public function checkSystem(): array
     {
         $requirements = [];
+        // Checking if the necessary PHP extensions are loaded.
+        $requirements = $this->checkExtensionsFromComposer();
+
         // check php version
         $requirements['php'] = version_compare(PHP_VERSION, '8.2', '>=');
-
-        // Checking if the necessary PHP extensions are loaded.
-        $requirements['bcmath']     = extension_loaded('bcmath');
-        $requirements['curl']       = extension_loaded('curl');
         $requirements['gd']         = extension_loaded('gd') || extension_loaded('gd2');
-        $requirements['imap']       = extension_loaded('imap');
-        $requirements['mailparse']  = extension_loaded('mailparse');
-        $requirements['mbstrings']  = extension_loaded('mbstring');
-        $requirements['xml_parser'] = extension_loaded('xml');
-        $requirements['zip']        = extension_loaded('zip');
 
         # check package pear
         include_once 'System.php';
@@ -240,16 +234,30 @@ class SpiceInstaller
             $requirements['upload_dir'] = true;
         }
 
-        // check that we have true for all the requirements
-        if (in_array(false, $requirements)) {
-            $outcome = false;
-        } else {
-            $outcome = true;
+        return [
+            'success'      => !in_array(false, $requirements), // check that we have true for all the requirements
+            "requirements" => $requirements,
+        ];
+    }
+
+    /**
+     * Reads the required PHP extensions from composer.json and checks if they are loaded.
+     *
+     * @return array
+     */
+    private function checkExtensionsFromComposer(): array
+    {
+        $requirements = [];
+        $composer = json_decode(file_get_contents(__DIR__ . '/../../composer.json'), true);
+
+        foreach ($composer['require'] as $name => $version) {
+            if (str_starts_with($name, 'ext-')) {
+                $extension = substr($name, 4);
+                $requirements[$extension] = extension_loaded($extension);
+            }
         }
 
-        return [
-            'success' => $outcome,
-            "requirements" => $requirements];
+        return $requirements;
     }
 
     /**
