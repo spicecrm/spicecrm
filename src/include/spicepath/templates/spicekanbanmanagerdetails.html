@@ -18,13 +18,13 @@
             </div>
         </div>
         <div class="slds-grid slds-wrap">
-        <div class="slds-col slds-size_1-of-1 slds-p-around--x-small">
-            <div class="slds-form-element">
-                <label class="slds-form-element__label"><system-label label="LBL_COMPONENTSET"></system-label></label>
-                <system-icon-help-text [helpText]="language.getLabel('LBL_STAGE_ADD_COMP_HELP', '', 'long')"></system-icon-help-text>
-                <system-input-componentset [(ngModel)]="selectedStage.stage_componentset"></system-input-componentset>
+            <div class="slds-col slds-size_1-of-1 slds-p-around--x-small">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><system-label label="LBL_COMPONENTSET"></system-label></label>
+                    <system-icon-help-text [helpText]="language.getLabel('LBL_STAGE_ADD_COMP_HELP', '', 'long')"></system-icon-help-text>
+                    <system-input-componentset [(ngModel)]="selectedStage.stage_componentset"></system-input-componentset>
+                </div>
             </div>
-        </div>
         </div>
 
         <div class="slds-grid slds-wrap slds-p-around--x-small">
@@ -63,6 +63,20 @@
                         <system-select-option value="won" display="LBL_WON"/>
                         <system-select-option value="lost" display="LBL_LOST"/>
                     </system-select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-2 slds-p-around--x-small">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
+                    <system-input-package [(ngModel)]="selectedStage.package"></system-input-package>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-p-around--x-small">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
+                    <system-input-version [(ngModel)]="selectedStage.version"></system-input-version>
                 </div>
             </div>
         </div>
