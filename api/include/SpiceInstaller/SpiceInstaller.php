@@ -156,70 +156,21 @@ class SpiceInstaller
      * @return array
      */
 
-    public function checkSystem()
+    public function checkSystem(): array
     {
         $requirements = [];
         // check php version
-        if (version_compare(phpversion(), '8.2', '<')) {
-            $requirements['php'] = false;
-        } else {
-            $requirements['php'] = true;
-        }
+        $requirements['php'] = version_compare(PHP_VERSION, '8.2', '>=');
 
-        // check PCRE version
-        if (version_compare(PCRE_VERSION, '7.0') < 0) {
-            $requirements['pcre'] = false;
-        } else {
-            $requirements['pcre'] = true;
-        }
-
-        // check gd
-        if (!extension_loaded('gd') && !extension_loaded('gd2')) {
-            $requirements['gd'] = false;
-        } else {
-            $requirements['gd'] = true;
-        }
-
-        // check curl
-        if (!function_exists('curl_version')) {
-            $requirements['curl'] = false;
-        } else {
-            $requirements['curl'] = true;
-        }
-        // check xml parser
-        if (!function_exists('xml_parser_create')) {
-            $requirements['xml_parser'] = false;
-        } else {
-            $requirements['xml_parser'] = true;
-        }
-        //check mbstrings enabled in php.ini
-        if (!function_exists('mb_strlen')) {
-            $requirements['mbstrings'] = false;
-        } else {
-            $requirements['mbstrings'] = true;
-        }
-        //check zip
-        if (!class_exists('ZipArchive')) {
-            $requirements['zip'] = false;
-        } else {
-            $requirements['zip'] = true;
-        }
-
-        //check mailparse
-        if (!function_exists('mailparse_msg_parse_file')) {
-            $requirements['mailparse'] = false;
-        } else {
-            $requirements['mailparse'] = true;
-        }
-
-        // check imap
-        if (!function_exists('imap_qprint')) {
-            $requirements['imap'] = false;
-        } else {
-            $requirements['imap'] = true;
-        }
-
-        $requirements['bcmath'] = extension_loaded('bcmath');
+        // Checking if the necessary PHP extensions are loaded.
+        $requirements['bcmath']     = extension_loaded('bcmath');
+        $requirements['curl']       = extension_loaded('curl');
+        $requirements['gd']         = extension_loaded('gd') || extension_loaded('gd2');
+        $requirements['imap']       = extension_loaded('imap');
+        $requirements['mailparse']  = extension_loaded('mailparse');
+        $requirements['mbstrings']  = extension_loaded('mbstring');
+        $requirements['xml_parser'] = extension_loaded('xml');
+        $requirements['zip']        = extension_loaded('zip');
 
         # check package pear
         include_once 'System.php';
