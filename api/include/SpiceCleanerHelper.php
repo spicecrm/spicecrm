@@ -42,11 +42,11 @@ class SpiceCleanerHelper extends SpiceSingleton
 {
     /**
      * Clean string from potential XSS problems
-     * @param string $html
+     * @param string|null $html
      * @param bool $encoded Was it entity-encoded?
      * @return string
      */
-    static public function cleanHtml(string $html, bool $encoded = false): string
+    static public function cleanHtml(?string $html, bool $encoded = false): string
     {
         if ($encoded && !empty($html)) {
             return DBUtils::toHtml(DBUtils::fromHtml($html));
