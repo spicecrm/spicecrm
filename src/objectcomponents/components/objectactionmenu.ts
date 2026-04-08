@@ -84,6 +84,9 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
     }
 
     public setActionsets() {
+
+        this.allActionItems = [];
+
         let actionitems = this.metadata.getActionSetItems(this.actionset);
 
         for (let actionitem of actionitems) {
