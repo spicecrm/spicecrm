@@ -30,7 +30,7 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
 
     @Input() public buttonsize: string = '';
 
-    @Input() public actionset: string = '';
+    @Input() public actionset: string;
 
     @Input() public ignoreMobileView: boolean = false;
 
@@ -72,11 +72,15 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
     }
 
     public ngOnInit() {
-        if (this.actionset == "") {
+
+        this.actionset = this.componentconfig?.actionset_default;
+
+        if (!this.actionset) {
             this.componentconfig = this.metadata.getComponentConfig('ObjectActionMenu', this.model.module);
             this.actionset = this.componentconfig.actionset_default;
-            this.setActionsets();
         }
+
+        this.setActionsets();
     }
 
     public ngOnChanges() {
@@ -84,6 +88,8 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
     }
 
     public setActionsets() {
+
+        if (!this.actionset) return;
 
         this.allActionItems = [];
 
