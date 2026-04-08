@@ -73,7 +73,9 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
 
     public ngOnInit() {
 
-        this.actionset = this.componentconfig?.actionset_default;
+        if (!this.actionset) {
+            this.actionset = this.componentconfig?.actionset_default;
+        }
 
         if (!this.actionset) {
             this.componentconfig = this.metadata.getComponentConfig('ObjectActionMenu', this.model.module);
