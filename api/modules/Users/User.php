@@ -1046,7 +1046,7 @@ class User extends SpiceBean
 
         if($this->parent_id && $this->parent_type){
             $parent = BeanFactory::getBean($this->parent_type, $this->parent_id, ['relationships' => false]);
-            if($parent && $parent->load_relationship('report_to_link')){
+            if($parent && $parent->load_relationship('reports_to_link')){
                 $parentReportsTo = BeanFactory::getBean($parent->_module, $parent->reports_to_id, ['relationships' => false]);
             }
         }
