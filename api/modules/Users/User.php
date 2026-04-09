@@ -735,6 +735,7 @@ class User extends SpiceBean
                 $emailObj = BeanFactory::getBean('Emails');
                 $emailObj->name = DBUtils::fromHtml($template->subject);
                 $emailObj->body = DBUtils::fromHtml($template->body_html);
+                $emailObj->mailbox_id = $mailboxId;
                 $emailObj->addEmailAddress('to', $itemail);
 
                 try {
