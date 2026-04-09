@@ -1040,15 +1040,23 @@ class User extends SpiceBean
 
     /**
      * returns "the reports to" record from the parent record
+     * @params $level string employee|user user will force to return the related User object
      * @return false|SpiceBean|null
      */
-    public function getParentReportsTo() : bool|SpiceBean {
+    public function getParentReportsTo($level = 'employee') : bool|SpiceBean {
         $parentReportsTo = false;
 
         if($this->parent_id && $this->parent_type){
             $parent = BeanFactory::getBean($this->parent_type, $this->parent_id, ['relationships' => false]);
-            if($parent && $parent->load_relationship('report_to_link')){
+            if($parent && $parent->load_relationship('reports_to_link')){
                 $parentReportsTo = BeanFactory::getBean($parent->_module, $parent->reports_to_id, ['relationships' => false]);
+                // get corresponding user - needed for workflow
+                if($level == 'user'){
+                    $parentReportsToUser = $parentReportsTo->get_linked_beans('users');
+                    if($parentReportsToUser[0]){
+                        $parentReportsTo = $parentReportsToUser[0];
+                    }
+                }
             }
         }
         // fallback on user
