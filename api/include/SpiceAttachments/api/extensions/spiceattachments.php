@@ -575,6 +575,35 @@ $routes = [
     ],
     [
         'method'      => 'delete',
+        'route'       => '/common/spiceattachments/module/{beanName}/{beanId}/deleteattachments',
+        'class'       => SpiceAttachmentsController::class,
+        'function'    => 'deleteAttachments',
+        'description' => '',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters'  => [
+            'beanName' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'description' => 'name of a module',
+                'example' => 'Accounts',
+                'required' => true
+            ],
+            'beanId' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'description' => 'GUID of bean',
+                'required' => true
+            ],
+            'selectedAttachments' => [
+                'in' => 'query',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'GUIDs of the attachments to delete',
+                'required' => true
+            ]
+        ]
+    ],
+    [
+        'method'      => 'delete',
         'route'       => '/common/spiceattachments/module/{beanName}/{beanId}/{attachmentId}',
         'oldroute'    => '/spiceAttachments/module/{beanName}/{beanId}/{attachmentId}',
         'class'       => SpiceAttachmentsController::class,
@@ -599,35 +628,6 @@ $routes = [
                 'in' => 'path',
                 'type'        => ValidationMiddleware::TYPE_GUID,
                 'description' => 'GUID of the attachment',
-                'required' => true
-            ]
-        ]
-    ],
-    [
-        'method'      => 'delete',
-        'route'       => '/common/spiceattachments/module/{beanName}/{beanId}/deleteattachments',
-        'class'       => SpiceAttachmentsController::class,
-        'function'    => 'deleteAttachments',
-        'description' => '',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
-        'parameters'  => [
-            'beanName' => [
-                'in' => 'path',
-                'type'        => ValidationMiddleware::TYPE_MODULE,
-                'description' => 'name of a module',
-                'example' => 'Accounts',
-                'required' => true
-            ],
-            'beanId' => [
-                'in' => 'path',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-                'description' => 'GUID of bean',
-                'required' => true
-            ],
-            'selectedAttachments' => [
-                'in' => 'query',
-                'type'        => ValidationMiddleware::TYPE_STRING,
-                'description' => 'GUIDs of the attachments to delete',
                 'required' => true
             ]
         ]
