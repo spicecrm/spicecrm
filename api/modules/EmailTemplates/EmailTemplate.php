@@ -68,11 +68,12 @@ class EmailTemplate extends SpiceBean {
 
     /**
      * get language from the bean or the template
-     * @param SpiceBean $bean
+     * @param SpiceBean|null $bean
      * @return string | null
      */
-    private function getBeanCommunicationLanguage(SpiceBean $bean): ?string
+    private function getBeanCommunicationLanguage(?SpiceBean $bean): ?string
     {
+        if (!$bean) return null;
         $languageField = array_column(array_filter($bean->field_defs, fn($field) => $field['type'] == 'language'), 'name')[0];
         return $bean->$languageField;
     }
