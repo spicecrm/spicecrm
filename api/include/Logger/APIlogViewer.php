@@ -39,7 +39,6 @@ class APIlogViewer {
      */
     public static function getAdditionalLogTables()
     {
-        return [];
         $sysapilogItems = [];
         foreach ( SpiceDictionaryItems::getInstance()->getItemsForDictionary( SpiceDictionaryDefinitions::getInstance()->getDefinitionByName('sysapilog')['id'] ) as $item )
             if ( $item['non_db'] == 0 ) $sysapilogItems[$item['name']] = $item;
@@ -114,9 +113,7 @@ class APIlogViewer {
         if ( !empty( $queryParams['start'])) $filter[] = "a.date_entered >= '{$db->quote($queryParams['start'])}'";
         if ( !empty( $queryParams['pinned'])) $filter[] = "a.pinned = 1";
 
-        if (count( $filter) > 0) {
-            $whereClause = 'WHERE ' . implode(' AND ', $filter);
-        }
+        $whereClause = ( count( $filter) > 0 ) ? 'WHERE ' . implode(' AND ', $filter ) : '';
 
         $sql = "SELECT a.id, a.runtime, a.route, a.method, a.request_args , a.request_params, a.user_id , u.user_name, a.date_entered, a.http_status_code, a.transaction_id, a.direction, a.pinned FROM {$logtable} a LEFT JOIN users u ON a.user_id = u.id {$whereClause} ORDER BY a.date_timestamp DESC";
 
