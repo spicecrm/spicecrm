@@ -38,7 +38,7 @@ class One2MRelationship extends M2MRelationship
             }
 
             $this->lhsLink = $lhsLinkDef['name'];
-            $this->rhsLink = $rhsLinkDef;
+            $this->rhsLink = $lhsLinkDef['name'];
 
         } else {
 
