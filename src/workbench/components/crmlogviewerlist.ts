@@ -132,10 +132,7 @@ export class CRMLogViewerList implements OnInit {
         this.backend.postRequest('admin/crmlog/'+entry.id+'/pin', null, {"pinned": (entry.pinned ? 0:1 ) }).subscribe({
             next: ( response ) => {
                 loadingModal.emit(true);
-                if ( response.success === true ) {
-                    entry.pinned = response.pinned;
-                    this.toast.sendToast('CRM Log Entry successfully '+( response.pinned ? '':'un-' )+'pinned.', 'success');
-                }
+                if ( response.success === true ) entry.pinned = response.pinned;
                 else this.toast.sendToast('Error changing pin', 'error');
             },
             error: () => {
