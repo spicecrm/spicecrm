@@ -10,6 +10,8 @@ import {helper} from "../../services/helper.service";
 import {navigationtab} from "../../services/navigationtab.service";
 import {Router} from "@angular/router";
 
+declare var moment;
+
 @Component({
     selector: "object-related-card-file",
     templateUrl: "../templates/objectrelatedcardfile.html",
@@ -45,6 +47,9 @@ export class ObjectRelatedCardFile {
     }
 
     get filedate() {
+        if(typeof  this.file.date === 'string'){
+            return new moment(this.file.date).format(this.userpreferences.getDateFormat())
+        }
         return this.file.date ? this.file.date.format(this.userpreferences.getDateFormat()) : '';
     }
 
