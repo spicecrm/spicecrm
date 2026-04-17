@@ -204,7 +204,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
         if (this.componentconfig.use_user_currency || defaultConfig.use_user_currency) {
             this.currentCurrencyId.set(this.userpreferences.toUse.currency);
         } else {
-            this.currentCurrencyId.set(this.currency.getCurrencies().find(c => c.is_systemcurrency == 1).id ?? '-99')
+            this.currentCurrencyId.set(this.currency.getCurrencies().find(c => c.is_systemcurrency == 1)?.id ?? '-99')
         }
 
         const kanbans = this.configuration.getData('spicebeanguides')[this.modellist.module];
