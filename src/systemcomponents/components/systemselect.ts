@@ -118,7 +118,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
         this.subscription.add(this.options.changes.subscribe(() => {
             // rebuild the search list options on content change
             this.searchList = this.generateSearchList();
-            this.setFocusedItem(this.value);
+            this.setFocusedItem(this.value ?? this.focusedItem);
             this.cdRef.detectChanges();
         }));
     }
