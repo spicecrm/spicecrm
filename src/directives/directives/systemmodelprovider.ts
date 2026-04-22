@@ -1,7 +1,7 @@
 /**
  * @module DirectivesModule
  */
-import {Directive, Input, Output, EventEmitter, OnDestroy} from '@angular/core';
+import {Directive, Input, Output, EventEmitter, OnDestroy, Injector} from '@angular/core';
 import {model} from "../../services/model.service";
 import {Subscription} from "rxjs";
 
@@ -32,7 +32,8 @@ export class SystemModelProviderDirective implements OnDestroy {
     public subscription = new Subscription();
 
     constructor(
-        public model: model
+        public model: model,
+        public injector: Injector
     ) {
         // in case the host component is listening to the loading status and waits for it!
         this.model.isLoading = true;

@@ -458,12 +458,13 @@ class EmailAddress extends SpiceBean
 
     /**
      * validate email address domain
+     * gethostbyname returns the ip address of the domain if valid, otherwise it returns the domain name
      * @param string $domain
      * @return bool
      */
     public static function validateEmailAddressDomain(string $domain): bool
     {
-        return checkdnsrr($domain, 'A') || checkdnsrr($domain);
+        return gethostbyname($domain) !== $domain;
     }
 
     /**

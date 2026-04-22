@@ -735,6 +735,7 @@ class User extends SpiceBean
                 $emailObj = BeanFactory::getBean('Emails');
                 $emailObj->name = DBUtils::fromHtml($template->subject);
                 $emailObj->body = DBUtils::fromHtml($template->body_html);
+                $emailObj->mailbox_id = $mailboxId;
                 $emailObj->addEmailAddress('to', $itemail);
 
                 try {
@@ -1035,5 +1036,33 @@ class User extends SpiceBean
             'phone_home', 'phone_mobile', 'phone_work', 'phone_other', 'phone_fax',
             'primary_address_street', 'primary_address_city', 'primary_address_state', 'primary_address_postalcode', 'primary_address_country'
         ];
+    }
+
+    /**
+     * returns "the reports to" record from the parent record
+     * @params $level string employee|user user will force to return the related User object
+     * @return false|SpiceBean|null
+     */
+    public function getParentReportsTo($level = 'employee') : bool|SpiceBean {
+        $parentReportsTo = false;
+
+        if($this->parent_id && $this->parent_type){
+            $parent = BeanFactory::getBean($this->parent_type, $this->parent_id, ['relationships' => false]);
+            if($parent && $parent->load_relationship('reports_to_link')){
+                $parentReportsTo = BeanFactory::getBean($parent->_module, $parent->reports_to_id, ['relationships' => false]);
+                // get corresponding user - needed for workflow
+                if($level == 'user'){
+                    $parentReportsToUser = $parentReportsTo->get_linked_beans('users');
+                    if($parentReportsToUser[0]){
+                        $parentReportsTo = $parentReportsToUser[0];
+                    }
+                }
+            }
+        }
+        // fallback on user
+        if(!$parentReportsTo && $this->reports_to_id){
+            $parentReportsTo = BeanFactory::getBean($this->_module, $this->reports_to_id, ['relationships' => false]);
+        }
+        return $parentReportsTo;
     }
 }

@@ -116,7 +116,8 @@ class Compiler
         $this->additionalValues = $additionalValues;
         $this->lang = empty( $lang ) ? AuthenticationController::getInstance()->getCurrentUser()?->getPreference('language') : $lang;
         if ( empty( $this->lang )) $this->lang = 'de_DE';
-        $this->app_list_strings = SpiceUtils::returnAppListStringsLanguage($lang); // get doms corresponding to template language
+
+        $this->loadEnumTranslations($lang);
 
         $dom = new DOMDocument();
 
@@ -163,6 +164,17 @@ class Compiler
         } else {
             return $this->doc->saveHTML();
         }
+    }
+
+    /**
+     * load enum translations
+     * @param string|null $lang
+     * @return void
+     * @throws \Exception
+     */
+    private function loadEnumTranslations(?string $lang): void
+    {
+        $this->app_list_strings = SpiceUtils::returnAppListStringsLanguage($lang);
     }
 
     /**
@@ -922,9 +934,22 @@ class Compiler
         return $obj ?: false;
     }
 
-    public function compileblock($txt, $beans = [], $lang = 'de_DE')
+    /**
+     * compile the HTML block and return the results
+     * @param $txt
+     * @param array $beans
+     * @param string|null $lang
+     * @param bool $standalone if true, call initial functions before compiling e.g. loadEnumTranslations
+     * @return string
+     * @throws \Exception
+     */
+    public function compileblock($txt, array $beans = [], ?string $lang = 'en_us', bool $standalone = false): string
     {
         if (empty($txt)) return '';
+
+        if ($standalone) {
+            $this->loadEnumTranslations($lang);
+        }
 
         $resultText = '';
         $remainingText = $txt;

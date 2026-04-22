@@ -64,22 +64,26 @@ class Employee extends Person {
     /**
      * checks absences for the employee for the given date and returns true if the user is absent
      *
-     * @param $date
-     * @return void
+     * @param DateTime $date
+     * @param string[] $statuses
+     * @return bool
      */
-    public function isAbsent(DateTime $date, $statuses = ['created', 'submitted', 'approved']){
+    public function isAbsent(DateTime $date, array $statuses = ['created', 'submitted', 'approved']): bool
+    {
+        return (bool) $this->getAbsenceType($date, $statuses);
+    }
 
-        $user = BeanFactory::getBean('Users')->retrieve_by_string_fields(['parent_id' => $this->id]);
-        if($user){
-            $checkDate = $date->format(TimeDate::DB_DATE_FORMAT);
-            $statusFilter = "'" . implode("','", $statuses) . "'";
-            $record = $this->db->fetchOne("SELECT id FROM userabsences WHERE deleted = 0 AND assigned_user_id = '$user->id' AND date_start <= '$checkDate' AND date_end >= '$checkDate' AND status IN ($statusFilter)");
-            if($record){
-                return true;
-            }
-        }
-
-        return false;
+    /**
+     * get the absence type for the employee for the given date
+     * @param DateTime $date
+     * @param array $statuses
+     * @return string|null
+     */
+    public function getAbsenceType(DateTime $date, array $statuses = ['created', 'submitted', 'approved']): ?string
+    {
+        $checkDate = $date->format(TimeDate::DB_DATE_FORMAT);
+        $statusFilter = "'" . implode("','", $statuses) . "'";
+        return $this->db->getOne("SELECT type FROM userabsences WHERE deleted = 0 AND employee_id = '$this->id' AND date_start <= '$checkDate' AND date_end >= '$checkDate' AND status IN ($statusFilter)");
     }
 
 }

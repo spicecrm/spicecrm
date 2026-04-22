@@ -68,11 +68,12 @@ class EmailTemplate extends SpiceBean {
 
     /**
      * get language from the bean or the template
-     * @param SpiceBean $bean
+     * @param SpiceBean|null $bean
      * @return string | null
      */
-    private function getBeanCommunicationLanguage(SpiceBean $bean): ?string
+    private function getBeanCommunicationLanguage(?SpiceBean $bean): ?string
     {
+        if (!$bean) return null;
         $languageField = array_column(array_filter($bean->field_defs, fn($field) => $field['type'] == 'language'), 'name')[0];
         return $bean->$languageField;
     }
@@ -185,8 +186,7 @@ class EmailTemplate extends SpiceBean {
         $templateCompiler = new Compiler($this);
         $templateCompiler->idsOfParentTemplates = array_merge( $this->idsOfParentTemplates, [$this->id] );
         $templateCompiler->additionalValues = $additionalValues;
-        $templateCompiler->app_list_strings = SpiceUtils::returnAppListStringsLanguage($this->language); // get doms corresponding to template language
-        $text = $templateCompiler->compileblock($this->$field, [ 'bean' => $parentbean ], $this->language );
+        $text = $templateCompiler->compileblock($this->$field, [ 'bean' => $parentbean ], $this->language, true);
         return $text;
     }
 

@@ -86,6 +86,10 @@ class UsersController
         $configs = SpiceCRMPasswordUtils::getSendCredentialConfigs('username');
         $template = null;
 
+        if (!$configs->channel) {
+            throw new ForbiddenException("Send username not allowed check login management settings");
+        }
+
         # gateway mailbox does not require email template. The template must be defined on the gateway server
         if ($configs->mailboxId != 'gateway') {
             $template = SpiceCRMPasswordUtils::getChannelTemplateByType($user, 'sendUsername', $configs->channel);

@@ -768,7 +768,7 @@ class SpiceFTSHandler
      *
      * @return array|mixed
      */
-    public function searchModule($module, string $searchterm = '', array $searchtags = [], array $aggregatesFilters = [], int $size = 25,
+    public function searchModule($module, string $searchterm = '', array|null $searchtags = [], array $aggregatesFilters = [], int $size = 25,
                           int $from = 0, array $sort = [], array $addFilters = [], bool $useWildcard = false, array $requiredFields = [],
                           bool $source = true, array $addAggregates = [], bool $useGlobalFilter = true, ?string $listId = null): mixed
     {

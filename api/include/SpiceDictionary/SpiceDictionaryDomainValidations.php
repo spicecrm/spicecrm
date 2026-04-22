@@ -358,7 +358,7 @@ class SpiceDictionaryDomainValidations
 
         foreach($tableScopes as $scope => $table){
 
-            $query = $db->query("SELECT id, enumvalue, $scope scope FROM $table WHERE sysdomainfieldvalidation_id='$validationId'");
+            $query = $db->query("SELECT id, enumvalue, '$scope' scope FROM $table WHERE sysdomainfieldvalidation_id='$validationId'");
 
             while($option = $db->fetchByAssoc($query)){
                 $activeValues[$option['id']] = $option;
