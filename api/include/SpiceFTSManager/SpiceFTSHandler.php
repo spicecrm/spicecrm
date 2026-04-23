@@ -1243,6 +1243,7 @@ class SpiceFTSHandler
 
             // prepare the aggregates
             $aggregatesFilters = [];
+            $addAggrs          = [];
             foreach ($aggregates[$module] as $aggregate) {
                 $aggregateDetails = explode('::', $aggregate);
                 $aggregatesFilters[$aggregateDetails[0]][] = $aggregateDetails[1];
@@ -1332,7 +1333,6 @@ class SpiceFTSHandler
                             $params['buckets']['bucketfield'] . '.raw' => $bucketitem['bucket']
                         ]
                     ];
-                    $addAggrs = [];
                     if ($params['buckets']['buckettotal']) {
                         foreach ($params['buckets']['buckettotal'] as $item) {
                             $addAggrs['_bucket_agg_' . $item['name']] = [$item['function'] => ['field' => $item['name'] . '.agg']];
