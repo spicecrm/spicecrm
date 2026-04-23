@@ -37,6 +37,7 @@
     "slim/slim": "4.14.0",
     "swiftmailer/swiftmailer": "5.4.9",
     "tecnickcom/tc-lib-barcode": "1.18.4",
+    "true/punycode": "2.1.1",
 
     "brick/math" : "0.9.3",
     "chrome-php/wrench": "1.7.0",
