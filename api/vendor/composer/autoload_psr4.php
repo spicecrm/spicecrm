@@ -12,6 +12,7 @@ return array(
     'jamesiarmes\\PhpEws\\' => array($vendorDir . '/php-ews/php-ews/src'),
     'ZipStream\\' => array($vendorDir . '/maennchen/zipstream-php/src'),
     'Wrench\\' => array($vendorDir . '/chrome-php/wrench/src'),
+    'TrueBV\\' => array($vendorDir . '/true/punycode/src'),
     'Symfony\\Polyfill\\Php81\\' => array($vendorDir . '/symfony/polyfill-php81'),
     'Symfony\\Polyfill\\Php80\\' => array($vendorDir . '/symfony/polyfill-php80'),
     'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),

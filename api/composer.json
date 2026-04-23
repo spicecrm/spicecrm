@@ -82,7 +82,8 @@
     "ext-mailparse" : "*",
     "ext-mbstring" : "*",
     "ext-simplexml" : "*",
-    "ext-zip" : "*"
+    "ext-zip" : "*",
+    "true/punycode": "^2.1"
   },
   "minimum-stability": "rc",
   "description": ""

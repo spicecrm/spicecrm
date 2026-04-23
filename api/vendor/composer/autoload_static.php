@@ -41,6 +41,10 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
         array (
             'Wrench\\' => 7,
         ),
+        'T' => 
+        array (
+            'TrueBV\\' => 7,
+        ),
         'S' => 
         array (
             'Symfony\\Polyfill\\Php81\\' => 23,
@@ -195,6 +199,10 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
         'Wrench\\' => 
         array (
             0 => __DIR__ . '/..' . '/chrome-php/wrench/src',
+        ),
+        'TrueBV\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/true/punycode/src',
         ),
         'Symfony\\Polyfill\\Php81\\' => 
         array (

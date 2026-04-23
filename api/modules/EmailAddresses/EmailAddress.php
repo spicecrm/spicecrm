@@ -19,6 +19,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
+use TrueBV\Punycode;
 
 /*********************************************************************************
  * SugarCRM Community Edition is a customer relationship management program developed by
@@ -464,7 +465,9 @@ class EmailAddress extends SpiceBean
      */
     public static function validateEmailAddressDomain(string $domain): bool
     {
-        return gethostbyname($domain) !== $domain;
+        $punycode = new Punycode();
+        $asciiDomain = $punycode->encode($domain);
+        return gethostbyname($asciiDomain) !== $asciiDomain;
     }
 
     /**
