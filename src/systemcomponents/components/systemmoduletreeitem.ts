@@ -127,7 +127,7 @@ export class SystemModuleTreeItem {
 
                 if (this.displayRelationshipFields && this.nodedata.hasRelationshipFields) {
                     this.nodeitems = [{
-                        displayname: this.language.getLabel('LBL_RELATIONSHIP_FIELDS'),
+                        label: this.language.getLabel('LBL_RELATIONSHIP_FIELDS'),
                         leaf: true,
                         relationshipNode: true,
                         module: this.module,
@@ -141,7 +141,7 @@ export class SystemModuleTreeItem {
                 // root:Contacts::link:Contacts:opportunities::audit:Opportunities:audit::field:field_name
                 if (this.displayAuditFields && this.metadata.getModuleDefs(this.module).audited == 1) {
                     this.nodeitems = [{
-                        displayname: this.language.getLabel('LBL_AUDIT_FIELDS'),
+                        label: this.language.getLabel('LBL_AUDIT_FIELDS'),
                         leaf: true,
                         auditNode: true,
                         module: this.module,

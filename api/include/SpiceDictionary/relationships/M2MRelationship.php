@@ -58,6 +58,9 @@ class M2MRelationship extends Relationship
             $joinRoleColumn =  $joinField->name;
         }
 
+
+        $fields = SpiceDictionary::getInstance()->getDefs($joinDefinition->tablename)['fields'];
+
         return [
             'id' => $relationship->id,
             'relationship_name' => $relationship->relationship->relationship_name,
@@ -74,6 +77,7 @@ class M2MRelationship extends Relationship
             'deleted' => 0,
             'relationship_role_column' => $joinRoleColumn,
             'relationship_role_column_value' => $relationship->relationship->relationship_role_column_value,
+            'fields' => $fields
         ];
     }
 
@@ -125,7 +129,7 @@ class M2MRelationship extends Relationship
             }
 
             # add join table fields
-            $joinTableRoleFields = $relationship->getJoinTableFields($forSideDefinition->id);
+            $joinTableRoleFields = $relationship->getRelationshipFieldsForJoinTable($forSideDefinition->id);
             $joinDefinition = new SpiceDictionaryDefinition($relationship->relationship->join_sysdictionarydefinition_id);
 
             foreach ($joinTableRoleFields as $field) {
@@ -144,7 +148,7 @@ class M2MRelationship extends Relationship
             }
 
             # add the mapping fields to the link to the opposite side
-            $joinTableRoleFields = $relationship->getJoinTableFields($oppositeSideDefinition->id);
+            $joinTableRoleFields = $relationship->getRelationshipFieldsForJoinTable($oppositeSideDefinition->id);
 
             $linkField['rel_fields'] = [];
 
