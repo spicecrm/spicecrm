@@ -28,7 +28,7 @@ import {modal} from "../../services/modal.service";
 import {configurationService} from "../../services/configuration.service";
 import {backend} from "../../services/backend.service";
 import {broadcast} from "../../services/broadcast.service";
-import {Subscription} from "rxjs";
+import {firstValueFrom, Subscription} from "rxjs";
 import {AgreementsAddRevisionModal} from "../../modules/agreements/components/agreementsaddrevisionmodal";
 import {userpreferences} from "../../services/userpreferences.service";
 import {navigationtab} from "../../services/navigationtab.service";
@@ -182,6 +182,25 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
      */
     public subscriptions: Subscription = new Subscription();
 
+    public tableViewActions: {action: string, label: string}[] = [
+        {
+            action: 'selectall',
+            label: 'LBL_SELECT_ALL'
+        },
+        {
+            action: 'unselectall',
+            label: 'LBL_UNSELECT_ALL'
+        },
+        {
+            action: 'download',
+            label: 'LBL_DOWNLOAD'
+        },
+        {
+            action: 'delete',
+            label: 'LBL_DELETE'
+        }
+    ]
+
     constructor(public modelattachments: modelattachments,
                 public language: language,
                 public model: model,
@@ -256,6 +275,14 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
             })
         )
 
+        this.subscriptions.add(
+            this.modelattachments.folderId$.subscribe({
+                next: () => {
+                    this.modelattachments._files.forEach(file => file.selected = null);
+                }
+            })
+        )
+
         // set to open if we have set to alwysopen per config
         if(this.componentconfig.alwaysExpanded) this.isopen = true;
 
@@ -265,7 +292,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
             this.toggleView(fileViewPref.fileview, true);
         }
 
-        if (fileViewPref.field != '') {
+        if (fileViewPref && fileViewPref.field != '') {
             this.sort(fileViewPref.field, false, false);
         }
     }
@@ -374,7 +401,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
             this.doupload(this.files);
         }
         this.modelattachments.getAttachments().subscribe(res => {
-            this.filteredFiles = res;
+            this.filteredFiles = res.map(file => ({...file, selected: null}));
             this.loadCategories();
             // reload container
             this.setFilteredFiles('category', this.selectedCategoryId);
@@ -688,12 +715,73 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         return formattedDate.format(this.userpreferences.getDateFormat());
     }
 
-    public fileSize(size): any {
-        return size ? this.modelattachments.humanFileSize(size) : '';
+    get selectedFiles() {
+        return this.modelattachments._files.filter(file => file.selected);
+    }
+
+    public fileSize(file): any {
+        if (file.file_mime_type == 'folder') {
+            let folderSize = this.modelattachments.calcFolderSize(file.id);
+            return folderSize ? this.modelattachments.humanFileSize(folderSize) : '';
+        }
+
+        return file.filesize ? this.modelattachments.humanFileSize(file.filesize) : '';
     }
 
     public filename(file) {
         return file.display_name ? file.display_name : file.filename;
+    }
+
+    public toggleSelectFile(file) {
+        file.selected = !file.selected;
+    }
+
+    public actionDisabled(action) {
+        if (action == 'selectall') return false;
+        return this.selectedFiles.length == 0;
+    }
+
+    public async doAction(action) {
+        if (this.actionDisabled(action)) return;
+
+        switch (action) {
+            case 'selectall':
+                this.filteredFiles.forEach(file => file.selected = true);
+                break;
+            case 'unselectall':
+                this.filteredFiles.forEach(file => file.selected = false);
+                break;
+            case 'download':
+                const loading = this.modal.await(this.language.getLabel('LBL_DOWNLOADING'));
+                this.backend.downloadFile({
+                    route: `common/spiceattachments/module/${this.model.module}/${this.model.id}/download`,
+                    method: 'POST',
+                    params: null,
+                    body: { selectedAttachments: this.selectedFiles.map(file => file.id) },
+                    headers: null
+                } as any, 'testing', 'application/zip').subscribe({
+                    next: () => {
+                        loading.emit(true);
+                    },
+                    error: () => {
+                        loading.emit(true);
+                        this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+                    }
+                });
+                break;
+            case 'delete':
+                let modalRes = await firstValueFrom(this.modal.prompt('confirm', 'MSG_DELETE_RECORD', 'LBL_DELETE'));
+
+                if (modalRes) {
+                    this.backend.deleteRequest(`common/spiceattachments/module/${this.model.module}/${this.model.id}/deleteattachments`,
+                        {selectedAttachments: this.selectedFiles.map(file => file.id).join(',')}
+                    ).subscribe(() => {
+                        this.toast.sendToast(this.language.getLabel('LBL_DELETED'), 'success');
+                        this.loadFiles();
+                    });
+                }
+
+        }
     }
 
     public openInTab(file) {
@@ -701,6 +789,23 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
             this.modelattachments.folderId = file.id;
             this.sort(this.fileViewAndSort.field, false, false);
         } else {
+
+            let fileTypeArray = file.file_mime_type.toLowerCase().split("/");
+
+            let supportedMimeTypes = ['pdf', 'msg'];
+
+            if (this.metadata.configuration.getCapabilityConfig('txcontrol').isActive) {
+                supportedMimeTypes.push('vnd.openxmlformats-officedocument.wordprocessingml.document');
+            }
+
+            const applicationFile =  fileTypeArray[0] == 'application' && !supportedMimeTypes.includes(fileTypeArray[1]);
+            const csvFile = fileTypeArray[0] == 'text' && fileTypeArray[1] == 'csv';
+
+            if(applicationFile || csvFile) {
+                this.modelattachments.downloadAttachment(file.id, file.filename);
+                return;
+            }
+
             let routePrefix = '';
             if (this.navigationtab?.tabid) {
                 routePrefix = '/tab/' + this.navigationtab.tabid;

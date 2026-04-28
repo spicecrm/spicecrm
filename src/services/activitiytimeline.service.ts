@@ -267,6 +267,8 @@ export class activitiytimeline {
      */
     public getTimeLineData(module: activityTimeLineModules, silent: boolean = false) {
 
+        let retSubject = new Subject<boolean>();
+
         if (!silent) {
             this.activities[module].loading = true;
         }
@@ -291,14 +293,21 @@ export class activitiytimeline {
                         this.activities[module].list = response.items;
                         this.activities[module].totalcount = parseInt(response.totalcount, 10);
                         this.activities[module].aggregates = response.aggregates ? response.aggregates : [];
+
+                        retSubject.next(true);
+                        retSubject.complete();
                     }
                     this.activities[module].loading = false;
                 },
             error: error => {
                 this.activities[module].loading = false;
-            }
 
+                retSubject.error(error);
+                retSubject.complete();
+            }
         });
+
+        return retSubject.asObservable();
     }
 
     /**

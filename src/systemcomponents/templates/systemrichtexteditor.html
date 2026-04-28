@@ -60,13 +60,10 @@
                 <div class="slds-form-element">
                     <div class="slds-form-element__control">
                         <div class="slds-select_container">
-                            <select class="slds-select" [(ngModel)]="block" (change)="heading(block)">
-                                <option value="heading2">Heading 2</option>
-                                <option value="heading3">Heading 3</option>
-                                <option value="heading4">Heading 4</option>
-                                <!--<option value="heading5">Heading 5</option>
-                                <option value="heading6">Heading 6</option>-->
-                                <option value="paragraph">Paragraph</option>
+                            <select class="slds-select" [ngModel]="editor?.commands.get('heading').value || 'paragraph'" (ngModelChange)="heading($event)">
+                                @for (heading of headings; track heading.model) {
+                                    <option [value]="heading.model">{{heading.title}}</option>
+                                }
                             </select>
                         </div>
                     </div>
@@ -75,12 +72,23 @@
             <div class="slds-rich-text-editor__select">
                 <div class="slds-form-element">
                     <div class="slds-form-element__control">
-                        <div class="slds-select_container">
-                            <select class="slds-select" (change)="customStyle($event.target.value)">
-                                <option value="">&mdash;</option>
-                                <option *ngFor="let customStyle of customStyleDefinitions"
-                                        value="{{customStyle.id}}">{{customStyle.display}}</option>
-                            </select>
+                        <div [system-dropdown-trigger]="false" [autoClose]="false" dropdownSelectorClass="slds-popover-container" class="slds-is-relative">
+                            <button system-dropdown-trigger-button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" system-title="LBL_STYLE">
+                                <system-button-icon icon="format"/>
+                            </button>
+                            <div class="slds-popover-container">
+                                <div class="slds-popover slds-popover--small" role="tooltip">
+                                    <div class="slds-popover__body" style="width: 100%; line-height:1.1rem">
+                                        <system-checkbox-group [ngModel]="editor?.commands.get('style').value" (singleValue$)="applyCustomStyle($event)">
+                                            @for (customStyle of customStyleDefinitions; track customStyle.id) {
+                                                <system-checkbox-group-checkbox [disabled]="!editor?.commands.get('style').enabledStyles.includes(customStyle.id)" [value]="customStyle.id">
+                                                    {{customStyle.display}}
+                                                </system-checkbox-group-checkbox>
+                                            }
+                                        </system-checkbox-group>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -299,6 +307,13 @@
                     <system-button-icon icon="unmuted"></system-button-icon>
                 </button>
             </li>
+            @if (configurationService.getCapabilityConfig('generative_ai')?.isActive) {
+                <li>
+                    <button (click)="openAIPrompt()" class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" system-title="LBL_AI_PROMPT">
+                        <system-button-icon icon="ai_app"></system-button-icon>
+                    </button>
+                </li>
+            }
         </ul>
 
         <ul class="slds-button-group-list">

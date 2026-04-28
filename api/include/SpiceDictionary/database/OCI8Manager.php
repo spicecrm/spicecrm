@@ -857,10 +857,8 @@ class OCI8Manager extends DBManager
         return $row;
     }
 
-    public function connect(array $configOptions = null, $dieOnError = false)
+    public function connect(?array $configOptions = null, $dieOnError = false)
     {
-        
-
         if (!$configOptions)
             $configOptions = SpiceConfig::getInstance()->config['dbconfig'];
 

@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import { Component, Input } from "@angular/core";
+import {Component, input, Input} from "@angular/core";
 import { language } from "../../services/language.service";
 import { userpreferences } from '../../services/userpreferences.service';
 
@@ -50,6 +50,14 @@ export class SystemProgressBar {
      * When 'total' is not given, the input parameter 'progress' will be interpreted as percentage value.
      */
     @Input() public total: number = null;
+    /**
+     * input border radius css style
+     */
+    public borderRadius = input<string>();
+    /**
+     * input border color css style
+     */
+    public borderStyle = input<string>();
 
     constructor( public lang: language, public userprefs: userpreferences ) { }
 

@@ -119,6 +119,7 @@ class OutputRevisionsController
         $Output = BeanFactory::getBean('OutputRevisions');
         $Output->parent_id = $args['parentid'];
         $Output->parent_type = $args['parenttype'];
+        $Output->outputtemplate_id = $args['template'];
         $Output->file_md5 = $md5;
         $Output->file_name = $template->getFileName();
         $Output->file_mime_type = 'application/pdf';

@@ -33,7 +33,27 @@ export class SystemDropdownTriggerButtonDirective {
     @HostListener('click', ['$event'])
     public onClick(event) {
         event.stopPropagation();
-        if (!this.trigger) return;
+        if (!this.trigger || this.trigger.triggerOnHover()) return;
         this.trigger.toggleDropdown();
+    }
+
+    /**
+     * open the dropdown on mouse enter
+     */
+    @HostListener('mouseenter')
+    public onMouseEnter() {
+        if (this.trigger.triggerOnHover()) {
+            this.trigger.open();
+        }
+    }
+
+    /**
+     * close the dropdown on mouse leave
+     */
+    @HostListener('mouseleave')
+    public onMouseExit() {
+        if (this.trigger.triggerOnHover()) {
+            this.trigger.close();
+        }
     }
 }

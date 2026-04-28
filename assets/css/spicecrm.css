@@ -15,7 +15,7 @@
 :root {
     --color-white: white;
     --color-grey-1: #fafafa;
-    --color-grey-3: #f3f2f2;
+    --color-grey-3: #f3f3f3;
     --color-gray-4: #ecebea;
     --color-grey-5: #dddbda;
     --color-grey-7: #aaaaaa;
@@ -420,7 +420,7 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 .slds-button--icon:enabled:hover,
 .slds-button--icon-border-filled:enabled:focus,
 .slds-button--icon-border-filled:enabled:hover {
-    color: var(--color-border-brand);
+    color: var(--sds-c-button-text-color-hover);
 }
 
 .slds-button.slds-button--brand, .slds-button.slds-button_brand {
@@ -473,14 +473,27 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     align-items:center;
 }
 
-/** overwrite dropdown triggers and icon button to not be styled like regular button, excluding the stateful button for the reminders **/
-.slds-button--icon:hover,
-.slds-button--icon:focus,
-.slds-button--icon:active,
+
 .slds-dropdown-trigger > .slds-button:not(.slds-button_stateful):hover,
 .slds-dropdown-trigger > .slds-button:not(.slds-button_stateful):focus,
 .slds-dropdown-trigger > .slds-button:not(.slds-button_stateful):active {
     color: var(--color-border-brand);
+    background: var(--brand-primary);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+/** overwrite the color for focus and active **/
+.slds-dropdown-trigger > .slds-button:not(.slds-button_stateful):focus,
+.slds-dropdown-trigger > .slds-button:not(.slds-button_stateful):active{
+    color: var(--sds-c-button-text-color-hover);
+}
+
+/** overwrite dropdown triggers and icon button to not be styled like regular button, excluding the stateful button for the reminders **/
+.slds-button--icon:hover,
+.slds-button--icon:focus,
+.slds-button--icon:active {
+    color: var(--sds-c-button-text-color-hover);
     -webkit-box-shadow: none;
     box-shadow: none;
 }
@@ -789,4 +802,61 @@ input[type="submit"] {
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+.slds-popover__body {
+    overflow: auto;
+}
+
+.slds-popover-container {
+    position: absolute;
+    overflow: visible;
+    margin: 1px;
+}
+
+.slds-popover-container:has(.slds-nubbin_top), .slds-popover-container:has(.slds-nubbin_top-left), .slds-popover-container:has(.slds-nubbin_top-right) {
+    padding-top: 1rem;
+}
+
+.slds-popover-container:has(.slds-nubbin_top-right), .slds-popover-container:has(.slds-nubbin_bottom-right) {
+    margin-right: -1rem;
+}
+
+.slds-popover-container:has(.slds-nubbin_top-left), .slds-popover-container:has(.slds-nubbin_bottom-left) {
+    margin-left: -1rem;
+}
+
+.slds-popover-container:has(.slds-nubbin_bottom), .slds-popover-container:has(.slds-nubbin_bottom-left), .slds-popover-container:has(.slds-nubbin_bottom-right) {
+    padding-bottom: 1rem;
+}
+
+.slds-popover-container:has(.slds-nubbin_left), .slds-popover-container:has(.slds-nubbin_left-bottom), .slds-popover-container:has(.slds-nubbin_left-top) {
+    padding-left: 1rem;
+}
+
+.slds-popover-container:has(.slds-nubbin_right), .slds-popover-container:has(.slds-nubbin_right-bottom), .slds-popover-container:has(.slds-nubbin_right-top) {
+    padding-right: 1rem;
+}
+
+.system-responsive-sidebar-small {
+    position: absolute;
+    top: 0;
+    z-index: 10;
+    transform: translateX(-100%);
+}
+
+.system-native-resizable-handle {
+    user-select: none;
+    z-index: 9999;
+    position: absolute;
+    -webkit-user-drag: none;
+    touch-action: none;
+}
+
+.spice-progress-bar-transparent .slds-progress-bar {
+    background-color: unset;
+}
+
+.field-container-height-full field-container > div {
+    height: 100%;
 }

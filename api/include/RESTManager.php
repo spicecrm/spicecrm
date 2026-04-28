@@ -182,7 +182,7 @@ class RESTManager
      * @param array $routeArray
      * @param string|null $extension
      */
-    public function registerRoutes(array $routeArray, string $extension = null): void {
+    public function registerRoutes(array $routeArray, ?string $extension = null): void {
         foreach ($routeArray as $route) {
             $route['extension'] = $extension;
             $route['custom']    = $this->isCustomExtension;

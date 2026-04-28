@@ -1,4 +1,4 @@
-import {Component, effect, inject, Injector, OnInit} from '@angular/core';
+import {Component, effect, inject, Injector, input, Input, OnInit} from '@angular/core';
 import {ObjectFieldTranslationsModal} from "../../objectcomponents/components/objectfieldtranslationsmodal";
 import {
     ModuleFieldTranslationsObjectI
@@ -30,11 +30,19 @@ export class FieldTranslatableText implements OnInit {
     /**
      * the field name passed by the field container
      */
-    public fieldname: string = '';
+    @Input() public fieldname: string = '';
     /**
      * the field config passed by the field container
      */
-    public fieldconfig: any = {};
+    @Input() public fieldconfig: any = {};
+    /**
+     * additonal classes top be added when the field is displayed
+     */
+    @Input() public fielddisplayclass: string = '';
+    /**
+     * if true, use the field type passed directly to the component
+     */
+    public useOriginalFieldType = input<boolean>(true);
 
     constructor(private modal: modal,
                 private model: model,
@@ -75,7 +83,9 @@ export class FieldTranslatableText implements OnInit {
     private initializeTextFieldConfig() {
         this.textFieldConfig = {...this.fieldconfig};
         this.textFieldName = this.fieldname.replace('_translations', '');
-        this.textFieldConfig.fieldtype = this.metadata.getFieldType(this.model.module, this.textFieldName);
+        if (this.useOriginalFieldType()) {
+            this.textFieldConfig.fieldtype = this.metadata.getFieldType(this.model.module, this.textFieldName);
+        }
         this.textFieldConfig.hasTranslationField = true;
 
     }
@@ -83,13 +93,16 @@ export class FieldTranslatableText implements OnInit {
     /**
      * open the translation modal
      */
-    public openTranslationsModal(editMode: boolean, asRichtext?: boolean) {
+    public openTranslationsModal(editMode: boolean, fieldType?: 'html' | 'text' | 'richtext'): void {
 
         this.modal.openStaticModal(ObjectFieldTranslationsModal, true, this.injector).subscribe(ref => {
 
             ref.instance.isEditMode = editMode;
-            ref.instance.originalText = this.model.getField(this.textFieldName);
-            ref.instance.asRichtext = asRichtext;
+            ref.instance.originalText.set(this.model.getField(this.textFieldName));
+            ref.instance.fieldType = fieldType ?? 'text';
+            if (!this.useOriginalFieldType() && ['html', 'richtext'].includes(this.textFieldConfig.fieldtype)) {
+                ref.instance.fieldType = this.textFieldConfig.fieldtype as 'html' | 'richtext';
+            }
             const translations = this.model.getField(this.fieldname);
             if (!window._.isEmpty(translations)) {
                 ref.instance.setTranslationsArray(Object.values(translations));

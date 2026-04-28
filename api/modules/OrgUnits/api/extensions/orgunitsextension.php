@@ -60,6 +60,11 @@ $routes = [
                 'in' => 'query',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'required' => false
+            ],
+            'filterown' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'required' => false
             ]
         ]
     ]

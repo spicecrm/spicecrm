@@ -8,9 +8,12 @@ use DateTime;
 use DateTimeZone;
 use DOMDocument;
 use DOMXPath;
+use SpiceCRM\extensions\includes\GenerativeAI\GenerativeAIAgent;
+use SpiceCRM\extensions\includes\GenerativeAI\GenerativeAIHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
@@ -108,12 +111,13 @@ class Compiler
      */
     public $idsOfParentTemplates = [];
 
-    public function compile($txt, $bean = null, $lang = null, array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null, $bodyContentOnly = false, $headItems = [])
+    public function compile($txt, $bean = null, $lang = null, ?array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null, $bodyContentOnly = false, $headItems = [])
     {
         $this->additionalValues = $additionalValues;
         $this->lang = empty( $lang ) ? AuthenticationController::getInstance()->getCurrentUser()?->getPreference('language') : $lang;
         if ( empty( $this->lang )) $this->lang = 'de_DE';
-        $this->app_list_strings = SpiceUtils::returnAppListStringsLanguage($lang); // get doms corresponding to template language
+
+        $this->loadEnumTranslations($lang);
 
         $dom = new DOMDocument();
 
@@ -160,6 +164,17 @@ class Compiler
         } else {
             return $this->doc->saveHTML();
         }
+    }
+
+    /**
+     * load enum translations
+     * @param string|null $lang
+     * @return void
+     * @throws \Exception
+     */
+    private function loadEnumTranslations(?string $lang): void
+    {
+        $this->app_list_strings = SpiceUtils::returnAppListStringsLanguage($lang);
     }
 
     /**
@@ -909,6 +924,9 @@ class Compiler
             case 'root_template':
                 $obj = BeanFactory::getBean($this->rootTemplate->_module, $this->rootTemplate->id);
                 break;
+            case 'ai':
+                $obj = (object)[];
+                break;
             default:
                 $obj = $beans[$object];
         }
@@ -916,9 +934,22 @@ class Compiler
         return $obj ?: false;
     }
 
-    public function compileblock($txt, $beans = [], $lang = 'de_DE')
+    /**
+     * compile the HTML block and return the results
+     * @param $txt
+     * @param array $beans
+     * @param string|null $lang
+     * @param bool $standalone if true, call initial functions before compiling e.g. loadEnumTranslations
+     * @return string
+     * @throws \Exception
+     */
+    public function compileblock($txt, array $beans = [], ?string $lang = 'en_us', bool $standalone = false): string
     {
         if (empty($txt)) return '';
+
+        if ($standalone) {
+            $this->loadEnumTranslations($lang);
+        }
 
         $resultText = '';
         $remainingText = $txt;
@@ -968,6 +999,29 @@ class Compiler
         return $currentValue;
     }
 
+    /**
+     * generate an AI content and return the result text
+     * @param string $function
+     * @param string $param
+     * @param SpiceBean|null $bean
+     * @return string
+     * @throws Exception
+     */
+    private function generateAIContent(string $function, string $param, ?SpiceBean $bean): string
+    {
+        switch ($function) {
+            case 'parsePrompt':
+                $idOrName = str_replace("'", '', $param);
+                $agent = new GenerativeAIAgent($idOrName, $this->lang, $bean);
+                return $agent->submit()->parts[0]->text;
+            case 'generateContent':
+                $text = $param;
+                return GenerativeAIHandler::getInstance()->generateContent($text)->parts[0]->text;
+        }
+
+        throw new Exception('Unknown AI Function');
+    }
+
     function getValueForCompileblock($m, $beans, $raw = false ) {
 
         # quoted string has nothing to parse. Just return the string as is
@@ -990,6 +1044,10 @@ class Compiler
         // get the object
         $obj = $this->getObject( $objectname, $beans );
         if ( !$obj ) return null;
+
+        if ($objectname == 'ai') {
+            return $this->generateAIContent($parts[1], $matches[3], $beans['bean']);
+        }
 
         if ( $objectname === 'func' ) {
             return $this->doFunction( $parts[1], $matches[3], $beans );

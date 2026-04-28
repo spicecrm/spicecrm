@@ -60,7 +60,7 @@ import {DomainManagerFieldValidation} from "./components/domainmanagerfieldvalid
 import {DomainManagerAddDefinitionModal} from "./components/domainmanageradddefinitionmodal";
 import {DomainManagerAddFieldModal} from "./components/domainmanageraddfieldmodal";
 import {DomainManagerSelectValidation} from "./components/domainmanagerselectvalidation";
-import {DomainManagerAddValidation} from "./components/domainmanageraddvalidation";
+import {DomainManagerEditValidation} from "./components/domainmanagereditvalidation";
 import {DomainManagerAddValidationValueModal} from "./components/domainmanageraddvalidationvaluemodal";
 
 import {FieldsetManager} from "./components/fieldsetmanager";
@@ -197,6 +197,11 @@ import {MailboxesSpiceGatewayManager} from "./components/mailboxesspicegatewayma
 import {
     DictionaryManagerRelationshipAddManyToManySelf
 } from "./components/dictionarymanagerrelationshipaddmanytomanyself";
+import {DictionaryRelationships} from "./components/dictionaryrelationships";
+import {DictionaryRelationshipsDefinitions} from "./components/dictionaryrelationshipsdefinitions";
+import {WorkbenchConfigOptionAiprompt} from "./components/workbenchconfigoptionaiprompt";
+import {DomainValidations} from "./components/domainvalidations";
+import {DomainValidationUsageModal} from "./components/domainvalidationusagemodal";
 
 
 @NgModule({
@@ -226,7 +231,7 @@ import {
         DomainManagerAddDefinitionModal,
         DomainManagerAddFieldModal,
         DomainManagerSelectValidation,
-        DomainManagerAddValidation,
+        DomainManagerEditValidation,
         DomainManagerAddValidationValueModal,
         DomainManagerEditDefinitionModal,
         DictionaryManager,
@@ -269,6 +274,8 @@ import {
         DictionaryManagerRepairAll,
         DictionaryIndexes,
         DictionaryIndexesDefinitions,
+        DictionaryRelationships,
+        DictionaryRelationshipsDefinitions,
         FieldsetManager,
         FieldsetManagerFieldsetDetails,
         FieldsetManagerFieldDetails,
@@ -377,9 +384,12 @@ import {
         Hl7ManagerType,
         HL7ManagerRule,
         WorkbenchConfigOptionKanban,
+        WorkbenchConfigOptionAiprompt,
         DictionaryManagerFieldDefinitionModal,
         MailboxesSpiceGatewayManager,
-        DictionaryManagerRelationshipAddManyToManySelf
+        DictionaryManagerRelationshipAddManyToManySelf,
+        DomainValidations,
+        DomainValidationUsageModal,
     ],
     exports: [
         SortPipe,

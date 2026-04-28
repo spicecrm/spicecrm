@@ -418,10 +418,8 @@ class MysqliManager extends DBManager
     /**
      * @see DBManager::connect()
      */
-    public function connect(array $configOptions = null, $dieOnError = false)
+    public function connect(?array $configOptions = null, $dieOnError = false)
     {
-
-
         if (is_null($configOptions))
             $configOptions = $this->dbConfig['dbconfig'];
 
@@ -917,7 +915,7 @@ class MysqliManager extends DBManager
      * @param $fields
      * @return false
      */
-    public function reshuffleFields($tablename, $fields)
+    public function reshuffleFields($tablename, $fields): bool
     {
         $columns = [];
         $columnsObj = $this->query("SHOW FULL COLUMNS FROM {$tablename}");
@@ -950,7 +948,7 @@ class MysqliManager extends DBManager
             return true;
         }
 
-        return false;
+        return true;
     }
 
     /**

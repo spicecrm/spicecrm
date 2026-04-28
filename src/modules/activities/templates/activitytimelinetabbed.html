@@ -1,15 +1,15 @@
 <activitytimeline-add-container *ngIf="displayAddContainer"></activitytimeline-add-container>
 <div class="slds-tabs_default">
     <div *ngIf="isSmall" class="slds-grid slds-grid--vertical-align-center slds-p-top--x-small">
-        <system-input-delayed *ngIf="activitiytimeline.usefts" [placeholder]="language.getLabel('LBL_SEARCH')" delay="1000" [(ngModel)]="ftsSearchTerm" class="slds-p-horizontal--xx-small slds-grow"></system-input-delayed>
+        <system-input-delayed *ngIf="activitiytimeline.usefts" system-placeholder="LBL_SEARCH" [delay]="1000" [(ngModel)]="ftsSearchTerm" class="slds-p-horizontal--xx-small slds-grow"></system-input-delayed>
         <activity-timeline-filter class="slds-p-horizontal--xxx-small"></activity-timeline-filter>
-        <button class="slds-button slds-button--icon" [title]="language.getLabel('LBL_RELOAD')" (click)="reload()">
+        <button class="slds-button slds-button--icon" system-title="LBL_RELOAD" (click)="reload()">
             <system-button-icon class="slds-p-horizontal--xxx-small slds-icon-text-default" icon="refresh"></system-button-icon>
         </button>
-        <button class="slds-button slds-button--icon" [title]="language.getLabel('LBL_SUMMARY')" (click)="displaySummary()">
+        <button class="slds-button slds-button--icon" system-title="LBL_SUMMARY" (click)="displaySummary()">
             <system-button-icon class="slds-p-horizontal--xxx-small" icon="side_list"></system-button-icon>
         </button>
-        <button class="slds-button slds-button--icon" [title]="language.getLabel('LBL_OPEN_ALL')" (click)="toggleOpen()">
+        <button class="slds-button slds-button--icon" system-title="LBL_OPEN_ALL" (click)="toggleOpen()">
             <system-button-icon class="slds-p-horizontal--xxx-small" [icon]="activitiytimeline.openness ? 'chevronup' : 'chevrondown'"></system-button-icon>
         </button>
     </div>
@@ -23,15 +23,15 @@
             </li>
             <li *ngIf="!isSmall" class="slds-col--bump-left slds-p-vertical--xx-small">
                 <div class="slds-grid slds-grid--vertical-align-center">
-                    <system-input-delayed *ngIf="activitiytimeline.usefts" [placeholder]="language.getLabel('LBL_SEARCH')" delay="1000" [(ngModel)]="ftsSearchTerm" class="slds-p-horizontal--xx-small"></system-input-delayed>
+                    <system-input-delayed *ngIf="activitiytimeline.usefts" system-placeholder="LBL_SEARCH" [delay]="1000" [(ngModel)]="ftsSearchTerm" class="slds-p-horizontal--xx-small"></system-input-delayed>
                     <activity-timeline-filter class="slds-p-horizontal--xxx-small"></activity-timeline-filter>
-                    <button class="slds-button slds-button--icon" [title]="language.getLabel('LBL_RELOAD')" (click)="reload()">
+                    <button class="slds-button slds-button--icon" system-title="LBL_RELOAD" (click)="reload()">
                         <system-button-icon class="slds-p-horizontal--xxx-small slds-icon-text-default" icon="refresh"></system-button-icon>
                     </button>
-                    <button class="slds-button slds-button--icon" [title]="language.getLabel('LBL_SUMMARY')" (click)="displaySummary()">
+                    <button class="slds-button slds-button--icon" system-title="LBL_SUMMARY" (click)="displaySummary()">
                         <system-button-icon class="slds-p-horizontal--xxx-small" icon="side_list"></system-button-icon>
                     </button>
-                    <button class="slds-button slds-button--icon" [title]="language.getLabel('LBL_OPEN_ALL')" (click)="toggleOpen()">
+                    <button class="slds-button slds-button--icon" system-title="LBL_OPEN_ALL" (click)="toggleOpen()">
                         <system-button-icon class="slds-p-horizontal--xxx-small" [icon]="activitiytimeline.openness ? 'chevronup' : 'chevrondown'"></system-button-icon>
                     </button>
                 </div>

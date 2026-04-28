@@ -95,26 +95,27 @@ export class EmailReplyModal implements OnInit {
             if (address.address_type == "from") {
                 let toaddress = {...address};
                 toaddress.address_type = "to";
-                toaddress.id = '';
+                toaddress.id = this.model.generateGuid();
                 recipient_addresses.push(toaddress);
             } else if (this.mode == 'replyall') {
                 if(address.address_type == "cc" || address.address_type == "to") {
                     let addaddress = {...address};
                     addaddress.address_type = "cc";
-                    addaddress.id = '';
+                    addaddress.id = this.model.generateGuid();
                     recipient_addresses.push(addaddress);
                 }
             }
         }
 
         // set the email-history into the body
-        this.emailsService.composeReplyContent(this.parent, 'fwd').subscribe({
+        this.emailsService.composeReplyContent(this.parent, 'reply').subscribe({
             next: (emailTexts) => {
                 this.model.setFields({
                     recipient_addresses: recipient_addresses,
                     reference_id: this.parent.id,
                     name: emailTexts.name,
-                    body: emailTexts.body
+                    body: emailTexts.body,
+                    from_addr: '' // will be set by mailbox data on send
                 });
             }
         });

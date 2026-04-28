@@ -176,9 +176,9 @@ class TimeDate
 
     /**
      * Create TimeDate handler
-     * @param User $user User to work with, default if current user
+     * @param User|null $user User to work with, default if current user
      */
-    public function __construct(User $user = null)
+    public function __construct(?User $user = null)
     {
         if (self::$gmtTimezone == null) {
             self::$gmtTimezone = new DateTimeZone("UTC");
@@ -221,11 +221,11 @@ class TimeDate
      *
      * The order is: supplied parameter, TimeDate's user, global current user
      *
-     * @param User $user User object, default is current user
+     * @param User|null $user User object, default is current user
      * @internal
      * @return User
      */
-    protected function _getUser(User $user = null)
+    protected function _getUser(?User $user = null): ?User
     {
         return AuthenticationController::getInstance()->getCurrentUser();
     }
@@ -233,10 +233,10 @@ class TimeDate
     /**
      * Get timezone for the specified user
      *
-     * @param User $user User object, default is current user
+     * @param User|null $user User object, default is current user
      * @return DateTimeZone
      */
-    protected function _getUserTZ(User $user = null)
+    protected function _getUserTZ(?User $user = null)
     {
         $user = $this->_getUser($user);
         if (empty($user) || $this->always_db) {
@@ -270,12 +270,11 @@ class TimeDate
 
     /**
      * Get user date format.
-     * @todo add caching
-     *
-     * @param User $user user object, current user if not specified
+     * @param User|null $user user object, current user if not specified
      * @return string
+     * @todo add caching
      */
-    public function get_date_format(User $user = null)
+    public function get_date_format(?User $user = null): string
     {
         $user = $this->_getUser($user);
 
@@ -424,10 +423,10 @@ class TimeDate
      * Format DateTime object as user datetime
      *
      * @param DateTime $date
-     * @param User $user
+     * @param User|null $user
      * @return string
      */
-    public function asUser(DateTime $date, User $user = null)
+    public function asUser(DateTime $date, ?User $user = null): string
     {
         $this->tzUser($date, $user);
         return $date->format($this->get_date_time_format($user));
@@ -451,10 +450,10 @@ class TimeDate
      * Note: by default does not convert TZ!
      * @param DateTime $date
      * @param boolean $tz Perform TZ conversion?
-     * @param User $user
+     * @param User|null $user
      * @return string
      */
-    public function asUserDate(DateTime $date, $tz = false, User $user = null)
+    public function asUserDate(DateTime $date, $tz = false, ?User $user = null): string
     {
         if($tz) $this->tzUser($date, $user);
         return $date->format($this->get_date_format($user));
@@ -476,10 +475,10 @@ class TimeDate
      * Format DateTime object as user time
      *
      * @param DateTime $date
-     * @param User $user
+     * @param User|null $user
      * @return string
      */
-    public function asUserTime(DateTime $date, User $user = null)
+    public function asUserTime(DateTime $date, ?User $user = null): string
     {
         $this->tzUser($date, $user);
         return $date->format($this->get_time_format($user));
@@ -541,10 +540,10 @@ class TimeDate
      * Get DateTime from user datetime string
      *
      * @param string $date
-     * @param User $user
-     * @return DateTime
+     * @param User|null $user
+     * @return DateTime|null
      */
-    public function fromUser($date, User $user = null)
+    public function fromUser($date, ?User $user = null): ?DateTime
     {
         $res = null;
         try {
@@ -561,17 +560,16 @@ class TimeDate
     }
 
 
-
     /**
      * Create a date object from any string
      *
      * Same formats accepted as for DateTime ctor
      *
      * @param string $date
-     * @param User $user
-     * @return DateTime
+     * @param User|null $user
+     * @return DateTime|null
      */
-    public function fromString($date, User $user = null)
+    public function fromString($date, ?User $user = null): ?DateTime
     {
         try {
             return new DateTime($date, $this->_getUserTZ($user));
@@ -785,13 +783,12 @@ class TimeDate
     }
 
 
-
-	/**
-	 * Get the name of the timezone for the user
-	 * @param User $user User, default - current user
-	 * @return string
-	 */
-	public static function userTimezone(User $user = null)
+    /**
+     * Get the name of the timezone for the user
+     * @param User|null $user User, default - current user
+     * @return string
+     */
+	public static function userTimezone(?User $user = null): string
 	{
 	    $user = self::getInstance()->_getUser($user);
 	    if(empty($user)) {
@@ -975,11 +972,11 @@ class TimeDate
 
     /**
      * Returns the offset from user's timezone to GMT
-     * @param User $user
-     * @param DateTime $time When the offset is taken, default is now
+     * @param User|null $user
+     * @param DateTime|null $time When the offset is taken, default is now
      * @return int Offset in minutes
      */
-    public function getUserUTCOffset(User $user = null, DateTime $time = null)
+    public function getUserUTCOffset(?User $user = null, ?DateTime $time = null): int
     {
         if(empty($time)) {
             $time = $this->now;

@@ -91,11 +91,6 @@ class SpiceUILoader
         return $data;
     }
 
-    public function close()
-    {
-        curl_close($this->curl);
-    }
-
     /**
      * checkt if any change request log is found for a chnage request that hasn't been completed yet
      * if found abort.

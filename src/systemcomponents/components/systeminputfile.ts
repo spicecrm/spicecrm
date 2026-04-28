@@ -6,7 +6,7 @@ import {
     ChangeDetectorRef,
     Component,
     EventEmitter,
-    forwardRef,
+    forwardRef, input,
     Input,
     Output,
     ViewChild,
@@ -85,7 +85,7 @@ export class SystemInputFile implements ControlValueAccessor {
      * ControlValueAccessor change emitter
      * @private
      */
-    public onChange: (value: { file_name: string, file_mime_type: string, file_md5?: string, file_size?: string, remove: () => void}) => void;
+    public onChange: (value: { file_name: string, file_mime_type: string, file_md5?: string, file_size?: string, remove: () => void, progressSubscription?: BehaviorSubject<number>, file?: string}) => void;
     /**
      * ControlValueAccessor touched emitter
      * @private
@@ -101,6 +101,10 @@ export class SystemInputFile implements ControlValueAccessor {
      * @private
      */
     public file: { file_name: string, file_mime_type: string, file_md5?: string, file_size?: string };
+    /**
+     * enable/disable uploading the files
+     */
+    public uploadFiles = input(true);
 
     constructor(public configurationService: configurationService,
                 public session: session,
@@ -162,9 +166,19 @@ export class SystemInputFile implements ControlValueAccessor {
         }
 
         let progressSubscription = new BehaviorSubject<number>(0);
-        progressSubscription.subscribe(value => {
-            this.fileProgress = Math.floor(value);
-            this.cdRef.detectChanges();
+        progressSubscription.subscribe({
+            next: value => {
+                this.fileProgress = Math.floor(value);
+                this.cdRef.detectChanges();
+            },
+            complete: () => {
+                this.isUploading = false;
+                this.cdRef.detectChanges();
+            },
+            error: () => {
+                this.isUploading = false;
+                this.cdRef.detectChanges();
+            }
         });
 
         const fileContent = await this.readFileAsync(files[0]);
@@ -175,17 +189,23 @@ export class SystemInputFile implements ControlValueAccessor {
             filemimetype: this.file.file_mime_type
         };
 
-        this.backend.postRequestWithProgress('common/spiceattachments', null, fileBody, progressSubscription)
-            .subscribe(res => {
-                this.file.file_md5 = res[0].filemd5;
-                this.onChange({
-                    ...this.file,
-                    remove: () => this.removeFile(true)
-                });
-                this.isUploading = false;
-                this.cdRef.detectChanges();
+        if (!this.uploadFiles()) {
+            this.onChange({
+                ...this.file,
+                file: fileBody.file,
+                progressSubscription,
+                remove: () => this.removeFile(true),
             });
-
+        } else {
+            this.backend.postRequestWithProgress('common/spiceattachments', null, fileBody, progressSubscription)
+                .subscribe(res => {
+                    this.file.file_md5 = res[0].filemd5;
+                    this.onChange({
+                        ...this.file,
+                        remove: () => this.removeFile(true)
+                    });
+                });
+        }
     }
 
     /**

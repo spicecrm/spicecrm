@@ -79,7 +79,6 @@ class SpiceDictionaryDefinition
 
         try {
             $sql = DBManagerFactory::getInstance()->repairTableParams($this->tablename, $fields, $buildFields->indexes, $execute);
-
         } catch (\Throwable $exception) {
 
             $mismatch = self::getDBColumnsMismatch($this->name, $fields);
@@ -95,6 +94,11 @@ class SpiceDictionaryDefinition
         // check for Audit table
         if($this->definition->audited == 1){
             $sql .= $this->repairAuditTable();
+        }
+
+        // do the reshuffle
+        if($execute) {
+            $this->reshuffle();
         }
 
         // return the sql
@@ -186,7 +190,13 @@ class SpiceDictionaryDefinition
             $indexes[] = (new SpiceDictionaryIndex($index['id']))->getIndexDefinition($this->tablename);
         }
 
-        return DBManagerFactory::getInstance()->repairTableParams("{$this->tablename}_audit", $fields, $indexes);
+        // do the table repair
+        $retVal = DBManagerFactory::getInstance()->repairTableParams("{$this->tablename}_audit", $fields, $indexes);
+
+        // do the reshuffle if the DB supports it
+        DBManagerFactory::getInstance()->reshuffleFields("{$this->tablename}_audit", array_map(function ($f){return $f['name'];}, $fields));
+
+        return $retVal;
     }
 
     /**
@@ -330,11 +340,13 @@ class SpiceDictionaryDefinition
      * @return string|null
      * @throws Exception
      */
-    public function reshuffle($fields)
+    public function reshuffle($fields = []): bool
     {
-        DBManagerFactory::getInstance()->reshuffleFields($this->tablename, $fields);
-        // return the sql
-        return true;
+        // get the fields
+        $fields = array_map(function ($f){return $f['name'];}, $this->buildDictionaryFields(false, true)->fields);
+
+        // do the reshuffle if the DB supports it
+        return DBManagerFactory::getInstance()->reshuffleFields($this->tablename, $fields);
     }
 
     /**

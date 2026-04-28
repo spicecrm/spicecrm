@@ -45,7 +45,13 @@ export class ActivityTimelineFilter {
      */
     public ownerfilter: activityTimelineOwnerfilter = '';
 
-    constructor(public renderer: Renderer2, public elementRef: ElementRef, public language: language, public metadata: metadata, public activitiytimeline: activitiytimeline) {
+    constructor(
+        public renderer: Renderer2,
+        public elementRef: ElementRef,
+        public language: language,
+        public metadata: metadata,
+        public activitiytimeline: activitiytimeline
+    ) {
         this.setFromService();
     }
 
@@ -94,14 +100,16 @@ export class ActivityTimelineFilter {
      * @param event
      */
     public onClick(event: MouseEvent): void {
-
-
         // regitser the click listener
         const clickedInside = this.elementRef.nativeElement.contains(event.target);
         if (!clickedInside) {
             this.isOpen = false;
             this.clickListener();
         }
+    }
+
+    get canFilter(){
+        return this.isOpen || this.activitiytimeline.activities.Activities.totalcount > 0 || this.activitiytimeline.activities.History.totalcount > 0;
     }
 
     /**

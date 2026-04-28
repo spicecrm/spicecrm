@@ -369,8 +369,7 @@ class ConfigTransferController
         SpiceUIConfHandler::writeBackupFile($backup);
 
         # Is the import data restricted to records of specific packages? Build an array of the package names:
-        $restrictedToPackages = explode(',', $filecontent->data->restrictedToPackages );
-        if ( $restrictedToPackages === false ) $restrictedToPackages = [];
+        $restrictedToPackages = empty( $filecontent->data->restrictedToPackages ) ? [] : explode(',', $filecontent->data->restrictedToPackages );
 
         $numberLinesInserted = 0;
         foreach ($filecontent->data->rows as $tablename => $rows) {

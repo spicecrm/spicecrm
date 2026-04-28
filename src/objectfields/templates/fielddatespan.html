@@ -5,24 +5,25 @@
     </field-generic-display>
 </ng-container>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small"
-     [ngClass]="css_classes">
+     >
     <div class="slds-grid slds-gutters_direct-xx-small">
         <div class="slds-size--1-of-2 slds-col">
-            <div class="slds-form-element">
+            <div class="slds-form-element" [ngClass]="fieldcss_classes(fieldstart)">
                 <label *ngIf="displayLabel" class="slds-form-element__label">
                     <system-label [label]="fieldconfig.date_start_label ?? 'LBL_DATE_START'"></system-label>
                 </label>
                 <system-input-date system-input-date-hide-error [(ngModel)]="startDate" (valid)="setDateValid('start', $event)"></system-input-date>
             </div>
+            <field-messages [fieldname]="fieldstart"></field-messages>
         </div>
         <div class="slds-size--1-of-2 slds-col">
-            <div class="slds-form-element ">
+            <div class="slds-form-element"  [ngClass]="fieldcss_classes(fieldend)">
                 <label *ngIf="displayLabel" class="slds-form-element__label">
                     <system-label [label]="fieldconfig.date_end_label ?? 'LBL_DATE_END'"></system-label>
                 </label>
                 <system-input-date system-input-date-hide-error [(ngModel)]="endDate"  (valid)="setDateValid('end', $event)"></system-input-date>
             </div>
+            <field-messages [fieldname]="fieldend"></field-messages>
         </div>
     </div>
-    <field-messages [fieldname]="fieldname"></field-messages>
 </div>

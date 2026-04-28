@@ -358,8 +358,10 @@ class SpiceFTSBeanHandler
                     if (is_array($valueBean)) {
                         foreach ($valueBean as $thisValueBean) {
                             $thisValueBean->load_relationship($pathRecordDetails[2]);
-                            $thisBeans = $thisValueBean->{$pathRecordDetails[2]}->getBeans();
-                            $beans = array_merge($beans, $thisBeans);
+                            if($thisValueBean->{$pathRecordDetails[2]}) {
+                                $thisBeans = $thisValueBean->{$pathRecordDetails[2]}->getBeans();
+                                $beans = array_merge($beans, $thisBeans);
+                            }
                         }
                     } else {
 

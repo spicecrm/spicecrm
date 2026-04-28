@@ -39,9 +39,10 @@ class SpiceDictionaryDomainField
     /**
      * returns the dictionary item definition
      * @param SpiceDictionaryItem|null $sysdictionaryItem
-     * @return void
+     * @return stdClass
      */
-    public function getDefinition(SpiceDictionaryItem $sysdictionaryItem = null){
+    public function getDefinition(?SpiceDictionaryItem $sysdictionaryItem = null): stdClass
+    {
         $definition = new stdClass();
         $definition->sysdictionarydomainfield_id = $this->id;
         $definition->sysdictionaryitem_id = $sysdictionaryItem->id;
@@ -51,6 +52,7 @@ class SpiceDictionaryDomainField
         $definition->sysdomaindefinition_id = $this->domainField->sysdomaindefinition_id;
         $definition->sysdomainfieldvalidation_id = $this->domainField->sysdomainfieldvalidation_id;
         $definition->duplicate_merge = (int) $sysdictionaryItem->itemDefinition->duplicate_merge;
+        $definition->unified_search = (int) $sysdictionaryItem->itemDefinition->unified_search;
 
         // set the defualt value
         $definition->default = $this->domainField->defaultvalue;

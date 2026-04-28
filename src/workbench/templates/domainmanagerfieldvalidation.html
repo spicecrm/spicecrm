@@ -60,6 +60,16 @@
                         <th *ngIf="view == 'core'" class="" scope="col">
                             <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">label</div>
                         </th>
+                        @if (view == 'extended') {
+                            <th class="" scope="col">
+                                <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">icon</div>
+                            </th>
+                        }
+                        @if (view == 'extended') {
+                            <th class="" scope="col">
+                                <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">color</div>
+                            </th>
+                        }
                         <th *ngIf="view == 'core'" class="" scope="col">
                             <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">comment</div>
                         </th>
@@ -94,6 +104,16 @@
                         <td *ngIf="view == 'core'">
                             <system-input-label [(ngModel)]="validationvalue.label"></system-input-label>
                         </td>
+                        @if (view == 'extended') {
+                            <td>
+                                <input type="text" [(ngModel)]="validationvalue.icon" class="slds-input"/>
+                            </td>
+                        }
+                        @if (view == 'extended') {
+                            <td>
+                                <input type="text" [(ngModel)]="validationvalue.color" class="slds-input"/>
+                            </td>
+                        }
                         <td *ngIf="view == 'core'">
                             <input type="text" [(ngModel)]="validationvalue.description" class="slds-input"/>
                         </td>

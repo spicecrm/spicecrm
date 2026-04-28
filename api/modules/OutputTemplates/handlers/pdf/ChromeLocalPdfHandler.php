@@ -17,7 +17,7 @@ class ChromeLocalPdfHandler extends PdfHandler
 {
     public $basicFontSize = '9pt';
 
-    public function process( $html = null, array $options = null )
+    public function process($html = null, ?array $options = null)
     {
         parent::process( $html, $options );
         if ( get_class( $this ) === 'SpiceCRM\modules\OutputTemplates\handlers\pdf\ChromeLocalPdfHandler' ) $this->createChromeLocalPdf();
@@ -250,6 +250,8 @@ class ChromeLocalPdfHandler extends PdfHandler
         $tmpPdfFilename = tempnam( sys_get_temp_dir(), '' );
 
         $chromePath = SpiceConfig::getInstance()->config['outputtemplates']['chrome_path'];
+        $chromeNoSandbox = SpiceConfig::getInstance()->get('outputtemplates.chrome_no_sandbox', 0 );
+
         # also available command line parameters of chrome, but not used:
         # --run-all-compositor-stages-before-draw
         # --enable-logging
@@ -259,7 +261,7 @@ class ChromeLocalPdfHandler extends PdfHandler
         do {
             if ( $counter !== 0 ) unlink( $tmpPdfFilename );
             $counter++;
-            exec( sprintf('%s --virtual-time-budget=10000 --headless --disable-gpu --print-to-pdf=%s --no-pdf-header-footer --print-to-pdf-no-header --no-margins %s', escapeshellarg($chromePath), escapeshellarg($tmpPdfFilename), escapeshellarg($tmpHtmlFilename)), $output, $resultCode );
+            exec( sprintf('%s --virtual-time-budget=10000 --headless --disable-gpu --print-to-pdf=%s --no-pdf-header-footer --print-to-pdf-no-header --no-margins'.( $chromeNoSandbox ? ' -no-sandbox':'' ).' %s', escapeshellarg($chromePath), escapeshellarg($tmpPdfFilename), escapeshellarg($tmpHtmlFilename)), $output, $resultCode );
             $fs = filesize( $tmpPdfFilename );
         } while ( $fs < 2000 and $counter < 10 );
         if ( $counter > 1 ) {

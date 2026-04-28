@@ -92,7 +92,7 @@ class AuthenticateController
 
         if ($user->system_generated_password != 1 && (!empty($user->user_2fa_method) || in_array($config2FA->require_on, ['always', 'device_change']))) {
 
-            $method = $user->user_2fa_method ?? $config2FA->method;
+            $method = $user->user_2fa_method ?: $config2FA->method;
 
             if (!empty($parsedBody['code2fa'])) {
                 try {
@@ -106,11 +106,11 @@ class AuthenticateController
 
                 switch ($method) {
                     case 'sms':
-                        $message = 'Enter the code sent to your email';
+                        $message = 'Enter the sms code sent to your mobile device';
                         SpiceCRM2FAUtils::send2FACodeBySMS($user);
                         break;
                     case 'email':
-                        $message = 'Enter the sms code sent to your mobile device';
+                        $message = 'Enter the code sent to your email';
                         SpiceCRM2FAUtils::send2FACodeByEmail($user);
                         break;
                     case 'one_time_password':

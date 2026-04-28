@@ -849,6 +849,7 @@ export class SpicePageBuilderService {
      */
     private getElementCustomAttributes(element: TagElementI | ContentElementI) {
         const head = this._page.children.find(c => c.tagName == 'head');
+        if (!head) return undefined;
         const customAttributes = head.children.find(c => c.tagName == 'html-attributes');
         return customAttributes.children.find(c => c.attributes.path == `.element-id-${element.id}`);
     }

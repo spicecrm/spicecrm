@@ -43,7 +43,7 @@
                         <system-utility-icon icon="record_update" size="xx-small"/>
                     </a>
                 </li>
-                <li class="slds-dropdown__item" role="presentation" [hidden]="hidden" (click)="deleteFolder()" [ngClass]="{'slds-is-disabled': modelattachments.itemsInFolder(file.id) > 0}">
+                <li class="slds-dropdown__item" role="presentation" [hidden]="hidden" (click)="deleteFolder()">
                     <a href="javascript:void(0);" role="menuitem">
                         <span class="slds-truncate"><system-label label="LBL_DELETE"/></span>
                         <system-utility-icon icon="delete" size="xx-small"/>

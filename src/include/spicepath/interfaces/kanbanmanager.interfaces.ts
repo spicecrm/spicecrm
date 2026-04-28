@@ -14,6 +14,8 @@ export interface SpiceBeanGuideStageI {
     spicebeanguide_status: string;
     scope?: string;
     deleted?: 0 | 1;
+    package?: string;
+    version?: string;
 }
 
 export interface SpiceBeanGuideActiveStageI extends SpiceBeanGuideStageI {
@@ -33,6 +35,8 @@ export interface SpiceBeanGuidesI {
     name: string;
     systextid: string;
     is_default?: 0 | 1;
+    package?: string;
+    version?: string;
 }
 
 export interface SpiceBeanGuideCheckI {

@@ -7,6 +7,7 @@ use DateTime;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -19,7 +20,7 @@ class UserAbsence extends SpiceBean
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
 
         $language = $currentUser->getPreference('language');
-        if ( empty( $language )) $language = 'en_us';
+        if ( empty( $language )) $language = LanguageManager::getDefaultLanguage();
         $app_list_strings = SpiceUtils::returnAppListStringsLanguage( $language );
 
         $dateFormat = $currentUser->getPreference('datef');

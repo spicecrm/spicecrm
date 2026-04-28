@@ -66,9 +66,29 @@ class EmailTemplate extends SpiceBean {
 		parent::__construct();
 	}
 
+    /**
+     * get language from the bean or the template
+     * @param SpiceBean|null $bean
+     * @return string | null
+     */
+    private function getBeanCommunicationLanguage(?SpiceBean $bean): ?string
+    {
+        if (!$bean) return null;
+        $languageField = array_column(array_filter($bean->field_defs, fn($field) => $field['type'] == 'language'), 'name')[0];
+        return $bean->$languageField;
+    }
 
     function parse( $bean, $additionalValues = null, $additionalBeans = [], $additionalStyles = [], $addtionalHeadItems = [] ){
         global $app_list_strings;
+
+        $beanLanguage = $this->getBeanCommunicationLanguage($bean);
+
+        # if the bean has a communication language apply the template translated content language before parsing
+        if ($beanLanguage) {
+            $this->language = $beanLanguage;
+            $this->translateTranslatableFields($beanLanguage);
+        }
+
         $app_list_strings = SpiceUtils::returnAppListStringsLanguage($this->language);
 
         $pdfFiles = $this->generatePdfFilesFromOutputTemplates($bean);
@@ -78,6 +98,7 @@ class EmailTemplate extends SpiceBean {
             'body' => $this->parseHTMLTextField('body', $bean, $additionalValues, $additionalBeans, $additionalStyles ),
             'body_html' => $this->parseHTMLTextField('body_html', $bean, $additionalValues, $additionalBeans, $additionalStyles, $addtionalHeadItems ),
             'reply_to_addr' => $this->parsePlainTextField('reply_to_addr', $bean, $additionalValues, $additionalBeans, $additionalStyles, $addtionalHeadItems ),
+            'to_addr' => $this->parsePlainTextField('to_addr', $bean, $additionalValues, $additionalBeans, $additionalStyles, $addtionalHeadItems ),
             'attachments' => array_merge($this->getAttachmentsWithFiles(), $pdfFiles)
         ];
         $retArray['subject'] = preg_replace('#\s+#', ' ', trim( $retArray['subject'] )); // multiple white spaces -> one
@@ -165,8 +186,7 @@ class EmailTemplate extends SpiceBean {
         $templateCompiler = new Compiler($this);
         $templateCompiler->idsOfParentTemplates = array_merge( $this->idsOfParentTemplates, [$this->id] );
         $templateCompiler->additionalValues = $additionalValues;
-        $templateCompiler->app_list_strings = SpiceUtils::returnAppListStringsLanguage($this->language); // get doms corresponding to template language
-        $text = $templateCompiler->compileblock($this->$field, [ 'bean' => $parentbean ], $this->language );
+        $text = $templateCompiler->compileblock($this->$field, [ 'bean' => $parentbean ], $this->language, true);
         return $text;
     }
 

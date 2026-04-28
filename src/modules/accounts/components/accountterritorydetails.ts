@@ -13,6 +13,7 @@ import {toast} from "../../../services/toast.service";
 declare var _: any;
 
 @Component({
+    selector: 'account-territory-details',
     templateUrl: '../templates/accountterritorydetails.html',
     standalone: false
 })

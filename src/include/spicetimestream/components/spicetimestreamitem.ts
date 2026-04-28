@@ -131,7 +131,7 @@ export class SpiceTimestreamItem implements OnInit {
     }
 
     public getElementStyle() {
-        if (this.elementstart && this.elementend) {
+        if (this.elementstart && this.elementend && this.elementend.diff(this.elementstart, 'days') > 0) {
             if (this.timestream.dateEnd.diff(this.timestream.dateStart, 'days') > 0) {
                 return {
                     left: this.getStart() + '%',
@@ -146,13 +146,13 @@ export class SpiceTimestreamItem implements OnInit {
             }
         } else if (this.elementstart && this.elementstart.isAfter(this.timestream.dateStart) && this.elementstart.isBefore(this.timestream.dateEnd)) {
             return {
-                left: this.getStart() + '%',
+                left: 'calc(' + this.getStart() + '% - 10px)',
                 width: '10px',
-                transform: 'rotate(45deg)'
+                transform: !this.elementend ? 'rotate(45deg)' : 'none'
             };
         } else if (this.elementend && this.elementend.isAfter(this.timestream.dateStart) && this.elementend.isBefore(this.timestream.dateEnd)) {
             return {
-                left: this.getStartFromEnd() + '%',
+                left: 'calc(' + this.getStart() + '% - 10px)',
                 width: '10px',
                 transform: 'rotate(45deg)'
             };

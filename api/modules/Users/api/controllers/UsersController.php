@@ -14,7 +14,9 @@ use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SpiceTemplateCompiler\System;
 use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -42,7 +44,7 @@ class UsersController
                 email_addresses ea WHERE ea.id = er.email_address_id
                 AND ea.deleted = 0 AND er.deleted = 0 AND er.bean_module = 'Users' AND email_address_caps IN ('{$db->quote(strtoupper($email1))}') )";
 
-            $row = $db->fetchByAssoc($db->query($q));
+            $row = $db->fetchOne("SELECT id FROM users WHERE UPPER(user_email) = '{$db->quote(strtoupper($email1))}' AND deleted = 0");
 
             if ($row && $row['id'] != $params['id'])
                 throw (new BadRequestException("Email already exists."))->setErrorCode('duplicateEmail1');
@@ -82,8 +84,18 @@ class UsersController
     private function sendUsernameBySystem(User $user): void
     {
         $configs = SpiceCRMPasswordUtils::getSendCredentialConfigs('username');
-        $template = SpiceCRMPasswordUtils::getChannelTemplateByType($user, 'sendUsername', $configs->channel);
-        $user->sendCredentialToUser($template, 'username', ['username' => $user->user_name]);
+        $template = null;
+
+        if (!$configs->channel) {
+            throw new ForbiddenException("Send username not allowed check login management settings");
+        }
+
+        # gateway mailbox does not require email template. The template must be defined on the gateway server
+        if ($configs->mailboxId != 'gateway') {
+            $template = SpiceCRMPasswordUtils::getChannelTemplateByType($user, 'sendUsername', $configs->channel);
+        }
+
+        $user->sendCredentialToUser($template, 'username', ['username' => $user->user_name, 'source_frontend_url' => (new System())->frontend_url()]);
     }
 
     /**

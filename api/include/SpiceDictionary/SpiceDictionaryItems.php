@@ -130,6 +130,7 @@ class SpiceDictionaryItems
     public function getItemsForDictionary(string $dictionaryId, ?array $statusFilter = ['a']): array
     {
         $items = $this->dictionaryItemsByDicId[$dictionaryId] ?? [];
+        usort($items, function($a, $b){return (int)$a['sequence'] > (int)$b['sequence'] ? 1 : -1;});
         return !$statusFilter ? $items : array_filter($items, fn($item) => in_array($item['status'], $statusFilter));
     }
 
@@ -194,6 +195,7 @@ class SpiceDictionaryItems
     private function pushItemInList(array $item): void
     {
         $item['sequence'] = intval($item['sequence']);
+        $item['unified_search'] = intval($item['unified_search']);
         $item['non_db'] = $item['non_db'] ? intval($item['non_db']) : 0;
         $item['exclude_from_audited'] = $item['exclude_from_audited'] ? intval($item['exclude_from_audited']) : 0;
 
@@ -281,5 +283,12 @@ class SpiceDictionaryItems
         }
 
         self::$instance->writeCache();
+    }
+
+    public static function compareItems( $item1, $item2 ): bool
+    {
+        if ( $item1['name'] !== $item2['name'] ) return false;
+        if ( $item1['sysdomaindefinition_id'] !== $item2['sysdomaindefinition_id'] ) return false;
+        return true;
     }
 }

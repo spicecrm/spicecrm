@@ -28,7 +28,9 @@ class OrgUnitsController
             throw new NotFoundException('Org Unit with the given ID not found');
         }
 
-        return $res->withJson($seed->getAllEmployees());
+        $employees = $seed->getAllEmployees();
+
+        return $res->withJson(['count' => count($employees), 'list' => $employees]);
     }
 
 }

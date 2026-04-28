@@ -224,29 +224,35 @@ class Person extends SpiceBean
         return $content;
     }
 
-    /*
+    /**
      * Check if the person's birthday is today (or on a specific date).
      *
-     * @param string $comparisonDateAsString The date to check for the anniversary. Format: YYYY-MM-DD. Optional. If not specified, the current system date is used.
-     * @param string $timezone Optional. If no comparison date is specified, the current system date has to be used. Then a time zone is required. If not specified, the timezone of the current user is used.
+     * @param string|null $comparisonDate The date to check for the anniversary. Format: YYYY-MM-DD. Optional. If not specified, the current system date is used.
+     * @param string|null $timezone Optional. If no comparison date is specified, the current system date has to be used. Then a time zone is required. If not specified, the timezone of the current user is used.
      * @return bool
+     *
+     * @throws \DateInvalidTimeZoneException
+     * @throws \DateMalformedStringException
      */
-    public function hasBirthday( string $comparisonDate = null, string $timezone = null ): bool
+    public function hasBirthday(?string $comparisonDate = null, ?string $timezone = null): bool
     {
         return ( !empty( $this->birthdate ) and self::isAnniversary( $this->birthdate, $comparisonDate, $timezone ));
     }
 
-    /*
+    /**
      * Check whether there is an anniversary today - or on another specific day.
      *
      * @param string $anniversaryDay The date of the anniversary, e.g. a birthday. Format: MM-DD or YYYY-MM-DD
-     * @param string $comparisonDateAsString The date to check for the anniversary. Format: YYYY-MM-DD. Optional. If not specified, the current system date is used.
-     * @param string $timezone Optional. If no comparison date is specified, the current system date has to be used. Then a time zone is required. If not specified, the timezone of the current user is used.
+     * @param string|null $comparisonDate The date to check for the anniversary. Format: YYYY-MM-DD. Optional. If not specified, the current system date is used.
+     * @param string|null $timezone Optional. If no comparison date is specified, the current system date has to be used. Then a time zone is required. If not specified, the timezone of the current user is used.
      * @return bool
      * Might be to do: Use as timezone the zone of the postal address of the person.
      *                 Until then, we will use the time zone of the current user.
+     *
+     * @throws \DateInvalidTimeZoneException
+     * @throws \DateMalformedStringException
      */
-    public static function isAnniversary(string $anniversaryDay, string $comparisonDate = null, string $timezone = null ): bool
+    public static function isAnniversary(string $anniversaryDay, ?string $comparisonDate = null, ?string $timezone = null): bool
     {
         # YYYY-MM-DD --> MM-DD
         if ( strlen( $anniversaryDay ) > 5 ) $anniversaryDay = substr( $anniversaryDay, -5 );

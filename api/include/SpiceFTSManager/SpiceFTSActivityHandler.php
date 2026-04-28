@@ -377,7 +377,7 @@ class SpiceFTSActivityHandler
                     'end' => $hit['_source'][$modules[$hitModule]['endDateFieldName']],
                     # type passed from system calendar item or if the dates are same consider it as Day type otherwise a regular event
                     'type' => $modules[$hitModule]['type'] ?: ($hit['_source']['_activitydate'] == $hit['_source'][$modules[$hitModule]['endDateFieldName']] ? 'Day' : 'event'),
-                    'data' => $moduleHandler->mapBeanToArray($hitModule, $seed, false)
+                    'data' => $moduleHandler->mapBeanToArray($hitModule, $seed, true)
                 ];
             }
         }

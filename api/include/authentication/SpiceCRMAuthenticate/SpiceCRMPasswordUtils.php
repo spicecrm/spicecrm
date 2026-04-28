@@ -16,6 +16,7 @@ use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceGateway\SpiceGatewayClientHandler;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
+use SpiceCRM\includes\SpiceTemplateCompiler\System;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
@@ -65,8 +66,17 @@ class SpiceCRMPasswordUtils
 
         if ($sendByEmail) {
             $configs = self::getSendCredentialConfigs('password');
-            $template = $this->getChannelTemplateByType($userObj, 'sendPassword', $configs->channel);;
-            $userObj->sendCredentialToUser($template, 'password', ['password' => $newPassword]);
+
+            if (!$configs->channel) {
+                throw new ForbiddenException("Send password not allowed check login management settings");
+            }
+
+            $template = null;
+            # gateway mailbox does not require email template. The template must be defined on the gateway server
+            if ($configs->mailboxId != 'gateway') {
+                $template = $this->getChannelTemplateByType($userObj, 'sendPassword', $configs->channel);
+            }
+            $userObj->sendCredentialToUser($template, 'password', ['password' => $newPassword, 'source_frontend_url' => (new System())->frontend_url()]);
         }
 
         return true;
@@ -254,6 +264,10 @@ class SpiceCRMPasswordUtils
         $sendChannel = SpiceConfig::getInstance()->get('passwordsetting.send_password_channel');
         $mailboxId = SpiceConfig::getInstance()->get('passwordsetting.send_password_channel_mailbox_id');
 
+        if (!$sendChannel) {
+            throw new ForbiddenException("Send token not allowed check login management settings");
+        }
+
         if ($mailboxId == 'gateway') {
 
             if ($sendChannel == 'sms') {
@@ -281,6 +295,7 @@ class SpiceCRMPasswordUtils
 
             $emailObj->name = DBUtils::fromHtml($emailTempl->subject);
             $emailObj->body = DBUtils::fromHtml($emailTempl->body_html);
+            $emailObj->mailbox_id = $mailboxId;
             $emailObj->addEmailAddress('to', $email);
             $result = $emailObj->sendEmail();
 

@@ -59,7 +59,7 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
      * attribute to hide time
      * @param value
      */
-    @Input('system-display-datetime-hide-time') set setDisplayTime(value: boolean) {
+    @Input('system-display-datetime-hide-time') set setDisplayTime(value: any|boolean) {
         this.displayTime = false;
     }
 

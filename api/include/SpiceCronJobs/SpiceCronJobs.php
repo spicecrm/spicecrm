@@ -20,7 +20,7 @@ class SpiceCronJobs
      * @param string|null $jobId
      * @throws Exception
      */
-    public function runJobs(string $jobId = null)
+    public function runJobs(?string $jobId = null): void
     {
         if (SystemStartupMode::maintenanceModeEnabled() || SystemStartupMode::recoveryModeEnabled()) return;
 

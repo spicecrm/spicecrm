@@ -27,7 +27,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************************/
 namespace SpiceCRM\includes\SpiceTemplateCompiler;
-
+/**
+ * @method frontend_url
+ */
 class System
 {
     private static $plugin_directories = [

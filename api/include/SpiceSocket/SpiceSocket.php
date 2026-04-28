@@ -139,7 +139,5 @@ class SpiceSocket
             LoggerManager::getLogger()->fatal($debugMessageUrl);
             LoggerManager::getLogger()->fatal("$debugPath ERROR info" . print_r($info, true));
         }
-
-        curl_close($curl);
     }
 }

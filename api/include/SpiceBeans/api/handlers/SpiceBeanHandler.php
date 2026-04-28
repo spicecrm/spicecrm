@@ -237,21 +237,10 @@ class SpiceBeanHandler
                 $searchTerms = [];
                 $searchTermFields = $searchParams['searchtermfields'] ? json_decode(html_entity_decode($searchParams['searchtermfields']), true) : [];
 
-                // if no serachterm field has been sent .. use the unified search fields
-                if (is_array($searchTermFields) && count($searchTermFields) == 0) {
-                    foreach ($thisBean->field_defs as $fieldname => $fielddata) {
-                        if ($fielddata['unified_search']) {
-                            $searchTermFields[] = $fieldname;
-                        }
-                    }
-                }
-
                 if ($searchTermFields) {
                     foreach ($searchTermFields as $fieldName) {
                         switch ($thisBean->field_defs[$fieldName]['type']) {
                             case 'relate':
-                                $searchTerms[] = ($thisBean->field_defs[$fieldName]['join_name'] ?: $thisBean->field_defs[$fieldName]['table']) . '.' . $thisBean->field_defs[$fieldName]['rname'] . ' like \'%' . $thisSearchterm . '%\'';
-                                break;
                             case 'link':
                                 break;
                             default:
@@ -484,8 +473,8 @@ class SpiceBeanHandler
                     $assoc = $thisBean->db->fetchByAssoc($result);
                     if (isset($assoc['c'])) {
                         $bucketitem['total'] = (int)$assoc['c'];
-                        $bucketitem['value'] = (double)$assoc['total'] ?: 0;
-                        $bucketitem['values']['_bucket_agg_' . $searchParams['buckets']['buckettotal'][0]['name']] = (double)$assoc['total'] ?: 0;
+                        $bucketitem['value'] = (float)$assoc['total'] ?: 0;
+                        $bucketitem['values']['_bucket_agg_' . $searchParams['buckets']['buckettotal'][0]['name']] = (float)$assoc['total'] ?: 0;
                         $totalcount += $assoc['c'];
                     }
                 }
@@ -646,12 +635,28 @@ class SpiceBeanHandler
 
         // prepare the output
         $fh = fopen('php://temp', 'rw');
-        fputcsv($fh, $returnFields, $delimiter);
+        fputcsv(stream: $fh, fields: $returnFields, separator: $delimiter, escape: '');
         foreach ($beans as $thisBean) {
             $entryArray = [];
-            foreach ($returnFields as $returnField)
-                $entryArray[] = !empty($charsetTo) ? mb_convert_encoding($thisBean->$returnField, $charsetTo) : $thisBean->$returnField;
-            fputcsv($fh, $entryArray, $delimiter);
+            foreach ($returnFields as $returnField){
+                // set default values
+                $linkedBean = null;
+                $entryValue = '';
+
+                // check linked fields i.e. assigned_user, modified_vy_user, created_by_user...
+                if($thisBean->field_defs[$returnField]['type'] == 'linked'){
+                    $linkedBean = BeanFactory::getBean($thisBean->field_defs[$returnField]['module'], $thisBean->{$thisBean->field_defs[$returnField]['id_name']}, ['relationships' => false]);
+                    if($linkedBean && $linkedBean->id){
+                        $entryValue = !empty($charsetTo) ? mb_convert_encoding($linkedBean->get_summary_text(), $charsetTo) : $linkedBean->get_summary_text();
+                    }
+                } else{
+                    $entryValue = !empty($charsetTo) ? mb_convert_encoding($thisBean->$returnField, $charsetTo) : $thisBean->$returnField;
+                }
+
+                // allocate the value
+                $entryArray[] = $entryValue;
+            }
+            fputcsv(stream: $fh, fields: $entryArray, separator: $delimiter, escape: '');
         }
         rewind($fh);
         $csv = stream_get_contents($fh);
@@ -2173,7 +2178,7 @@ class SpiceBeanHandler
 
                         if ($loaded && $thisBean->{$fieldId}) {
                             $relModule = $thisBean->{$fieldId}->getRelatedModuleName();
-                            $relatedBeans = $thisBean->get_linked_beans($fieldId, $relModule, false, true);
+                            $relatedBeans = $thisBean->get_linked_beans($fieldId, $relModule);
                             foreach ($relatedBeans as $relatedBean) {
                                 $beanDataArray[$fieldId]['beans']->{$relatedBean->id} = $this->mapBeanToArray($relModule, $relatedBean);
                             }
@@ -2186,13 +2191,15 @@ class SpiceBeanHandler
                 case 'quantity':
                 case 'double':
                 case 'currency':
-                    $beanDataArray[$fieldId] = (double) $thisBean->$fieldId;
+                    $beanDataArray[$fieldId] = (float) $thisBean->$fieldId;
                     break;
                 default:
                     $beanDataArray[$fieldId] = $thisBean->$fieldId;
                     break;
             }
         }
+
+        if(!$thisBean) return null;
 
         // call the bean mapper if that one exists
         if ($thisBean && method_exists($thisBean, 'mapToRestArray')) {

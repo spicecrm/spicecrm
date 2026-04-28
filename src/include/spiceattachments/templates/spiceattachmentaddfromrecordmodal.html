@@ -14,17 +14,15 @@
             @if(!showSelected) {
                 <div class="slds-grid slds-grid_vertical-align-center slds-p-around--xx-small">
                     <system-checkbox [(ngModel)]="selectAll"
-                                     [indeterminate]="selectedFilesInFolder > 0 && !selectAll">
-                        <system-label label="LBL_SELECT_ALL_FILES"></system-label>
+                                     [indeterminate]="indeterminate">
+                        <system-label label="LBL_SELECT_ALL"></system-label>
                     </system-checkbox>
                 </div>
             }
-            <div *ngFor="let file of visibleFiles" [ngClass]="{'slds-theme_shade': (file.selected && file.file_mime_type != 'folder')}"
+            <div *ngFor="let file of visibleFiles" [ngClass]="{'slds-theme_shade': file.selected}"
                  class="slds-grid slds-grid_vertical-align-center slds-p-around--xx-small"
-                 (click)="toggleSelectFile(file)">
-                @if (file.file_mime_type != 'folder') {
-                    <system-checkbox [ngModel]="file.selected" [disabled]="false" (click)="toggleSelectFile(file)"/>
-                }
+                 (click)="toggleSelect(file)">
+                <system-checkbox [indeterminate]="getIndeterminateFile(file)" [ngModel]="file.selected" [disabled]="false" (click)="toggleSelect(file)"/>
                 <spice-attachment-file [modelattachments]="modelattachments" [file]="file" [editmode]="false"
                                        [disabled]="true" class="slds-media"
                                        (click)="openFolder(file)">
@@ -52,16 +50,24 @@
                 </nav>
             }
             <div class="slds-grid slds-grid--align-spread slds-col--bump-left">
-                <div class="slds-grid slds-grid_vertical-align-center slds-p-right--medium">
-                    <button class="slds-button slds-button--icon-border slds-button--icon"
-                            [disabled]="selectedFiles.length == 0 && !showSelected"
-                            (click)="toggleShowSelected()">
-                        <system-button-icon [icon]="showSelected ? 'chevrondown' : 'chevronup'"/>
-                    </button>
-                    <div class="slds-p-horizontal--x-small">{{ selectedFiles.length }}
-                        <system-label label="LBL_SELECTED"/>
+                @if (selectedFiles.total.length > 0 || showSelected) {
+                    <div class="slds-grid slds-grid_vertical-align-center slds-p-right--medium">
+                        <button class="slds-button slds-button--icon-border slds-button--icon"
+                                [disabled]="selectedFiles.total.length == 0 && !showSelected"
+                                (click)="toggleShowSelected()">
+                            <system-button-icon [icon]="showSelected ? 'chevrondown' : 'chevronup'"/>
+                        </button>
+                        <div class="slds-p-left--x-small">{{ selectedFiles.total.length }}
+                            <system-label label="LBL_SELECTED"/>
+                        </div>
+                        @if (isFolderSelected && !showSelected) {
+                            <span class="slds-p-left--x-small">({{selectedFiles.folders.length}} <system-label label="LBL_FOLDERS"/>)</span>
+                        }
+                        <div class="slds-p-left--x-small">
+                            / {{ selectedFilesSize }}
+                        </div>
                     </div>
-                </div>
+                }
                 <button class="slds-button slds-button--neutral" (click)="close()">
                     <system-label label="LBL_CANCEL"></system-label>
                 </button>

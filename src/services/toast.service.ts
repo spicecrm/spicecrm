@@ -51,6 +51,17 @@ export class toast {
     }
 
     /**
+     * send error toast
+     * @param text
+     * @param description
+     * @param autoClose
+     * @param uniqueMessageCode
+     */
+    public sendError(text: string, description: string = "", autoClose: boolean | number = true, uniqueMessageCode?: string): string {
+        return this.addToast(text, 'toast', 'error', description, autoClose, uniqueMessageCode);
+    }
+
+    /**
      * the internal funtion handling the toast adding
      *
      * @param text the text of the message to be sent
@@ -65,11 +76,15 @@ export class toast {
             return '';
         }
 
-        if (type === 'error') autoClose = false;
-        if (autoClose === true) {
+        if (type === 'error' && Number.isNaN(autoClose)) {
+            autoClose = false;
+        } else if (autoClose === true) {
             // 5 seconds is standard
             autoClose = 5;
+        } else if(Number.isNaN(autoClose)){
+            autoClose = false
         }
+
         let messageId = this.modelutilities.generateGuid();
         this.activeToasts.push({
             id: messageId,

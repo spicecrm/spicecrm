@@ -35,7 +35,7 @@ export class APIlogViewerReplayModal {
     /**
      * the entry
      */
-    // @Input() public entry: any;
+        // @Input() public entry: any;
 
     public record: any = {};
 
@@ -253,26 +253,16 @@ export class APIlogViewerReplayModal {
         this.modal.prompt('confirm', this.language.getLabel('LBL_CONFIRM_API_REPLAY', '', 'long'), this.language.getLabel('LBL_CONFIRM_API_REPLAY'))
             .pipe(take(1))
             .subscribe({
-               next: confirmation => {
-                   if ( !confirmation ) return;
-                   if ( this.record.needsAuthorization ) this.modal.prompt('input_password', this.language.getLabel('LBL_API_REPLAY_PW_PROMPT', '', 'long'), this.language.getLabel('LBL_API_REPLAY_PW_PROMPT'))
-                       .pipe(take(1))
-                       .subscribe({
-                           next: ( val: string|boolean ) => {
-                               if ( val !== false ) { // @ts-ignore
-                                   this.sendReplay( val );
-                               }
-                           }
-                       })
-                   else this.sendReplay( null );
-               }
+                next: confirmation => {
+                    if ( confirmation ) this.sendReplay();
+                }
             });
     }
 
-    public sendReplay( password: string|null ): void
+    public sendReplay(): void
     {
         let body = undefined;
-        if ( password ) password = this.helper.encodeBase64( password );
+
         if ( this.editMode ) {
             if ( this.replayData ) {
                 switch( this.contentType ) {
@@ -287,7 +277,7 @@ export class APIlogViewerReplayModal {
         } else {
             body = this.record.request_body;
         }
-        this.backend.postRequest('admin/apilog/replay/'+this.record.id, null, { headers: null, getParams: null, bodyParams: body, password: password ? password : undefined })
+        this.backend.postRequest('admin/apilog/replay/'+this.record.id, null, { headers: null, getParams: null, bodyParams: body })
             .pipe(take(1))
             .subscribe({
                 next: (response) => {
@@ -308,12 +298,12 @@ export class APIlogViewerReplayModal {
                                 responseText = responseObject.error.message;
                             }
                         }
-                        this.toast.sendToast('LBL_REPLAY_UNSUCCESSFUL', 'error', 'Status Code: ' + response.httpStatusCode + ( responseText ? ', Message: ' + responseText : '' ));
+                        this.toast.sendToast('LBL_REPLAY_UNSUCCESSFUL', 'error', 'Status Code: ' + response.httpStatusCode + ( responseText ? ', Message: ' + responseText : '' ), false );
                     }
                 },
                 error: (error) => {
                     this.isLoading = false;
-                    this.toast.sendToast('LBL_REPLAY_UNSUCCESSFUL', 'error');
+                    this.toast.sendToast('LBL_REPLAY_UNSUCCESSFUL', 'error', null, false );
                 }
             });
     }

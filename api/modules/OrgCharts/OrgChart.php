@@ -26,11 +26,13 @@ class OrgChart extends SpiceBean
                 $this->new_with_id = true;
             }
 
+            /*
             $unit = BeanFactory::getBean('OrgUnits');
             $unit->name = 'new';
             $unit->orgchart_id = $this->id;
             $unit->assigned_user_id = $this->assigned_user_id;
             $unit->save();
+            */
         }
 
         // save the parent

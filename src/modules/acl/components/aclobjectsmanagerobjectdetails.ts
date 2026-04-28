@@ -32,7 +32,8 @@ export class ACLObjectsManagerObjectDetails implements OnInit {
         {id: 'export', action: 'LBL_EXPORT'},
         {id: 'import', action: 'LBL_IMPORT'},
         {id: 'massupdate', action: 'LBL_MASSUPDATE'},
-        {id: 'moduleadmin', action: 'LBL_MODULEADMIN'}
+        {id: 'moduleadmin', action: 'LBL_MODULEADMIN'},
+        {id: 'auditlog', action: 'LBL_AUDITLOG'}
         // {id: 8, action: 'LBL_REASSIGN'},
         // {id: 9, action: 'LBL_CHANGE_TERRITORY'}
     ];

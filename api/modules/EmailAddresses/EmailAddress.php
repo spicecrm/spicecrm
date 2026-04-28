@@ -19,6 +19,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
+use TrueBV\Punycode;
 
 /*********************************************************************************
  * SugarCRM Community Edition is a customer relationship management program developed by
@@ -180,7 +181,13 @@ class EmailAddress extends SpiceBean
             $fields = array_column(array_filter(SpiceFTSUtils::getBeanIndexProperties($ftsModule['module']),fn($property) => $property['email'] === true),'indexfieldname');
 
             foreach ($emailAddresses as $emailAddress) {
-                $searchResult = SpiceFTSHandler::getInstance()->searchModule($ftsModule['module'], strtolower($emailAddress), [], [], 1000, 0, [], [], false, $fields, false);
+                $searchResult = SpiceFTSHandler::getInstance()->searchModule(
+                    module:         $ftsModule['module'],
+                    searchterm:     strtolower($emailAddress),
+                    size:           1000,
+                    requiredFields: $fields,
+                    source:         false,
+                );
                 foreach ($searchResult['hits']['hits'] as $item) {
                     $bean = BeanFactory::getBean($ftsModule['module'], $item['_id']);
                     $results[$bean->id] = [
@@ -452,12 +459,15 @@ class EmailAddress extends SpiceBean
 
     /**
      * validate email address domain
+     * gethostbyname returns the ip address of the domain if valid, otherwise it returns the domain name
      * @param string $domain
      * @return bool
      */
     public static function validateEmailAddressDomain(string $domain): bool
     {
-        return checkdnsrr($domain, 'A') || checkdnsrr($domain);
+        $punycode = new Punycode();
+        $asciiDomain = $punycode->encode($domain);
+        return gethostbyname($asciiDomain) !== $asciiDomain;
     }
 
     /**

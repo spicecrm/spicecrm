@@ -18,11 +18,11 @@
                     <field-container *ngIf="!!fieldsNames.mailboxField" [field]="fieldsNames.mailboxField" [fieldconfig]="{fieldtype: 'mailboxes', scope: 'outboundmass', hideZipCompress: true, hideReadReceipt: true}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small" class="slds-m-left--x-small"></field-container>
                 </div>
                 <div [ngSwitch]="activeEditor" class="slds-grid slds-grid--align-center slds-grid--vertical-align-center slds-grow" style="min-height: 250px">
-                    <field-container *ngSwitchCase="'richText'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'richtext', hidelabel: true}" class="slds-size--1-of-1 slds-height_full child-height-full"></field-container>
-                    <field-container *ngSwitchCase="'pageBuilder'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'pagebuilder', hidelabel: true, bodySPBField: fieldsNames.bodySPBField}" class="slds-size--1-of-1 slds-height_full child-height-full"></field-container>
-                    <field-container *ngSwitchCase="'html'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'html', hidelabel: true}" class="slds-size--1-of-1 slds-height_full child-height-full"></field-container>
+                    <field-translatable-text *ngSwitchCase="'richText'" [useOriginalFieldType]="false" [fieldname]="fieldsNames.bodyHtmlField + '_translations'" [fieldconfig]="{fieldtype: 'richtext', hidelabel: true}" class="slds-size--1-of-1 slds-height_full field-container-height-full"/>
+                    <field-translatable-text *ngSwitchCase="'pageBuilder'" [useOriginalFieldType]="false" [fieldname]="fieldsNames.bodyHtmlField + '_translations'" [fieldconfig]="{fieldtype: 'pagebuilder', hidelabel: true, bodySPBField: fieldsNames.bodySPBField}" class="slds-size--1-of-1 slds-height_full field-container-height-full"/>
+                    <field-translatable-text *ngSwitchCase="'html'" [useOriginalFieldType]="false" [fieldname]="fieldsNames.bodyHtmlField + '_translations'" [fieldconfig]="{fieldtype: 'html', hidelabel: true}" class="slds-size--1-of-1 slds-height_full field-container-height-full"/>
                     <div *ngSwitchDefault>
-                        <field-container [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{hidelabel: true}" class="slds-size--1-of-1 slds-height_full child-height-full"></field-container>
+                        <field-translatable-text [fieldname]="fieldsNames.bodyHtmlField + '_translations'" [fieldconfig]="{hidelabel: true}" class="slds-size--1-of-1 slds-height_full child-height-full"></field-translatable-text>
                     </div>
                 </div>
             </div>
@@ -33,9 +33,9 @@
                         <field-container *ngIf="!!fieldsNames.mailboxField" [field]="fieldsNames.mailboxField" [fieldconfig]="{fieldtype: 'mailboxes', scope: 'outboundmass', hideZipCompress: true, hideReadReceipt: true}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small" class="slds-m-left--x-small"></field-container>
                     </div>
                     <div [ngSwitch]="activeEditor" class="slds-grid slds-grid--align-center slds-grid--vertical-align-center slds-grow" style="min-height: 250px">
-                        <field-container *ngSwitchCase="'richText'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'richtext', hidelabel: true}" class="slds-size--1-of-1 slds-height_full child-height-full"></field-container>
-                        <field-container *ngSwitchCase="'pageBuilder'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'pagebuilder', hidelabel: true, bodySPBField: fieldsNames.bodySPBField}" class="slds-size--1-of-1 slds-height_full child-height-full"></field-container>
-                        <field-container *ngSwitchCase="'html'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'html', hidelabel: true}" class="slds-size--1-of-1 slds-height_full child-height-full"></field-container>
+                        <field-translatable-text *ngSwitchCase="'richText'" [useOriginalFieldType]="false" [fieldname]="fieldsNames.bodyHtmlField + '_translations'" [fieldconfig]="{fieldtype: 'richtext', hidelabel: true}" class="slds-size--1-of-1 slds-height_full field-container-height-full"/>
+                        <field-translatable-text *ngSwitchCase="'pageBuilder'" [useOriginalFieldType]="false" [fieldname]="fieldsNames.bodyHtmlField + '_translations'" [fieldconfig]="{fieldtype: 'pagebuilder', hidelabel: true, bodySPBField: fieldsNames.bodySPBField}" class="slds-size--1-of-1 slds-height_full field-container-height-full"/>
+                        <field-translatable-text *ngSwitchCase="'html'" [useOriginalFieldType]="false" [fieldname]="fieldsNames.bodyHtmlField + '_translations'" [fieldconfig]="{fieldtype: 'html', hidelabel: true}" class="slds-size--1-of-1 slds-height_full field-container-height-full"/>
                         <div *ngSwitchDefault>
                             <system-label label="LBL_EDIT_WITH" class="slds-m-right--xx-small"></system-label>
                             <button class="slds-button slds-button--neutral spice-hover-button" (click)="updateModelEditor('richText')">

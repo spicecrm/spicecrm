@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, EventEmitter, Output
+    Component, output
 } from '@angular/core';
 import {domainmanager} from '../services/domainmanager.service';
 import {DomainValidation} from "../interfaces/domainmanager.interfaces";
@@ -35,10 +35,10 @@ export class DomainManagerSelectValidation {
     /**
      * an event emitter that emits validations
      */
-    @Output() public validation: EventEmitter<string> = new EventEmitter<string>();
+    public validationId = output<string>();
 
     constructor(public domainmanager: domainmanager) {
-        this._validations = domainmanager.domainfieldvalidations.sort((a, b) => a.name > b.name ? 1 : -1);
+        this._validations = domainmanager.domainfieldvalidations().sort((a, b) => a.name > b.name ? 1 : -1);
     }
 
     /**
@@ -57,8 +57,7 @@ export class DomainManagerSelectValidation {
      * @param id
      */
     public selectValidation(id){
-        this.validation.emit(id);
-        // this.domainmanager.domainfields.find(f => f.id == this.domainmanager.currentDomainField).sysdomainfieldvalidation_id = id;
+        this.validationId.emit(id);
         this.close();
     }
 
@@ -66,7 +65,7 @@ export class DomainManagerSelectValidation {
      * adds a new
      */
     public new() {
-        this.validation.emit('new');
+        this.validationId.emit('new');
         this.close();
     }
 

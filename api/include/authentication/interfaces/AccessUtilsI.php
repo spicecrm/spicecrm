@@ -16,7 +16,7 @@ interface AccessUtilsI
      * @throws BadRequestException
      * @throws NotFoundException
      */
-    public function blockUserByName(string $username, string $blockingDuration = null);
+    public function blockUserByName(string $username, ?string $blockingDuration = null);
 
     /**
      * Checks if a user is blocked permanent or for a specific time

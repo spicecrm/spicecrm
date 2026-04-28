@@ -60,7 +60,7 @@ class TextSnippet extends SpiceBean
      * @return string
      * @throws Exception
      */
-    function parse(?SpiceBean $bean, array $additionalValues = null, array $additionalBeans = []): string
+    function parse(?SpiceBean $bean, ?array $additionalValues = null, array $additionalBeans = []): string
     {
         global $app_list_strings;
         $app_list_strings = SpiceUtils::returnAppListStringsLanguage($this->language);
@@ -70,7 +70,7 @@ class TextSnippet extends SpiceBean
     }
 
 
-    function parsePlainText(?SpiceBean $bean, array $additionalValues = null, array $additionalBeans = []): string
+    function parsePlainText(?SpiceBean $bean, ?array $additionalValues = null, array $additionalBeans = []): string
     {
         return html_entity_decode(strip_tags($this->parse($bean, $additionalValues, $additionalBeans)), ENT_SUBSTITUTE);
     }

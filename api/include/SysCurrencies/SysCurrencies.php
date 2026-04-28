@@ -28,7 +28,7 @@ class SysCurrencies
     /**
      * Create SysCurrencies handler
      */
-    public function __construct(User $user = null)
+    public function __construct(?User $user = null)
     {
         $exchangeRateLimitQuery = DBManagerFactory::getInstance()->limitQuerySql("SELECT exchange_rate FROM syscurrenciesexchangerates WHERE syscurrency_id =  syscurrencies.id ORDER BY exchangerate_date DESC", 0, 1);
 
@@ -342,7 +342,7 @@ class SysCurrencies
                 $exchangeRates[$currency['iso4217']] = [
                     'id' => $rate['id'],
                     'date' => $rate['exchangerate_date'],
-                    'rate' => (double) $rate['exchange_rate']
+                    'rate' => (float) $rate['exchange_rate']
                 ];
             }
         }

@@ -82,7 +82,7 @@ class CampaignLogController{
                     $campaignLog->related_id = $postParams['call_id'];
                     $campaignLog->related_type = 'Calls';
                     $campaignLog->hits += 1;
-                    $campaignLog->planned_activity_date = null;
+                    $campaignLog->planned_activity_date = $postParams['planned_activity_date'];
                     break;
 
                 case 'completed':

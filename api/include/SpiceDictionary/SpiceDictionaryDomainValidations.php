@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceDictionary;
 
 use Exception;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
@@ -132,6 +133,8 @@ class SpiceDictionaryDomainValidations
                         'label' => $value['label'],
                         'sequence' => (int)$value['sequence'],
                         'status' => $value['status'],
+                        'icon' => $value['icon'],
+                        'color' => $value['color'],
                     ];
 
                     $this->domainValidationValues[$value['id']] = $value;
@@ -155,6 +158,17 @@ class SpiceDictionaryDomainValidations
     }
 
     /**
+     * remove a validation from the list
+     * @param array $validation
+     * @return void
+     */
+    private function removeValidationFromList(array $validation)
+    {
+        unset($this->domainValidations[$validation['id']]);
+        unset($this->domainValidationsWithValues[$validation['name']]);
+    }
+
+    /**
      * push/update a validation value in the list
      * @param string $validationId
      * @param array $value
@@ -166,6 +180,19 @@ class SpiceDictionaryDomainValidations
 
         $this->domainValidationsWithValues[$validationName]['validationvalues'][$value['enumvalue']] = $value;
         $this->domainValidationValues[$value['id']] = $value;
+    }
+
+    /**
+     * remove validation related values from the list
+     * @param string $validationId
+     * @return void
+     */
+    private function removeValidationRelatedValuesFromList(string $validationId)
+    {
+        foreach ($this->domainValidationValues as $validationValue) {
+            if ($validationValue['sysdomainfieldvalidation_id'] !== $validationId) continue;
+            unset($this->domainValidationValues[$validationValue['id']]);
+        }
     }
 
     /**
@@ -246,6 +273,73 @@ class SpiceDictionaryDomainValidations
     }
 
     /**
+     * delete a validation
+     * @param string $validationId
+     * @return void
+     * @throws Exception
+     */
+    public function deleteValidationWithValues(string $validationId): void
+    {
+        $validation = $this->domainValidations[$validationId];
+
+        $this->checkCanDeleteValidation($validation['id']);
+
+        $this->removeValidationFromList($validation);
+        $this->deleteValidation($validation);
+
+        $this->removeValidationRelatedValuesFromList($validation['id']);
+        $this->deleteValidationRelatedValues($validation['id']);
+
+        $this->writeCache();
+    }
+
+    /**
+     * delete a validation
+     * @param array $validation
+     * @return void
+     * @throws Exception
+     */
+    private function deleteValidation(array $validation): void
+    {
+        $table = $validation['scope'] == 'c' ? self::customTable : self::table;
+
+        SystemDeploymentCR::deleteDBEntry($table, $validation['id'], $validation['name']);
+
+    }
+
+    /**
+     * check if a validation can be deleted
+     * @param string $validationId
+     * @return void
+     * @throws ForbiddenException
+     */
+    public function checkCanDeleteValidation(string $validationId)
+    {
+        $domainFields = SpiceDictionaryDomainFields::getInstance()->getDomainFields();
+
+        foreach ($domainFields as $domainField) {
+            if ($domainField['status'] == 'a' && $domainField['sysdomainfieldvalidation_id'] == $validationId) {
+                throw new ForbiddenException("Domain field validation with id '$validationId' is still in use");
+            }
+        }
+    }
+
+    /**
+     * delete validation related values
+     * @param string $validationId
+     * @return void
+     * @throws Exception
+     */
+    private function deleteValidationRelatedValues(string $validationId)
+    {
+        foreach ($this->domainValidationValues as $validationValue) {
+            if ($validationValue['sysdomainfieldvalidation_id'] !== $validationId) continue;
+            $valueTable = $validationValue['scope'] == 'c' ? self::valuesCustomTable : self::valuesTable;
+            SystemDeploymentCR::deleteDBEntry($valueTable, $validationValue['id'], $validationValue['name']);
+        }
+    }
+
+    /**
      * save the enum values for a validation
      * @param string $validationId
      * @param array $values
@@ -264,7 +358,7 @@ class SpiceDictionaryDomainValidations
 
         foreach($tableScopes as $scope => $table){
 
-            $query = $db->query("SELECT id, enumvalue, $scope scope FROM $table WHERE sysdomainfieldvalidation_id='$validationId'");
+            $query = $db->query("SELECT id, enumvalue, '$scope' scope FROM $table WHERE sysdomainfieldvalidation_id='$validationId'");
 
             while($option = $db->fetchByAssoc($query)){
                 $activeValues[$option['id']] = $option;

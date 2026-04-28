@@ -4,8 +4,8 @@
         {{value}}%
     </div>
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
-    <div class="slds-grid slds-grid--vertical-align-end">
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-top--xx-small" [ngClass]="getFieldClass()">
+    <div class="slds-grid slds-grid--vertical-align-center">
         <input class="slds-input slds-text-align_right" type="number" [(ngModel)]="value"/>
         <span class="slds-p-left--x-small">%</span>
     </div>

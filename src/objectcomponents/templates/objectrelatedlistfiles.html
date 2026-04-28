@@ -97,6 +97,25 @@
                                 <table class="slds-table slds-p-around--none slds-table--fixed-layout slds-table--header-fixed slds-max-medium-table_stacked slds-table--bordered">
                                     <thead>
                                     <tr class="slds-line-height_reset">
+                                        <th scope="col" style="width: 2rem">
+                                            <div system-dropdown-trigger class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                                                <system-utility-icon style="cursor: pointer" icon="down" size="xx-small" class="slds-p-left--x-small"/>
+                                                <div class="slds-dropdown slds-dropdown--bottom slds-dropdown_left">
+                                                    <ul class="slds-text-title--caps slds-dropdown__list" role="menu" aria-label="Show More">
+                                                        <li class="slds-dropdown__item" role="presentation" *ngFor="let action of tableViewActions">
+                                                            <a href="javascript:void(0);" role="menuitem" (click)="doAction(action.action)">
+                                                                <span class="slds-truncate" [ngClass]="{'slds-disabled-text': actionDisabled(action.action)}">
+                                                                    <system-label [label]="action.label"/>
+                                                                    @if (!action.action.includes('select')) {
+                                                                        ({{selectedFiles.length}})
+                                                                    }
+                                                                </span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </th>
                                         <th style="overflow: hidden; resize: horizontal" scope="col" class="slds-is-resizable">
                                             <div (click)="sort('filename')" class="slds-truncate slds-p-left--x-small" style="cursor: pointer;">
                                                 <system-label label="LBL_NAME" class="slds-p-right--x-small"></system-label>
@@ -127,13 +146,16 @@
                                     <tbody>
                                         @for (file of filteredFiles; track $index) {
                                             <tr>
+                                                <td style="width: 2rem">
+                                                    <system-checkbox [ngModel]="file.selected" (ngModelChange)="toggleSelectFile(file)"/>
+                                                </td>
                                                 <td class="slds-truncate">
                                                     <a (click)="openInTab(file)" href="javascript:void(0)">
                                                         <span [system-title]="file.filename" class="slds-grid"><system-icon size="xx-small" [icon]="file.file_mime_type == 'folder' ? 'folder' : 'file'"/>{{filename(file)}}</span>
                                                     </a>
                                                 </td>
                                                 <td class="slds-truncate">
-                                                    <span>{{fileSize(file.filesize)}}</span>
+                                                    <span>{{fileSize(file)}}</span>
                                                 </td>
                                                 <td class="slds-truncate">{{filedate(file.date)}}</td>
                                                 <td><object-file-action-menu [file]="file"/></td>

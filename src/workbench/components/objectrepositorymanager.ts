@@ -12,6 +12,7 @@ import {ObjectRepositoryManagerAddRepo} from "./objectrepositorymanageraddrepo";
 import {modelutilities} from "../../services/modelutilities.service";
 import {configurationService} from "../../services/configuration.service";
 import {view} from "../../services/view.service";
+import {moveItemInArray} from "@angular/cdk/drag-drop";
 
 /*
 * add a pipe to filter by the object
@@ -56,7 +57,7 @@ export class ObjectRepositoryManager {
     public configList: any = {};
     public currentConfigArray: any[] = [];
     public objectFilter: string = '';
-    public fieldTypeList: any[] = ["string", "label", "boolean", "fieldset", "actionset", "componentset", "module", "modulefilter", "kanban"];
+    public fieldTypeList: any[] = ["string", "label", "boolean", "fieldset", "actionset", "componentset", "module", "modulefilter", "kanban", "aiprompt"];
     public newRepo: any = {};
     public emptyRepo: any = {
         component: "",
@@ -433,6 +434,10 @@ export class ObjectRepositoryManager {
 
     public getDeprecatedBool(dep) {
         return dep == '1';
+    }
+
+    public dropped(dropevent){
+        moveItemInArray(this.currentConfigArray, dropevent.previousIndex, dropevent.currentIndex);
     }
 
 }

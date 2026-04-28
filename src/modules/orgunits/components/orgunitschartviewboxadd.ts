@@ -24,7 +24,12 @@ export class OrgunitsChartViewBoxAdd {
      */
     @Input() customStyles: any = {};
 
-    constructor(public oview: orgunitsViewService, public backend: backend, public modal: modal, public model: model, @SkipSelf() public parent: model) {
+    constructor(
+        public oview: orgunitsViewService,
+        public backend: backend,
+        public modal: modal,
+        public model: model, @SkipSelf() public parent: model
+    ) {
     }
 
     public add(){
@@ -67,29 +72,35 @@ export class OrgunitsChartViewBoxAdd {
                                 });
                                 break;
                             case 'selectorgunit':
-                                this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
-                                    selectModal.instance.module = 'OrgUnits';
-                                    selectModal.instance.multiselect = false;
+                                this.modal.prompt('confirm', 'MSG_CONFIG_SELECT_ORGUNIT', 'MSG_CONFIG_SELECT_ORGUNIT').subscribe({
+                                    next: (res) => {
+                                        if(res) {
+                                            this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
+                                                selectModal.instance.module = 'OrgUnits';
+                                                selectModal.instance.multiselect = false;
 
-                                    selectModal.instance.selectedItems.subscribe(items => {
-                                        let awaitModal = this.modal.await('LBL_LOADING');
-                                        this.backend.putRequest(`module/OrgCharts/${this.oview.orgChart.id}/orgunit/${this.parent.id}/${items[0].id}`).subscribe({
-                                            next: (res) => {
-                                                this.oview.loadOrgUnits().subscribe({
-                                                    next: (loaded) => {
-                                                        awaitModal.emit(true);
-                                                    },
-                                                    error: () => {
-                                                        awaitModal.emit(true);
-                                                    }
+                                                selectModal.instance.selectedItems.subscribe(items => {
+                                                    let awaitModal = this.modal.await('LBL_LOADING');
+                                                    this.backend.putRequest(`module/OrgCharts/${this.oview.orgChart.id}/orgunit/${this.parent.id}/${items[0].id}`).subscribe({
+                                                        next: (res) => {
+                                                            this.oview.loadOrgUnits().subscribe({
+                                                                next: (loaded) => {
+                                                                    awaitModal.emit(true);
+                                                                },
+                                                                error: () => {
+                                                                    awaitModal.emit(true);
+                                                                }
+                                                            });
+                                                        },
+                                                        error: () => {
+                                                            awaitModal.emit(true);
+                                                        }
+                                                    })
                                                 });
-                                            },
-                                            error: () => {
-                                                awaitModal.emit(true);
-                                            }
-                                        })
-                                    });
-                                });
+                                            });
+                                        }
+                                    }
+                                })
                                 break;
                             case 'selectorgchart':
                                 this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {

@@ -81,6 +81,7 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
                 if (componentsetComponent.componentconfig.module && this.metadata.checkModuleAcl(componentsetComponent.componentconfig.module, 'create')) {
                     this.tabs.push({
                         module: componentsetComponent.componentconfig.module,
+                        label: componentsetComponent.componentconfig.label,
                         component: componentsetComponent.component,
                         componentconfig: componentsetComponent.componentconfig
                     });

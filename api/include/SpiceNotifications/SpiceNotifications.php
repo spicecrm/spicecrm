@@ -34,7 +34,8 @@ class SpiceNotifications
     const TYPE_GENERIC     = 'generic';
     const TYPE_RELATE     = 'relate';
 
-    public function __construct(SpiceBean $bean, string $type = self::TYPE_ASSIGNMENT, string $userId = null, ?string $text = null) {
+    public function __construct(SpiceBean $bean, string $type = self::TYPE_ASSIGNMENT, ?string $userId = null, ?string $text = null)
+    {
         $timedate = TimeDate::getInstance();
 
         $this->id = SpiceUtils::createGuid();
@@ -105,7 +106,7 @@ class SpiceNotifications
 
         if ($parsedTpl === false) return;
 
-        $sendToEmail = $this->assignedUser->email1;
+        $sendToEmail = $this->assignedUser->user_email;
         if (empty($sendToEmail)) {
             LoggerManager::getLogger()->warn("Notifications: No e-mail address set for user '{$this->assignedUser->user_name}', cancelling send.");
             return false;

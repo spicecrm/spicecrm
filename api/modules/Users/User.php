@@ -37,6 +37,7 @@
 namespace SpiceCRM\modules\Users;
 
 use Exception;
+use SpiceCRM\extensions\modules\TextMessages\TextMessage;
 use SpiceCRM\extensions\modules\TextMessageTemplates\TextMessageTemplate;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
@@ -343,9 +344,11 @@ class User extends SpiceBean
 
         // get the parent if we have one
         if($this->parent_type && $this->parent_id){
-            $parent = BeanFactory::getBean($this->parent_type, $this->parent_id);
+            $parent = BeanFactory::getBean($this->parent_type, $this->parent_id, ['relationships' => false]);
             if($parent){
-                $this->user_image = $parent->image;
+                if ($parent->image) {
+                    $this->user_image = $parent->image;
+                }
                 $this->salutation = $parent->salutation;
                 $this->first_name = $parent->first_name;
                 $this->last_name = $parent->last_name;
@@ -675,13 +678,13 @@ class User extends SpiceBean
      * Replacement for the deprecated sendEmailForPassword function, to be used with KREST.
      * Sends a new password to the user.
      *
-     * @param EmailTemplate|TextMessageTemplate $template
+     * @param EmailTemplate|TextMessageTemplate|null $template
      * @param string $type
      * @param array $additionalData
      * @return array
      * @throws Exception
      */
-    public function sendCredentialToUser(EmailTemplate | TextMessageTemplate $template, string $type, array $additionalData = []): array
+    public function sendCredentialToUser(EmailTemplate | TextMessageTemplate | null  $template, string $type, array $additionalData = []): array
     {
         $result = ['status' => false];
 
@@ -704,25 +707,45 @@ class User extends SpiceBean
 
             $result['status'] = true;
         } else {
+
             $compiledContent = $template->parse($this, $additionalData);
-            $template->body_html = $compiledContent['body_html'];
-            $template->body = $compiledContent['body'];
-            $template->subject = $compiledContent['subject'];
 
-            $itemail = $this->email1;
+            if ($sendChannel == 'sms') {
 
-            /** @var Email $emailObj */
-            $emailObj = BeanFactory::getBean('Emails');
-            $emailObj->name = DBUtils::fromHtml($template->subject);
-            $emailObj->body = DBUtils::fromHtml($template->body_html);
-            $emailObj->addEmailAddress('to', $itemail);
+                /** @var TextMessage $sms */
+                $sms = BeanFactory::newBean('TextMessages');
+                $sms->description = $compiledContent;
+                $sms->msisdn = $this->phone_mobile;
+                $sms->mailbox_id = $mailboxId;
 
-            try {
-                $response = $emailObj->sendEmail();
-            } catch (Exception $e) {
-                $result['message'] = $e->getMessage();
-                return $result;
+                try {
+                    $response = $sms->send();
+                } catch (Exception $e) {
+                    $result['message'] = $e->getMessage();
+                }
+
+            } else {
+                $template->body_html = $compiledContent['body_html'];
+                $template->body = $compiledContent['body'];
+                $template->subject = $compiledContent['subject'];
+
+                $itemail = $this->email1;
+
+                /** @var Email $emailObj */
+                $emailObj = BeanFactory::getBean('Emails');
+                $emailObj->name = DBUtils::fromHtml($template->subject);
+                $emailObj->body = DBUtils::fromHtml($template->body_html);
+                $emailObj->mailbox_id = $mailboxId;
+                $emailObj->addEmailAddress('to', $itemail);
+
+                try {
+                    $response = $emailObj->sendEmail();
+                } catch (Exception $e) {
+                    $result['message'] = $e->getMessage();
+                    return $result;
+                }
             }
+
 
             if ($response['result']) {
                 $result['status'] = true;
@@ -900,7 +923,7 @@ class User extends SpiceBean
 
     public static function isAdmin_byName( $username ) {
         $db = DBManagerFactory::getInstance();
-        return (boolean)$db->getOne("SELECT is_admin FROM users WHERE deleted = 0 AND user_name = '".$db->quote( $username )."'" );
+        return (bool)$db->getOne("SELECT is_admin FROM users WHERE deleted = 0 AND user_name = '".$db->quote( $username )."'" );
     }
 
     /**
@@ -930,7 +953,7 @@ class User extends SpiceBean
      * @return void
      */
     private function buildReportees($userID, &$reportees){
-        $reporttoIDs = $this->db->fetchAll("SELECT id FROM users WHERE reports_to_id='{$userID}'");
+        $reporttoIDs = $this->db->fetchAll("SELECT id FROM users WHERE reports_to_id='{$userID}' AND status = 'Active'");
         foreach ($reporttoIDs as $reporttoID) {
             if(!in_array($reporttoID['id'], $reportees) && $reporttoID['id'] != $this->id){
                 $reportees[] = $reporttoID['id'];
@@ -1013,5 +1036,33 @@ class User extends SpiceBean
             'phone_home', 'phone_mobile', 'phone_work', 'phone_other', 'phone_fax',
             'primary_address_street', 'primary_address_city', 'primary_address_state', 'primary_address_postalcode', 'primary_address_country'
         ];
+    }
+
+    /**
+     * returns "the reports to" record from the parent record
+     * @params $level string employee|user user will force to return the related User object
+     * @return false|SpiceBean|null
+     */
+    public function getParentReportsTo($level = 'employee') : bool|SpiceBean {
+        $parentReportsTo = false;
+
+        if($this->parent_id && $this->parent_type){
+            $parent = BeanFactory::getBean($this->parent_type, $this->parent_id, ['relationships' => false]);
+            if($parent && $parent->load_relationship('reports_to_link')){
+                $parentReportsTo = BeanFactory::getBean($parent->_module, $parent->reports_to_id, ['relationships' => false]);
+                // get corresponding user - needed for workflow
+                if($level == 'user'){
+                    $parentReportsToUser = $parentReportsTo->get_linked_beans('users');
+                    if($parentReportsToUser[0]){
+                        $parentReportsTo = $parentReportsToUser[0];
+                    }
+                }
+            }
+        }
+        // fallback on user
+        if(!$parentReportsTo && $this->reports_to_id){
+            $parentReportsTo = BeanFactory::getBean($this->_module, $this->reports_to_id, ['relationships' => false]);
+        }
+        return $parentReportsTo;
     }
 }

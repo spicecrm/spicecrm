@@ -1,6 +1,6 @@
 <div class="slds-section" [ngClass]="{'slds-is-open': expanded, 'slds-m-around--none': margin == 'none'}">
     <h3 *ngIf="_title != ''" class="slds-section__title">
-        <ng-container *ngIf="collapsible; else simpleheader">
+        <ng-container *ngIf="collapsable; else simpleheader">
             <button aria-expanded="true" class="slds-button slds-section__title-action" (click)="togglePanel()">
                 <system-utility-icon icon="switch" size="x-small" addclasses="slds-section__title-action-icon slds-button__icon slds-button__icon_left"></system-utility-icon>
                 <div class="slds-grid slds-grid--vertical-align-center">

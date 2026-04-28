@@ -2,6 +2,9 @@
     <system-modal-header (close)="close()"><system-label label="LBL_SELECT_LEAD_TYPE"></system-label></system-modal-header>
     <system-modal-content>
         <object-record-fieldset [fieldset]="fieldset"></object-record-fieldset>
+        @if (promptId()) {
+            <system-input-file [ngModel]="leadFile()" [uploadFiles]="false" (ngModelChange)="createLeadFromFile($event)"/>
+        }
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>

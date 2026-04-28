@@ -734,7 +734,7 @@ export class model implements OnDestroy {
      * @param event
      */
     public evaluateValidationRules(field?: string, event?: 'change' | 'initialize') {
-        let validations = this.metadata.getModuleValidations(this.module);
+        let validations = this.metadata.getModuleValidations(this.module, true);
         if (!validations) {
             return true;
         }
@@ -818,11 +818,11 @@ export class model implements OnDestroy {
 
         let val_left = this.data[condition.fieldname];
         let val_right: null;
-        if (condition.comparator.match(/regex/g)) {
+        //if (condition.comparator.match(/regex/g)) {
             val_right = condition.valuations;
-        } else {
-            val_right = this.evaluateValidationParams(condition.valuations);
-        }
+        //} else {
+        //    val_right = this.evaluateValidationParams(condition.valuations);
+        //}
 
         check = modelutilities.compare(val_left, condition.comparator, val_right);
 
@@ -1191,7 +1191,7 @@ export class model implements OnDestroy {
                 !_.isEqual(
                     this.data[property] === null ? '' : this.data[property],
                     this.backupData[property] === null ? '' : this.backupData[property]
-                )
+                ) || (typeof this.data[property] == 'object' && JSON.stringify(this.data[property]) != JSON.stringify(this.backupData[property]))
             )) {
                 d[property] = this.data[property];
             }
@@ -1277,6 +1277,18 @@ export class model implements OnDestroy {
                                 lockingModalRef.instance.conflicts = error.error.error.conflicts;
                                 lockingModalRef.instance.responseSubject = responseSubject;
                             });
+                            break;
+                        case 422:
+                            if (notify) {
+                                this.toast.sendToast(this.language.getLabel("LBL_UNPROCESSABLE_ENTRY") + " " + error.status, "error", error.error.error.lbl ? this.language.getLabel( error.error.error.lbl ) : error.error.error.message, 5 );
+                            }
+                            if(error.error?.error?.details?.fields){
+                                error.error.error.details.fields.forEach(f => {
+                                    return this.setFieldMessage('error', f.msg, f.field, null);
+                                })
+                            }
+                            responseSubject.error(error);
+                            responseSubject.complete();
                             break;
                         default:
                             if (notify) {
@@ -1761,7 +1773,7 @@ export class model implements OnDestroy {
     /*
     * open an edit modal using the injecor from the provider
      */
-    public edit(reload: boolean = false, componentSet: string = ""): Observable<any> {
+    public edit(reload: boolean = false, componentconfig: any = undefined): Observable<any> {
         // check if the user can edit
         if (!this.checkAccess("edit")) {
             return of(false);
@@ -1775,8 +1787,8 @@ export class model implements OnDestroy {
             if (editModalRef) {
 
                 // check if a requested componentset for the modal was passed in
-                if (componentSet && componentSet != "") {
-                    editModalRef.instance.componentSet = componentSet;
+                if (componentconfig) {
+                    editModalRef.instance.componentconfig = componentconfig;
                 }
 
                 // check if the model shoudl be reloaded

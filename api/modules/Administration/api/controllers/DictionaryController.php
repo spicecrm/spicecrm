@@ -6,7 +6,11 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\api\controllers\MigrateController;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
@@ -310,13 +314,13 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
      */
     public function getAuditFields(Request $req, Response $res, array $args): Response
     {
-        $fields = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
+        $auditFields = SpiceDictionary::getInstance()->getDefs('audit')['fields'];
 
         $fields = array_values(
             array_map(function ($field) {
                 $field['id'] = "field:{$field['name']}";
                 return $field;
-            }, $fields)
+            }, $auditFields)
         );
 
         return $res->withJson(array_values($fields));

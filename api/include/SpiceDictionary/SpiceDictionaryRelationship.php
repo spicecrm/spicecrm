@@ -97,12 +97,12 @@ class SpiceDictionaryRelationship
     }
 
     /**
-     * get the join table fields
+     * get the relationship fields for join table
      * @param string $definitionId
      * @return array
      */
-    public function getJoinTableFields(string $definitionId): array
+    public function getRelationshipFieldsForJoinTable(string $definitionId): array
     {
-        return SpiceDictionaryRelationships::getInstance()->getJoinTableFields($definitionId, $this->id);
+        return SpiceDictionaryRelationships::getInstance()->getRelationshipFieldsForJoinTable($definitionId, $this->id);
     }
 }

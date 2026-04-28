@@ -2,8 +2,10 @@
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SpiceUI\SpiceUIPackageValidator;
 
 class ConfServerController
 {
@@ -152,6 +154,13 @@ class ConfServerController
             'sysuiroles',
             'sysuiroutes',
             'workflowtasktypes',
+            'sysprocessmgmtsystemclausetemplates',
+            'sysprocessmgmtsystemscopetemplates',
+            'syshazardousmaterialimages',
+            'spicebeanguides',
+            'spicebeanguidestages',
+            'sysaiprompts',
+            'sysaipromptinputmethods'
         ];
 
         $tableArray = [];
@@ -176,7 +185,7 @@ class ConfServerController
             while ($record = $db->fetchByAssoc($records)) {
                 $tmpRec = [];
                 foreach ($record as $field => $value) {
-                    $tmpRec[$field] = html_entity_decode(utf8_encode($value));
+                    $tmpRec[$field] = html_entity_decode(mb_check_encoding($value, 'UTF-8') ? $value : mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1'));
                 }
                 $tableArray[$table][$record['id']] = base64_encode(json_encode($tmpRec));
             }
@@ -191,7 +200,7 @@ class ConfServerController
             if($refRecordEntry) {
                 $tmpRec = [];
                 foreach ($refRecordEntry as $field => $value) {
-                    $tmpRec[$field] = html_entity_decode(utf8_encode($value));
+                    $tmpRec[$field] = html_entity_decode(mb_check_encoding($value, 'UTF-8') ? $value : mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1'));
                 }
                 $tableArray[$refRecord['tablename']][$refRecord['tablekey']] = base64_encode(json_encode($tmpRec));
             }
@@ -235,6 +244,23 @@ class ConfServerController
         }
 
         return $res->withJson($tableArray);
+    }
+
+    /**
+     * Validate package entries. Checking if they exist and if the package declaration
+     * corresponds between the entries
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     * @throws Exception
+     */
+    public function validatePackages(Request $req, Response $res, array $args): Response
+    {
+        $packageValidator = new SpiceUIPackageValidator();
+        return $res->withJson($packageValidator->validate());
     }
 
 }

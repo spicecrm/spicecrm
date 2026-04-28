@@ -5,25 +5,32 @@ namespace SpiceCRM\includes;
 abstract class SpiceSingleton
 {
     /**
-     * the instance for the singleton pattern
+     * the instances for the singleton pattern
      *
      * @var
      */
-    protected static $instance = null;
+    private static array $instances = [];
+
 
     protected function __construct() {}
 
-    final protected function __clone() {}
+    final protected function __clone(): void {}
 
     /**
      * @return static
      */
-    final public static function getInstance(): self {
-        static $instances = [];
-        $calledClass = get_called_class();
-        if(!isset($instances[$calledClass])){
-            $instances[$calledClass] = new $calledClass();
-        }
-        return $instances[$calledClass];
+    final public static function getInstance(): static
+    {
+        return self::$instances[static::class] ??= new static();
+    }
+
+    final public function __serialize(): array
+    {
+        throw new \LogicException(static::class . ' cannot be serialized');
+    }
+
+    final public function __unserialize(array $data): void
+    {
+        throw new \LogicException(static::class . ' cannot be unserialized');
     }
 }

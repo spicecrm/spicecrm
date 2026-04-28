@@ -27,7 +27,9 @@ export class currency {
                 id: c.id,
                 name: c.name,
                 iso: c.iso4217,
-                symbol: c.currency_symbol
+                symbol: c.currency_symbol,
+                exchange_rate: c.exchange_rate,
+                is_systemcurrency: c.is_systemcurrency
             }
         });
     }
@@ -41,4 +43,28 @@ export class currency {
         }
     }
 
+    /**
+     * convert currency amount from base amount
+     * @param currencyId
+     * @param amount
+     * @param precision
+     */
+    public convertFromBase(currencyId: string, amount: number, precision: number = 6): number {
+
+        const systemCurrency = this.currencies.find(cur => cur.is_systemcurrency == 1);
+
+        if (currencyId === systemCurrency.id) {
+            return amount;
+        }
+
+        const currency = this.currencies.find(cur => cur.id == currencyId);
+
+        if (!currency.exchange_rate) {
+            return amount;
+        }
+
+        const convertedAmount = amount * currency.exchange_rate;
+        const multiplier = Math.pow(10, precision);
+        return Math.round(convertedAmount * multiplier) / multiplier;
+    }
 }

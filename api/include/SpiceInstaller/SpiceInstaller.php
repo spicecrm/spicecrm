@@ -149,70 +149,15 @@ class SpiceInstaller
      * @return array
      */
 
-    public function checkSystem()
+    public function checkSystem(): array
     {
         $requirements = [];
+        // Checking if the necessary PHP extensions are loaded.
+        $requirements = $this->checkExtensionsFromComposer();
+
         // check php version
-        if (version_compare(phpversion(), '8.0', '<')) {
-            $requirements['php'] = false;
-        } else {
-            $requirements['php'] = true;
-        }
-
-        // check PCRE version
-        if (version_compare(PCRE_VERSION, '7.0') < 0) {
-            $requirements['pcre'] = false;
-        } else {
-            $requirements['pcre'] = true;
-        }
-
-        // check gd
-        if (!extension_loaded('gd') && !extension_loaded('gd2')) {
-            $requirements['gd'] = false;
-        } else {
-            $requirements['gd'] = true;
-        }
-
-        // check curl
-        if (!function_exists('curl_version')) {
-            $requirements['curl'] = false;
-        } else {
-            $requirements['curl'] = true;
-        }
-        // check xml parser
-        if (!function_exists('xml_parser_create')) {
-            $requirements['xml_parser'] = false;
-        } else {
-            $requirements['xml_parser'] = true;
-        }
-        //check mbstrings enabled in php.ini
-        if (!function_exists('mb_strlen')) {
-            $requirements['mbstrings'] = false;
-        } else {
-            $requirements['mbstrings'] = true;
-        }
-        //check zip
-        if (!class_exists('ZipArchive')) {
-            $requirements['zip'] = false;
-        } else {
-            $requirements['zip'] = true;
-        }
-
-        //check mailparse
-//        if (!function_exists('mailparse_msg_parse_file')) {
-//            $requirements['mailparse'] = false;
-//        } else {
-//            $requirements['mailparse'] = true;
-//        }
-
-        // check imap
-        if (!function_exists('imap_qprint')) {
-            $requirements['imap'] = false;
-        } else {
-            $requirements['imap'] = true;
-        }
-
-        $requirements['bcmath'] = extension_loaded('bcmath');
+        $requirements['php'] = version_compare(PHP_VERSION, '8.2', '>=');
+        $requirements['gd']         = extension_loaded('gd') || extension_loaded('gd2');
 
         # check package pear
         include_once 'System.php';
@@ -282,16 +227,30 @@ class SpiceInstaller
             $requirements['upload_dir'] = true;
         }
 
-        // check that we have true for all the requirements
-        if (in_array(false, $requirements)) {
-            $outcome = false;
-        } else {
-            $outcome = true;
+        return [
+            'success'      => !in_array(false, $requirements), // check that we have true for all the requirements
+            "requirements" => $requirements,
+        ];
+    }
+
+    /**
+     * Reads the required PHP extensions from composer.json and checks if they are loaded.
+     *
+     * @return array
+     */
+    private function checkExtensionsFromComposer(): array
+    {
+        $requirements = [];
+        $composer = json_decode(file_get_contents(__DIR__ . '/../../composer.json'), true);
+
+        foreach ($composer['require'] as $name => $version) {
+            if (str_starts_with($name, 'ext-')) {
+                $extension = substr($name, 4);
+                $requirements[$extension] = extension_loaded($extension);
+            }
         }
 
-        return [
-            'success' => $outcome,
-            "requirements" => $requirements];
+        return $requirements;
     }
 
     /**

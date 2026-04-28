@@ -76,10 +76,6 @@ export class ObjectFileActionMenu {
      *
      */
     public deleteFolder() {
-        // chek that we do not have items in the folder
-        if(this.modelattachments.itemsInFolder(this.file.id) > 0) return;
-
-        // prompt and delete
         this.modalservice.confirm(this.language.getLabel('QST_DELETE_FOLDER'), this.language.getLabel('QST_DELETE_FOLDER', null, 'short')).subscribe((answer) => {
             if (answer) this.modelattachments.deleteAttachment(this.file.id);
         });

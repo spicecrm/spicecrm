@@ -41,6 +41,10 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
         array (
             'Wrench\\' => 7,
         ),
+        'T' => 
+        array (
+            'TrueBV\\' => 7,
+        ),
         'S' => 
         array (
             'Symfony\\Polyfill\\Php81\\' => 23,
@@ -55,11 +59,9 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
             'SpiceCRM\\includes\\' => 18,
             'SpiceCRM\\extensions\\includes\\' => 29,
             'SpiceCRM\\extensions\\' => 20,
-            'SpiceCRM\\data\\' => 14,
             'SpiceCRM\\custom\\modules\\' => 24,
             'SpiceCRM\\custom\\includes\\' => 25,
             'SpiceCRM\\custom\\' => 16,
-            'SpiceCRM\\KREST\\' => 15,
             'Slim\\Psr7\\' => 10,
             'Slim\\' => 5,
             'SendinBlue\\Client\\' => 18,
@@ -198,6 +200,10 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
         array (
             0 => __DIR__ . '/..' . '/chrome-php/wrench/src',
         ),
+        'TrueBV\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/true/punycode/src',
+        ),
         'Symfony\\Polyfill\\Php81\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php81',
@@ -246,10 +252,6 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
         array (
             0 => __DIR__ . '/../..' . '/extensions',
         ),
-        'SpiceCRM\\data\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/data',
-        ),
         'SpiceCRM\\custom\\modules\\' => 
         array (
             0 => __DIR__ . '/../..' . '/custom/modules',
@@ -261,10 +263,6 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
         'SpiceCRM\\custom\\' => 
         array (
             0 => __DIR__ . '/../..' . '/custom',
-        ),
-        'SpiceCRM\\KREST\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/KREST',
         ),
         'Slim\\Psr7\\' => 
         array (

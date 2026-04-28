@@ -54,7 +54,11 @@ class EmailTrackingActionsSchedulerJobTasks
 
             $bean = BeanFactory::getBean($item['record_module'], $item['record_id']);
 
-            if(!$bean) return;
+            if(!$bean) {
+                $emailTrackingActionBean->update_bean = 2;
+                $emailTrackingActionBean->save();
+                continue;
+            }
 
             // update beans
             switch ($item['record_module']) {

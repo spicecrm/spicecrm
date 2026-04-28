@@ -126,7 +126,7 @@ export class fieldHtml extends fieldGeneric implements OnInit {
      * a getter for the value bound top the model
      */
     get value() {
-        return this.model.getField(this.fieldname);
+        return super.value;
     }
 
     /**

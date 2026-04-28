@@ -255,8 +255,6 @@ class SpiceUrls
         // get status http code & push it
         $info = curl_getinfo($ch);
 
-        curl_close($ch);
-
         return ['rawHtml' => $curlData, 'httpCode' => $info['http_code']];
     }
 

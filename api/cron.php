@@ -18,7 +18,7 @@ register_shutdown_function(function () {
 require_once 'vendor/autoload.php';
 
 global $overCLI;
-$overCLI = substr(php_sapi_name(), 0, 3) == 'cli';
+$overCLI = str_starts_with(php_sapi_name(), 'cli');
 
 if (!$overCLI) {
     SpiceUtils::sugarDie("CLI only.");

@@ -5,7 +5,7 @@
 
             @if (isEditMode()) {
                 @if (isTranslatable) {
-                    <button (click)="fieldTranslatableText.openTranslationsModal(true, true)" class="slds-button slds-button--icon">
+                    <button (click)="fieldTranslatableText.openTranslationsModal(true, 'richtext')" class="slds-button slds-button--icon">
                         <system-button-icon icon="translate" size="xx-small"/>
                     </button>
                 }
@@ -16,7 +16,7 @@
             }
         }
     </div>
-    <button *ngIf="!isEditMode() && isEditable()" class="slds-button slds-button--icon slds-m-left--xx-small spice-hover-button" (click)="setEditMode()">
+    <button *ngIf="!isEditMode() && isEditable()" class="slds-button slds-button--icon slds-m-left--xx-small spice-hover-button spice-button-icon-light" (click)="setEditMode()">
         <system-button-icon [icon]="'edit'"></system-button-icon>
     </button>
 </div>
@@ -73,7 +73,7 @@
         </li>
         @if (!displayLabel && isTranslatable) {
             <li>
-                <button (click)="fieldTranslatableText.openTranslationsModal(true, true)" class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" aria-pressed=true system-title="LBL_TRANSLATE">
+                <button (click)="fieldTranslatableText.openTranslationsModal(true, 'richtext')" class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" aria-pressed=true system-title="LBL_TRANSLATE">
                     <system-button-icon icon="translate"></system-button-icon>
                 </button>
             </li>

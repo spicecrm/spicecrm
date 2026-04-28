@@ -54,6 +54,11 @@ $routes = [
                     ValidationMiddleware::VOPT_REGEX => '/^\d{10}$/',
                 ],
             ],
+            'pinned' => [
+                'in' => 'query',
+                'description' => 'Pinned log entries.',
+                'type' => ValidationMiddleware::TYPE_BOOL
+            ]
         ]
     ],
     [
@@ -93,7 +98,7 @@ $routes = [
         'method'      => 'get',
         'route'       => '/admin/apilog/logtables',
         'class'       => LogViewController::class,
-        'function'    => 'APIlogGetLogTables',
+        'function'    => 'APIlogGetAdditionalLogTables',
         'description' => 'returns the available apilog tables',
         'options'     => ['adminOnly' => true]
     ],
@@ -221,6 +226,11 @@ $routes = [
                 'in' => 'query',
                 'description' => 'Start date and hour of the requested REST log entries.',
                 'type' => ValidationMiddleware::TYPE_DATETIME
+            ],
+            'pinned' => [
+                'in' => 'query',
+                'description' => 'Pinned log entries.',
+                'type' => ValidationMiddleware::TYPE_BOOL
             ]
         ]
     ],
@@ -287,6 +297,51 @@ $routes = [
                 'in' => 'body',
                 'description' => '',
                 'type' => ValidationMiddleware::TYPE_STRING
+            ]
+        ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/admin/apilog/{id}/pin',
+        'class'       => LogViewController::class,
+        'function'    => 'APIlogSetPinned',
+        'description' => 'Get the config for the api log',
+        'options'     => ['adminOnly' => true, 'validate' => true],
+        'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'the id of the entry',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
+            'pinned' => [
+                'in' => 'body',
+                'description' => 'ttruw or false to activate or deactivate ',
+                'type' => ValidationMiddleware::TYPE_BOOL
+            ],
+            'logtable' => [
+                'in' => 'query',
+                'description' => 'the name of the logtable',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ]
+        ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/admin/crmlog/{id}/pin',
+        'class'       => LogViewController::class,
+        'function'    => 'CRMlogSetPinned',
+        'description' => 'todo',
+        'options'     => ['adminOnly' => true, 'validate' => true],
+        'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'the id of the entry',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
+            'pinned' => [
+                'in' => 'body',
+                'description' => 'todo',
+                'type' => ValidationMiddleware::TYPE_BOOL
             ]
         ]
     ]

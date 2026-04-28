@@ -666,12 +666,12 @@ class SpiceDictionaryRelationships
     }
 
     /**
-     * get the join table fields
+     * get the relationship fields for join table
      * @param string $dictionaryId
      * @param string $relationshipId
      * @return array
      */
-    public function getJoinTableFields(string $dictionaryId, string $relationshipId): array
+    public function getRelationshipFieldsForJoinTable(string $dictionaryId, string $relationshipId): array
     {
         return $this->relationshipFieldsByRelationAndDefinitionId["$relationshipId::$dictionaryId"] ?? [];
     }

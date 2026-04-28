@@ -12,7 +12,7 @@ import {
     Output,
     EventEmitter,
     Input,
-    OnChanges
+    OnChanges, output, signal
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
@@ -36,8 +36,14 @@ export class ACLProfilesManagerAddObjectModal {
     public activeObjectId: string = '';
     public searchterm: string = '';
     public loading: boolean = false;
-
-    @Output() public aclobject: EventEmitter<any> = new EventEmitter<any>();
+    /**
+     * output for selected objects
+     */
+    public selectedObjects$ = output<any[]>();
+    /**
+     * holds the selected objects
+     */
+    public selectedObjects = signal<any[]>([]);
 
     constructor(public language: language, public backend: backend) {
         this.backend.getRequest('module/SpiceACLObjects/modules').subscribe(acltypes => {
@@ -95,15 +101,36 @@ export class ACLProfilesManagerAddObjectModal {
         return '';
     }
 
+    /**
+     * select an object
+     * @param aclobject
+     */
     public selectObject(aclobject) {
+        if (this.selectedObjects().some(o => o.id == aclobject.id)) {
+            return;
+        }
 
         aclobject.module = this.currentModule;
-        this.aclobject.emit(aclobject);
-        this.close();
+        this.selectedObjects.set(
+            [...this.selectedObjects(), aclobject]
+        );
+    }
+
+    /**
+     * remove an object from the selected objects
+     */
+    public removeObject(id: string) {
+        this.selectedObjects.set(
+            this.selectedObjects().filter(o => o.id != id)
+        );
     }
 
     public close() {
         this.self.destroy();
     }
 
+    public save() {
+        this.selectedObjects$.emit(this.selectedObjects());
+        this.close();
+    }
 }

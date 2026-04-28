@@ -80,7 +80,7 @@ class Mailbox extends SpiceBean {
     /**
      * @var string TODO check if that should go into the dictionary
      */
-    public string $smtp_auth;
+    public ?bool $smtp_auth;
 
     /**
      * @var string TODO check if that should go into the dictionary
@@ -95,7 +95,7 @@ class Mailbox extends SpiceBean {
     /**
      * @var int TODO check if that should go into the dictionary
      */
-    public int $smtp_port;
+    public int|string $smtp_port;
 
     /**
      * @var bool TODO check if that should go into the dictionary

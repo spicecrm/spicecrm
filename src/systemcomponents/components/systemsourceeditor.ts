@@ -30,7 +30,7 @@ export class SystemSourceEditor implements OnInit, OnDestroy, ControlValueAccess
      * @default html
      * @private
      */
-    @Input() private language: 'html' | 'javascript' | 'php' | 'css' | 'json' | 'typescript' | 'mysql' | string = 'html';
+    @Input() public language: 'html' | 'javascript' | 'php' | 'css' | 'json' | 'typescript' | 'mysql' | string = 'html';
     /**
      * show/hide the toolbar
      */
@@ -157,6 +157,9 @@ export class SystemSourceEditor implements OnInit, OnDestroy, ControlValueAccess
      */
     public writeValue(code: string): void {
         this.sourceCode = code;
+        if (this.editor) {
+            this.editor.setValue(this.sourceCode);
+        }
     }
 
     /**

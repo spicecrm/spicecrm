@@ -1,0 +1,41 @@
+<system-modal size="small">
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_FIELDS"></system-label>
+    </system-modal-header>
+    <system-modal-content>
+        <table class="slds-table slds-table_bordered">
+            <thead>
+            <tr class="slds-line-height_reset">
+                <th class="" scope="col">
+                    <div class="slds-truncate"><system-label label="LBL_DOMAIN"/></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate"><system-label label="LBL_FIELD"/></div>
+                </th>
+                <th class="slds-cell-shrink" scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+                @for (field of usedIn(); track field.id) {
+                    <tr class="slds-hint-parent">
+                        <td>
+                            <div class="slds-truncate">{{field._domainName}}</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">{{field.name}}</div>
+                        </td>
+                        <td class="slds-cell-shrink">
+                            <button (click)="unlink(field)" system-title="LBL_UNLINK" class="slds-button slds-button--icon slds-col_bump-left --slds-c-button-color-border">
+                                <system-button-icon icon="unlinked" [colorclass]="'slds-icon-text-error'"></system-button-icon>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"/></button>
+    </system-modal-footer>
+</system-modal>

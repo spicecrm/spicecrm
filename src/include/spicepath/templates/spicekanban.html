@@ -64,6 +64,15 @@
                             </select>
                         </div>
                     </div>
+                    @if (componentconfig.show_currency_dropdown) {
+                        <div class="slds-form-element__control slds-col slds-p-left--x-small" style="width: 7rem">
+                            <system-select [ngModel]="currentCurrencyId()" (ngModelChange)="currentCurrencyId.set($event)" [idOnly]="true" [disabled]="currencies().length == 0" placeholder="LBL_CURRENCY">
+                                @for (currency of currencies(); track currency.id) {
+                                    <system-select-option [value]="currency.id" [display]="currency.iso + ' (' + currency.symbol + ')'" [displayselect]="currency.name + ' ' + currency.iso + ' (' + currency.symbol + ')'"/>
+                                }
+                            </system-select>
+                        </div>
+                    }
                 </div>
                 <div *ngIf="hiddenstages.length > 0 && (footerExpanded || layout.screenwidth != 'small')" class="slds-utility-bar__item slds-wrap slds-p-horizontal--x-small ">
                     <div *ngFor="let stage of hiddenstages" (cdkDropListDropped)="handleHiddenDrop($event)" cdkDropList [cdkDropListData]="stage" [cdkDropListEnterPredicate]="dropEnterAllowed(stage)" class="slds-box--border slds-m-around--xxx-small slds-align--absolute-center slds-theme--info">

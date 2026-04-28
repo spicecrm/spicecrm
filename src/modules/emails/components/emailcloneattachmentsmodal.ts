@@ -205,7 +205,8 @@ export class EmailCloneAttachmentsModal {
 
         const body = {
             categoryId: categoryId,
-            selectedFiles: selectedFiles
+            selectedFiles: selectedFiles,
+            excludedFileIds: []
         };
 
         this.backend.postRequest(`common/spiceattachments/module/${this.parent.module}/${this.parent.id}/clone/${this.model.module}/${this.model.id}`, {}, body, this.modelattachments.httpRequestsRefID).subscribe({

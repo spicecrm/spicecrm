@@ -132,7 +132,6 @@ ehthumbs.db
 Thumbs.db
 .~*
 .*~
-composer.lock
 xmlfiles
 package-lock.json
 

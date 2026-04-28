@@ -1,0 +1,20 @@
+<system-modal size="medium">
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_GENERATE_AI_CONTENT"/>
+    </system-modal-header>
+    <system-modal-content>
+        <div class="slds-grid slds-grid--vertical slds-height_full">
+            <textarea class="slds-size--1-of-1" style="height: 60vh; resize: none" [ngModel]="response()" disabled></textarea>
+            <div class="slds-grid slds-p-top--small">
+                <input type="text" [(ngModel)]="input" class="slds-input"/>
+                <button (click)="submit()" class="slds-button slds-m-left--xx-small slds-button--icon slds-button--icon-border-filled">
+                    <system-button-icon [icon]="response() ? 'refresh' : 'send'"/>
+                </button>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"/></button>
+        <button [disabled]="!response() || response().length == 0" class="slds-button slds-button--brand" (click)="confirm()"><system-label label="LBL_CONFIRM"/></button>
+    </system-modal-footer>
+</system-modal>

@@ -6,7 +6,7 @@ use Exception;
 use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
 use SpiceCRM\includes\authentication\interfaces\AuthResponse;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
@@ -25,10 +25,10 @@ class APIKeyAuthenticate extends SpiceCRMAuthenticate implements AuthenticatorI
                 $db = DBManagerFactory::getInstance();
                 $now = $db->now();
                 $apiKey = $this->encrypt($authData->token->access_token);
-                $userId = (string) $db->getOne("SELECT user_id FROM api_keys WHERE is_active = 1 AND (valid_until IS NULL OR valid_until <= $now) AND api_key = '$apiKey'");
+                $userId = (string) $db->getOne("SELECT user_id FROM api_keys WHERE is_active = 1 AND (expire_on IS NULL OR expire_on <= $now) AND api_key = '$apiKey'");
 
                 if (!$userId) {
-                    throw new UnauthorizedException('Invalid Token', 'InvalidToken');
+                    throw new UnauthorizedException('Invalid API Key', 'InvalidToken');
                 }
 
                 break;

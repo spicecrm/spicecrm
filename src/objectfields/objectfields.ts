@@ -31,6 +31,7 @@ import {fieldCurrency} from './components/fieldcurrency';
 import {fieldWeightedAmount} from './components/fieldweightedamount';
 import {fieldTotalAmount} from './components/fieldtotalamount';
 import {fieldEnum} from './components/fieldenum';
+import {fieldSelect} from './components/fieldselect';
 import {fieldLanguage} from './components/fieldlanguage';
 import {fieldEmailTo} from './components/fieldemailto';
 import {fieldEmailTemplates} from './components/fieldemailtemplates';
@@ -186,6 +187,7 @@ declare var _: any;
         fieldCompanies,
         fieldColor,
         fieldEnum,
+        fieldSelect,
         fieldLanguage,
         fieldEmailTo,
         fieldEmailTemplates,
@@ -320,7 +322,8 @@ declare var _: any;
         fieldEmailEmailAddressStatus,
         fieldVersion,
         fieldPackage,
-        fieldPhone
+        fieldPhone,
+        FieldTranslatableText
     ]
 })
 export class ObjectFields {}

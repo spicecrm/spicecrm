@@ -202,7 +202,6 @@ class WebHook
         $logEntryHandler->updateOutgoingLogEntry($curl, $response);
         $errors = curl_error($curl);
         $info = curl_getinfo($curl);
-        curl_close($curl);
 
         if($returnResponse) {
             if ($info['http_code'] < 300 && $info['http_code'] >= 200) {

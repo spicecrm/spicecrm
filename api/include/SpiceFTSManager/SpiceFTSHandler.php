@@ -305,12 +305,12 @@ class SpiceFTSHandler
         }
 
         $fh = @fopen('php://output', 'w');
-        fputcsv($fh, $postBody['fields'], $delimiter);
+        fputcsv(stream: $fh, fields: $postBody['fields'], separator: $delimiter, escape: '');
         foreach ($result as $thisBean) {
             $entryArray = [];
             foreach ($postBody['fields'] as $returnField)
                 $entryArray[] = !empty($charsetTo) ? mb_convert_encoding($thisBean[$returnField], $charsetTo) : $thisBean[$returnField];
-            fputcsv($fh, $entryArray, $delimiter);
+            fputcsv(stream: $fh, fields: $entryArray, separator: $delimiter, escape: '');
         }
         fclose($fh);
 
@@ -749,23 +749,28 @@ class SpiceFTSHandler
     }
 
     /**
-     *
      * function to search in a module
      *
      * @param $module
      * @param string $searchterm
+     * @param array $searchtags
      * @param array $aggregatesFilters
      * @param int $size
      * @param int $from
      * @param array $sort
      * @param array $addFilters
-     * @deprecated  bool $useWildcard
+     * @param bool $useWildcard deprecated
      * @param array $requiredFields
-     * @param array $source set to false if no source fields shopudl be returned
+     * @param bool $source set to false if no source fields should be returned
+     * @param array $addAggregates
+     * @param bool $useGlobalFilter
+     * @param string|null $listId
      *
      * @return array|mixed
      */
-    function searchModule($module, $searchterm = '', $searchtags = [], $aggregatesFilters = [], $size = 25, $from = 0, $sort = [], $addFilters = [], $useWildcard = false, $requiredFields = [], $source = true, $addAggregates = [], $useGlobalFilter = true, $listId = NULL)
+    public function searchModule($module, string $searchterm = '', array|null $searchtags = [], array $aggregatesFilters = [], int $size = 25,
+                          int $from = 0, array $sort = [], array $addFilters = [], bool $useWildcard = false, array $requiredFields = [],
+                          bool $source = true, array $addAggregates = [], bool $useGlobalFilter = true, ?string $listId = null): mixed
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
@@ -859,22 +864,6 @@ class SpiceFTSHandler
                 $queryParam['query']['bool']['should'] = $existsBlock;
                 $queryParam['query']['bool']['minimum_should_match'] = 1;
             }
-
-
-            //wildcard capability: change elasticsearch params!
-            /*
-            if ($useWildcard) {
-                $queryParam['query'] = [
-                    "bool" => [
-                        "should" => []
-                    ]
-                ];
-                foreach ($searchFields as $searchField) {
-                    $queryParam['query']['bool']['should'][] = ["wildcard" => [substr($searchField, 0, (strpos($searchField, "^") > 0 ? strpos($searchField, "^") : strlen($searchField))) => "$searchterm"]];
-                }
-
-            };
-            */
         }
 
         // if searchtags add an additional query for the must
@@ -1254,6 +1243,7 @@ class SpiceFTSHandler
 
             // prepare the aggregates
             $aggregatesFilters = [];
+            $addAggrs          = [];
             foreach ($aggregates[$module] as $aggregate) {
                 $aggregateDetails = explode('::', $aggregate);
                 $aggregatesFilters[$aggregateDetails[0]][] = $aggregateDetails[1];
@@ -1321,7 +1311,18 @@ class SpiceFTSHandler
             $params['buckets'] = json_decode($params['buckets'], true);
             if (is_array($params['buckets']) && count($params['buckets']) > 0) {
                 // get the full aggregates
-                $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, 0, 0, $sort, $addFilters, false, $required, $useGlobalFilter, 'globalSearch');
+                $searchresultsraw = $this->searchModule(
+                    module:            $module,
+                    searchterm:        $searchterm,
+                    searchtags:        $searchtags,
+                    aggregatesFilters: $aggregatesFilters,
+                    size:              0,
+                    sort:              $sort ?: [],
+                    addFilters:        $addFilters,
+                    requiredFields:    $required,
+                    useGlobalFilter:   $useGlobalFilter,
+                    listId:            'globalSearch',
+                );
                 $searchresults[$module] = $searchresultsraw['hits'] ?: ['hits' => [], 'total' => $this->elasticHandler->getHitsTotalValue($searchresultsraw)];
                 $searchresults[$module]['aggregations'] = $searchresultsraw['aggregations'];
 
@@ -1332,14 +1333,26 @@ class SpiceFTSHandler
                             $params['buckets']['bucketfield'] . '.raw' => $bucketitem['bucket']
                         ]
                     ];
-                    $addAggrs = [];
                     if ($params['buckets']['buckettotal']) {
                         foreach ($params['buckets']['buckettotal'] as $item) {
                             $addAggrs['_bucket_agg_' . $item['name']] = [$item['function'] => ['field' => $item['name'] . '.agg']];
                         }
                     }
 
-                    $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $bucketitem['items'] ?: 0, $sort, array_merge($addFilters, $bucketfilters), $useWildcard, $required, true, $addAggrs, $useGlobalFilter, 'globalSearch');
+                    $searchresultsraw = $this->searchModule(
+                        module:            $module,
+                        searchterm:        $searchterm,
+                        searchtags:        $searchtags,
+                        aggregatesFilters: $aggregatesFilters,
+                        size:              $params['records'] ?: 5,
+                        from:              $bucketitem['items'] ?: 0,
+                        sort:              $sort ?: [],
+                        addFilters:        array_merge($addFilters, $bucketfilters),
+                        requiredFields:    $required,
+                        addAggregates:     $addAggrs,
+                        useGlobalFilter:   $useGlobalFilter,
+                        listId:            'globalSearch',
+                    );
                     foreach ($searchresultsraw['hits']['hits'] as &$hit) {
                         $seed = BeanFactory::getBean($module, $hit['_id'], ['forceRetrieve' => true]);
 
@@ -1382,7 +1395,20 @@ class SpiceFTSHandler
                 $searchresults[$module]['buckets'] = $params['buckets'];
             } else {
 
-                $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $params['start'] ?: 0, $sort, $addFilters, false, $required, true, $addAggrs, $useGlobalFilter, 'globalSearch');
+                $searchresultsraw = $this->searchModule(
+                    module:            $module,
+                    searchterm:        $searchterm,
+                    searchtags:        $searchtags,
+                    aggregatesFilters: $aggregatesFilters,
+                    size:              $params['records'] ?: 5,
+                    from:              $params['start'] ?: 0,
+                    sort:              $sort ?: [],
+                    addFilters:        $addFilters,
+                    requiredFields:    $required,
+                    addAggregates:     $addAggrs,
+                    useGlobalFilter:   $useGlobalFilter,
+                    listId:            'globalSearch',
+                );
                 $searchresults[$module] = $searchresultsraw['hits'] ?: ['hits' => [], 'total' => $this->elasticHandler->getHitsTotalValue($searchresultsraw)];
 
                 if ($searchresultsraw['error']) {
@@ -1548,7 +1574,19 @@ class SpiceFTSHandler
                 }
 
                 // add the aggregates
-                $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $bucketitem['items'] ?: 0, $sort, array_merge($addFilters, $bucketfilters), false, $required, true, $addAggrs, true, $params['listid']);
+                $searchresultsraw = $this->searchModule(
+                    module:            $module,
+                    searchterm:        $searchterm,
+                    searchtags:        $searchtags,
+                    aggregatesFilters: $aggregatesFilters,
+                    size:              $params['records'] ?: 5,
+                    from:              $bucketitem['items'] ?: 0,
+                    sort:              $sort ?: [],
+                    addFilters:        array_merge($addFilters, $bucketfilters),
+                    requiredFields:    $required,
+                    addAggregates:     $addAggrs,
+                    listId:            $params['listid'],
+                );
                 // only add when not hidden
                 if($bucketitem['hidden'] === false) {
                     foreach ($searchresultsraw['hits']['hits'] as &$hit) {
@@ -1576,14 +1614,35 @@ class SpiceFTSHandler
                     $params['buckets']['bucketfield'] . '.raw' => $terms
                 ]
             ];
-            $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, 0, 0, $sort, array_merge($addFilters, $bucketfilters), false, $required, true, [], true, $params['listid']);
+            $searchresultsraw = $this->searchModule(
+                module:            $module,
+                searchterm:        $searchterm,
+                searchtags:        $searchtags,
+                aggregatesFilters: $aggregatesFilters,
+                size:              0,
+                sort:              $sort ?: [],
+                addFilters:        array_merge($addFilters, $bucketfilters),
+                requiredFields:    $required,
+                listId:            $params['listid'],
+            );
             $searchresults['total'] = $this->elasticHandler->getHitsTotalValue($searchresultsraw);
             $searchresults['aggregations'] = $searchresultsraw['aggregations'];
 
             // return the upodated bnucket items
             $searchresults['buckets'] = $params['buckets'];
         } else {
-            $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $params['start'] ?: 0, $sort, $addFilters, false, $required,true, [], true, $params['listid']);
+            $searchresultsraw = $this->searchModule(
+                module:            $module,
+                searchterm:        $searchterm,
+                searchtags:        $searchtags,
+                aggregatesFilters: $aggregatesFilters,
+                size:              $params['records'] ?: 5,
+                from:              $params['start'] ?: 0,
+                sort:              $sort ?: [],
+                addFilters:        $addFilters,
+                requiredFields:    $required,
+                listId:            $params['listid'],
+            );
             $searchresults = $searchresultsraw['hits'] ? ['hits' => $searchresultsraw['hits']['hits'], 'total' => $this->elasticHandler->getHitsTotalValue($searchresultsraw)] : ['hits' => [], 'total' => 0];
 
             if ($searchresultsraw['error']) {
@@ -1653,7 +1712,17 @@ class SpiceFTSHandler
         }
 
 
-        $searchresultsraw = $this->searchModule($module, $searchterm, [], $aggregatesFilters, $size, $from, $sort, $addFilters, false, $required, $source);
+        $searchresultsraw = $this->searchModule(
+            module:            $module,
+            searchterm:        $searchterm,
+            aggregatesFilters: $aggregatesFilters,
+            size:              $size,
+            from:              $from,
+            sort:              $sort ?: [],
+            addFilters:        $addFilters,
+            requiredFields:    $required,
+            source:            $source,
+        );
 
         return $searchresultsraw;
 

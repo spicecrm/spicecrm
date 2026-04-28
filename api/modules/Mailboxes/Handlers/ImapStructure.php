@@ -199,7 +199,7 @@ class ImapStructure
                 $this->email_body = $this->email_body;
                 break;
             case 'iso-8859-1':
-                $this->email_body = utf8_encode($this->email_body);
+                $this->email_body = mb_convert_encoding($this->email_body, 'UTF-8', 'ISO-8859-1');
                 break;
             default:
                 $this->email_body = $this->email_body;

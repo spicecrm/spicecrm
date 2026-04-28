@@ -6,6 +6,7 @@ use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceUI\SpiceUIPackageValidator;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryDomain
@@ -64,7 +65,8 @@ class SpiceDictionaryDomain
      * @return array
      * @throws Exception
      */
-    public function getFieldDefinitions(SpiceDictionaryItem $sysdictionaryItem = null){
+    public function getFieldDefinitions(?SpiceDictionaryItem $sysdictionaryItem = null): array
+    {
         $fieldDefinitions = [];
 
         $fields = SpiceDictionaryDomainFields::getInstance()->getDomainFields($this->id);

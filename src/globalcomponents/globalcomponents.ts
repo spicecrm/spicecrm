@@ -243,7 +243,8 @@ import {GlobalFieldTranslationsLanguageButton} from "./components/globalfieldtra
         GlobalComposeButton,
         GlobalHeaderSearchResultsItem,
         GlobalHeaderDocumentRevisionsModal,
-        GlobalLoginOAuth2
+        GlobalLoginOAuth2,
+        GlobalHeaderImage
     ]
 })
 export class GlobalComponents {

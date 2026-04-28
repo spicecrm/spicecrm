@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\modules\Emails;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceSingleton;
 
 class EmailTransactionHandler extends SpiceSingleton
@@ -39,6 +39,7 @@ class EmailTransactionHandler extends SpiceSingleton
             /** @var Email $email */
             $email = BeanFactory::getBean('Emails', $id);
             $email->to_be_sent_now = true;
+            $email->addressesToArray();
             $email->save();
         }
     }

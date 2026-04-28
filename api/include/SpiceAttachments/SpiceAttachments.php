@@ -83,8 +83,8 @@ class SpiceAttachments
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
-        if(!is_array($selectedFiles)) $selectedFiles = [];
-        if(count($selectedFiles) > 0) {
+        if (!is_array($selectedFiles)) $selectedFiles = [];
+        if (count($selectedFiles) > 0) {
             // get selected attachments
             $attachments = $selectedFiles;
         } else {
@@ -97,7 +97,8 @@ class SpiceAttachments
         foreach ($attachments as $attachment) {
 
             // do not clone excluded filenames
-            if($attachment['external_id'] && array_search($attachment['external_id'], $excludedFileIDs) !== false) continue;
+            if(!is_array($excludedFileIDs)) $excludedFileIDs = [];
+            if ($attachment['external_id'] && array_search($attachment['external_id'], $excludedFileIDs) !== false) continue;
 
             $attachment['id'] = SpiceUtils::createGuid();
             $attachment['bean_type'] = $beanName;
@@ -141,11 +142,11 @@ class SpiceAttachments
      * @param null $categoryId
      * @throws Exception
      */
-    public static function getAttachmentsCountPerBean(string $beanName, array $beanIds,  $returnFiles = false)
+    public static function getAttachmentsCountPerBean(string $beanName, array $beanIds, $returnFiles = false)
     {
         $attachments = [];
         foreach ($beanIds as $beanId) {
-          $attachments[$beanId] = self::getAttachmentsForBean($beanName,$beanId, 25, false);
+            $attachments[$beanId] = self::getAttachmentsForBean($beanName, $beanId, 25, false);
         }
         $res = $attachments;
         return $res;
@@ -208,7 +209,8 @@ class SpiceAttachments
                 'file_mime_type' => $file_mime_type,
                 'category_ids' => $file['category_ids'],
                 'external_id' => $file['external_id'],
-                'folder_id' => $file['folder_id']
+                'folder_id' => $file['folder_id'],
+                'display_name' => $file['display_name']
             ]);
             // $db->query("INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type, category_ids) VALUES ('{$guid}', '{$beanName}', '{$beanId}', '" . $current_user->id . "', '" . gmdate('Y-m-d H:i:s') . "', '{$filename}', '{$filesize}', '{$filemd5}', '{$file['text']}', '$thumbnail', 0, '{$file_mime_type}', '{$file['category_ids']}')");
         }
@@ -225,10 +227,30 @@ class SpiceAttachments
             'thumbnail' => $thumbnail,
             'filemd5' => $filemd5,
             'external_id' => $file['external_id'],
-            'category_ids' => $file['category_ids']
+            'category_ids' => $file['category_ids'],
+            'display_name' => $file['display_name']
         ];
         return $attachments;
     }
+
+
+    /**
+     * Will process multiple files
+     * @param $beanName
+     * @param $beanId
+     * @param $files
+     * @return array
+     * @throws Exception
+     */
+    public static function saveMultipleAttachmentHashFiles($beanName, $beanId, $files): array
+    {
+        $attachments = [];
+        foreach($files['files'] as $file){
+            $attachments[] = self::saveAttachmentHashFiles($beanName, $beanId, $file);
+        }
+        return $attachments;
+    }
+
 
     /**
      * saves a Folder
@@ -422,12 +444,26 @@ class SpiceAttachments
      * @throws ForbiddenException
      * @throws NotFoundException
      * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     * @throws Exception
      */
     public static function deleteAttachment($attachmentId): array
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
-        $result = $db->query("UPDATE spiceattachments SET deleted = 1 WHERE id='{$attachmentId}'");
+
+        $attachment = $db->fetchOne("SELECT * FROM spiceattachments WHERE id = '{$attachmentId}'");
+
+        if(!$attachment) throw new NotFoundException('Attachment not found.');
+
+        if ($attachment['file_mime_type'] == 'folder') {
+            $filesInFolder = self::getFilesInFolders([$attachment]);
+            if ($filesInFolder) {
+                $filesIds = implode("','" ,array_column($filesInFolder, 'id'));
+            }
+            $result = $db->query("UPDATE spiceattachments SET deleted = '1' WHERE id IN ('$filesIds')");
+        } else {
+            $result = $db->query("UPDATE spiceattachments SET deleted = '1' WHERE id='{$attachmentId}'");
+        }
         // disable user id check, now done in frontend
 //        $result = $db->query("UPDATE spiceattachments SET deleted = 1 WHERE id='{$attachmentId}'" . (!$current_user->is_admin ? " AND user_id='" . $current_user->id . "'" : ""));
 
@@ -545,6 +581,7 @@ class SpiceAttachments
             'date' => $thisAttachment['trdate'],
             'text' => nl2br($thisAttachment['text']),
             'filename' => $thisAttachment['filename'],
+            'display_name' => $thisAttachment['display_name'],
             'filesize' => $thisAttachment['filesize'],
             'file_mime_type' => $thisAttachment['file_mime_type'],
             'file' => $file,
@@ -589,7 +626,6 @@ class SpiceAttachments
                     imagejpeg($thumb);
                     $thumbnail = base64_encode(ob_get_contents());
                     ob_end_clean();
-                    imagedestroy($thumb);
 
                     return $thumbnail;
                 } else {
@@ -771,5 +807,44 @@ class SpiceAttachments
         $attachment['file_mime_type'] = 'text/html';
 
         return $attachment;
+    }
+
+    /**
+     * recursively collects the files from folders and it's subfolders
+     * @param array $folders
+     * @param array $allAttachments
+     * @return array
+     * @throws Exception
+     */
+    public static function getFilesInFolders(array $folders, array &$allAttachments = []): array {
+        $visited = [];
+
+        foreach ($folders as $folder) {
+            if (isset($visited[$folder['id']])) {
+                continue;
+            }
+
+            $visited[$folder['id']] = true;
+
+            $sql = "SELECT * FROM spiceattachments WHERE folder_id = '{$folder['id']}'";
+            $children = DBManagerFactory::getInstance()->fetchAll($sql);
+
+            $childFolders = [];
+
+            foreach ($children as $child) {
+                $child['folder_path'] = $folder['folder_path'] ? $folder['folder_path'] . DIRECTORY_SEPARATOR . $folder['filename'] : $folder['filename'];
+                $allAttachments[] = $child;
+
+                if ($child['file_mime_type'] == 'folder') {
+                    $childFolders[] = $child;
+                }
+            }
+
+            if (!empty($childFolders)) {
+                self::getFilesInFolders($childFolders, $allAttachments);
+            }
+        }
+
+        return $allAttachments;
     }
 }

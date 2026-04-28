@@ -38,6 +38,8 @@ class SpiceDictionaryLink
     //Used to store unsaved beans on this relationship that will be combined with the ones pulled from the DB if getBeans() is called.
     protected $tempBeans = [];
 
+    public $ignoreACL = false;
+
     /**
      * @param  $linkName String name of a link field in the module's vardefs
      * @param  $bean SpiceBean focus bean for this link (one half of a relationship)

@@ -51,6 +51,7 @@ export interface DictionaryItem {
     non_db?: number;
     exclude_from_audited?: number;
     required?: number;
+    unified_search?: number;
     default_value?: string;
     duplicate_merge?: number;
     is_sensitive?: number;

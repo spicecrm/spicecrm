@@ -38,6 +38,7 @@ namespace SpiceCRM\includes\DataStreams\wrappers;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\DataStreams\interfaces\StreamWrapperRegisterI;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceFileUtils;
 use RecursiveIteratorIterator;
@@ -345,6 +346,46 @@ class UploadStream extends StreamWrapperAbstract implements StreamWrapperRegiste
             $count++;
         }
         return ['size' => $size, 'count' => $count];
+    }
+
+    /**
+     * get file content
+     * @param string $md5
+     * @return string|null
+     */
+    public static function getFileContent(string $md5): ?string
+    {
+        return file_get_contents(self::getFilePath($md5));
+    }
+
+    /**
+     * get file content
+     * @param string $md5
+     * @return string|null
+     */
+    public static function getFileContentBase64(string $md5): ?string
+    {
+        return base64_encode(self::getFileContent($md5));
+    }
+
+    /**
+     * get file size
+     * @param string $md5
+     * @return int|null
+     */
+    public static function getFileSize(string $md5): ?int
+    {
+        return filesize(self::getFilePath($md5));
+    }
+
+    /**
+     * get file path
+     * @param string $md5
+     * @return string|null
+     */
+    public static function getFilePath(string $md5): ?string
+    {
+        return StreamFactory::getPathPrefix('upload') . $md5;
     }
 }
 

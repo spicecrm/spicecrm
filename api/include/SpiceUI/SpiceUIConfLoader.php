@@ -97,7 +97,13 @@ class SpiceUIConfLoader
         'sysmsgraphmappingsegmentitems',
         'sysmsgraphmappingmodules',
         'spiceaclmoduleactions',
-        'spiceaclmodulefields'
+        'spiceaclmodulefields',
+        'sysaiprompts',
+        'sysprocessmgmtsystemclausetemplates',
+        'sysprocessmgmtsystemscopetemplates',
+        'syshazardousmaterialimages',
+        'spicebeanguides',
+        'spicebeanguidestages'
     ];
 
     /**

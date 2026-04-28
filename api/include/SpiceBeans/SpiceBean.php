@@ -25,7 +25,7 @@ use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceNotes\SpiceNotes;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotificationsLoader;
 use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
-use SpiceCRM\includes\SugarCleaner;
+use SpiceCRM\includes\SpiceCleanerHelper;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysTrashCan\SysTrashCan;
 use SpiceCRM\includes\TimeDate;
@@ -1094,6 +1094,19 @@ class SpiceBean
         return [];
     }
 
+    /*
+     * Returns an array of beans of related data. Like get_linked_beans(), however disabling ACL.
+     */
+    function get_linked_beans_ignoreacl( $field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "", $relationships = false )
+    {
+        $this->load_relationship( $field_name );
+        $currentValue = $this->{$field_name}->ignoreACL;
+        $this->{$field_name}->ignoreACL = true;
+        $return = $this->get_linked_beans( $field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "", $relationships = false );
+        $this->{$field_name}->ignoreACL = $currentValue;
+        return $return;
+    }
+
     /**
      * CR1000509 get a collection of related beans
      * EXPERIMENTAL! DO NOT USE FOR NOW!
@@ -1182,7 +1195,11 @@ class SpiceBean
             if ($this->load_relationship($field_name)) {
                 // get fts count
                 if (!empty($searchterm)) {
-                    $filteredResults = SpiceFTSHandler::getInstance()->searchModule($this->$field_name->getRelatedModuleName(), $searchterm, [], [], 0, 0);
+                    $filteredResults = SpiceFTSHandler::getInstance()->searchModule(
+                        module:     $this->$field_name->getRelatedModuleName(),
+                        searchterm: $searchterm,
+                        size:       0,
+                    );
                     $count += ($filteredResults['hits']['total']['value'] ?: 0);
                 } else {
                     $count += $this->$field_name->getBeanCount([
@@ -1463,14 +1480,14 @@ class SpiceBean
             if (isset($def['dbType']))
                 $type .= $def['dbType'];
 
-            if ($def['type'] == 'html' || $def['type'] == 'longhtml') {
-                $this->$key = SugarCleaner::cleanHtml($this->$key, true);
+            if (!empty($this->$key) && $def['type'] == 'html' || $def['type'] == 'longhtml') {
+                $this->$key = SpiceCleanerHelper::cleanHtml($this->$key, true);
             } elseif ((strpos($type, 'char') !== false ||
                     strpos($type, 'text') !== false ||
                     $type == 'enum') &&
                 !empty($this->$key)
             ) {
-                $this->$key = SugarCleaner::cleanHtml($this->$key);
+                $this->$key = SpiceCleanerHelper::cleanHtml($this->$key);
             }
         }
     }
@@ -1804,6 +1821,9 @@ class SpiceBean
                         case 'asc':
                         case 'desc':
                             break;
+                        case 'isnull':
+                            $list_column[1] = 'IS NULL';
+                            break;
                         default:
                             LoggerManager::getLogger()->debug("process_order_by: ($list_column[1]) is not a valid order.");
                             unset($list_column[1]);
@@ -2045,6 +2065,10 @@ class SpiceBean
         $this->is_updated_dependent_fields = false;
         $this->fill_in_additional_detail_fields();
 
+        // populate the summary text
+        $this->summary_text = $this->get_summary_text();
+
+        // call the domain handlers on retrieve
         $this->callDomainHandlerMethod('onRetrieve');
 
         if ($relationships) {
@@ -2330,7 +2354,7 @@ class SpiceBean
             // fill in parents as well
             if (0 == strcmp($field['type'], 'parent') && !empty($this->{$field['id_name']}) && !empty($this->{$field['type_name']})) {
                 $mod = BeanFactory::getBean($this->{$field['type_name']}, $this->{$field['id_name']}, ['relationships' => false]);
-                $this->{$field['name']} = $mod->get_summary_text();
+                $this->{$field['name']} = $mod ? $mod->get_summary_text() : null;
             }
 
             // fill in linked as well
@@ -2347,29 +2371,25 @@ class SpiceBean
 
     function fill_in_link_field($linkFieldName, $def)
     {
-        /**
-         * CR1001802 none of it is most likely necessary.
-         */
+        $idField = $linkFieldName;
+        //If the id_name provided really was an ID, don't try to load it as a link. Use the normal link
+        // CR1000476: remove check on type shall be id. Not always the case (see companycode_id in Users)
+        // if (!empty($this->field_defs[$linkFieldName]['type']) && $this->field_defs[$linkFieldName]['type'] == "id" && !empty($def['link'])) {
+        // check field type
+        $typeIsId = false;
+        if ($this->field_defs[$linkFieldName]['type'] == "id" ||
+            $this->field_defs[$linkFieldName]['dbType'] == "id" ||
+            $this->field_defs[$linkFieldName]['dbtype'] == "id") {
+            $typeIsId = true;
+        }
+        if (!empty($this->field_defs[$linkFieldName]['type']) && $typeIsId && !empty($def['link'])) {
+            $linkFieldName = $def['link'];
+        }
 
-//        $idField = $linkFieldName;
-//        //If the id_name provided really was an ID, don't try to load it as a link. Use the normal link
-//        // CR1000476: remove check on type shall be id. Not always the case (see companycode_id in Users)
-//        // if (!empty($this->field_defs[$linkFieldName]['type']) && $this->field_defs[$linkFieldName]['type'] == "id" && !empty($def['link'])) {
-//        // check field type
-//        $typeIsId = false;
-//        if ($this->field_defs[$linkFieldName]['type'] == "id" ||
-//            $this->field_defs[$linkFieldName]['dbType'] == "id" ||
-//            $this->field_defs[$linkFieldName]['dbtype'] == "id") {
-//            $typeIsId = true;
-//        }
-//        if (!empty($this->field_defs[$linkFieldName]['type']) && $typeIsId && !empty($def['link'])) {
-//            $linkFieldName = $def['link'];
-//        }
-//
-//        // ToDo Check why the above was added
-//        if($def['link']) {
-//            $linkFieldName = $def['link'];
-//        }
+        // ToDo Check why the above was added
+        if($def['link']) {
+            $linkFieldName = $def['link'];
+        }
 
         if ($this->load_relationship($linkFieldName)) {
             $list = $this->$linkFieldName->get();
@@ -2617,7 +2637,7 @@ class SpiceBean
             }
             //handle related beans
             foreach ($linked_fields as $name => $properties) {
-                if ($properties['name'] == 'modified_user_link' || $properties['name'] == 'created_by_link')
+                if ($properties['name'] == 'modified_user_link' || $properties['name'] == 'created_by_link' || $properties['name'] == 'assigned_user_link')
                     continue;
 
                 if (isset($properties['duplicate_merge'])) {
@@ -2906,6 +2926,8 @@ class SpiceBean
                     $valArray[] = $this->db->quoted($thisValue, false);
                 }
                 $where_clause .= "$name IN (" . implode(',', $valArray) . ")";
+            } else if ($value == null) {
+                $where_clause .= "$name IS NULL";
             } else {
                 $where_clause .= "$name = " . $this->db->quoted($value, false);
             }
