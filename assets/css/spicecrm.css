@@ -22,10 +22,10 @@
     --color-grey-9: #706e6b;
     --color-grey-13: #080707;
     --brand-background-primary: #fafaf9;
-    --brand-primary: #CA1B21;
+    --brand-primary: #f72121;
     --brand-primary-active: #b3191e;
     --brand-primary-transparent: rgba(155, 155, 155, .1);
-    --brand-accessible: #CA1B21;
+    --brand-accessible: #f72121;
     --brand-accessible-active: #b3191e;
     --brand-header-contrast-cool: #a61419;
     --brand-text-link: #1f1f1f;
@@ -36,25 +36,25 @@
     --color-text-link-active: #222;
     --color-progressbar_item-completed: #080707;
     --color-background-alt-inverse: #002D31;
-    --color-border-brand: #CA1B21;
-    --sds-c-button-brand-color-background: #CA1B21;
+    --color-border-brand: #f72121;
+    --sds-c-button-brand-color-background: #f72121;
     --slds-c-button-brand-color-border: var(--color-grey-5);
-    --sds-c-button-neutral-color-background-hover: #CA1B21;
-    --slds-c-button-color-background-hover: #CA1B21;
+    --sds-c-button-neutral-color-background-hover: #f72121;
+    --slds-c-button-color-background-hover: #f72121;
     --sds-c-button-brand-color-border-hover: #ffffff;
-    --sds-c-button-brand-color-background-active: #CA1B21;
+    --sds-c-button-brand-color-background-active: #f72121;
     --sds-c-button-brand-color-border-active: #ffffff;
-    --sds-c-button-brand-color-background-hover: #CA1B21;
-    --sds-c-input-shadow-focus: 0 0 3px #CA1B21;
-    --sds-c-textarea-shadow-focus: 0 0 3px #CA1B21;
+    --sds-c-button-brand-color-background-hover: #f72121;
+    --sds-c-input-shadow-focus: 0 0 3px #f72121;
+    --sds-c-textarea-shadow-focus: 0 0 3px #f72121;
     --slds-c-input-color-border: #c9c9c9;
     --slds-c-select-color-border: #c9c9c9;
     --slds-g-color-border-base-4: var(--slds-g-color-border-base-1);
-    --sds-c-select-shadow-focus: 0 0 3px #CA1B21;
+    --sds-c-select-shadow-focus: 0 0 3px #f72121;
     --sds-c-button-text-color-hover: #ffffff;
     --sds-c-toast-text-color: #ffffff;
     --sds-c-icon-color-foreground: #ffffff;
-    --slds-c-slider-track-color-background: #CA1B21;
+    --slds-c-slider-track-color-background: #f72121;
     --spice-alert-color-error: #ea001e;
     --spice-alert-color-info: #0176d3;
     --spice-alert-color-warning: #fe9339;
@@ -603,10 +603,10 @@ input[type="submit"] {
 /* brand color for vertical progress bar */
 .slds-progress_vertical .slds-progress__item.slds-is-completed .slds-progress__marker_icon svg
 {
-    fill: var(--brand-primary,#CA1B21);
+    fill: var(--brand-primary,#f72121);
 }
 .slds-progress_vertical .slds-progress__item.slds-has-error:before, .slds-progress_vertical .slds-progress__item.slds-is-active:before, .slds-progress_vertical .slds-progress__item.slds-is-completed:after, .slds-progress_vertical .slds-progress__item.slds-is-completed:before {
-    background-color: var(--brand-primary,#CA1B21);
+    background-color: var(--brand-primary,#f72121);
 }
 
 .slds-context-bar {
