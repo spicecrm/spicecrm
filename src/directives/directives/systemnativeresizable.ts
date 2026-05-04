@@ -13,7 +13,10 @@ import { ResizeConstrainFn, ResizeEvent, ResizeHandle } from "../../systemcompon
 
 @Directive({
     selector: '[system-native-resizable]',
-    standalone: false
+    standalone: false,
+    host: {
+        '(document:keydown.escape)': 'cancelResize()'
+    }
 })
 export class SystemNativeResizableDirective implements AfterViewInit {
     /**
@@ -25,7 +28,7 @@ export class SystemNativeResizableDirective implements AfterViewInit {
      * Array or single string of active resize handles.
      * Automatically transformed into an array for internal use.
      */
-    public resizeHandles = input<ResizeHandle[], ResizeHandle[] | ResizeHandle>(['bottom-right'], {
+    public resizeHandles = input<ResizeHandle[], ResizeHandle[] | ResizeHandle | string>(['bottom-right'], {
         transform: (value: ResizeHandle[] | ResizeHandle | string) => {
             if (Array.isArray(value)) return value as ResizeHandle[];
             return [value as ResizeHandle];
@@ -61,6 +64,11 @@ export class SystemNativeResizableDirective implements AfterViewInit {
      * Emits when the user releases the mouse button
      */
     public resizeEnd = output<ResizeEvent>();
+
+    /**
+     * Emits when the user releases the mouse button
+     */
+    public resizeCancel = output<void>();
 
     /**
      * Emits on resize change
@@ -134,6 +142,17 @@ export class SystemNativeResizableDirective implements AfterViewInit {
      * @private
      */
     private startHeight: number = 0;
+    /**
+     * stores the initial element top when resizing starts
+     * @private
+     */
+    private startTop: number = 0;
+
+    /**
+     * stores the initial element left when resizing starts
+     * @private
+     */
+    private startLeft: number = 0;
 
     /**
      * Caches the element's bounding rect at the start of resize to prevent expensive calculation on each mouse move
@@ -160,7 +179,7 @@ export class SystemNativeResizableDirective implements AfterViewInit {
     private windowListeners: Array<() => void> = [];
 
     constructor() {
-        this.destroyRef.onDestroy(() => this.cleanup());
+        this.destroyRef.onDestroy(() => this.cleanup(true));
     }
 
     /**
@@ -244,7 +263,9 @@ export class SystemNativeResizableDirective implements AfterViewInit {
         this.startY = event.clientY;
 
         const rect = this.elementRef.nativeElement.getBoundingClientRect();
+        this.startLeft = this.elementRef.nativeElement.offsetLeft;
         this.startWidth = rect.width;
+        this.startTop = this.elementRef.nativeElement.offsetTop;
         this.startHeight = rect.height;
         this.cachedRect = rect;
 
@@ -275,12 +296,21 @@ export class SystemNativeResizableDirective implements AfterViewInit {
             const moveDiffY = event.clientY - this.startY;
             let newWidth = this.startWidth;
             let newHeight = this.startHeight;
+            let newLeft = this.startLeft;
+            let newTop = this.startTop;
 
             const handle = this.currentHandle;
             if (handle.includes('right')) newWidth += moveDiffX;
-            if (handle.includes('left')) newWidth -= moveDiffX;
+            if (handle.includes('left')) {
+                const clampedDiffX = Math.min(moveDiffX, this.startWidth - this.minWidth());
+                newLeft = this.startLeft + clampedDiffX;
+                newWidth = this.startWidth - clampedDiffX;
+            }
             if (handle.includes('bottom')) newHeight += moveDiffY;
-            if (handle.includes('top')) newHeight -= moveDiffY;
+            if (handle.includes('top')) {
+                newTop += moveDiffY;
+                newHeight -= moveDiffY;
+            }
 
             newWidth = Math.max(this.minWidth(), newWidth);
             newHeight = Math.max(this.minHeight(), newHeight);
@@ -288,15 +318,24 @@ export class SystemNativeResizableDirective implements AfterViewInit {
             const constrain = this.resizeConstrainFn();
 
             if (constrain && this.cachedRect) {
-                const ConstrainRes = constrain({ width: newWidth, height: newHeight }, this.elementRef, this.cachedRect, { x: this.startX, y: this.startY });
+                const userSize = {width: newWidth, height: newHeight, top: newTop, left: newLeft};
+                const ConstrainRes = constrain(userSize, this.currentHandle, this.elementRef, this.cachedRect, { x: this.startX, y: this.startY });
+                newLeft = ConstrainRes.left;
                 newWidth = ConstrainRes.width;
+                newTop = ConstrainRes.top;
                 newHeight = ConstrainRes.height;
             }
 
-            if (handle.includes('right') || handle.includes('left')) {
+            if (handle.includes('left')) {
+                this.renderer.setStyle(this.elementRef.nativeElement, 'left', `${newLeft}px`);
+            }
+            if (handle.includes('left') || handle.includes('right')) {
                 this.renderer.setStyle(this.elementRef.nativeElement, 'width', `${newWidth}px`);
             }
-            if (handle.includes('bottom') || handle.includes('top')) {
+            if (handle.includes('top')) {
+                this.renderer.setStyle(this.elementRef.nativeElement, 'top', `${newTop}px`);
+            }
+            if (handle.includes('top') || handle.includes('bottom')) {
                 this.renderer.setStyle(this.elementRef.nativeElement, 'height', `${newHeight}px`);
             }
 
@@ -304,8 +343,11 @@ export class SystemNativeResizableDirective implements AfterViewInit {
                 this.resized.emit({
                     width: newWidth,
                     height: newHeight,
+                    left: newLeft,
+                    top: newTop,
                     deltaWidth: newWidth - this.startWidth,
-                    deltaHeight: newHeight - this.startHeight
+                    deltaHeight: newHeight - this.startHeight,
+                    handle
                 });
             });
         });
@@ -316,32 +358,44 @@ export class SystemNativeResizableDirective implements AfterViewInit {
      * @private
      */
     private onMouseUp(): void {
-        const el = this.elementRef.nativeElement;
-        const rect = el.getBoundingClientRect();
+
+        const rect = this.elementRef.nativeElement.getBoundingClientRect();
 
         const finalEvent: ResizeEvent = {
+            left: this.startLeft,
             width: rect.width,
+            top: this.startTop,
             height: rect.height,
             deltaWidth: rect.width - this.startWidth,
-            deltaHeight: rect.height - this.startHeight
+            deltaHeight: rect.height - this.startHeight,
+            handle: this.currentHandle
         };
 
-        // revert changes if applyChanges is false
         if (!this.applyChanges()) {
-            this.renderer.setStyle(el, 'width', `${this.startWidth}px`);
-            this.renderer.setStyle(el, 'height', `${this.startHeight}px`);
+            this.resetElementStyles();
         }
 
-        this.isResizing = false;
-        this.currentHandle = null;
-        this.clearWindowListeners();
-        this.renderer.setStyle(document.body, 'cursor', '');
+        this.cleanup();
 
         // Emit final event inside NgZone to ensure parent components can react
+
         this.ngZone.run(() => {
             this.resizeEnd.emit(finalEvent);
         });
     }
+
+    /**
+     * reset element styles
+     * @private
+     */
+    private resetElementStyles() {
+        const el = this.elementRef.nativeElement;
+        this.renderer.setStyle(el, 'left', `${this.startLeft}px`);
+        this.renderer.setStyle(el, 'width', `${this.startWidth}px`);
+        this.renderer.setStyle(el, 'top', `${this.startTop}px`);
+        this.renderer.setStyle(el, 'height', `${this.startHeight}px`);
+    }
+
     /**
      * Maps a resize handle type to the appropriate CSS cursor
      * @private
@@ -367,9 +421,23 @@ export class SystemNativeResizableDirective implements AfterViewInit {
      * Final cleanup on component destruction
      * @private
      */
-    private cleanup(): void {
+    private cleanup(permanent?: boolean): void {
+        this.isResizing = false;
+        this.currentHandle = null;
         this.clearWindowListeners();
-        this.permanentListeners.forEach(unsub => unsub());
         this.renderer.setStyle(document.body, 'cursor', '');
+
+        if (permanent) {
+            this.permanentListeners.forEach(unsub => unsub());
+        }
+    }
+
+    /**
+     * cancel the resize can be called from a parent component
+     */
+    public cancelResize() {
+        this.cleanup();
+        this.resetElementStyles();
+        this.resizeCancel.emit();
     }
 }

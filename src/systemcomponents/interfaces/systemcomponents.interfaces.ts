@@ -150,18 +150,22 @@ export interface GeminiAIParams {
 }
 
 export interface ResizeEvent {
+    left: number;
     width: number;
+    top: number;
     height: number;
     deltaWidth: number;
     deltaHeight: number;
+    handle: ResizeHandle;
 }
 
 export type ResizeConstrainFn = (
-    userSize: { width: number; height: number },
+    userSize: { width: number; height: number; top: number; left: number },
+    handle: ResizeHandle,
     element: ElementRef,
     dimensions: DOMRect,
     pickupPositionInElement: Point
-) => { width: number; height: number };
+) => { width?: number; height?: number, top?: number, left?: number };
 
 export type ResizeHandle =
     | 'bottom-right'
