@@ -436,6 +436,7 @@ export class SystemNativeResizableDirective implements AfterViewInit {
      * cancel the resize can be called from a parent component
      */
     public cancelResize() {
+        if (!this.isResizing) return;
         this.cleanup();
         this.resetElementStyles();
         this.resizeCancel.emit();
