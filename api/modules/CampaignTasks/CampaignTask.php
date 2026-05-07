@@ -603,15 +603,15 @@ class CampaignTask extends SpiceBean
 
                     $email = $this->sendEmail($seed, $emailAddress->email_address, $this->save_emails == 1, false, ['CampaignLog' => $campaignLog]);
 
+                    $campaignLog->external_id = $email->message_id;
+
+                    if (!empty($email->status)) {
+                        $campaignLog->activity_type = $email->status;
+                    }
+
                     if ($this->save_emails == 1) {
                         $campaignLog->related_id = $email->id;
                         $campaignLog->related_type = 'Emails';
-                    } else if ($email->status === 'sent' or $email->status === 'intercepted') {
-                        $campaignLog->activity_type = $email->status;
-                        $campaignLog->external_id = $email->message_id;
-                    } else {
-                        $campaignLog->activity_type = "processing";
-                        $campaignLog->external_id = $email->message_id;
                     }
                 }
 
