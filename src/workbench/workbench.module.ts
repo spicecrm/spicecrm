@@ -199,7 +199,6 @@ import {
 } from "./components/dictionarymanagerrelationshipaddmanytomanyself";
 import {DictionaryRelationships} from "./components/dictionaryrelationships";
 import {DictionaryRelationshipsDefinitions} from "./components/dictionaryrelationshipsdefinitions";
-import {WorkbenchConfigOptionAiprompt} from "./components/workbenchconfigoptionaiprompt";
 import {DomainValidations} from "./components/domainvalidations";
 import {DomainValidationUsageModal} from "./components/domainvalidationusagemodal";
 
@@ -384,7 +383,6 @@ import {DomainValidationUsageModal} from "./components/domainvalidationusagemoda
         Hl7ManagerType,
         HL7ManagerRule,
         WorkbenchConfigOptionKanban,
-        WorkbenchConfigOptionAiprompt,
         DictionaryManagerFieldDefinitionModal,
         MailboxesSpiceGatewayManager,
         DictionaryManagerRelationshipAddManyToManySelf,

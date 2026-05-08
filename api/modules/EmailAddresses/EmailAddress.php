@@ -12,7 +12,7 @@ use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SpiceBeans\SpiceModules;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -486,7 +486,8 @@ class EmailAddress extends SpiceBean
 
         if ($valueBefore == $valueAfter) return;
 
-        $fieldType = SpiceDictionaryHandler::getInstance()->dictionary['email_addr_bean_rel']['fields'][$field]['type'];
+        $fieldType = SpiceDictionary::getInstance()->getDefs('email_addr_bean_rel')['fields'][$field]['type'];
+
         $insertData = [
             'id' => SpiceUtils::createGuid(),
             'parent_id' => $id,

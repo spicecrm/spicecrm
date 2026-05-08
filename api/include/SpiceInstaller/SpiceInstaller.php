@@ -67,8 +67,8 @@ class SpiceInstaller
      */
     public static function reloadSystemPackage(): void
     {
-        SpiceCache::instance()->flush();
         self::loadSystemPackage(DBManagerFactory::getInstance());
+        SpiceCache::instance()->flush();
     }
 
     /**
@@ -87,11 +87,31 @@ class SpiceInstaller
         $db = DBManagerFactory::getInstance();
         $configHash = (string) $db->getOne("SELECT value FROM config WHERE category = 'dictionary' AND name = 'system_dump_hash'");
 
-        if ($configHash !== self::generateSystemPackageHash()) {
+        if ($configHash === self::generateSystemPackageHash()) {
+            return;
+        }
+
+        # create temp lock file to prevent race condition which triggers the system package reload multiple times
+        $lockPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'spice_system_package.lock';
+        $fp = fopen($lockPath, "c");
+
+        # if system package reload is still processing, stop the request and throw an exception
+        if (!flock($fp, LOCK_EX | LOCK_NB)) {
+            fclose($fp);
+            throw new Exception("System is not available. System package reload is still processing.");
+        }
+
+        # process the system package reload
+        try {
             self::$systemPackageContent = self::getSystemPackageContent();
             self::initializeDictionaryFromSystemPackage();
             self::createSystemTables();
             self::reloadSystemPackage();
+
+        } finally {
+            # This ensures the lock is released even if an error occurs inside the work
+            flock($fp, LOCK_UN);
+            fclose($fp);
         }
     }
 
