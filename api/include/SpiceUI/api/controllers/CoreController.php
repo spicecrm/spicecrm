@@ -98,7 +98,8 @@ class CoreController
             'sessionMaxLifetime' => (int)ini_get('session.gc_maxlifetime'),
             'unique_key' => SpiceConfig::getInstance()->config['unique_key'],
             'name' => SpiceConfig::getInstance()->config['system']['name'],
-            'assets' => $uiRestHandler->getAssets()
+            'assets' => $uiRestHandler->getAssets(),
+            'publicRoutes' => SpiceUIRoutesController::getPublicRoutes()
         ];
 
         $response = RESTManager::getInstance()->app->getResponseFactory()->createResponse();

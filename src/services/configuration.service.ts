@@ -178,6 +178,12 @@ export class configurationService {
                     this.data.loginSidebarUrl = res.loginSidebarUrl;
                     this.data.allowForgotPass = res.allowForgotPass;
                     this.data.name = res.name ? res.name : 'SpiceCRM';
+                    if (res.publicRoutes.routes?.length > 0) {
+                        this.broadcast.message$.emit({
+                            messagetype: 'configuration.sysinfo',
+                            messagedata: res.publicRoutes
+                        });
+                    }
                     this.loaded$.next(true);
                 }
                 this.initialized = true;

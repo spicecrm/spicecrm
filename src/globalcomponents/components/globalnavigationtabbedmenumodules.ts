@@ -93,6 +93,7 @@ export class GlobalNavigationTabbedMenuModules {
 
         let modules = this.metadata.getRoleModules(true);
         for (let module of modules) {
+            if (this.menuItems.some(i => i == module)) continue;
             this.menuItems.push(module);
         }
     }
