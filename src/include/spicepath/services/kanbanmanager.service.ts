@@ -38,9 +38,6 @@ export class KanbanManagerService {
      */
     public currentStageTexts: SpiceTextsI[] = [];
 
-    public domainFieldValidations: any = [];
-    public domainFieldValidationsValues: any = [];
-
     public minimized: boolean = false;
 
     public selectedStage: SpiceBeanGuideStageI;
@@ -51,7 +48,7 @@ export class KanbanManagerService {
     /**
      * emit on refresh selected kanban stages
      */
-    public newAddedStages$ = new Subject<SpiceBeanGuideStageI[]>();
+    public newAddedStages$ = new Subject<{newStages: SpiceBeanGuideStageI[], deletedStages: string[]}>();
     /**
      * emit on save
      */
@@ -69,7 +66,6 @@ export class KanbanManagerService {
         this.editMode = this.configurationService.getCapabilityConfig('core').edit_mode;
         this.loadItems();
         this.loadChecks();
-        this.loadValidations();
         this.loadSpiceTexts();
     }
 
@@ -176,16 +172,6 @@ export class KanbanManagerService {
         const global: Observable<SpiceBeanGuidesI[]> = this.backend.getRequest(`configuration/configurator/entries/spicebeanguides`);
 
         return forkJoin([custom, global]).pipe(map(([c, g]) => [...c.map(i => ({...i, scope: 'custom'})), ...g.map(i => ({...i, scope: 'global'}))]));
-    }
-
-    public loadValidations() {
-        this.backend.getRequest(`configuration/configurator/entries/sysdomainfieldvalidations`).subscribe(validations => {
-            this.domainFieldValidations = validations;
-        })
-
-        this.backend.getRequest(`configuration/configurator/entries/sysdomainfieldvalidationvalues`).subscribe(validationsValues => {
-            this.domainFieldValidationsValues = validationsValues;
-        })
     }
 
     /**
@@ -323,10 +309,18 @@ export class KanbanManagerService {
      */
     public refreshSelectedKanbanStages() {
 
-        let newStages = this.generateKanbanStages(this.selectedBeanGuide)
+        const latestStages = this.generateKanbanStages(this.selectedBeanGuide);
+
+        const deletedStages = this.currentStages
+            .filter(s => !latestStages.some(latestStage => latestStage.stage == s.stage))
+            .map(s => s.id);
+        this.currentStages = this.currentStages.filter(s => latestStages.some(latestStage => latestStage.stage == s.stage));
+
+        let newStages = latestStages
             .filter(s => !this.currentStages.some(currentStage => currentStage.stage == s.stage && currentStage.deleted != 1));
 
-        if (newStages.length == 0) {
+
+        if (newStages.length == 0 && deletedStages.length == 0) {
             this.toast.sendToast('LBL_COMPLETED', "success");
             return;
         }
@@ -341,7 +335,7 @@ export class KanbanManagerService {
         });
 
         this.currentStages = this.currentStages.concat(newStages);
-        this.newAddedStages$.next(newStages);
+        this.newAddedStages$.next({newStages, deletedStages});
         this.toast.sendToast('LBL_COMPLETED', "success");
     }
 
@@ -350,9 +344,10 @@ export class KanbanManagerService {
      * @return SpiceBeanGuideStageI[]
      */
     public generateKanbanStages(guide: SpiceBeanGuidesI): SpiceBeanGuideStageI[] {
-        const optionsKey = this.metadata.getFieldOptions(guide.module, guide.status_field);
-        const fieldValidation = this.domainFieldValidations.find(val => val.name == optionsKey);
-        return this.domainFieldValidationsValues.filter(val => val.sysdomainfieldvalidation_id == fieldValidation.id).map(res => {
+        const options = this.metadata.getFieldOptions(guide.module, guide.status_field);
+        const validation = this.metadata.getDomainValidationByName(options).validationvalues;
+
+        return Object.values(validation).map(res => {
             return {
                 id: this.modelUtilities.generateGuid(),
                 spicebeanguide_id: guide.id,
@@ -360,7 +355,7 @@ export class KanbanManagerService {
                 stage_sequence: res.sequence,
                 stage_label: res.label,
                 not_in_kanban: 0
-            }
+            } as SpiceBeanGuideStageI
         });
     }
 }

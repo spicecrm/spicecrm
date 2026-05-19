@@ -352,7 +352,7 @@ export class loginService {
     providedIn: 'root'
 })
 export class loginCheck  {
-    constructor(public login: loginService, public session: session, public modal: modal, public router: Router, public loader: loader) {
+    constructor(public login: loginService, public session: session, public modal: modal, public router: Router, public loader: loader, private metadata: metadata) {
     }
 
     public canActivate(route, state) {
@@ -360,6 +360,7 @@ export class loginCheck  {
             if (state.url != '/') {
                 this.login.redirectUrl = state.url;
             }
+            this.metadata.initialRouteUrl = state.url;
             this.router.navigate(['/login']);
             return false;
         } else {

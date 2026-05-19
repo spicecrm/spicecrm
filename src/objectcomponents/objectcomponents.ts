@@ -18,7 +18,6 @@ import {ChecklistItemI, ChecklistI} from "./interfaces/objectcomponents.interfac
 
 import {loginCheck} from '../services/login.service';
 import {metadata, aclCheck} from '../services/metadata.service';
-import {canNavigateAway} from '../services/navigation.service';
 
 import {ObjectKeyValuesPipe} from "./pipes/objectkeyvalue.pipe";
 import {ObjectFieldFilterPipe} from "./pipes/objectfieldfilter.pipe";

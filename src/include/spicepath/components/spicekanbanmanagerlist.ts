@@ -173,15 +173,15 @@ export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{
 
     /**
      * handle newly added stages
-     * @param newStages
      * @private
+     * @param event
      */
-    private handleNewStages(newStages: SpiceBeanGuideStageI[]) {
+    private handleNewStages(event: {newStages: SpiceBeanGuideStageI[], deletedStages: string[]}) {
 
-        newStages = newStages.map(stage => this.kanbanManagerService.generateTrackableNewObject(stage, 'stages', obj => obj.deleted != 1));
+        event.newStages = event.newStages.map(stage => this.kanbanManagerService.generateTrackableNewObject(stage, 'stages', obj => obj.deleted != 1));
 
-        const activeStages = newStages.filter(dis => dis.not_in_kanban == 0);
-        const inactiveStages = newStages.filter(dis => dis.not_in_kanban == 1);
+        const activeStages = event.newStages.filter(dis => dis.not_in_kanban == 0);
+        const inactiveStages = event.newStages.filter(dis => dis.not_in_kanban == 1);
 
         // register a random change to push the new item to the change service history
         activeStages.forEach(stage => {
@@ -191,6 +191,20 @@ export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{
         inactiveStages.forEach(stage => {
             stage.deleted = 0;
             this.inactiveStages.push(stage as any);
+        });
+
+        this.selected = undefined;
+        this.selectedStage.emit(undefined);
+
+        this.inactiveStages.forEach(stage => {
+            if (!event.deletedStages.includes(stage.id)) return;
+            stage.deleted = 1;
+            this.inactiveStages = this.inactiveStages.filter(dis => dis.id != stage.id) as any;
+        });
+        this.activeStages.forEach(stage => {
+            if (!event.deletedStages.includes(stage.id)) return;
+            stage.deleted = 1;
+            this.activeStages = this.activeStages.filter(dis => dis.id != stage.id) as any;
         });
 
         this.emitActiveStages.emit(this.activeStages);

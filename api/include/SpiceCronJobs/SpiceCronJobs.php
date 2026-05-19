@@ -9,6 +9,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SchedulerJobs\SchedulerJob;
 use SpiceCRM\modules\SchedulerJobTasks\SchedulerJobTask;

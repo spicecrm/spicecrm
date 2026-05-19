@@ -383,7 +383,9 @@ export class navigation {
         this.setTabTitle();
 
         // set the browser location accordingly without triggering the router
-        this.router.navigate([tab.url]);
+        if (tab.url.replace(/^\//, '') !== this.router.url.replace(/^\//, '')) {
+            this.router.navigate([tab.url]);
+        }
         // this.location.replaceState(tab.url);
     }
 
@@ -787,7 +789,7 @@ export class navigation {
             for (let objectTab of this.objectTabs) {
                 if (_.isEmpty(routeParams) && !objectTab.active) continue;
 
-                if (this.matchPath(objectTab, routeData) && this.matchRouteParams(objectTab, routeParams)) {
+                if (this.matchPath(objectTab, routeData) && (routeData.pathmatch == 'anyid' || this.matchRouteParams(objectTab, routeParams))) {
                     // set the path since the path might be changed dues to the reference path of routes for the tabbed navigation
                     // but do not change it when the only difference is the tabid
                     // that happens if the same object is clicked in a link on a subtab
@@ -1037,38 +1039,4 @@ export class navigation {
         return _.isEqual(object, this.activeRoute);
     }
 
-}
-
-// tslint:disable-next-line:max-classes-per-file
-@Injectable({
-    providedIn: 'root'
-})
-export class canNavigateAway  {
-    constructor(public navigation: navigation, public modal: modal, public language: language) {
-    }
-
-    public canActivate(route, state): Observable<boolean> {
-
-        let isToWarn = false;
-        for (let model of this.navigation.modelregister) {
-            if (!model.model.isGlobal && model.model.isDirty()) {
-                isToWarn = true;
-                break;
-            }
-        }
-
-        if (isToWarn) {
-            let retSubject = new Subject<boolean>();
-            this.modal.confirm(this.language.getLabel('MSG_NAVIGATIONSTOP', '', 'long'), this.language.getLabel('MSG_NAVIGATIONSTOP')).subscribe(retval => {
-                if (retval) {
-                    this.navigation.discardAllChanges();
-                }
-                retSubject.next(retval);
-                retSubject.complete();
-            });
-            return retSubject.asObservable();
-        } else {
-            return of(true);
-        }
-    }
 }
