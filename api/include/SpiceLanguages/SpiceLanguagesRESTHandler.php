@@ -6,7 +6,7 @@ use Google\ApiCore\ValidationException;
 use Google\Cloud\Translate\V3\Client\TranslationServiceClient;
 use Google\Cloud\Translate\V3\DocumentInputConfig;
 use Google\Cloud\Translate\V3\TranslateDocumentRequest;
-use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;

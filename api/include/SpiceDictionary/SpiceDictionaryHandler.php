@@ -1,7 +1,7 @@
 <?php
 namespace SpiceCRM\includes\SpiceDictionary;
 
-use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\SpiceBeans\SpiceModules;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;

@@ -4,7 +4,7 @@ namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
 use Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;

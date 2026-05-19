@@ -28,7 +28,7 @@
 ********************************************************************************/
 namespace SpiceCRM\includes\SpiceFTSManager;
 
-use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
