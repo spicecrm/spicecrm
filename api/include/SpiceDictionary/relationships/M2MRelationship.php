@@ -128,28 +128,33 @@ class M2MRelationship extends Relationship
                 $linkField['side'] = $forSide == 'rhs' ? 'right' : 'left';
             }
 
-            # add join table fields
-            $joinTableRoleFields = $relationship->getRelationshipFieldsForJoinTable($forSideDefinition->id);
-            $joinDefinition = new SpiceDictionaryDefinition($relationship->relationship->join_sysdictionarydefinition_id);
+            # add join table fields but only if a jointable definition exists
+            if($relationship->relationship->join_sysdictionarydefinition_id) {
+                $joinTableRoleFields = $relationship->getRelationshipFieldsForJoinTable($forSideDefinition->id);
+                try {
+                    $joinDefinition = new SpiceDictionaryDefinition($relationship->relationship->join_sysdictionarydefinition_id);
+                } catch (Exception $e) {
+                    return [];
+                }
 
-            foreach ($joinTableRoleFields as $field) {
+                foreach ($joinTableRoleFields as $field) {
 
-                $joinField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($joinDefinition->name, $field['sysdictionaryitem_id']);
+                    $joinField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($joinDefinition->name, $field['sysdictionaryitem_id']);
 
-                if (!$joinField) continue;
+                    if (!$joinField) continue;
 
-                unset($joinField->sysdictionaryitem_id,$joinField->dbtype);
+                    unset($joinField->sysdictionaryitem_id, $joinField->dbtype);
 
-                $joinField->name = $field['map_to_fieldname'];
-                $joinField->source = 'non-db';
-                $joinField->required = 0;
+                    $joinField->name = $field['map_to_fieldname'];
+                    $joinField->source = 'non-db';
+                    $joinField->required = 0;
 
-                $fields[$joinField->name] = (array) $joinField;
+                    $fields[$joinField->name] = (array)$joinField;
+                }
+
+                # add the mapping fields to the link to the opposite side
+                $joinTableRoleFields = $relationship->getRelationshipFieldsForJoinTable($oppositeSideDefinition->id);
             }
-
-            # add the mapping fields to the link to the opposite side
-            $joinTableRoleFields = $relationship->getRelationshipFieldsForJoinTable($oppositeSideDefinition->id);
-
             $linkField['rel_fields'] = [];
 
             foreach ($joinTableRoleFields as $field) {
