@@ -177,7 +177,7 @@ class AdminController
                 'upload_dir' => SpiceConfig::getInstance()->config['upload_dir'],
                 'file_types' => SpiceConfig::getInstance()->config['attachments']['file_types'] ?: false,
                 'international_email_addresses' => SpiceConfig::getInstance()->config['international_email_addresses'],
-                'translatable_fields' => SpiceConfig::getInstance()->config['translatable_fields'],
+                'translatable_fields' => SpiceConfig::getInstance()->config['system.translatable_fields'],
                 'encryption_hash_salt' => SpiceConfig::getInstance()->get('system.encryption_hash_salt'),
                 'gateway_server_api_key' => SpiceConfig::getInstance()->get('system.gateway_server_api_key'),
                 'gateway_server_domain' => SpiceConfig::getInstance()->get('system.gateway_server_domain'),
@@ -258,6 +258,9 @@ class AdminController
                         break;
                     case 'gateway_server_domain':
                         SpiceConfig::getInstance()->set('system', 'gateway_server_domain', $itemvalue);
+                        break;
+                    case 'translatable_fields':
+                        SpiceConfig::getInstance()->set('system', 'translatable_fields', $itemvalue);
                         break;
                     default:
                         SpiceConfig::getInstance()->config[$itemname] = $itemvalue;
