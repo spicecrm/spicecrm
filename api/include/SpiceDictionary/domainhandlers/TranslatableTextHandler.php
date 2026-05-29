@@ -22,7 +22,7 @@ class TranslatableTextHandler extends SpiceDictionaryDomainHandler
      */
     public function onRetrieve(array $item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
     {
-        if (!SpiceConfig::getInstance()->get('translatable_fields')) {
+        if (!SpiceConfig::getInstance()->get('system.translatable_fields')) {
             return true;
         }
 
@@ -53,7 +53,7 @@ class TranslatableTextHandler extends SpiceDictionaryDomainHandler
      */
     public function beforeSave(array $item, SpiceDictionaryDomain $domain, array &$fields, SpiceBean $bean): bool
     {
-        if (!SpiceConfig::getInstance()->get('translatable_fields')) {
+        if (!SpiceConfig::getInstance()->get('system.translatable_fields')) {
             return true;
         }
 
