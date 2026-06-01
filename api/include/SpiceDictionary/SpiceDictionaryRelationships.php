@@ -9,6 +9,8 @@ use SpiceCRM\includes\SpiceBeans\SpiceModules;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
+use ReflectionClass;
+use ReflectionMethod;
 
 class SpiceDictionaryRelationships
 {
@@ -200,8 +202,8 @@ class SpiceDictionaryRelationships
      */
     public function reloadItems(): void
     {
-        $this->retrieveRelationships();
         $this->retrieveRelationshipTypes();
+        $this->retrieveRelationships();
         $this->retrievePolymorphRelationships();
         $this->retrieveRelationshipFields();
         $this->writeCache();
@@ -230,6 +232,18 @@ class SpiceDictionaryRelationships
 
             while($relationship = $db->fetchByAssoc($query)){
                 $this->pushRelationshipInList($relationship);
+
+                // check if we have a typoe definiton and that type has a static method to add additonal rtelationships
+                $typeDefinition = $this->getRelationshipTypeDefinition($relationship['relationship_type']);
+                if($typeDefinition) {
+                    $reflection = new ReflectionClass($typeDefinition['class']);
+                    if ($reflection->hasMethod('loadAddRelationships') && (new ReflectionMethod($typeDefinition['class'], 'loadAddRelationships'))->isStatic()) {
+                        $addRelationships = $typeDefinition['class']::loadAddRelationships($relationship);
+                        foreach ($addRelationships as $addRelationship) {
+                            $this->pushRelationshipInList($addRelationship);
+                        }
+                    }
+                }
             }
         }
 

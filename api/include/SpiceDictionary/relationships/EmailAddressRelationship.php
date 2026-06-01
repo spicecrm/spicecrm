@@ -24,6 +24,22 @@ class EmailAddressRelationship extends M2MRelationship
 
     public $type = 'email-address';
 
+    /**
+     * implement a static class that adds a primary relationship that is also added
+     *
+     * @param $relationship
+     * @return array
+     */
+    public static function loadAddRelationships($relationship){
+        $primary = $relationship;
+        $primary['id'] = SpiceUtils::createGuid();
+        $primary['name'] .= '_primary';
+        $primary['relationship_name'] .= '_primary';
+        $primary['relationship_role_column'] .= 'primary_address';
+        $primary['relationship_role_column_value'] .= '1';
+
+        return [$primary];
+    }
 
     /**
      * initialize the instance from the given dictionary relationship
@@ -97,6 +113,11 @@ class EmailAddressRelationship extends M2MRelationship
 
         # the email address dictionary does not have link fields
         if ($forSide == 'rhs') {
+            return [];
+        }
+
+        // catch that we do not add the fields twice
+        if($relationship->relationship->relationship_role_column == 'primary_address' && $relationship->relationship->relationship_role_column_value == '1') {
             return [];
         }
 
