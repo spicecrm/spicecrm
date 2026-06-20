@@ -327,6 +327,10 @@ export class relatedmodels implements OnDestroy {
 
                     this.items = response.list.map(item => ({...this.modelutilities.backendModel2spice(this.relatedModule, item), relid: item.relid}));
 
+                    if(this.sequencefield){
+                        this.items.sort((a, b) => a[this.sequencefield] > b[this.sequencefield] ? 1 : -1);
+                    }
+
                     // set loaded
                     this.isloading = false;
 
