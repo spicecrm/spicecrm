@@ -350,7 +350,8 @@ class AuthenticationController
         $this->setCurrentUser($userObj);
 
         if (!$userObj->isAdmin() && SystemStartupMode::recoveryModeEnabled()) {
-            throw (new ServiceUnavailableException('System is in recovery mode. Only admin can login'))->setFatal( false );
+            throw (new ServiceUnavailableException('System is in recovery mode. Only admin can login'))->setFatal( false )
+                ->setErrorCode('recoveryModeEnabled');
         }
 
         if ($authType == 'credentials') {
