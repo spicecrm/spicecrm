@@ -25,8 +25,11 @@ class OrgUnitRelationship extends One2MBeanRelationship
             $leftDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
             $leftField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($leftDefinition->name, $relationship->relationship->lhs_sysdictionaryitem_id);
             $rightDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
+            if ($rightDefinition->type == 'template') {
+                $rightDefinition = new SpiceDictionaryDefinition($this->linkInstance->getFocus()->_sysdictionarydefinition_id);
+            }
             $rightField = SpiceDictionary::getInstance()->getFieldByDefinitionNameAndItemId($rightDefinition->name, $relationship->relationship->rhs_sysdictionaryitem_id);
-        } catch (Exception $e){
+        } catch (\Exception $e){
             return [];
         }
 
@@ -76,7 +79,8 @@ class OrgUnitRelationship extends One2MBeanRelationship
             'relationship' => $relationship->relationship->relationship_name,
             'source' => 'non-db',
             'module' => $leftDefinition->getModuleName(),
-            'vname' => $relationship->relationship->rhs_linklabel
+            'vname' => $relationship->relationship->rhs_linklabel,
+            'duplicate_merge' => $relationship->relationship->rhs_duplicatemerge
         ];
 
         $fields[$relationship->relationship->rhs_linkname] = $linkField;
@@ -90,7 +94,8 @@ class OrgUnitRelationship extends One2MBeanRelationship
                 'link' => $relationship->relationship->rhs_linkname,
                 'source' => 'non-db',
                 'module' => $leftDefinition->getModuleName(),
-                'vname' => $relationship->relationship->rhs_relatelabel
+                'vname' => $relationship->relationship->rhs_relatelabel,
+                'duplicate_merge' => $relationship->relationship->rhs_duplicatemerge
             ];
         }
 

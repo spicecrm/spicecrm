@@ -84,7 +84,7 @@ export class ObjectRecordAdministrationTab implements OnInit {
                         if(this.model.getField('assigned_orgunit_id') != this.model.getField('assigned_user').orgunit_id){
                             this.model.setFields({
                                 'assigned_orgunit_id': this.model.getField('assigned_user').orgunit_id,
-                                'assigned_orgunit': this.model.getField('assigned_user').orgunit
+                                'assigned_orgunit': this.model.getField('assigned_user').orgunit.id ? this.model.getField('assigned_user').orgunit : {id:this.model.getField('assigned_user').orgunit_id, name: this.model.getField('assigned_user').orgunit_name}
                             }, true)
                         }
                     } else {
