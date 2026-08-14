@@ -46,6 +46,8 @@ use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlRequest;
+use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlWrapper;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
@@ -558,31 +560,25 @@ class SpiceUIConfLoader
      * returns array with packages and versions
      * @return array[]
      * @throws Exception
+     * @throws \Exception
      */
     public function getRepositoryInfo(): array
     {
-
         $repositoriesMetadata = ['packages' => [], 'versions' => []];
 
         $db = DBManagerFactory::getInstance();
         $repositoryObjects = $db->query("SELECT * FROM sysuipackagerepositories");
 
-        while($repository = $db->fetchByAssoc($repositoryObjects)){
-
+        while ($repository = $db->fetchByAssoc($repositoryObjects)) {
             // prepare url
             $repositoryUrl = $repository['url'].'/';
 
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-            curl_setopt($curl, CURLOPT_URL, $repositoryUrl .'config');
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt($curl, CURLOPT_ENCODING, "UTF-8");
-            $getJSONcontent = curl_exec($curl);
-
-            // decode content as array
-            $content = json_decode($getJSONcontent, true);
+            $content = SpiceCurlWrapper::getRequest($repositoryUrl .'config')
+                        ->setRouteAlias('spiceuiconfloader')
+                        ->setRawOption(CURLOPT_ENCODING, SpiceCurlRequest::ENCODING_UTF8)
+                        ->setSsl(false)
+                        ->send()
+                        ->getResponse();
 
             // loop through content and push the versions to repositoriesMetadata array
             foreach ($content['versions'] as $version) {

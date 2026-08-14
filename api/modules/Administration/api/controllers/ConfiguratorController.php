@@ -263,7 +263,7 @@ class ConfiguratorController{
             $this->resetSessionCache($args['table']);
         }
 
-        return $res->withJson(['status' => 'success']);
+            return $res->withJson(['status' => 'success']);
     }
 
     /**

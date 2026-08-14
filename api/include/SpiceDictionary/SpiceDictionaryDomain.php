@@ -123,6 +123,9 @@ class SpiceDictionaryDomain
             // write labelinputhelper to cache
             if(!empty($dictionaryitem->itemDefinition->labelinputhelper)) $definition->popupHelp = $dictionaryitem->itemDefinition->labelinputhelper;
 
+            // write labelinputhelper to cache
+            if(!empty($dictionaryitem->itemDefinition->labelinputhelper)) $definition->popupHelp = $dictionaryitem->itemDefinition->labelinputhelper;
+
             // backward compatibility to push options as well
             if($definition->sysdomainfieldvalidation_id) {
                 $validation = new SpiceDictionaryDomainValidation($definition->sysdomainfieldvalidation_id);

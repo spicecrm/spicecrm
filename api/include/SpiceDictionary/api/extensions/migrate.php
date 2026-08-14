@@ -14,6 +14,7 @@ $RESTManager = RESTManager::getInstance();
  * restrict routes to admin users
  */
 $routes = [
+    // @deprecated
     [
         'method'      => 'post',
         'route'       => '/admin/migrate/legacydoms',

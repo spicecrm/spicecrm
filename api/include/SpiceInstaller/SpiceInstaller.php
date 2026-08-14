@@ -6,10 +6,11 @@ namespace SpiceCRM\includes\SpiceInstaller;
 use Exception;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
-use SpiceCRM\includes\ErrorHandlers\ServiceUnavailableException;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
-use SpiceCRM\includes\SpiceBeans\SpiceModules;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlConnector;
+use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlRequest;
+use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlWrapper;
 use SpiceCRM\includes\SpiceDictionary\database\DBManager;
 use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
@@ -17,15 +18,11 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainFields;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomains;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidations;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndex;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageLoader;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
 use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SystemDeploymentPackages\SystemDeploymentPackageSource;
@@ -47,8 +44,6 @@ class SpiceInstaller
 
     public function __construct()
     {
-        // init curl object
-        $this->curl = curl_init();
         // init database object
         $this->dbManagerFactory = new DBManagerFactory();
 
@@ -143,32 +138,30 @@ class SpiceInstaller
 
     /**
      * performs a curl call and returns a decoded response
-     * @param $curl
+     *
      * @param $url
-     * @param bool $ssl
+     * @param $ssl
+     * @param $username
+     * @param $password
      * @return mixed
+     * @throws Exception
      */
-    private function curlCall($curl, $url, $ssl = false, $username = null, $password = null)
+    private function curlCall($url, $ssl = false, $username = null, $password = null)
     {
-        curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $request = SpiceCurlWrapper::getRequest($url)
+                    ->disableLogger()
+                    ->setSsl($ssl)
+                    ->setRawOption(CURLOPT_ENCODING, SpiceCurlRequest::ENCODING_UTF8);
 
-        // turn off ssl check
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $ssl);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $ssl);
-        curl_setopt($curl, CURLOPT_ENCODING, "UTF-8");
-
-
-        if($username && $password) {
-            curl_setopt($curl, CURLOPT_USERPWD, "{$username}:{$password}");
+        if ($username && $password) {
+            $request->setRawOption(CURLOPT_USERPWD, "{$username}:{$password}");
         }
 
-        $response = curl_exec($curl);
-        if (empty($response)) {
-            $response = curl_error($curl);
+        $response = $request->send();
+        if (empty($response->getRawResponse())) {
+            return json_decode($response->getErrors());
         }
-        return json_decode($response);
+        return $response->getResponse();
     }
 
     /**
@@ -378,10 +371,10 @@ class SpiceInstaller
 
         $url = $protocol . "://" . $postData['server'] . ":" . $postData['port'] . "/";
 
-        $response = $this->curlCall($this->curl, $url, $postData['sslverify'], $postData['username'], $postData['password']);
+        $response = $this->curlCall($url, $postData['sslverify'], $postData['username'], $postData['password']);
 
         if (!empty($response)) {
-            if (version_compare($response->version->number, '7.5', '<') ) {
+            if (version_compare($response['version']['number'], '7.5', '<') ) {
                 $errors = ['version not supported'];
             } else {
                 $ftsconfig = ['https' => $postData['https'], 'username' => $postData['username'], 'password' => $postData['password'], 'protocol' => $protocol, 'server' => $postData['server'], 'port' => $postData['port'], 'prefix' => $postData['prefix']];
@@ -410,7 +403,7 @@ class SpiceInstaller
         $errors = [];
         $url = SystemDeploymentPackageSource::getPublicSource() . 'config';
 
-        $response = $this->curlCall($this->curl, $url);
+        $response = $this->curlCall($url);
 
         if (!empty($response)) {
             $outcome = true;
@@ -430,7 +423,7 @@ class SpiceInstaller
     public function getLanguages()
     {
         $url = SystemDeploymentPackageSource::getPublicSource() . 'config';
-        $response = $this->curlCall($this->curl, $url);
+        $response = $this->curlCall($url);
         return $response;
     }
 

@@ -10,6 +10,8 @@ namespace SpiceCRM\includes\SpiceUI;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlRequest;
+use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlWrapper;
 use SpiceCRM\modules\SystemDeploymentPackages\SystemDeploymentPackageSource;
 
 class SpiceUILoader
@@ -64,41 +66,27 @@ class SpiceUILoader
         if (!empty($getParams) && is_array($getParams))
             $getParams = "?" . http_build_query($getParams);
         $url = $this->endpoint . $route . $getParams;
-//        file_put_contents('spicecrm.log', $url."\n", FILE_APPEND);
 
-        curl_setopt($this->curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-        curl_setopt($this->curl, CURLOPT_URL, $url);
-        curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
+        $response = SpiceCurlWrapper::newRequest($url, $method)
+                    ->setSsl(false)
+                    ->setRawOption(CURLOPT_ENCODING, SpiceCurlRequest::ENCODING_UTF8)
+                    ->send();
 
-        // turn off ssl check
-        curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($this->curl, CURLOPT_ENCODING, "UTF-8");
-
-//        //post
-//        if($method=="POST"){
-//            $url = $this->endpoint."/".$route;
-//            curl_setopt($this->curl,CURLOPT_POST, true);
-//            curl_setopt($this->curl,CURLOPT_POSTFIELDS, json_encode($postParams));
-//        }
-//        //DELETE
-//        if($method=="DELETE"){
-//            $url = $this->endpoint."/".$route;
-//            curl_setopt($this->curl,CURLOPT_CUSTOMREQUEST, $method);
-//            curl_setopt($this->curl,CURLOPT_POSTFIELDS, json_encode($postParams));
-//        }
-
-        $response = curl_exec($this->curl);
-        if (!$response)
-            LoggerManager::getLogger()->fatal("ERROR curl in " . __CLASS__ . curl_error($this->curl));
+        if (!$response->getRawResponse()) {
+            LoggerManager::getLogger()->fatal("ERROR curl in " . __CLASS__ . $response->getErrors());
+        }
 
         //catch empty response
-        if ($response == "[]")
+        if ($response->getRawResponse() == "[]") {
             return ['nodata' => []];
+        }
+
 
         //decode reponse
-        if (!$data = json_decode($response, true))
-            LoggerManager::getLogger()->fatal('json_decode error on REST response from reference server. Response: ' . print_r($response, true) . '. URL: ' . $url . '. Please check call parameters!');
+        if (!$data = $response->getResponse()) {
+            LoggerManager::getLogger()->fatal('json_decode error on REST response from reference server. Response: '
+                . print_r($response->getRawResponse(), true) . '. URL: ' . $url . '. Please check call parameters!');
+        }
 
         return $data;
     }

@@ -19,6 +19,7 @@ use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysCategoryTrees\SysCategoryTree;
+use SpiceCRM\includes\TimeDate;
 
 /**
  * Class SpiceUtils
