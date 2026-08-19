@@ -1,7 +1,7 @@
-<div *ngIf="display" [ngClass]="getClass()">
+<div *ngIf="parentId && module == parentModule" [ngClass]="fieldconfig.cssclass" class="slds-box--border">
     <div class="slds-p-around--xx-small slds-text-heading--label">
         <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
     </div>
-    <field-related-details-container  *ngIf="parentId" [module]="module" [componentset]="componentset" [id]="parentId"></field-related-details-container>
+    <field-related-details-container  *ngIf="parentId" [module]="fieldconfig.module" [componentset]="fieldconfig.componentset" [id]="parentId"></field-related-details-container>
 </div>
 

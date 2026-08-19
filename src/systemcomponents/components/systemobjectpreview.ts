@@ -12,7 +12,8 @@ import { Subscription } from 'rxjs';
  */
 @Component({
     selector: 'system-object-preview',
-    templateUrl: '../templates/systemobjectpreview.html'
+    templateUrl: '../templates/systemobjectpreview.html',
+    standalone: false
 })
 export class SystemObjectPreview {
 
@@ -34,7 +35,7 @@ export class SystemObjectPreview {
     /**
      * raw data of the object being passed in. When the data is passed in the blob url is created
      */
-    private rawData: string;
+    public rawData: string;
 
     /**
      * Indicates that setBlobUrl() is finished and the download is available.
@@ -110,6 +111,7 @@ export class SystemObjectPreview {
         switch (typeArray[0]) {
             case 'audio':
             case 'video':
+            case 'text':
                 return typeArray[0];
             default:
                 return 'object';

@@ -10,9 +10,12 @@ import {helper} from "../../services/helper.service";
 import {navigationtab} from "../../services/navigationtab.service";
 import {Router} from "@angular/router";
 
+declare var moment;
+
 @Component({
-    selector: "[object-related-card-file]",
-    templateUrl: "../templates/objectrelatedcardfile.html"
+    selector: "object-related-card-file",
+    templateUrl: "../templates/objectrelatedcardfile.html",
+    standalone: false
 })
 export class ObjectRelatedCardFile {
 
@@ -21,7 +24,7 @@ export class ObjectRelatedCardFile {
     /**
      * holds the big thumbnail value
      */
-    @Input() public bigThumbnail: boolean = false;
+    @Input() public displayAs: string = 'file';
 
     /**
      * disables the click event
@@ -37,7 +40,6 @@ export class ObjectRelatedCardFile {
         public injector: Injector,
         public navigationtab: navigationtab,
         public router: Router) {
-
     }
 
     get humanFileSize() {
@@ -45,6 +47,9 @@ export class ObjectRelatedCardFile {
     }
 
     get filedate() {
+        if(typeof  this.file.date === 'string'){
+            return new moment(this.file.date).format(this.userpreferences.getDateFormat())
+        }
         return this.file.date ? this.file.date.format(this.userpreferences.getDateFormat()) : '';
     }
 
@@ -75,16 +80,21 @@ export class ObjectRelatedCardFile {
         // disable preview for specific files
         let fileTypeArray = this.file.file_mime_type.toLowerCase().split("/");
 
-        // disable preview for specific files
-        const applicationFile = fileTypeArray[0] == 'application' && fileTypeArray[1] != 'pdf' && fileTypeArray[1] != 'msg';
-        const csvFile = fileTypeArray[0] == 'text' && fileTypeArray[1] == 'csv';
-        if(applicationFile || csvFile) return this.downloadFile();
+        if(fileTypeArray[0] == 'folder'){
+            this.modelattachments.folderId = this.file.id;
+        } else {
+            // disable preview for specific files
+            const applicationFile =  fileTypeArray[0] == 'application' && !['pdf', 'msg', 'vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(fileTypeArray[1]);
+            const csvFile = fileTypeArray[0] == 'text' && fileTypeArray[1] == 'csv';
 
-        let routePrefix = '';
-        if (this.navigationtab?.tabid) {
-            routePrefix = '/tab/' + this.navigationtab.tabid;
+            if(applicationFile || csvFile) return this.downloadFile();
+
+            let routePrefix = '';
+            if (this.navigationtab?.tabid) {
+                routePrefix = '/tab/' + this.navigationtab.tabid;
+            }
+            this.router.navigate([`${routePrefix}/attachment/${this.file.id}/${this.modelattachments.module}/${this.modelattachments.id}`]);
         }
-        this.router.navigate([`${routePrefix}/attachment/${this.file.id}/${this.modelattachments.module}/${this.modelattachments.id}`]);
     }
 
 }

@@ -10,7 +10,8 @@ import {domainmanager} from "../services/domainmanager.service";
 
 
 @Component({
-    templateUrl: '../templates/domainmanagereditdefinitionmodal.html'
+    templateUrl: '../templates/domainmanagereditdefinitionmodal.html',
+    standalone: false
 })
 export class DomainManagerEditDefinitionModal{
     /**
@@ -48,6 +49,7 @@ export class DomainManagerEditDefinitionModal{
                     this.close();
                 },
                 error: () => {
+                    this.domainmanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                     this.close();
                 }
             })

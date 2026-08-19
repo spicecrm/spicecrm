@@ -8,14 +8,14 @@ import {metadata} from '../../../services/metadata.service';
 
 @Component({
     selector: 'dashboard-add-element',
-    templateUrl: '../templates/dashboardaddelement.html'
+    templateUrl: '../templates/dashboardaddelement.html',
+    standalone: false
 })
 export class DashboardAddElement {
 
     public self: any = {};
     public kreports: any[] = [];
     public dashboarddashlets: any[] = [];
-    public dashletName: string = '';
     public searchKey: string = '';
     public dashlettype: string = 'Generic';
     public dashletModule: string = '*';
@@ -133,7 +133,7 @@ export class DashboardAddElement {
 
     public add(dashlet) {
         if (!dashlet) return;
-        let name = this.dashletName;
+        let name = dashlet.name ? dashlet.name : dashlet.label;
         let component = '';
         let componentconfig: any = {};
         let dashletconfig: any = {};
@@ -142,17 +142,20 @@ export class DashboardAddElement {
         let acl_action: string = '';
         let dashlet_id: string = '';
         let label: string = '';
+        let refresh_interval: number;
 
         switch (this.dashletType) {
             case 'dashletVisualization':
                 component = 'ReporterVisualizationDashlet';
                 componentconfig = {reportid: dashlet.id};
                 module = 'KReports';
+                refresh_interval = 0;
                 break;
             case 'dashletPresentation':
                 component = 'ReporterPresentationDashlet';
                 componentconfig = {reportid: dashlet.id};
                 module = 'KReports';
+                refresh_interval = 0;
                 break;
             case 'Generic':
                 component = dashlet.component;
@@ -162,6 +165,7 @@ export class DashboardAddElement {
                 label = dashlet.label;
                 icon = dashlet.icon;
                 acl_action = dashlet.acl_action;
+                refresh_interval = dashlet.refresh_interval ?? null;
                 break;
         }
 
@@ -174,7 +178,8 @@ export class DashboardAddElement {
             dashletconfig,
             icon,
             acl_action,
-            dashlet_id
+            dashlet_id,
+            refresh_interval,
         });
 
         this.self.destroy();

@@ -14,7 +14,8 @@ import {Router} from '@angular/router';
  */
 @Component({
     selector: 'field-enum',
-    templateUrl: '../templates/fieldlanguage.html'
+    templateUrl: '../templates/fieldlanguage.html',
+    standalone: false
 })
 export class fieldLanguage extends fieldGeneric implements OnInit {
     /**
@@ -78,6 +79,6 @@ export class fieldLanguage extends fieldGeneric implements OnInit {
      */
     public setDisplayValue() {
         const lang = this.options.find(lang => lang.value == this.model.getField(this.fieldname));
-        this.displayValue = lang?.display || '';
+        this.displayValue = lang?.display || this.value;
     }
 }

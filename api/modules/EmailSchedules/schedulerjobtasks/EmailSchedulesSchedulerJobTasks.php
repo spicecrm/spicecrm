@@ -1,7 +1,7 @@
 <?php
 namespace SpiceCRM\modules\EmailSchedules\schedulerjobtasks;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 
 class EmailSchedulesSchedulerJobTasks
 {
@@ -10,6 +10,9 @@ class EmailSchedulesSchedulerJobTasks
      * sendEmailScheduleEmails
      */
     public function sendEmailScheduleEmails(): bool {
+
+        set_time_limit(900);
+
         $emailSchedule = BeanFactory::getBean('EmailSchedules');
         return $emailSchedule->sendQueuedEmails();
     }

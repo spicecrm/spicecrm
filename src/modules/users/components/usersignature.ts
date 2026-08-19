@@ -9,7 +9,8 @@ import {broadcast} from "../../../services/broadcast.service";
 @Component({
     selector: "user-signature",
     templateUrl: "../templates/usersignature.html",
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class UserSignature {
 

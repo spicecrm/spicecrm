@@ -11,6 +11,7 @@ import {language} from '../../services/language.service';
 @Component({
     selector: 'system-filter-builder-expression-group',
     templateUrl: '../templates/systemfilterbuilderfilterexpressiongroup.html',
+    standalone: false
 })
 export class SystemFilterBuilderFilterExpressionGroup implements OnChanges {
 

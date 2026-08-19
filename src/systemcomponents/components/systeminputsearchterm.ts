@@ -7,6 +7,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {fromEvent} from "rxjs";
 import {take} from "rxjs/operators";
 import {fts} from "../../services/fts.service";
+import {language} from "../../services/language.service";
 
 @Component({
     selector: 'system-input-search-term',
@@ -17,7 +18,8 @@ import {fts} from "../../services/fts.service";
             useExisting: forwardRef(() => SystemInputSearchTerm),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputSearchTerm implements ControlValueAccessor {
     /**
@@ -57,7 +59,8 @@ export class SystemInputSearchTerm implements ControlValueAccessor {
     public onTouched: () => void;
 
     constructor(public fts: fts,
-                public configuration: configurationService) {
+                public configuration: configurationService,
+                public language: language,) {
     }
 
     public _searchTerm: string;
@@ -123,7 +126,7 @@ export class SystemInputSearchTerm implements ControlValueAccessor {
         if (this.searchTimeoutId) window.clearTimeout(this.searchTimeoutId);
 
         // clear the search term
-        this._searchTerm = '';
+        this.searchTerm = '';
         this.onSearchTermClear.emit();
     }
 

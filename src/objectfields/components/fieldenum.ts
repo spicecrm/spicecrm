@@ -11,7 +11,8 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-enum',
-    templateUrl: '../templates/fieldenum.html'
+    templateUrl: '../templates/fieldenum.html',
+    standalone: false
 })
 export class fieldEnum extends fieldGeneric {
 
@@ -33,13 +34,29 @@ export class fieldEnum extends fieldGeneric {
         this.getOptions();
     }
 
+    /**
+     * a getter for the value bound top the model
+     */
+    get value() {
+        return this.model.getField(this.fieldname);
+    }
+
+    /**
+     * a setter that returns the value to the model and triggers the validation
+     *
+     * @param val the new value
+     */
+    set value(val) {
+        this.model.setField(this.fieldname, val ?? '');
+    }
+
     public getValue(): string {
         return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldname, this.value);
     }
 
     public getOptions() {
 
-        this.options = this.language.getFieldDisplayOptions(this.model.module, this.fieldname, true, true);
+        this.options = this.language.getFieldDisplayOptions(this.model.module, this.fieldname, true, this.fieldconfig.hideinactive ? false : true);
 
         if (this.fieldconfig.sortdirection) {
             switch (this.fieldconfig.sortdirection.toLowerCase()) {

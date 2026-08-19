@@ -1,11 +1,22 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectorRef,
+    Component, inject,
+    Injector, input,
+    Input, InputSignal,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {CdkDrag, CdkDragDrop, CdkDragEnter, CdkDragExit, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
 import {modal} from "../../../services/modal.service";
-import {ColumnI, PanelElementI} from "../interfaces/spicepagebuilder.interfaces";
+import {AttributeObjectI, ColumnI, PanelElementI} from "../interfaces/spicepagebuilder.interfaces";
+import {SpicePageBuilderMediaArticleService} from "../services/spicepagebuildermediaarticle.service";
+import {SpicePageBuilderElementSection} from "./spicepagebuilderelementsection";
+import {configurationService} from "../../../services/configuration.service";
 
 /**
  * Parse and renders renderer container
@@ -13,13 +24,17 @@ import {ColumnI, PanelElementI} from "../interfaces/spicepagebuilder.interfaces"
 @Component({
     selector: 'spice-page-builder-element-column',
     templateUrl: '../templates/spicepagebuilderelementcolumn.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    standalone: false
 })
 export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
     /**
+     * hold the edit mode boolean
+     */
+    public isEditMode: InputSignal<boolean> = input(false);
+    /**
      * containers to be rendered
      */
-    @Input() public readonly column: ColumnI;
+    @Input() public column: ColumnI;
     /**
      * holds the drag entered value
      */
@@ -32,9 +47,35 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
      * hold the style object for the element
      */
     public style = {};
+    /**
+     * list of the editable attributes
+     */
+    public readonly columnAttributesList: AttributeObjectI[][] = [
+        [
+            {name: 'width', type: 'width', class: 'slds-size--1-of-2'},
+            {name: 'background-color', type: 'color', class: 'slds-size--1-of-4'},
+            {name: 'inner-background-color', type: 'color', class: 'slds-size--1-of-4'}
+        ], [
+            {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'border', type: 'borders', class: 'slds-size--1-of-1'}
+        ],[
+            {name: 'inner-border', type: 'borders', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'vertical-align', type: 'valign', class: 'slds-size--1-of-2'},
+            {name: 'css-class', type: 'text', class: 'slds-size--1-of-2'}
+        ]
+    ];
+    /**
+     * reference to the parent section component
+     */
+    public sectionComponent = inject(SpicePageBuilderElementSection);
 
     constructor(public spicePageBuilderService: SpicePageBuilderService,
                 public modal: modal,
+                private injector: Injector,
+                public articleService: SpicePageBuilderMediaArticleService,
+                private configurationService: configurationService,
                 public cdRef: ChangeDetectorRef) {
     }
 
@@ -42,12 +83,32 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
      * call to generate body style from attributes
      */
     public ngOnInit() {
+        this.handleMediaArticleAttribute();
         this.generateStyle();
     }
 
     public ngAfterViewInit(): void {
-        this.spicePageBuilderService.addDropListToGroup(this.dropList);
+        if (!this.isEditMode()) {
+            this.spicePageBuilderService.addDropListToGroup(this.dropList);
+        }
     }
+
+    /**
+     * load the media article data if in edit mode, otherwise set the id
+     *
+     * @private
+     */
+    private handleMediaArticleAttribute() {
+
+        if (!this.column.attributes['media-article']) return;
+
+        if (this.isEditMode()) {
+            this.articleService.loadMediaArticle(this.column.attributes['media-article']).subscribe(
+                () => this.cdRef.detectChanges()
+            );
+        }
+    }
+
 
     /**
      * A function that defines how to track changes for items in the iterable (ngForOf).
@@ -65,21 +126,27 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
         return item.data.tagName != 'section';
     }
 
+    get displayStyle(){
+        this.generateStyle();
+        return this.style;
+    }
+
     /**
      * generate body style object
      */
     public generateStyle() {
-        this.style = {
-            'background-color': this.column.attributes['background-color'],
-            'border': this.column.attributes.border,
-            'border-top': this.column.attributes['border-top'],
-            'border-right': this.column.attributes['border-right'],
-            'border-bottom': this.column.attributes['border-bottom'],
-            'border-left': this.column.attributes['border-left'],
-            'border-radius': this.column.attributes['border-radius'],
-            'vertical-align': this.column.attributes['vertical-align'],
-            'padding': this.column.attributes.padding,
-        };
+        this.style = {};
+        if(this.column.attributes['background-color']) this.style['background-color'] = this.column.attributes['background-color'];
+        if(this.column.attributes['inner-background-color']) this.style['background-color'] = this.column.attributes['inner-background-color'];
+        if(this.column.attributes['border']) this.style['border'] = this.column.attributes['border'];
+        if(this.column.attributes['border-top']) this.style['border-top'] = this.column.attributes['border-top'];
+        if(this.column.attributes['border-right']) this.style['border-right'] = this.column.attributes['border-right'];
+        if(this.column.attributes['border-bottom']) this.style['border-bottom'] = this.column.attributes['border-bottom'];
+        if(this.column.attributes['border-left']) this.style['border-left'] = this.column.attributes['border-left'];
+        // border radius is not supported on the table element
+        // if(this.column.attributes['border-radius']) this.style['border-radius'] = this.column.attributes['border-radius'];
+        if(this.column.attributes['vertical-align']) this.style['vertical-align'] = this.column.attributes['vertical-align'];
+        if(this.column.attributes['padding']) this.style['padding'] = this.column.attributes['padding'];
     }
 
     /**
@@ -100,19 +167,31 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
                 event.previousContainer.data.children = event.previousContainer.data.children.filter(item => item != event.item.data);
             }
 
+            this.spicePageBuilderService.isMouseIn = undefined;
+
             switch (event.item.data.tagName) {
                 case 'image':
-                    this.spicePageBuilderService.openMediaFilePicker().subscribe(src => {
-                        if (!!src) {
-                            const image: PanelElementI = JSON.parse(JSON.stringify(event.item.data));
-                            image.attributes.src = src;
-                            delete image.icon;
+                    this.handleImageDrop(event);
+                    break;
+                case 'social':
+
+                    const social: PanelElementI = JSON.parse(JSON.stringify(event.item.data));
+
+                    if (event.item.data.children.length > 1) {
+                        this.column.children.splice(
+                            event.currentIndex, 0, social
+                        );
+                        this.cdRef.detectChanges();
+                        this.spicePageBuilderService.emitData();
+                    } else {
+                        this.spicePageBuilderService.openEditModal(social, true, this.injector).subscribe(socialRes => {
                             this.column.children.splice(
-                                event.currentIndex, 0, image
+                                event.currentIndex, 0, socialRes
                             );
                             this.cdRef.detectChanges();
-                        }
-                    });
+                            this.spicePageBuilderService.emitData();
+                        });
+                    }
                     break;
                 default:
                     const element: PanelElementI = JSON.parse(JSON.stringify(event.item.data));
@@ -121,14 +200,57 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
                     this.column.children.splice(
                         event.currentIndex, 0, element
                     );
+                    this.spicePageBuilderService.emitData();
             }
         } else {
             moveItemInArray(this.column.children, event.previousIndex, event.currentIndex);
+            this.spicePageBuilderService.emitData();
         }
 
-        this.spicePageBuilderService.emitData();
-
         this.dragEntered = false;
+    }
+
+    /**
+     * handle an article image drop
+     * @private
+     * @param event
+     */
+    private handleImageDrop(event: CdkDragDrop<any>) {
+
+        this.spicePageBuilderService.openMediaFilePicker(event.item.data.attributes.isArticleImage).subscribe(srcOrSize => {
+
+            if (!srcOrSize) return;
+
+            const image: PanelElementI = JSON.parse(JSON.stringify(event.item.data));
+            delete image.icon;
+
+            const pushFn = () => {
+                this.column.children.splice(
+                    event.currentIndex, 0, image
+                );
+                this.cdRef.detectChanges();
+                this.spicePageBuilderService.emitData();
+            };
+
+            if (event.item.data.attributes.isArticleImage) {
+
+                image.attributes['media-article-part'] = `media_article_image_size.${srcOrSize}`;
+
+                this.spicePageBuilderService.handleMediaArticleAttribute(image, 'media-article-part');
+
+                this.articleService.getElementMediaArticle(this).subscribe({
+                    next: article => {
+
+                        const mediaFileConfig: { public_url: string } = this.configurationService.getCapabilityConfig('mediafiles');
+                        const mediaFile = article.mediafiles.find(f => f.media_article_image_size == srcOrSize);
+                        image.attributes['src'] = !mediaFile ? null : mediaFileConfig.public_url + mediaFile.id;
+                        pushFn();
+                    }
+                });
+            } else {
+                pushFn();
+            }
+        });
     }
 
     /**
@@ -154,5 +276,15 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
     public onContentDelete(element) {
         this.column.children = this.column.children.filter(item => item != element);
         this.spicePageBuilderService.emitData();
+    }
+
+    /**
+     * handle article change and load the media article data
+     * @param id
+     */
+    public handleArticleChange(id: string) {
+        this.articleService.loadMediaArticle(id).subscribe(
+            () => this.cdRef.detectChanges()
+        );
     }
 }

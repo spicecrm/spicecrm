@@ -1,12 +1,13 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Injector, Input} from '@angular/core';
 import {DomSanitizer} from "@angular/platform-browser";
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {modal} from "../../../services/modal.service";
 import {AttributeObjectI, ImageI} from "../interfaces/spicepagebuilder.interfaces";
 import {SpicePageBuilderElement} from "./spicepagebuilderelement";
+import {configurationService} from "../../../services/configuration.service";
 
 /**
  * Parse and renders renderer container
@@ -14,7 +15,8 @@ import {SpicePageBuilderElement} from "./spicepagebuilderelement";
 @Component({
     selector: 'spice-page-builder-element-image',
     templateUrl: '../templates/spicepagebuilderelementimage.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
     /**
@@ -24,24 +26,35 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
     /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[] = [
-        {name: 'title', type: 'text'},
-        {name: 'href', type: 'text'},
-        {name: 'alt', type: 'text'},
-        {name: 'fluid-on-mobile', type: 'text'},
-        {name: 'rel', type: 'text'},
-        {name: 'srcset', type: 'text'},
-        {name: 'target', type: 'text'},
-        {name: 'usemap', type: 'text'},
-        {name: 'border', type: 'text'},
-        {name: 'border-radius', type: 'textSuffix'},
-        {name: 'align', type: 'text'},
-        {name: 'height', type: 'textSuffix'},
-        {name: 'padding', type: 'sides'},
-        {name: 'width', type: 'textSuffix'},
-        {name: 'container-background-color', type: 'color'},
-        {name: 'css-class', type: 'text'}
+    public readonly attributesList: AttributeObjectI[][] = [ [
+            {name: 'title', type: 'text'},
+            {name: 'alt', type: 'text'},
+        ],
+        [
+            {name: 'href', type: 'text'},
+            {name: 'fluid-on-mobile', type: 'text'},
+        ],
+        [
+            {name: 'srcset', type: 'text'},
+            {name: 'target', type: 'text'}
+        ], [
+            {name: 'border', type: 'borders', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'width', type: 'textSuffix'},
+            {name: 'height', type: 'textSuffix'},
+            {name: 'align', type: 'halign'},
+            {name: 'container-background-color', type: 'color'},
+        ], [
+            {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'css-class', type: 'text', class: 'slds-size--1-of-1'}
+        ]
     ];
+    /**
+     * reference to the configuration service
+     * @private
+     */
+    private configurationService = inject(configurationService);
 
     constructor(public domSanitizer: DomSanitizer,
                 public modal: modal,
@@ -67,8 +80,42 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
      */
     public generateStyle() {
         super.generateStyle([
-            'border', 'border-radius', 'align', 'height', 'padding', 'width'
+            'container-background-color', 'border', 'inner-border', 'border-radius', 'height', 'padding', 'width'
         ]);
+
+        switch (this.element.attributes.align) {
+            case 'center':
+                this.style.margin = '0 auto';
+                break;
+            case 'right':
+                this.style.float = 'right';
+                break;
+        }
     }
 
+    /**
+     * handle media attribute change
+     */
+    public handleMediaAttributeChange(imageSize: string) {
+
+        if (!imageSize) {
+            this.element.attributes.src = null;
+            this.cdRef.detectChanges();
+            return;
+        }
+
+        this.articleService.getElementMediaArticle(this.columnComponent).subscribe(article => {
+
+            if (!article) return;
+
+            const mediaFileConfig: {public_url: string} = this.configurationService.getCapabilityConfig('mediafiles');
+            imageSize = imageSize.split('.')[1];
+            const mediaFile = article.mediafiles.find(f => f.media_article_image_size == imageSize);
+
+            this.element.attributes.src = !mediaFile ? null : mediaFileConfig.public_url + mediaFile.id;
+
+            this.cdRef.detectChanges();
+        });
+
+    }
 }

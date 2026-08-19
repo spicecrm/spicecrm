@@ -10,7 +10,8 @@ import {language} from '../../services/language.service';
 
 @Pipe({
     name: 'objectaddressespipe',
-    pure: false
+    pure: false,
+    standalone: false
 })
 export class ObjectAddressesPipe {
 
@@ -31,6 +32,7 @@ export class ObjectAddressesPipe {
     host: {
         '[style.display]': 'getDisplay()'
     },
+    standalone: false
 })
 export class ObjectAddresses implements OnInit {
 

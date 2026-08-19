@@ -5,6 +5,7 @@ import {Component, OnInit, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
+import {navigation} from '../../../services/navigation.service';
 import {view} from '../../../services/view.service';
 import {modal} from '../../../services/modal.service';
 import {backend} from '../../../services/backend.service';
@@ -16,7 +17,8 @@ import {ActivityTimelineAddItem} from "./activitytimelineadditem";
 @Component({
     selector: 'activitytimeline-add-email',
     templateUrl: '../templates/activitytimelineaddemail.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements OnInit {
     /**
@@ -42,9 +44,10 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
         public dockedComposer: dockedComposer,
         public ViewContainerRef: ViewContainerRef,
         public backend: backend,
+        public navigation: navigation,
         public session: session
     ) {
-        super(metadata, activitiytimeline, model, view, language, modal, dockedComposer, ViewContainerRef);
+        super(metadata, activitiytimeline, model, navigation, view, language, modal, dockedComposer, ViewContainerRef);
     }
 
     /**

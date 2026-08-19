@@ -13,11 +13,13 @@ import {modellist} from '../../../services/modellist.service';
 import {language} from '../../../services/language.service';
 import {userpreferences} from '../../../services/userpreferences.service';
 import {dashboardlayout} from '../services/dashboardlayout.service';
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'dashboard-select-panel',
     templateUrl: '../templates/dashboardselectpanel.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class DashboardSelectPanel {
 
@@ -25,7 +27,16 @@ export class DashboardSelectPanel {
     @Output() public hide: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() public dashboardSelect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(public vcr: ViewContainerRef,public metadata: metadata, public userpreferences: userpreferences, public language: language, public model: model, public modellist: modellist, public dashboardlayout: dashboardlayout) {
+    constructor(
+        public vcr: ViewContainerRef,
+        public metadata: metadata,
+        public userpreferences: userpreferences,
+        public language: language,
+        public model: model,
+        public modellist: modellist,
+        public dashboardlayout: dashboardlayout,
+        public router: Router
+    ) {
 
     }
 
@@ -41,6 +52,10 @@ export class DashboardSelectPanel {
 
     get canAdd() {
         return this.metadata.checkModuleAcl('Dashboards', 'create');
+    }
+
+    get canEditDashboardSets() {
+        return this.metadata.checkModuleAcl('DashboardSets', 'edit');
     }
 
     public getActiveClass(id) {
@@ -60,5 +75,9 @@ export class DashboardSelectPanel {
 
     public trackByFn(index, item) {
         return item.id;
+    }
+
+    public goDashboardSets(){
+        this.router.navigate(['module/DashboardSets'])
     }
 }

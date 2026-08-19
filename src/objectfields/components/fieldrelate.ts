@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {popup} from '../../services/popup.service';
@@ -13,11 +13,13 @@ import {fieldGeneric} from './fieldgeneric';
 import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
 import {relateFilter} from "../../services/interfaces.service";
+import {modelutilities} from "../../services/modelutilities.service";
 
 @Component({
     selector: 'field-relate',
     templateUrl: '../templates/fieldrelate.html',
-    providers: [popup]
+    providers: [popup],
+    standalone: false
 })
 export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
     public relateIdField: string = '';
@@ -42,6 +44,8 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
         public modal: modal,
         public backend: backend,
         public toast: toast,
+        public modelutilities: modelutilities,
+        public cdref: ChangeDetectorRef
     ) {
         super(model, view, language, metadata, router);
     }
@@ -103,6 +107,15 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
                     this.updateRelateFilter();
                 })
             );
+
+            /*
+            this.subscriptions.add(
+                this.model.data$.subscribe(data => {
+                    this.cdref.detectChanges();
+                })
+            );
+            */
+
         }
     }
 
@@ -113,7 +126,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldconfig.relatefilterfield);
         if (fieldDefs) {
             this.relateFilter = {
-                module: fieldDefs.module,
+                module: (this.fieldconfig.relatedfiltermodule ? this.fieldconfig.relatedfiltermodule : this.relateType),
                 relationship: this.fieldconfig.relatefilterrelationship,
                 id: this.model.getField(fieldDefs.id_name),
                 display: this.model.getField(this.fieldconfig.relatefilterfield),
@@ -277,6 +290,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
             selectModal.instance.module = this.relateType;
             selectModal.instance.modulefilter = this.fieldconfig.modulefilter;
+            selectModal.instance.filtercontext = this.handleFilterContext();
             selectModal.instance.multiselect = false;
             selectModal.instance.relatefilter = this.relateFilter;
             this.subscriptions.add(
@@ -288,5 +302,21 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
             );
             selectModal.instance.searchTerm = this.relateSearchTerm;
         });
+    }
+
+    /**
+     * check on optional filtercontextdata
+     * and return filtercontext object
+     */
+    public handleFilterContext(){
+        if(this.fieldconfig.filtercontextdata){
+            const filterContextConfig = this.fieldconfig.filtercontextdata.split(',');
+            let filterContextData = {};
+            filterContextConfig.forEach(key => {
+                filterContextData[key] = this.modelutilities.spice2backend(this.model.module, key, this.model.getField(key));
+            });
+            return {id: this.model._id, module: this.model._module, data: filterContextData};
+        }
+        return {};
     }
 }

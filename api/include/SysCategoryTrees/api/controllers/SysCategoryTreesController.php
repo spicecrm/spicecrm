@@ -3,10 +3,9 @@
 namespace SpiceCRM\includes\SysCategoryTrees\api\controllers;
 
 use Psr\Http\Message\RequestInterface as Request;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\includes\SpiceUI\SpiceUIRESTHandler;
 use SpiceCRM\includes\TimeDate;
 
 class SysCategoryTreesController
@@ -52,10 +51,10 @@ class SysCategoryTreesController
         $params = $req->getQueryParams();
 
         $return = [];
-        $where = "syscategorytree_id = '{$args['id']}'";
+        $where = "syscategorytree_id = '{$args['id']}' AND deleted = 0 ";
         if(!$params['all']){
             $dbNow = TimeDate::getInstance()->nowDb();
-            $where .= " AND deleted = 0 AND node_status = 'a' AND valid_from <= '{$dbNow}' AND valid_to >= '{$dbNow}'";
+            $where .= " AND node_status = 'a' AND valid_from <= '{$dbNow}' AND valid_to >= '{$dbNow}'";
         }
         $rows = $db->query("SELECT * FROM syscategorytreenodes WHERE $where");
         while ($row = $db->fetchByAssoc($rows)) {

@@ -17,6 +17,7 @@ import {Router} from "@angular/router";
  */
 @Component({
     templateUrl: '../templates/fieldactivitiestaskwithclosecheckbox.html',
+    standalone: false
 })
 export class fieldActivitiesTaskWithCloseCheckbox extends fieldGeneric {
 

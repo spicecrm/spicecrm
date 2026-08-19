@@ -22,7 +22,8 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: 'lead-convert-opportunity',
     templateUrl: '../templates/leadconvertopportunity.html',
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 export class LeadConvertOpportunity implements AfterViewInit {
 

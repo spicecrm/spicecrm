@@ -13,7 +13,8 @@ import {Router} from "@angular/router";
  */
 @Component({
     selector: 'global-header-notifications',
-    templateUrl: '../templates/globalheadernotifications.html'
+    templateUrl: '../templates/globalheadernotifications.html',
+    standalone: false
 })
 export class GlobalHeaderNotifications implements OnInit {
     /**

@@ -14,7 +14,8 @@ declare var _: any;
  */
 @Component({
     selector: 'object-listview-settings-setfields-modal',
-    templateUrl: '../templates/objectlistviewsettingssetfieldsmodal.html'
+    templateUrl: '../templates/objectlistviewsettingssetfieldsmodal.html',
+    standalone: false
 })
 export class ObjectListViewSettingsSetfieldsModal {
 

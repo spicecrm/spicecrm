@@ -1,47 +1,25 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\SpiceFTSManager;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
+use Exception;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
-use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\modules\SpiceACL\SpiceACL;
-use stdClass;
-use SpiceCRM\modules\UserPreferences\UserPreference;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\SpiceACL\SpiceACL;
+use SpiceCRM\modules\SystemTenants\SystemTenant;
+use SpiceCRM\modules\UserPreferences\UserPreference;
+use stdClass;
 
 class SpiceFTSHandler
 {
@@ -82,15 +60,43 @@ class SpiceFTSHandler
         'database' => [],
         'elastic' => []
     ];
+    /**
+     * holds the fts modules
+     * @var array
+     */
+    public array $modules = [];
 
     /**
      * fixed date to differentiate the erroneous entries failed to index
      */
     const ERRONEOUS_FIXED_DATE = '9999-12-31 23:24:25';
 
+    /**
+     * @throws Exception
+     */
     public final function __construct()
     {
+        $this->loadModules();
         $this->elasticHandler = new ElasticHandler();
+    }
+
+    /**
+     * load the fts modules
+     * @important should only be done once or after switching the database
+     * @return void
+     * @throws Exception
+     */
+    public function loadModules(): void
+    {
+        $this->modules = [];
+
+        $query = DBManagerFactory::getInstance()->query("SELECT * FROM sysfts ORDER BY index_priority");
+
+        if (!$query) return;
+
+        while ($record = DBManagerFactory::getInstance()->fetchByAssoc($query)) {
+            $this->modules[$record['module']] = $record;
+        }
     }
 
     private function __clone()
@@ -192,6 +198,12 @@ class SpiceFTSHandler
             }
         }
 
+        // if we have a searchterm check the min NGRam length
+        if($postBody['searchterm'] && strlen($postBody['searchterm']) < SpiceConfig::getInstance()->get('fts.min_ngram', 3)) {
+            $ngramLength = SpiceConfig::getInstance()->get('fts.min_ngram', 3);
+            throw new BadRequestException("Minimum NGram Length ({$ngramLength}) not matched in searchterm");
+        }
+
         // use FTS
         if ($useFts) {
             $result = $this->getGlobalSearchResults($postBody['modules'], $postBody['searchterm'], json_decode($postBody['searchtags']), $postBody, $postBody['aggregates'], $postBody['sort'], [],$postBody['useGlobalFilter'] ?? true);
@@ -229,26 +241,26 @@ class SpiceFTSHandler
      */
     function searchPhone($phonenumber)
     {
-        $db = DBManagerFactory::getInstance();
-
-
         if (substr($phonenumber, 0, 2) == 00) {
             $phonenumber = '+' . substr($phonenumber, 2);
         }
 
         // format as in fts index
-        $phonenumber = SpicePhoneNumberParser::convertToE164($phonenumber);
+        $formattedPhoneNumber = SpicePhoneNumberParser::convertToE164($phonenumber);
+
+        if ($formattedPhoneNumber == "") {
+            return $phonenumber;
+        }
 
         // determine the modules
         // ToDo: move to fts utils and utilize cache
         $searchresults = [];
         $krestHandler = new SpiceBeanHandler();
-        $modulesObject = $db->query("SELECT * FROM sysfts");
-        while ($ftsmodule = $db->fetchByAssoc($modulesObject)) {
+        foreach ($this->modules as $ftsmodule) {
             $ftsParams = json_decode(html_entity_decode($ftsmodule['settings']));
             if ($ftsParams->phonesearch == true) {
                 $module = $ftsmodule['module'];
-                $searchresultsraw = $this->searchModuleByPhoneNumber($module, $phonenumber);
+                $searchresultsraw = $this->searchModuleByPhoneNumber($module, $formattedPhoneNumber);
 
                 foreach ($searchresultsraw['hits']['hits'] as $hit) {
                     $seed = BeanFactory::getBean($module, $hit['_id']);
@@ -293,12 +305,12 @@ class SpiceFTSHandler
         }
 
         $fh = @fopen('php://output', 'w');
-        fputcsv($fh, $postBody['fields'], $delimiter);
+        fputcsv(stream: $fh, fields: $postBody['fields'], separator: $delimiter, escape: '');
         foreach ($result as $thisBean) {
             $entryArray = [];
             foreach ($postBody['fields'] as $returnField)
                 $entryArray[] = !empty($charsetTo) ? mb_convert_encoding($thisBean[$returnField], $charsetTo) : $thisBean[$returnField];
-            fputcsv($fh, $entryArray, $delimiter);
+            fputcsv(stream: $fh, fields: $entryArray, separator: $delimiter, escape: '');
         }
         fclose($fh);
 
@@ -310,9 +322,7 @@ class SpiceFTSHandler
     */
     public function checkModule($module, $checkIndex = false)
     {
-        $db = DBManagerFactory::getInstance();
-
-        if ($db->fetchByAssoc($db->query("SELECT * FROM sysfts WHERE module = '$module'"))) {
+        if (SpiceFTSHandler::getInstance()->modules[$module]) {
             if ($checkIndex) {
                 $elastichandler = new ElasticHandler();
                 return $elastichandler->checkIndex($module);
@@ -335,6 +345,29 @@ class SpiceFTSHandler
         $sysFilter = new SysModuleFilters();
         $sysFilter->filtermodule = $module;
         $fields = $sysFilter->getFilterFieldsForGroup($filterdefs);
+
+        $beanHandler = new SpiceFTSBeanHandler($module);
+        $indexedFields = $beanHandler->mapModule();
+
+        foreach ($fields as $field) {
+            // check that we have the field and also a raw value - otherwise the search will not return proper results
+            if (!(isset($indexedFields[$field]) && isset($indexedFields[$field]['fields']['raw']))) return false;
+        }
+
+        return true;
+    }
+
+    /*
+    * static function to check if a module has a FTE definition
+    */
+    public function checkFilterID($module, $filterId)
+    {
+        // check that a filter def has been passed in
+        if (!$filterId) return true;
+
+        $sysFilter = new SysModuleFilters();
+        $sysFilter->filtermodule = $module;
+        $fields = $sysFilter->getFilterFields($filterId);
 
         $beanHandler = new SpiceFTSBeanHandler($module);
         $indexedFields = $beanHandler->mapModule();
@@ -421,13 +454,7 @@ class SpiceFTSHandler
         $modArray = [];
         $modLangArray = [];
         $viewDefs = [];
-        $modules = [];
-
-        // default FTS
-        $modListFts = $db->query("SELECT * FROM sysfts");
-        while ($row = $db->fetchByAssoc($modListFts)) {
-            $modules[] = $row;
-        }
+        $modules = SpiceFTSHandler::getInstance()->modules;
 
         foreach ($modules as $module) {
             $settings = json_decode(html_entity_decode($module['settings']), true);
@@ -518,8 +545,7 @@ class SpiceFTSHandler
         $modArray = [];
         $searchFields = [];
 
-        $modules = $db->query("SELECT * FROM sysfts");
-        while ($module = $db->fetchByAssoc($modules)) {
+        foreach (SpiceFTSHandler::getInstance()->modules as $module) {
             $settings = json_decode(html_entity_decode($module['settings']), true);
             if (!$settings['globalsearch']) continue;
 
@@ -540,7 +566,7 @@ class SpiceFTSHandler
     /**
      * indexes a given bean that is passed in
      *
-     * @param $bean the sugarbean to be indexed
+     * @param $bean SpiceBean the sugarbean to be indexed
      *
      * @return bool
      */
@@ -723,23 +749,28 @@ class SpiceFTSHandler
     }
 
     /**
-     *
      * function to search in a module
      *
      * @param $module
      * @param string $searchterm
+     * @param array $searchtags
      * @param array $aggregatesFilters
      * @param int $size
      * @param int $from
      * @param array $sort
      * @param array $addFilters
-     * @deprecated  bool $useWildcard
+     * @param bool $useWildcard deprecated
      * @param array $requiredFields
-     * @param array $source set to false if no source fields shopudl be returned
+     * @param bool $source set to false if no source fields should be returned
+     * @param array $addAggregates
+     * @param bool $useGlobalFilter
+     * @param string|null $listId
      *
      * @return array|mixed
      */
-    function searchModule($module, $searchterm = '', $searchtags = [], $aggregatesFilters = [], $size = 25, $from = 0, $sort = [], $addFilters = [], $useWildcard = false, $requiredFields = [], $source = true, $addAggregates = [], $useGlobalFilter = true, $listId = NULL)
+    public function searchModule($module, string $searchterm = '', array|null $searchtags = [], array $aggregatesFilters = [], int $size = 25,
+                          int $from = 0, array $sort = [], array $addFilters = [], bool $useWildcard = false, array $requiredFields = [],
+                          bool $source = true, array $addAggregates = [], bool $useGlobalFilter = true, ?string $listId = null): mixed
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
@@ -833,22 +864,6 @@ class SpiceFTSHandler
                 $queryParam['query']['bool']['should'] = $existsBlock;
                 $queryParam['query']['bool']['minimum_should_match'] = 1;
             }
-
-
-            //wildcard capability: change elasticsearch params!
-            /*
-            if ($useWildcard) {
-                $queryParam['query'] = [
-                    "bool" => [
-                        "should" => []
-                    ]
-                ];
-                foreach ($searchFields as $searchField) {
-                    $queryParam['query']['bool']['should'][] = ["wildcard" => [substr($searchField, 0, (strpos($searchField, "^") > 0 ? strpos($searchField, "^") : strlen($searchField))) => "$searchterm"]];
-                }
-
-            };
-            */
         }
 
         // if searchtags add an additional query for the must
@@ -895,8 +910,12 @@ class SpiceFTSHandler
             }
         }
 
+        if (!is_array($addFilters)) $addFilters = [];
+
+        SystemTenant::addFTSFilter($queryParam);
+
         // process additional filters
-        if (is_array($addFilters) && count($addFilters) > 0) {
+        if (count($addFilters) > 0) {
             if (is_array($queryParam['query']['bool']['filter']['bool']['must'])) {
                 foreach ($addFilters as $addFilter)
                     $queryParam['query']['bool']['filter']['bool']['must'][] = $addFilter;
@@ -908,7 +927,7 @@ class SpiceFTSHandler
         // add additional query params
         // exclude inactive records for specific list types
         $listTypes = ['all', 'owner', 'globalSearch'];
-        if ($seed && property_exists($seed, 'is_inactive') && in_array($listId, $listTypes)) {
+        if ($seed && isset($seed->field_defs['is_inactive']) && in_array($listId, $listTypes)) {
             if(is_array($queryParam['query']['bool']['filter']['bool']['must'])) {
                 $queryParam['query']['bool']['filter']['bool']['must'][]['bool']['must'][]['terms']['is_inactive'] = ['0'];
             } else {
@@ -1076,7 +1095,7 @@ class SpiceFTSHandler
                                 "match" => [
                                     $indexProperty['indexfieldname'] => [
                                         "query" => $queryField,
-                                        'analyzer' => 'standard',
+                                        'analyzer' =>  $indexProperty['search_analyzer'] ?: 'standard',
                                         "operator" => "and",
                                         'fuzziness' => $indexProperty['duplicatefuzz'] ?: 0]
                                 ]
@@ -1224,6 +1243,7 @@ class SpiceFTSHandler
 
             // prepare the aggregates
             $aggregatesFilters = [];
+            $addAggrs          = [];
             foreach ($aggregates[$module] as $aggregate) {
                 $aggregateDetails = explode('::', $aggregate);
                 $aggregatesFilters[$aggregateDetails[0]][] = $aggregateDetails[1];
@@ -1291,7 +1311,18 @@ class SpiceFTSHandler
             $params['buckets'] = json_decode($params['buckets'], true);
             if (is_array($params['buckets']) && count($params['buckets']) > 0) {
                 // get the full aggregates
-                $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, 0, 0, $sort, $addFilters, false, $required, $useGlobalFilter, 'globalSearch');
+                $searchresultsraw = $this->searchModule(
+                    module:            $module,
+                    searchterm:        $searchterm,
+                    searchtags:        $searchtags,
+                    aggregatesFilters: $aggregatesFilters,
+                    size:              0,
+                    sort:              $sort ?: [],
+                    addFilters:        $addFilters,
+                    requiredFields:    $required,
+                    useGlobalFilter:   $useGlobalFilter,
+                    listId:            'globalSearch',
+                );
                 $searchresults[$module] = $searchresultsraw['hits'] ?: ['hits' => [], 'total' => $this->elasticHandler->getHitsTotalValue($searchresultsraw)];
                 $searchresults[$module]['aggregations'] = $searchresultsraw['aggregations'];
 
@@ -1302,14 +1333,26 @@ class SpiceFTSHandler
                             $params['buckets']['bucketfield'] . '.raw' => $bucketitem['bucket']
                         ]
                     ];
-                    $addAggrs = [];
                     if ($params['buckets']['buckettotal']) {
                         foreach ($params['buckets']['buckettotal'] as $item) {
                             $addAggrs['_bucket_agg_' . $item['name']] = [$item['function'] => ['field' => $item['name'] . '.agg']];
                         }
                     }
 
-                    $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $bucketitem['items'] ?: 0, $sort, array_merge($addFilters, $bucketfilters), $useWildcard, $required, true, $addAggrs, $useGlobalFilter, 'globalSearch');
+                    $searchresultsraw = $this->searchModule(
+                        module:            $module,
+                        searchterm:        $searchterm,
+                        searchtags:        $searchtags,
+                        aggregatesFilters: $aggregatesFilters,
+                        size:              $params['records'] ?: 5,
+                        from:              $bucketitem['items'] ?: 0,
+                        sort:              $sort ?: [],
+                        addFilters:        array_merge($addFilters, $bucketfilters),
+                        requiredFields:    $required,
+                        addAggregates:     $addAggrs,
+                        useGlobalFilter:   $useGlobalFilter,
+                        listId:            'globalSearch',
+                    );
                     foreach ($searchresultsraw['hits']['hits'] as &$hit) {
                         $seed = BeanFactory::getBean($module, $hit['_id'], ['forceRetrieve' => true]);
 
@@ -1352,7 +1395,20 @@ class SpiceFTSHandler
                 $searchresults[$module]['buckets'] = $params['buckets'];
             } else {
 
-                $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $params['start'] ?: 0, $sort, $addFilters, false, $required, true, $addAggrs, $useGlobalFilter, 'globalSearch');
+                $searchresultsraw = $this->searchModule(
+                    module:            $module,
+                    searchterm:        $searchterm,
+                    searchtags:        $searchtags,
+                    aggregatesFilters: $aggregatesFilters,
+                    size:              $params['records'] ?: 5,
+                    from:              $params['start'] ?: 0,
+                    sort:              $sort ?: [],
+                    addFilters:        $addFilters,
+                    requiredFields:    $required,
+                    addAggregates:     $addAggrs,
+                    useGlobalFilter:   $useGlobalFilter,
+                    listId:            'globalSearch',
+                );
                 $searchresults[$module] = $searchresultsraw['hits'] ?: ['hits' => [], 'total' => $this->elasticHandler->getHitsTotalValue($searchresultsraw)];
 
                 if ($searchresultsraw['error']) {
@@ -1374,7 +1430,7 @@ class SpiceFTSHandler
 
                     foreach ($seed->field_defs as $field => $fieldData) {
                         //if (!isset($hit['_source']{$field}))
-                        if(is_string($seed->$field)) { // might be Link2 Object! so check on it
+                        if(is_string($seed->$field)) { // might be SpiceDictionaryLink Object! so check on it
                             $hit['_source'][$field] = html_entity_decode($seed->$field, ENT_QUOTES);
                         }
                     }
@@ -1518,7 +1574,19 @@ class SpiceFTSHandler
                 }
 
                 // add the aggregates
-                $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $bucketitem['items'] ?: 0, $sort, array_merge($addFilters, $bucketfilters), false, $required, true, $addAggrs, true, $params['listid']);
+                $searchresultsraw = $this->searchModule(
+                    module:            $module,
+                    searchterm:        $searchterm,
+                    searchtags:        $searchtags,
+                    aggregatesFilters: $aggregatesFilters,
+                    size:              $params['records'] ?: 5,
+                    from:              $bucketitem['items'] ?: 0,
+                    sort:              $sort ?: [],
+                    addFilters:        array_merge($addFilters, $bucketfilters),
+                    requiredFields:    $required,
+                    addAggregates:     $addAggrs,
+                    listId:            $params['listid'],
+                );
                 // only add when not hidden
                 if($bucketitem['hidden'] === false) {
                     foreach ($searchresultsraw['hits']['hits'] as &$hit) {
@@ -1546,14 +1614,35 @@ class SpiceFTSHandler
                     $params['buckets']['bucketfield'] . '.raw' => $terms
                 ]
             ];
-            $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, 0, 0, $sort, array_merge($addFilters, $bucketfilters), false, $required, true, [], true, $params['listid']);
+            $searchresultsraw = $this->searchModule(
+                module:            $module,
+                searchterm:        $searchterm,
+                searchtags:        $searchtags,
+                aggregatesFilters: $aggregatesFilters,
+                size:              0,
+                sort:              $sort ?: [],
+                addFilters:        array_merge($addFilters, $bucketfilters),
+                requiredFields:    $required,
+                listId:            $params['listid'],
+            );
             $searchresults['total'] = $this->elasticHandler->getHitsTotalValue($searchresultsraw);
             $searchresults['aggregations'] = $searchresultsraw['aggregations'];
 
             // return the upodated bnucket items
             $searchresults['buckets'] = $params['buckets'];
         } else {
-            $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $params['start'] ?: 0, $sort, $addFilters, false, $required,true, [], true, $params['listid']);
+            $searchresultsraw = $this->searchModule(
+                module:            $module,
+                searchterm:        $searchterm,
+                searchtags:        $searchtags,
+                aggregatesFilters: $aggregatesFilters,
+                size:              $params['records'] ?: 5,
+                from:              $params['start'] ?: 0,
+                sort:              $sort ?: [],
+                addFilters:        $addFilters,
+                requiredFields:    $required,
+                listId:            $params['listid'],
+            );
             $searchresults = $searchresultsraw['hits'] ? ['hits' => $searchresultsraw['hits']['hits'], 'total' => $this->elasticHandler->getHitsTotalValue($searchresultsraw)] : ['hits' => [], 'total' => 0];
 
             if ($searchresultsraw['error']) {
@@ -1623,7 +1712,17 @@ class SpiceFTSHandler
         }
 
 
-        $searchresultsraw = $this->searchModule($module, $searchterm, [], $aggregatesFilters, $size, $from, $sort, $addFilters, false, $required, $source);
+        $searchresultsraw = $this->searchModule(
+            module:            $module,
+            searchterm:        $searchterm,
+            aggregatesFilters: $aggregatesFilters,
+            size:              $size,
+            from:              $from,
+            sort:              $sort ?: [],
+            addFilters:        $addFilters,
+            requiredFields:    $required,
+            source:            $source,
+        );
 
         return $searchresultsraw;
 
@@ -1656,9 +1755,9 @@ class SpiceFTSHandler
         $db = DBManagerFactory::getInstance();
 
         $beanCounter = 0;
-        $beans = $db->query("SELECT * FROM sysfts");
         echo "Starting indexing (maximal $packagesize records).\n";
-        while ($bean = $db->fetchByAssoc($beans)) {
+
+        foreach (SpiceFTSHandler::getInstance()->modules as $bean) {
             echo 'Indexing module ' . $bean['module'] . ': ';
             $seed = BeanFactory::getBean($bean['module']);
 
@@ -1730,13 +1829,14 @@ class SpiceFTSHandler
         $db = DBManagerFactory::getInstance();
 
         $beanCounter = 0;
-        // BEGIN CR1000257
-        $where = "";
+
         if (!empty($module)) {
-            $where = " WHERE module='" . $module . "'";
+            $modules = [$this->modules[$module]];
+        } else {
+            $modules = $this->modules;
         }
+
         // END
-        $beans = $db->query("SELECT * FROM sysfts $where ORDER BY index_priority");
         echo "Starting indexing (maximal $packagesize records).\n";
 
         $bulkCommitSize = (SpiceConfig::getInstance()->config['fts']['bulkcommitsize'] ?: 1000);
@@ -1746,7 +1846,7 @@ class SpiceFTSHandler
             'deleted' => []
         ];
 
-        while ($bean = $db->fetchByAssoc($beans)) {
+        foreach ($modules as $bean) {
             echo 'Indexing module ' . $bean['module'] . ': ';
             $seed = BeanFactory::getBean($bean['module']);
 
@@ -1891,7 +1991,7 @@ class SpiceFTSHandler
      * @param int $counterIndexed
      * @param int $counterDeleted
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     private function handleBulkResponse(object $indexResponse, array &$bulkUpdates, string $tableName, int &$counterErroneous, int &$counterIndexed, int &$counterDeleted): void
     {
@@ -1956,7 +2056,7 @@ class SpiceFTSHandler
      * execute the updates to the database
      * reset the transaction array and transaction flag
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function commitTransaction(){
         $db = DBManagerFactory::getInstance();

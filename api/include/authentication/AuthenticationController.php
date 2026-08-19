@@ -1,36 +1,8 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\authentication;
 
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\GoogleAuthenticate\GoogleAuthenticate;
 use SpiceCRM\includes\authentication\interfaces\AccessUtilsI;
 use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
@@ -41,7 +13,6 @@ use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRM2FAUtils;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAccessUtils;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
@@ -49,6 +20,9 @@ use SpiceCRM\includes\ErrorHandlers\ServiceUnavailableException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
@@ -189,8 +163,10 @@ class AuthenticationController
      */
     public function authenticate($authParams = null)
     {
+        RESTManager::getInstance()->excludeImageFields = true;
+
         if(!$authParams) {
-            $authParams = RESTManager::getInstance()->parseAuthParams();
+            $authParams = RESTManager::getInstance()->getAuthParams();
         }
 
         if ($authParams->authType == 'none') return;
@@ -208,6 +184,8 @@ class AuthenticationController
         } catch (UnauthorizedException $e) {
             $this->handleFailedAuthentication($e, $authParams->authData);
         }
+
+        RESTManager::getInstance()->excludeImageFields = false;
     }
 
     /**
@@ -239,7 +217,7 @@ class AuthenticationController
         if (LDAPAuthenticate::isLdapEnabled()) $type = 'LDAP';
 
         // if we do not have the audata get it from teh REST Call
-        if(!$authData) $authData = RESTManager::getInstance()->parseAuthParams()->authData;
+        if(!$authData) $authData = RESTManager::getInstance()->getAuthParams()->authData;
         $tokenIssuer = $authData->tokenIssuer;
 
         if (!empty($tokenIssuer)) $type = $tokenIssuer;
@@ -363,8 +341,6 @@ class AuthenticationController
 
         $this->checkUserStatus($userObj);
 
-        $this->checkPasswordExpire($userObj);
-
         // retrieve impersonation user
         if (!empty($authData->impersonationUser)) {
             $impersonatingUser = $this->getUserByUsername($authData->impersonationUser);
@@ -374,11 +350,13 @@ class AuthenticationController
         $this->setCurrentUser($userObj);
 
         if (!$userObj->isAdmin() && SystemStartupMode::recoveryModeEnabled()) {
-            throw (new ServiceUnavailableException('System is in recovery mode. Only admin can login'))->setFatal( false );
+            throw (new ServiceUnavailableException('System is in recovery mode. Only admin can login'))->setFatal( false )
+                ->setErrorCode('recoveryModeEnabled');
         }
 
         if ($authType == 'credentials') {
             SpiceCRM2FAUtils::handle2FAFlow($userObj, $authData);
+            $this->checkPasswordExpire($userObj);
         }
 
         if (!empty($authResponse->tenantId)) {
@@ -444,6 +422,8 @@ class AuthenticationController
         if (!$userObj->findByUserName($username)) {
             throw new UnauthorizedException('User not found', 404);
         }
+
+        $userObj->retrieveViewDetails();
 
         return $userObj;
     }
@@ -545,7 +525,7 @@ class AuthenticationController
             throw new UnauthorizedException('Tenant expired', 401);
         }
 
-        $tenant->switchToTenant();
+        SystemTenant::switchToTenant($tenant->id);
 
         $this->systemtenantid = $tenant->id;
         $this->systemtenantname = $tenant->name;
@@ -566,7 +546,7 @@ class AuthenticationController
         }
 
         // get the current user
-        $currentUser = $this->getCurrentUser();
+        $currentUser = BeanFactory::getBean('Users', $this->getCurrentUser()->id, ['forceRetrieve' => true]);
 
         // get a module handler to map the current user
         $moduleHandler = new SpiceBeanHandler();
@@ -592,7 +572,7 @@ class AuthenticationController
             'obtainGDPRconsent' => false,
             'canchangepassword' => AuthenticationController::getInstance()->getCanChangePassword(),
             'expiringPasswordValidityDays' => AuthenticationController::getInstance()->expiringPasswordValidityDays,
-            'user' => $moduleHandler->mapBean($currentUser),
+            'user' => $moduleHandler->mapBean(BeanFactory::getBean('Users', $currentUser->id)),
             'deviceID' => $this->deviceID
         ];
 

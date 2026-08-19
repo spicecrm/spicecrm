@@ -663,6 +663,8 @@ export class backend {
     public handleError(err, route, method: string, data = null, responseSubject?: Subject<any>): boolean {
         switch (err.status) {
             case 503:
+                if (err.error?.error?.errorCode !== 'recoveryModeEnabled') return false;
+
                 this.configurationService.data.startupMode = 'recovery';
                 return true;
             case 401:

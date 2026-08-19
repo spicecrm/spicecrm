@@ -41,7 +41,8 @@ declare var MarkerClusterer: any;
 @Component({
     selector: 'spice-google-maps',
     templateUrl: '../templates/spicegooglemaps.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 
 export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
@@ -826,7 +827,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
             this.setMarkerCluster();
         }
 
-        if (!this.options.circle) {
+        if (!this.options.circle && this.records.length > 0) {
             this.fitMapBounds();
         }
     }

@@ -32,6 +32,11 @@ export class configurationService {
     public initialized: boolean = false;
 
     /**
+     * holds an error if loading
+     */
+    public loadingError: string;
+
+    /**
      * set to true if the sysinfo is getting reloaded
      */
     public reloading: boolean = false;
@@ -173,6 +178,12 @@ export class configurationService {
                     this.data.loginSidebarUrl = res.loginSidebarUrl;
                     this.data.allowForgotPass = res.allowForgotPass;
                     this.data.name = res.name ? res.name : 'SpiceCRM';
+                    if (res.publicRoutes.routes?.length > 0) {
+                        this.broadcast.message$.emit({
+                            messagetype: 'configuration.sysinfo',
+                            messagedata: res.publicRoutes
+                        });
+                    }
                     this.loaded$.next(true);
                 }
                 this.initialized = true;
@@ -182,22 +193,33 @@ export class configurationService {
                     this.setAssets(res.assets);
                 }
 
-                // set the favicon
-                // ToDo: move to separate theming service
-                this.setFavIcon();
-
                 // set the title
                 this.title.setTitle(this.systemName);
             },
             error: (err: any) => {
                 // if we figure the system is not installed add the route to the routes available so it can also be called and redirect to the installer
-                if (err.status == '503' && err.error.error.errorCode == 'crmNotInstalled') {
-                    this.enableinstall = true;
-                    this.router.config.unshift({
-                        path: 'install',
-                        component: SpiceInstaller
-                    });
-                    this.router.navigate(['/install']);
+                if (err.status == '503') {
+                    switch (err.error.error.errorCode) {
+                        case 'crmNotInstalled':
+                            this.enableinstall = true;
+                            this.router.config.unshift({
+                                path: 'install',
+                                component: SpiceInstaller
+                            });
+                            this.router.navigate(['/install']);
+                            break;
+                        case 'systemVersionChange':
+                            this.storeService.clearAllDBs();
+                            localStorage.clear();
+                            sessionStorage.clear();
+                            this.initialized = true;
+                            this.loadingError = err.error.error.message;
+                            break;
+                    }
+
+                } else {
+                    this.initialized = true;
+                    this.loadingError = err.error ? err.error.error.message : 'unknown system error';
                 }
             }
         });
@@ -241,7 +263,11 @@ export class configurationService {
     public setAssets(assets, emit = false) {
         this.assets = assets;
 
+        // set the color
         this.setColors();
+
+        // set the favicon
+        this.setFavIcon();
 
         if (emit) this.loaded$.next(true);
     }
@@ -335,7 +361,7 @@ export class configurationService {
      */
     public getData(key) {
         // console.log('appdata',this.appdata);
-        return this.appdata[key] ? this.appdata[key] : false;
+        return this.appdata.hasOwnProperty(key) ? this.appdata[key] : false;
     }
 
     public updateThemeColors() {
@@ -405,14 +431,12 @@ export class configurationService {
      * sets the favicon
      */
     public setFavIcon() {
+        // chek that we have a favicon
+        if (!this.getAsset('favicon')) return;
+        let favicon = this.getAsset('favicon');
         let icon = document.querySelectorAll("link[ rel ~= 'icon' i]")[0];
         if (icon) {
-            let config = this.getCapabilityConfig('theme');
-            if (config.icon_image) {
-                icon.setAttribute('href', 'data:' + config.icon_image);
-            } else {
-                icon.setAttribute('href', './config/favicon');
-            }
+            icon.setAttribute('href', favicon);
         }
     }
 
@@ -430,7 +454,6 @@ export class configurationService {
         for (let assetColor in colorObj) {
             document.documentElement.style.setProperty('--' + assetColor, colorObj[assetColor]);
         }
-
     }
 
     /**

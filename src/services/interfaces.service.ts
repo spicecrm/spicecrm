@@ -131,6 +131,7 @@ export interface NotificationI {
     notification_date: string;
     notification_type: 'generic' | 'assign' | 'delete' | 'change' |'reminder';
     notification_read: 1 | 0;
+    notification_text?: string;
     additional_infos: {
         fieldsNames: string[]
     } | any;

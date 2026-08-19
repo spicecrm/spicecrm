@@ -2,6 +2,9 @@
  * @module SystemComponents
  */
 
+import {ElementRef} from "@angular/core";
+import {Point} from "@angular/cdk/drag-drop";
+
 /**
  * used for input radio group input
  */
@@ -44,7 +47,7 @@ export interface SystemTreeConfigI {
     collapsible?: boolean;
 }
 
-export  type GoogleChartTypeOneDimensional = 'Area' | 'SteppedArea' | 'Bar' | 'Column' | 'Line' | 'Pie' | 'Donut';
+export  type GoogleChartTypeOneDimensional = 'Area' | 'SteppedArea' | 'Bar' | 'Column' | 'Line' | 'Pie' | 'Donut' | 'Gauge';
 
 export type GoogleChartTypeMultiDimensional = 'Area' | 'SteppedArea' | 'Bar' | 'Column' | 'Line'; // 'Bubble' | 'Sankey' need different structure
 
@@ -70,6 +73,19 @@ export interface GoogleChartOptionsI {
     is3D?: boolean;
     isStacked?: boolean;
     animation?: any;
+    // for the Gauge
+    greenFrom?:number;
+    greenTo?:number;
+    greenColor?:string;
+    yellowFrom?:number;
+    yellowTo?:number;
+    yellowColor?:string;
+    redFrom?:number;
+    redTo?:number;
+    redColor?:string;
+    minorTicks?: number;
+    max?: number;
+    min?: number;
 }
 
 export interface GoogleChartOptionLegendI {
@@ -99,3 +115,72 @@ export interface GoogleChartSelectedObject {
 }
 
 export type ChartJSTypeOneDimensional = 'Bar' | 'Column' | 'Line' | 'Pie' | 'Doughnut';
+
+export type GenerativeAIInputI = string | GenerativeAIInputObjectI;
+
+/**
+ * input object for the generative AI service
+ */
+interface GenerativeAIInputObjectI {
+    type: 'file' | 'text';
+    mime?: string;
+    md5?: string;
+    content?: string;
+}
+
+/**
+ * this params config can be one of multiple interfaces based on the system selected service provider
+ */
+export type GenerativeAIParams = GeminiAIParams;
+
+export interface GeminiAIParams {
+    responseItemsSchema: {
+        [key: string]: {
+            type: 'STRING' | 'NUMBER' | 'INTEGER' | 'BOOLEAN' | 'ARRAY';
+            maxLength?: number; // for string
+            minLength?: number; // for string
+            minimum?: number; // for integer
+            maximum?: number; // for integer
+            nullable?: boolean;
+            enum?: string[];
+            items?: {} // for array type
+        };
+    }
+
+}
+
+export interface ResizeEvent {
+    left: number;
+    width: number;
+    top: number;
+    height: number;
+    deltaWidth: number;
+    deltaHeight: number;
+    handle: ResizeHandle;
+}
+
+export type ResizeConstrainFn = (
+    userSize: { width: number; height: number; top: number; left: number },
+    handle: ResizeHandle,
+    element: ElementRef,
+    dimensions: DOMRect,
+    pickupPositionInElement: Point
+) => { width?: number; height?: number, top?: number, left?: number };
+
+export type ResizeHandle =
+    | 'bottom-right'
+    | 'bottom-left'
+    | 'top-right'
+    | 'top-left'
+    | 'top'
+    | 'bottom'
+    | 'right'
+    | 'left';
+
+/**
+ * object emitted by the SystemSizeListener Directive
+ */
+export interface SizeChangeI {
+    rect: DOMRectReadOnly;
+    element: HTMLElement;
+}

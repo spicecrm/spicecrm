@@ -4,14 +4,18 @@
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-    Component,
-    EventEmitter,
+    Component, ElementRef,
+    EventEmitter, Injector,
     Input,
-    OnInit,
-    Output
+    OnInit, Optional,
+    Output, SkipSelf
 } from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
-import {AttributeObjectI, SectionI} from "../interfaces/spicepagebuilder.interfaces";
+import {
+    AttributeObjectI, MediaArticleI,
+    SectionI,
+} from "../interfaces/spicepagebuilder.interfaces";
+import {SpicePageBuilderMediaArticleService} from "../services/spicepagebuildermediaarticle.service";
 
 /**
  * Parse and renders renderer container
@@ -19,7 +23,8 @@ import {AttributeObjectI, SectionI} from "../interfaces/spicepagebuilder.interfa
 @Component({
     selector: 'spice-page-builder-element-section',
     templateUrl: '../templates/spicepagebuilderelementsection.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderElementSection implements OnInit {
     /**
@@ -41,30 +46,52 @@ export class SpicePageBuilderElementSection implements OnInit {
     /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[] = [
-        {name: 'background-color', type: 'color'},
-        {name: 'color', type: 'color'},
-        {name: 'padding', type: 'sides'},
-        {name: 'css-class', type: 'text'},
-        {name: 'border', type: 'text'},
-        {name: 'border-top', type: 'text'},
-        {name: 'border-right', type: 'text'},
-        {name: 'border-bottom', type: 'text'},
-        {name: 'border-left', type: 'text'},
-        {name: 'background-position', type: 'text'},
-        {name: 'background-repeat', type: 'text'},
-        {name: 'background-size', type: 'text'},
-        {name: 'background-url', type: 'text'},
+    public readonly mainAttributesList: AttributeObjectI[][] = [
+        [
+            {name: 'background-color', type: 'color', class: 'slds-size--1-of-2'},
+            {name: 'direction', type: 'direction', class: 'slds-size--1-of-4'},
+            {name: 'is-group', type: 'bool', class: 'slds-size--1-of-4'},
+        ], [
+            {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
+        ]
+    ];
+    /**
+     * list of the editable attributes
+     */
+    public readonly attributesList: AttributeObjectI[][] = [
+        [
+            {name: 'color', type: 'color',},
+            {name: 'css-class', type: 'text'},
+        ], [
+            {name: 'border', type: 'borders', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'background-position', type: 'text', class: 'slds-size--1-of-4'},
+            {name: 'background-repeat', type: 'text', class: 'slds-size--1-of-4'},
+            {name: 'background-size', type: 'text', class: 'slds-size--1-of-4'},
+            {name: 'background-url', type: 'text', class: 'slds-size--1-of-4'}
+        ]
     ];
 
-    constructor(public spicePageBuilderService: SpicePageBuilderService,
-                private cdRef: ChangeDetectorRef) {
+    constructor(
+        public elementRef: ElementRef,
+        public spicePageBuilderService: SpicePageBuilderService,
+        public _articleService: SpicePageBuilderMediaArticleService,
+        @SkipSelf() @Optional() public _articleServiceParent: SpicePageBuilderMediaArticleService,
+        private injector: Injector,
+        private cdRef: ChangeDetectorRef) {
+    }
+
+    get articleService(): SpicePageBuilderMediaArticleService {
+        return this.isEditMode ? this._articleServiceParent : this._articleService;
     }
 
     /**
      * call to generate body style from attributes
      */
     public ngOnInit() {
+
+        this.handleMediaArticleAttribute();
+
         this.generateStyle();
     }
 
@@ -97,6 +124,7 @@ export class SpicePageBuilderElementSection implements OnInit {
             'background-repeat': this.section.attributes['background-repeat'],
             'background-size': this.section.attributes['background-size'],
             'background-url': this.section.attributes['background-url'],
+            'direction': this.section.attributes['direction']
         };
     }
 
@@ -116,11 +144,12 @@ export class SpicePageBuilderElementSection implements OnInit {
     }
 
     /**
-     * open edit modal
+     * open the edit modal
+     * pass the custom view mode injector to the edit modal to pass the provided media article service instance.
      */
     public edit() {
 
-        this.spicePageBuilderService.openEditModal(this.section).subscribe({
+        this.spicePageBuilderService.openEditModal(this.section, true, this.injector).subscribe({
             next: res => {
                 if (!!res) {
                     this.handleEditResponse(res);
@@ -134,11 +163,83 @@ export class SpicePageBuilderElementSection implements OnInit {
      */
     public handleEditResponse(res) {
         this.section.attributes = res.attributes;
-        this.section.children.forEach((input, index) =>{
-            input.attributes = res.children[index].attributes
-        } );
+        this.section.children = res.children;
+        this.section.children.forEach((column, index) => {
+            column.attributes = res.children[index].attributes;
+            this.spicePageBuilderService.handleMediaArticleAttribute(column, 'media-article');
+            this.articleService.fillInArticleParts(this.section.attributes['media-article'], column);
+        });
+
         this.generateStyle();
+
+        this.spicePageBuilderService.handleMediaArticleAttribute(this.section, 'media-article');
+        this.articleService.fillInArticleParts(this.section.attributes['media-article'], this.section);
+
         this.spicePageBuilderService.emitData();
         this.cdRef.detectChanges();
+    }
+
+    /**
+     * handle article change and load the media article data
+     * @param id
+     */
+    public handleArticleChange(id: string) {
+        this.articleService.loadMediaArticle(id).subscribe(() => {
+            this.cdRef.detectChanges();
+        });
+    }
+
+    /**
+     * add new column to the section element
+     * @returns void
+     */
+    public addColumn(): void {
+        let newSection = JSON.parse(JSON.stringify(this.spicePageBuilderService.panelDefaultColumn))
+        const childrenCount = this.section.children.length;
+        const childWidth = `${100 / childrenCount}%`;
+        newSection.attributes.width = childWidth;
+        this.section.children.push(newSection);
+
+        this.recalculateColumnSizes();
+        this.cdRef.detectChanges();
+    }
+
+    /**
+     * add new column to the section element
+     * @returns void
+     */
+    public deleteColumn(index): void {
+        this.section.children.splice(index, 1);
+        this.recalculateColumnSizes();
+        this.cdRef.detectChanges();
+    }
+
+    /**
+     * load the media article data if in edit mode, otherwise set the id
+     *
+     * @private
+     */
+    private handleMediaArticleAttribute() {
+
+        if (!this.section.attributes['media-article']) return;
+
+        if (this.isEditMode) {
+            this.articleService.loadMediaArticle(this.section.attributes['media-article']).subscribe(() =>
+                this.cdRef.detectChanges()
+            );
+        }
+    }
+
+    private recalculateColumnSizes() {
+        let totalWidth = 0;
+        this.section.children.forEach(c => {
+            totalWidth += parseInt(c.attributes.width, 10);
+        })
+        this.section.children.forEach(c => {
+            let cWidth = parseInt(c.attributes.width, 10);
+            let nWidth = Math.round(100 / totalWidth * cWidth);
+            c.attributes.width = c.attributes.width.replace(cWidth.toString(), nWidth.toString());
+
+        })
     }
 }

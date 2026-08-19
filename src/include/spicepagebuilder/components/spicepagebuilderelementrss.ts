@@ -15,7 +15,8 @@ import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomp
 @Component({
     selector: 'spice-page-builder-element-rss',
     templateUrl: '../templates/spicepagebuilderelementrss.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderElementRSS extends SpicePageBuilderElement {
     /**
@@ -25,8 +26,8 @@ export class SpicePageBuilderElementRSS extends SpicePageBuilderElement {
     /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[] = [
-        {name: 'align', type: 'text'},
+    public readonly attributesList: AttributeObjectI[][] = [
+        [{name: 'align', type: 'text'},
         {name: 'width', type: 'textSuffix'},
         {name: 'border', type: 'text'},
         {name: 'border-top', type: 'text'},
@@ -38,12 +39,12 @@ export class SpicePageBuilderElementRSS extends SpicePageBuilderElement {
         {name: 'line-height', type: 'textSuffix'},
         {name: 'vertical-align', type: 'text'},
         {name: 'font-size', type: 'textSuffix'},
-        {name: 'font-style', type: 'text'},
-        {name: 'font-weight', type: 'text'},
+        {name: 'font-style', type: 'fontstyle'},
+        {name: 'font-weight', type: 'fontweight'},
         {name: 'letter-spacing', type: 'textSuffix'},
-        {name: 'text-decoration', type: 'text'},
-        {name: 'text-transform', type: 'text'},
-        {name: 'css-class', type: 'text'}
+        {name: 'text-decoration', type: 'textdecoration'},
+        {name: 'text-transform', type: 'texttransform'},
+        {name: 'css-class', type: 'text'}]
     ];
     /**
      * style attributes list for the item children
@@ -56,7 +57,7 @@ export class SpicePageBuilderElementRSS extends SpicePageBuilderElement {
             {name: 'color', type: 'color'},
             {name: 'font-size', type: 'textSuffix'},
             {name: 'line-height', type: 'textSuffix'},
-            {name: 'font-weight', type: 'text'},
+            {name: 'font-weight', type: 'fontweight'},
             {name: 'padding', type: 'sides'},
             {name: 'container-background-color', type: 'color'},
         ],

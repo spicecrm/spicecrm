@@ -1,23 +1,24 @@
 /**
  * @module ModuleUsers
  */
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {session} from "../../../services/session.service";
 import {configurationService} from "../../../services/configuration.service";
-import { helper } from '../../../services/helper.service';
+import {helper} from '../../../services/helper.service';
 
 /**
  * renders a modal to rest the password of a user and resend the password
  */
 @Component({
     selector: "user-reset-password-modal",
-    templateUrl: "../templates/userresetpasswordmodal.html"
+    templateUrl: "../templates/userresetpasswordmodal.html",
+    standalone: false
 })
-export class UserResetPasswordModal {
+export class UserResetPasswordModal implements OnInit {
 
     /**
      * reference to the modal itself
@@ -58,10 +59,17 @@ export class UserResetPasswordModal {
     public autogenerate: boolean = false;
 
     /**
+     * holds the info if the password is auto generated
+     *
+     * @private
+     */
+    public externalAuthOnly: boolean = false;
+
+    /**
      * set if the password shpudl be sent via email
      * @private
      */
-    public sendByEmail: boolean = false;
+    public sendBySystem: boolean = false;
 
     /**
      * toggle to show the password
@@ -102,6 +110,10 @@ export class UserResetPasswordModal {
         this.getInfo();
     }
 
+    public ngOnInit() {
+        this.externalAuthOnly = this.model.getField('external_auth_only');
+    }
+
     /**
      * returns if the password does not match
      */
@@ -127,7 +139,7 @@ export class UserResetPasswordModal {
      */
     set autoGenerate(value) {
         this.autogenerate = value;
-        if ( value ) {
+        if (value) {
             this.password = this.helper.generatePassword(this.configuration.getCapabilityConfig('userpassword'));
             this.repeatPassword = this.password;
         }
@@ -149,7 +161,7 @@ export class UserResetPasswordModal {
         if (!this.autoGenerate) {
             return;
         }
-        navigator.clipboard.writeText( this.password)
+        navigator.clipboard.writeText(this.password)
         this.toast.sendToast("Password copied", "success");
     }
 
@@ -176,8 +188,8 @@ export class UserResetPasswordModal {
     /**
      * getter to check if we can save
      */
-    get canSave() {
-        if (this.updating || this.passwordError || this.repeatPasswordError || !this.session.isAdmin) {
+    get canSetPassword() {
+        if (this.updating || !this.password || this.passwordError || this.repeatPasswordError || !this.session.isAdmin) {
             return false;
         }
         return true;
@@ -189,18 +201,57 @@ export class UserResetPasswordModal {
      * @private
      */
     public setPassword() {
-        if (this.canSave) {
+        if (this.canSetPassword) {
             this.updating = true;
             this.backend.postRequest(`module/Users/${this.model.id}/password/reset`, {}, {
                 newPassword: this.password,
                 forceReset: this.forceReset,
-                sendEmail: this.sendByEmail
-            }).subscribe(res => {
-                this.close();
-                this.toast.sendToast('Password Reset!', 'info');
-            }, error => {
-                this.updating = false;
-                this.toast.sendToast("Error resetting the password", "error");
+                sendBySystem: this.sendBySystem
+            }).subscribe({
+                next: (res) => {
+                    // set external auth on the model
+                    if(this.externalAuthOnly != this.model.getField('external_auth_only')){
+                        this.model.setField('external_auth_only', this.externalAuthOnly);
+                    }
+
+                    // set the system generated password
+                    this.model.setField('system_generated_password', this.forceReset);
+
+                    this.close();
+                    this.toast.sendToast('LBL_PASSWORD_RESETTED', 'info');
+                },
+                error: (error) => {
+                    this.updating = false;
+                    this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.lbl ? this.language.getLabel( error.error.error.lbl ) : error.error.error.message );
+                }
+            });
+        }
+    }
+
+    /**
+     * checks if we can save the external auth as this has been changed
+     */
+    get canSave() {
+        return this.externalAuthOnly != this.model.getField('external_authg_only');
+    }
+
+    /**
+     * saves the external auth only flag
+     */
+    public save() {
+        if (this.canSave) {
+            this.updating = true;
+            this.backend.putRequest(`module/Users/${this.model.id}/externalauthonly`).subscribe({
+                next: (res) => {
+                    this.model.setField('external_auth_only', this.externalAuthOnly);
+                    this.model.setField('system_generated_password', false);
+                    this.close();
+                    this.toast.sendToast('LBL_RECORD_UPDATED', 'info');
+                },
+                error: (error) => {
+                    this.updating = false;
+                    this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.lbl ? this.language.getLabel( error.error.error.lbl ) : error.error.error.message );
+                }
             });
         }
     }

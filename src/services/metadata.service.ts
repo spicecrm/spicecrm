@@ -10,7 +10,7 @@ import {
     ViewContainerRef
 } from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import { Router } from "@angular/router";
+import {DefaultUrlSerializer, PRIMARY_OUTLET, Router} from "@angular/router";
 import {LocationStrategy} from "@angular/common";
 import {session} from "./session.service";
 import {broadcast} from "./broadcast.service";
@@ -31,6 +31,15 @@ declare var _;
 export class metadata {
     // modules: Array<any> = [];
     public role: string = "";
+    /**
+     * stores the public route metadata
+     * @private
+     */
+    private publicRouteDefs: {componentDefs: any[], moduleDefs: any[], routes: any[]};
+    /**
+     * holds the initial route url
+     */
+    public initialRouteUrl: string;
 
     constructor(
         public http: HttpClient,
@@ -56,11 +65,11 @@ export class metadata {
     }
 
     get moduleDirectory(): {[key: string]: {id: string, module: string, path: string, factories?: any[]}} {
-        return !this.configuration.getData('modules') ? {} : this.configuration.getData('modules');
+        return this.configuration.getData('modules') || this.publicRouteDefs?.moduleDefs || {};
     }
 
     get componentDirectory() {
-        return !this.configuration.getData('components') ? {} : this.configuration.getData('components');
+        return this.configuration.getData('components') || this.publicRouteDefs?.componentDefs || {};
     }
 
     get componentSets() {
@@ -68,7 +77,14 @@ export class metadata {
     }
 
     get routes() {
-        return this.configuration.getData('routes');
+        return this.configuration.getData('routes') || this.publicRoutes;
+    }
+
+    /**
+     * @return any[] array of the public routes
+     */
+    get publicRoutes(): any[] {
+        return this.publicRouteDefs?.routes ?? [];
     }
 
     get scripts() {
@@ -139,7 +155,7 @@ export class metadata {
     /*
     * dynamically add routes from this.routes with a route container hat will handle the dynamic routes
      */
-    public addRoutes() {
+    public addRoutes(routes?: any[]) {
 
         // reset all rouites
         this.router.config.forEach((r, i) => {
@@ -148,9 +164,14 @@ export class metadata {
             }
         })
 
-        this.routes.sort((a, b) => {
+        if (!routes) routes = this.routes;
+
+        routes.sort((a, b) => {
             return a.path.split(':').length > b.path.split(':').length ? -1 : 1;
         }).forEach(route => {
+
+            if (this.router.config.some(r => r.path === route.path)) return;
+
             this.router.config.unshift({
                 path: route.path,
                 component: SystemNavigationCollector,
@@ -226,15 +247,31 @@ export class metadata {
      * import the component file and return the factory
      * @private
      * @param moduleMetadata
+     * @param inExtensions
      */
-    public async importModule(moduleMetadata: { name: string, path: string }): Promise<any> {
+    public async importModule(moduleMetadata: { name: string, path: string }, inExtensions?: boolean): Promise<any> {
 
-        return import(
+        const moduleInstance = await import(
             /*
                webpackInclude: /^\.(\\|\/)[^\\|\/]+(\\|\/)?(\\|\/)[^\\|\/]+?$|(\\|\/)(addcomponents|admincomponents|globalcomponents|objectcomponents|objectfields|portalcomponents|systemcomponents|workbench)(\\|\/)[^\\|\/]+?$|(\\|\/)(modules|include|custom)(\\|\/)[^\\|\/]+(\\|\/)?(\\|\/)[^\\|\/]+?$/
              */
             `src/${moduleMetadata.path}.ts`)
-            .then(m => m[moduleMetadata.name]);
+            .then(m => m[moduleMetadata.name]).catch(e => {
+                if (inExtensions) {
+                    throw Error(e);
+                }
+            });
+
+        if (!moduleInstance && !inExtensions) {
+            const extensionModuleMetadata = {
+                name: moduleMetadata.name,
+                path: 'extensions/' + moduleMetadata.path
+            };
+
+            return this.importModule(extensionModuleMetadata, true);
+        }
+
+        return Promise.resolve(moduleInstance);
     }
 
     private renderMissingComponent(vcr: ViewContainerRef, ComponentName: string) {
@@ -920,9 +957,9 @@ export class metadata {
         return dupfields;
     }
 
-    public getModuleValidations(module: string) {
+    public getModuleValidations(module: string, activeOnly = false) {
         try {
-            return this.validationRules[module].validations;
+            return this.validationRules[module].validations && activeOnly ? this.validationRules[module].validations.filter((v) => v.active).sort((a, b) => parseInt(a.priority, 10) > parseInt(b.priority, 10) ? 1 : -1  ) : this.validationRules[module].validations;
         } catch (e) {
             return [];
         }
@@ -1707,12 +1744,38 @@ export class metadata {
         return this.countries;
     }
 
+    /**
+     * match route.path to url e.g. docs/:id to docs/123
+     * @param configPath
+     * @param actualUrl
+     * @private
+     */
+    private matchRoutePathToUrl(configPath: string, actualUrl: string): boolean {
+        const serializer = new DefaultUrlSerializer();
+
+        // Parse strings into UrlSegmentGroups
+        const urlTree = serializer.parse(actualUrl);
+        const group = urlTree.root.children[PRIMARY_OUTLET];
+        const segments = group ? group.segments : [];
+
+        // check if the segments match the path pattern
+        const parts = configPath.split('/');
+
+        if (parts.length !== segments.length) return false;
+
+        return parts.every((part, i) => {
+            return part.startsWith(':') || part === segments[i].path;
+        });
+    }
 
     /**
      * message handler for workbench updates
      */
     public handleMessage(message) {
         switch (message.messagetype) {
+            case 'configuration.sysinfo':
+                this.handlePublicRoutesLoad(message);
+                break;
             case "loader.completed":
                 if (message.messagedata == 'loadRepository') {
                     // set Routes
@@ -1756,6 +1819,26 @@ export class metadata {
                 break;
             default:
                 break;
+        }
+    }
+
+    /**
+     * handles the public routes load from sysinfo
+     * @param message
+     * @private
+     */
+    private handlePublicRoutesLoad(message) {
+
+        if (!message.messagedata) return;
+
+        this.publicRouteDefs = message.messagedata;
+
+        this.addRoutes(this.publicRouteDefs.routes);
+
+        // after bootstrap the system navigates to the login route.
+        // Navigate back to the initially called url if it is a public url
+        if (this.initialRouteUrl && this.publicRoutes.find(r => this.matchRoutePathToUrl(r.path, this.initialRouteUrl))) {
+            this.router.navigate([this.initialRouteUrl]);
         }
     }
 
@@ -1908,6 +1991,10 @@ export class aclCheck  {
 
     public canActivate(route, state) {
 
+        // if the route is public, no further check just activate it
+        if (this.metadata.publicRoutes.find(r => r.path == route.routeConfig.path)) {
+            return true;
+        }
         // if no session leave the redirect to the login handler
         if (!this.session || !this.session.authData.sessionId) {
             return false;

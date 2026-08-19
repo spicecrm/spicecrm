@@ -10,6 +10,7 @@
             [cdkDragDisabled]="!config.draggable || item.systemTreeDefs.hasChildren"
             [attr.aria-level]="item.systemTreeDefs.level"
             [attr.aria-selected]="item.systemTreeDefs.isSelected"
+            [attr.data-tree-item-id]="item.id"
             class="slds-grid slds-drag--preview">
             <system-tree-item [item]="item"
                               [customButtonsContainer]="customButtonsContainer"
@@ -18,7 +19,7 @@
                               [isDragging]="isDragging"
                               (toggleExpandedChange)="handleExpand($event)"
                               (dragPositionChange)="handleDragPosition($event)"
-                              (onItemAdd)="onItemAdd.emit($event)"
+                              (onItemAdd)="addItem($event)"
                               [title]="item.name"
                               style="width: 100%"
                               class="slds-grid--vertical slds-p-vertical--none slds-tree__item">

@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\CampaignTasks\api\controllers\CampaignTasksController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
@@ -49,7 +23,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'getCampaignTaskItems',
         'description' => 'get campaign tasks defined for a specific campaign',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id' => [
                 'in' => 'path',
@@ -78,7 +52,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'getCampaignTaskStats',
         'description' => 'return stats on the campaign log for a campagntask',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id' => [
                 'in' => 'path',
@@ -94,7 +68,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'activateCampaignTask',
         'description' => 'delete old campaign logs and activate campaign task by inserting new ones (prospect lists of type test will be ignored)',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id'    => [
                 'in'          => 'path',
@@ -108,7 +82,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'activateEventTask',
         'description' => 'delete old campaign logs and activate campaign task by inserting new ones (prospect lists of type test will be ignored)',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id'    => [
                 'in'          => 'path',
@@ -123,7 +97,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'getTargetCount',
         'description' => 'returns the number of targets via linked target lists',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id'    => [
                 'in'          => 'path',
@@ -138,7 +112,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'mailmergeCampaignTask',
         'description' => 'genereate a PDF for a mailmerge campaign',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id'    => [
                 'in'          => 'path',
@@ -164,7 +138,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'sendCampaignTaskTestEmail',
         'description' => 'send a test mail for campaign task',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id'    => [
                 'in'          => 'path',
@@ -180,7 +154,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'queueCampaignTaskEmail',
         'description' => '',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id'    => [
                 'in'          => 'path',
@@ -190,56 +164,12 @@ $routes = [
         ],
     ],
     [
-        'method'      => 'post',
-        'route'       => '/module/CampaignTasks/{id}/livecompile/{parentmodule}/{parentid}',
-        'oldroute'    => '/CampaignTasks/liveCompile/{module}/{parent}',
-        'class'       => CampaignTasksController::class,
-        'function'    => 'liveCompileEmailBody',
-        'description' => '',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
-        'parameters'  => [
-            'id' => [
-                'in' => 'path',
-                'type' => ValidationMiddleware::TYPE_GUID,
-                'description' => ''
-            ],
-            'parentmodule' => [
-                'in' => 'path',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'description' => 'name of parent module',
-                'example' => 'Accounts',
-                'required' => true
-            ],
-            'parentid' => [
-                'in' => 'path',
-                'type' => 'guid',
-                'description' => 'if of parent bean',
-                'example' => '2816ba5c-97e7-11eb-8c42-00fffe0c4f07',
-                'required' => true
-            ],
-            'html' => [
-                'in' => 'body',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'description' => 'html string',
-                'example' => '',
-                'required' => true
-            ],
-            'field' => [
-                'in' => 'body',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'description' => 'html field',
-                'example' => '',
-                'required' => false
-            ]
-        ]
-    ],
-    [
         'method'      => 'get',
         'route'       => '/module/CampaignTasks/export/reports',
         'class'       => CampaignTasksController::class,
         'function'    => 'getExportReports',
         'description' => 'get all reports based on CampaignTasks module',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['validate' => true],
     ],
     [
         'method'      => 'get',
@@ -337,7 +267,7 @@ $routes = [
         'class'       => CampaignTasksController::class,
         'function'    => 'deactivateCampaignTask',
         'description' => 'delete old campaign logs and set activated flag to false',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['validate' => true],
         'parameters'  => [
             'id'    => [
                 'in'          => 'path',
@@ -345,6 +275,22 @@ $routes = [
                 'type'        => ValidationMiddleware::TYPE_GUID,
             ],
         ],
+    ],
+    [
+        'method' => 'delete',
+        'route' => '/module/CampaignTasks/{campaignTaskId}/delete',
+        'class' => CampaignTasksController::class,
+        'function' => 'deleteCampaignTask',
+        'description' => 'delete campaign task with its campaignlogs',
+        'options' => ['validate' => true],
+        'parameters' => [
+            'campaignTaskId' => [
+                'in' => 'path',
+                'description' => 'id of campaigntask to delete',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'example' => 'a29342d1-897b-11eb-9bff-00fffe0c4f07',
+            ]
+        ]
     ],
 ];
 

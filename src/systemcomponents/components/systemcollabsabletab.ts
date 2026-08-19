@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {
     trigger,
     state,
@@ -20,28 +20,29 @@ import {language} from '../../services/language.service';
     animations: [
         trigger('tabanimation', [
             // open
-            state('true', style({height: '*', opacity: 1})),
+            state('true', style({ height: '*', opacity: 1 })),
             // closed
-            state('false', style({height: '0px', opacity: 0})),
+            state('false', style({ height: '0px', opacity: 0 })),
             // open => close
             transition('true => false', [
-                style({overflow: 'hidden'}),
+                style({ overflow: 'hidden' }),
                 animate('.5s')
             ]),
             // close => open
             transition('false => true', [
                 animate('.5s'),
-                style({overflow: 'inherit'})
+                style({ overflow: 'inherit' })
             ])
         ])
-    ]
+    ],
+    standalone: false
 })
 export class SystemCollabsableTab {
 
     /**
      * if set to false the panel will not be collapsible
      */
-    @Input() public collapsible: boolean = true;
+    @Input() public collapsable: boolean = true;
 
     /**
      * set to true to expand it when loaded. if set to false the panel will be collapsed by default
@@ -75,6 +76,10 @@ export class SystemCollabsableTab {
     @Input() public tabhelptext: string = '';
 
     @Input() public tabHelpTextVerticalPositionBottom = false;
+    /**
+     * emits the expanded flag on change
+     */
+    @Output() public expanded$ = new EventEmitter<boolean>();
 
     constructor(public language: language) {
     }
@@ -84,6 +89,7 @@ export class SystemCollabsableTab {
      */
     public togglePanel() {
         this.expanded = !this.expanded;
+        this.expanded$.emit(this.expanded);
     }
 
     /**

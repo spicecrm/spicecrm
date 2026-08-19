@@ -7,11 +7,14 @@ import {toast} from '../../services/toast.service';
 import {modal} from '../../services/modal.service';
 import {classNames} from "@angular/cdk/schematics";
 import {administrationapiinspectorService} from "../services/administrationapiinspector.service";
+import {SystemSelectModuleModal} from "../../systemcomponents/components/systemselectmodulemodal";
+import {metadata} from "../../services/metadata.service";
 
 @Component({
     selector: '[administration-api-inspector]',
     templateUrl: '../templates/administrationapiinspector.html',
-    providers: [administrationapiinspectorService]
+    providers: [administrationapiinspectorService],
+    standalone: false
 })
 
 export class AdministrationAPIInspector {
@@ -27,7 +30,8 @@ export class AdministrationAPIInspector {
         public toast: toast,
         public modal: modal,
         public injector: Injector,
-        public apiinspector: administrationapiinspectorService
+        public apiinspector: administrationapiinspectorService,
+        private metadata: metadata
     ) {
     }
 
@@ -87,29 +91,47 @@ export class AdministrationAPIInspector {
         const route = this.apiinspector.selectedAPI.route;
         const includeSubroutes = this.apiinspector.apiSubMethods;
 
-        const isDownloading = this.modal.await('LBL_DOWNLOADING');
+        const exportSwaggerRequest = (modules?: string[]) => {
 
-        this.apiinspector.exportSwagger(route, includeSubroutes).subscribe({
-            next: (downloadUrl) => {
+            const isDownloading = this.modal.await('LBL_DOWNLOADING');
 
-                const a: any = document.createElement("a");
-                document.body.appendChild(a);
-                a.href = downloadUrl;
-                a.download = `swagger_${route.replace(/\//g, '_')}.yaml`;
-                a.click();
-                a.remove();
-            },
-            error: (error) => {
-                this.toast.sendToast('Error exporting Swagger file', 'error');
-            },
-            complete: () => {
-                isDownloading.next(true);
-                isDownloading.complete();
-            }
-            },
-        );
+            this.apiinspector.exportSwagger(route, includeSubroutes, modules).subscribe({
+                    next: (downloadUrl) => {
+
+                        const a: any = document.createElement("a");
+                        document.body.appendChild(a);
+                        a.href = downloadUrl;
+                        a.download = `swagger_${route.replace(/\//g, '_')}.yaml`;
+                        a.click();
+                        a.remove();
+                    },
+                    error: (error) => {
+                        this.toast.sendToast('Error exporting Swagger file', 'error');
+                        isDownloading.next(true);
+                        isDownloading.complete();
+                    },
+                    complete: () => {
+                        isDownloading.next(true);
+                        isDownloading.complete();
+                    }
+                },
+            );
+        };
+
+        // if the route is a bean route, prompt to select a module to generate for the swagger file
+        if (route.includes('{beanName}')) {
+            this.modal.openStaticModal(SystemSelectModuleModal, true, this.injector).subscribe(modalRef => {
+
+                modalRef.instance.modules = this.metadata.getModules();
+                modalRef.instance.module$.subscribe({
+                    next: module => {
+                        exportSwaggerRequest([module]);
+                    }
+                });
+            });
+        } else {
+            exportSwaggerRequest();
+        }
     }
-
-
 }
 

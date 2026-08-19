@@ -9,7 +9,8 @@ import {DomSanitizer} from "@angular/platform-browser";
  */
 @Component({
     selector: 'system-pdf-container',
-    templateUrl: '../templates/systempdfcontainer.html'
+    templateUrl: '../templates/systempdfcontainer.html',
+    standalone: false
 })
 export class SystemPDFContainer implements OnChanges{
     /**
@@ -56,6 +57,6 @@ export class SystemPDFContainer implements OnChanges{
             byteArrays.push(byteArray);
         }
 
-        return new Blob(byteArrays);
+        return new Blob(byteArrays, {type: 'application/pdf'});
     }
 }

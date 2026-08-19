@@ -23,6 +23,10 @@ import {ActionActivityCloseCreateButton} from "./components/actionactivityclosec
 import {ActivityCloseModal} from "./components/activityclosemodal";
 import {ActivityCloseCreateModal} from "./components/activityclosecreatemodal";
 
+import {ActionGenerateTasksButton} from "./components/actiongeneratetasksbutton";
+import {ActionGenerateTasksModal} from "./components/actiongeneratetasksmodal";
+import {ActionGenerateTasksItem} from "./components/actiongeneratetasksitem";
+
 import {ActivitiesPopoverAddBar} from "./components/activitiespopoveraddbar";
 import {ActivitiesPopoverAddBarButton} from "./components/activitiespopoveraddbarbutton";
 import {fieldActivitiesAddActions} from "./fields/fieldactivitiesaddactions";
@@ -59,6 +63,11 @@ import {fieldActivityDate} from './fields/fieldactivitydate';
 
 import {ActivityTimelineSpiceMailButton} from "./components/activitytimelinespicemailbutton";
 import {ClipboardModule} from "@angular/cdk/clipboard";
+import {ActivityTextMessagesChat} from "./components/activitytextmessageschat";
+import {ActivityTextMessagesChatMessage} from "./components/activitytextmessageschatmessage";
+import {ActivityTextMessagesChatCompose} from "./components/activitytextmessageschatcompose";
+import {ActionActivityNewOccurrenceButton} from "./components/actionactivitynewoccurrencebutton";
+
 
 @NgModule({
     imports: [
@@ -80,6 +89,9 @@ import {ClipboardModule} from "@angular/cdk/clipboard";
         ActivityTimelineSaveButton,
         ActionActivityCloseButton,
         ActionActivityCloseCreateButton,
+        ActionGenerateTasksButton,
+        ActionGenerateTasksModal,
+        ActionGenerateTasksItem,
         ActivityCloseModal,
         ActivityCloseCreateModal,
         ActivitiesPopoverAddBar,
@@ -112,7 +124,11 @@ import {ClipboardModule} from "@angular/cdk/clipboard";
         ActivityTimelineSummaryButton,
         ActivityTimelineSummaryAggregates,
         ActivityTimelineSpiceMailButton,
-        fieldActivityDate
+        ActivityTextMessagesChat,
+        ActivityTextMessagesChatMessage,
+        ActivityTextMessagesChatCompose,
+        fieldActivityDate,
+        ActionActivityNewOccurrenceButton
     ],
     exports: [
         ActivityTimelineItemContainer,

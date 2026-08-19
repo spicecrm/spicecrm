@@ -1,13 +1,20 @@
 <?php
 namespace SpiceCRM\includes\SpiceLanguages;
 
+use Google\ApiCore\ApiException;
+use Google\ApiCore\ValidationException;
+use Google\Cloud\Translate\V3\Client\TranslationServiceClient;
+use Google\Cloud\Translate\V3\DocumentInputConfig;
+use Google\Cloud\Translate\V3\TranslateDocumentRequest;
 use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceLanguagesRESTHandler
 {
@@ -57,6 +64,9 @@ class SpiceLanguagesRESTHandler
                                 break;
                         }
                         $data = $trans;
+
+                        # skip inserting if the mandatory field is not filled out
+                        if (!isset($data['translation_default'])) continue;
 
                         SystemDeploymentCR::writeDBEntry($table, $trans['id'], $data, $data['translation_default']);
                     }
@@ -210,10 +220,68 @@ class SpiceLanguagesRESTHandler
         $query = "SELECT sl.id, sl.name FROM $tableLabels sl";
         $query .= " WHERE NOT EXISTS (SELECT id FROM $tableTranslations slt";
         $query .= " WHERE slt.syslanguagelabel_id = sl.id AND slt.syslanguage = '$language') ORDER BY sl.name;";
-        $query = $db->query($query);
+        return $db->fetchAll($query);
+    }
 
-        while ($row = $this->db->fetchByAssoc($query)) {
-            $untranslatedLabels[] = $row;
+    public function translateUntranslatedLabels($language, $scope, $limit = 10)
+    {
+        $db = DBManagerFactory::getInstance();
+        $language = $db->quote($language);
+        $untranslatedLabels = [];
+        $tableTranslations = $scope == 'global' ? 'syslanguagetranslations' : 'syslanguagecustomtranslations';
+        $tableLabels = $scope == 'global' ? 'syslanguagelabels' : 'syslanguagecustomlabels';
+        $query = "SELECT sl.id, sl.name FROM $tableLabels sl";
+        $query .= " WHERE NOT EXISTS (SELECT id FROM $tableTranslations slt";
+        $query .= " WHERE slt.syslanguagelabel_id = sl.id AND slt.syslanguage = '$language') ORDER BY sl.name";
+
+        $untranslatedLabels = $db->fetchLimit($query, 0, $limit);
+
+        foreach($untranslatedLabels as $label){
+            $labelDetails = $this->retrieveLabelDataByName($label['name'], 'en_US');
+
+            // cannot have an empty default translation
+            if(empty($labelDetails["{$scope}_translations"][0]['translation_default'])) continue;
+
+            $translationValues = ['default'];
+            $translationInput = [$labelDetails["{$scope}_translations"][0]['translation_default']];
+            if(!empty($labelDetails["{$scope}_translations"][0]['translation_short'])){
+                $translationInput[] = $labelDetails["{$scope}_translations"][0]['translation_short'];
+                $translationValues[] = 'short';
+            }
+            if(!empty($labelDetails["{$scope}_translations"][0]['translation_long'])){
+                $translationInput[] = $labelDetails["{$scope}_translations"][0]['translation_long'];
+                $translationValues[] = 'long';
+            }
+
+            $translationOutput =  $this->translateLabels($translationInput, substr('en', 0, 2), substr($language, 0, 2));
+
+            if($translationOutput && is_array($translationOutput) && count($translationOutput) == count($translationInput)){
+                $newLabel = [
+                    'id' => SpiceUtils::createGuid(),
+                    'scope' => $scope,
+                    'syslanguagelabel_id' => $label['id'],
+                    'syslanguage' => $language
+                ];
+
+                foreach($translationValues as $key => $value){
+                    switch($value){
+                        case 'short':
+                            $newLabel["translation_{$value}"] = substr($translationOutput[$key], 0, 100);
+                            break;
+                        case 'default':
+                            $newLabel["translation_{$value}"] = substr($translationOutput[$key], 0, 250);
+                            break;
+                        case 'long':
+                            $newLabel["translation_{$value}"] = $translationOutput[$key];
+                            break;
+                    }
+
+                }
+
+                $table = $scope == 'global' ? 'syslanguagetranslations' : 'syslanguagecustomtranslations';
+
+                SystemDeploymentCR::writeDBEntry($table, $newLabel['id'], $newLabel, $translationInput[0]);
+            }
         }
 
         return $untranslatedLabels;
@@ -222,6 +290,48 @@ class SpiceLanguagesRESTHandler
     public function transferFromFilesToDB()
     {
         return (new SpiceLanguageFilesToDB())->transferFromFilesToDB();
+    }
+
+    /**
+     * translate a docx document to the given language by google translate service
+     * @throws ValidationException
+     * @throws ApiException
+     * @throws NotFoundException
+     * @throws Exception
+     */
+    public function translateDocument(string $content, string $from, string $to)
+    {
+        $keyFile = SpiceConfig::getInstance()->get('googleapi.translate_service_user_key');
+
+        if (!$keyFile) {
+            throw new NotFoundException('No Google API Key stored for translate');
+        }
+
+        $keyFile = json_decode($keyFile, true);
+        $projectId = $keyFile['project_id'];
+
+        $translationClient = new TranslationServiceClient(['credentials' => $keyFile]);
+
+        $documentInputConfig = new DocumentInputConfig();
+        $documentInputConfig->setContent($content);
+        $documentInputConfig->setMimeType('application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+
+        $request = (new TranslateDocumentRequest())
+            ->setParent("projects/$projectId/locations/global")
+            ->setSourceLanguageCode($from)
+            ->setTargetLanguageCode($to)
+            ->setDocumentInputConfig($documentInputConfig);
+
+        $response = $translationClient->translateDocument($request);
+        $translationClient->close();
+
+        $translatedDocument = $response->getDocumentTranslation();
+
+        if ($translatedDocument) {
+            return $translatedDocument->getByteStreamOutputs()[0];
+        } else {
+            throw new Exception('Google Translate API Service: Translated content is empty.');
+        }
     }
 
     /**
@@ -241,7 +351,7 @@ class SpiceLanguagesRESTHandler
         }
 
         // build the language URL
-        $url = "https://translation.googleapis.com/language/translate/v2?key=" . $spice_config['googleapi']['languagekey'];
+        $url = "https://translation.googleapis.com/language/translate/v2?format=text&key=" . $spice_config['googleapi']['languagekey'];
 
         // build the body
         $requestBody = json_encode([
@@ -266,8 +376,19 @@ class SpiceLanguagesRESTHandler
             )
         );
 
+        // the response
+        $response = json_decode(curl_exec($ch));
+
+        // build the translations
+        $translations = [];
+        $search = ["&#39;"];
+        $replace = ["'"];
+        foreach($response->data->translations as $translation){
+            $translations[] = str_replace($search, $replace, $translation->translatedText);
+        }
+
         // return the response
-        return json_decode(curl_exec($ch));
+        return $translations;
     }
 
     /**

@@ -14,7 +14,8 @@ import {view} from "../../services/view.service";
 @Component({
     selector: 'dictionary-manager-edit-definition-modal',
     templateUrl: '../templates/dictionarymanagereditdefinitionmodal.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class DictionaryManagerEditDefinitionModal {
 

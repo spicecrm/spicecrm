@@ -12,7 +12,8 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'object-action-auditlog-button',
-    templateUrl: '../templates/objectactionauditlogbutton.html'
+    templateUrl: '../templates/objectactionauditlogbutton.html',
+    standalone: false
 })
 export class ObjectActionAuditlogButton implements OnInit {
 
@@ -33,7 +34,7 @@ export class ObjectActionAuditlogButton implements OnInit {
      * checks if the module is audit enabled and if enables the button
      */
     public ngOnInit() {
-        if (this.metadata.getModuleDefs(this.model.module).audited) {
+        if (this.metadata.getModuleDefs(this.model.module).audited && this.metadata.checkModuleAcl(this.model.module, 'auditlog')) {
             this.disabled = false;
             this.hidden = false;
         }

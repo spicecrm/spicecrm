@@ -2,10 +2,9 @@
 
 namespace SpiceCRM\includes\VoiceOverIP;
 
-use Cassandra\Time;
 use Exception;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSocket\SpiceSocket;
 use SpiceCRM\includes\TimeDate;
 
@@ -18,6 +17,16 @@ class VoiceOverIP
     protected $preferenceCategory = 'VoiceOverIP';
     protected $config;
     protected $channelPrefix;
+
+    const STATE_HANGUP     = 'HANGUP';
+    const STATE_CONNECTED  = 'CONNECTED';
+    const STATE_PROCEEDING = 'PROCEEDING';
+    const STATE_RINGING    = 'RINGING';
+    const STATE_INCOMING   = 'INCOMING';
+
+    const ANONYMOUS_CALLERNUMBER = 'ANONYMOUS';
+
+    const CALL_DIRECTIONS = [self::DIRECTION_INCOMING, self::DIRECTION_OUTGOING];
 
     /**
      * Returns the users preferences.

@@ -37,11 +37,9 @@
 namespace SpiceCRM\includes\SugarObjects;
 
 use Exception;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
-use SpiceCRM\includes\utils\SugarArray;
-use SpiceCRM\modules\SystemTenants\SystemTenant;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\utils\SpiceArray;
 
 /**
  * Config manager
@@ -96,7 +94,7 @@ class SpiceConfig
      */
     public function get($key, $default = null)
     {
-        $value = SugarArray::staticGet($this->config, $key, $default);
+        $value = SpiceArray::staticGet($this->config, $key, $default);
         return $value ? $value : $default;
     }
 

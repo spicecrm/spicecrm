@@ -20,6 +20,7 @@ declare var _;
 @Component({
     selector: 'field-html',
     templateUrl: '../templates/fieldhtml.html',
+    standalone: false
 })
 export class fieldHtml extends fieldGeneric implements OnInit {
     /**
@@ -125,7 +126,7 @@ export class fieldHtml extends fieldGeneric implements OnInit {
      * a getter for the value bound top the model
      */
     get value() {
-        return this.model.getField(this.fieldname);
+        return super.value;
     }
 
     /**
@@ -284,7 +285,7 @@ export class fieldHtml extends fieldGeneric implements OnInit {
 
     public setStylesheetField() {
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
-        if (!_.isEmpty(fieldDefs.stylesheet_id_field)) {
+        if (fieldDefs && !_.isEmpty(fieldDefs.stylesheet_id_field)) {
             this.stylesheetField = fieldDefs.stylesheet_id_field;
         }
     }

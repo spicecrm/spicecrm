@@ -10,7 +10,7 @@
                 <system-input-text [(ngModel)]="dictionaryitem.name"></system-input-text>
                 <div class="slds-form-element__help" *ngFor="let message of getMessages('name')">{{message.message}}</div>
             </div>
-            <div class="slds-large-size--1-of-2 slds-p-left--xxx-small slds-form-element__control" [ngClass]="{'slds-has-error': getMessages('sysdomaindefinition_id').length > 0}">
+            <div class="slds-large-size--1-of-4 slds-p-left--xxx-small slds-form-element__control" [ngClass]="{'slds-has-error': getMessages('sysdomaindefinition_id').length > 0}">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_DOMAIN"></system-label></label>
                 <system-select system-select-id-only [(ngModel)]="dictionaryitem.sysdomaindefinition_id">
                     <system-select-option  *ngFor="let domain of domains" [value]="domain.id" [display]="domain.name"/>
@@ -21,6 +21,15 @@
                     </select>
                 </div-->
                 <div class="slds-form-element__help" *ngFor="let message of getMessages('sysdomaindefinition_id')">{{message.message}}</div>
+            </div>
+            <div class="slds-form-element__control slds-large-size--1-of-4 slds-p-left--xx-small">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_SCOPE"></system-label></label>
+                <div class="slds-select_container">
+                    <select [disabled]="dictionarymanager.currentDictionaryScope == 'c'" class="slds-select" [(ngModel)]="dictionaryitem.scope">
+                        <option *ngIf="dictionarymanager.changescope == 'all'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
+                        <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
+                    </select>
+                </div>
             </div>
             <div class="slds-col slds-size_12-of-12">
             <div>
@@ -42,11 +51,25 @@
                 </div>
             </div>
             <div class="slds-grid slds-p-vertical--xx-small">
-                <div class="slds-size--1-of-3 slds-form-element__control">
-                    <system-checkbox [(ngModel)]="dictionaryitem.required" [asinteger]="true"><system-label label="LBL_REQUIRED"/></system-checkbox>
+                <div class="slds-size--1-of-4 slds-form-element__control">
+                    <system-checkbox [(ngModel)]="dictionaryitem.required" [asinteger]="true">
+                        <system-label label="LBL_REQUIRED"/>
+                    </system-checkbox>
                 </div>
-                <div class="slds-size--1-of-3 slds-form-element__control">
-                    <system-checkbox [(ngModel)]="dictionaryitem.non_db" [asinteger]="true"><system-label label="LBL_NON_DB"/></system-checkbox>
+                <div class="slds-size--1-of-4 slds-form-element__control">
+                    <system-checkbox [(ngModel)]="dictionaryitem.non_db" (ngModelChange)="onNonDBSet($event)" [asinteger]="true">
+                        <system-label label="LBL_NON_DB"/>
+                    </system-checkbox>
+                </div>
+                <div class="slds-size--1-of-4 slds-form-element__control">
+                    <system-checkbox [(ngModel)]="dictionaryitem.duplicate_merge" [disabled]="dictionaryitem.non_db == 1" [asinteger]="true">
+                        <system-label label="LBL_DUPLICATE_MERGE"/>
+                    </system-checkbox>
+                </div>
+                <div class="slds-size--1-of-4 slds-form-element__control">
+                    <system-checkbox [(ngModel)]="dictionaryitem.is_sensitive" [asinteger]="true">
+                        <system-label label="LBL_SENSITIVE"/>
+                    </system-checkbox>
                 </div>
             </div>
             </div>
@@ -63,28 +86,18 @@
             </div-->
             <div class="slds-form-element__help" *ngFor="let message of getMessages('sysdictionary_ref_id')">{{message.message}}</div>
         </div>
+        <label class="slds-form-element__label"><system-label label="LBL_COMMENT"></system-label></label>
+        <system-input-text [maxlength]="150" [(ngModel)]="dictionaryitem.description"></system-input-text>
         <div class="slds-grid">
-            <div class="slds-form-element__control slds-size--1-of-2 slds-p-right--xxx-small">
-                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_SCOPE"></system-label></label>
-                <div class="slds-select_container">
-                    <select [disabled]="dictionarymanager.currentDictionaryScope == 'c'" class="slds-select" [(ngModel)]="dictionaryitem.scope">
-                        <option *ngIf="dictionarymanager.changescope == 'all'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
-                        <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
-                    </select>
-                </div>
-            </div>
-            <div class="slds-size--1-of-4 slds-p-horizontal--xxx-small slds-form-element__control">
+            <div class="slds-size--1-of-2 slds-p-horizontal--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
                 <system-input-package [(ngModel)]="dictionaryitem.package"/>
             </div>
-            <div class="slds-size--1-of-4 slds-p-left--xxx-small slds-form-element__control">
+            <div class="slds-size--1-of-2 slds-p-left--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
                 <system-input-version [(ngModel)]="dictionaryitem.version"/>
             </div>
         </div>
-        <label class="slds-form-element__label"><system-label label="LBL_COMMENT"></system-label></label>
-<!--        <system-richtext-editor [(ngModel)]="dictionaryitem.description"></system-richtext-editor>-->
-            <system-input-text maxlength="150" [ngModel]="dictionaryitem.description"></system-input-text>
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label> </button>

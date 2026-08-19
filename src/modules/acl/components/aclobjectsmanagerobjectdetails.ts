@@ -14,7 +14,7 @@ import {backend} from '../../../services/backend.service';
 @Component({
     selector: 'aclobjects-manager-object-details',
     templateUrl: '../templates/aclobjectsmanagerobjectdetails.html',
-    providers: [view]
+    standalone: false
 })
 export class ACLObjectsManagerObjectDetails implements OnInit {
 
@@ -32,7 +32,8 @@ export class ACLObjectsManagerObjectDetails implements OnInit {
         {id: 'export', action: 'LBL_EXPORT'},
         {id: 'import', action: 'LBL_IMPORT'},
         {id: 'massupdate', action: 'LBL_MASSUPDATE'},
-        {id: 'moduleadmin', action: 'LBL_MODULEADMIN'}
+        {id: 'moduleadmin', action: 'LBL_MODULEADMIN'},
+        {id: 'auditlog', action: 'LBL_AUDITLOG'}
         // {id: 8, action: 'LBL_REASSIGN'},
         // {id: 9, action: 'LBL_CHANGE_TERRITORY'}
     ];
@@ -40,8 +41,7 @@ export class ACLObjectsManagerObjectDetails implements OnInit {
     public objectactions = [];
 
     constructor(public view: view, public metadata: metadata, public model: model, public language: language, public backend: backend) {
-        this.view.isEditable = true;
-        this.view.setEditMode();
+
 
         // get the config
         let componentconfig = this.metadata.getComponentConfig('ACLObjectsManagerObjectDetails', 'SpiceACLObjects');

@@ -30,7 +30,8 @@ import {layout} from "../../services/layout.service";
         ':host  field-container global-button-icon {display:none;}',
         ':host:hover  field-container global-button-icon {display:inline;}',
     ],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ObjectListItem implements OnInit, OnDestroy {
 
@@ -125,8 +126,7 @@ export class ObjectListItem implements OnInit, OnDestroy {
         this.model.module = this.modellist.module;
         this.model.id = this.listItem.id;
         this.model.setData(this.listItem);
-        this.model.validate('change');
-        this.model.initializeFieldsStati();
+        this.model.validate();
         this.model.initializeFieldsAlertStyles(this.listItem);
 
         this.view.isEditable = this.inlineedit && this.model.checkAccess('edit');
@@ -168,5 +168,13 @@ export class ObjectListItem implements OnInit, OnDestroy {
     public toggleExpanded(e: MouseEvent) {
         e.stopPropagation();
         this.expanded = !this.expanded;
+    }
+
+    public toggleSelected(selected){
+        if(selected) {
+            this.modellist.setSelected(this.model.id);
+        } else {
+            this.modellist.setUnSelected(this.model.id);
+        }
     }
 }

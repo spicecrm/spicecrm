@@ -2,10 +2,7 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
-use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\ErrorHandlers\DatabaseException;
-use SpiceCRM\includes\ErrorHandlers\Exception;
+use Exception;
 
 class SpiceDictionaryRelationship
 {
@@ -24,11 +21,7 @@ class SpiceDictionaryRelationship
     {
         $this->id = $id;
 
-        $relationship = DBManagerFactory::getInstance()->fetchOne("SELECT *, 'g' scope FROM sysdictionaryrelationships WHERE id='{$id}'");
-
-        if (!$relationship) {
-            $relationship = DBManagerFactory::getInstance()->fetchOne("SELECT *, 'c' scope FROM syscustomdictionaryrelationships WHERE id='{$id}'");
-        }
+        $relationship = SpiceDictionaryRelationships::getInstance()->getRelationshipById($id);
 
         if(!$relationship){
             throw new Exception("Relationship with id {$id} not found");
@@ -51,72 +44,43 @@ class SpiceDictionaryRelationship
      */
     private function setStatus($status)
     {
-        // get the proper table name
-        $table = $this->relationship->scope == 'c' ? 'syscustomdictionaryrelationships' : 'sysdictionaryrelationships';
-
-        // write the stazus update
-        SystemDeploymentCR::writeDBEntry($table, $this->id, ['status' => $status], $this->name);
+        SpiceDictionaryRelationships::getInstance()->setStatus($this->id, $status);
     }
 
     /**
      * activates the relationship
      *
-     * @return void
-     * @throws \Exception
+     * @return SpiceDictionaryRelationship
+     * @throws Exception
      */
-    public function activate($setStatus = true, $templateDefinitionId = null,  $referencingDefinitonId = null){
-        if($templateDefinitionId && $referencingDefinitonId){
-            // get the definition
-            $definition = new SpiceDictionaryDefinition($referencingDefinitonId);
-            // manage the names and replacements
-            $this->name = str_replace('{tablename}', $definition->tablename, $this->name);
-            $this->relationship->name = str_replace('{tablename}', $definition->tablename, $this->relationship->name);
-            $this->relationship->relationship_name = str_replace('{tablename}', $definition->tablename, $this->relationship->relationship_name);
-            $this->relationship->lhs_linkname = str_replace('{tablename}', $definition->tablename, $this->relationship->lhs_linkname);
-            $this->relationship->lhs_linkname = str_replace('{tablename}', $definition->tablename, $this->relationship->lhs_linkname);
-            $this->relationship->rhs_relatename = str_replace('{tablename}', $definition->tablename, $this->relationship->rhs_relatename);
-
-            // witch the IDs from the template
-            if($this->relationship->lhs_sysdictionarydefinition_id == $templateDefinitionId)$this->relationship->lhs_sysdictionarydefinition_id = $referencingDefinitonId;
-            if($this->relationship->rhs_sysdictionarydefinition_id == $templateDefinitionId)$this->relationship->rhs_sysdictionarydefinition_id = $referencingDefinitonId;
-
-            // build a new ID
-            $this->id = md5("{$templateDefinitionId}{$referencingDefinitonId}{$this->relationship->id}");
-        }
-
-        // get the class for the activation
-        $relType = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM sysdictionaryrelationshiptypes WHERE name='{$this->type}'");
-
-        // check if left or right is a template ... if it is do not activate
-        if((!$this->relationship->lhs_sysdictionarydefinition_id || (new SpiceDictionaryDefinition($this->relationship->lhs_sysdictionarydefinition_id))->type != 'template') && (!$this->relationship->rhs_sysdictionarydefinition_id || (new SpiceDictionaryDefinition($this->relationship->rhs_sysdictionarydefinition_id))->type != 'template')) {
-            (new $relType['class']((array) $this->relationship))->activate($this);
-        }
-
-        // set the status
-        if($setStatus) $this->setStatus('a');
-
+    public function activate(): SpiceDictionaryRelationship
+    {
+        $this->setStatus('a');
         return $this;
+    }
+
+    /**
+     * build link fields for dictionary
+     * @param string $dictionaryId
+     * @return array[]
+     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     */
+    public function buildLinkFields(string $dictionaryId): array
+    {
+        $relType = SpiceDictionaryRelationships::getInstance()->getRelationshipTypeDefinition($this->type);
+
+        return call_user_func([$relType['class'], 'buildLinkFields'], $this, $dictionaryId);
     }
 
     /**
      * deactiovates the relationship
      *
-     * @return void
-     * @throws \Exception
+     * @return SpiceDictionaryRelationship
+     * @throws Exception
      */
-    public function deactivate($setStatus = true, $originalDefinitionId = null,  $newDefinitonId = null){
-        // get the class for the activation
-        $relType = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM sysdictionaryrelationshiptypes WHERE name='{$this->type}'");
-
-        if($originalDefinitionId && $newDefinitonId){
-            // build a new ID
-            $this->id = md5("{$originalDefinitionId}{$newDefinitonId}");
-        }
-
-        (new $relType['class'](null))->deactivate($this);
-
-        // set the status
-        if($setStatus) $this->setStatus('i');
+    public function deactivate(): SpiceDictionaryRelationship
+    {
+        $this->setStatus('i');
 
         return $this;
     }
@@ -124,49 +88,21 @@ class SpiceDictionaryRelationship
     /**
      * deletes a relationship
      *
-     * @return null
+     * @return void
      * @throws \Exception
      */
     public function delete()
     {
-        // determine from which tabel to delete the item
-        $table = $this->relationship->scope == 'c' ? 'syscustomdictionaryrelationships' : 'sysdictionaryrelationships';
-        $this->deleteJoinTableFields();
-        return SystemDeploymentCR::deleteDBEntry($table, $this->id, $this->name);
+        SpiceDictionaryRelationships::getInstance()->deleteRelationship($this->id);
     }
 
     /**
-     * delete join table fields
-     * @return void
-     * @throws \Exception
-     */
-    private function deleteJoinTableFields(): void
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $table = $this->relationship->scope == 'c' ? 'syscustomdictionaryrelationshipfields' : 'sysdictionaryrelationshipfields';
-        $query = $db->query("SELECT id, map_to_fieldname FROM $table WHERE sysdictionaryrelationship_id = '$this->id'");
-
-        while ($field = $db->fetchByAssoc($query)) {
-            SystemDeploymentCR::deleteDBEntry($table, $field['id'], $this->name . "/{$field['map_to_fieldname']}");
-        }
-    }
-
-    /**
-     * get join table fields
+     * get the relationship fields for join table
      * @param string $definitionId
-     * @return array | boolean
-     * @throws DatabaseException|\Exception
+     * @return array
      */
-    public function getJoinTableFields(string $definitionId): bool|array
+    public function getRelationshipFieldsForJoinTable(string $definitionId): array
     {
-        $db = DBManagerFactory::getInstance();
-        $table = $this->relationship->scope == 'c' ? 'syscustomdictionaryrelationshipfields' : 'sysdictionaryrelationshipfields';
-
-        $query = "SELECT * FROM $table WHERE sysdictionarydefinition_id = '$definitionId' AND sysdictionaryrelationship_id = '$this->id' and deleted != 1";
-
-        $joinFields = $db->fetchAll($query);
-
-        return $joinFields;
+        return SpiceDictionaryRelationships::getInstance()->getRelationshipFieldsForJoinTable($definitionId, $this->id);
     }
 }

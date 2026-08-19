@@ -7,7 +7,8 @@ import { spiceinstaller, stepObject } from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-mysqli',
-    templateUrl: '../templates/spiceinstallermysqli.html'
+    templateUrl: '../templates/spiceinstallermysqli.html',
+    standalone: false
 })
 export class SpiceinstallerMySQLi {
 

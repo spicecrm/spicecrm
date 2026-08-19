@@ -23,7 +23,8 @@ import {navigationtab} from "../../services/navigationtab.service";
 @Component({
     selector: 'object-record-create-container',
     templateUrl: '../templates/objectrecordcreatecontainer.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class ObjectRecordCreateContainer implements OnInit {
     /**
@@ -76,6 +77,7 @@ export class ObjectRecordCreateContainer implements OnInit {
         let params = this.navigationtab.activeRoute.params;
         this.model.module = params.module;
         this.model.id = params.id;
+
         this.model.initialize();
         this.model.isNew = true;
 

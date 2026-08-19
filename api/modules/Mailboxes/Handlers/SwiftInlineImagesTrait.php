@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
@@ -77,11 +51,15 @@ trait SwiftInlineImagesTrait
         $imageData = $image->getAttribute('src');
 
         // check if the image src has charset param and set the proper data start position
-        $stringPos = strpos('charset=utf-8' , $imageData) == 14 ? 35 : 21;
+        // $stringPos = strpos('charset=utf-8' , $imageData) == 14 ? 35 : 21;
+        $imageArray = explode(',' , $imageData);
 
-        $decodedImageData = base64_decode(substr($imageData, $stringPos));
-        $imageName = SpiceUtils::createGuid() . '.png';
-        $inlineImage = Swift_Image::newInstance($decodedImageData, $imageName, 'image/png')
+        // get the image type
+        $matches = [];
+        $matched = preg_match('/image\/(.*);/', $imageArray[0], $matches );
+        $decodedImageData = base64_decode($imageArray[1]);
+        $imageName = SpiceUtils::createGuid() . '.' . ($matched == 1 ? $matches[1] : 'png');
+        $inlineImage = Swift_Image::newInstance($decodedImageData, $imageName, $matched == 1 ? $matches[0] : 'image/png')
             ->setDisposition('inline');
         return $message->embed($inlineImage);
     }
@@ -98,8 +76,8 @@ trait SwiftInlineImagesTrait
         $doc->loadHTML('<?xml encoding="utf-8"?>' . $message->getBody());
         $selector = new DOMXPath($doc);
 
-        // query all inline images. some images include charset utf-8 in the src
-        $inlineImages = $selector->query("//img[contains(@src, 'data:image/png;base64,') or contains(@src, 'data:image/png;charset=utf-8;base64,')]");
+        // query all inline images.
+        $inlineImages = $selector->query("//img[contains(@src, 'data:image/') or contains(@src, 'data:IMAGE/')]");
 
         // replace the first one
         $inlineImage = $inlineImages->item(0);

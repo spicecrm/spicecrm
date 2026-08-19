@@ -14,7 +14,8 @@ import {configurationService} from "../../services/configuration.service";
  */
 @Component({
     selector: 'object-set-inactive-icon',
-    templateUrl: '../templates/objectsetinactiveicon.html'
+    templateUrl: '../templates/objectsetinactiveicon.html',
+    standalone: false
 })
 
 export class ObjectSetInactiveIcon {
@@ -55,12 +56,26 @@ export class ObjectSetInactiveIcon {
     }
 
     /**
+     * disabled if the field acl action is hide = 1 or display = 2
+     */
+    get disabled() {
+        return [1,2].includes(this.model.getFieldAccess('is_inactive'));
+    }
+
+    get addClasses(){
+        return this.disabled ? 'slds-is-disabled' : '';
+    }
+
+    /**
      * sets is_inactive flag on a Bean
      */
     public manageActiveState() {
 
         // do nothing if Bean is being edited
         if (this.model.isEditing) return;
+
+        // do nothing if acl is not enough
+        if(this.disabled) return;
 
         this.inProcess = true;
 

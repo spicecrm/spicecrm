@@ -36,10 +36,10 @@
 namespace SpiceCRM\includes\resource;
 
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\resource\Observers\SoapResourceObserver;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
@@ -124,10 +124,10 @@ class ResourceManager
     /**
      * notifyObservers
      * This method notifies the registered observers with the provided message.
-     * @param $msg Message from language file to notify observers with
+     * @param $msg string Message from language file to notify observers with
      */
-    public function notifyObservers($msg) {
-
+    public function notifyObservers($msg): void
+    {
         if(empty($this->_observers)) {
            return;
         }

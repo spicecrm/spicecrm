@@ -24,6 +24,7 @@ import {backend} from "../../services/backend.service";
 @Component({
     selector: 'dictionary-manager-relationship-add-one-to-many-polymorph',
     templateUrl: '../templates/dictionarymanagerrelationshipaddonetomanypolymorph.html',
+    standalone: false
 })
 export class DictionaryManagerRelationshipAddOneToManyPolymorph {
 
@@ -124,6 +125,7 @@ export class DictionaryManagerRelationshipAddOneToManyPolymorph {
         this.backend.postRequest(`dictionary/relationship/${this.relationship.id}`, {}, {relationship: this.relationship, relationshippolymorphs: this.relationshipPolymorphs}).subscribe({
             next: (res) => {
                 this.dictionarymanager.pushNewRelationshipToArray(this.relationship);
+                this.dictionarymanager.dictionaryrelationshippolymorphs.push(...this.relationshipPolymorphs);
                 this.close();
             }
         })

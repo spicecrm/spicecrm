@@ -17,7 +17,8 @@ import {configurationService} from "../../services/configuration.service";
 declare var moment: any;
 
 @Component({
-    templateUrl: '../templates/configtransfer.html'
+    templateUrl: '../templates/configtransfer.html',
+    standalone: false
 })
 export class ConfigTransfer {
 
@@ -111,17 +112,17 @@ export class ConfigTransfer {
      */
     public exportSystemPackage() {
 
-        this.loadTableNames().then(() => {
-            this.selectableTables.forEach( table => {
-                if (table.name.includes('custom')) return;
-                table.include = true;
-            });
-            this.selectedPackages = 'system';
-            this.additionalTables = 'spiceaclstandardactions';
-            this.fileName = 'system-package.gz';
+        this.fileName = 'system-package.gz';
 
-            this.exportTables();
-        });
+        this.backend.getDownloadPostRequestFile('configuration/package/system/generate').subscribe({
+            next: (res): void => {
+                this.downloadlink.element.nativeElement.href = res;
+                this.downloadlink.element.nativeElement.click();
+            },
+            error: (err): void => {
+                this.toast.sendToast( this.lang.getLabel('ERR_EXPORT_FAILED'), 'error', err.error.message);
+            }
+        })
     }
 
     public exportTables() {

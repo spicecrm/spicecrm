@@ -14,8 +14,10 @@ import {Router} from "@angular/router";
 import {SystemInputMedia} from "../../../systemcomponents/components/systeminputmedia";
 
 @Component({
+    selector: 'field-mediafiles-image',
     templateUrl: '../templates/fieldmediafilesimage.html',
-    providers: [mediafiles]
+    providers: [mediafiles],
+    standalone: false
 })
 export class fieldMediaFilesImage extends fieldGeneric {
 
@@ -44,6 +46,11 @@ export class fieldMediaFilesImage extends fieldGeneric {
         this.initialize();
     }
 
+    get disableModifications(){
+        return !!this.fieldconfig.disableModifications;
+    }
+
+
     /**
      * getter for the value overwritten to access the buffered value loaded from the backend for the image
      */
@@ -56,11 +63,11 @@ export class fieldMediaFilesImage extends fieldGeneric {
      *
      * @param value
      */
-    set value(value) {
+    set value(v) {
 
         let fieldValues: any = {};
 
-        fieldValues.file = value;
+        fieldValues.file = v;
         fieldValues.filetype = this.systemInputMedia.mediaMetaData.mimetype;
 
         let name = this.model.getField('name');
@@ -74,9 +81,11 @@ export class fieldMediaFilesImage extends fieldGeneric {
                 }
                 this.model.setFields(fieldValues);
             });
+        } else {
+            this.model.setFields(fieldValues);
         }
 
-        this._value = value;
+        this._value = v;
 
     }
 

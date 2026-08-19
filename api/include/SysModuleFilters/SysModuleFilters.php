@@ -29,15 +29,16 @@
 
 namespace SpiceCRM\includes\SysModuleFilters;
 
-use Cassandra\Time;
-use DateTimeZone;
-use Exception;
-use SpiceCRM\data\BeanFactory;
 use DateInterval;
 use DateTime;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
+use DateTimeZone;
+use Exception;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 
 class SysModuleFilters
@@ -52,6 +53,20 @@ class SysModuleFilters
      * @var the module of the filter we currently analyze
      */
     var $filtermodule;
+
+    /**
+     * @var int the minimum nGram length as set in the config
+     */
+    var $minNgram = 3;
+
+    /**
+     * the comntructor
+     */
+    public final function __construct()
+    {
+        // get the min ntram length
+        $this->minNgram = SpiceConfig::getInstance()->get('fts.min_ngram', 3);
+    }
 
     /**
      * static function used in the spiceui rest extension to load all module filters and return to the UI
@@ -218,13 +233,15 @@ class SysModuleFilters
         // build where clause for groupscope and/or groupstate
         if(!empty($module)) $filteredListCondition = $this->buildSQLWhereClauseForLists($group, $tablename, $module, $current_user->id);
 
+        // if we get a condition in teh response use it
         if(!empty($filteredListCondition)) $filterCondition .= " $filteredListCondition ";
 
         if (!empty($filterConditionArray)) {
 
-           if(!empty($filterCondition)) $filterCondition .= " {$group->logicaloperator} ";
+            // a group condition which we might have at this stage is always to be used with an AND statement
+           if(!empty($filterCondition)) $filterCondition .= " AND ";
 
-            $filterCondition .= ' (' . implode(' ' . $group->logicaloperator . ' ', $filterConditionArray) . ')';
+            $filterCondition .= ' (' . implode(' ' . strtoupper($group->logicaloperator) . ' ', $filterConditionArray) . ')';
             if ($group->groupscope == 'own') {
                 $userIds = array_merge([$current_user->id], $absence->getSubstituteIDs());
                 $userIds = "'" . join("','", $userIds) . "'";
@@ -251,6 +268,11 @@ class SysModuleFilters
             $settings = SpiceFTSUtils::getBeanIndexSettings($module);
             $geocondition = "(6371*acos(cos(radians( {$group->geography->lat}))*cos(radians({$tablename}.{$settings['geolat']}))*cos(radians({$tablename}.{$settings['geolng']})-radians({$group->geography->lng}))+sin(radians({$group->geography->lat}))*sin(radians({$tablename}.{$settings['geolat']})))) < {$group->geography->radius}";
             $filterCondition = "($filterCondition) AND ($geocondition)";
+        }
+
+        // check if we shoudl select deleted records
+        if($group->deleted) {
+            $filterCondition = "($filterCondition) AND ({$tablename}.deleted = 1)";
         }
 
         return $filterCondition;
@@ -280,10 +302,10 @@ class SysModuleFilters
                         // build query also for 'all' to avoid errors
                         break;
                     case 'own':
-                        $filteredListCondition .= " ({$tablename}.assigned_user_id = {$currentUserId}) ";
+                        $filteredListCondition .= " ({$tablename}.assigned_user_id = '{$currentUserId}') ";
                         break;
                     case 'creator':
-                        $filteredListCondition .= " ({$tablename}.created_by = {$currentUserId}) ";
+                        $filteredListCondition .= " ({$tablename}.created_by = '{$currentUserId}') ";
                         break;
                 }
             }
@@ -320,7 +342,7 @@ class SysModuleFilters
      * @return string
      * @throws Exception
      */
-    private function bildSQLWhereStatementForCondition($condition, $tablename)
+    public function bildSQLWhereStatementForCondition($condition, $tablename)
     {
         switch ($condition->operator) {
             case 'empty':
@@ -624,7 +646,7 @@ class SysModuleFilters
     /**
      * builds an elastic filter for a given group. Calls itself recursivley if a group has subgrups
      *
-     * @param $group the group definition
+     * @param $group object the group definition
      * @return array
      */
     public function buildElasticFilterForGroup($group)
@@ -700,6 +722,12 @@ class SysModuleFilters
         return count($filterCondition) > 0 ? ['bool' => $filterCondition] : [];
     }
 
+    private function checkMinNGramLength($searchvalue){
+        if(strlen($searchvalue) < $this->minNgram){
+            throw new BadRequestException("Minimum NGram Length ({$this->minNgram}) not matched in query");
+        }
+    }
+
     /**
      * builds the filter for a single condition
      *
@@ -707,7 +735,7 @@ class SysModuleFilters
      * @return array
      * @throws Exception
      */
-    private function buildElasticFilterForCondition($condition)
+    public function buildElasticFilterForCondition($condition)
     {
         switch ($condition->operator) {
             case 'empty':
@@ -813,10 +841,13 @@ class SysModuleFilters
             case 'false':
                 return ['term' => [$condition->field . '.raw' => 0]];
             case 'starts':
+                $this->checkMinNGramLength($condition->filtervalue);
                 return ['wildcard' => [$condition->field . '.raw' => $condition->filtervalue . '*']];
             case 'contains':
+                $this->checkMinNGramLength($condition->filtervalue);
                 return ['match' => [$condition->field => $condition->filtervalue]];
             case 'ncontains':
+                $this->checkMinNGramLength($condition->filtervalue);
                 return ['bool' => ['must_not' => [['match' => [$condition->field => $condition->filtervalue]]]]];
             case 'greater':
                 return ['range' => [$condition->field . '.raw' => ['gt' => $condition->filtervalue]]];
@@ -1182,5 +1213,16 @@ class SysModuleFilters
             default:
                 return false;
         }
+    }
+
+    /**
+     * generate module filter condition group
+     * @param string $module
+     * @param string $operator
+     * @return SysModuleFilterGroup
+     */
+    public static function generateConditionGroup(string $module, string $operator = 'and'): SysModuleFilterGroup
+    {
+        return new SysModuleFilterGroup($module, $operator);
     }
 }

@@ -10,7 +10,8 @@ declare var _: any;
 @Component({
     selector: 'reporter-field-container',
     templateUrl: '../templates/reporterfieldcontainer.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ReporterFieldContainer implements OnInit {
 
@@ -179,6 +180,9 @@ export class ReporterFieldContainer implements OnInit {
                 case "datetimecombo":
                 case "datetime":
                     this.fieldType = 'ReporterFieldDateTime';
+                    break;
+                case "datetutc":
+                    this.fieldType = 'ReporterFieldDateTimeUTC';
                     break;
                 case 'date':
                     this.fieldType = 'ReporterFieldDate';

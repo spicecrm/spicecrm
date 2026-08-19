@@ -20,6 +20,7 @@ import {
 @Component({
     selector: 'dictionary-manager-relationship-container-manytomany-prospectlists',
     templateUrl: '../templates/dictionarymanagerrelationshipcontainermanytomanyprospectlists.html',
+    standalone: false
 })
 export class DictionaryManagerRelationshipContainerManyToManyProspectlists implements OnInit, OnChanges {
 
@@ -70,6 +71,22 @@ export class DictionaryManagerRelationshipContainerManyToManyProspectlists imple
      */
     get join_sysdictionarydefinition_id(): string{
         return this.relationship.join_sysdictionarydefinition_id;
+    }
+
+    get rhs_clone_join_table(){
+        return this.relationship.rhs_clone_join_table_record_on_duplicate == 1;
+    }
+
+    set rhs_clone_join_table(value){
+        this.relationship.rhs_clone_join_table_record_on_duplicate = value ? 1 : 0;
+    }
+
+    get lhs_clone_join_table(){
+        return this.relationship.lhs_clone_join_table_record_on_duplicate == 1;
+    }
+
+    set lhs_clone_join_table(value){
+        this.relationship.lhs_clone_join_table_record_on_duplicate = value ? 1 : 0;
     }
 
     /**
@@ -239,7 +256,9 @@ export class DictionaryManagerRelationshipContainerManyToManyProspectlists imple
             map_to_fieldname: '',
             sysdictionaryitem_id: joinItemId,
             deleted: 0,
-            isNew: true
+            isNew: true,
+            version: this.relationship.version,
+            package: this.relationship.package
         };
     }
 }

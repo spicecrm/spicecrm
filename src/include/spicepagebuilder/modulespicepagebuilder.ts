@@ -12,8 +12,19 @@ import * as interfaces from './interfaces/spicepagebuilder.interfaces';
 import {SpicePageBuilderService} from './services/spicepagebuilder.service';
 
 import {SpicePageBuilderInputText} from './components/spicepagebuilderinputtext';
+import {SpicePageBuilderInputWidth} from './components/spicepagebuilderinputwidth';
 import {SpicePageBuilderInputSides} from './components/spicepagebuilderinputsides';
+import {SpicePageBuilderInputPadding} from './components/spicepagebuilderinputpadding';
 import {SpicePageBuilderInputColor} from './components/spicepagebuilderinputcolor';
+import {SpicePageBuilderInputBorder} from "./components/spicepagebuilderinputborder";
+import {SpicePageBuilderInputBorders} from "./components/spicepagebuilderinputborders";
+import {SpicePageBuilderInputHorizontalAlign} from "./components/spicepagebuilderinputhorizontalalign";
+import {SpicePageBuilderInputVerticalAlign} from "./components/spicepagebuilderinputverticalalign";
+import {SpicePageBuilderInputTextDecoration} from "./components/spicepagebuilderinputtextdecoration";
+import {SpicePageBuilderInputTextTransform} from "./components/spicepagebuilderinputtexttransform";
+import {SpicePageBuilderInputFontStyle} from "./components/spicepagebuilderinputfontstyle";
+import {SpicePageBuilderInputFontWeight} from "./components/spicepagebuilderinputfontweight";
+import {SpicePageBuilderInputDirection} from "./components/spicepagebuilderinputdirection";
 import {SpicePageBuilderElement} from './components/spicepagebuilderelement';
 import {SpicePageBuilderElementImage} from './components/spicepagebuilderelementimage';
 import {SpicePageBuilderElementText} from './components/spicepagebuilderelementtext';
@@ -31,10 +42,20 @@ import {SpicePageBuilder} from './components/spicepagebuilder';
 
 import {fieldPageBuilder} from './fields/fieldpagebuilder';
 
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DirectivesModule} from "../../directives/directives";
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {SpicePageBuilderElementRSS} from "./components/spicepagebuilderelementrss";
+import {SpicePageBuilderElementHeading} from "./components/spicepagebuilderelementheading";
+import {SpicePageBuilderElementAttributes} from "./components/spicepagebuilderelementattributes";
+
+
+import {SpicePageBuilderElementImageUrl} from "./components/spicepagebuilderelementimageurl";
+import {SpicePageBuilderElementSocial} from "./components/spicepagebuilderelementsocial";
+import {SpicePageBuilderInputOptions} from "./components/spicepagebuilderinputoptions";
+import {SpicePageBuilderInputArticle} from "./components/spicepagebuilderinputarticle";
+import {SpicePageBuilderInputArticlePart} from "./components/spicepagebuilderinputarticlepart";
+import {SystemTranslatePipe} from "../../systemcomponents/pipes/systemtranslate.pipe";
 
 @NgModule({
     declarations: [
@@ -42,9 +63,21 @@ import {SpicePageBuilderElementRSS} from "./components/spicepagebuilderelementrs
         SpicePageBuilderPanel,
         SpicePageBuilderRenderer,
         SpicePageBuilderElement,
+        SpicePageBuilderElementAttributes,
         SpicePageBuilderInputText,
+        SpicePageBuilderInputWidth,
+        SpicePageBuilderInputHorizontalAlign,
+        SpicePageBuilderInputVerticalAlign,
+        SpicePageBuilderInputTextDecoration,
+        SpicePageBuilderInputTextTransform,
         SpicePageBuilderInputSides,
+        SpicePageBuilderInputPadding,
+        SpicePageBuilderInputBorder,
+        SpicePageBuilderInputBorders,
         SpicePageBuilderInputColor,
+        SpicePageBuilderInputFontStyle,
+        SpicePageBuilderInputFontWeight,
+        SpicePageBuilderInputDirection,
         SpicePageBuilderEditor,
         SpicePageBuilderElement,
         SpicePageBuilderElementBody,
@@ -52,12 +85,18 @@ import {SpicePageBuilderElementRSS} from "./components/spicepagebuilderelementrs
         SpicePageBuilderElementColumn,
         SpicePageBuilderElementImage,
         SpicePageBuilderElementText,
+        SpicePageBuilderElementHeading,
         SpicePageBuilderElementDivider,
         SpicePageBuilderElementSpacer,
         SpicePageBuilderElementButton,
         SpicePageBuilderElementCode,
         SpicePageBuilderElementRSS,
-        fieldPageBuilder
+        fieldPageBuilder,
+        SpicePageBuilderElementImageUrl,
+        SpicePageBuilderElementSocial,
+        SpicePageBuilderInputOptions,
+        SpicePageBuilderInputArticle,
+        SpicePageBuilderInputArticlePart,
     ],
     exports: [
         SpicePageBuilder
@@ -68,7 +107,9 @@ import {SpicePageBuilderElementRSS} from "./components/spicepagebuilderelementrs
         SystemComponents,
         FormsModule,
         DirectivesModule,
-        DragDropModule
+        DragDropModule,
+        ReactiveFormsModule,
+        SystemTranslatePipe
     ]
 })
 export class ModuleSpicePageBuilder {

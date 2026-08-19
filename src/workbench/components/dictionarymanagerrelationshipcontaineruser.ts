@@ -4,7 +4,8 @@ import {dictionarymanager} from "../services/dictionarymanager.service";
 
 @Component({
     selector: 'dictionary-manager-relationship-container-user',
-    templateUrl: '../templates/dictionarymanagerrelationshipcontaineruser.html'
+    templateUrl: '../templates/dictionarymanagerrelationshipcontaineruser.html',
+    standalone: false
 })
 
 export class DictionaryManagerRelationshipContainerUser {
@@ -37,6 +38,14 @@ export class DictionaryManagerRelationshipContainerUser {
     set relationshipName(val: string) {
         this.relationship.relationship_name = `{tablename}_${val}_user`;
         this.generateRelationshipFields(val);
+    }
+
+    get rhs_duplicatemerge(){
+        return this.relationship.rhs_duplicatemerge == 1;
+    }
+
+    set rhs_duplicatemerge(value){
+        this.relationship.rhs_duplicatemerge = value ? 1 : 0;
     }
 
     /**

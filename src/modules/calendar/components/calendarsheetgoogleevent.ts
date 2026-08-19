@@ -19,7 +19,8 @@ declare var moment: any;
     selector: 'calendar-sheet-google-event',
     templateUrl: '../templates/calendarsheetgoogleevent.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class CalendarSheetGoogleEvent {
     /**

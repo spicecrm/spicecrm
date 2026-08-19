@@ -2,14 +2,13 @@
 
 namespace SpiceCRM\includes\SysCurrencies;
 
-use SpiceCRM\includes\database\DBManagerFactory;
+use DateTime;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Users\User;
-
-use DateTime;
 
 class SysCurrencies
 {
@@ -29,7 +28,7 @@ class SysCurrencies
     /**
      * Create SysCurrencies handler
      */
-    public function __construct(User $user = null)
+    public function __construct(?User $user = null)
     {
         $exchangeRateLimitQuery = DBManagerFactory::getInstance()->limitQuerySql("SELECT exchange_rate FROM syscurrenciesexchangerates WHERE syscurrency_id =  syscurrencies.id ORDER BY exchangerate_date DESC", 0, 1);
 
@@ -338,12 +337,12 @@ class SysCurrencies
         $db = DBManagerFactory::getInstance();
         $exchangeRates = [];
         foreach ($this->currencies as $currency) {
-            $rate = $db->fetchOne("SELECT id, exchangerate_date, exchange_rate FROM syscurrenciesexchangerates WHERE syscurrency_id='{$currency['id']}'");
+            $rate = $db->fetchOne("SELECT id, exchangerate_date, exchange_rate FROM syscurrenciesexchangerates WHERE syscurrency_id='{$currency['id']}' ORDER BY exchangerate_date DESC");
             if($rate) {
                 $exchangeRates[$currency['iso4217']] = [
                     'id' => $rate['id'],
                     'date' => $rate['exchangerate_date'],
-                    'rate' => (double) $rate['exchange_rate']
+                    'rate' => (float) $rate['exchange_rate']
                 ];
             }
         }

@@ -2,7 +2,7 @@
  * @module AdminComponentsModule
  */
 import {CommonModule} from '@angular/common';
-import {FormsModule}   from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgModule} from '@angular/core';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
@@ -52,9 +52,6 @@ import { AdministrationApiInspectorMethodTest } from "./components/administratio
 import { AdministrationSysTrashcanManager } from './components/administrationsystrashcanmanager';
 import { AdministrationSysTrashcanRecover } from './components/administrationsystrashcanrecover';
 
-import { AdministrationDictRepair } from './components/administrationdictrepair';
-import {AdministrationDictRepairItem} from "./components/administrationdictrepairitem";
-import {AdministrationDictRepairModal} from "./components/administrationdictrepairmodal";
 import {AdministrationDictRepairACLRoles} from "./components/administrationdictrepairaclroles";
 import {AdministrationDictRepairDbColumnsModal} from "./components/administrationdictrepairdbcolumnsmodal";
 import {AdministrationDictRepairConvertDBCharsetModal} from "./components/administrationdictrepairconvertdbcharsetmodal";
@@ -71,7 +68,6 @@ import { AdministrationJobRunningList } from './components/administrationjobrunn
 import { AdministrationJobFailedList } from './components/administrationjobfailedlist';
 import { AdministrationJobCockpit } from './components/administrationjobcockpit';
 
-import { AdministrationDictionaryManager, AdministrationDictionaryManagerItem, AdministrationDictionaryManagerItemField } from './components/administrationdictionarymanager';
 import {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
 import {AdministrationLanguages} from "./components/administrationlanguages";
 import {AdministrationDefaultPreferences} from './components/administrationdefaultpreferences';
@@ -89,8 +85,11 @@ import {AdministrationGDPRRetentionManager} from "./components/administrationgdp
 import {AdministrationAssetManager} from "./components/administrationassetmanager";
 import {AdministrationMigrateLegacyDoms} from "./components/administrationmigratelegacydoms";
 import {WorkbenchModule} from "../workbench/workbench.module";
+import {AdministrationBackupManager} from "./components/administrationbackupmanager";
+import {AdministrationBackupManagerPreviewModal} from "./components/administrationbackupmanagerpreviewmodal";
 
-
+import { AdministrationIpClients } from "./components/administrationipclients";
+import { AdministrationApiInspectorMethodIpClients } from './components/administrationapiinspectormethodipclients';
 
 @NgModule({
     imports: [
@@ -101,7 +100,8 @@ import {WorkbenchModule} from "../workbench/workbench.module";
         DragDropModule,
         ObjectComponents,
         ObjectFields,
-        WorkbenchModule
+        WorkbenchModule,
+        ReactiveFormsModule
     ],
     declarations: [
         AdministrationAPIInspector,
@@ -128,14 +128,8 @@ import {WorkbenchModule} from "../workbench/workbench.module";
         AdministrationFTSManagerDetails,
         AdministrationFTSManagerFieldsAdd,
         AdministrationFTSStats,
-        AdministrationDictionaryManager,
-        AdministrationDictionaryManagerItem,
-        AdministrationDictionaryManagerItemField,
         AdministrationSysTrashcanManager,
         AdministrationSysTrashcanRecover,
-        AdministrationDictRepair,
-        AdministrationDictRepairItem,
-        AdministrationDictRepairModal,
         AdministrationDictRepairACLRoles,
         AdministrationDictRepairDbColumnsModal,
         AdministrationConfigEditor,
@@ -171,7 +165,10 @@ import {WorkbenchModule} from "../workbench/workbench.module";
         AdministrationLoginManagement,
         AdministrationAssetManager,
         AdministrationLoginMethods,
-
+        AdministrationBackupManager,
+        AdministrationBackupManagerPreviewModal,
+        AdministrationIpClients,
+        AdministrationApiInspectorMethodIpClients
     ]
 
 })

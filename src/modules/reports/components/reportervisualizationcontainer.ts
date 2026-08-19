@@ -2,7 +2,7 @@
  * @module ModuleReports
  */
 import {
-    Component
+    Component, Input
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 
@@ -11,14 +11,15 @@ import {model} from '../../../services/model.service';
     templateUrl: '../templates/reportervisualizationcontainer.html',
     styles: [
         ':host {width:100%; height: 300px;}'
-    ]
+    ],
+    standalone: false
 })
 export class ReporterVisualizationContainer {
 
     /**
      * the component config
      */
-    public componentconfig: any = {};
+    @Input() public componentconfig: any = {};
 
     /**
      * status to have the component hidden

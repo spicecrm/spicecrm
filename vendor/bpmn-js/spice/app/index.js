@@ -10,4 +10,5 @@ export var init = {
 }
 
 export var spiceContextPad = SpiceContextPad;
+export var spicePalette = SpicePalette;
 

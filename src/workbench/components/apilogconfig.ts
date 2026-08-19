@@ -17,7 +17,8 @@ declare var moment: any;
  */
 @Component({
     selector: 'apilog-config',
-    templateUrl: '../templates/apilogconfig.html'
+    templateUrl: '../templates/apilogconfig.html',
+    standalone: false
 })
 export class APIlogConfig {
 

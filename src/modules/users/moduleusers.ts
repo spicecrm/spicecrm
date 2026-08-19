@@ -27,6 +27,7 @@ import {UserDeactivateButton} from "./components/userdeactivatebutton";
 import {UserDeactivateModal} from "./components/userdeactivatemodal";
 import {UserDeactivateSelectUser} from "./components/userdeactivateselectuser";
 import {UserSignature} from "./components/usersignature";
+import {User2FAConfiguration} from "./components/user2faconfiguration";
 import {UserPreferencesModal} from "./components/userpreferencesmodal";
 import {UserSignatureModal} from "./components/usersignaturemodal";
 import {UserCreateRoles} from "./components/usercreateroles";
@@ -35,6 +36,14 @@ import {UserCreatePassword} from "./components/usercreatepassword";
 import {UserSet2FAModal} from "./components/userset2famodal";
 import {UserSecuritySettingsModal} from "./components/usersecuritysettingsmodal";
 import {UserSecurityPasskeyButton} from "./components/usersecuritypasskeybutton";
+import {UserAliasManagerModal} from "./components/useraliasmanagermodal";
+import {UserAliasManagerButton} from "./components/useraliasmanagerbutton";
+import {UserManagementPanel} from "./components/usermanagementpanel";
+import {UserAPIKeysModal} from "./components/userapikeysmodal";
+import {SystemTranslatePipe} from "../../systemcomponents/pipes/systemtranslate.pipe";
+import {UserManagementPanelUser} from "./components/usermanagementpaneluser";
+import {fieldUserRoles} from "./fields/fielduserroles";
+import {UserAPIKeysButton} from "./components/userapikeysbutton";
 
 @NgModule({
     imports: [
@@ -45,6 +54,7 @@ import {UserSecurityPasskeyButton} from "./components/usersecuritypasskeybutton"
         ObjectComponents,
         SystemComponents,
         DirectivesModule,
+        SystemTranslatePipe,
     ],
     exports: [
         UserPreferences
@@ -70,9 +80,17 @@ import {UserSecurityPasskeyButton} from "./components/usersecuritypasskeybutton"
         UserDeactivateModal,
         UserDeactivateSelectUser,
         UserSignature,
+        User2FAConfiguration,
         UserSet2FAModal,
         UserSecuritySettingsModal,
-        UserSecurityPasskeyButton
+        UserSecurityPasskeyButton,
+        UserAliasManagerModal,
+        UserAliasManagerButton,
+        UserManagementPanel,
+        UserManagementPanelUser,
+        fieldUserRoles,
+        UserAPIKeysModal,
+        UserAPIKeysButton
     ]
 })
 export class ModuleUsers {

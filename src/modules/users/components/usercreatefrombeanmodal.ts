@@ -21,7 +21,8 @@ declare var moment: any;
 @Component({
     selector: "usercreatefrombeanmodal",
     templateUrl: "../templates/usercreatefrombeanmodal.html",
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class UserCreateFromBeanModal implements OnInit {
     @ViewChild("addcontainer", {read: ViewContainerRef, static: true}) public addcontainer: ViewContainerRef;
@@ -37,11 +38,11 @@ export class UserCreateFromBeanModal implements OnInit {
 
     // for the password handling
     public password: string;
-    public sendByEmail: boolean = false;
+    public sendBySystem: boolean = false;
     public forceReset: boolean = true;
     public systemGenerated: boolean = true;
     public externalAuthOnly: boolean = false;
-    public canSendByEmail: boolean = true;
+    public canSendBySystem: boolean = true;
 
     public step: 'user'|'role'|'acl' = 'user';
     public steps:{value: 'user'|'role'|'acl', label: string}[] = [
@@ -187,7 +188,7 @@ export class UserCreateFromBeanModal implements OnInit {
             credentials: {
                 newPassword: this.password,
                 forceReset: this.forceReset,
-                sendEmail: this.canSendByEmail ? this.sendByEmail : false
+                sendBySystem: this.canSendBySystem ? this.sendBySystem : false
             }
         };
 
@@ -282,14 +283,14 @@ export class UserCreateFromBeanModal implements OnInit {
     }
 
     public savePassword() {
-        let awaitModal = this.modal.await('LBL_SAVING_PASSWORD');
-        let body = {
+        const awaitModal = this.modal.await('LBL_SAVING_PASSWORD');
+        const body = {
             newPassword: this.password,
             forceReset: this.forceReset,
-            sendEmail: this.canSendByEmail ? this.sendByEmail : false
+            sendBySystem: this.canSendBySystem ? this.sendBySystem : false
         };
         this.backend.postRequest("module/Users/"+this.model.id+"/password/reset", {}, body).subscribe(res => {
-                if (this.sendByEmail) {
+                if (this.sendBySystem) {
                     this.toast.sendToast(this.language.getLabel("MSG_NEW_PASSWORD_EMAIL_SENT"), "success", "", 10);
                 } else {
                     this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED"), "success");
@@ -297,8 +298,8 @@ export class UserCreateFromBeanModal implements OnInit {
             awaitModal.emit(true);
                 this.self.destroy();
         }, error => {
-            this.sendByEmail = false;
-            this.canSendByEmail = false;
+            this.sendBySystem = false;
+            this.canSendBySystem = false;
             this.toast.sendToast(this.language.getLabel("MSG_PASSWORD_RESET_FAILED"), "error");
             awaitModal.emit(true);
         });

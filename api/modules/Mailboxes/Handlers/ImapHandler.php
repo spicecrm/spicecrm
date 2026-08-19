@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
@@ -33,8 +7,15 @@ use Exception;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
+use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
+use SpiceCRM\modules\Mailboxes\Mailbox;
 use Swift_Attachment;
 use Swift_Mailer;
 use Swift_Message;
@@ -42,13 +23,6 @@ use Swift_Mime_ContentEncoder_PlainContentEncoder;
 use Swift_RfcComplianceException;
 use Swift_SmtpTransport;
 use Swift_TransportException;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\modules\Emails\Email;
-use SpiceCRM\modules\Mailboxes\Mailbox;
 
 /**
  * Class ImapHandler
@@ -239,7 +213,9 @@ class ImapHandler extends TransportHandler
 
                 $email->body = $structure->getEmailBody();
                 try {
+                    $email->processEmail('before_save');
                     $email->save(false, true, false);
+                    $email->processEmail('after_save');
                 } catch (Exception $e) {
                     LoggerManager::getLogger()->error('Could not save email: ' . $email->name . ' ' . $email->message_id .'. Error Message: '.$e->getMessage());
                     continue;
@@ -250,7 +226,6 @@ class ImapHandler extends TransportHandler
                     SpiceAttachments::saveEmailAttachment('Emails', $email->id, $attachment);
                 }
 
-                $email->processEmail();
 
                 if ($new_mail_count > 100) {
                     break;
@@ -434,7 +409,8 @@ class ImapHandler extends TransportHandler
         if (!empty($result)) { // Substitute the old mailbox ID with the current one
             $query2 = "UPDATE emails SET mailbox_id='" . $this->mailbox->id . "' WHERE id='" . $result['id'] . "'";
             $q2 = $db->query($query2);
-            $result2 = $db->fetchByAssoc($q2);
+
+            return true;
         }
 
         return false;
@@ -617,18 +593,23 @@ class ImapHandler extends TransportHandler
             if ( count( $bccAddresses )) $message->setBcc( $bccAddresses );
         }
 
-        if ($this->mailbox->reply_to != '') {
+        if (!empty($email->reply_to_addr)) {
+            $message->setReplyTo($email->reply_to_addr);
+        } else if ($this->mailbox->reply_to != '') {
             $message->setReplyTo($this->mailbox->reply_to);
         }
 
         if ($email->id) {
-            foreach ($email->attachments as $att) {
-                if($att->display_name){
-                    $displayName = $att->display_name . substr($att->filename, strrpos($att->filename, '.'));
+            if(!$email->downloadlink_attachments) {
+                foreach ($email->attachments as $att) {
+                    $displayName = null;
+                    if ($att->display_name) {
+                        $displayName = $att->display_name . substr($att->filename, strrpos($att->filename, '.'));
+                    }
+                    $message->attach(
+                        Swift_Attachment::fromPath(StreamFactory::getPathPrefix('upload') . $att->filemd5)->setFilename($displayName ?: $att->filename)
+                    );
                 }
-                $message->attach(
-                    Swift_Attachment::fromPath(StreamFactory::getPathPrefix('upload') . $att->filemd5)->setFilename($displayName ?: $att->filename)
-                );
             }
 
             $this->handleInlineImages($message, $email);
@@ -644,7 +625,7 @@ class ImapHandler extends TransportHandler
      * @return DispatchResponse
      * @throws Exception
      */
-    protected function dispatch($message): DispatchResponse
+    protected function dispatch($message, $email): DispatchResponse
     {
         $logEntryHandler = new APILogEntryHandler();
         try {
@@ -705,7 +686,7 @@ class ImapHandler extends TransportHandler
         // If there is no incoming communication and SMTP authentication is disabled the password is allowed to be empty
         foreach ($response['missing'] as $index => $missingSetting) {
             if ($missingSetting == 'imap_pop3_password' && $this->mailbox->inbound_comm == 0
-                && ($this->mailbox->smtp_auth == 0 || !isset($this->mailbox->smtp_auth))) {
+                && (!isset($this->mailbox->smtp_auth) || $this->mailbox->smtp_auth == 0)) {
                 unset($response['missing'][$index]);
             }
         }
@@ -737,7 +718,7 @@ class ImapHandler extends TransportHandler
         if ((substr(strtolower($decodedSubject[0]->charset), 0 ,3) == 'iso')
             || (strtolower($decodedSubject[0]->charset) == 'windows-1252')
             || (strtolower($decodedSubject[0]->charset) == 'windows-1250')) {
-            $subject = utf8_encode($decodedSubject[0]->text);
+            $subject = mb_convert_encoding($decodedSubject[0]->text, 'UTF-8', 'ISO-8859-1');
         } else {
             $subject = $decodedSubject[0]->text;
         }
@@ -760,7 +741,7 @@ class ImapHandler extends TransportHandler
         foreach ($decodedAddress as $addressPart) {
             if (strtolower($addressPart->charset) != 'utf-8'
                 && strtolower($addressPart->charset) != 'default') {
-                $address .= utf8_encode($addressPart->text);
+                $address .= mb_convert_encoding($addressPart->text, 'UTF-8', 'ISO-8859-1');
             } else {
                 $address .= $addressPart->text;
             }

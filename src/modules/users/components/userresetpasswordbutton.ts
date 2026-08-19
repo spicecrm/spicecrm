@@ -8,7 +8,8 @@ import {session} from "../../../services/session.service";
 import {language} from "../../../services/language.service";
 
 @Component({
-    templateUrl: "../templates/userresetpasswordbutton.html"
+    templateUrl: "../templates/userresetpasswordbutton.html",
+    standalone: false
 })
 
 /**
@@ -25,7 +26,7 @@ export class UserResetPasswordButton {
      *  also no change of password when the user is set to external authentication only
      */
     get disabled() {
-        return this.session.isAdmin && this.model.getField('status') == 'Active' && this.model.getFieldValue('external_auth_only') == false ? false : true;
+        return this.session.isAdmin && this.model.getField('status') == 'Active' /* && this.model.getFieldValue('external_auth_only') == false */ ? false : true;
     }
 
     /**

@@ -14,7 +14,8 @@ import {language} from '../../services/language.service';
  */
 @Component({
     selector: 'object-record-details-tab',
-    templateUrl: '../templates/objectrecorddetailstab.html'
+    templateUrl: '../templates/objectrecorddetailstab.html',
+    standalone: false
 })
 export class ObjectRecordDetailsTab implements OnInit {
 
@@ -28,6 +29,11 @@ export class ObjectRecordDetailsTab implements OnInit {
      */
     public expanded: boolean = true;
 
+    /**
+     * set if tab shoudl be collapsable
+     */
+    public collapsable: boolean = true;
+
     constructor(public metadata: metadata, public model: model, public language: language) {
     }
 
@@ -37,6 +43,10 @@ export class ObjectRecordDetailsTab implements OnInit {
     public ngOnInit() {
         if (this.componentconfig.collapsed) {
             this.expanded = false;
+        }
+
+        if (this.componentconfig.notcollapsable) {
+            this.collapsable = false;
         }
     }
 
@@ -68,6 +78,10 @@ export class ObjectRecordDetailsTab implements OnInit {
      * this is mainly driven by the required model state
      */
     get hidden() {
+        // check that we have acl access
+        if(this.componentconfig.acl && !this.model.checkAccess(this.componentconfig.acl)) return true;
+
+        // check that we have model state access
         return (this.componentconfig.requiredmodelstate && !this.model.checkModelState(this.componentconfig.requiredmodelstate));
     }
 }

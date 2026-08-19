@@ -27,7 +27,8 @@ import { Clipboard } from '@angular/cdk/clipboard';
         '.slds-is-selected td { background-color: transparent; border-width: 2px 2px 0 2px !important; padding-top:calc(0.25rem - 1px);}',
         '.slds-is-selected td.hl7-first-col { border-left:2px solid #e5e5e5; padding-left:calc(0.5rem - 2px)}',
         '.slds-is-selected td.hl7-last-col { border-right:2px solid #e5e5e5;padding-right:calc(0.5rem - 2px)}',
-    ]
+    ],
+    standalone: false
 })
 export class HL7ManagerRule {
 
@@ -61,7 +62,7 @@ export class HL7ManagerRule {
 
     public toggleActive( active: boolean ) {
         this.rule.active = active;
-        this.model.setField('active', active );
+        this.model.setField('active', active);
         this.model.save(true);
         return;
     }

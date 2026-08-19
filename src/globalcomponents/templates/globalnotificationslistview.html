@@ -70,6 +70,11 @@
                 </th>
                 <th scope="col">
                     <div class="slds-truncate slds-p-around--x-small">
+                        <system-label label="LBL_TEXT"></system-label>
+                    </div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate slds-p-around--x-small">
                         <system-label label="LBL_CREATED_BY"></system-label>
                     </div>
                 </th>
@@ -98,6 +103,7 @@
                         <system-label *ngSwitchCase="'change'" label="LBL_CHANGE"></system-label>
                         <system-label *ngSwitchCase="'delete'" label="LBL_DELETION"></system-label>
                         <system-label *ngSwitchCase="'reminder'" label="LBL_REMINDER"></system-label>
+                        <system-label *ngSwitchCase="'generic'" label="LBL_TEXT"></system-label>
                         <system-label *ngSwitchDefault label="LBL_NOT_SET"></system-label>
                     </div>
                 </td>
@@ -111,7 +117,12 @@
                         {{notification.bean_name}}
                     </div>
                 </td>
-                <td system-model-popover [id]="notification.created_by_name" module="Users" [system-title]="notification.created_by_name">
+                <td [system-title]="notification.notification_text">
+                    <div class="slds-truncate">
+                        {{notification.notification_text}}
+                    </div>
+                </td>
+                <td system-model-popover [id]="notification.created_by" module="Users" [system-title]="notification.created_by_name">
                     <div class="slds-truncate">
                         {{notification.created_by_name}}
                     </div>

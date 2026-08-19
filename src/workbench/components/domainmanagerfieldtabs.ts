@@ -18,7 +18,8 @@ import {domainmanager} from '../services/domainmanager.service';
  */
 @Component({
     selector: 'domain-manager-field-tabs',
-    templateUrl: '../templates/domainmanagerfieldtabs.html'
+    templateUrl: '../templates/domainmanagerfieldtabs.html',
+    standalone: false
 })
 export class DomainManagerFieldTabs {
 
@@ -39,7 +40,7 @@ export class DomainManagerFieldTabs {
     }
 
     get domainfields() {
-        return this.domainmanager.domainfields;
+        return this.domainmanager.domainfields();
     }
 
     get currentField() {

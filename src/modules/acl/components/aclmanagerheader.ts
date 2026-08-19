@@ -7,10 +7,15 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: 'acl-manager-header',
     templateUrl: '../templates/aclmanagerheader.html',
+    standalone: false
 })
 export class ACLManagerHeader {
 
     @Input() displaylabel: string = '';
+
+    @Input() displayicon: string;
+
+    @Input() displaymodule: string = 'SpiceACLObjects';
 
     constructor(public language: language) {
 

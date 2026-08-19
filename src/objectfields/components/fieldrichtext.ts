@@ -21,6 +21,7 @@ declare var _;
 @Component({
     selector: 'field-richtext',
     templateUrl: '../templates/fieldrichtext.html',
+    standalone: false
 })
 export class fieldRichText extends fieldGeneric implements OnInit {
     /**
@@ -127,22 +128,6 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         if (id) {
             this.model.setField(this.stylesheetField, id);
         }
-    }
-
-    /**
-     * a getter for the value bound top the model
-     */
-    get value() {
-        return this.model.getField(this.fieldname);
-    }
-
-    /**
-     * a setter that returns the value to the model and triggers the validation
-     *
-     * @param val the new value
-     */
-    set value(val) {
-        this.model.setField(this.fieldname, val);
     }
 
     /**
@@ -304,13 +289,13 @@ export class fieldRichText extends fieldGeneric implements OnInit {
 
     public setStylesheetField() {
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
-        if (!_.isEmpty(fieldDefs.stylesheet_id_field)) {
+        if (fieldDefs && !_.isEmpty(fieldDefs.stylesheet_id_field)) {
             this.stylesheetField = fieldDefs.stylesheet_id_field;
         }
     }
 
     public setStylesheetsToUse() {
-        this.useStylesheets = !_.isEmpty(this.stylesheetField) && !_.isEmpty(this.stylesheets);
+        this.useStylesheets = !_.isEmpty(this.stylesheets);
         if (this.useStylesheets) {
             if (this.stylesheets.length === 1) {
                 this.stylesheetToUse = this.stylesheets[0].id;

@@ -15,7 +15,8 @@ declare var _: any;
 @Component({
     selector: 'spice-importer-fixed',
     templateUrl: '../templates/spiceimporterfixed.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 
 

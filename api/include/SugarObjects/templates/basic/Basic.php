@@ -35,8 +35,12 @@
 ********************************************************************************/
 namespace SpiceCRM\includes\SugarObjects\templates\basic;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 
+/**
+ * @deprecated
+ * Will be removed 2026.01.001
+ */
 class Basic extends SpiceBean
 {
     /** 

@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\SpiceTemplateCompiler;
 
@@ -34,14 +8,18 @@ use DateTime;
 use DateTimeZone;
 use DOMDocument;
 use DOMXPath;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\extensions\includes\GenerativeAI\GenerativeAIAgent;
+use SpiceCRM\extensions\includes\GenerativeAI\GenerativeAIHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SystemTemplateFunctions;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -133,17 +111,32 @@ class Compiler
      */
     public $idsOfParentTemplates = [];
 
-    public function compile($txt, $bean = null, $lang = null, array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null, $bodyContentOnly = false)
+    public function compile($txt, $bean = null, $lang = null, ?array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null, $bodyContentOnly = false, $headItems = [])
     {
         $this->additionalValues = $additionalValues;
         $this->lang = empty( $lang ) ? AuthenticationController::getInstance()->getCurrentUser()?->getPreference('language') : $lang;
         if ( empty( $this->lang )) $this->lang = 'de_DE';
-        $this->app_list_strings = SpiceUtils::returnAppListStringsLanguage($lang); // get doms corresponding to template language
+
+        $this->loadEnumTranslations($lang);
 
         $dom = new DOMDocument();
 
         #$html = preg_replace("/\n|\r|\t/", "", html_entity_decode($txt, ENT_QUOTES));
         $dom->loadHTML('<?xml encoding="utf-8"?>' . html_entity_decode($txt, ENT_QUOTES));
+
+        preg_match_all('/<img[^>]+src="([^"]*)"/i', $txt, $matches);
+
+        # escaping the ampersands and ensuring the proper img URL encoding
+        $fixedImgSources = [];
+        foreach ($matches[1] as $src) {
+            $fixedSrc = str_replace('&', '&amp;', $src);
+            $fixedImgSources[] = $fixedSrc;
+        }
+
+        $tags = $dom->getElementsByTagName('img');
+        foreach ($tags as $index => $tag) {
+            $tag->setAttribute('src', $fixedImgSources[$index]);
+        }
 
         // handle the beans array
         $beans = ['bean' => $bean];
@@ -160,6 +153,10 @@ class Compiler
             $additionalStyleId = !$additionalStyleId ? [] : [$additionalStyleId];
         }
 
+        // add additonal Head Items
+        foreach ($headItems as $headItem) $this->addHeadItem($headItem);
+
+        // add addtional style items
         foreach ($additionalStyleId as $id) $this->addStyleTag($id);
 
         if ($bodyContentOnly) {
@@ -167,6 +164,17 @@ class Compiler
         } else {
             return $this->doc->saveHTML();
         }
+    }
+
+    /**
+     * load enum translations
+     * @param string|null $lang
+     * @return void
+     * @throws \Exception
+     */
+    private function loadEnumTranslations(?string $lang): void
+    {
+        $this->app_list_strings = SpiceUtils::returnAppListStringsLanguage($lang);
     }
 
     /**
@@ -198,6 +206,35 @@ class Compiler
         $styleElement->appendChild($typeAttr);
 
         $head->appendChild($styleElement);
+    }
+
+    /**
+     * add attributes to the header
+     *
+     * headitem needs to have type and optional content
+     * and an array of attributes
+     *
+     * @return void
+     * @throws \Exception
+     */
+    private function addHeadItem($headItem): void
+    {
+
+        $head = $this->root->getElementsByTagName('head')[0];
+
+        if (!$head) {
+            $head = $this->doc->createElement('head');
+            $this->doc->appendChild($head);
+        }
+
+        $headElement = $this->doc->createElement($headItem['type'], html_entity_decode($headItem['content'], ENT_QUOTES));
+        foreach ($headItem['attrs'] as $attrName => $attrValue) {
+            $addAttr = $this->doc->createAttribute($attrName);
+            $addAttr->value = $attrValue;
+            $headElement->appendChild($addAttr);
+        }
+
+        $head->appendChild($headElement);
     }
 
     /**
@@ -297,39 +334,56 @@ class Compiler
                     else if($node->getAttribute('data-spicefor')){
                         $spicefor = $node->getAttribute('data-spicefor');
 
-                        // CR1000360
-                        // split looking for pipes
-                        $attributeParts = preg_split("/(\|)/", $spicefor);
-                        $countParts = count($attributeParts);
-                        $params = [];
+                        // check if we have a curly brackets statement
+                        $matches = [];
+                        $matched = preg_match("/{(.*?)}/", $spicefor,  $matches);
+                        if($matched) {
+                            $linkedBeans = $this->handleSubstitution($matches[1], $beans);
+                            $forArray = explode(" as ", $spicefor);
+                        } else {
+                            // CR1000360
+                            // split looking for pipes
+                            $attributeParts = preg_split("/(\|)/", $spicefor);
+                            $countParts = count($attributeParts);
+                            $params = [];
 
-                        // scenario 1: we have 1 parts only. This means NO additional parameters
-                        // $attributeParts[0] = bean.linkname as linkedbean (the full haystack returned when no match)
-                        if($countParts == 1){
-                            $forArray = explode(" as ", $attributeParts[0]);
+                            // scenario 1: we have 1 parts only. This means NO additional parameters
+                            // $attributeParts[0] = bean.linkname as linkedbean (the full haystack returned when no match) or
+                            // $attributeParts[0] = func.functionname as function (a template function to be called)
+                            if ($countParts == 1) {
+                                $forArray = explode(" as ", $attributeParts[0]);
+                            }
+
+                            // scenario 2: we have 3 parts. This means additional parameters
+                            // CR1000360 check on params (like filter)
+                            // $attributeParts[0] = bean.linkname | func.functionname
+                            // $attributeParts[1] = some_urlencode_sring (the string between the pipes)
+                            // $attributeParts[2] = as linkedbean
+                            if ($countParts == 3) {
+                                // string " as linkedbean" to "linkedbean"
+                                $attributeParts[2] = substr($attributeParts[2], 4, strlen($attributeParts[2]));
+                                $forArray = [$attributeParts[0], $attributeParts[2]];
+                                $params = $this->parsePipeToArray($attributeParts[1]);
+                            }
+
+                            if (str_starts_with($forArray[0], 'value.') && $this->additionalValues[explode('.', $forArray[0])[1]]) {
+                                $linkedBeans = $this->additionalValues[explode('.', $forArray[0])[1]];
+                            } elseif (str_starts_with($forArray[0], 'func.')) {
+                                $tplFunctionName = explode('.', $forArray[0])[1];
+                                $linkedBeans = $this->doFunction($tplFunctionName, '', $beans) ;
+                            }
+                            else {
+                                $linkedBeans = $this->getLinkedBeans($forArray[0], NULL, $beans, $params); // CR1000360 added $params
+                            }
                         }
-
-                        // scenario 2: we have 3 parts. This means additional parameters
-                        // CR1000360 check on params (like filter)
-                        // $attributeParts[0] = bean.linkname
-                        // $attributeParts[1] = some_urlencode_sring (the string between the pipes)
-                        // $attributeParts[2] = as linkedbean
-                        if($countParts == 3){
-                            // string " as linkedbean" to "linkedbean"
-                            $attributeParts[2] = substr($attributeParts[2], 4, strlen($attributeParts[2]));
-                            $forArray = [$attributeParts[0], $attributeParts[2]];
-                            $params = $this->parsePipeToArray($attributeParts[1]);
-                        }
-
-                        $linkedBeans = $this->getLinkedBeans($forArray[0], NULL, $beans, $params); // CR1000360 added $params
                         foreach ($linkedBeans as $index => $linkedBean) {
                             // set the params for teh first or last entry
                             $params = [];
                             if( $index === 0 ) $params[] = 'data-spicefor-first';
                             if ( $index === count($linkedBeans) - 1) $params[] = 'data-spicefor-last';
                             if ( $index > 0 and $index < count($linkedBeans) - 1 ) $params[] = 'data-spicefor-inner';
-                            if ( $index % 2 === 0 ) $params[] = 'data-spicefor-even';
-                            if ( $index % 2 === 1 ) $params[] = 'data-spicefor-odd';
+                            if ( (int)$index % 2 === 0 ) $params[] = 'data-spicefor-even';
+                            if ( (int)$index % 2 === 1 ) $params[] = 'data-spicefor-odd';
 
                             $spiceforParent = ( isset( $beans['spicefor'] ) ? $beans['spicefor'] : null );
                             $elements[] = $this->createNewElement(
@@ -338,11 +392,12 @@ class Compiler
                                     $forArray[1] => $linkedBean,
                                     'spicefor' => new SpiceFor([
                                         'index' => $index,
+                                        'index_one_based' => $index + 1,
                                         'first' => ( $index === 0 ),
                                         'last' => ( $index === count( $linkedBeans ) - 1 ),
                                         'inner' => ( $index > 0 and $index < count( $linkedBeans ) - 1 ),
-                                        'even' => ( $index % 2 === 0 ),
-                                        'odd' => ( $index % 2 === 1 ),
+                                        'even' => ( (int)$index % 2 === 0 ),
+                                        'odd' => ( (int)$index % 2 === 1 ),
                                         'parent' => $spiceforParent,
                                         'total' => count( $linkedBeans )
                                     ])
@@ -398,15 +453,71 @@ class Compiler
                         $node = $this->parseRSSFeed($node);
 
                         $elements[] = $this->createNewElement($node, $beans);
+                    } else if ($node->getAttribute('data-media-article')) {
+
+                        $node = $this->parseMediaArticle($node);
+                        $elements[] = $this->createNewElement($node, $beans);
                     } else {
                         $elements[] = $this->createNewElement($node, $beans);
                     }
                     break;
-                default:
-                    die(get_class($node));
             }
         }
         return $elements;
+    }
+
+    /**
+     * read the media article content and fill in the part elements with its content
+     * @param \DOMElement $node
+     * @return \DOMElement
+     */
+    private function parseMediaArticle(\DOMElement $node)
+    {
+        $article = BeanFactory::getBean('MediaArticles', $node->getAttribute('data-media-article'));
+
+        if (!$article) return $node;
+
+        $publicUrl = SpiceConfig::getInstance()->config['mediafiles']['public_url'] ?? 'https://cdn.spicecrm.io/';
+
+        $finder = new DomXPath($node->ownerDocument);
+
+        $mediaFiles = null;
+
+        $articleParts = $finder->query("//*[@data-media-article-part]", $node);
+
+        foreach ($articleParts as $articlePart) {
+
+            [$scope, $value] = explode('.', $articlePart->getAttribute('data-media-article-part'));;
+
+            switch ($scope) {
+                case 'article':
+                    foreach ($articlePart->childNodes as $childNode) {
+                        if (get_class($childNode) != 'DOMElement') continue;
+                        $childNode->nodeValue = $article->$value;
+                    }
+                    break;
+                case 'media_article_image_size':
+
+                    # load the media files when needed
+                    if (!$mediaFiles) {
+                        $mediaFiles = $article->get_linked_beans('mediafiles');
+                    }
+
+                    foreach ($mediaFiles as $mediaFile) {
+                        if ($mediaFile->media_article_image_size != $value) continue;
+
+                        foreach ($articlePart->getElementsByTagName('img') as $childNode) {
+                            $childNode->setAttribute('src', "$publicUrl$mediaFile->id");
+                        }
+
+                        break;
+                    }
+                    break;
+
+            }
+        }
+
+        return $node;
     }
 
     /**
@@ -556,13 +667,13 @@ class Compiler
                     case 'data-spicefor-odd':
                         if(in_array($attribute->nodeName, $params)){
                             $newAttribute = $this->doc->createAttribute($attribute->nodeName);
-                            $newAttribute->value = $this->compileblock($attribute->nodeValue, $beans, $this->lang);
+                            $newAttribute->value = htmlspecialchars($this->compileblock($attribute->nodeValue, $beans, $this->lang));
                             $newElement->appendChild($newAttribute);
                         }
                         break;
                     default:
                         $newAttribute = $this->doc->createAttribute($attribute->nodeName);
-                        $newAttribute->value = $this->compileblock($attribute->nodeValue, $beans, $this->lang);
+                        $newAttribute->value = htmlspecialchars($this->compileblock($attribute->nodeValue, $beans, $this->lang));
                         $newElement->appendChild($newAttribute);
                 }
             }
@@ -592,6 +703,13 @@ class Compiler
         }
         // if we do not find it return an empty object
         if (!$obj) return [];
+
+        // if we have only part[0] => then we have an array of additional beans
+        // or some other object that we want to use in a template
+        if(count($parts) == 1){
+            if(!is_array($beans[$parts[0]])) return [];
+            return $beans[$parts[0]];
+        }
 
         // check that the field is a link
         if ($obj->field_defs[$parts[1]]['type'] != 'link') return [];
@@ -806,6 +924,9 @@ class Compiler
             case 'root_template':
                 $obj = BeanFactory::getBean($this->rootTemplate->_module, $this->rootTemplate->id);
                 break;
+            case 'ai':
+                $obj = (object)[];
+                break;
             default:
                 $obj = $beans[$object];
         }
@@ -813,9 +934,22 @@ class Compiler
         return $obj ?: false;
     }
 
-    public function compileblock($txt, $beans = [], $lang = 'de_DE')
+    /**
+     * compile the HTML block and return the results
+     * @param $txt
+     * @param array $beans
+     * @param string|null $lang
+     * @param bool $standalone if true, call initial functions before compiling e.g. loadEnumTranslations
+     * @return string
+     * @throws \Exception
+     */
+    public function compileblock($txt, array $beans = [], ?string $lang = 'en_us', bool $standalone = false): string
     {
         if (empty($txt)) return '';
+
+        if ($standalone) {
+            $this->loadEnumTranslations($lang);
+        }
 
         $resultText = '';
         $remainingText = $txt;
@@ -865,6 +999,29 @@ class Compiler
         return $currentValue;
     }
 
+    /**
+     * generate an AI content and return the result text
+     * @param string $function
+     * @param string $param
+     * @param SpiceBean|null $bean
+     * @return string
+     * @throws Exception
+     */
+    private function generateAIContent(string $function, string $param, ?SpiceBean $bean): string
+    {
+        switch ($function) {
+            case 'parsePrompt':
+                $idOrName = str_replace("'", '', $param);
+                $agent = new GenerativeAIAgent($idOrName, $this->lang, $bean);
+                return $agent->submit()->parts[0]->text;
+            case 'generateContent':
+                $text = $param;
+                return GenerativeAIHandler::getInstance()->generateContent($text)->parts[0]->text;
+        }
+
+        throw new Exception('Unknown AI Function');
+    }
+
     function getValueForCompileblock($m, $beans, $raw = false ) {
 
         # quoted string has nothing to parse. Just return the string as is
@@ -887,6 +1044,10 @@ class Compiler
         // get the object
         $obj = $this->getObject( $objectname, $beans );
         if ( !$obj ) return null;
+
+        if ($objectname == 'ai') {
+            return $this->generateAIContent($parts[1], $matches[3], $beans['bean']);
+        }
 
         if ( $objectname === 'func' ) {
             return $this->doFunction( $parts[1], $matches[3], $beans );
@@ -964,21 +1125,21 @@ class Compiler
                         }
                         break;
                     case 'time':
+                        $value = '';
                         if (!empty($obj->{$part})) {
+                            $value = $obj->{$part};
                             //set to user preferences format
-                            $userTimezone = new DateTimeZone(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timezone"));
-                            $gmtTimezone = new DateTimeZone('GMT');
-                            $myDateTime = new DateTime($obj->{$part}, $gmtTimezone);
-                            $offset = $userTimezone->getOffset($myDateTime);
-                            $myInterval = DateInterval::createFromDateString((string)$offset . 'seconds');
-                            $myDateTime->add($myInterval);
-                            $value = $myDateTime->format(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"));
-                        } else {
-                            $value = '';
+//                            $userTimezone = new DateTimeZone(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timezone"));
+//                            $gmtTimezone = new DateTimeZone('GMT');
+//                            $myDateTime = new DateTime($obj->{$part}, $gmtTimezone);
+//                            $offset = $userTimezone->getOffset($myDateTime);
+//                            $myInterval = DateInterval::createFromDateString((string)$offset . 'seconds');
+//                            $myDateTime->add($myInterval);
+//                            $value = $myDateTime->format(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"));
                         }
                         break;
                     case 'currency':
-                        // $currency = \SpiceCRM\data\BeanFactory::getBean('Currencies');
+                        // $currency = \SpiceCRM\includes\SpiceBeans\BeanFactory::getBean('Currencies');
                         $value = $raw ? $obj->{$part} : SpiceUtils::currencyFormatNumber($obj->{$part}, ['symbol_space' => true]);
                         break;
                     case 'html':

@@ -8,7 +8,8 @@ import {model} from "../../services/model.service";
 
 @Component({
     selector: 'object-help-text-modal',
-    templateUrl: '../templates/objecthelptextmodal.html'
+    templateUrl: '../templates/objecthelptextmodal.html',
+    standalone: false
 })
 
 /**

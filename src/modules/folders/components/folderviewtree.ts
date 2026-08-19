@@ -14,7 +14,8 @@ declare var _: any;
 
 @Component({
     selector: "folder-view-tree",
-    templateUrl: "../templates/folderviewtree.html"
+    templateUrl: "../templates/folderviewtree.html",
+    standalone: false
 })
 
 export class FolderViewTree implements OnInit {
@@ -31,7 +32,7 @@ export class FolderViewTree implements OnInit {
         if ( val === this._selectedItem ) return;
         this._selectedItem = val;
         this.setAggregate( val );
-        this.model.setField('folder_id', val );
+        this.model.setField('folder_id', val);
     }
 
     /*

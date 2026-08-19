@@ -13,7 +13,8 @@ import {userpreferences} from '../../services/userpreferences.service';
 
 @Component({
     selector: 'field-currency',
-    templateUrl: '../templates/fieldcurrency.html'
+    templateUrl: '../templates/fieldcurrency.html',
+    standalone: false
 })
 export class fieldCurrency extends fieldGeneric implements OnInit {
 
@@ -72,6 +73,10 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
 
         // check if we should display the caluclator
         if(this.fieldconfig.withcalculator) this.displayCalculator = true;
+    }
+
+    get alignmentClass(){
+        return this.fieldconfig?.leftalign ? '' : 'slds-grid--align-end';
     }
 
    /**

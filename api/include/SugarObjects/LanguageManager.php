@@ -36,8 +36,8 @@
 
 namespace SpiceCRM\includes\SugarObjects;
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 /**
  * Language files management
@@ -255,5 +255,25 @@ class LanguageManager
     public static function checkLabelExists(string $label) {
         $db = DBManagerFactory::getInstance();
         return $db->getOne("SELECT id FROM (select id, name from syslanguagelabels UNION select id, name from syslanguagecustomlabels) tblabels WHERE name='$label'");
+    }
+
+    /**
+     * Returns all the labels and they're IDs.
+     * Basically just the contents of syslanguagelabels and syslanguagecustomlabels.
+     *
+     * @return array
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
+     */
+    public static function getAllLabels(): array
+    {
+        $labels = [];
+        $db = DBManagerFactory::getInstance();
+
+        $query = "SELECT * FROM syslanguagelabels UNION SELECT * FROM syslanguagecustomlabels";
+        $res = $db->query($query);
+        while ($label = $db->fetchByAssoc($res)) {
+            $labels[$label['id']] = strtoupper($label['name']);
+        }
+        return $labels;
     }
 }

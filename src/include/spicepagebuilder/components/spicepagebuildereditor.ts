@@ -8,6 +8,7 @@ import {
     DividerI,
     HTMLCodeI,
     ImageI,
+    ImageUrlI,
     RSSI,
     SectionI,
     SpacerI,
@@ -20,13 +21,14 @@ import {
 @Component({
     selector: 'spice-page-builder-editor',
     templateUrl: '../templates/spicepagebuildereditor.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderEditor {
     /**
      * hold the element to be edited
      */
-    public element: SectionI | TextI | ImageI | ButtonI | DividerI | SpacerI | HTMLCodeI | RSSI | any;
+    public element: SectionI | TextI | ImageI | ImageUrlI | ButtonI | DividerI | SpacerI | HTMLCodeI | RSSI | any;
     /**
      * emit the changes to the element
      */
@@ -35,6 +37,12 @@ export class SpicePageBuilderEditor {
      * holds a reference to the component for destroy
      */
     public self: any = {};
+
+    /**
+     * set to grow the modal by default
+     */
+    public grow: boolean = true;
+
     /**
      * code container reference to beatify
      */

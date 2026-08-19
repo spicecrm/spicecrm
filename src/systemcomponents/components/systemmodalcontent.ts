@@ -9,9 +9,14 @@ import {Component, Input} from '@angular/core';
     host: {
         '[class]': 'this.contentclass'
     },
-    styles: [':host {position:relative}']
+    styles: [':host {position:relative}'],
+    standalone: false
 })
 export class SystemModalContent {
+    /**
+     * sets the scrollable on Y and X axis
+     */
+    @Input() public scrollableXY: boolean = false;
 
     /**
      * sets the margin for the content

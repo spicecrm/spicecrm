@@ -19,6 +19,16 @@
     </div>
     <div class="slds-grid">
         <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
+            <system-input-package [disabled]="readonly" [(ngModel)]="relationship.package"/>
+        </div>
+        <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
+            <system-input-version [disabled]="readonly" [(ngModel)]="relationship.version"/>
+        </div>
+    </div>
+    <div class="slds-grid">
+        <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
             <label class="slds-form-element__label">
                 <system-label label="LBL_LHS_DICTIONARYDEFINITION"></system-label>
             </label>
@@ -40,21 +50,17 @@
             <label class="slds-form-element__label">
                 <system-label label="LBL_LHS_SYSDICTIONARYITEM"></system-label>
             </label>
-            <div class="slds-select_container">
-                <select [disabled]="readonly" [(ngModel)]="relationship.lhs_sysdictionaryitem_id" class="slds-select">
-                    <option *ngFor="let item of lhs_items" [value]="item.id">{{item.name}}</option>
-                </select>
-            </div>
+            <system-select system-select-id-only [disabled]="readonly" [(ngModel)]="relationship.lhs_sysdictionaryitem_id" >
+                <system-select-option *ngFor="let item of lhs_items" [value]="item.id" [display]="item.name"/>
+            </system-select>
         </div>
         <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
             <label class="slds-form-element__label">
                 <system-label label="LBL_RHS_SYSDICTIONARYITEM"></system-label>
             </label>
-            <div class="slds-select_container">
-                <select [disabled]="readonly" [(ngModel)]="relationship.rhs_sysdictionaryitem_id" class="slds-select">
-                    <option *ngFor="let item of rhs_items" [value]="item.id">{{item.name}}</option>
-                </select>
-            </div>
+            <system-select system-select-id-only [disabled]="readonly" [(ngModel)]="relationship.rhs_sysdictionaryitem_id" >
+                <system-select-option *ngFor="let item of rhs_items" [value]="item.id" [display]="item.name"/>
+            </system-select>
         </div>
     </div>
     <div class="slds-grid">
@@ -94,14 +100,13 @@
         </div>
     </div>
     <div class="slds-grid slds-p-vertical--xx-small">
-        <div class="slds-size--1-of-4 slds-form-element">
+        <div class="slds-size--1-of-2 slds-form-element" system-title="LBL_LHS_DUPLICATEMERGE">
             <system-checkbox [disabled]="readonly" [(ngModel)]="lhs_duplicatemerge"><system-label label="LBL_LHS_DUPLICATEMERGE"></system-label></system-checkbox>
         </div>
-        <div class="slds-size--1-of-4"></div>
-        <div class="slds-size--1-of-4 slds-p-left--xx-small slds-form-element">
+        <div class="slds-size--1-of-4 slds-p-left--xx-small slds-form-element" system-title="LBL_RHS_LINKDEFAULT">
             <system-checkbox [disabled]="readonly" [(ngModel)]="rhs_linkdefault"><system-label label="LBL_RHS_LINKDEFAULT"></system-label></system-checkbox>
         </div>
-        <div class="slds-size--1-of-4 slds-p-left--xx-small slds-form-element">
+        <div class="slds-size--1-of-4 slds-p-left--xx-small slds-form-element" system-title="LBL_RHS_DUPLICATEMERGE">
             <system-checkbox [disabled]="readonly" [(ngModel)]="rhs_duplicatemerge"><system-label label="LBL_RHS_DUPLICATEMERGE"></system-label></system-checkbox>
         </div>
     </div>
@@ -128,6 +133,25 @@
                     <option value="asc"><system-label label="LBL_ASCENDING"/></option>
                     <option value="desc"><system-label label="LBL_DESCENDING"/></option>
                 </select>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid">
+        <div class="slds-size--1-of-2"></div>
+        <div class="slds-size--1-of-4 slds-p-left--xx-small slds-form-element">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_RELATIONSHIP_ROLE_COLUMN"></system-label>
+            </label>
+            <system-select system-select-id-only [disabled]="readonly" [(ngModel)]="relationship.relationship_role_column" >
+                <system-select-option *ngFor="let item of rhs_items" [value]="item.id" [display]="item.name"/>
+            </system-select>
+        </div>
+        <div class="slds-size--1-of-4 slds-p-left--xx-small slds-form-element">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_RELATIONSHIP_ROLE_COLUMN_VALUE"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <input [disabled]="readonly || !relationship.relationship_role_column" class="slds-input" [(ngModel)]="relationship.relationship_role_column_value"/>
             </div>
         </div>
     </div>

@@ -1,42 +1,15 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\KReports;
 
 use DateInterval;
 use DateTime;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\authentication\AuthenticationController;
 
 // require_once('modules/ACL/ACLController.php');
 
@@ -139,7 +112,7 @@ class KReportQuery
 
     function build_query_strings()
     {
-        // if (\SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'mssql' || \SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'oci8')
+        // if (\SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance()->dbType == 'mssql' || \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance()->dbType == 'oci8')
         $this->check_groupby($this->additionalGroupBy);
 
         $this->build_path();
@@ -469,7 +442,7 @@ class KReportQuery
     {
         // require_once('include/utils.php');
         global $app_list_strings;
-$db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
+$db = \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance();
         /*
          * Block to build the selct clause with all fields selected
          */
@@ -482,7 +455,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
 
         // build select
         // 2016-11-23 added count select stzring into the swicth for mssql and oci8
-        if ($this->isGrouped && !\SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config['KReports']['olderMySqlVersion'] /* && (\SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'mssql' || \SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'oci8')*/) {
+        if ($this->isGrouped && !\SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config['KReports']['olderMySqlVersion'] /* && (\SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance()->dbType == 'mssql' || \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance()->dbType == 'oci8')*/) {
             $this->selectString = 'SELECT MIN(' . $this->rootGuid . '.id) as sugarRecordId';
             $this->countSelectString = 'SELECT MIN(' . $this->rootGuid . '.id) as sugarRecordId';
         }
@@ -522,7 +495,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
             foreach ($unionJoinSegments as $thisAlias => $thisJoinIdData) {
                 if ($thisJoinIdData['unionid'] == $this->unionId) {
                     // this is for this join ... so we select the id
-                    if ($this->isGrouped && !\SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config['KReports']['olderMySqlVersion'] /*&& (\SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'mssql' || \SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'oci8')*/)
+                    if ($this->isGrouped && !\SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config['KReports']['olderMySqlVersion'] /*&& (\SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance()->dbType == 'mssql' || \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance()->dbType == 'oci8')*/)
                         $this->selectString .= ', MIN(' . $thisAlias . '.id) as ' . $thisAlias . 'id';
                     else
                     $this->selectString .= ', ' . $thisAlias . '.id as "' . $thisAlias . 'id"';
@@ -547,7 +520,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 // 2011-12-29 check if Jointype is set
                 //if( $joinsegment['jointype'] != '')
                 //{
-                if ($this->isGrouped && (\SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'mssql' || \SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'oci8'))
+                if ($this->isGrouped && (\SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance()->dbType == 'mssql' || \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance()->dbType == 'oci8'))
                     $this->selectString .= ', MIN(' . $joinsegment['alias'] . '.id) as ' . $joinsegment['alias'] . 'id';
                 else
                     $this->selectString .= ', ' . $joinsegment['alias'] . '.id as "' . $joinsegment['alias'] . 'id"';
@@ -717,7 +690,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
     {
         global $app_list_strings;
 $current_user = \SpiceCRM\includes\authentication\AuthenticationController::getInstance()->getCurrentUser();
-$db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
+$db = \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance();
 
         /*
          * Block to build the Where Clause
@@ -1340,6 +1313,10 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 $todayDate = date('Y-m-d', time());
                 $thisWhereString .= ' >= \'' . $todayDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' <= \'' . $todayDate . ' 23:59:59\'';
                 break;
+            case 'yesterday':
+                $yesterdayDate = date('Y-m-d', time() - 86400);
+                $thisWhereString .= ' >= \'' . $yesterdayDate . ' 00:00:00\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' <= \'' . $yesterdayDate . ' 23:59:59\'';
+                break;
             case 'past':
                 $thisWhereString .= ' <= \'' . date('Y-m-d H:i:s', time()) . '\'';
                 break;
@@ -1718,7 +1695,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
         }
         if ($this->isGrouped)
             foreach ($this->listArray as $listArrayIndex => $thisList) {
-                if ($thisList['groupby'] == 'no' && !\SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config['KReports']['olderMySqlVersion'] && /*(\SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'mssql' || \SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'oci8') &&*/ $this->evalSQLFunctions && ($thisList['sqlfunction'] == '' || $thisList['sqlfunction'] == '-'))
+                if ($thisList['groupby'] == 'no' && !\SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config['KReports']['olderMySqlVersion'] && /*(\SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance()->dbType == 'mssql' || \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance()->dbType == 'oci8') &&*/ $this->evalSQLFunctions && ($thisList['sqlfunction'] == '' || $thisList['sqlfunction'] == '-'))
                     $this->listArray[$listArrayIndex]['sqlfunction'] = 'MIN';
             }
     }
@@ -1726,7 +1703,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
     function build_groupby_string($additionalGroupBy = array())
     {
         global $app_list_strings;
-$db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
+$db = \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance();
 
         /*
          * Block to build the Group By Clause
@@ -1790,7 +1767,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
     function build_orderby_string()
     {
         global $app_list_strings;
-$db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
+$db = \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance();
 
         /*
          * Block to Build the Order by Clause
@@ -1882,19 +1859,20 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                         }
                     }
                 }
-            } else {
-                if ($this->isGrouped && (\SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'mssql' || \SpiceCRM\includes\database\DBManagerFactory::getInstance()->dbType == 'oci8') ) {
-                    if ($this->orderByFieldID)
-                        $this->orderbyString .= 'ORDER BY MIN(sugarRecordId) ASC';
-                    else
-                        $this->orderbyString .= 'ORDER BY MIN(' . $this->rootGuid . '.id) ASC';
-                } else {
-                    if ($this->orderByFieldID)
-                        $this->orderbyString .= 'ORDER BY sugarRecordId ASC';
-                    else
-                        $this->orderbyString .= 'ORDER BY ' . $this->rootGuid . '.id ASC';
-                }
             }
+//            else {
+//                if ($this->isGrouped && (\SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance()->dbType == 'mssql' || \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance()->dbType == 'oci8') ) {
+//                    if ($this->orderByFieldID)
+//                        $this->orderbyString .= 'ORDER BY MIN(sugarRecordId) ASC';
+//                    else
+//                        $this->orderbyString .= 'ORDER BY MIN(' . $this->rootGuid . '.id) ASC';
+//                } else {
+//                    if ($this->orderByFieldID)
+//                        $this->orderbyString .= 'ORDER BY sugarRecordId ASC';
+//                    else
+//                        $this->orderbyString .= 'ORDER BY ' . $this->rootGuid . '.id ASC';
+//                }
+//            }
             //else
             //    $this->orderbyString .= 'ORDER BY sugarRecordId';
         }
@@ -1920,7 +1898,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
      */
     private function where_field_grouping($grouping, $selectedMappings = array())
     {
-        $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
+        $db = \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance();
 
         $groupingValues = [];
         $groupingDetail = $db->fetchByAssoc($db->query("SELECT * FROM kreportgroupings WHERE id = '$grouping'"));
@@ -1944,7 +1922,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
      */
     private function where_field_grouping_other($grouping, $selectedMappings = array())
     {
-        $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
+        $db = \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance();
 
         $groupingValues = [];
         $groupingDetail = $db->fetchByAssoc($db->query("SELECT * FROM kreportgroupings WHERE id = '$grouping'"));
@@ -2047,7 +2025,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
 
     private function wrap_field_grouping($alias, $field, $grouping = '')
     {
-        $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
+        $db = \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance();
 
         $fieldVal = $alias . '.' . $field;
 

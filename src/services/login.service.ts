@@ -16,6 +16,7 @@ import {metadata} from './metadata.service';
 import {modelutilities} from "./modelutilities.service";
 import {backend} from "./backend.service";
 import {TokenObjectI} from "../globalcomponents/interfaces/globalcomponents.interfaces";
+import {socket} from "./socket.service";
 
 interface loginAuthDataIf {
     userName: string;
@@ -55,6 +56,10 @@ export class loginService {
      * to be pased to the login so the handler can identify based on the toekn
      */
     public oauthIssuer: string = '';
+    /**
+     * flag set if the user logs out
+     */
+    public loggedOut: boolean = false;
 
     constructor(
         public configurationService: configurationService,
@@ -64,6 +69,7 @@ export class loginService {
         public toast: toast,
         public helper: helper,
         public session: session,
+        public socket: socket,
         public broadcast: broadcast,
         public modelutilities: modelutilities,
         public modal: modal,
@@ -123,6 +129,7 @@ export class loginService {
                     this.session.authData.googleToken = response.access_token;
                     this.session.authData.obtainGDPRconsent = response.obtainGDPRconsent;
                     this.session.authData.canchangepassword = response.canchangepassword;
+                    this.session.authData.is_api_user = response.is_api_user;
                     this.session.authData.user = this.modelutilities.backendModel2spice('Users', response.user);
 
                     this.session.storeToken(this.authData.keepMeLoggedIn);
@@ -320,12 +327,18 @@ export class loginService {
      * broadcasts a an ebvenmt that sevrices can subscriber and listen to to cleanup and data that might occur
      */
     public logout(localonly: boolean = false) {
+
+        this.loggedOut = true;
+
         // check if we shoudl also logout on the server
         if(!localonly) {
             this.backend.deleteRequest('authentication/login', {session_id: this.session.authData.sessionId});
         }
         this.session.endSession();
         this.loader.reset();
+
+        // disconnect all sockets
+        this.socket.disconnectAll();
 
         // broadcast that the user loged out
         this.broadcast.broadcastMessage('logout');
@@ -339,7 +352,7 @@ export class loginService {
     providedIn: 'root'
 })
 export class loginCheck  {
-    constructor(public login: loginService, public session: session, public modal: modal, public router: Router, public loader: loader) {
+    constructor(public login: loginService, public session: session, public modal: modal, public router: Router, public loader: loader, private metadata: metadata) {
     }
 
     public canActivate(route, state) {
@@ -347,6 +360,7 @@ export class loginCheck  {
             if (state.url != '/') {
                 this.login.redirectUrl = state.url;
             }
+            this.metadata.initialRouteUrl = state.url;
             this.router.navigate(['/login']);
             return false;
         } else {

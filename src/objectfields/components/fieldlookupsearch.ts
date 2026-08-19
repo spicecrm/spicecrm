@@ -10,7 +10,7 @@ import {
     OnChanges,
     SimpleChanges,
     Renderer2,
-    OnDestroy
+    OnDestroy, ChangeDetectorRef
 } from '@angular/core';
 import {model} from '../../services/model.service';
 import {modellist} from '../../services/modellist.service';
@@ -26,7 +26,8 @@ import {Subscription} from "rxjs";
 @Component({
     selector: 'field-lookup-search',
     templateUrl: '../templates/fieldlookupsearch.html',
-    providers: [modellist]
+    providers: [modellist],
+    standalone: false
 })
 export class fieldLookupSearch implements OnInit, OnChanges, OnDestroy {
     /**
@@ -103,7 +104,7 @@ export class fieldLookupSearch implements OnInit, OnChanges, OnDestroy {
         this.searchTimeout = window.setTimeout(() => this.doSearch(), 500);
     }
 
-    constructor(public metadata: metadata, public model: model, public modellist: modellist, public language: language, public modal: modal, public renderer: Renderer2,) {
+    constructor(public metadata: metadata, public model: model, public modellist: modellist, public language: language, public modal: modal, public renderer: Renderer2, private cdRef: ChangeDetectorRef) {
     }
 
     /**
@@ -174,7 +175,9 @@ export class fieldLookupSearch implements OnInit, OnChanges, OnDestroy {
     public doSearch() {
         if (this.searchTerm !== '' && this.searchTerm !== this.modellist.searchTerm) {
             this.modellist.searchTerm = this.searchTerm;
-            this.modellist.getListData();
+            this.modellist.getListData().subscribe(() => {
+                this.cdRef.detectChanges();
+            });
         }
     }
 

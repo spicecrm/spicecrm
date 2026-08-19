@@ -10,7 +10,8 @@ import {metadata} from "../../services/metadata.service";
 @Component({
     selector: "system-button-icon",
     templateUrl: "../templates/systembuttonicon.html",
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SystemButtonIcon implements OnChanges {
 
@@ -32,12 +33,12 @@ export class SystemButtonIcon implements OnChanges {
     /**
      * override the size
      */
-    @Input() public size: ''|'large' | 'small' | 'x-small' | 'xx-small' = "";
+    @Input() public size: ''|'large' | 'small' | 'x-small' | 'xx-small' | 'medium' = "";
 
     /**
      * an optional color class: can be any of the avialable SLDS icon color classes
      */
-    @Input() public colorclass: 'slds-icon-text-default'|'slds-icon-text-success'|'slds-icon-text-warning'|'slds-icon-text-error'|'slds-icon-text-light';
+    @Input() public colorclass: 'slds-icon-text-default'|'slds-icon-text-success'|'slds-icon-text-warning'|'slds-icon-text-error'|'slds-icon-text-light'|'slds-icon-text-superlight';
 
     /**
      * a module name if the icon shoudl be loaded from teh metadata

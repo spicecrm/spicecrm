@@ -81,7 +81,7 @@
             </div>
         </div>
     </div>
-    <div class="slds-grid">
+    <div class="slds-grid" >
         <div class="slds-size--2-of-5 slds-p-horizontal--small slds-p-top--x-small slds-border--right">
             <div class="slds-tree_container" role="application" style="max-width: none;" class="dragboundary" cdkDropList (cdkDropListDropped)="drop($event)">
                 <div *ngFor="let currentComponentSetItem of getComponentSetItems()" class="slds-p-vertical--xx-small slds-grid slds-grid--align-spread slds-grid--vertical-align-center" (click)="selectItem(currentComponentSetItem)" [ngClass]="{'slds-theme--shade' : isSelected(currentComponentSetItem.id)}" cdkDrag cdkDragBoundary=".dragboundary">
@@ -108,7 +108,7 @@
                 </button>
             </div>
         </div>
-        <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-vertical--x-small">
+        <div system-to-bottom [marginBottom]="56" class="slds-size--3-of-5 slds-p-horizontal--small slds-p-vertical--x-small">
             <componentsetmanager-componentset-details *ngIf="selectedId" [module]="currentModule" [component]="selectedComponent"></componentsetmanager-componentset-details>
         </div>
     </div>

@@ -24,7 +24,8 @@ declare var moment: any;
     styles: [
         'table { border-bottom: none; }',
         'table tr:last-child td { border-bottom: none; }'
-    ]
+    ],
+    standalone: false
 })
 export class ObjectOptimisticLockingModal implements OnInit {
 
@@ -122,7 +123,7 @@ export class ObjectOptimisticLockingModal implements OnInit {
 
     public copyFields() {
         for ( let fieldname in this.conflicts ) {
-            if ( !this.fieldsToCopy[fieldname] ) this.model.setField( fieldname, this.conflicts[fieldname].value );
+            if ( !this.fieldsToCopy[fieldname] ) this.model.setField(fieldname, this.conflicts[fieldname].value);
         }
     }
 

@@ -2,24 +2,22 @@
 
 namespace SpiceCRM\includes\SpiceUI;
 
-use SpiceCRM\data\BeanFactory;
 use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFavorites\SpiceFavorites;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSActivityHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
-use stdClass;
 
 class SpiceUIRESTHandler
 {
@@ -1078,6 +1076,11 @@ class SpiceUIRESTHandler
         }
     }
 
+    /**
+     * @deprecated
+     * @return array
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
+     */
     public function getSelectTrees()
     {
         $return = [];
@@ -1090,6 +1093,12 @@ class SpiceUIRESTHandler
         return $return;
     }
 
+    /**
+     * @deprecated
+     * @param $id
+     * @return array
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
+     */
     public function getSelectTreeList($id)
     {
         $return = [];
@@ -1103,6 +1112,12 @@ class SpiceUIRESTHandler
         return $return;
     }
 
+    /**
+     * @deprecated
+     * @param $id
+     * @return array
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
+     */
     public function getSelectTree($id)
     {
         $return = [];
@@ -1118,6 +1133,12 @@ class SpiceUIRESTHandler
         return $return;
     }
 
+    /**
+     * @deprecated
+     * @param $cat
+     * @return array
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
+     */
     private function getSelectTreeChilds(&$cat)
     {
         $sql = "SELECT * FROM sysselecttree_fields 
@@ -1131,6 +1152,13 @@ class SpiceUIRESTHandler
         return $cat;
     }
 
+    /**
+     * @deprecated
+     * @param $selecttree
+     * @return bool
+     * @throws ForbiddenException
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
+     */
     public function setSelectTree($selecttree)
     {
         $this->checkAdmin();
@@ -1177,6 +1205,12 @@ class SpiceUIRESTHandler
         }
     }
 
+    /**
+     * @deprecated
+     * @param $tree
+     * @return bool
+     * @throws ForbiddenException
+     */
     public function setTree($tree)
     {
         $this->checkAdmin();
@@ -1280,62 +1314,33 @@ class SpiceUIRESTHandler
         $db = DBManagerFactory::getInstance();
         $navElements = [];
 
-        // admin only
         if ($current_user->is_admin) {
-            // load all groups sorted
-            $groups = $db->query("SELECT * FROM (SELECT id, name, label, sequence FROM sysuiadmingroups UNION ALL SELECT id, name, label, sequence FROM sysuicustomadmingroups) us ORDER by sequence");
-            while ($group = $db->fetchByAssoc($groups)) {
-                // get the components for the group
+            $globalGroups = $db->query("SELECT id, name, label, sequence FROM sysuiadmingroups ORDER BY sequence ASC");
+            $customGroups = $db->query("SELECT id, name, label, sequence FROM sysuicustomadmingroups ORDER BY sequence ASC");
+
+            $groups = [];
+            while ($group = $db->fetchByAssoc($globalGroups)) {
+                $groups[] = array_merge($group, ['scope' => 'global']);
+            }
+            while ($group = $db->fetchByAssoc($customGroups)) {
+                $groups[] = array_merge($group, ['scope' => 'custom']);
+            }
+
+            foreach ($groups as $group) {
                 $groupComponents = [];
-                $groupComponentsObjects = $db->query("SELECT * FROM (SELECT id, adminaction, sequence, component, componentconfig, admin_label, icon FROM sysuiadmincomponents WHERE admingroup='{$group['name']}' UNION ALL SELECT id, adminaction, sequence, component, componentconfig, admin_label, icon FROM sysuicustomadmincomponents  WHERE admingroup='{$group['name']}') gc ORDER BY sequence");
+                $groupComponentsObjects = $db->query("SELECT id, adminaction, sequence, component, componentconfig, admin_label, icon FROM sysuiadmincomponents WHERE admingroup='{$group['name']}' UNION ALL SELECT id, adminaction, sequence, component, componentconfig, admin_label, icon FROM sysuicustomadmincomponents WHERE admingroup='{$group['name']}' ORDER BY sequence ASC");
                 while ($groupComponent = $db->fetchByAssoc($groupComponentsObjects)) {
-                    // ugly but effective
-                    // ToDo: find a nice way to handle that
                     $groupComponent['componentconfig'] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"', '"'], html_entity_decode($groupComponent['componentconfig'])), true) ?: [];
-
-                    if ($groupComponent['component'] == 'AdministrationConfigurator') {
-                        $groupComponent['componentconfig']['fields'] = $this->getTableFieldTypes($groupComponent['componentconfig']['dictionary'], $groupComponent['componentconfig']['fields']);
-                    }
-
                     $groupComponents[] = $groupComponent;
                 }
-                // only add if we have any component
-                if (count($groupComponents) > 0) {
+
+                if (!empty($groupComponents)) {
                     $navElements[] = array_merge($group, ['groupcomponents' => $groupComponents]);
                 }
             }
         }
 
         return $navElements;
-    }
-
-    private function getTableFieldTypes(string $tableName, array $fields)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $dictionaryDefinition = $db->fetchOne("SELECT id FROM sysdictionarydefinitions WHERE name = '{$tableName}'");
-        $dictionaryDefinitionId = $dictionaryDefinition['id'];
-
-        $dictionaryFieldDefinitions = $db->fetchAll("SELECT fielddefinition FROM sysdictionaryfields WHERE sysdictionarydefinition_id = '{$dictionaryDefinitionId}'");
-
-        $requiredFieldNames = [];
-        foreach ($dictionaryFieldDefinitions as $field) {
-            $fieldDefinition = json_decode($field['fielddefinition'], true);
-            if (isset($fieldDefinition['required']) && $fieldDefinition['required'] == 1) {
-                $requiredFieldNames[] = $fieldDefinition['name'];
-            }
-        }
-
-        foreach ($fields as &$field) {
-            $field['required'] = in_array($field['name'], $requiredFieldNames);
-
-            $def = $dictionaryFieldDefinitions[$field['name']] ?? null;
-            if (empty($field['type']) && $def) {
-                $field['type'] = $def['type'] ?? '';
-            }
-        }
-
-        return $fields;
     }
 
     function getAllModules()
@@ -1426,9 +1431,13 @@ class SpiceUIRESTHandler
             // check if we have the asset
             $asssetRecord = $db->fetchOne("SELECT id FROM sysuiassets WHERE assetkey='{$asset['assetkey']}'");
             $asset['id'] = $asssetRecord['id'] ?: SpiceUtils::createGuid();
-
-            // upsert it
-            $db->upsertQuery('sysuiassets', ['id' => $asset['id'] ?: SpiceUtils::createGuid()], $asset);
+            if($asset['assetvalue']) {
+                // upsert it
+                $db->upsertQuery('sysuiassets', ['id' => $asset['id'] ?: SpiceUtils::createGuid()], $asset);
+            } elseif ($asssetRecord['id']) {
+                // delete it
+                $db->query("DELETE FROM sysuiassets WHERE id='{$asssetRecord['id']}'");
+            }
         }
         return $this->getAssets();
     }

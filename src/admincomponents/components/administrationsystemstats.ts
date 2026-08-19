@@ -9,7 +9,8 @@ import {backend} from '../../services/backend.service';
 import {helper} from '../../services/helper.service';
 
 @Component({
-    templateUrl: '../templates/administrationsystemstats.html'
+    templateUrl: '../templates/administrationsystemstats.html',
+    standalone: false
 })
 export class AdministrationSystemStats {
 

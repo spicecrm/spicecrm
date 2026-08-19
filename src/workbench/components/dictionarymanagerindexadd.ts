@@ -22,7 +22,8 @@ import {
  */
 @Component({
     selector: 'dictionary-manager-index-add',
-    templateUrl: '../templates/dictionarymanagerindexadd.html'
+    templateUrl: '../templates/dictionarymanagerindexadd.html',
+    standalone: false
 })
 export class DictionaryManagerIndexAdd implements OnInit{
 
@@ -69,7 +70,9 @@ export class DictionaryManagerIndexAdd implements OnInit{
 
     constructor(public backend: backend, public modal: modal, public dictionarymanager: dictionarymanager, public injector: Injector, public modelutilities: modelutilities) {
 
-        let tablename = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition).tablename;
+
+        let currentDefinition = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition);
+        let tablename = currentDefinition.tablename;
 
         this.index = {
             id: this.modelutilities.generateGuid(),
@@ -77,13 +80,15 @@ export class DictionaryManagerIndexAdd implements OnInit{
             sysdictionarydefinition_id: this.dictionarymanager.currentDictionaryDefinition,
             status: 'd',
             scope:  this.dictionarymanager.currentDictionaryScope,
-            indextype: 'index'
+            indextype: 'index',
+            package: currentDefinition.package,
+            version: currentDefinition.version
         };
 
         // if scope is not all reset to custom in any case
 
 
-        this.availableDictionaryItems = this.dictionarymanager.getDictionaryDefinitionItems(this.dictionarymanager.currentDictionaryDefinition).sort((a, b) => a.name.localeCompare(b.name));
+        this.availableDictionaryItems = this.dictionarymanager.getDictionaryDefinitionItems(this.dictionarymanager.currentDictionaryDefinition).filter(i => i.non_db != 1).sort((a, b) => a.name.localeCompare(b.name));
     }
 
     get foreignDefinitions(): DictionaryDefinition[]{

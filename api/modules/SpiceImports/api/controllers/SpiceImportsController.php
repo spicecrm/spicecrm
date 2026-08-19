@@ -1,40 +1,14 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\SpiceImports\api\controllers;
 
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\modules\SpiceACL\SpiceACL;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\modules\SpiceImports\SpiceImport;
 
 class SpiceImportsController{
@@ -109,15 +83,16 @@ class SpiceImportsController{
      */
 
     public function saveFromImport(Request $req, Response $res, array $args): Response {
-        if (!SpiceACL::getInstance()->checkAccess('SpiceImports', 'edit', true)) {
-            throw (new ForbiddenException("Forbidden for details in module SpiceImports."))
-                ->setErrorCode('noModuleDetails');
+        $importData = $req->getParsedBody();
+
+        if (!SpiceACL::getInstance()->checkAccess($importData['module'], 'import')) {
+            throw (new ForbiddenException("import for module not allowed"));
         }
 
-        $bean = BeanFactory::getBean('SpiceImports');
-        return $res->withJson( $bean->saveFromImport(
-            $args['objectimport'] ? json_decode( $args['objectimport'] ) : ( $req->getParsedBody()['objectimport'] ?: [] )
-        ));
+        $seed = BeanFactory::getBean('SpiceImports');
+        $seed->saveFromImport($importData);
+        $handler = new SpiceBeanHandler();
+        return $res->withJson($handler->mapBean($seed));
     }
 
     /**
@@ -130,21 +105,24 @@ class SpiceImportsController{
      */
 
     public function getImportLog(Request $req, Response $res, array $args): Response {
-        if (!SpiceACL::getInstance()->checkAccess('SpiceImports', 'detail', true)) {
-            throw (new ForbiddenException("Forbidden for details in module SpiceImports."))
-                ->setErrorCode('noModuleDetails');
+        $seed = BeanFactory::getBean('SpiceImports', $args['importId']);
+        if(!$seed){
+            throw (new ForbiddenException("No Access to this SpiceImport"));
         }
 
-        $id = $args['importId'];
-        $db = DBManagerFactory::getInstance();
-        $logs = [];
+        // gets the query params
+        $params = $req->getQueryParams();
 
-        $spiceImportLogIds = $db->query("SELECT * FROM spiceimportlogs WHERE import_id = '$id'");
-        while ($log = $db->fetchByAssoc($spiceImportLogIds)) {
-            $logs[] = $log;
-        }
+        // gets the records
+        $logs = $seed->db->fetchLimit("SELECT * FROM spiceimportlogs WHERE import_id = '{$seed->id}' ORDER BY rowpointer", $params['start'] ?: 0, $params['limit'] ?: 50);
 
-        return $res->withJson($logs);
+        // get the total count
+        $totalcount = $seed->db->fetchOne("SELECT COUNT(id) as totalcount FROM spiceimportlogs WHERE import_id = '{$seed->id}'")['totalcount'];
+
+        // get the importData for the header
+        $importData = json_decode(html_entity_decode($seed->data));
+
+        return $res->withJson(['header' => $importData->fileHeader, 'totalcount' => (int) $totalcount, 'logs' => $logs ?: []]);
     }
 
     /**

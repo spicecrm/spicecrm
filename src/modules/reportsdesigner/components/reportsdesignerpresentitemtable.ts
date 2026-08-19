@@ -9,13 +9,19 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-present-item-table',
-    templateUrl: '../templates/reportsdesignerpresentitemtable.html'
+    templateUrl: '../templates/reportsdesignerpresentitemtable.html',
+    standalone: false
 })
 export class ReportsDesignerPresentItemTable {
     /**
      * show/hide function field
      */
     @Input() public showFunction: boolean = false;
+
+    /**
+     * show/hide width field
+     */
+    @Input() public showWidth: boolean = true;
 
     constructor(public language: language, public model: model, public reportsDesignerService: ReportsDesignerService) {
     }

@@ -1,43 +1,16 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 namespace SpiceCRM\includes\SugarObjects\templates\person;
 
-use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
-use SpiceCRM\includes\SugarObjects\templates\basic\Basic;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
 use SpiceCRM\includes\SugarObjects\traits\letterSalutationTrait;
-use SpiceCRM\includes\Localization\Localization;
-use SpiceCRM\modules\EmailAddresses\EmailAddress;
+use SpiceCRM\includes\utils\SpiceUtils;
 
-class Person extends Basic
+class Person extends SpiceBean
 {
     // adds the letter salutation functions
     use letterSalutationTrait;
@@ -49,12 +22,12 @@ class Person extends Basic
     var $createLocaleFormattedName = true;
 
     /**
-     * @var Link2
+     * @var SpiceDictionaryLink
      */
     public $email_addresses;
 
     /**
-     * @var false|\SpiceCRM\data\SpiceBean
+     * @var false|\SpiceCRM\includes\SpiceBeans\SpiceBean
      */
     public $emailAddress;
 
@@ -116,79 +89,12 @@ class Person extends Basic
     }
 
     /**
-     * handle saving/adding the primary email address
-     * @see parent::save()
-     */
-    public function save($check_notify = false, $fts_index_bean = true)
-    {
-        $id = parent::save($check_notify, false);
-
-        if (empty(trim($this->email1))){
-            return $this->id;
-        }
-
-        $primaryEmailAddressId = EmailAddress::getEmailAddressId($this->email1);
-
-        if (!$primaryEmailAddressId) {
-            $newEmailAddress = BeanFactory::newBean('EmailAddresses');
-            $newEmailAddress->email_address = $this->email1;
-            $newEmailAddress->email_address_caps = strtoupper($this->email1);
-            $primaryEmailAddressId = $newEmailAddress->save();
-        }
-
-        if (!empty($this->opt_in_status)) {
-            $this->setPrimaryEmailAddress($primaryEmailAddressId, ['opt_in_status' => $this->opt_in_status]);
-        } else {
-            $this->setPrimaryEmailAddress($primaryEmailAddressId);
-        }
-
-        if ($fts_index_bean) {
-            # index the person after adding the primary email address to ensure indexing it
-            SpiceFTSHandler::getInstance()->indexBean($this);
-        }
-
-        return $id;
-    }
-
-    /**
      * fill in primary email address opt in status
      * @param $status
      */
     public function fillInPrimaryEmailAddressOptInStatus($status)
     {
         $this->primary_email_opt_in_status = $status;
-    }
-
-    /**
-     * set the primary email address from the email1 field
-     * @param string $primaryEmailAddressId
-     * @param array $relFieldsValues
-     */
-    private function setPrimaryEmailAddress(string $primaryEmailAddressId, $relFieldsValues = [])
-    {
-
-        if(!$this->email_addresses) return;
-
-        $relationExists = false;
-        $linkedEmailAddresses = $this->get_linked_beans('email_addresses');
-
-        if (!is_array($linkedEmailAddresses)) return;
-
-        foreach ($linkedEmailAddresses as $linkedEmailAddress) {
-
-            if ($primaryEmailAddressId == $linkedEmailAddress->id) {
-
-                $relationExists = true;
-                $this->email_addresses->add($linkedEmailAddress->id, ['primary_address' => 1]);
-            } else {
-                $this->email_addresses->add($linkedEmailAddress->id, ['primary_address' => 0]);
-            }
-        }
-
-        if (!$relationExists) {
-            $relFieldsValues['primary_address'] = 1;
-            $this->email_addresses->add($primaryEmailAddressId, $relFieldsValues);
-        }
     }
 
     /**
@@ -229,10 +135,10 @@ class Person extends Basic
                                 'summary_text' => $linkedBean->get_summary_text(),
                                 'date_entered' => $linkedBean->date_entered,
                                 'created_by' => $linkedBean->created_by,
-                                'created_by_name' => $linkedBean->created_by_name,
+                                'created_by_name' => $linkedBean->created_by_user->name,
                                 'date_modified' => $linkedBean->date_modified,
                                 'modified_user_id' => $linkedBean->modified_user_id,
-                                'modified_by_name' => $linkedBean->modified_by_name,
+                                'modified_by_name' => $linkedBean->modified_by_user->name,
                                 'gdpr_data_agreement' => $linkedBean->gdpr_data_agreement,
                                 'gdpr_marketing_agreement' => $linkedBean->gdpr_marketing_agreement
                             ];
@@ -252,7 +158,6 @@ class Person extends Basic
             $auditFields = $db->query("SELECT * FROM $audittablename WHERE parent_id = '{$this->id}' AND field_name like 'gdpr_%' ORDER BY date_created DESC");
             while($auditField = $db->fetchByAssoc($auditFields)){
                 $createdUser = BeanFactory::getBean('Users', $auditField['created_by']);
-                $createdUser->_create_proper_name_field();
                 $gdprReleases['audit'][]= [
                     'date_created' => $auditField['date_created'],
                     'field_name' => $auditField['field_name'],
@@ -285,25 +190,34 @@ class Person extends Basic
 
     /**
      * Generate VCARD content
-     * @return $content
+     * @return string $content
+     * @throws \Exception
      */
-    public function getVCardContent() {
+    public function getVCardContent(): string
+    {
         global $app_list_strings;
+
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $currentLanguage = $current_user->getPreference('language');
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($currentLanguage);
+
         $content = "BEGIN:VCARD\nVERSION:4.0\n";
-        $content .= "N:{$this->last_name};{$this->first_name};;{$this->salutation} {$this->degree1};{$this->degree2}\n";
+        $content .= "N:{$this->last_name};{$this->first_name};;{$app_list_strings['salutation_dom'][$this->salutation]} {$this->degree1};{$this->degree2}\n";
         $content .= "FN:{$this->salutation} {$this->degree1} {$this->first_name} {$this->last_name} {$this->degree2}\n";
         $content .= $this->email1 && $this->email1 != "" ? "EMAIL;TYPE=INTERNET:{$this->email1}\n" : "";
         $content .= $this->account_name && $this->account_name != "" ? "ORG:{$this->account_name}\n" : "";
         $content .= $this->phone_work && $this->phone_work != "" ? "TEL;TYPE=WORK:{$this->phone_work}\n" : "";
+        $content .= $this->phone_fax && $this->phone_fax != "" ? "TEL;TYPE=WORK;TYPE=FAX:{$this->phone_fax}\n" : "";
         $content .= $this->phone_home && $this->phone_home != "" ? "TEL;TYPE=HOME:{$this->phone_home}\n" : "";
         $content .= $this->phone_mobile && $this->phone_mobile != "" ? "TEL;TYPE=CELL:{$this->phone_mobile}\n" : "";
         $content .= $this->phone_other && $this->phone_other != "" ? "TEL:{$this->phone_other}\n" : "";
         $title = $app_list_strings && $app_list_strings['contacts_title_dom'] ? $app_list_strings['contacts_title_dom'][$this->title_dd] : null;
         $content .= $title && $title != "" ? "TITLE:{$title}\n" : "";
         $content .= "ADR:;";
+        $content .= ";";
         $content .= $this->primary_address_street && $this->primary_address_street != "" ? "{$this->primary_address_street};" : ';';
         $content .= $this->primary_address_city && $this->primary_address_city != "" ? "{$this->primary_address_city};" : ';';
-        $content .= $this->primary_address_state && $this->primary_address_state != "" ? "{$this->primary_address_state};" : ';';
+        $content .= ";";
         $content .= $this->primary_address_postalcode && $this->primary_address_postalcode != "" ? "{$this->primary_address_postalcode};" : ';';
         $content .= $this->primary_address_country && $this->primary_address_country != "" ? "{$this->primary_address_country}" : '';
         $content .= "\nEND:VCARD";
@@ -311,55 +225,34 @@ class Person extends Basic
     }
 
     /**
-     * override sugar function fill in additional fields on retrieve
-     */
-    public function fill_in_additional_detail_fields()
-    {
-        parent::fill_in_additional_detail_fields();
-        $this->fillInEmail1Field();
-    }
-
-    /**
-     * fill in the email1 field called by fill_in_additional_detail_fields
-     */
-    public function fillInEmail1Field() {
-        $emailAddress = $this->db->fetchOne("SELECT email_address FROM email_addresses ea, email_addr_bean_rel ear WHERE ear.bean_id='{$this->id}' AND ear.bean_module='{$this->_module}'  AND ear.primary_address=1 AND ear.deleted != 1 AND ear.email_address_id = ea.id AND ea.deleted != 1");
-        if($emailAddress){
-            $this->email1 = $emailAddress['email_address'];
-        } else $this->email1 = '';
-        /* performance increase
-        $emailAddresses = $this->get_linked_beans('email_addresses');
-        foreach ($emailAddresses as $emailAddress) {
-            if ($emailAddress->primary_address != 1) continue;
-            $this->email1 = $emailAddress->email_address;
-            break;
-        }
-        */
-    }
-
-    /*
      * Check if the person's birthday is today (or on a specific date).
      *
-     * @param string $comparisonDateAsString The date to check for the anniversary. Format: YYYY-MM-DD. Optional. If not specified, the current system date is used.
-     * @param string $timezone Optional. If no comparison date is specified, the current system date has to be used. Then a time zone is required. If not specified, the timezone of the current user is used.
+     * @param string|null $comparisonDate The date to check for the anniversary. Format: YYYY-MM-DD. Optional. If not specified, the current system date is used.
+     * @param string|null $timezone Optional. If no comparison date is specified, the current system date has to be used. Then a time zone is required. If not specified, the timezone of the current user is used.
      * @return bool
+     *
+     * @throws \DateInvalidTimeZoneException
+     * @throws \DateMalformedStringException
      */
-    public function hasBirthday( string $comparisonDate = null, string $timezone = null ): bool
+    public function hasBirthday(?string $comparisonDate = null, ?string $timezone = null): bool
     {
         return ( !empty( $this->birthdate ) and self::isAnniversary( $this->birthdate, $comparisonDate, $timezone ));
     }
 
-    /*
+    /**
      * Check whether there is an anniversary today - or on another specific day.
      *
      * @param string $anniversaryDay The date of the anniversary, e.g. a birthday. Format: MM-DD or YYYY-MM-DD
-     * @param string $comparisonDateAsString The date to check for the anniversary. Format: YYYY-MM-DD. Optional. If not specified, the current system date is used.
-     * @param string $timezone Optional. If no comparison date is specified, the current system date has to be used. Then a time zone is required. If not specified, the timezone of the current user is used.
+     * @param string|null $comparisonDate The date to check for the anniversary. Format: YYYY-MM-DD. Optional. If not specified, the current system date is used.
+     * @param string|null $timezone Optional. If no comparison date is specified, the current system date has to be used. Then a time zone is required. If not specified, the timezone of the current user is used.
      * @return bool
      * Might be to do: Use as timezone the zone of the postal address of the person.
      *                 Until then, we will use the time zone of the current user.
+     *
+     * @throws \DateInvalidTimeZoneException
+     * @throws \DateMalformedStringException
      */
-    public static function isAnniversary(string $anniversaryDay, string $comparisonDate = null, string $timezone = null ): bool
+    public static function isAnniversary(string $anniversaryDay, ?string $comparisonDate = null, ?string $timezone = null): bool
     {
         # YYYY-MM-DD --> MM-DD
         if ( strlen( $anniversaryDay ) > 5 ) $anniversaryDay = substr( $anniversaryDay, -5 );

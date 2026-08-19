@@ -12,8 +12,8 @@ declare var _: any;
 
 @Component({
     selector: 'object-recordview-detail-1',
-    templateUrl: '../templates/objectrecordviewdetail1.html'
-
+    templateUrl: '../templates/objectrecordviewdetail1.html',
+    standalone: false
 })
 export class ObjectRecordViewDetail1 implements OnInit {
     @ViewChild('contentcontainer', {read: ViewContainerRef, static: true}) public contentcontainer: ViewContainerRef;

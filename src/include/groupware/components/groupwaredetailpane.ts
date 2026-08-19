@@ -1,14 +1,16 @@
 /**
  * @module ModuleGroupware
  */
-import {Component, OnDestroy, OnInit, ChangeDetectorRef, NgZone, Injector} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectorRef, NgZone, Injector, inject, viewChild} from '@angular/core';
 import {Router} from "@angular/router";
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {broadcast} from "../../../services/broadcast.service";
-import {Subscription} from "rxjs";
+import {Subscription, switchMap} from "rxjs";
 import {SystemSelectModuleModal} from "../../../systemcomponents/components/systemselectmodulemodal";
 import {metadata} from "../../../services/metadata.service";
 import {modal} from "../../../services/modal.service";
+import {GenerativeAIService} from "../../../services/generativeai.service";
+import {GroupwareCreateBean} from "./groupwarecreatebean";
 
 /**
  * Outlook add-in detail pane showing a list of beans that use the email addresses found in the email.
@@ -16,7 +18,8 @@ import {modal} from "../../../services/modal.service";
  */
 @Component({
     selector: 'groupware-detail-pane',
-    templateUrl: '../templates/groupwaredetailpane.html'
+    templateUrl: '../templates/groupwaredetailpane.html',
+    standalone: false
 })
 export class GroupwareDetailPane implements OnInit, OnDestroy {
 
@@ -38,6 +41,16 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
      * the available modules
      */
     public availableModules: string[] = [];
+    /**
+     * reference to the create bean component
+     * @private
+     */
+    private groupwareCreateBean = viewChild(GroupwareCreateBean);
+    /**
+     * reference to the generative ai service
+     * @private
+     */
+    private generativeAI = inject(GenerativeAIService);
 
     constructor(
         public groupware: GroupwareService,
@@ -126,10 +139,43 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
                 modalRef.instance.module$.subscribe({
                     next: module => {
                         this.selectedModule = module;
+                        this.autofillWithAIPrompt();
                         this.isCreating = true;
                     }
                 });
             });
+        });
+    }
+
+    /**
+     * fills the model data with the data from the generative ai prompt
+     * @private
+     */
+    private autofillWithAIPrompt() {
+
+        const config = this.metadata.getComponentConfig('GroupwareCreateBean', this.selectedModule);
+
+        if (!config.promptId) return;
+
+        const loading = this.modal.await('LBL_ANALYSING_EMAIL');
+
+        this.groupware.assembleEmail().pipe(
+            switchMap(email => {
+                const inputs = [JSON.stringify(email)];
+                return this.generativeAI.submitPromptWithInputs(config.promptId, inputs, true);
+            })).subscribe({
+            next: res => {
+                loading.next(true);
+                loading.complete();
+                if (res.length != 1) return;
+                this.groupwareCreateBean().model.setFields(res[0]);
+                this.cdref.detectChanges();
+            },
+            error: () => {
+                loading.next(true);
+                loading.complete();
+                this.modal.toast.sendToast('ERR_FAILED_TO_EXECUTE');
+            }
         });
     }
 

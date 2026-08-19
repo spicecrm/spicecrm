@@ -13,6 +13,7 @@ import {language} from '../../services/language.service';
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryDefinition} from "../interfaces/dictionarymanager.interfaces";
+import {DictionaryManagerUsageModal} from "./dictionarymanagereusagemodal";
 
 /**
  * list the available dictionary definitions
@@ -20,6 +21,7 @@ import {DictionaryDefinition} from "../interfaces/dictionarymanager.interfaces";
 @Component({
     selector: 'dictionary-manager-definitions',
     templateUrl: '../templates/dictionarymanagerdefinitions.html',
+    standalone: false
 })
 export class DictionaryManagerDefinitions {
 
@@ -122,6 +124,7 @@ export class DictionaryManagerDefinitions {
                         loadingModal.emit(true);
                     },
                     error: () => {
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                         loadingModal.emit(true);
                     }
                 })
@@ -142,6 +145,7 @@ export class DictionaryManagerDefinitions {
                         loadingModal.emit(true);
                     },
                     error: () => {
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                         loadingModal.emit(true);
                     }
                 })
@@ -223,6 +227,7 @@ export class DictionaryManagerDefinitions {
                         deleteModal.emit(true);
                     },
                     error: () => {
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                         deleteModal.emit(true);
                     }
                 })
@@ -236,6 +241,15 @@ export class DictionaryManagerDefinitions {
     public editDictionaryDefinition(definition: DictionaryDefinition) {
 
         this.modal.openModal('DictionaryManagerEditDefinitionModal', true, this.injector).subscribe(modalRef => {
+            modalRef.instance.dictionarydefinition = definition;
+        });
+    }
+
+    /**
+     * open edit dictionary definition
+     */
+    public dictionaryDefinitionUsage(definition: DictionaryDefinition) {
+        this.modal.openStaticModal(DictionaryManagerUsageModal, true, this.injector).subscribe(modalRef => {
             modalRef.instance.dictionarydefinition = definition;
         });
     }

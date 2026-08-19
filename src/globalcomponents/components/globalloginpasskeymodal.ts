@@ -7,7 +7,8 @@ import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'global-login-passkey-modal',
-    templateUrl: '../templates/globalloginpasskeymodal.html'
+    templateUrl: '../templates/globalloginpasskeymodal.html',
+    standalone: false
 })
 
 export class GlobalLoginPasskeyModal implements ModalComponentI, OnDestroy {

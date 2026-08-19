@@ -12,7 +12,7 @@
 
     </field-generic-display>
 </div>
-<div *ngIf="this.isEditMode()">
+<div *ngIf="isEditMode()">
     <div *ngFor="let vat of getAccountVATIDs()" class="slds-grid slds-grid--vertical-align-center">
         <button class="slds-button slds-button--icon-small slds-button--icon-border slds-m-right--x-small">
             <system-button-icon icon="close" (click)="delete(vat.id)"></system-button-icon>

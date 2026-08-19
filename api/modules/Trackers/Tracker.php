@@ -35,22 +35,11 @@
 ********************************************************************************/
 namespace SpiceCRM\modules\Trackers;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class Tracker extends SpiceBean
 {
-    /**
-     * @var bool inidcator if we are in the save
-     */
-    var $in_save = false;
-
-    // php 9 compatibility preparation
-    var $modified_user_id;
-    var $modified_by_name;
-    var $date_entered;
-    var $created_by;
-    var $created_by_name;
 
     /*
      * Return the most recently viewed items for this user.
@@ -68,7 +57,7 @@ class Tracker extends SpiceBean
         } else {
             $history_max_viewed = (!empty(SpiceConfig::getInstance()->config['history_max_viewed'])) ? SpiceConfig::getInstance()->config['history_max_viewed'] : 50;
         }
-        $rows = $this->db->limitQuery("SELECT item_id, module_name, date_modified FROM tracker WHERE user_id = '{$user_id}' AND visible = 1 $module_query ORDER BY date_modified DESC", 0, $history_max_viewed);
+        $rows = $this->db->limitQuery("SELECT item_id, module_name, date_modified FROM tracker WHERE user_id = '{$user_id}' AND visible = 1 AND deleted=0 $module_query ORDER BY date_modified DESC", 0, $history_max_viewed);
         while (($row = $this->db->fetchByAssoc($rows))) {
             $list[] = $row;
 

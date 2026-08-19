@@ -12,8 +12,12 @@ import {language} from '../../../services/language.service';
 */
 declare var moment: any;
 
+/**
+ * @deprecated
+ */
 @Component({
-    templateUrl: '../templates/accountskpisoverview.html'
+    templateUrl: '../templates/accountskpisoverview.html',
+    standalone: false
 })
 export class AccountsKPIsOverview {
 

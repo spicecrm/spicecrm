@@ -8,6 +8,7 @@ export interface DomainDefinition {
     scope: 'c'|'g';
     status: 'd'|'a'|'i';
     fieldtype: string;
+    handlerclass?: string;
     description?: string;
     version?: string;
     package?: string;
@@ -70,4 +71,6 @@ export interface DomainValidationValue {
     description?: string;
     version?: string;
     package?: string;
+    icon?: string;
+    color?: string;
 }

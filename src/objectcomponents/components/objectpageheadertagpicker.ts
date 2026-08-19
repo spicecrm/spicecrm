@@ -17,7 +17,8 @@ import { toast } from '../../services/toast.service';
         '.slds-badge { text-transform: none; font-size: 0.75rem; padding-top: 0.1875rem; line-height: 2; }', // 0.75rem == slds-text-body_small
         '.slds-badge:hover { cursor: pointer; filter: brightness(90%); }',
         '.slds-badge.slds-badge_inverse:hover { filter: brightness(133%); }'
-    ]
+    ],
+    standalone: false
 })
 export class ObjectPageHeaderTagPicker implements OnInit {
 

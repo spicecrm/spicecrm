@@ -20,6 +20,7 @@ import {configurationService} from "../../services/configuration.service";
 @Component({
     selector: 'dictionary-manager-add-definition-modal',
     templateUrl: '../templates/dictionarymanageradddefinitionmodal.html',
+    standalone: false
 })
 export class DictionaryManagerAddDefinitionModal {
 
@@ -68,7 +69,8 @@ export class DictionaryManagerAddDefinitionModal {
             tablename: '',
             sysdictionary_type: undefined,
             scope: this.dictionarymanager.defaultScope,
-            status: 'd'
+            status: 'd',
+            audited: 1
         };
     }
 

@@ -21,7 +21,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 @Component({
     selector: 'system-label',
     templateUrl: '../templates/systemlabel.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SystemLabel implements OnChanges, AfterViewInit, OnDestroy {
 
@@ -34,6 +35,12 @@ export class SystemLabel implements OnChanges, AfterViewInit, OnDestroy {
      * the field
      */
     @Input() public length: 'default' | 'long' | 'short' = 'default';
+    @Input('system-label-short') set setlengthShort(value) {
+        this.length = 'short';
+    }
+    @Input('system-label-long') set setlengthLong(value) {
+        this.length = 'long';
+    }
 
     /**
      * Array (in the future maybe also an object) of values to be included in the label text.

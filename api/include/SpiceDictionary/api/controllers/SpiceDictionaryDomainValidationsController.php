@@ -30,6 +30,9 @@
 namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainField;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidation;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidations;
@@ -58,39 +61,46 @@ class SpiceDictionaryDomainValidationsController
 
         SpiceDictionaryDomainValidations::getInstance()->addValidation($body);
 
+        SpiceDictionary::getInstance()->clearSessionCache();
+
         return $res->withJson((new SpiceDictionaryDomainValidation($args['id']))->getDefinition());
     }
 
     /**
      * posts a Domain Validation
      *
-     * @param $req
-     * @param $res
-     * @param $args
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
      * @return mixed
+     * @throws \Exception
      */
     public function postDictionaryDomainValidationValues(Request $req, Response $res, array $args): Response
     {
         // get the body
         $values = $req->getParsedBody();
+        SpiceDictionaryDomainValidations::getInstance()->setValues($args['id'], $values);
 
+        SpiceDictionary::getInstance()->clearSessionCache();
 
-
-        return $res->withJson((new SpiceDictionaryDomainValidation($args['id']))->setValues($values));
+        return $res;
     }
 
     /**
-     * posts a Domain Validation
-     *
-     * @param $req
-     * @param $res
-     * @param $args
+     * delete a Domain Validation
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
      * @return mixed
+     * @throws \Exception
      */
     public function deleteDictionaryDomainValidation(Request $req, Response $res, array $args): Response
     {
+        SpiceDictionaryDomainValidations::getInstance()->deleteValidationWithValues($args['id']);
 
-        return $res->withJson((new SpiceDictionaryDomainField($args['id']))->delete());
+        SpiceDictionary::getInstance()->clearSessionCache();
+
+        return $res->withStatus(204);
     }
 
 }

@@ -1,98 +1,49 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\SpiceInstaller;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManager;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
-use SpiceCRM\includes\SpiceCache\SpiceCacheFile;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlConnector;
+use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlRequest;
+use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlWrapper;
+use SpiceCRM\includes\SpiceDictionary\database\DBManager;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndex;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainFields;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomains;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidations;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
-use SpiceCRM\includes\SpiceUI\api\controllers\ConfigTransferController;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\includes\utils\SpiceFileUtils;
-use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\modules\Relationships\Relationship;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\modules\Users\User;
-use SpiceCRM\modules\SystemDeploymentPackages\SystemDeploymentPackageSource;
-use SpiceCRM\modules\Administration\api\controllers\AdminController;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageLoader;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
-use SpiceCRM\data\SpiceBean;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceFileUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\SystemDeploymentPackages\SystemDeploymentPackageSource;
+use SpiceCRM\modules\Users\User;
 use Throwable;
 
-require_once('modules/TableDictionary.php');
 
-
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 class SpiceInstaller
 {
+    /**
+     * @var string path to the system package file
+     */
+    private static string $systemPackageFilePath = './include/SpiceInstaller/SystemPackage/system-package.gz';
+    /**
+     * @var object|null the system package file content
+     */
+    private static ?object $systemPackageContent = null;
 
     public function __construct()
     {
-        // init curl object
-        $this->curl = curl_init();
         // init database object
         $this->dbManagerFactory = new DBManagerFactory();
 
@@ -100,35 +51,117 @@ class SpiceInstaller
         SpiceConfig::getInstance()->installing = true;
     }
 
+    /**
+     * @return object|mixed the system package file content
+     */
+    private static function getSystemPackageContent(): object
+    {
+        return json_decode(gzdecode(file_get_contents(self::$systemPackageFilePath)));
+    }
+
+    /**
+     * write the loaded system dump dictionaries to the cache to temporarily hold the system defined dictionaries.
+     * This keeps the system alive until SpiceDictionaryVardefs::repairDictionaries action is taken
+     * @return void
+     * @throws Throwable
+     */
+    public static function reloadSystemPackage(): void
+    {
+        self::loadSystemPackage(DBManagerFactory::getInstance());
+        SpiceCache::instance()->flush();
+    }
+
+    /**
+     * compare system package hashes to force repair system dictionaries if the hash
+     * on the database differs from the hash of the package file
+     * @return void
+     * @throws Throwable
+     */
+    public static function checkForSystemPackageChanges(): void
+    {
+        # skip the comparison for the SpiceCRM public-config reference system
+        if (SpiceConfig::getInstance()->get('systemvardefs.create_system_file_enabled') == 1) {
+            return;
+        }
+
+        $db = DBManagerFactory::getInstance();
+        $configHash = (string) $db->getOne("SELECT value FROM config WHERE category = 'dictionary' AND name = 'system_dump_hash'");
+
+        if ($configHash === self::generateSystemPackageHash()) {
+            return;
+        }
+
+        # create temp lock file to prevent race condition which triggers the system package reload multiple times
+        $lockPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'spice_system_package.lock';
+        $fp = fopen($lockPath, "c");
+
+        # if system package reload is still processing, stop the request and throw an exception
+        if (!flock($fp, LOCK_EX | LOCK_NB)) {
+            fclose($fp);
+            throw new Exception("System is not available. System package reload is still processing.");
+        }
+
+        # process the system package reload
+        try {
+            self::$systemPackageContent = self::getSystemPackageContent();
+            self::initializeDictionaryFromSystemPackage();
+            self::createSystemTables();
+            self::reloadSystemPackage();
+
+        } finally {
+            # This ensures the lock is released even if an error occurs inside the work
+            flock($fp, LOCK_UN);
+            fclose($fp);
+        }
+    }
+
+    /**
+     * write system cache hash to config
+     * @param string $hash
+     * @return void
+     * @throws Exception
+     */
+    public static function writeSystemPackageFileHashToConfig(): void
+    {
+        $db = DBManagerFactory::getInstance();
+
+        if (!$db->tableExists('config')) return;
+
+        $hash = self::generateSystemPackageHash();
+
+        $db->query("DELETE FROM config WHERE category='dictionary' AND name='system_dump_hash'");
+        $db->query("INSERT INTO config (category, name, value) VALUES('dictionary', 'system_dump_hash', '{$hash}')");
+
+        SpiceCache::deleteByKey('dbconfig');
+        SpiceConfig::getInstance()->reloadConfig(true);
+    }
 
     /**
      * performs a curl call and returns a decoded response
-     * @param $curl
+     *
      * @param $url
-     * @param bool $ssl
+     * @param $ssl
+     * @param $username
+     * @param $password
      * @return mixed
+     * @throws Exception
      */
-    private function curlCall($curl, $url, $ssl = false, $username = null, $password = null)
+    private function curlCall($url, $ssl = false, $username = null, $password = null)
     {
-        curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $request = SpiceCurlWrapper::getRequest($url)
+                    ->disableLogger()
+                    ->setSsl($ssl)
+                    ->setRawOption(CURLOPT_ENCODING, SpiceCurlRequest::ENCODING_UTF8);
 
-        // turn off ssl check
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $ssl);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $ssl);
-        curl_setopt($curl, CURLOPT_ENCODING, "UTF-8");
-
-
-        if($username && $password) {
-            curl_setopt($curl, CURLOPT_USERPWD, "{$username}:{$password}");
+        if ($username && $password) {
+            $request->setRawOption(CURLOPT_USERPWD, "{$username}:{$password}");
         }
 
-        $response = curl_exec($curl);
-        if (empty($response)) {
-            $response = curl_error($curl);
+        $response = $request->send();
+        if (empty($response->getRawResponse())) {
+            return json_decode($response->getErrors());
         }
-        return json_decode($response);
+        return $response->getResponse();
     }
 
     /**
@@ -136,70 +169,15 @@ class SpiceInstaller
      * @return array
      */
 
-    public function checkSystem()
+    public function checkSystem(): array
     {
         $requirements = [];
+        // Checking if the necessary PHP extensions are loaded.
+        $requirements = $this->checkExtensionsFromComposer();
+
         // check php version
-        if (version_compare(phpversion(), '8.0', '<')) {
-            $requirements['php'] = false;
-        } else {
-            $requirements['php'] = true;
-        }
-
-        // check PCRE version
-        if (version_compare(PCRE_VERSION, '7.0') < 0) {
-            $requirements['pcre'] = false;
-        } else {
-            $requirements['pcre'] = true;
-        }
-
-        // check gd
-        if (!extension_loaded('gd') && !extension_loaded('gd2')) {
-            $requirements['gd'] = false;
-        } else {
-            $requirements['gd'] = true;
-        }
-
-        // check curl
-        if (!function_exists('curl_version')) {
-            $requirements['curl'] = false;
-        } else {
-            $requirements['curl'] = true;
-        }
-        // check xml parser
-        if (!function_exists('xml_parser_create')) {
-            $requirements['xml_parser'] = false;
-        } else {
-            $requirements['xml_parser'] = true;
-        }
-        //check mbstrings enabled in php.ini
-        if (!function_exists('mb_strlen')) {
-            $requirements['mbstrings'] = false;
-        } else {
-            $requirements['mbstrings'] = true;
-        }
-        //check zip
-        if (!class_exists('ZipArchive')) {
-            $requirements['zip'] = false;
-        } else {
-            $requirements['zip'] = true;
-        }
-
-        //check mailparse
-        if (!function_exists('mailparse_msg_parse_file')) {
-            $requirements['mailparse'] = false;
-        } else {
-            $requirements['mailparse'] = true;
-        }
-
-        // check imap
-        if (!function_exists('imap_qprint')) {
-            $requirements['imap'] = false;
-        } else {
-            $requirements['imap'] = true;
-        }
-
-        $requirements['bcmath'] = extension_loaded('bcmath');
+        $requirements['php'] = version_compare(PHP_VERSION, '8.2', '>=');
+        $requirements['gd']         = extension_loaded('gd') || extension_loaded('gd2');
 
         # check package pear
         include_once 'System.php';
@@ -269,16 +247,30 @@ class SpiceInstaller
             $requirements['upload_dir'] = true;
         }
 
-        // check that we have true for all the requirements
-        if (in_array(false, $requirements)) {
-            $outcome = false;
-        } else {
-            $outcome = true;
+        return [
+            'success'      => !in_array(false, $requirements), // check that we have true for all the requirements
+            "requirements" => $requirements,
+        ];
+    }
+
+    /**
+     * Reads the required PHP extensions from composer.json and checks if they are loaded.
+     *
+     * @return array
+     */
+    private function checkExtensionsFromComposer(): array
+    {
+        $requirements = [];
+        $composer = json_decode(file_get_contents(__DIR__ . '/../../composer.json'), true);
+
+        foreach ($composer['require'] as $name => $version) {
+            if (str_starts_with($name, 'ext-')) {
+                $extension = substr($name, 4);
+                $requirements[$extension] = extension_loaded($extension);
+            }
         }
 
-        return [
-            'success' => $outcome,
-            "requirements" => $requirements];
+        return $requirements;
     }
 
     /**
@@ -379,10 +371,10 @@ class SpiceInstaller
 
         $url = $protocol . "://" . $postData['server'] . ":" . $postData['port'] . "/";
 
-        $response = $this->curlCall($this->curl, $url, $postData['sslverify'], $postData['username'], $postData['password']);
+        $response = $this->curlCall($url, $postData['sslverify'], $postData['username'], $postData['password']);
 
         if (!empty($response)) {
-            if (version_compare($response->version->number, '7.5', '<') ) {
+            if (version_compare($response['version']['number'], '7.5', '<') ) {
                 $errors = ['version not supported'];
             } else {
                 $ftsconfig = ['https' => $postData['https'], 'username' => $postData['username'], 'password' => $postData['password'], 'protocol' => $protocol, 'server' => $postData['server'], 'port' => $postData['port'], 'prefix' => $postData['prefix']];
@@ -411,7 +403,7 @@ class SpiceInstaller
         $errors = [];
         $url = SystemDeploymentPackageSource::getPublicSource() . 'config';
 
-        $response = $this->curlCall($this->curl, $url);
+        $response = $this->curlCall($url);
 
         if (!empty($response)) {
             $outcome = true;
@@ -431,7 +423,7 @@ class SpiceInstaller
     public function getLanguages()
     {
         $url = SystemDeploymentPackageSource::getPublicSource() . 'config';
-        $response = $this->curlCall($this->curl, $url);
+        $response = $this->curlCall($url);
         return $response;
     }
 
@@ -504,8 +496,6 @@ class SpiceInstaller
             'db_type' => $postData['database']['db_type'],];
 
         $db = $this->dbManagerFactory::getTypeInstance($postData['database']['db_type'], ['dbconfig' => ['db_manager' => $postData['database']['db_manager']]]);
-        $postData['dboptions']['collation'] = "utf8mb4_unicode_ci";
-        $postData['dboptions']['charset'] = "utf8mb4";
         $db->setOptions($postData['dboptions']);
         if ($dbconfig['db_type'] == 'oci8') {
             $dbconfig['db_schema'] = $postData['database']['db_schema'];
@@ -531,138 +521,48 @@ class SpiceInstaller
     }
 
     /**
-     * load the dictionary dump file
-     * creates the system dictionary tables without indexes from teh dump for the system fields
-     * save the dump file hash in the config for later comparison
-     * @param DBManager $db
+     * creates the system tables from the loaded system package
      * @return void
-     * @throws Exception
+     * @throws Exception|Throwable
      */
-    public function createSystemTablesFromDump(DBManager $db){
-
-        $hash = SpiceDictionary::getInstance(false)->loadSystemDumpFile();
-
-        $dictionary = SpiceDictionary::getInstance()->dictionary;
-
-        foreach ($dictionary as $dictFields){
-            $query = $db->createTableSQLParams($dictFields['table'], $dictFields['fields'], []);
-            $db->query($query, true);
+    public static function createSystemTables()
+    {
+        foreach (SpiceDictionaryDefinitions::getInstance()->getDefinitions() as $definition) {
+            SpiceDictionaryDefinitions::getInstance()->repair($definition['id']);
         }
-
-        SpiceDictionary::writeSystemDumpFileHashToConfig($hash);
     }
 
     /**
-     * creates the tables from the dictionary, as well as the audit tables and relationship tables, writes the relationship cache
-     * @param $db
+     * initialize the dictionary definitions by loading the system package into the cache files to prepare for create tables
+     * @return void
      */
-    public function createTables($db)
+    private static function initializeDictionaryFromSystemPackage()
     {
-        $globalBeanList = [];
-        // workaround load metadata definitions (tables like sysmodules ... will be needed for retrieveSysModules)
-        // load them now!
-        SpiceDictionaryHandler::loadMetaDataFiles();
-        $rel_dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
+        SpiceDictionaryItems::initializeFromSystemPackage(
+            self::$systemPackageContent->data->rows->{SpiceDictionaryItems::table}
+        );
 
-// will break installation under php8.1 and is unnecessary
-//        $vardef = new VardefManager();
-//        $vardef->clearVardef();
+        SpiceDictionaryDefinitions::initializeFromSystemPackage(
+            self::$systemPackageContent->data->rows->{SpiceDictionaryDefinitions::table}
+        );
 
-        // workaround create table from metadata definitions now
-        foreach ($rel_dictionary as $rel_name => $rel_data) {
-            $table = $rel_data['table'];
+        SpiceDictionaryDomains::initializeFromSystemPackage(
+            self::$systemPackageContent->data->rows->{SpiceDictionaryDomains::table}
+        );
 
-            if (!$db->tableExists($table)) {
-                $query = $db->createTableSQLParams($table, $rel_data['fields'], $rel_data['indices']);
-                $db->query($query);
-            }
-        }
+        SpiceDictionaryDomainFields::initializeFromSystemPackage(
+            self::$systemPackageContent->data->rows->{SpiceDictionaryDomainFields::table}
+        );
 
-        // retrieve available modules from reference
-        $sysModules = $this->retrieveSysModules();
+        SpiceDictionaryDomainValidations::initializeFromSystemPackage(
+            self::$systemPackageContent->data->rows->{SpiceDictionaryDomainValidations::table},
+            self::$systemPackageContent->data->rows->{SpiceDictionaryDomainValidations::valuesTable}
+        );
 
-        if (!empty($sysModules)) {
-            foreach ($sysModules['sysmodules'] as $sysModuleId => $moduleConf) {
-                $base64conf = base64_decode($moduleConf);
-                if ($decodedConf = json_decode($base64conf, true)) {
-                    if (!empty($decodedConf['bean'])) {
-                        $globalBeanList[$decodedConf['module']] = $decodedConf['bean'];
-                        //todo temporary bugfix, find correct solution?
-                        SpiceModules::getInstance()->setBeanClass(
-                            $decodedConf['module'],
-                            '\\SpiceCRM\\modules\\' . $decodedConf['module'] . '\\' . $decodedConf['bean']
-                        );
-                    }
-                }
-            }
-        }
-
-        // relationship workaround: relationship has to be the first table to be  created before module tables
-        //require_once('modules/Relationships/vardefs.php');
-        $table   = SpiceDictionaryHandler::getInstance()->dictionary['Relationship']['table'];
-        $fields  = SpiceDictionaryHandler::getInstance()->dictionary['Relationship']['fields'];
-        $indices = SpiceDictionaryHandler::getInstance()->dictionary['Relationship']['indices'];
-
-        if (!empty($table)) {
-            if (!$db->tableExists($table)) {
-                $query = $db->createTableSQLParams($table, $fields, $indices);
-                $db->query($query);
-            }
-        }
-        ksort($globalBeanList);
-
-        foreach ($globalBeanList as $dir => $bean) {
-            // in core edition some modules might be missing
-            // ignore them when it encountered
-            if (file_exists('modules/' . $dir . '/vardefs.php')) {
-                require_once('modules/' . $dir . '/vardefs.php');
-            } else {
-                continue;
-            }
-
-            if (SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'] == 'does_not_exist') {
-                continue;
-            }
-            $table   = SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'];
-            $fields  = SpiceDictionaryHandler::getInstance()->dictionary[$bean]['fields'];
-            $indices = SpiceDictionaryHandler::getInstance()->dictionary[$bean]['indices'];
-
-            if (!empty($table)) {
-                if (!$db->tableExists($table)) {
-                    $query = $db->createTableSQLParams($table, $fields, $indices);
-                    $db->query($query);
-                }
-            }
-
-            // creates audit table if object is audited
-            /*
-            SpiceBean::createRelationshipMeta(
-                $bean,
-                $db,
-                SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'],
-                '',
-                $dir
-            );
-            */
-        }
-        SpiceModules::getInstance()->setBeanList($globalBeanList);
-
-        ksort($rel_dictionary);
-        foreach ($rel_dictionary as $rel_name => $rel_data) {
-            $table = $rel_data['table'];
-
-            if (!$db->tableExists($table)) {
-                $query = $db->createTableSQLParams($table, $rel_data['fields'], $rel_data['indices']);
-                $db->query($query);
-            }
-
-            //SpiceBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
-        }
-
-
-        // repair relationships
-        SpiceDictionaryVardefs::build_relationship_cache();
-
+        SpiceDictionaryIndexes::initializeFromSystemPackage(
+            self::$systemPackageContent->data->rows->{SpiceDictionaryIndexes::table},
+            self::$systemPackageContent->data->rows->{SpiceDictionaryIndexes::itemTable}
+        );
     }
 
     /**
@@ -726,10 +626,11 @@ class SpiceInstaller
         $username = $postData['credentials']['username'];
         $surname = $postData['credentials']['surname'];
         $password = $postData['credentials']['password'];
+        $user_email = $postData['credentials']['email'];
         $user_instance->user_hash = User::getPasswordHash($password);
         $date = date("Y-m-d h:i:s");
-        $user = "INSERT INTO users (id, user_name, user_hash, last_name, is_admin, date_entered, date_modified, modified_user_id, created_by, title, status, deleted) 
-            VALUES ('1', '$username', '$user_instance->user_hash', '$surname', 1, '$date','$date', '1', '1', 'Administrator', 'Active', 0)";
+        $user = "INSERT INTO users (id, user_name, user_hash, user_email, last_name, is_admin, date_entered, date_modified, modified_user_id, created_by, status, deleted) 
+            VALUES ('1', '{$username}', '{$user_instance->user_hash}', '{$user_email}', '$surname', 1, '$date','$date', '1', '1', 'Active', 0)";
 
         $userrole = "INSERT INTO sysuiuserroles (id, user_id, sysuirole_id, defaultrole) VALUES (" . $db->getGuidSQL() . ", '1', '3687463f-8ed3-49df-af07-1fa2638505db', 1)";
         if (!$db->query($user)) {
@@ -737,9 +638,9 @@ class SpiceInstaller
         }
         $db->query($userrole);
 
-        $current_user = $user_instance->retrieve(1);
-        $current_user->email1 = $postData['credentials']['email'];
-        $current_user->save();
+//        $current_user = $user_instance->retrieve(1);
+//        $current_user->email1 = $postData['credentials']['email'];
+//        $current_user->save();
     }
 
     /**
@@ -779,6 +680,8 @@ class SpiceInstaller
         $postData = $body->getParsedBody();
 
         //generate a new spice_config
+        $postData['dboptions']['collation'] = "utf8mb4_unicode_ci";
+        $postData['dboptions']['charset'] = "utf8mb4";
         $spice_config = $this->generateSpiceConfig($postData);
 
         //assign to global instance
@@ -829,94 +732,69 @@ class SpiceInstaller
      * @param $db
      * @param string|null $language
      * @return void
-     * @throws Exception
+     * @throws Throwable
      */
     public function initializeSystem($db, ?string $language): void
     {
-        $this->createSystemTablesFromDump($db);
+        self::$systemPackageContent = self::getSystemPackageContent();
+
+        $this->initializeDictionaryFromSystemPackage();
+
+        $this->createSystemTables();
 
         $this->loadSystemPackage($db);
-
-        $this->writeDictionaryToCacheTable();
-
-        $this->createDatabaseIndexes();
 
         $this->retrieveLanguages( $db, $language );
     }
 
     /**
-     * write dictionary array to the cache table
-     * @return void
-     * @throws Exception
-     */
-    public function writeDictionaryToCacheTable()
-    {
-        # write the definitions to the cache table
-        $defsHandler = SpiceDictionaryDefinitions::getInstance();
-
-        foreach (SpiceDictionary::getInstance()->dictionary as $dicName => $dicFields) {
-            $defsHandler->writeVardefToFieldsTable($dicName, $dicFields);
-        }
-    }
-
-    /**
-     * create database indexes
-     * @return void
-     * @throws Exception
-     */
-    public function createDatabaseIndexes(): void
-    {
-        $indexHandler = SpiceDictionaryIndexes::getInstance();
-
-        foreach ($indexHandler->dictionaryIndexes as $index) {
-            try {
-                $index = new SpiceDictionaryIndex($index['id']);
-                $index->activate();
-            } catch (Throwable $t) {
-                throw new Exception("Error repairing index ($index->name). Check if all index items and dictionary related items have the package system in the system-package.gz file. Error: " . $t->getMessage());
-            }
-        }
-    }
-
-    /**
      * load system package
      * @param $db
-     * @throws Exception
+     * @throws Throwable
      */
     public static function loadSystemPackage($db): void
     {
-        $packageContent = json_decode( gzdecode ( file_get_contents('./include/SpiceInstaller/SystemPackage/system-package.gz')));
-        $tablesFields = [];
-        foreach (SpiceDictionary::getInstance()->dictionary as $dic) {
-            $tablesFields[$dic['table']] = array_map(function ($f) {return $f['name'];}, $dic['fields']);
+        if (!self::$systemPackageContent) {
+            self::$systemPackageContent = self::getSystemPackageContent();
         }
 
-        foreach ( $packageContent->data->tables as $tableName ) {
+        foreach (self::$systemPackageContent->data->tables as $tableName) {
 
-            if ( !$tablesFields[$tableName]) continue;
+            $tablesFields = SpiceDictionary::getInstance()->buildFieldsByTable($tableName);
+
+            if ( !$tablesFields) continue;
 
             // delete all system package entries
             $db->query("DELETE FROM {$tableName} WHERE package='system'");
 
-            foreach ($packageContent->data->rows->$tableName as $row) {
-                $row = self::prepareSystemPackageRow($row, $tablesFields, $tableName);
+            foreach (self::$systemPackageContent->data->rows->$tableName as $row) {
+                $row = self::prepareSystemPackageRow($row, $tablesFields);
                 $db->upsertQuery($tableName, ['id' => $row['id']] , $row);
             }
         }
+
+
+        self::writeSystemPackageFileHashToConfig();
+    }
+
+    /**
+     * generate system package hash
+     * @return false|string
+     */
+    private static function generateSystemPackageHash(): string
+    {
+        return md5_file(self::$systemPackageFilePath) ?: '';
     }
 
     /**
      * prepare system package row data and keep only the defined dictionary fields
      * @param object $row
      * @param array $tablesFields
-     * @param string $tableName
      * @return array
      */
-    private static function prepareSystemPackageRow(object $row, array $tablesFields, string $tableName): array
+    private static function prepareSystemPackageRow(object $row, array $tablesFields): array
     {
-        return array_filter((array) $row, function ($field) use ($tablesFields, $tableName) {
-            return $tablesFields[$tableName][$field];
-        }, ARRAY_FILTER_USE_KEY);
+        return array_filter((array) $row, fn ($field) => $tablesFields[$field], ARRAY_FILTER_USE_KEY);
     }
 }
 

@@ -28,12 +28,12 @@
 ********************************************************************************/
 namespace SpiceCRM\includes\SpiceFTSManager;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceFTSUtils
@@ -118,7 +118,11 @@ class SpiceFTSUtils
         'spiceacl_territories_hash' => [
             'type' => 'keyword',
             'index' => true
-        ]
+        ],
+        '_systemtenant_id' => [
+            'type' => 'keyword',
+            'index' => true
+        ],
     ];
 
     static function checkElastic(){
@@ -145,13 +149,13 @@ class SpiceFTSUtils
             return $cached[$module];
         } else {
 
-            $moduleProperties = $db->fetchByAssoc($db->query("SELECT * FROM sysfts WHERE module = '$module'"));
+            $moduleProperties = SpiceFTSHandler::getInstance()->modules[$module];
             if ($moduleProperties) {
                 $modulePropertiesarray = json_decode(html_entity_decode($moduleProperties['ftsfields']), true);
                 $seed = BeanFactory::getBean($module);
 
                 // ensure the is_inactive field is properly set in the index parameters
-                if ($seed && property_exists($seed, 'is_inactive')) {
+                if ($seed && isset($seed->field_defs['is_inactive'])) {
                     $id =  SpiceUtils::createGuid();
                     $modulePropertiesarray[] = [
                         'id' => $id,
@@ -241,13 +245,10 @@ class SpiceFTSUtils
         $cached = SpiceCache::get('ftsBeanIndexSettings');
         if(!$cached) $cached = [];
 
-        //END
-        $db = DBManagerFactory::getInstance();
-
         if ($cached && isset($cached[$module]['settings'])) {
             return $cached[$module]['settings'];
         } else {
-            $moduleProperties = $db->fetchByAssoc($db->query("SELECT settings FROM sysfts WHERE module = '$module'"));
+            $moduleProperties = SpiceFTSHandler::getInstance()->modules[$module];
             if ($moduleProperties) {
                 // add to cache
                 $cached[$module]['settings'] = json_decode(html_entity_decode($moduleProperties['settings']), true);
@@ -327,11 +328,9 @@ class SpiceFTSUtils
         $cached = SpiceCache::get('ftsActivityModules'.$scope);
         if($cached) return $cached;
 
-        // build the data
-        $db = DBManagerFactory::getInstance();
         $modules = [];
-        $moduleProperties = $db->query("SELECT * FROM sysfts");
-        while ($moduleProperty = $db->fetchByAssoc($moduleProperties)) {
+
+        foreach (SpiceFTSHandler::getInstance()->modules as $moduleProperty) {
             $moduleSettings = json_decode(html_entity_decode($moduleProperty['settings']), true);
             if ($moduleSettings[strtolower($scope) . 'search']) {
                 // check if module is loaded (because of core/more edition)
@@ -356,11 +355,9 @@ class SpiceFTSUtils
         $cached = SpiceCache::get('ftsTimelineModules');
         if($cached) return $cached;
 
-        $db = DBManagerFactory::getInstance();
         $modules = [];
 
-        $moduleProperties = $db->query("SELECT * FROM sysfts");
-        while ($moduleProperty = $db->fetchByAssoc($moduleProperties)) {
+        foreach (SpiceFTSHandler::getInstance()->modules as $moduleProperty) {
             $moduleSettings = json_decode(html_entity_decode($moduleProperty['settings']), true);
             if ($moduleSettings['timelinesearch']) {
                 // check if module is loaded (because of core/more edition)
@@ -388,8 +385,7 @@ class SpiceFTSUtils
         $db = DBManagerFactory::getInstance();
         $modules = [];
 
-        $moduleProperties = $db->query("SELECT * FROM sysfts");
-        while ($moduleProperty = $db->fetchByAssoc($moduleProperties)) {
+        foreach (SpiceFTSHandler::getInstance()->modules as $moduleProperty) {
             $moduleSettings = json_decode(html_entity_decode($moduleProperty['settings']), true);
             if ($moduleSettings['calendarsearch']) {
                 $modules[$moduleProperty['module']] = [

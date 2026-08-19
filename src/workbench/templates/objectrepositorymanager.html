@@ -80,6 +80,9 @@
             <table class="slds-table slds-table_bordered" role="grid" style="width: 100%;">
                 <thead>
                     <tr class="slds-line-height_reset">
+                        <th scope="col" style="width: 20px;">
+
+                        </th>
                         <th scope="col">
                                 <span class="slds-truncate" title="Name"><system-label label="LBL_NAME"></system-label></span>
                         </th>
@@ -92,9 +95,10 @@
                         <th scope="col"></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody cdkDropList cdkDropListOrientation="vertical" (cdkDropListDropped)="dropped($event)">
                     <ng-container *ngFor="let currentConfig of currentConfigArray; index as i">
-                        <tr class="slds-hint-parent">
+                        <tr cdkDrag class="slds-hint-parent">
+                            <td><system-utility-icon cdkDragHandle icon="drag_and_drop"></system-utility-icon></td>
                             <td class="slds-cell-edit" role="gridcell" style="width: 30%;">
                                 <span class="slds-grid slds-grid_align-spread">
                                     <div class="slds-form-element__control" style="width: 100%;">

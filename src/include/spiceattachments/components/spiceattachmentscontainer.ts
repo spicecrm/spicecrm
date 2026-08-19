@@ -7,6 +7,11 @@ import {navigationtab} from "../../../services/navigationtab.service";
 import {modelattachments} from "../../../services/modelattachments.service";
 import {helper} from "../../../services/helper.service";
 import {modal} from "../../../services/modal.service";
+import {backend} from "../../../services/backend.service";
+import {model} from "../../../services/model.service";
+import {Router} from "@angular/router";
+import {configurationService} from "../../../services/configuration.service";
+import {toast} from "../../../services/toast.service";
 
 /**
  * Display spice attachment in a new tab
@@ -14,7 +19,8 @@ import {modal} from "../../../services/modal.service";
 @Component({
     selector: 'spice-attachments-container',
     templateUrl: '../templates/spiceattachmentscontainer.html',
-    providers: [modelattachments]
+    providers: [modelattachments, model],
+    standalone: false
 })
 
 export class SpiceAttachmentsContainer implements OnDestroy {
@@ -33,6 +39,21 @@ export class SpiceAttachmentsContainer implements OnDestroy {
      * if we get a loading error
      */
     public loadingerror: boolean = false;
+
+    /**
+     * loading flag
+     */
+    public isLoading: boolean = false;
+
+    /**
+     * route params
+     */
+    public routeParams: {fieldname: string; attachmentId: string};
+    /**
+     * is editor active flag
+     */
+    public isEditorActive: boolean = false;
+    /**
 
     /**
      * subscribe to route component
@@ -59,11 +80,25 @@ export class SpiceAttachmentsContainer implements OnDestroy {
      */
     public imgData: string;
 
+    /**
+     * set to true if the attachment was not found - Server returned 404
+     */
+    public attachmentNotFound: boolean = false;
+
     constructor(
         public navigationtab: navigationtab,
         public modelattachments: modelattachments,
         public helper: helper,
+        public toast: toast,
+        private backend: backend,
+        private router: Router,
+        private configurationService: configurationService,
+        public model: model,
         public modal: modal) {
+
+        const config = this.configurationService.getCapabilityConfig('txcontrol');
+        this.isEditorActive = config?.isActive;
+
         this.componentSubscriptions.add(
             this.navigationtab.activeRoute$.subscribe(route => {
                 this.initialize(route.params);
@@ -102,21 +137,111 @@ export class SpiceAttachmentsContainer implements OnDestroy {
     public initialize(routeParams) {
         this.modelattachments.module = routeParams.module;
         this.modelattachments.id = routeParams.id;
-        this.modelattachments.getAttachmentData(routeParams.attachmentId).subscribe({
-            next: (fileData) => {
-                this.file = fileData;
-                this.type = this.file.file_mime_type.toLowerCase();
+        this.model.id = routeParams.id;
+        this.model.module = routeParams.module;
+        this.model.getData();
+        this.isLoading = true;
+        this.routeParams = routeParams;
+
+        if(routeParams.fieldname){
+            this.modelattachments.getAttachmentDataByField(routeParams.fieldname).subscribe({
+                next: (fileData) => {
+
+                    this.file = fileData;
+
+                    // generate pdf preview of the docx file
+                    if (fileData.file_mime_type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+
+                        this.handleDocXPreview(routeParams, this.file.file);
+
+                    } else {
+
+                        this.isLoading = false;
+
+                        this.type = this.file.file_mime_type.toLowerCase();
+
+                        this.blobFile = atob(this.file.file);
+                        this.setTabTitle();
+
+                        // set imgsrc data for image
+                        if (this.fileType == 'image') {
+                            this.imgData = 'data:' + this.file.file_mime_type.toLowerCase() + ';base64,' + this.file.file;
+                        }
+                    }
+
+                }, error: (e) => {
+                    this.isLoading = false;
+                    this.loadingerror = true;
+                    if(e.status == 404){
+                        this.attachmentNotFound = true;
+                        this.setTabTitleNotFound();
+                    } else {
+                        this.toast.sendToast('ERR_LOADING_ATTACHMENT', 'error');
+                        this.navigationtab.closeTab();
+                    }
+                }
+            });
+        } else {
+            this.modelattachments.getAttachmentData(routeParams.attachmentId).subscribe({
+                next: (fileData) => {
+                    this.file = fileData;
+
+                    // generate pdf preview of the docx file
+                    if (fileData.file_mime_type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+
+                        this.handleDocXPreview(routeParams, this.file.file);
+
+                    } else {
+
+                        this.isLoading = false;
+
+                        this.type = this.file.file_mime_type.toLowerCase();
+                        this.blobFile = atob(this.file.file);
+                        this.setTabTitle();
+
+                        // set imgsrc data for image
+                        if (this.fileType == 'image') {
+                            this.imgData = 'data:' + this.file.file_mime_type.toLowerCase() + ';base64,' + this.file.file;
+                        }
+                    }
+                }, error: (e) => {
+                    this.isLoading = false;
+                    this.loadingerror = true;
+                    if(e.status == 404){
+                        this.attachmentNotFound = true;
+                        this.setTabTitleNotFound();
+                    } else {
+                        this.toast.sendToast('ERR_LOADING_ATTACHMENT', 'error');
+                        this.navigationtab.closeTab();
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * parse the docx file to pdf and show it
+     * @param routeParams
+     * @param content
+     * @private
+     */
+    private handleDocXPreview(routeParams, content) {
+        this.backend.postRequest(`common/TXControl/convert/module/${routeParams.module}/${routeParams.id}`, null, {content: content, format: 'PDF'}).subscribe({
+            next: parseContent => {
+                this.isLoading = false;
+                this.file.file = parseContent.content;
+                this.type = 'application/pdf';
                 this.blobFile = atob(this.file.file);
                 this.setTabTitle();
-
-                // set imgsrc data for image
-                if (this.fileType == 'image') {
-                    this.imgData = 'data:' + this.file.file_mime_type.toLowerCase() + ';base64,' + this.file.file;
-                }
-            }, error: () => {
-                this.loadingerror = true;
+            },
+            error: () => {
+                this.isLoading = false;
+                this.type = this.file.file_mime_type;
+                this.blobFile = atob(this.file.file);
+                this.setTabTitle();
             }
         });
+
     }
 
     /**
@@ -130,4 +255,29 @@ export class SpiceAttachmentsContainer implements OnDestroy {
         this.navigationtab.setTabInfo(tabInfoObj)
     }
 
+    /**
+     * displays header info in the tab
+     */
+    public setTabTitleNotFound() {
+        const tabInfoObj = {
+            displayname: 'ERR_NOT_FOUND',
+            displayicon: 'unlinked',
+        }
+        this.navigationtab.setTabInfo(tabInfoObj)
+    }
+
+    /**
+     * set docx editing to true
+     */
+    public editDocX() {
+
+        const routePrefix = !this.navigationtab?.tabid ? '' : ('/tab/' + this.navigationtab.tabid);
+        this.navigationtab.closeTab();
+
+        if (this.routeParams.attachmentId) {
+            this.router.navigate([`${routePrefix}/docx/edit/${this.routeParams.attachmentId}/${this.modelattachments.module}/${this.modelattachments.id}`]);
+        } else {
+            this.router.navigate([`${routePrefix}/docx/edit/${this.model.module}/${this.model.id}/fieldname/${this.routeParams.fieldname}`]);
+        }
+    }
 }

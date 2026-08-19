@@ -23,13 +23,14 @@ import {ObjectActionMenuItemI} from "../interfaces/objectcomponents.interfaces";
 @Component({
     selector: 'object-action-menu',
     templateUrl: '../templates/objectactionmenu.html',
-    providers: [helper]
+    providers: [helper],
+    standalone: false
 })
 export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
 
     @Input() public buttonsize: string = '';
 
-    @Input() public actionset: string = '';
+    @Input() public actionset: string;
 
     @Input() public ignoreMobileView: boolean = false;
 
@@ -71,11 +72,17 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
     }
 
     public ngOnInit() {
-        if (this.actionset == "") {
+
+        if (!this.actionset) {
+            this.actionset = this.componentconfig?.actionset_default;
+        }
+
+        if (!this.actionset) {
             this.componentconfig = this.metadata.getComponentConfig('ObjectActionMenu', this.model.module);
             this.actionset = this.componentconfig.actionset_default;
-            this.setActionsets();
         }
+
+        this.setActionsets();
     }
 
     public ngOnChanges() {
@@ -83,6 +90,11 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
     }
 
     public setActionsets() {
+
+        if (!this.actionset) return;
+
+        this.allActionItems = [];
+
         let actionitems = this.metadata.getActionSetItems(this.actionset);
 
         for (let actionitem of actionitems) {

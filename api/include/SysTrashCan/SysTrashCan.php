@@ -29,11 +29,11 @@
 
 namespace SpiceCRM\includes\SysTrashCan;
 
-use SpiceCRM\includes\TimeDate;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class SysTrashCan
@@ -60,10 +60,13 @@ class SysTrashCan
     }
 
     /**
-     * @return array
+     * @param $offset
+     * @param $limit
+     * @param array|null $filter
+     * @return array[]
      * @throws \Exception
      */
-    static function getRecords($offset = 0, $limit = 50, array $filter = null)
+    static function getRecords($offset = 0, $limit = 50, ?array $filter = null): array
     {
         $db = DBManagerFactory::getInstance();
 
@@ -82,7 +85,7 @@ class SysTrashCan
         $sql = "SELECT systrashcan.*, users.user_name FROM systrashcan, users WHERE systrashcan.user_deleted = users.id $filterWhere AND recordtype = 'bean' AND recovered = '0' ORDER BY date_deleted DESC";
 
         $count = $db->getOne("SELECT count(0) FROM systrashcan, users WHERE systrashcan.user_deleted = users.id $filterWhere AND recordtype = 'bean' AND recovered = '0'");
-        $retArray['count'] = (double) $count;
+        $retArray['count'] = (float) $count;
 
         $records = $db->limitQuery($sql, $offset, $limit);
 

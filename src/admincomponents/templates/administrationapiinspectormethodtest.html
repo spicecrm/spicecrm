@@ -11,34 +11,47 @@
         <div class="slds-tabs_default" >
             <ul class="slds-tabs_default__nav" role="tablist">
                 <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active': activetab == 'parameters'}" role="presentation">
-                    <a class="slds-tabs_default__link" role="tab" (click)="activetab = 'parameters'"><system-label label="LBL_PARAMETERS"></system-label></a>
+                    <a class="slds-tabs_default__link" role="tab" (click)="activetab = 'parameters'"><system-label label="LBL_PARAMETERS"/></a>
                 </li>
-                <!--li class="slds-tabs_default__item" title="Item Two" [ngClass]="{'slds-is-active': activetab == 'request'}" role="presentation">
-                    <a class="slds-tabs_default__link" role="tab" (click)="activetab = 'request'"><system-label label="LBL_REQUEST"></system-label></a>
-                </li-->
+                @if (useRawBody) {
+                    <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active': activetab == 'request'}" role="presentation">
+                        <a class="slds-tabs_default__link" role="tab" (click)="activetab = 'request'"><system-label label="LBL_REQUEST"/></a>
+                    </li>
+                }
                 <li class="slds-tabs_default__item" title="Item Three" [ngClass]="{'slds-is-active': activetab == 'response'}" role="presentation">
-                    <a class="slds-tabs_default__link" role="tab" (click)="activetab = 'response'"><system-label label="LBL_RESPONSE"></system-label></a>
+                    <a class="slds-tabs_default__link" role="tab" (click)="activetab = 'response'"><system-label label="LBL_RESPONSE"/></a>
                 </li>
             </ul>
             <div #tabcontent [ngStyle]="tabStyle" class="slds-scrollable">
                 <div class="slds-tabs_default__content" [ngClass]="{'slds-hide': activetab != 'parameters'}" role="tabpanel">
-                    <administration-api-inspector-method-parameters [apimethod]="apiMethod" [parameterCollector]="parameterCollector" in="path"></administration-api-inspector-method-parameters>
-                    <administration-api-inspector-method-parameters [apimethod]="apiMethod" [parameterCollector]="parameterCollector" in="query"></administration-api-inspector-method-parameters>
-                    <administration-api-inspector-method-parameters [apimethod]="apiMethod" [parameterCollector]="parameterCollector" in="body"></administration-api-inspector-method-parameters>
+                    <administration-api-inspector-method-parameters [apimethod]="apiMethod" [parameterCollector]="parameterCollector" in="path"/>
+                    <administration-api-inspector-method-parameters [apimethod]="apiMethod" [parameterCollector]="parameterCollector" in="query"/>
+                    <administration-api-inspector-method-parameters [disabled]="useRawBody" [apimethod]="apiMethod" [parameterCollector]="parameterCollector" in="body"/>
                 </div>
-                <div class="slds-tabs_default__content" [ngClass]="{'slds-hide': activetab != 'response'}" role="tabpanel">
-                    <div *ngIf="this.response else loading">
-                        <pre class="slds-p-horizontal--x-small" style="white-space: pre-wrap">{{this.response}}</pre>
-                    </div>
-                    <ng-template #loading>
-                        <system-spinner></system-spinner>
-                    </ng-template>
+                @if (useRawBody) {
+                <div class="slds-tabs_default__content slds-height_full slds-p-horizontal--x-small" [ngClass]="{'slds-hide': activetab != 'request'}" role="tabpanel">
+                    <system-source-editor class="slds-height_full" language="json" [canOpenInModal]="false" [(ngModel)]="body"> </system-source-editor>
+                </div>
+                }
+                <div class="slds-tabs_default__content slds-height_full" [ngClass]="{'slds-hide': activetab != 'response'}" role="tabpanel">
+                    @if (response){
+                        <pre class="slds-p-horizontal--x-small" style="white-space: pre-wrap">{{response}}</pre>
+                    } @else if (executing) {
+                        <system-spinner class="slds-height_full slds-align--absolute-center"/>
+                    } @else {
+                        <system-illustration-no-data class="slds-height_full slds-align--absolute-center"/>
+                    }
                 </div>
             </div>
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label></button>
-        <button class="slds-button slds-button--brand" (click)="test()"><system-label label="LBL_TEST"></system-label></button>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            @if(apiMethod.method == 'post' || apiMethod.method == 'put'){
+            <system-checkbox [(ngModel)]="useRawBody"><system-label label="LBL_USE_RAW_BODY"/></system-checkbox>
+            }
+            <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label></button>
+            <button class="slds-button slds-button--brand" (click)="test()"><system-label label="LBL_TEST"></system-label></button>
+        </div>
     </system-modal-footer>
 </system-modal>

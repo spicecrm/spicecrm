@@ -13,7 +13,8 @@ import {Subscription} from "rxjs";
 @Component({
     selector: 'spice-google-maps-list-header',
     templateUrl: '../templates/spicegooglemapslistheader.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpiceGoogleMapsListHeader implements OnInit, OnDestroy {
     /**

@@ -18,13 +18,12 @@ import {toast} from "../../services/toast.service";
 @Component({
     selector: 'dictionary-manager-migratedefinition-modal',
     templateUrl: '../templates/dictionarymanagermigratedefinitionmodal.html',
+    standalone: false
 })
 export class DictionaryManagerMigrateDefinitionModal implements OnInit {
 
-    private currentVersion = '2024.02.002';
+    private currentVersion = '2024.02.001';
     private currentPackage = 'system';
-
-    public loading: boolean = true;
 
     /**
      * reference to the modal self
@@ -80,7 +79,6 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
     }
 
     public ngOnInit() {
-        let awaitModal = this.modal.await('LBL_LOADING');
 
         this.dictionarydefinition = {
             id: this.modelutilities.generateGuid(),
@@ -88,22 +86,23 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
             tablename: '',
             sysdictionary_type: 'module',
             scope: this.dictionarymanager.defaultScope,
+            audited: 0,
             status: 'd'
         };
 
-        this.backend.getRequest('dictionary/fields').subscribe({
-            next: (tables) => {
-                this.tables = tables;
+        Object.keys(this.dictionarymanager.vardefFields).forEach(name => {
 
-                this.tables.sort((a, b) => a.sysdictionarytablename.localeCompare(b.sysdictionarytablename));
-                awaitModal.emit(true);
-                this.loading = false;
-            },
-            error: () => {
-                awaitModal.emit(true);
-                this.close();
-            }
+            const tableDef = JSON.parse(JSON.stringify(this.dictionarymanager.vardefFields[name]));
+
+            if (tableDef.fields.length == 0) return;
+
+            tableDef.sysdictionarydefinition_id = this.dictionarymanager.dictionarydefinitions.find(d => d.tablename == tableDef.table)?.id;
+            tableDef.name = name;
+            tableDef.fields = Object.values(tableDef.fields);
+            this.tables.push(tableDef);
         });
+
+        this.tables.sort((a, b) => a.table.localeCompare(b.table));
 
         // load the domains
         for (let domain of this.dictionarymanager.domaindefinitions) {
@@ -127,39 +126,35 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
     }
 
     private loadVardefs(dictionaryname) {
-        this.backend.getRequest(`dictionary/vardefs/${dictionaryname}`).subscribe({
-            next: (data) => {
 
-                if (data[dictionaryname].indices) {
-                    let keys = Object.keys(data[dictionaryname].indices);
-                    for (let key of keys) {
-                        data[dictionaryname].indices[key].scope = this.dictionarydefinition.scope;
-                        data[dictionaryname].indices[key].package = this.dictionarydefinition.package;
-                        data[dictionaryname].indices[key].version = this.dictionarydefinition.version;
-                        this.indices.push(data[dictionaryname].indices[key]);
-                    }
-                }
-
-                if (data[dictionaryname].templates) {
-                    let keys = Object.keys(data[dictionaryname].templates);
-                    for (let key of keys) {
-                        let t = this.definedtemplates.find(d => d.name == key);
-                        this.templates.push({
-                            name: key,
-                            sysdictionary_ref_id: t ? t.id : undefined,
-                            scope: this.dictionarydefinition.scope,
-                            package: this.dictionarydefinition.package,
-                            version: this.dictionarydefinition.version
-                        });
-                    }
-                }
+        if (this.dictionarymanager.vardefFields[dictionaryname].indices) {
+            let keys = Object.keys(this.dictionarymanager.vardefFields[dictionaryname].indices);
+            for (let key of keys) {
+                this.dictionarymanager.vardefFields[dictionaryname].indices[key].scope = this.dictionarydefinition.scope;
+                this.dictionarymanager.vardefFields[dictionaryname].indices[key].package = this.dictionarydefinition.package;
+                this.dictionarymanager.vardefFields[dictionaryname].indices[key].version = this.dictionarydefinition.version;
+                this.indices.push(this.dictionarymanager.vardefFields[dictionaryname].indices[key]);
             }
-        });
+        }
+
+        if (this.dictionarymanager.vardefFields[dictionaryname].templates) {
+            let keys = Object.keys(this.dictionarymanager.vardefFields[dictionaryname].templates);
+            for (let key of keys) {
+                let t = this.definedtemplates.find(d => d.name == key);
+                this.templates.push({
+                    name: key,
+                    sysdictionary_ref_id: t ? t.id : undefined,
+                    scope: this.dictionarydefinition.scope,
+                    package: this.dictionarydefinition.package,
+                    version: this.dictionarydefinition.version
+                });
+            }
+        }
     }
 
     get _tables() {
         if (this.filterterm || this.filterundefined) {
-            return this.tables.filter(t => (!this.filterterm || t.sysdictionarytablename.toLowerCase().indexOf(this.filterterm.toLowerCase()) >= 0) && (!this.filterundefined || !t.sysdictionarydefinition_id));
+            return this.tables.filter(t => (!this.filterterm || t.table.toLowerCase().indexOf(this.filterterm.toLowerCase()) >= 0) && (!this.filterundefined || !t.sysdictionarydefinition_id));
         }
 
         return this.tables;
@@ -202,7 +197,7 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
     set selectedtable(value) {
         this._selectedtable = value;
 
-        let table = this.tables.find(t => t.sysdictionarytablename == value);
+        let table = this.tables.find(t => t.table == value);
         if (table) {
 
 
@@ -220,8 +215,8 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
                 this.dictionarydefinition.version = this.currentVersion;
             }
 
-            this.dictionarydefinition.name = table.sysdictionaryname;
-            this.dictionarydefinition.tablename = table.sysdictionarytablename;
+            this.dictionarydefinition.name = table.name;
+            this.dictionarydefinition.tablename = table.table;
 
             this.fields = table.fields;
             this.autoMapFields();
@@ -243,8 +238,8 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
             }
 
             // generate label from name if it is undefined
-            if (!f.fielddefinition.vname) {
-                f.fielddefinition.vname = `LBL_${f.fielddefinition.name.toUpperCase()}`;
+            if (!f.vname) {
+                f.vname = `LBL_${f.name.toUpperCase()}`;
             }
 
             if (!f.version) f.version = this.currentVersion;
@@ -263,27 +258,27 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
      */
     private mapFieldTypeToDomain(field): string {
 
-        let fieldType = field.fieldtype;
+        let fieldType = field.type;
 
-        switch (field.fieldtype) {
+        switch (field.type) {
             case 'varchar':
                 fieldType = 'varchar255';
 
-                if (field.fielddefinition.len == 36 || field.name == 'id') {
+                if (field.len == 36 || field.name == 'id') {
                     fieldType = 'guid';
-                } else if (field.fieldname == 'version') {
+                } else if (field.name == 'version') {
                     fieldType = 'varchar15';
-                } else if (field.fieldname == 'package') {
+                } else if (field.name == 'package') {
                     fieldType = 'varchar50';
-                } else if (!isNaN(field.fielddefinition.len)) {
-                    fieldType = field.fieldtype + field.fielddefinition.len;
+                } else if (!isNaN(field.len)) {
+                    fieldType = field.type + field.len;
                 }
                 break;
             case 'id':
                 fieldType = 'guid';
                 break;
             case 'int':
-                if (field.fielddefinition.len == 1) {
+                if (field.len == 1) {
                     fieldType = 'smallint';
                 }
                 break;
@@ -366,7 +361,7 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
     public canAddIndex(fields: any[]){
 
         for(let field of fields) {
-            if (!this.fields.find(f => (f.selected || !!f.sysdomainfield_id) && f.fieldname == field)) return false;
+            if (!this.fields.find(f => (f.selected || !!f.sysdomainfield_id) && f.name == field)) return false;
         }
 
         return true;
@@ -434,22 +429,22 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
                 id: itemId,
                 sysdictionarydefinition_id: this.dictionarydefinition.id,
                 sysdomaindefinition_id: f.sysdomaindefinition_id,
-                name: f.fieldname,
+                name: f.name,
                 non_db: 0,
-                exclude_from_audited: f.fielddefinition.audited ? 0 : 1,
+                exclude_from_audited: f.audited ? 0 : 1,
                 default_value: '',
-                required: f.fielddefinition.required ? 1 : 0,
+                required: f.required ? 1 : 0,
                 scope: f.scope ? f.scope : this.dictionarydefinition.scope,
                 status: 'd',
                 sequence: s,
                 package: f.package,
                 version: f.version,
-                label: f.fielddefinition.vname,
-                description: f.fielddefinition.comment
+                label: f.vname,
+                description: f.comment
             };
             s++;
 
-            newitems[f.fieldname] = itemId;
+            newitems[f.name] = itemId;
 
             // collect the newItems
             newItems.push(dictionaryitem);

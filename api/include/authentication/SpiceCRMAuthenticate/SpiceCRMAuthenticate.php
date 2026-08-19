@@ -1,45 +1,20 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\authentication\SpiceCRMAuthenticate;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
 use SpiceCRM\includes\authentication\interfaces\AuthResponse;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\SessionExpiredException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\SystemTenants\SystemTenant;
 use SpiceCRM\modules\Users\User;
 
 class SpiceCRMAuthenticate implements AuthenticatorI
@@ -71,10 +46,11 @@ class SpiceCRMAuthenticate implements AuthenticatorI
      * @param string $userId
      * @return AuthResponse
      * @throws UnauthorizedException
+     * @throws Exception
      */
     public function generateAuthResponse(string $userId): AuthResponse
     {
-        $username =  BeanFactory::getBean('Users', $userId, ['relationships' => false])->user_name;
+        $username = DBManagerFactory::getInstance()->getOne("SELECT user_name FROM users WHERE id = '$userId' AND deleted = 0");
         return new AuthResponse($username);
     }
 
@@ -94,6 +70,10 @@ class SpiceCRMAuthenticate implements AuthenticatorI
             throw new SessionExpiredException($label['default'] ?: "Session Expired", 0);
         }
 
+        if (!empty($_SESSION['systemtenant_id']) && (!SystemTenant::isInTenantSystem() || $_SESSION['systemtenant_id'] !== SystemTenant::$currentTenantID)) {
+            throw new SessionExpiredException("Session Expired");
+        }
+
         return $_SESSION['authenticated_user_id'];
     }
 
@@ -107,7 +87,7 @@ class SpiceCRMAuthenticate implements AuthenticatorI
      */
     public function handleCredentials(string $username, string $password, ?string $adminUsername = null): string
     {
-        $sqlWhere = "( is_group IS NULL OR is_group != 1 ) AND status = 'Active' AND deleted = 0 and external_auth_only = 0";
+        $sqlWhere = "status = 'Active' AND deleted = 0 and external_auth_only = 0";
 
         # Usual case, no impersonation:
         if (empty($adminUsername)) {
@@ -142,6 +122,8 @@ class SpiceCRMAuthenticate implements AuthenticatorI
 
         $_SESSION['authenticated_user_id'] = $userObj->id;
         $_SESSION['unique_key'] = SpiceConfig::getInstance()->config['unique_key'];
+
+        $_SESSION['systemtenant_id'] = SystemTenant::$currentTenantID;
 
         $token = session_id();
 

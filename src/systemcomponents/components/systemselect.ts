@@ -7,8 +7,8 @@ import {
     ChangeDetectorRef,
     Component, ContentChildren,
     ElementRef,
-    forwardRef,
-    Input, OnChanges, OnDestroy, QueryList,
+    forwardRef, input,
+    Input, InputSignal, OnChanges, OnDestroy, QueryList,
     Renderer2, SimpleChanges,
     ViewChild,
     ViewContainerRef
@@ -30,10 +30,11 @@ declare var _;
     templateUrl: "../templates/systemselect.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => SystemSelect),
-        multi: true
-    }]
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SystemSelect),
+            multi: true
+        }],
+    standalone: false
 })
 export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnDestroy {
     /**
@@ -44,7 +45,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
     /**
      * when true emit and receive the id as ngModel value
      */
-    @Input('system-select-id-only') set setIdOnly(value: boolean) {
+    @Input('system-select-id-only') set setIdOnly(value) {
         this.idOnly = value !== false;
     }
     @Input() public idOnly: boolean = false;
@@ -74,6 +75,10 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      * desc -> asc
      */
     @Input() public sortReversed: boolean = false;
+    /**
+     * pass the placeholder as input
+     */
+    public placeholder: InputSignal<string> = input();
 
     /**
      * holds the search list results
@@ -113,8 +118,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
         this.subscription.add(this.options.changes.subscribe(() => {
             // rebuild the search list options on content change
             this.searchList = this.generateSearchList();
-            this.value = undefined;
-            this.focusedItem = undefined;
+            this.setFocusedItem(this.value ?? this.focusedItem);
             this.cdRef.detectChanges();
         }));
     }
@@ -144,6 +148,24 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
     }
 
     /**
+     * set focused item from id or object
+     * @param focusedItemOrId
+     * @private
+     */
+    private setFocusedItem(focusedItemOrId: string | SystemSelectNgModelValue) {
+
+        if(typeof focusedItemOrId == 'string') {
+            this.focusedItem = this.searchList.find(e => e.id == focusedItemOrId);
+        } else {
+            this.focusedItem = focusedItemOrId;
+        }
+
+        if (this.focusedItem) {
+            this.inputIsVisible = false;
+        }
+    }
+
+    /**
      * Write a new focusedItemOrString to the element.
      * @param focusedItemOrString
      */
@@ -155,17 +177,10 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
             return;
         }
 
-        if(typeof focusedItemOrString == 'string') {
-            const focusedItem = this.searchList.find(e => e.id == focusedItemOrString);
-            if (!focusedItem) {
-                this.value = focusedItemOrString;
-            } else {
-                this.focusedItem = focusedItem;
-                this.inputIsVisible = false;
-            }
-        } else {
-            this.focusedItem = focusedItemOrString;
-            this.inputIsVisible = false;
+        this.setFocusedItem(focusedItemOrString);
+
+        if (!this.focusedItem && typeof focusedItemOrString == 'string') {
+            this.value = focusedItemOrString;
         }
 
         this.cdRef.detectChanges();
@@ -245,10 +260,14 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      * @private
      */
     public itemClicked(listItem: SystemSelectOptionI, event: MouseEvent) {
+        if (listItem.inactive) {
+            event.stopPropagation();
+            return;
+        }
+
         this.emitValue(listItem);
         this.focusedItem = listItem;
         this.value = undefined;
-
         this.inputIsVisible = false;
     }
 
@@ -290,14 +309,16 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      * @private
      */
     public handleEnterPress() {
-        if (!!this.focusedItem) {
+        if (!!this.focusedItem && !this.focusedItem.inactive) {
             this.emitValue(this.focusedItem);
             this.value = undefined;
             this.inputIsVisible = false;
         } else if (this.emitInputValueOnEnterPress) {
             this.focusedItem = this.searchList.find(e => e.id == this.value);
-            this.onChange(this.value);
-            this.inputIsVisible = false;
+            if(!this.focusedItem || !this.focusedItem.inactive){
+                this.onChange(this.value);
+                this.inputIsVisible = false;
+            }
         }
     }
 
@@ -341,9 +362,9 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      * @private
      */
     public navigateThroughResultList(event: KeyboardEvent) {
-
         let list = !this.dropdownTrigger.dropDownOpen ? this.generateSearchList() : this.searchList;
-        list = list.filter(e => !e.isGroup);
+        // Filter out group items and inactive items
+        list = list.filter(e => !e.isGroup && !e.inactive);
 
         if (list.length == 0) {
             return;
@@ -356,9 +377,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
         if (!this.focusedItem || !nextItem) {
             nextItem = list[0];
             this.focusedItem = nextItem;
-
         } else if (!!nextItem) {
-
             this.focusedItem = nextItem;
         }
 
@@ -409,9 +428,11 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit, OnD
      */
     public setInputVisible(inputContainer: HTMLInputElement, e: MouseEvent) {
         e.stopPropagation();
-        this.inputIsVisible = true;
-        this.cdRef.detectChanges();
-        inputContainer.focus();
-        inputContainer.click();
+        if(!this.disabled) {
+            this.inputIsVisible = true;
+            this.cdRef.detectChanges();
+            inputContainer.focus();
+            inputContainer.click();
+        }
     }
 }

@@ -7,7 +7,7 @@ import {
     Component,
     ElementRef, HostListener,
     OnDestroy, OnInit,
-    QueryList,
+    QueryList, SkipSelf,
     ViewChild,
     ViewChildren
 } from '@angular/core';
@@ -25,7 +25,8 @@ import {orgunitsViewService} from "../services/orgunitsview.service";
 @Component({
     selector: 'orgunits-chart-view',
     templateUrl: '../templates/orgunitschartview.html',
-    providers: [orgunitsViewService]
+    providers: [orgunitsViewService, model],
+    standalone: false
 })
 export class OrgunitsChartView implements AfterViewInit {
 
@@ -45,27 +46,37 @@ export class OrgunitsChartView implements AfterViewInit {
 
     private zoomFactor: number = 1;
 
-    constructor(public model: model, public oview: orgunitsViewService, public cdRef: ChangeDetectorRef) {
+    constructor(
+        @SkipSelf() public model: model,
+        public newOrgUnit: model,
+        public oview: orgunitsViewService,
+        public cdRef: ChangeDetectorRef
+    ) {
         this.oview.updated$.subscribe(() => {
             this.cdRef.detectChanges();
         })
 
-        // set the model of the chart in focus to the service so we have it as reference
-        this.oview.orgChart = this.model;
+
     }
 
+
     public ngAfterViewInit() {
-        this.oview.viewport = this.orgViewPort?.nativeElement;
+        this.oview.orgChart = this.model;
         this.oview.loadOrgUnits().subscribe({
             next: () => {
                 this.oview.viewport = this.orgViewPort?.nativeElement;
-                this.oview.buildConnectors();
+                // this.oview.buildConnectors();
+                // ugly but effective way to ensure the update ont eh page happens before the update on the connectors happen
+                window.setTimeout(() => this.oview.buildConnectors(), 0);
+
+
+                this.oview.viewport = this.orgViewPort?.nativeElement;
             }
         });
     }
 
     get rootID(){
-        return this.oview.orgunits.find(o => !o.parent_id).id;
+        return this.oview.orgunits.find(o => !o.parent_id)?.id;
     }
 
     get zoomedStyle(){
@@ -95,4 +106,16 @@ export class OrgunitsChartView implements AfterViewInit {
         window.setTimeout(() => this.oview.buildConnectors(), 0);
     }
 
+    public add(){
+        this.newOrgUnit.module = 'OrgUnits';
+        this.newOrgUnit.initialize();
+        this.newOrgUnit.addModel(null, this.model, {
+            orgchart_id: this.model.id,
+            orgchart_name: this.model.getField('name')
+        }).subscribe({
+            next: (data) => {
+                this.oview.orgunits.push(data);
+            }
+        });
+    }
 }

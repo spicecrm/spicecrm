@@ -2,23 +2,22 @@
 
 namespace SpiceCRM\modules\Emails\api\controllers;
 
-use SpiceCRM\data\BeanFactory;
 use Exception;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\extensions\includes\GenerativeAI\GenerativeAIAgent;
+use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachmentHandler;
 use SpiceCRM\extensions\modules\Mailboxes\Handlers\OutlookAttachmentHandler;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\DataStreams\StreamFactory;
-use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachmentHandler;
-use SpiceCRM\includes\UploadFile;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\Emails\Email;
 
 class EmailsController
 {
@@ -61,7 +60,13 @@ class EmailsController
         $email = BeanFactory::getBean('Emails');
 
         // get linked items
-        if ($email->retrieve_by_string_fields(['message_id' => $message_id]) || $email->retrieve_by_string_fields(['thread_id' => $thread_id])) {
+        if (($message_id && $email->retrieve_by_string_fields(['message_id' => $message_id])) || ($thread_id && $email->retrieve_by_string_fields(['thread_id' => $thread_id]))) {
+            // re-check because of message ID case sensitivity! The SQL query will not consider the difference between a and A
+            if(($message_id && $email->message_id && $email->message_id !== $message_id) || ($thread_id && $email->thread_id && $email->thread_id !== $thread_id)){
+                throw new NotFoundException('Email not found');
+            }
+
+
             $result['email_id']    = $email->id;
             $result['attachments'] = SpiceAttachments::getAttachmentsForBean('Emails', $email->id, 10, false);
             $linkedBeansObj = $db->query("SELECT bean_module, bean_id FROM emails_beans WHERE email_id = '$email->id'");
@@ -167,7 +172,7 @@ class EmailsController
      * @return array
      * @throws Exception
      */
-    private function saveEmailWithBeans(array $postBody, string $source): array {
+    public function saveEmailWithBeans(array $postBody, string $source): array {
         if (!isset($postBody['email'])) {
             throw new Exception('Email missing');
         }
@@ -359,23 +364,9 @@ class EmailsController
      */
     public function createEmailFromMSGFile(Request $req, Response $res, array $args): Response {
         $postBody = $req->getParsedBody();
-
-        $email = BeanFactory::getBean('Emails');
-        $email->id = SpiceUtils::createGuid();
-        $email->new_with_id = true;
-        $email->file_name = $postBody['filename'];
-        $email->file_mime_type = $postBody['filemimetype'];
-
-        // create a guid for the email and save the message as file with the bean id
-        $upload_file = new UploadFile('file');
-        $decodedFile = base64_decode($postBody['file']);
-
-        $email->file_md5 = md5($decodedFile);
-
-        $upload_file->set_for_soap($email->id, $decodedFile);
-        $upload_file->final_move($email->file_md5, true);
-
-        // convert the message
+        /** @var Email $email */
+        $email = BeanFactory::newBean('Emails');
+        $email->initializeForMimeFile($postBody);
         $email->convertMsgToEmail($email->file_md5, $postBody['beanModule'], $postBody['beanId']);
         $email->save();
 
@@ -395,24 +386,10 @@ class EmailsController
      */
     public function createEmailFromEMLFile(Request $req, Response $res, array $args): Response {
         $postBody = $req->getParsedBody();
-
-        $email = BeanFactory::getBean('Emails');
-        $email->id = SpiceUtils::createGuid();
-        $email->new_with_id = true;
-        $email->file_name = $postBody['filename'];
-        $email->file_mime_type = $postBody['filemimetype'];
-
-        // create a guid for the email and save the message as file with the bean id
-        $upload_file = new UploadFile('file');
-        $decodedFile = base64_decode($postBody['file']);
-
-        $email->file_md5 = md5($decodedFile);
-
-        $upload_file->set_for_soap($email->id, $decodedFile);
-        $upload_file->final_move($email->file_md5, true);
-
-        // convert the message
-        $email->convertEMLToEmail($email->file_md5, $decodedFile, $postBody['beanModule'], $postBody['beanId']);
+        /** @var Email $email */
+        $email = BeanFactory::newBean('Emails');
+        $decodedFile = $email->initializeForMimeFile($postBody);
+        $email->convertEMLToEmail($email->file_md5, $decodedFile , $postBody['beanModule'], $postBody['beanId']);
         $email->save();
 
         $KRESTModuleHandler = new SpiceBeanHandler();
@@ -429,7 +406,7 @@ class EmailsController
      * @return Email
      * @throws Exception
      */
-    private function externalDataToEmail($data, $emailbean, $beans, $source) {
+    public function externalDataToEmail($data, $emailbean, $beans, $source) {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         try {
             $email = Email::findByMessageId($data['message_id']);
@@ -524,7 +501,7 @@ class EmailsController
     private static function getEmailBean(string $emailId): Email {
         $email = BeanFactory::getBean('Emails', $emailId);
         if (!$email) {
-            throw (new NotFoundException('Record not found.'))->setLookedFor(id);
+            throw (new NotFoundException('Record not found.'))->setLookedFor($emailId);
         }
 
         if (!$email->ACLAccess('edit')) {
@@ -583,6 +560,9 @@ class EmailsController
 
         return $res->withJson($attachment);
     }
+
+
+
     public function sendTestEmail(Request $req, Response $res, array $args): Response{
         $body = $req->getParsedBody();
 
@@ -598,12 +578,26 @@ class EmailsController
             $email->body = str_replace("\n", "", $email->body);
         }
 
-        // clone the attachments
-        $email->id = SpiceUtils::createGuid();
-
+        //save test email for easier testing of marketing actions
+        $email->save();
         $email->sendEmail();
 
         return $res->withJson(['success' => true]);
+    }
+
+
+    public function extractEmailSignature(Request $req, Response $res, array $args): Response{
+        $seed = BeanFactory::getBean('Emails', $args['id']);
+
+        if(!$seed) {
+            throw new NotFoundException('Email not found');
+        }
+
+        $agent = new GenerativeAIAgent('90114fdf-07ff-74e8-5597-3b7916873927', 'de', $seed);
+
+        $response = $agent->submit();
+
+        return $res->withJson(json_decode($response->parts[0]->text)[0]);
     }
 
 }

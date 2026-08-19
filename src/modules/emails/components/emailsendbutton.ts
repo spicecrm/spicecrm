@@ -16,7 +16,8 @@ import {configurationService} from "../../../services/configuration.service";
  */
 @Component({
     selector: "email-send-button",
-    templateUrl: "../templates/emailsendbutton.html"
+    templateUrl: "../templates/emailsendbutton.html",
+    standalone: false
 })
 export class EmailSendButton {
     // public object_module_name: string;
@@ -39,6 +40,10 @@ export class EmailSendButton {
 
     }
 
+    get hidden() {
+        return this.model.getField('status') != 'draft' && this.model.getField('status') != 'created';
+    }
+
     /**
      * a getter that returns the disabled status. This getter checks if all data are available
      */
@@ -52,15 +57,18 @@ export class EmailSendButton {
                 mailboxData = (this.configuration.getData('mailboxes'+k));
             }
         });
-        const selectedMailboxData = mailboxData.find(id => id.value == mailbox);
-        let sizeTooBig = !!this.model.getFieldValue('attachments_size') ? this.model.getFieldValue('attachments_size') > selectedMailboxData.max_upload : false;
+        let selectedMailboxData = mailboxData.find(id => id.value == mailbox);
+        let sizeTooBig = !!selectedMailboxData && !!this.model.getFieldValue('attachments_size') ? this.model.getFieldValue('attachments_size') > selectedMailboxData.max_upload : false;
         let name = this.model.getFieldValue('name');
         let body = this.model.getFieldValue('body');
         let recipientTo = recipientAddresses ? recipientAddresses.find(re => re.address_type == 'to') : undefined;
 
+        if (this.model.getField('downloadlink_attachments')) {
+            sizeTooBig = false;
+        }
+
         return (!name || !body || !mailbox || !recipientAddresses || !recipientTo || sizeTooBig) ? true : this.sending;
     }
-
 
     /**
      * the method invoed when selecting the action. It sends the email
@@ -72,6 +80,7 @@ export class EmailSendButton {
             this.sending = true;
             this.model.setFields({
                 type: 'out',
+                status: 'created',
                 to_be_sent: true,
                 from_addr: this.model.getField('from_addr_name'),
                 to_addrs: this.model.getField('to_addrs_names'),

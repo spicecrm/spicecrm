@@ -20,6 +20,7 @@ import {modal} from '../../services/modal.service';
 @Component({
     selector: 'object-list-header-actions-merge-button',
     templateUrl: '../templates/objectlistheaderactionsmergebutton.html',
+    standalone: false
 })
 export class ObjectListHeaderActionsMergeButton {
 

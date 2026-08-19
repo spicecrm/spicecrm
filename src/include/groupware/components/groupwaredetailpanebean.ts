@@ -15,7 +15,8 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'groupware-detail-pane-bean',
     templateUrl: '../templates/groupwaredetailpanebean.html',
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 export class GroupwareDetailPaneBean implements OnInit {
 
@@ -47,22 +48,22 @@ export class GroupwareDetailPaneBean implements OnInit {
             this.model.id = this.bean.id;
             this.model.setData(this.bean.data);
 
-            // get the fieldconfig
-            let componentconfig = this.metadata.getComponentConfig(
-                'GlobalHeaderSearchResultsItem', // todo create its own config if needed
-                this.model.module
-            );
-            if (componentconfig && componentconfig.mainfieldset) {
-                this.mainfieldsetfields = this.metadata.getFieldSetItems(componentconfig.mainfieldset);
+            let config = this.metadata.getComponentConfig('GroupwareDetailPaneBean', this.model.module);
+
+            if (window._.isEmpty(config)) {
+                config = this.metadata.getComponentConfig('GlobalHeaderSearchResultsItem', this.model.module);
             }
-            if (componentconfig && componentconfig.subfieldset) {
-                this.subfieldsetfields = this.metadata.getFieldSetItems(componentconfig.subfieldset);
+
+            if (config && config.mainfieldset) {
+                this.mainfieldsetfields = this.metadata.getFieldSetItems(config.mainfieldset);
+            }
+            if (config && config.subfieldset) {
+                this.subfieldsetfields = this.metadata.getFieldSetItems(config.subfieldset);
             }
         });
     }
 
     public onClick(event) {
         this.selected.emit({module: this.bean.module, id: this.bean.id});
-        // this.router.navigate(['module/' + this.bean.module + '/' + this.bean.id]);
     }
 }

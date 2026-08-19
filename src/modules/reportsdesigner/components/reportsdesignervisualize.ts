@@ -9,7 +9,8 @@ import {model} from "../../../services/model.service";
 
 @Component({
     selector: 'reports-designer-visualize',
-    templateUrl: '../templates/reportsdesignervisualize.html'
+    templateUrl: '../templates/reportsdesignervisualize.html',
+    standalone: false
 })
 export class ReportsDesignerVisualize {
 

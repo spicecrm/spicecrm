@@ -1,36 +1,11 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use DOMDocument;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\extensions\modules\TextMessageTemplates\TextMessageTemplate;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Emails\Email;
@@ -62,6 +37,8 @@ abstract class TransportHandler
     protected $logger;
     protected $incoming_settings = [];
     protected $outgoing_settings = [];
+
+    public $canSendScheduled = false;
 
     public function __construct(Mailbox $mailbox)
     {
@@ -99,6 +76,7 @@ abstract class TransportHandler
 
     public function sendMail(Email|TextMessage $email, $noSecurityCheck = false )
     {
+        try{
         $timedate = TimeDate::getInstance();
 
         if ($this->mailbox->active == false) {
@@ -154,6 +132,17 @@ abstract class TransportHandler
             $style = '<style>'.$email->getStylesheet($this->mailbox->stylesheet).'</style>';
         }
 
+        // Check if downloadlink_attachments is enabled
+        $downloadLink = "";
+        $downloadLinkPosition = "";
+        if ($email->downloadlink_attachments) {
+            $downloadLink = $this->parseDownloadLink($email);
+            $downloadLinkPosition = "beforemailboxfooter"; // default
+            if(SpiceConfig::getInstance()->get('spiceattachments.downloadlink_position')){
+                $downloadLinkPosition = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_position');
+            }
+        }
+
         if(strpos($email->body, '<html') === false) {
             $bodyParts[] = '<html>';
         }
@@ -165,19 +154,51 @@ abstract class TransportHandler
             $bodySource = str_replace('<head>', '<head>'.$style, $bodySource);
         }
 
-        if(strpos($email->body, '<body>') === false){
+        if(strpos($email->body, '<body') === false){
             $bodyParts[] = '<body>';
+            if($downloadLinkPosition == 'beforemailboxheader'){
+                $bodyParts[] = $downloadLink;
+            }
             $bodyParts[] = $header;
+            if($downloadLinkPosition == 'aftermailboxheader'){
+                $bodyParts[] = $downloadLink;
+            }
         } else{
-            $bodySource = str_replace('<body>', '<body>'.$header, $bodySource);
+            $headerText = $header;
+            // consider download link position
+            switch($downloadLinkPosition){
+                case 'beforemailboxheader':
+                    $headerText = $downloadLink . $header;
+                    break;
+                case 'aftermailboxheader':
+                    $headerText = $header . $downloadLink;
+                    break;
+            }
+            $bodySource = preg_replace('/<body.*?>/', '$0'.$headerText, $bodySource);
         }
 
         if(strpos($email->body, '</body>') === false){
             $bodyParts[] = $bodySource;
+            if($downloadLinkPosition == 'beforemailboxfooter'){
+                $bodyParts[] = $downloadLink;
+            }
             $bodyParts[] = $footer;
+            if($downloadLinkPosition == 'aftermailboxfooter'){
+                $bodyParts[] = $downloadLink;
+            }
             $bodyParts[] = '</body>';
         } else{
-            $bodySource = str_replace('</body>', $footer.'</body>', $bodySource);
+            $footerText = $footer;
+            // consider download link position
+            switch($downloadLinkPosition){
+                case 'beforemailboxfooter':
+                    $footerText = $downloadLink . $footer;
+                    break;
+                case 'aftermailboxfooter':
+                    $footerText = $footer . $downloadLink;
+                    break;
+            }
+            $bodySource = str_replace('</body>',$footerText.'</body>', $bodySource);
             $bodyParts[] = $bodySource;
         }
 
@@ -191,13 +212,59 @@ abstract class TransportHandler
 
         $email->body = $this->parseTemplateBodyOnly($emailTemplate, $email, $html);
 
+        // cleanup the last \n for IMAP
+        $email->body = str_replace("\n", "",  $email->body);
+
         $message = $this->composeEmail($email, $noSecurityCheck);
 
         // set the date sent
         $email->date_sent = $timedate->nowDb();
-
-        return (array) $this->dispatch( $message );
+        $email->status = $email::STATUS_SENT;
+        $result = $this->dispatch( $message, $email);
+        }
+        catch (Exception $exception) {
+            $email->status = $email::STATUS_SEND_ERROR;
+            $result = new DispatchResponse(false, [
+                'errors' => $exception->getMessage(),
+            ]);
+            LoggerManager::getLogger()->error(__FUNCTION__, 'e-mail was not sent. Status '.$email->status. ' for id '.$email->id.' . '.$exception->getMessage());
+        }
+        return (array) $result;
     }
+
+    /**
+     * Will parse the link for the download click in the e-mail body
+     * @param $email
+     * @return string
+     */
+    private function parseDownloadLink($email)
+    {
+        $landingPageUrl = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_landingpage_url');
+        if(substr($landingPageUrl, -1) == '/'){
+            $landingPageUrl = substr($landingPageUrl, 0,strlen($landingPageUrl)-1);
+        }
+        $landingPageId = substr($landingPageUrl, (strrpos($landingPageUrl, '/') + 1), strlen($landingPageUrl));
+        $landingPage = BeanFactory::getBean('LandingPages', $landingPageId);
+        $templateId = SpiceConfig::getInstance()->get('spiceattachments.downloadlink_textsnippet_id');
+
+        if ($landingPage && $email->id) {
+
+            $originalLink = "{$landingPageUrl}/{$email->id}";
+            if($landingPage){
+                $snippet = BeanFactory::getBean('TextSnippets', $templateId);
+                if($snippet){
+                    $downloadLink = $snippet->parse($landingPage, ['originalLink' => $originalLink]);
+                }
+            }
+            // fallback
+            if(empty($downloadLink)){
+                $downloadLink = "<div><a href=\"$originalLink\">Download Attachments</a></div>";
+            }
+        }
+
+        return $downloadLink;
+    }
+
 
     /**
      * parse template body only
@@ -259,7 +326,7 @@ abstract class TransportHandler
      * @param $message
      * @return DispatchResponse
      */
-    abstract protected function dispatch($message): DispatchResponse;
+    abstract protected function dispatch($message, $email): DispatchResponse;
 
     /**
      * checkConfiguration
@@ -315,18 +382,33 @@ abstract class TransportHandler
     }
 
     /**
-     * Can handle *one* address (as string) or a *list* of addresses (as array).
-     * @param $addressOrAddresses
+     * Check if an destination email address ist white listed or not.
+     * @param $destinationAddress
      * @return boolean
      */
     protected function isWhiteListed( string $destinationAddress ): bool
     {
         # Parse the (comma separated) content of the field "whitelist" and build an array
         $whiteAddresses = empty( $this->mailbox->whitelist ) ? [] : explode(',', $this->mailbox->whitelist );
+        foreach ( $whiteAddresses as $k => $v ) $whiteAddresses[$k] = trim($v); # Remove whitespace left and right, especially line breaks.
         # Check, if the destination address is one of the addresses in the array (ignoring space characters in case it is a phone number) and return true;
-        foreach ( $whiteAddresses as $address ) {
-            if ( mb_strtolower( str_replace(' ', '', $address )) === mb_strtolower( str_replace( ' ', '', $destinationAddress ))) return true;
+        foreach ( $whiteAddresses as $whiteAddress ) {
+            if ( self::compareToWhiteAddress( mb_strtolower( trim( $destinationAddress )), mb_strtolower( $whiteAddress ))) return true;
         }
         return false;
+    }
+
+    /**
+     * Compare an email address to an email address pattern that may contain a wildcard ("*").
+     * @param $destinationAddress
+     * @return boolean
+     */
+    protected static function compareToWhiteAddress( string $address, string $whiteAddress ): bool
+    {
+        $whiteAddressArray = explode('*', $whiteAddress);
+        foreach ( $whiteAddressArray as $k => $v ) $whiteAddressArray[$k] = preg_quote( $v );
+        $whiteAddress = implode('.*', $whiteAddressArray );
+        $result = preg_match( '/^'.$whiteAddress.'$/', $address );
+        return ( $result !== false and $result > 0 );
     }
 }

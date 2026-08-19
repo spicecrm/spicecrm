@@ -1,45 +1,19 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
 use Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\RESTManager;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceUI\SpiceUIRESTHandler;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
@@ -86,7 +60,7 @@ class CoreController
             'LBL_REMEMBER_DEVICE', 'LBL_CONFIRM', 'LBL_SMS', 'LBL_EMAIL', 'MSG_TOTP_GENERATING_CODE', 'LBL_SENDING', 'LBL_SENT', 'ERR_FAILED_TO_EXECUTE',
             'ERR_RECOVERY_MODE_ENABLED', 'ERR_MAINTENANCE_MODE_ENABLED', 'LBL_FORGOT_PASSWORD', 'LBL_EMAIL_ADDRESS_OR_USER_NAME', 'LBL_SEND',
             'MSG_TOKEN_WAS_SENT_VIA_EMAIL', 'LBL_ENTER_NEW_PASSWORD', 'LBL_REPEAT_NEW_PASSWORD', 'LBL_RESET_PASSWORD',
-            'LBL_LOGIN_WITH_PASSKEY', 'LBL_TO', 'MSG_RESEND_CODE_VIA_EMAIL', 'MSG_RESEND_CODE_VIA_SMS'
+            'LBL_LOGIN_WITH_PASSKEY', 'LBL_TO', 'MSG_RESEND_CODE_VIA_EMAIL', 'MSG_RESEND_CODE_VIA_SMS', 'LBL_PROCESSING'
         ]);
 
         // CR1000463 User Manager cleanup.. we need to know in frontend if spiceacl is running
@@ -103,10 +77,11 @@ class CoreController
             'version' => SpiceConfig::getSystemVersion(),
             'systemsettings' => [
                 'upload_maxsize' => SpiceConfig::getInstance()->config['upload_maxsize'],
-                'enableSettingUserPrefsByAdmin' => isset(SpiceConfig::getInstance()->config['enableSettingUserPrefsByAdmin']) ? (boolean)@SpiceConfig::getInstance()->config['enableSettingUserPrefsByAdmin'] : false,
+                'enableSettingUserPrefsByAdmin' => isset(SpiceConfig::getInstance()->config['enableSettingUserPrefsByAdmin']) ? (bool)@SpiceConfig::getInstance()->config['enableSettingUserPrefsByAdmin'] : false,
                 'aclcontroller' => $aclcontroller, //CR1000463
                 'stack_trace_errors' => SpiceUtils::getStackTrace(),
-                'international_email_addresses' => SpiceConfig::getInstance()->config['international_email_addresses'] ?? 0
+                'international_email_addresses' => SpiceConfig::getInstance()->config['international_email_addresses'] ?? 0,
+                'translatable_fields' => SpiceConfig::getInstance()->get('system.translatable_fields') ?? 0,
             ],
             'extensions' => RESTManager::getInstance()->extensions,
             'languages' => $languages,
@@ -118,12 +93,13 @@ class CoreController
             'socket_frontend' => SpiceConfig::getInstance()->config['core']['socket_frontend'],
             'loginSidebarUrl' => isset (SpiceConfig::getInstance()->config['uiLoginSidebarUrl'][0]) ? SpiceConfig::getInstance()->config['uiLoginSidebarUrl'] : false,
             'displayloginsidebar' => SpiceConfig::getInstance()->config['uiDisplayLoginSidebar'] ?: false,
-            'allowForgotPass' => (boolean)( SpiceConfig::getInstance()->config['uiAllowForgotPass'] ),
-            'ChangeRequestRequired' => isset(SpiceConfig::getInstance()->config['change_request_required']) ? (boolean)SpiceConfig::getInstance()->config['change_request_required'] : false,
+            'allowForgotPass' => (bool)( SpiceConfig::getInstance()->config['uiAllowForgotPass'] ),
+            'ChangeRequestRequired' => isset(SpiceConfig::getInstance()->config['change_request_required']) ? (bool)SpiceConfig::getInstance()->config['change_request_required'] : false,
             'sessionMaxLifetime' => (int)ini_get('session.gc_maxlifetime'),
             'unique_key' => SpiceConfig::getInstance()->config['unique_key'],
             'name' => SpiceConfig::getInstance()->config['system']['name'],
-            'assets' => $uiRestHandler->getAssets()
+            'assets' => $uiRestHandler->getAssets(),
+            'publicRoutes' => SpiceUIRoutesController::getPublicRoutes()
         ];
 
         $response = RESTManager::getInstance()->app->getResponseFactory()->createResponse();
@@ -223,7 +199,7 @@ class CoreController
 
         // see if the user has a default language set
         if (empty($language)) {
-            $language = $current_user->getPreference('language');
+            $language = $current_user?->getPreference('language');
         }
 
         // see if we have a language passed in .. if not use the default
@@ -292,6 +268,108 @@ class CoreController
 //        $extensionName = $args['extensionName'] ?: '';
         $res->getBody()->write(RESTManager::getInstance()->getSwagger($selectedRoute, $includeSubroutes, $extensions, $modules, $node));
         return $res->withHeader('Content-Type', 'text/yaml');
+    }
+
+    /**
+     * Get the list of clients for a specific route+method
+     */
+    public function getIpClients( $req, $res, $args )
+    {
+        $queryParams = $req->getQueryParams();
+        $clients = $this->loadClientAccess( $queryParams['routePattern'], $queryParams['routeMethod'], $numberOfFixDefined );
+
+        return $res->withJson([ 'adminComponent' => self::getIpClientsAdminComponent(), 'clients' => array_values( $clients ), 'numberOfFixDefined' => $numberOfFixDefined ]);
+    }
+
+    /**
+     * Load the list of clients for a specific route+method from the DB. Consider also hard-coded clients from the route definition.
+     */
+    public function loadClientAccess( $routePattern, $routeMethod, &$numberOfFixDefined )
+    {
+        $clients = self::loadClientAccessFromDB( $routePattern, $routeMethod );
+
+        $slimRoutes = RESTManager::getInstance()->app->getRouteCollector()->getRoutes();
+        foreach ( $slimRoutes as $route ) {
+            if ( $route->getPattern() == $routePattern and $route->getMethods()[0] == strtoupper( $routeMethod )) {
+                $routeDefinition = RESTManager::getInstance()->getRoute( $route->getIdentifier(), $routeMethod );
+                break;
+            }
+        }
+        $numberOfFixDefined = 0;
+        if ( isset( $routeDefinition['options']['ipClients'] )) {
+            if ( !is_array( $routeDefinition['options']['ipClients'] )) $routeDefinition['options']['ipClients'] = [$routeDefinition['options']['ipClients']];
+            foreach ( $routeDefinition['options']['ipClients'] as $client ) {
+                $clients[] = [
+                    'name' => $client,
+                    'access' => true,
+                    'fixDefined' => true
+                ];
+                $numberOfFixDefined++;
+            }
+        }
+        return $clients;
+    }
+
+    /**
+     * Set the authorized clients for a specific route+method.
+     */
+    public function setIpClientAccess( $req, $res, $args )
+    {
+        $bodyParams  = $req->getParsedBody();
+        $db = \SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory::getInstance();
+
+        $clientsInDB = self::loadClientAccessFromDB( $bodyParams['routePattern'], $bodyParams['routeMethod'] );
+
+        foreach ( $bodyParams['clients'] as $client ) {
+            if ( $client['access'] === true and $clientsInDB[$client['name']]['notDefined'] )
+                throw new BadRequestException("Unknown IP Client \"{$client['name']}\".");
+            else
+            {
+                if ( $clientsInDB[$client['name']]['access'] !== $client['access'] ) {
+                    if ( $client['access'] === false ) {
+                        $db->query( sprintf("DELETE FROM sysipclientroutes WHERE route_pattern = '%s' AND request_method = '%s' AND ip_client_name = '%s'", $db->quote( $bodyParams['routePattern'] ), $db->quote( $bodyParams['routeMethod'] ), $db->quote( $client['name'] ) ));
+                    } else {
+                        $db->query( sprintf("INSERT INTO sysipclientroutes ( id, route_pattern, request_method, ip_client_name ) VALUES ( UUID(), '%s', '%s', '%s' )", $db->quote( $bodyParams['routePattern'] ), $db->quote( $bodyParams['routeMethod'] ), $db->quote( $client['name'] ) ));
+                    }
+                }
+                $clientsInDB[$client['name']]['blabla'] = true;
+            }
+        }
+
+        $clients = $this->loadClientAccess( $bodyParams['routePattern'], $bodyParams['routeMethod'], $numberOfFixDefined );
+
+        return $res->withJson([ 'success' => true, 'clients' => array_values( $clients ), 'numberOfFixDefined' => $numberOfFixDefined ]);
+    }
+
+    /**
+     * Load the list of clients for a specific route/method from the DB.
+     */
+    public static function loadClientAccessFromDB( string $routePattern, string $routeMethod ): array
+    {
+        $db = DBManagerFactory::getInstance();
+        $clients = [];
+
+        $dbResult = $db->query("SELECT DISTINCT name, active FROM sysipclients");
+        while( $client = $db->fetchByAssoc( $dbResult ))
+            $clients[$client['name']] = [ 'name' => $client['name'], 'access' => false, 'active' => ( $client['active'] == 1 ) ];
+
+        $dbResult = $db->query( sprintf( "SELECT ip_client_name FROM sysipclientroutes WHERE route_pattern = '%s' and request_method = '%s'", $db->quote( $routePattern ), $db->quote( $routeMethod )));
+        while( $client = $db->fetchByAssoc( $dbResult )) {
+            if ( isset( $clients[$client['ip_client_name']] )) $clients[$client['ip_client_name']]['access'] = true;
+            else {
+                $clients[$client['ip_client_name']] = [ 'access' => true, 'name' => $client['ip_client_name'], 'notDefined' => true ];
+            }
+        }
+        return $clients;
+    }
+
+    /**
+     * Get ID and Component Configuration of the Admin Component for the admin action 'IP Clients'
+     */
+    public static function getIpClientsAdminComponent()
+    {
+        $db = DBManagerFactory::getInstance();
+        return $db->fetchOne("SELECT id, componentconfig FROM sysuiadmincomponents WHERE adminaction = 'IP Clients'");
     }
 
 }

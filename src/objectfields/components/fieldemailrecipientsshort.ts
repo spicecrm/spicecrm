@@ -12,7 +12,8 @@ import {Router} from '@angular/router';
 
 @Component({
     templateUrl: '../templates/fieldemailrecipientsshort.html',
-    styles: ['input, input:focus { border: none; outline: none;}']
+    styles: ['input, input:focus { border: none; outline: none;}'],
+    standalone: false
 })
 export class fieldEmailRecipientsShort extends fieldGeneric {
 
@@ -87,7 +88,7 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
                 // if the atring is an email address add it .. else do search
                 if (this.validateEmail(this.addAddress)) {
                     if (!this.model.getField('recipient_addresses')) {
-                        this.model.setField('recipient_addresses', []);
+                        this.model.setField('recipient_addresses', [], false);
                     }
 
                     this.model.getField('recipient_addresses').push({
@@ -127,7 +128,7 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
 
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.handleClick(event));
 
-            this.backend.getRequest('module/EmailAddresses/' + this.addAddress).subscribe(results => {
+            this.backend.getRequest('module/EmailAddresses/search/' + this.addAddress).subscribe(results => {
                 if (results.length > 0) {
                     this.searchResults = results;
                 } else {
@@ -151,7 +152,7 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
     public selectAddress(address) {
 
         if (!this.model.getField('recipient_addresses')) {
-            this.model.setField('recipient_addresses', []);
+            this.model.setField('recipient_addresses', [], false);
         }
 
         this.model.getField('recipient_addresses').push({

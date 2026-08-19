@@ -15,7 +15,8 @@ import {loggerService} from '../../services/logger.service';
  */
 @Component({
     selector: 'object-relatedlist-table',
-    templateUrl: '../templates/objectrelatedlisttable.html'
+    templateUrl: '../templates/objectrelatedlisttable.html',
+    standalone: false
 })
 export class ObjectRelatedlistTable implements OnInit {
 
@@ -189,10 +190,14 @@ export class ObjectRelatedlistTable implements OnInit {
 
         let actionitems = this.metadata.getActionSetItems(this.listitemactionset);
 
-        for (let actionitem of actionitems) {
-            if (actionitem.actionconfig.singlebutton || actionitem.actionconfig.displayasicon) {
-                this.singlebutton = true;
+        if(actionitems.length > 0) {
+            for (let actionitem of actionitems) {
+                if (actionitem.actionconfig.singlebutton || actionitem.actionconfig.displayasicon) {
+                    this.singlebutton = true;
+                }
             }
+        } else {
+            this.hideActions = true;
         }
     }
 

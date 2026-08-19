@@ -16,7 +16,8 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
  * renders a status field for the participation status
  */
 @Component({
-    templateUrl: '../templates/fieldactivityparticipationstatus.html'
+    templateUrl: '../templates/fieldactivityparticipationstatus.html',
+    standalone: false
 })
 export class fieldActivityParticipationStatus extends fieldGeneric implements OnInit {
 

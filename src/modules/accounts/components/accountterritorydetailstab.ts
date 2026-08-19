@@ -15,7 +15,8 @@ declare var _: any;
 @Component({
     selector: 'account-territory-details-tab',
     templateUrl: '../templates/accountterritorydetailstab.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 
 export class AccountTerritoryDetailsTab {

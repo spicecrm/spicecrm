@@ -9,7 +9,8 @@ import {toast} from "../../services/toast.service";
 
 @Component({
     selector: 'object-action-help-button',
-    templateUrl: '../templates/objectactionhelptextbutton.html'
+    templateUrl: '../templates/objectactionhelptextbutton.html',
+    standalone: false
 })
 
 /**

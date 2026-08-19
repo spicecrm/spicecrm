@@ -2,17 +2,18 @@
 namespace SpiceCRM\modules\Administration\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
-use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
-use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\modules\SystemDeploymentPackages\SystemDeploymentPackageSource;
-use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
-use SpiceCRM\includes\SpiceLanguages\SpiceLanguageLoader;
-use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageLoader;
+use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\modules\SystemDeploymentPackages\SystemDeploymentPackageSource;
+use Throwable;
 
 class PackageController {
 
@@ -100,6 +101,9 @@ class PackageController {
 
     public function loadPackage(Request $req, Response $res, array $args): Response {
         $this->checkAdmin();
+        // set a max time limit longer here
+        set_time_limit(300);
+        // load the package
         $confloader = new SpiceUIConfLoader($this->getRepoUrl($args['repository']));
         $result = ['response' => $confloader->loadPackage($args['package'], '*')];
         SpiceModules::getInstance()->loadModules(true);
@@ -171,7 +175,7 @@ class PackageController {
      * @param Response $res
      * @param array $args
      * @return Response
-     * @throws \Exception
+     * @throws Throwable
      */
     public function reloadSystemPackage(Request $req, Response $res, array $args): Response
     {

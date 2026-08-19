@@ -21,6 +21,7 @@ export interface DictionaryDefinition {
     sysdictionary_type: DictionaryType;
     sysdictionary_contenttype?: string;
     description?: string;
+    audited: number;
     version?: string;
     package?: string;
 }
@@ -50,14 +51,16 @@ export interface DictionaryItem {
     non_db?: number;
     exclude_from_audited?: number;
     required?: number;
+    unified_search?: number;
     default_value?: string;
     duplicate_merge?: number;
+    is_sensitive?: number;
     description?: string;
     version?: string;
     package?: string;
     addFields?: DomainField[];
     defined?:boolean;
-    cached?:boolean;
+    isVardef?:boolean;
     database?:boolean;
     selected?: boolean;
 }
@@ -103,6 +106,8 @@ export interface Relationship {
     join_sysdictionarydefinition_id?: string;
     join_lhs_sysdictionaryitem_id?: string;
     join_rhs_sysdictionaryitem_id?: string;
+    lhs_clone_join_table_record_on_duplicate?: number;
+    rhs_clone_join_table_record_on_duplicate?: number;
     relationship_role_column?: string;
     relationship_role_column_value?: string;
     deleted: number;

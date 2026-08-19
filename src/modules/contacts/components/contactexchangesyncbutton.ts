@@ -16,7 +16,8 @@ import {userpreferences} from "../../../services/userpreferences.service";
  * renders a button that toggles the exchange sync state
  */
 @Component({
-    templateUrl: "../templates/contactexchangesyncbutton.html"
+    templateUrl: "../templates/contactexchangesyncbutton.html",
+    standalone: false
 })
 export class ContactExchangeSyncButton implements OnDestroy {
 
@@ -84,11 +85,11 @@ export class ContactExchangeSyncButton implements OnDestroy {
     public setRoute(){
         this.route = 'module/Contacts/' + this.model.id;
         switch(this.userpreferences.getPreference('microsoftActiveService')){
-            case 'msgraph':
-                this.route+= '/msgraphsync';
+            case 'spicecrmexchange':
+                this.route+= '/exchangesync';
                 break;
             default:
-                this.route+= '/exchangesync';
+                this.route+= '/msgraphsync';
         }
     }
 

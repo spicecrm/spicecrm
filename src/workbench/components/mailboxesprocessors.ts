@@ -12,6 +12,7 @@ import {view} from "../../services/view.service";
 @Component({
     selector: "mailboxes-processors",
     templateUrl: "../templates/mailboxesprocessors.html",
+    standalone: false
 })
 export class MailboxesProcessors {
     public processors: any[] = [];
@@ -31,7 +32,7 @@ export class MailboxesProcessors {
 
     public addProcessor() {
         if (!this.model.getField('mailbox_processors')) {
-            this.model.setField('mailbox_processors',  []);
+            this.model.setField('mailbox_processors', []);
         }
 
         this.model.getField('mailbox_processors').push({

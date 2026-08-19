@@ -20,7 +20,7 @@ declare var moment: any;
 @Component({
     selector: 'field-duration',
     templateUrl: '../templates/fieldduration.html',
-
+    standalone: false
 })
 export class fieldDuration extends fieldGeneric {
     public isValid: boolean = true;
@@ -53,7 +53,7 @@ export class fieldDuration extends fieldGeneric {
 
 
     get editDurationHours() {
-        return this.model.getField(this.fieldhours);
+        return this.handleLeadingZero(this.model.getField(this.fieldhours));
     }
 
     set editDurationHours(hours) {
@@ -68,4 +68,11 @@ export class fieldDuration extends fieldGeneric {
         this.model.setField(this.fieldminutes, minutes);
     }
 
+    /**
+     * returns a string for the hours display with 2 digits
+     * @param hours
+     */
+    public handleLeadingZero(hours){
+        return String(hours).padStart(2, '0')
+    }
 }

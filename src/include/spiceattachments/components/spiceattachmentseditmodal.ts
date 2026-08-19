@@ -7,6 +7,7 @@ import {configurationService} from "../../../services/configuration.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {model} from "../../../services/model.service";
+import {modelattachments} from "../../../services/modelattachments.service";
 
 /**
  * Display edit fields for spice attachment
@@ -14,7 +15,8 @@ import {model} from "../../../services/model.service";
 @Component({
     selector: 'spice-attachments-edit-modal',
     templateUrl: '../templates/spiceattachmentseditmodal.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpiceAttachmentsEditModal implements OnInit {
     /**
@@ -40,6 +42,7 @@ export class SpiceAttachmentsEditModal implements OnInit {
     constructor(public configurationService: configurationService,
                 public toast: toast,
                 public language: language,
+                public modelattachments: modelattachments,
                 public model: model,
                 public backend: backend) {
     }
@@ -77,27 +80,32 @@ export class SpiceAttachmentsEditModal implements OnInit {
             display_name: this.inputData.display_name ? this.inputData.display_name : ''
         };
 
-        this.backend.postRequest('common/spiceattachments/' + this.attachment.id, {}, body).subscribe(res => {
-           if (!!res && !!res.success) {
+        this.backend.postRequest('common/spiceattachments/' + this.attachment.id, {}, body).subscribe({
+            next: (res) => {
+                if (!!res && !!res.success) {
 
-               if (!!this.inputData.category_ids && this.inputData.category_ids.join(',') != this.attachment.category_ids) {
-                   this.attachment.category_ids = this.inputData.category_ids.join(',');
-               }
-               if (this.inputData.text != this.attachment.text) {
-                   this.attachment.text = this.inputData.text;
-               }
-               if (this.inputData.display_name != this.attachment.display_name) {
-                   this.attachment.display_name = this.inputData.display_name;
-               }
+                    if (!!this.inputData.category_ids && this.inputData.category_ids.join(',') != this.attachment.category_ids) {
+                        this.attachment.category_ids = this.inputData.category_ids.join(',');
+                    }
+                    if (this.inputData.text != this.attachment.text) {
+                        this.attachment.text = this.inputData.text;
+                    }
+                    if (this.inputData.display_name != this.attachment.display_name) {
+                        this.attachment.display_name = this.inputData.display_name;
+                    }
 
-               this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
-           } else {
-               this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
-           }
-           this.self.destroy();
-        }, () => {
-            this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error');
-            this.self.destroy();
+                    this.modelattachments.fileActionPerformed.update(n => n + 1);
+
+                    this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
+                } else {
+                    this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+                }
+                this.self.destroy();
+            },
+            error: () => {
+                this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error');
+                this.self.destroy();
+            }
         });
     }
 }

@@ -21,7 +21,8 @@ declare var _;
  */
 @Component({
     selector: 'field-email-addresses',
-    templateUrl: '../templates/fieldemailaddresses.html'
+    templateUrl: '../templates/fieldemailaddresses.html',
+    standalone: false
 })
 export class fieldEmailAddresses extends fieldGeneric implements OnInit {
     /**
@@ -36,6 +37,10 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * true to display/hide input new email address
      */
     public isAdding: boolean = false;
+    /**
+     * true to set the focus in the input field of new email address
+     */
+    public hasFocus: boolean = false;
     /**
      * holds the current focused email address
      */
@@ -201,9 +206,11 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * disable adding new one before typing in
      */
     public startAdding() {
+        this.hasFocus = false;
 
         if (!this.canAdd) return;
 
+        if(this.canAdd && !this.isAdding) this.hasFocus = true;
         this.isAdding = true;
         this.canAdd = false;
     }

@@ -18,10 +18,11 @@ import { fieldGeneric } from '../../../objectfields/components/fieldgeneric';
 import { mediafiles } from '../../../services/mediafiles.service';
 import { backend } from '../../../services/backend.service';
 
-@Component( {
+@Component({
     selector: 'field-media-file-image',
     templateUrl: '../templates/fieldmediafileimage.html',
-    providers: [ mediafiles ],
+    providers: [mediafiles],
+    standalone: false
 })
 export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
 
@@ -242,13 +243,6 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
             this.model.startEdit();
             this.view.setEditMode( this.fieldid );
         }
-    }
-
-    /**
-     * Is the field editable?
-     */
-    public isEditable(): boolean {
-        return this.getStati( this.fieldname ).editable && !this.getStati( this.fieldname ).readonly && !this.getStati( this.fieldname ).disabled && !this.getStati( this.fieldname ).hidden;
     }
 
     public ngOnDestroy() {

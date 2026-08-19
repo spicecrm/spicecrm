@@ -1,8 +1,7 @@
 <?php
 namespace SpiceCRM\includes\SpiceDictionary;
 
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 /**
  * a loader for the domains and domain validations
@@ -12,9 +11,38 @@ use SpiceCRM\includes\SpiceCache\SpiceCache;
  */
 class SpiceDictionaryDomainLoader
 {
+    /**
+     * loads the domains to the frontend
+     *
+     * @return array|array[]
+     */
+    public function loadDomains(){
+        return array_map(function($d){return [
+            'id' => $d['id'],
+            'name' => $d['name']
+        ];}, SpiceDictionaryDomains::getInstance()->getDomains());
+    }
+
+    /**
+     * loads the domainfields to the frontend
+     *
+     * @return array|array[]
+     */
+    public function loadDomainFields(){
+        return array_map(function($d){return [
+            'id' => $d['id'],
+            'sysdomaindefinition_id' => $d['sysdomaindefinition_id'],
+            'sequence' => (int) $d['sequence'],
+            'name' => $d['name'],
+            'label' => $d['label'],
+            'sysdomainfieldvalidation_id' => $d['sysdomainfieldvalidation_id']
+        ];}, SpiceDictionaryDomainFields::getInstance()->getDomainFields());
+    }
+
+
     public function loadDomainValidations()
     {
-        return SpiceDictionaryDomainValidations::getInstance()->domainValidations;
+        return SpiceDictionaryDomainValidations::getInstance()->domainValidationsWithValues;
     }
 
     /**

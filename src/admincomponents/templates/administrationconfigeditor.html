@@ -1,8 +1,8 @@
 <div class="slds-grid slds-grid--align-spread slds-p-around--medium">
     <h2 class="slds-text-heading--medium "><system-label [label]="label"></system-label></h2>
     <ng-container *ngIf="canCopyPaste">
-        <button class="slds-button slds-button--icon-border slds-button--neutral slds-col_bump-left" [disabled]="this.loading" (click)="copyData()"><system-button-icon icon="copy" size="medium"></system-button-icon></button>
-        <button class="slds-button slds-button--icon-border slds-button--neutral slds-m-right--medium" [disabled]="this.loading" (click)="pasteData()"><system-button-icon icon="paste" size="medium"></system-button-icon></button>
+        <button class="slds-button slds-button--icon-border slds-button--neutral slds-col_bump-left" [disabled]="loading" (click)="copyData()"><system-button-icon icon="copy" size="medium"></system-button-icon></button>
+        <button class="slds-button slds-button--icon-border slds-button--neutral slds-m-right--medium" [disabled]="loading" (click)="pasteData()"><system-button-icon icon="paste" size="medium"></system-button-icon></button>
     </ng-container>
     <button class="slds-button slds-button--neutral" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
 </div>
@@ -24,13 +24,25 @@
                     <div *ngIf="!item.label">{{item.name}}</div>
                 </td>
                 <td>
-                    <ng-container [ngSwitch]="item.type">
-                        <system-checkbox *ngSwitchCase="'bool'" [(ngModel)]="configvalues[item.name]" [asinteger]="true"></system-checkbox>
-                        <administration-configeditor-enum *ngSwitchCase="'enum'" [value]="configvalues[item.name]" (newvalue)="configvalues[item.name] = $event" [options]="item.options"></administration-configeditor-enum>
-                        <div *ngSwitchDefault class="slds-form-element__control">
-                            <input type="text" class="slds-input" [disabled]="loading" [(ngModel)]="configvalues[item.name]" />
-                        </div>
-                    </ng-container>
+                    @switch(item.type){
+                        @case('bool'){
+                            <system-checkbox [(ngModel)]="configvalues[item.name]" [asinteger]="true"></system-checkbox>
+                        }
+                        @case('enum'){
+                            <administration-configeditor-enum  [value]="configvalues[item.name]" (newvalue)="configvalues[item.name] = $event" [options]="item.options"></administration-configeditor-enum>
+                        }
+                        @case('json'){
+                            <system-source-editor [(ngModel)]="configvalues[item.name]" language="json" style="height: 300px; width: 100%"/>
+                        }
+                        @case('country'){
+                            <system-input-country system-input-country-strict [(ngModel)]="configvalues[item.name]"/>
+                        }
+                        @default{
+                            <div class="slds-form-element__control">
+                                <input type="text" class="slds-input" [disabled]="loading" [(ngModel)]="configvalues[item.name]"/>
+                            </div>
+                        }
+                    }
                 </td>
             </tr>
         </tbody>

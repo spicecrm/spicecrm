@@ -3,22 +3,23 @@ namespace SpiceCRM\includes\utils;
 
 use DateTime;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ValidationException;
 use SpiceCRM\includes\Localization\Localization;
+use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidations;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\data\SpiceBean;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SysCategoryTrees\SysCategoryTree;
+use SpiceCRM\includes\TimeDate;
 
 /**
  * Class SpiceUtils
@@ -238,7 +239,7 @@ class SpiceUtils
     public static function spiceCleanup(bool $exit = false) {
         if (SpiceConfig::getInstance()->configExists()) { // workaround for installer for now. variable is set in SpiceInstallerController ... find a better way
             $db = DBManagerFactory::getInstance();
-            if($db) $db->disconnect();
+            if($db && $db->database) $db->disconnect();
         }
         if ($exit) {
             exit;
@@ -1579,7 +1580,7 @@ class SpiceUtils
 
         if($field){
             foreach($treeLinks as $treeLink){
-                if($treeLink['module_field'] == $field){
+                if(in_array($field, [$treeLink['module_field'], $treeLink['module_field_c1'], $treeLink['module_field_c2'], $treeLink['module_field_c3'], $treeLink['module_field_c4']])){
                     $treeId = $treeLink['syscategorytree_id'];
                     break;
                 }

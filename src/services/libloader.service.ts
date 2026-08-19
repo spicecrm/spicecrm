@@ -128,6 +128,36 @@ export class libloader {
     }
 
     /**
+     * remove loaded lib script
+     * @param name
+     */
+    public unloadLib(name: string) {
+
+        const lib = this.loadedLibs.find(lib => lib.name == name);
+
+        if (!lib) return;
+
+        this.scripts[lib.name].forEach(script => {
+            this.removeLibFromHead(script.src);
+        });
+
+        this.loadedLibs = this.loadedLibs.filter(lib => lib.name != name);
+    }
+
+    /**
+     * remove library element from head
+     * @param src
+     */
+    public removeLibFromHead(src: string) {
+
+        const scriptElement = document.head.querySelector(`link[href="${src}"],script[src="${src}"]`);
+
+        if (scriptElement) {
+            scriptElement.remove();
+        }
+    }
+
+    /**
      * async function to load libs waiting for themn to be loaded ina  sequence
      *
      * @param scripts

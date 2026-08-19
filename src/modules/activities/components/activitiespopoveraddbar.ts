@@ -14,6 +14,7 @@ import {metadata} from '../../../services/metadata.service';
  */
 @Component({
     templateUrl: '../templates/activitiespopoveraddbar.html',
+    standalone: false
 })
 export class ActivitiesPopoverAddBar implements OnInit{
 

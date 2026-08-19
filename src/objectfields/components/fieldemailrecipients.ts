@@ -18,7 +18,8 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
  */
 @Component({
     selector: 'field-email-recipients',
-    templateUrl: '../templates/fieldemailrecipients.html'
+    templateUrl: '../templates/fieldemailrecipients.html',
+    standalone: false
 })
 export class fieldEmailRecipients extends fieldGeneric implements OnInit {
     /**
@@ -83,7 +84,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
      * @param val the new value
      */
     set value(val) {
-        this.model.setField('recipient_addresses', val);
+        this.model.setField('recipient_addresses', val, false);
     }
 
     /**

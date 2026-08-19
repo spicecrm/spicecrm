@@ -8,12 +8,18 @@ import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 
 @Component({
-    templateUrl: '../templates/objectrelatecontainer.html'
+    templateUrl: '../templates/objectrelatecontainer.html',
+    standalone: false
 })
 export class ObjectRelateContainer implements OnInit {
 
     public componentconfig: any = {};
     public componentset: string;
+
+    /**
+     * holds an array with items for the number of stencils to be rendered
+     */
+    public stencils: any[] = [];
 
     constructor(public model: model, public metadata: metadata) {
     }
@@ -24,6 +30,14 @@ export class ObjectRelateContainer implements OnInit {
             this.componentset = componentconfig.componentset;
         } else {
             this.componentset = this.componentconfig.componentset;
+        }
+
+        // fill the array with items so the stencils get rendered. Default is 3 but can be set from the config
+        // get the componentset components
+        if(this.componentset && !this.componentconfig.stencils) {
+            this.stencils= Array(this.metadata.getComponentSetObjects(this.componentset).length ?? 3);
+        } else {
+            this.stencils = Array(this.componentconfig.stencils ?? 3);
         }
     }
 

@@ -17,6 +17,7 @@ import {modal} from '../../services/modal.service';
 @Component({
     selector: 'object-list-header-actions-export-csv-button',
     templateUrl: '../templates/objectlistheaderactionsexportcsvbutton.html',
+    standalone: false
 })
 export class ObjectListHeaderActionsExportCSVButton {
 

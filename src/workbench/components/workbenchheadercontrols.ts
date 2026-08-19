@@ -11,6 +11,7 @@ import {
 @Component({
     selector: 'workbench-header-controls',
     templateUrl: '../templates/workbenchheadercontrols.html',
+    standalone: false
 })
 export class WorkbenchHeaderControls {
 

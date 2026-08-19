@@ -1,0 +1,87 @@
+<div class="slds-p-around--xx-small slds-grid slds-grid--vertical-align-center slds-theme--default">
+    <system-input-text placeholder="LBL_SEARCH" class="slds-grow" [(ngModel)]="definitionfilterterm" autocomplete="off" [showClear]="true"></system-input-text>
+    <system-select-icon class="slds-p-left--xx-small" [(ngModel)]="definitionfilterscope">
+        <system-select-icon-item></system-select-icon-item>
+        <system-select-icon-item value="g" icon="world"></system-select-icon-item>
+        <system-select-icon-item value="c" icon="people"></system-select-icon-item>
+    </system-select-icon>
+    <system-select-icon class="slds-p-left--xx-small" [(ngModel)]="definitionfilterstatus">
+        <system-select-icon-item></system-select-icon-item>
+        <system-select-icon-item value="d" icon="light_bulb" colorclass="slds-icon-text-warning"></system-select-icon-item>
+        <system-select-icon-item value="a" icon="light_bulb" colorclass="slds-icon-text-success"></system-select-icon-item>
+        <system-select-icon-item value="i" icon="light_bulb" colorclass="slds-icon-text-light"></system-select-icon-item>
+    </system-select-icon>
+    <div class="slds-select_container slds-p-left--xx-small">
+        <select class="slds-select" [(ngModel)]="definitionfiltertype">
+            <option value=""><system-label label="LBL_ALL"></system-label></option>
+            <option value="primary"><system-label label="LBL_PRIMARY"></system-label></option>
+            <option value="unique"><system-label label="LBL_UNIQUE"></system-label></option>
+            <option value="index"><system-label label="LBL_INDEX"></system-label></option>
+            <option value="foreign"><system-label label="LBL_FOREIGN"></system-label></option>
+        </select>
+    </div>
+</div>
+<div class="slds-border--top slds-scrollable" system-to-bottom>
+    <table class="slds-table slds-table--fixed-layout slds-table_bordered slds-table--header-fixed">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th style="width:2.5rem" scope="col"></th>
+                <th class="" scope="col">
+                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_NAME"></system-label></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_TABLE"></system-label></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_TYPE"></system-label></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_FIELDS"></system-label></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_PACKAGE"></system-label></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_VERSION"></system-label></div>
+                </th>
+                <th style="width:3rem" scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(dictionaryindex of dictionaryindexesdefinitions; track dictionaryindex.id) {
+                <tr class="slds-hint-parent">
+                    <td>
+                        <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionaryindex.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
+                        <dictionary-manager-item-status [ngModel]="dictionaryindex.status" (ngModelChange)="setStatus(dictionaryindex, $event)"></dictionary-manager-item-status>
+                    </td>
+                    <td data-label="Dictionary" title="{{dictionaryindex.name}}">
+                        <div class="slds-truncate">{{ dictionaryindex.name }}</div>
+                    </td>
+                    <td data-label="Table">
+                        <div class="slds-truncate">{{dictionarymanager.getDictionaryDefinitionTableName(dictionaryindex.sysdictionarydefinition_id)}}</div>
+                    </td>
+                    <td data-label="Type">
+                        <div class="slds-truncate">{{ dictionaryindex.indextype }}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{getIndexFields(dictionaryindex.id)}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{dictionaryindex.package}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{dictionaryindex.version}}</div>
+                    </td>
+                    <td>
+                        <button class="slds-button slds-button--icon" [disabled]="dictionaryindex.status == 'a'" (click)="editDictionaryIndex(dictionaryindex)">
+                            <system-button-icon size="xx-small" icon="edit"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--icon" [disabled]="dictionaryindex.status == 'a' || !dictionarymanager.canChange(dictionaryindex.scope)" (click)="delete(dictionaryindex.id)">
+                            <system-button-icon size="xx-small" icon="delete"></system-button-icon>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

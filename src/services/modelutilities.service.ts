@@ -55,6 +55,54 @@ export class modelutilities {
         return regexExp.test(param) == true;
     }
 
+    /**
+     * Checks and formats the content of a field when converting its type from 'text' to 'html'.
+     * @param value The value of the field to be checked and formatted.
+     * @returns The formatted value as an HTML string or the original value.
+     */
+    public checkHtmlFieldTypeContent(value: string): string {
+
+        const REGEX = {
+            lineBreaks: /\r?\n/,
+            htmlTags: /(?<!\w)<|>(?!\w)/g
+        };
+
+        // Helper function to format plain text with line breaks
+        const formatLineBreaks = (text: string): string => {
+            return text
+                .trim()
+                .split(REGEX.lineBreaks)
+                .filter(Boolean)
+                .map(line => `<div>${line}</div><br>`)
+                .join(' ');
+        };
+
+        const hasLineBreaks = REGEX.lineBreaks.test(value);
+        const hasHtmlTags = REGEX.htmlTags.test(value);
+
+        // Case 1: Only line breaks, no HTML
+        if (hasLineBreaks && !hasHtmlTags) {
+            return formatLineBreaks(value);
+        }
+
+        // Case 2: Only HTML, no line breaks
+        if (hasHtmlTags && !hasLineBreaks) {
+            return value;
+        }
+
+        // Case 3: Both HTML and line breaks
+        if (hasHtmlTags && hasLineBreaks) {
+            const htmlTagIndex = value.indexOf('<');
+            const plainText = value.slice(0, htmlTagIndex).trim();
+            const htmlContent = value.slice(htmlTagIndex).trim();
+
+            return formatLineBreaks(plainText) + htmlContent;
+        }
+
+        // Default case: No special formatting needed
+        return value;
+    }
+
     /*
      Data transition functions
      */
@@ -79,6 +127,11 @@ export class modelutilities {
                 if (moment.isMoment(value)) return value; // check if the object is already a moment object
                 let pDate = moment(value); // without a specific time zone, because it´s only a date (without time)
                 return pDate.isValid() ? pDate : null;
+            case "time":
+                if (!value) return null;
+                if (moment.isMoment(value)) return value;
+                const pTime = moment.utc(`1970-01-01 ${value}`); // without a specific time zone, because it's only a time
+                return pTime.isValid() ? pTime : null;
             case "datetime":
             case "datetimecombo":
                 if (moment.isMoment(value)) return value; // check if the object is already a moment object
@@ -114,6 +167,8 @@ export class modelutilities {
                     }
                 }
                 return value;
+            case "html":
+                return this.checkHtmlFieldTypeContent(value);
             default:
                 return value;
         }
@@ -150,6 +205,14 @@ export class modelutilities {
                     return pDate.isValid() ? pDate.format('YYYY-MM-DD') : ''; // ... to validate it and to format it.
                 } else if (value && value._isAMomentObject) { // It is a moment object (the usual case).
                     return value.isValid() ? value.format('YYYY-MM-DD') : ''; // Validate it and format it for the backend (without a specific time zone, because it´s only a date).
+                }
+                return '';
+            case "time":
+                if (typeof value === 'string') { // A date field should not be a string, it should be a moment object. Anyway, if it happens, it is handled here.
+                    const pTime = moment(value); // We create a moment object from the string (without a specific time zone, because it´s only a date) ...
+                    return pTime.isValid() ? pTime.format('HH:mm:ss') : ''; // ... to validate it and to format it.
+                } else if (value && value._isAMomentObject) { // It is a moment object (the usual case).
+                    return value.isValid() ? value.format('HH:mm:ss') : ''; // Validate it and format it for the backend (without a specific time zone, because it´s only a date).
                 }
                 return '';
             case "datetime":

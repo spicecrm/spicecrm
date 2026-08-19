@@ -2,52 +2,29 @@
 
 namespace SpiceCRM\includes\authentication\SpiceCRMAuthenticate;
 
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 use DateTime;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\extensions\modules\TextMessageTemplates\TextMessageTemplate;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceGateway\SpiceGatewayClientHandler;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
+use SpiceCRM\includes\SpiceTemplateCompiler\System;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\UserAccessLogs\UserAccessLog;
 use SpiceCRM\modules\Users\User;
-use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * user password management
@@ -57,11 +34,11 @@ class SpiceCRMPasswordUtils
     /**
      * @param string $username
      * @param string $newPwd
-     * @param false $sendByEmail
+     * @param false $sendBySystem
      * @return bool
      * @throws Exception | ForbiddenException | NotFoundException
      */
-    public function changePassword(string $username, string $newPwd, bool $sendByEmail = false): bool
+    public function changePassword(string $username, string $newPwd, bool $sendBySystem = false): bool
     {
         if (AuthenticationController::getInstance()->getCanChangePassword() === false) {
             throw new ForbiddenException("Password Change not allowed");
@@ -71,7 +48,7 @@ class SpiceCRMPasswordUtils
 
         $passwordUtils = AuthenticationController::getInstance()->getPasswordUtilsInstance();
 
-        return $passwordUtils->setNewPassword($userObj, $newPwd, $sendByEmail, false);
+        return $passwordUtils->setNewPassword($userObj, $newPwd, $sendBySystem, false);
     }
 
     /**
@@ -81,16 +58,49 @@ class SpiceCRMPasswordUtils
      * @param bool $sendByEmail
      * @param bool $systemGeneratedPassword
      * @return bool
-     * @throws Exception
+     * @throws \Exception
      */
     public function setNewPassword(User $userObj, string $newPassword, bool $sendByEmail, bool $systemGeneratedPassword): bool
     {
         $userObj->setNewPassword($newPassword, $systemGeneratedPassword ? '1' : '0');
+
         if ($sendByEmail) {
-            $emailTempl = $this->getProperEmailTemplate($userObj, 'sendCredentials');
-            $userObj->sendPasswordToUser($emailTempl, ['password' => $newPassword]);
+            $configs = self::getSendCredentialConfigs('password');
+
+            if (!$configs->channel) {
+                throw new ForbiddenException("Send password not allowed check login management settings");
+            }
+
+            $template = null;
+            # gateway mailbox does not require email template. The template must be defined on the gateway server
+            if ($configs->mailboxId != 'gateway') {
+                $template = $this->getChannelTemplateByType($userObj, 'sendPassword', $configs->channel);
+            }
+            $userObj->sendCredentialToUser($template, 'password', ['password' => $newPassword, 'source_frontend_url' => (new System())->frontend_url()]);
         }
+
         return true;
+    }
+
+    /**
+     * check and get the send-credential configs
+     * @param string $property the credential property name (password, username)
+     * @return object
+     * @throws \Exception
+     */
+    public static function getSendCredentialConfigs(string $property): object
+    {
+        $sendChannel = SpiceConfig::getInstance()->get("passwordsetting.send_{$property}_channel");
+        $mailbox = SpiceConfig::getInstance()->get("passwordsetting.send_{$property}_channel_mailbox_id");
+
+        if (!$mailbox || !$sendChannel) {
+            throw new \Exception("send_{$property}_channel is not set in the login management settings");
+        }
+
+        return (object)[
+            "channel" => $sendChannel,
+            "mailboxId" => $mailbox,
+        ];
     }
 
     /**
@@ -163,40 +173,53 @@ class SpiceCRMPasswordUtils
     /**
      * get proper token email template
      * @param $userIdOrBean
-     * @param $type string
-     * @return ?EmailTemplate
-     * @throws Exception
+     * @param $templateType string
+     * @param string $channel
+     * @return EmailTemplate|TextMessageTemplate
+     * @throws \Exception
      */
-    public function getProperEmailTemplate($userIdOrBean, $type): ?EmailTemplate
+    public static function getChannelTemplateByType($userIdOrBean, string $templateType, string $channel): EmailTemplate | TextMessageTemplate
     {
+        $templateModule = $channel == 'sms' ? 'TextMessageTemplates' : 'EmailTemplates';
+        $parentField = $channel == 'sms' ? 'parent_type' : 'for_bean';
 
         if (!is_object($userIdOrBean)) {
+            /** @var User $user */
             $user = BeanFactory::getBean('Users', $userIdOrBean);
-            if (empty($user->id)) throw (new Exception('Could not compose Email. Contact the administrator.'))->setLogMessage('Could not retrieve user with ID "' . $userIdOrBean . '"');
-        } else $user = $userIdOrBean;
 
-        $destUserPrefs = BeanFactory::getBean('UserPreferences')->setUser($user);
-        $destUserPrefs->reloadPreferences();
-        $destLang = $destUserPrefs->getPreference('language');
+            if (empty($user->id)) {
+                throw (new Exception("Could not compose $channel. Contact the administrator."))
+                    ->setLogMessage("'Could not retrieve user with ID '$userIdOrBean'");
+            }
+        } else {
+            $user = $userIdOrBean;
+        }
+
+        $destLang = $user->getPreference('language');
         if (!isset($destLang[0])) $destLang = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
         if (!isset($destLang[0])) $destLang = 'en_us';
 
-        /** @var EmailTemplate $emailTempl */
-        $emailTempl = BeanFactory::getBean('EmailTemplates');
-        if ($emailTempl === false) {
-            throw new \Exception("Unable to instanciate EmailTemplates. Email Package loaded?");
-        }
-        $emailTempl->retrieve_by_string_fields(['type' => $type, 'language' => $destLang], false);
+        /** @var EmailTemplate | TextMessageTemplate $template */
+        $template = BeanFactory::getBean($templateModule);
 
-        if (empty($emailTempl->id)) {
-            LoggerManager::getLogger()->warn('Could not retrieve email template "' . $type . '" for language "' . $destLang . '", will try "en_us" instead');
-            $destLang = 'en_us';
-            $emailTempl->retrieve_by_string_fields(['for_bean' => 'Users', 'type' => $type, 'language' => $destLang], false);
-            if (empty($emailTempl->id)) throw (new Exception('Could not compose Email. Contact the administrator.'))->setLogMessage('Could not retrieve email template "' . $type . '" (for language "' . $destLang . '")');
+        if ($template === false) {
+            throw new Exception("Unable to instantiate $templateModule. Check if $channel Package loaded");
         }
 
-        return $emailTempl;
+        $template->retrieve_by_string_fields(['type' => $templateType, 'language' => $destLang]);
 
+        # if no template with the passed language was found, try to find the template in en_us language
+        if (empty($template->id)) {
+
+            $template->retrieve_by_string_fields([$parentField => 'Users', 'type' => $templateType, 'language' => 'en_us']);
+
+            if (empty($template->id)) {
+                throw (new Exception("Could not compose $channel. Contact the administrator."))
+                    ->setLogMessage("'Could not retrieve email template $templateType (for language '$destLang')");
+            }
+        }
+
+        return $template;
     }
 
     /**
@@ -238,39 +261,47 @@ class SpiceCRMPasswordUtils
         //delete old token
         $db->query(sprintf("delete from users_password_tokens where id != '%s' and user_id = '%s'", $db->quote($token), $user_id));
 
-        $emailTempl = $this->getProperEmailTemplate($user_id, 'sendTokenForNewPassword');
-        $emailTempl->disable_row_level_security = true;
+        $sendChannel = SpiceConfig::getInstance()->get('passwordsetting.send_password_channel');
+        $mailboxId = SpiceConfig::getInstance()->get('passwordsetting.send_password_channel_mailbox_id');
 
-        //replace instance variables in email templates
-        $memmy = $emailTempl->parse(null, ['token' => $token]);
-        $emailTempl->body_html = $memmy['body_html'];
-        $emailTempl->body = $memmy['body'];
-        $emailTempl->subject = $memmy['subject'];
+        if (!$sendChannel) {
+            throw new ForbiddenException("Send token not allowed check login management settings");
+        }
 
-        /** @var Email $emailObj */
-        $emailObj = BeanFactory::getBean('Emails');
+        if ($mailboxId == 'gateway') {
 
-        $emailObj->name = DBUtils::fromHtml($emailTempl->subject);
-        $emailObj->body = DBUtils::fromHtml($emailTempl->body_html);
-        $emailObj->addEmailAddress('to', $email);
-        $emailObj->to_be_sent = true;
-        $result = $emailObj->save();
+            if ($sendChannel == 'sms') {
+                SpiceGatewayClientHandler::sendTemplateTypeSMS(
+                    $userObj->phone_mobile,'sendTokenForNewPassword', ['token' => $token], $userObj->getPreference('language')
+                );
+            } else {
+                SpiceGatewayClientHandler::sendTemplateTypeEmail(
+                    [['type' => 'to', 'email' => $userObj->email1]],'sendTokenForNewPassword', ['token' => $token], $userObj->getPreference('language')
+                );
+            }
 
-        if ($result['result'] == true) {
-            $emailObj->to_be_sent = false;
-            $emailObj->team_id = 1;
-            $emailObj->to_addrs = '';
-            $emailObj->type = 'archived';
-            $emailObj->deleted = '0';
-            $emailObj->parent_type = 'User';
-            $emailObj->mailbox_id = SpiceConfig::getInstance()->config['passwordsetting']['mailbox'];
-            $emailObj->date_sent = TimeDate::getInstance()->nowDb();
-            $emailObj->modified_user_id = '1';
-            $emailObj->created_by = '1';
-            $emailObj->status = 'sent';
-            $emailObj->save();
         } else {
-            throw new Exception("Unable to send email");
+
+            $emailTempl = $this->getChannelTemplateByType($user_id, 'sendTokenForNewPassword', $sendChannel);
+
+            //replace instance variables in email templates
+            $memmy = $emailTempl->parse(null, ['token' => $token]);
+            $emailTempl->body_html = $memmy['body_html'];
+            $emailTempl->body = $memmy['body'];
+            $emailTempl->subject = $memmy['subject'];
+
+            /** @var Email $emailObj */
+            $emailObj = BeanFactory::getBean('Emails');
+
+            $emailObj->name = DBUtils::fromHtml($emailTempl->subject);
+            $emailObj->body = DBUtils::fromHtml($emailTempl->body_html);
+            $emailObj->mailbox_id = $mailboxId;
+            $emailObj->addEmailAddress('to', $email);
+            $result = $emailObj->sendEmail();
+
+            if (!$result['result']) {
+                throw new Exception("Unable to send email");
+            }
         }
 
         return true;

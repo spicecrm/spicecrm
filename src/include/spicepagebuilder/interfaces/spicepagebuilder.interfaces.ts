@@ -1,3 +1,5 @@
+import {SafeResourceUrl} from "@angular/platform-browser";
+
 /**
  * container element to be rendered in the view
  */
@@ -5,6 +7,7 @@ export interface TagElementI {
     tagName: string;
     attributes: any;
     children: any[];
+    id?: string;
 }
 /**
  * body element that will be rendered in the view
@@ -14,7 +17,8 @@ export interface BodyI extends TagElementI {
     attributes: {
         'background-color'?: string,
         'width'?: string,
-        'css-class'?: string
+        'css-class'?: string,
+        'trackinglinkall'?:boolean
     };
 }
 /**
@@ -36,6 +40,8 @@ export interface SectionI extends TagElementI {
         'background-repeat'?: string;
         'background-size'?: string;
         'background-url'?: string;
+        'is-group'?:boolean;
+        'media-article'?: string
     };
 }
 /**
@@ -45,7 +51,8 @@ export interface CustomElement {
     id?: string,
     name: string,
     type: 'section' | 'item',
-    content: SectionI | ContentElementI
+    content: SectionI | ContentElementI,
+    image?: number
 }
 /**
  * column element to be rendered in the view
@@ -70,9 +77,11 @@ export interface ColumnI extends TagElementI {
  * content element to be rendered in the view
  */
 export interface ContentElementI {
-    label: string,
+    label?: string,
     tagName: string;
     attributes: any;
+    'media-article-part'?: string;
+    id?: string;
 }
 /**
  * divider element to be rendered in the view
@@ -85,7 +94,8 @@ export interface DividerI extends ContentElementI {
         'border-width'?: string,
         'padding'?: string,
         'css-class'?: string,
-        'width'?: string
+        'width'?: string,
+        align?: string
     };
 }
 /**
@@ -164,23 +174,28 @@ export interface RSSI extends ContentElementI {
  */
 export interface ImageI extends ContentElementI {
     attributes: {
-        'href?': string,
-        'align?': string,
-        'alt'?: string,
-        'src': string,
-        'title'?: string,
-        'border'?: string,
+        href?: string,
+        align?: string,
+        alt?: string,
+        src: string,
+        title?: string,
+        border?: string,
         'border-radius'?: string,
         'container-background-color'?: string,
-        'height'?: string,
-        'padding'?: string,
+        height?: string,
+        padding?: string,
         'css-class'?: string,
-        'fluid-on-mobile'?: 'true'|'false',
-        'rel'?: string,
-        'srcset'?: string,
-        'target'?: string,
-        'width'?: string
+        'fluid-on-mobile'?: 'true' | 'false',
+        rel?: string,
+        srcset?: string,
+        target?: string,
+        width?: string,
+        isArticleImage?: boolean
     };
+}
+
+export interface ImageUrlI extends ImageI {
+    content: string
 }
 /**
  * spacer element to be rendered in the view
@@ -200,7 +215,6 @@ export interface SpacerI extends ContentElementI {
  */
 export interface TextI extends ContentElementI {
     content: string;
-    editorType: 'richText' | 'html';
     attributes: {
         'color'?: string,
         'container-background-color'?: string,
@@ -214,7 +228,8 @@ export interface TextI extends ContentElementI {
         'text-transform'?: string,
         'align'?: string,
         'padding'?: string,
-        'css-class'?: string
+        'css-class'?: string,
+        'line-height-auto'?: boolean;
     };
 }
 /**
@@ -222,6 +237,76 @@ export interface TextI extends ContentElementI {
  */
 export interface HTMLCodeI extends ContentElementI {
     content: string;
+}
+/**
+ * spacer element to be rendered in the view
+ */
+export interface SocialMediaI extends TagElementI {
+    children: SocialMediaElementI[];
+    attributes: {
+        'attribute'?: string,
+        'align'?: string,
+        'border-radius'?: string,
+        'color'?: string,
+        'css-class'?: string,
+        'container-background-color'?: string,
+        'font-family'?: string,
+        'font-size'?: string,
+        'font-style'?: string,
+        'font-weight'?: string,
+        'icon-height'?: string,
+        'icon-size'?: string,
+        'inner-padding'?: string,
+        'line-height'?: string,
+        'mode'?: 'vertical' | 'horizontal',
+        'padding'?: string,
+        'padding-bottom'?: string,
+        'padding-left'?: string,
+        'padding-right'?: string,
+        'padding-top'?: string,
+        'icon-padding'?: string,
+        'text-padding'?: string,
+        'text-decoration'?: string,
+    }
+}
+/**
+ * spacer element to be rendered in the view
+ */
+export interface SocialMediaElementI extends ContentElementI {
+    content: string;
+    attributes: {
+        'src': string;
+        'href': string;
+        'align'?: string;
+        'alt'?: string;
+        'background-color'?: string;
+        'border-radius'?: string;
+        'color'?: string;
+        'css-class'?: string;
+        'font-family'?: string;
+        'font-size'?: string;
+        'font-style'?: string;
+        'font-weight'?: string;
+        'icon-height'?: string;
+        'icon-size'?: string;
+        'line-height'?: string;
+        'name'?: string;
+        'padding'?: string;
+        'padding-bottom'?: string;
+        'padding-left'?: string;
+        'padding-right'?: string;
+        'padding-top'?: string;
+        'icon-padding'?: string;
+        'icon-position'?: string;
+        'text-padding'?: string;
+        'sizes'?: string;
+        'srcset'?: string;
+        'rel'?: string;
+        'target'?: string;
+        'title'?: string;
+        'text-decoration'?: string;
+        'vertical-align'?: string;
+    }
 }
 /**
  * available panel element
@@ -248,80 +333,39 @@ export interface EditorAttributeI {
  */
 export interface AttributeObjectI {
     name: string;
-    type: 'color'|'text'|'sides'|'textSuffix';
+    type: 'color'|'text'|'sides'|'padding'|'textSuffix'|'width'|'halign'|'valign'|'textdecoration'|'texttransform'|'border'|'borders'|'fontstyle'|'fontweight'|'direction'|'options'|'bool';
+    class?: string;
+    options?: {value: string, label?: string}[]
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+export interface StylesheetObjI {
+    fieldName: string;
+    id: string;
+    content?: string;
+    contentResourceUrl?: string;
+    contentSafeResourceUrl?: SafeResourceUrl
+}
+
+export interface JSONNodeI {
+    tagName?: string;
+    children?: JSONNodeI[];
+    content?: string;
+    attributes?: any;
+    showDate?: string;
+    count?: number;
+    href?: string;
+    trackingLink?: string;
+    trackByMethod?: string;
+}
+
+export interface MediaArticleI {
+    id: string;
+    name: string;
+    mediafiles: [
+        {
+            id: string,
+            name: string,
+            media_article_image_size: string
+        }
+    ]
+}

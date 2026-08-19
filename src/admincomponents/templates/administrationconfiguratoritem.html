@@ -4,7 +4,24 @@
                 @switch (field.type){
                     @case('json'){
                         @if (isEditMode(field)) {
-                            <textarea class="slds-textarea slds-scrollable--y" [(ngModel)]="entry.data[field.name]"></textarea>
+                            <div class="slds-grid">
+                                <system-input-text [(ngModel)]="entry.data[field.name]" class="slds-grow"/>
+                                <button (click)="openSourceCodeEditModal(entry, field.name, 'json')" class="slds-m-left--xx-small">
+                                    <system-button-icon icon="new_window"/>
+                                </button>
+                            </div>
+                        } @else {
+                            <span class="slds-truncate_container_25" style="max-width: 200px;">{{entry.data[field.name]}}</span>
+                        }
+                    }
+                    @case('css'){
+                        @if (isEditMode(field)) {
+                            <div class="slds-grid">
+                                <system-input-text [(ngModel)]="entry.data[field.name]" class="slds-grow"/>
+                                <button (click)="openSourceCodeEditModal(entry, field.name, 'css')" class="slds-m-left--xx-small">
+                                    <system-button-icon icon="new_window"/>
+                                </button>
+                            </div>
                         } @else {
                             <span class="slds-truncate_container_25" style="max-width: 200px;">{{entry.data[field.name]}}</span>
                         }
@@ -71,18 +88,34 @@
                         @if (isEditMode(field)) {
                             <system-input-version [(ngModel)]="entry.data[field.name]"></system-input-version>
                         } @else {
-                            <system-input-text disabled [(ngModel)]="entry.data[field.name]"></system-input-text>
+                            <system-input-text [disabled]="true" [(ngModel)]="entry.data[field.name]"></system-input-text>
                         }
                     }
                     @case('package'){
                         @if (isEditMode(field)) {
                             <system-input-package [(ngModel)]="entry.data[field.name]"></system-input-package>
                         }@else {
-                            <system-input-text disabled [(ngModel)]="entry.data[field.name]"></system-input-text>
+                            <system-input-text [disabled]="true" [(ngModel)]="entry.data[field.name]"></system-input-text>
+                        }
+                    }
+                    @case('country'){
+                        <system-input-country [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]" system-input-country-strict></system-input-country>
+                    }
+                    @case('number'){
+                        <system-input-number [disabled]="!isEditMode(field)" [asNumber]="true" precision="2" [(ngModel)]="entry.data[field.name]"/>
+                    }
+                    @case('color'){
+                        @if (isEditMode(field)) {
+                            <system-input-color [(ngModel)]="entry.data[field.name]"/>
+                        }@else {
+                            <div class="slds-grid slds-grid_vertical-align-center slds-p-vertical--xx-small">
+                                <div style="width:16px; height: 16px;border: 1px solid #d2d2d2" [ngStyle]="{backgroundColor: entry.data[field.name]}"></div>
+                                <div class="slds-p-left--small">{{entry.data[field.name]}}</div>
+                            </div>
                         }
                     }
                     @default{
-                        <input  [disabled]="!isEditMode(field)" type="text" class="slds-input" [(ngModel)]="entry.data[field.name]"/>
+                        <system-input-text [disabled]="!isEditMode(field)" [(ngModel)]="entry.data[field.name]"/>
                     }
                 }
             </div>

@@ -2,6 +2,7 @@
 namespace SpiceCRM\includes\SpiceSwagger;
 
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainLoader;
 
 class SpiceSwaggerParameter
@@ -16,10 +17,15 @@ class SpiceSwaggerParameter
     const TYPE_NUMBER  = 'number';
     const TYPE_OBJECT  = 'object';
     const TYPE_STRING  = 'string';
+    /**
+     * @var array generated bean schemas
+     */
+    private array $beanSchemas;
 
-    public function __construct(string $parameterName, array $parameterArray) {
+    public function __construct(string $parameterName, array $parameterArray, array $beanSchemas = []) {
         $this->parameterName  = $parameterName;
         $this->parameterArray = $parameterArray;
+        $this->beanSchemas = $beanSchemas;
     }
 
     public function generateSwaggerParameter() {
@@ -169,7 +175,16 @@ class SpiceSwaggerParameter
                     ];
                 }
             case ValidationMiddleware::TYPE_OBJECT:
-            // todo add schemas for objects
+                $properties = [];
+
+                foreach ($this->parameterArray['properties'] as $propName => $property) {
+                    $properties[$propName] = $this->resolveType($property['type'], $property['subtype'] ?? null);
+                }
+
+                return [
+                    'type'  => self::TYPE_OBJECT,
+                    'properties' => $properties,
+                ];
             case ValidationMiddleware::TYPE_COMPLEX:
                 if (isset($this->parameterArray['schema'])) {
                     return $this->parameterArray['schema'];
@@ -181,6 +196,66 @@ class SpiceSwaggerParameter
                     ];
                 }
 
+            case ValidationMiddleware::TYPE_BEAN_SCHEMA:
+
+                if (count($this->beanSchemas) == 1) {
+                    return ['$ref' => "#/components/schemas/{$this->beanSchemas[0]}"];
+                } else {
+
+                    $schemaRefs = [];
+
+                    foreach ($this->beanSchemas as $beanSchema) {
+                        $schemaRefs['- $ref'] = "#/components/schemas/$beanSchema";
+                    }
+
+                    return ['oneOf' => $schemaRefs];
+                }
+            case ValidationMiddleware::TYPE_LINK:
+
+                return [
+                    'type' => self::TYPE_OBJECT,
+                    'properties' => [
+                        'beans' => [
+                            'type' => self::TYPE_STRING,
+                            'format' => "dictionary::$subtype"
+                        ],
+                        'beans_relations_to_delete' => [
+                            'type' => self::TYPE_STRING,
+                            'format' => "dictionary::$subtype"
+                        ],
+                    ]
+                ];
+            case ValidationMiddleware::TYPE_FILE:
+                return [
+                    'type' => self::TYPE_OBJECT,
+                    'properties' => [
+                        'file' => [
+                            'type' => self::TYPE_STRING,
+                            'format' => 'base64',
+                            'description' => 'the file content base64 encoded',
+                        ],
+                        'filemimetype' => [
+                            'type'        => self::TYPE_STRING,
+                            'description' => 'the file Mime Type',
+                        ],
+                        'filename' => [
+                            'type'        => self::TYPE_STRING,
+                            'description' => 'the file Name',
+                        ],
+                        'category_ids' => [
+                            'type' => self::TYPE_STRING,
+                            'description' => 'ids of categories joined with ,',
+                        ],
+                        'folder_id' => [
+                            'type'        => self::TYPE_STRING,
+                            'description' => 'the folder ID in which the file is stored',
+                        ],
+                        'display_name' =>[
+                            'type'        => self::TYPE_STRING,
+                            'description' => 'optional file name to display',
+                        ]
+                    ]
+                ];
             default:
                 return null;
         }

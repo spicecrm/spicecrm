@@ -22,6 +22,7 @@ import {Subscription} from "rxjs";
         model
     ],
     templateUrl: '../templates/reportsdesigner.html',
+    standalone: false
 })
 export class ReportsDesigner implements OnDestroy {
 

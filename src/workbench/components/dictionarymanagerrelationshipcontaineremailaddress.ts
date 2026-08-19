@@ -18,6 +18,7 @@ import {DictionaryDefinition, Relationship, RelationshipRelateField} from "../in
 @Component({
     selector: 'dictionary-manager-relationship-container-emailaddress',
     templateUrl: '../templates/dictionarymanagerrelationshipcontaineremailaddress.html',
+    standalone: false
 })
 export class DictionaryManagerRelationshipContainerEmailAddress implements OnInit {
 
@@ -41,6 +42,10 @@ export class DictionaryManagerRelationshipContainerEmailAddress implements OnIni
 
 
     constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
+    }
+
+    get relatedIds(): DictionaryDefinition[] {
+        return this.dictionarymanager.dictionarydefinitions.sort((a, b) => a.name.localeCompare(b.name));
     }
 
     /**

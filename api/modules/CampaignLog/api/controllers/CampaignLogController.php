@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\modules\CampaignLog\api\controllers;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -82,7 +82,7 @@ class CampaignLogController{
                     $campaignLog->related_id = $postParams['call_id'];
                     $campaignLog->related_type = 'Calls';
                     $campaignLog->hits += 1;
-                    $campaignLog->planned_activity_date = null;
+                    $campaignLog->planned_activity_date = $postParams['planned_activity_date'];
                     break;
 
                 case 'completed':

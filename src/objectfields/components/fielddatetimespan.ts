@@ -20,7 +20,8 @@ declare var moment: any;
  */
 @Component({
     selector: 'field-date-time-span',
-    templateUrl: '../templates/fielddatetimespan.html'
+    templateUrl: '../templates/fielddatetimespan.html',
+    standalone: false
 })
 export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
 
@@ -193,8 +194,8 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
         }
     }
 
-    get stati() {
-        let stati = this.model.getFieldStati(this.fieldname);
+    public stati(fieldname) {
+        let stati = this.model.getFieldStates(fieldname);
 
         if (stati.editable && (!this.view.isEditable || this.fieldconfig.readonly)) {
             stati.editable = false;

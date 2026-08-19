@@ -28,13 +28,13 @@
 ********************************************************************************/
 namespace SpiceCRM\includes\SpiceFTSManager;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * @deprecated
@@ -73,12 +73,9 @@ class SpiceFTSCreator {
     }
 
     public function getFtsModules(){
-        $ftsmodules = [];
-        $modules = DBManagerFactory::getInstance()->query("SELECT module FROM sysfts");
-        while($module = DBManagerFactory::getInstance()->fetchByAssoc($modules)){
-            $ftsmodules[] = $module['module'];
-        }
-        return $ftsmodules;
+        return array_column(
+            SpiceFTSHandler::getInstance()->modules, 'module'
+        );
     }
 
     public function createFtsFieldsForModule($module){

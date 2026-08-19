@@ -7,7 +7,7 @@
     </ng-container>
 </field-generic-display>
 <div *ngIf="isEditMode()" class="slds-grid slds-grid--vertical-align-center">
-    <div class="slds-form-element__control slds-size--1-of-2" [ngClass]="getFieldClass()">
+    <div class="slds-form-element__control" [ngClass]="getFieldClass()">
         <div class="slds-select_container slds-m-vertical--xx-small">
             <select class="slds-select" [disabled]="options.length == 0" [(ngModel)]="value" (ngModelChange)="onChange($event)">
                 <ng-container *ngFor="let o of options; trackBy: trackByFn">
@@ -18,9 +18,12 @@
         <field-messages [fieldname]="fieldname"></field-messages>
     </div>
     <div *ngIf="!zipHidden" class="slds-size--1-of-4 slds-truncate slds-p-horizontal--xx-small">
-        <system-checkbox [disabled]="zipDisabled" [ngModel]="model.getField('zip_compress')" (ngModelChange)="setZip($event)"><system-label label="LBL_ZIP_COMPRESS"/></system-checkbox>
+        <system-checkbox [disabled]="zipDisabled" [ngModel]="model.getField('zip_compress')" (ngModelChange)="setZip($event)" [title]="language.getLabel('LBL_ZIP_COMPRESS', '', 'default')"><system-label label="LBL_ZIP_COMPRESS" length="short"/></system-checkbox>
     </div>
     <div *ngIf="!receiptHidden" class="slds-size--1-of-4 slds-truncate slds-p-horizontal--xx-small">
-        <system-checkbox [disabled]="receiptDisabled" [ngModel]="model.getField('send_read_receipt')" (ngModelChange)="setReadReceipt($event)"><system-label label="LBL_SEND_READ_RECEIPT"/></system-checkbox>
+        <system-checkbox [disabled]="receiptDisabled" [ngModel]="model.getField('send_read_receipt')" (ngModelChange)="setReadReceipt($event)" [title]="language.getLabel('LBL_SEND_READ_RECEIPT', '', 'default')"><system-label label="LBL_SEND_READ_RECEIPT" length="short"/></system-checkbox>
+    </div>
+    <div *ngIf="!downloadLinkHidden" class="slds-size--1-of-4 slds-truncate slds-p-horizontal--xx-small">
+        <system-checkbox [disabled]="downloadLinkDisabled" [ngModel]="model.getField('downloadlink_attachments')" (ngModelChange)="setDownloadLink($event)" [title]="language.getLabel('LBL_SEND_ATTACHMENTS_AS_LINK', '', 'default')"><system-label label="LBL_SEND_ATTACHMENTS_AS_LINK" length="short"/></system-checkbox>
     </div>
 </div>

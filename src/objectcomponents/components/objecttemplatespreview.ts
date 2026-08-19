@@ -17,7 +17,8 @@ import {toast} from "../../services/toast.service";
 @Component({
     selector: 'object-templates-preview',
     templateUrl: "../templates/objecttemplatespreview.html",
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ObjectTemplatesPreview implements AfterViewInit {
     /**
@@ -203,6 +204,7 @@ export class ObjectTemplatesPreview implements AfterViewInit {
             html: this.model.getField(this.bodyHtmlField),
             field: this.bodyHtmlField,
             stylesheet_id: !this.mailboxId ? null: this.mailboxes.find(m => m.value == this.mailboxId).stylesheet,
+            language: this.language.currentFieldTranslationLanguage()
         };
         this.backend.postRequest(`module/${this.model.module}/${this.model.id}/livecompile/${this.previewForBean}/${this.selectedItem.id}`, {}, body)
             .subscribe({

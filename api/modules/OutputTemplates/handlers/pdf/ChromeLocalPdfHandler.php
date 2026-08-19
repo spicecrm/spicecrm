@@ -1,34 +1,14 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\OutputTemplates\handlers\pdf;
 
+use HeadlessChromium\BrowserFactory;
+use HeadlessChromium\Clip;
+use HeadlessChromium\Exception\CommunicationException;
+use HeadlessChromium\Exception\EvaluationFailed;
+use HeadlessChromium\Exception\JavascriptException;
+use HeadlessChromium\Page;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -37,7 +17,7 @@ class ChromeLocalPdfHandler extends PdfHandler
 {
     public $basicFontSize = '9pt';
 
-    public function process( $html = null, array $options = null )
+    public function process($html = null, ?array $options = null)
     {
         parent::process( $html, $options );
         if ( get_class( $this ) === 'SpiceCRM\modules\OutputTemplates\handlers\pdf\ChromeLocalPdfHandler' ) $this->createChromeLocalPdf();
@@ -192,6 +172,70 @@ class ChromeLocalPdfHandler extends PdfHandler
     }
 
     /**
+     * generate screenshot
+     * @param $html
+     * @param string|null $selector
+     * @param string|null $format png | jpeg
+     * @return string
+     * @throws \Exception
+     */
+    public static function getScreenshot($html, ?string $selector = null, ?string $format = 'png'): string
+    {
+        $browserFactory = new BrowserFactory();
+        $browser = $browserFactory->createBrowser();
+
+        try {
+            $page = $browser->createPage();
+            $page->setHtml($html, 3000, Page::NETWORK_IDLE);
+            $options = ['format' => $format];
+
+            $options += self::getScreenshotElementRect($page, $selector);
+
+            return $page->screenshot($options)->getBase64(3000);
+
+        } catch (\Exception $e) {
+            throw new \Exception('Error occurred while generating screenshot: ' . $e->getMessage());
+        } finally {
+            $browser->close();
+        }
+    }
+
+    /**
+     * get screenshot element rect by css selector
+     * @param Page $page
+     * @param string|null $selector
+     * @return array
+     * @throws CommunicationException
+     * @throws EvaluationFailed
+     * @throws JavascriptException
+     * @throws \Exception
+     */
+    private static function getScreenshotElementRect(Page $page, ?string $selector): array
+    {
+        if (!$selector) return [];
+
+        # validate the selector
+        if (!preg_match('/^[a-zA-Z0-9\-_.#+>\s*]+$/', $selector)) {
+            throw new \Exception('ChromeLocalPdfHandler::getScreenshot Invalid html selector');
+        }
+
+        $options = [];
+
+        $rect = $page->evaluate("(() => {
+                const el = document.querySelector('$selector');
+                if (!el) return null;
+                const r = el.getBoundingClientRect();
+                return { x: r.x, y: r.y, width: r.width, height: r.height };})()"
+        )->getReturnValue();
+
+        if ($rect) {
+            $options['clip'] = new Clip($rect['x'], $rect['y'], $rect['width'], $rect['height']);
+        }
+
+        return $options;
+    }
+
+    /**
      * Take the HTML Code and let Google Chrome generate the PDF file.
      * @param $htmlOutput
      * @return string The content of the generated PDF file.
@@ -206,6 +250,8 @@ class ChromeLocalPdfHandler extends PdfHandler
         $tmpPdfFilename = tempnam( sys_get_temp_dir(), '' );
 
         $chromePath = SpiceConfig::getInstance()->config['outputtemplates']['chrome_path'];
+        $chromeNoSandbox = SpiceConfig::getInstance()->get('outputtemplates.chrome_no_sandbox', 0 );
+
         # also available command line parameters of chrome, but not used:
         # --run-all-compositor-stages-before-draw
         # --enable-logging
@@ -215,7 +261,7 @@ class ChromeLocalPdfHandler extends PdfHandler
         do {
             if ( $counter !== 0 ) unlink( $tmpPdfFilename );
             $counter++;
-            exec( sprintf('%s --virtual-time-budget=10000 --headless --disable-gpu --print-to-pdf=%s --print-to-pdf-no-header --no-margins %s', escapeshellarg($chromePath), escapeshellarg($tmpPdfFilename), escapeshellarg($tmpHtmlFilename)), $output, $resultCode );
+            exec( sprintf('%s --virtual-time-budget=10000 --headless --disable-gpu --print-to-pdf=%s --no-pdf-header-footer --print-to-pdf-no-header --no-margins'.( $chromeNoSandbox ? ' -no-sandbox':'' ).' %s', escapeshellarg($chromePath), escapeshellarg($tmpPdfFilename), escapeshellarg($tmpHtmlFilename)), $output, $resultCode );
             $fs = filesize( $tmpPdfFilename );
         } while ( $fs < 2000 and $counter < 10 );
         if ( $counter > 1 ) {

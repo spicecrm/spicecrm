@@ -3,7 +3,10 @@
  */
 import {Pipe} from '@angular/core';
 
-@Pipe({name: 'systemmoduleglobalpipe'})
+@Pipe({
+    name: 'systemmoduleglobalpipe',
+    standalone: false
+})
 export class SystemModuleGlobalPipe {
     public transform(values, module) {
         let retValues = [];

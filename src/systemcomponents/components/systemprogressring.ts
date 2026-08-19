@@ -9,7 +9,8 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: "system-progress-ring",
-    templateUrl: "../templates/systemprogressring.html"
+    templateUrl: "../templates/systemprogressring.html",
+    standalone: false
 })
 export class SystemProgressRing {
     /**

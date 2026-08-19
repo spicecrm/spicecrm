@@ -1,10 +1,10 @@
 <?php
 namespace SpiceCRM\includes\Logger\schedulerjobtasks;
 
-use SpiceCRM\includes\database\DBManagerFactory;
+use DateInterval;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
-use DateInterval;
 
 class LoggerSchedulerJobTasks
 {
@@ -18,7 +18,7 @@ class LoggerSchedulerJobTasks
         $timeDate = TimeDate::getInstance()->getNow();
         $timeDate->sub(new DateInterval((isset(SpiceConfig::getInstance()->config['logger']['db']['clean_interval']) && !empty(SpiceConfig::getInstance()->config['logger']['db']['clean_interval']) ? SpiceConfig::getInstance()->config['logger']['db']['clean_interval'] : $defaultInterval)));
         $calculatedDate = TimeDate::getInstance()->asDb($timeDate);
-        $q = "DELETE FROM syslogs WHERE date_entered < '{$calculatedDate}'";
+        $q = "DELETE FROM syslogs WHERE date_entered < '{$calculatedDate}' AND pinned <> 1";
         DBManagerFactory::getInstance()->query($q);
         return true;
     }
@@ -34,7 +34,7 @@ class LoggerSchedulerJobTasks
         $timeDate = TimeDate::getInstance()->getNow();
         $timeDate->sub(new DateInterval((isset(SpiceConfig::getInstance()->config['logger']['db']['clean_interval']) && !empty(SpiceConfig::getInstance()->config['logger']['db']['clean_interval']) ? SpiceConfig::getInstance()->config['logger']['db']['clean_interval'] : $defaultInterval)));
         $calculatedDate = TimeDate::getInstance()->asDb($timeDate);
-        $q = "DELETE FROM sysapilog WHERE date_entered < '{$calculatedDate}'";
+        $q = "DELETE FROM sysapilog WHERE date_entered < '{$calculatedDate}' AND pinned <> 1";
         DBManagerFactory::getInstance()->query($q);
         return true;
     }

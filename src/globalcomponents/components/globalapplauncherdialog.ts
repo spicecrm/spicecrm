@@ -13,7 +13,8 @@ import {userpreferences} from "../../services/userpreferences.service";
  */
 @Component({
     selector: 'global-app-launcher-dialog',
-    templateUrl: '../templates/globalapplauncherdialog.html'
+    templateUrl: '../templates/globalapplauncherdialog.html',
+    standalone: false
 })
 export class GlobalAppLauncherDialog {
 
@@ -89,7 +90,7 @@ export class GlobalAppLauncherDialog {
         }
 
         menuItems.sort((a, b) => {
-            return this.language.getModuleName(a) > this.language.getModuleName(b) ? 1 : -1;
+            return this.language.compareStrings( this.language.getModuleName(a), this.language.getModuleName(b) );
         });
         return menuItems;
     }

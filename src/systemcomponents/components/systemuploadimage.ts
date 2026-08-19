@@ -1,7 +1,17 @@
 /**
  * @module SystemComponents
  */
-import {Component, EventEmitter, Input, OnDestroy, Output, Renderer2, ViewChild, ViewContainerRef} from "@angular/core";
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output,
+    Renderer2,
+    ViewChild,
+    ViewContainerRef
+} from "@angular/core";
 import {DomSanitizer} from '@angular/platform-browser';
 import {language} from "../../services/language.service";
 import {libloader} from "../../services/libloader.service";
@@ -16,9 +26,10 @@ declare var Croppie: any;
  */
 @Component({
     selector: "system-upload-image",
-    templateUrl: "../templates/systemuploadimage.html"
+    templateUrl: "../templates/systemuploadimage.html",
+    standalone: false
 })
-export class SystemUploadImage implements OnDestroy {
+export class SystemUploadImage implements OnInit, OnDestroy {
     /**
      * a reference to the image container
      */
@@ -62,6 +73,11 @@ export class SystemUploadImage implements OnDestroy {
     public imageBase64: any;
 
     /**
+     * set to ture if an image was initially loaded
+     */
+    public imageLoaded: boolean = false;
+
+    /**
      * @ignore
      *
      * the croppie image when the croppie has been loaded andis initialized
@@ -94,6 +110,10 @@ export class SystemUploadImage implements OnDestroy {
         };
     }
 
+    public ngOnInit() {
+        this.imageLoaded = !!this.imageBase64;
+    }
+
     public ngOnDestroy(): void {
         this.pasteListener();
     }
@@ -105,6 +125,16 @@ export class SystemUploadImage implements OnDestroy {
      */
     public close(emitfalse = true) {
         if (emitfalse) this.imagedata.emit(false);
+        this.self.destroy();
+    }
+
+    /**
+     * closes the modal
+     *
+     * @param emitfalse set to false to not emit an image if one is set
+     */
+    public delete(emitfalse = true) {
+        this.imagedata.emit('delete');
         this.self.destroy();
     }
 

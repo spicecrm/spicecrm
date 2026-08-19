@@ -1,59 +1,82 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\Mailboxes\schedulerjobtasks;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 
 class MailboxesSchedulerJobTasks
 {
     /**
      * Job 23
      * fetchEmails
+     * @param null $mailboxGUIDs can be one guid or a coma separated list of guids
+     * @throws Exception
      */
-    public function fetchEmails(): bool {
+    public function fetchEmails( $mailboxGUIDs = null ): bool {
 
         set_time_limit(1200);
 
-        $mailboxes = BeanFactory::getBean('Mailboxes')
-            ->get_full_list(
+        // Determine which mailboxes to process
+        if (empty($mailboxGUIDs)) {
+            $mailboxes = BeanFactory::getBean('Mailboxes')->get_full_list(
                 'mailboxes.name',
                 'inbound_comm=1 AND active=1'
             );
+        } else {
+            $mailboxIDs = $this->parseMailboxGuids($mailboxGUIDs);
+            $mailboxes = $this->fetchMailboxesByGuids($mailboxIDs);
+        }
 
         foreach ($mailboxes as $mailbox) {
             $mailbox->initTransportHandler();
-
             $mailbox->transport_handler->fetchEmails();
         }
 
         // return true so the job gets set as properly
         return true;
+    }
+
+    private function parseMailboxGuids(string $mailboxes): array
+    {
+        $guids = array_map('trim', explode(',', $mailboxes));
+
+        return array_filter($guids, function ($guid) {
+            return !empty($guid);
+        });
+    }
+
+    /**
+     * Fetch mailboxes by their GUIDs
+     * @param array $guids
+     * @return array
+     * @throws Exception
+     */
+    private function fetchMailboxesByGuids(array $guids): array
+    {
+        $mailboxes = [];
+        $notFoundGuids = [];
+
+        foreach ($guids as $guid) {
+            $mailbox = BeanFactory::getBean('Mailboxes', $guid);
+
+            if ($mailbox && !empty($mailbox->id)) {
+                // Verify the mailbox is active and configured for inbound communication
+                if ($mailbox->active == 1 && $mailbox->inbound_comm == 1) {
+                    $mailboxes[] = $mailbox;
+                } else {
+                    $notFoundGuids[] = $guid . ' (inactive or not configured for inbound)';
+                }
+            } else {
+                $notFoundGuids[] = $guid;
+            }
+        }
+
+        if (!empty($notFoundGuids)) {
+            throw new Exception('Could not find active inbound mailboxes for GUIDs: ' . implode(', ', $notFoundGuids));
+        }
+
+        return $mailboxes;
     }
 }

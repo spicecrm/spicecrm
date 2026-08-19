@@ -1,5 +1,7 @@
 <workbench-header titlelabel="LBL_API_LOG_VIEWER" icon="custom:custom62">
-    ({{entries.length}} <system-label label="LBL_RECORDS"></system-label>)
+    @if ( isLoaded ) {
+        {{userpreferences.formatMoney(entries.length,0)}} <system-label label="LBL_RECORDS"></system-label>.&nbsp;<system-label label="LBL_TOTAL_ENTRIES_IN_DB"></system-label>: {{userpreferences.formatMoney(totalCount,0)}}
+    }
     <workbench-header-controls>
         <div class="slds-grid slds-grid--vertical-align-center">
             <div *ngIf="logtables.length > 0" class="slds-form-element slds-m-right--small">
@@ -12,6 +14,7 @@
                     </div>
                 </div>
             </div>
+            <button class="slds-button slds-button--neutral" (click)="truncate()"><system-label label="LBL_TRUNCATE"></system-label></button><!-- [disabled]="0 && isLoading" -->
             <button class="slds-button slds-button--brand" (click)="buttonLoad()" [disabled]="isLoading"><system-label label="LBL_LOAD"></system-label></button>
         </div>
     </workbench-header-controls>
@@ -56,11 +59,11 @@
 
         </div>
         <div class="slds-grid slds-gutters_direct-xxx-small">
-            <div class="slds-col slds-size--1-of-8">
+            <div class="slds-col slds-size--2-of-12">
                 <label class="slds-form-element__label"><system-label label="LBL_USER"></system-label></label>
                 <system-input-relate module="Users" [(ngModel)]="filterUser" nameField="user_name"></system-input-relate>
             </div>
-            <div class="slds-col slds-size--1-of-8">
+            <div class="slds-col slds-size--1-of-12">
                 <label class="slds-form-element__label"><system-label label="LBL_METHOD"></system-label></label>
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="filter.method">
@@ -69,7 +72,7 @@
                     </select>
                 </div>
             </div>
-            <div class="slds-col slds-size--1-of-8">
+            <div class="slds-col slds-size--2-of-12">
                 <label class="slds-form-element__label"><system-label label="LBL_DIRECTION"></system-label></label>
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="filter.direction">
@@ -79,7 +82,7 @@
                     </select>
                 </div>
             </div>
-            <div class="slds-col slds-size--1-of-8">
+            <div class="slds-col slds-size--1-of-12">
                 <label class="slds-form-element__label"><system-label label="LBL_STATUS"></system-label></label>
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                     <input class="slds-input" type="text" system-trim-input size="3" [(ngModel)]="filter.status" />
@@ -88,7 +91,7 @@
                     </button>
                 </div>
             </div>
-            <div class="slds-col slds-size--1-of-6">
+            <div class="slds-col slds-size--2-of-12">
                 <label class="slds-form-element__label"><system-label label="LBL_IP_ADDRESS"></system-label></label>
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                     <input class="slds-input" type="text" system-trim-input [(ngModel)]="filter.ip" />
@@ -97,7 +100,7 @@
                     </button>
                 </div>
             </div>
-            <div class="slds-col slds-size--1-of-6">
+            <div class="slds-col slds-size--2-of-12">
                 <label class="slds-form-element__label"><system-label label="LBL_SESSION_ID"></system-label></label>
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                     <input class="slds-input" type="text" system-trim-input [(ngModel)]="filter.session_id" />
@@ -106,7 +109,7 @@
                     </button>
                 </div>
             </div>
-            <div class="slds-col slds-size--1-of-6">
+            <div class="slds-col slds-size--1-of-12">
                 <label class="slds-form-element__label"><system-label label="LBL_ROWS"></system-label></label>
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="limit">
@@ -116,10 +119,14 @@
                     </select>
                 </div>
             </div>
+            <div class="slds-col slds-size--1-of-12">
+                <label class="slds-form-element__label"><system-label label="LBL_PINNED"></system-label></label>
+                <system-checkbox [(ngModel)]="filter.pinned" style="display:block;height:2rem"></system-checkbox>
+            </div>
         </div>
     </div>
     <div system-to-bottom class="slds-border--top">
-        <table class="slds-table slds-table--bordered slds-table--fixed-layout slds-table--col-bordered slds-no-row-hover slds-table_header-fixed">
+        <table class="slds-table slds-table--bordered slds-table--fixed-layout slds-table--col-bordered slds-table_header-fixed">
             <thead>
             <tr>
                 <th style="width: 8rem;"><system-label class="slds-th__action" label="LBL_DATE"></system-label></th>
@@ -132,11 +139,12 @@
                 <th style="width: 3rem;" class="slds-text-align_center"><system-utility-icon icon="clock" size="x-small"></system-utility-icon></th>
                 <th class="slds-resizable"><system-label class="slds-th__action" label="LBL_ROUTE_ARGUMENTS"></system-label></th>
                 <th class="slds-resizable"><system-label class="slds-th__action" label="LBL_URL_PARAMETERS"></system-label></th>
+                <th style="width:2rem"></th>
                 <th style="width:2.5rem"></th>
             </tr>
             </thead>
             <tbody #tbody>
-            <tr *ngFor="let entry of entries" [ngClass]="{'slds-theme--error' : entry.http_status_code < 200 || entry.http_status_code >= 300 }">
+            <tr *ngFor="let entry of entries" [ngClass]="{'slds-theme--error' : entry.http_status_code >= 400 }">
                 <td><system-display-datetime [date]="entry.date_entered"></system-display-datetime></td>
                 <td><div class="slds-truncate">{{entry.user_name}}</div></td>
                 <td><div class="slds-truncate">{{entry.transaction_id}}</div></td>
@@ -147,6 +155,7 @@
                 <td class="slds-text-align--center"><system-display-number [number]="entry.runtime" system-display-number-nodigits></system-display-number></td>
                 <td><div class="slds-truncate">{{entry.request_args}}</div></td>
                 <td><div class="slds-truncate">{{entry.request_params}}</div></td>
+                <td><system-utility-icon [icon]="entry.pinned ? 'pinned':'pin'" [colorclass]="entry.pinned ? 'slds-icon-text-success':'slds-icon-text-default'" (click)="togglePin(entry)" size="x-small" [style]="{'opacity':entry.pinned?1:0.33,'cursor':'pointer'}"/></td>
                 <td>
                     <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="showEntryInModal(entry)">
                         <system-button-icon [icon]="'expand'" [size]="'medium'"></system-button-icon>

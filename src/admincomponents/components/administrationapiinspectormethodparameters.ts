@@ -6,7 +6,8 @@ import {administrationapiinspectorService} from "../services/administrationapiin
  */
 @Component({
     selector: 'administration-api-inspector-method-parameters',
-    templateUrl: '../templates/administrationapiinspectormethodparameters.html'
+    templateUrl: '../templates/administrationapiinspectormethodparameters.html',
+    standalone: false
 })
 export class AdministrationApiInspectorMethodParameters implements OnChanges {
 
@@ -23,6 +24,11 @@ export class AdministrationApiInspectorMethodParameters implements OnChanges {
      * @private
      */
     @Input() public apimethod: any;
+
+    /**
+     * if set to true the fields are disabled
+     */
+    @Input() public disabled: boolean = false;
 
     /**
      * the path to filter by

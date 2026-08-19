@@ -2,23 +2,24 @@
 
 namespace SpiceCRM\modules\EmailAddresses;
 
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\ErrorHandlers\ValidationException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\RESTManager;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\TimeDate;
-use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
+use TrueBV\Punycode;
 
 /*********************************************************************************
  * SugarCRM Community Edition is a customer relationship management program developed by
@@ -73,15 +74,41 @@ class EmailAddress extends SpiceBean
     const VALIDATE_REGEX = '/^(?!(?:(?:\x22?\x5C[\x00-\x7E]\x22?)|(?:\x22?[^\x5C\x22]\x22?)){255,})(?!(?:(?:\x22?\x5C[\x00-\x7E]\x22?)|(?:\x22?[^\x5C\x22]\x22?)){65,}@)(?:(?:[\x21\x23-\x27\x2A\x2B\x2D\x2F-\x39\x3D\x3F\x5E-\x7E]+)|(?:\x22(?:[\x01-\x08\x0B\x0C\x0E-\x1F\x21\x23-\x5B\x5D-\x7F]|(?:\x5C[\x00-\x7F]))*\x22))(?:\.(?:(?:[\x21\x23-\x27\x2A\x2B\x2D\x2F-\x39\x3D\x3F\x5E-\x7E]+)|(?:\x22(?:[\x01-\x08\x0B\x0C\x0E-\x1F\x21\x23-\x5B\x5D-\x7F]|(?:\x5C[\x00-\x7F]))*\x22)))*@(?:(?:(?!.*[^.]{64,})(?:(?:(?:xn--)?[a-z0-9]+(?:-[a-z0-9]+)*\.){1,126}){1,}(?:(?:[a-z][a-z0-9]*)|(?:(?:xn--)[a-z0-9]+))(?:-[a-z0-9]+)*)|(?:\[(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){7})|(?:(?!(?:.*[a-f0-9][:\]]){7,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?)))|(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){5}:)|(?:(?!(?:.*[a-f0-9]:){5,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3}:)?)))?(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))(?:\.(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))){3}))\]))$/iD';
 
     /**
-     * holds the email address field from db
-     * @var string
+     * An override for the magic setter function.
+     * It's needed because EmailAddress is the only module that uses the field date_created instead of date_entered.
+     *
+     * @param string $attributeName
+     * @param mixed $attributeValue
+     * @return void
+     * @throws ValidationException
      */
-    public $email_address;
+    public function __set(string $attributeName, mixed $attributeValue): void {
+        if ($attributeName == "date_entered") {
+            parent::__set("date_created", $attributeValue);
+        } else {
+            parent::__set($attributeName, $attributeValue);
+        }
+    }
+
     /**
-     * holds the email address caps field from db
-     * @var string
+     * An override for the magic getter function.
+     * It's needed because EmailAddress is the only module that uses the field date_created instead of date_entered.
+     *
+     * @param string $attributeName
+     * @return mixed
      */
-    public $email_address_caps;
+    public function __get(string $attributeName): mixed {
+        if ($attributeName == "date_entered") {
+            return parent::__get("date_created");
+        }
+
+        return parent::__get($attributeName);
+    }
+
+    function get_summary_text()
+    {
+        return $this->email_address;
+    }
 
     /**
      * clean the email address before save
@@ -95,6 +122,9 @@ class EmailAddress extends SpiceBean
      */
     public function save($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
     {
+        $this->email_address = $this->splitEmailAddress($this->email_address)['email'];
+        $this->email_address_caps = strtoupper($this->email_address);
+
         if (!$this->isValidEmailAddress($this->email_address)) {
             if (!$ignoreInvalidEmailAddresses) {
                 throw new Exception("Invalid Email Address: {$this->email_address}", 422);
@@ -138,8 +168,7 @@ class EmailAddress extends SpiceBean
      */
     public static function ftsSearchByEmailAddresses(array $emailAddresses): array
     {
-        $db = DBManagerFactory::getInstance();
-        $ftsModules = $db->fetchAll("SELECT * FROM sysfts");
+        $ftsModules = SpiceFTSHandler::getInstance()->modules;
         $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
         $results = [];
 
@@ -152,7 +181,13 @@ class EmailAddress extends SpiceBean
             $fields = array_column(array_filter(SpiceFTSUtils::getBeanIndexProperties($ftsModule['module']),fn($property) => $property['email'] === true),'indexfieldname');
 
             foreach ($emailAddresses as $emailAddress) {
-                $searchResult = SpiceFTSHandler::getInstance()->searchModule($ftsModule['module'], $emailAddress, [], [], 1000, 0, [], [], false, $fields, false);
+                $searchResult = SpiceFTSHandler::getInstance()->searchModule(
+                    module:         $ftsModule['module'],
+                    searchterm:     strtolower($emailAddress),
+                    size:           1000,
+                    requiredFields: $fields,
+                    source:         false,
+                );
                 foreach ($searchResult['hits']['hits'] as $item) {
                     $bean = BeanFactory::getBean($ftsModule['module'], $item['_id']);
                     $results[$bean->id] = [
@@ -183,8 +218,9 @@ class EmailAddress extends SpiceBean
         // get an FTS manager
 
         // determine the modules
-        $modules = $db->query("SELECT * FROM sysfts");
-        while ($module = $db->fetchByAssoc($modules)) {
+        $modules = SpiceFTSHandler::getInstance()->modules;
+
+        foreach ($modules as $module) {
             $emailFields = [];
 
             $ftsParams = json_decode(html_entity_decode($module['settings']));
@@ -414,7 +450,7 @@ class EmailAddress extends SpiceBean
      * @param $addressString
      * @return array
      */
-    public function splitEmailAddress($addressString): array
+    public static function splitEmailAddress($addressString): array
     {
         if (!str_contains($addressString, '<')) return ['name' => null, 'email' => $addressString];
         [$nameOrEmailAddress, $emailAddress] = explode(' <', trim($addressString, '> '));
@@ -423,12 +459,15 @@ class EmailAddress extends SpiceBean
 
     /**
      * validate email address domain
+     * gethostbyname returns the ip address of the domain if valid, otherwise it returns the domain name
      * @param string $domain
      * @return bool
      */
     public static function validateEmailAddressDomain(string $domain): bool
     {
-        return checkdnsrr($domain);
+        $punycode = new Punycode();
+        $asciiDomain = $punycode->encode($domain);
+        return gethostbyname($asciiDomain) !== $asciiDomain;
     }
 
     /**
@@ -447,13 +486,14 @@ class EmailAddress extends SpiceBean
 
         if ($valueBefore == $valueAfter) return;
 
-        $fieldType = SpiceDictionaryHandler::getInstance()->dictionary['email_addr_bean_rel']['fields'][$field]['type'];
+        $fieldType = SpiceDictionary::getInstance()->getDefs('email_addr_bean_rel')['fields'][$field]['type'];
+
         $insertData = [
             'id' => SpiceUtils::createGuid(),
             'parent_id' => $id,
             'transaction_id' => $transactionId,
             'date_created' => TimeDate::getInstance()->nowDb(),
-            'created_by' => $currentUser->id,
+            'created_by' => $currentUser->id ?? $id,
             'field_name' => $field,
             'data_type' => $fieldType,
             'before_value' => $valueBefore,
@@ -477,9 +517,27 @@ class EmailAddress extends SpiceBean
         if (!$emailAddress) {
             return false;
         }
+        if($newStatus == 'opted_in' || 'pending') $dateField = 'opt_in_date';
+        else if($newStatus == 'opted_out') $dateField = 'opt_out_date';
 
-        $bean->email_addresses->add($emailAddress, ['opt_in_status' => $newStatus]);
+
+        $bean->email_addresses->add($emailAddress, ['opt_in_status' => $newStatus, $dateField => date('Y-m-d H:m:s')]);
 
         return true;
+    }
+
+    public function getEmailAddressForBean(SpiceBean $bean, $emailAddrBeanRelId = null)
+    {
+        if (!empty($emailAddrBeanRelId)) {
+            $q = "SELECT eabr.* FROM email_addr_bean_rel eabr where eabr.id ='{$emailAddrBeanRelId}' and eabr.bean_id ='$bean->id' and eabr.deleted = 0";
+        }
+        else{
+            $q = "SELECT eabr.* FROM email_addr_bean_rel eabr where eabr.bean_id ='$bean->id' and eabr.primary_address = 1 and eabr.deleted = 0";
+        }
+        if($row = $this->db->fetchOne($q)){
+            $emailAddress = BeanFactory::getBean('EmailAddresses', $row['email_address_id']);
+            $emailAddress->opt_in_status = $row['opt_in_status'];
+            return $emailAddress;
+        }
     }
 }

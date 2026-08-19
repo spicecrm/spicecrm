@@ -25,6 +25,8 @@ class SpiceDictionaryIndexesController
 
         SpiceDictionaryIndexes::getInstance()->addIndex($body['index'], $body['items']);
 
+        SpiceDictionary::getInstance()->clearSessionCache();
+
         return $res->withJson((new SpiceDictionaryIndex($args['id']))->getIndexDefinition());
     }
 
@@ -38,7 +40,11 @@ class SpiceDictionaryIndexesController
      */
     public function deleteDictionaryIndex(Request $req, Response $res, array $args): Response
     {
-        return $res->withJson(['success' => (new SpiceDictionaryIndex($args['id']))->delete()]);
+        $deleted = (new SpiceDictionaryIndex($args['id']))->delete();
+
+        SpiceDictionary::getInstance()->clearSessionCache();
+
+        return $res->withJson(['success' => $deleted]);
     }
 
     /**
@@ -52,7 +58,8 @@ class SpiceDictionaryIndexesController
     public function activateDictionaryIndex(Request $req, Response $res, array $args): Response
     {
         $success = (new SpiceDictionaryIndex($args['id']))->activate();
-        SpiceDictionary::getInstance()->loadDictionary();
+
+        SpiceDictionary::getInstance()->clearSessionCache();
 
         return $res->withJson(['success' => $success]);
     }
@@ -68,7 +75,8 @@ class SpiceDictionaryIndexesController
     public function dropDictionaryIndex(Request $req, Response $res, array $args): Response
     {
         $success = (new SpiceDictionaryIndex($args['id']))->deactivate();
-        SpiceDictionary::getInstance()->loadDictionary();
+
+        SpiceDictionary::getInstance()->clearSessionCache();
 
         return $res->withJson(['success' => $success]);
     }

@@ -26,6 +26,7 @@ import {Router} from '@angular/router';
 @Component({
     selector: 'field-iban',
     templateUrl: '../templates/fieldiban.html',
+    standalone: false
 })
 
 export class fieldIban extends fieldGeneric {
@@ -175,7 +176,7 @@ export class fieldIban extends fieldGeneric {
      * if input is true, call modulo function
      */
     public checkInputLength() {
-        if(this.value) this.modulo()
+        if(this.value && !this.fieldconfig.skipIbanValidation) this.modulo()
     }
 
     /**

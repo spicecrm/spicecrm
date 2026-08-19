@@ -11,7 +11,8 @@ import {territories} from '../../services/territories.service';
 
 @Component({
     selector: 'object-record-administration-tab',
-    templateUrl: '../templates/objectrecordadministrationtab.html'
+    templateUrl: '../templates/objectrecordadministrationtab.html',
+    standalone: false
 })
 export class ObjectRecordAdministrationTab implements OnInit {
 
@@ -78,16 +79,16 @@ export class ObjectRecordAdministrationTab implements OnInit {
             this.model.data$.subscribe({
                 next: (modeldata) => {
                     if (!!this.model.getField('assigned_user_id')) {
-                        this.model._fields_stati.assigned_orgunit.readonly = true;
+                        this.model.fieldStates.assigned_orgunit.readonly = true;
                         // check if we have another orgunit and if there is a change update it
                         if(this.model.getField('assigned_orgunit_id') != this.model.getField('assigned_user').orgunit_id){
                             this.model.setFields({
                                 'assigned_orgunit_id': this.model.getField('assigned_user').orgunit_id,
-                                'assigned_orgunit': this.model.getField('assigned_user').orgunit
+                                'assigned_orgunit': this.model.getField('assigned_user').orgunit.id ? this.model.getField('assigned_user').orgunit : {id:this.model.getField('assigned_user').orgunit_id, name: this.model.getField('assigned_user').orgunit_name}
                             }, true)
                         }
                     } else {
-                        this.model._fields_stati.assigned_orgunit.readonly = false;
+                        this.model.fieldStates.assigned_orgunit.readonly = false;
                     }
                 }
             })
@@ -119,7 +120,7 @@ export class ObjectRecordAdministrationTab implements OnInit {
      * simple getter to return if the current module manages multiple users
      */
     get multipleusers() {
-        return this.metadata.getModuleDefs(this.model.module).acl_multipleusers == 1 ? true : false;
+        return this.metadata.getModuleDefs(this.model.module)?.acl_multipleusers == 1 ? true : false;
     }
 
     get hidden() {

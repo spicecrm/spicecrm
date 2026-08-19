@@ -11,7 +11,8 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-enummulti',
-    templateUrl: '../templates/fieldenummulti.html'
+    templateUrl: '../templates/fieldenummulti.html',
+    standalone: false
 })
 export class fieldEnumMulti extends fieldGeneric implements OnInit {
     public options: EnumDisplayOptionObject = {};
@@ -113,7 +114,7 @@ export class fieldEnumMulti extends fieldGeneric implements OnInit {
         if(newValue.length > 0){
             valueString = "^" + newValue.join('^,^') + "^";
         }
-        this.model.setField(this.fieldname,valueString);
+        this.model.setField(this.fieldname, valueString);
     }
 
 

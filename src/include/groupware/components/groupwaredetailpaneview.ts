@@ -15,7 +15,8 @@ import {navigationtab} from "../../../services/navigationtab.service";
 @Component({
     selector: 'groupware-detail-pane-view',
     templateUrl: '../templates/groupwaredetailpaneview.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class GroupwareDetailPaneView implements AfterViewInit, OnDestroy {
 

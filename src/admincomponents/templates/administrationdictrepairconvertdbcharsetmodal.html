@@ -76,7 +76,7 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody system-multi-select-checkboxes>
                         <tr *ngFor="let table of filteredTables" class="slds-hint-parent">
                             <td class="slds-text-align_right" role="gridcell">
                                 <system-checkbox [(ngModel)]="table.selected" (ngModelChange)="selectTable($event, table.table_name)"></system-checkbox>

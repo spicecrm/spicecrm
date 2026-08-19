@@ -1,42 +1,17 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\KReports;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguagesRESTHandler;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
+use Throwable;
 
 require_once('modules/KReports/utils.php');
 
@@ -397,7 +372,7 @@ class KReport extends SpiceBean
                 switch ($valuetypeArray [0]) {
                     case 'P' :
                         // calculate the value
-                        $returnArray [$thisFieldData['fieldid']] = round((double)$returnArray [$thisFieldData['fieldid']] / (double)$this->totalResult[$thisFieldData['fieldid'] . '_total'] * 100, 2);
+                        $returnArray [$thisFieldData['fieldid']] = round((float)$returnArray [$thisFieldData['fieldid']] / (float)$this->totalResult[$thisFieldData['fieldid'] . '_total'] * 100, 2);
 
                         // set the format to float so we interpret this as number
                         $this->fieldNameMap [$thisFieldData['fieldid']] ['type'] = 'float';
@@ -405,7 +380,7 @@ class KReport extends SpiceBean
                         break;
                     case 'D' :
                         // calculate the value
-                        $returnArray[$thisFieldData ['fieldid']] = round((double)$returnArray[$thisFieldData['fieldid']] - (double)$this->totalResult[$thisFieldData['fieldid'] . '_total'], 2);
+                        $returnArray[$thisFieldData ['fieldid']] = round((float)$returnArray[$thisFieldData['fieldid']] - (float)$this->totalResult[$thisFieldData['fieldid'] . '_total'], 2);
                         break;
                     case 'C':
                         if (!empty($cumulatedArray[$thisFieldData ['fieldid']])) {
@@ -503,8 +478,11 @@ class KReport extends SpiceBean
                             $fieldValue = $returnArray [$fieldID . '_val'];
                         break;
                     case 'multienum' :
+
+                        $returnArray[$fieldID . '_val'] = $fieldValue;
+
                         // do not format if we have a function (Count ... etc ... )
-                        if ($this->fieldNameMap [$fieldID] ['sqlFunction'] == '') {
+                        if (str_contains($fieldValue, '^')) {
                             $fieldArray = preg_split('/\^,\^/', $fieldValue);
                             //bugfix 2010-09-22 if only one value is selected
                             if (is_array($fieldArray) && count($fieldArray) > 1) {
@@ -524,6 +502,7 @@ class KReport extends SpiceBean
                                 $fieldValue = $app_list_strings [$this->kQueryArray->queryArray [(isset($fieldArray ['unionid']) ? $fieldArray ['unionid'] : 'root')] ['kQuery']->fieldNameMap [$fieldID] ['fields_name_map_entry'] ['options']] [trim($fieldValue, '^')];
                             }
                         }
+
                         break;
                 }
             }
@@ -743,7 +722,7 @@ class KReport extends SpiceBean
         $fieldIdArray = [];
         foreach ($arrayList as $thisList) {
             if ($thisList['display'] == 'yes') {
-                $fieldArray[] = ['label' => utf8_decode($thisList ['name']), 'width' => (isset($thisList['width']) && $thisList ['width']!= '' && $thisList['width'] != '0') ? $thisList['width'] : '100', 'display' => $thisList['display']];
+                $fieldArray[] = ['label' => mb_convert_encoding($thisList['name'], 'ISO-8859-1', 'UTF-8') , 'width' => (isset($thisList['width']) && $thisList ['width']!= '' && $thisList['width'] != '0') ? $thisList['width'] : '100', 'display' => $thisList['display']];
                 $fieldIdArray[] = $thisList['fieldid'];
             }
         }
@@ -1213,8 +1192,12 @@ $db = DBManagerFactory::getInstance();
 
         if (is_array($this->formulaArray)) {
             foreach ($this->formulaArray as $sequence => $formula) {
-                //2013-03-06 suppress error messages
-                @eval($formula . ';');
+                try {
+                    //2013-03-06 suppress error messages
+                    @eval($formula . ';');
+                } catch (Throwable $e) {
+                    // error in process
+                }
             }
         }
     }

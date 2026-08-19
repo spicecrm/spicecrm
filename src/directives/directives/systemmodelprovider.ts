@@ -1,7 +1,7 @@
 /**
  * @module DirectivesModule
  */
-import {Directive, Input, Output, EventEmitter, OnDestroy} from '@angular/core';
+import {Directive, Input, Output, EventEmitter, OnDestroy, Injector} from '@angular/core';
 import {model} from "../../services/model.service";
 import {Subscription} from "rxjs";
 
@@ -17,7 +17,8 @@ import {Subscription} from "rxjs";
 @Directive({
     selector: '[system-model-provider]',
     providers: [model],
-    exportAs: 'system-model-provider'
+    exportAs: 'system-model-provider',
+    standalone: false
 })
 export class SystemModelProviderDirective implements OnDestroy {
     /**
@@ -31,7 +32,8 @@ export class SystemModelProviderDirective implements OnDestroy {
     public subscription = new Subscription();
 
     constructor(
-        public model: model
+        public model: model,
+        public injector: Injector
     ) {
         // in case the host component is listening to the loading status and waits for it!
         this.model.isLoading = true;
@@ -53,7 +55,7 @@ export class SystemModelProviderDirective implements OnDestroy {
      * @param provided_model
      */
     @Input('system-model-provider')
-    set provided_model(provided_model: { module: string, id?: string, data: any, clone?: boolean }) {
+    set provided_model(provided_model: {parent?: model, module: string, id?: string, data: any, clone?: boolean, startEdit?: boolean}) {
 
         if (!provided_model.module) return;
 
@@ -67,20 +69,31 @@ export class SystemModelProviderDirective implements OnDestroy {
         if (provided_model.data) {
 
             // if (provided_model.data.isNew) {
-                this.model.initialize();
+                this.model.initialize(provided_model.parent);
             // }
 
             // set the data
             this.model.setData(provided_model.clone === true ?  {...provided_model.data} : provided_model.data);
+
+            if (provided_model.startEdit) {
+                this.model.startEdit();
+            }
 
             // set to loading done
             this.model.isLoading = false;
 
         } else if (this.model.id) {
             // if no data was found BUT an ID, load it from backend... isLoading will be set inside getData()
-            this.model.getData();
+            this.model.getData().subscribe(() => {
+                if (provided_model.startEdit) {
+                    this.model.startEdit();
+                }
+            })
         } else {
-            this.model.initialize();
+            this.model.initialize(provided_model.parent);
+            if (provided_model.startEdit) {
+                this.model.startEdit();
+            }
             this.model.isLoading = false;
         }
     }

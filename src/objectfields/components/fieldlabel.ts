@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, Input, Injector} from '@angular/core';
+import {Component, Input, Injector, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
 import {metadata} from '../../services/metadata.service';
 import {view} from '../../services/view.service';
@@ -11,13 +11,16 @@ import {userpreferences} from "../../services/userpreferences.service";
 
 @Component({
     selector: 'field-label',
-    templateUrl: '../templates/fieldlabel.html'
+    templateUrl: '../templates/fieldlabel.html',
+    standalone: false
 })
-export class fieldLabel {
+export class fieldLabel  implements OnInit{
     @Input() public fieldname: string = '';
     @Input() public fieldconfig: any = {};
     @Input() public addclasses: string = 'slds-form-element__label';
     public showHelp: boolean = false;
+    public alignment: 'left'|'right'|'center' = 'left';
+    public displayClasses: string;
 
     constructor(
         public model: model,
@@ -30,33 +33,52 @@ export class fieldLabel {
     ) {
     }
 
+    public ngOnInit() {
+        // check if we shoudl determine the laignment of the label
+        if(this.view.alignLabels) {
+            let fieldType = this.fieldconfig.fieldtype ? this.fieldconfig.fieldtype : this.metadata.getFieldType(this.model.module, this.fieldname);
+            switch (fieldType) {
+                case 'double':
+                case 'float':
+                case 'currency':
+                case 'probability':
+                    this.alignment = 'right';
+                    break;
+            }
+        }
+
+        // set the displayclasses
+        this.displayClasses = this.addclasses;
+
+        // switch and set the alignment class
+        switch (this.alignment){
+            case "right":
+                this.displayClasses += ' slds-float_right';
+                break;
+            default:
+                this.displayClasses += ' slds-float_left';
+                break;
+        }
+    }
+
     get stati() {
-        let stati = this.model.getFieldStati(this.fieldname);
+        return this.model.getFieldStates(this.fieldname);
+    }
 
-        if (stati.editable && (!this.view.isEditable || this.fieldconfig.readonly)) {
-            stati.editable = false;
-        }
-
-        // add required flag if set via fieldconfig
-        if (this.fieldconfig.required) {
-            stati.required = true;
-        }
-
-        return stati;
+    /**
+     * check if the field is readonly
+     * @returns {boolean}
+     */
+    get isReadonly(): boolean {
+        return (!this.view.isEditable || this.fieldconfig.readonly);
     }
 
     public isRequired() {
-        return this.stati.editable && this.stati.required;
+        return this.stati.required;
     }
 
     public isEditable() {
-        return this.stati.editable;
-        /*
-        if (!this.view.isEditable || this.fieldconfig.readonly)
-            return false;
-        else
-            return true;
-        */
+        return !this.isReadonly && (this.model.checkAccess('edit') || this.model.checkAccess('create')) && this.stati.editable &&  !this.stati.disabled && !this.stati.hidden;
     }
 
     public isEditMode() {

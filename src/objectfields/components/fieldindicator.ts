@@ -14,9 +14,10 @@ import { fieldGeneric } from './fieldgeneric';
 /**
  * renders a trend indicator based on the input values
  */
-@Component( {
+@Component({
     selector: 'field-indicator',
     templateUrl: '../templates/fieldindicator.html',
+    standalone: false
 })
 export class fieldIndicator extends fieldGeneric {
 

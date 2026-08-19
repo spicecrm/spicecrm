@@ -41,20 +41,22 @@
 
 namespace SpiceCRM\includes\SpiceUI;
 
-use SpiceCRM\data\Relationships\RelationshipFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
-use SpiceCRM\includes\database\DBManager;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlRequest;
+use SpiceCRM\includes\SpiceCurlWrapper\SpiceCurlWrapper;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainFields;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomains;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidations;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationships;
-use SpiceCRM\includes\SugarObjects\VardefManager;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\includes\authentication\AuthenticationController;
 
 class SpiceUIConfLoader
 {
@@ -95,7 +97,13 @@ class SpiceUIConfLoader
         'sysmsgraphmappingsegmentitems',
         'sysmsgraphmappingmodules',
         'spiceaclmoduleactions',
-        'spiceaclmodulefields'
+        'spiceaclmodulefields',
+        'sysaiprompts',
+        'sysprocessmgmtsystemclausetemplates',
+        'sysprocessmgmtsystemscopetemplates',
+        'syshazardousmaterialimages',
+        'spicebeanguides',
+        'spicebeanguidestages'
     ];
 
     /**
@@ -137,16 +145,7 @@ class SpiceUIConfLoader
      */
     public function __construct($endpoint = null)
     {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $this->loader = new SpiceUILoader($endpoint);
-
-        // module dictionaries are unknown at that time
-        // load them to make sure DBManager will have proper content in global $dictionary
-        SpiceModules::getInstance()->loadModules();
-        foreach(SpiceModules::getInstance()->getModuleList() as $idx => $module){
-            VardefManager::loadVardef($module, SpiceModules::getInstance()->getBeanName($module));
-        }
-
     }
 
     /**
@@ -405,7 +404,7 @@ class SpiceUIConfLoader
     {
         if (in_array($table, ['sysfts', 'syslangs'])) return;
 
-        /** @var DBManager $db */
+        /** @var \SpiceCRM\includes\SpiceDictionary\database\DBManager $db */
         $db = DBManagerFactory::getInstance();
 
         //$deleteWhere = "package IN('" . implode("','", $packages) . "') OR package IS NULL OR package=''";
@@ -460,7 +459,10 @@ class SpiceUIConfLoader
         foreach ($dictionaryTables as $table) {
             $this->loadTableRecords($table, $response[$table], $packages);
         }
-
+        SpiceDictionary::getInstance()->clearSessionCache();
+        SpiceDictionaryDomainValidations::getInstance()->reloadItems();
+        SpiceDictionaryDomainFields::getInstance()->reloadItems();
+        SpiceDictionaryDomains::getInstance()->reloadItems();
         SpiceDictionaryDefinitions::getInstance()->reloadItems();
         SpiceDictionaryItems::getInstance()->reloadItems();
         SpiceDictionaryIndexes::getInstance()->reloadItems();
@@ -482,35 +484,10 @@ class SpiceUIConfLoader
                     $this->loadErrors[] = ['scope' => 'dictionary', 'name' => $dictionaryDef['name'], 'mismatch' => is_callable([$exception, 'getDetails']) ? $exception->getDetails() : null, 'message' => $exception->getMessage()];
                 }
             }
-
-            $this->repairNewRelationships($response['sysdictionarydefinitions']);
         }
-
-        SpiceDictionary::getInstance()->loadDictionary();
-        RelationshipFactory::getInstance()->loadRelationships(true);
 
         foreach ($dictionaryTables as $table) {
             unset($response[$table]);
-        }
-    }
-
-    /**
-     * repair relationships for new dictionaries
-     * @param array $dictionaries
-     * @return void
-     */
-    public function repairNewRelationships(array $dictionaries): void
-    {
-        foreach ($dictionaries as $dic) {
-
-            $dic = json_decode(base64_decode($dic), true);
-
-            SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($dic['id']);
-            try {
-                SpiceDictionaryRelationships::repairDictionaryVardefRelationships($dic['id']);
-            } catch (\Throwable $exception) {
-                $this->loadErrors[] = ['scope' => 'dictionary' ,'name' => $dic['name'], 'message' => $exception->getMessage()];
-            }
         }
     }
 
@@ -583,31 +560,25 @@ class SpiceUIConfLoader
      * returns array with packages and versions
      * @return array[]
      * @throws Exception
+     * @throws \Exception
      */
     public function getRepositoryInfo(): array
     {
-
         $repositoriesMetadata = ['packages' => [], 'versions' => []];
 
         $db = DBManagerFactory::getInstance();
         $repositoryObjects = $db->query("SELECT * FROM sysuipackagerepositories");
 
-        while($repository = $db->fetchByAssoc($repositoryObjects)){
-
+        while ($repository = $db->fetchByAssoc($repositoryObjects)) {
             // prepare url
             $repositoryUrl = $repository['url'].'/';
 
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-            curl_setopt($curl, CURLOPT_URL, $repositoryUrl .'config');
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt($curl, CURLOPT_ENCODING, "UTF-8");
-            $getJSONcontent = curl_exec($curl);
-
-            // decode content as array
-            $content = json_decode($getJSONcontent, true);
+            $content = SpiceCurlWrapper::getRequest($repositoryUrl .'config')
+                        ->setRouteAlias('spiceuiconfloader')
+                        ->setRawOption(CURLOPT_ENCODING, SpiceCurlRequest::ENCODING_UTF8)
+                        ->setSsl(false)
+                        ->send()
+                        ->getResponse();
 
             // loop through content and push the versions to repositoriesMetadata array
             foreach ($content['versions'] as $version) {

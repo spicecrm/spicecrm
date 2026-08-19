@@ -1,0 +1,5 @@
+@if (model.getField('status') == 'draft' || model.getField('status') == 'created') {
+    <object-record-details [componentSet]=" componentconfig.composeComponentset"/>
+} @else {
+    <object-record-details [componentSet]="componentconfig.viewComponentset" [readonly]="true"/>
+}

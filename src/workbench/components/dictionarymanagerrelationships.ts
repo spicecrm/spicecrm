@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Injector
+    Component, effect, Injector
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
@@ -14,48 +14,27 @@ import {language} from '../../services/language.service';
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {Relationship} from "../interfaces/dictionarymanager.interfaces";
+import {DictionaryManagerItemDetails} from "./dictionarymanageritemdetails";
 
 
 @Component({
     selector: 'dictionary-manager-relationships',
     templateUrl: '../templates/dictionarymanagerrelationships.html',
+    standalone: false
 })
 export class DictionaryManagerRelationships {
 
     public currentRelationship: Relationship;
 
+    /**
+     * a term to filter by
+     */
+    public filterterm: string;
+
+    public showTemplated: boolean = true;
+
     constructor(public dictionarymanager: dictionarymanager, public backend: backend, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
 
-    }
-
-    /**
-     * gets all non deleted entries sorted by name
-     */
-    get dictionaryrelationships() {
-
-        // return an empty array when no DictionaryDefinition is set
-        if (!this.dictionarymanager.currentDictionaryDefinition) return [];
-
-        return this.dictionarymanager.dictionaryrelationships.filter(r => r.deleted == 0 && (r.lhs_sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition || r.rhs_sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition || r.join_sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition)).sort((a, b) => a.name.localeCompare(b.name));
-    }
-
-    /**
-     * gets all non deleted entries sorted by name
-     */
-    get dictionaryRelationshipsForTemplates(): any[] {
-        let relatedRelationships: any[] = [];
-
-        for(let item of this.dictionarymanager.dictionaryitems.filter(d =>  d.sysdictionary_ref_id && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition)){
-            let relRelationships = this.dictionarymanager.dictionaryrelationships.filter(d => d.deleted == 0 && (d.lhs_sysdictionarydefinition_id == item.sysdictionary_ref_id || d.rhs_sysdictionarydefinition_id == item.sysdictionary_ref_id));
-            if(relRelationships.length > 0) {
-                relatedRelationships.push({
-                    relatedTemplateId: item.sysdictionary_ref_id,
-                    relationships: relRelationships
-                });
-            }
-        }
-
-        return relatedRelationships;
     }
 
 
@@ -70,8 +49,7 @@ export class DictionaryManagerRelationships {
     /**
      * react to the click to add a new dictionary definition
      */
-    public addDictionaryRelationship(event: MouseEvent) {
-        event.stopPropagation();
+    public addDictionaryRelationship() {
         this.modal.openModal('DictionaryManagerRelationshipAdd', true, this.injector);
     }
 
@@ -116,6 +94,9 @@ export class DictionaryManagerRelationships {
                             this.dictionarymanager.currentDictionaryRelationship == null;
                             this.currentRelationship = null;
                         }
+                    },
+                    error: () => {
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                     }
                 })
             }
@@ -160,6 +141,7 @@ export class DictionaryManagerRelationships {
                         loadingModal.emit(true);
                     },
                     error: () => {
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                         loadingModal.emit(true);
                     }
                 })
@@ -173,6 +155,7 @@ export class DictionaryManagerRelationships {
                         loadingModal.emit(true);
                     },
                     error: () => {
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                         loadingModal.emit(true);
                     }
                 })
@@ -184,5 +167,27 @@ export class DictionaryManagerRelationships {
 
     public trackByFn(e, i) {
         return i;
+    }
+
+    /**
+     * customize a relationship by double-click on the world icon
+     * @param relationship
+     */
+    public customizeRelationship(relationship: Relationship) {
+
+        if (this.dictionarymanager.changescope == 'none' || relationship.scope == 'c') return;
+
+        this.currentRelationship = undefined;
+        
+        const customRelationship = {...relationship}
+        customRelationship.id = this.modelutilities.generateGuid();
+        customRelationship.scope = 'c';
+        customRelationship.status = 'd';
+
+        const relType = this.dictionarymanager.dictionaryrelationshiptypes.find(rt => rt.name == relationship.relationship_type);
+
+        this.modal.openModal(relType.component_edit, true, this.injector).subscribe(modalRef => {
+            modalRef.instance.dictionaryRelationship = customRelationship;
+        });
     }
 }

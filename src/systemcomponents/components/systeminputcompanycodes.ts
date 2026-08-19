@@ -18,7 +18,8 @@ import {configurationService} from "../../services/configuration.service";
             useExisting: forwardRef(() => SystemInputCompanycodes),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputCompanycodes implements ControlValueAccessor {
 
@@ -47,7 +48,7 @@ export class SystemInputCompanycodes implements ControlValueAccessor {
     ) {
         this._companycodes = this.configuration.getData('companycodes');
         if(typeof this._companycodes === 'object') {
-            this._companycodes.sort((a, b) => a.name > b.name ? -1 : 1);
+            this._companycodes.sort((a, b) => a.name.localeCompare(b.name));
         }
     }
 

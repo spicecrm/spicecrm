@@ -1,10 +1,10 @@
 <?php
 namespace SpiceCRM\modules\Dashboards\api\controllers;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\ErrorHandlers\Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 class DashboardManagerController{
@@ -129,11 +129,16 @@ class DashboardManagerController{
         $db->query("DELETE FROM dashboardcomponents WHERE dashboard_id = '{$args['dashboardId']}'");
         foreach ($postbodyitems as $postbodyitem) {
             // $db->query("UPDATE sysuidashboardcomponents SET position='".json_encode($postbodyitem['position'])."', name='".$postbodyitem['name']."', component='".$postbodyitem['component']."' WHERE id = '".$postbodyitem['id']."'");
-            $sql = "INSERT INTO dashboardcomponents (id, dashboard_id, name, component, componentconfig, position, dashlet_id) values('";
+            $sql = "INSERT INTO dashboardcomponents (id, dashboard_id, name, component, componentconfig, position, dashlet_id, refresh_interval) values('";
             $sql .= $postbodyitem['id'] . "', '{$args['dashboardId']}', '" . $postbodyitem['name'] . "', '" . $postbodyitem['component'];
             $sql .= "', '" . $db->quote(json_encode($postbodyitem['componentconfig']));
             $sql .= "', '" . $db->quote(json_encode($postbodyitem['position']));
-            $sql .= "', '" . $postbodyitem['dashlet_id'] . "')";
+            $sql .= "', '" . $postbodyitem['dashlet_id'];
+            if (isset($postbodyitem['refresh_interval'])) {
+                $sql .= "', '" . $postbodyitem['refresh_interval'] . "')";
+            } else {
+                $sql .= "', NULL)";
+            };
             if( !$db->query($sql) ) throw ( new Exception( $db->last_error ))->setFatal(true);
         }
         return $res->withJson(['status' => $status]);

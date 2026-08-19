@@ -11,7 +11,8 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-module-icon',
-    templateUrl: '../templates/fieldmoduleicon.html'
+    templateUrl: '../templates/fieldmoduleicon.html',
+    standalone: false
 })
 export class fieldModuleIcon extends fieldGeneric {
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {

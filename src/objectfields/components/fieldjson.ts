@@ -12,7 +12,8 @@ import {fieldGeneric} from "./fieldgeneric";
 
 @Component({
     selector: 'field-json',
-    templateUrl: '../templates/fieldjson.html'
+    templateUrl: '../templates/fieldjson.html',
+    standalone: false
 })
 export class fieldJson extends fieldGeneric {
 
@@ -45,7 +46,7 @@ export class fieldJson extends fieldGeneric {
             this.setValid(false);
         }
         if ( !error ) {
-            this.model.setField( this.fieldname, val );
+            this.model.setField(this.fieldname, val);
         }
     }
 

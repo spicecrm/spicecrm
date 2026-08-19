@@ -1,39 +1,13 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\SpiceACLObjects;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\modules\SpiceACLObjects\SpiceACLObject;
 use stdClass;
 
 class SpiceACLObjectsRESTHandler
@@ -55,22 +29,41 @@ class SpiceACLObjectsRESTHandler
     public function getACLModule($id) {
         $db = DBManagerFactory::getInstance();
 
+        $details = SpiceModules::getInstance()->getModuleDetails(moduleId: $id);
+
         $retArray = [
-            'type' => $db->fetchByAssoc($db->query("SELECT sysmodules.id, sysmodules.module FROM sysmodules WHERE id = '$id' UNION SELECT syscustommodules.id, syscustommodules.module FROM syscustommodules WHERE id = '$id'")),
+            'type' => [
+                'id' => $details['id'],
+                'module' => $details['module'],
+                'scope' => $details['scope'],
+            ], // $db->fetchByAssoc($db->query("SELECT sysmodules.id, sysmodules.module, 'g' scope FROM sysmodules WHERE id = '$id' UNION SELECT syscustommodules.id, syscustommodules.module, 'c' scope FROM syscustommodules WHERE id = '$id'")),
             'authtypefields' => [],
             'authtypeactions' => []
         ];
 
         // get field values
-        $authTypeFields = $db->query("SELECT id, name FROM spiceaclmodulefields WHERE sysmodule_id = '$id'");
+        $authTypeFields = $db->query("SELECT id, name, 'g' scope FROM spiceaclmodulefields WHERE sysmodule_id = '$id'");
         while ($authTypeField = $db->fetchByAssoc($authTypeFields)) {
+            // get the dictionary info for the field
             $retArray['authtypefields'][] = $authTypeField;
         }
 
+        // get custom field values
+        $authTypeCustomFields = $db->query("SELECT id, name, 'c' scope FROM spiceaclcustommodulefields WHERE sysmodule_id = '$id'");
+        while ($authTypeCustomField = $db->fetchByAssoc($authTypeCustomFields)) {
+            $retArray['authtypefields'][] = $authTypeCustomField;
+        }
+
         // get action values
-        $authTypeActions = $db->query("SELECT id, action, description FROM spiceaclmoduleactions WHERE sysmodule_id = '$id'");
+        $authTypeActions = $db->query("SELECT id, action, description,'g' scope FROM spiceaclmoduleactions WHERE sysmodule_id = '$id'");
         while ($authTypeAction = $db->fetchByAssoc($authTypeActions)) {
             $retArray['authtypeactions'][] = $authTypeAction;
+        }
+
+        // get custom action values
+        $authTypeCustomActions = $db->query("SELECT id, action, description,'c' scope FROM spiceaclcustommoduleactions WHERE sysmodule_id = '$id'");
+        while ($authTypeCustomAction = $db->fetchByAssoc($authTypeCustomActions)) {
+            $retArray['authtypeactions'][] = $authTypeCustomAction;
         }
 
         return $retArray;
@@ -82,16 +75,13 @@ class SpiceACLObjectsRESTHandler
      * @return array
      * @throws \Exception
      */
-    public function addACLModuleField($typeId, $field)
+    public function addACLModuleField($field)
     {
-        $db = DBManagerFactory::getInstance();
-        $newId = SpiceUtils::createGuid();
-        $db->query("INSERT INTO spiceaclmodulefields (id, sysmodule_id, name) VALUES('$newId','$typeId','$field')");
+        $tablename = $field['scope'] == 'c' ? 'spiceaclcustommodulefields' : 'spiceaclmodulefields';
 
-        return [
-            'id' => $newId,
-            'name' => $field
-        ];
+        DBManagerFactory::getInstance()->insertQuery($tablename, $field);
+
+        return true;
     }
 
     /**
@@ -103,8 +93,8 @@ class SpiceACLObjectsRESTHandler
      */
     public function deleteACLModuleField($id)
     {
-        $db = DBManagerFactory::getInstance();
-        $db->query("DELETE FROM spiceaclmodulefields WHERE id = '$id'");
+        DBManagerFactory::getInstance()->query("DELETE FROM spiceaclmodulefields WHERE id = '$id'");
+        DBManagerFactory::getInstance()->query("DELETE FROM spiceaclcustommodulefields WHERE id = '$id'");
         return ['success' => true];
     }
 
@@ -118,6 +108,7 @@ class SpiceACLObjectsRESTHandler
     public function getACLModuleActions($sysmoduleid) {
         $db = DBManagerFactory::getInstance();
         $actions = [];
+
         $actionsObj = $db->query("SELECT * FROM spiceaclmoduleactions WHERE sysmodule_id ='$sysmoduleid'");
         while($action = $db->fetchByassoc($actionsObj)){
             $actions[] = [
@@ -126,6 +117,16 @@ class SpiceACLObjectsRESTHandler
                 'description' => $action['description']
             ];
         }
+
+        $customActionsObj = $db->query("SELECT * FROM spiceaclcustommoduleactions WHERE sysmodule_id ='$sysmoduleid'");
+        while($customAction = $db->fetchByassoc($customActionsObj)){
+            $actions[] = [
+                'id' => $customAction['id'],
+                'action' => $customAction['action'],
+                'description' => $customAction['description']
+            ];
+        }
+
         return $actions;
     }
 
@@ -135,16 +136,13 @@ class SpiceACLObjectsRESTHandler
      * @return array
      * @throws \Exception
      */
-    public function addACLModuleAction($sysmoduleid, $action, $description = null)
+    public function addACLModuleAction($action)
     {
-        $db = DBManagerFactory::getInstance();
-        $actionId = SpiceUtils::createGuid();
-        $db->query("INSERT INTO spiceaclmoduleactions (id, sysmodule_id, action, description) VALUES('$actionId', '$sysmoduleid', '$action', '$description')");
-        return [
-            'id' => $actionId,
-            'action' => $action,
-            'description' => $description
-        ];
+        $tablename = $action['scope'] == 'c' ? 'spiceaclcustommoduleactions' : 'spiceaclmoduleactions';
+
+        DBManagerFactory::getInstance()->insertQuery($tablename, $action);
+
+        return true;
     }
 
     /**
@@ -154,8 +152,8 @@ class SpiceACLObjectsRESTHandler
      */
     public function deleteACLModuleAction($id)
     {
-        $db = DBManagerFactory::getInstance();
-        $db->query("DELETE FROM spiceaclmoduleactions WHERE id = '$id'");
+        DBManagerFactory::getInstance()->query("DELETE FROM spiceaclmoduleactions WHERE id = '$id'");
+        DBManagerFactory::getInstance()->query("DELETE FROM spiceaclcustommoduleactions WHERE id = '$id'");
         return ['success' => true];
     }
 

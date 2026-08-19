@@ -1,39 +1,14 @@
 <?php
 namespace SpiceCRM\includes\Logger;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
 
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 /**
  * Viewing/Selecting from API log (database)
@@ -57,18 +32,31 @@ class APIlogViewer {
     }
 
     /**
-     * returns the logtables
+     * Returns the API-log-tables.
+     * API-log-tables are all tables similar to the table "sysapilog".
      *
      * @return array
      */
-    public function getLogTables(){
-        $dictionary = SpiceDictionary::getInstance()->dictionary;
+    public static function getAdditionalLogTables()
+    {
+        $sysapilogItems = [];
+        foreach ( SpiceDictionaryItems::getInstance()->getItemsForDictionary( SpiceDictionaryDefinitions::getInstance()->getDefinitionByName('sysapilog')['id'] ) as $item )
+            if ( $item['non_db'] == 0 ) $sysapilogItems[$item['name']] = $item;
 
         $tables = [];
-        foreach($dictionary as $name => $data){
-            if($name != 'sysapilog' && $data['fields'] == $dictionary['sysapilog']['fields']){
-                $tables[] = $name;
+        foreach ( SpiceDictionaryDefinitions::getInstance()->getDefinitions('a') as $definition )
+        {
+            if ( $definition['name'] === 'sysapilog' ) continue;
+            if ( $definition['sysdictionary_contenttype'] != 'logs' ) continue;
+            $items = [];
+            foreach( SpiceDictionaryItems::getInstance()->getItemsForDictionary( $definition['id'] ) as $v ) if ( $item['non_db'] == 0 ) $items[$v['name']] = $v;
+            if ( count( $items ) !== count( $sysapilogItems )) continue;
+            foreach( $items as $item )
+            {
+                if ( !isset( $sysapilogItems[$item['name']] ) ) continue 2;
+                if ( !SpiceDictionaryItems::compareItems( $sysapilogItems[$item['name']], $item )) continue 2;
             }
+            $tables[] = $definition['tablename'];
         }
         return $tables;
     }
@@ -87,7 +75,7 @@ class APIlogViewer {
         // check if we have a specific log table
         $logtable = 'sysapilog';
         if($queryParams['logtable'] && $queryParams['logtable'] != 'sysapilog'){
-            $logtables = $this->getLogTables();
+            $logtables = self::getAdditionalLogTables();
             if(array_search($queryParams['logtable'], $logtables) === false){
                 throw (new NotFoundException("Logtable not found"))->setLookedFor($logtable);
             }
@@ -123,12 +111,11 @@ class APIlogViewer {
         if ( !empty( $queryParams['direction'])) $filter[] = "a.direction = '{$db->quote($queryParams['direction'])}'";
         if ( !empty( $queryParams['end'])) $filter[] = "a.date_entered <= '{$db->quote($queryParams['end'])}'";
         if ( !empty( $queryParams['start'])) $filter[] = "a.date_entered >= '{$db->quote($queryParams['start'])}'";
+        if ( !empty( $queryParams['pinned'])) $filter[] = "a.pinned = 1";
 
-        if (count( $filter) > 0) {
-            $whereClause = 'WHERE ' . implode(' AND ', $filter);
-        }
+        $whereClause = ( count( $filter) > 0 ) ? 'WHERE ' . implode(' AND ', $filter ) : '';
 
-        $sql = "SELECT a.id, a.runtime, a.route, a.method, a.request_args , a.request_params, a.user_id , u.user_name, a.date_entered, a.http_status_code, a.transaction_id, a.direction FROM {$logtable} a LEFT JOIN users u ON a.user_id = u.id {$whereClause} ORDER BY a.date_timestamp DESC";
+        $sql = "SELECT a.id, a.runtime, a.route, a.method, a.request_args , a.request_params, a.user_id , u.user_name, a.date_entered, a.http_status_code, a.transaction_id, a.direction, a.pinned FROM {$logtable} a LEFT JOIN users u ON a.user_id = u.id {$whereClause} ORDER BY a.date_timestamp DESC";
 
         $dbResult = $db->limitQuery( $sql, 0, $queryParams['limit'] ?: 100);
 
@@ -144,7 +131,7 @@ class APIlogViewer {
 
         // check if we have a specific log table
         if($logtable && $logtable != 'sysapilog'){
-            $logtables = $this->getLogTables();
+            $logtables = self::getAdditionalLogTables();
             if(array_search($logtable, $logtables) === false){
                 throw (new NotFoundException("Logtable not found"))->setLookedFor($logtable);
             }
@@ -161,6 +148,12 @@ class APIlogViewer {
         }
 
         return $entry;
+    }
+
+    function getTotalCount(): int
+    {
+        $db = DBManagerFactory::getInstance();
+        return (int)$db->getOne('SELECT COUNT(*) FROM sysapilog');
     }
 
 }

@@ -18,7 +18,8 @@ import {language} from "../../services/language.service";
             useExisting: forwardRef(() => SystemSelectUOM),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemSelectUOM implements ControlValueAccessor {
 

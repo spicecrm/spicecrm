@@ -1,42 +1,14 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\SpiceACL;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
 use SpiceCRM\extensions\modules\SpiceACLTerritories\SpiceACLTerritory;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\modules\SpiceACL\SpiceACLUsers;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceModules;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 class SpiceACL
 {
@@ -56,13 +28,27 @@ class SpiceACL
     var $aclObject = null;
     var $territory = null;
 
+    /**
+     * cached Object Values
+     */
+    var $aclObjectValues = [];
+
+
     private static $instance;
 
-    private function __construct() {
-
+    private function __construct()
+    {
+        // $this->migrate();
     }
-    private function __clone() {}
-    private function __wakeup() {}
+
+    private function __clone()
+    {
+    }
+
+    private function __wakeup()
+    {
+    }
+
     /**
      * @return SpiceACL
      */
@@ -74,6 +60,15 @@ class SpiceACL
             self::$instance = new self;
         }
         return self::$instance;
+    }
+
+    private function migrate(){
+        $db = DBManagerFactory::getInstance();
+        $toBeMigrated = $db->fetchAll("SELECT * FROM spiceaclmoduleactions WHERE package IS NULL");
+        foreach ($toBeMigrated as $action) {
+            $db->insertQuery('spiceaclcustommoduleactions', $action);
+            $db->query("DELETE FROM spiceaclmoduleactions WHERE id='{$action['id']}'");
+        }
     }
 
     public function createVardefs($module)
@@ -91,12 +86,10 @@ class SpiceACL
     {
         $addData = SpiceACLUsers::addFTSData($bean);
 
-        if(file_exists('extensions/modules/SpiceACLTerritories')) {
-            $territory = BeanFactory::getBean('SpiceACLTerritories');
-            if ($territory && $territory instanceof SpiceACLTerritory) {
-                $territoryData = $territory->addFTSData($bean);
-                $addData = array_merge($addData, $territoryData);
-            }
+        $territory = BeanFactory::getBean('SpiceACLTerritories');
+        if ($territory instanceof SpiceACLTerritory) {
+            $territoryData = $territory->addFTSData($bean);
+            $addData = array_merge($addData, $territoryData);
         }
 
         return $addData;
@@ -299,7 +292,7 @@ class SpiceACL
             if (DBManagerFactory::getInstance()) {
                 $dbresult = DBManagerFactory::getInstance()->query("SELECT acl FROM sysmodules WHERE module='" . $module . "' UNION SELECT acl FROM syscustommodules WHERE module='" . $module . "'");
                 while ($row = DBManagerFactory::getInstance()->fetchByAssoc($dbresult)) {
-                    $_SESSION['spiceaclaccess']['aclmoduleactions'][$module] = (boolean)$row['acl'];
+                    $_SESSION['spiceaclaccess']['aclmoduleactions'][$module] = (bool)$row['acl'];
                 }
             }
             //check acl support on bean
@@ -339,10 +332,10 @@ class SpiceACL
                 return 'edit';
             default:
                 // check if we have a custom action
-                if($module) {
+                if ($module) {
                     $db = DBManagerFactory::getInstance();
                     $moduleId = SpiceModules::getInstance()->getModuleId($module);
-                    $customAction = $db->fetchByAssoc($db->query("SELECT id FROM spiceaclmoduleactions WHERE sysmodule_id = '$moduleId' AND action = '$action'"));
+                    $customAction = $db->fetchByAssoc($db->query("SELECT id FROM spiceaclmoduleactions WHERE sysmodule_id = '$moduleId' AND action = '$action' UNION SELECT id FROM spiceaclcustommoduleactions WHERE sysmodule_id = '$moduleId' AND action = '$action' "));
                 }
                 return $customAction['id'] ?: $action;
             /*
@@ -362,17 +355,23 @@ class SpiceACL
      * @return void
      * @throws \Exception
      */
-    private function loadActions(){
+    private function loadActions()
+    {
 
         $db = DBManagerFactory::getInstance();
 
         $standardActions = $db->query("SELECT action FROM spiceaclstandardactions");
-        while($s = $db->fetchByAssoc(($standardActions))){
+        while ($s = $db->fetchByAssoc(($standardActions))) {
             $this->standardActions[] = $s['action'];
         }
 
         $moduleActions = $db->query("SELECT sysmodule_id, action FROM spiceaclmoduleactions");
-        while($m = $db->fetchByAssoc(($moduleActions))){
+        while ($m = $db->fetchByAssoc(($moduleActions))) {
+            $this->moduleActions[$m['sysmodule_id']][] = $m['action'];
+        }
+
+        $moduleActions = $db->query("SELECT sysmodule_id, action FROM spiceaclcustommoduleactions");
+        while ($m = $db->fetchByAssoc(($moduleActions))) {
             $this->moduleActions[$m['sysmodule_id']][] = $m['action'];
         }
 
@@ -388,13 +387,13 @@ class SpiceACL
     function getModuleAccess($module)
     {
         // load the actins if not loaded
-        if(!$this->standardActions) $this->loadActions();
+        if (!$this->standardActions) $this->loadActions();
 
         // get the moduleid and the combined actions
         $moduleId = SpiceModules::getInstance()->getModuleId($module);
         $aclActions = array_values(array_merge($this->standardActions, isset($this->moduleActions[$moduleId]) ? $this->moduleActions[$moduleId] : []));
 
-        foreach($aclActions as $aclAction) {
+        foreach ($aclActions as $aclAction) {
             // $aclArray[$aclAction] = $seed->ACLAccess($aclAction);
             $aclArray[$aclAction] = $this->checkAccess($module, $aclAction, true);
         }
@@ -514,13 +513,16 @@ class SpiceACL
      */
     private function getModuleActions($module)
     {
-        if(!isset($this->moduleActions[$module])){
+        if (!isset($this->moduleActions[$module])) {
             $db = DBManagerFactory::getInstance();
             $actions = [];
 
             // get the Actions
-            $actionsObj = $db->query("SELECT action id, action FROM spiceaclstandardactions UNION SELECT spiceaclmoduleactions.id, action FROM spiceaclmoduleactions, sysmodules WHERE spiceaclmoduleactions.sysmodule_id = sysmodules.id AND sysmodules.module = '$module' UNION SELECT spiceaclmoduleactions.id, action FROM spiceaclmoduleactions, syscustommodules WHERE spiceaclmoduleactions.sysmodule_id = syscustommodules.id AND syscustommodules.module = '$module'");
-            while ($action = $db->fetchByAssoc($actionsObj)) {
+            $standardActions = $db->fetchAll("SELECT action id, action FROM spiceaclstandardactions");
+            $globalActions = $db->fetchAll("SELECT spiceaclmoduleactions.id, action FROM spiceaclmoduleactions, sysmodules WHERE spiceaclmoduleactions.sysmodule_id = sysmodules.id AND sysmodules.module = '$module' UNION SELECT spiceaclmoduleactions.id, action FROM spiceaclmoduleactions, syscustommodules WHERE spiceaclmoduleactions.sysmodule_id = syscustommodules.id AND syscustommodules.module = '$module'");
+            $customActions = $db->fetchAll("SELECT spiceaclcustommoduleactions.id, action FROM spiceaclcustommoduleactions, sysmodules WHERE spiceaclcustommoduleactions.sysmodule_id = sysmodules.id AND sysmodules.module = '$module' UNION SELECT spiceaclcustommoduleactions.id, action FROM spiceaclcustommoduleactions, syscustommodules WHERE spiceaclcustommoduleactions.sysmodule_id = syscustommodules.id AND syscustommodules.module = '$module'");
+            $allActions = array_merge($standardActions ?: [], $globalActions ?: [], $customActions ?: []);
+            foreach ($allActions as $action) {
                 $actions[$action['id']] = $action['action'];
             }
             $this->moduleActions[$module] = $actions;
@@ -581,19 +583,29 @@ class SpiceACL
             if (count($activitiesAllowed) > 0) {
                 foreach ($userObjects as $aclObjectId => $aclObjectData) {
                     // only check type 0
-                    if ($aclObjectData['spiceaclobjecttype'] != 3)
+                    if ($aclObjectData['spiceaclobjecttype'] != 3 && $aclObjectData['spiceaclobjecttype'] != 6)
                         continue;
 
                     // match the object without activitiy
                     $activities = $this->aclObject->getObjectActivities($bean, $aclObjectData);
-                    if($activities !== false) {
-                        foreach ($activitiesAllowed as $allowedid => $allwoedaction) {
-                            if (in_array($allwoedaction, $activities) === false) {
-                                unset($activitiesAllowed[$allowedid]);
-                            }
+                    if ($activities !== false) {
+                        switch ($aclObjectData['spiceaclobjecttype']) {
+                            case 3:
+                                foreach ($activitiesAllowed as $allowedid => $allwoedaction) {
+                                    if (in_array($allwoedaction, $activities) === false) {
+                                        unset($activitiesAllowed[$allowedid]);
+                                    }
+                                }
+                                break;
+                            case 6:
+                                foreach ($activities as $allowedAction) {
+                                    if (in_array($allowedAction, $activitiesAllowed) === false) {
+                                        $activitiesAllowed[] = $allowedAction;
+                                    }
+                                }
+                                break;
                         }
                     }
-
                 }
             }
 
@@ -673,5 +685,21 @@ class SpiceACL
         }
 
         return $fieldControlArray;
+    }
+
+    /**
+     * fetches and caches the objectvalues
+     *
+     * @param $aclObjectId
+     * @return array|mixed
+     * @throws \Exception
+     */
+    public function getACLObjectValues($aclObjectId){
+        if(!isset($this->aclObjectValues[$aclObjectId])){
+            $standardValues = DBManagerFactory::getInstance()->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclmodulefields.name FROM spiceaclobjectvalues, spiceaclmodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclmodulefields.id AND spiceaclobject_id='$aclObjectId'");
+            $customValues = DBManagerFactory::getInstance()->fetchAll("SELECT spiceaclobjectvalues.*, spiceaclcustommodulefields.name FROM spiceaclobjectvalues, spiceaclcustommodulefields WHERE spiceaclobjectvalues.spiceaclmodulefield_id = spiceaclcustommodulefields.id AND spiceaclobject_id='$aclObjectId'");
+            $this->aclObjectValues[$aclObjectId] = array_merge($standardValues ?: [], $customValues ?: []);
+        }
+        return $this->aclObjectValues[$aclObjectId];
     }
 }

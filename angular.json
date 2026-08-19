@@ -43,7 +43,8 @@
               "node_modules/socket.io-client/dist/socket.io.min.js",
               "node_modules/libphonenumber-js/bundle/libphonenumber-js.min.js",
               "node_modules/cropperjs/dist/cropper.min.js",
-              "node_modules/croppie/croppie.min.js"
+              "node_modules/croppie/croppie.min.js",
+              "vendor/ckeditor/ckeditor.js"
             ]
           },
           "configurations": {
@@ -78,13 +79,13 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "core:build",
+            "buildTarget": "core:build",
             "port": 3333,
             "proxyConfig": "proxy.conf.js"
           },
           "configurations": {
             "outlook": {
-              "browserTarget": "core:build:outlook",
+              "buildTarget": "core:build:outlook",
               "ssl": true
             }
           }

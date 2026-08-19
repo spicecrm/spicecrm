@@ -1,7 +1,7 @@
 /**
  * @module services
  */
-import {Injectable, EventEmitter} from '@angular/core';
+import {Injectable, EventEmitter, WritableSignal, signal} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Subject} from 'rxjs';
 
@@ -12,6 +12,7 @@ import {metadata} from './metadata.service';
 import {Observable} from 'rxjs';
 import {StoreService} from "./store.service";
 import {DomainValidation, DomainValidationValue} from "../workbench/interfaces/domainmanager.interfaces";
+import {MomentService} from "./moment.service";
 
 /**
  * @ignore
@@ -25,6 +26,11 @@ declare var _: any;
     providedIn: 'root'
 })
 export class language {
+    /**
+     * holds the current display language for translatable fields set from the object-field-translations-language-button
+     */
+    public currentFieldTranslationLanguage: WritableSignal<string> = signal(undefined);
+
     /**
      * interla object that holds all language labels retrieved from the backend in the current language
      */
@@ -53,6 +59,7 @@ export class language {
         public session: session,
         public broadcast: broadcast,
         public storeService: StoreService,
+        private momentService: MomentService,
         public metadata: metadata
     ) {
 
@@ -72,6 +79,8 @@ export class language {
         if (!language) language = this.getDefaultLanguage();
 
         this._currentlanguage = language;
+
+        this.momentService.setLocale(language);
 
         this.storeService.readStoreAll(this.storeDBName, 'languages').then(languages => {
 
@@ -122,6 +131,7 @@ export class language {
                 this.languagedata.languages = {available: languages};
 
                 this._currentlanguage = languages.find(l => l.isCurrent)?.language_code;
+                this.momentService.setLocale(this._currentlanguage);
 
                 this.storeService.readStore(this.storeDBName, 'applang', this.currentlanguage).subscribe({
                     next: applang => this.languagedata.applang = applang,
@@ -573,6 +583,17 @@ export class language {
         } else {
             return value;
         }
+    }
+
+    /**
+     * get field display option object
+     * @param module
+     * @param fieldName
+     * @param value
+     */
+    public getValidationValueObject(module: string, fieldName: string, value: string): DomainValidationValue {
+        let options = this.metadata.getFieldOptions(module, fieldName);
+            return this.metadata.getDomainValidationValues(options)[value];
     }
 
     /**

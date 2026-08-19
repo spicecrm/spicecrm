@@ -1,0 +1,3353 @@
+<?php
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
+
+namespace SpiceCRM\includes\SpiceBeans;
+
+use SpiceCRM\includes\AddressReferences\AddressReferences;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\ErrorHandlers\ValidationException;
+use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\LogicHook\LogicHook;
+use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SpiceDictionary\database\DBManager;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\relationships\Relationship;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryLink;
+use SpiceCRM\includes\SpiceDictionary\validators\ValidatorFactory;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
+use SpiceCRM\includes\SpiceNotes\SpiceNotes;
+use SpiceCRM\includes\SpiceNotifications\SpiceNotificationsLoader;
+use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
+use SpiceCRM\includes\SpiceCleanerHelper;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SysTrashCan\SysTrashCan;
+use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\DBUtils;
+use SpiceCRM\includes\utils\EncryptionUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\includes\WebHook\WebHook;
+use SpiceCRM\modules\SpiceACL\SpiceACL;
+use stdClass;
+
+
+/* * *******************************************************************************
+ * Description:  Defines the base class for all data entities used throughout the
+ * application.  The base class including its methods and variables is designed to
+ * be overloaded with module-specific methods and variables particular to the
+ * module's base entity class.
+ * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
+ * All Rights Reserved.
+ * ***************************************************************************** */
+
+
+/**
+ * SpiceBean is the base class for all business objects in SpiceCRM.  It implements
+ * the primary functionality needed for manipulating business objects: create,
+ * retrieve, update, delete.  It allows for searching and retrieving list of records.
+ * It allows for retrieving related objects (e.g. contacts related to a specific account).
+ *
+ * In the current implementation, there can only be one bean per folder.
+ * Naming convention has the bean name be the same as the module and folder name.
+ * All bean names should be singular (e.g. Contact).  The primary table name for
+ * a bean should be plural (e.g. contacts).
+ */
+class SpiceBean
+{
+    /**
+     * introduced in spicecrm 201903001
+     * CR1000154
+     * catch and handle bean action state
+     * @var
+     */
+    private $_bean_action;
+    const BEAN_ACTION_CREATE = 1;
+    const BEAN_ACTION_UPDATE = 2;
+    const BEAN_ACTION_DELETE = 4;
+    // const BEAN_ACTION_DUPLICATE = 8;
+    const BEAN_ACTIONS = [self::BEAN_ACTION_CREATE, self::BEAN_ACTION_UPDATE, self::BEAN_ACTION_DELETE];
+    //
+
+    /**
+     * Blowfish encryption key
+     * @var string
+     */
+    static protected $field_key;
+
+    /**
+     * Cache of fields which can contain files
+     *
+     * @var array
+     */
+    static protected $fileFields = [];
+
+    /**
+     * A pointer to the database object
+     *
+     * @var \SpiceCRM\includes\SpiceDictionary\database\DBManager
+     */
+    var $db;
+
+    /**
+     * Unique object identifier
+     *
+     * @var string
+     */
+    public $id;
+
+    /**
+     * @var add a default name field
+     */
+    public $name;
+
+    /**
+     * add a default relid field as this is used by the relationships
+     *
+     * @var
+     */
+    public $relid;
+
+    /**
+     * the module this has been created for, set by the BeanFactory
+     *
+     * @var string
+     */
+    public $_module;
+
+    /**
+     * the dictionary definition id of the bean
+     *
+     * @var string
+     */
+    public $_sysdictionarydefinition_id;
+
+    /**
+     * the dictionary definition name
+     *
+     * @var string
+     */
+    public $_sysdictionarydefinition_name;
+
+    /**
+     * the name of the database table for this Bean
+     *
+     * @var string
+     */
+    public $_tablename;
+
+    /**
+     * the Objectname set when laoded via the beanfactory
+     *
+     * @var string
+     */
+    public $_objectname;
+
+    /**
+     * When createing a bean, you can specify a value in the id column as
+     * long as that value is unique.  During save, if the system finds an
+     * id, it assumes it is an update.  Setting new_with_id to true will
+     * make sure the system performs an insert instead of an update.
+     *
+     * @var BOOL -- default false
+     */
+    var $new_with_id = false;
+
+    /**
+     * Disble vardefs.  This should be set to true only for beans that do not have varders.  Tracker is an example
+     *
+     * @var BOOL -- default false
+     */
+    var $disable_vardefs = false;
+
+    /**
+     * When running a query on related items using the method: retrieve_by_string_fields
+     * this value will be set to true if more than one item matches the search criteria.
+     *
+     * @var BOOL
+     */
+    var $duplicates_found = false;
+
+    /**
+     * true if this bean has been deleted, false otherwise.
+     *
+     * @var BOOL
+     */
+    var $deleted = 0;
+
+    /**
+     * Should the date modified column of the bean be updated during save?
+     * This is used for admin level functionality that should not be updating
+     * the date modified.  This is only used by sync to allow for updates to be
+     * replicated in a way that will not cause them to be replicated back.
+     *
+     * @var BOOL
+     */
+    var $update_date_modified = true;
+
+    /**
+     * Should the modified by column of the bean be updated during save?
+     * This is used for admin level functionality that should not be updating
+     * the modified by column.  This is only used by sync to allow for updates to be
+     * replicated in a way that will not cause them to be replicated back.
+     *
+     * @var BOOL
+     */
+    var $update_modified_by = true;
+
+    /**
+     * This allows for seed data to be created without using the current user to set the id.
+     * This should be replaced by altering the current user before the call to save.
+     *
+     * @var unknown_type
+     */
+    //TODO This should be replaced by altering the current user before the call to save.
+    /**
+     * Setting this to true allows for updates to overwrite the date_entered
+     *
+     * @var BOOL
+     */
+    var $update_date_entered = false;
+    var $set_created_by = true;
+
+    /**
+     * The database table where records of this Bean are stored.
+     * @deprecated replaced by $_tablename
+     * @var String
+     */
+    var $table_name = '';
+
+    /**
+     * This is the singular name of the bean.  (i.e. Contact).
+     * @deprecated replaced by $_objectname
+     * @var String
+     */
+    var $object_name = '';
+
+
+    /**
+     * The name of the module folder for this type of bean.
+     *
+     * @var String
+     */
+
+    /**
+     * @deprecated replaced by $_module
+     *
+     * @var string
+     */
+    var $module_dir = '';
+
+    /**
+     * @deprecated replaced by $_module
+     *
+     * @var string
+     */
+    var $module_name = '';
+
+    /**
+     * @deprecated. Use $field_defs instead
+     *
+     * @var array
+     */
+    var $field_name_map;
+
+    /**
+     * Stores the variable definitions in the bean
+     *
+     * @var array
+     */
+    var $field_defs;
+
+    /**
+     * @var holds acl fields that are under ACL control
+     */
+    var $acl_fields;
+
+    /**
+     * @deprecated
+     *
+     * @var array
+     */
+    var $required_fields = [];
+
+    /**
+     * @deprecated
+     *
+     * @var array
+     */
+    var $column_fields = [];
+
+    /**
+     * @deprecated
+     *
+     * @var array
+     */
+    var $list_fields = [];
+
+    /**
+     * @deprecated
+     *
+     * @var array
+     */
+    var $additional_column_fields = [];
+
+
+    var $relationship_fields = [];
+    var $fetched_row = false;
+    var $fetched_rel_row = [];
+    var $force_load_details = false;
+    var $optimistic_lock = false;
+
+    /*
+     * The default ACL type
+     */
+    var $acltype = 'module';
+
+    /**
+     * Set to true in the child beans if the module supports importing
+     */
+    var $importable = false;
+
+    /**
+     * Set to true if the bean is being dealt with in a workflow
+     */
+    var $in_workflow = false;
+
+    /**
+     *
+     * By default it will be true but if any module is to be kept non visible
+     * to tracker, then its value needs to be overriden in that particular module to false.
+     *
+     */
+    var $tracker_visibility = true;
+
+    /**
+     * How deep logic hooks can go
+     * @var int
+     */
+    protected $max_logic_depth = 10;
+
+    /**
+     * A way to keep track of the loaded relationships so when we clone the object we can unset them.
+     *
+     * @var array
+     */
+    protected $loaded_relationships = [];
+
+    /**
+     * set to true if dependent fields updated
+     */
+    protected $is_updated_dependent_fields = false;
+
+
+    /**
+     * maretval 2019-03-13. additional property
+     * save data changes to be able to look up audited fields in after_save logic
+     */
+    public $auditDataChanges = [];
+
+    /**
+     * In case this bean is a clone: This informs about the GUID of the template bean.
+     */
+    var $newFromTemplate = '';
+
+
+    /**
+     * set to true before saving to enforce a reload on the frontend when a socket message is retrieved
+     * this will change the message type that is sent via the socket and bypass the session check
+     *
+     * @var bool
+     */
+    public $systemUpdate = false;
+
+    /**
+     * @var int helper var for the logic hook depth
+     */
+    var $logicHookDepth = [];
+
+    /**
+     * @var holds the data values of the bean
+     */
+    protected $_data = null;
+
+    /**
+     * @var string a generic summary text for the Bean
+     */
+    public $summary_text = '';
+
+
+    /**
+     * store related data, currently for email address relationship id in ProspectLists
+     * @var array
+     */
+    public $mergeRelatedData = [];
+
+    /**
+     * @var bool indicator if we are in the save
+     */
+    public bool $in_save = false;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    public ?string $modified_by_name = null;
+
+    /**
+     * @var array TODO check if that should go into the dictionary
+     */
+    private array $audit_enabled_fields;
+
+    /**
+     * @var array TODO check if that should go into the dictionary
+     */
+    private array $firstlog_enabled_fields = [];
+
+    /**
+     * set in code to disable validation
+     *
+     * @var bool
+     */
+    public bool $disableValidation = false;
+
+    /**
+     * holds all BEAN dictionary based values
+     * @var array
+     */
+    protected array $beanValues = [];
+
+    /**
+     * Constructor for the bean, it performs following tasks:
+     *
+     * 1. Initalized a database connections
+     * 2. Load the vardefs for the module implemeting the class. cache the entries
+     *    if needed
+     * 3. Setup row-level security preference
+     * All implementing classes  must call this constructor using the parent::SpiceBean() class.
+     *
+     */
+    function __construct()
+    {
+        // initialize the _data object
+        $this->_data = new stdClass();
+
+        // return the object
+        return $this;
+    }
+
+    /**
+     * Magic setter function
+     *
+     * Uses the field definition from the dictionary to perform validation unless turned off with the disableValidation flag.
+     * Stores the value in the bean attribute e.g. $bean->attribute
+     * and in the $beanValues array.
+     *
+     * @param string $attributeName
+     * @param mixed $attributeValue
+     * @return void
+     * @throws ValidationException
+     */
+    public function __set(string $attributeName, mixed $attributeValue): void {
+        if (property_exists($this, $attributeName)) {
+            $this->{$attributeName} = $attributeValue;
+        }
+
+        if ($this->disableValidation == false && SpiceConfig::getInstance()->get('systemvardefs.enable_bean_validation') == true) {
+            $dictionaryField = $this->getDictionaryField($attributeName);
+            if ($dictionaryField) {
+                $this->validateField($attributeName, $attributeValue, $dictionaryField);
+            } else {
+                 if (SpiceConfig::getInstance()->get('systemvardefs.enable_strict_property_check') == true) {
+                     throw new ValidationException('No field definition found for ' . $attributeName);
+                 }
+            }
+        }
+
+        $this->{$attributeName} = $attributeValue;
+        $this->beanValues[$attributeName] = $attributeValue;
+    }
+
+    /**
+     * Magic getter function.
+     *
+     * Returns the value of the attribute from the beanValues array.
+     * If it doesn't exist it returns the values from the bean attribute.
+     *
+     * @param string $attributeName
+     * @return mixed
+     */
+    public function __get(string $attributeName): mixed {
+        if (isset($this->beanValues[$attributeName])) {
+            return $this->beanValues[$attributeName];
+        }
+
+        if (property_exists($this, $attributeName)) {
+            return $this->{$attributeName};
+        }
+
+        return null;
+    }
+
+    /**
+     * Magic isset function.
+     *
+     * @param string $attributeName
+     * @return bool
+     */
+    public function __isset(string $attributeName): bool
+    {
+        if (isset($this->beanValues[$attributeName])) {
+            return true;
+        }
+
+        if (isset($this->$attributeName)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Magi unset function.
+     *
+     * @param string $attributeName
+     * @return void
+     */
+    public function __unset(string $attributeName): void
+    {
+        unset($this->beanValues[$attributeName]);
+    }
+
+    /**
+     * Performs the technical and logical validation for values of an attribute.
+     *
+     * @param string $attributeName
+     * @param mixed $attributeValue
+     * @param array $dictionaryField
+     * @return void
+     */
+    private function validateField(string $attributeName, mixed $attributeValue, array $dictionaryField): void {
+        if (isset($dictionaryField['sysdictionarydomainfield_id'])) {
+            $validators = ValidatorFactory::getInstance()->getValidators($dictionaryField['sysdictionarydomainfield_id']);
+
+            if ($validators['technical']) {
+                $validators['technical']($attributeValue, $dictionaryField);
+            }
+
+            if ($validators['logical']) {
+                $validators['logical']($attributeValue, $dictionaryField);
+            }
+        }
+    }
+
+    public function getBeanDataArray(){
+        $data = (array) $this->_data;
+
+        // add standard Fields
+        $data['id'] = $this->id;
+        $data['deleted'] = $this->deleted;
+
+        // return the data
+        return $data;
+    }
+
+    /**
+     * initializes the bean
+     */
+    public function initialize_bean()
+    {
+        $this->db = DBManagerFactory::getInstance();
+
+        $dictionaryDefs = SpiceDictionary::getInstance()->getDefs($this->_sysdictionarydefinition_name ?: $this->_objectname);
+        $this->field_defs = $dictionaryDefs['fields'];
+        $this->optimistic_lock = $dictionaryDefs['optimistic_locking'];
+
+        if ($this->bean_implements('ACL') && !empty(AuthenticationController::getInstance()->getCurrentUser())) {
+            $this->acl_fields = (isset($dictionaryDefs['acl_fields']) && $dictionaryDefs['acl_fields'] === false) ? false : true;
+        }
+        $this->populateDefaultValues();
+
+        /*
+        $dictHandler = SpiceDictionaryHandler::getInstance();
+        if ((false == $this->disable_vardefs && empty($dictHandler->dictionary[$this->_objectname])) || !empty($GLOBALS['reload_vardefs'])) {
+            VardefManager::loadVardef($this->_module, $this->_objectname);
+
+            // logic hook to create vardefs .. if any additonal fields are required
+            // ToDo - check why we need this here
+            $this->call_custom_logic('create_vardefs');
+
+            if (isset($dictHandler->dictionary[$this->_objectname]) && !$this->disable_vardefs) {
+                $this->field_defs = $dictHandler->dictionary[$this->_objectname]['fields'];
+
+                if (!empty($dictHandler->dictionary[$this->_objectname]['optimistic_locking'])) {
+                    $this->optimistic_lock = true;
+                }
+            }
+
+        } else {
+            $this->field_defs = &$dictHandler->dictionary[$this->_objectname]['fields'];
+
+            if (!empty($dictHandler->dictionary[$this->_objectname]['optimistic_locking'])) {
+                $this->optimistic_lock = true;
+            }
+        }
+
+        if ($this->bean_implements('ACL') && !empty(AuthenticationController::getInstance()->getCurrentUser())) {
+            $this->acl_fields = (isset($dictHandler->dictionary[$this->_objectname]['acl_fields']) && $dictHandler->dictionary[$this->_objectname]['acl_fields'] === false) ? false : true;
+        }
+        $this->populateDefaultValues();
+        */
+    }
+
+    /**
+     * introduced in spicecrm 201903001
+     * CR1000154
+     * set current action applied on bean
+     * only create || update for now
+     * @param null $action
+     */
+    private function set_bean_action($action = null)
+    {
+        if ($action && !in_array($action, self::BEAN_ACTIONS))
+            return;
+        $this->_bean_action = $action;
+    }
+
+    /**
+     * introduced in spicecrm 201903001
+     * CR1000154
+     * @return mixed
+     */
+    public function get_bean_action()
+    {
+        return $this->_bean_action;
+    }
+
+    /**
+     * introduced in spicecrm 201903001
+     * CR1000154
+     * @return bool
+     */
+    public function isNew()
+    {
+        // added check on new_with_id for BW compatibility
+        // return ($this->_bean_action == self::BEAN_ACTION_CREATE);
+        return ($this->_bean_action == self::BEAN_ACTION_CREATE || empty($this->id) || $this->new_with_id);
+    }
+
+    /**
+     * will be called on var_dump() or print_r()
+     * @return mixed
+     */
+    public function __debugInfo()
+    {
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+
+        // only if the current user is an admin
+        if (!$current_user->isAdmin()) return [];
+
+        $ret = [];
+        $fields = $this->getFieldDefinitions();
+        foreach ($fields as $field => $data) {
+            $ret[$field] = $this->{$field};
+        }
+        return $ret;
+    }
+
+
+    function bean_implements($interface)
+    {
+        // by default return ACL true
+        switch ($interface) {
+            case 'ACL':
+                return true;
+        }
+        return false;
+    }
+
+    function populateDefaultValues($force = false)
+    {
+        if (!is_array($this->field_defs))
+            return;
+        foreach ($this->field_defs as $field => $value) {
+            if ((isset($value['default']) || !empty($value['display_default'])) && ($force || empty($this->$field))) {
+                $type = $value['type'];
+
+                switch ($type) {
+                    case 'multienum':
+                        if (empty($value['default']) && !empty($value['display_default']))
+                            $this->$field = $value['display_default'];
+                        else
+                            $this->$field = $value['default'];
+                        break;
+                    case 'bool':
+                        if (isset($this->$field)) {
+                            break;
+                        }
+                    default:
+                        if (isset($value['default']) && $value['default'] !== '') {
+                            $this->$field = htmlentities($value['default'], ENT_QUOTES, 'UTF-8');
+                        } else {
+                            $this->$field = '';
+                        }
+                } //switch
+            }
+        } //foreach
+    }
+
+    /**
+     * Returns a list of fields with their definitions that have the audited property set to true.
+     * Before calling this function, check whether audit has been enabled for the table/module or not.
+     * You would set the audit flag in the implemting module's vardef file.
+     *
+     * @return array
+     * @see is_AuditEnabled
+     *
+     * Internal function, do not override.
+     */
+    function getAuditEnabledFieldDefinitions()
+    {
+        $aclcheck = $this->bean_implements('ACL');
+        $is_owner = $this->isOwner(AuthenticationController::getInstance()->getCurrentUser()->id);
+        if (!isset($this->audit_enabled_fields)) {
+
+            $this->audit_enabled_fields = [];
+            foreach ($this->field_defs as $field => $properties) {
+
+                if (
+                    // todo: figure out why the modified fields are always set to wrong audited value
+                $properties['source'] != 'non-db' && $properties['audited'] !== false && $properties['name'] != 'modified_by_name' && $properties['name'] != 'date_modified'
+                ) {
+
+                    $this->audit_enabled_fields[$field] = $properties;
+                }
+            }
+        }
+        return $this->audit_enabled_fields;
+    }
+
+    /**
+     * Introduced 2018-6-19
+     * Returns a list of fields with their definitions that have the auditedfirstlog property set to true.
+     * Before calling this function, check whether audit has been enabled for the table/module or not.
+     * You would set the audit flag in the implemting module's vardef file.
+     *
+     * @return array
+     *
+     * Internal function, do not override.     */
+    function getAuditedFirstLogEnabledFieldDefinitions()
+    {
+        $aclcheck = $this->bean_implements('ACL');
+        $is_owner = $this->isOwner(AuthenticationController::getInstance()->getCurrentUser()->id);
+        if (!isset($this->firstlog_enabled_fields)) {
+
+            $this->firstlog_enabled_fields = [];
+            foreach ($this->field_defs as $field => $properties) {
+                if (
+                (
+                !empty($properties['auditedfirstlog']))
+                ) {
+
+                    $this->firstlog_enabled_fields[$field] = $properties;
+                }
+            }
+        }
+        return $this->firstlog_enabled_fields;
+    }
+
+    /**
+     * Returns true of false if the user_id passed is the owner
+     *
+     * @param GUID $user_id
+     * @return boolean
+     */
+    function isOwner($user_id)
+    {
+        //if we don't have an id we must be the owner as we are creating it
+        if (!isset($this->id)) {
+            return true;
+        }
+        //if there is an assigned_user that is the owner
+        if (!empty($this->fetched_row['assigned_user_id'])) {
+            if ($this->fetched_row['assigned_user_id'] == $user_id) {
+                return true;
+            }
+            return false;
+        } elseif (isset($this->assigned_user_id)) {
+            if ($this->assigned_user_id == $user_id)
+                return true;
+            return false;
+        } else {
+            //other wise if there is a created_by that is the owner
+            if (isset($this->created_by) && $this->created_by == $user_id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Returns the implementing class' table name.
+     *
+     * All implementing classes set a value for the table_name variable. This value is returned as the
+     * table name. If not set, table name is extracted from the implementing module's vardef.
+     *
+     * @return String Table name.
+     *
+     * Internal function, do not override.
+     */
+    public function getTableName()
+    {
+        if (isset($this->_tablename)) {
+            return $this->_tablename;
+        }
+
+        return SpiceDictionary::getInstance()->getDefs($this->_objectname)['table'];
+    }
+
+    /**
+     * Returns the object name. If object_name is not set, table_name is returned.
+     *
+     * All implementing classes must set a value for the object_name variable.
+     *
+     * @param array $arr row of data fetched from the database.
+     * @return  nothing
+     *
+     */
+    function getObjectName()
+    {
+        if ($this->_objectname)
+            return $this->_objectname;
+
+        // This is a quick way out. The generated metadata files have the table name
+        // as the key. The correct way to do this is to override this function
+        // in bean and return the object name. That requires changing all the beans
+        // as well as put the object name in the generator.
+        return $this->_tablename;
+    }
+
+    /**
+     * Returns index definitions for the implementing module.
+     *
+     * The definitions were loaded in the constructor.
+     *
+     * @return Array Index definitions.
+     *
+     * Internal function, do not override.
+     */
+    function getIndices()
+    {
+        // load indices from dictionary definitions
+        $dbDefIndices = SpiceDictionaryHandler::getInstance()->loadDictionaryIndicesFromSession($this->getObjectName());
+        return $dbDefIndices;
+    }
+
+    /**
+     * Returnss  definition for the id field name.
+     *
+     * The definitions were loaded in the constructor.
+     *
+     * @return Array Field properties.
+     *
+     * Internal function, do not override.
+     */
+    function getPrimaryFieldDefinition()
+    {
+        $def = $this->getFieldDefinition("id");
+        if (empty($def)) {
+            $def = $this->getFieldDefinition(0);
+        }
+        if (empty($def)) {
+            $defs = $this->field_defs;
+            reset($defs);
+            $def = current($defs);
+        }
+        return $def;
+    }
+
+    /**
+     * Returns field definition for the requested field name.
+     *
+     * The definitions were loaded in the constructor.
+     *
+     * @param string field name,
+     * @return Array Field properties or boolean false if the field doesn't exist
+     *
+     * Internal function, do not override.
+     */
+    function getFieldDefinition($name)
+    {
+        if (!isset($this->field_defs[$name]))
+            return false;
+
+        return $this->field_defs[$name];
+    }
+
+    /**
+     * Returns the value for the requested field.
+     *
+     * When a row of data is fetched using the bean, all fields are created as variables in the context
+     * of the bean and then fetched values are set in these variables.
+     *
+     * @param string field name,
+     * @return varies Field value.
+     *
+     * Internal function, do not override.
+     */
+    function getFieldValue($name)
+    {
+        if (!isset($this->$name)) {
+            return FALSE;
+        }
+        if ($this->$name === TRUE) {
+            return 1;
+        }
+        if ($this->$name === FALSE) {
+            return 0;
+        }
+        return $this->$name;
+    }
+
+
+    /**
+     * Handle the following when a SpiceBean object is cloned
+     *
+     * Currently all this does it unset any relationships that were created prior to cloning the object
+     *
+     * @api
+     */
+    public function __clone()
+    {
+        if (!empty($this->loaded_relationships)) {
+            foreach ($this->loaded_relationships as $rel) {
+                unset($this->$rel);
+            }
+        }
+    }
+
+    /**
+     * Loads all attributes of type link.
+     *
+     * DO NOT CALL THIS FUNCTION IF YOU CAN AVOID IT. Please use load_relationship directly instead.
+     *
+     * Method searches the implmenting module's vardef file for attributes of type link, and for each attribute
+     * create a similary named variable and load the relationship definition.
+     *
+     * @return Nothing
+     *
+     * Internal function, do not override.
+     */
+    function load_relationships()
+    {
+        LoggerManager::getLogger()->debug("SpiceBean.load_relationships, Loading all relationships of type link.");
+        $linked_fields = $this->get_linked_fields();
+        foreach ($linked_fields as $name => $properties) {
+            $this->load_relationship($name);
+        }
+    }
+
+    /**
+     * Returns an array of fields that are of type link.
+     *
+     * @return array List of fields.
+     *
+     * Internal function, do not override.
+     */
+    function get_linked_fields()
+    {
+        $linked_fields = [];
+        $fieldDefs = $this->getFieldDefinitions();
+
+        //find all definitions of type link.
+        if (!empty($fieldDefs)) {
+            foreach ($fieldDefs as $name => $properties) {
+                if (array_search('link', $properties) === 'type') {
+                    $linked_fields[$name] = $properties;
+                }
+            }
+        }
+
+        return $linked_fields;
+    }
+
+    /**
+     * Returns field definitions for the implementing module.
+     *
+     * The definitions were loaded in the constructor.
+     *
+     * @return Array Field definitions.
+     *
+     * Internal function, do not override.
+     */
+    function getFieldDefinitions()
+    {
+        return $this->field_defs;
+    }
+
+    /**
+     * Loads the request relationship. This method should be called before performing any operations on the related data.
+     *
+     * This method searches the vardef array for the requested attribute's definition. If the attribute is of the type
+     * link then it creates a similary named variable and loads the relationship definition.
+     *
+     * @param string $rel_name relationship/attribute name.
+     * @return nothing.
+     */
+    function load_relationship($rel_name, $forceReload = false )
+    {
+        LoggerManager::getLogger()->debug("SpiceBean[{$this->_objectname}].load_relationships, Loading relationship (" . $rel_name . ").");
+
+        if (empty($rel_name)) {
+            LoggerManager::getLogger()->error("SpiceBean.load_relationships, Null relationship name passed.");
+            return false;
+        }
+        $fieldDefs = $this->getFieldDefinitions();
+
+        //find all definitions of type link.
+        if (!empty($fieldDefs[$rel_name])) {
+            //initialize a variable of type Link
+            $class = SpiceDictionaryLink::class;
+            if (isset($this->$rel_name) && $this->$rel_name instanceof $class) {
+                if ($forceReload) {
+                    $this->$rel_name->load();
+                }
+                return true;
+            }
+            //if rel_name is provided, search the fieldef array keys by name.
+            if (isset($fieldDefs[$rel_name]['type']) && $fieldDefs[$rel_name]['type'] == 'link') {
+                $this->$rel_name = new $class($rel_name, $this);
+
+                if (!$this->$rel_name->loadedSuccesfully()) {
+                    unset($this->$rel_name);
+                    return false;
+                }
+                // keep track of the loaded relationships
+                $this->loaded_relationships[] = $rel_name;
+                return true;
+            }
+        }
+        LoggerManager::getLogger()->developer('relationships', "SpiceBean.load_relationships, Error Loading relationship (passed link name = " . $rel_name . ") in module " . $this->_module);
+
+        return false;
+    }
+
+    /**
+     * Returns an array of beans of related data.
+     *
+     * For instance, if an account is related to 10 contacts , this function will return an array of contacts beans (10)
+     * with each bean representing a contact record.
+     * Method will load the relationship if not done so already.
+     *
+     * @param mixed string|array $field_name relationship(s) to be loaded.
+     * @param string $bean name  class name of the related bean. @deprecated parameter. Not necessary
+     * @param array $sort_array optional, unused
+     * @param int $begin_index Optional, default 0, unused.
+     * @param int $end_index Optional, default -1
+     * @param int $deleted Optional, Default 0, 0  adds deleted=0 filter, 1  adds deleted=1 filter.
+     * @param string $optional_where , Optional, default empty.
+     *
+     * Internal function, do not override.
+     */
+    function get_linked_beans($field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "", $relationships = false)
+    {
+        if($searchterm){
+            $searchterm = strtolower($searchterm);
+        }
+        // CR1000509 get a collection of related beans
+        if (is_array($field_name)) {
+            return $this->get_multiple_linked_beans($field_name);
+        }
+
+        if ($this->load_relationship($field_name)) {
+
+            // SpiceDictionaryLink style
+            if ($end_index != -1 || !empty($deleted) || !empty($optional_where) || !empty($searchterm)) {
+
+                // BEGIN CR1000382: move sort_array content to 'sorthook' when sortfield is non-db
+                if (!empty($sort_array) && isset($sort_array['sortfield'])) {
+                    if (isset($this->field_defs[$sort_array['sortfield']]['source']) && $this->field_defs[$sort_array['sortfield']]['source'] == 'non-db') {
+                        $sorthook['sorthook'] = $sort_array;
+                        $sort_array = $sorthook;
+                    }
+                }
+                // END
+
+                return array_values($this->$field_name->getBeans([
+                    'where' => $optional_where,
+                    'deleted' => $deleted,
+                    'offset' => $begin_index,
+                    'limit' => ($end_index - $begin_index),
+                    'sort' => $sort_array,
+                    'searchterm' => $searchterm,
+                    'relationships' => $relationships
+                ]));
+            } else {
+                return array_values($this->$field_name->getBeans(['sort' => $sort_array, 'relationships' => $relationships]));
+            }
+        }
+        return [];
+    }
+
+    /*
+     * Returns an array of beans of related data. Like get_linked_beans(), however disabling ACL.
+     */
+    function get_linked_beans_ignoreacl( $field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "", $relationships = false )
+    {
+        $this->load_relationship( $field_name );
+        $currentValue = $this->{$field_name}->ignoreACL;
+        $this->{$field_name}->ignoreACL = true;
+        $return = $this->get_linked_beans( $field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "", $relationships = false );
+        $this->{$field_name}->ignoreACL = $currentValue;
+        return $return;
+    }
+
+    /**
+     * CR1000509 get a collection of related beans
+     * EXPERIMENTAL! DO NOT USE FOR NOW!
+     * @param array $field_names linkname => [params]
+     * @return array
+     */
+    public function get_multiple_linked_beans($field_names)
+    {
+        // check how field_names is formed. Make an array if it's not.
+        foreach ($field_names as $field_name){
+            if(!is_array($field_name)){
+                $field_names[$field_name] = [];
+            }
+        }
+
+        $returnBeans = [];
+        foreach ($field_names as $field_name => $field_name_params) {
+            if ($this->load_relationship($field_name)) {
+                // handle params
+                $sort_array = [];
+                $begin_index = 0;
+                $end_index = -1;
+                $deleted = 0;
+                $optional_where = "";
+                if (isset($field_name_params['sort_array'])) {
+                    $sort_array = $field_name_params['sort_array'];
+                }
+                if (isset($field_name_params['begin_index'])) {
+                    $begin_index = $field_name_params['begin_index'];
+                }
+                if (isset($field_name_params['end_index'])) {
+                    $end_index = $field_name_params['end_index'];
+                }
+                if (isset($field_name_params['deleted'])) {
+                    $deleted = $field_name_params['deleted'];
+                }
+                if (isset($field_name_params['optional_where'])) {
+                    $optional_where = $field_name_params['optional_where'];
+                }
+                // get related beans
+                $returnBeans = array_merge($returnBeans, $this->get_linked_beans($field_name, null, $sort_array, $begin_index, $end_index, $deleted, $optional_where));
+            }
+        }
+
+        return $returnBeans;
+    }
+
+    /**
+     * @param string $field_name
+     * @param null $bean_name
+     * @param int $deleted
+     * @param string $optional_where
+     * @return int
+     */
+    function get_linked_beans_count($field_name, $bean_name = null, $deleted = 0, $optional_where = "", $searchterm = "")
+    {
+        if (is_array($field_name)) {
+            return $this->get_multiple_linked_beans_count($field_name, $searchterm);
+        }
+
+        if ($this->load_relationship($field_name)) {
+            return $this->$field_name->getBeanCount([
+                'where' => $optional_where,
+                'deleted' => $deleted,
+                'searchterm' => $searchterm
+            ]);
+        } else
+            return 0;
+    }
+
+    /**
+     * @param array $field_names list of linknames => [params]
+     * @return int
+     */
+    function get_multiple_linked_beans_count($field_names, $searchterm = '')
+    {
+        // check how field_names is formed. Make an array if it's not.
+        foreach ($field_names as $field_name){
+            if(!is_array($field_name)){
+                $field_names[$field_name] = [];
+            }
+        }
+
+        $count = 0;
+        foreach ($field_names as $field_name => $field_name_params) {
+            if ($this->load_relationship($field_name)) {
+                // get fts count
+                if (!empty($searchterm)) {
+                    $filteredResults = SpiceFTSHandler::getInstance()->searchModule(
+                        module:     $this->$field_name->getRelatedModuleName(),
+                        searchterm: $searchterm,
+                        size:       0,
+                    );
+                    $count += ($filteredResults['hits']['total']['value'] ?: 0);
+                } else {
+                    $count += $this->$field_name->getBeanCount([
+                        'where' => $field_name_params['optional_where'],
+                        'deleted' => $field_name_params['deleted']
+                    ]);
+                }
+            }
+        }
+        return $count;
+    }
+
+
+
+    /**
+     * Returns the ACL category for this module; defaults to the SpiceBean::$acl_category if defined
+     * otherwise it is SpiceBean::$module_dir
+     *
+     * @return string
+     */
+    public function getACLCategory()
+    {
+        return !empty($this->acl_category) ? $this->acl_category : $this->_module;
+    }
+
+    /**
+     * Return true if auditing is enabled for this object
+     * You would set the audit flag in the implemting module's vardef file.
+     *
+     * @return boolean|array|null
+     *
+     * Internal function, do not override.
+     */
+    function is_AuditEnabled(): bool|array|null
+    {
+        if (empty(SpiceModules::getInstance()->modules)) return false;
+
+        return SpiceModules::getInstance()->getModuleDetails($this->_module)['audited'];
+    }
+
+    /**
+     * Uses the Audit log and gets all change reocords grouped by field
+     * that have been changed on teh bean since the date passed in
+     *
+     * @param $date .. the date from which to check,
+     * @param $fields .. array of Fields to be checked
+     * @return array of changed fields
+     */
+    public function getAuditChangesAfterDate($date, $fields = [])
+    {
+        $records = [];
+
+        // CR1000308
+        if(!$this->is_AuditEnabled()){
+            return $records;
+        }
+
+        $auditTablename = $this->get_audit_table_name();
+        $query = "SELECT {$auditTablename}.*, users.user_name FROM {$auditTablename}, users WHERE users.id = {$auditTablename}.created_by AND {$auditTablename}.parent_id = '$this->id' AND {$auditTablename}.date_created > '$date'";
+        if (count($fields) > 0) {
+            $query .= " AND field_name in ('" . implode("','", $fields) . "')";
+        }
+        $query .= " ORDER BY date_created DESC";
+
+        $recordsObject = $this->db->query($query);
+        while ($record = $this->db->fetchByAssoc($recordsObject)) {
+            if (!isset($records[$record['field_name']])) {
+                $records[$record['field_name']] = [
+                    'value' => $this->{$record['field_name']},
+                    'changes' => []
+                ];
+            }
+            $records[$record['field_name']]['changes'][] = $record;
+        }
+
+        return $records;
+    }
+
+    /**
+     * Returns the name of the audit table.
+     * Audit table's name is based on implementing class' table name.
+     *
+     * @return String Audit table name.
+     *
+     * Internal function, do not override.
+     */
+    function get_audit_table_name()
+    {
+        return $this->getTableName() . '_audit';
+    }
+
+    /**
+     * Implements a generic insert and update logic for any SpiceBean
+     * This method only works for subclasses that implement the same variable names.
+     * This method uses the presence of an id field that is not null to signify and update.
+     * The id field should not be set otherwise.
+     *
+     * @param boolean $check_notify Optional, default false, if set to true assignee of the record is notified via email.
+     * @param boolean $fts_index_bean Optional, default true, if set to true SpiceFTSHandler will index the bean.
+     * @return int returns the id of the saved bean
+     * @throws \Exception
+     * @todo Add support for field type validation and encoding of parameters.
+     */
+    public function save($check_notify = false, $fts_index_bean = true)
+    {
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+
+        if (isset($this->newFromTemplate[0])) {
+            // CRNR: 1000375: Bug Fix
+            // used "module_dir" instead of "module_name", because "OutputTemplates" has the field "module_name" in vardefs which
+            // overrides sugar bean variable "module_name".
+            // this fix should not have any side effects, as long as all extended beans has the variable "module_dir" set.
+            $GLOBALS['cloningData'] = ['count' => 1, 'cloned' => [['module' => $this->_module, 'id' => $this->newFromTemplate, 'bean' => &$this, 'cloneId' => $this->id]], 'custom' => null];
+            $source = BeanFactory::getBean($this->_module, $this->newFromTemplate);
+            $source->cloneBeansOfAllLinks($this);
+            $source->cloneM2MRecords($this);
+        }
+
+        $this->in_save = true;
+        // cn: SECURITY - strip XSS potential vectors
+        $this->cleanBean();
+
+        $isUpdate = true;
+        if (empty($this->id) || $this->new_with_id == true) {
+            $isUpdate = false;
+        }
+
+        //set current bean_action
+        if ($isUpdate) {
+            $this->set_bean_action(self::BEAN_ACTION_UPDATE);
+        } else {
+            $this->set_bean_action(self::BEAN_ACTION_CREATE);
+        }
+
+        if (empty($this->date_modified) || $this->update_date_modified) {
+            $this->date_modified = TimeDate::getInstance()->nowDb();
+        }
+
+        if ($this->update_modified_by) {
+            $this->modified_user_id = 1;
+
+            if (!empty($current_user)) {
+                $this->modified_user_id = $current_user->id;
+                $this->modified_by_name = $current_user->user_name;
+            }
+        }
+        if ($this->deleted != 1)
+            $this->deleted = 0;
+        if (!$isUpdate) {
+            if (empty($this->date_entered)) {
+                $this->date_entered = $this->date_modified;
+            }
+            if ($this->set_created_by == true) {
+                // created by should always be this user
+                $this->created_by = (isset($current_user)) ? $current_user->id : "";
+            }
+            if ($this->new_with_id == false) {
+                $this->id = SpiceUtils::createGuid();
+            }
+        }
+
+        BeanFactory::registerBean($this->_module, $this);
+
+        if (empty($GLOBALS['updating_relationships']) && empty($GLOBALS['saving_relationships']) && empty($GLOBALS['resavingRelatedBeans'])) {
+            $GLOBALS['saving_relationships'] = true;
+            // let subclasses save related field changes
+            $this->save_relationship_changes($isUpdate);
+            $GLOBALS['saving_relationships'] = false;
+        }
+
+        // keep date entered and do not delete it .. otherwise we will remove id from fts indexer
+        if ($isUpdate && !$this->update_date_entered && $this->date_entered != $this->fetched_row['date_entered']) {
+            //unset($this->date_entered);
+            $this->date_entered = $this->fetched_row['date_entered'];
+        }
+        // call the custom business logic
+        $custom_logic_arguments['check_notify'] = $check_notify;
+
+        $this->callDomainHandlerMethod('beforeSave');
+
+        $this->call_custom_logic("before_save", $custom_logic_arguments);
+        unset($custom_logic_arguments);
+
+        // check if we have any numbered fields or missing defaults
+        if($this->isNew()){
+            $numberrangeFields = SpiceNumberRanges::getNumberRangeFieldsForBean($this->_module, true);
+            foreach ($numberrangeFields as $numberrangeField){
+                if(empty($this->{$numberrangeField})){
+                    $this->{$numberrangeField} = SpiceNumberRanges::getNextNumberForField($this->_module, $numberrangeField);
+                }
+            }
+        }
+
+        //construct the SQL to create the audit record if auditing is enabled.
+        $auditDataChanges = [];
+        if ($this->is_AuditEnabled()) {
+            if ($isUpdate && !isset($this->fetched_row)) {
+                LoggerManager::getLogger()->debug('Auditing: Retrieve was not called, audit record will not be created.');
+            } else {
+                $auditDataChanges = $this->db->getAuditDataChanges($this);
+                //BEGIN introduced 2018-06-19 maretval: log first value set to audit table (vardefs property auditedfirstlog)
+                if (!$isUpdate)
+                    $dataFirstLog = $this->db->getDataAuditedFirstLog($this);
+                //END
+            }
+        }
+
+        //maretval 2019-03-13: remember changes in after_save logic
+        $this->auditDataChanges = $auditDataChanges;
+        //END
+
+        // create notifications
+        $notificationLoader = new SpiceNotificationsLoader();
+        $notificationLoader->createChangeNotifications($this, $check_notify);
+        $notificationLoader->createAssignNotification($this, $check_notify);
+
+        if ($isUpdate) {
+            $this->db->update($this);
+        } else {
+            $this->db->insert($this);
+        }
+
+        if (!empty($auditDataChanges) && is_array($auditDataChanges)) {
+            foreach ($auditDataChanges as $change) {
+                $this->db->save_audit_records($this, $change);
+            }
+        }//BEGIN introduced 2018-06-19 maretval 2018-05-09: log first value set to audit table (vardefs property auditedfirstlog)
+        elseif (!empty($dataFirstLog) && is_array($dataFirstLog)) {
+            foreach ($dataFirstLog as $change) {
+                $this->db->save_audit_records($this, $change);
+            }
+        }
+        //END
+
+
+        if (empty($GLOBALS['resavingRelatedBeans'])) {
+            Relationship::resaveRelatedBeans();
+        }
+
+
+        if (!empty($this->newFromTemplate)) {
+            $source = BeanFactory::getBean($this->_module, $this->newFromTemplate);
+            $this->cloneM2MRecords($source);
+        }
+
+        $this->callDomainHandlerMethod('afterSave');
+
+        // call fts manager to index the bean
+        if ($fts_index_bean) {
+
+            SpiceFTSHandler::getInstance()->indexBean($this);
+        }
+
+        //Now that the record has been saved, we don't want to insert again on further saves
+        $this->new_with_id = false;
+        $this->in_save = false;
+
+        AddressReferences::getInstance()->updateReferencedBeansAddress($this);
+
+        $this->call_custom_logic('after_save', '');
+
+        //unset current bean_action
+        $this->set_bean_action(null);
+
+        return $this->id;
+    }
+
+    /**
+     * Cleans char, varchar, text, etc. fields of XSS type materials
+     */
+    function cleanBean()
+    {
+        foreach ($this->field_defs as $key => $def) {
+
+            if (isset($def['type'])) {
+                $type = $def['type'];
+            }
+            if (isset($def['dbType']))
+                $type .= $def['dbType'];
+
+            if (!empty($this->$key) && $def['type'] == 'html' || $def['type'] == 'longhtml') {
+                $this->$key = SpiceCleanerHelper::cleanHtml($this->$key, true);
+            } elseif ((strpos($type, 'char') !== false ||
+                    strpos($type, 'text') !== false ||
+                    $type == 'enum') &&
+                !empty($this->$key)
+            ) {
+                $this->$key = SpiceCleanerHelper::cleanHtml($this->$key);
+            }
+        }
+    }
+
+    /**
+     * Encrpyt and base64 encode an 'encrypt' field type in the bean using Blowfish. The default system key is stored in cache/Blowfish/{keytype}
+     * @param STRING value -plain text value of the bean field.
+     * @return string
+     */
+    function encrpyt_before_save($value)
+    {
+        require_once("include/utils/encryption_utils.php");
+        return EncryptionUtils::blowfishEncode($this->getEncryptKey(), $value);
+    }
+
+    protected function getEncryptKey()
+    {
+        if (empty(self::$field_key)) {
+            self::$field_key = EncryptionUtils::blowfishGetKey('encrypt_field');
+        }
+        return self::$field_key;
+    }
+
+
+    /**
+     * returns this bean as an array
+     *
+     * @return array of fields with id, name, access and category
+     */
+    function toArray($dbOnly = false, $stringOnly = false, $upperKeys = false)
+    {
+        static $cache = [];
+        $arr = [];
+
+        foreach ($this->field_defs as $field => $data) {
+            if (!$dbOnly || !isset($data['source']) || $data['source'] == 'db')
+                if (!$stringOnly || is_string($this->$field))
+                    if ($upperKeys) {
+                        if (!isset($cache[$field])) {
+                            $cache[$field] = strtoupper($field);
+                        }
+                        $arr[$cache[$field]] = $this->$field;
+                    } else {
+                        if (isset($this->$field)) {
+                            $arr[$field] = $this->$field;
+                        } else {
+                            $arr[$field] = '';
+                        }
+                    }
+        }
+        return $arr;
+    }
+
+    /**
+     * This function is a good location to save changes that have been made to a relationship.
+     * This should be overridden in subclasses that have something to save.
+     *
+     * @param boolean $is_update true if this save is an update.
+     * @param array $exclude a way to exclude relationships
+     */
+    public function save_relationship_changes($is_update, $exclude = [])
+    {
+        /*
+        list($new_rel_id, $new_rel_link) = $this->set_relationship_info($exclude);
+
+        $new_rel_id = $this->handle_preset_relationships($new_rel_id, $new_rel_link, $exclude);
+
+        $this->handle_request_relate($new_rel_id, $new_rel_link);
+        */
+
+    }
+
+
+    /**
+     * Trigger custom logic for this module that is defined for the provided hook
+     * The custom logic file is located under custom/modules/[CURRENT_MODULE]/logic_hooks.php.
+     * That file should define the $hook_version that should be used.
+     * It should also define the $hook_array.  The $hook_array will be a two dimensional array
+     * the first dimension is the name of the event, the second dimension is the information needed
+     * to fire the hook.  Each entry in the top level array should be defined on a single line to make it
+     * easier to automatically replace this file.  There should be no contents of this file that are not replacable.
+     *
+     * $hook_array['before_save'][] = Array(1, testtype, 'custom/modules/Leads/test12.php', 'TestClass', 'lead_before_save_1');
+     * This sample line creates a before_save hook.  The hooks are procesed in the order in which they
+     * are added to the array.  The second dimension is an array of:
+     *        processing index (for sorting before exporting the array)
+     *        A logic type hook
+     *        label/type
+     *        php file to include
+     *        php class the method is in
+     *        php method to call
+     *
+     * The method signature for version 1 hooks is:
+     * function NAME(&$bean, $event, $arguments)
+     *        $bean - $this bean passed in by reference.
+     *        $event - The string for the current event (i.e. before_save)
+     *        $arguments - An array of arguments that are specific to the event.
+     */
+    function call_custom_logic($event, $arguments = null)
+    {
+        if ($this->_module && (!isset($this->processed) || $this->processed == false)) {
+            //add some logic to ensure we do not get into an infinite loop
+            if (!empty($this->logicHookDepth[$event])) {
+                if ($this->logicHookDepth[$event] > $this->max_logic_depth)
+                    return;
+            } else
+                $this->logicHookDepth[$event] = 0;
+
+            //we have to put the increment operator here
+            //otherwise we may never increase the depth for that event in the case
+            //where one event will trigger another as in the case of before_save and after_save
+            //Also keeping the depth per event allow any number of hooks to be called on the bean
+            //and we only will return if one event gets caught in a loop. We do not increment globally
+            //for each event called.
+            $this->logicHookDepth[$event]++;
+
+            //method defined in 'include/utils/LogicHook.php'
+
+            $logicHook = LogicHook::getInstance();
+            $logicHook->call_custom_logic($this->_module, $this, $event, $arguments);
+            $this->logicHookDepth[$event]--;
+
+            // handle WebHooks
+            switch ($event) {
+                case 'after_save':
+                    Webhook::getInstance()->callWebhook($this->isNew() ? 'create' : 'update', $this);
+                    break;
+                case 'after_delete':
+                    Webhook::getInstance()->callWebhook('delete', $this);
+                    break;
+            }
+
+        }
+    }
+
+    /**
+     * Checks if Bean has email defs
+     *
+     * @return boolean
+     */
+    public function hasEmails(): bool
+    {
+        return !empty($this->field_defs['email_addresses']) && $this->field_defs['email_addresses']['type'] == 'link';
+    }
+
+    /**
+     * Returns the summary text that should show up in the recent history list for this object.
+     *
+     * @return string
+     */
+    public function get_summary_text()
+    {
+        // by default return name
+        return $this->name;
+
+    }
+
+
+    /**
+     * This function returns a paged list of the current object type.  It is intended to allow for
+     * hopping back and forth through pages of data.  It only retrieves what is on the current page.
+     *
+     * @param string $order_by
+     * @param string $where Additional where clause
+     * @param int $row_offset Optaional,default 0, starting row number
+     * @param init $limit Optional, default -1
+     * @param int $max Optional, default -1
+     * @param boolean $show_deleted Optional, default 0, if set to 1 system will show deleted records.
+     * @return array Fetched data.
+     *
+     * Internal function, do not override.
+     *
+     * @internal This method must be called on a new instance.  It trashes the values of all the fields in the current one.
+     */
+    function get_list($order_by = "", $where = "", $row_offset = 0, $limit = -1, $max = -1, $show_deleted = 0, $singleSelect = false, $select_fields = [])
+    {
+        LoggerManager::getLogger()->debug("get_list:  order_by = '$order_by' and where = '$where' and limit = '$limit'");
+        if (isset($_SESSION['show_deleted'])) {
+            $show_deleted = 1;
+        }
+
+        if ($this->bean_implements('ACL') && SpiceACL::getInstance()->requireOwner($this->_module, 'list')) {
+            $current_user = AuthenticationController::getInstance()->getCurrentUser();
+            $owner_where = $this->getOwnerWhere($current_user->id);
+
+            //rrs - because $this->getOwnerWhere() can return '' we need to be sure to check for it and
+            //handle it properly else you could get into a situation where you are create a where stmt like
+            //WHERE .. AND ''
+            if (!empty($owner_where)) {
+                if (empty($where)) {
+                    $where = $owner_where;
+                } else {
+                    $where .= ' AND ' . $owner_where;
+                }
+            }
+        }
+        $query = $this->create_new_list_query($order_by, $where, $select_fields, [], $show_deleted, '', false, null, $singleSelect);
+        return $this->process_list_query($query, $row_offset, $limit, $max, $where);
+    }
+
+    /**
+     * Gets there where statement for checking if a user is an owner
+     *
+     * @param GUID $user_id
+     * @return STRING
+     */
+    function getOwnerWhere($user_id)
+    {
+        if (isset($this->field_defs['assigned_user_id'])) {
+            return " $this->_tablename.assigned_user_id ='$user_id' ";
+        }
+        if (isset($this->field_defs['created_by'])) {
+            return " $this->_tablename.created_by ='$user_id' ";
+        }
+        return '';
+    }
+
+    /**
+     * Return the list query used by the list views and export button. Next generation of create_new_list_query function.
+     *
+     * Override this function to return a custom query.
+     *
+     * @param string $order_by custom order by clause
+     * @param string $where custom where clause
+     * @param array $filter Optioanal
+     * @param array $params Optional     *
+     * @param int $show_deleted Optional, default 0, show deleted records is set to 1.
+     * @param string $join_type
+     * @param boolean $return_array Optional, default false, response as array
+     * @param object $parentbean creating a subquery for this bean.
+     * @param boolean $singleSelect Optional, default false.
+     * @return String select query string, optionally an array value will be returned if $return_array= true.
+     */
+    public function create_new_list_query($order_by, $where, $filter = [], $params = [], $show_deleted = 0,
+                                          $join_type = '', $return_array = false, $parentbean = null,
+                                          $singleSelect = false, $ifListForExport = false)
+    {
+        $ret_array = [];
+
+        if ($this->bean_implements('ACL') && SpiceACL::getInstance()->requireOwner($this->_module, 'list')) {
+            $current_user = AuthenticationController::getInstance()->getCurrentUser();
+            $owner_where = $this->getOwnerWhere($current_user->id);
+            if (empty($where)) {
+                $where = $owner_where;
+            } else {
+                $where .= ' AND ' . $owner_where;
+            }
+        }
+
+        $ret_array['select'] = " SELECT $this->_tablename.id ";
+
+        $ret_array['from'] = " FROM $this->_tablename ";
+        $ret_array['where'] = '';
+        $ret_array['order_by'] = '';
+
+        if ($show_deleted == 0) {
+            $where_auto = "$this->_tablename.deleted = 0";
+        } else if ($show_deleted == 1) {
+            $where_auto = "$this->_tablename.deleted = 1";
+        }
+
+        if ($where != "")
+            $ret_array['where'] = " where ($where) AND $where_auto";
+        else
+            $ret_array['where'] = " where $where_auto";
+
+        //make call to process the order by clause
+        $order_by = $this->process_order_by($order_by);
+        if (!empty($order_by)) {
+            $ret_array['order_by'] = " ORDER BY " . $order_by;
+        }
+
+        if (SpiceACL::getInstance() && method_exists(SpiceACL::getInstance(), 'addACLAccessToListArray')) {
+            SpiceACL::getInstance()->addACLAccessToListArray($ret_array, $this);
+        }
+
+        if ($return_array) {
+            return $ret_array;
+        }
+
+        return $ret_array['select'] . $ret_array['from'] . $ret_array['where'] . $ret_array['order_by'];
+    }
+
+    /**
+     * Prefixes column names with this bean's table name.
+     *
+     * @param string $order_by Order by clause to be processed
+     * @param SpiceBean $submodule name of the module this order by clause is for
+     * @param boolean $suppress_table_name Whether table name should be suppressed
+     * @return string Processed order by clause
+     *
+     * Internal function, do not override.
+     */
+    public function process_order_by($order_by, $submodule = null, $suppress_table_name = false)
+    {
+        if (empty($order_by))
+            return $order_by;
+
+        $raw_elements = explode(',', $order_by);
+        $valid_elements = [];
+        foreach ($raw_elements as $key => $value) {
+
+            $is_valid = false;
+
+            //value might have ascending and descending decorations
+            $list_column = preg_split('/\s/', trim($value), 2);
+            $list_column = array_map('trim', $list_column);
+
+            $list_column_name = $list_column[0];
+            if (isset($this->field_defs[$list_column_name])) {
+                $field_defs = $this->field_defs[$list_column_name];
+                $source = isset($field_defs['source']) ? $field_defs['source'] : 'db';
+
+                if (empty($field_defs['table']) && !$suppress_table_name) {
+                    if ($source == 'db') {
+                        $list_column[0] = $this->_tablename . '.' . $list_column[0];
+                    }
+                }
+
+                // Bug 38803 - Use CONVERT() function when doing an order by on ntext, text, and image fields
+                if ($source != 'non-db' && $this->db->isTextType($this->db->getFieldType($this->field_defs[$list_column_name]))
+                ) {
+                    // array(10000) is for db2 only. It tells db2manager to cast 'clob' to varchar(10000) for this 'sort by' column
+                    $list_column[0] = $this->db->convert($list_column[0], "text2char", [10000]);
+                }
+
+                $is_valid = true;
+
+                if (isset($list_column[1])) {
+                    switch (strtolower($list_column[1])) {
+                        case 'asc':
+                        case 'desc':
+                            break;
+                        case 'isnull':
+                            $list_column[1] = 'IS NULL';
+                            break;
+                        default:
+                            LoggerManager::getLogger()->debug("process_order_by: ($list_column[1]) is not a valid order.");
+                            unset($list_column[1]);
+                            break;
+                    }
+                }
+            } else {
+                LoggerManager::getLogger()->debug("process_order_by: ($list_column[0]) does not have a vardef entry.");
+            }
+
+            if ($is_valid) {
+                $valid_elements[$key] = implode(' ', $list_column);
+            }
+        }
+
+        return implode(', ', $valid_elements);
+    }
+
+    /**
+     * Processes the list query and return fetched row.
+     *
+     * Internal function, do not override.
+     * @param string $query select query to be processed.
+     * @param int $row_offset starting position
+     * @param int $limit Optioanl, default -1
+     * @param int $max_per_page Optional, default -1
+     * @param string $where Optional, additional filter criteria.
+     * @return array Fetched data
+     */
+    function process_list_query($query, $row_offset, $limit = -1, $max_per_page = -1)
+    {
+        $db = DBManagerFactory::getInstance();
+        /**
+         * if the row_offset is set to 'end' go to the end of the list
+         */
+        $toEnd = strval($row_offset) == 'end';
+        LoggerManager::getLogger()->debug("process_list_query: " . $query);
+        if ($max_per_page == -1) {
+            $max_per_page = SpiceConfig::getInstance()->config['list_max_entries_per_page'] ?: 25;
+        }
+        // Check to see if we have a count query available.
+        if (empty(SpiceConfig::getInstance()->config['disable_count_query']) || $toEnd) {
+            $count_query = $this->create_list_count_query($query);
+            if (!empty($count_query) && !empty($limit) && $limit > 0) {
+                // We have a count query.  Run it and get the results.
+                $result = $db->query($count_query, true, "Error running count query for $this->_objectname List: ");
+                $assoc = $db->fetchByAssoc($result);
+                if (!empty($assoc['c'])) {
+                    $rows_found = $assoc['c'];
+                }
+                if ($toEnd) {
+                    $row_offset = (floor(($rows_found - 1) / $limit)) * $limit;
+                }
+            }
+        } else {
+            if ((empty($limit) || $limit == -1)) {
+                $limit = $max_per_page + 1;
+                $max_per_page = $limit;
+            }
+        }
+
+        if (empty($row_offset)) {
+            $row_offset = 0;
+        }
+        if (!empty($limit) && $limit != -1 && $limit != -99) {
+            $result = $db->limitQuery($query, $row_offset, $limit, true, "Error retrieving $this->_objectname list: ");
+        } else {
+            $result = $db->query($query, true, "Error retrieving $this->_objectname list: ");
+        }
+
+        $list = [];
+
+        $previous_offset = $row_offset - $max_per_page;
+        $next_offset = $row_offset + $max_per_page;
+
+        $class = get_class($this);
+        //FIXME: Bug? we should remove the magic number -99
+        //use -99 to return all
+        $index = $row_offset;
+        while ($row = $db->fetchByAssoc($result)) {
+
+            //instantiate a new class each time. This is because php5 passes
+            //by reference by default so if we continually update $this, we will
+            //at the end have a list of all the same objects
+            /** @var SpiceBean $temp */
+            $temp = BeanFactory::getBean($this->_module, $row['id'], ['relationships' => false]);
+
+            $temp->fill_in_additional_list_fields();
+
+            // needs to be processed as well
+            $temp->fill_in_relationship_fields();
+
+            $temp->call_custom_logic("process_record");
+
+            // fix defect #44206. implement the same logic as sugar_currency_format
+            // Smarty modifier does.
+            // $temp->populateCurrencyFields();
+            $list[] = $temp;
+
+            $index++;
+        }
+        if (!empty(SpiceConfig::getInstance()->config['disable_count_query']) && !empty($limit)) {
+
+            $rows_found = $row_offset + count($list);
+
+            if (!$toEnd) {
+                $next_offset--;
+                $previous_offset++;
+            }
+        } else if (!isset($rows_found)) {
+            $rows_found = $row_offset + count($list);
+        }
+
+        $response = [];
+        $response['list'] = $list;
+        $response['row_count'] = $rows_found;
+        $response['next_offset'] = $next_offset;
+        $response['previous_offset'] = $previous_offset;
+        $response['current_offset'] = $row_offset;
+        return $response;
+    }
+
+    /**
+     * Changes the select expression of the given query to be 'count(*)' so you
+     * can get the number of items the query will return.  This is used to
+     * populate the upper limit on ListViews.
+     *
+     * @param string $query Select query string
+     * @return string count query
+     *
+     * Internal function, do not override.
+     */
+    function create_list_count_query($query)
+    {
+        // remove the 'order by' clause which is expected to be at the end of the query
+        $pattern = '/\sORDER BY.*/is';  // ignores the case
+        $replacement = '';
+        $query = preg_replace($pattern, $replacement, $query);
+        //handle distinct clause
+        $star = '*';
+        if (substr_count(strtolower($query), 'distinct')) {
+            if (!empty($this->seed) && !empty($this->seed->_tablename))
+                $star = 'DISTINCT ' . $this->seed->_tablename . '.id';
+            else
+                $star = 'DISTINCT ' . $this->_tablename . '.id';
+        }
+
+        // change the select expression to 'count(*)'
+        $pattern = '/SELECT(.*?)(\s){1}FROM(\s){1}/is';  // ignores the case
+        $replacement = 'SELECT count(' . $star . ') c FROM ';
+
+        //if the passed query has union clause then replace all instances of the pattern.
+        //this is very rare. I have seen this happening only from projects module.
+        //in addition to this added a condition that has  union clause and uses
+        //sub-selects.
+        if (strstr($query, " UNION ALL ") !== false) {
+
+            //separate out all the queries.
+            $union_qs = explode(" UNION ALL ", $query);
+            foreach ($union_qs as $key => $union_query) {
+                $star = '*';
+                preg_match($pattern, $union_query, $matches);
+                if (!empty($matches)) {
+                    if (stristr($matches[0], "distinct")) {
+                        if (!empty($this->seed) && !empty($this->seed->_tablename))
+                            $star = 'DISTINCT ' . $this->seed->_tablename . '.id';
+                        else
+                            $star = 'DISTINCT ' . $this->_tablename . '.id';
+                    }
+                } // if
+                $replacement = 'SELECT count(' . $star . ') c FROM ';
+                $union_qs[$key] = preg_replace($pattern, $replacement, $union_query, 1);
+            }
+            $modified_select_query = implode(" UNION ALL ", $union_qs);
+        } else {
+            $modified_select_query = preg_replace($pattern, $replacement, $query, 1);
+        }
+
+        return $modified_select_query;
+    }
+
+
+    /**
+     * This is designed to be overridden and add specific fields to each record.
+     * This allows the generic query to fill in the major fields, and then targeted
+     * queries to get related fields and add them to the record.  The contact's
+     * account for instance.  This method is only used for populating extra fields
+     * in lists.
+     */
+    function fill_in_additional_list_fields()
+    {
+        // // removed and covered in fill_in_relationship_fields
+        // $this->fill_in_additional_parent_fields();
+    }
+
+
+    /**
+     * Function fetches a single row of data given the primary key value.
+     *
+     * The fetched data is then set into the bean. The function also processes the fetched data by formattig
+     * date/time and numeric values.
+     *
+     * @param string $id Optional, default -1, is set to -1 id value from the bean is used, else, passed value is used
+     * @param boolean $encode Optional, default true, encodes the values fetched from the database.
+     * @param boolean $deleted Optional, default true, if set to false deleted filter will not be added.
+     *
+     * Internal function, do not override.
+     */
+    public function retrieve($id = -1, $encode = false, $deleted = true, $relationships = true)
+    {
+
+        $custom_logic_arguments['id'] = $id;
+        $this->call_custom_logic('before_retrieve', $custom_logic_arguments);
+
+        if ($id == -1) {
+            $id = $this->id;
+        }
+
+        $query = "SELECT * FROM $this->_tablename WHERE id = " . $this->db->quoted($id);
+
+        # exclude deleted if the deleted flag check is true
+        if ($deleted) $query .= " AND deleted = 0";
+
+        $result = $this->db->query($query, true, "Retrieving record by id $this->_tablename:$id found ");
+        if (empty($result)) {
+            return null;
+        }
+
+        $row = $this->db->fetchByAssoc($result);
+        if (empty($row)) {
+            return null;
+        }
+
+        //make copy of the fetched row for construction of audit record and for business logic/workflow
+        $row = $this->convertRow($row, $encode);
+        $this->fetched_row = $row;
+        $this->populateFromRow($row);
+
+        $this->is_updated_dependent_fields = false;
+        $this->fill_in_additional_detail_fields();
+
+        // populate the summary text
+        $this->summary_text = $this->get_summary_text();
+
+        // call the domain handlers on retrieve
+        $this->callDomainHandlerMethod('onRetrieve');
+
+        if ($relationships) {
+            $this->fill_in_relationship_fields();
+            // save related fields values for audit
+            foreach ($this->get_related_fields() as $rel_field_name) {
+                $rel_field_name_name = $rel_field_name['name']; //PHP7 COMPAT
+                if (!empty($this->$rel_field_name_name)) { //PHP7 COMPAT
+                    $this->fetched_rel_row[$rel_field_name['name']] = $this->$rel_field_name_name;
+                }
+            }
+            //make a copy of fields in the relationship_fields array. These field values will be used to
+            //clear relationship.
+            foreach ($this->field_defs as $key => $def) {
+                if ($def ['type'] == 'relate' && isset($def ['id_name']) && isset($def ['link']) && isset($def['save'])) {
+                    if (isset($this->$key)) {
+                        $this->rel_fields_before_value[$key] = $this->$key;
+                        $def_id_name = $def ['id_name']; //PHP7 COMPAT
+                        if (isset($this->$def_id_name)) { //PHP7 COMPAT
+                            $this->rel_fields_before_value[$def ['id_name']] = $this->$def_id_name; //PHP7 COMPAT
+                        }
+                    } else
+                        $this->rel_fields_before_value[$key] = null;
+                }
+            }
+            if (isset($this->relationship_fields) && is_array($this->relationship_fields)) {
+                foreach ($this->relationship_fields as $rel_id => $rel_name) {
+                    if (isset($this->$rel_id))
+                        $this->rel_fields_before_value[$rel_id] = $this->$rel_id;
+                    else
+                        $this->rel_fields_before_value[$rel_id] = null;
+                }
+            }
+        }
+
+        // call the custom business logic
+        $custom_logic_arguments['id'] = $id;
+        $custom_logic_arguments['encode'] = $encode;
+        $this->call_custom_logic("after_retrieve", $custom_logic_arguments);
+        unset($custom_logic_arguments);
+        return $this;
+    }
+
+    /**
+     * call domain handler method
+     * @param string $method onRetrieve | beforeSave | afterSave
+     * @return void
+     * @throws Exception
+     */
+    private function callDomainHandlerMethod(string $method): void
+    {
+        if (!$this->_sysdictionarydefinition_id) return;
+
+        $items = (new SpiceDictionaryDefinition($this->_sysdictionarydefinition_id))->getItems();
+
+        foreach ($items as $item) {
+
+            if (!$item['sysdomaindefinition_id']) continue;
+
+            $domain = (new SpiceDictionaryDomain($item['sysdomaindefinition_id']));
+
+            $handlerClass = $domain->getHandlerClass();
+
+            if (!$handlerClass || !class_exists($handlerClass)) continue;
+
+            $fields = $domain->getFields(new SpiceDictionaryItem($item['id']));
+            $curVals = [];
+
+            foreach ($fields as $field) {
+                $curVals[$field] = $this->$field;
+            }
+
+            if(class_exists($handlerClass)){
+                $handler = new $handlerClass();
+
+                if ($handler->$method($item, $domain, $curVals, $this)) {
+                    foreach ($fields as $field) {
+                        $this->$field = $curVals[$field];
+                        // set the value also to the fetched row
+                        if ($method == 'onRetrieve') {
+                            $this->fetched_row[$field] = $curVals[$field];
+                        }
+                    }
+                }
+            } else {
+                $domainDefs = $domain->getDefinition();
+                LoggerManager::getLogger()->fatal("Domain Handler Class '{$handlerClass}' for domain '{$domainDefs->name}' does not exist");
+            }
+        }
+    }
+
+    /**
+     * callable to retrieve addtional View Details
+     */
+    public function retrieveViewDetails()
+    {
+
+    }
+
+    /**
+     * callable to retrieve addtional List Details
+     */
+    public function retrieveListDetails()
+    {
+
+    }
+
+    /*
+     * map to the array that is returnes to the REST Output
+     * needs to be overwritten on the BEAN for a custom implementation
+     */
+
+    /**
+     * Proxy method for DynamicField::getJOIN
+     * @param array $beanDataArray
+     * @return array
+     */
+    public function mapToRestArray($beanDataArray)
+    {
+        return $beanDataArray;
+    }
+
+    /*
+     * map to the array that is received in the REST Post or PUT Call
+     * needs to be overwritten on the BEAN for a custom implementation
+     */
+
+    /**
+     * Proxy method for DynamicField::getJOIN
+     * @param array $beanDataArray
+     * @return array
+     */
+    public function mapFromRestArray($beanDataArray)
+    {
+        return;
+    }
+
+    /**
+     * Convert row data from DB format to internal format
+     * Mostly useful for dates/times
+     * @param array $row
+     * @param bool $encode
+     * @return array $row
+     */
+    public function convertRow(array $row, bool $encode = false): array
+    {
+        foreach ($this->field_defs as $name => $fieldDef) {
+            if (!isset($name) || empty($row[$name])) continue;
+            $row[$name] = $this->convertField($row[$name], $fieldDef, $encode);
+
+        }
+        return $row;
+    }
+
+    /**
+     * Converts the field value based on the provided fieldDef
+     * @param $fieldvalue
+     * @param $fieldDef
+     * @param bool $encode
+     * @return string
+     */
+    public function convertField($fieldvalue, $fieldDef, bool $encode = false): string|null
+    {
+        if (empty($fieldvalue)) return $fieldvalue;
+
+        switch ($fieldDef['type']) {
+            case 'json':
+                break;
+            default:
+                if ($encode) $fieldvalue = DBUtils::toHtml($fieldvalue);
+                if (!(isset($fieldDef['source']) && !in_array($fieldDef['source'], ['db', 'relate']) && !isset($fieldDef['dbType']))) {
+                    $fieldvalue = $this->db->fromConvert($fieldvalue, $this->db->getFieldType($fieldDef));
+                }
+        }
+
+        return $fieldvalue;
+    }
+
+    /**
+     * Will map all non link fields of a bean to another bean that is created on the fly
+     * @param SpiceBean $origin the original bean
+     * @param string $targetModule the target module name
+     * @param array $mapConvert an optional array with a field mapping origin field name to target field name
+     * @return false|SpiceBean
+     */
+    public function convertBeanToBean(SpiceBean $origin, string $targetModule, array $mapConvert = []){
+        $target = BeanFactory::newBean($targetModule);
+        $target->new_with_id = true;
+        $target->id = SpiceUtils::createGuid();
+
+        foreach($origin->field_defs as $vardef){
+            if(!in_array($vardef['type'], ['link', 'linked']) && isset($target->field_defs[$vardef['name']])){
+                $target->{$vardef['name']} = $origin->{$vardef['name']};
+            }
+        }
+
+        if(!empty($mapConvert)){
+            foreach($mapConvert as $originField => $targetField){
+                $target->{$targetField} = $origin->{$originField};
+            }
+        }
+        return $target;
+    }
+
+    /**
+     * Sets value from fetched row into the bean.
+     *
+     * @param array $row Fetched row
+     * @todo loop through vardefs instead
+     * @internal runs into an issue when populating from field_defs for users - corrupts user prefs
+     *
+     * Internal function, do not override.
+     */
+    function populateFromRow($row)
+    {
+        $nullvalue = '';
+        foreach ($this->field_defs as $field => $fieldDef) {
+
+            if (RESTManager::getInstance()->excludeImageFields && $fieldDef['type'] === 'image' && $fieldDef['source'] !== 'non-db') {
+                unset($row[$field]);
+            }
+
+            if ($field == 'user_preferences' && $this->_module == 'Users')
+                continue;
+            if (isset($row[$field])) {
+                $this->$field = $row[$field];
+                $owner = $field . '_owner';
+                if (!empty($row[$owner])) {
+                    $this->$owner = $row[$owner];
+                }
+            } else {
+                $this->$field = $nullvalue;
+            }
+        }
+    }
+
+    /**
+     * This is designed to be overridden and add specific fields to each record.
+     * This allows the generic query to fill in the major fields, and then targeted
+     * queries to get related fields and add them to the record.  The contact's
+     * account for instance.  This method is only used for populating extra fields
+     * in the detail form
+     */
+    function fill_in_additional_detail_fields()
+    {
+        return;
+    }
+
+    /**
+     * Fill in fields where type = relate
+     */
+    function fill_in_relationship_fields()
+    {
+        global $fill_in_rel_depth;
+        if (empty($fill_in_rel_depth) || $fill_in_rel_depth < 0)
+            $fill_in_rel_depth = 0;
+
+        if ($fill_in_rel_depth > 1)
+            return;
+
+        $fill_in_rel_depth++;
+
+        foreach ($this->field_defs as $field) {
+            if (0 == strcmp($field['type'], 'relate') && !empty($field['module'])) {
+                $name = $field['name'];
+                if (empty($this->$name)) {
+                    // only try to load if the id field is a non-db field
+                    if (empty($this->{$field['id_name']}) && $this->field_defs[$field['id_name']]['source'] == 'non-db') {
+                        $this->fill_in_link_field($field['id_name'], $field);
+                    }
+                    if (!empty($this->{$field['id_name']}) && ($this->_objectname != $field['module'] || ($this->_objectname == $field['module'] && $this->{$field['id_name']} != $this->id))) {
+                            // change to use of BeanFactory
+                            $mod = BeanFactory::getBean($field['module'], $this->{$field['id_name']}, ['relationships' => false]);
+                            if ($mod and !empty(@$field['rname'])) {
+                                $field_rname = $field['rname']; //PHP7 COMPAT
+                                $this->$name = $mod->$field_rname; //PHP7 COMPAT
+                            } else if (isset($mod->name)) {
+                                $this->$name = $mod->name;
+                            }
+                    }
+                }
+            }
+            // fill in parents as well
+            if (0 == strcmp($field['type'], 'parent') && !empty($this->{$field['id_name']}) && !empty($this->{$field['type_name']})) {
+                $mod = BeanFactory::getBean($this->{$field['type_name']}, $this->{$field['id_name']}, ['relationships' => false]);
+                $this->{$field['name']} = $mod ? $mod->get_summary_text() : null;
+            }
+
+            // fill in linked as well
+            if (0 == strcmp($field['type'], 'linked') && !empty($this->{$field['id_name']}) && $field['link']) {
+                $mod = BeanFactory::getBean($field['module'], $this->{$field['id_name']}, ['relationships' => false]);
+                if($mod){
+                    $this->{$field['name']} = $mod;
+                }
+            }
+
+        }
+        $fill_in_rel_depth--;
+    }
+
+    function fill_in_link_field($linkFieldName, $def)
+    {
+        $idField = $linkFieldName;
+        //If the id_name provided really was an ID, don't try to load it as a link. Use the normal link
+        // CR1000476: remove check on type shall be id. Not always the case (see companycode_id in Users)
+        // if (!empty($this->field_defs[$linkFieldName]['type']) && $this->field_defs[$linkFieldName]['type'] == "id" && !empty($def['link'])) {
+        // check field type
+        $typeIsId = false;
+        if ($this->field_defs[$linkFieldName]['type'] == "id" ||
+            $this->field_defs[$linkFieldName]['dbType'] == "id" ||
+            $this->field_defs[$linkFieldName]['dbtype'] == "id") {
+            $typeIsId = true;
+        }
+        if (!empty($this->field_defs[$linkFieldName]['type']) && $typeIsId && !empty($def['link'])) {
+            $linkFieldName = $def['link'];
+        }
+
+        // ToDo Check why the above was added
+        if($def['link']) {
+            $linkFieldName = $def['link'];
+        }
+
+        if ($this->load_relationship($linkFieldName)) {
+            $list = $this->$linkFieldName->get();
+            $this->$idField = ''; // match up with null value in $this->populateFromRow()
+            if (!empty($list))
+                $this->$idField = $list[0];
+        }
+    }
+
+    /**
+     * Returns an array of fields that are of type relate.
+     *
+     * @return array List of fields.
+     *
+     * Internal function, do not override.
+     */
+    function get_related_fields()
+    {
+
+        $related_fields = [];
+
+//    	require_once('data/Link.php');
+
+        $fieldDefs = $this->getFieldDefinitions();
+
+        //find all definitions of type link.
+        if (!empty($fieldDefs)) {
+            foreach ($fieldDefs as $name => $properties) {
+                if (array_search('relate', $properties) === 'type') {
+                    $related_fields[$name] = $properties;
+                }
+            }
+        }
+
+        return $related_fields;
+    }
+
+    /**
+     * Returns a full (ie non-paged) list of the current object type.
+     *
+     * @param string $order_by the order by SQL parameter. defaults to ""
+     * @param string $where where clause. defaults to ""
+     * @param boolean $check_dates . defaults to false
+     * @param int $show_deleted show deleted records. defaults to 0
+     */
+    function get_full_list($order_by = "", $where = "", $check_dates = false, $show_deleted = 0)
+    {
+        LoggerManager::getLogger()->debug("get_full_list:  order_by = '$order_by' and where = '$where'");
+        if (isset($_SESSION['show_deleted'])) {
+            $show_deleted = 1;
+        }
+        $query = $this->create_new_list_query($order_by, $where, [], [], $show_deleted);
+        return $this->process_full_list_query($query);
+    }
+
+    /**
+     * Processes fetched list view data
+     *
+     * Internal function, do not override.
+     * @param string $query query to be processed.
+     * @return array Fetched data.
+     *
+     */
+    function process_full_list_query($query)
+    {
+        LoggerManager::getLogger()->debug("process_full_list_query: query is " . $query);
+        $result = $this->db->query($query, false);
+        LoggerManager::getLogger()->debug("process_full_list_query: result is " . print_r($result, true));
+        $bean = BeanFactory::getBean($this->_module);
+
+        // We have some data.
+        while (($row = $this->db->fetchByAssoc($result)) != null) {
+
+            $seed = BeanFactory::getBean($this->_module, $row['id'], ['relationships' => false]);
+
+            $seed->fill_in_additional_list_fields();
+
+            // needs to be processed as well
+            $seed->fill_in_relationship_fields();
+
+            $seed->call_custom_logic("process_record");
+
+            $list[] = $seed;
+        }
+        //}
+        if (isset($list))
+            return $list;
+        else
+            return null;
+    }
+
+    /**
+     * This function should be overridden in each module.  It marks an item as deleted.
+     *
+     * If it is not overridden, then marking this type of item is not allowed
+     */
+    function mark_deleted($id)
+    {
+        // make sure that we retrieve before we continue in case we did not retrieve before calling this function
+        if (empty($this->id)) {
+            $bean = BeanFactory::getBean($this->_module, $id, ['relationships' => false ]);
+            // check if retrieve succeed to prevent recursion
+            if (!empty($bean->id)) {
+                $bean->mark_deleted($id);
+                return;
+            }
+        }
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $date_modified = TimeDate::getInstance()->nowDb();
+        if (isset($_SESSION['show_deleted'])) {
+            $this->mark_undeleted($id);
+        } else {
+            // call the custom business logic
+            $custom_logic_arguments['id'] = $id;
+            $this->call_custom_logic("before_delete", $custom_logic_arguments);
+            $this->deleted = 1;
+
+            // add to the trashcan
+            SysTrashCan::addRecord('bean', $this->_module, $this->id, $this->get_summary_text());
+
+            $this->mark_relationships_deleted($id);
+            if (isset($this->field_defs['modified_user_id'])) {
+                if (!empty($current_user)) {
+                    $this->modified_user_id = $current_user->id;
+                } else {
+                    $this->modified_user_id = 1;
+                }
+                $query = "UPDATE $this->_tablename set deleted=1 , date_modified = '$date_modified', modified_user_id = '$this->modified_user_id' where id='$id'";
+            } else {
+                $query = "UPDATE $this->_tablename set deleted=1 , date_modified = '$date_modified' where id='$id'";
+            }
+            $this->db->query($query, true, "Error marking record deleted: ");
+
+            Relationship::resaveRelatedBeans();
+
+            // Take the item off the recently viewed lists
+            $tracker = BeanFactory::getBean('Trackers');
+            $tracker->makeInvisibleForAll($id);
+
+            // delete from the index
+            SpiceFTSHandler::getInstance()->deleteBean($this);
+
+            // create a delete notification
+            $notificationLoader = new SpiceNotificationsLoader();
+            $notificationLoader->createDeleteNotification($this);
+
+            // call the custom business logic
+            $this->call_custom_logic("after_delete", $custom_logic_arguments);
+        }
+    }
+
+    /**
+     * Restores data deleted by call to mark_deleted() function.
+     *
+     * Internal function, do not override.
+     */
+    function mark_undeleted($id)
+    {
+        // call the custom business logic
+        $custom_logic_arguments['id'] = $id;
+        $this->call_custom_logic("before_restore", $custom_logic_arguments);
+
+        $date_modified = TimeDate::getInstance()->nowDb();
+        $query = "UPDATE $this->_tablename set deleted=0 , date_modified = '$date_modified' where id='$id'";
+        $this->db->query($query, true, "Error marking record undeleted: ");
+
+        // reindex the bean
+
+        SpiceFTSHandler::getInstance()->indexBean($this);
+
+        // call the custom business logic
+        $this->call_custom_logic("after_restore", $custom_logic_arguments);
+    }
+
+    /**
+     * spicecrm merge current bean with others
+     * current bean is master in merge (the bean we keep)
+     *
+     * @param array $params
+     * ** array toDeleteBeanIds => IDs of beans that will be marked deleted
+     * ** array fields => field names from beans to use and overwrite current bean with
+     */
+    public function merge($params)
+    {
+        //simplify  params
+        $duplicates = $params['duplicates'];
+        $overwriteFieldsWithId = $params['fields'];
+
+        //get beans to delete
+        $tmpBeans = [];
+        foreach ($duplicates as $beanId) {
+            $tmpBeans[$beanId] = BeanFactory::getBean($this->_module, $beanId);
+
+            // merge SpiceAttachments & SpiceNotes for duplicate
+                // $this->id == ID of Master Bean (Bean to be kept)
+                // $beanId == ID of the Bean to be deleted
+            SpiceAttachments::mergeSpiceAttachments($this->_module, $this->id, $beanId);
+            SpiceNotes::mergeSpiceNotes($this->_module, $this->id, $beanId);
+        }
+
+        // overwrite fields
+        foreach ($overwriteFieldsWithId as $fieldname => $beanId) {
+            switch($this->field_defs[$fieldname]['type']) {
+                case 'relate':
+                    $this->{$fieldname} = $tmpBeans[$beanId]->{$fieldname};
+                    $this->{$this->field_defs[$fieldname]['id_name']} = $tmpBeans[$beanId]->{$this->field_defs[$fieldname]['id_name']};
+                    break;
+                default:
+                    $domainDefinitionId = $this->field_defs[$fieldname]['sysdomaindefinition_id'];
+                    if($domainDefinitionId) {
+                        foreach ($this->field_defs as $thisFieldName => $thisFieldData){
+                            if($thisFieldData['sysdomaindefinition_id'] == $domainDefinitionId) {
+                                $this->{$thisFieldName} = $tmpBeans[$beanId]->{$thisFieldName};
+                            }
+                        }
+                    } else {
+                        $this->{$fieldname} = $tmpBeans[$beanId]->{$fieldname};
+                    }
+            }
+        }
+        //save bean master
+        $this->save();
+
+        //handle related beans coming from beans to delete
+        $linked_fields = $this->get_linked_fields();
+
+        //delete beans used in merge
+        foreach ($tmpBeans as $beanId => $tmpBean) {
+            // make sure email addresses are handled before other relationships to allow correct handling of other relationships
+            $key = 'email_addresses';
+            if (array_key_exists($key, $linked_fields)) {
+                if (isset($linked_fields[$key]['duplicate_merge'])) {
+                    if (
+                        $linked_fields[$key]['duplicate_merge'] === 'disabled' or
+                        $linked_fields[$key]['duplicate_merge'] === 0 or
+                        $linked_fields[$key]['duplicate_merge'] === false) {
+                        continue;
+                    }
+                }
+                if ($tmpBean->load_relationship($key)) {
+                    $tmpBean->$key->load(['relationship_fields' => $tmpBean->$key->relationship_fields]);
+//                handle email address merge
+                    $this->handleEmailMerge($key, $tmpBean->$key->rows);
+                }
+            }
+            //handle related beans
+            foreach ($linked_fields as $name => $properties) {
+                if ($properties['name'] == 'modified_user_link' || $properties['name'] == 'created_by_link' || $properties['name'] == 'assigned_user_link')
+                    continue;
+
+                if (isset($properties['duplicate_merge'])) {
+                    if (
+                        $properties['duplicate_merge'] === 'disabled' or
+                        $properties['duplicate_merge'] === 0 or
+                        $properties['duplicate_merge'] === false) {
+                        continue;
+                    }
+                }
+
+                if ($tmpBean->load_relationship($name)) {
+                    //check to see if loaded relationship is with email address
+                    $relName = $tmpBean->$name->getRelatedModuleName();
+                    if (!empty($relName) and strtolower($relName) == 'emailaddresses') {
+//                        $tmpBean->$name->load(['relationship_fields' => $tmpBean->$name->relationship_fields]);
+//                        //handle email address merge
+//                        $this->handleEmailMerge($name, $tmpBean->$name->rows);
+                        continue;
+                    } else {
+                        $tmpBean->$name->load(['relationship_fields' => $tmpBean->$name->relationship_fields]);
+                        $data = $tmpBean->$name->rows;
+
+                        if (is_array($data) && !empty($data)) {
+                            if ($this->load_relationship($name)) {
+                                foreach ($data as $related_id => $row) {
+
+                                    $additionalValues = [];
+
+                                    foreach ($this->$name->relationship_fields as $field => $def) {
+                                        $additionalValues[$field] = $row[$field];
+                                    }
+
+                                    //remove from tmpBean (only many-to-many)
+                                    if ($tmpBean->$name->getType == 'many')
+                                        $tmpBean->$name->delete($tmpBean->id, $related_id);
+                                    //add to primary bean
+                                    $this->$name->add($row['id'], $additionalValues);
+
+                                    // re-index the related bean
+                                    $relatedBean = BeanFactory::getBean($relName, $row['id'], ['relationships' => false]);
+                                    SpiceFTSHandler::getInstance()->indexBean($relatedBean);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // merge attachments
+            $this->db->query("UPDATE spiceattachments SET bean_id='{$this->id}' WHERE deleted=0 AND bean_id='{$tmpBean->id}'");
+
+            AddressReferences::getInstance()->updateReferencedBeansAddress($this, $tmpBean->id);
+
+            //mark deleted
+            $tmpBean->mark_deleted($beanId);
+
+        }
+        //free memory
+        unset($tmpBeans);
+
+        return true;
+    }
+
+    /**
+     * This function will compare the email addresses to be merged and only add the email id's
+     * of the email addresses that are not duplicates.
+     * @param $name string of relationship (email_addresses)
+     * @param $data array of email id's that will be merged into existing bean.
+     */
+    public function handleEmailMerge($name, $data)
+    {
+        $mrgArray = [];
+        //get the email id's to merge
+        $existingData = $data;
+
+        // save existing email data
+        $this->mergeRelatedData[$name]['existingEmailMergeData'] = $existingData;
+
+        $existingEmails = [];
+
+        //make sure id's to merge exist and are in array format
+        //get the existing email id's
+        $this->load_relationship($name);
+        $exData = $this->$name->get();
+
+        if (!is_array($existingData) || empty($existingData)) {
+            return;
+        }
+        //query email and retrieve existing email address
+        $exEmailQuery = 'Select id, email_address from email_addresses where id in (';
+        $first = true;
+        foreach ($exData as $id) {
+            if ($first) {
+                $exEmailQuery .= " '$id' ";
+                $first = false;
+            } else {
+                $exEmailQuery .= ", '$id' ";
+                $first = false;
+            }
+        }
+        $exEmailQuery .= ')';
+
+        $exResult = $this->db->query($exEmailQuery);
+        while (($row = $this->db->fetchByAssoc($exResult)) != null) {
+            $existingEmails[$row['id']] = $row['email_address'];
+        }
+
+
+        //query email and retrieve email address to be linked.
+        $newEmailQuery = 'Select id, email_address from email_addresses where id in (';
+        $first = true;
+        foreach ($existingData as $id => $row) {
+            if ($first) {
+                $newEmailQuery .= " '$id' ";
+                $first = false;
+            } else {
+                $newEmailQuery .= ", '$id' ";
+                $first = false;
+            }
+        }
+        $newEmailQuery .= ')';
+
+        $newResult = $this->db->query($newEmailQuery);
+        while (($row = $this->db->fetchByAssoc($newResult)) != null) {
+            $newEmails[$row['id']] = [];
+
+            foreach ($this->$name->relationship_fields as $field => $def) {
+                $newEmails[$row['id']][$field] = $existingData[$row['id']][$field];
+            }
+        }
+
+        //compare the two arrays and remove duplicates
+         foreach ($newEmails as $k => $n) {
+            if (!in_array($n, $existingEmails)) {
+                $mrgArray[$k] = $n;
+            }
+        }
+
+        //add email id's.
+        foreach ($mrgArray as $related_id => $additionalValues) {
+            //add to primary bean
+            $this->$name->add($related_id, $additionalValues);
+            // save new email data
+            $this->mergeRelatedData[$name]['newEmailMergeData'][] = [
+                'id' => $related_id,
+                'relid' => $this->email_addresses->relationship->relid
+            ];
+        }
+    }
+
+    /*
+     * 	RELATIONSHIP HANDLING
+     */
+
+    /**
+     * This function deletes relationships to this object.  It should be overridden
+     * to handle the relationships of the specific object.
+     * This function is called when the item itself is being deleted.
+     *
+     * @param int $id id of the relationship to delete
+     */
+    function mark_relationships_deleted($id)
+    {
+        $this->delete_linked($id);
+    }
+
+    /* 	When creating a custom field of type Dropdown, it creates an enum row in the DB.
+      A typical get_list_view_array() result will have the *KEY* value from that drop-down.
+      Since custom _dom objects are flat-files included in the $app_list_strings variable,
+      We need to generate a key-key pair to get the true value like so:
+      ([module]_cstm->fields_meta_data->$app_list_strings->*VALUE*) */
+
+    /**
+     * Iterates through all the relationships and deletes all records for reach relationship.
+     *
+     * @param string $id Primary key value of the parent reocrd
+     */
+    function delete_linked($id)
+    {
+        $linked_fields = $this->get_linked_fields();
+        foreach ($linked_fields as $name => $value) {
+            if ($this->load_relationship($name)) {
+                $this->$name->delete($id);
+            } else {
+                LoggerManager::getLogger()->fatal('relationships', "error loading relationship $name in " . __FILE__);
+            }
+        }
+    }
+
+
+    /**
+     * This function is used to execute the query and create an array template objects
+     * from the resulting ids from the query.
+     * It is currently used for building sub-panel arrays.
+     *
+     * @param string $query - the query that should be executed to build the list
+     * @param object $template - The object that should be used to copy the records.
+     * @param int $row_offset Optional, default 0
+     * @param int $limit Optional, default -1
+     * @return array
+     */
+    function build_related_list($query, &$template, $row_offset = 0, $limit = -1)
+    {
+        LoggerManager::getLogger()->debug("Finding linked records $this->_objectname: " . $query);
+        $db = DBManagerFactory::getInstance();
+
+        if (!empty($row_offset) && $row_offset != 0 && !empty($limit) && $limit != -1) {
+            $result = $db->limitQuery($query, $row_offset, $limit, true, "Error retrieving $template->_objectname list: ");
+        } else {
+            $result = $db->query($query, true);
+        }
+
+        $list = [];
+        $isFirstTime = true;
+        $class = get_class($template);
+        while ($row = $this->db->fetchByAssoc($result)) {
+            if (!$isFirstTime) {
+                $template = new $class();
+            }
+            $isFirstTime = false;
+            $record = $template->retrieve($row['id']);
+
+            if ($record != null) {
+                // this copies the object into the array
+                $list[] = $template;
+            }
+        }
+        return $list;
+    }
+
+    /**
+     * Constructs a select query and fetch 1 row using this query, and then process the row
+     *
+     * Internal function, do not override.
+     * @param array @fields_array  array of name value pairs used to construct query.
+     * @param boolean $encode Optional, default true, encode fetched data.
+     * @param boolean $deleted Optional, default true, if set to false deleted filter will not be added.
+     * @return object Instance of this bean with fetched data.
+     */
+    function retrieve_by_string_fields($fields_array, $encode = false, $deleted = true, $relationships = true)
+    {
+        $where_clause = $this->get_where($fields_array, $deleted);
+        $query = "SELECT $this->_tablename.id" . " FROM $this->_tablename ";
+        $query .= " $where_clause";
+        LoggerManager::getLogger()->debug("Retrieve $this->_objectname: " . $query);
+        //requireSingleResult has been deprecated.
+        //$result = $this->db->requireSingleResult($query, true, "Retrieving record $where_clause:");
+        $result = $this->db->limitQuery($query, 0, 1, true, "Retrieving record $where_clause:");
+
+
+        if (empty($result)) {
+            return null;
+        }
+        $row = $this->db->fetchByAssoc($result);
+        if (empty($row)) {
+            return null;
+        }
+        // Removed getRowCount-if-clause earlier and insert duplicates_found here as it seems that we have found something
+        // if we didn't return null in the previous clause.
+        return $this->retrieve($row['id'], $encode, $deleted, $relationships);
+    }
+
+    /**
+     * Construct where clause from a list of name-value pairs.
+     * if value is passed as array the values are put into an IN statement
+     *
+     * @param array $fields_array Name/value pairs for column checks
+     * @param boolean $deleted Optional, default true, if set to false deleted filter will not be added.
+     * @return string The WHERE clause
+     */
+    function get_where($fields_array, $deleted = true)
+    {
+        $where_clause = "";
+        foreach ($fields_array as $name => $value) {
+            if (!empty($where_clause)) {
+                $where_clause .= " AND ";
+            }
+
+            $name = $this->db->getValidDBName($name);
+
+            // if we pass ina  list of values convert to an IN statement
+            if(is_array($value)){
+                $valArray = [];
+                foreach($value as $thisValue){
+                    $valArray[] = $this->db->quoted($thisValue, false);
+                }
+                $where_clause .= "$name IN (" . implode(',', $valArray) . ")";
+            } else if ($value == null) {
+                $where_clause .= "$name IS NULL";
+            } else {
+                $where_clause .= "$name = " . $this->db->quoted($value, false);
+            }
+        }
+        if (!empty($where_clause)) {
+            if ($deleted) {
+                return "WHERE $where_clause AND deleted=0";
+            } else {
+                return "WHERE $where_clause";
+            }
+        } else {
+            return "";
+        }
+    }
+
+
+    /**
+     * Override this function to build a where clause based on the search criteria set into bean .
+     * @abstract
+     */
+    function build_generic_where_clause($value)
+    {
+
+    }
+
+    /**
+     * ToDo: define what this does exaclt
+     *
+     * @param $table
+     * @param $relate_values
+     * @param bool $check_duplicates
+     * @param false $do_update
+     * @param null $data_values
+     *
+     */
+    function set_relationship($table, $relate_values, $check_duplicates = true, $do_update = false, $data_values = null)
+    {
+        $where = '';
+
+        // make sure there is a date modified
+        $date_modified = $this->db->convert("'" . TimeDate::getInstance()->nowDb() . "'", 'datetime');
+
+        $row = null;
+        if ($check_duplicates) {
+            $query = "SELECT * FROM $table ";
+            $where = "WHERE deleted = '0'  ";
+            foreach ($relate_values as $name => $value) {
+                $where .= " AND $name = '$value' ";
+            }
+            $query .= $where;
+            $result = $this->db->query($query, false, "Looking For Duplicate Relationship:" . $query);
+            $row = $this->db->fetchByAssoc($result);
+        }
+
+        if (!$check_duplicates || empty($row)) {
+            unset($relate_values['id']);
+            if (isset($data_values)) {
+                $relate_values = array_merge($relate_values, $data_values);
+            }
+            $query = "INSERT INTO $table (id, " . implode(',', array_keys($relate_values)) . ", date_modified) VALUES ('" . SpiceUtils::createGuid() . "', " . "'" . implode("', '", $relate_values) . "', " . $date_modified . ")";
+
+            $this->db->query($query, false, "Creating Relationship:" . $query);
+        } else if ($do_update) {
+            $conds = [];
+            foreach ($data_values as $key => $value) {
+                array_push($conds, $key . "='" . $this->db->quote($value) . "'");
+            }
+            $query = "UPDATE $table SET " . implode(',', $conds) . ",date_modified=" . $date_modified . " " . $where;
+            $this->db->query($query, false, "Updating Relationship:" . $query);
+        }
+    }
+
+    function retrieve_relationships($table, $values, $select_id)
+    {
+        $query = "SELECT $select_id FROM $table WHERE deleted = 0  ";
+        foreach ($values as $name => $value) {
+            $query .= " AND $name = '$value' ";
+        }
+        $query .= " ORDER BY $select_id ";
+        $result = $this->db->query($query, false, "Retrieving Relationship:" . $query);
+        $ids = [];
+        while ($row = $this->db->fetchByAssoc($result)) {
+            $ids[] = $row;
+        }
+        return $ids;
+    }
+
+
+    /**
+     * Check whether the user has access to a particular view for the current bean/module
+     * @param $view string required, the view to determine access for i.e. DetailView, ListView...
+     * @param $is_owner bool optional, this is part of the ACL check if the current user is an owner they will receive different access
+     */
+    function ACLAccess($view, $is_owner = 'not_set')
+    {
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        if ($current_user->isAdmin()) {
+            return true;
+        }
+        $not_set = false;
+        if ($is_owner == 'not_set') {
+            $not_set = true;
+            $is_owner = $this->isOwner($current_user->id);
+        }
+
+        // If we don't implement ACLs, return true.
+        if (!$this->bean_implements('ACL'))
+            return true;
+        $view = strtolower($view);
+
+        // BEGMOD KORGOBJECTS
+        // if(!($GLOBALS['KAuthAccessController']->checkACLAccess($this, $view))) return false;
+        // ENDMOD KORGOBJECTS
+
+        switch ($view) {
+            case 'list':
+            case 'index':
+            case 'listview':
+                return SpiceACL::getInstance()->checkAccess($this->_module, 'list', true);
+            case 'edit':
+            case 'save':
+                if (!$is_owner && $not_set && !empty($this->id)) {
+                    if (!empty($this->fetched_row) && !empty($this->fetched_row['id']) && !empty($this->fetched_row['assigned_user_id']) && !empty($this->fetched_row['created_by'])) {
+                        //$temp->populateFromRow($this->fetched_row);
+                    } else {
+                        $temp = BeanFactory::getBean($this->_module, $this->id, ['relationships' => false]);
+                        $is_owner = $temp->isOwner($current_user->id);
+                        unset($temp);
+                    }
+                }
+            case 'popupeditview':
+            case 'editview':
+                return SpiceACL::getInstance()->checkAccess($this, 'edit', $is_owner, $this->acltype);
+            case 'view':
+            case 'detail':
+            case 'detailview':
+                return SpiceACL::getInstance()->checkAccess($this, 'view', $is_owner, $this->acltype);
+            case 'delete':
+                return SpiceACL::getInstance()->checkAccess($this, 'delete', $is_owner, $this->acltype);
+            case 'export':
+                return SpiceACL::getInstance()->checkAccess($this->_module, 'export', $is_owner, $this->acltype);
+            case 'import':
+                return SpiceACL::getInstance()->checkAccess($this->_module, 'import', true, $this->acltype);
+            case 'manageattachments':
+                return SpiceACL::getInstance()->checkAccess('Application', 'manageattachments');
+        }
+        //if it is not one of the above views then it should be implemented on the page level
+        return true;
+    }
+
+    function getACLActions()
+    {
+
+        // If we don't implement ACLs, return true.
+        if (!$this->bean_implements('ACL'))
+            return [];
+
+        return SpiceACL::getInstance()->getBeanActions($this);
+    }
+
+    /**
+     * Loads a row of data into instance of a bean. The data is passed as an array to this function
+     *
+     * @param array $arr row of data fetched from the database.
+     * @return  nothing
+     *
+     * Internal function do not override.
+     */
+    function loadFromRow($arr)
+    {
+        $this->populateFromRow($arr);
+
+        $this->fill_in_additional_list_fields();
+
+        $this->call_custom_logic("process_record");
+    }
+
+    /**
+     * checks if there are duplicates for the bean based on the FTS search
+     *
+     * @return array
+     */
+    public function checkForDuplicates(array $acceptedDuplicatesIds = [])
+    {
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $module = array_search($this->_objectname, SpiceModules::getInstance()->getBeanList());
+
+        $duplicates = SpiceFTSHandler::getInstance()->checkDuplicates($this, $acceptedDuplicatesIds);
+
+        $dupRet = [];
+        foreach ($duplicates['records'] as $duplicate) {
+            if($seed = BeanFactory::getBean($this->_module, $duplicate, ['relationships' => false])){
+                if ($seed) {
+                    $dupRet[] = $seed;
+                } else {
+                    $duplicates['count']--;
+                }
+            }
+        }
+        return ['count' => $duplicates['count'], 'records' => $dupRet];
+    }
+
+    /**
+     * ToDo: add validation logic based on domains
+     *
+     * @return array|bool
+     */
+    function validate()
+    {
+        $return = [];
+        if (($dummy = $this->validateContent()) !== true)
+            $return['invalidFields'] = $dummy;
+        if (($dummy = $this->validateRequired()) !== true)
+            $return['missingFields'] = $dummy;
+        return $return ? $return : true;
+    }
+
+    function validateRequired()
+    {
+        $missingFields = [];
+        foreach ($this->field_defs as $field) {
+            if (($field['name'] !== 'id' or $this->new_with_id === true) and $field['name'] !== 'date_entered' and $field['name'] !== 'date_modified'
+                and isset($field['required']) and $field['required']
+                and (
+                    !isset($this->{$field['name']}) or
+                    is_null($this->{$field['name']}) or
+                    (is_string($this->{$field['name']}) and strlen($this->{$field['name']}) === 0)
+                )
+            )
+                $missingFields[] = $field['name'];
+        }
+        return $missingFields ? $missingFields : true;
+    }
+
+    function validateContent()
+    {
+        $invalidFields = [];
+        foreach ($this->field_defs as $field) {
+            if (isset($this->{$field['name']})) {
+                switch ($field['type']) {
+                    case 'varchar':
+                    case 'text':
+                        if (isset($field['len']) and strlen($this->{$field['name']}) > $field['len'])
+                            $invalidFields[$field['name']][] = 'String to long (max: ' . $field['len'] . ').';
+                        break;
+                    case 'date':
+                        if (!(preg_match('#^(\d{1,4})-(\d{1,2})-(\d{1,2})$#', $this->{$field['name']}, $matches) and checkdate($matches[2], $matches[3], $matches[1])))
+                            $invalidFields[$field['name']][] = 'Date invalid.';
+                }
+            }
+        }
+        return $invalidFields ? $invalidFields : true;
+    }
+
+    /**
+     * returns the frontend url
+     * ToDo: move to other general class
+     *
+     * @return false|string
+     */
+    public function getFrontendUrl()
+    {
+        if (empty($this->id)) return false;
+        return SpiceConfig::getInstance()->config['frontend_url'] . '#/module/' . $this->_module . '/' . $this->id;
+    }
+
+    public function getFrontendUrlEncoded()
+    {
+        return urlencode($this->getFrontendUrl());
+    }
+
+    /**
+     * Iterates over all linked beans of a template bean
+     * and clones them (in case the dictionary property 'duplicate_linked' is set).
+     *
+     * @param object $clone
+     */
+    private function cloneBeansOfAllLinks(&$clone)
+    {
+        foreach ($this->field_defs as $v) {
+            if ($v['type'] === 'link' and @$v['duplicate_linked'] === true) {
+                foreach ($this->get_linked_beans($v['name'], $v['module']) as $v2) {
+                    if (!$v2->isCloned()) { # To prevent a recursion: Don´t clone in case this bean has already been cloned.
+                        $v2->cloneLinkedBean($v['name'], $clone);
+                    } else {
+                        LoggerManager::getLogger()->error('Bean cloning: A recursion has been prevented ( link: ' . $v['name'] . ' in module ' . $this->_module . ', bean to clone: ' . $v2->_objectname . ' ' . $v2->id . ' ). Check configuration in dictionary for property "duplicate_linked".');
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * clone m2m join table records from a source bean for all m2m links with duplicate_m2m_records = true
+     * @param SpiceBean $source
+     * @return void
+     */
+    public function cloneM2MRecords(SpiceBean $source): void
+    {
+        foreach ($this->field_defs as $fieldDef) {
+            if ($fieldDef['type'] === 'link' and @$fieldDef['duplicate_m2m_records'] === true) {
+                $this->cloneM2MRecord($fieldDef['name'], $source);
+            }
+        }
+
+    }
+
+    /**
+     * clone m2m join table records from a source bean
+     * @param string $linkName
+     * @param SpiceBean $source
+     * @return void
+     */
+    public function cloneM2MRecord(string $linkName, SpiceBean $source): void
+    {
+        if (!$source->load_relationship($linkName)) return;
+
+        $source->$linkName->load(['relationship_fields' => $source->$linkName->relationship_fields]);
+
+        $data = $source->$linkName->rows;
+
+        if (!is_array($data) || empty($data) || !$this->load_relationship($linkName)) return;
+
+        foreach ($data as $row) {
+
+            $additionalValues = [];
+
+            foreach ($source->$linkName->relationship_fields as $field => $def) {
+                $additionalValues[$field] = $row[$field];
+            }
+
+            $this->$linkName->add($row['id'], $additionalValues);
+        }
+    }
+
+    /**
+     * Clones a linked bean. It also creates the link to the opposite bean.
+     *
+     * @param string $linkName Name of the link.
+     * @param string $oppositeBean The opposite cloned bean where the link is defined.
+     */
+    public function cloneLinkedBean($linkName, &$oppositeBean)
+    {
+        $clone = clone $this;
+        $clone->id = SpiceUtils::createGuid();
+        $GLOBALS['cloningData']['cloned'][] = ['module' => $clone->_module, 'id' => $this->id, 'cloneId' => $clone->id, 'clone' => $clone];
+        $clone->cloningData['count']++;
+        $clone->new_with_id = true;
+        $clone->update_date_entered = true;
+        $clone->date_entered = TimeDate::getInstance()->nowDb();
+        $clone->onClone();
+        $clone->save();
+
+        $oppositeBean->load_relationship($linkName);
+        $oppositeBean->{$linkName}->add($clone->id);
+
+        $this->cloneBeansOfAllLinks($clone);
+    }
+
+    /**
+     * Has the bean already been cloned??
+     *
+     * @return boolean
+     */
+    public function isCloned()
+    {
+        foreach ($GLOBALS['cloningData']['cloned'] as $v) {
+            if ($this->_module === $v['module'] and $this->id === $v['id']) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Placeholder
+     */
+    public function onClone()
+    {
+    }
+
+    /**
+     * returns output templates that can be rendered for this module
+     *
+     * @return array
+     */
+    public function getOutputTemplates(): array
+    {
+        $templates = [];
+        $bean = BeanFactory::getBean('OutputTemplates');
+        $beans = $bean->get_full_list('name', "module_name='{$this->_module}' AND is_inactive = '0'");
+        foreach ($beans as $bean) {
+            $templates[] = [
+                'id' => $bean->id,
+                'name' => $bean->name,
+                'language' => $bean->language
+            ];
+        };
+        return $templates;
+    }
+
+    /**
+     * Returns the dictionary field definition for a given field.
+     *
+     * @param string $attributeName
+     * @return array|null
+     */
+    protected function getDictionaryField(string $attributeName): ?array {
+        return $this->field_defs[$attributeName] ?? null;
+    }
+
+    /**
+     * translate all translatable fields and override the original value with the translation
+     * @param string $language
+     * @return void
+     */
+    public function translateTranslatableFields(string $language): void
+    {
+        foreach ($this->field_defs as $fieldDef) {
+            if ($fieldDef['type'] != 'translatabletext' || empty($this->{$fieldDef['name']}) || !$this->{$fieldDef['name']}->$language) continue;
+            $originalField = str_replace('_translations', '', $fieldDef['name']);
+            $this->$originalField = $this->{$fieldDef['name']}->$language->translation_text;
+        }
+    }
+}

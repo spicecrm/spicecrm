@@ -12,7 +12,7 @@ import {
     enableProdMode, ViewChild, ApplicationRef
 } from "@angular/core";
 import {FormsModule} from "@angular/forms";
-import {RouterModule} from "@angular/router";
+import {RouterModule, UrlMatchResult, UrlSegment} from "@angular/router";
 import {HttpClientModule} from "@angular/common/http";
 import {LocationStrategy, HashLocationStrategy} from "@angular/common";
 
@@ -28,6 +28,7 @@ import {GlobalHeader} from "./globalcomponents/components/globalheader";
 import {SpiceInstallerModule} from "./include/spiceinstaller/spiceinstallermodule";
 import {loginCheck} from "./services/login.service";
 import {ModuleTOTPAuthentication} from "./include/totpauthentication/moduletotpauthentication";
+import {ModuleSpiceDiagrams} from "./include/spicediagrams/modulespicediagrams";
 
 // declarations for TS
 /**
@@ -49,7 +50,8 @@ const bootstrap = (document.querySelector('meta[name="bootstrap"]') as HTMLMetaE
  */
 @Component({
     selector: "spicecrm",
-    template: "<global-header></global-header><div [ngStyle]='outletstyle'><router-outlet></router-outlet><system-navigation-manager></system-navigation-manager></div><global-footer></global-footer>"
+    template: "<global-header></global-header><div [ngStyle]='outletstyle'><router-outlet></router-outlet><system-navigation-manager></system-navigation-manager></div><global-footer></global-footer>",
+    standalone: false
 })
 export class SpiceUI {
     /**
@@ -99,9 +101,10 @@ export class SpiceUI {
             [
                 {path: "login", component: GlobalLogin},
                 {path: "", redirectTo: "/module/Home", pathMatch: "full"},
-                {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]}
+                {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]},
             ]
-        )
+        ),
+        ModuleSpiceDiagrams
     ],
     declarations: [SpiceUI],
     providers: [

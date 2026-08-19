@@ -5,46 +5,21 @@ namespace SpiceCRM\includes\authentication\SpiceCRMAuthenticate;
 use DateInterval;
 use Exception;
 use libphonenumber\PhoneNumberUtil;
-use SpiceCRM\data\BeanFactory;
 use SpiceCRM\extensions\modules\TextMessages\TextMessage;
-use SpiceCRM\includes\authentication\api\controllers\AuthenticateController;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceGateway\SpiceGatewayClientHandler;
 use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
+use SpiceCRM\modules\SystemTenants\SystemTenant;
 use SpiceCRM\modules\Users\User;
 
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 /**
  * user two-factor authentication utils
@@ -113,11 +88,11 @@ class SpiceCRM2FAUtils
         switch ($method) {
             case 'email':
                 $message = 'Enter the code sent to your email';
-                self::send2FACodeByEmail($user->id);
+                self::send2FACodeByEmail($user);
                 break;
             case 'sms':
                 $message = 'Enter the sms code sent to your mobile device';
-                self::send2FACodeBySMS($user->id);
+                self::send2FACodeBySMS($user);
                 break;
             case 'one_time_password':
                 self::checkActiveOneTimePassword($user);
@@ -234,8 +209,9 @@ class SpiceCRM2FAUtils
         $db = DBManagerFactory::getInstance();
         $expiresInDurationMin = 5;
         $code = random_int(100000, 999999);
+        $now = $db->now();
 
-        $db->query("DELETE FROM user_2fa_codes WHERE user_id = '$userId'");
+        $db->query("DELETE FROM user_2fa_codes WHERE user_id = '$userId' AND expires_in < $now");
 
         $date = TimeDate::getInstance()->getNow();
         $date->add(new DateInterval("PT{$expiresInDurationMin}M"));
@@ -248,66 +224,107 @@ class SpiceCRM2FAUtils
 
     /**
      * send code by sms
-     * @param string $userId
+     * @param User $user
      * @return void
      * @throws UnauthorizedException | Exception
      */
-    public static function send2FACodeBySMS(string $userId)
+    public static function send2FACodeBySMS(User $user): void
     {
+        $userId = $user->id;
         $db = DBManagerFactory::getInstance();
         $code = self::generateCode($userId);
-        $mailboxId = self::get2FAConfig()->sms_mailbox_id;
 
-        $phoneNumber = $db->getOne("SELECT phone_mobile FROM users WHERE id = '$userId'");
+        $phoneNumber = (string) $db->getOne("SELECT phone_mobile FROM users WHERE id = '$userId'");
 
         if (!$phoneNumber) {
             throw new UnauthorizedException("User mobile phone number missing", 5);
         }
 
+        # send the code in the master system to use its mailbox
+        $tenantId = SystemTenant::$currentTenantID;
+
+        if (SystemTenant::multitenancyEnabled()) {
+            SystemTenant::switchToMaster();
+        }
+
+        $mailboxId = self::get2FAConfig()->sms_mailbox_id;
+
         if (!$mailboxId) {
             throw new UnauthorizedException("Missing configuration mailbox id", 5);
         }
 
-        /** @var TextMessage $sms */
-        $sms = BeanFactory::newBean('TextMessages');
-        $sms->to_be_sent = true;
-        $sms->mailbox_id = $mailboxId;
-        $sms->description = "Your CRM login code is $code";
-        $sms->msisdn = $phoneNumber;
-        $sms->send();
+        if ($mailboxId == 'gateway') {
+            SpiceGatewayClientHandler::sendTemplateTypeSMS(
+                $phoneNumber, 'twoFactorToken', ['code' => $code], $user->getPreference('language')
+            );
+        } else {
+            /** @var TextMessage $sms */
+            $sms = BeanFactory::newBean('TextMessages');
+            $sms->mailbox_id = $mailboxId;
+            $sms->description = "Your CRM login code is $code";
+            $sms->msisdn = $phoneNumber;
+            $sms->send();
+        }
+
+        if (SystemTenant::multitenancyEnabled()) {
+            SystemTenant::switchToTenant($tenantId);
+        }
     }
 
     /**
      * send code by email
-     * @param string $userId
+     * @param User $user
      * @return void
      * @throws UnauthorizedException | Exception
      */
-    public static function send2FACodeByEmail(string $userId)
+    public static function send2FACodeByEmail(User $user): void
     {
+        $userId = $user->id;
         $db = DBManagerFactory::getInstance();
         $code = self::generateCode($userId);
-        $mailboxId = self::get2FAConfig()->email_mailbox_id;
 
-        $emailAddress = $db->getOne("SELECT email_address FROM email_addresses ea, email_addr_bean_rel ear WHERE ear.bean_id='$userId' AND ear.bean_module= 'Users'  AND ear.primary_address = 1 AND ear.deleted != 1 AND ear.email_address_id = ea.id AND ea.deleted != 1");
+        $emailAddress = (string) $db->getOne("SELECT user_email FROM users WHERE id ='$userId' AND deleted != 1");
+
+        if (empty($emailAddress)) {
+            $emailAddress = (string) $db->getOne("SELECT email_address FROM email_addresses ea, email_addr_bean_rel ear WHERE ear.bean_id='$userId' AND ear.bean_module= 'Users'  AND ear.primary_address = 1 AND ear.deleted != 1 AND ear.email_address_id = ea.id AND ea.deleted != 1");
+        }
 
         if (!$emailAddress) {
             throw new UnauthorizedException("User email address missing", 5);
         }
 
+
+        # send the code in the master system to use its mailbox
+        $tenantId = SystemTenant::$currentTenantID;
+
+        if (SystemTenant::multitenancyEnabled()) {
+            SystemTenant::switchToMaster();
+        }
+
+        $mailboxId = self::get2FAConfig()->email_mailbox_id;
+
         if (!$mailboxId) {
             throw new UnauthorizedException("Missing configuration mailbox id", 5);
         }
 
-        /** @var Email $email */
-        $email = BeanFactory::newBean('Emails');
-        $email->to_be_sent = true;
-        $email->mailbox_id = $mailboxId;
-        $email->name = 'Verification Code';
-        $email->body = "Your CRM login code is $code";
-        $email->addEmailAddress('to', $emailAddress);
+        if ($mailboxId == 'gateway') {
+            SpiceGatewayClientHandler::sendTemplateTypeEmail(
+                [['type' => 'to', 'email' => $emailAddress]], 'twoFactorToken', ['code' => $code], $user->getPreference('language')
+            );
+        } else {
+            /** @var Email $email */
+            $email = BeanFactory::newBean('Emails');
+            $email->mailbox_id = $mailboxId;
+            $email->name = 'Verification Code';
+            $email->body = "Your CRM login code is $code";
+            $email->addEmailAddress('to', $emailAddress);
 
-        $email->sendEmail();
+            $email->sendEmail();
+        }
+
+        if (SystemTenant::multitenancyEnabled()) {
+            SystemTenant::switchToTenant($tenantId);
+        }
     }
 
     /**

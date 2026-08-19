@@ -21,7 +21,8 @@ import {modal} from "../../services/modal.service";
             useExisting: forwardRef(() => SystemInputLabel),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
 
@@ -147,7 +148,7 @@ export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
     public addLabel() {
         let label = {
             id: this.modelutilities.generateGuid(),
-            name: '',
+            name: this.searchterm,
             scope: 'custom',
             custom_translations: [],
             global_translations: [],
@@ -199,6 +200,13 @@ export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
         if(!value) return
 
         this.label = value;
+    }
+
+    /**
+     * allow only admins to add labels
+     */
+    get allowAddLabel(): boolean {
+        return this.modelutilities.session.isAdmin;
     }
 
 }

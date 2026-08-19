@@ -2,13 +2,19 @@ import {Component, Input, OnInit} from "@angular/core";
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
 import {dictionarymanager} from "../services/dictionarymanager.service";
-import {DictionaryDefinition, DictionaryIndex, DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
+import {
+    DictionaryDefinition,
+    DictionaryIndex,
+    DictionaryIndexItem,
+    DictionaryItem
+} from "../interfaces/dictionarymanager.interfaces";
 import {metadata} from "../../services/metadata.service";
 import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'dictionary-manager-index-edit',
-    templateUrl:'../templates/dictionarymanagerindexedit.html',
+    templateUrl: '../templates/dictionarymanagerindexedit.html',
+    standalone: false
 })
 export class DictionaryManagerIndexEdit implements OnInit {
 
@@ -16,8 +22,8 @@ export class DictionaryManagerIndexEdit implements OnInit {
     @Input() public index: DictionaryIndex;
 
     public availableDictionaryItems: DictionaryItem[] = [];
-    public indexDictionaryItems: DictionaryItem[] = [];
-    private originalIndexItems: DictionaryItem[] = []; // To track original items
+    public indexDictionaryItems = new Map<string, DictionaryItem>();
+    public indexItems: DictionaryIndexItem[] = [];
 
     public dictionaryItemId: string;
     public dictionaryForeignDefinitionId: string;
@@ -36,7 +42,7 @@ export class DictionaryManagerIndexEdit implements OnInit {
 
     private populateItems() {
         // Get all items for the current dictionary definition
-        const allItems = this.dictionarymanager.getDictionaryDefinitionItems(this.index.sysdictionarydefinition_id)
+        const allIDictionaryItems = this.dictionarymanager.getDictionaryDefinitionItems(this.index.sysdictionarydefinition_id).filter(item => item.non_db != 1)
             .sort((a, b) => a.name.localeCompare(b.name));
 
         if (this.index.indextype === 'foreign') {
@@ -48,31 +54,64 @@ export class DictionaryManagerIndexEdit implements OnInit {
                 this.dictionaryForeignItemId = foreignItem.sysdictionaryforeignitem_id;
 
                 // Ensure the selected item is in availableDictionaryItems
-                this.availableDictionaryItems = allItems;
+                this.availableDictionaryItems = allIDictionaryItems;
             }
         } else {
             // Existing logic for non-foreign indexes
             const indexItems = this.dictionarymanager.dictionaryindexitems
-                .filter(item => item.sysdictionaryindex_id === this.index.id)
-                .map(item => allItems.find(i => i.id === item.sysdictionaryitem_id))
-                .filter(item => item !== undefined) as DictionaryItem[];
+                .filter(item => item.sysdictionaryindex_id === this.index.id);
 
-            this.originalIndexItems = [...indexItems];
-            this.indexDictionaryItems = indexItems;
-            this.availableDictionaryItems = allItems.filter(item =>
-                !indexItems.some(indexItem => indexItem.id === item.id)
+            this.indexItems = indexItems.map(i => ({...i}));
+
+            indexItems.forEach(indexItem => {
+
+                const dicItem = allIDictionaryItems.find(i => i.id === indexItem.sysdictionaryitem_id);
+
+                if (!dicItem) return;
+
+                this.indexDictionaryItems.set(dicItem.id, dicItem);
+            });
+
+            this.availableDictionaryItems = allIDictionaryItems.filter(dicItem =>
+                !indexItems.some(indexItem => indexItem.sysdictionaryitem_id === dicItem.id)
             );
         }
     }
 
     public onFieldDrop(event) {
-        let draggedItem = event.previousContainer.data[event.previousIndex];
 
         if (event.previousContainer === event.container) return;
 
-        event.previousContainer.data.splice(event.previousIndex, 1);
+        const dropInIndexItemsList = event.container.data instanceof Map;
 
-        event.container.data.splice(event.currentIndex, 0, draggedItem);
+        if (dropInIndexItemsList) {
+
+            event.previousContainer.data.splice(event.previousIndex, 1);
+
+            let indexItem = this.dictionarymanager.dictionaryindexitems
+                .find(item => item.sysdictionaryindex_id === this.index.id && item.sysdictionaryitem_id === event.item.data.id);
+
+            if (!indexItem) {
+                indexItem = {
+                    id: this.modelutilities.generateGuid(), // Use existing ID if available
+                    scope: this.index.scope,
+                    status: this.index.status,
+                    sysdictionaryindex_id: this.index.id,
+                    sysdictionaryitem_id: event.item.data.id,
+                    sequence: event.currentIndex,
+                    version: this.index.version,
+                    package: this.index.package
+                }
+            }
+
+            this.indexItems.splice(event.currentIndex, 0, {...indexItem});
+            this.indexDictionaryItems.set(event.item.data.id, event.item.data);
+
+        } else {
+            event.container.data.splice(event.currentIndex, 0, this.indexDictionaryItems.get(event.item.data.sysdictionaryitem_id));
+            this.indexDictionaryItems.delete(event.item.data.sysdictionaryitem_id);
+            this.indexItems.splice(event.previousIndex, 1);
+        }
     }
 
     canSave(){
@@ -81,7 +120,7 @@ export class DictionaryManagerIndexEdit implements OnInit {
         if (!namePattern.test(this.index.name)) return false;
 
         // for non-foreign we need to have fields
-        if (this.index.indextype != 'foreign' && this.indexDictionaryItems.length == 0) return false;
+        if (this.index.indextype != 'foreign' && this.indexDictionaryItems.size == 0) return false;
 
         // for foreign we need to have the remote field
         if (this.index.indextype == 'foreign' && (!this.dictionaryItemId || !this.dictionaryForeignItemId)) return false;
@@ -112,25 +151,19 @@ export class DictionaryManagerIndexEdit implements OnInit {
                 }]
             };
         } else {
+
             toSave = {
                 index: { ...this.index },
-                items: this.indexDictionaryItems.map((item, index) => ({
-                    id: item.id || this.modelutilities.generateGuid(), // Use existing ID if available
-                    scope: this.index.scope,
-                    status: this.index.status,
-                    sysdictionaryindex_id: this.index.id,
-                    sysdictionaryitem_id: item.id,
-                    sequence: index,
-                    version: this.index.version,
-                    package: this.index.package
-                }))
+                items: this.indexItems
             };
         }
 
         let saveModal = this.modal.await('LBL_SAVING');
         this.backend.postRequest(`dictionary/index/${this.index.id}`, {}, toSave).subscribe({
             next: (res) => {
+
                 const existingIndex = this.dictionarymanager.dictionaryindexes.findIndex(i => i.id === this.index.id);
+
                 if (existingIndex !== -1) {
                     this.dictionarymanager.dictionaryindexes[existingIndex] = { ...toSave.index };
                 } else {
@@ -140,10 +173,7 @@ export class DictionaryManagerIndexEdit implements OnInit {
                 // Update dictionary items to reflect saved state
                 this.dictionarymanager.dictionaryindexitems = this.dictionarymanager.dictionaryindexitems.filter(
                     item => item.sysdictionaryindex_id !== this.index.id
-                ).concat(toSave.items);
-
-                // Update original items
-                this.originalIndexItems = [...this.indexDictionaryItems];
+                ).concat(this.indexItems);
 
                 saveModal.emit(true);
                 saveModal.complete();

@@ -21,6 +21,7 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 @Component({
     selector: 'field-email-subject',
     templateUrl: '../templates/fieldemailsubject.html',
+    standalone: false
 })
 export class fieldEmailSubject extends fieldGeneric {
 

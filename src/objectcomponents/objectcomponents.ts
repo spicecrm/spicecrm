@@ -18,7 +18,6 @@ import {ChecklistItemI, ChecklistI} from "./interfaces/objectcomponents.interfac
 
 import {loginCheck} from '../services/login.service';
 import {metadata, aclCheck} from '../services/metadata.service';
-import {canNavigateAway} from '../services/navigation.service';
 
 import {ObjectKeyValuesPipe} from "./pipes/objectkeyvalue.pipe";
 import {ObjectFieldFilterPipe} from "./pipes/objectfieldfilter.pipe";
@@ -27,6 +26,9 @@ import {ObjectListViewHeader} from './components/objectlistviewheader';
 import {ObjectListViewHeaderDetails} from './components/objectlistviewheaderdetails';
 import {ObjectListViewHeaderListSelector} from './components/objectlistviewheaderlistselector';
 import {ObjectList} from './components/objectlist';
+import {ObjectListSplit} from './components/objectlistsplit';
+import {ObjectListSplitItem} from './components/objectlistsplititem';
+import {ObjectListSplitContainer} from "./components/objectlistsplitcontainer";
 import {ObjectListViewContainer} from './components/objectlistviewcontainer';
 import {ObjectListView} from './components/objectlistview';
 import {ObjectActionContainerItem} from './components/objectactioncontaineritem';
@@ -112,9 +114,11 @@ import {ObjectRecordViewContainer} from './components/objectrecordviewcontainer'
 import {ObjectRecordView} from './components/objectrecordview';
 import {ObjectRecordViewDetail1} from './components/objectrecordviewdetail1';
 import {ObjectRecordViewDetail2and1} from './components/objectrecordviewdetail2and1';
+import {ObjectRecordViewDetail1and2and1} from './components/objectrecordviewdetail1and2and1';
 import {ObjectRecordViewDetailsplit} from './components/objectrecordviewdetailsplit';
 import {ObjectRecordCreateContainer} from "./components/objectrecordcreatecontainer";
 import {ObjectPageHeader} from './components/objectpageheader';
+import {ObjectPageHeaderIcon} from './components/objectpageheadericon';
 import {ObjectPageHeaderTags} from './components/objectpageheadertags';
 import {ObjectPageHeaderTagPicker} from './components/objectpageheadertagpicker';
 import {ObjectPageHeaderDetails} from './components/objectpageheaderdetails';
@@ -233,6 +237,9 @@ import {ObjectListHeaderActionsExportPdfButton} from "./components/objectlisthea
 import {ObjectActionPdfExportRelatedButton} from "./components/objectactionpdfexportrelatedbutton";
 import {ObjectTemplateSendTestEmailModal} from "./components/objecttemplatesendtestemailmodal";
 import {ObjectListHeaderActionsBulkSetStatusButton} from "./actions/objectlistheaderactionsbulksetstatusbutton";
+import {ObjectActionDownloadIcsButton} from "./components/objectactiondownloadicsbutton";
+import {ObjectRouteRedirect} from "./components/objectrouteredirect";
+import {ObjectFieldTranslationsModal} from "./components/objectfieldtranslationsmodal";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -256,6 +263,9 @@ import {ObjectListHeaderActionsBulkSetStatusButton} from "./actions/objectlisthe
         ObjectListViewHeaderDetails,
         ObjectListViewHeaderListSelector,
         ObjectList,
+        ObjectListSplit,
+        ObjectListSplitItem,
+        ObjectListSplitContainer,
         ObjectListHeader,
         ObjectListHeaderSort,
         ObjectActionContainer,
@@ -331,8 +341,10 @@ import {ObjectListHeaderActionsBulkSetStatusButton} from "./actions/objectlisthe
         ObjectRecordView,
         ObjectRecordViewDetail1,
         ObjectRecordViewDetail2and1,
+        ObjectRecordViewDetail1and2and1,
         ObjectRecordViewDetailsplit,
         ObjectPageHeader,
+        ObjectPageHeaderIcon,
         ObjectPageHeaderTags,
         ObjectPageHeaderTagPicker,
         ObjectPageHeaderDetails,
@@ -440,7 +452,10 @@ import {ObjectListHeaderActionsBulkSetStatusButton} from "./actions/objectlisthe
         ObjectTemplatesPreview,
         ObjectActionDownloadEmailButton,
         ObjectTemplateSendTestEmailModal,
-        ObjectListHeaderActionsBulkSetStatusButton
+        ObjectListHeaderActionsBulkSetStatusButton,
+        ObjectActionDownloadIcsButton,
+        ObjectRouteRedirect,
+        ObjectFieldTranslationsModal
     ],
     exports: [
         ObjectListViewHeader,
@@ -494,7 +509,8 @@ import {ObjectListHeaderActionsBulkSetStatusButton} from "./actions/objectlisthe
         ObjectRecordFieldsetContainer,
         ObjectActionContainerItem,
         ObjectActionDownloadEmailButton,
-        ObjectTemplateSendTestEmailModal
+        ObjectTemplateSendTestEmailModal,
+        ObjectActionDownloadIcsButton
     ]
 })
 export class ObjectComponents {}

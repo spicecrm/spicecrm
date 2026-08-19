@@ -4,7 +4,8 @@ import {administrationapiinspectorService} from "../services/administrationapiin
 
 @Component({
     selector: 'administration-api-inspector-methods',
-    templateUrl: '../templates/administrationapiinspectormethods.html'
+    templateUrl: '../templates/administrationapiinspectormethods.html',
+    standalone: false
 })
 
 export class AdministrationApiInspectorMethods {
@@ -22,6 +23,13 @@ export class AdministrationApiInspectorMethods {
 
         this.modal.openModal('AdministrationApiInspectorMethodTest', true, this.injector).subscribe(modalRef => {
             modalRef.instance.apiMethod = apiMethod;
+        });
+    }
+
+    public selectIpClients(apiMethod: any, e: MouseEvent)
+    {
+        this.modal.openModal('AdministrationApiInspectorMethodIpClients', true, this.injector).subscribe(modalRef => {
+            modalRef.instance.apiRoute = apiMethod;
         });
     }
 

@@ -30,6 +30,7 @@
 namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainField;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainFields;
@@ -59,7 +60,35 @@ class SpiceDictionaryDomainFieldsController
 
         SpiceDictionaryDomainFields::getInstance()->addField($body);
 
+        SpiceDictionary::getInstance()->clearSessionCache();
+
         return $res->withJson((new SpiceDictionaryDomainField($args['id']))->getDefinition());
+    }
+
+    /**
+     * posts a Dictionary Item
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function postDomainFieldsSequence(Request $req, Response $res, array $args): Response
+    {
+        // get the body
+        $body = $req->getParsedBody();
+
+        $sequence = 0;
+        foreach ($body['fields'] as $field) {
+            $item = new SpiceDictionaryDomainField($field);
+            $item->domainField->sequence = $sequence;
+            SpiceDictionaryDomainFields::getInstance()->addField((array) $item->domainField);
+            $sequence++;
+        }
+
+        SpiceDictionary::getInstance()->clearSessionCache();
+
+        return $res->withJson(['success' => true]);
     }
 
     /**
@@ -72,8 +101,11 @@ class SpiceDictionaryDomainFieldsController
      */
     public function deleteDictionaryDomainField(Request $req, Response $res, array $args): Response
     {
+        $deleted = (new SpiceDictionaryDomainField($args['id']))->delete();
 
-        return $res->withJson((new SpiceDictionaryDomainField($args['id']))->delete());
+        SpiceDictionary::getInstance()->clearSessionCache();
+
+        return $res->withJson($deleted);
     }
 
     /**
@@ -86,7 +118,11 @@ class SpiceDictionaryDomainFieldsController
      */
     public function activateDictionaryDomainField(Request $req, Response $res, array $args): Response
     {
-        return $res->withJson((new SpiceDictionaryDomainField($args['id']))->activate());
+        (new SpiceDictionaryDomainField($args['id']))->activate();
+
+        SpiceDictionary::getInstance()->clearSessionCache();
+
+        return $res->withJson(true);
     }
 
     /**
@@ -99,8 +135,11 @@ class SpiceDictionaryDomainFieldsController
      */
     public function deactivateDictionaryDomainField(Request $req, Response $res, array $args): Response
     {
-        $params = $req->getQueryParams();
-        return $res->withJson((new SpiceDictionaryDomainField($args['id']))->deactivate());
+        (new SpiceDictionaryDomainField($args['id']))->deactivate();
+
+        SpiceDictionary::getInstance()->clearSessionCache();
+
+        return $res->withJson(true);
     }
 
     /**
@@ -113,8 +152,11 @@ class SpiceDictionaryDomainFieldsController
      */
     public function repairDictionaryDefinition(Request $req, Response $res, array $args): Response
     {
-        $params = $req->getQueryParams();
-        return $res->withJson(['success' => true, 'sql' => (new SpiceDictionaryDefinition($args['id']))->repair()]);
+        $sql = (new SpiceDictionaryDefinition($args['id']))->repair();
+
+        SpiceDictionary::getInstance()->clearSessionCache();
+
+        return $res->withJson(['success' => true, 'sql' => $sql]);
     }
 
 }

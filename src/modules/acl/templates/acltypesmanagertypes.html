@@ -11,23 +11,24 @@
             <table class="slds-table slds-table--header-fixed slds-table_bordered slds-table_cell-buffer">
                 <thead>
                 <tr class="slds-text-title_caps">
+                    <th style="width:2.5rem" scope="col"></th>
                     <th scope="col">
-                        <div class="slds-truncate slds-th__action"><system-label label="LBL_MODULE"></system-label></div>
+                        <div class="slds-truncate slds-th__action"><system-label label="LBL_MODULE"/></div>
                     </th>
                     <th scope="col" style="width: 3rem;"></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let acltype of acltypeslist" (click)="selectType(acltype)"
-                    [ngClass]="{'slds-theme--shade': acltype.id == activeTypeId}">
+                <tr *ngFor="let acltype of acltypeslist" (click)="selectType(acltype)" [ngClass]="{'slds-theme--shade': acltype.id == activeTypeId}">
+                    <td>
+                        <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="acltype.scope == 'g' ? 'world' : 'people'"/>
+                    </td>
                     <td>
                         <div class="slds-truncate"><system-link>{{acltype.module}}</system-link></div>
                     </td>
                     <td style="width: 3rem;">
-                        <system-utility-icon *ngIf="acltype.usagecount > 0" icon="lock" size="x-small"
-                                             addclasses="slds-icon slds-icon-text-default"></system-utility-icon>
-                        <system-utility-icon *ngIf="acltype.usagecount == 0" icon="unlock" size="x-small"
-                                             addclasses="slds-icon slds-icon-text-light"></system-utility-icon>
+                        <system-utility-icon *ngIf="acltype.usagecount > 0" icon="lock" size="x-small" addclasses="slds-icon slds-icon-text-default"/>
+                        <system-utility-icon *ngIf="acltype.usagecount == 0" icon="unlock" size="x-small" addclasses="slds-icon slds-icon-text-light"/>
                     </td>
                 </tr>
                 </tbody>

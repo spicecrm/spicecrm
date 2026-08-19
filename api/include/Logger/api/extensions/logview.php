@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\Logger\api\controllers\LogViewController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
@@ -80,6 +54,11 @@ $routes = [
                     ValidationMiddleware::VOPT_REGEX => '/^\d{10}$/',
                 ],
             ],
+            'pinned' => [
+                'in' => 'query',
+                'description' => 'Pinned log entries.',
+                'type' => ValidationMiddleware::TYPE_BOOL
+            ]
         ]
     ],
     [
@@ -119,7 +98,7 @@ $routes = [
         'method'      => 'get',
         'route'       => '/admin/apilog/logtables',
         'class'       => LogViewController::class,
-        'function'    => 'APIlogGetLogTables',
+        'function'    => 'APIlogGetAdditionalLogTables',
         'description' => 'returns the available apilog tables',
         'options'     => ['adminOnly' => true]
     ],
@@ -247,6 +226,11 @@ $routes = [
                 'in' => 'query',
                 'description' => 'Start date and hour of the requested REST log entries.',
                 'type' => ValidationMiddleware::TYPE_DATETIME
+            ],
+            'pinned' => [
+                'in' => 'query',
+                'description' => 'Pinned log entries.',
+                'type' => ValidationMiddleware::TYPE_BOOL
             ]
         ]
     ],
@@ -277,6 +261,87 @@ $routes = [
                 'description' => 'GUID of the requested REST log entry.',
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'required' => true
+            ]
+        ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/admin/apilog/replay/{id}',
+        'class'       => LogViewController::class,
+        'function'    => 'APIlogReplay',
+        'description' => '',
+        'options'     => [ 'noAuth' => false, 'adminOnly' => true, 'validate' => true ],
+        'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'GUID of the requested REST log entry.',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true
+            ],
+            'bodyParams' => [
+                'in' => 'body',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_COMPLEX
+            ],
+            'getParams' => [
+                'in' => 'body',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_COMPLEX
+            ],
+            'headers' => [
+                'in' => 'body',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_COMPLEX
+            ],
+            'password' => [
+                'in' => 'body',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ]
+        ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/admin/apilog/{id}/pin',
+        'class'       => LogViewController::class,
+        'function'    => 'APIlogSetPinned',
+        'description' => 'Get the config for the api log',
+        'options'     => ['adminOnly' => true, 'validate' => true],
+        'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'the id of the entry',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
+            'pinned' => [
+                'in' => 'body',
+                'description' => 'ttruw or false to activate or deactivate ',
+                'type' => ValidationMiddleware::TYPE_BOOL
+            ],
+            'logtable' => [
+                'in' => 'query',
+                'description' => 'the name of the logtable',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ]
+        ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/admin/crmlog/{id}/pin',
+        'class'       => LogViewController::class,
+        'function'    => 'CRMlogSetPinned',
+        'description' => 'todo',
+        'options'     => ['adminOnly' => true, 'validate' => true],
+        'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'the id of the entry',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
+            'pinned' => [
+                'in' => 'body',
+                'description' => 'todo',
+                'type' => ValidationMiddleware::TYPE_BOOL
             ]
         ]
     ]

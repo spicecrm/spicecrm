@@ -1,6 +1,6 @@
 <div [system-overlay-loading-spinner]="isLoading">
 
-    <system-collapsable-tab [collapsible]="false"  tabtitle="LBL_LOCALE_PREFERENCES">
+    <system-collapsable-tab [collapsable]="false"  tabtitle="LBL_LOCALE_PREFERENCES">
         <div class="slds-grid slds-grid--align-spread slds-wrap">
 
             <system-preferences-panel-item class="slds-size--1-of-1 slds-medium-size--1-of-4" itemlabel="LBL_TIMEZONE">
@@ -75,17 +75,11 @@
                     </span>
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
-                    <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="preferences.currency" (ngModelChange)="prefChanged()">
-                            <option *ngIf="isPersonalContext"></option>
-                            <option *ngFor="let item of currencyList" [value]="item.id">
-                                {{ item.name }}
-                            </option>
-                        </select>
-                    </div>
+                    <system-select system-select-id-only [(ngModel)]="preferences.currency">
+                        <system-select-option *ngFor="let currency of currencyList" [value]="currency.id" [display]="currency.iso + ' (' + currency.symbol + ')'" [displayselect]="currency.name + ' ' + currency.iso + ' (' + currency.symbol + ')'"/>
+                    </system-select>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
-
             <system-preferences-panel-item class="slds-size--1-of-1 slds-medium-size--1-of-5" itemlabel="LBL_DECIMAL_DIGITS">
                 <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('currency_significant_digits')">
                     {{ getPrefValue('currency_significant_digits') }}
@@ -141,7 +135,7 @@
 <!--        </div>-->
 <!--    </system-collapsable-tab>-->
 
-    <system-collapsable-tab [collapsible]="false" tabtitle="LBL_EXPORT_PREFERENCES">
+    <system-collapsable-tab [collapsable]="false" tabtitle="LBL_EXPORT_PREFERENCES">
         <div class="slds-grid slds-grid--align-spread slds-wrap">
 
             <system-preferences-panel-item class="slds-size--1-of-1 slds-medium-size--1-of-2" itemlabel="LBL_EXPORT_DELIMITER">
@@ -179,7 +173,7 @@
         </div>
     </system-collapsable-tab>
 
-    <system-collapsable-tab [collapsible]="false" tabtitle="LBL_OTHER_PREFERENCES">
+    <system-collapsable-tab [collapsable]="false" tabtitle="LBL_OTHER_PREFERENCES">
         <div class="slds-grid slds-grid--align-spread slds-wrap">
 
             <system-preferences-panel-item class="slds-size--1-of-1 slds-medium-size--1-of-2" itemlabel="LBL_NAME_FORMAT">
@@ -219,7 +213,7 @@
         </div>
     </system-collapsable-tab>
 
-    <system-collapsable-tab [collapsible]="false" tabtitle="LBL_CALENDAR_PREFERENCES">
+    <system-collapsable-tab [collapsable]="false" tabtitle="LBL_CALENDAR_PREFERENCES">
 
         <div class="slds-grid slds-grid--align-spread slds-wrap">
 
@@ -294,7 +288,7 @@
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <system-dynamic-component component="fieldActivityReminder"
-                        [system-model-provider]="{ module:'Calls', id: '', data: { 'reminder_time': this.preferences.reminder_time }}" (data$)="reminderTimeChanged($event)"
+                        [system-model-provider]="{ module:'Calls', id: '', data: { 'reminder_time': preferences.reminder_time }}" (data$)="reminderTimeChanged($event)"
                         [componentattributes]="{ fieldname: 'reminder_time', fieldconfig: { hidelabel: true, showEmptyOption: isPersonalContext }}">
                     </system-dynamic-component>
                 </system-preferences-panel-item-edit>

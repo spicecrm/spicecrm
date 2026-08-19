@@ -20,7 +20,8 @@ declare var moment: any;
 
 @Component({
     selector: 'field-date-span',
-    templateUrl: '../templates/fielddatespan.html'
+    templateUrl: '../templates/fielddatespan.html',
+    standalone: false
 })
 export class fieldDateSpan extends fieldGeneric implements OnInit {
 
@@ -97,6 +98,8 @@ export class fieldDateSpan extends fieldGeneric implements OnInit {
 
             // add the end date
             fields[this.fieldend] = newEndDate;
+        } else if (!this.model.getField(this.fieldend)) {
+            fields[this.fieldend] = new moment(date);
         }
 
         // set the fields on the model
@@ -123,6 +126,19 @@ export class fieldDateSpan extends fieldGeneric implements OnInit {
             this.model.setField(this.fieldend, date);
             this.isValid = true;
         }
+    }
+
+    /**
+     * a getter to return the additonal css classes
+     */
+    public fieldcss_classes(fieldname) {
+        if (this.model.getFieldStates(fieldname).invalid) {
+            this.addCssClass('slds-has-error');
+        } else {
+            this.removeCssClass('slds-has-error');
+        }
+
+        return this._css_classes;
     }
 
     /**

@@ -5,7 +5,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    EventEmitter,
+    EventEmitter, input,
     Input,
     OnChanges,
     Output, SimpleChanges
@@ -17,7 +17,8 @@ import {
 @Component({
     selector: 'system-utility-icon',
     templateUrl: '../templates/systemutilityicon.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SystemUtilityIcon implements OnChanges{
     /**
@@ -33,7 +34,7 @@ export class SystemUtilityIcon implements OnChanges{
     /**
      * the size of the icon
      */
-    @Input() public size: 'large' | 'small' | 'x-small' | 'xx-small' = 'small';
+    @Input() public size: 'large' | 'default' | 'small' | 'x-small' | 'xx-small' = 'small';
 
     /**
      * a string of classes that can be passed in and is added to the SVG
@@ -49,7 +50,10 @@ export class SystemUtilityIcon implements OnChanges{
      * a string for the title that is rendered as part of the SVG HTML element
      */
     @Input() public title: string = '';
-
+    /**
+     * hex custom fill color
+     */
+    public customColor = input<string>(undefined);
 
     constructor(public cdref: ChangeDetectorRef) {
 

@@ -8,7 +8,8 @@ declare var _;
 
 @Component({
     selector: 'field-grouped-enum',
-    templateUrl: '../templates/fieldgroupedenum.html'
+    templateUrl: '../templates/fieldgroupedenum.html',
+    standalone: false
 })
 export class fieldGroupedEnum extends fieldGeneric implements OnInit {
     /**
@@ -150,6 +151,13 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
         } else if (checked && this.localValue.valueArray.indexOf(group.value) == -1) {
 
             value = `${this.localValue.valueText},^${group.value}^`;
+
+            // check if group valueText is set or not empty to prevent unnecessary comma before group.value
+            if (!!this.localValue.valueText && !!group.value) {
+                value = `${this.localValue.valueText},^${group.value}^`;
+            } else if (!!group.value && !this.localValue.valueText) {
+                value = `^${group.value}^`;
+            }
         }
         this.setLocalValues(value);
         this.value = value;

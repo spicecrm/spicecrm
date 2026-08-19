@@ -21,7 +21,8 @@ declare var _: any;
 @Component({
     selector: 'groupware-detail-pane-header',
     templateUrl: '../templates/groupwaredetailpaneheader.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class GroupwareDetailPaneHeader extends ObjectPageHeader {
 

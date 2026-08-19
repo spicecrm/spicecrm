@@ -26,18 +26,18 @@ import {backend} from "../../../services/backend.service";
     animations: [
         trigger('displaycoaching', [
             transition(':enter', [
-                style({opacity: 0, height: '0px', overflow: 'hidden'}),
-                animate('.5s', style({height: '*', opacity: 1})),
-                style({overflow: 'unset'})
+                style({ opacity: 0, height: '0px', overflow: 'hidden' }),
+                animate('.5s', style({ height: '*', opacity: 1 })),
+                style({ overflow: 'unset' })
             ]),
             transition(':leave', [
-                style({overflow: 'hidden'}),
-                animate('.5s', style({height: '0px', opacity: 0}))
+                style({ overflow: 'hidden' }),
+                animate('.5s', style({ height: '0px', opacity: 0 }))
             ])
         ]),
         trigger('coachingicon', [
-            state('open', style({transform: 'rotate(90deg)'})),
-            state('closed', style({transform: 'rotate(0deg)'})),
+            state('open', style({ transform: 'rotate(90deg)' })),
+            state('closed', style({ transform: 'rotate(0deg)' })),
             transition('open => closed', [
                 animate('.5s')
             ]),
@@ -45,7 +45,8 @@ import {backend} from "../../../services/backend.service";
                 animate('.5s')
             ])
         ])
-    ]
+    ],
+    standalone: false
 })
 export class SpicePathWithCoaching {
 
@@ -53,6 +54,11 @@ export class SpicePathWithCoaching {
      * determines if the coaching is visible or not
      */
     public coachingVisible: boolean = false;
+
+    /**
+     * to be set if coashing should be hidden
+     */
+    public coachingHidden: boolean = false;
 
     /**
      * holds the current active stage if the user clicks on another stage
@@ -64,7 +70,10 @@ export class SpicePathWithCoaching {
      */
     public beanStagesChecksResults: any[];
 
-    public componentconfig: {coachingVisible?: boolean, kanban?: string} = {};
+    /**
+     * the componentconfig
+     */
+    public componentconfig: {coachingVisible?: boolean,coachingHidden?: boolean, kanban?: string} = {};
 
     public stages: any[] = [];
 
@@ -73,6 +82,9 @@ export class SpicePathWithCoaching {
         if (this.componentconfig && this.componentconfig.coachingVisible) {
             this.coachingVisible = this.componentconfig.coachingVisible;
         }
+        if (this.componentconfig && this.componentconfig.coachingHidden) {
+            this.coachingHidden = this.componentconfig.coachingHidden;
+        }
     }
 
     /**
@@ -80,6 +92,9 @@ export class SpicePathWithCoaching {
      */
     public ngOnInit() {
 
+        if (this.componentconfig && this.componentconfig.coachingHidden) {
+            this.coachingHidden = this.componentconfig.coachingHidden;
+        }
         if (this.componentconfig && this.componentconfig.coachingVisible) {
             this.coachingVisible = this.componentconfig.coachingVisible;
         }

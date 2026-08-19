@@ -21,7 +21,8 @@ import {Subject, Observable} from 'rxjs';
  */
 @Component({
     selector: 'field-file',
-    templateUrl: '../templates/fieldfile.html'
+    templateUrl: '../templates/fieldfile.html',
+    standalone: false
 })
 export class fieldFile extends fieldGeneric {
 
@@ -81,18 +82,22 @@ export class fieldFile extends fieldGeneric {
     public doupload(files) {
         this.showUploadModal = true;
         this.theFile = files[0].name;
-        this.uploadAttachmentsBase64(files).subscribe((retVal: any) => {
-            if (retVal.progress) {
-                this.theProgress = retVal.progress.loaded / retVal.progress.total * 100;
-            } else if (retVal.complete) {
-                this.value = retVal.filename ? retVal.filename : this.theFile;
-                // set the filetype
-                this.model.setField('file_mime_type', retVal.filetype);
-            }
-        }, error => {
+        this.uploadAttachmentsBase64(files).subscribe({
+            next: (retVal: any) => {
+                if (retVal.progress) {
+                    this.theProgress = retVal.progress.loaded / retVal.progress.total * 100;
+                } else if (retVal.complete) {
+                    this.value = retVal.filename ? retVal.filename : this.theFile;
+                    // set the filetype
+                    this.model.setField('file_mime_type', retVal.filetype);
+                }
+            },
+            error: (error) => {
 
-            this.closeUploadPopup();
-        }, () => this.closeUploadPopup());
+                this.closeUploadPopup();
+            },
+            complete: () => this.closeUploadPopup()
+        });
     }
 
     public removeFile() {
@@ -315,7 +320,7 @@ export class fieldFile extends fieldGeneric {
      * @param files
      */
     public onDrop(files: FileList) {
-            this.doupload(files);
+        this.doupload(files);
     }
 
 }

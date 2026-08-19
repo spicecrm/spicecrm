@@ -9,7 +9,8 @@ import {language} from "../../../services/language.service";
 @Component({
     selector: 'scrum-main',
     templateUrl: '../templates/scrummain.html',
-    providers: [scrum]
+    providers: [scrum],
+    standalone: false
 })
 export class ScrumMain {
 

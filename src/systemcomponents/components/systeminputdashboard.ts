@@ -21,7 +21,8 @@ import {backend} from "../../services/backend.service";
             useExisting: forwardRef(() => SystemInputDashboard),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputDashboard implements OnDestroy, ControlValueAccessor {
 

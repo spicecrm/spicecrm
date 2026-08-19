@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Injector, OnInit, Input
+    Component, Injector, OnInit, Input, EventEmitter, Output
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {modal} from '../../services/modal.service';
@@ -19,6 +19,7 @@ import {DictionaryDefinition, Relationship, RelationshipPolymorph} from "../inte
 @Component({
     selector: 'dictionary-manager-relationship-container-onetomanypolymorph',
     templateUrl: '../templates/dictionarymanagerrelationshipcontaineronetomanypolymorph.html',
+    standalone: false
 })
 export class DictionaryManagerRelationshipContainerOneToManyPolymorph implements OnInit {
 
@@ -39,6 +40,11 @@ export class DictionaryManagerRelationshipContainerOneToManyPolymorph implements
      * the polymorph records
      */
     @Input() public relationshipPolymorphs: RelationshipPolymorph[] = [];
+
+    /**
+     * the polymorph records
+     */
+    @Output() public relationshipPolymorphsChange = new EventEmitter<RelationshipPolymorph[]>();
 
     /**
      * to set to readonly
@@ -78,10 +84,20 @@ export class DictionaryManagerRelationshipContainerOneToManyPolymorph implements
                         relationshipPolymorph.relationship_name = lhsDefinitionDetails.tablename + '_' + rhsDefinitionDetails.tablename;
 
                         this.relationshipPolymorphs.push(relationshipPolymorph);
+                        this.relationshipPolymorphsChange.emit(this.relationshipPolymorphs);
                     }
                 })
             }
         })
+    }
+
+    /**
+     * delete related polymorph
+     * @param polymorph
+     */
+    public deleteRelated(polymorph: RelationshipPolymorph) {
+        this.relationshipPolymorphs = this.relationshipPolymorphs.filter(p => p.id != polymorph.id);
+        this.relationshipPolymorphsChange.emit(this.relationshipPolymorphs);
     }
 
     /**

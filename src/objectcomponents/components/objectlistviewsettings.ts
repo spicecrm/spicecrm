@@ -12,7 +12,7 @@ import {ObjectListViewSettingsSetfieldsModal} from "./objectlistviewsettingssetf
 @Component({
     selector: 'object-listview-settings',
     templateUrl: '../templates/objectlistviewsettings.html',
-
+    standalone: false
 })
 export class ObjectListViewSettings {
 

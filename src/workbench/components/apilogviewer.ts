@@ -1,10 +1,12 @@
 /**
  * @module WorkbenchModule
  */
-import {Component, ViewChild, ElementRef} from '@angular/core';
+import { Component, ViewChild, ElementRef, EventEmitter } from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {modal} from '../../services/modal.service';
 import {toast} from '../../services/toast.service';
+import { userpreferences } from '../../services/userpreferences.service';
+import { take } from 'rxjs/operators';
 
 /**
  * @ignore
@@ -15,7 +17,8 @@ declare var moment: any;
  * the api log viwer rendered as part of the admin setion in the system
  */
 @Component({
-    templateUrl: '../templates/apilogviewer.html'
+    templateUrl: '../templates/apilogviewer.html',
+    standalone: false
 })
 export class APIlogViewer {
 
@@ -33,10 +36,18 @@ export class APIlogViewer {
     public limit = '250';
 
     /**
-     * the data loaded fromt he backend
+     * the data loaded from the backend
      * @private
      */
     public entries: any[] = [];
+
+    /**
+     * data is loaded from the backend
+     * @private
+     */
+    public isLoaded = false;
+
+    public totalCount: number;
 
     /**
      * an object holding the filter settings
@@ -51,7 +62,8 @@ export class APIlogViewer {
         ip: '',
         route: '',
         status: '',
-        direction: ''
+        direction: '',
+        pinned: false
     };
 
     /**
@@ -135,7 +147,7 @@ export class APIlogViewer {
         }
     }
 
-    constructor(public backend: backend, public modal: modal, public toast: toast) {
+    constructor(public backend: backend, public modal: modal, public toast: toast, public userpreferences: userpreferences ) {
         this.getAPILogTables();
     }
 
@@ -187,6 +199,7 @@ export class APIlogViewer {
             if (this.filter.status) queryParams.status = this.filter.status;
             if (this.filter.session_id) queryParams.session_id = this.filter.session_id;
             if (this.filter.direction) queryParams.direction = this.filter.direction;
+            if (this.filter.pinned) queryParams.pinned = true;
             if (this.dateEnd) queryParams.end = this.dateEnd?.utc().format('YYYY-MM-DD HH:mm:ss');
             if (this.dateStart) queryParams.start = this.dateStart?.utc().format('YYYY-MM-DD HH:mm:ss');
 
@@ -194,7 +207,10 @@ export class APIlogViewer {
             this.backend.getRequest('admin/apilog', queryParams).subscribe({
                 next: (response) => {
                     this.entries = response.entries;
+                    this.entries.forEach( entry => entry.pinned = ( entry.pinned === '1' ? true : false ));
+                    this.totalCount = response.totalCount;
                     this.isLoading = false;
+                    this.isLoaded = true;
                 },
                 error: (error) => {
                     this.toast.sendToast('Error loading log data!', 'error');
@@ -221,16 +237,16 @@ export class APIlogViewer {
         this.modal.prompt('confirm', 'Truncate the API log and delete all entries?', 'Truncate API Log').subscribe(
             res => {
                 if (res) {
-                    this.backend.deleteRequest('admin/apilog').subscribe(
-                        () => {
+                    this.backend.deleteRequest('admin/apilog', { logtable: this.logtable }).subscribe({
+                        next: () => {
                             this.isLoading = false;
                             this.loadData();
                         },
-                        () => {
+                        error: () => {
                             this.toast.sendToast('Error truncating log', 'error');
                             this.isLoading = false;
                         }
-                    );
+                    });
                     this.isLoading = true;
                 }
             }
@@ -247,6 +263,24 @@ export class APIlogViewer {
         this.modal.openModal('APIlogViewerModal').subscribe(modal => {
             modal.instance.entry = entry;
             modal.instance.logtable = this.logtable;
+            modal.instance.replay = new EventEmitter();
+            modal.instance.replay.pipe(take(1)).subscribe(
+                record => this.showReplayModal( record )
+            );
+        });
+    }
+
+    /**
+     * open the entry in a modal with all details
+     *
+     * @param entry
+     * @private
+     */
+    public showReplayModal( record) {
+        this.modal.openModal('APIlogViewerReplayModal').subscribe( modal => {
+            // modal.instance.entry = entry;
+            modal.instance.logtable = this.logtable;
+            modal.instance.record = record;
         });
     }
 
@@ -288,4 +322,23 @@ export class APIlogViewer {
                 break;
         }
     }
+
+    /**
+     * Toggle pin of API log entry.
+     */
+    public togglePin(entry) {
+        let loadingModal = this.modal.await('LBL_EXECUTING');
+        this.backend.postRequest('admin/apilog/'+entry.id+'/pin', { "logtable": this.logtable }, {"pinned": (entry.pinned ? 0:1 ) }).subscribe({
+            next: ( response ) => {
+                loadingModal.emit(true);
+                if ( response.success === true ) entry.pinned = response.pinned;
+                else this.toast.sendToast('Error changing pin', 'error');
+            },
+            error: () => {
+                loadingModal.emit(true);
+                this.toast.sendToast('Error changing pin', 'error');
+            }
+        });
+    }
+
 }

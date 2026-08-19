@@ -61,14 +61,25 @@ export class objectmerge {
         this.mergeFields = [];
         let modelFields = this.metadata.getModuleFields(this.masterModule);
 
-        for (let mergeField in modelFields) {
+        let componenConfig = this.metadata.getComponentConfig('ObjectMergeModal', this.masterModule);
+        if(componenConfig?.fieldset){
+            let fieldSetFields = this.metadata.getFieldSetFields(componenConfig.fieldset);
+            for(let fieldSetField of fieldSetFields){
+                if(modelFields[fieldSetField.field] && modelFields[fieldSetField.field].type != 'id'
+                    && (modelFields[fieldSetField.field].source != 'non-db' || modelFields[fieldSetField.field].type == 'relate' || modelFields[fieldSetField.field].type == 'linked' || modelFields[fieldSetField.field].type == 'linkedparent' || modelFields[fieldSetField.field].name.endsWith('_address'))) {
+                    this.mergeFields.push(modelFields[fieldSetField.field]);
+                }
+            }
+        } else {
+            for (let mergeField in modelFields) {
 
-            // check if duplicate_merge is set in field def
-            const duplicateMergeEnabled = (modelFields[mergeField].duplicate_merge == '1' || modelFields[mergeField].duplicate_merge === true || modelFields[mergeField].duplicate_merge === undefined || modelFields[mergeField].duplicate_merge == 'enabled');
+                // check if duplicate_merge is set in field def
+                const duplicateMergeEnabled = (modelFields[mergeField].duplicate_merge == '1' || modelFields[mergeField].duplicate_merge === true || modelFields[mergeField].duplicate_merge === undefined || modelFields[mergeField].duplicate_merge == 'enabled');
 
-            if (duplicateMergeEnabled && modelFields[mergeField].type != 'id'
-                && (modelFields[mergeField].source != 'non-db' || modelFields[mergeField].type == 'linked' ||modelFields[mergeField].type == 'linkedparent' || modelFields[mergeField].name.endsWith('_address'))) {
-                this.mergeFields.push(modelFields[mergeField]);
+                if (duplicateMergeEnabled && modelFields[mergeField].type != 'id'
+                    && (modelFields[mergeField].source != 'non-db' || modelFields[mergeField].type == 'linked' || modelFields[mergeField].type == 'linkedparent' || modelFields[mergeField].name.endsWith('_address'))) {
+                    this.mergeFields.push(modelFields[mergeField]);
+                }
             }
         }
     }

@@ -13,7 +13,7 @@
 ******************************************************************************* */
 
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class pluginkcsvexportcontroller {

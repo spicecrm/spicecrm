@@ -3,10 +3,12 @@ import {backend} from "../../services/backend.service";
 import {toast} from "../../services/toast.service";
 import {modal} from "../../services/modal.service";
 
+//test 6
 
 @Component({
     selector: 'git-pull-from-repository',
-    templateUrl: '../templates/gitpullfromrepository.html'
+    templateUrl: '../templates/gitpullfromrepository.html',
+    standalone: false
 })
 export class GitPullFromRepository {
 

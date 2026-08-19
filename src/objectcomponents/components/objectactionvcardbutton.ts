@@ -9,7 +9,8 @@ import {backend} from "../../services/backend.service";
 
 @Component({
     selector: 'object-action-output-bean-button',
-    templateUrl: '../templates/objectactionvcardbutton.html'
+    templateUrl: '../templates/objectactionvcardbutton.html',
+    standalone: false
 })
 export class ObjectActionVCardButton {
 
@@ -30,7 +31,7 @@ export class ObjectActionVCardButton {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingCompRef => {
             loadingCompRef.instance.messagelabel = 'MSG_GENERATING_VCARD';
             this.backend.downloadFile(
-                {route: `/module/${this.model.module}/${this.model.id}/vcard`}, fileName, 'text/bin')
+                {route: `module/${this.model.module}/${this.model.id}/vcard`}, fileName, 'text/bin')
                 .subscribe(
                     next => {
                         loadingCompRef.instance.self.destroy();

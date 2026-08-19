@@ -14,6 +14,7 @@ declare var _: any;
 @Component({
     selector: 'spice-importer-map',
     templateUrl: '../templates/spiceimportermap.html',
+    standalone: false
 })
 export class SpiceImporterMap {
 
@@ -44,8 +45,8 @@ export class SpiceImporterMap {
         return this.spiceImport.getMapping(row);
     }
 
-    public setMapping(row, event) {
-        this.spiceImport.setMapping(row, event.target.value);
+    public setMapping(row, value) {
+        this.spiceImport.setMapping(row, value);
     }
 
     public checkRequired(fieldName) {

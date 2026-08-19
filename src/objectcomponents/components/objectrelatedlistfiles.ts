@@ -9,9 +9,11 @@ import {
     ElementRef,
     Injector,
     Input,
+    effect,
     OnChanges,
     OnDestroy,
-    Renderer2, SimpleChanges,
+    Renderer2,
+    SimpleChanges,
     ViewChild,
     ViewContainerRef
 } from "@angular/core";
@@ -26,8 +28,16 @@ import {modal} from "../../services/modal.service";
 import {configurationService} from "../../services/configuration.service";
 import {backend} from "../../services/backend.service";
 import {broadcast} from "../../services/broadcast.service";
-import {Subscription} from "rxjs";
+import {firstValueFrom, Subscription} from "rxjs";
 import {AgreementsAddRevisionModal} from "../../modules/agreements/components/agreementsaddrevisionmodal";
+import {userpreferences} from "../../services/userpreferences.service";
+import {navigationtab} from "../../services/navigationtab.service";
+import {Router} from "@angular/router";
+
+/**
+ * @ignore
+ */
+declare var moment: any;
 
 /**
  * a generic component that renders a panel in teh contect of a model. This allows uploading files and also has a drag and drop functionality to cimply drop files over the component and upload the file
@@ -38,8 +48,8 @@ import {AgreementsAddRevisionModal} from "../../modules/agreements/components/ag
     providers: [modelattachments],
     animations: [
         trigger('animateicon', [
-            state('open', style({transform: 'scale(1, 1)'})),
-            state('closed', style({transform: 'scale(1, -1)'})),
+            state('open', style({ transform: 'scale(1, 1)' })),
+            state('closed', style({ transform: 'scale(1, -1)' })),
             transition('open => closed', [
                 animate('.5s'),
             ]),
@@ -49,16 +59,17 @@ import {AgreementsAddRevisionModal} from "../../modules/agreements/components/ag
         ]),
         trigger('displaycard', [
             transition(':enter', [
-                style({opacity: 0, height: '0px', overflow: 'hidden'}),
-                animate('.5s', style({height: '*', opacity: 1})),
-                style({overflow: 'unset'})
+                style({ opacity: 0, height: '0px', overflow: 'hidden' }),
+                animate('.5s', style({ height: '*', opacity: 1 })),
+                style({ overflow: 'unset' })
             ]),
             transition(':leave', [
-                style({overflow: 'hidden'}),
-                animate('.5s', style({height: '0px', opacity: 0}))
+                style({ overflow: 'hidden' }),
+                animate('.5s', style({ height: '0px', opacity: 0 }))
             ])
         ])
-    ]
+    ],
+    standalone: false
 })
 export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChanges {
 
@@ -75,6 +86,12 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
      * the fileupload elelent
      */
     @ViewChild("fileupload", {read: ViewContainerRef, static: true}) public fileupload: ViewContainerRef;
+
+    /**
+     * the itemcontainer element
+     */
+    @ViewChild("itemcontainer", {read: ViewContainerRef, static: false}) public itemcontainer: ViewContainerRef;
+
     /**
      * @ignore
      *
@@ -86,7 +103,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
      *
      * keeps if the modal is open or not
      */
-    public isopen: boolean = true;
+    public isopen: boolean = false;
     /**
      * holds the selected category value
      * @private
@@ -121,11 +138,68 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
     public filterTimeout: number;
 
     /**
-     * holds the components subscriptions
-     *
+     * show or hide folders
+     */
+    public showFolders: boolean = false;
+
+    /**
+     * if configured, limit the file types to be considered on upload
+     */
+    public fileTypeActionObject: any;
+
+    /**
+     * checks if the upload is allowed
+     */
+    public allowUpload: boolean = true;
+
+    /**
+     * file types that are allowed/not allowed
+     */
+    public fileTypes: string;
+
+    /**
+     * message to be displayed based on the configured file types and the action to perform
+     */
+    public toastMessage: string;
+
+    /**
+     * default sort order
+     */
+    public fileViewAndSort: {fileview: string, field: string, order: 'desc'|'asc'} = {
+        fileview: '',
+        field: '',
+        order: 'asc'
+    }
+
+    /**
+     * uploading state
+     */
+    public isUploading: boolean = false;
+
+    /**
+     * holds the components subscriptions     *
      * @private
      */
     public subscriptions: Subscription = new Subscription();
+
+    public tableViewActions: {action: string, label: string}[] = [
+        {
+            action: 'selectall',
+            label: 'LBL_SELECT_ALL'
+        },
+        {
+            action: 'unselectall',
+            label: 'LBL_UNSELECT_ALL'
+        },
+        {
+            action: 'download',
+            label: 'LBL_DOWNLOAD'
+        },
+        {
+            action: 'delete',
+            label: 'LBL_DELETE'
+        }
+    ]
 
     constructor(public modelattachments: modelattachments,
                 public language: language,
@@ -139,6 +213,9 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
                 public elementRef: ElementRef,
                 public configurationService: configurationService,
                 public modal: modal,
+                public userpreferences: userpreferences,
+                public navigationtab: navigationtab,
+                public router: Router,
                 public injector: Injector,
                 public cdRef: ChangeDetectorRef,
     ) {
@@ -154,6 +231,15 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         if(!this.defaultCategoryId && !this.selectedCategoryId) {
             this.selectedCategoryId = '*';
         }
+
+        // if the config exists, limit the file based on it
+        this.fileTypeActionObject = this.configurationService.getCapabilityConfig('spiceattachments')?.fileTypes;
+
+        effect(() => {
+            if (this.modelattachments.fileActionPerformed() > 0) {
+                this.sort(this.fileViewAndSort.field, false, false);
+            }
+        });
     }
 
     /**
@@ -169,6 +255,69 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
             this.broadcast.message$.subscribe(message => this.handleMessage(message))
         );
 
+        // subscribe to the folder change
+        this.subscriptions.add(
+            this.modelattachments.folderId$.subscribe({
+                next: () => {
+                    this.filteredFiles = this.filterFiles();
+                    if (this.componentconfig.displayAs == 'table') {
+                        this.sort(this.fileViewAndSort.field, false, false);
+                    }
+                }
+            })
+        )
+
+        this.subscriptions.add(
+            this.modelattachments.attachmentDeleted$.subscribe({
+                next: () => {
+                    this.sort(this.fileViewAndSort.field, false, false);
+                }
+            })
+        )
+
+        this.subscriptions.add(
+            this.modelattachments.folderId$.subscribe({
+                next: () => {
+                    this.modelattachments._files.forEach(file => file.selected = null);
+                }
+            })
+        )
+
+        // set to open if we have set to alwysopen per config
+        if(this.componentconfig.alwaysExpanded) this.isopen = true;
+
+        let fileViewPref = this.userpreferences.getPreference('fileviewpref');
+        if (fileViewPref) {
+            this.fileViewAndSort = fileViewPref;
+            this.toggleView(fileViewPref.fileview, true);
+        }
+
+        if (fileViewPref && fileViewPref.field != '') {
+            this.sort(fileViewPref.field, false, false);
+        }
+    }
+
+    /**
+     * check that we have edit rights on the record
+     */
+    get canUpload(){
+        return this.metadata.checkModuleAcl('Application', "manageattachments") || this.model.checkAccess('edit');
+    }
+
+    /**
+     * gets the folder id and consider the root value
+     */
+    get treeFolder(){
+        return this.modelattachments.folderId ?? 'root';
+    }
+
+    /**
+     * sets the folder id and considers the root value
+     *
+     * @param folderId
+     */
+    public  setTreeFolder(folderId){
+        this.modelattachments.folderId = folderId == 'root' ? null : folderId;
     }
 
     public ngOnChanges(changes: SimpleChanges) {
@@ -220,6 +369,9 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
             case 'attachments.loaded':
                 // load attachments only, if we are in the same model
                 if(message.messagedata.reload && message.messagedata.module == this.model.module && message.messagedata.id == this.model.id) {
+                    // open if we have files
+                    if(this.modelattachments._files.length > 0) this.isopen = true;
+                    // keep closed
                     this.setFilteredFiles('category', this.selectedCategoryId);
                 }
                 break;
@@ -241,15 +393,20 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
      * initializes the model attachments service and loads the attachments
      */
     public loadFiles() {
+        // set the name if we have one
+        this.modelattachments.name = this.model.getField('summary_text');
+
         // set input base64 files
         if (this.files.length > 0) {
             this.doupload(this.files);
         }
         this.modelattachments.getAttachments().subscribe(res => {
-            this.filteredFiles = res;
+            this.filteredFiles = res.map(file => ({...file, selected: null}));
             this.loadCategories();
             // reload container
             this.setFilteredFiles('category', this.selectedCategoryId);
+
+            this.sort(this.fileViewAndSort.field, false, false);
         });
     }
 
@@ -268,6 +425,10 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
 
     get width(){
         return this.elementRef.nativeElement.getBoundingClientRect().width;
+    }
+
+    get containerWidth(){
+        return this.itemcontainer ? this.itemcontainer.element.nativeElement.getBoundingClientRect().width : 0;
     }
 
     /**
@@ -314,18 +475,66 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
     }
 
     /**
+     * extracts the file types that are configured in the general settings
+     * and performs a check if the types are allowed to be uploaded
+     * @param filesObject
+     * @param files
+     */
+    public handleConfiguredFileTypesAndActions(filesObject: any, files: File): void {
+        let parsedObject = JSON.parse(filesObject);
+        const [action, fileTypes] = Object.entries(parsedObject)[0]
+
+        this.fileTypes = String(fileTypes);
+
+        // extract file names
+        let fileNames: string[] = [];
+        Object.entries(files).forEach(obj => fileNames.push((obj[1]['name'])))
+
+        // extract files that are in the upload process
+        let fileTypesToBeUploaded: string[] = [];
+        fileNames.forEach(fileName => {
+            const lastDotIndex = fileName.lastIndexOf('.');
+            const fileExtension = lastDotIndex === -1 ? fileName : fileName.substring(lastDotIndex);
+            fileTypesToBeUploaded.push(fileExtension);
+        });
+
+        // reset allowUpload if previously set to false
+        this.allowUpload = true;
+
+        // check each file type based on file types that we allow/not allow
+        fileTypesToBeUploaded.forEach(file => {
+            const isFileIncluded = this.fileTypes.includes(file);
+
+            if (
+                (action === 'exclude' && isFileIncluded) ||
+                (action === 'include' && !isFileIncluded)
+            ) {
+                this.allowUpload = false;
+                this.toastMessage = `'${fileTypes}' ${this.language.getLabel(
+                    action === 'exclude' ? 'LBL_FILETYPES_NOT_ALLOWED' : 'LBL_FILETYPES_ALLOWED'
+                )}`;
+            }
+        });
+    }
+
+    /**
      * handle the drop and upload the files
-     *
-     * @param event the drop event
+     * @param files
      */
     public fileDrop(files) {
-        if(this.componentconfig.disableupload && this.componentconfig.disableupload === true){
+        if(this.componentconfig.disableupload && this.componentconfig.disableupload === true && !this.canUpload){
             this.toast.sendToast(this.language.getLabel('LBL_UPLOAD_IS_DISABLED'), 'error');
             return false;
         }
 
-        if (files && files.length >= 1) {
+        if (this.fileTypeActionObject) {
+            this.handleConfiguredFileTypesAndActions(this.fileTypeActionObject, files);
+        }
+
+        if (files && files.length >= 1 && this.allowUpload) {
             this.doupload(files);
+        } else {
+            this.toast.sendToast(this.toastMessage, 'error')
         }
     }
 
@@ -338,11 +547,27 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
     }
 
     /**
+     * triggers a file upload. From the select button firing the hidden file upload input
+     */
+    public addImage() {
+        this.modal.openModal('SpiceAttachmentAddImageModal', true, this.injector);
+    }
+
+    /**
      * does the upload oif the files
      */
     public uploadFile() {
         let files = this.fileupload.element.nativeElement.files;
-        this.doupload(files);
+
+        if (this.fileTypeActionObject) {
+            this.handleConfiguredFileTypesAndActions(this.fileTypeActionObject, files);
+        }
+
+        if(this.allowUpload) {
+            this.doupload(files);
+        } else {
+            this.toast.sendToast(this.toastMessage, 'error');
+        }
     }
 
     /**
@@ -363,14 +588,21 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
             this.selectedCategoryId = this.defaultCategoryId;
         }
 
+        this.isUploading = true;
+
         this.modelattachments.uploadAttachmentsBase64(files, (this.selectedCategoryId == '*' ? this.defaultCategoryId : this.selectedCategoryId)).subscribe({
             next: (res) => {
                 if (this.componentconfig.revComponent) {
                     this.openRevisionModal(files);
                 }
+
+                this.sort(this.fileViewAndSort.field, false, false);
+                this.isUploading = false;
+
             },
             error: () => {
                 this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+                this.isUploading = false;
             }
         });
     }
@@ -418,29 +650,224 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         switch (action) {
             case 'category':
                 this.selectedCategoryId = value;
-                this.filteredFiles = (value == '*' || !value) ? this.modelattachments.files : this.modelattachments.files
-                    .filter(file => !!file.category_ids && file.category_ids.includes(value));
+                this.filteredFiles = this.filterFiles();
                 break;
             case 'input':
                 const term = value.toLowerCase();
                 this.filterTerm = value;
-
                 window.clearTimeout(this.filterTimeout);
                 this.filterTimeout = window.setTimeout(() => {
-                    this.filteredFiles = value.length == 0 ? this.modelattachments.files : this.modelattachments.files
-                        .filter(file => file.filename.toLowerCase().includes(term) || (!!file.display_name && file.display_name.toLowerCase().includes(term)) || (!!file.text && file.text.toLowerCase().includes(term)));
+                    this.filteredFiles = this.filterFiles();
                 }, 600);
         }
     }
 
     /**
+     * return the filtered files
+     * @private
+     */
+    private filterFiles(){
+        let filteredFiles = this.modelattachments.files;
+
+        if(this.selectedCategoryId){
+            filteredFiles = (this.selectedCategoryId == '*' || !this.selectedCategoryId) ? filteredFiles : filteredFiles
+                .filter(file => !!file.category_ids && file.category_ids.includes(this.selectedCategoryId));
+        }
+
+        if(this.filterTerm){
+            const term = this.filterTerm.toLowerCase();
+            filteredFiles = term.length == 0 ? filteredFiles : filteredFiles
+                .filter(file => file.filename.toLowerCase().includes(term) || (!!file.display_name && file.display_name.toLowerCase().includes(term)) || (!!file.text && file.text.toLowerCase().includes(term)));
+        }
+
+        return /*this.showFolders ? filteredFiles.filter(f => f.file_mime_type != 'folder') : */  filteredFiles;
+    }
+
+    /**
      * toggle big thumbnail value
      */
-    public toggleBigThumbnail() {
+    public toggleView(view: string, isInit: boolean = false) {
         if (!this.componentconfig) {
             this.componentconfig = {};
         }
-        this.componentconfig.bigThumbnail = !this.componentconfig.bigThumbnail;
+        this.componentconfig.displayAs = view;
+
+        this.fileViewAndSort.fileview = view;
+
+        if (!isInit) {
+            this.userpreferences.setPreference('fileviewpref', this.fileViewAndSort);
+        }
+    }
+
+    get changeViewIcon() {
+        switch (this.fileViewAndSort.fileview) {
+            case 'table':
+                return 'table';
+            case 'file':
+                return 'file';
+            case 'bigThumbnail':
+                return 'ad_set';
+        }
+    }
+
+    public filedate(date) {
+        let formattedDate = date ? new moment(date) : '';
+        return formattedDate.format(this.userpreferences.getDateFormat());
+    }
+
+    get selectedFiles() {
+        return this.modelattachments._files.filter(file => file.selected);
+    }
+
+    public fileSize(file): any {
+        if (file.file_mime_type == 'folder') {
+            let folderSize = this.modelattachments.calcFolderSize(file.id);
+            return folderSize ? this.modelattachments.humanFileSize(folderSize) : '';
+        }
+
+        return file.filesize ? this.modelattachments.humanFileSize(file.filesize) : '';
+    }
+
+    public filename(file) {
+        return file.display_name ? file.display_name : file.filename;
+    }
+
+    public toggleSelectFile(file) {
+        file.selected = !file.selected;
+    }
+
+    public actionDisabled(action) {
+        if (action == 'selectall') return false;
+        return this.selectedFiles.length == 0;
+    }
+
+    public async doAction(action) {
+        if (this.actionDisabled(action)) return;
+
+        switch (action) {
+            case 'selectall':
+                this.filteredFiles.forEach(file => file.selected = true);
+                break;
+            case 'unselectall':
+                this.filteredFiles.forEach(file => file.selected = false);
+                break;
+            case 'download':
+                const loading = this.modal.await(this.language.getLabel('LBL_DOWNLOADING'));
+                this.backend.downloadFile({
+                    route: `common/spiceattachments/module/${this.model.module}/${this.model.id}/download`,
+                    method: 'POST',
+                    params: null,
+                    body: { selectedAttachments: this.selectedFiles.map(file => file.id) },
+                    headers: null
+                } as any, 'testing', 'application/zip').subscribe({
+                    next: () => {
+                        loading.emit(true);
+                    },
+                    error: () => {
+                        loading.emit(true);
+                        this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+                    }
+                });
+                break;
+            case 'delete':
+                let modalRes = await firstValueFrom(this.modal.prompt('confirm', 'MSG_DELETE_RECORD', 'LBL_DELETE'));
+
+                if (modalRes) {
+                    this.backend.deleteRequest(`common/spiceattachments/module/${this.model.module}/${this.model.id}/deleteattachments`,
+                        {selectedAttachments: this.selectedFiles.map(file => file.id).join(',')}
+                    ).subscribe(() => {
+                        this.toast.sendToast(this.language.getLabel('LBL_DELETED'), 'success');
+                        this.loadFiles();
+                    });
+                }
+
+        }
+    }
+
+    public openInTab(file) {
+        if(file.file_mime_type == 'folder') {
+            this.modelattachments.folderId = file.id;
+            this.sort(this.fileViewAndSort.field, false, false);
+        } else {
+
+            let fileTypeArray = file.file_mime_type.toLowerCase().split("/");
+
+            let supportedMimeTypes = ['pdf', 'msg'];
+
+            if (this.metadata.configuration.getCapabilityConfig('txcontrol').isActive) {
+                supportedMimeTypes.push('vnd.openxmlformats-officedocument.wordprocessingml.document');
+            }
+
+            const applicationFile =  fileTypeArray[0] == 'application' && !supportedMimeTypes.includes(fileTypeArray[1]);
+            const csvFile = fileTypeArray[0] == 'text' && fileTypeArray[1] == 'csv';
+
+            if(applicationFile || csvFile) {
+                this.modelattachments.downloadAttachment(file.id, file.filename);
+                return;
+            }
+
+            let routePrefix = '';
+            if (this.navigationtab?.tabid) {
+                routePrefix = '/tab/' + this.navigationtab.tabid;
+            }
+            this.router.navigate([`${routePrefix}/attachment/${file.id}/${this.modelattachments.module}/${this.modelattachments.id}`]);
+        }
+    }
+
+    /**
+     *
+     * @param sortField field to be used for sorting
+     * @param toggle if the sort order should be toggled
+     * @param setPref on init don't set prefs
+     */
+    public sort(sortField: string, toggle: boolean = true, setPref: boolean = true) {
+        if (toggle) {
+            this.fileViewAndSort.order = this.fileViewAndSort.order == 'asc' ? 'desc' : 'asc';
+        }
+
+        this.fileViewAndSort.field = sortField;
+
+        if (setPref) {
+            this.userpreferences.setPreference('fileviewpref', this.fileViewAndSort);
+        }
+
+        this.filteredFiles.sort((a, b) => {
+            const aIsFolder = a.file_mime_type === 'folder';
+            const bIsFolder = b.file_mime_type === 'folder';
+
+            if (aIsFolder !== bIsFolder) {
+                return aIsFolder ? -1 : 1;
+            }
+
+            let aVal = a[sortField];
+            let bVal = b[sortField];
+
+            if (this.fileViewAndSort.field == 'filename') {
+                aVal = this.filename(a);
+                bVal = this.filename(b);
+            }
+
+            if (sortField == 'date') {
+                aVal = new Date(aVal);
+                bVal = new Date(bVal);
+                const comparison = aVal - bVal;
+                return this.fileViewAndSort.order === 'desc' ? -comparison : comparison;
+            } else {
+                const comparison = String(aVal).localeCompare(
+                    String(bVal),
+                    undefined,
+                    { numeric: true, sensitivity: 'base' }
+                );
+                return this.fileViewAndSort.order === 'desc' ? -comparison : comparison;
+            }
+        });
+    }
+
+    public toggleFolders(){
+        this.showFolders = !this.showFolders;
+        this.filteredFiles = this.filterFiles();
+        this.sort(this.fileViewAndSort.field, false, false);
+        this.cdRef.detectChanges();
     }
 
     /**
@@ -450,4 +877,21 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         this.broadcastSubscription.unsubscribe();
     }
 
+    /**
+     * adds a folder
+     */
+    public addFolder(){
+        this.modal.prompt('input', null, 'LBL_FOLDER_NAME').subscribe({
+            next: (foldername) => {
+                if(foldername){
+                    this.modelattachments.createFolder(foldername).subscribe({
+                        next: (folderID) => {
+                            this.modelattachments.folderId = folderID;
+                            // this.filteredFiles = this.filterFiles();
+                        }
+                    });
+                }
+            }
+        })
+    }
 }

@@ -17,6 +17,7 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
     providers: [model, view],
     selector: "mailbox-manager-textmessage",
     templateUrl: "../templates/mailboxmanagertextmessage.html",
+    standalone: false
 })
 export class MailboxManagerTextMessage implements OnInit {
 

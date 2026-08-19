@@ -12,7 +12,8 @@ import {fieldStatusNetworkItem} from "./fieldstatusnetworkitem";
 
 @Component({
     selector: 'field-statusnetwork',
-    templateUrl: '../templates/fieldstatusnetwork.html'
+    templateUrl: '../templates/fieldstatusnetwork.html',
+    standalone: false
 })
 export class fieldStatusNetwork extends fieldEnum {
 
@@ -71,7 +72,10 @@ export class fieldStatusNetwork extends fieldEnum {
     get networkItems() {
         let retArray = [];
         for (let statusnetworkitem of this.statusNetwork) {
-            if (statusnetworkitem.status_from == this.value && (!statusnetworkitem.required_model_state || this.model.checkModelState(statusnetworkitem.required_model_state))) {
+
+            const aclCheck = (!statusnetworkitem.required_model_acl_action || this.model.checkAccess(statusnetworkitem.required_model_acl_action));
+
+            if (aclCheck && statusnetworkitem.status_from == this.value && (!statusnetworkitem.required_model_state || this.model.checkModelState(statusnetworkitem.required_model_state))) {
                 retArray.push(statusnetworkitem);
             }
         }

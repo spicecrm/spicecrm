@@ -10,6 +10,7 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: 'tasks-manager-tasks',
     templateUrl: '../templates/tasksmanagertasks.html',
+    standalone: false
 })
 export class TasksManagerTasks {
     /**

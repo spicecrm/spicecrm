@@ -6,13 +6,16 @@ import {toast} from '../../../services/toast.service';
 import {language} from '../../../services/language.service';
 import {SpiceImporterService} from '../services/spiceimporter.service';
 import {backend} from "../../../services/backend.service";
+import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
+import {model} from "../../../services/model.service";
 
 /**
  * Render a file selection and preview for the import
  */
 @Component({
     selector: 'spice-importer-select',
-    templateUrl: '../templates/spiceimporterselect.html'
+    templateUrl: '../templates/spiceimporterselect.html',
+    standalone: false
 })
 
 export class SpiceImporterSelect {
@@ -30,11 +33,6 @@ export class SpiceImporterSelect {
      */
     public isLoading: boolean = false;
 
-    /**
-     * holds file data
-     */
-    public file = null;
-
     public selectedClassMethods: string[] = [];
 
     public selectedClass: {id: string, name: string};
@@ -42,22 +40,14 @@ export class SpiceImporterSelect {
      * holds enclosure options
      * @private
      */
-    public enclosureOptions = [
-        {label: "'", value: 'single'},
-        {label: ' ', value: 'none'},
-        {label: '"', value: 'double'},
-    ];
+    public enclosureOptions: InputRadioOptionI[] = [];
 
 
     /**
      * holds delimiter options
      * @private
      */
-    public delimiterOptions = [
-        {label: ';', value: 'semicolon'},
-        {label: ',', value: 'comma'},
-        {label: 'nl', value: 'endofline'}
-    ];
+    public delimiterOptions: InputRadioOptionI[] = [];
 
     constructor(
         public spiceImport: SpiceImporterService,
@@ -65,6 +55,18 @@ export class SpiceImporterSelect {
         public backend: backend,
         public language: language
     ) {
+        this.delimiterOptions = this.language.getFieldDisplayOptions('SpiceImports', 'csv_delimiter', true, true).map(o => {
+            return {
+                value: o.value,
+                label: o.display
+            }
+        });
+        this.enclosureOptions = this.language.getFieldDisplayOptions('SpiceImports', 'csv_enclosure', true, true).map(o => {
+            return {
+                value: o.value,
+                label: o.display
+            }
+        });
     }
 
     /**
@@ -121,6 +123,26 @@ export class SpiceImporterSelect {
         }
     }
 
+    set separator(s){
+        this.spiceImport.separator = s;
+
+        if(this.spiceImport.file) this.doLoadPreview()
+    }
+
+    get separator(){
+        return this.spiceImport.separator;
+    }
+
+    set enclosure(e){
+        this.spiceImport.enclosure = e;
+
+        if(this.spiceImport.file) this.doLoadPreview()
+    }
+
+    get enclosure(){
+        return this.spiceImport.enclosure;
+    }
+
     /**
      * reset select options
      * @private
@@ -145,8 +167,7 @@ export class SpiceImporterSelect {
      * @private
      */
     public clearFile() {
-        this.spiceImport.fileName = '';
-        this.spiceImport.fileId = '';
+        this.spiceImport.file = undefined;
 
         this.spiceImport.fileHeader = [];
         this.spiceImport.fileData = undefined;
@@ -165,41 +186,45 @@ export class SpiceImporterSelect {
 
         let fileType = file.file_name.toLowerCase();
 
-        this.file = file;
+        this.spiceImport.file = file;
 
         // if (!file.file_mime_type.toLowerCase().includes('excel')) { // commented out since issues with file_mime_type in multiple browsers
         if (!fileType.endsWith('.csv')) {
             this.toast.sendToast(this.language.getLabel('MSG_ONLY_CSV_ALLOWED'), 'error');
             return file.remove();
         }
+
+        this.doLoadPreview();
+    }
+
+    private doLoadPreview(){
         this.isLoading = true;
 
-        this.spiceImport.fileName = file.file_name;
-        this.spiceImport.fileId = file.file_md5;
         const params = {
-            file_md5: file.file_md5,
+            file_md5: this.spiceImport.file.file_md5,
             enclosure: this.spiceImport.enclosure,
             separator: this.spiceImport.separator
         };
-        this.backend.getRequest('module/SpiceImports/filepreview', params).subscribe(res => {
+        this.backend.getRequest('module/SpiceImports/filepreview', params).subscribe({
+            next: (res) => {
 
-            this.isLoading = false;
+                this.isLoading = false;
 
-            this.spiceImport.fileHeader = res.fileHeader;
-            this.spiceImport.fileData = res.fileData;
-            this.spiceImport.fileRows = res.fileRows;
-            this.spiceImport.fileTooBig = res.fileTooBig;
+                this.spiceImport.fileHeader = res.fileHeader;
+                this.spiceImport.fileData = res.fileData;
+                this.spiceImport.fileRows = res.fileRows;
+                this.spiceImport.fileTooBig = res.fileTooBig;
 
-            if (res.fileTooBig) {
-                this.toast.sendToast(this.language.getLabel('MSG_FILE_ROWS_TOO_LARGE'), 'warning', '', false);
+                if (res.fileTooBig) {
+                    this.toast.sendToast(this.language.getLabel('MSG_FILE_ROWS_TOO_LARGE'), 'warning', '', false);
+                }
+            }, error: () => {
+                this.isLoading = false;
+                this.toast.sendToast(this.language.getLabel('ERR_CANT_READ_FILE_DATA'), 'error', '', false);
+                this.spiceImport.file.remove();
             }
-        }, () => {
-            this.isLoading = false;
-            this.toast.sendToast(this.language.getLabel('ERR_CANT_READ_FILE_DATA'), 'error', '', false);
-            file.remove();
         });
     }
-
 
     /**
      * checks whether the class is valid and if public methods exist

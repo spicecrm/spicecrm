@@ -1,9 +1,8 @@
 <?php
 namespace SpiceCRM\includes\SysCurrencies\schedulerjobtasks;
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
-use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysCurrencies\SysCurrencies;
 use SpiceCRM\includes\TimeDate;
@@ -59,8 +58,6 @@ class SysCurrenciesSchedulerJobTasks
             }
         }
 
-        curl_close($curl);
-
         return $response->success;
     }
 
@@ -96,7 +93,7 @@ class SysCurrenciesSchedulerJobTasks
         if($response){
             foreach ($response as $iso => $rateDetails) {
                 // check if we have the record already
-                if($db->fetchOne("SELECT id FROM syscurrencyexchangerates WHERE id='{$rateDetails->id}'")){
+                if($db->fetchOne("SELECT id FROM syscurrenciesexchangerates WHERE id='{$rateDetails->id}'")){
                     continue;
                 }
 
@@ -112,8 +109,6 @@ class SysCurrenciesSchedulerJobTasks
                 }
             }
         }
-
-        curl_close($curl);
 
         return true;
     }

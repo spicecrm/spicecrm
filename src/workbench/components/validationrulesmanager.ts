@@ -14,6 +14,7 @@ import {toast} from "../../services/toast.service";
 @Component({
     selector: 'validation-rules-manager',
     templateUrl: '../templates/validationrulesmanager.html',
+    standalone: false
 })
 export class ValidationRulesManager {
     public rules: any[] = [];
@@ -177,7 +178,10 @@ import {JsonPipe} from '@angular/common';
 import {configurationService} from "../../services/configuration.service";
 
 // tslint:disable-next-line:max-classes-per-file
-@Pipe({name: 'maybejson'})
+@Pipe({
+    name: 'maybejson',
+    standalone: false
+})
 export class MaybeJsonPipe extends JsonPipe {
     public transform(value): string {
         if (value instanceof Array || value instanceof Object) {

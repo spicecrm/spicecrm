@@ -1,0 +1,22 @@
+<div system-to-bottom-noscroll class="slds-box slds-box--border slds-m-bottom--small" [system-overlay-loading-spinner]="!initialized">
+        <div #chatcontainer [ngStyle]="containerStyle" class="slds-m-vertical--x-small slds-scrollable--y slds-is-relative">
+            <section role="log" class="slds-chat slds-size--1-of-1" style="position: absolute; bottom: 0px;">
+                <ul class="slds-chat-list slds-is-relative" style="display: flex; flex-direction: column-reverse;">
+                    @for (chatMessage of chatMessages; track chatMessage.id){
+                        <activity-textmessages-chat-message [chatMessage]="chatMessage"/>
+                    }
+                </ul>
+            </section>
+            @if (initialized && chatMessages.length == 0){
+                <div class="slds-height_full slds-size--1-of-1 slds-align--absolute-center">
+                    <system-illustration-no-records>
+                        <system-label label="LBL_NO_DATA"/>
+                    </system-illustration-no-records>
+                </div>
+            }
+        </div>
+        <div #addcontainer class="slds-theme--shade" [ngClass]="{'slds-hide': !initialized || !parentHasMobile}">
+            <activity-textmessages-chat-compose (messagesent)="reload()"/>
+        </div>
+
+</div>

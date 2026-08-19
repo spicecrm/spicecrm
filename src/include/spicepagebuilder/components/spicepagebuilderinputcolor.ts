@@ -17,13 +17,18 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
             provide: NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => SpicePageBuilderInputColor)
         }
-    ]
+    ],
+    standalone: false
 })
 export class SpicePageBuilderInputColor implements ControlValueAccessor {
     /**
      * name of the style attribute
      */
     @Input() public label: string = '';
+    /**
+     * to disable the control
+     */
+    @Input() public disabled: boolean = false;
     /**
      * holds the sides value
      */

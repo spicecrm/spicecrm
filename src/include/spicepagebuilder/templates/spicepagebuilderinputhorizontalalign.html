@@ -1,0 +1,12 @@
+<div class="slds-form-element">
+    <label class="slds-form-element__label">
+        <system-label [label]="label"></system-label>
+    </label>
+    <div class="slds-select_container slds-size--1-of-1">
+        <select class="slds-select" [(ngModel)]="value" (ngModelChange)="emitValue()">
+            <option value="left"><system-label label="LBL_ALIGN_LEFT"/></option>
+            <option value="center"><system-label label="LBL_ALIGN_CENTER"/></option>
+            <option value="right"><system-label label="LBL_ALIGN_RIGHT"/></option>
+        </select>
+    </div>
+</div>

@@ -25,7 +25,7 @@
             </div>
             <div class="slds-grid slds-grid--vertical-align-center">
                 <system-label label="LBL_SHOW_NON_DB_FIELDS"></system-label>
-                <system-checkbox-toggle [(ngModel)]="showNonDbFields" (ngModelChange)="getModuleFields()"></system-checkbox-toggle>
+                <system-checkbox-toggle [(ngModel)]="spiceImporter.showNonDbFields" (ngModelChange)="getModuleFields()"></system-checkbox-toggle>
             </div>
         </div>
     </div>
@@ -50,12 +50,12 @@
         </div>
     </div>
     <!-- show next button -->
-    <button *ngIf="this.spiceImporter.currentImportStep < 3 && !spiceImporter.processByMethod"
+    <button *ngIf="spiceImporter.currentImportStep < 3 && !spiceImporter.processByMethod"
             class="slds-button slds-button--neutral" (click)="nextStep()">
         <system-label label="LBL_NEXT"></system-label>
     </button>
     <!--    show import button -->
-    <button *ngIf="this.spiceImporter.currentImportStep == 3 || spiceImporter.processByMethod" [disabled]="processing"
+    <button *ngIf="spiceImporter.currentImportStep == 3 || spiceImporter.processByMethod" [disabled]="processing"
             class="slds-button slds-button--brand slds-grid slds-grid_vertical-align-center"
             (click)="import()">
         <span *ngIf="!processing" class="slds-p-right--xx-small">

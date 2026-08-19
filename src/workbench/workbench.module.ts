@@ -21,6 +21,7 @@ import {DictionaryManagerDefinitions} from "./components/dictionarymanagerdefini
 import {DictionaryManagerDefinitionTabs} from "./components/dictionarymanagerdefinitiontabs";
 import {DictionaryManagerItems} from "./components/dictionarymanageritems";
 import {DictionaryManagerItemDetails} from "./components/dictionarymanageritemdetails";
+import {DictionaryManagerItemReferenceDetails} from "./components/dictionarymanageritemreferencedetails";
 import {DictionaryManagerAddDefinitionModal} from "./components/dictionarymanageradddefinitionmodal";
 import {DictionaryManagerMigrateDefinitionModal} from "./components/dictionarymanagermigratedefinitionmodal";
 import {DictionaryManagerAddItemModal} from "./components/dictionarymanageradditemmodal";
@@ -47,6 +48,9 @@ import {DictionaryManagerFields} from "./components/dictionarymanagerfields";
 import {DictionaryManagerDeleteFieldsModal} from "./components/dictionarymanagerdeletefieldsmodal";
 import {DictionaryManagerDeleteModal} from "./components/dictionarymanagerdeletemodal";
 
+import {DictionaryIndexes} from "./components/dictionaryindexes";
+import {DictionaryIndexesDefinitions} from "./components/dictionaryindexesdefinitions";
+
 import {DomainManager} from "./components/domainmanager";
 import {DomainManagerDefinitions} from "./components/domainmanagerdefinitions";
 import {DomainManagerFields} from "./components/domainmanagerfields";
@@ -56,7 +60,7 @@ import {DomainManagerFieldValidation} from "./components/domainmanagerfieldvalid
 import {DomainManagerAddDefinitionModal} from "./components/domainmanageradddefinitionmodal";
 import {DomainManagerAddFieldModal} from "./components/domainmanageraddfieldmodal";
 import {DomainManagerSelectValidation} from "./components/domainmanagerselectvalidation";
-import {DomainManagerAddValidation} from "./components/domainmanageraddvalidation";
+import {DomainManagerEditValidation} from "./components/domainmanagereditvalidation";
 import {DomainManagerAddValidationValueModal} from "./components/domainmanageraddvalidationvaluemodal";
 
 import {FieldsetManager} from "./components/fieldsetmanager";
@@ -140,6 +144,9 @@ import {CRMLogViewerListModal} from './components/crmlogviewerlistmodal';
 
 import {APIlogViewer} from './components/apilogviewer';
 import {APIlogViewerModal} from './components/apilogviewermodal';
+import {APIlogViewerReplayModal} from './components/apilogviewerreplaymodal';
+import {APIlogViewerReplayItem} from './components/apilogviewerreplayitem';
+import {APIlogReplayItemXML} from './components/apilogreplayitemxml';
 
 import {ModuleFilterBuilder} from "./components/modulefilterbuilder";
 import {ModuleFilterBuilderFilters} from "./components/modulefilterbuilderfilters";
@@ -154,6 +161,9 @@ import {DomainManagerEditDefinitionModal} from "./components/domainmanagereditde
 import {CategoryTreeManagerLinkModal} from "./components/categorytreemanagerlinkmodal";
 import {RoleMenuManager} from "./components/rolemenumanager";
 import {RoleMenuManagerEditRoleModal} from "./components/rolemenumanagereditrolemodal";
+import {AdminMenuManager} from "./components/adminmenumanager";
+import {AdminMenuManagerEditGroupModal} from "./components/adminmenumanagereditgroupmodal"
+import {AdminMenuManagerEditComponentModal} from "./components/adminmenumanagereditcomponentmodal";
 import {GitPullFromRepository} from "./components/gitpullfromrepository";
 import {GitStatusOfRepository} from "./components/gitstatusofrepository";
 import {DictionaryManagerRepairAll} from "./components/dictionarymanagerrepairall";
@@ -172,12 +182,26 @@ import {
 import {DictionaryManagerRelationshipAddUser} from "./components/dictionarymanagerrelationshipadduser";
 import {DictionaryManagerRelationshipAddOrgUnit} from "./components/dictionarymanagerrelationshipaddorgunit";
 import {DictionaryManagerRelationshipContainerUser} from "./components/dictionarymanagerrelationshipcontaineruser";
+import {DictionaryManagerRelationshipContainerOrgunit} from "./components/dictionarymanagerrelationshipcontainerorgunit";
 import {DictionaryManagerFixDBFieldsMismatchModal} from "./components/dictionarymanagerfixdbfieldsmismatchmodal";
 
 import {HL7Manager} from './components/hl7manager';
 import {Hl7ManagerType} from './components/hl7managertype';
 import {HL7ManagerRule} from './components/hl7managerrule';
 import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkanban";
+import {DomainManagerDefinitionUsageModal} from "./components/domainmanagerdefinitionusagemodal";
+import {DictionaryManagerUsageModal} from "./components/dictionarymanagereusagemodal";
+import {DictionaryManagerFilterItemsPipe} from "./pipes/dictionarymanagerfilteritems.pipe";
+import {DictionaryManagerFieldDefinitionModal} from "./components/dictionarymanagerfielddefinitionmodal";
+import {MailboxesSpiceGatewayManager} from "./components/mailboxesspicegatewaymanager";
+import {
+    DictionaryManagerRelationshipAddManyToManySelf
+} from "./components/dictionarymanagerrelationshipaddmanytomanyself";
+import {DictionaryRelationships} from "./components/dictionaryrelationships";
+import {DictionaryRelationshipsDefinitions} from "./components/dictionaryrelationshipsdefinitions";
+import {DomainValidations} from "./components/domainvalidations";
+import {DomainValidationUsageModal} from "./components/domainvalidationusagemodal";
+
 
 @NgModule({
     imports: [
@@ -188,7 +212,8 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         ObjectFields,
         ObjectComponents,
         GlobalComponents,
-        DragDropModule
+        DragDropModule,
+        DictionaryManagerFilterItemsPipe
     ],
     declarations: [
         CategoryTreeManager,
@@ -197,6 +222,7 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         CategoryTreeAddModal,
         DomainManager,
         DomainManagerDefinitions,
+        DomainManagerDefinitionUsageModal,
         DomainManagerFields,
         DomainManagerFieldTabs,
         DomainManagerFieldDetails,
@@ -204,7 +230,7 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         DomainManagerAddDefinitionModal,
         DomainManagerAddFieldModal,
         DomainManagerSelectValidation,
-        DomainManagerAddValidation,
+        DomainManagerEditValidation,
         DomainManagerAddValidationValueModal,
         DomainManagerEditDefinitionModal,
         DictionaryManager,
@@ -212,11 +238,13 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         DictionaryManagerDefinitionTabs,
         DictionaryManagerItems,
         DictionaryManagerItemDetails,
+        DictionaryManagerItemReferenceDetails,
         DictionaryManagerItemStatus,
         DictionaryManagerAddDefinitionModal,
         DictionaryManagerCloneDefinitionModal,
         DictionaryManagerMigrateDefinitionModal,
         DictionaryManagerEditDefinitionModal,
+        DictionaryManagerUsageModal,
         DictionaryManagerAddItemModal,
         DictionaryManagerRelationships,
         DictionaryManagerRelationshipsDetails,
@@ -243,6 +271,10 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         DictionaryManagerDeleteFieldsModal,
         DictionaryManagerDeleteModal,
         DictionaryManagerRepairAll,
+        DictionaryIndexes,
+        DictionaryIndexesDefinitions,
+        DictionaryRelationships,
+        DictionaryRelationshipsDefinitions,
         FieldsetManager,
         FieldsetManagerFieldsetDetails,
         FieldsetManagerFieldDetails,
@@ -317,6 +349,9 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         APIlogConfig,
         APIlogViewer,
         APIlogViewerModal,
+        APIlogViewerReplayModal,
+        APIlogViewerReplayItem,
+        APIlogReplayItemXML,
         APIlogConfig,
         ModuleFilterBuilder,
         ModuleFilterBuilderFilters,
@@ -327,6 +362,9 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         ConfigTransfer,
         RoleMenuManager,
         RoleMenuManagerEditRoleModal,
+        AdminMenuManager,
+        AdminMenuManagerEditGroupModal,
+        AdminMenuManagerEditComponentModal,
         GitPullFromRepository,
         GitStatusOfRepository,
         HooksManager,
@@ -339,11 +377,17 @@ import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkan
         DictionaryManagerRelationshipAddUser,
         DictionaryManagerRelationshipAddOrgUnit,
         DictionaryManagerRelationshipContainerUser,
+        DictionaryManagerRelationshipContainerOrgunit,
         DictionaryManagerFixDBFieldsMismatchModal,
         HL7Manager,
         Hl7ManagerType,
         HL7ManagerRule,
-        WorkbenchConfigOptionKanban
+        WorkbenchConfigOptionKanban,
+        DictionaryManagerFieldDefinitionModal,
+        MailboxesSpiceGatewayManager,
+        DictionaryManagerRelationshipAddManyToManySelf,
+        DomainValidations,
+        DomainValidationUsageModal,
     ],
     exports: [
         SortPipe,

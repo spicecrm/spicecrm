@@ -1,12 +1,13 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Injector, Input, OnInit} from '@angular/core';
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {modal} from "../../../services/modal.service";
 import {AttributeObjectI, TextI} from "../interfaces/spicepagebuilder.interfaces";
 import {SpicePageBuilderElement} from "./spicepagebuilderelement";
+import {SpicePageBuilderElementColumn} from "./spicepagebuilderelementcolumn";
 
 /**
  * Parse and renders renderer container
@@ -14,7 +15,8 @@ import {SpicePageBuilderElement} from "./spicepagebuilderelement";
 @Component({
     selector: 'spice-page-builder-element-text',
     templateUrl: '../templates/spicepagebuilderelementtext.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderElementText extends SpicePageBuilderElement implements OnInit {
     /**
@@ -24,25 +26,36 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
     /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[] = [
-        {name: 'color', type: 'color'},
-        {name: 'container-background-color', type: 'color'},
-        {name: 'font-size', type: 'textSuffix'},
-        {name: 'font-style', type: 'text'},
-        {name: 'font-weight', type: 'text'},
-        {name: 'line-height', type: 'textSuffix'},
-        {name: 'letter-spacing', type: 'textSuffix'},
-        {name: 'height', type: 'textSuffix'},
-        {name: 'text-decoration', type: 'text'},
-        {name: 'text-transform', type: 'text'},
-        {name: 'align', type: 'text'},
-        {name: 'padding', type: 'sides'},
-        {name: 'css-class', type: 'text'}
+    public readonly attributesList: AttributeObjectI[][] = [
+        [
+            {name: 'color', type: 'color'},
+            {name: 'container-background-color', type: 'color'}
+        ], [
+            {name: 'font-size', type: 'textSuffix', class: 'slds-size--1-of-3'},
+            {name: 'font-style', type: 'text', class: 'slds-size--1-of-3'},
+            {name: 'font-weight', type: 'text', class: 'slds-size--1-of-3'}
+        ], [
+            {name: 'line-height', type: 'textSuffix'},
+            {name: 'letter-spacing', type: 'textSuffix'},
+            {name: 'height', type: 'textSuffix'},
+            {name: 'text-decoration', type: 'textdecoration'},
+            {name: 'text-transform', type: 'texttransform'},
+            {name: 'align', type: 'halign'}
+        ], [
+            {name: 'padding', type: 'padding', class: 'slds-size--1-of-1'}
+        ], [
+            {name: 'css-class', type: 'text', class: 'slds-size--1-of-1'}
+        ]
     ];
     /**
      * hold the sanitized content html
      */
     public sanitizedContent: SafeHtml = '';
+
+    /**
+     * holds the info if the styles panel is expanded
+     */
+    public styleExpanded: boolean = false;
 
     constructor(public domSanitizer: DomSanitizer,
                 public modal: modal,
@@ -57,10 +70,21 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
      */
     public ngOnInit() {
         super.ngOnInit();
-        if (!this.element.editorType) {
-            this.element.editorType = 'richText';
+        if (!this.element.attributes["editor-type"]) {
+            this.element.attributes["editor-type"] = 'richText';
         }
-        this.sanitizeContent();
+    }
+
+    get editorStyle() {
+        if (this.styleExpanded) {
+            return {
+                height: '50%'
+            }
+        } else {
+            return {
+                height: 'calc(100% - 40px)'
+            }
+        }
     }
 
     /**
@@ -69,15 +93,7 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
      */
     public handleEditResponse(res) {
         this.element.content = res.content;
-        this.sanitizeContent();
         super.handleEditResponse(res);
-    }
-
-    /**
-     * sanitize the html content
-     */
-    public sanitizeContent() {
-        this.sanitizedContent = this.domSanitizer.bypassSecurityTrustHtml(this.element.content);
     }
 
     /**
@@ -86,7 +102,34 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
     public generateStyle() {
         super.generateStyle([
             'color', 'font-size', 'font-style', 'font-weight', 'line-height', 'letter-spacing',
-            'text-decoration', 'text-transform', 'align', 'padding', 'height'
+            'text-decoration', 'text-transform', 'padding', 'height'
         ]);
+
+        if (this.element.attributes.align) {
+            this.style['text-align'] = this.element.attributes.align;
+        }
+    }
+
+    /**
+     * handle media attribute change
+     */
+    public handleMediaAttributeChange(path: string) {
+
+        if (!path) {
+            this.element.content = null;
+            this.cdRef.detectChanges();
+            return;
+        }
+
+        this.articleService.getElementMediaArticle(this.columnComponent).subscribe(article => {
+
+            if (!article) return;
+
+            const fieldName = path.split('.')[1];
+
+            this.element.content = article[fieldName];
+
+            this.cdRef.detectChanges();
+        });
     }
 }

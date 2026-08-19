@@ -22,7 +22,8 @@ declare var _;
  */
 @Component({
     selector: 'field-address',
-    templateUrl: '../templates/fieldaddress.html'
+    templateUrl: '../templates/fieldaddress.html',
+    standalone: false
 })
 export class fieldAddress extends fieldGeneric {
 
@@ -65,7 +66,7 @@ export class fieldAddress extends fieldGeneric {
     /**
      * a fallback address format in case none is specified
      */
-    public addressFormat = '{street} {street_number}, {postalcode} {city}, {statename}, {countryname}';
+    public addressFormat = '{street} {street_number} {street_number_suffix}, {postalcode} {city}, {statename}, {countryname}';
 
     public ngOnInit() {
         super.ngOnInit();
@@ -346,8 +347,8 @@ export class fieldAddress extends fieldGeneric {
     /**
      * a getter for the street
      */
-    get street_suffix() {
-        return this.model.getField(this.addresskey + 'address_street_suffix');
+    get street_number_suffix() {
+        return this.model.getField(this.addresskey + 'address_street_number_suffix');
     }
 
     /**
@@ -355,8 +356,8 @@ export class fieldAddress extends fieldGeneric {
      *
      * @param value
      */
-    set street_suffix(value) {
-        this.model.setField(this.addresskey + 'address_street_suffix', value);
+    set street_number_suffix(value) {
+        this.model.setField(this.addresskey + 'address_street_number_suffix', value);
     }
 
 
@@ -493,7 +494,7 @@ export class fieldAddress extends fieldGeneric {
      */
     get hideattn() {
         if (this.fieldconfig.hideattn) return true;
-        if (this.config_address_format?.hideattn) return true;
+        if (this.configuration.getCapabilityConfig('address_format').hideattn) return true;
         return false;
     }
 
@@ -502,7 +503,7 @@ export class fieldAddress extends fieldGeneric {
      */
     get hidestate() {
         if (this.fieldconfig.hidestate) return true;
-        if (this.config_address_format?.hidestate) return true;
+        if (this.configuration.getCapabilityConfig('address_format').hidestate) return true;
         return false;
     }
 
@@ -511,7 +512,7 @@ export class fieldAddress extends fieldGeneric {
      */
     get hidestreetnumber() {
         if (this.fieldconfig.hidestreetnumber) return true;
-        if (this.config_address_format?.hidestreetnumber) return true;
+        if (this.configuration.getCapabilityConfig('address_format').hidestreetnumber) return true;
         return false;
     }
 
@@ -520,7 +521,7 @@ export class fieldAddress extends fieldGeneric {
      */
     get hidedistrict() {
         if (this.fieldconfig.hidedistrict) return true;
-        if (this.config_address_format?.hidedistrict) return true;
+        if (this.configuration.getCapabilityConfig('address_format').hidedistrict) return true;
         return false;
     }
 
@@ -529,7 +530,7 @@ export class fieldAddress extends fieldGeneric {
      */
     get hidenumbersuffix() {
         if (this.fieldconfig.hidenumbersuffix) return true;
-        if (this.config_address_format?.hidenumbersuffix) return true;
+        if (this.configuration.getCapabilityConfig('address_format').hidenumbersuffix) return true;
         return false;
     }
 

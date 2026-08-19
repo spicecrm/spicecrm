@@ -1,24 +1,23 @@
 <div class="slds-p-around--xx-small slds-grid slds-grid--vertical-align-center slds-border--bottom">
     <system-input-text placeholder="LBL_SEARCH" class="slds-grow" [(ngModel)]="definitionfilterterm"></system-input-text>
     <system-select-icon class="slds-p-left--xx-small" [(ngModel)]="definitionfilterscope">
-        <system-select-icon-item></system-select-icon-item>
+        <system-select-icon-item/>
         <system-select-icon-item value="g" icon="world"></system-select-icon-item>
         <system-select-icon-item value="c" icon="people"></system-select-icon-item>
     </system-select-icon>
     <system-select-icon class="slds-p-left--xx-small" [(ngModel)]="definitionfilterstatus">
-        <system-select-icon-item></system-select-icon-item>
+        <system-select-icon-item/>
         <system-select-icon-item value="d" icon="light_bulb" colorclass="slds-icon-text-warning"></system-select-icon-item>
         <system-select-icon-item value="a" icon="light_bulb" colorclass="slds-icon-text-success"></system-select-icon-item>
         <system-select-icon-item value="i" icon="light_bulb" colorclass="slds-icon-text-light"></system-select-icon-item>
     </system-select-icon>
-    <div class="slds-select_container slds-p-left--xx-small">
-        <select class="slds-select" [(ngModel)]="definitionsfiltertype">
-            <option value=""><system-label label="LBL_ALL"></system-label></option>
-            <option *ngFor="let fieldtype of domainmanager.fieldtypes" [value]="fieldtype">{{fieldtype}}</option>
-        </select>
-    </div>
+    <system-select system-select-id-only [(ngModel)]="definitionsfiltertype" class="slds-p-left--xx-small" style="min-width: 200px;">
+        @for (fieldtype of domainmanager.fieldtypes; track fieldtype){
+            <system-select-option [value]="fieldtype" [display]="fieldtype"/>
+        }
+    </system-select>
 </div>
-<div system-to-bottom marginBottom="45" #itemscontainer>
+<div system-to-bottom [marginBottom]="45" #itemscontainer>
     <table class="slds-table slds-table--fixed-layout slds-table_bordered slds-table--header-fixed">
         <thead>
         <tr class="slds-line-height_reset">
@@ -33,26 +32,32 @@
         </tr>
         </thead>
         <tbody>
-        <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected':domainmanager.currentDomainDefinition == domaindefinition.id}"  *ngFor="let domaindefinition of domaindefinitions; trackBy: trackByFn" (click)="setCurrentDomainDefintion(domaindefinition.id)" >
-            <td>
-                <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="domaindefinition.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                <dictionary-manager-item-status [ngModel]="domaindefinition.status" (ngModelChange)="setStatus(domaindefinition, $event)" style="cursor:pointer"></dictionary-manager-item-status>
-            </td>
-            <td data-label="Domain" >
-                <div class="slds-truncate">{{domaindefinition.name}}</div>
-            </td>
-            <td data-label="Type">
-                <div class="slds-truncate">{{domaindefinition.fieldtype}}</div>
-            </td>
-            <td>
-                <button class="slds-button slds-button--icon"(click)="editDomainDefinition(domaindefinition)">
-                    <system-button-icon size="xx-small" icon="edit"></system-button-icon>
-                </button>
-                <button class="slds-button slds-button--icon" [disabled]="domaindefinition.status == 'a'" (click)="deleteDomainDefinition(domaindefinition.id)">
-                    <system-button-icon size="xx-small" icon="delete"></system-button-icon>
-                </button>
-            </td>
-        </tr>
+        @for(domaindefinition of domaindefinitions; track domaindefinition.id) {
+            <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected':domainmanager.currentDomainDefinition == domaindefinition.id}" (click)="setCurrentDomainDefintion(domaindefinition.id)">
+                <td>
+                    <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="domaindefinition.scope == 'g' ? 'world' : 'people'"/>
+                    <dictionary-manager-item-status [ngModel]="domaindefinition.status" (ngModelChange)="setStatus(domaindefinition, $event)" style="cursor:pointer"/>
+                </td>
+                <td data-label="Domain">
+                    <div class="slds-truncate">{{ domaindefinition.name }}</div>
+                </td>
+                <td data-label="Type">
+                    <div class="slds-truncate">{{ domaindefinition.fieldtype }}</div>
+                </td>
+                <td>
+                    <button class="slds-button slds-button--icon" (click)="editDomainDefinition(domaindefinition)">
+                        <system-button-icon size="xx-small" icon="edit"/>
+                    </button>
+                    <button class="slds-button slds-button--icon" (click)="domainDefinitionUsage(domaindefinition)">
+                        <system-button-icon size="xx-small" icon="data_graph"/>
+                    </button>
+                    <button class="slds-button slds-button--icon" [disabled]="domaindefinition.status == 'a'"
+                            (click)="deleteDomainDefinition(domaindefinition.id)">
+                        <system-button-icon size="xx-small" icon="delete"/>
+                    </button>
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
 </div>

@@ -33,7 +33,8 @@ declare var moment: any;
 @Component({
     selector: 'calendar-sheet-day',
     templateUrl: '../templates/calendarsheetday.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 
 export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
@@ -128,6 +129,9 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
             next: calendar => {
                 if (calendar.type == 'other') {
                     this.getOwnerEvents(calendar);
+                    if (calendar.id == 'owner' && this.groupwareVisible) {
+                        this.getGroupwareEvents();
+                    }
                 } else {
                     this.getUserEvents(calendar);
                 }
@@ -248,12 +252,17 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      */
     public adjustEvent(event) {
         if (!event.isMulti) {
-            let endInRange = event.end.hour() > this.calendar.startHour && event.start.hour() < this.calendar.startHour;
-            let startInRange = event.start.hour() < this.calendar.endHour && event.end.hour() > this.calendar.endHour;
-            if (endInRange) {
+            const sameDay = event.start.date() == event.end.date();
+
+            if ((sameDay || event.start.date() == this.setdate.date()) && event.start.hour() < this.calendar.startHour) {
                 event.start = event.start.hour(this.calendar.startHour).minute(0);
             }
-            if (startInRange) {
+
+            if (!sameDay && (event.start.hour() > this.calendar.endHour || event.start.date() != this.setdate.date())) {
+                event.start.add(1, 'days').hour(this.calendar.startHour).minute(0);
+            }
+
+            if (event.end.hour() > this.calendar.endHour || (!sameDay && event.end.date() != this.setdate.date())) {
                 event.end = event.end.hour(this.calendar.endHour).minute(59);
             }
         }
@@ -301,7 +310,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     public getGroupwareEvents() {
         this.groupwareEvents = [];
         this.groupwareMultiEvents = [];
-        if (!this.groupwareVisible || this.calendar.isMobileView) {
+        if (!this.groupwareVisible) {
             return this.setEventsStyle();
         }
 
@@ -374,7 +383,20 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      * @param events
      */
     public filterEvents(events): any {
-        return events.filter(event => event.end.hour() > this.calendar.startHour || event.start.hour() < this.calendar.endHour);
+        return events.filter(event => {
+
+            if (event.isMulti) return true;
+
+            const sameDay = event.start.date() == event.end.date();
+
+            if (!sameDay && event.start.hour() > this.calendar.endHour && event.end.hour() < this.calendar.startHour) {
+                return false;
+            } else if (sameDay && (event.start.hour() > this.calendar.endHour || event.end.hour() < this.calendar.startHour)) {
+                return false;
+            }
+
+            return true;
+        });
     }
 
     /**

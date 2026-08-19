@@ -1,40 +1,18 @@
 <div class="slds-grid slds-wrap slds-height_full">
     <div class="slds-p-horizontal--small slds-size--1-of-4 slds-border--right slds-height_full">
-        <div class="slds-text-body--regular slds-box slds-m-top--small slds-text-color--weak" style="padding: .25rem">
+        <div class="slds-text-body--regular slds-box slds-m-top--small slds-text-color--weak">
             {{ spiceImporter.stepLongText }}
         </div>
         <div class="slds-form slds-m-around--medium">
             <div class="slds-form-element slds-m-vertical--medium">
                 <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_DUPLICATE_ACTION"></system-label></legend>
                 <div class="slds-form-element__control">
-                    <span class="slds-radio">
-                      <input type="radio" id="importduplicateactionignore" name="duplicateoptions" value="ignore"
-                             [(ngModel)]="importDuplicateAction"/>
-                      <label class="slds-radio__label" for="importduplicateactionignore">
-                        <span class="slds-radio--faux"></span>
-                        <span class="slds-form-element__label"><system-label label="LBL_IGNORE_DUPLICATE"></system-label></span>
-                      </label>
-                    </span>
-                    <span class="slds-radio">
-                      <input type="radio" id="importduplicateactionlog" name="duplicateoptions" value="log"
-                             [(ngModel)]="importDuplicateAction"/>
-                      <label class="slds-radio__label" for="importduplicateactionlog">
-                        <span class="slds-radio--faux"></span>
-                        <span class="slds-form-element__label"><system-label label="LBL_LOG_DUPLICATES"></system-label></span>
-                      </label>
-                    </span>
-                    <span class="slds-radio">
-                      <input type="radio" id="importduplicateactionreject" name="duplicateoptions" value="reject_existing"
-                             [(ngModel)]="importDuplicateAction">
-                      <label class="slds-radio__label" for="importduplicateactionreject">
-                        <span class="slds-radio--faux"></span>
-                        <span class="slds-form-element__label"><system-label label="LBL_REJECT_EXISTING"></system-label></span>
-                      </label>
-                    </span>
+                    <system-input-radio [(ngModel)]="importDuplicateAction" name="duplicateoptions" value="ignore"><system-label label="LBL_IGNORE_DUPLICATE"/></system-input-radio>
+                    <system-input-radio [(ngModel)]="importDuplicateAction" name="duplicateoptions" value="log"><system-label label="LBL_LOG_DUPLICATES"/></system-input-radio>
+                    <system-input-radio [(ngModel)]="importDuplicateAction" name="duplicateoptions" value="reject_existing"><system-label label="LBL_REJECT_EXISTING"/></system-input-radio>
                     <div *ngIf="spiceImporter.importDuplicateAction == 'reject_existing'" class="slds-grid">
                         <div class="slds-form-element  slds-m-vertical--small">
                             <label class="slds-form-element__label" for="idFieldSelectId"><system-label label="LBL_SELECT_CSV_ID_FIELD"></system-label></label>
-
                             <div class="slds-form-element__control">
                                 <div class="slds-select_container">
                                     <select class="slds-select" id="idFieldSelectId" [(ngModel)]="csvRejectExistingKey" (ngModelChange)="setCSVRejectExistingKey($event)">

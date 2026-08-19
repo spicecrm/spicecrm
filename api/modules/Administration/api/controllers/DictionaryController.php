@@ -3,19 +3,18 @@ namespace SpiceCRM\modules\Administration\api\controllers;
 
 use Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\api\controllers\MigrateController;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\includes\SpiceDictionary\api\controllers\MigrateController;
 
 class DictionaryController
 {
@@ -33,7 +32,6 @@ class DictionaryController
     }
 
     /**
-     * @deprecated
      * repair custom enum
      * @param Request $req
      * @param Response $res
@@ -210,10 +208,11 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
             foreach ($nodeModule->field_defs as $field_name => $field_defs) {
                 // 2011-03-23 also exculde the excluded modules from the config in the Module Tree
                 //if ($field_defs['type'] == 'link' && (!isset($field_defs['module']) || (isset($field_defs['module']) && array_search($field_defs['module'], $excludedModules) == false))) {
-                if ($field_defs['type'] == 'link') {
+                if ($field_defs['type'] == 'link' && $field_defs['relationship']) {
                     if($nodeModule->load_relationship($field_name)) {
                         //BUGFIX 2010/07/13 to display alternative module name if vname is not maintained
                         $entry = [
+                            'id' => $field_defs['id'],
                             'path' => "link:$module:$field_name",
                             'module' => $nodeModule->$field_name->getRelatedModuleName(),
                             'parentModule' => $module,
@@ -221,7 +220,7 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
                             'leaf' => false,
                             'label' => $field_defs['vname'],
                             'link' => $field_name,
-                            'hasRelationshipFields' => $nodeModule->$field_name->relationship->type == 'many-to-many'
+                            'hasRelationshipFields' => in_array($nodeModule->$field_name->relationship->type,  ['many-to-many', 'email-address', 'many-to-many-prospectlists', 'many-to-many-bean'])
                         ];
 
                         $returnArray[] = $entry;
@@ -231,6 +230,7 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
 
             //2013-01-09 add support for Studio Relate Fields
             // get all relate fields where the link is empty ... those with link we get via the link anyway properly
+            /*
             if ($field_defs['type'] == 'relate') {
                 if (isset($field_defs['module']))
                     $returnArray[] = [
@@ -249,6 +249,7 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
                         'label' => $field_defs['vname']
                     ];
             }
+            */
         }
 
         // 2013-08-21 BUG #492 added sorting for the module tree
@@ -297,7 +298,7 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
             array_map(function ($field) {
                 $field['id'] = "field:{$field['name']}";
                 return $field;
-            }, $bean->{$args['link']}->relationship->def['fields'])
+            }, is_array($bean->{$args['link']}->relationship->def['fields']) ? $bean->{$args['link']}->relationship->def['fields'] : [])
         );
 
         return $res->withJson(array_values($fields));
@@ -313,13 +314,13 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
      */
     public function getAuditFields(Request $req, Response $res, array $args): Response
     {
-        $fields = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
+        $auditFields = SpiceDictionary::getInstance()->getDefs('audit')['fields'];
 
         $fields = array_values(
             array_map(function ($field) {
                 $field['id'] = "field:{$field['name']}";
                 return $field;
-            }, $fields)
+            }, $auditFields)
         );
 
         return $res->withJson(array_values($fields));
@@ -355,60 +356,4 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
 
         return $returnArray;
     }
-
-
-    /**
-     * @deprecated
-     * legacy & cache table
-     */
-    public function repairCacheDb(Request $req, Response $res, array $args): Response {
-        $body = $req->getParsedBody();
-        $returnArray = SpiceDictionaryVardefs::getInstance()->repairDictionaries(isset($body['dictionaries']) ? $body['dictionaries'] : []);
-
-        return $res->withJson($returnArray);
-    }
-
-    /**
-     * run a silent repair/rebuild, reoair cache, repair relationships for a dictionary list
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     * @throws Exception
-     */
-    public function repairDictionary(Request $req, Response $res, array $args): Response {
-        $dictionaryNames = $req->getParsedBody()['dictionaries'];
-        $success = true;
-        $msg = '';
-        $sql = AdminController::buildSQLQueries($dictionaryNames);
-        if(!empty($sql) && !DBManagerFactory::getInstance()->query($sql)){
-            $success = false;
-            $msg = DBManagerFactory::getInstance()->lastDbError();
-        }
-        //@todo: update relationship cache
-        return $res->withJson(['success' => $success, 'msg' => $msg, 'sql' => $sql]);
-    }
-
-
-    /**
-     * returns a list of link names for which no module property is defined
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     */
-//    public function checkLinks(Request $req, Response $res, array $args): Response {
-//        // load Vardefs
-//        $repair=[];
-//        $vardefs = SpiceDictionaryVardefs::loadVardefs();
-//        foreach($vardefs as $dictName => $dict){
-//            foreach($dict['fields'] as $field){
-//                if($field['type'] == 'link' && !key_exists('module', $field)){
-//                    $repair[$dictName][] = $field['name'];
-//                }
-//            }
-//        }
-//        return $res->withJson($repair);
-//    }
-
 }

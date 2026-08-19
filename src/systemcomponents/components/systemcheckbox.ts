@@ -31,7 +31,8 @@ declare var _;
             useExisting: forwardRef(() => SystemCheckbox),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemCheckbox implements ControlValueAccessor, OnChanges, AfterViewInit {
 
@@ -44,6 +45,11 @@ export class SystemCheckbox implements ControlValueAccessor, OnChanges, AfterVie
     @Input() public hidelabel: boolean = false;
 
     /**
+     * Set to true to prevent the label text from being cut off
+     */
+    @Input() public noTextTruncation = false;
+
+    /**
      * holds the checkbox indeterminate value
      */
     @Input() public indeterminate: boolean = false;
@@ -52,7 +58,13 @@ export class SystemCheckbox implements ControlValueAccessor, OnChanges, AfterVie
      * set to true if the model value should be returned as integer
      */
     @Input() public asinteger: boolean = false;
-
+    @Input('system-checkbox-asinteger') set setAsinteger(value) {
+        if (value === false) {
+            this.asinteger = false;
+        } else {
+            this.asinteger = true;
+        }
+    }
 
     @Input() public textColorTheme: 'default' | 'success' | 'error' | 'inverse' | 'inverse-weak' | 'weak';
     /**

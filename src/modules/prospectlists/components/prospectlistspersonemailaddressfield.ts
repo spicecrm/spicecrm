@@ -8,7 +8,8 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'prospect-lists-person-email-address-field',
-    templateUrl: '../templates/prospectlistspersonemailaddressfield.html'
+    templateUrl: '../templates/prospectlistspersonemailaddressfield.html',
+    standalone: false
 })
 
 export class ProspectListsPersonEmailAddressField extends fieldGeneric {
@@ -17,7 +18,7 @@ export class ProspectListsPersonEmailAddressField extends fieldGeneric {
 
     ngOnInit() {
         super.ngOnInit();
-        if (this.model.parentmodel && this.model.module == 'ProspectLists') {
+        if (this.model.parentmodel && this.model.module != 'Contacts') {
             this.emailAddresses = this.model.parentmodel.data.email_addresses.beans;
         } else {
             this.emailAddresses = this.model.data.email_addresses.beans;

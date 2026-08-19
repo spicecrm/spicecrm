@@ -1,9 +1,7 @@
 /**
  * @module WorkbenchModule
  */
-import {
-    Component, ElementRef, EventEmitter, Injector, Output, QueryList, ViewChild, ViewChildren
-} from '@angular/core';
+import {Component, ElementRef, Injector, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {modal} from '../../services/modal.service';
 import {modelutilities} from '../../services/modelutilities.service';
@@ -16,6 +14,7 @@ import {DictionaryManagerFixDBFieldsMismatchModal} from "./dictionarymanagerfixd
 @Component({
     selector: 'dictionary-manager-repair-all',
     templateUrl: '../templates/dictionarymanagerrepairall.html',
+    standalone: false
 })
 export class DictionaryManagerRepairAll {
 
@@ -59,17 +58,9 @@ export class DictionaryManagerRepairAll {
      */
     public executerSQLs: boolean = true;
 
-    public displayDetailSetting: boolean = false;
-
     public itemfilters = {
-        definitions: true,
-        relationships: true,
         erroneousDefinitions: false,
         alteredDefinitions: false,
-    }
-
-    public actions = {
-        fullreset: true,
     }
 
     constructor(public dictionarymanager: dictionarymanager, public backend: backend, public metadata: metadata, public toast: toast, public modal: modal, public modelutilities: modelutilities, public injector: Injector) {
@@ -115,36 +106,6 @@ export class DictionaryManagerRepairAll {
                 // merge the arrays
                 this.definitions = this.definitions.concat(vardefdefinitions).sort((a, b) => a.name?.localeCompare(b.name));
 
-                // build relationships
-                let relationships = res.SpiceDictionaryRelationships.map(d => {
-                    return {
-                        id: d.id,
-                        type: 'dictionaryrelationship',
-                        name: d.relationship_name,
-                        template_sysdictionarydefinition_id: d.template_sysdictionarydefinition_id,
-                        referencing_sysdictionarydefinition_id: d.referencing_sysdictionarydefinition_id,
-                        original_id: d.original_id,
-                        status: 'n',
-                        sql: '',
-                        error: ''
-                    }
-                });
-                // add the vardef Relationships
-                relationships = relationships.concat(res.VardefDictionaryRelationships.map(d => {
-                    return {
-                        id: d.id,
-                        type: 'vardefrelationship',
-                        name: d.relationship_name,
-                        dictionaryname: d.dictionaryname,
-                        status: 'n',
-                        sql: '',
-                        error: ''
-                    }
-                }));
-
-                // merge the arrays
-                    this.definitions = this.definitions.concat(relationships.sort((a, b) => a.name?.localeCompare(b.name)));
-                // set that we are no longer loading
                 this.loading = false;
                 // emit to close the loading modal
                 loadingModal.emit(true);
@@ -152,21 +113,7 @@ export class DictionaryManagerRepairAll {
             error: () => {
                 loadingModal.emit(true);
             }
-        })
-
-        /*
-        this.definitions = this.dictionarymanager.dictionarydefinitions.filter(d => d.status == 'a' && d.sysdictionary_type != 'template').sort((a, b) => a.name.localeCompare(b.name)).map(d => {
-            return {
-                id: d.id,
-                type: 'dictionarydefinition',
-                name: d.tablename,
-                status: 'n',
-                sql: '',
-                error: ''
-            }
         });
-        */
-
     }
 
     /**
@@ -182,23 +129,22 @@ export class DictionaryManagerRepairAll {
                 return false;
             }
 
-            const searchTermMatch = !this.searchTerm || d.name.toLowerCase().includes(this.searchTerm.toLowerCase());
+            return !this.searchTerm || d.name.toLowerCase().includes(this.searchTerm.toLowerCase());
+        });
+    }
 
-            if (!searchTermMatch) {
-                return false;
-            }
+    /**
+     * returns the number of errors
+     */
+    get errorCount(){
+        return this.definitions.filter(d => d.status == 'e').length;
+    }
 
-            switch(d.type){
-                case 'dictionarydefinition':
-                    return this.itemfilters.definitions;
-                case 'vardefdefinition':
-                    return this.itemfilters.definitions;
-                case 'vardefrelationship':
-                    return this.itemfilters.relationships;
-                case 'dictionaryrelationship':
-                    return this.itemfilters.relationships;
-            }
-        })
+    /**
+     * returns the number of errors
+     */
+    get alteredCount(){
+        return this.definitions.filter(d => !!d.sql).length;
     }
 
     /**
@@ -209,33 +155,6 @@ export class DictionaryManagerRepairAll {
     public trackByFn(index, item) {
         return item.id;
     }
-
-    /**
-     * gets all relationships that are active and belong to the item
-     */
-    private dictionaryrelationships(definitioId) {
-        return this.dictionarymanager.dictionaryrelationships.filter(r => r.status == 'a' && (r.lhs_sysdictionarydefinition_id == definitioId || r.rhs_sysdictionarydefinition_id == definitioId || r.join_sysdictionarydefinition_id == definitioId)).sort((a, b) => a.name?.localeCompare(b.name));
-    }
-
-    /**
-     * gets all non deleted entries sorted by name
-     */
-    private dictionaryRelationshipsForTemplates(definitioId): any[] {
-        let relatedRelationships: any[] = [];
-
-        for (let item of this.dictionarymanager.dictionaryitems.filter(d => d.status == 'a' && d.sysdictionary_ref_id && d.sysdictionarydefinition_id == definitioId)) {
-            let relRelationships = this.dictionarymanager.dictionaryrelationships.filter(d => d.deleted == 0 && (d.lhs_sysdictionarydefinition_id == item.sysdictionary_ref_id || d.rhs_sysdictionarydefinition_id == item.sysdictionary_ref_id));
-            if (relRelationships.length > 0) {
-                relatedRelationships.push({
-                    relatedTemplateId: item.sysdictionary_ref_id,
-                    relationships: relRelationships
-                });
-            }
-        }
-
-        return relatedRelationships;
-    }
-
 
     /**
      * gets the repair progress
@@ -253,29 +172,7 @@ export class DictionaryManagerRepairAll {
      * returns the processed count
      */
     get processedCount() {
-        return this.filtereddefinitions.filter(d => d.status != 'n').length
-    }
-
-    /**
-     * determines a class based on the definition status and SQL
-     *
-     * @param d
-     */
-    public lineThemeClass(d) {
-        // if we have an error
-        if (d.status == 'e') return 'slds-theme--error';
-
-        // if in process highlight the row
-        if (d.status == 'p') return 'slds-theme--info';
-
-        // if completed but with an sql
-        if (d.status == 'c' && d.sql) return 'slds-theme--warning';
-
-        // if completed and no action required
-        if (d.status == 'c') return 'slds-theme--success';
-
-        // if not no class is returnes
-        return '';
+        return this.definitions.filter(d => d.status != 'n').length
     }
 
     /**
@@ -307,13 +204,10 @@ export class DictionaryManagerRepairAll {
         this.currentRowIndex = 0;
         this.scrollContainer.nativeElement.scrollTo(0, 0);
 
-        // close the settings in case they are open
-        this.displayDetailSetting = false;
         // reset the stored SQLs on the backend
         let resetAwait = this.modal.await('LBL_RESETTING');
 
         let params: any = {};
-        if(this.actions.fullreset) params.fullreset = true;
 
         this.backend.putRequest('dictionary/repair/reset', params).subscribe({
             next: () => {
@@ -338,14 +232,7 @@ export class DictionaryManagerRepairAll {
      * stops the process
      */
     public stop() {
-        if (this.actions.fullreset) {
-            this.modal.confirm('MSG_WARNING_STOP_REPAIR_ALL_DICTIONARIES', 'MSG_WARNING_STOP_REPAIR_ALL_DICTIONARIES', 'warning').subscribe(answer => {
-                if (!answer) return;
-                this.stopped = true;
-            })
-        } else {
-            this.stopped = true;
-        }
+        this.stopped = true;
     }
 
     public handleNext() {
@@ -359,7 +246,7 @@ export class DictionaryManagerRepairAll {
             this.stopped = false;
             this.repairing = false;
             return;
-        };
+        }
 
         let d = this.filtereddefinitions.find(d => d.status == 'n');
         if (d) {
@@ -368,10 +255,6 @@ export class DictionaryManagerRepairAll {
                 case 'dictionarydefinition':
                 case 'vardefdefinition':
                     this.repairDefinition(d);
-                    break;
-                case 'vardefrelationship':
-                case 'dictionaryrelationship':
-                    this.repairRelationship(d);
                     break;
             }
         } else {
@@ -431,40 +314,6 @@ export class DictionaryManagerRepairAll {
         })
     }
 
-    private repairRelationship(relationship, handleNext = true) {
-        let params: any = {};
-
-        let relId = relationship.original_id ? relationship.original_id : relationship.id
-        if (relationship.referencing_sysdictionarydefinition_id) {
-            params.referencing_sysdictionarydefinition_id = relationship.referencing_sysdictionarydefinition_id;
-            params.template_sysdictionarydefinition_id = relationship.template_sysdictionarydefinition_id;
-        }
-
-        // determine what type we are doing
-        let route = relationship.type == 'dictionaryrelationship' ? `dictionary/repair/relationship/${relId}` : `dictionary/repair/relationship/${relationship.dictionaryname}/${relationship.name}`;
-
-
-
-        // run the request
-        this.backend.putRequest(route, params).subscribe({
-            next: (res) => {
-                if (res) {
-                    relationship.status = 'c';
-                } else {
-                    relationship.status = 'e';
-                }
-                if (handleNext) this.handleNext();
-            },
-            error: (e) => {
-                relationship.status = 'e';
-                relationship.error = e.error?.error?.message;
-                relationship.errorDetails = e.error?.error?.details;
-                relationship.errorCode = e.error?.error?.errorCode;
-                if (handleNext) this.handleNext();
-            }
-        })
-    }
-
     public getIcon(status) {
         switch (status) {
             case 'p':
@@ -480,21 +329,17 @@ export class DictionaryManagerRepairAll {
 
     public getTypeIcon(type) {
         switch (type) {
-            case 'dictionaryrelationship':
-                return 'link';
             case 'vardefdefinition':
                 return 'file';
             case 'dictionarydefinition':
                 return 'database';
-            case 'vardefrelationship':
-                return 'knowledge_smart_link';
         }
     }
 
     /**
      * executes a single SQL statement
      *
-     * @param sql
+     * @param definition
      */
     public execute(definition) {
         this.modal.confirm(definition.sql, 'LBL_EXECUTE').subscribe({
@@ -530,7 +375,6 @@ export class DictionaryManagerRepairAll {
 
     /**
      * copies all SQLs to the clipboard
-     * @param sql
      */
     public copyAllToClipBoard(): void {
         navigator.clipboard.writeText(this.definitions.filter(d => d.sql).map(d => d.sql).join("\r\n"));
@@ -576,15 +420,13 @@ export class DictionaryManagerRepairAll {
      * @param definition
      */
     public runSingleRepair(definition) {
-        definition.status = 'p'
+
+        definition.status = 'p';
+
         switch(definition.type){
             case 'dictionarydefinition':
             case 'vardefdefinition':
                 this.repairDefinition(definition, false);
-                break;
-            case 'vardefrelationship':
-            case 'dictionaryrelationship':
-                this.repairRelationship(definition, false);
                 break;
         }
     }

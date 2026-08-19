@@ -20,7 +20,8 @@ declare var _: any;
 @Component({
     selector: "system-tree",
     templateUrl: "../templates/systemtree.html",
-    styles: ['.cdk-drag-animating {transition: none}']
+    styles: ['.cdk-drag-animating {transition: none}'],
+    standalone: false
 })
 
 export class SystemTree implements OnChanges {
@@ -328,6 +329,14 @@ export class SystemTree implements OnChanges {
                 return true;
             }
         });
+    }
+
+    public addItem(parent){
+
+        // get the next itemsequence
+        parent.nextsequence = this.sourceList.filter(t => t.parent_id == parent.id).length;
+
+        this.onItemAdd.emit(parent)
     }
 
     /*

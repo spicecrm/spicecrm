@@ -32,7 +32,8 @@ declare var moment: any;
 @Component({
     selector: 'spice-timeline',
     templateUrl: '../templates/spicetimeline.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
     /**

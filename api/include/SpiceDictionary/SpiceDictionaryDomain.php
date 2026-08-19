@@ -3,9 +3,10 @@
 namespace SpiceCRM\includes\SpiceDictionary;
 
 use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceUI\SpiceUIPackageValidator;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryDomain
@@ -32,44 +33,62 @@ class SpiceDictionaryDomain
         $this->domainDefinition = (object) $domainDefinition;
     }
 
-    public function getFields(SpiceDictionaryItem $sysdictionaryItem = null, bool $activeOnly = true){
+    public function getFields(?SpiceDictionaryItem $sysdictionaryItem = null, $indexOnly = false){
         $fieldNames = [];
         $fieldObjects = SpiceDictionaryDomainFields::getInstance()->getDomainFields($this->id);
         foreach($fieldObjects as $fieldObject){
             $fieldObject = (object) $fieldObject;
             $fieldObject->name = str_replace("{sysdictionaryitems.name}", $sysdictionaryItem->name, $fieldObject->name);
+
+            // if we need only the index fields check that they are not non-db and not excluded from the index
+            if($indexOnly && ($fieldObject->exclude_from_index == 1 || $fieldObject->dbtype == 'non-db')) continue;
+
             $fieldNames[] = $fieldObject->name;
         }
         return $fieldNames;
+    }
+
+
+    /**
+     * returns a handler class if one is defined
+     *
+     * @return mixed
+     */
+    public function getHandlerClass(){
+        return $this->domainDefinition->handlerclass;
     }
 
     /**
      * returns an array of fielddefinitions
      *
      * @param SpiceDictionaryItem|null $sysdictionaryItem
-     * @param bool $activeOnly
      * @return array
      * @throws Exception
      */
-    public function getFieldDefinitions(SpiceDictionaryItem $sysdictionaryItem = null, bool $activeOnly = true){
+    public function getFieldDefinitions(?SpiceDictionaryItem $sysdictionaryItem = null): array
+    {
         $fieldDefinitions = [];
-        $db = DBManagerFactory::getInstance();
 
-        $fieldObjects = $db->query("SELECT id FROM syscustomdomainfields WHERE sysdomaindefinition_id='{$this->id}'");
-        while($fieldObject = $db->fetchByAssoc($fieldObjects)){
+        $fields = SpiceDictionaryDomainFields::getInstance()->getDomainFields($this->id);
+
+        foreach($fields as $fieldObject){
             $definition = (new SpiceDictionaryDomainField($fieldObject['id']))->getDefinition($sysdictionaryItem);
             $fieldDefinitions[$definition->name] = $definition;
         }
 
+        $fieldDefinitions = array_values($fieldDefinitions);
 
-        $fieldObjects = $db->query("SELECT id FROM sysdomainfields WHERE sysdomaindefinition_id='{$this->id}'");
-        while($fieldObject = $db->fetchByAssoc($fieldObjects)){
-            $definition = (new SpiceDictionaryDomainField($fieldObject['id']))->getDefinition($sysdictionaryItem);
-            if(!isset($fieldDefinitions[$definition->name])) {
-                $fieldDefinitions[$definition->name] = $definition;
-            }
+        # call handler class method on repair to manipulate the field definitions dynamically
+        $handlerClass = $this->getHandlerClass();
+
+        if ($handlerClass && class_exists($handlerClass) && is_subclass_of($handlerClass, 'SpiceCRM\includes\SpiceDictionary\domainhandlers\SpiceDictionaryDomainHandler')) {
+
+            $handler = new $handlerClass();
+
+            $fieldDefinitions = $handler->onRepair($sysdictionaryItem, $this, $fieldDefinitions);
         }
-        return array_values($fieldDefinitions);
+
+        return $fieldDefinitions;
     }
 
     /**
@@ -77,27 +96,32 @@ class SpiceDictionaryDomain
      * writes the cahced fielddefs
      *
      * @param SpiceDictionaryItem $dictionaryitem
-     * @param SpiceDictionaryDefinition $dictionaryDefinition
      * @return array
      * @throws Exception
      */
-    public function activateForItem(SpiceDictionaryItem $dictionaryitem, SpiceDictionaryDefinition $dictionaryDefinition){
+    public function activateForItem(SpiceDictionaryItem $dictionaryitem){
         $alldefinitons = [];
 
         // get the field Definitons
         $definitions = $this->getFieldDefinitions($dictionaryitem);
 
         foreach ($definitions as &$definition){
-            $definition->sysdomaindefinition_id = $dictionaryitem->item->sysdomaindefinition_id;
+            // $definition->sysdomaindefinition_id = $dictionaryitem->item->sysdomaindefinition_id;
             if($dictionaryitem->itemDefinition->non_db){
                 $definition->source = 'non-db';
                 unset($definitions->dbtype);
             }
-            if($dictionaryitem->itemDefinition->required == 1) $definition->required = 1;
-            if(!empty($dictionaryitem->itemDefinition->default_value) || $dictionaryitem->itemDefinition->default_value == 0) $definition->default = $dictionaryitem->itemDefinition->default_value;
-            if($dictionaryitem->itemDefinition->descriptions) $definition->descriptions = $dictionaryitem->itemDefinition->descriptions;
+
+            // if($dictionaryitem->itemDefinition->required == 1) $definition->required = 1;
+            // if(!empty($dictionaryitem->itemDefinition->default_value) || $dictionaryitem->itemDefinition->default_value == 0) $definition->default = $dictionaryitem->itemDefinition->default_value;
+            // if($dictionaryitem->itemDefinition->descriptions) $definition->descriptions = $dictionaryitem->itemDefinition->descriptions;
             // ToDO: temp fix to preserve domain level field name
-            if($dictionaryitem->itemDefinition->label && !$definition->vname) $definition->vname = $dictionaryitem->itemDefinition->label;
+            // if($dictionaryitem->itemDefinition->label && !$definition->vname) $definition->vname = $dictionaryitem->itemDefinition->label;
+
+
+
+            // write labelinputhelper to cache
+            if(!empty($dictionaryitem->itemDefinition->labelinputhelper)) $definition->popupHelp = $dictionaryitem->itemDefinition->labelinputhelper;
 
             // write labelinputhelper to cache
             if(!empty($dictionaryitem->itemDefinition->labelinputhelper)) $definition->popupHelp = $dictionaryitem->itemDefinition->labelinputhelper;
@@ -108,23 +132,6 @@ class SpiceDictionaryDomain
                 // enum is the deprecated value
                 if($validation->domainvalidation->validation_type == 'options' || $validation->domainvalidation->validation_type == 'enum') $definition->options = $validation->domainvalidation->name;
             }
-
-            // write to the cached fields
-            $sysDictionaryField = [
-                'id' => SpiceUtils::createGuid(),
-                'sysdictionaryname' => $dictionaryDefinition->name,
-                'sysdictionarytablename' => $dictionaryDefinition->tablename,
-                'sysdictionarytableaudited' => $dictionaryDefinition->getDefinition()->audited,
-                'sysdictionarydefinition_id' => $dictionaryDefinition->id,
-                'sysdictionaryitem_id' => $dictionaryitem->id,
-                'sysdomainfield_id' => $definition->sysdictionarydomainfield_id,
-                'fieldname' => $definition->name,
-                'fieldtype' => $definition->type,
-                'fielddefinition' => json_encode($definition)
-            ];
-
-            // insert into the cached file
-            DBManagerFactory::getInstance()->insertQuery('sysdictionaryfields', $sysDictionaryField);
 
             // collect the definiton entry
             $alldefinitons[] = $definition;

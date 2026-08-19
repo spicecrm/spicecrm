@@ -25,7 +25,8 @@ declare var moment: any
 @Component({
     selector: 'outputrevisions-pdf-tab-container-email',
     templateUrl: '../templates/outputrevisionspdftabcontaineremail.html',
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 export class OutputRevisionsPDFTabContainerEmail {
 

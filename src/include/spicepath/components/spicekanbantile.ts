@@ -29,7 +29,8 @@ declare var _: any;
     host: {
         '[class]': "'slds-item'"
     },
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpiceKanbanTile implements OnInit, OnDestroy {
     /**
@@ -74,9 +75,6 @@ export class SpiceKanbanTile implements OnInit, OnDestroy {
         this.model.module = this.modellist.module;
         this.model.id = this.item.id;
         this.model.setData(_.clone(this.item));
-
-        // initialize the field statis
-        this.model.initializeFieldsStati();
 
         // handle drop from anopther kanban stage
         if (this.item._KanbanDrop) {

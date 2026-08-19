@@ -1,0 +1,89 @@
+<div class="slds-p-around--xx-small slds-grid slds-grid--vertical-align-center slds-theme--default">
+    <system-input-text placeholder="LBL_SEARCH" class="slds-grow" [(ngModel)]="definitionfilterterm" autocomplete="off" [showClear]="true"/>
+    <system-select system-select-id-only [(ngModel)]="definitionfiltertype" class="slds-p-left--xx-small" style="width: 200px;">
+        @for (dictionaryrelationshiptype of dictionarymanager.dictionaryrelationshiptypes; track dictionaryrelationshiptype.id){
+            <system-select-option [value]="dictionaryrelationshiptype.name" [display]="dictionaryrelationshiptype.name"/>
+        }
+    </system-select>
+    <system-select-icon class="slds-p-left--xx-small" [(ngModel)]="definitionfilterscope">
+        <system-select-icon-item/>
+        <system-select-icon-item value="g" icon="world"/>
+        <system-select-icon-item value="c" icon="people"/>
+    </system-select-icon>
+    <system-select-icon class="slds-p-left--xx-small" [(ngModel)]="definitionfilterstatus">
+        <system-select-icon-item/>
+        <system-select-icon-item value="d" icon="light_bulb" colorclass="slds-icon-text-warning"/>
+        <system-select-icon-item value="a" icon="light_bulb" colorclass="slds-icon-text-success"/>
+        <system-select-icon-item value="i" icon="light_bulb" colorclass="slds-icon-text-light"/>
+    </system-select-icon>
+</div>
+<div class="slds-border--top slds-scrollable" system-to-bottom>
+    <table class="slds-table slds-table--fixed-layout slds-table_bordered slds-table--header-fixed">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th style="width:2.5rem" scope="col"></th>
+                <th class="" scope="col">
+                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_NAME"></system-label></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_TYPE"></system-label></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_LEFT"></system-label></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_RIGHT"></system-label></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_PACKAGE"></system-label></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_VERSION"></system-label></div>
+                </th>
+                <th style="width:3rem" scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(relationship of dictionaryrelationships; track relationship.id) {
+                <tr class="slds-hint-parent" style="vertical-align: top">
+                    <td>
+                        <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="relationship.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
+                        <dictionary-manager-item-status [ngModel]="relationship.status" (ngModelChange)="setStatus(relationship, $event)"></dictionary-manager-item-status>
+                    </td>
+                    <td data-label="Dictionary" title="{{relationship.name}}">
+                        <div class="slds-truncate">{{ relationship.name }}</div>
+                    </td>
+                    <td data-label="Type">
+                        <div class="slds-truncate">{{ relationship.relationship_type }}</div>
+                    </td>
+                    <td data-label="Table">
+                        @if(getPolymorphDefinitions(relationship).length > 0){
+                            @for (p of getPolymorphDefinitions(relationship); track p.id){
+                                <div class="slds-truncate">{{dictionarymanager.getDictionaryDefinitionTableName(p.lhs_sysdictionarydefinition_id)}}</div>
+                            }
+                        } @else {
+                            <div class="slds-truncate">{{dictionarymanager.getDictionaryDefinitionTableName(relationship.lhs_sysdictionarydefinition_id)}}</div>
+                        }
+                    </td>
+                    <td data-label="Table">
+                        <div class="slds-truncate">{{dictionarymanager.getDictionaryDefinitionTableName(relationship.rhs_sysdictionarydefinition_id)}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{relationship.package}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{relationship.version}}</div>
+                    </td>
+                    <td>
+                        <button class="slds-button slds-button--icon" (click)="editRelationship(relationship)">
+                            <system-button-icon size="xx-small" [icon]="relationship.status == 'a' ? 'preview' : 'edit'"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--icon" [disabled]="relationship.status == 'a' || !dictionarymanager.canChange(relationship.scope)" (click)="delete(relationship.id)">
+                            <system-button-icon size="xx-small" icon="delete"></system-button-icon>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

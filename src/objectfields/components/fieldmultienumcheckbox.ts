@@ -9,7 +9,8 @@ import {metadata} from '../../services/metadata.service';
 
 @Component({
     selector: 'field-multienum-checkbox',
-    templateUrl: '../templates/fieldmultienumcheckbox.html'
+    templateUrl: '../templates/fieldmultienumcheckbox.html',
+    standalone: false
 })
 export class fieldMultienumCheckBox {
 
@@ -53,6 +54,6 @@ export class fieldMultienumCheckBox {
             valArray.splice(valIndex, 1);
         }
 
-        this.model.setField(this.fieldname, '^' + valArray.join('^,^') + '^');
+        this.model.setField(this.fieldname, valArray.map(v => `^${v}^`).join(','));
     }
 }

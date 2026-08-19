@@ -12,8 +12,7 @@
                     <system-label label="LBL_CONTROL"></system-label>
                 </div>
             </th>
-            <th scope="col">
-            </th>
+            <th scope="col" style="width: 2.5rem;"></th>
         </tr>
         </thead>
         <tbody>
@@ -24,7 +23,7 @@
             <td>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
-                        <select class="slds-select" [value]="getFieldControl(field.field)"
+                        <select class="slds-select" [disabled]="!view.isEditMode()" [value]="getFieldControl(field.field)"
                                 (change)="setFieldControl(field.field, $event)">
                             <option value="1">
                                 <system-label label="LBL_HIDE"></system-label>
@@ -40,15 +39,22 @@
                 </div>
             </td>
             <td>
-                <system-utility-icon class="slds-float--right" icon="clear" size="x-small"
-                                     (click)="removeField(field.field)"></system-utility-icon>
+                <button class="slds-button slds-button--icon" [disabled]="!view.isEditMode()" (click)="removeField(field.field)">
+                    <system-button-icon icon="clear"/>
+                </button>
             </td>
         </tr>
         </tbody>
     </table>
-    <div class="slds-align_absolute-center slds-p-top--medium">
-        <system-utility-icon icon="new" size="x-small" (click)="addField()"></system-utility-icon>
-    </div>
 } @else {
-    <div class="slds-p-around--medium slds-align_absolute-center"><system-label label="LBL_NOFIELDCONTROLSFORTHISTYPE"></system-label></div>
+    <div class="slds-p-around--medium slds-align_absolute-center slds-p-around--medium">
+        <system-illustration-no-records>
+            <system-label label="LBL_NOFIELDCONTROLSFORTHISTYPE"></system-label>
+        </system-illustration-no-records>
+    </div>
 }
+<div class="slds-align_absolute-center slds-p-top--medium">
+    <button class="slds-button slds-button--icon" *ngIf="view.isEditMode()" (click)="addField()">
+        <system-button-icon icon="new"/>
+    </button>
+</div>

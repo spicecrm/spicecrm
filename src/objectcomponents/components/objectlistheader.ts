@@ -26,7 +26,8 @@ import {ObjectListItem} from "./objectlistitem";
 @Component({
     selector: '[object-list-header]',
     templateUrl: '../templates/objectlistheader.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class ObjectListHeader implements OnDestroy {
 
@@ -68,7 +69,11 @@ export class ObjectListHeader implements OnDestroy {
     public subscriptions: Subscription = new Subscription();
 
     constructor(public modellist: modellist, public language: language, public view: view, public elementRef: ElementRef, public layout: layout, public cdref: ChangeDetectorRef) {
+        // set to short labels
         this.view.labels = 'short';
+
+        // align labels
+        this.view.alignLabels = true;
 
         // register to listfield changes
         this.subscriptions.add(this.modellist.listfield$.subscribe(data => this.cdref.detectChanges()));

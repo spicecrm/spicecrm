@@ -37,12 +37,10 @@
 namespace SpiceCRM\includes\Logger;
 
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
-use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
-use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
@@ -258,6 +256,7 @@ class SpiceLogger implements LoggerTemplate
         $logparams = []
     )
     {
+
         # prevent recursion when logging to log table fails
         if ($this->loggingToLogTable) {
             $this->loggingToLogTable = false;
@@ -269,25 +268,33 @@ class SpiceLogger implements LoggerTemplate
         //do not log on install
         if (!SpiceConfig::getInstance()->configExists() || SpiceConfig::getInstance()->installing) return true;
 
-        $td = new TimeDate();
-        $log = ["id" => SpiceUtils::createGuid(),
-            "table_name" => "syslogs",
-            "log_level" => $level,
+        // get an instance
+        $instance = DBManagerFactory::getInstance('spicelogger');
+
+        // if we failed to get an instance return
+        if(!$instance->database) return;
+
+        // make sure to set enable log to false
+        $instance->enablelog = false;
+
+        // create the log entry and write to the DB
+        $log = [
+            "id" => SpiceUtils::createGuid(),
+            "log_level" =>$level,
             "log_sublevel" => $sublevel,
             "pid" => getmypid(),
             "created_by" => (!empty($logparams['user']) ?: '-none-'),
-            'microtime' => $this->getTimestamp(),
-            "date_entered" => $td->nowDb(),
-            "description" => $message,
-            "transaction_id" => LoggerManager::getLogger()->getTransactionId()];
+            'microtime' =>$this->getTimestamp(),
+            "date_entered" => TimeDate::getInstance()->nowDb(),
+            "description" => $instance->quote($message),
+            "transaction_id" => LoggerManager::getLogger()->getTransactionId()
+        ];
 
-        // get an instance
-        $instance = DBManagerFactory::getInstance('spicelogger');
-        // make sure to set enable log to false
-        $instance->enablelog = false;
-        // write the query
-        $query = $instance->insertQuery("syslogs", $log, false);
-        $instance->query($query);
+        try {
+            $instance->queryOnly("INSERT INTO syslogs (" . implode(",", array_keys($log)) . ") VALUES ('" . implode("','", $log) . "')", true);
+        } catch (\Exception $exception){
+            // do nothing
+        }
 
         $this->loggingToLogTable = false;
     }

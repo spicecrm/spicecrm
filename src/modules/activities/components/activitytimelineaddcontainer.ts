@@ -10,21 +10,46 @@ import {
     ViewContainerRef,
     ElementRef,
     Renderer2,
-    OnDestroy, ViewChild
+    OnDestroy, ViewChild, ComponentRef
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {activitiytimeline} from '../../../services/activitiytimeline.service';
+import {navigation} from '../../../services/navigation.service';
+import {modal} from '../../../services/modal.service';
+import {trigger, state, style, transition, animate} from '@angular/animations';
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'activitytimeline-add-container',
-    templateUrl: '../templates/activitytimelineaddcontainer.html'
+    templateUrl: '../templates/activitytimelineaddcontainer.html',
+    animations: [
+        trigger('slideIn', [
+            state('void', style({
+                transform: 'translateX(-100%)',
+                opacity: 0
+            })),
+            state('*', style({
+                transform: 'translateX(0)',
+                opacity: 1
+            })),
+            transition('void => *', [
+                animate('0.3s ease-in')
+            ]),
+            transition('* => void', [
+                animate('0.3s ease-out')
+            ])
+        ])
+    ],
+    standalone: false
 })
+
 export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChildren('maintabs', {read: ViewContainerRef}) public maintabs: QueryList<any>;
     @ViewChildren('moretabs', {read: ViewContainerRef}) public moretabs: QueryList<any>;
+
     @ViewChild('moretab', {read: ViewContainerRef, static: false}) public moretab: ViewContainerRef;
 
     public currenttab: string = '';
@@ -32,13 +57,20 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
     public resizeListener: any;
     public moreOpen: boolean = false;
     public moreModules: string[] = [];
+    private subscription = new Subscription();
 
-    constructor(public model: model, public language: language, public activitiytimeline: activitiytimeline, public metadata: metadata, public elementRef: ElementRef, public renderer: Renderer2) {
+    constructor(public model: model,
+                public language: language,
+                public activitiytimeline: activitiytimeline,
+                public metadata: metadata,
+                public elementRef: ElementRef,
+                public renderer: Renderer2,
+                public modal: modal,
+                public navigation: navigation) {
         this.resizeListener = this.renderer.listen('window', 'resize', e => {
             this.handleOverflow();
         });
     }
-
 
     public ngOnInit() {
         let config = this.metadata.getComponentConfig('ActivityTimelineAddContainer', this.model.module);
@@ -49,6 +81,7 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
                 if (componentsetComponent.componentconfig.module && this.metadata.checkModuleAcl(componentsetComponent.componentconfig.module, 'create')) {
                     this.tabs.push({
                         module: componentsetComponent.componentconfig.module,
+                        label: componentsetComponent.componentconfig.label,
                         component: componentsetComponent.component,
                         componentconfig: componentsetComponent.componentconfig
                     });
@@ -66,6 +99,7 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
     }
 
     public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
         this.resizeListener();
     }
 
@@ -118,8 +152,11 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
 
     }
 
-    public setTab(object) {
-        this.currenttab = object;
+    public setTab(tab) {
+        if (tab.module == this.currenttab) return;
+        this.currenttab = tab.module;
+
+        if (!tab.cRef.instance.model.isDirty()) tab.cRef.instance.cancel();
     }
 
     public checkTab(object) {
@@ -136,5 +173,14 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
 
     public toggleOpen() {
         this.moreOpen = !this.moreOpen;
+    }
+
+    public pushChildComponentRef(tab, cRef: ComponentRef<any>) {
+        tab.cRef = cRef;
+    }
+
+    public checkTabDirty(module: string): boolean {
+        const tab = this.tabs.find(tab => tab.module === module);
+        return tab?.cRef?.instance?.model?.isDirty() ?? false;
     }
 }

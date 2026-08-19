@@ -1,48 +1,23 @@
 <?php
 
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\SystemTenants\api\controllers;
 
 use Exception;
-use SpiceCRM\modules\SystemTenants\SystemTenant;
-use SpiceCRM\data\BeanFactory;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\extensions\modules\LandingPages\LandingPage;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDemoData\SpiceDemoDataGenerator;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\SystemTenants\SystemTenant;
 
 class SystemTenantsController
 {
@@ -55,8 +30,63 @@ class SystemTenantsController
      * @return Response
      */
     public function initialize(Request $req, Response $res, array $args): Response {
+        set_time_limit(300);
         $tenant = BeanFactory::getBean('SystemTenants', $args['id']);
         return $res->withJson($tenant->initializeTenant());
+    }
+
+    /**
+     * confirm the tenant and process the initialization
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function confirmTenant(Request $req, Response $res, array $args): Response
+    {
+        /** @var SystemTenant $tenant */
+        $tenant = BeanFactory::getBean('SystemTenants', $args['id']);
+
+        if ($tenant->systemtenant_status == 'pending') {
+            $tenant->systemtenant_status = 'confirmed';
+            $tenant->save();
+        }
+
+        $redirectUrl = SpiceConfig::getInstance()->get('multitenancy.confirm_redirect_url');
+
+        if (!empty($redirectUrl)) {
+            return $res->withHeader('Location', $redirectUrl)->withStatus(302);
+        }
+
+        # load the landingpage content
+        /** @var LandingPage $landingPage */
+        $landingPage = BeanFactory::getBean('LandingPages', SpiceConfig::getInstance()->get('multitenancy.confirm_landing_page_id'));
+
+        if ($landingPage) {
+            $lpContent = $landingPage->parse($tenant);
+        } else {
+            $lpContent = ['content' => '<h1>Misconfiguration issue. Please contact the system administrator</h1>'];
+        }
+
+        $res->getBody()->write($lpContent['content']);
+        return $res->withHeader('Content-Type', 'text/html');
+    }
+
+    /**
+     * initializes the tenant
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws BadRequestException
+     */
+    public function createTenant(Request $req, Response $res, array $args): Response {
+        $data = (object) $req->getParsedBody();
+        $created = SystemTenant::createTenantFromInquiry($data);
+        return $res->withJson(['success' => $created]);
     }
 
     /**
@@ -81,7 +111,7 @@ class SystemTenantsController
         $tenant = BeanFactory::getBean('SystemTenants', $args['id']);
         if ($tenant) {
 
-            $tenant->switchToTenant();
+            SystemTenant::switchToTenant($tenant->id);
 
             $demoGenerator = new SpiceDemoDataGenerator();
             $demoGenerator->generateAccounts();

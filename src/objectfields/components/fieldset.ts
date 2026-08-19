@@ -7,9 +7,10 @@ import {metadata} from '../../services/metadata.service';
 @Component({
     selector: 'field-set',
     templateUrl: '../templates/fieldset.html',
-    host:{
-        '[class.slds-form-element]' : 'true'
-    }
+    host: {
+        '[class.slds-form-element]': 'true'
+    },
+    standalone: false
 })
 export class fieldSet implements OnInit{
     @Input() fieldset: string = '';

@@ -17,6 +17,8 @@ import {ProspectListsActionSelectButton} from "./components/prospectlistsactions
 import {ProspectListsSetTargetsEmailAddressModal} from "./components/prospectlistssettargetsemailaddressmodal";
 import {ProspectListsPersonEmailAddressField} from "./components/prospectlistspersonemailaddressfield";
 import {ProspectListCountField} from "./fields/prospectlistscountfield";
+import {ProspectListsAnalysis} from "./components/prospectlistsanalysis";
+import {ProspectlistsLastMemberModificationField} from "./fields/prospectlistslastmembermodificationfield";
 
 @NgModule({
     imports: [
@@ -34,7 +36,9 @@ import {ProspectListCountField} from "./fields/prospectlistscountfield";
         ProspectListsActionSelectButton,
         ProspectListsSetTargetsEmailAddressModal,
         ProspectListsPersonEmailAddressField,
-        ProspectListCountField
+        ProspectListCountField,
+        ProspectListsAnalysis,
+        ProspectlistsLastMemberModificationField
     ]
 })
 export class ModuleProspectLists {}

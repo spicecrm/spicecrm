@@ -193,4 +193,14 @@ class SpiceCacheRedis extends SpiceCacheAbstract
     {
         return str_replace(' ','_',$key);
     }
+
+    protected function _resetExternal()
+    {
+        // TODO: Implement _resetExternal() method.
+    }
+
+    public function __getKeys()
+    {
+        // TODO: Implement __getKeys() method.
+    }
 }

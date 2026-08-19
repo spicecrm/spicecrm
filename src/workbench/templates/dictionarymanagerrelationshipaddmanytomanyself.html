@@ -1,0 +1,22 @@
+<system-modal [size]="hasRelated ? 'medium' : 'small'">
+    <system-modal-header (close)="close()"><system-label label="LBL_N_TO_M_SELF"></system-label></system-modal-header>
+    <system-modal-content>
+        @if (!hasRelated) {
+            <div class="slds-grid">
+                <div class="slds-size--1-of-2 slds-p-horizontal--xx-small slds-form-element">
+                    <label class="slds-form-element__label"><system-label label="LBL_DICTIONARY"/></label>
+                    <system-select system-select-id-only [disabled]="currentIsModule" [(ngModel)]="lhsRelatedId" (ngModelChange)="rhsRelatedId = $event">
+                        <system-select-option *ngFor="let ri of relatedIds" [value]="ri.id" [display]="ri.name"/>
+                    </system-select>
+                </div>
+            </div>
+        } @else {
+            <dictionary-manager-relationship-container-manytomany isNew [relationshipFields]="relationshipFields" [relationship]="relationship"></dictionary-manager-relationship-container-manytomany>
+        }
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button *ngIf="!hasRelated" class="slds-button slds-button--brand" (click)="setRelated()"><system-label label="LBL_NEXT"></system-label></button>
+        <button *ngIf="hasRelated" class="slds-button slds-button--brand" (click)="add()"><system-label label="LBL_ADD"></system-label></button>
+    </system-modal-footer>
+</system-modal>

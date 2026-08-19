@@ -1,4 +1,5 @@
 <workbench-header titlelabel="LBL_DOMAIN_MANAGER" icon="dataset">
+    {{domainmanager.domaindefinitions.length}} <system-label label="LBL_ITEMS"/>
     <workbench-header-controls>
         <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last" system-dropdown-trigger>
             <button class="slds-button slds-button_icon slds-button_icon-border-filled"><system-button-icon icon="down"></system-button-icon></button>
@@ -16,14 +17,11 @@
 </workbench-header>
 <div class="slds-grid">
     <div class="slds-size--1-of-3">
-        <domain-manager-definitions></domain-manager-definitions>
+        <domain-manager-definitions/>
     </div>
     <div class="slds-size--2-of-3 slds-theme--default slds-border--left" system-to-bottom-noscroll>
         <div system-to-bottom>
-            <domain-manager-fields></domain-manager-fields>
+            <domain-manager-fields/>
         </div>
-        <!--div [ngStyle]="detailsHeight" class="slds-scrollable--y">
-            <domain-manager-field-tabs (expanded)="this.expanded = $event"></domain-manager-field-tabs>
-        </div-->
     </div>
 </div>

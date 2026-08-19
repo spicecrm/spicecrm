@@ -2,21 +2,26 @@
 
 namespace SpiceCRM\modules\Users\api\controllers;
 
-use SpiceCRM\data\BeanFactory;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\authentication\api\controllers\AuthenticateController;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SpiceTemplateCompiler\System;
+use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\TimeDate;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\modules\Users\User;
 
 class UsersController
 {
@@ -27,33 +32,87 @@ class UsersController
      * @return Response
      * @throws BadRequestException
      * @throws NotFoundException
-     * @throws \SpiceCRM\includes\ErrorHandlers\ConflictException
-     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     * @throws \Exception
      */
     public function saveUser(Request $req, Response $res, array $args): Response {
         $db = DBManagerFactory::getInstance();
         $params = $req->getParsedBody();
 
-        $email1 = $params['email1'];
+        $email1 = $params['user_email'];
         if (!empty($email1)) {
             $q = "select id from users where id in ( SELECT  er.bean_id AS id FROM email_addr_bean_rel er,
                 email_addresses ea WHERE ea.id = er.email_address_id
                 AND ea.deleted = 0 AND er.deleted = 0 AND er.bean_module = 'Users' AND email_address_caps IN ('{$db->quote(strtoupper($email1))}') )";
 
-            $row = $db->fetchByAssoc($db->query($q));
+            $row = $db->fetchOne("SELECT id FROM users WHERE UPPER(user_email) = '{$db->quote(strtoupper($email1))}' AND deleted = 0");
 
             if ($row && $row['id'] != $params['id'])
                 throw (new BadRequestException("Email already exists."))->setErrorCode('duplicateEmail1');
 
-            $email1 = htmlspecialchars(stripslashes(trim($params['email1'])));
+            $email1 = htmlspecialchars(stripslashes(trim($params['user_email'])));
             if (!filter_var($email1, FILTER_VALIDATE_EMAIL))
                 throw (new BadRequestException("Invalid email format."))->setErrorCode('invalidEmailFormat');
         }
 
+        $userId = $db->quote($args['id']);
+        $exists = (bool) $db->getOne("SELECT id FROM users WHERE id = '$userId'");
+
         $KRESTModuleHandler = new SpiceBeanHandler();
         $beanResponse = $KRESTModuleHandler->add_bean("Users", $args['id'], $params);
 
+        if (!$exists && !$params['external_auth_only']) {
+
+            /** @var User $user */
+            $user = BeanFactory::getBean('Users', $args['id']);
+
+            if ($params['credentials']['sendBySystem']) {
+                $this->sendUsernameBySystem($user);
+            }
+
+            $this->setNewUserPassword($user, $params['credentials']['newPassword'], $params['credentials']['sendBySystem'], $params['credentials']['forceReset']);;
+        }
+
         return $res->withJson($beanResponse);
+    }
+
+    /**
+     * send username to the person by system
+     * @param User $user
+     * @return void
+     * @throws \Exception
+     */
+    private function sendUsernameBySystem(User $user): void
+    {
+        $configs = SpiceCRMPasswordUtils::getSendCredentialConfigs('username');
+        $template = null;
+
+        if (!$configs->channel) {
+            throw new ForbiddenException("Send username not allowed check login management settings");
+        }
+
+        # gateway mailbox does not require email template. The template must be defined on the gateway server
+        if ($configs->mailboxId != 'gateway') {
+            $template = SpiceCRMPasswordUtils::getChannelTemplateByType($user, 'sendUsername', $configs->channel);
+        }
+
+        $user->sendCredentialToUser($template, 'username', ['username' => $user->user_name, 'source_frontend_url' => (new System())->frontend_url()]);
+    }
+
+    /**
+     * set a new user password
+     * @param User $user
+     * @param string $newPassword
+     * @param bool $sendBySystem
+     * @param bool $forceReset
+     * @return void
+     * @throws ForbiddenException
+     * @throws \Exception
+     */
+    private function setNewUserPassword(User $user, string $newPassword, bool $sendBySystem, bool $forceReset): void
+    {
+        AuthenticateController::checkCanSetPassword();
+        $sugarAuthenticationObj = AuthenticationController::getInstance()->getPasswordUtilsInstance();
+        $sugarAuthenticationObj->setNewPassword($user, $newPassword, $sendBySystem, $forceReset);
     }
 
     /**
@@ -64,7 +123,7 @@ class UsersController
      * @throws BadRequestException
      * @throws NotFoundException
      * @throws \SpiceCRM\includes\ErrorHandlers\ConflictException
-     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     * @throws Exception
      */
     public function createUser(Request $req, Response $res, array $args): Response {
         $db = DBManagerFactory::getInstance();
@@ -168,6 +227,25 @@ class UsersController
         $params['userid'] = $args['id'];
         $list = $this->getReassignModuleData($params);
         return $res->withJson($list);
+    }
+
+
+    /**
+     * gets a user based on the parent type & id
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function getUserByParent(Request $req, Response $res, array $args): Response {
+        $seed = BeanFactory::getBean('Users')->retrieve_by_string_fields(['parent_type' => $args['parenttype'], 'parent_id' => $args['parentid']]);
+
+        if(!$seed){
+            throw new NotFoundException('User with the given Parent exists not found');
+        }
+
+        return $res->withJson((new SpiceBeanHandler())->mapBean($seed));
     }
 
     /**
@@ -408,6 +486,51 @@ class UsersController
 
                 ]);
             }
+        }
+
+        // return
+        return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * generates Employee Records for all users that not yet do have one and links the employee to the user
+     * does not do it for admin and API users
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     */
+    public function generateEmployees(Request $req, Response $res, array $args): Response {
+
+        set_time_limit(120);
+
+        $seed = BeanFactory::getBean('Users');
+
+        $users = $seed->get_full_list([], "status = 'Active' AND (parent_id IS NULL OR parent_id = '') AND is_admin = 0 AND is_api_user = 0");
+
+        foreach ($users as $user) {
+            $e = BeanFactory::getBean('Employees');
+
+            $e->salutation = 'Mr.';
+            $e->first_name = $user->first_name;
+            $e->last_name = $user->last_name;
+            $e->phone_home = $user->phone_home;
+            $e->phone_mobile = $user->phone_mobile;
+            $e->phone_work = $user->phone_work;
+            $e->address_street = $user->address_street;
+            $e->address_street_number = $user->address_street_number;
+            $e->address_city = $user->address_city;
+            $e->address_state = $user->address_state;
+            $e->address_country = $user->address_country;
+            $e->email1 = $user->email1;
+            $e->save();
+
+            $user->parent_type = 'Employees';
+            $user->parent_id = $e->id;
+            $user->save();
         }
 
         // return

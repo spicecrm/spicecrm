@@ -20,7 +20,8 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: 'lead-convert',
     templateUrl: '../templates/leadconvert.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class LeadConvert {
 
@@ -129,12 +130,12 @@ export class LeadConvert {
         switch (this.currentConvertStep) {
 
             case 0:
-                if (this.account &&  this.account.validate()) {
+                if (this.account && (!this.account.isNew || this.account.validate())) {
                     this.currentConvertStep++;
                 }
                 break;
             case 1:
-                if (this.contact && this.contact.validate()) {
+                if (this.contact && (!this.contact.isNew || this.contact.validate())) {
                     this.currentConvertStep++;
                 }
                 break;

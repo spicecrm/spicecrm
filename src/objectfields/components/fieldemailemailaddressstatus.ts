@@ -7,7 +7,8 @@ import {modal} from "../../services/modal.service";
 @Component({
     selector: 'field-email-emailaddress-status',
     templateUrl: '../templates/fieldemailemailaddressstatus.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class fieldEmailEmailAddressStatus {
     /**

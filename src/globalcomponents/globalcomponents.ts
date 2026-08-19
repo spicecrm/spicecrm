@@ -105,12 +105,15 @@ import {GlobalSubscriptionsManager} from "./components/globalsubscriptionsmanage
 import {GlobalLoginOAuth2} from "./components/globalloginoauth2";
 import {GlobalLoginOAuth2Button} from "./components/globalloginoauth2button";
 import {GlobalHeaderReloadModal} from "./components/globalheaderreloadmodal";
-import {GlobalHeaderDocumentRevisions} from "../modules/documents/components/globalheaderdocumentrevisions";
-import {GlobalHeaderDocumentRevisionsModal} from "../modules/documents/components/globalheaderdocumentrevisionsmodal";
 import {GlobalNavigationTabContextMenu} from "./components/globalnavigationtabcontextmenu";
 import {CdkDrag, CdkDragHandle, CdkDropList, CdkDropListGroup} from "@angular/cdk/drag-drop";
 import {GlobalLogin2FAMethodSelectModal} from "./components/globallogin2famethodselectmodal";
 import {GlobalLoginPasskeyModal} from "./components/globalloginpasskeymodal";
+/**
+ * TODO importing anything from extensions is not allowed here.
+ */
+import {GlobalHeaderModuleShortcut} from "./components/globalheadermoduleshortcut";
+import {GlobalFieldTranslationsLanguageButton} from "./components/globalfieldtranslationslanguagebutton";
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
@@ -218,10 +221,10 @@ import {GlobalLoginPasskeyModal} from "./components/globalloginpasskeymodal";
         GlobalSubscriptionsManager,
         GlobalLoginOAuth2,
         GlobalLoginOAuth2Button,
-        GlobalHeaderDocumentRevisions,
-        GlobalHeaderDocumentRevisionsModal,
         GlobalLogin2FAMethodSelectModal,
-        GlobalLoginPasskeyModal
+        GlobalLoginPasskeyModal,
+        GlobalHeaderModuleShortcut,
+        GlobalFieldTranslationsLanguageButton
     ],
     exports: [
         GlobalCopyright,
@@ -233,8 +236,8 @@ import {GlobalLoginPasskeyModal} from "./components/globalloginpasskeymodal";
         GlobalDockedComposerOverflow,
         GlobalComposeButton,
         GlobalHeaderSearchResultsItem,
-        GlobalHeaderDocumentRevisionsModal,
-        GlobalLoginOAuth2
+        GlobalLoginOAuth2,
+        GlobalHeaderImage
     ]
 })
 export class GlobalComponents {

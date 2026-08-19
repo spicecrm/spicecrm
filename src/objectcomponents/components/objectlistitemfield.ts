@@ -8,7 +8,8 @@ import { language } from '../../services/language.service';
 
 @Component({
     selector: 'object-list-item--field',
-    templateUrl: '../templates/objectlistitemfield.html'
+    templateUrl: '../templates/objectlistitemfield.html',
+    standalone: false
 })
 export class ObjectListItemField implements AfterViewInit{
     @ViewChild('fieldcontainer', {read: ViewContainerRef, static: true}) fieldcontainer: ViewContainerRef;

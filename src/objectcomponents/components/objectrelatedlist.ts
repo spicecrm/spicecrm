@@ -18,7 +18,8 @@ declare var _: any;
 @Component({
     selector: "object-related-list",
     templateUrl: "../templates/objectrelatedlist.html",
-    providers: [relatedmodels]
+    providers: [relatedmodels],
+    standalone: false
 })
 export class ObjectRelatedList implements OnInit {
 
@@ -139,6 +140,9 @@ export class ObjectRelatedList implements OnInit {
 
         // set the modulefilter if one is set
         if (this.componentconfig.modulefilter) this.relatedmodels.modulefilter = this.componentconfig.modulefilter;
+
+        // set the edit componentset to the related model service
+        if (this.componentconfig.editcomponentset) this.relatedmodels.editcomponentset = this.componentconfig.editcomponentset;
 
         // set save to link only to prevent saving to backend and keep the data in the model link
         this.relatedmodels.saveToLinkOnly = !!this.componentconfig.saveToLinkOnly;

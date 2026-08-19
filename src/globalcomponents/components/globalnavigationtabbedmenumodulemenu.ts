@@ -28,7 +28,8 @@ import {GlobalNavigationMenuItemActionContainer} from "./globalnavigationmenuite
     selector: 'global-navigation-tabbed-module-menu',
     templateUrl: '../templates/globalnavigationtabbedmenumodulemenu.html',
     providers: [model, view],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class GlobalNavigationTabbedMenuModuleMenu implements OnChanges {
 
@@ -98,7 +99,13 @@ export class GlobalNavigationTabbedMenuModuleMenu implements OnChanges {
         return false;
     }
 
+    get hasFavorites(){
+        if (this.module) {
+            return this.metadata.getModuleDefs(this.module)?.favorites == '1';
+        }
 
+        return false;
+    }
 
     /**
      * when the module changes reload the menu, recent items and favorites
@@ -148,7 +155,9 @@ export class GlobalNavigationTabbedMenuModuleMenu implements OnChanges {
         }
 
         // load the favorites
-        this.favorites = this.favorite.getFavorites(this.module);
+        if(this.hasFavorites) {
+            this.favorites = this.favorite.getFavorites(this.module);
+        }
     }
 
     /**

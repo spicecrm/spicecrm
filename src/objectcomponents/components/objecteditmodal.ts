@@ -22,17 +22,25 @@ import {navigationtab} from "../../services/navigationtab.service";
  */
 @Component({
     templateUrl: '../templates/objecteditmodal.html',
-    providers: [view, modalwindow]
+    providers: [view, modalwindow],
+    standalone: false
 })
 export class ObjectEditModal implements OnInit {
     /**
      * a reference to the modal content to have a reference to scrolling
      */
     @ViewChild('modalContent', {read: ViewContainerRef, static: true}) public modalContent: ViewContainerRef;
+
+    /**
+     * a componentset that can be set to override
+     */
+    public componentSet: string;
+
     /**
      * the componentconfig that gets passed in when the modal is created
      */
-    public componentconfig: any;
+    public componentconfig: any ;
+
     /**
      * the actionset items to be rendered in the modal
      */

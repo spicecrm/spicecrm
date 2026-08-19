@@ -16,7 +16,8 @@ declare var moment: any;
 @Component({
     selector: 'email-clone-attachments-modal',
     templateUrl: '../templates/emailcloneattachmentsmodal.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 
 /**
@@ -204,7 +205,8 @@ export class EmailCloneAttachmentsModal {
 
         const body = {
             categoryId: categoryId,
-            selectedFiles: selectedFiles
+            selectedFiles: selectedFiles,
+            excludedFileIds: []
         };
 
         this.backend.postRequest(`common/spiceattachments/module/${this.parent.module}/${this.parent.id}/clone/${this.model.module}/${this.model.id}`, {}, body, this.modelattachments.httpRequestsRefID).subscribe({

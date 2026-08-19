@@ -11,6 +11,7 @@ import {orgunitsViewService} from "../services/orgunitsview.service";
 @Component({
     selector: 'orgunits-chart-view-orgunit',
     templateUrl: '../templates/orgunitschartvieworgunit.html',
+    standalone: false
 })
 export class OrgunitsChartOrgViewOrgunit{
 
@@ -21,13 +22,25 @@ export class OrgunitsChartOrgViewOrgunit{
     }
 
     get subUnits(){
-        let units = this.oview.orgunits.filter(o => o.parent_id == this.orgunitid).map(u => {return {module: 'OrgUnits', id: u.id, name: u.name};});
+        let units = this.oview.orgunits.filter(o => o.parent_id == this.orgunitid && (o.is_staff_unit == false || o.is_staff_unit == 0)).map(u => {return {module: 'OrgUnits', id: u.id, name: u.name};});
         let charts = this.oview.orgcharts.filter(o => o.orgunit_id == this.orgunitid).map(u => {return {module: 'OrgCharts', id: u.id, name: u.name};});
         return units.concat(charts).sort((a, b) => a.name.localeCompare(b.name));
     }
 
+    get staffUnits(){
+        let units = this.oview.orgunits.filter(o => o.parent_id == this.orgunitid && (o.is_staff_unit != false && o.is_staff_unit != 0)).map(u => {return {module: 'OrgUnits', id: u.id, name: u.name};});
+        return units.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
     get subOrgUnits() {
-        return this.oview.orgunits.filter(o => o.parent_id == this.orgunitid);
+        let so = this.oview.orgunits.filter(o => {
+            return  o.parent_id == this.orgunitid && (o.is_staff_unit == false || o.is_staff_unit == 0);
+        });
+        return so;
+    }
+
+    get staffOrgUnits() {
+        return this.oview.orgunits.filter(o => o.parent_id == this.orgunitid && o.is_staff_unit);
     }
 
     get subOrgCharts() {

@@ -3,11 +3,10 @@
 namespace SpiceCRM\modules\OutputRevisions\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\modules\OutputTemplates\OutputTemplate;
 
@@ -120,6 +119,7 @@ class OutputRevisionsController
         $Output = BeanFactory::getBean('OutputRevisions');
         $Output->parent_id = $args['parentid'];
         $Output->parent_type = $args['parenttype'];
+        $Output->outputtemplate_id = $args['template'];
         $Output->file_md5 = $md5;
         $Output->file_name = $template->getFileName();
         $Output->file_mime_type = 'application/pdf';

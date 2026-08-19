@@ -15,7 +15,8 @@ import {modal} from "../../services/modal.service";
             useExisting: forwardRef(() => SystemInputNumber),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputNumber implements ControlValueAccessor {
 
@@ -49,6 +50,7 @@ export class SystemInputNumber implements ControlValueAccessor {
 
     /**
      * a setter to set that a calculator icon should be displayed in the field
+     *
      * @param displayCalculator
      */
     @Input('system-input-number-with-calculator') set setCalculator(displayCalculator: boolean){
@@ -59,6 +61,21 @@ export class SystemInputNumber implements ControlValueAccessor {
         }
     }
     public withCalculator: boolean = false;
+
+    /**
+     * allows to align the field left, default is right aligned for numbers
+     *
+     * @param displayCalculator
+     */
+    public leftAlign: boolean = false;
+    @Input('system-input-number-leftalign') set setLeftAlign(leftAlign: boolean){
+        if (leftAlign === false) {
+            this.leftAlign = false;
+        } else {
+            this.leftAlign = true;
+        }
+    }
+
 
     /**
      * Display only the html input field, not the surrounding html
@@ -140,6 +157,10 @@ export class SystemInputNumber implements ControlValueAccessor {
 
 
     constructor(public userpreferences: userpreferences, public renderer: Renderer2, public injector: Injector) {
+    }
+
+    get alignmentClass(){
+        return this.leftAlign ? '' : 'slds-text-align--right';
     }
 
     // ControlValueAccessor Interface: >>

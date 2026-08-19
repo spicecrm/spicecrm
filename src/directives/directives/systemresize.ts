@@ -14,7 +14,8 @@ import {
  * a resizer directive that reacts on mopuse down and mouseup
  */
 @Directive({
-    selector: '[system-resize]'
+    selector: '[system-resize]',
+    standalone: false
 })
 export class SystemResizeDirective implements OnDestroy {
 

@@ -11,6 +11,7 @@ import {language} from '../../services/language.service';
 @Component({
     selector: 'style-cache-cleaner',
     templateUrl: '../templates/stylecachecleaner.html',
+    standalone: false
 })
 export class StyleCacheCleaner {
     public is_loading = false;

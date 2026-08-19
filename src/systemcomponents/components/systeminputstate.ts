@@ -18,7 +18,8 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
             useExisting: forwardRef(() => SystemInputState),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputState implements OnChanges, ControlValueAccessor {
 
@@ -50,15 +51,14 @@ export class SystemInputState implements OnChanges, ControlValueAccessor {
     /**
      * set to true if the address inpout shoudl be strict according to the dropdown values
      */
-    public strict: boolean = false;
+    public strict: boolean = true;
 
     constructor(
         public metadata: metadata,
         public language: language,
         public configuration: configurationService
     ) {
-        let addressmode = this.configuration.data.backendextensions.spiceui.config.format;
-        if(addressmode == 'strict') this.strict = true;
+        if (this.configuration.getCapabilityConfig('address_format').lazy) this.strict = false;
     }
 
     get value() {

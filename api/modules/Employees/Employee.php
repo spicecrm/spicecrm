@@ -1,35 +1,11 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 namespace SpiceCRM\modules\Employees;
 
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
+use SpiceCRM\includes\TimeDate;
+use DateTime;
 
 class Employee extends Person {
 
@@ -54,9 +30,11 @@ class Employee extends Person {
      * @return false|mixed
      */
     public function getPrimaryOrgUnit(){
-        $orgunit = $this->get_linked_beans('orgunitprimary');
-        if(count($orgunit) > 0){
-            return $orgunit[0];
+
+        $orgUnitId = $this->db->getOne("SELECT orgunit_id FROM orgunits_beans WHERE bean_id = '$this->id' AND is_primary = 1 AND deleted != 1");
+
+        if($orgUnitId){
+            return BeanFactory::getBean('OrgUnits', $orgUnitId);
         }
 
         // BWC fallback check employees.orgunit_id
@@ -83,5 +61,29 @@ class Employee extends Person {
         return false;
     }
 
+    /**
+     * checks absences for the employee for the given date and returns true if the user is absent
+     *
+     * @param DateTime $date
+     * @param string[] $statuses
+     * @return bool
+     */
+    public function isAbsent(DateTime $date, array $statuses = ['created', 'submitted', 'approved']): bool
+    {
+        return (bool) $this->getAbsenceType($date, $statuses);
+    }
+
+    /**
+     * get the absence type for the employee for the given date
+     * @param DateTime $date
+     * @param array $statuses
+     * @return string|null
+     */
+    public function getAbsenceType(DateTime $date, array $statuses = ['created', 'submitted', 'approved']): ?string
+    {
+        $checkDate = $date->format(TimeDate::DB_DATE_FORMAT);
+        $statusFilter = "'" . implode("','", $statuses) . "'";
+        return $this->db->getOne("SELECT type FROM userabsences WHERE deleted = 0 AND employee_id = '$this->id' AND date_start <= '$checkDate' AND date_end >= '$checkDate' AND status IN ($statusFilter)");
+    }
 
 }

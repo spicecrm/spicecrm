@@ -19,7 +19,8 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: "lead-convert-account",
     templateUrl: "../templates/leadconvertaccount.html",
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 export class LeadConvertAccount implements AfterViewInit, OnInit {
     /**
@@ -68,7 +69,7 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
     }
 
     /**
-     * initializes the account from the lead using th ecopy rules
+     * initializes the account from the lead using the copy rules
      * Also subscribes to the model data$ and updates the leads account_id and anccunt_linked_name if the model data changes
      */
     public initializeFromLead() {

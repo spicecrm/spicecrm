@@ -24,9 +24,17 @@ declare var moment: any;
 @Component({
     selector: 'system-display-datetime',
     templateUrl: '../templates/systemdisplaydatetime.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestroy {
+
+    /**
+     * the user timezone
+     *
+     * @private
+     */
+    private timeZone;
 
     /**
      * the number to be displayed
@@ -48,14 +56,72 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
     @Input() public displayTime: boolean = true;
 
     /**
+     * attribute to hide time
+     * @param value
+     */
+    @Input('system-display-datetime-hide-time') set setDisplayTime(value: any|boolean) {
+        this.displayTime = false;
+    }
+
+    /**
+     * set to true to display the day
+     *
+     * @private
+     */
+    @Input() public displayDayOfWeek: boolean = false;
+
+    /**
+     * attribute to display the weekday
+     *
+     * @param value
+     */
+    @Input('system-display-datetime-show-dayofweek') set setDisplayDayOfWeek(value: boolean) {
+        if (value === false) {
+            this.displayDayOfWeek = false;
+        } else {
+            this.displayDayOfWeek = true;
+        }
+    }
+
+    /**
+     * attribute to hide time
+     * @param value
+     */
+    private _displayFromNow: boolean = false;
+    @Input('system-display-datetime-fromnow') set setDisplayFromNow(value: boolean) {
+        if (value === false) {
+            this._displayFromNow = false;
+        } else {
+            this._displayFromNow = true;
+        }
+    }
+
+    /**
+     * attribute to display the value in utc
+     * @param value
+     */
+    private _displayUTC: boolean = false;
+    @Input('system-display-datetime-utc') set setDisplayUTC(value: boolean) {
+        if (value === false) {
+            this._displayUTC = false;
+        } else {
+            this._displayUTC = true;
+        }
+    }
+
+    @Input() public specificFormat: string;
+
+    /**
      * holds the components subscriptions
      *
      * @private
      */
     public subscriptions: Subscription = new Subscription();
 
-    constructor(public language: language, public cdRef: ChangeDetectorRef, public session: session, public userpreferences: userpreferences) {
+    private days= ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY']
 
+    constructor(public language: language, public cdRef: ChangeDetectorRef, public session: session, public userpreferences: userpreferences) {
+        this.timeZone = this.userpreferences.toUse.timezone || this.session.getSessionData('timezone') || moment.tz.guess(true);
     }
 
     /**
@@ -116,17 +182,31 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
         // if we do not have a date or neither date nor time should be displayed return empty
         if (!this.date || (!this.displayDate && !this.displayTime)) return '';
 
-        let formatArray = [];
-        if (this.displayDate) formatArray.push(this.userpreferences.getDateFormat());
-        if (this.displayTime) formatArray.push(this.userpreferences.getTimeFormat());
-
-        if(moment.isMoment(this.date)) {
-            return this.date.format(formatArray.join(' '));
+        if(this._displayFromNow === true){
+            return this.date.fromNow();
         } else {
-            let timeZone = this.userpreferences.toUse.timezone || this.session.getSessionData('timezone') || moment.tz.guess(true);
-            // set the Time Zone for the Field Value only if the Time Zone is set
-            return moment.utc(this.date).tz(timeZone).format(formatArray.join(' '));
+            let formatArray = [];
+            if (this.specificFormat) formatArray.push( this.specificFormat );
+            else {
+                if( this.displayDate ) formatArray.push( this.userpreferences.getDateFormat() );
+                if( this.displayTime ) formatArray.push( this.userpreferences.getTimeFormat() );
+            }
+
+            if (moment.isMoment(this.date)) {
+                return this.date.format(formatArray.join(' '));
+            } else {
+
+                // set the Time Zone for the Field Value only if the Time Zone is set
+                return this._displayUTC ? moment.utc(this.date).format(formatArray.join(' ')) :  moment.utc(this.date).tz(this.timeZone).format(formatArray.join(' '));
+            }
         }
+    }
+
+    /**
+     * get the weekday label
+     */
+    get weekDayLabel(){
+        return this.date ? 'LBL_' + this.days[moment.utc(this.date).tz(this.timeZone).format('d')] : '';
     }
 
 }

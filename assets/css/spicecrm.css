@@ -15,17 +15,17 @@
 :root {
     --color-white: white;
     --color-grey-1: #fafafa;
-    --color-grey-3: #f3f2f2;
+    --color-grey-3: #f3f3f3;
     --color-gray-4: #ecebea;
     --color-grey-5: #dddbda;
     --color-grey-7: #aaaaaa;
     --color-grey-9: #706e6b;
     --color-grey-13: #080707;
     --brand-background-primary: #fafaf9;
-    --brand-primary: #CA1B21;
+    --brand-primary: #f72121;
     --brand-primary-active: #b3191e;
     --brand-primary-transparent: rgba(155, 155, 155, .1);
-    --brand-accessible: #CA1B21;
+    --brand-accessible: #f72121;
     --brand-accessible-active: #b3191e;
     --brand-header-contrast-cool: #a61419;
     --brand-text-link: #1f1f1f;
@@ -36,24 +36,25 @@
     --color-text-link-active: #222;
     --color-progressbar_item-completed: #080707;
     --color-background-alt-inverse: #002D31;
-    --color-border-brand: #CA1B21;
-    --sds-c-button-brand-color-background: #CA1B21;
+    --color-border-brand: #f72121;
+    --sds-c-button-brand-color-background: #f72121;
     --slds-c-button-brand-color-border: var(--color-grey-5);
-    --sds-c-button-neutral-color-background-hover: #CA1B21;
+    --sds-c-button-neutral-color-background-hover: #f72121;
+    --slds-c-button-color-background-hover: #f72121;
     --sds-c-button-brand-color-border-hover: #ffffff;
-    --sds-c-button-brand-color-background-active: #CA1B21;
+    --sds-c-button-brand-color-background-active: #f72121;
     --sds-c-button-brand-color-border-active: #ffffff;
-    --sds-c-button-brand-color-background-hover: #CA1B21;
-    --sds-c-input-shadow-focus: 0 0 3px #CA1B21;
-    --sds-c-textarea-shadow-focus: 0 0 3px #CA1B21;
+    --sds-c-button-brand-color-background-hover: #f72121;
+    --sds-c-input-shadow-focus: 0 0 3px #f72121;
+    --sds-c-textarea-shadow-focus: 0 0 3px #f72121;
     --slds-c-input-color-border: #c9c9c9;
     --slds-c-select-color-border: #c9c9c9;
     --slds-g-color-border-base-4: var(--slds-g-color-border-base-1);
-    --sds-c-select-shadow-focus: 0 0 3px #CA1B21;
+    --sds-c-select-shadow-focus: 0 0 3px #f72121;
     --sds-c-button-text-color-hover: #ffffff;
     --sds-c-toast-text-color: #ffffff;
     --sds-c-icon-color-foreground: #ffffff;
-    --slds-c-slider-track-color-background: #CA1B21;
+    --slds-c-slider-track-color-background: #f72121;
     --spice-alert-color-error: #ea001e;
     --spice-alert-color-info: #0176d3;
     --spice-alert-color-warning: #fe9339;
@@ -71,6 +72,10 @@
     --slds-g-shadow-outline-focus-1: 0 0 3px var(--brand-primary);
     --slds-c-radio-mark-color-foreground: var(--brand-primary);
     --slds-c-radio-shadow-focus: 0 0 3px var(--brand-primary);
+    --slds-c-slider-thumb-color-foreground: var(--brand-primary);
+    --sds-c-slider-thumb-color-foreground-active: var(--color-grey-9);
+    --slds-c-slider-thumb-color-foreground-focus: var(--color-grey-9);
+    --sds-c-slider-thumb-color-foreground-hover: var(--color-grey-7);
 }
 
 html {
@@ -156,6 +161,10 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     color: var(--brand-primary);
 }
 
+.slds-text-linethrough{
+    text-decoration: line-through;
+}
+
 /* a 1 pixel gap between tab and bold horizontal line. */
 .slds-context-bar__item:before {
     bottom: 1px;
@@ -186,6 +195,10 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 }
 .slds-button span::first-letter {
     text-transform: capitalize;
+}
+
+.slds-button:hover .slds-button__icon{
+    fill: var(--color-white);
 }
 
 /* align text justified */
@@ -307,6 +320,16 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     background: var(--color-gray-4);
     box-shadow: var(--color-border-brand) 4px 0 0 inset;
 }
+/* set indovodual paddings for the tree */
+[aria-level="1"]>.slds-tree__item{padding-left:0rem}
+[aria-level="2"]>.slds-tree__item{padding-left:1rem}
+[aria-level="3"]>.slds-tree__item{padding-left:2rem}
+[aria-level="4"]>.slds-tree__item{padding-left:3rem}
+[aria-level="5"]>.slds-tree__item{padding-left:4rem}
+[aria-level="6"]>.slds-tree__item{padding-left:5rem}
+[aria-level="7"]>.slds-tree__item{padding-left:6rem}
+[aria-level="8"]>.slds-tree__item{padding-left:7rem}
+[aria-level="9"]>.slds-tree__item{padding-left:8rem}
 
 /* for tables: resizable columns */
 .slds-table th.slds-resizable {
@@ -371,7 +394,9 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 }
 
 /* radio button groups: white color for icons in radio buttons */
-.slds-radio_button-group .slds-radio_button [type=radio]:checked + label svg {
+.slds-radio_button-group .slds-radio_button [type=radio]:checked + label svg,
+.spice-button-icon-white.slds-button--icon svg,
+.spice-button-icon-white.slds-button_icon svg {
     fill: var(--color-white);
 }
 
@@ -395,7 +420,7 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 .slds-button--icon:enabled:hover,
 .slds-button--icon-border-filled:enabled:focus,
 .slds-button--icon-border-filled:enabled:hover {
-    color: var(--color-border-brand);
+    color: var(--sds-c-button-text-color-hover);
 }
 
 .slds-button.slds-button--brand, .slds-button.slds-button_brand {
@@ -407,6 +432,23 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 .slds-button-no-focus:hover{
     background-color: inherit;
 }
+
+.slds-button:hover .slds-icon,
+.slds-button:focus .slds-icon,
+.slds-button.slds-is-pressed .slds-icon{
+    fill: var(--color-white);
+}
+
+/* disabled fill color if in disabled element */
+.slds-is-disabled .slds-icon_container.slds-icon{
+    fill: var(--slds-g-color-neutral-base-80, #c9c9c9)
+}
+
+/* disabled text color */
+.slds-dropdown__item>a.slds-is-disabled a{
+    color: var(--slds-g-color-neutral-base-80, #c9c9c9)
+}
+
 
 /* fix for scoped tabs when the second tba is selected */
 .slds-tabs--scoped__item, .slds-tabs_scoped__item{
@@ -431,14 +473,27 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     align-items:center;
 }
 
-/** overwrite dropdown triggers and icon button to not be styled like regular button, excluding the stateful button for the reminders **/
-.slds-button--icon:hover,
-.slds-button--icon:focus,
-.slds-button--icon:active,
+
 .slds-dropdown-trigger > .slds-button:not(.slds-button_stateful):hover,
 .slds-dropdown-trigger > .slds-button:not(.slds-button_stateful):focus,
 .slds-dropdown-trigger > .slds-button:not(.slds-button_stateful):active {
     color: var(--color-border-brand);
+    background: var(--brand-primary);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+/** overwrite the color for focus and active **/
+.slds-dropdown-trigger > .slds-button:not(.slds-button_stateful):focus,
+.slds-dropdown-trigger > .slds-button:not(.slds-button_stateful):active{
+    color: var(--sds-c-button-text-color-hover);
+}
+
+/** overwrite dropdown triggers and icon button to not be styled like regular button, excluding the stateful button for the reminders **/
+.slds-button--icon:hover,
+.slds-button--icon:focus,
+.slds-button--icon:active {
+    color: var(--sds-c-button-text-color-hover);
     -webkit-box-shadow: none;
     box-shadow: none;
 }
@@ -458,7 +513,7 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 
 .spice-drop-zone {
     position:relative;
-    z-index:8000;
+    z-index:1;
     width: 100%;
 }
 .spice-drop-zone article:focus {
@@ -548,10 +603,10 @@ input[type="submit"] {
 /* brand color for vertical progress bar */
 .slds-progress_vertical .slds-progress__item.slds-is-completed .slds-progress__marker_icon svg
 {
-    fill: var(--brand-primary,#CA1B21);
+    fill: var(--brand-primary,#f72121);
 }
 .slds-progress_vertical .slds-progress__item.slds-has-error:before, .slds-progress_vertical .slds-progress__item.slds-is-active:before, .slds-progress_vertical .slds-progress__item.slds-is-completed:after, .slds-progress_vertical .slds-progress__item.slds-is-completed:before {
-    background-color: var(--brand-primary,#CA1B21);
+    background-color: var(--brand-primary,#f72121);
 }
 
 .slds-context-bar {
@@ -717,6 +772,11 @@ input[type="submit"] {
     min-height: 0;
 }
 
+.slds-icon-text-superlight{
+    /*! @css-var-fallback fill */
+    --slds-c-icon-color-foreground:var(--color-gray-4, #ecebea);
+}
+
 .spice-sticky-top, .spice-sticky-bottom , .spice-sticky-left , .spice-sticky-right {
     position: sticky;
     z-index: 1;
@@ -736,4 +796,67 @@ input[type="submit"] {
 
 .spice-sticky-right {
     right: 0;
+}
+
+.spice-select-disabled {
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.slds-popover__body {
+    overflow: auto;
+}
+
+.slds-popover-container {
+    position: absolute;
+    overflow: visible;
+    margin: 1px;
+}
+
+.slds-popover-container:has(.slds-nubbin_top), .slds-popover-container:has(.slds-nubbin_top-left), .slds-popover-container:has(.slds-nubbin_top-right) {
+    padding-top: 1rem;
+}
+
+.slds-popover-container:has(.slds-nubbin_top-right), .slds-popover-container:has(.slds-nubbin_bottom-right) {
+    margin-right: -1rem;
+}
+
+.slds-popover-container:has(.slds-nubbin_top-left), .slds-popover-container:has(.slds-nubbin_bottom-left) {
+    margin-left: -1rem;
+}
+
+.slds-popover-container:has(.slds-nubbin_bottom), .slds-popover-container:has(.slds-nubbin_bottom-left), .slds-popover-container:has(.slds-nubbin_bottom-right) {
+    padding-bottom: 1rem;
+}
+
+.slds-popover-container:has(.slds-nubbin_left), .slds-popover-container:has(.slds-nubbin_left-bottom), .slds-popover-container:has(.slds-nubbin_left-top) {
+    padding-left: 1rem;
+}
+
+.slds-popover-container:has(.slds-nubbin_right), .slds-popover-container:has(.slds-nubbin_right-bottom), .slds-popover-container:has(.slds-nubbin_right-top) {
+    padding-right: 1rem;
+}
+
+.system-responsive-sidebar-small {
+    position: absolute;
+    top: 0;
+    z-index: 10;
+    transform: translateX(-100%);
+}
+
+.system-native-resizable-handle {
+    user-select: none;
+    z-index: 9999;
+    position: absolute;
+    -webkit-user-drag: none;
+    touch-action: none;
+}
+
+.spice-progress-bar-transparent .slds-progress-bar {
+    background-color: unset;
+}
+
+.field-container-height-full field-container > div {
+    height: 100%;
 }

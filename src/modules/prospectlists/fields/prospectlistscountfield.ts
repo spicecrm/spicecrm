@@ -3,7 +3,8 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 
 @Component({
     selector: 'prospect-list-count-field',
-    templateUrl: '../templates/prospectlistcountfield.html'
+    templateUrl: '../templates/prospectlistcountfield.html',
+    standalone: false
 })
 
 export class ProspectListCountField extends fieldGeneric implements OnInit {

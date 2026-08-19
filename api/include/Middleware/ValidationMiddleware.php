@@ -26,7 +26,7 @@ class ValidationMiddleware
         self::TYPE_STRING, self::TYPE_ENUM, self::TYPE_GUID, self::TYPE_DATETIME, self::TYPE_BOOL,
         self::TYPE_NUMERIC, self::TYPE_ALPHANUMERIC, self::TYPE_EMAIL, self::TYPE_JSON, self::TYPE_BASE64,
         self::TYPE_MODULE, self::TYPE_ARRAY, self::TYPE_DATE, self::TYPE_EXTENSION, self::TYPE_OBJECT,
-        self::TYPE_COMPLEX,
+        self::TYPE_COMPLEX, self::TYPE_FILE
     ];
     private $allowedValidationOptions = [
         self::VOPT_MIN_SIZE, self::VOPT_MAX_SIZE, self::VOPT_FUNCTION, self::VOPT_REGEX,
@@ -54,6 +54,12 @@ class ValidationMiddleware
     const TYPE_EXTENSION    = 'extension';
     const TYPE_OBJECT       = 'object';
     const TYPE_COMPLEX      = 'complex';
+    const TYPE_BEAN_SCHEMA      = 'beanSchema';
+    const TYPE_LINK      = 'link';
+    const TYPE_ONE_OF      = 'oneOf';
+
+    const TYPE_FILE      = 'file';
+
 
     const VOPT_MIN_SIZE      = 'minSize';
     const VOPT_MAX_SIZE      = 'maxSize';
@@ -114,7 +120,7 @@ class ValidationMiddleware
     private function checkParameterPresence(): void {
         $pathParams  = $this->route->getArguments();
         $queryParams = $this->request->getQueryParams();
-        $bodyParams  = $this->request->getParsedBody();
+        $bodyParams  = $this->request->getParsedBody() ?: [];
 
         foreach ($this->routeDefinition['parameters'] as $paramName => $paramDefinition) {
             if (!isset($paramDefinition['required'])

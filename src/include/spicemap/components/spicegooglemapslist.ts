@@ -18,7 +18,8 @@ import {ListTypeI} from "../../../services/interfaces.service";
 @Component({
     selector: 'spice-google-maps-list',
     templateUrl: '../templates/spicegooglemapslist.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
 
@@ -92,6 +93,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
      */
     public ngOnInit() {
         this.loadComponentConfigs();
+        this.setRecords();
         this.subscribeToModelListChanges();
         this.subscribeToBroadcastMessages();
     }

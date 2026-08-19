@@ -37,23 +37,30 @@
 namespace SpiceCRM\modules\Users;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\extensions\modules\TextMessages\TextMessage;
+use SpiceCRM\extensions\modules\TextMessageTemplates\TextMessageTemplate;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceGateway\SpiceGatewayClientHandler;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\templates\person\Person;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\Emails\Email;
+use SpiceCRM\modules\EmailTemplates\EmailTemplate;
+use SpiceCRM\modules\SystemTenants\hooks\TenantUserHooks;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 
 // workaround for spiceinstaller
-use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\includes\ErrorHandlers\BadRequestException;
-use SpiceCRM\includes\authentication\AuthenticationController;
 
 // User is used to store customer information.
-class User extends Person
+class User extends SpiceBean
 {
     var $user_preferences;
     var $impersonating_user_id;
@@ -226,21 +233,21 @@ class User extends Person
 
 
         // is_group & portal should be set to 0 by default
-        if (!isset($this->is_group)) {
-            $this->is_group = 0;
-        }
-        if (!isset($this->portal_only)) {
-            $this->portal_only = 0;
-        }
+//        if (!isset($this->is_group)) {
+//            $this->is_group = 0;
+//        }
+//        if (!isset($this->portal_only)) {
+//            $this->portal_only = 0;
+//        }
 
         // wp: do not save user_preferences in this table, see user_preferences module
         $this->user_preferences = '';
 
-        // if this is an admin user, do not allow is_group or portal_only flag to be set.
-        if ($this->is_admin) {
-            $this->is_group = 0;
-            $this->portal_only = 0;
-        }
+//        // if this is an admin user, do not allow is_group or portal_only flag to be set.
+//        if ($this->is_admin) {
+//            $this->is_group = 0;
+//            $this->portal_only = 0;
+//        }
 
         // If ...
         // • the user name has been changed, or
@@ -262,7 +269,7 @@ class User extends Person
         parent::save($check_notify, $fts_index_bean);
 
         // populate the name field
-        $this->_create_proper_name_field();
+        // $this->_create_proper_name_field();
 
         // set some default preferences when creating a new user
         if ($setNewUserPreferences) {
@@ -275,10 +282,32 @@ class User extends Person
         return $this->id;
     }
 
+    /**
+     * built-in after save and delete tenant hooks to adjust the tenant mapping table
+     * @param $event
+     * @param $arguments
+     * @return void
+     * @throws Exception
+     */
+    public function call_custom_logic($event, $arguments = null): void
+    {
+        if ($this->processed) return;
+
+        switch ($event) {
+            case 'after_delete':
+                TenantUserHooks::removeUserFromTenantMappingTable($this);
+                break;
+            case 'after_save':
+                TenantUserHooks::addUserTOTenantMappingTable($this);
+                break;
+        }
+        parent::call_custom_logic($event, $arguments);
+    }
+
     function get_summary_text()
     {
         //$this->_create_proper_name_field();
-        return $this->name;
+        return $this->user_name;
     }
 
     /**
@@ -313,6 +342,26 @@ class User extends Person
     {
         $ret = parent::retrieve($id, $encode, $deleted, $relationships);
 
+        // get the parent if we have one
+        if($this->parent_type && $this->parent_id){
+            $parent = BeanFactory::getBean($this->parent_type, $this->parent_id, ['relationships' => false]);
+            if($parent){
+                if ($parent->image) {
+                    $this->user_image = $parent->image;
+                }
+                $this->salutation = $parent->salutation;
+                $this->first_name = $parent->first_name;
+                $this->last_name = $parent->last_name;
+                $this->full_name = $parent->full_name;
+                $this->title = $parent->title;
+                $this->phone_home = $parent->phone_home;
+                $this->phone_mobile = $parent->phone_mobile;
+                $this->phone_work = $parent->phone_work;
+                $this->phone_other = $parent->phone_other;
+                $this->parent_name = $parent->full_name;
+            }
+        }
+
         $this->summary_text = $this->get_summary_text();
 
         if ($ret) {
@@ -326,13 +375,59 @@ class User extends Person
             }
         }
 
+        // auto self healing and set email 1 - to be @deprecated inj one of the future releases
+        if(empty($this->user_email)){
+            if($this->email1) {
+                // populate the email field
+                $this->user_email = $this->email1;
+
+                // update the user and cut the email1 field
+                $this->db->query("UPDATE users SET user_email = '{$this->user_email}' WHERE id = '{$this->id}'");
+                $this->db->query("UPDATE email_addr_bean_rel SET deleted = 1 WHERE bean_id = '{$this->id}' AND bean_module='Users' AND deleted = 0");
+            }
+        } else {
+            $this->email1 = $this->user_email;
+        }
+
         return $ret;
     }
 
     public function retrieveViewDetails()
     {
         parent::retrieveViewDetails(); // TODO: Change the autogenerated stub
+
+        // get the parent if we have one
+        /* moved to the retrieve
+        if($this->parent_type && $this->parent_id){
+            $parent = BeanFactory::getBean($this->parent_type, $this->parent_id);
+            if($parent){
+                $this->user_image = $parent->image;
+                $this->salutation = $parent->salutation;
+                $this->first_name = $parent->first_name;
+                $this->last_name = $parent->last_name;
+                $this->full_name = $parent->full_name;
+                $this->title = $parent->title;
+                $this->phone_home = $parent->phone_home;
+                $this->phone_mobile = $parent->phone_mobile;
+                $this->phone_work = $parent->phone_work;
+                $this->phone_other = $parent->phone_other;
+                $this->parent_name = $parent->full_name;
+            }
+        }
+        */
+
         $this->getPrimaryOrgUnit();
+    }
+
+    public function retrieveListDetails()
+    {
+        parent::retrieveListDetails(); // TODO: Change the autogenerated stub
+        $this->getPrimaryOrgUnit();
+    }
+
+    public function retrieve_by_email_address($email, $encode = true, $deleted = true, $relationships = true)
+    {
+        return $this->retrieve_by_string_fields(['user_email' => $email], $encode, $deleted, $relationships);
     }
 
     /**
@@ -343,15 +438,39 @@ class User extends Person
      */
     public function getPrimaryOrgUnit(){
         if($this->parent_id && !empty($this->parent_type)){
-            $orgUnits = $this->get_linked_beans('orgunitprimary');
-            if($orgUnits){ // should be only 1
-                foreach($orgUnits as $orgUnit){
-                    $this->orgunit_id = $orgUnit->id;
-                    $this->orgunit_name = $orgUnit->name;
-                    $this->orgunit_assigned_user_id = $orgUnit->assigned_user_id;
+            $orgUnitId = $this->db->getOne("SELECT orgunit_id FROM orgunits_beans WHERE bean_id = '{$this->parent_id}' AND is_primary = 1 AND deleted != 1");
+            $orgUnit = $orgUnitId ? BeanFactory::getBean('OrgUnits', $orgUnitId) : null;
+
+            if($orgUnit){
+                $this->orgunit_id = $orgUnit->id;
+                $this->orgunit_name = $orgUnit->name;
+                $this->orgunit_assigned_user_id = $orgUnit->assigned_user_id;
+            }
+        }
+    }
+
+    /**
+     * will get all the orgunits allocated to the user
+     * @return array
+     */
+    public function getOrgUnits($idsOnly = false): array
+    {
+        $orgUnits = [];
+
+        if ($this->parent_id && !empty($this->parent_type)) {
+
+            $query = $this->db->query("SELECT orgunit_id FROM orgunits_beans WHERE bean_id = '$this->id' AND deleted != 1");
+
+            while ($row = $this->db->fetchByAssoc($query)) {
+                if ($idsOnly) {
+                    $orgUnits[] = $row['orgunit_id'];
+                } else if ($orgUnit = BeanFactory::getBean('OrgUnits', $row['orgunit_id'])) {
+                    $orgUnits[] = $orgUnit;
                 }
             }
         }
+
+        return $orgUnits;
     }
 
     /**
@@ -565,50 +684,83 @@ class User extends Person
      * Replacement for the deprecated sendEmailForPassword function, to be used with KREST.
      * Sends a new password to the user.
      *
-     * @param object $emailTempl
+     * @param EmailTemplate|TextMessageTemplate|null $template
+     * @param string $type
      * @param array $additionalData
      * @return array
+     * @throws Exception
      */
-    public function sendPasswordToUser($emailTempl, $additionalData = [])
+    public function sendCredentialToUser(EmailTemplate | TextMessageTemplate | null  $template, string $type, array $additionalData = []): array
     {
         $result = ['status' => false];
 
-        $memmy = $emailTempl->parse($this, ['password' => $additionalData['password']]);
-        $emailTempl->body_html = $memmy['body_html'];
-        $emailTempl->body = $memmy['body'];
-        $emailTempl->subject = $memmy['subject'];
+        $sendChannel = SpiceConfig::getInstance()->get("passwordsetting.send_{$type}_channel");
+        $mailboxId = SpiceConfig::getInstance()->get("passwordsetting.send_{$type}_channel_mailbox_id");
 
-        $itemail = $this->email1;
+        if ($mailboxId == 'gateway') {
 
-        $emailObj = BeanFactory::getBean('Emails');
-        $emailObj->name = DBUtils::fromHtml($emailTempl->subject);
-        $emailObj->body = DBUtils::fromHtml($emailTempl->body_html);
-        $emailObj->addEmailAddress('to', $itemail);
-        $emailObj->to_be_sent = true;
+            $channelType = 'send' . ucfirst($type);
 
-        try {
-            $response = $emailObj->save();
-        } catch (Exception $e) {
-            $result['message'] = $e->getMessage();
-            return $result;
-        }
-
-        if ($response['result'] == true) {
-            $result['status'] = true;
-            $emailObj->to_be_sent = false;
-            $emailObj->type = 'archived';
-            $emailObj->team_id = 1;
-            $emailObj->parent_type = 'User';
-            $emailObj->modified_user_id = '1';
-            $emailObj->created_by = '1';
-            $emailObj->date_sent = TimeDate::getInstance()->nowDb();
-            $emailObj->save();
-
-            if (!isset($additionalData['link']) || $additionalData['link'] == false) {
-                $this->setNewPassword($additionalData['password'], '1');
+            if ($sendChannel == 'sms') {
+                SpiceGatewayClientHandler::sendTemplateTypeSMS(
+                    $this->phone_mobile, $channelType, $additionalData, $this->getPreference('language')
+                );
+            } else {
+                SpiceGatewayClientHandler::sendTemplateTypeEmail(
+                    [['type' => 'to', 'email' => $this->email1]], $channelType, $additionalData, $this->getPreference('language')
+                );
             }
+
+            $result['status'] = true;
         } else {
-            $result['message'] = 'The Email was not sent. Check Mailbox settings.';
+
+            $compiledContent = $template->parse($this, $additionalData);
+
+            if ($sendChannel == 'sms') {
+
+                /** @var TextMessage $sms */
+                $sms = BeanFactory::newBean('TextMessages');
+                $sms->description = $compiledContent;
+                $sms->msisdn = $this->phone_mobile;
+                $sms->mailbox_id = $mailboxId;
+
+                try {
+                    $response = $sms->send();
+                } catch (Exception $e) {
+                    $result['message'] = $e->getMessage();
+                }
+
+            } else {
+                $template->body_html = $compiledContent['body_html'];
+                $template->body = $compiledContent['body'];
+                $template->subject = $compiledContent['subject'];
+
+                $itemail = $this->email1;
+
+                /** @var Email $emailObj */
+                $emailObj = BeanFactory::getBean('Emails');
+                $emailObj->name = DBUtils::fromHtml($template->subject);
+                $emailObj->body = DBUtils::fromHtml($template->body_html);
+                $emailObj->mailbox_id = $mailboxId;
+                $emailObj->addEmailAddress('to', $itemail);
+
+                try {
+                    $response = $emailObj->sendEmail();
+                } catch (Exception $e) {
+                    $result['message'] = $e->getMessage();
+                    return $result;
+                }
+            }
+
+
+            if ($response['result']) {
+                $result['status'] = true;
+                if ($type == 'password' && !$additionalData['link']) {
+                    $this->setNewPassword($additionalData['password'], '1');
+                }
+            } else {
+                $result['message'] = 'The Email was not sent. Check Mailbox settings.';
+            }
         }
 
         return $result;
@@ -630,7 +782,6 @@ class User extends Person
         $mod_strings = LanguageManager::loadDatabaseLanguage(LanguageManager::getDefaultLanguage());
 
         $emailTemp = BeanFactory::getBean('EmailTemplates');
-        $emailTemp->disable_row_level_security = true;
         if ($emailTemp->retrieve($templateId) == '') {
             $result['message'] = $mod_strings['LBL_EMAIL_TEMPLATE_MISSING']['default'];
             return $result;
@@ -778,7 +929,146 @@ class User extends Person
 
     public static function isAdmin_byName( $username ) {
         $db = DBManagerFactory::getInstance();
-        return (boolean)$db->getOne("SELECT is_admin FROM users WHERE deleted = 0 AND user_name = '".$db->quote( $username )."'" );
+        return (bool)$db->getOne("SELECT is_admin FROM users WHERE deleted = 0 AND user_name = '".$db->quote( $username )."'" );
     }
 
+    /**
+     * builds an array with the id of all ids reporting to the user
+     *
+     * @return array
+     */
+    public function getReporteesList(){
+        if( $_SESSION['reportees'] && isset($_SESSION['reportees'][$this->id])){
+            return $_SESSION['reportees'][$this->id];
+        }
+
+        $reportees = [];
+        $this->buildReportees($this->id, $reportees);
+
+        if(!$_SESSION['reportees']) $_SESSION['reportees'] = [];
+        $_SESSION['reportees'][$this->id] = $reportees;
+
+        return $reportees;
+    }
+
+    /**
+     * recurisve function to build the reportees per id
+     *
+     * @param $userID
+     * @param $reportees
+     * @return void
+     */
+    private function buildReportees($userID, &$reportees){
+        $reporttoIDs = $this->db->fetchAll("SELECT id FROM users WHERE reports_to_id='{$userID}' AND status = 'Active'");
+        foreach ($reporttoIDs as $reporttoID) {
+            if(!in_array($reporttoID['id'], $reportees) && $reporttoID['id'] != $this->id){
+                $reportees[] = $reporttoID['id'];
+                $this->buildReportees($reporttoID['id'], $reportees);
+            }
+        }
+    }
+
+    /**
+     * @param bool $updateUser will update the user record
+     * @return bool|string  false on employee save error or the employee ID
+     * @throws Exception
+     */
+    public function convertUserToEmployee($updateUser = true) : bool| string
+    {
+        // check if you the user is elligible for conversion
+        $convert = $this->canConvertUserToEmployee();
+        if(!$convert){
+            return false;
+        }
+
+        // map User to employee
+        $employee = BeanFactory::newBean('Employees');
+        $matchProperties = $this->getPropertiesConvertUserToEmployee();
+        foreach($matchProperties as $matchProperty){
+            if(property_exists($this, $matchProperty)){
+                $employee->$matchProperty = $this->$matchProperty;
+            }
+        }
+        $employee->assigned_user_id = $this->id;
+        $employeeSaved = $employee->save();
+
+        // add primary orgunit
+        if($employeeSaved && $this->orgunit_id){
+            $orgunit = BeanFactory::getBean('OrgUnits', $this->orgunit_id);
+            if($orgunit && $orgunit->load_relationship('employeesasprimary')){
+                if(!$orgunit->employeesasprimary->add($employee, ['bean_type' => $employee->_module])){
+                    // log error
+                    LoggerManager::getLogger()->error(__FUNCTION__.' Could not add primary orgunit to employee record');
+                }
+            }
+        }
+
+        // update user record
+        if($updateUser && $employeeSaved){
+            $this->parent_id = $employee->id;
+            $this->parent_type = $employee->_module;
+            $this->processed = true;
+            $this->save();
+        }
+
+        return $employeeSaved;
+    }
+
+    /**
+     * default handling: don't do anything if the user
+     * -> already has a parent
+     * -> or is an API User
+     * -> or the user is inactive
+     * @return void
+     */
+    public function canConvertUserToEmployee() : bool
+    {
+        if(!empty($this->parent_id) || $this->is_api_user || $this->status == 'Inactive'){
+            // log error
+            LoggerManager::getLogger()->info(__FUNCTION__.' User '.$this->user_name.' with id '.$this->id.' shall not be converted to an employee. Check existing parent value, api user flag and status');
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * the list of properties to map
+     * @return string[]
+     */
+    public function getPropertiesConvertUserToEmployee() : array
+    {
+        return ['salutation', 'first_name', 'last_name', 'description', 'email1', 'title', 'department',
+            'phone_home', 'phone_mobile', 'phone_work', 'phone_other', 'phone_fax',
+            'primary_address_street', 'primary_address_city', 'primary_address_state', 'primary_address_postalcode', 'primary_address_country'
+        ];
+    }
+
+    /**
+     * returns "the reports to" record from the parent record
+     * @params $level string employee|user user will force to return the related User object
+     * @return false|SpiceBean|null
+     */
+    public function getParentReportsTo($level = 'employee') : bool|SpiceBean {
+        $parentReportsTo = false;
+
+        if($this->parent_id && $this->parent_type){
+            $parent = BeanFactory::getBean($this->parent_type, $this->parent_id, ['relationships' => false]);
+            if($parent && $parent->load_relationship('reports_to_link')){
+                $parentReportsTo = BeanFactory::getBean($parent->_module, $parent->reports_to_id, ['relationships' => false]);
+                // get corresponding user - needed for workflow
+                if($level == 'user'){
+                    $parentReportsToUser = $parentReportsTo->get_linked_beans('users');
+                    if($parentReportsToUser[0]){
+                        $parentReportsTo = $parentReportsToUser[0];
+                    }
+                }
+            }
+        }
+        // fallback on user
+        if(!$parentReportsTo && $this->reports_to_id){
+            $parentReportsTo = BeanFactory::getBean($this->_module, $this->reports_to_id, ['relationships' => false]);
+        }
+        return $parentReportsTo;
+    }
 }

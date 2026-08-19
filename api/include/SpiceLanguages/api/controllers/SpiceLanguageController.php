@@ -2,13 +2,12 @@
 
 namespace SpiceCRM\includes\SpiceLanguages\api\controllers;
 
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceLanguages\SpiceLanguagesRESTHandler;
-use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
-use SpiceCRM\includes\ErrorHandlers\BadRequestException;
-use Slim\Routing\RouteCollectorProxy;
 use Slim\Psr7\Request as Request;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguagesRESTHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
@@ -95,7 +94,7 @@ class SpiceLanguageController
     {
         $handler = new SpiceLanguagesRESTHandler();
         $labels = $req->getParsedBody();
-        $result = $handler->translateLabels($labels['labels'], $args['fromlanguage'], $args['tolanguage']);
+        $result = $handler->translateLabels($labels['labels'], substr($args['fromlanguage'], 0, 2), substr($args['tolanguage'], 0, 2));
         return $res->withJson($result);
     }
 
@@ -208,6 +207,20 @@ class SpiceLanguageController
         }
 
         return $res->withJson($handler->getUntranslatedLabels($args['language'], $args['scope']));
+
+    }
+
+    public function LanguageTranslateRawLabels(Request $req, Response $res, array $args): Response
+    {
+        $handler = new SpiceLanguagesRESTHandler();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        if (!$current_user->is_admin) {
+            throw (new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
+        }
+
+        $params = $req->getQueryParams();
+
+        return $res->withJson($handler->translateUntranslatedLabels($args['language'], $args['scope'], $params['limit'] ?: 10));
 
     }
 

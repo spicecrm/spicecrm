@@ -14,6 +14,7 @@ import {Observable, Subject} from "rxjs";
  */
 @Component({
     templateUrl: "../templates/mailboxesimpersonatedewstrafficmanager.html",
+    standalone: false
 })
 export class MailboxesImpersonatedEWSTrafficManager {
     constructor(

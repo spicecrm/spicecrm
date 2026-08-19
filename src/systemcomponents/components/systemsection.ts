@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import {Component, Input} from "@angular/core";
+import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {language} from "../../services/language.service";
 
 /**
@@ -9,7 +9,8 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: "system-section",
-    templateUrl: "../templates/systemsection.html"
+    templateUrl: "../templates/systemsection.html",
+    standalone: false
 })
 export class SystemSection {
 
@@ -28,6 +29,11 @@ export class SystemSection {
      */
     @Input() public alwaysExpanded = false;
 
+    /**
+     * an event emitter to toggle if we expand or collapse
+     */
+    @Output() public toggleExpanded: EventEmitter<boolean> = new EventEmitter<boolean>();
+
     constructor(public language: language) {
 
     }
@@ -37,6 +43,8 @@ export class SystemSection {
      */
     public togglePanel() {
         this.expanded = !this.expanded;
+        // emit the expanded state
+        this.toggleExpanded.emit(this.expanded);
     }
 
     /**

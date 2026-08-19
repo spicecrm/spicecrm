@@ -2,10 +2,8 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
-use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
-use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 class SpiceDictionaryIndex
 {
@@ -59,7 +57,7 @@ class SpiceDictionaryIndex
         $itemsObjects = SpiceDictionaryIndexes::getInstance()->getIndexItems($this->id);
         foreach ( $itemsObjects as $itemsObject ) {
             $itemsObject = (object)$itemsObject;
-            $itemsObject->fieldnames = (new SpiceDictionaryItem($itemsObject->sysdictionaryitem_id))->getDomainFieldNames();
+            $itemsObject->fieldnames = (new SpiceDictionaryItem($itemsObject->sysdictionaryitem_id))->getDomainFieldNames(true);
             $indexItems[] = $itemsObject;
         }
         return $indexItems;
@@ -72,7 +70,7 @@ class SpiceDictionaryIndex
         foreach ($this->indexItems as $indexItem) {
             $fieldnames = array_merge($fieldnames, $indexItem->fieldnames);
         }
-        return $fieldnames;
+        return array_unique($fieldnames);
     }
 
     public function getIndexDefinition($tablename = null)
@@ -129,10 +127,13 @@ class SpiceDictionaryIndex
     /**
      * creates an index from teh definition
      *
-     * @return string
-     * @throws \Exception
+     * @param $create
+     * @param SpiceDictionaryDefinition|null $dictionaryDefinition
+     * @return true
+     * @throws Exception
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
      */
-    public function activate($create = true, SpiceDictionaryDefinition $dictionaryDefinition = null)
+    public function activate($create = true, ?SpiceDictionaryDefinition $dictionaryDefinition = null): bool
     {
         // get the definition
         $indexDictionaryDefinition = new SpiceDictionaryDefinition($this->sysdictionarydefinition_id);
@@ -162,10 +163,13 @@ class SpiceDictionaryIndex
     /**
      * drops an index based ont eh definition
      *
-     * @return string
-     * @throws \Exception
+     * @param $drop
+     * @param SpiceDictionaryDefinition|null $dictionaryDefinition
+     * @return true
+     * @throws Exception
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
      */
-    public function deactivate($drop = true, SpiceDictionaryDefinition $dictionaryDefinition = null)
+    public function deactivate($drop = true, ?SpiceDictionaryDefinition $dictionaryDefinition = null): bool
     {
         // get a db instance
         $db = DBManagerFactory::getInstance();

@@ -21,6 +21,7 @@ import {DictionaryIndex, DictionaryItem} from "../interfaces/dictionarymanager.i
 @Component({
     selector: 'dictionary-manager-indexes',
     templateUrl: '../templates/dictionarymanagerindexes.html',
+    standalone: false
 })
 export class DictionaryManagerIndexes {
 
@@ -86,6 +87,7 @@ export class DictionaryManagerIndexes {
                         loadingModal.emit(true);
                     },
                     error: () => {
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                         loadingModal.emit(true);
                     }
                 })
@@ -99,6 +101,7 @@ export class DictionaryManagerIndexes {
                         loadingModal.emit(true);
                     },
                     error: () => {
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                         loadingModal.emit(true);
                     }
                 })
@@ -155,6 +158,7 @@ export class DictionaryManagerIndexes {
                         deleteModal.emit(true);
                     },
                     error: () => {
+                        this.dictionarymanager.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                         deleteModal.emit(true);
                     }
                 });

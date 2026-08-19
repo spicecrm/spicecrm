@@ -16,7 +16,8 @@ declare var _: any;
 
 @Component({
     selector: "system-module-tree-item",
-    templateUrl: "../templates/systemmoduletreeitem.html"
+    templateUrl: "../templates/systemmoduletreeitem.html",
+    standalone: false
 })
 
 export class SystemModuleTreeItem {
@@ -117,7 +118,8 @@ export class SystemModuleTreeItem {
             if (items) {
                 this.nodeitems = items
                     .map(item => {
-                        item.nodeId = this.modelUtilities.generateGuid();
+                        item.nodeId = item.id;
+                        item.label,
                         item.displayname = !!item.label ? this.language.getLabel(item.label) : this.language.getModuleName(item.module);
                         return item;
                     })
@@ -125,7 +127,7 @@ export class SystemModuleTreeItem {
 
                 if (this.displayRelationshipFields && this.nodedata.hasRelationshipFields) {
                     this.nodeitems = [{
-                        displayname: this.language.getLabel('LBL_RELATIONSHIP_FIELDS'),
+                        label: this.language.getLabel('LBL_RELATIONSHIP_FIELDS'),
                         leaf: true,
                         relationshipNode: true,
                         module: this.module,
@@ -139,7 +141,7 @@ export class SystemModuleTreeItem {
                 // root:Contacts::link:Contacts:opportunities::audit:Opportunities:audit::field:field_name
                 if (this.displayAuditFields && this.metadata.getModuleDefs(this.module).audited == 1) {
                     this.nodeitems = [{
-                        displayname: this.language.getLabel('LBL_AUDIT_FIELDS'),
+                        label: this.language.getLabel('LBL_AUDIT_FIELDS'),
                         leaf: true,
                         auditNode: true,
                         module: this.module,

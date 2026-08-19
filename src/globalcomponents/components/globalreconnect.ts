@@ -17,6 +17,7 @@ import {interval, Subscription} from "rxjs";
 @Component({
     selector: 'global-re-connect',
     templateUrl: '../templates/globalreconnect.html',
+    standalone: false
 })
 export class GlobalReConnect implements OnInit, OnDestroy {
 
@@ -98,16 +99,16 @@ export class GlobalReConnect implements OnInit, OnDestroy {
      */
    public reconnect() {
         let loginUrl: string = this.configuration.getBackendUrl() + '/sysinfo';
-        this.http.get(loginUrl).subscribe(
-            (res: any) => {
+        this.http.get(loginUrl).subscribe({
+            next: (res: any) => {
                 this.connected.emit(true);
                 this.close();
             },
-            (err: any) => {
+            error: (err: any) => {
                 console.log(err);
                 this.timeToNextCheck = 1000;
             }
-        );
+        });
 
     }
 

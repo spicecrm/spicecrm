@@ -8,7 +8,8 @@ import { SystemInputMedia } from './systeminputmedia';
 
 @Component({
     selector: 'system-image-modal',
-    templateUrl: '../templates/systemimagemodal.html'
+    templateUrl: '../templates/systemimagemodal.html',
+    standalone: false
 })
 export class SystemImageModal {
 
@@ -20,12 +21,7 @@ export class SystemImageModal {
     /**
      * Maximal pixel width of the image, when predefined from outside.
      */
-    @Input() public maxWidth: number = null;
-
-    /**
-     * Maximal pixel height of the image, when predefined from outside.
-     */
-    @Input() public maxHeight: number = null;
+    @Input() public maxSize: number = null;
 
     /**
      * Extern dropped file(s).

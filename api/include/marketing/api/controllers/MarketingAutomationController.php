@@ -4,11 +4,11 @@ namespace SpiceCRM\includes\marketing\api\controllers;
 
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
@@ -26,7 +26,7 @@ class MarketingAutomationController
      */
     public function handleTrackingPixel(Request $req, Response $res, array $args): Response
     {
-        $decrypted = $this->decryptBlowfish(base64_decode($args['key']));
+        $decrypted = $this->decryptEncryptionKey(base64_decode($args['key']));
 
         if (!$decrypted) {
             throw new BadRequestException('Failed to decrypt key');
@@ -48,7 +48,7 @@ class MarketingAutomationController
      */
     public function handleTrackingUrl(Request $req, Response $res, array $args): Response
     {
-        $decrypted = $this->decryptBlowfish(base64_decode($args['key']));
+        $decrypted = $this->decryptEncryptionKey(base64_decode($args['key']));
 
         if (!$decrypted) {
             throw new BadRequestException('Failed to decrypt key');
@@ -69,7 +69,7 @@ class MarketingAutomationController
      */
     public function handleMarketingAction(Request $req, Response $res, array $args): Response
     {
-        $decrypted = $this->decryptBlowfish(base64_decode($args['key']));
+        $decrypted = $this->decryptEncryptionKey(base64_decode($args['key']));
 
         if (!$decrypted) {
             throw new BadRequestException('Failed to decrypt key');
@@ -201,11 +201,11 @@ class MarketingAutomationController
      * decrypts the key
      * @param $key
      */
-    private function decryptBlowfish($key)
+    private function decryptEncryptionKey($key)
     {
-        $blowfishkey = '2fs5uhnjcnpxcpg9';
-        $method = 'blowfish';
-        return openssl_decrypt($key, $method, $blowfishkey);
+        $encryptionKey = SpiceConfig::getInstance()->get('emailtracking.encryptionkey') ?? SpiceConfig::getInstance()->config['unique_key'];
+        $method = 'DES-EDE3-CBC';
+        return openssl_decrypt($key, $method, $encryptionKey);
     }
 
     /**

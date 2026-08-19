@@ -2,12 +2,12 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
-use SpiceCRM\includes\database\DBManagerFactory;
+use Exception;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 
 class SpiceDictionaryDomains
 {
-
     /**
      * the main table name
      */
@@ -16,27 +16,26 @@ class SpiceDictionaryDomains
     /**
      * the custom table name
      */
-    const customtable = 'syscustomdomaindefinitions';
+    const customTable = 'syscustomdomaindefinitions';
 
     /**
      * the cache object name
      */
-    const cachename = 'domaindefinitions';
-
+    const cacheName = 'domaindefinitions';
 
     /**
      * the instance for the singelton
      *
-     * @var
+     * @var SpiceDictionaryDomains|null
      */
-    private static $instance;
+    private static ?SpiceDictionaryDomains $instance = null;
 
     /**
      * the array with the fields
      *
      * @var array
      */
-    protected $domaindefinitions;
+    protected array $domainDefinitions = [];
 
     private function __clone()
     {
@@ -58,52 +57,107 @@ class SpiceDictionaryDomains
         return self::$instance;
     }
 
-    public function __construct()
+    private function __construct(bool $load = true)
     {
-        $cached = SpiceCache::get(self::cachename);
+        if (!$load) return;
+
+        $cached = SpiceCache::get(self::cacheName);
+
         if ($cached) {
-            $this->domaindefinitions = $cached;
+            $this->domainDefinitions = $cached;
+        } else {
+            $this->reloadItems();
         }
+    }
 
+    /**
+     * retrieve domain definitions from the database
+     * @return array
+     * @throws Exception
+     */
+    public function retrieveDomains(): array
+    {
         $db = DBManagerFactory::getInstance();
-        $this->domaindefinitions = [];
-        $domaindefinitions = $db->query("SELECT * FROM " . self::table);
-        while ($domaindefinition = $db->fetchByAssoc($domaindefinitions)) {
-            $this->domaindefinitions[$domaindefinition['id']] = array_merge($domaindefinition, ['scope' => 'g']);
-        }
-        $domaindefinitions = $db->query("SELECT * FROM " . self::customtable);
-        while ($domaindefinition = $db->fetchByAssoc($domaindefinitions)) {
-            $this->domaindefinitions[$domaindefinition['id']] = array_merge($domaindefinition, ['scope' => 'c']);;
+        $this->domainDefinitions = [];
+
+        $scopesTables = ['g' => self::table, 'c' => self::customTable];
+
+        foreach ($scopesTables as $scope => $table) {
+
+            $query = $db->query("SELECT *, '$scope' as scope FROM $table");
+
+            while ($def = $db->fetchByAssoc($query)) {
+                $this->pushDefinitionInList($def);
+            }
         }
 
-        // write Cache
+        return $this->domainDefinitions;
+    }
+
+    /**
+     * reload domains from the database
+     * @return void
+     * @throws Exception
+     */
+    public function reloadItems():void
+    {
+        $this->retrieveDomains();
         $this->writeCache();
     }
 
     public function writeCache()
     {
-        SpiceCache::set(self::cachename, $this->domaindefinitions);
+        SpiceCache::set(self::cacheName, $this->domainDefinitions);
     }
 
     public function getDomains(){
-        return array_values($this->domaindefinitions);
+        return array_values($this->domainDefinitions);
     }
 
     public function getDomainById($id){
-        return $this->domaindefinitions[$id];
+        return $this->domainDefinitions[$id];
+    }
+
+    /**
+     * push/update definition in the list
+     * @param array $definition
+     * @return void
+     */
+    private function pushDefinitionInList(array $definition)
+    {
+        $this->domainDefinitions[$definition['id']] = $definition;
     }
 
     public function addDefinition(array $definition)
     {
         //get teh table
-        $table = $definition['scope'] == 'c' ? self::customtable : self::table;
+        $table = $definition['scope'] == 'c' ? self::customTable : self::table;
+
+        $this->pushDefinitionInList($definition);
+
         unset($definition['scope']);
+
         DBManagerFactory::getInstance()->upsertQuery($table, ['id' => $definition['id']], $definition);
 
-        // add to the domains
-        $this->domaindefinitions[$definition['id']] = $definition;
-
-        // write the cache
         $this->writeCache();
+    }
+
+    /**
+     * initialize and set domain definitions from the system package for installer
+     * @param array $definitions
+     * @return void
+     */
+    public static function initializeFromSystemPackage(array $definitions)
+    {
+        self::$instance = new self(false);
+
+        self::$instance->domainDefinitions = [];
+
+        foreach ($definitions as $definition) {
+            $definition->scope = 'g';
+            self::$instance->pushDefinitionInList((array) $definition);
+        }
+
+        self::$instance->writeCache();
     }
 }

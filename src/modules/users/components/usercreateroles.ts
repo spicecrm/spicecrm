@@ -37,7 +37,8 @@ declare var moment: any;
             useExisting: forwardRef(() => UserCreateRoles),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class UserCreateRoles implements OnInit, ControlValueAccessor {
 

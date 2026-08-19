@@ -2,11 +2,9 @@
  * @module ModuleActivities
  */
 import {Component, Injector, OnDestroy, OnInit, Optional} from '@angular/core';
-import {language} from '../../../services/language.service';
 import {navigationtab} from '../../../services/navigationtab.service';
 import {model} from '../../../services/model.service';
 import {activitiytimeline} from '../../../services/activitiytimeline.service';
-import {modelattachments} from "../../../services/modelattachments.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {metadata} from "../../../services/metadata.service";
 import {layout} from "../../../services/layout.service";
@@ -20,7 +18,8 @@ declare var moment;
 @Component({
     selector: 'activity-timeline',
     templateUrl: '../templates/activitytimeline.html',
-    providers: [activitiytimeline]
+    providers: [activitiytimeline],
+    standalone: false
 })
 export class ActivityTimeline implements OnInit, OnDestroy {
 
@@ -39,7 +38,6 @@ export class ActivityTimeline implements OnInit, OnDestroy {
 
     constructor(public model: model,
                 public router: Router,
-                public language: language,
                 public activitiytimeline: activitiytimeline,
                 public metadata: metadata,
                 public utils: modelutilities,
@@ -116,6 +114,13 @@ export class ActivityTimeline implements OnInit, OnDestroy {
      */
     public loadMore(module) {
         this.activitiytimeline.getMoreTimeLineData(module, this.componentconfig.defaultentries);
+    }
+
+    /**
+     * check if we can toggle
+     */
+    get canToggleOpen(){
+        return this.activitiytimeline.activities.Activities.totalcount > 0 || this.activitiytimeline.activities.History.totalcount > 0;
     }
 
     /**

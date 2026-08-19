@@ -3,21 +3,21 @@
 namespace SpiceCRM\includes\SpiceAttachments;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
+use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachment;
+use SpiceCRM\extensions\modules\Mailboxes\Handlers\OutlookAttachment;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\UploadFile;
 use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
-use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachment;
-use SpiceCRM\extensions\modules\Mailboxes\Handlers\OutlookAttachment;
 
 class SpiceAttachments
 {
@@ -55,7 +55,8 @@ class SpiceAttachments
                 'thumbnail' => $thisAttachment['thumbnail'],
                 'display_name' => $thisAttachment['display_name'],
                 'category_ids' => $thisAttachment['category_ids'],
-                'external_id' => $thisAttachment['external_id']
+                'external_id' => $thisAttachment['external_id'],
+                'folder_id' => $thisAttachment['folder_id']
             ];
         }
 
@@ -78,12 +79,12 @@ class SpiceAttachments
      * @return array
      * @throws Exception
      */
-    static function cloneAttachmentsForBean($beanName, $beanId, $fromBeanName, $fromBeanId, bool $save = true, $categoryId = null, $selectedFiles = []): array
+    static function cloneAttachmentsForBean($beanName, $beanId, $fromBeanName, $fromBeanId, bool $save = true, $categoryId = null, $selectedFiles = [], $excludedFileIDs = []): array
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
-        if(!is_array($selectedFiles)) $selectedFiles = [];
-        if(count($selectedFiles) > 0) {
+        if (!is_array($selectedFiles)) $selectedFiles = [];
+        if (count($selectedFiles) > 0) {
             // get selected attachments
             $attachments = $selectedFiles;
         } else {
@@ -94,6 +95,10 @@ class SpiceAttachments
         $clonedAttachments = [];
 
         foreach ($attachments as $attachment) {
+
+            // do not clone excluded filenames
+            if(!is_array($excludedFileIDs)) $excludedFileIDs = [];
+            if ($attachment['external_id'] && array_search($attachment['external_id'], $excludedFileIDs) !== false) continue;
 
             $attachment['id'] = SpiceUtils::createGuid();
             $attachment['bean_type'] = $beanName;
@@ -137,11 +142,11 @@ class SpiceAttachments
      * @param null $categoryId
      * @throws Exception
      */
-    public static function getAttachmentsCountPerBean(string $beanName, array $beanIds,  $returnFiles = false)
+    public static function getAttachmentsCountPerBean(string $beanName, array $beanIds, $returnFiles = false)
     {
         $attachments = [];
         foreach ($beanIds as $beanId) {
-          $attachments[$beanId] = self::getAttachmentsForBean($beanName,$beanId, 25, false);
+            $attachments[$beanId] = self::getAttachmentsForBean($beanName, $beanId, 25, false);
         }
         $res = $attachments;
         return $res;
@@ -203,7 +208,9 @@ class SpiceAttachments
                 'deleted' => '0',
                 'file_mime_type' => $file_mime_type,
                 'category_ids' => $file['category_ids'],
-                'external_id' => $file['external_id']
+                'external_id' => $file['external_id'],
+                'folder_id' => $file['folder_id'],
+                'display_name' => $file['display_name']
             ]);
             // $db->query("INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type, category_ids) VALUES ('{$guid}', '{$beanName}', '{$beanId}', '" . $current_user->id . "', '" . gmdate('Y-m-d H:i:s') . "', '{$filename}', '{$filesize}', '{$filemd5}', '{$file['text']}', '$thumbnail', 0, '{$file_mime_type}', '{$file['category_ids']}')");
         }
@@ -220,9 +227,70 @@ class SpiceAttachments
             'thumbnail' => $thumbnail,
             'filemd5' => $filemd5,
             'external_id' => $file['external_id'],
-            'category_ids' => $file['category_ids']
+            'category_ids' => $file['category_ids'],
+            'display_name' => $file['display_name']
         ];
         return $attachments;
+    }
+
+
+    /**
+     * Will process multiple files
+     * @param $beanName
+     * @param $beanId
+     * @param $files
+     * @return array
+     * @throws Exception
+     */
+    public static function saveMultipleAttachmentHashFiles($beanName, $beanId, $files): array
+    {
+        $attachments = [];
+        foreach($files['files'] as $file){
+            $attachments[] = self::saveAttachmentHashFiles($beanName, $beanId, $file);
+        }
+        return $attachments;
+    }
+
+
+    /**
+     * saves a Folder
+     *
+     * @param $beanName
+     * @param $beanId
+     * @param $post
+     * @return mixed
+     * @throws Exception
+     */
+    public static function saveFolder($beanName, $beanId, $postBody): array
+    {
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $db = DBManagerFactory::getInstance();
+
+        $guid = SpiceUtils::createGuid();
+
+        // add the attachment
+        $db->insertQuery('spiceattachments', [
+            'id' => $guid,
+            'bean_type' => $beanName,
+            'bean_id' => $beanId,
+            'user_id' => $current_user->id,
+            'trdate' => TimeDate::getInstance()->nowDb(),
+            'filename' => $postBody['folder_name'],
+            'deleted' => '0',
+            'file_mime_type' => 'folder',
+            'folder_id' => $postBody['folder_id'],
+        ]);
+
+        $folder = [
+            'id' => $guid,
+            'user_id' => $current_user->id,
+            'user_name' => $current_user->user_name,
+            'date' => TimeDate::getInstance()->nowDb(),
+            'filename' => $postBody['folder_name'],
+            'file_mime_type' => 'folder',
+            'folder_id' => $postBody['folder_id'],
+        ];
+        return $folder;
     }
 
     /**
@@ -277,15 +345,14 @@ class SpiceAttachments
 
     /**
      * save an email attachment for Outlook
-     * @param \Email $email
      * @param OutlookAttachment $attachment
+     * @return null
      */
-    public static function saveEmailAttachmentFromOutlook(Email $email, OutlookAttachment $attachment) {
+    public static function saveEmailAttachmentFromOutlook(OutlookAttachment $attachment) {
         $filepath = StreamFactory::getPathPrefix('upload') . $attachment->fileMd5;
         touch($filepath);
 
-        $byteContent = base64_decode($attachment->content);
-        file_put_contents($filepath, $byteContent);
+        file_put_contents($filepath, $attachment->content);
 
         // if we have an image create a thumbnail
         $attachment->thumbnail = self::createThumbnail($attachment->fileMd5, $attachment->fileMimeType);
@@ -330,6 +397,21 @@ class SpiceAttachments
         return true;
     }
 
+    /**
+     * will decode a mime encoded attachment name
+     * @param $encodedName
+     * @return false|mixed|string
+     */
+    public static function decodeEmailAttachmentName($encodedName){
+        $filename = $encodedName;
+        if (function_exists('mb_decode_mimeheader')) {
+            $filename = mb_decode_mimeheader($encodedName);
+        } elseif (function_exists('iconv_mime_decode')) {
+            $filename =  iconv_mime_decode($encodedName, 0, "UTF-8");
+        }
+        return $filename;
+    }
+
     public static function saveBase64File(string $fileContent): string {
         $md5 = md5($fileContent);
         $filepath = StreamFactory::getPathPrefix('upload') . $md5;
@@ -362,12 +444,26 @@ class SpiceAttachments
      * @throws ForbiddenException
      * @throws NotFoundException
      * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     * @throws Exception
      */
     public static function deleteAttachment($attachmentId): array
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
-        $result = $db->query("UPDATE spiceattachments SET deleted = 1 WHERE id='{$attachmentId}'");
+
+        $attachment = $db->fetchOne("SELECT * FROM spiceattachments WHERE id = '{$attachmentId}'");
+
+        if(!$attachment) throw new NotFoundException('Attachment not found.');
+
+        if ($attachment['file_mime_type'] == 'folder') {
+            $filesInFolder = self::getFilesInFolders([$attachment]);
+            if ($filesInFolder) {
+                $filesIds = implode("','" ,array_column($filesInFolder, 'id'));
+            }
+            $result = $db->query("UPDATE spiceattachments SET deleted = '1' WHERE id IN ('$filesIds')");
+        } else {
+            $result = $db->query("UPDATE spiceattachments SET deleted = '1' WHERE id='{$attachmentId}'");
+        }
         // disable user id check, now done in frontend
 //        $result = $db->query("UPDATE spiceattachments SET deleted = 1 WHERE id='{$attachmentId}'" . (!$current_user->is_admin ? " AND user_id='" . $current_user->id . "'" : ""));
 
@@ -396,12 +492,46 @@ class SpiceAttachments
     public static function updateAttachmentData($attachmentId, $data): array
     {
         $db = DBManagerFactory::getInstance();
-        $text = $db->quote($data['text']);
-        $displayName = $db->quote($data['display_name']);
-        $category_ids = $db->quote($data['category_ids']);
 
-        $res = $db->query("UPDATE spiceattachments SET text = '$text', category_ids = '$category_ids', display_name = '$displayName' WHERE id = '$attachmentId'");
+        $updates = [];
+
+        if(isset($data['text'])) $updates['text'] = $db->quote($data['text']);
+        if(isset($data['display_name'])) $updates['display_name'] =  $db->quote($data['display_name']);
+        if(isset($data['category_ids'])) $updates['category_ids'] = $db->quote($data['category_ids']);
+        if(isset($data['folder_id'])) $updates['folder_id'] = $db->quote($data['folder_id']);
+        if(isset($data['filename'])) $updates['filename'] = $db->quote($data['filename']);
+
+        $res = $db->updateQuery('spiceattachments', ['id' => $attachmentId], $updates);
+
         return ['success' => $res];
+    }
+
+    /**
+     * save attachment file content
+     * @param $file
+     * @return array
+     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     */
+    public static function saveAttachmentFile($file): array
+    {
+        $upload_file = new UploadFile('file');
+        $decodedFile = base64_decode($file['file']);
+
+        $upload_file->set_for_soap(null, $decodedFile);
+
+        if(!$upload_file->final_move($file['filemd5'])){
+            throw new \SpiceCRM\includes\ErrorHandlers\Exception('Error moving file');
+        }
+
+        $prefix = StreamFactory::getPathPrefix('upload');
+
+        $modifiedTimestamp = filemtime($prefix . $file['filemd5']);
+        $dateModified = !$modifiedTimestamp ? '' : TimeDate::getInstance()->fromTimestamp($modifiedTimestamp)->format(TimeDate::DB_DATETIME_FORMAT);
+
+        return [
+            'filesize' => filesize($prefix . $file['filemd5']),
+            'date_modified' => $dateModified
+        ];
     }
 
     /**
@@ -451,6 +581,7 @@ class SpiceAttachments
             'date' => $thisAttachment['trdate'],
             'text' => nl2br($thisAttachment['text']),
             'filename' => $thisAttachment['filename'],
+            'display_name' => $thisAttachment['display_name'],
             'filesize' => $thisAttachment['filesize'],
             'file_mime_type' => $thisAttachment['file_mime_type'],
             'file' => $file,
@@ -495,7 +626,6 @@ class SpiceAttachments
                     imagejpeg($thumb);
                     $thumbnail = base64_encode(ob_get_contents());
                     ob_end_clean();
-                    imagedestroy($thumb);
 
                     return $thumbnail;
                 } else {
@@ -640,5 +770,81 @@ class SpiceAttachments
                 $db->query($sql);
             }
         }
+    }
+
+    /**
+     * Converts an email attachment in the .eml format into an Email bean in order to be easily concatenated
+     * into a string for display.
+     *
+     * The Email bean is created only during runtime and is not saved in the DB.
+     *
+     * @param array $attachment
+     * @return array
+     */
+    public static function convertEmlFile4display(array $attachment): array {
+        $email = BeanFactory::getBean('Emails');
+        $email->id = SpiceUtils::createGuid();
+        $email->new_with_id = true;
+        $email->file_name = $attachment['filename'];
+        $email->file_mime_type = $attachment['file_mime_type'];
+
+        $decodedFile = base64_decode($attachment['file']);
+
+        $email->file_md5 = md5($decodedFile);
+
+        // convert the message
+        $email->convertEMLToEmail($email->file_md5, $decodedFile);
+
+        $ccString   = implode(', ', array_column($email->cc(), 'email'));
+
+        $inceptionEmail = "<strong>From: </strong>" . implode(', ', array_column($email->from(), 'email')) . "<br>" .
+                          "<strong>To: </strong>" . implode(', ', array_column($email->to(), 'email')) . "<br>" .
+                          (!empty($ccString) ? "<strong>Cc: </strong>" . $ccString . "<br>" : '') .
+                          "<strong>Subject: </strong>" . $email->name . "<br><br>" .
+                          $email->body;
+
+        $attachment['file'] = base64_encode($inceptionEmail);
+        $attachment['file_mime_type'] = 'text/html';
+
+        return $attachment;
+    }
+
+    /**
+     * recursively collects the files from folders and it's subfolders
+     * @param array $folders
+     * @param array $allAttachments
+     * @return array
+     * @throws Exception
+     */
+    public static function getFilesInFolders(array $folders, array &$allAttachments = []): array {
+        $visited = [];
+
+        foreach ($folders as $folder) {
+            if (isset($visited[$folder['id']])) {
+                continue;
+            }
+
+            $visited[$folder['id']] = true;
+
+            $sql = "SELECT * FROM spiceattachments WHERE folder_id = '{$folder['id']}'";
+            $children = DBManagerFactory::getInstance()->fetchAll($sql);
+
+            $childFolders = [];
+
+            foreach ($children as $child) {
+                $child['folder_path'] = $folder['folder_path'] ? $folder['folder_path'] . DIRECTORY_SEPARATOR . $folder['filename'] : $folder['filename'];
+                $allAttachments[] = $child;
+
+                if ($child['file_mime_type'] == 'folder') {
+                    $childFolders[] = $child;
+                }
+            }
+
+            if (!empty($childFolders)) {
+                self::getFilesInFolders($childFolders, $allAttachments);
+            }
+        }
+
+        return $allAttachments;
     }
 }

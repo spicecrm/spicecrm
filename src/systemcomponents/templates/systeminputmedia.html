@@ -1,5 +1,5 @@
-<div class="slds-rich-text-editor slds-grid slds-grid_vertical slds-nowrap">
-    <div #toolbar role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none" [ngClass]="{'slds-hide': !showToolBars}">
+<div class="slds-grid slds-grid_vertical slds-nowrap">
+    <div #toolbar role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none" [ngClass]="{'slds-hide': !displayToolbars}">
         <ul class="slds-button-group-list">
             <li >
                 <button class="slds-button slds-button--icon-border slds-button--neutral" (click)="removeImage()" [disabled]="!mediaBase64"><system-button-icon icon="delete"></system-button-icon></button>
@@ -41,17 +41,15 @@
                 <button class="slds-button slds-button--icon-border slds-button--neutral" (click)="mirrorY()" [disabled]="!canMirror" title="{{language.getLabel('LBL_MIRROR_VERTICALLY')}}"><system-button-custom-icon icon="mirrorvertical" size="medium"></system-button-custom-icon></button>
             </li>
         </ul>
-        <div *ngIf="allowResizing" class="slds-grid slds-grid--vertical-align-center slds-col--bump-left">
-            <system-checkbox [(ngModel)]="doResizeByUser" [disabled]="!canResize"><system-label label="LBL_DOWNSIZE_TO_MAX"></system-label></system-checkbox>
-            <system-input-number onlyField="true" [(ngModel)]="maxWidthInput" precision="0" min="1" placeholder="{{language.getLabel('LBL_WIDTH')}} " [disabled]="!doResizeByUser || !canResize" size="5" (change)="maxWidthChanged()"></system-input-number>
-            <div class="slds-p-left--xxx-small">px</div>
-            <div class="slds-p-horizontal--x-small">x</div>
-            <system-input-number onlyField="true" [(ngModel)]="maxHeightInput" precision="0" min="1" placeholder="{{language.getLabel('LBL_HEIGHT')}} " [disabled]="!doResizeByUser || !canResize" size="5" (change)="maxHeightChanged()"></system-input-number>
-            <div class="slds-p-left--xxx-small">px</div>
+        <div *ngIf="allowResizing && !maxSizeBySystem" class="slds-grid slds-grid--vertical-align-center slds-col--bump-left">
+            <!--system-checkbox [(ngModel)]="doResizeByUser" [disabled]="!canResize"><system-label label="LBL_DOWNSIZE_TO_MAX"></system-label></system-checkbox-->
+            <div class="slds-p-right--xx-small">max</div>
+            <system-input-number onlyField="true" [asNumber]="true" [(ngModel)]="maxSizeInput" precision="0" min="1" placeholder="WxH" [disabled]="!canResize" size="5" (change)="maxSizeChanged()"></system-input-number>
+            <div class="slds-p-left--xx-small">px</div>
         </div>
     </div>
     <div [ngStyle]="{height:cropperHeight}">
-        <div class="slds-height_full" style="overflow:hidden" (system-drop-file)="onDrop($event)" [system-overlay-loading-spinner]="isLoading" >
+        <div class="slds-height_full" [ngClass]="{'slds-align--absolute-center': !allowModifications}" style="overflow:hidden" (system-drop-file)="onDrop($event)" [system-overlay-loading-spinner]="isLoading" >
             <img #imgelement *ngIf="mediaBase64, else uploadbutton" [src]="mediaBase64" (load)="imageLoaded($event)" style="display:block"/>
             <ng-template #uploadbutton>
                 <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
@@ -64,9 +62,11 @@
             </ng-template>
         </div>
     </div>
-    <div #bottomtoolbar role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none slds-rich-text-editor__toolbar_bottom" [ngClass]="{'slds-hide': !showToolBars}">
-        <div *ngIf="mediaMetaData.fileformat" class="slds-col--bump-right">Format: {{this.mediaMetaData.fileformat.toUpperCase()}}</div>
-        <div *ngIf="mediaBase64">{{mediaMetaData.originalWidth}} &times; {{mediaMetaData.originalHeight}} px<span *ngIf="isResized"> &nbsp;&#8594;&nbsp; {{mediaMetaData.width}} &times; {{mediaMetaData.height}} px</span></div>
-        <div *ngIf="!mediaBase64">&nbsp;</div>
+    <div #bottomtoolbar role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none slds-rich-text-editor__toolbar_bottom" [ngClass]="{'slds-hide': !displayToolbars || !mediaMetaData.fileformat}">
+        <div *ngIf="mediaMetaData.fileformat" class="slds-col--bump-right">Format: {{mediaMetaData.fileformat.toUpperCase()}}</div>
+        <div class="slds-p-horizontal--x-small slds-border--right">
+            <system-slider [(ngModel)]="imageQuality" theme="default" min="0" max="1" step="0.1"><system-label label="LBL_IMAGE_QUALITY"/></system-slider>
+        </div>
+        <div *ngIf="mediaBase64" class="slds-m-left--x-small">{{width}} &times; {{height}} px<span *ngIf="maxSize"> &nbsp;&#8594;&nbsp; {{resizedWidth}} &times; {{resizedHeigth}} px</span></div>
     </div>
 </div>

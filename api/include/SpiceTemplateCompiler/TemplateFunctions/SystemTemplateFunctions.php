@@ -7,9 +7,10 @@ use DateTime;
 use DateTimeZone;
 use IntlDateFormatter;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SysCurrencies\SysCurrencies;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -65,6 +66,31 @@ class SystemTemplateFunctions {
 
     }
 
+    /**
+     * The difference to date format is that we need to handle the time as UTC time (use the raw value)
+     */
+    static function timeFormat($compiler, $beans, $inputString, $format, $placeHolderForOldLanguageParameter = null){
+        if (empty($inputString)) return '';
+
+        # For formatting look here:
+        # https://www.php.net/manual/de/datetime.format.php
+
+        $time = DateTime::createFromFormat(TimeDate::getInstance()->get_db_time_format(), $inputString);
+        if(!$time){
+            $time = DateTime::createFromFormat(TimeDate::getInstance()->get_time_format(), $inputString);
+        }
+        if(!$time){
+            $time = DateTime::createFromFormat(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef")." ". AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"), $inputString);
+        }
+        if(!$time){
+            $time = DateTime::createFromFormat(TimeDate::DB_TIME_FORMAT, $inputString);
+        }
+        if(!$time){
+            $time = DateTime::createFromFormat(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"), $inputString);
+        }
+
+        return $time ? $time->format( $format ) : $inputString;
+    }
     static function cat( $compiler, $beans, $inputString, $stringToAdd ) {
         return isset( $inputstring[0] ) ? $$inputstring.$stringToAdd : $$inputString;
     }
@@ -213,6 +239,64 @@ class SystemTemplateFunctions {
 
         return SpiceUtils::currencyFormatNumber($inputString);
 
+    }
+
+    /**
+     * returns a currency Symbol
+     *
+     * @param $compiler
+     * @param $beans
+     * @param $inputString
+     * @return string
+     */
+    static function getCurrencySymbol($compiler, $beans, $inputString){
+
+        if (empty($inputString)) return '';
+
+        $currency = SysCurrencies::getInstance()->getCurrencyByID($inputString);
+
+        return $currency->currency_symbol;
+
+    }
+
+    /**
+     * returns a currency ISO4217
+     *
+     * @param $compiler
+     * @param $beans
+     * @param $inputString
+     * @return string
+     */
+    static function getCurrencyISO($compiler, $beans, $inputString){
+
+        if (empty($inputString)) return '';
+
+        $currency = SysCurrencies::getInstance()->getCurrencyByID($inputString);
+
+        return $currency->iso4217;
+
+    }
+
+    /**
+     * returns a value given in seconds in hh:mm Form at
+     *
+     * @param $compiler
+     * @param $beans
+     * @param $inputString
+     * @return string
+     */
+    static function seconds2hours($compiler, $beans, $inputString){
+
+        if (empty($inputString)) return '';
+
+        // Calculate total hours
+        $hours = floor((float) $inputString / 3600);
+
+        // Calculate remaining minutes
+        $minutes = floor(((float) $inputString / 60) % 60);
+
+        // Format with leading zeros (e.g., 5 becomes 05)
+        return sprintf('%d:%02d', $hours, $minutes);
     }
 
 }

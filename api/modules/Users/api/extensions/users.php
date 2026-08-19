@@ -65,7 +65,34 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'required' => true,
             ],
+            'credentials' => [
+                'in' => 'body',
+                'description' => 'credentials for the user',
+                'type' => ValidationMiddleware::TYPE_OBJECT,
+                'properties' => [
+                    'newPassword' => [
+                        'description' => 'password for the user',
+                        'type' => ValidationMiddleware::TYPE_STRING,
+                    ],
+                    'forceReset' => [
+                        'description' => 'Force user to change the password on next login',
+                        'type' => ValidationMiddleware::TYPE_BOOL,
+                    ],
+                    'sendBySystem' => [
+                        'description' => 'Whether send the credentials to the user by the system',
+                        'type' => ValidationMiddleware::TYPE_BOOL,
+                    ],
+                ]
+            ],
         ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/module/Users/Employees/create',
+        'class'       => UsersController::class,
+        'function'    => 'generateEmployees',
+        'description' => 'generates Employees for all users and links them',
+        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true ]
     ],
     [
         'method'      => 'post',
@@ -99,6 +126,28 @@ $routes = [
             'userId' => [
                 'in' => 'query',
                 'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
+            ],
+        ]
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/module/Users/byparent/{parenttype}/{parentid}',
+        'class'       => UsersController::class,
+        'function'    => 'getUserByParent',
+        'description' => '',
+        'options'     => ['validate' => true],
+        'parameters' => [
+            'parenttype' => [
+                'in' => 'path',
+                'description' => 'the parent type',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
+            ],
+            'parentid' => [
+                'in' => 'path',
+                'description' => 'the parent id',
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'required' => true,
             ],
@@ -186,7 +235,7 @@ $routes = [
                 'required' => true
             ],
         ]
-    ],
+    ]
 ];
 
 /**

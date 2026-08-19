@@ -1,11 +1,6 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
-    <div *ngIf="!displayLink()" class="slds-truncate">
-        <span [ngClass]="{'slds-text-color_error' : highlightdate}"><system-display-datetime [date]="value" [displayTime]="false"></system-display-datetime></span>
-    </div>
-    <div *ngIf="displayLink()" class="slds-truncate">
-        <a href="javascript:void(0);" (click)="goRecord()"><span [ngClass]="{'slds-text-color_error' : highlightdate}"><system-display-datetime [date]="value" [displayTime]="false"></system-display-datetime></span></a>
-    </div>
+    <span [ngClass]="{'slds-text-color_error' : highlightdate}"><system-display-datetime system-display-datetime-hide-time [date]="value"/></span>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="css_classes">
     <system-input-date system-input-date-hide-error [(ngModel)]="value" (valid)="setValid($event)" ></system-input-date>

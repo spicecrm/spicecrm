@@ -12,7 +12,8 @@ declare var _: any;
 
 @Component({
     selector: "system-module-tree",
-    templateUrl: "../templates/systemmoduletree.html"
+    templateUrl: "../templates/systemmoduletree.html",
+    standalone: false
 })
 
 export class SystemModuleTree implements AfterViewInit {

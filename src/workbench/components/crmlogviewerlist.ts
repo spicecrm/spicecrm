@@ -23,15 +23,17 @@ declare var moment: any;
 
 @Component({
     selector: 'crm-log-viewer-list',
-    templateUrl: '../templates/crmlogviewerlist.html'
+    templateUrl: '../templates/crmlogviewerlist.html',
+    standalone: false
 })
 export class CRMLogViewerList implements OnInit {
 
-    @Input() public filter = { loglevel: '', subloglevel: '', pid: '', user_id: '', text: '', transaction_id: '', end: undefined };
+    @Input() public filter = { loglevel: '', subloglevel: '', pid: '', user_id: '', text: '', transaction_id: '', end: undefined, pinned: undefined };
     @Input() public period = { type: '', begin: { year: '', month: '', day: '', hour: '' }, end: { year: '', month: '', day: '', hour: '' }, duration: '' };
     @Input('load') public load$: EventEmitter<null>;
     @Input() public valuesNotClickable = false;
-    @Output() public countEntries$ = new BehaviorSubject<number>(0);
+    @Output() public countEntries$ = new BehaviorSubject<number|false>(false);
+    @Output() public countEntriesTotal$ = new BehaviorSubject<number>(0);
     @Input() public limit: number;
 
     @Output('valueClicked') public valueClicked$ = new EventEmitter();
@@ -88,14 +90,17 @@ export class CRMLogViewerList implements OnInit {
             text: this.filter.text ? this.filter.text : undefined,
             transaction_id: this.filter.transaction_id ? this.filter.transaction_id : undefined,
             end: this.filter.end ? this.filter.end.utc().format( 'YYYY-MM-DD HH:mm:ss' ) : undefined,
-            limit: this.limit
+            limit: this.limit,
+            pinned: this.filter.pinned ? this.filter.pinned : undefined,
         };
 
         this.toast.clearToast( this.toastId );
         this.backend.getRequest( 'admin/crmlog/entries', queryParams ).subscribe(
             response => {
                 this.entries = response.entries;
-                this.countEntries$.next( response.totalCount );
+                this.entries.forEach( entry => entry.pinned = ( entry.pinned === '1' ? true : false ));
+                this.countEntries$.next( response.count );
+                this.countEntriesTotal$.next( response.totalCount );
                 this.isLoading = false;
                 this.isInitialLoaded = true;
             },
@@ -116,6 +121,24 @@ export class CRMLogViewerList implements OnInit {
         this.modalservice.openModal('CRMLogViewerModal' ).subscribe( modal => {
             modal.instance.entry = this.entries[i];
             modal.instance.user_name = this.entries[i].user_name;
+        });
+    }
+
+    /**
+     * Toggle pin of CRM log entry.
+     */
+    public togglePin(entry) {
+        let loadingModal = this.modalservice.await('LBL_EXECUTING');
+        this.backend.postRequest('admin/crmlog/'+entry.id+'/pin', null, {"pinned": (entry.pinned ? 0:1 ) }).subscribe({
+            next: ( response ) => {
+                loadingModal.emit(true);
+                if ( response.success === true ) entry.pinned = response.pinned;
+                else this.toast.sendToast('Error changing pin', 'error');
+            },
+            error: () => {
+                loadingModal.emit(true);
+                this.toast.sendToast('Error changing pin', 'error');
+            }
         });
     }
 

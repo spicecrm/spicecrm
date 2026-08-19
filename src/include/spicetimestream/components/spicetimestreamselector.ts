@@ -22,7 +22,8 @@ declare var moment: any;
 
 @Component({
     selector: 'spice-timestream-selector',
-    templateUrl: '../templates/spicetimestreamselector.html'
+    templateUrl: '../templates/spicetimestreamselector.html',
+    standalone: false
 })
 export class SpiceTimestreamSelector implements OnInit{
 

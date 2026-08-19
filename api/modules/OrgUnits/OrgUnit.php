@@ -2,13 +2,12 @@
 
 namespace SpiceCRM\modules\OrgUnits;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\TimeDate;
 
-class OrgUnit extends \SpiceCRM\data\SpiceBean
+class OrgUnit extends \SpiceCRM\includes\SpiceBeans\SpiceBean
 {
     public function save($check_notify = false, $fts_index_bean = true)
     {
@@ -211,6 +210,28 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
         if (empty($parentBean->parent_id)) {
             $this->recurringParentDeletion($parentBean, $data);
         }
+    }
+
+    public function getAllEmployees($mapped = true){
+        $employees = [];
+        $nowDB = TimeDate::getInstance()->nowDbDate();
+        // get the ids of all employees
+        $employeeArray = $this->db->fetchAll("SELECT hcmjobposition_employees.employee_id employee_id, hcmjobpositions.id hcmjobposition_id, date_start, date_end FROM hcmjobposition_employees, hcmjobpositions WHERE hcmjobpositions.id = hcmjobposition_employees.hcmjobposition_id AND orgunit_id = '{$this->id}' AND hcmjobpositions.deleted = 0 and hcmjobposition_employees.deleted = 0 AND (date_start IS NULL OR date_start < '{$nowDB}') AND (date_end IS NULL OR date_end > '{$nowDB}')");
+        foreach ($employeeArray as $employeeArrayItem){
+            // get the employee
+            $employee = BeanFactory::getBean('Employees', $employeeArrayItem['employee_id']);
+
+            // get the jon position
+            $jobPosition = BeanFactory::getBean('HCMJobPositions', $employeeArrayItem['hcmjobposition_id']);
+            $employee->hcmjobposition_id = $jobPosition->id;
+            $employee->hcmjobposition_name = $jobPosition->name;
+            $employee->hcmjobposition_date_start = $employeeArrayItem['date_start'];
+            $employee->hcmjobposition_date_end = $employeeArrayItem['date_end'];
+
+            // map the employee for the response
+            $employees[] = $mapped ? (new SpiceBeanHandler())->mapBean($employee) : $employee;
+        }
+        return $employees;
     }
 
 }

@@ -22,7 +22,8 @@ import {language} from '../../services/language.service';
         ':host  .mce-btn button{font-size: 12px; color: #54698d;}',
         ':host  .mce-tinymce{border-radius: 4px}',
         ':host  .mce-widget{font-family: \'Titillium Web\', sans-serif;}'
-    ]
+    ],
+    standalone: false
 })
 export class ObjectRepositoryManagerAddModule implements OnInit {
     @Output() public closedialog: EventEmitter<boolean> = new EventEmitter<boolean>();

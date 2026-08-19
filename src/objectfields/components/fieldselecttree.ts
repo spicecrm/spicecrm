@@ -12,12 +12,14 @@ import {backend} from "../../services/backend.service";
 import {configurationService} from "../../services/configuration.service";
 
 /**
+ * @deprecated in 2025.02.001
  * documentation: https://spicecrm.gitbooks.io/spicecrm-ui/content/component-directory/fields/service-categories.html
  * created by Sebastian Franz
  */
 @Component({
     selector: 'select-tree',
-    templateUrl: '../templates/fieldselecttree.html'
+    templateUrl: '../templates/fieldselecttree.html',
+    standalone: false
 })
 export class fieldSelectTree extends fieldGeneric {
     public fields = [];

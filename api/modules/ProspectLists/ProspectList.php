@@ -1,7 +1,7 @@
 <?php
 namespace SpiceCRM\modules\ProspectLists;
 
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
@@ -207,17 +207,19 @@ FROM prospect_lists_prospects plp
     }
 
 
-    function get_entry_count()
+    /**
+     * returns the entry count
+     *
+     * @param $detailed
+     * @return int|mixed
+     */
+    function get_entry_count($detailed = false)
     {
-        $query = "SELECT count(*) AS num FROM prospect_lists_prospects WHERE prospect_list_id='$this->id' AND deleted = '0'";
-        $result = $this->db->query($query, true, "Grabbing prospect_list entry count");
-
-        $row = $this->db->fetchByAssoc($result);
-
-        if ($row)
-            return $row['num'];
-        else
-            return 0;
+        if($detailed){
+            return $this->db->fetchAll("SELECT related_type, count(*) num FROM prospect_lists_prospects WHERE prospect_list_id='$this->id' AND deleted = 0 GROUP BY related_type", true, "Grabbing prospect_list entry count");
+        } else {
+            return $this->db->getOne("SELECT count(*) num FROM prospect_lists_prospects WHERE prospect_list_id='$this->id' AND deleted = '0'", true, "Grabbing prospect_list entry count") ?: 0;
+        }
     }
 
 

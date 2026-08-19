@@ -14,7 +14,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 @Component({
     selector: 'aclobjects-manager-object-fieldvalues',
     templateUrl: '../templates/aclobjectsmanagerobjectfieldvalues.html',
-    providers: [view]
+    standalone: false
 })
 export class ACLObjectsManagerObjectFieldvalues {
 
@@ -23,8 +23,6 @@ export class ACLObjectsManagerObjectFieldvalues {
     public loadedtype: string = '';
 
     constructor(public backend: backend, public view: view, public metadata: metadata, public model: model, public language: language, public modelutilities: modelutilities) {
-        this.view.isEditable = true;
-        this.view.setEditMode();
 
         this.handleType();
 

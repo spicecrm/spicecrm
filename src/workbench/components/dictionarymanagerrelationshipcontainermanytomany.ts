@@ -20,6 +20,7 @@ import {
 @Component({
     selector: 'dictionary-manager-relationship-container-manytomany',
     templateUrl: '../templates/dictionarymanagerrelationshipcontainermanytomany.html',
+    standalone: false
 })
 export class DictionaryManagerRelationshipContainerManyToMany implements OnInit, OnChanges {
 
@@ -97,6 +98,15 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit,
         this.relationship.rhs_duplicatemerge = value ? 1 : 0;
     }
 
+    get rhs_linkdefault(){
+        return this.relationship.rhs_linkdefault == 1;
+    }
+
+    set rhs_linkdefault(value){
+        this.relationship.rhs_linkdefault = value ? 1 : 0;
+    }
+
+
     get lhs_duplicatemerge(){
         return this.relationship.lhs_duplicatemerge == 1;
     }
@@ -104,6 +114,32 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit,
     set lhs_duplicatemerge(value){
         this.relationship.lhs_duplicatemerge = value ? 1 : 0;
     }
+
+
+    get lhs_linkdefault(){
+        return this.relationship.lhs_linkdefault == 1;
+    }
+
+    set lhs_linkdefault(value){
+        this.relationship.lhs_linkdefault = value ? 1 : 0;
+    }
+
+    get rhs_clone_join_table(){
+        return this.relationship.rhs_clone_join_table_record_on_duplicate == 1;
+    }
+
+    set rhs_clone_join_table(value){
+        this.relationship.rhs_clone_join_table_record_on_duplicate = value ? 1 : 0;
+    }
+
+    get lhs_clone_join_table(){
+        return this.relationship.lhs_clone_join_table_record_on_duplicate == 1;
+    }
+
+    set lhs_clone_join_table(value){
+        this.relationship.lhs_clone_join_table_record_on_duplicate = value ? 1 : 0;
+    }
+
 
     public ngOnChanges() {
         this.buildRelationshipFieldsPerItem();
@@ -261,7 +297,9 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit,
             map_to_fieldname: '',
             sysdictionaryitem_id: joinItemId,
             deleted: 0,
-            isNew: true
+            isNew: true,
+            version: this.relationship.version,
+            package: this.relationship.package
         };
     }
 
@@ -278,7 +316,7 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit,
      * @param linkName
      */
     public getLabel(linkName): string {
-        return this.checkIfExistingLabel(linkName)
+        return linkName && this.checkIfExistingLabel(linkName)
             ? 'LBL_' + linkName.toUpperCase()
             : '';
     }

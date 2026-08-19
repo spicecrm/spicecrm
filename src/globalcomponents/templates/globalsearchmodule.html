@@ -24,7 +24,7 @@
             <thead class="slds-show--medium">
                 <tr class="slds-text-title--caps">
                     <th *ngFor="let item of listfields; let i=index" scope="col" class="slds-resizable" [ngClass]="sizeClass(i)">
-                        <div class="slds-truncate slds-p-around--x-small"><system-label-fieldname [module]="module" [field]="item.field"></system-label-fieldname></div>
+                        <div class="slds-truncate slds-p-around--x-small"><system-label-fieldname [module]="module" [field]="item.field" [fieldconfig]="item.fieldconfig"></system-label-fieldname></div>
                     </th>
                 </tr>
             </thead>

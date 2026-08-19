@@ -2,10 +2,12 @@
 
 namespace SpiceCRM\includes\SpiceUI;
 
+use DateTime;
 use DirectoryIterator;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class SpiceUIConfHandler
@@ -41,7 +43,7 @@ class SpiceUIConfHandler
         'sysgsuiteuserconfig'
     ];
 
-    static public $dataFormat = 2;
+    static public $dataFormat = 3;
     static public $allTablenamesOfDB = null;
     static public $blacklistedTables = [];
     static public $selectableTables = [];
@@ -145,11 +147,34 @@ class SpiceUIConfHandler
         $db = DBManagerFactory::getInstance();
         $rows = [];
 
-        $where = empty($packages) ? '' : "where package in ('" . implode("','", explode(',', $packages)) . "')";
+        if (self::checkTableHasPackageField($tablename)) {
+            $where = empty($packages) ? "where package != 'system' OR package is null" : "where package in ('" . implode("','", explode(',', $packages)) . "')";
+        } else {
+            if ( empty( $packages )) $where = ''; else return [];
+        }
 
         $result = $db->query(sprintf("SELECT * FROM %s $where", $db->quote($tablename)), false, '', true);
         while ($row = $db->fetchByAssoc($result)) $rows[] = $row;
         return $rows;
+    }
+
+    /**
+     * check table has package field
+     * @param string $tableName
+     * @return bool
+     * @throws \Exception
+     */
+    private static function checkTableHasPackageField(string $tableName): bool
+    {
+        $dic = SpiceDictionary::getInstance()->getDefsByTableName($tableName);
+
+        foreach ($dic['fields'] as $field) {
+            if ($field['name'] != 'package') continue;
+            return true;
+        }
+
+        return false;
+
     }
 
     /**
@@ -231,5 +256,25 @@ class SpiceUIConfHandler
                 }
             }
         }
+    }
+
+    /**
+     * retrieves all backup files currently present in the /backups folder
+     * @return array
+     */
+    public function getBackupFiles(): array
+    {
+        $files = [];
+        $dir = new DirectoryIterator(self::$backupFolder);
+
+        foreach ($dir as $file) {
+            if ($file->isFile()) {
+                preg_match('/\b\d{8}\b/', $file->getFileName(), $matches);
+                $date = DateTime::createFromFormat('Ymd', $matches[0]);
+                $files[] = ['fileCreated' => $date->format('Y-m-d'), 'pathName' => $file->getPathname()];
+            }
+        }
+
+        return $files;
     }
 }

@@ -1,21 +1,21 @@
 <?php
 namespace SpiceCRM\modules\Administration\api\controllers;
 
-use Google\Auth\Cache\Item;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
-use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
-use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use stdClass;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use stdClass;
 
 class ConfiguratorController{
 
@@ -114,7 +114,7 @@ class ConfiguratorController{
         $retArray = [];
 
         // check that we have a dictionary entry
-        if(!isset(SpiceDictionary::getInstance()->dictionary[$args['table']])){
+        if(!SpiceDictionaryDefinitions::getInstance()->getDefinitionByTable($args['table'])){
             throw new NotFoundException('not a known table');
         }
         $entries = $db->query("SELECT * FROM {$args['table']}");
@@ -152,7 +152,7 @@ class ConfiguratorController{
         $retArray = [];
 
         // check that we have a dictionary entry
-        if(!isset(SpiceDictionaryHandler::getInstance()->dictionary[$config['dictionary']])){
+        if(!SpiceDictionaryDefinitions::getInstance()->getDefinitionByName($config['dictionary'])){
             throw new NotFoundException('not a known table');
         }
         $entries = $db->query("SELECT * FROM {$config['dictionary']}");
@@ -174,7 +174,7 @@ class ConfiguratorController{
                 if($field['foreign']['dictionary']){
                     $selectFields = $field['foreign']['value'] . ' value';
                     if($field['foreign']['display']) $selectFields .= ', ' . $field['foreign']['display'] . ' display';
-                    $foreignkeys[$field['name']] = $db->fetchAll(" SELECT {$selectFields} FROM {$field['foreign']['dictionary']}");
+                    $foreignkeys[$field['name']] = $db->fetchAll(" SELECT {$selectFields} FROM {$field['foreign']['dictionary']}") ?: [];
                 }
 
                 //in case of module
@@ -209,7 +209,7 @@ class ConfiguratorController{
         # header("Access-Control-Allow-Origin: *");
         if (!$current_user->is_admin) throw (new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
 
-        if(!isset(SpiceDictionaryHandler::getInstance()->dictionary[$args['table']])){
+        if(!SpiceDictionaryDefinitions::getInstance()->getDefinitionByTable($args['table'])){
             throw new NotFoundException('not a known table');
         }
 
@@ -237,7 +237,7 @@ class ConfiguratorController{
         if (!$current_user->is_admin) throw ( new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
         # header("Access-Control-Allow-Origin: *");
 
-        if(!isset(SpiceDictionary::getInstance()->dictionary[$args['table']])){
+        if(!SpiceDictionaryDefinitions::getInstance()->getDefinitionByTable($args['table'])){
             throw new NotFoundException('not a known table');
         }
 
@@ -263,7 +263,7 @@ class ConfiguratorController{
             $this->resetSessionCache($args['table']);
         }
 
-        return $res->withJson(['status' => 'success']);
+            return $res->withJson(['status' => 'success']);
     }
 
     /**
@@ -294,14 +294,7 @@ class ConfiguratorController{
 
         if (!$current_user->is_admin) throw ( new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
 
-        $tableExists = false;
-
-        foreach (SpiceDictionary::getInstance()->dictionary as $item) {
-            if ($item['table'] == $args['table']) {
-                $tableExists = true;
-            }
-        }
-        if(!$tableExists){
+        if(!SpiceDictionaryDefinitions::getInstance()->getDefinitionByTable($args['table'])){
             throw new NotFoundException('not a known table');
         }
 

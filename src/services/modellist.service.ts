@@ -1,7 +1,7 @@
 /**
  * @module services
  */
-import {EventEmitter, Injectable, OnDestroy} from '@angular/core';
+import {EventEmitter, Injectable, OnDestroy, signal, WritableSignal} from '@angular/core';
 import {Observable, Subject, of, BehaviorSubject, Subscription} from 'rxjs';
 import {backend} from './backend.service';
 import {userpreferences} from './userpreferences.service';
@@ -85,7 +85,12 @@ export class modellist implements OnDestroy {
     /**
      * emits when the selection of the list has been changed via select all .. to trigger chanmge detection on the components
      */
-    public selectionChanged$: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public selectionChanged$: EventEmitter<boolean|string> = new EventEmitter<boolean|string>();
+
+    /**
+     * switch to signal for the selection change
+     */
+    public selectedItems: WritableSignal<string[]> = signal([]);
 
     /**
      * holds an array of fields and direction for multidimensional sorting
@@ -216,6 +221,10 @@ export class modellist implements OnDestroy {
      * whether the list item is currently in view or edit mode
      */
     public listItemMode: string = 'view';
+    /**
+     * mobile fieldset fields
+     */
+    public mobileFieldsetId: string;
 
     constructor(
         public broadcast: broadcast,
@@ -231,6 +240,14 @@ export class modellist implements OnDestroy {
         this.subscribeToBroadcast();
         this.generateStandardLists();
         this.listType$ = new BehaviorSubject<ListTypeI>(this.standardLists[0]);
+    }
+
+    /**
+     * set mobile fieldset
+     * @private
+     */
+    private setMobileFieldset() {
+        this.mobileFieldsetId = this.metadata.getComponentConfig('ObjectList', this.module)?.mobileFieldset;
     }
 
     /**
@@ -262,6 +279,8 @@ export class modellist implements OnDestroy {
     public initialize(module: string, embeddedByComponent?: string) {
 
         this.module = module;
+
+        this.setMobileFieldset();
 
         this.generateStandardLists();
 
@@ -1011,6 +1030,10 @@ export class modellist implements OnDestroy {
 
         // emit that the data changed
         this.listDataChanged$.next(true);
+
+        // emit also that the seldection changed
+        this.selectionChanged$.next(true);
+        this.selectedItems.set([]);
     }
 
     /**
@@ -1173,6 +1196,34 @@ export class modellist implements OnDestroy {
         this.selectedAggregates = this.selectedAggregates.filter(item => item.split('::', 1)[0] !== fieldname);
     }
 
+    /**
+     * set a single item as selected
+     *
+     * @param id
+     */
+    public setSelected(id){
+        let item = this.listData.list.find(i => i.id == id);
+        if(item && !item.selected) {
+            item.selected = true;
+            this.selectionChanged$.emit(id);
+            this.selectedItems.set(this.getSelectedIDs());
+        }
+    }
+
+    /**
+     * set a single item to unselected
+     *
+     * @param id
+     */
+    public setUnSelected(id){
+        let item = this.listData.list.find(i => i.id == id);
+        if(item && item.selected) {
+            item.selected = false;
+            this.selectionChanged$.emit(id);
+            this.selectedItems.set(this.getSelectedIDs());
+        }
+    }
+
     /*
      * select functions
      */
@@ -1184,6 +1235,8 @@ export class modellist implements OnDestroy {
 
         // emit so items can trigger change detection
         this.selectionChanged$.emit(true);
+        this.selectedItems.set(this.getSelectedIDs());
+
     }
 
     /**
@@ -1197,6 +1250,7 @@ export class modellist implements OnDestroy {
 
         // emit so items can trigger change detection
         this.selectionChanged$.emit(true);
+        this.selectedItems.set([]);
     }
 
     /*
@@ -1210,6 +1264,7 @@ export class modellist implements OnDestroy {
 
         // emit so items can trigger change detection
         this.selectionChanged$.emit(true);
+        this.selectedItems.set(this.getSelectedIDs());
     }
 
     /**
@@ -1272,6 +1327,10 @@ export class modellist implements OnDestroy {
      */
     public getListData(quiet: boolean = false): Observable<boolean> {
         let retSub = new Subject<boolean>();
+
+        // preserve the selection
+        let selectedIDs = [...this.getSelectedIDs()];
+
         if (!quiet) {
             // set the service to loading state
             this.isLoading = true;
@@ -1313,6 +1372,9 @@ export class modellist implements OnDestroy {
             next: (res: any) => {
                 // set the listdata
                 this.listData = res;
+
+                // reselect the items
+                this.listData.list.filter(i => selectedIDs.indexOf(i.id) >= 0).forEach(i => i.selected = true);
 
                 // update the timestamp for the last load
                 this.lastLoad = new moment();
@@ -1380,6 +1442,7 @@ export class modellist implements OnDestroy {
             this.httpRequestsRefID)
             .subscribe((res: any) => {
                 this.listData.list = this.listData.list.concat(res.list);
+                this.buckets = res.buckets;
                 this.lastLoad = new moment();
                 this.isLoading = false;
                 this.listDataChanged$.next(true);

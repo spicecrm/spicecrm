@@ -25,20 +25,21 @@ declare var moment: any
     templateUrl: '../templates/outputrevisionspdftabcontainer.html',
     animations: [
         trigger('slideInOut', [
-            state('open', style({width: '50%'})),
-            state('closed', style({width: '100%'})),
+            state('open', style({ width: '50%' })),
+            state('closed', style({ width: '100%' })),
             transition('open <=> closed', [
                 animate('200ms'),
             ])
         ]),
         trigger('slideInOut2', [
-            state('open', style({width: '50%'})),
-            state('closed', style({width: '0%'})),
+            state('open', style({ width: '50%' })),
+            state('closed', style({ width: '0%' })),
             transition('open <=> closed', [
                 animate('200ms'),
             ])
         ]),
-    ]
+    ],
+    standalone: false
 })
 export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
 
@@ -59,6 +60,16 @@ export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
      * indicator that we are loading
      */
     public loading: boolean = false;
+
+    /**
+     * an array with the templates we have
+     */
+    public outputTemplates: {id:string, name:string}[] = [];
+
+    /**
+     * the selected template
+     */
+    public outputTemplate: string;
 
     public outputRevision: string = '';
     public outputRevisions: any[] = [];
@@ -94,6 +105,20 @@ export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
+    get outputtemplate(){
+        return this.outputTemplate;
+    }
+
+    set outputtemplate(outputTemplate){
+        this.outputTemplate = outputTemplate;
+        this.outputRevision = this.outputrevisions[0].id;
+        this.loadOutput();
+    }
+
+    get outputrevisions(){
+        return this.outputRevisions.filter(or => or.outputtemplate_id == this.outputTemplate);
+    }
+
     /**
      * initializes modelattachments and retrieves file from backend
      * @param routeParams
@@ -124,7 +149,7 @@ export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
     /**
      * loads the outputs for the salesdo
      */
-    public getOutputs(forceSetOutput = false) {
+    public getOutputs(forceSetOutput = false, outputrevision_id?: string) {
         this.loading = true;
         this.backend.getRequest(`module/${this.model.module}/${this.model.id}/related/outputrevisions?offset=0&limit=99`).subscribe({
             next: (response) => {
@@ -133,25 +158,48 @@ export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
                 // reset the current array
                 this.outputRevisions = [];
                 // sort the response
-                for (let id in response) {
-                    if (response.hasOwnProperty(id)) {
-                        let item = this.model.utils.backendModel2spice('OutputRevisions', response[id]);
-                        this.outputRevisions.push({
-                            id: item.id,
-                            date_entered: item.date_entered,
-                            created_by: item.created_by_user.user_name,
-                            description: item.description
+                for (let resItem of response) {
+                    let item = this.model.utils.backendModel2spice('OutputRevisions', resItem);
+                    this.outputRevisions.push({
+                        id: item.id,
+                        outputtemplate_id: item.outputtemplate_id,
+                        outputtemplate_name: item.outputtemplate_name,
+                        date_entered: item.date_entered,
+                        created_by: item.created_by_user.user_name,
+                        description: item.description
+                    })
+
+                    // add the template id
+                    if(!this.outputTemplates.find(o => o.id == resItem.outputtemplate_id)){
+                        this.outputTemplates.push({
+                            id: resItem.outputtemplate_id,
+                            name: resItem.outputtemplate_name
                         })
                     }
                 }
 
+                // sort the templates found
+                this.outputTemplates.sort((a, b) => a.name.localeCompare(b.name));
+
                 // sort the array by date entered
                 this.outputRevisions.sort((a, b) => a.date_entered.isBefore(b.date_entered) ? 1 : -1);
 
-                // set the default one and laod the output
-                if (this.outputRevisions.length > 0 && (forceSetOutput || !this.outputRevision)) {
-                    this.outputRevision = this.outputRevisions[0].id;
+                if(outputrevision_id){
+                    let or = this.outputRevisions.find(or => or.id == outputrevision_id);
+                    this.outputTemplate = or.outputtemplate_id;
+                    this.outputRevision = outputrevision_id;
                     this.loadOutput();
+                } else {
+                    // set the default template
+                    if (this.outputTemplates.length > 0) {
+                        this.outputTemplate = this.outputTemplates[0].id;
+                    }
+
+                    // set the default one and laod the output
+                    if (this.outputRevisions.length > 0 && (forceSetOutput || !this.outputRevision)) {
+                        this.outputRevision = this.outputRevisions.filter(or => or.outputtemplate_id == this.outputTemplate)[0].id;
+                        this.loadOutput();
+                    }
                 }
             },
             error: (e) => {
@@ -199,6 +247,8 @@ export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
                     } else {
                         this.generateOutput(templates[0].id);
                     }
+                } else {
+                    this.toast.sendToast('MSG_NO_TEMPLATES_FOUNSD', 'warning');
                 }
             },
             error: (e) => {
@@ -225,7 +275,7 @@ export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
                             next:(save) => {
                                 if(save){
                                     // if we have other than the initial printout prompt a text
-                                    if(this.outputRevisions.length > 0) {
+                                    if(this.outputRevisions.filter(or => or.outputtemplate_id == template).length > 0) {
                                         this.modal.prompt('input_text', 'MSG_CREATE_NEW_OUTPUT', 'MSG_CREATE_NEW_OUTPUT').subscribe({
                                             next: (text) => {
                                                 this.postOutput(template, text)
@@ -259,7 +309,7 @@ export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
         }).subscribe({
             next: (res) => {
                 this.loading = false;
-                this.getOutputs(true);
+                this.getOutputs(true, res.id);
             },
             error: () => {
                 this.loading = false;

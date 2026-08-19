@@ -37,7 +37,8 @@ declare var moment: any;
             useExisting: forwardRef(() => UserCreatePassword),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class UserCreatePassword implements OnInit, ControlValueAccessor{
 
@@ -47,12 +48,11 @@ export class UserCreatePassword implements OnInit, ControlValueAccessor{
     public userNameCheck: RegExp = new RegExp("^(?![_.])(?!.*[_.]{2})[@a-zA-Z0-9._-]{1,60}$");
     public pwdGuideline: string;
     public autogenerate: boolean = false;
-    public sendByEmail: boolean = false;
+    public sendBySystem: boolean = false;
     public forceReset: boolean = true;
     public externalauthonly: boolean = false;
     public showPassword: boolean = false;
     public saveTriggered: boolean = false;
-    public canSendByEmail: boolean = true;
 
     @Output() sendbyemail: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() forcereset: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -107,7 +107,7 @@ export class UserCreatePassword implements OnInit, ControlValueAccessor{
      * emit all changes
      */
     public emitChanges(){
-        this.sendbyemail.emit(this.sendByEmail);
+        this.sendbyemail.emit(this.sendBySystem);
         this.extauthonly.emit(this.externalAuthOnly);
         this.forcereset.emit(this.forceReset);
         this.systemgenerated.emit(this.autogenerate);
@@ -225,7 +225,7 @@ export class UserCreatePassword implements OnInit, ControlValueAccessor{
         this.externalauthonly = value;
         if(value){
             this.autogenerate = false;
-            this.sendByEmail = false;
+            this.sendBySystem = false;
             this.forceReset = false;
             this.password = '';
             this.showPassword = false;

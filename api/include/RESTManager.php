@@ -1,31 +1,31 @@
 <?php
 /*********************************************************************************
-* This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
-* and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
-* You can contact us at info@spicecrm.io
-*
-* SpiceCRM is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version
-*
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-*
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-*
-* SpiceCRM is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-********************************************************************************/
+ * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
+ * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+ * You can contact us at info@spicecrm.io
+ *
+ * SpiceCRM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ *
+ * SpiceCRM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ********************************************************************************/
 
 namespace SpiceCRM\includes;
 
@@ -35,33 +35,27 @@ namespace SpiceCRM\includes;
 
 use Slim\App;
 use Slim\Exception\HttpNotFoundException;
-use Slim\Psr7\Response;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\Exception;
-use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\Middleware\AdminOnlyAccessMiddleware;
 use SpiceCRM\includes\Middleware\ApiOnlyAccessMiddleware;
 use SpiceCRM\includes\Middleware\ErrorMiddleware;
 use SpiceCRM\includes\Middleware\ExceptionMiddleware;
+use SpiceCRM\includes\Middleware\ipClientsMiddleware;
 use SpiceCRM\includes\Middleware\LoggerMiddleware;
 use SpiceCRM\includes\Middleware\ModuleRouteMiddleware;
-use SpiceCRM\includes\Middleware\RequireAuthenticationMiddleware;
 use SpiceCRM\includes\Middleware\TenantMiddleware;
 use SpiceCRM\includes\Middleware\TransactionMiddleware;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainLoader;
 use SpiceCRM\includes\SpiceSwagger\SpiceSwaggerGenerator;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\utils\RESTRateLimiter;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\modules\Contacts\Contact;
-use Throwable;
-use SpiceCRM\includes\Middleware\ipClientsMiddleware;
+use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\UserAliases\UserAlias;
+use SpiceCRM\modules\Users\User;
 
 class RESTManager
 {
@@ -95,6 +89,17 @@ class RESTManager
      * @var bool
      */
     private $isCustomExtension = false;
+    /**
+     * holds the auth params
+     * @var object|null
+     */
+    private ?object $authParams = null;
+    /**
+     * if true, SpiceBean will exclude the image field from retrieve for the whole request
+     * To be set in the controller before processing when needed
+     * @var bool
+     */
+    public bool $excludeImageFields = false;
 
     private function __construct()
     {
@@ -136,6 +141,8 @@ class RESTManager
 
         if(class_exists('\SpiceCRM\custom\includes\Middleware\TransactionMiddleware')){
             $this->app->add(\SpiceCRM\custom\includes\Middleware\TransactionMiddleware::class);
+        } else if(class_exists('\SpiceCRM\extensions\includes\Middleware\TransactionMiddleware')){
+            $this->app->add(\SpiceCRM\extensions\includes\Middleware\TransactionMiddleware::class);
         } else {
             $this->app->add(TransactionMiddleware::class);
         }
@@ -175,14 +182,14 @@ class RESTManager
      * @param array $routeArray
      * @param string|null $extension
      */
-    public function registerRoutes(array $routeArray, string $extension = null): void {
+    public function registerRoutes(array $routeArray, ?string $extension = null): void {
         foreach ($routeArray as $route) {
             $route['extension'] = $extension;
             $route['custom']    = $this->isCustomExtension;
             $this->routes[$route['method'].':'.$route['route']] = $route;
             // check on aliases
-            if(isset($route['aliases']) && !empty($route['aliases'])){
-                foreach($route['aliases'] as $alias){
+            if (isset($route['aliases']) && !empty($route['aliases'])) {
+                foreach ($route['aliases'] as $alias) {
                     $routeAlias = $route;
                     $routeAlias['route'] = $alias;
                     unset($routeAlias['aliases']);
@@ -266,15 +273,37 @@ class RESTManager
     }
 
     /**
-     * parse the auth params from the server data
+     * get/parse the auth params
      * @return object {authType: 'credentials' | 'token', authData: {token?: string, username?: string, password?: string, tokenIssuer?: string, impersonationUser?: string}
      */
-    public function parseAuthParams(): object
+    public function getAuthParams(): object
+    {
+        if (!$this->authParams) {
+            $this->parseAuthParams();
+        }
+
+        return $this->authParams;
+    }
+
+    /**
+     * parse the auth params from the server data
+     * authParams: object {authType: 'credentials' | 'token', authData: {token?: string, username?: string, password?: string, tokenIssuer?: string, impersonationUser?: string}
+     */
+    private function parseAuthParams(): void
     {
         // set SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1 in .htaccessfile
 
         // get the headers
         $headers = $this->getHeaders();
+
+        // specific handling if header sets enforced authorization none we process unauthorized
+        // this uspports passing by any accidentially or unwanted added authorization headers
+        // it can be overwritten e.g. in .htaccess or any other rule in between
+        // in this ca<se the user will simply not be authorized and the request will be handled anonymously
+        if($headers['force-authorization-none'] == 'true') {
+            $this->authParams = (object) [ 'authType' => 'none'];
+            return;
+        }
 
         $token = null;
         $tokenIssuer = null;
@@ -312,21 +341,35 @@ class RESTManager
         $authType = !empty($token) ? 'token' : ($user && $pass ? 'credentials' : 'none');
 
         $authData = [
-            'impersonationUser' => SpiceConfig::getInstance()->config['system']['impersonation_enabled'] ? $_GET['impersonationuser'] : null,
+            'impersonationUser' => SpiceConfig::getInstance()->config['system']['impersonation_enabled'] ? urldecode($_GET['impersonationuser']) : null,
             'tokenIssuer' => $tokenIssuer
         ];
 
         if ($authType == 'token') {
             $authData['token'] = $token;
         } elseif ($user && $pass) {
-            $authData['username'] = $user;
+            $authData['username'] = self::getUsername($user);
             $authData['password'] = $pass;
             $authData['code2fa'] = $headers['code2fa'];
             $authData['deviceID'] = $headers['device-id'];
             $authData['rememberDevice'] = $headers['remember-device'];
         }
 
-        return (object) ['authData' => (object) $authData, 'authType' => $authType, 'tenantID' => $headers['tenant-id']];
+        $this->authParams = (object) ['authData' => (object) $authData, 'authType' => $authType, 'tenantID' => $headers['tenant-id']];
+    }
+
+    /**
+     * find user by username or check alias
+     * @param string $username
+     * @return User|null
+     */
+    private static function getUsername(string $username): ?string
+    {
+        $user = (BeanFactory::newBean('Users'))->findByUsername($username);
+
+        if (!$user) $user = UserAlias::findUser($username);
+
+        return $user?->user_name ?: $username;
     }
 
 
@@ -464,8 +507,8 @@ class RESTManager
     private function initExtensions() {
         // check if we have extension in the local path
         $checkRootPaths = ['include', 'modules',
-                            'extensions/include', 'extensions/modules',
-                            'custom/modules', 'custom/include'];
+            'extensions/include', 'extensions/modules',
+            'custom/modules', 'custom/include'];
         foreach ($checkRootPaths as $checkRootPath) {
             $KRestDirHandle = opendir("./$checkRootPath");
             if ($KRestDirHandle) {
@@ -477,9 +520,7 @@ class RESTManager
             }
         }
 
-        $this->initExtensionsInFolder('.');
-        $this->initExtensionsInFolder('./data');
-        $this->initExtensionsInFolder('./custom');
+        $this->sortRoutes();
     }
 
     private function initExtensionsInFolder(string $folderPath) {
@@ -598,5 +639,26 @@ class RESTManager
         }
 
         return false;
+    }
+
+    private function sortRoutes(): void
+    {
+        uksort($this->routes, function($a, $b) {
+            return $this->countRouteParameters($a) - $this->countRouteParameters($b);
+        });
+    }
+
+    /**
+     * Returns the number of nonspecific parameters in a route.
+     * For example '/module/{beanName}/export/{beanId}' return 2.
+     *
+     * @param string $routeString
+     * @return int
+     */
+    private function countRouteParameters(string $routeString): int
+    {
+        preg_match_all('/\{[^}]+\}/', $routeString, $matches);
+
+        return count($matches[0]);
     }
 }

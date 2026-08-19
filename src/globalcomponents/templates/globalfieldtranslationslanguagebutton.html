@@ -1,0 +1,29 @@
+@if (configurationService.data.systemparameters.translatable_fields) {
+    <div [system-dropdown-trigger] [stickyOnMobile]="true" class="slds-dropdown-trigger slds-dropdown-trigger--click slds-m-horizontal--xxx-small">
+        @if (language.currentFieldTranslationLanguage()) {
+            <button system-dropdown-trigger-button class="slds-button slds-button--brand slds-p-around--none" style="width: 24px; height: 24px;">
+                {{language.currentFieldTranslationLanguage().slice(0, 2).toUpperCase()}}
+            </button>
+        } @else {
+            <button system-dropdown-trigger-button class="slds-button slds-button--icon">
+                <system-button-icon icon="translate" addclasses="slds-button--icon-x-small"></system-button-icon>
+            </button>
+        }
+        <div class="slds-dropdown slds-dropdown_actions slds-p-around--none">
+            <ul class="slds-dropdown__list" role="group">
+                <li [class.slds-theme--info]="!language.currentFieldTranslationLanguage()" class="slds-dropdown__item">
+                    <a (click)="selectLanguage(undefined)" href="javascript:void(0);" style="padding: 0.2rem 0.5rem !important">
+                        <system-label label="LBL_DEFAULT"></system-label>
+                    </a>
+                </li>
+                @for (lang of languages; track lang.code) {
+                    <li [class.slds-theme--info]="language.currentFieldTranslationLanguage() == lang.code" class="slds-dropdown__item">
+                        <a (click)="selectLanguage(lang.code)" href="javascript:void(0);" style="padding: 0.2rem 0.5rem !important">
+                            {{lang.name}}
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+}

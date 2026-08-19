@@ -3,15 +3,14 @@
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceUI\SpiceUIRESTHelper;
 use stdClass;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 class SpiceUIFieldsetsController
 {
@@ -206,8 +205,8 @@ FROM sysuicustomfieldsets LEFT JOIN sysuicustomfieldsetsitems ON sysuicustomfiel
                     'fieldset' => $fieldsetItem['fieldset'],
                     'sequence' => $fieldsetItem['sequence'],
                     'fieldconfig' => json_encode($fieldsetItem['fieldconfig']),
-                    'package' => $fieldsetItem['package'],
-                    'version' => $fieldsetItem['version'],
+                    'package' => $fieldsetItem['package'] ?: $fieldsetData['package'],
+                    'version' => $fieldsetItem['version'] ?: $fieldsetData['version']
                 ];
 
                 $name = $name . $fieldsetItem['field'];
@@ -248,8 +247,8 @@ FROM sysuicustomfieldsets LEFT JOIN sysuicustomfieldsetsitems ON sysuicustomfiel
             'fieldset' => $fieldsetItem['fieldset'],
             'sequence' => $fieldsetItem['sequence'],
             'fieldconfig' => json_encode($fieldsetItem['fieldconfig']),
-            'package' => $fieldsetItem['package'],
-            'version' => $fieldsetData['version'],
+            'package' => $fieldsetItem['package'] ?: $fieldsetData['package'],
+            'version' => $fieldsetData['version'] ?: $fieldsetData['version']
         ];
 
         $itemName = $fieldsetItem['field'];

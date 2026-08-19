@@ -5,7 +5,8 @@ import {Component, Output, EventEmitter} from '@angular/core';
 
 @Component({
     selector: 'system-link',
-    templateUrl: '../templates/systemlink.html'
+    templateUrl: '../templates/systemlink.html',
+    standalone: false
 })
 export class SystemLink {
 

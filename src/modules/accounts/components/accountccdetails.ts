@@ -8,7 +8,8 @@ import {backend} from '../../../services/backend.service';
 import {model} from '../../../services/model.service';
 
 @Component({
-    templateUrl: '../templates/accountccdetails.html'
+    templateUrl: '../templates/accountccdetails.html',
+    standalone: false
 })
 export class AccountCCDetails implements OnInit {
     public companyCodes: any[] = [];

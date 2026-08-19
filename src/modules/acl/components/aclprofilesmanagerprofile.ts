@@ -7,11 +7,15 @@ import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {view} from "../../../services/view.service";
 import {metadata} from "../../../services/metadata.service";
+import {switchMap} from "rxjs";
+import {map} from "rxjs/operators";
+import {outputToObservable} from "@angular/core/rxjs-interop";
 
 @Component({
     selector: 'aclprofiles-manager-profile',
     templateUrl: '../templates/aclprofilesmanagerprofile.html',
     providers: [view],
+    standalone: false
 })
 export class ACLProfilesManagerProfile implements OnChanges {
 
@@ -113,13 +117,21 @@ export class ACLProfilesManagerProfile implements OnChanges {
     }
 
     public selectProfile() {
-        this.modal.openModal('ACLProfilesManagerAddObjectModal').subscribe(modalRef => {
-            modalRef.instance.aclobject.subscribe(aclobject => {
-                this.backend.postRequest('module/SpiceACLProfiles/' + this.profileid + '/related/spiceaclobjects/' + aclobject.id).subscribe(status => {
-                    this.aclobjects.push(aclobject);
-                    this.sortobjects();
-                });
-            });
+
+        const url = `module/SpiceACLProfiles/${this.profileid}/related/spiceaclobjects`;
+
+        this.modal.openModal('ACLProfilesManagerAddObjectModal').pipe(
+            switchMap(modalRef => outputToObservable(modalRef.instance.selectedObjects$)),
+            switchMap((objects: any[]) => this.backend.postRequest(url, null, {objectIds: objects.map(o => o.id)}).pipe(map(() => objects)))
+        ).subscribe({
+            next: objects => {
+                this.aclobjects.push(...objects);
+                this.sortobjects();
+            },
+            error: () => {
+                this.modal.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+            },
+            complete: () => console.log('done')
         });
     }
 

@@ -2,8 +2,8 @@
 namespace SpiceCRM\modules\EmailTemplates;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
@@ -66,9 +66,29 @@ class EmailTemplate extends SpiceBean {
 		parent::__construct();
 	}
 
+    /**
+     * get language from the bean or the template
+     * @param SpiceBean|null $bean
+     * @return string | null
+     */
+    public function getBeanCommunicationLanguage(?SpiceBean $bean): ?string
+    {
+        if (!$bean) return null;
+        $languageField = array_column(array_filter($bean->field_defs, fn($field) => $field['type'] == 'language'), 'name')[0];
+        return $bean->$languageField;
+    }
 
-    function parse( $bean, $additionalValues = null, $additionalBeans = [], $additionalStyles = [] ){
+    function parse( $bean, $additionalValues = null, $additionalBeans = [], $additionalStyles = [], $addtionalHeadItems = [] ){
         global $app_list_strings;
+
+        $beanLanguage = $this->getBeanCommunicationLanguage($bean);
+
+        # if the bean has a communication language apply the template translated content language before parsing
+        if ($beanLanguage) {
+            $this->language = $beanLanguage;
+            $this->translateTranslatableFields($beanLanguage);
+        }
+
         $app_list_strings = SpiceUtils::returnAppListStringsLanguage($this->language);
 
         $pdfFiles = $this->generatePdfFilesFromOutputTemplates($bean);
@@ -76,7 +96,9 @@ class EmailTemplate extends SpiceBean {
         $retArray = [
             'subject' => $this->parsePlainTextField('subject', $bean, $additionalValues ),
             'body' => $this->parseHTMLTextField('body', $bean, $additionalValues, $additionalBeans, $additionalStyles ),
-            'body_html' => $this->parseHTMLTextField('body_html', $bean, $additionalValues, $additionalBeans, $additionalStyles ),
+            'body_html' => $this->parseHTMLTextField('body_html', $bean, $additionalValues, $additionalBeans, $additionalStyles, $addtionalHeadItems ),
+            'reply_to_addr' => $this->parsePlainTextField('reply_to_addr', $bean, $additionalValues, $additionalBeans, $additionalStyles, $addtionalHeadItems ),
+            'to_addr' => $this->parsePlainTextField('to_addr', $bean, $additionalValues, $additionalBeans, $additionalStyles, $addtionalHeadItems ),
             'attachments' => array_merge($this->getAttachmentsWithFiles(), $pdfFiles)
         ];
         $retArray['subject'] = preg_replace('#\s+#', ' ', trim( $retArray['subject'] )); // multiple white spaces -> one
@@ -151,11 +173,11 @@ class EmailTemplate extends SpiceBean {
     }
 
 
-    public function parseHTMLTextField( $field, $parentbean = null, $additionalValues = null, $additionalBeans = [], $additionalStyles = [] )
+    public function parseHTMLTextField( $field, $parentbean = null, $additionalValues = null, $additionalBeans = [], $additionalStyles = [], $addtionalHeadItems = [] )
     {
         $templateCompiler = new Compiler($this);
         $templateCompiler->idsOfParentTemplates = array_merge( $this->idsOfParentTemplates, [$this->id] );
-        $html = $templateCompiler->compile($this->$field, $parentbean, $this->language, $additionalValues, $additionalBeans, [...$additionalStyles, $this->style]);
+        $html = $templateCompiler->compile($this->$field, $parentbean, $this->language, $additionalValues, $additionalBeans, [...$additionalStyles, $this->style], false, $addtionalHeadItems);
         return html_entity_decode($html);
     }
 
@@ -164,7 +186,7 @@ class EmailTemplate extends SpiceBean {
         $templateCompiler = new Compiler($this);
         $templateCompiler->idsOfParentTemplates = array_merge( $this->idsOfParentTemplates, [$this->id] );
         $templateCompiler->additionalValues = $additionalValues;
-        $text = $templateCompiler->compileblock($this->$field, [ 'bean' => $parentbean ], $this->language );
+        $text = $templateCompiler->compileblock($this->$field, [ 'bean' => $parentbean ], $this->language, true);
         return $text;
     }
 
@@ -175,6 +197,64 @@ class EmailTemplate extends SpiceBean {
             $style = html_entity_decode($styleRecord['csscode'], ENT_QUOTES);
         }
         return $style;
+    }
+
+    /**
+     * Creates an ics attachment in the email template
+     *
+     * @param $emailTemplate
+     * @param $retArray
+     * @param $bean
+     * @return array
+     */
+    public function attachIcsToEmail($emailTemplate, $retArray, $bean)
+    {
+        if (!property_exists($bean, 'date_start') || !property_exists($bean, 'date_end')) {
+            return $retArray;
+        }
+
+        $content = "BEGIN:VCALENDAR\r\n";
+        $content .= "VERSION:2.0\r\n";
+        $content .= "PRODID:-//SpiceCrm\r\n";
+        $content .= "BEGIN:VEVENT\r\n";
+        $content .= "UID:" . SpiceUtils::createGuid() . "\r\n";
+        $content .= "DTSTAMP:" . gmdate('Ymd\THis\Z') . "\r\n";
+        $content .= "DTSTART:" . date('Ymd\THis\Z', strtotime($bean->date_start)) . "\r\n";
+        $content .= "DTEND:" . date('Ymd\THis\Z', strtotime($bean->date_end)) . "\r\n";
+        $content .= "SUMMARY:" . $bean->name . "\r\n";
+
+        $cleanDescription = $this->htmlToPlainText($bean->description);
+        $cleanDescription = str_replace("\n", "\\n", $cleanDescription);
+
+        $content .= "DESCRIPTION:" . $cleanDescription . "\r\n";
+        $content .= "END:VEVENT\r\n";
+        $content .= "END:VCALENDAR\r\n";
+
+        $retArray['attachments'][] = [
+            'file' => base64_encode($content),
+            'file_mime_type' => 'text/calendar',
+            'filename' => $bean->name . '.ics',
+            'filesize' => strlen($content),
+        ];
+
+        return $retArray;
+    }
+
+    private function htmlToPlainText($html) {
+        $html = str_replace(['<br>', '<br/>', '<br />'], "\n", $html);
+        $html = str_replace('</p>', "\n\n", $html);
+        $html = str_replace(['<p>', '</div>'], '', $html);
+        $html = str_replace('<div>', "\n", $html);
+        $html = str_replace('&nbsp;', ' ', $html);
+
+        $text = strip_tags($html);
+
+        $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+        $text = preg_replace('/\n\s*\n\s*\n/', "\n\n", $text);
+        $text = preg_replace('/[ \t]+/', ' ', $text);
+        $text = trim($text);
+
+        return $text;
     }
 
 }

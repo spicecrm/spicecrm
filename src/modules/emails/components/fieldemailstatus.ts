@@ -10,7 +10,8 @@ import {Router} from '@angular/router';
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 
 @Component({
-    templateUrl: '../templates/fieldemailstatus.html'
+    templateUrl: '../templates/fieldemailstatus.html',
+    standalone: false
 })
 export class fieldEmailStatus extends fieldGeneric {
 
@@ -24,12 +25,19 @@ export class fieldEmailStatus extends fieldGeneric {
             case 'opened':
             case 'read':
                 return 'email_open';
-            case 'bounced':
+            case 'bounced_checked':
+                return 'turn_off_notifications';
             case 'deferred':
+                return 'hourglass';
+            case 'bounced':
+            case 'send_error_checked':
             case 'send_error':
+            case 'error':
                 return 'error';
             case 'sent':
                 return 'send';
+            case 'archived':
+                return 'archive';
             default:
                 return 'email';
         }
@@ -40,16 +48,27 @@ export class fieldEmailStatus extends fieldGeneric {
         return this.model.getField('type');
     }
 
-    // get a status icon
-    get directionicon() {
-        switch (this.model.getField('type')) {
-            case 'inbound':
-                return 'back';
-            case 'out':
-                return 'forward';
+    /**
+     * @return color class for the icon
+     */
+    get iconColorClass() {
+        switch (this.value) {
+            case 'opened':
+            case 'read':
+            case 'sent':
+            case 'delivered':
+                return 'slds-icon-text-success';
+            case 'bounced':
+            case 'bounced_checked':
+            case 'deferred':
+            case 'unread':
+                return 'slds-icon-text-warning';
+            case 'send_error_checked':
+            case 'send_error':
+            case 'error':
+                return 'slds-icon-text-error';
             default:
-                return '';
+                return 'slds-icon-text-default';
         }
     }
-
 }

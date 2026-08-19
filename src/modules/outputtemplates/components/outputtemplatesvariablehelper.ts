@@ -9,7 +9,8 @@ import { backend } from '../../../services/backend.service';
 import { model } from '../../../services/model.service';
 
 @Component({
-    templateUrl: '../templates/outputtemplatesvariablehelper.html'
+    templateUrl: '../templates/outputtemplatesvariablehelper.html',
+    standalone: false
 })
 export class OutputTemplatesVariableHelper implements OnInit {
 
@@ -120,6 +121,8 @@ export class OutputTemplatesVariableHelper implements OnInit {
     public searchTimeOut: number;
 
     public showFuncParamsError = false;
+
+    public aiParam: string;
 
     constructor( public language: language, public metadata: metadata, public backend: backend, public cdr: ChangeDetectorRef, @Optional() public model: model ) { }
 
@@ -258,7 +261,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
         if ( !this.fieldResult && this.functionResultWithParams ) back = 'func.'+this.functionResultWithParams;
         else {
             back = this.fieldResult;
-            if ( this.functionResultWithParams ) back += '|' + this.functionResultWithParams;
+            if ( this.functionResultWithParams && this.sourceType != 'ai' ) back += '|' + this.functionResultWithParams;
         }
         this.response.emit( back );
         this.close();
@@ -411,18 +414,22 @@ export class OutputTemplatesVariableHelper implements OnInit {
      * A source (module/bean, current user, template, label or standalone non-pipe function) has been selected.
      */
     public sourceSelected(): void {
+
+        this.resetFunctionResult();
+
         switch( this.source )
         {
             case 'function':
                 this.sourceType = 'function';
-                this.resetFunctionResult();
                 break;
             case 'label':
-                if ( this.sourceType === 'function' ) this.resetFunctionResult();
                 this.sourceType = 'label';
                 break;
+            case 'ai':
+                this.sourceType = 'ai';
+                this.aiParam = undefined;
+                break;
             default:
-                if ( this.sourceType === 'function' ) this.resetFunctionResult();
                 this.sourceType = 'bean';
         }
         this.buildOfferedFunctions();
@@ -473,12 +480,12 @@ export class OutputTemplatesVariableHelper implements OnInit {
      * All data entered correctly? Can the form be submitted?
      */
     public canSubmit(): boolean {
-        return ( this.actualFuncParamsValid() || !this.showFuncParamsError )
+        return (this.sourceType == 'ai' && !!this.functionResult && !!this.aiParam) || (( this.actualFuncParamsValid() || !this.showFuncParamsError )
             && this.sourceType
             && (
                 ( this.sourceType === 'function' && !!this.functionResult ) ||
                 (( this.sourceType === 'bean' || this.sourceType === 'label' ) && !!this.fieldResult )
-            );
+            ));
     }
 
     /*
@@ -497,4 +504,16 @@ export class OutputTemplatesVariableHelper implements OnInit {
         return !param.required || !!param.value;
     }
 
+    public selectAIFunction(fn: string) {
+        this.functionResult = fn;
+        this.fieldResult = 'ai.' + fn;
+        this.aiParam = undefined;
+    }
+
+    /**
+     * append the AI param to the fieldResult
+     */
+    public appendAIParam(aiParam: string) {
+        this.fieldResult = `ai.${this.functionResult}:'${aiParam}'`;
+    }
 }

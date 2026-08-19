@@ -29,6 +29,8 @@ class SpiceDictionaryItemsController
             SpiceDictionaryItems::getInstance()->addItem($body);
         }
 
+        SpiceDictionary::getInstance()->clearSessionCache();
+
         return $res->withJson(['success' => true]);
     }
 
@@ -46,8 +48,14 @@ class SpiceDictionaryItemsController
         $body = $req->getParsedBody();
 
         foreach ($body['items'] as $item) {
-            SpiceDictionaryItems::getInstance()->addItem($item);
+            if (SpiceDictionaryItems::getInstance()->getItem($item['id'])) {
+                SpiceDictionaryItems::getInstance()->setItem($item);
+            } else {
+                SpiceDictionaryItems::getInstance()->addItem($item);
+            }
         }
+
+        SpiceDictionary::getInstance()->clearSessionCache();
 
         return $res->withJson(['success' => true]);
     }
@@ -73,6 +81,8 @@ class SpiceDictionaryItemsController
             $sequence++;
         }
 
+        SpiceDictionary::getInstance()->clearSessionCache();
+
         return $res->withJson(['success' => true]);
     }
 
@@ -87,7 +97,11 @@ class SpiceDictionaryItemsController
     public function deleteDictionaryItem(Request $req, Response $res, array $args): Response
     {
         $queryParams = $req->getQueryParams();
-        return $res->withJson(['success' => (new SpiceDictionaryItem($args['id']))->delete( $queryParams['drop'] == 1 ?: false )]);
+        $success = (new SpiceDictionaryItem($args['id']))->delete($queryParams['drop'] == 1 ?: false);
+
+        SpiceDictionary::getInstance()->clearSessionCache();
+
+        return $res->withJson(['success' => $success]);
     }
 
     /**
@@ -101,7 +115,8 @@ class SpiceDictionaryItemsController
     public function activateDictionaryItem(Request $req, Response $res, array $args): Response
     {
         $success = (new SpiceDictionaryItem($args['id']))->activate();
-        SpiceDictionary::getInstance()->loadDictionary();
+
+        SpiceDictionary::getInstance()->clearSessionCache();
 
         return $res->withJson(['success' => $success]);
     }
@@ -117,7 +132,8 @@ class SpiceDictionaryItemsController
     public function deactivateDictionaryItem(Request $req, Response $res, array $args): Response
     {
         $success = (new SpiceDictionaryItem($args['id']))->deactivate();
-        SpiceDictionary::getInstance()->loadDictionary();
+
+        SpiceDictionary::getInstance()->clearSessionCache();
 
         return $res->withJson(['success' => $success]);
     }

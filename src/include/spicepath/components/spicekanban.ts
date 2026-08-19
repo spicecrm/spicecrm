@@ -8,7 +8,7 @@ import {
     ViewContainerRef,
     OnDestroy,
     OnInit,
-    Input
+    Input, signal
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {backend} from '../../../services/backend.service';
@@ -32,7 +32,8 @@ declare var _: any;
 @Component({
     selector: 'spice-kanban',
     templateUrl: '../templates/spicekanban.html',
-    providers: [model]
+    providers: [model],
+    standalone: false
 })
 export class SpiceKanban implements OnInit, OnDestroy {
     /**
@@ -48,6 +49,8 @@ export class SpiceKanban implements OnInit, OnDestroy {
         sumfield?: string;
         limit?: string;
         draganddrop?: string;
+        use_user_currency?: boolean;
+        show_currency_dropdown?: boolean;
     } = {};
 
     /**
@@ -76,7 +79,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
     /**
      * holds an array of currencies
      */
-    public currencies: any[] = [];
+    public currencies = signal([]);
 
     public sortfields: any[] = [];
 
@@ -97,10 +100,16 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * expanded flag for the footer
      */
     public footerExpanded: boolean;
+    /**
+     * stores the current currency
+     */
+    public currentCurrencyId = signal(undefined);
 
     constructor(public backend: backend, public broadcast: broadcast, public model: model, public modellist: modellist, public configuration: configurationService, public metadata: metadata, public userpreferences: userpreferences, public language: language, public currency: currency, public layout: layout) {
 
-        this.currencies = this.currency.getCurrencies();
+        this.currencies.set(
+            this.currency.getCurrencies().filter(c => c.exchange_rate || c.is_systemcurrency == 1)
+        );
         this.loadSortFields();
 
     }
@@ -174,6 +183,8 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
         const defaultConfig = this.metadata.getComponentConfig('SpiceKanban', this.modellist.module);
 
+        this.componentconfig = {...this.componentconfig};
+
         if (!this.componentconfig.kanban) {
             this.componentconfig.kanban = defaultConfig.kanban;
         }
@@ -185,6 +196,15 @@ export class SpiceKanban implements OnInit, OnDestroy {
         }
         if (!this.componentconfig.draganddrop) {
             this.componentconfig.draganddrop = defaultConfig.draganddrop;
+        }
+        if (!this.componentconfig.show_currency_dropdown) {
+            this.componentconfig.show_currency_dropdown = defaultConfig.show_currency_dropdown;
+        }
+
+        if (this.componentconfig.use_user_currency || defaultConfig.use_user_currency) {
+            this.currentCurrencyId.set(this.userpreferences.toUse.currency);
+        } else {
+            this.currentCurrencyId.set(this.currency.getCurrencies().find(c => c.is_systemcurrency == 1)?.id ?? '-99')
         }
 
         const kanbans = this.configuration.getData('spicebeanguides')[this.modellist.module];
@@ -359,12 +379,27 @@ export class SpiceKanban implements OnInit, OnDestroy {
             for(let prop in item.values) {
                 let value = item.values[prop];
                 if(prop == aggname) {
-                    return item.values ? value : 0;
+                    return item.values ? this.convertCurrencyValue(value) : 0;
                 }
             }
         } catch (e) {
             return 0;
         }
+    }
+
+    /**
+     * convert currency value to the current currency if it differs from the
+     * @param value
+     * @return number
+     * @private
+     */
+    private convertCurrencyValue(value: number): number {
+
+        if (isNaN(value) || this.model.getField('currency_id') == this.currentCurrencyId()) {
+            return value;
+        }
+
+        return this.currency.convertFromBase(this.currentCurrencyId(), value);
     }
 
     /**
@@ -449,9 +484,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     public getCurrencySymbol(aggregatefield): string {
         if (this.metadata.getFieldType(this.modellist.module, aggregatefield.name) == 'currency') {
-            let currencySymbol: string;
-            let currencyid = -99;
-            return this.currency.getCurrencySymbol(currencyid);
+            return this.currency.getCurrencySymbol(this.currentCurrencyId());
         }
 
     }
@@ -486,9 +519,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
             this.model.id = event.item.data.id;
             this.model.setData(_.clone(event.item.data));
 
-            // initialize the field statis
-            this.model.initializeFieldsStati();
-
             // start the edit and set the new stage
             this.model.startEdit();
             this.model.setField(this.confdata.statusfield, event.container.data.stage);
@@ -511,7 +541,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * @param item
      */
     public allowDrag(item) {
-        return this.draganddropenabled && item.acl.edit && (!this.statusNetworkManaged || this.statusNetworkItems.some(e => item[this.statusField] == e.status_from));
+        return this.draganddropenabled && item.acl.edit && (!this.statusNetworkManaged || this.statusNetworkItems.some(e => item[this.statusField] == e.status_from && (!e.required_model_acl_action || item.acl[e.required_model_acl_action])));
     }
 
     /**
@@ -530,7 +560,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     public dropEnterAllowed(stage: any) {
         return (item: CdkDrag) => {
-            return !this.statusNetworkManaged || this.statusNetworkItems.filter(e => e.status_to == stage.stage).some(e => e.status_from == item.data[this.statusField])
+            return !this.statusNetworkManaged || this.statusNetworkItems.filter(e => e.status_to == stage.stage).some(e => e.status_from == item.data[this.statusField] && (!e.required_model_acl_action || item.data.acl[e.required_model_acl_action]))
         }
     }
 }

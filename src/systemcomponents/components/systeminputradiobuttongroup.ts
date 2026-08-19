@@ -29,7 +29,8 @@ declare var _;
             useExisting: forwardRef(() => SystemInputRadioButtonGroup),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputRadioButtonGroup implements ControlValueAccessor, AfterViewInit {
 
@@ -41,6 +42,10 @@ export class SystemInputRadioButtonGroup implements ControlValueAccessor, AfterV
      * the value to be set
      */
     @Input() public readonly disabled: boolean = false;
+    /**
+     * container class
+     */
+    @Input() public readonly containerClass: string = 'slds-m-right--x-small';
     /**
      * the value to be set
      */

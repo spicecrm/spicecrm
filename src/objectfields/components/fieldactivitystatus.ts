@@ -15,7 +15,8 @@ declare var moment: any;
 
 @Component({
     selector: 'field-activity-status',
-    templateUrl: '../templates/fieldactivitystatus.html'
+    templateUrl: '../templates/fieldactivitystatus.html',
+    standalone: false
 })
 
 export class fieldActivityStatus extends fieldEnum implements OnInit, OnDestroy {
@@ -44,10 +45,14 @@ export class fieldActivityStatus extends fieldEnum implements OnInit, OnDestroy 
     }
 
     public subscribeToChanges() {
+        if (this.model.isNew && this.model.getField('date_start')){
+            this.setStatusBasedOnDate();
+        }
+
         this.subscriptions.add(
             this.model.observeFieldChanges('date_start').subscribe({
                 next: (value) => {
-                    this.calculateDate();
+                    this.setStatusBasedOnDate();
                 }
             })
         );
@@ -72,17 +77,17 @@ export class fieldActivityStatus extends fieldEnum implements OnInit, OnDestroy 
      * checks whether the start date is before or after now
      * sets the value for status field accordingly
      */
-    public calculateDate() {
+    public setStatusBasedOnDate() {
+        if (this.model.isNew && this.view.isEditMode()) {
+            const startDate = moment(this.model.data.date_start).format('YYYY-MM-DD HH:mm a');
 
-        // retrieve value from the field$ observable, this.model.data.date_start is not yet updated at this point
-        const startDate = moment(this.model.field$.value.value).format('YYYY-MM-DD HH:MM a');
+            let now = new moment.tz(this.timeZone || moment.tz.guess(true)).format('YYYY-MM-DD HH:mm a');
 
-        let now = new moment.tz(this.timeZone || moment.tz.guess(true)).format('YYYY-MM-DD HH:MM a');
-
-        if (startDate <= now) {
-            this.model.setField(this.fieldname, 'Held');
-        } else {
-            this.model.setField(this.fieldname, 'Planned');
+            if (startDate <= now) {
+                this.model.setField(this.fieldname, 'Held');
+            } else {
+                this.model.setField(this.fieldname, 'Planned');
+            }
         }
     }
 

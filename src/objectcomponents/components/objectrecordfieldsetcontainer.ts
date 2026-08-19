@@ -17,7 +17,8 @@ import {view} from '../../services/view.service';
  */
 @Component({
     selector: 'object-record-fieldset-container',
-    templateUrl: '../templates/objectrecordfieldsetcontainer.html'
+    templateUrl: '../templates/objectrecordfieldsetcontainer.html',
+    standalone: false
 })
 export class ObjectRecordFieldsetContainer {
 

@@ -27,7 +27,8 @@ import {ObjectList} from "../../../objectcomponents/components/objectlist";
 @Component({
     selector: 'media-files-list',
     templateUrl: '../templates/mediafileslist.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class MediaFilesList extends ObjectList implements OnDestroy {
 
@@ -52,6 +53,13 @@ export class MediaFilesList extends ObjectList implements OnDestroy {
     public onResize() {
         this.cdRef.detectChanges();
     }
+
+    get stencilCount(){
+        let bbox = this.elementRef.nativeElement.getBoundingClientRect();
+        let count = Math.floor((bbox.width - 10) / 320);
+        return count * 3
+    }
+
 
     get containerStyle() {
         let bbox = this.elementRef.nativeElement.getBoundingClientRect();

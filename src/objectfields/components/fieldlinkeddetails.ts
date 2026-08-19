@@ -9,7 +9,8 @@ import {metadata} from '../../services/metadata.service';
 @Component({
     selector: 'field-linked-details',
     templateUrl: '../templates/fieldlinkeddetails.html',
-    providers: [model, view]
+    providers: [model, view],
+    standalone: false
 })
 export class fieldLinkedDetails implements OnInit, OnChanges {
 
@@ -39,7 +40,7 @@ export class fieldLinkedDetails implements OnInit, OnChanges {
     public ngOnChanges(changes: SimpleChanges) {
         this.model.module = this.module;
         this.model.id = this.data.id;
-        this.model.setData(this.data);
+        this.model.setData(this.data, false);
     }
 
 }

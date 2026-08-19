@@ -21,6 +21,7 @@ import {FieldsAlertI} from "./interfaces.service";
 import {filter, map} from "rxjs/operators";
 import {userpreferences} from "./userpreferences.service";
 import {DomSanitizer} from "@angular/platform-browser";
+import {ModelFieldStateI, ModelFieldStatesI} from "../objectcomponents/interfaces/objectcomponents.interfaces";
 
 /**
  * @ignore
@@ -30,16 +31,6 @@ declare var moment: any;
  * @ignore
  */
 declare var _: any;
-
-interface fieldstati {
-    editable: boolean;
-    invalid: boolean;
-    required: boolean;
-    incomplete: boolean;
-    disabled: boolean;
-    hidden: boolean;
-    readonly: boolean;
-}
 
 /**
  * for the save data emitter
@@ -92,8 +83,6 @@ export class model implements OnDestroy {
 
     /**
      * the data object.
-     *
-     * ToDo: make a public property
      */
     public data: any = {};
 
@@ -114,6 +103,12 @@ export class model implements OnDestroy {
      *```
      */
     public data$: BehaviorSubject<any>;
+
+    /**
+     * a behavioural subject to indicate that the model is loaded
+     * in opposite to the data$ this only emits when the model is loaded from the backend
+     */
+    public loaded$: BehaviorSubject<any>;
 
     /**
      * holds observable of a field and its value
@@ -181,25 +176,16 @@ export class model implements OnDestroy {
     public isNew: boolean = false;
 
     /**
-     * @ignore
-     *
-     * @ToDo: add documentation
+     * holds the states of the module fields to be validated
      */
-    public _fields_stati: any = []; // will be build by initialization of the model
-
+    public fieldStates: { [field: string]: ModelFieldStatesI } = {};
     /**
      * @ignore
      *
-     * @ToDo: add documentation
+     * holds the configured states of the model to be validated
+     * model states can be set dynamically or in the workbench/validation rules
      */
-    public _fields_stati_tmp: any = []; // will be erased when evaluateValidationRules() is called
-
-    /**
-     * @ignore
-     *
-     * @ToDo: add documentation
-     */
-    public _model_stati_tmp: any = [];  // will be erased when evaluateValidationRules() is called
+    public modelStates: string[] = [];
 
     /**
      * holds any collected messages during validation or propagation
@@ -211,6 +197,13 @@ export class model implements OnDestroy {
      */
     public reference: string = "";
     public _fields: any = [];
+    /**
+     * holds a mapping for the 'relate' fields (id, relate)
+     * id field required-flag = false
+     * relate field required-flag = transferred from the id field
+     * @private
+     */
+    private relateFieldsRequired = new Map<string, any>();
     public messageChange$ = new EventEmitter<boolean>();
 
     /**
@@ -244,12 +237,13 @@ export class model implements OnDestroy {
     public duplicatecount: number = 0;
 
     /**
-     * ToDo add documentation on how to use this
+     * holds the number returned from the navigation register model
      */
     public modelRegisterId: number;
 
     /**
-     * ToDo: add documentation how to use this
+     * a behavior subject to be subscribed from other components
+     * in case other components need to know when the model done saving and the backend request is completed
      */
     public savingProgress: BehaviorSubject<number> = new BehaviorSubject(1);
 
@@ -270,11 +264,6 @@ export class model implements OnDestroy {
      * A simple event emitter that emits whenever the model has been validated.
      */
     public validated$: EventEmitter<void> = new EventEmitter<void>();
-
-    /**
-     * A simple event emitter that emits whenever the model is before validating.
-     */
-    public beforeValidate$: EventEmitter<void> = new EventEmitter<void>();
 
     /**
      * holds the data of the alerted field
@@ -305,7 +294,11 @@ export class model implements OnDestroy {
         private sanitizer: DomSanitizer
     ) {
 
+        // create the data subject
         this.data$ = new BehaviorSubject(this.data);
+
+        // create the loaded subject
+        this.loaded$ = new BehaviorSubject(false);
 
         this.subscriptions.add(
             this.broadcast.message$.subscribe(data => {
@@ -350,13 +343,12 @@ export class model implements OnDestroy {
 
     /**
      * setter for the module
-     * also triggers inittialization of field statis as well as model registry
-     *
+     * initializes the field States and registers the model
      * @param val
      */
     set module(val: string) {
         this._module = val;
-        this.initializeFieldsStati();
+        this.initializeFieldStates();
         this.registerModel();
         if (!val) return;
     }
@@ -399,9 +391,26 @@ export class model implements OnDestroy {
     get fields(): any[] {
         if (this.module && _.isEmpty(this._fields)) {
             this._fields = this.metadata.getModuleFields(this.module);
+            if (this._fields.length > 0) {
+                this.setRelateFieldsRequired();
+            }
         }
 
         return this._fields;
+    }
+
+    /**
+     * set the 'relate' fields (id, relate) required mapping. when the id field is mostly invisible, it will always be required = false
+     * transfer the required flag from the id field to the 'relate' field
+     * @private
+     */
+    private setRelateFieldsRequired() {
+        Object.keys(this.fields).forEach(field => {
+            if (!['relate', 'relatePrimary'].includes(this.fields[field].type)) return;
+            const idFieldName = this.fields[field].type == 'relate' ? this.fields[field].id_name : this.fields[field].name + '_id';
+            this.relateFieldsRequired.set(idFieldName, false);
+            this.relateFieldsRequired.set(field, this.fields[idFieldName].required);
+        });
     }
 
     /**
@@ -420,13 +429,19 @@ export class model implements OnDestroy {
      * @param field the fieldname
      */
     public isFieldRequired(field: string): boolean {
-        switch (field) {
-            // wtf???
-            case "date_entered":
-            case "date_modified":
-                return true;
-            default:
-                return this.metadata.getFieldRequired(this.module, field);
+
+        // read the required flag for the 'relate' fields (id, relate) from the generated mapping
+        if (this.relateFieldsRequired.has(field)) {
+            return this.relateFieldsRequired.get(field);
+        } else {
+            switch (field) {
+                // wtf???
+                case "date_entered":
+                case "date_modified":
+                    return true;
+                default:
+                    return this.metadata.getFieldRequired(this.module, field);
+            }
         }
     }
 
@@ -445,7 +460,6 @@ export class model implements OnDestroy {
      * @param access a strting with the access to be checked. Can be literally any acl string. standard are edit, display, list .. they are deifned in the backend
      */
     public checkAccess(access): boolean {
-        // ToDo: clean this up and make view or detail in general
         if (access == 'detail' || access == 'view') {
             return this.acl.detail || this.acl.view;
         } else {
@@ -525,10 +539,11 @@ export class model implements OnDestroy {
                 if (trackAction != "") {
                     this.recent.trackItem(this.module, this.id, this.data);
                 }
-                this.initializeFieldsStati();
+                this.initializeFieldStates();
                 this.evaluateValidationRules(null, 'initialize');
                 this.emitFieldsChanges(res);
                 this.data$.next(res);
+                this.loaded$.next(true);
                 this.broadcast.broadcastMessage("model.loaded", {id: this.id, module: this.module, data: this.data});
                 responseSubject.next(res);
                 responseSubject.complete();
@@ -550,50 +565,96 @@ export class model implements OnDestroy {
 
 
     /**
-     * validates the model
-     * ToDo: Sebastian to add some more details
-     *
-     * @param event
+     * validates the model data by evaluating the field states and generate appropriate error messages
+     * @return boolean
      */
-    public validate(event?: string) {
-        this.beforeValidate$.next();
+    public validate(): boolean {
+
         this.resetMessages();
         this.isValid = true;
 
-        // run evaluation rules again
-        this.evaluateValidationRules(null, "change");
+        this.evaluateValidationRules(null, 'change');
 
         for (let field in this.fields) {
-            // check required
-            if (
-                field !== "id" && this.getFieldStati(field).required &&
-                ((!this.data[field] && this.data[field] !== 0) || String(this.data[field]).length === 0)
-            ) {
-                this.isValid = false;
-                this.addMessage("error", this.language.getLabel("MSG_INPUT_REQUIRED") + "!", field);
-            }
-            if (this.getFieldStati(field).invalid) {
+
+            this.validateFieldRequiredState(field);
+            if (this.getFieldStates(field).invalid) {
                 this.isValid = false;
             }
         }
-        if (!this.isValid) {
-            // console.warn("validation failed:", this.messages);
-        }
+
         this.validated$.next();
         return this.isValid;
     }
 
-    public initializeFieldsStati() {
-        let stati = [];
-        for (let field in this.fields) {
-            stati[field] = this.evaluateFieldStati(field);
+    /**
+     * if the passed field is required and empty it will set the field to invalid and add an error message
+     * @param field
+     * @private
+     */
+    private validateFieldRequiredState(field: string) {
+        if (field !== "id" && this.getFieldStates(field).required && this.checkFieldEmpty(field)) {
+            this.isValid = false;
+            this.setFieldState(field, 'invalid', true, false);
+            this.addMessage('error', this.language.getLabel('MSG_INPUT_REQUIRED') + "!", field);
         }
-        this._fields_stati = stati;
     }
 
-    public getDefaultStati(): fieldstati {
+    /**
+     * checks if the field is empty
+     * @param field
+     * @return boolean
+     * @private
+     */
+    private checkFieldEmpty(field: string): boolean {
+        return !['boolean', 'number'].includes(typeof this.data[field]) && _.isEmpty(this.data[field]);
+    }
+
+    /**
+     * initialize the States object for all fields
+     */
+    public initializeFieldStates() {
+
+        const states = {};
+        const relateFields = [];
+
+        for (let field in this.fields) {
+            states[field] = this.evaluateFieldStates(field);
+
+            if (['relate', 'relatePrimary'].includes(this.fields[field].type)) {
+                relateFields.push(field);
+            }
+        }
+
+        this.adjustRelateFieldsStatesRequiredFlag(relateFields, states);
+        this.fieldStates = states;
+    }
+
+    /**
+     * transfer the required flag from the id to the 'relate' field since the id field is mostly invisible in the ui
+     * @param relateFields
+     * @param statesObject
+     * @private
+     */
+    private adjustRelateFieldsStatesRequiredFlag(relateFields: string[], statesObject: any) {
+
+        relateFields.forEach(relateField => {
+            const idField = this.fields[relateField].type == 'relate' ? this.fields[relateField].id_name : this.fields[relateField].name + '_id';
+
+            if (statesObject[idField]?.required) {
+                statesObject[idField].required = false;
+                statesObject[relateField].required = true;
+            }
+        });
+    }
+
+    /**
+     * generate default field states
+     * @return ModelFieldStatesI
+     */
+    public generateDefaultFieldStates(): ModelFieldStatesI {
         return {
-            editable: this.checkAccess("edit"),
+            editable: this.checkAccess("edit") ?? false,
             invalid: false,
             required: false,
             incomplete: false,
@@ -604,116 +665,87 @@ export class model implements OnDestroy {
     }
 
     /**
-     * evaluates the stati of a field by checking acl, required, errors etc...
+     * evaluates the states of a field by checking acl, required, errors, etc...
      * @param {string} field
-     * @returns {fieldstati}
+     * @returns ModelFieldStatesI
      */
-    public evaluateFieldStati(field: string) {
-        let stati = this.getDefaultStati();
+    public evaluateFieldStates(field: string): ModelFieldStatesI {
 
-        // editable... acl check?!
-        if (
-            this.acl_fieldcontrol &&
-            this.acl_fieldcontrol[field] &&
-            parseInt(this.acl_fieldcontrol[field], 10) < 3
-        ) {
-            stati.editable = false;
+        const states = this.generateDefaultFieldStates();
+        const hasAclFieldControl = this.acl_fieldcontrol && this.acl_fieldcontrol[field];
+        const fieldIsReadonly = hasAclFieldControl && parseInt(this.acl_fieldcontrol[field], 10) < 3;
+
+        if (fieldIsReadonly) {
+            states.editable = false;
         }
 
         if (this.isRequired(field)) {
-            stati.required = true;
+            states.required = true;
         }
 
-        return stati;
-    }
-
-    public resetFieldStati(field: string) {
-        this._fields_stati[field] = this.evaluateFieldStati(field);
-        // tmp stati
-        this._fields_stati_tmp[field] = {...this._fields_stati[field]};
-        if (this.getFieldMessages(field, "error")) {
-            this._fields_stati_tmp[field].invalid = true;
-        }
+        return states;
     }
 
     /**
-     * sets the field status
-     *
+     * set field sate
      * @param field the name if the field
-     * @param status the status to be set
+     * @param state the state to be set
      * @param value
-     *
+     * @param resetMessages
      */
-    public setFieldStatus(field: string, status: 'editable' | 'invalid' | 'required' | 'incomplete' | 'disabled' | 'hidden' | 'readonly', value: boolean = true): boolean {
-        try {
-            let stati = this._fields_stati[field];
-            if (stati[status] && !value) {
-                console.warn("could not set status " + status + " to " + value + " because it has to be: " + stati[status]);
-                return false;
+    public setFieldState(field: string, state: ModelFieldStateI, value: boolean = true, resetMessages: boolean = true): boolean {
+        if (this.fieldStates[field]) {
+            this.fieldStates[field][state] = value;
+            if (resetMessages) {
+                this.resetFieldMessages(field);
             }
-            switch (status) {
-                case "required":
-                    // check if not hidden...
-
-                    break;
-            }
-            if (!this._fields_stati_tmp[field]) {
-                // copy...
-                this._fields_stati_tmp[field] = {...stati};
-            }
-            this._fields_stati_tmp[field][status] = value;
             return true;
-        } catch (e) {
-            console.warn(e);
+        } else {
             return false;
         }
     }
 
-    public setFieldStati(field: string, stati: object): boolean {
-        for (let status in stati) {
-            // @ts-ignore
-            let result = this.setFieldStatus(field, status, stati[status]);
+    /**
+     * set all the field states at once
+     * @param field
+     * @param states
+     * @param resetMessages
+     */
+    public setFieldStates(field: string, states: ModelFieldStatesI, resetMessages: boolean = true): boolean {
+        for (let state in states) {
+            let result = this.setFieldState(field, state as ModelFieldStateI, states[state], resetMessages);
             if (!result) return false;
         }
         return true;
     }
 
-
-    public getFieldStati(field: string) {
-
-        let stati = this._fields_stati_tmp[field];
-        if (!stati) {
-            stati = this._fields_stati[field];
-            if (!stati) {
-                stati = this.getDefaultStati();
-                this._fields_stati[field] = stati;
-            }
-        }
-        /*
-        if ( field == 'questionnaire ') {
-            this._fields_stati[field].invalid = true;
-        }
-
-         */
-        // copy stati to manipulate them without changing the stored ones...
-        stati = {...stati};
-        if (!stati.invalid && this.getFieldMessages(field, "error")) {
-            stati.invalid = true;
-        }
-
-        return stati;
+    /**
+     * return field states
+     * @param field
+     * @return ModelFieldStatesI
+     */
+    public getFieldStates(field: string): ModelFieldStatesI {
+        return this.fieldStates[field] ?? {} as ModelFieldStatesI;
     }
 
-    public evaluateValidationRules(field?: string, event?: string) {
-        let validations = this.metadata.getModuleValidations(this.module);
+    /**
+     * evaluate the validation rules and execute the actions
+     * @param field
+     * @param event
+     */
+    public evaluateValidationRules(field?: string, event?: 'change' | 'initialize') {
+        let validations = this.metadata.getModuleValidations(this.module, true);
         if (!validations) {
             return true;
         }
 
-        // reset tmp stati to evaluate new...
-        this._fields_stati_tmp = [];
-        this._model_stati_tmp = [];
-        this.resetMessages();
+        this.modelStates = [];
+
+        if (field) {
+            this.resetFieldMessages(field);
+        } else {
+            this.resetMessages();
+        }
 
         // loop through validations...
         for (let validation of validations) {
@@ -786,18 +818,13 @@ export class model implements OnDestroy {
 
         let val_left = this.data[condition.fieldname];
         let val_right: null;
-        if (condition.comparator.match(/regex/g)) {
+        //if (condition.comparator.match(/regex/g)) {
             val_right = condition.valuations;
-        } else {
-            val_right = this.evaluateValidationParams(condition.valuations);
-        }
+        //} else {
+        //    val_right = this.evaluateValidationParams(condition.valuations);
+        //}
 
         check = modelutilities.compare(val_left, condition.comparator, val_right);
-
-        /*
-        console.log("checking: " + condition.fieldname + " " + condition.comparator + " " + condition.valuations,
-            val_left + " " + condition.comparator + " " + val_right + " is " + check);
-        */
 
         return check;
     }
@@ -835,16 +862,16 @@ export class model implements OnDestroy {
                 return this.addMessage("notice", params, action.fieldname);
             case "hide":
                 params = (typeof params == "string" ? modelutilities.strtobool(params) : params);
-                return this.setFieldStatus(action.fieldname, "hidden", params);
+                return this.setFieldState(action.fieldname, "hidden", params, false);
             case "show":
                 params = !(typeof params == "string" ? modelutilities.strtobool(params) : params);
-                return this.setFieldStatus(action.fieldname, "hidden", params);
+                return this.setFieldState(action.fieldname, "hidden", params, false);
             case "require":
                 params = (typeof params == "string" ? modelutilities.strtobool(params) : params);
-                return this.setFieldStatus(action.fieldname, "required", params);
+                return this.setFieldState(action.fieldname, "required", params, false);
             case "readonly":
                 params = (typeof params == "string" ? modelutilities.strtobool(params) : params);
-                return this.setFieldStatus(action.fieldname, "readonly", params);
+                return this.setFieldState(action.fieldname, "readonly", params, false);
             case "set_stati":
                 /*
                 * params has to be an json string like this:
@@ -859,16 +886,16 @@ export class model implements OnDestroy {
                 }
                 */
                 params = (typeof params == "string" ? JSON.parse(params) : params);
-                return this.setFieldStati(action.fieldname, params);
+                return this.setFieldStates(action.fieldname, params, false);
             case "set_model_state":
                 if (params instanceof Array) {
                     for (let state of params) {
                         if (!this.checkModelState(state)) {
-                            this._model_stati_tmp.push(state);
+                            this.modelStates.push(state);
                         }
                     }
                 } else if (!this.checkModelState(params)) {
-                    this._model_stati_tmp.push(params);
+                    this.modelStates.push(params);
                 }
                 return true;
             case "set_model_alert":
@@ -966,8 +993,13 @@ export class model implements OnDestroy {
         return params;
     }
 
+    /**
+     * check for the passed state if the model states array contains it
+     * @param state
+     * @return boolean
+     */
     public checkModelState(state: string): boolean {
-        return this._model_stati_tmp.includes(state);
+        return this.modelStates.includes(state);
     }
 
     /**
@@ -1037,7 +1069,6 @@ export class model implements OnDestroy {
 
     /**
      * sets a single field on the model
-     *
      * @param field
      * @param value
      * @param silent
@@ -1048,6 +1079,7 @@ export class model implements OnDestroy {
         const previousValue = this.data[field];
         this.data[field] = value;
 
+        this.setFieldState(field, 'invalid', false);
         this.evaluateValidationRules(field, "change");
 
         if (previousValue !== value && !silent) {
@@ -1083,10 +1115,13 @@ export class model implements OnDestroy {
             if (!fieldData.hasOwnProperty(fieldName)) continue;
             let fieldValue = fieldData[fieldName];
             if (_.isString(fieldValue)) fieldValue = fieldValue.trim();
-            if (this.data[fieldName] != fieldValue) {
+
+            const previousValue = this.data[fieldName];
+            this.data[fieldName] = fieldValue;
+
+            if (previousValue != fieldValue) {
                 this.field$.next({field: fieldName, value: fieldValue});
             }
-            this.data[fieldName] = fieldValue;
             changedFields.push(fieldName);
         }
 
@@ -1122,6 +1157,7 @@ export class model implements OnDestroy {
             this.data = this.backupData;
             this.data$.next(this.data);
             this.backupData = null;
+            this.emitFieldsChanges(this.data);
             this.evaluateValidationRules(null, "change");
             this.resetMessages();
         }
@@ -1150,7 +1186,13 @@ export class model implements OnDestroy {
         let d = {};
         for (let property in this.data) {
             // if (property && (!this.backupData || _.isObject(this.data[property]) || _.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
-            if (property && (!this.backupData || !_.isEqual(this.data[property], this.backupData[property]))) {
+            if (property && (
+                !this.backupData ||
+                !_.isEqual(
+                    this.data[property] === null ? '' : this.data[property],
+                    this.backupData[property] === null ? '' : this.backupData[property]
+                ) || (typeof this.data[property] == 'object' && JSON.stringify(this.data[property]) != JSON.stringify(this.backupData[property]))
+            )) {
                 d[property] = this.data[property];
             }
         }
@@ -1159,10 +1201,10 @@ export class model implements OnDestroy {
 
     /**
      * saves the changes on the model
-     *
      * @param notify if set to true a toast is sent once the save is completed (defaults to false)
+     * @param silent set to true if the action shouldn't be broadcast
      */
-    public save(notify: boolean = false): Observable<boolean> {
+    public save(notify: boolean = false, silent: boolean = false): Observable<boolean> {
         let responseSubject = new Subject<boolean>();
 
         // set to saving
@@ -1189,14 +1231,18 @@ export class model implements OnDestroy {
                     this.data = res;
                     this.isNew = false;
                     this.data$.next(res);
-                    this.broadcast.broadcastMessage("model.save", {
-                        id: this.id,
-                        reference: this.reference,
-                        module: this.module,
-                        data: this.data,
-                        changed: this.getDirtyFields(),
-                        backupdata: this.backupData
-                    });
+                    this.emitFieldsChanges(res);
+                    this.loaded$.next(true);
+                    if (!silent) {
+                        this.broadcast.broadcastMessage("model.save", {
+                            id: this.id,
+                            reference: this.reference,
+                            module: this.module,
+                            data: this.data,
+                            changed: this.getDirtyFields(),
+                            backupdata: this.backupData
+                        });
+                    }
 
                     // saving is done
                     this.isSaving = false;
@@ -1215,8 +1261,8 @@ export class model implements OnDestroy {
                     // end the edit process
                     this.endEdit();
 
-                    // reinitialize the Field Stats in case ACL Changed
-                    this.initializeFieldsStati();
+                    // initialize the field states in case ACL changed
+                    this.initializeFieldStates();
 
                     // emit the observable
                     responseSubject.next(true);
@@ -1231,6 +1277,18 @@ export class model implements OnDestroy {
                                 lockingModalRef.instance.conflicts = error.error.error.conflicts;
                                 lockingModalRef.instance.responseSubject = responseSubject;
                             });
+                            break;
+                        case 422:
+                            if (notify) {
+                                this.toast.sendToast(this.language.getLabel("LBL_UNPROCESSABLE_ENTRY") + " " + error.status, "error", error.error.error.lbl ? this.language.getLabel( error.error.error.lbl ) : error.error.error.message, 5 );
+                            }
+                            if(error.error?.error?.details?.fields){
+                                error.error.error.details.fields.forEach(f => {
+                                    return this.setFieldMessage('error', f.msg, f.field, null);
+                                })
+                            }
+                            responseSubject.error(error);
+                            responseSubject.complete();
                             break;
                         default:
                             if (notify) {
@@ -1291,23 +1349,15 @@ export class model implements OnDestroy {
     public reset() {
         this.id = null;
         this.module = null;
-        this._fields_stati_tmp = this._fields_stati = [];
+        this.fieldStates = {};
+
         this._fields = [];
+        this.relateFieldsRequired.clear();
         this.isLoading = false;
         this.isEditing = false;
         this.mode$.emit('display');
         this.resetMessages();
         this.resetData();
-    }
-
-    // todo: check what this is for and if it is really needed
-    public clone() {
-        let clone: any = {
-            module: this.module,
-            id: this.id,
-            data: {...this.data},
-        };
-        return clone;
     }
 
     public getAuditLog(filters: any = {}): Observable<any> {
@@ -1392,8 +1442,8 @@ export class model implements OnDestroy {
         // get the field control
         this.acl_fieldcontrol = this.metadata.moduleDefs[this.module]?.acl_fieldcontrol ?? [];
 
-        // initialize the field stati and run the initial evaluation rules
-        this.initializeFieldsStati();
+        // initialize the field states and run the initial evaluation rules
+        this.initializeFieldStates();
         this.evaluateValidationRules(null, 'initialize');
 
         // set the parent model from the intialized one in the call
@@ -1421,10 +1471,10 @@ export class model implements OnDestroy {
         // emit the data changes
         if (silent !== true) {
             this.data$.next(this.data);
+            this.emitFieldsChanges(this.data);
         }
 
-        // initialize the field stati
-        this.initializeFieldsStati();
+        this.initializeFieldStates();
     }
 
     /**
@@ -1714,6 +1764,8 @@ export class model implements OnDestroy {
                 return moment({hour: this.userpreferences.toUse.calendar_day_start_hour});
             case "calendarEndHour":
                 return moment({hour: this.userpreferences.toUse.calendar_day_end_hour});
+            case "currentUserId":
+                return this.session.authData.userId;
         }
         return "";
     }
@@ -1721,7 +1773,7 @@ export class model implements OnDestroy {
     /*
     * open an edit modal using the injecor from the provider
      */
-    public edit(reload: boolean = false, componentSet: string = ""): Observable<any> {
+    public edit(reload: boolean = false, componentconfig: any = undefined): Observable<any> {
         // check if the user can edit
         if (!this.checkAccess("edit")) {
             return of(false);
@@ -1735,8 +1787,8 @@ export class model implements OnDestroy {
             if (editModalRef) {
 
                 // check if a requested componentset for the modal was passed in
-                if (componentSet && componentSet != "") {
-                    editModalRef.instance.componentSet = componentSet;
+                if (componentconfig) {
+                    editModalRef.instance.componentconfig = componentconfig;
                 }
 
                 // check if the model shoudl be reloaded
@@ -1861,15 +1913,18 @@ export class model implements OnDestroy {
      * @returns {boolean}
      */
     public addMessage(type: "error" | "warning" | "notice", message: string, ref: string = null, source = "validation"): boolean {
+
+        if (type == "error" && ref) {
+            this.setFieldState(ref, "invalid", true, false);
+        }
+
         this._messages.push({
             type,
             message,
             reference: ref,
             source,
         });
-        if (type == "error" && ref) {
-            this.setFieldStatus(ref, "invalid", true);
-        }
+
         this.messageChange$.emit(true);
         return true;
     }
@@ -1882,9 +1937,9 @@ export class model implements OnDestroy {
     }
 
     public setFieldMessage(type: "error" | "warning" | "notice", message: string, ref: string, source: string): boolean {
-        this.resetFieldMessages(ref, type, source);
+        this.resetFieldMessages(ref, type);
         if (type == "error") {
-            this.setFieldStatus(ref, "invalid", true);
+            this.setFieldState(ref, "invalid", true, false);
         }
         return this.addMessage(type, message, ref, source);
     }
@@ -1919,15 +1974,12 @@ export class model implements OnDestroy {
                 this.messageChange$.emit(true);
             }
         }
+        this.setFieldState(ref, "invalid", false, false);
 
-        // reset stati caused by messages...
-        this.resetFieldStati(ref);
         return true;
     }
 
-    public
-
-    resetMessages(type ?: string, source: string = "validation"): boolean {
+    public resetMessages(type ?: string, source: string = "validation"): boolean {
         if (this._messages.length == 0) {
             return true;
         }
@@ -1938,8 +1990,7 @@ export class model implements OnDestroy {
                 this._messages.splice(i, 1);
                 this.messageChange$.emit(true);
             }
-            // reset stati caused by messages...
-            this.resetFieldStati(e.reference);
+            this.setFieldState(e.reference, 'invalid', false, false);
         }
         return true;
     }

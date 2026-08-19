@@ -22,7 +22,8 @@ import {telephony} from "../../services/telephony.service";
 
 @Component({
     selector: 'global-docked-composer-modal',
-    templateUrl: '../templates/globaldockedcomposermodal.html'
+    templateUrl: '../templates/globaldockedcomposermodal.html',
+    standalone: false
 })
 export class GlobalDockedComposerModal implements OnInit {
 

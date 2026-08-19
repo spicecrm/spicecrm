@@ -14,7 +14,8 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
         .cdk-drop-list:hover {
             background: #fff
         }
-    `]
+    `],
+    standalone: false
 })
 export class ReportsDesignerConditionGroup {
 

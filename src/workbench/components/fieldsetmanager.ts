@@ -20,7 +20,8 @@ import {FieldsetManagerCopyDialog} from "./fieldsetmanagercopydialog";
 @Component({
     selector: 'fieldset-manager',
     templateUrl: '../templates/fieldsetmanager.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class FieldsetManager {
 
@@ -236,6 +237,12 @@ export class FieldsetManager {
                     } else {
                         let fieldsetid = this.modelutilities.generateGuid();
                         this.metadata.addFieldset(fieldsetid, this.currentModule, update.name, update.type);
+                        this.moduleFieldsets[update.type].push({
+                            id: fieldsetid,
+                            name: update.name,
+                            module: this.currentModule,
+                            type: update.type
+                        })
                         this.currentFieldSet = fieldsetid;
                     }
                     this.checkMode();
@@ -439,7 +446,7 @@ export class FieldsetManager {
      */
     public async openCopyModal(subFieldset?) {
 
-        const fieldset = subFieldset ? subFieldset.item.fieldset : this.currentFieldSet;
+        const fieldset = subFieldset ? subFieldset.data.fieldset : this.currentFieldSet;
         const copyModal: ComponentRef<FieldsetManagerCopyDialog> = await firstValueFrom(this.modalservice.openModal('FieldsetManagerCopyDialog'));
 
         copyModal.instance.fieldset = this.metadata.getFieldset(fieldset);
@@ -493,7 +500,7 @@ export class FieldsetManager {
 
         // set the new parent fieldset for the sub fieldset
         if (subFieldset) {
-            subFieldset.item.fieldset = newFieldsetId;
+            subFieldset.data.fieldset = newFieldsetId;
         }
 
         const fieldsetData = {[newFieldsetId]: this.copyFieldsetToMetadata(newFieldsetId, copyDialogRes)};
@@ -596,20 +603,27 @@ export class FieldsetManager {
 
     public delete(): void {
         let tableName: string = this.fieldSetType === 'global' ? 'sysuifieldsets' : 'sysuicustomfieldsets';
+        let awaitModal = this.modal.await('LBL_DELETING');
 
         this.modal.confirmDeleteRecord().subscribe({
             next: (confirmed) => {
-                if(confirmed) {
+                if (confirmed) {
                     this.backend.deleteRequest(`configuration/spiceui/core/${tableName}/${this.currentFieldSet}`).subscribe({
                         next: () => {
+                            let fieldSetIndex = this.moduleFieldsets[this.fieldSetType].findIndex(item => item.id === this.currentFieldSet);
+                            this.moduleFieldsets[this.fieldSetType].splice(fieldSetIndex, 1);
                             this.configurationService.reloadTaskData('fieldsets');
                             this.currentFieldSet = '';
                             this.toast.sendToast('LBL_DELETED');
+                            awaitModal.emit(true);
                         },
                         error: () => {
-                            this.toast.sendToast('LBL_ERROR')
+                            this.toast.sendToast('LBL_ERROR');
+                            awaitModal.emit(true);
                         }
                     })
+                } else {
+                    awaitModal.emit(true);
                 }
             }
         })

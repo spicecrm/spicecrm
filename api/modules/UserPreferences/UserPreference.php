@@ -35,13 +35,13 @@
  ********************************************************************************/
 namespace SpiceCRM\modules\UserPreferences;
 
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SpiceBean;
-use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceBeans\BeanFactory;
+use SpiceCRM\includes\SpiceBeans\SpiceBean;
+use SpiceCRM\includes\SpiceDictionary\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
-use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Users\User;
 
@@ -56,11 +56,20 @@ use SpiceCRM\modules\Users\User;
 class UserPreference extends SpiceBean
 {
 
-    public $disable_row_level_security = true;
-
     protected $_userFocus;
 
-    public function setUser(User $user = null){
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    protected string $modified_user_id;
+
+    /**
+     * @var string TODO check if that should go into the dictionary
+     */
+    protected string $created_by;
+
+    public function setUser(?User $user = null): UserPreference
+    {
         $this->_userFocus = $user;
         $this->tracker_visibility = false;
         return $this;

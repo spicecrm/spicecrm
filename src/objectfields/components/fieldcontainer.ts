@@ -9,7 +9,8 @@ import {view} from '../../services/view.service';
 
 @Component({
     selector: 'field-container',
-    templateUrl: '../templates/fieldcontainer.html'
+    templateUrl: '../templates/fieldcontainer.html',
+    standalone: false
 })
 export class fieldContainer implements AfterViewInit {
     @ViewChild('fieldcontainer', {read: ViewContainerRef, static: true}) public fieldcontainer: ViewContainerRef;
@@ -37,7 +38,7 @@ export class fieldContainer implements AfterViewInit {
     }
 
     get stati() {
-        let stati = this.model.getFieldStati(this.field);
+        let stati = this.model.getFieldStates(this.field);
         return stati;
     }
 

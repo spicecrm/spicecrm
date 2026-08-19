@@ -14,7 +14,8 @@ import {SpicePageBuilderElement} from "./spicepagebuilderelement";
 @Component({
     selector: 'spice-page-builder-element-spacer',
     templateUrl: '../templates/spicepagebuilderelementspacer.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderElementSpacer extends SpicePageBuilderElement {
     /**
@@ -24,12 +25,11 @@ export class SpicePageBuilderElementSpacer extends SpicePageBuilderElement {
     /**
      * list of the editable attributes
      */
-    public readonly attributesList: AttributeObjectI[] = [
-        {name: 'width', type: 'textSuffix'},
-        {name: 'padding', type: 'sides'},
-        {name: 'container-background-color', type: 'color'},
-        {name: 'vertical-align', type: 'text'},
-        {name: 'css-class', type: 'text'}
+    public readonly attributesList: AttributeObjectI[][] = [
+        [
+            {name: 'height', type: 'textSuffix'},
+            {name: 'container-background-color', type: 'color'}
+        ]
     ];
 
     constructor(public domSanitizer: DomSanitizer,
@@ -38,6 +38,7 @@ export class SpicePageBuilderElementSpacer extends SpicePageBuilderElement {
                 public cdRef: ChangeDetectorRef,
                 public spicePageBuilderService: SpicePageBuilderService) {
         super(domSanitizer, modal, injector, cdRef, spicePageBuilderService);
+        this.growEditorModal = false;
     }
 
     /**

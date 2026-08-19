@@ -43,7 +43,8 @@ import { backend } from '../../services/backend.service';
             useExisting: forwardRef(() => SystemHtmlEditor),
             multi: true
         }, systemrichtextservice
-    ]
+    ],
+    standalone: false
 })
 export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor {
 
@@ -62,6 +63,11 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
      * @private
      */
     @Input() public innerheight: string;
+
+    /**
+     * set the ediotor to resizable or not
+     */
+    @Input() public resizeable: boolean = true;
 
     /**
      * enable/disable using the media file module
@@ -137,7 +143,10 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
             resize: 'none',
             position: 'fixed',
             'z-index': 9999
-        } : {height: (+this.innerHeight + 50) + 'px'};
+        } : {
+            height: this.innerheight?.endsWith('%') ? this.innerheight : (+this.innerHeight + 50) + 'px',
+            resize: this.resizeable ? 'vertical' : 'none'
+        };
     }
 
     public ngOnInit() {
@@ -335,8 +344,8 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
         this.modal.openModal('SystemRichTextSourceModal', true, this.viewContainerRef.injector)
             .pipe(take(1))
             .subscribe(componentRef => {
-                componentRef.instance._html = this._html;
-                componentRef.instance.html.subscribe(newHtml => {
+                componentRef.instance.sourceCode = this._html;
+                componentRef.instance.sourceCode$.subscribe(newHtml => {
                     // update our internal value
                     this._html = newHtml;
 
@@ -414,6 +423,8 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                                     else delete aTag.dataset.trackinglink;
                                     if (anchorData.marketingAction) aTag.dataset.marketingaction = anchorData.marketingAction;
                                     else delete aTag.dataset.marketingaction;
+                                    if (anchorData.emailAction) aTag.dataset.emailaction = anchorData.emailAction;
+                                    else delete aTag.dataset.emailaction;
                                 } else {
                                     if (!anchorData.text) anchorData.text = anchorData.url;
                                     this.editorService.restoreSelection();
@@ -422,6 +433,7 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                                     let dataAttributes: any = {};
                                     if (anchorData.linkType === 'conv' && !!anchorData.trackByMethod) dataAttributes.trackinglink = anchorData.trackingId;
                                     if (anchorData.linkType === 'mark') dataAttributes.marketingaction = anchorData.marketingAction;
+                                    if (anchorData.linkType === 'email') dataAttributes.emailaction = anchorData.emailAction;
                                     this.editorService.insertAnchor(anchorData.url, linkContent, dataAttributes);
                                 }
                                 this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);

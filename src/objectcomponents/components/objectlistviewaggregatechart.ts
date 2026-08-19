@@ -25,7 +25,8 @@ import {language} from "../../services/language.service";
 @Component({
     selector: 'object-listview-aggregate-chart',
     templateUrl: '../templates/objectlistviewaggregatechart.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 
 export class ObjectListViewAggregateChart implements OnInit, OnDestroy, OnChanges{

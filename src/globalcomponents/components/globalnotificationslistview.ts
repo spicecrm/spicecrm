@@ -12,7 +12,8 @@ import {language} from "../../services/language.service";
  */
 @Component({
     selector: 'global-notifications-list-view',
-    templateUrl: '../templates/globalnotificationslistview.html'
+    templateUrl: '../templates/globalnotificationslistview.html',
+    standalone: false
 })
 export class GlobalNotificationsListView {
 

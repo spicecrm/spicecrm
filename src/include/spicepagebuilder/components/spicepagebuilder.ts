@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {CdkDropListGroup} from "@angular/cdk/drag-drop";
-import {TagElementI} from "../interfaces/spicepagebuilder.interfaces";
+import {StylesheetObjI, TagElementI} from "../interfaces/spicepagebuilder.interfaces";
 import {toast} from "../../../services/toast.service";
 
 /**
@@ -22,11 +22,12 @@ import {toast} from "../../../services/toast.service";
     selector: 'spice-page-builder',
     templateUrl: '../templates/spicepagebuilder.html',
     providers: [SpicePageBuilderService],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilder implements AfterViewInit {
 
-    @Output() public pageBuilderChange$: EventEmitter<TagElementI>;
+    @Output() public pageBuilderChange$: EventEmitter<{obj: TagElementI, html: string}>;
     /**
      * reference of this component to allow destroying
      * @public
@@ -46,6 +47,15 @@ export class SpicePageBuilder implements AfterViewInit {
                 private toast: toast,
                 public cdRef: ChangeDetectorRef) {
         this.pageBuilderChange$ = this.spicePageBuilderService.response;
+    }
+
+
+    /**
+     * set the stylesheet object
+     */
+    @Input()
+    set stylesheet(val: StylesheetObjI) {
+        this.spicePageBuilderService.stylesheet = val;
     }
 
     @Input()

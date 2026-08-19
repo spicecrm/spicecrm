@@ -4,12 +4,12 @@ import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
 import {GroupwareService} from "../services/groupware.service";
 import {modal} from "../../../services/modal.service";
-import {error} from "@angular/compiler-cli/src/transformers/util";
 
 @Component({
     selector: 'groupware-create-bean',
     templateUrl: '../templates/groupwarecreatebean.html',
-    providers: [view, model]
+    providers: [view, model],
+    standalone: false
 })
 
 export class GroupwareCreateBean implements OnInit {
@@ -22,7 +22,7 @@ export class GroupwareCreateBean implements OnInit {
      * on save or cancel emit the action
      * @private
      */
-    @Output() private action$ = new EventEmitter<void>();
+    @Output() private action$ = new EventEmitter<{id: string}>();
     /**
      * bean module
      * @private
@@ -52,7 +52,9 @@ export class GroupwareCreateBean implements OnInit {
         this.view.isEditable = true;
         this.model.module = this.module;
         this.model.initialize();
+        this.model.startEdit();
         this.groupware.getAddressArray().subscribe(addresses => {
+            this.model.setField('email1', addresses[0]);
             this.model.addRelatedRecords('email_addresses', addresses.map((address, index) => ({
                 id: this.model.generateGuid(),
                 primary_address: index == 0 ? 1: 0,
@@ -64,10 +66,10 @@ export class GroupwareCreateBean implements OnInit {
 
         this.loadComponentConfig();
         this.view.setEditMode();
-        this.model.startEdit();
     }
 
     public save() {
+        if (!this.model.validate()) return false;
 
         const isSaving = this.modal.await('LBL_SAVING_DATA');
 
@@ -75,12 +77,13 @@ export class GroupwareCreateBean implements OnInit {
             next: res => {
                 isSaving.next(true);
                 isSaving.complete();
-                this.groupware.relatedBeans.push({
+                const bean = {
                     id: this.model.id,
                     module: this.model.module,
                     data: this.model.data,
-                });
-                this.action$.emit();
+                };
+                this.groupware.relatedBeans.push(bean);
+                this.action$.emit(bean);
             },
             error: () => {
                 isSaving.next(false);

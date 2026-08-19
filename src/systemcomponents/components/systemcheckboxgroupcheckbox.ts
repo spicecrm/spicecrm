@@ -16,7 +16,8 @@ declare var _;
 @Component({
     selector: 'system-checkbox-group-checkbox',
     templateUrl: '../templates/systemcheckboxgroupcheckbox.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SystemCheckboxGroupCheckbox implements OnChanges, AfterViewInit {
     public id = _.uniqueId('checkbox-group-checkbox-');  // needed to use inside the template for html ids... without, the click events will get confused...
@@ -89,6 +90,7 @@ export class SystemCheckboxGroupCheckbox implements OnChanges, AfterViewInit {
      * @private
      */
     public setGroupValue() {
+        this.systemCheckboxGroup.singleValue$.emit(this.value);
         if (!this.checked && this.systemCheckboxGroup.value.indexOf(this.value) > -1) {
             this.systemCheckboxGroup.value = this.systemCheckboxGroup.value.filter(e => e != this.value);
         } else if (this.checked && this.systemCheckboxGroup.value.indexOf(this.value) == -1) {

@@ -92,6 +92,14 @@ $routes = [
         'description' => '',
         'options'     => ['noAuth' => true, 'adminOnly' => false],
     ],
+    [
+        'method'      => 'get',
+        'route'       => '/config/packages/validate',
+        'class'       => ConfServerController::class,
+        'function'    => 'validatePackages',
+        'description' => 'validate all packages',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+    ]
 ];
 
 /**

@@ -23,6 +23,7 @@ declare var _;
 @Component({
     selector: 'package-loader-package',
     templateUrl: '../templates/packageloaderpackage.html',
+    standalone: false
 })
 export class PackageLoaderPackage implements OnInit {
 

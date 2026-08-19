@@ -2,7 +2,7 @@
     <!-- for the upload when a file is dropped-->
     <div *ngIf="uploadData.uploading" class="slds-m-vertical--medium slds-media">
         <div style="width: 30px; height: 30px;" class="slds-m-right--x-small slds-align--absolute-center">
-            <system-icon [icon]="this.uploadData.fileIcon.icon" divClass="" [sprite]="this.uploadData.fileIcon.sprite"  size="'small'"></system-icon>
+            <system-icon [icon]="uploadData.fileIcon.icon" divClass="" [sprite]="uploadData.fileIcon.sprite"  size="'small'"></system-icon>
         </div>
         <div class="slds-media__body">
             <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate">

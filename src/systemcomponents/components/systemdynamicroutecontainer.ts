@@ -9,7 +9,8 @@ import {session} from '../../services/session.service';
 
 @Component({
     selector: 'system-dynamicroute-container',
-    templateUrl: '../templates/systemdynamicroutecontainer.html'
+    templateUrl: '../templates/systemdynamicroutecontainer.html',
+    standalone: false
 })
 export class SystemDynamicRouteContainer implements AfterViewInit{
 

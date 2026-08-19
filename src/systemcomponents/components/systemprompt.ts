@@ -13,14 +13,15 @@ declare var _;
  */
 @Component({
     selector: 'system-prompt',
-    templateUrl: '../templates/systemprompt.html'
+    templateUrl: '../templates/systemprompt.html',
+    standalone: false
 })
 export class SystemPrompt implements OnInit, AfterViewInit {
 
     /**
      * the type of prompt
      */
-    @Input() public type: 'info'|'input'|'input_text'|'input_date'|'confirm'|'input_module';
+    @Input() public type: 'info'|'input'|'input_text'|'input_date'|'confirm'|'input_module'|'input_password';
 
     /**
      * the text that is rendered in the popup

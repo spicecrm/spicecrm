@@ -14,7 +14,7 @@
             </tbody>
             <tbody system-table-stencils [columns]="modellist.listfields.length" [select]="!issmall" [rownumbers]="rowNumbers" [dragHandles]="dragAndDrop" [tools]="true" [rows]="20" *ngIf="isloading"></tbody>
         </table>
-        <div class="slds-size--1-of-1 slds-p-around--small slds-align--absolute-center" *ngIf="noAutoLoad && canLoadMore">
+        <div class="slds-size--1-of-1 slds-p-around--small slds-align--absolute-center" *ngIf="noAutoLoadMore && canLoadMore">
             <button class="slds-button slds-button--neutral" (click)="loadMore()">
                 <system-button-icon class="slds-p-right--x-small" icon="skip_forward"></system-button-icon>
                 <system-label label="LBL_LOAD_MORE"></system-label>

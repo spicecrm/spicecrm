@@ -12,7 +12,8 @@ import {ColumnI, CustomElement, SectionI} from "../interfaces/spicepagebuilder.i
 @Component({
     selector: ' spice-page-builder-panel',
     templateUrl: '../templates/spicepagebuilderpanel.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SpicePageBuilderPanel {
     /**
@@ -28,6 +29,16 @@ export class SpicePageBuilderPanel {
      */
     public sections: SectionI[] = [];
 
+    /**
+     * contains the section with the ability to input custom number of columns
+     */
+    public inputColumnsSection: SectionI[] = []
+
+    /**
+     * the number of columns to be inserted in the section
+     */
+    public _columnsCounter: number = 1;
+
     constructor(public spicePageBuilderService: SpicePageBuilderService, private cdRef: ChangeDetectorRef) {
     }
 
@@ -36,7 +47,8 @@ export class SpicePageBuilderPanel {
      */
     public ngOnInit() {
         this.spicePageBuilderService.loadCustomElements();
-        this.generateSections();
+        this.generateInputColumns();
+        // this.generateSections();
     }
 
     public ngAfterViewInit(){
@@ -108,5 +120,44 @@ export class SpicePageBuilderPanel {
             event.container.element.nativeElement.removeChild(this.spicePageBuilderService.dragPlaceholderNode);
             this.spicePageBuilderService.dragPlaceholderNode = undefined;
         }
+    }
+
+    /**
+     * generates a section with ability to create up to 12 columns
+     * @param columnsToAdd number of columns to be added
+     */
+    public generateInputColumns(columnsToAdd: number = 1): void {
+
+        const section: SectionI = JSON.parse(JSON.stringify(this.spicePageBuilderService.panelDefaultSection));
+        let columns: ColumnI[] = [];
+
+        for (let i = 0; i < columnsToAdd; i++) {
+            columns.push(JSON.parse(JSON.stringify(this.spicePageBuilderService.panelDefaultColumn)));
+        }
+
+        let columnsWithWidth = [...columns];
+        let width = 100 / columns.length
+        columnsWithWidth.forEach(col => col.attributes.width = `${(Math.round(width * 100) / 100).toFixed(2)}%`);
+        section.children = columnsWithWidth;
+
+        this.inputColumnsSection.push(section);
+    }
+
+    /**
+     * add or remove the section columns based on the input
+     */
+    public addColumns(): void {
+        // remove the first generated section in order to push new one
+        this.inputColumnsSection.pop();
+
+        this.generateInputColumns(this.columnsCounter);
+    }
+
+    get columnsCounter() {
+        return this._columnsCounter;
+    }
+
+    set columnsCounter(value) {
+        this._columnsCounter = value;
     }
 }

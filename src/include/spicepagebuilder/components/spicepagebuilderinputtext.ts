@@ -17,7 +17,8 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
             provide: NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => SpicePageBuilderInputText)
         }
-    ]
+    ],
+    standalone: false
 })
 export class SpicePageBuilderInputText implements ControlValueAccessor {
     /**
@@ -28,6 +29,10 @@ export class SpicePageBuilderInputText implements ControlValueAccessor {
      * name of the style attribute
      */
     @Input() public label: string = '';
+    /**
+     * disabled flag
+     */
+    @Input() public disabled: boolean = false;
     /**
      * holds the sides value
      */

@@ -15,10 +15,11 @@ declare var moment: any;
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => SystemInputTimezone ),
+            useExisting: forwardRef(() => SystemInputTimezone),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class SystemInputTimezone implements ControlValueAccessor {
 
@@ -26,6 +27,12 @@ export class SystemInputTimezone implements ControlValueAccessor {
      * input to disable the input
      */
     @Input() public disabled = false;
+    public systemselect = false;
+
+    @Input('system-select') set setSystemSelect(value) {
+        this.systemselect = value !== false;
+    }
+
     @Input() public id = '';
 
     // for the value accessor

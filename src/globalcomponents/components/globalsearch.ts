@@ -13,7 +13,8 @@ declare var _: any;
 @Component({
     selector: 'global-search',
     templateUrl: '../templates/globalsearch.html',
-    providers: [fts]
+    providers: [fts],
+    standalone: false
 })
 export class GlobalSearch implements OnDestroy, OnInit {
 
@@ -32,7 +33,7 @@ export class GlobalSearch implements OnDestroy, OnInit {
             if (params.searchterm) {
                 // try to base 64 decode .. but can also be plain string
                 try {
-                    this.searchTerm = atob(decodeURIComponent(params.searchterm));
+                    this.searchTerm = decodeURIComponent(params.searchterm);
                 } catch (e) {
                     this.searchTerm = params.searchterm;
                 }

@@ -16,7 +16,8 @@ import {userpreferences} from "../../services/userpreferences.service";
 @Component({
     selector: 'global-header-search',
     templateUrl: '../templates/globalheadersearch.html',
-    providers: [fts]
+    providers: [fts],
+    standalone: false
 })
 export class GlobalHeaderSearch {
 
@@ -163,7 +164,7 @@ export class GlobalHeaderSearch {
 
                         // navigate to the search view
                         if (this.searchTerm.length > 0) {
-                            this.router.navigate(['/search/' + encodeURIComponent(btoa(this.searchTerm))]);
+                            this.router.navigate(['/search/' + encodeURIComponent(this.searchTerm)]);
                         }
                     }
 

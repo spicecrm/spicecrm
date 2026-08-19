@@ -1,3 +1,7 @@
-<button class="slds-button slds-button--neutral slds-button--icon-border slds-m-horizontal--xxx-small" system-title="LBL_AGGREGATES" [disabled]="!enabled" [ngClass]="buttonclasses" (click)="toggleaggregates()">
-    <system-button-icon icon="bucket"></system-button-icon>
-</button>
+@if(enabled) {
+    <div class="slds-p-horizontal--xxx-small">
+        <button class="slds-button slds-button--icon-border" system-title="LBL_AGGREGATES"  [ngClass]="buttonclasses" (click)="toggleaggregates()">
+            <system-button-icon icon="bucket"/>
+        </button>
+    </div>
+}

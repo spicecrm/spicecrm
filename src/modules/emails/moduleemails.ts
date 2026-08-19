@@ -24,6 +24,7 @@ import {EmailReplyModal} from "./components/emailreplymodal";
 import {EmailForwardButton} from "./components/emailforwardbutton";
 import {EmailForwardModal} from "./components/emailforwardmodal";
 import {EmailSendButton} from "./components/emailsendbutton";
+import {EmailSaveDraftButton} from "./components/emailsavedraftbutton";
 import {EmailSchedulesButton} from "./components/emailschedulesbutton";
 import {EmailSchedulesCancelButton} from "./components/emailschedulescancelbutton";
 import {EmailSchedulesModal} from "./components/emailschedulesmodal";
@@ -43,6 +44,11 @@ import {EmailCloneAttachmentsModal} from "./components/emailcloneattachmentsmoda
 import {ModuleSpiceAttachments} from "../../include/spiceattachments/spiceattachments";
 import {fieldZipCompress} from "./fields/fieldzipcompress";
 import {fieldReadReceipt} from "./fields/fieldreadreceipt";
+import {EmailForwardToTargetListButton} from "./components/emailforwardtotargetlistbutton";
+import {EmailsDetailsContainer} from "./components/emailsdetailscontainer";
+import {EmailPlanButton} from "./components/emailplanbutton";
+import {EmailPlanModal} from "./components/emailplanmodal";
+import {EmailCreateContactButton} from "./components/emailcreatecontactbutton";
 
 @NgModule({
     imports: [
@@ -64,8 +70,12 @@ import {fieldReadReceipt} from "./fields/fieldreadreceipt";
         EmailsPopoverBody,
         fieldEmailStatus,
         EmailReplyButton,
+        EmailForwardToTargetListButton,
         EmailReplyModal,
         EmailSendButton,
+        EmailPlanButton,
+        EmailPlanModal,
+        EmailSaveDraftButton,
         EmailForwardButton,
         EmailForwardModal,
         EmailSchedulesButton,
@@ -85,7 +95,9 @@ import {fieldReadReceipt} from "./fields/fieldreadreceipt";
         EmailCloneAttachmentsButton,
         EmailCloneAttachmentsModal,
         fieldZipCompress,
-        fieldReadReceipt
+        fieldReadReceipt,
+        EmailsDetailsContainer,
+        EmailCreateContactButton
     ]
 })
 export class ModuleEmails {}

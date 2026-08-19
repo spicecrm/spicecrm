@@ -17,7 +17,8 @@ import {Router} from '@angular/router';
     providers: [model, view],
     host: {
         "(click)": "navigateTo()"
-    }
+    },
+    standalone: false
 })
 export class GlobalHeaderSearchRecentItem implements OnInit {
     @Input()public item: any = {};

@@ -7,6 +7,7 @@ import {model} from '../../../services/model.service';
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {view} from "../../../services/view.service";
+import {Router} from "@angular/router";
 
 /**
  * A bean component. Dsiplays a list of Beans that are matched to an email address
@@ -14,7 +15,8 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: 'groupware-pane-bean',
     templateUrl: '../templates/groupwarepanebean.html',
-    providers: [view]
+    providers: [view],
+    standalone: false
 })
 export class GroupwarePaneBean implements OnInit {
 
@@ -22,6 +24,10 @@ export class GroupwarePaneBean implements OnInit {
      * Current bean.
      */
     @Input() public bean: any;
+    /**
+     * enable go details flag
+     */
+    @Input() public goDetailsEnabled: boolean = false;
 
     public mainfieldsetfields: any[];
     public subfieldsetfields: any[];
@@ -31,7 +37,8 @@ export class GroupwarePaneBean implements OnInit {
         public language: language,
         public metadata: metadata,
         public model: model,
-        public view: view
+        public view: view,
+        private router: Router
     ) {
         // set base settings for the view
         this.view.displayLabels = false;
@@ -64,5 +71,13 @@ export class GroupwarePaneBean implements OnInit {
         } else {
             this.groupware.removeBean(this.bean);
         }
+    }
+
+    /**
+     * go to bean details if enabled
+     */
+    public goDetails() {
+        if (!this.goDetailsEnabled) return;
+        this.router.navigate([`/groupware/details/${this.bean.module}/${this.bean.id}`]);
     }
 }

@@ -1,0 +1,65 @@
+<div class="slds-box slds-box--border slds-m-vertical--x-small">
+    <fieldset class="slds-form-element slds-form-element_compound slds-p-around--x-small">
+        <div class="slds-form-element__control">
+            <div class="slds-form-element__row">
+                <div class="slds-size--1-of-3">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label">{{label}}</label>
+                        <div class="slds-select_container slds-p-top--xxx-small">
+                            <select class="slds-select" [(ngModel)]="valueCount" (ngModelChange)="emitJoinedValue()">
+                                <option value="1"><system-label label="LBL_PADDING_EQUAL"/></option>
+                                <option value="2"><system-label label="LBL_PADDING_HV"/></option>
+                                <option value="3"><system-label label="LBL_PADDING_THB"/></option>
+                                <option value="4"><system-label label="LBL_PADDING_DISTINCT"/></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-size--1-of-6">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label"><system-label label="LBL_TOP"/></label>
+                        <div class="slds-form-element__control slds-input-has-fixed-addon slds-p-top--xxx-small">
+                            <input type="number" [(ngModel)]="value.top" (ngModelChange)="emitJoinedValue()" maxlength="4" size="4" class="slds-input">
+                            <span class="slds-form-element__addon">
+                                {{spicePageBuilderService.defaultSuffix}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-size--1-of-6">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label"><system-label label="LBL_RIGHT"/></label>
+                        <div class="slds-form-element__control slds-input-has-fixed-addon slds-p-top--xxx-small">
+                            <input type="number" [disabled]="valueCountNumber<2" [(ngModel)]="value.right" (ngModelChange)="emitJoinedValue()" maxlength="4" size="4" class="slds-input">
+                            <span class="slds-form-element__addon">
+                                {{spicePageBuilderService.defaultSuffix}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-size--1-of-6">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label"><system-label label="LBL_BOTTOM"/></label>
+                        <div class="slds-form-element__control slds-input-has-fixed-addon slds-p-top--xxx-small">
+                            <input type="number"  [disabled]="valueCountNumber<3" [(ngModel)]="value.bottom" (ngModelChange)="emitJoinedValue()" maxlength="4" size="4" class="slds-input">
+                            <span class="slds-form-element__addon">
+                                {{spicePageBuilderService.defaultSuffix}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-size--1-of-6">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label"><system-label label="LBL_LEFT"/></label>
+                        <div class="slds-form-element__control slds-input-has-fixed-addon slds-p-top--xxx-small">
+                            <input type="number" [disabled]="valueCountNumber!=4" [(ngModel)]="value.left" (ngModelChange)="emitJoinedValue()" maxlength="4" size="4" class="slds-input">
+                            <span class="slds-form-element__addon">
+                                {{spicePageBuilderService.defaultSuffix}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>
